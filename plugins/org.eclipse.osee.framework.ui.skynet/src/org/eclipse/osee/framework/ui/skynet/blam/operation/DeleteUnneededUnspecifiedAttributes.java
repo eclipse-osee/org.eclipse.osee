@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
@@ -40,7 +41,7 @@ public class DeleteUnneededUnspecifiedAttributes extends AbstractBlam {
       AttributeType attributeType = variableMap.getAttributeType("Attribute Type");
       List<Artifact> artifacts =
          ArtifactQuery.getArtifactListFromAttribute(attributeType, EnumeratedAttribute.UNSPECIFIED_VALUE, branch);
-      SkynetTransaction transaction = new SkynetTransaction(branch, "BLAM: Delete unneeded unspecified attributes");
+      SkynetTransaction transaction = TransactionManager.createTransaction(branch, "BLAM: Delete unneeded unspecified attributes");
 
       for (Artifact artifact : artifacts) {
          Collection<Attribute<String>> attributes = artifact.getAttributes(attributeType);

@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.support.test.util.DemoUsers;
 import org.junit.AfterClass;
@@ -62,7 +63,7 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
          Arrays.asList(UserManager.getUser().getUserId())));
 
       // create and transition decision review
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       String reviewTitle = "Test Review - " + teamWf.getName();
       DecisionReviewArtifact decRev =
          DecisionReviewManager.createNewDecisionReviewAndTransitionToDecision(teamWf, reviewTitle, "my description",
@@ -90,7 +91,7 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
          Arrays.asList(UserManager.getUser().getUserId())));
 
       // create and transition decision review
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       String reviewTitle = "Test Review - " + teamWf.getName();
       DecisionReviewArtifact decRev =
          DecisionReviewManager.createNewDecisionReviewAndTransitionToDecision(teamWf, reviewTitle, "my description",

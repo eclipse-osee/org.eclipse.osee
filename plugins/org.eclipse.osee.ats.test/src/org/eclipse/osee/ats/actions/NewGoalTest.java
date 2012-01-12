@@ -11,6 +11,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -22,7 +23,7 @@ public class NewGoalTest extends AbstractAtsActionRunTest {
    @BeforeClass
    @AfterClass
    public static void cleanup() throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), NewGoalTest.class.getSimpleName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), NewGoalTest.class.getSimpleName());
       for (Artifact art : ArtifactQuery.getArtifactListFromName(NewGoalTest.class.getSimpleName(),
          AtsUtil.getAtsBranchToken(), DeletionFlag.EXCLUDE_DELETED)) {
          art.deleteAndPersist(transaction);

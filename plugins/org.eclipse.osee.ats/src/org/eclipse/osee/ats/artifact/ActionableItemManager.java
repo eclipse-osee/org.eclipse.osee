@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 public class ActionableItemManager {
 
@@ -76,7 +77,8 @@ public class ActionableItemManager {
       }
 
       final StringBuffer sb = new StringBuffer();
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Edit Actionable Items");
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Edit Actionable Items");
       Date createdDate = new Date();
       User createdBy = UserManager.getUser();
 

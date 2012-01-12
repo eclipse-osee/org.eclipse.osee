@@ -31,10 +31,10 @@ public final class SkynetTransactionTest {
    @Test(expected = OseeCoreException.class)
    public void test_overalappingTransactions() throws OseeCoreException {
 
-      new SkynetTransaction(DemoSawBuilds.SAW_Bld_1, String.format(MSG, SkynetTransactionTest.class.getSimpleName(),
+      TransactionManager.createTransaction(DemoSawBuilds.SAW_Bld_1, String.format(MSG, SkynetTransactionTest.class.getSimpleName(),
          testName.getMethodName(), 1));
 
-      new SkynetTransaction(DemoSawBuilds.SAW_Bld_1, String.format(MSG, SkynetTransactionTest.class.getSimpleName(),
+      TransactionManager.createTransaction(DemoSawBuilds.SAW_Bld_1, String.format(MSG, SkynetTransactionTest.class.getSimpleName(),
          testName.getMethodName(), 2));
    }
 
@@ -42,11 +42,11 @@ public final class SkynetTransactionTest {
    public void test_overalappingTransactionsDifferentBranches() throws OseeCoreException {
 
       SkynetTransaction trans1 =
-         new SkynetTransaction(DemoSawBuilds.SAW_Bld_2, String.format(MSG, SkynetTransactionTest.class.getSimpleName(),
+         TransactionManager.createTransaction(DemoSawBuilds.SAW_Bld_2, String.format(MSG, SkynetTransactionTest.class.getSimpleName(),
             testName.getMethodName(), 1));
 
       SkynetTransaction trans2 =
-         new SkynetTransaction(DemoSawBuilds.SAW_Bld_1, String.format(MSG, SkynetTransactionTest.class.getSimpleName(),
+         TransactionManager.createTransaction(DemoSawBuilds.SAW_Bld_1, String.format(MSG, SkynetTransactionTest.class.getSimpleName(),
             testName.getMethodName(), 2));
 
       trans1.execute();
@@ -55,7 +55,7 @@ public final class SkynetTransactionTest {
 
    @Test
    public void test_multiThreadedOveralappingTransactions() throws Exception {
-      new SkynetTransaction(DemoSawBuilds.SAW_Bld_1, String.format(MSG, SkynetTransactionTest.class.getSimpleName(),
+      TransactionManager.createTransaction(DemoSawBuilds.SAW_Bld_1, String.format(MSG, SkynetTransactionTest.class.getSimpleName(),
          testName.getMethodName(), 1));
 
       ThreadedWorker worker = new ThreadedWorker(2, DemoSawBuilds.SAW_Bld_1);
@@ -69,7 +69,7 @@ public final class SkynetTransactionTest {
 
    @Test
    public void test_multiThreadedDifferentBranches() throws Exception {
-      new SkynetTransaction(DemoSawBuilds.SAW_Bld_1, String.format(MSG, SkynetTransactionTest.class.getSimpleName(),
+      TransactionManager.createTransaction(DemoSawBuilds.SAW_Bld_1, String.format(MSG, SkynetTransactionTest.class.getSimpleName(),
          testName.getMethodName(), 1));
       ThreadedWorker worker = new ThreadedWorker(2, DemoSawBuilds.SAW_Bld_2);
       worker.execute();
@@ -98,7 +98,7 @@ public final class SkynetTransactionTest {
       public void run() {
          try {
             governingTransaction =
-               new SkynetTransaction(branch, String.format(TRANS_COMMENT, SkynetTransactionTest.class.getSimpleName(),
+               TransactionManager.createTransaction(branch, String.format(TRANS_COMMENT, SkynetTransactionTest.class.getSimpleName(),
                   manualId));
             //hold onto this transaction
          } catch (OseeCoreException ex) {

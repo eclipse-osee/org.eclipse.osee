@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListe
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
@@ -243,7 +244,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
       if (ed.open() == 0) {
          try {
             SkynetTransaction transaction =
-               new SkynetTransaction(branch, GroupExplorer.class.getSimpleName() + ".handleNewGroup");
+               TransactionManager.createTransaction(branch, GroupExplorer.class.getSimpleName() + ".handleNewGroup");
             UniversalGroup.addGroup(ed.getEntry(), branch, transaction);
             transaction.execute();
             treeViewer.refresh();
@@ -266,7 +267,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
       if (MessageDialog.openConfirm(Displays.getActiveShell(), "Remove From Group",
          "Remove From Group - (Artifacts will not be deleted)\n\nAre you sure?")) {
          try {
-            SkynetTransaction transaction = new SkynetTransaction(branch, "Artifacts removed from group");
+            SkynetTransaction transaction = TransactionManager.createTransaction(branch, "Artifacts removed from group");
             for (GroupExplorerItem item : items) {
                item.getArtifact().deleteRelation(CoreRelationTypes.Universal_Grouping__Group,
                   item.getParentItem().getArtifact());
@@ -300,7 +301,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
          if (MessageDialog.openConfirm(Displays.getActiveShell(), "Delete Groups",
             "Delete Groups - (Contained Artifacts will not be deleted)\n\n" + names + "\nAre you sure?")) {
 
-            SkynetTransaction transaction = new SkynetTransaction(branch, "Delete Groups: " + names);
+            SkynetTransaction transaction = TransactionManager.createTransaction(branch, "Delete Groups: " + names);
             for (GroupExplorerItem item : items) {
                item.getArtifact().deleteAndPersist(transaction);
             }

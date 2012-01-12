@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.CheckBoxDialog;
@@ -75,7 +76,7 @@ public class DeleteCoveragePackageAction extends Action {
                boolean purge = cDialog.isChecked();
                SkynetTransaction transaction = null;
                if (!purge) {
-                  transaction = new SkynetTransaction(branch, "Delete Coverage Package - " + coveragePackage.getName());
+                  transaction = TransactionManager.createTransaction(branch, "Delete Coverage Package - " + coveragePackage.getName());
                }
                CoveragePackageEvent coverageEvent =
                   new CoveragePackageEvent(coveragePackage, CoverageEventType.Deleted);

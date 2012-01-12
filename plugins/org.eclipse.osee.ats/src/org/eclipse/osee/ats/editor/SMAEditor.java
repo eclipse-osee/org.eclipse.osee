@@ -51,6 +51,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.AttributesComposite;
@@ -205,7 +206,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
                "You do not have permissions to save " + awa.getArtifactTypeName() + ":" + awa);
          } else {
             try {
-               SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Workflow Editor - Save");
+               SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Workflow Editor - Save");
                // If change was made on Attribute tab, persist awa separately.  This is cause attribute
                // tab changes conflict with XWidget changes
                if (attributesComposite != null && getActivePage() == attributesPageIndex) {

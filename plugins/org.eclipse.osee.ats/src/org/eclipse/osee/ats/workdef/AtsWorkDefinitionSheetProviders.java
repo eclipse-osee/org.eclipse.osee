@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.plugin.core.PluginUtil;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.osgi.framework.Bundle;
 
 /**
@@ -50,7 +51,8 @@ public final class AtsWorkDefinitionSheetProviders {
    }
 
    public static void initializeDatabase(XResultData resultData, boolean onlyWorkDefinitions) throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Import ATS Work Definitions");
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Import ATS Work Definitions");
       Artifact folder =
          OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.WorkDefinitionsFolder, AtsUtil.getAtsBranch());
       if (folder.isDirty()) {
@@ -75,7 +77,7 @@ public final class AtsWorkDefinitionSheetProviders {
 
    public static void importAIsAndTeamsToDatabase() throws OseeCoreException {
       SkynetTransaction transaction =
-         new SkynetTransaction(AtsUtil.getAtsBranch(), "Import ATS AIs and Team Definitions");
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Import ATS AIs and Team Definitions");
       for (WorkDefinitionSheet sheet : getWorkDefinitionSheets()) {
          OseeLog.logf(Activator.class, Level.INFO, "Importing ATS AIs and Teams sheet [%s]", sheet.getName());
          AtsWorkDefinitionProvider.get().importAIsAndTeamsToDb(sheet, transaction);

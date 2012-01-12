@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.rule.OseeHousekeepingRule;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -224,7 +225,7 @@ public class VectorCastImportTest {
          // Test Persist of CoveragePackage
          OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, CoverageTestUtil.getTestBranch());
          SkynetTransaction transaction =
-            new SkynetTransaction(CoverageTestUtil.getTestBranch(), String.format("%s: %s.%s",
+            TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), String.format("%s: %s.%s",
                VectorCastImportTest.class.getSimpleName(), "Coverage Package Save ", testName.getMethodName()));
          CoveragePackageEvent coverageEvent = new CoveragePackageEvent(coveragePackage, CoverageEventType.Modified);
          store.save(transaction, coverageEvent);
@@ -283,7 +284,7 @@ public class VectorCastImportTest {
       coverageImport = vectorCastImporter.run(null);
 
       OseeCoveragePackageStore store = OseeCoveragePackageStore.get(coveragePackage, CoverageTestUtil.getTestBranch());
-      SkynetTransaction transaction = new SkynetTransaction(CoverageTestUtil.getTestBranch(), "Save Import Record");
+      SkynetTransaction transaction = TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), "Save Import Record");
       Result result = store.saveImportRecord(transaction, coverageImport);
       Assert.assertTrue(result.isTrue());
       transaction.execute();

@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -261,7 +262,7 @@ public class UserRoleXViewer extends XViewer {
 
    public boolean executeTransaction(Collection<UserRole> userRoles) throws OseeCoreException {
       SkynetTransaction transaction =
-         new SkynetTransaction(xUserRoleViewer.getReviewArt().getArtifact().getBranch(), "Modify Review Roles");
+         TransactionManager.createTransaction(xUserRoleViewer.getReviewArt().getArtifact().getBranch(), "Modify Review Roles");
       for (UserRole userRole : userRoles) {
          xUserRoleViewer.getUserRoleMgr().addOrUpdateUserRole(userRole);
          update(userRole, null);

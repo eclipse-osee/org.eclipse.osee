@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.swt.SWT;
@@ -96,7 +97,7 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
             }
             SkynetTransaction transaction = null;
             if (persist) {
-               transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Related-to-State");
+               transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Related-to-State");
             }
             for (TaskArtifact task : tasks) {
                String state = task.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "");

@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.operation.PurgeUnusedBackingDataAndTransactions;
 import org.eclipse.osee.framework.skynet.core.mocks.DbTestUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperationWithListener;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
@@ -84,7 +85,7 @@ public class PurgeTransactionTest {
 
    private void createArtifacts() throws Exception {
       DbTestUtil.getTableRowCounts(preCreateCount, tables);
-      createTransaction = new SkynetTransaction(branch, "Purge Transaction Test");
+      createTransaction = TransactionManager.createTransaction(branch, "Purge Transaction Test");
       softArts =
          FrameworkTestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10, getClass().getSimpleName(),
             branch);
@@ -97,7 +98,7 @@ public class PurgeTransactionTest {
 
    private void modifyArtifacts() throws Exception {
       DbTestUtil.getTableRowCounts(preModifyCount, tables);
-      modifyTransaction = new SkynetTransaction(branch, "Purge Transaction Test");
+      modifyTransaction = TransactionManager.createTransaction(branch, "Purge Transaction Test");
       for (Artifact softArt : softArts) {
          softArt.addAttribute(CoreAttributeTypes.StaticId, getClass().getSimpleName());
          softArt.persist(modifyTransaction);

@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.DemoActionableItems;
 import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 import org.junit.AfterClass;
@@ -73,7 +74,7 @@ public class AtsDeleteManagerTest {
     */
    @org.junit.Test
    public void testTeamArtDeleteOneWorkflow() throws Exception {
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
          createAction(TestNames.TeamArtDeleteOneWorkflow,
@@ -98,7 +99,7 @@ public class AtsDeleteManagerTest {
     */
    @org.junit.Test
    public void testTeamArtDeleteWithTwoWorkflows() throws Exception {
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
          createAction(TestNames.TeamArtDeleteWithTwoWorkflows,
@@ -118,7 +119,7 @@ public class AtsDeleteManagerTest {
 
    @org.junit.Test
    public void testTeamArtPurge() throws Exception {
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
          createAction(TestNames.TeamArtPurge,
@@ -138,7 +139,7 @@ public class AtsDeleteManagerTest {
 
    @org.junit.Test
    public void testActionDelete() throws Exception {
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
          createAction(TestNames.ActionDelete,
@@ -158,7 +159,7 @@ public class AtsDeleteManagerTest {
 
    @org.junit.Test
    public void testActionPurge() throws Exception {
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
          createAction(TestNames.ActionPurge,

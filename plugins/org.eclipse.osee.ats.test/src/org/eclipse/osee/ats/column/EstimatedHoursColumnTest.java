@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -46,7 +47,7 @@ public class EstimatedHoursColumnTest {
       SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
 
       SkynetTransaction transaction =
-         new SkynetTransaction(AtsUtil.getAtsBranch(), EstimatedHoursColumnTest.class.getSimpleName());
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), EstimatedHoursColumnTest.class.getSimpleName());
       TeamWorkFlowArtifact teamArt1 =
          DemoTestUtil.createSimpleAction(EstimatedHoursColumnTest.class.getSimpleName(), transaction);
 

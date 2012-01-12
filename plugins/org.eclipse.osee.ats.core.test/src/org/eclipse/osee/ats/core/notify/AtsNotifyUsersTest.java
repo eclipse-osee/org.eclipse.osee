@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.OseeNotificationEvent;
 import org.eclipse.osee.support.test.util.DemoActionableItems;
 import org.eclipse.osee.support.test.util.DemoUsers;
@@ -65,7 +66,7 @@ public class AtsNotifyUsersTest {
 
    private static void cleanUpAction() throws OseeCoreException {
       SkynetTransaction transaction =
-         new SkynetTransaction(AtsUtilCore.getAtsBranch(), AtsNotifyUsersTest.class.getSimpleName());
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsNotifyUsersTest.class.getSimpleName());
       for (Artifact art : ArtifactQuery.getArtifactListFromAttribute(CoreAttributeTypes.Name,
          AtsNotifyUsersTest.class.getSimpleName() + "%", AtsUtilCore.getAtsBranch())) {
          art.deleteAndPersist(transaction);
@@ -91,7 +92,7 @@ public class AtsNotifyUsersTest {
       AtsNotificationManager.setInTest(false);
       AtsNotificationManager.setIsProduction(true);
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       teamArt.setName(AtsNotifyUsersTest.class.getSimpleName());
       teamArt.internalSetCreatedBy(kay_ValidEmail);
@@ -151,7 +152,7 @@ public class AtsNotifyUsersTest {
 
       notifyManager.clear();
       SubscribeManager.toggleSubscribe(teamArt);
-      transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), "AtsNotifyUsersTests.toggle.subscribed");
+      transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "AtsNotifyUsersTests.toggle.subscribed");
       SubscribeManager.addSubscribed(teamArt, inactiveSteve, transaction);
       transaction.execute();
       AtsNotificationManager.notify(teamArt, AtsNotifyType.Subscribed);
@@ -190,7 +191,7 @@ public class AtsNotifyUsersTest {
       TransitionHelper helper =
          new TransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), TeamState.Cancelled.getPageName(),
             null, "this is the reason", TransitionOption.OverrideTransitionValidityCheck);
-      transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       TransitionManager transitionMgr = new TransitionManager(helper, transaction);
       TransitionResults results = transitionMgr.handleAll();
       transaction.execute();
@@ -217,7 +218,7 @@ public class AtsNotifyUsersTest {
       AtsNotificationManager.setInTest(false);
       AtsNotificationManager.setIsProduction(true);
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       ActionManager.createAction(null, getClass().getSimpleName() + "-OnNewAction", "Description",
          ChangeType.Improvement, "2", false, null,
          ActionableItemManagerCore.getActionableItems(Arrays.asList(DemoActionableItems.SAW_SW_Design.getName())),

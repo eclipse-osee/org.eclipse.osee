@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
 import org.junit.Assert;
@@ -81,7 +82,7 @@ public class ArtifactTestUnitStoreTest {
 
    @Test
    public void testStore() throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(testBranch, getClass().getSimpleName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(testBranch, getClass().getSimpleName());
       ArtifactTestUnitStore store = new ArtifactTestUnitStore(testBranch);
       TestUnitCache tc = new TestUnitCache(store);
       CoverageItem ci = createCoverageItem(tc);

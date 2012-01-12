@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -57,7 +58,7 @@ public class FavoritesManager {
                      "Remove Favorite", "Are You sure you wish to remove this as Favorite?");
             }
             if (result) {
-               SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Toggle Favorites");
+               SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Toggle Favorites");
                for (AbstractWorkflowArtifact awa : awas) {
                   removeFavorite(awa, UserManager.getUser(), transaction);
                }
@@ -71,7 +72,7 @@ public class FavoritesManager {
                      "Favorite", "Are you sure you wish add this as a Favorite?");
             }
             if (result) {
-               SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Toggle Favorites");
+               SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Toggle Favorites");
                for (AbstractWorkflowArtifact awa : awas) {
                   addFavorite(awa, UserManager.getUser(), transaction);
                }

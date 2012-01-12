@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -47,7 +48,7 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
 
       if (peerRevArt == null) {
          // setup fake review artifact with decision options set
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
+         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
          peerRevArt = PeerToPeerReviewManager.createNewPeerToPeerReview(null, getClass().getName(), "", transaction);
          peerRevArt.setName(getClass().getSimpleName());
          peerRevArt.persist(transaction);
@@ -74,7 +75,7 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
       UserRoleManager roleMgr = new UserRoleManager(peerRevArt);
       roleMgr.addOrUpdateUserRole(userRole);
       userRole = new UserRole(Role.Reviewer, UserManager.getUserByName("Alex Kay"));
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "test transition");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "test transition");
       roleMgr.addOrUpdateUserRole(userRole);
       roleMgr.saveToArtifact(transaction);
       transaction.execute();
@@ -93,7 +94,7 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
 
       // make call to state item that should set options based on artifact's attribute value
       AtsPeerToPeerReviewReviewStateItem stateItem = new AtsPeerToPeerReviewReviewStateItem();
-      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "test transition");
+      transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "test transition");
       stateItem.transitioned(peerRevArt, fromState, toState, Arrays.asList((IBasicUser) UserManager.getUser()),
          transaction);
       transaction.execute();

@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -73,15 +72,15 @@ public final class SkynetTransaction extends AbstractOperation {
    private final String comment;
    private User user;
 
-   private static TransactionMonitor txMonitor = new TransactionMonitor();
-
    private AccessPolicy access;
 
-   public SkynetTransaction(IOseeBranch branch, String comment) throws OseeCoreException {
+   private final TransactionMonitor txMonitor;
+
+   protected SkynetTransaction(TransactionMonitor txMonitor, Branch branch, String comment) {
       super(comment, Activator.PLUGIN_ID);
-      this.branch = BranchManager.getBranch(branch);
+      this.txMonitor = txMonitor;
+      this.branch = branch;
       this.comment = comment;
-      txMonitor.reportTxCreation(this, branch, comment);
    }
 
    private int getNewAttributeId(Artifact artifact, Attribute<?> attribute) throws OseeCoreException {

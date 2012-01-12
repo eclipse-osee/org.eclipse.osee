@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -157,7 +158,7 @@ public class GlobalMenu {
 
                Artifact[] artifactsArray = artifactsToBeDeleted.toArray(new Artifact[artifactsToBeDeleted.size()]);
                SkynetTransaction transaction =
-                  new SkynetTransaction(artifactsArray[0].getBranch(), "Delete artifact action");
+                  TransactionManager.createTransaction(artifactsArray[0].getBranch(), "Delete artifact action");
                ArtifactPersistenceManager.deleteArtifact(transaction, false, artifactsArray);
                transaction.execute();
 

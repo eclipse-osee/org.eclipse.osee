@@ -552,7 +552,7 @@ public class AtsBranchManagerCore {
             teamArt.setWorkingBranchCreationInProgress(false);
             // Create reviews as necessary
             SkynetTransaction transaction =
-               new SkynetTransaction(AtsUtilCore.getAtsBranch(), "Create Reviews upon Transition");
+               TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Create Reviews upon Transition");
             createNecessaryBranchEventReviews(StateEventType.CreateBranch, teamArt, new Date(),
                UserManager.getUser(SystemUser.OseeSystem), transaction);
             transaction.execute();

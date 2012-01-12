@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -61,7 +62,7 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
       bulkRequirements =
          RelationManager.getRelatedArtifacts(subsystemRequirements, 1, CoreRelationTypes.Requirement_Trace__Lower_Level);
       report = new StringBuilder(AHTML.beginMultiColumnTable(100, 1));
-      transaction = new SkynetTransaction(branch, "Set Verification Level for Subsystem Requirements");
+      transaction = TransactionManager.createTransaction(branch, "Set Verification Level for Subsystem Requirements");
    }
 
    @Override

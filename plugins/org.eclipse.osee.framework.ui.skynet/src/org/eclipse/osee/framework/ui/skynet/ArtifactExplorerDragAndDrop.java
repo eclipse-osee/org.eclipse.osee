@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.Wizards;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
@@ -175,7 +176,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                "Are you sure you want to make each of the selected artifacts a child of " + parentArtifact.getName() + "?")) {
                try {
                   SkynetTransaction transaction =
-                     new SkynetTransaction(parentArtifact.getBranch(), "Artifact explorer drag & drop");
+                     TransactionManager.createTransaction(parentArtifact.getBranch(), "Artifact explorer drag & drop");
                   // Replace all of the parent relations
                   for (Artifact artifact : artifactsToBeRelated) {
                      Artifact currentParent = artifact.getParent();

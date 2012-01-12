@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 import org.eclipse.osee.support.test.util.DemoUsers;
 
@@ -48,7 +49,7 @@ public class DemoDbReviews {
 
    public static void createReviews(boolean DEBUG) throws Exception {
       SkynetTransaction transaction =
-         new SkynetTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - Create Reviews");
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - Create Reviews");
       createPeerToPeerReviews(DEBUG, transaction);
       createDecisionReviews(DEBUG, transaction);
       transaction.execute();

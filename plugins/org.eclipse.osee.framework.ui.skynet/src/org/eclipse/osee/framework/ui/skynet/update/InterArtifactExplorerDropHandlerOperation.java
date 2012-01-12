@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -159,7 +160,7 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
       IOseeBranch destinationBranch = destinationArtifact.getBranch();
 
       SkynetTransaction transaction =
-         new SkynetTransaction(destinationBranch, "Introduced " + transferArtifacts.size() + " artifact(s)");
+         TransactionManager.createTransaction(destinationBranch, "Introduced " + transferArtifacts.size() + " artifact(s)");
       Set<Artifact> reloadArtifacts = new LinkedHashSet<Artifact>();
 
       //make sure all transfer artifacts are on the destination branch

@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -94,7 +95,7 @@ public class CoverageItemPersistTest {
 
       Artifact artifact = new OseeCoverageUnitStore(parentCu, CoverageTestUtil.getTestBranch()).getArtifact(true);
       Assert.assertNotNull(artifact);
-      SkynetTransaction transaction = new SkynetTransaction(CoverageTestUtil.getTestBranch(), "Save CoverageItem");
+      SkynetTransaction transaction = TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), "Save CoverageItem");
       String coverageGuid = GUID.create();
       String coverageName = "Test CP";
       CoveragePackageEvent coverageEvent =
@@ -142,7 +143,7 @@ public class CoverageItemPersistTest {
    public void testDelete() throws OseeCoreException {
       Artifact artifact = new OseeCoverageUnitStore(parentCu, CoverageTestUtil.getTestBranch()).getArtifact(false);
       Assert.assertNotNull(artifact);
-      SkynetTransaction transaction = new SkynetTransaction(CoverageTestUtil.getTestBranch(), "Save CoverageItem");
+      SkynetTransaction transaction = TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), "Save CoverageItem");
       CoveragePackageEvent coverageEvent =
          new CoveragePackageEvent("Test CP", GUID.create(), CoverageEventType.Deleted, GUID.create());
       new OseeCoverageUnitStore(parentCu, CoverageTestUtil.getTestBranch()).delete(transaction, coverageEvent, false);

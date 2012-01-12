@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.PluginUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -99,7 +100,7 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
          }
       } else {
          SkynetTransaction transaction =
-            new SkynetTransaction(AtsUtil.getAtsBranch(), "Import Actions from Spreadsheet");
+            TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Import Actions from Spreadsheet");
          extractor.createArtifactsAndNotify(transaction);
          WorldEditor.open(new WorldEditorSimpleProvider("Imported Action Artifacts", extractor.getActionArts()));
          transaction.execute();

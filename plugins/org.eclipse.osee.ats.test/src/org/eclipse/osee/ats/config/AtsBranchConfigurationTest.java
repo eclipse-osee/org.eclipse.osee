@@ -56,6 +56,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
@@ -156,7 +157,7 @@ public class AtsBranchConfigurationTest {
          ActionableItemManagerCore.getActionableItems(appendToName(BRANCH_VIA_VERSIONS, "A1"));
       Assert.assertFalse(selectedActionableItems.isEmpty());
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
       Artifact actionArt =
          ActionManager.createAction(null, BRANCH_VIA_VERSIONS.getName() + " Req Changes", "description",
             ChangeType.Problem, "1", false, null, selectedActionableItems, new Date(), UserManager.getUser(), null,
@@ -267,7 +268,7 @@ public class AtsBranchConfigurationTest {
       Assert.assertFalse(selectedActionableItems.isEmpty());
 
       SkynetTransaction transaction =
-         new SkynetTransaction(AtsUtil.getAtsBranch(), "Test branch via team definition: create action");
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Test branch via team definition: create action");
       String actionTitle = BRANCH_VIA_TEAM_DEFINITION.getName() + " Req Changes";
       Artifact actionArt =
          ActionManager.createAction(null, actionTitle, "description", ChangeType.Problem, "1", false, null,
@@ -320,7 +321,7 @@ public class AtsBranchConfigurationTest {
          ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.Action, branch.getName() + " Req Changes",
             AtsUtil.getAtsBranch());
       if (aArt != null) {
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
+         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
          for (TeamWorkFlowArtifact teamArt : ActionManager.getTeams(aArt)) {
             SMAEditor.close(Collections.singleton(teamArt), false);
             teamArt.deleteAndPersist(transaction, true);
@@ -333,7 +334,7 @@ public class AtsBranchConfigurationTest {
       Collection<Artifact> arts =
          ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.Version, AtsUtil.getAtsBranch());
       if (arts.size() > 0) {
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
+         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
          for (Artifact verArt : arts) {
             if (verArt.getName().contains(branch.getName())) {
                verArt.deleteAndPersist(transaction, true);
@@ -347,7 +348,7 @@ public class AtsBranchConfigurationTest {
          ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition, branch.getName(),
             AtsUtil.getAtsBranch());
       if (art != null) {
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
+         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
          art.deleteAndPersist(transaction, true);
          transaction.execute();
       }
@@ -357,7 +358,7 @@ public class AtsBranchConfigurationTest {
          ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.ActionableItem, branch.getName(),
             AtsUtil.getAtsBranch());
       if (art != null) {
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
+         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
          for (Artifact childArt : art.getChildren()) {
             childArt.deleteAndPersist(transaction, true);
          }
@@ -368,7 +369,7 @@ public class AtsBranchConfigurationTest {
       // Work Definition
       arts = ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.WorkDefinition, AtsUtil.getAtsBranch());
       if (arts.size() > 0) {
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
+         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
          for (Artifact workArt : arts) {
             if (workArt.getName().startsWith(namespace)) {
                workArt.deleteAndPersist(transaction, true);

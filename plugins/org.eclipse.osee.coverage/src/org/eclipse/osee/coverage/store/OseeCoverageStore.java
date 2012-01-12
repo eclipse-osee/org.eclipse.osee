@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Donald G. Dunne
@@ -63,7 +64,7 @@ public abstract class OseeCoverageStore extends CoverageStore {
    @Override
    public Result save(String saveName) {
       try {
-         SkynetTransaction transaction = new SkynetTransaction(branch, "Coverage Save - " + saveName);
+         SkynetTransaction transaction = TransactionManager.createTransaction(branch, "Coverage Save - " + saveName);
          CoveragePackageEvent coverageEvent = getBaseCoveragePackageEvent(CoverageEventType.Modified);
          save(transaction, coverageEvent);
          transaction.execute();
@@ -77,7 +78,7 @@ public abstract class OseeCoverageStore extends CoverageStore {
 
    @Override
    public void delete(boolean purge, String saveName) throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(branch, "Coverage Save - " + saveName);
+      SkynetTransaction transaction = TransactionManager.createTransaction(branch, "Coverage Save - " + saveName);
       CoveragePackageEvent coverageEvent = getBaseCoveragePackageEvent(CoverageEventType.Deleted);
       delete(transaction, coverageEvent, purge);
       transaction.execute();

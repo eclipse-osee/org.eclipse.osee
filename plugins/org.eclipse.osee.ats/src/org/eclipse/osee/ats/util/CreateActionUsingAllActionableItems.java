@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -67,7 +68,7 @@ public class CreateActionUsingAllActionableItems extends XNavigateItemAction {
          }
       }
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Create Action using all AIs");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Create Action using all AIs");
       ActionArtifact action =
          ActionManager.createAction(null, "Big Action Test - Delete Me", "Description", ChangeType.Improvement, "1",
             false, null, aias, new Date(), UserManager.getUser(), null, transaction);

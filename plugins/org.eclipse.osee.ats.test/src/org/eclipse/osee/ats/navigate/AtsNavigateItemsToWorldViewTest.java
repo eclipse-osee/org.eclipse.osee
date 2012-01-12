@@ -60,6 +60,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
@@ -617,7 +618,7 @@ public class AtsNavigateItemsToWorldViewTest {
       Map<Artifact, Object> attributeValues = new HashMap<Artifact, Object>();
       getXViewer().expandAll();
       handleTableCustomization();
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Navigate Test");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Navigate Test");
       // select a workflow artifact; get its attributes; delete an attribute
       for (Artifact art : arts) {
          attributeValues.put(art, art.getSoleAttributeValue(attributeTypeToDelete));
@@ -628,7 +629,7 @@ public class AtsNavigateItemsToWorldViewTest {
       try {
          runGeneralXColTest(20, true, attributeTypeToDelete, false);
       } finally {
-         transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Navigate Test");
+         transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Navigate Test");
          // restore the attribute to leave the demo db back in its original state
          for (Artifact art : arts) {
             art.setSoleAttributeValue(attributeTypeToDelete, attributeValues.get(art));

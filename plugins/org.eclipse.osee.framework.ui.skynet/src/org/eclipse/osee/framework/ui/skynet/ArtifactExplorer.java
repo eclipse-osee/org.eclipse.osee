@@ -76,6 +76,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
@@ -619,8 +620,8 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                      String name = dialog.getEntryValue();
 
                      SkynetTransaction transaction =
-                        new SkynetTransaction(branch, String.format("Created new %s \"%s\" in artifact explorer",
-                           type.getName(), name));
+                        TransactionManager.createTransaction(branch,
+                           String.format("Created new %s \"%s\" in artifact explorer", type.getName(), name));
                      Artifact newChildArt = parent.addNewChild(RelationOrderBaseTypes.PREEXISTING, type, name);
                      parent.persist(transaction);
                      transaction.execute();

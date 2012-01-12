@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 
 /**
@@ -121,7 +122,7 @@ public class SMAPromptChangeStatus {
       }
       SkynetTransaction transaction = null;
       if (persist) {
-         transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Status");
+         transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Status");
       }
       for (AbstractWorkflowArtifact awa : awas) {
          if (awa.getStateMgr().isUnAssigned()) {

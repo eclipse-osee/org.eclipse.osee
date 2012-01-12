@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Donald G. Dunne
@@ -231,7 +232,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
    @Override
    public Result save(Collection<ICoverage> coverages, String saveName) {
       try {
-         SkynetTransaction transaction = new SkynetTransaction(branch, "Coverage Save - " + saveName);
+         SkynetTransaction transaction = TransactionManager.createTransaction(branch, "Coverage Save - " + saveName);
          CoveragePackageEvent coverageEvent = new CoveragePackageEvent(coveragePackage, CoverageEventType.Modified);
          save(transaction, coverageEvent, coverages);
          transaction.execute();

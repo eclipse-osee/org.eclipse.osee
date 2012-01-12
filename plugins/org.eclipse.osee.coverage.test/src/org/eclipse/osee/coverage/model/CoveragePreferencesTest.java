@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.rule.OseeHousekeepingRule;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -34,7 +35,7 @@ public class CoveragePreferencesTest {
 
    @BeforeClass
    public static void setUp() throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(CoverageTestUtil.getTestBranch(), "delete");
+      SkynetTransaction transaction = TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), "delete");
       for (Artifact artifact : ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.GeneralData,
          "Coverage Preferences", CoverageTestUtil.getTestBranch())) {
          artifact.deleteAndPersist(transaction);

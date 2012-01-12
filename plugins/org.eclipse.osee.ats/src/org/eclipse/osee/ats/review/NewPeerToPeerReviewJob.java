@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Donald G. Dunne
@@ -42,7 +43,7 @@ public class NewPeerToPeerReviewJob extends Job {
    @Override
    public IStatus run(final IProgressMonitor monitor) {
       try {
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "New Peer To Peer Review");
+         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "New Peer To Peer Review");
          PeerToPeerReviewArtifact peerArt =
             PeerToPeerReviewManager.createNewPeerToPeerReview(teamParent, reviewTitle, againstState, transaction);
          peerArt.persist(transaction);

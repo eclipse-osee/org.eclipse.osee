@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -66,7 +67,7 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       Assert.assertEquals("No reviews should be present", 0, ReviewManager.getReviews(teamArt).size());
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       MockTransitionHelper helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), implement.getPageName(),
             Arrays.asList(UserManager.getUser()), null, TransitionOption.None);
@@ -111,7 +112,7 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       Assert.assertEquals("No reviews should be present", 0, ReviewManager.getReviews(teamArt).size());
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       MockTransitionHelper helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), implement.getPageName(),
             Arrays.asList(UserManager.getUser()), null, TransitionOption.None);

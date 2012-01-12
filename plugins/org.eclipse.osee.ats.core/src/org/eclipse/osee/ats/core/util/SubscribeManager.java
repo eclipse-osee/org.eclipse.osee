@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Donald G. Dunne
@@ -65,13 +66,13 @@ public class SubscribeManager {
 
    public static void toggleSubscribe(Collection<AbstractWorkflowArtifact> awas) throws OseeCoreException {
       if (SubscribeManager.amISubscribed(awas.iterator().next())) {
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), "Toggle Subscribed");
+         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Toggle Subscribed");
          for (AbstractWorkflowArtifact awa : awas) {
             SubscribeManager.removeSubscribed(awa, UserManager.getUser(), transaction);
          }
          transaction.execute();
       } else {
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), "Toggle Subscribed");
+         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Toggle Subscribed");
          for (AbstractWorkflowArtifact awa : awas) {
             SubscribeManager.addSubscribed(awa, UserManager.getUser(), transaction);
          }

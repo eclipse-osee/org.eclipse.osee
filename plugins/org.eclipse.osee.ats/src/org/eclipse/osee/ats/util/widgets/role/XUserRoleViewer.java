@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListe
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -294,7 +295,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
             "Are You Sure You Wish to Delete the Roles(s):\n\n" + builder.toString());
       if (delete) {
          try {
-            SkynetTransaction transaction = new SkynetTransaction(reviewArt.getBranch(), "Delete Review Roles");
+            SkynetTransaction transaction = TransactionManager.createTransaction(reviewArt.getBranch(), "Delete Review Roles");
             removeUserRoleHelper(items, transaction);
             transaction.execute();
          } catch (Exception ex) {
@@ -315,7 +316,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
 
    public void handleNewUserRole() {
       try {
-         SkynetTransaction transaction = new SkynetTransaction(reviewArt.getArtifact().getBranch(), "Add Review Roles");
+         SkynetTransaction transaction = TransactionManager.createTransaction(reviewArt.getArtifact().getBranch(), "Add Review Roles");
          roleMgr.addOrUpdateUserRole(new UserRole());
          roleMgr.saveToArtifact(transaction);
          transaction.execute();

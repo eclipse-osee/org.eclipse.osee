@@ -66,6 +66,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -211,7 +212,7 @@ public class AtsTestUtil {
    private static void reset(String postFixName) throws OseeCoreException {
       AtsTestUtil.postFixName = postFixName;
       SkynetTransaction transaction =
-         new SkynetTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName());
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName());
       workDef = new WorkDefinition(WORK_DEF_NAME);
 
       analyze = new StateDefinition("Analyze");
@@ -373,7 +374,7 @@ public class AtsTestUtil {
     */
    public static void cleanup() throws OseeCoreException {
       SkynetTransaction transaction =
-         new SkynetTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName() + " - cleanup 1");
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName() + " - cleanup 1");
       if (peerRevArt != null) {
          peerRevArt.deleteAndPersist(transaction);
       }
@@ -410,7 +411,7 @@ public class AtsTestUtil {
       transaction.execute();
 
       transaction =
-         new SkynetTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName() + " - cleanup 2");
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName() + " - cleanup 2");
       if (testAi != null) {
          testAi.deleteAndPersist(transaction);
       }
@@ -540,7 +541,7 @@ public class AtsTestUtil {
       ensureLoaded();
       if (teamArt2 == null) {
          SkynetTransaction transaction =
-            new SkynetTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName());
+            TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName());
          actionArt2 =
             ActionManager.createAction(null, getTitle("Team WF2", postFixName), "description", ChangeType.Improvement,
                "1", false, null, Arrays.asList(testAi2), new Date(), UserManager.getUser(), null, transaction);

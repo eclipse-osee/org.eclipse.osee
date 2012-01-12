@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
@@ -140,7 +141,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
    @Override
    public void process(IProgressMonitor monitor, TraceUnit traceUnit) throws OseeCoreException {
       if (transaction == null) {
-         transaction = new SkynetTransaction(importIntoBranch, "Importing Trace Unit(s)");
+         transaction = TransactionManager.createTransaction(importIntoBranch, "Importing Trace Unit(s)");
       }
       boolean hasChange = false;
       boolean artifactWasCreated = false;

@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -79,7 +80,7 @@ public class DeleteCoverUnitAction extends Action {
             ICoverage coverage = selectedCoverageEditorItem.getSelectedCoverageEditorItems().iterator().next();
             coveragePackage = (CoveragePackage) CoverageUtil.getParentCoveragePackageBase(coverage);
             SkynetTransaction transaction =
-               new SkynetTransaction(saveable.getBranch(),
+               TransactionManager.createTransaction(saveable.getBranch(),
                   "Coverage - Delete Coverage Unit - " + coveragePackage.getName());
             CoveragePackageEvent coverageEvent = new CoveragePackageEvent(coveragePackage, CoverageEventType.Modified);
             List<ICoverage> deleteItems = new ArrayList<ICoverage>();

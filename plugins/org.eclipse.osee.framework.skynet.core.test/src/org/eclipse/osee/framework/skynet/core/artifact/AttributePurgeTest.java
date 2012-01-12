@@ -19,12 +19,9 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.PurgeAttribute;
 import org.eclipse.osee.framework.skynet.core.mocks.DbTestUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.util.FrameworkTestUtil;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -43,7 +40,7 @@ public class AttributePurgeTest extends AbstractPurgeTest {
    public void runPurgeOperation() throws OseeCoreException {
       // Create some software artifacts
       Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_2.getName());
-      SkynetTransaction transaction = new SkynetTransaction(branch, "Test purge artifacts");
+      SkynetTransaction transaction = TransactionManager.createTransaction(branch, "Test purge artifacts");
       Collection<Artifact> softArts =
          FrameworkTestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10, getClass().getSimpleName(),
             branch);

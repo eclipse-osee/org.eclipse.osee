@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.httpRequests.PurgeBranchHttpReques
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.mocks.DbTestUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
@@ -76,7 +77,7 @@ public class BranchPurgeTest {
          FrameworkTestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10, name, branch);
       Artifacts.persistInTransaction("Test purge branch", softArts);
 
-      SkynetTransaction transaction = new SkynetTransaction(branch, name);
+      SkynetTransaction transaction = TransactionManager.createTransaction(branch, name);
       // make more changes to artifacts
       for (Artifact softArt : softArts) {
          softArt.addAttribute(CoreAttributeTypes.StaticId, name);

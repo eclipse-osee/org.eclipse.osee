@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Donald G. Dunne
@@ -33,7 +34,7 @@ public class DemoDbGroups {
 
    public static List<TeamWorkFlowArtifact> createGroups(boolean DEBUG) throws Exception {
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - Create Groups");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - Create Groups");
 
       // Create group of all resulting objects
       List<TeamWorkFlowArtifact> codeWorkflows = new ArrayList<TeamWorkFlowArtifact>();

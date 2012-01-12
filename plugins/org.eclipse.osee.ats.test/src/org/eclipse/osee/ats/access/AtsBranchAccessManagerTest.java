@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.DemoActionableItems;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.DemoWorkType;
@@ -89,7 +90,7 @@ public class AtsBranchAccessManagerTest {
    public void cleanup() throws OseeCoreException {
       TeamWorkFlowArtifact teamArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "testGetContextIdArtifact cleanup");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "testGetContextIdArtifact cleanup");
       teamArt.getTeamDefinition().deleteAttributes(CoreAttributeTypes.AccessContextId);
       teamArt.getTeamDefinition().persist(transaction);
       for (Artifact art : teamArt.getTeamDefinition().getRelatedArtifacts(

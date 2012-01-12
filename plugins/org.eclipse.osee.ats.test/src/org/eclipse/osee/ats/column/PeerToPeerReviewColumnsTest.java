@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.DemoUsers;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
@@ -53,7 +54,7 @@ public class PeerToPeerReviewColumnsTest {
       SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
 
       SkynetTransaction transaction =
-         new SkynetTransaction(AtsUtil.getAtsBranch(), PeerToPeerReviewColumnsTest.class.getSimpleName());
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), PeerToPeerReviewColumnsTest.class.getSimpleName());
       TeamWorkFlowArtifact teamArt =
          DemoTestUtil.createSimpleAction(PeerToPeerReviewColumnsTest.class.getSimpleName(), transaction);
       PeerToPeerReviewArtifact peerArt =
@@ -69,7 +70,7 @@ public class PeerToPeerReviewColumnsTest {
       Assert.assertEquals("", ReviewModeratorColumn.getInstance().getColumnText(peerArt, null, 0));
       Assert.assertEquals("", ReviewReviewerColumn.getInstance().getColumnText(peerArt, null, 0));
 
-      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), PeerToPeerReviewColumnsTest.class.getSimpleName());
+      transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), PeerToPeerReviewColumnsTest.class.getSimpleName());
       ReviewDefectItem item =
          new ReviewDefectItem(UserManager.getUser(), Severity.Issue, Disposition.None, InjectionActivity.Code,
             "description", "resolution", "location", new Date());

@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -121,7 +122,7 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
                File file = new File(filename);
                try {
                   SkynetTransaction transaction =
-                     new SkynetTransaction(AtsUtil.getAtsBranch(), "Import Tasks from Spreadsheet");
+                     TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Import Tasks from Spreadsheet");
                   Job job =
                      Jobs.startJob(new TaskImportJob(file, new ExcelAtsTaskArtifactExtractor(
                         (TeamWorkFlowArtifact) artifact, emailPocs, transaction)));

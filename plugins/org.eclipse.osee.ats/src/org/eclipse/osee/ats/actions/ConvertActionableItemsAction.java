@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -180,7 +181,7 @@ public class ConvertActionableItemsAction extends Action {
          if (teamDefinition != null) {
             teamArt.setTeamDefinition(teamDefinition);
          }
-         SkynetTransaction transaction = new SkynetTransaction(branch, "Convert Actionable Item");
+         SkynetTransaction transaction = TransactionManager.createTransaction(branch, "Convert Actionable Item");
          ActionArtifactRollup rollup = new ActionArtifactRollup(teamArt.getParentActionArtifact(), transaction);
          rollup.resetAttributesOffChildren();
          teamArt.persist(transaction);

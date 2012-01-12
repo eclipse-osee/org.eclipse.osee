@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.util.SMATestUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.SimpleTaskResolutionOptionsRule;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -58,7 +59,7 @@ public class SMAPromptChangeStatusTest {
 
    @org.junit.Test
    public void testInitialize() throws Exception {
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       teamArt = DemoTestUtil.createSimpleAction(getClass().getSimpleName(), transaction);
       transaction.execute();
       assertNotNull(teamArt);
@@ -67,7 +68,7 @@ public class SMAPromptChangeStatusTest {
    @org.junit.Test
    public void testChangeTaskStatusNoResolution() throws Exception {
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       Collection<TaskArtifact> tasks =
          DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_NoRes", 4, transaction);
       transaction.execute();
@@ -112,7 +113,7 @@ public class SMAPromptChangeStatusTest {
          return;
       }
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       Collection<TaskArtifact> tasks =
          DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_Res", 4, transaction);
       transaction.execute();
@@ -149,7 +150,7 @@ public class SMAPromptChangeStatusTest {
 
    @org.junit.Test
    public void testChangeStatusFailsIfTaskCancelled() throws Exception {
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       Collection<TaskArtifact> tasks =
          DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_Cancel", 2, transaction);
       transaction.execute();
@@ -158,7 +159,7 @@ public class SMAPromptChangeStatusTest {
       TaskArtifact cancelTask = tasks.iterator().next();
 
       // test that if one task is cancelled, can't change status
-      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
+      transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       TransitionHelper helper =
          new TransitionHelper("Transition to Cancelled", Arrays.asList(cancelTask), TaskStates.Cancelled.getPageName(),
             null, null, TransitionOption.None);
@@ -175,7 +176,7 @@ public class SMAPromptChangeStatusTest {
 
    @org.junit.Test
    public void testChangeStatusFailsIfTaskWrongRelatedToState() throws Exception {
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       Collection<TaskArtifact> tasks =
          DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_RelState", 2, transaction);
       transaction.execute();
@@ -184,7 +185,7 @@ public class SMAPromptChangeStatusTest {
       TaskArtifact taskArt = tasks.iterator().next();
 
       // test that if task not in related-to state of workflows's current status, can't change status
-      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
+      transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, TeamState.Analyze.getPageName());
       transaction.execute();
       Result result = SMAPromptChangeStatus.isValidToChangeStatus(tasks);

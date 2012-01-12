@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
@@ -53,7 +54,7 @@ public class ReplaceAttributeWithBaselineOperation extends AbstractOperation {
          transaction = transactions.get(branch);
       }
       if (transaction == null) {
-         transaction = new SkynetTransaction(branch, "Replace artifact with baseline values");
+         transaction = TransactionManager.createTransaction(branch, "Replace artifact with baseline values");
          transactions.put(branch, transaction);
       }
       return transaction;

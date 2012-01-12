@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * Test unit for {@link AtsTestUtil}
@@ -122,7 +123,7 @@ public class AtsTestUtilTest extends AtsTestUtil {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Analyze.getPageName());
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), "test");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "test");
 
       Result result =
          AtsTestUtil.transitionTo(AtsTestUtilState.Implement, UserManager.getUser(), transaction,
@@ -151,7 +152,7 @@ public class AtsTestUtilTest extends AtsTestUtil {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Analyze.getPageName());
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), "test");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "test");
 
       Result result =
          AtsTestUtil.transitionTo(AtsTestUtilState.Cancelled, UserManager.getUser(), transaction,

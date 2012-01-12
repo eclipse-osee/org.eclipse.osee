@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.DemoUsers;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -342,7 +343,7 @@ public class TransitionManagerTest {
          Assert.assertTrue(results.contains(teamArt, TransitionResult.TASKS_NOT_COMPLETED));
 
          // Cleanup task by completing and validate can transition
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
          TaskManager.transitionToCompleted(taskArt, 0.0, 0.1, transaction);
          transaction.execute();
          results.clear();
@@ -452,7 +453,7 @@ public class TransitionManagerTest {
 
       // validate that can transition cause review completed
       results.clear();
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       DecisionReviewManager.transitionTo(decArt, DecisionReviewState.Completed, UserManager.getUser(), false,
          transaction);
       transaction.execute();

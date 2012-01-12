@@ -25,6 +25,7 @@ import org.eclipse.osee.coverage.util.dialog.CoveragePackageArtifactListDialog;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -66,7 +67,7 @@ public class CreateWorkProductAction extends XNavigateItemAction {
          CoveragePackage coveragePackage = store.getCoveragePackage();
          List<WorkProductAction> workProductActions = new ArrayList<WorkProductAction>();
 
-         SkynetTransaction transaction = new SkynetTransaction(branch, getName());
+         SkynetTransaction transaction = TransactionManager.createTransaction(branch, getName());
          Artifact actionArt =
             cmService.createPcr("Reqts PCR 1001", "Do requirements for PCR 1001", "Improvement", "1", null,
                Arrays.asList("SAW Requirements"));

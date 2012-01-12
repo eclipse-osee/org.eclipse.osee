@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -40,7 +41,7 @@ public class DeleteArtifactHandler extends CommandHandler {
          if (dialog.open() == 0) {
             Artifact[] artifactsArray = artifacts.toArray(new Artifact[artifacts.size()]);
             SkynetTransaction transaction =
-               new SkynetTransaction(artifactsArray[0].getBranch(), "Delete artifact handler");
+               TransactionManager.createTransaction(artifactsArray[0].getBranch(), "Delete artifact handler");
             ArtifactPersistenceManager.deleteArtifact(transaction, false, artifactsArray);
             transaction.execute();
          }

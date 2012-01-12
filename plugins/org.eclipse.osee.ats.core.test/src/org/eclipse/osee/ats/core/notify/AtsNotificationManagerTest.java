@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.DemoUsers;
 import org.junit.AfterClass;
 
@@ -277,7 +278,7 @@ public class AtsNotificationManagerTest {
 
       // verify no notification events yet
       Assert.assertEquals(0, mgr.getNotificationEvents().size());
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       Result result =
          AtsTestUtil.transitionTo(AtsTestUtilState.Completed, UserManager.getUser(), transaction,
             TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
@@ -318,7 +319,7 @@ public class AtsNotificationManagerTest {
 
       // verify no notification events yet
       Assert.assertEquals(0, mgr.getNotificationEvents().size());
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       Result result =
          AtsTestUtil.transitionTo(AtsTestUtilState.Cancelled, UserManager.getUser(), transaction,
             TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
@@ -358,7 +359,7 @@ public class AtsNotificationManagerTest {
       mgr.clear();
 
       // create another action
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       ActionArtifact actionArt =
          ActionManager.createAction(null, getClass().getSimpleName() + " - testSubscribedTeam", "description",
             ChangeType.Improvement, "1", false, null, Arrays.asList(AtsTestUtil.getTestAi()), new Date(),
@@ -371,7 +372,7 @@ public class AtsNotificationManagerTest {
 
       transaction.execute();
 
-      SkynetTransaction transaction2 = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction2 = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
 
       actionArt.getTeams().iterator().next().deleteAndPersist(transaction2);
       actionArt.deleteAndPersist(transaction2);
@@ -410,7 +411,7 @@ public class AtsNotificationManagerTest {
       mgr.clear();
 
       // create another action
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       ActionArtifact actionArt =
          ActionManager.createAction(null, getClass().getSimpleName() + " - testSubscribedAI", "description",
             ChangeType.Improvement, "1", false, null, Arrays.asList(AtsTestUtil.getTestAi()), new Date(),
@@ -423,7 +424,7 @@ public class AtsNotificationManagerTest {
 
       transaction.execute();
 
-      SkynetTransaction transaction2 = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction2 = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
 
       actionArt.getTeams().iterator().next().deleteAndPersist(transaction2);
       actionArt.deleteAndPersist(transaction2);
@@ -463,7 +464,7 @@ public class AtsNotificationManagerTest {
 
       mgr.clear();
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       Result result =
          AtsTestUtil.transitionTo(AtsTestUtilState.Implement, UserManager.getUser(), transaction,
             TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
@@ -501,7 +502,7 @@ public class AtsNotificationManagerTest {
       kay.setSoleAttributeValue(CoreAttributeTypes.Email, "kay.jones@boeing.com");
       kay.persist(getClass().getSimpleName() + "- set kay email address");
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       PeerToPeerReviewArtifact peerArt =
          AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.None, AtsTestUtilState.Analyze, transaction);
       List<UserRole> roles = new ArrayList<UserRole>();
@@ -524,7 +525,7 @@ public class AtsNotificationManagerTest {
 
       // complete reviewer1 role
       transaction =
-         new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName() + " - update reviewer 1");
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName() + " - update reviewer 1");
       UserRoleManager roleMgr = new UserRoleManager(peerArt);
       reviewer1.setHoursSpent(1.0);
       reviewer1.setCompleted(true);
@@ -537,7 +538,7 @@ public class AtsNotificationManagerTest {
 
       // complete reviewer2 role
       transaction =
-         new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName() + " - update reviewer 2");
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName() + " - update reviewer 2");
       reviewer2.setHoursSpent(1.0);
       reviewer2.setCompleted(true);
       roleMgr.addOrUpdateUserRole(reviewer2);

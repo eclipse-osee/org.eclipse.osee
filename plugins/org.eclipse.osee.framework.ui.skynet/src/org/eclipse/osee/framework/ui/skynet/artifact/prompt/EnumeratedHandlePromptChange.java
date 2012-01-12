@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.EnumSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.artifact.EnumSelectionDialog.Selection;
@@ -80,7 +81,7 @@ public class EnumeratedHandlePromptChange implements IHandlePromptChange {
       boolean isRemoveAll = singletonDialog.isRemoveAllSelected();
       if (artifacts.size() > 0) {
          SkynetTransaction transaction =
-            !persist ? null : new SkynetTransaction(artifacts.iterator().next().getBranch(),
+            !persist ? null : TransactionManager.createTransaction(artifacts.iterator().next().getBranch(),
                "Change enumerated attribute");
          for (Artifact artifact : artifacts) {
             if (isRemoveAll) {
@@ -106,7 +107,7 @@ public class EnumeratedHandlePromptChange implements IHandlePromptChange {
       }
       if (artifacts.size() > 0) {
          SkynetTransaction transaction =
-            !persist ? null : new SkynetTransaction(artifacts.iterator().next().getBranch(),
+            !persist ? null : TransactionManager.createTransaction(artifacts.iterator().next().getBranch(),
                "Change enumerated attribute");
          for (Artifact artifact : artifacts) {
             List<String> current = artifact.getAttributesToStringList(attributeType);

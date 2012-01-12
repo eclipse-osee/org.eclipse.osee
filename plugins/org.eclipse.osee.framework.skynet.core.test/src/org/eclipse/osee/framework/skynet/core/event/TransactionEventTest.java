@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEventType;
 import org.eclipse.osee.framework.skynet.core.mocks.MockTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperationWithListener;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
@@ -87,7 +88,7 @@ public abstract class TransactionEventTest {
 
       // Make a change that we can delete
       newArt.setName(CHANGE_NAME);
-      SkynetTransaction transaction = new SkynetTransaction(newArt.getBranch(), "changed");
+      SkynetTransaction transaction = TransactionManager.createTransaction(newArt.getBranch(), "changed");
       int transIdToDelete = transaction.getTransactionNumber();
       newArt.persist(transaction);
       transaction.execute();

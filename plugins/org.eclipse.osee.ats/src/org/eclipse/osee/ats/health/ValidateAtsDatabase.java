@@ -76,6 +76,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.skynet.core.utility.ElapsedTime;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
@@ -240,7 +241,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
    public void testAtsAttributevaluesWithPersist(Collection<Artifact> artifacts) {
       try {
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Validate ATS Database");
+         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Validate ATS Database");
          testAtsAttributeValues(transaction, testNameToTimeSpentMap, testNameToResultsMap, fixAttributeValues,
             artifacts);
          transaction.execute();

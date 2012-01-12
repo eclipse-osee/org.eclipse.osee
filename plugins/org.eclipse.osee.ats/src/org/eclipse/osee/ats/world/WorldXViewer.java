@@ -66,6 +66,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
@@ -172,7 +173,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          public void run() {
             SkynetTransaction transaction;
             try {
-               transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Reset Action off Children");
+               transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Reset Action off Children");
                for (ActionArtifact actionArt : getSelectedActionArtifacts()) {
                   ActionArtifactRollup rollup = new ActionArtifactRollup(actionArt, transaction);
                   rollup.resetAttributesOffChildren();

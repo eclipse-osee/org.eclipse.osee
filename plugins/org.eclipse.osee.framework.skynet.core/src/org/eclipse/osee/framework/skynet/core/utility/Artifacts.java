@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
@@ -115,7 +116,7 @@ public final class Artifacts {
    }
 
    public static void persistInTransaction(String comment, Artifact... artifacts) throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(artifacts[0].getBranch(), comment);
+      SkynetTransaction transaction = TransactionManager.createTransaction(artifacts[0].getBranch(), comment);
       for (Artifact art : artifacts) {
          art.persist(transaction);
       }

@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
@@ -62,7 +63,7 @@ public class NewCoveragePackageAction extends Action {
                new CoveragePackage(dialog.getEntry(), CoverageOptionManagerDefault.instance(),
                   new DbWorkProductTaskProvider(branch));
             SkynetTransaction transaction =
-               new SkynetTransaction(branch, "Add Coverage Package - " + coveragePackage.getName());
+               TransactionManager.createTransaction(branch, "Add Coverage Package - " + coveragePackage.getName());
             CoveragePackageEvent coverageEvent = new CoveragePackageEvent(coveragePackage, CoverageEventType.Added);
             OseeCoveragePackageStore.get(coveragePackage, branch).save(transaction, coverageEvent);
             transaction.execute();

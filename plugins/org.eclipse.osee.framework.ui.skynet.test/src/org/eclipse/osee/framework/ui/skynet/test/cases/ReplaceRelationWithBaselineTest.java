@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.ReplaceRelationsWithBaselineOperation;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.junit.Assert;
@@ -43,7 +44,8 @@ public final class ReplaceRelationWithBaselineTest {
       Branch branch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
       Assert.assertNotNull(branch);
 
-      SkynetTransaction transaction = new SkynetTransaction(branch, name + ".testReplaceAttributeVersion 1");
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(branch, name + ".testReplaceAttributeVersion 1");
       Artifact artifact1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, branch, "Name1");
       Artifact artifact2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, branch, "Name2");
       artifact1.addChild(RelationOrderBaseTypes.USER_DEFINED, artifact2);
@@ -53,7 +55,7 @@ public final class ReplaceRelationWithBaselineTest {
       Branch childBranch =
          BranchManager.createWorkingBranch(branch,
             String.format("Test Child branch [%s] [%s]", name, testName.getMethodName()), null);
-      transaction = new SkynetTransaction(childBranch, name + ".testReplaceAttributeVersion 2");
+      transaction = TransactionManager.createTransaction(childBranch, name + ".testReplaceAttributeVersion 2");
       Artifact childArtifact1 = ArtifactQuery.getArtifactFromId(artifact1.getArtId(), childBranch);
       Artifact childArtifact2 = ArtifactQuery.getArtifactFromId(artifact2.getArtId(), childBranch);
       childArtifact1.deleteRelations(CoreRelationTypes.Default_Hierarchical__Child);

@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import static org.junit.Assert.assertFalse;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -22,7 +21,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -32,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.util.FrameworkTestUtil;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
@@ -61,7 +60,8 @@ public class ArtifactLoaderTest {
    }
 
    private static void testCleanup() throws Exception {
-      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "ArtifactLoaderTest");
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(BranchManager.getCommonBranch(), "ArtifactLoaderTest");
       List<Artifact> artifacts =
          ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", BranchManager.getCommonBranch(), EXCLUDE_DELETED);
       ArtifactPersistenceManager.deleteArtifactCollection(transaction, false, artifacts);
@@ -80,7 +80,8 @@ public class ArtifactLoaderTest {
    @org.junit.Test
    public void testThreadSafeLoading() throws Exception {
       // Create some software artifacts
-      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "ArtifactLoaderTest");
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(BranchManager.getCommonBranch(), "ArtifactLoaderTest");
       Collection<Artifact> artifacts =
          FrameworkTestUtil.createSimpleArtifacts(CoreArtifactTypes.GlobalPreferences, NUM_ARTIFACTS,
             "ArtifactLoaderTest", BranchManager.getCommonBranch());

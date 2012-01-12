@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -51,7 +52,7 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
       assertFalse("Test should not be run in production db", AtsUtil.isProductionDb());
 
       if (teamArt == null) {
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
+         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
          teamArt = DemoTestUtil.createSimpleAction(getClass().getSimpleName(), transaction);
          transaction.execute();
       }
@@ -98,7 +99,7 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
 
       // make call to state item that should set options based on artifact's attribute value
       AtsForceAssigneesToTeamLeadsStateItem stateItem = new AtsForceAssigneesToTeamLeadsStateItem();
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
       stateItem.transitioned(teamArt, fromState, toState, Arrays.asList((IBasicUser) UserManager.getUser()),
          transaction);
       transaction.execute();

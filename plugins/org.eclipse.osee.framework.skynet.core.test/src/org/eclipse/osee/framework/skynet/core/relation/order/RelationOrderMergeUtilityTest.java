@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.rule.OseeHousekeepingRule;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.util.FrameworkTestUtil;
 import org.junit.After;
 import org.junit.Assert;
@@ -131,12 +132,12 @@ public class RelationOrderMergeUtilityTest {
       }
 
       SkynetTransaction transaction1 =
-         new SkynetTransaction(destBranch, getClass().getSimpleName() + ".testStrategyMerge()_1");
+         TransactionManager.createTransaction(destBranch, getClass().getSimpleName() + ".testStrategyMerge()_1");
       ascParent.persist(transaction1);
       transaction1.execute();
 
       SkynetTransaction transaction2 =
-         new SkynetTransaction(destBranch, getClass().getSimpleName() + ".testStrategyMerge()_2");
+         TransactionManager.createTransaction(destBranch, getClass().getSimpleName() + ".testStrategyMerge()_2");
       descParent.persist(transaction2);
       transaction2.execute();
 

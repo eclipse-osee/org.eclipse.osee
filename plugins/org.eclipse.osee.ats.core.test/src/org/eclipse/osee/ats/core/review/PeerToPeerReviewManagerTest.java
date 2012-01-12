@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -43,7 +44,7 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
 
       // create and transition peer review
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       String reviewTitle = "Test Review - " + teamArt.getName();
 
       PeerToPeerReviewArtifact peerArt =
@@ -70,7 +71,7 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
 
       // create and transition peer review
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       String reviewTitle = "Test Review - " + teamArt.getName();
 
       PeerToPeerReviewArtifact peerArt =

@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -47,7 +48,7 @@ public class TaskManagerTest extends TaskManager {
 
       // transition to Completed
       SkynetTransaction transaction =
-         new SkynetTransaction(AtsUtilCore.getAtsBranch(),
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
             getClass().getSimpleName() + " testTransitionToCompletedThenInWork() 1");
       Result result = TaskManager.transitionToCompleted(taskArt, 0.0, 3, transaction);
       Assert.assertEquals(Result.TrueResult, result);
@@ -62,7 +63,7 @@ public class TaskManagerTest extends TaskManager {
 
       // transition back to InWork
       transaction =
-         new SkynetTransaction(AtsUtilCore.getAtsBranch(),
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
             getClass().getSimpleName() + " testTransitionToCompletedThenInWork() 2");
       result = TaskManager.transitionToInWork(taskArt, UserManager.getUser(), 45, .5, transaction);
       Assert.assertEquals(Result.TrueResult, result);
@@ -87,7 +88,7 @@ public class TaskManagerTest extends TaskManager {
 
       // status 34% completed
       SkynetTransaction transaction =
-         new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName() + " testStatusPercentChanged() 1");
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName() + " testStatusPercentChanged() 1");
       Result result = TaskManager.statusPercentChanged(taskArt, 3, 34, transaction);
       Assert.assertEquals(Result.TrueResult, result);
       transaction.execute();
@@ -102,7 +103,7 @@ public class TaskManagerTest extends TaskManager {
 
       // status 100% completed
       transaction =
-         new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName() + " testStatusPercentChanged() 2");
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName() + " testStatusPercentChanged() 2");
       result = TaskManager.statusPercentChanged(taskArt, 3, 100, transaction);
       Assert.assertEquals(Result.TrueResult, result);
       transaction.execute();
@@ -117,7 +118,7 @@ public class TaskManagerTest extends TaskManager {
 
       // status back to 25%
       transaction =
-         new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName() + " testStatusPercentChanged() 3");
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName() + " testStatusPercentChanged() 3");
       result = TaskManager.statusPercentChanged(taskArt, 1, 25, transaction);
       Assert.assertEquals(Result.TrueResult, result);
       transaction.execute();

@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -92,7 +93,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                try {
                   final TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
                   SkynetTransaction transaction =
-                     new SkynetTransaction(AtsUtil.getAtsBranch(), "Import Tasks from Simple List");
+                     TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Import Tasks from Simple List");
                   Date createdDate = new Date();
                   User createdBy = UserManager.getUser();
                   teamArt.createTasks(titles, assignees, createdDate, createdBy, transaction);

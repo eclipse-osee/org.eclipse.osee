@@ -66,6 +66,15 @@ public final class TransactionManager {
    private static final HashMap<Integer, List<TransactionRecord>> commitArtifactIdMap =
       new HashMap<Integer, List<TransactionRecord>>();
 
+   private static TransactionMonitor txMonitor = new TransactionMonitor();
+
+   public static SkynetTransaction createTransaction(IOseeBranch branch, String comment) throws OseeCoreException {
+      Branch actualBranch = BranchManager.getBranch(branch);
+      SkynetTransaction transaction = new SkynetTransaction(txMonitor, actualBranch, comment);
+      txMonitor.reportTxCreation(transaction, branch, comment);
+      return transaction;
+   }
+
    public static List<TransactionRecord> getTransaction(String comment) throws OseeCoreException {
       ArrayList<TransactionRecord> transactions = new ArrayList<TransactionRecord>();
       IOseeStatement chStmt = ConnectionHandler.getStatement();

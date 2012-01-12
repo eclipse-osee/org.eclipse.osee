@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -185,7 +186,7 @@ public class RelationOrderingTest {
    @Test
    public void testOrderPersist() throws OseeCoreException {
       String guid = GUID.create();
-      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "Test");
+      SkynetTransaction transaction = TransactionManager.createTransaction(BranchManager.getCommonBranch(), "Test");
       Artifact mainFolder =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BranchManager.getCommonBranch(),
             "Main Folder - " + guid);

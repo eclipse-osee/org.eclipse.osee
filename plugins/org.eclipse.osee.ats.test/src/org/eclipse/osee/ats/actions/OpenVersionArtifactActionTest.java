@@ -10,6 +10,7 @@ import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Donald G. Dunne
@@ -18,7 +19,7 @@ public class OpenVersionArtifactActionTest extends AbstractAtsActionRunTest {
 
    @Override
    public OpenVersionArtifactAction createAction() throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       AtsTestUtil.getTeamWf().addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
          AtsTestUtil.getVerArt1());
       AtsTestUtil.getVerArt1().persist(transaction);

@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.DemoWorkType;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Assert;
@@ -45,7 +46,7 @@ public class NumberOfTasksAndInWorkTasksColumnsTest {
       TaskArtifact taskArt = codeArt.getTaskArtifacts().iterator().next();
       Collection<IBasicUser> taskAssignees = new HashSet<IBasicUser>();
       taskAssignees.addAll(codeArt.getStateMgr().getAssignees());
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
       Result result = TaskManager.transitionToCompleted(taskArt, 0.0, 2, transaction);
       Assert.assertEquals(true, result.isTrue());
       taskArt.persist(transaction);
@@ -54,7 +55,7 @@ public class NumberOfTasksAndInWorkTasksColumnsTest {
       Assert.assertEquals("6", NumberOfTasksColumn.getInstance().getColumnText(codeArt, null, 0));
       Assert.assertEquals("5", NumberOfTasksRemainingColumn.getInstance().getColumnText(codeArt, null, 0));
 
-      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
+      transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
       result = TaskManager.transitionToInWork(taskArt, taskAssignees.iterator().next(), 0, -2, transaction);
       Assert.assertEquals(true, result.isTrue());
       taskArt.persist(transaction);

@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
@@ -179,7 +180,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
             builder.toString());
       if (delete) {
          try {
-            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete Tasks");
+            SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Delete Tasks");
             // Done for concurrent modification purposes
             ArrayList<TaskArtifact> delItems = new ArrayList<TaskArtifact>();
             ArrayList<TaskArtifact> tasksNotInDb = new ArrayList<TaskArtifact>();
@@ -304,7 +305,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
                return;
             }
             final Artifact[] artsToRelate = ((ArtifactData) e.data).getArtifacts();
-            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Drop Add Tasks");
+            SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Drop Add Tasks");
             for (Artifact art : artsToRelate) {
                if (art.isOfType(AtsArtifactTypes.Task)) {
                   TaskArtifact taskArt = (TaskArtifact) art;

@@ -55,6 +55,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.rule.OseeHousekeepingRule;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -227,7 +228,7 @@ public class CoveragePackageImportTest {
          // Test Persist of CoveragePackage
          OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, CoverageTestUtil.getTestBranch());
          SkynetTransaction transaction =
-            new SkynetTransaction(CoverageTestUtil.getTestBranch(), "Coverage Package Save " + testName.getMethodName());
+            TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), "Coverage Package Save " + testName.getMethodName());
          store.save(transaction, getTestCoveragePackageEvent());
          store.getArtifact(false).persist(transaction);
 
@@ -342,7 +343,7 @@ public class CoveragePackageImportTest {
          // Test Persist of CoveragePackage
          OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, CoverageTestUtil.getTestBranch());
          SkynetTransaction transaction =
-            new SkynetTransaction(CoverageTestUtil.getTestBranch(), "Coverage Package Save " + testName.getMethodName());
+            TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), "Coverage Package Save " + testName.getMethodName());
          store.save(transaction, getTestCoveragePackageEvent());
          store.getArtifact(false).persist(transaction);
 
@@ -380,7 +381,7 @@ public class CoveragePackageImportTest {
       Assert.assertNotNull(coverageImport);
 
       SkynetTransaction testLoadCovPackageTransaction =
-         new SkynetTransaction(CoverageTestUtil.getTestBranch(), String.format("%s.%s",
+         TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), String.format("%s.%s",
             CoveragePackageImportTest.class.getSimpleName(), testName.getMethodName()));
       if (testWithDb) {
          // Test Load of Coverage Package
@@ -482,7 +483,7 @@ public class CoveragePackageImportTest {
          // Test Persist of CoveragePackage
          OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, CoverageTestUtil.getTestBranch());
          SkynetTransaction transaction =
-            new SkynetTransaction(CoverageTestUtil.getTestBranch(), "Coverage Package Save " + testName.getMethodName());
+            TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), "Coverage Package Save " + testName.getMethodName());
          store.save(transaction, getTestCoveragePackageEvent());
          store.getArtifact(false).persist(transaction);
 
@@ -542,7 +543,7 @@ public class CoveragePackageImportTest {
       Assert.assertNotNull(coverageImport);
 
       SkynetTransaction testLoadTransaction =
-         new SkynetTransaction(CoverageTestUtil.getTestBranch(), String.format("%s.%s",
+         TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), String.format("%s.%s",
             CoveragePackageImportTest.class.getSimpleName(), testName.getMethodName()));
       if (testWithDb) {
          // Test Load of Coverage Package
@@ -624,7 +625,7 @@ public class CoveragePackageImportTest {
          // Test Persist of CoveragePackage
          OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, CoverageTestUtil.getTestBranch());
          SkynetTransaction transaction =
-            new SkynetTransaction(CoverageTestUtil.getTestBranch(), "Coverage Package Save " + testName.getMethodName());
+            TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), "Coverage Package Save " + testName.getMethodName());
          store.save(transaction, getTestCoveragePackageEvent());
          store.getArtifact(false).persist(transaction);
 
@@ -669,7 +670,7 @@ public class CoveragePackageImportTest {
 
       if (testWithDb) {
          SkynetTransaction transaction =
-            new SkynetTransaction(CoverageTestUtil.getTestBranch(), String.format("%s.%s",
+            TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), String.format("%s.%s",
                CoveragePackageImportTest.class.getSimpleName(), testName.getMethodName()));
          // Test Load of Coverage Package
          Artifact artifact =
@@ -751,7 +752,7 @@ public class CoveragePackageImportTest {
          // Test Persist of CoveragePackage
          OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, CoverageTestUtil.getTestBranch());
          SkynetTransaction transaction =
-            new SkynetTransaction(CoverageTestUtil.getTestBranch(), "Coverage Package Save " + testName.getMethodName());
+            TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), "Coverage Package Save " + testName.getMethodName());
          store.save(transaction, getTestCoveragePackageEvent());
          store.getArtifact(false).persist(transaction);
 
@@ -788,7 +789,7 @@ public class CoveragePackageImportTest {
 
       if (testWithDb) {
          SkynetTransaction transaction =
-            new SkynetTransaction(CoverageTestUtil.getTestBranch(), String.format("%s.%s",
+            TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), String.format("%s.%s",
                CoveragePackageImportTest.class.getSimpleName(), testName.getMethodName()));
          // Test Load of Coverage Package
          Artifact artifact =
@@ -891,7 +892,7 @@ public class CoveragePackageImportTest {
          // Test Persist of CoveragePackage
          OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, CoverageTestUtil.getTestBranch());
          SkynetTransaction transaction =
-            new SkynetTransaction(CoverageTestUtil.getTestBranch(), "Coverage Package Save " + testName.getMethodName());
+            TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), "Coverage Package Save " + testName.getMethodName());
          store.save(transaction, getTestCoveragePackageEvent());
          store.getArtifact(false).persist(transaction);
 
@@ -954,7 +955,7 @@ public class CoveragePackageImportTest {
 
       if (testWithDb) {
          SkynetTransaction transaction =
-            new SkynetTransaction(CoverageTestUtil.getTestBranch(), String.format("%s.%s",
+            TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), String.format("%s.%s",
                CoveragePackageImportTest.class.getSimpleName(), testName.getMethodName()));
 
          // Test Load of Coverage Package
@@ -1063,7 +1064,7 @@ public class CoveragePackageImportTest {
          // Test Persist of CoveragePackage
          OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, CoverageTestUtil.getTestBranch());
          SkynetTransaction transaction =
-            new SkynetTransaction(CoverageTestUtil.getTestBranch(), "Coverage Package Save " + testName.getMethodName());
+            TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), "Coverage Package Save " + testName.getMethodName());
          store.save(transaction, getTestCoveragePackageEvent());
          store.getArtifact(false).persist(transaction);
 
@@ -1151,7 +1152,7 @@ public class CoveragePackageImportTest {
 
       if (testWithDb) {
          SkynetTransaction transaction =
-            new SkynetTransaction(CoverageTestUtil.getTestBranch(), String.format("%s.%s",
+            TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), String.format("%s.%s",
                CoveragePackageImportTest.class.getSimpleName(), testName.getMethodName()));
          // Test Load of Coverage Package
          Artifact artifact =
@@ -1252,7 +1253,7 @@ public class CoveragePackageImportTest {
          // Test Persist of CoveragePackage
          OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, CoverageTestUtil.getTestBranch());
          SkynetTransaction transaction =
-            new SkynetTransaction(CoverageTestUtil.getTestBranch(), "Coverage Package Save " + testName.getMethodName());
+            TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), "Coverage Package Save " + testName.getMethodName());
          store.save(transaction, getTestCoveragePackageEvent());
          store.getArtifact(false).persist(transaction);
 
@@ -1308,7 +1309,7 @@ public class CoveragePackageImportTest {
 
       if (testWithDb) {
          SkynetTransaction transaction =
-            new SkynetTransaction(CoverageTestUtil.getTestBranch(), String.format("%s.%s",
+            TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), String.format("%s.%s",
                CoveragePackageImportTest.class.getSimpleName(), testName.getMethodName()));
          // Test Load of Coverage Package
          Artifact artifact =
@@ -1399,7 +1400,7 @@ public class CoveragePackageImportTest {
          // Test Persist of CoveragePackage
          OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, CoverageTestUtil.getTestBranch());
          SkynetTransaction transaction =
-            new SkynetTransaction(CoverageTestUtil.getTestBranch(), "Coverage Package Save " + testName.getMethodName());
+            TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), "Coverage Package Save " + testName.getMethodName());
          store.save(transaction, getTestCoveragePackageEvent());
          store.getArtifact(false).persist(transaction);
 
@@ -1457,12 +1458,12 @@ public class CoveragePackageImportTest {
       Assert.assertNotNull(coverageImport);
 
       SkynetTransaction importingTransaction =
-         new SkynetTransaction(CoverageTestUtil.getTestBranch(),
+         TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(),
             CoveragePackageImportTest.class.getSimpleName() + ".testImport10");
 
       if (testWithDb) {
          SkynetTransaction transaction =
-            new SkynetTransaction(CoverageTestUtil.getTestBranch(),
+            TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(),
                CoveragePackageImportTest.class.getSimpleName() + ".testImport10");
          // Test Load of Coverage Package
          Artifact artifact =
@@ -1482,7 +1483,7 @@ public class CoveragePackageImportTest {
       // reload coverage package from store
       if (testWithDb) {
          SkynetTransaction transaction =
-            new SkynetTransaction(CoverageTestUtil.getTestBranch(), String.format("%s.%s",
+            TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), String.format("%s.%s",
                CoveragePackageImportTest.class.getSimpleName(), testName.getMethodName()));
          // Test Load of Coverage Package
          Artifact artifact =
@@ -1572,7 +1573,7 @@ public class CoveragePackageImportTest {
          // Test Persist of CoveragePackage
          OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, CoverageTestUtil.getTestBranch());
          SkynetTransaction transaction =
-            new SkynetTransaction(CoverageTestUtil.getTestBranch(), "Coverage Package Save " + testName.getMethodName());
+            TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), "Coverage Package Save " + testName.getMethodName());
          store.save(transaction, getTestCoveragePackageEvent());
          store.getArtifact(false).persist(transaction);
 

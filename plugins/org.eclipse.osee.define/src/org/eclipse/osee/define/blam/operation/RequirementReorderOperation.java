@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.importing.ReqNumbering;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
@@ -38,7 +39,7 @@ public class RequirementReorderOperation extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       List<Artifact> artifacts = variableMap.getArtifacts("artifacts");
       IOseeBranch branch = artifacts.get(0).getBranch();
-      transaction = new SkynetTransaction(branch, "Fix Requirement Ordering BLAM");
+      transaction = TransactionManager.createTransaction(branch, "Fix Requirement Ordering BLAM");
       for (Artifact input : artifacts) {
          reorderChildren(input);
       }

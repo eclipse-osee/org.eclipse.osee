@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -114,7 +115,8 @@ public class AtsDeleteManager {
                if (purge) {
                   Operations.executeWorkAndCheckStatus(new PurgeArtifacts(allDeleteArts));
                } else if (!allDeleteArts.isEmpty()) {
-                  SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete ATS Objects");
+                  SkynetTransaction transaction =
+                     TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Delete ATS Objects");
                   ArtifactPersistenceManager.deleteArtifactCollection(transaction, false, allDeleteArts);
                   transaction.execute();
                }

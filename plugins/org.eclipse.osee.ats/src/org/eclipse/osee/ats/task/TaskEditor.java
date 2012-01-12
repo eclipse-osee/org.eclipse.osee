@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
@@ -68,7 +69,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IAtsMetricsPro
    @Override
    public void doSave(IProgressMonitor monitor) {
       try {
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Task Editor Save");
+         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Task Editor Save");
          for (TaskArtifact taskArt : tasks) {
             taskArt.saveSMA(transaction);
          }

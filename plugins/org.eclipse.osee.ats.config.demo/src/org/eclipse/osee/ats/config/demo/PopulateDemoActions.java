@@ -76,6 +76,7 @@ import org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineExtra
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.NewArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
@@ -162,7 +163,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
          // Create traceability between System, Subsystem and Software requirements
          SkynetTransaction demoDbTraceability =
-            new SkynetTransaction(DemoSawBuilds.SAW_Bld_1, "Populate Demo DB - Create Traceability");
+            TransactionManager.createTransaction(DemoSawBuilds.SAW_Bld_1, "Populate Demo DB - Create Traceability");
          demoDbTraceabilityTx(demoDbTraceability, DemoSawBuilds.SAW_Bld_1);
          demoDbTraceability.execute();
 
@@ -234,7 +235,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
    private void createNonReqChangeDemoActions() throws Exception {
       SkynetTransaction transaction =
-         new SkynetTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - Create Actions");
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - Create Actions");
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "createNonReqChangeDemoActions - SAW_Bld_3");
       }
@@ -269,7 +270,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
             "createNonReqChangeDemoActions - getGenericActionData");
       }
       SkynetTransaction transaction =
-         new SkynetTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - Create Generic Actions");
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - Create Generic Actions");
       createActions(DemoDbActionData.getGenericActionData(), null, null, transaction);
       transaction.execute();
    }

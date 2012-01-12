@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.rule.OseeHousekeepingRule;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
@@ -678,7 +679,7 @@ public class ArtifactEventTest {
 
       // Setup artifact and children to reorder
       SkynetTransaction transaction =
-         new SkynetTransaction(BranchManager.getCommonBranch(), getClass().getSimpleName());
+         TransactionManager.createTransaction(BranchManager.getCommonBranch(), getClass().getSimpleName());
       Artifact newArt =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BranchManager.getCommonBranch(),
             getClass().getSimpleName() + " - testArtifactRelationReorderEvents");

@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -54,7 +55,7 @@ public final class UserManagerTest {
    public void testCreateUser() throws Exception {
 
       SkynetTransaction transaction =
-         new SkynetTransaction(BranchManager.getCommonBranch(), getClass().getSimpleName());
+         TransactionManager.createTransaction(BranchManager.getCommonBranch(), getClass().getSimpleName());
 
       User lithium = createUser(transaction, 0);
       User sodium = createUser(transaction, 1);

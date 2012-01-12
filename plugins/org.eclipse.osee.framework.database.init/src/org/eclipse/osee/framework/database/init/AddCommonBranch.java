@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * This class creates the common branch and imports the appropriate skynet types. Class should be extended for plugins
@@ -69,7 +70,7 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
          Map<String, URL> typeMap = types.getOseeTypeExtensions();
 
          SkynetTransaction transaction1 =
-            new SkynetTransaction(BranchManager.getCommonBranch(), "Add Types to Common Branch");
+            TransactionManager.createTransaction(BranchManager.getCommonBranch(), "Add Types to Common Branch");
 
          for (Entry<String, URL> entry : typeMap.entrySet()) {
             Artifact artifact =
@@ -89,7 +90,7 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
          }
          transaction1.execute();
 
-         SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "Add Common Branch");
+         SkynetTransaction transaction = TransactionManager.createTransaction(BranchManager.getCommonBranch(), "Add Common Branch");
 
          //create everyone group
          Artifact everyonGroup = SystemGroup.Everyone.getArtifact();

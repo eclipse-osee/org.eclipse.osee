@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.importing.operations.SourceToRough
 import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactValidationCheckOperation;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
@@ -67,7 +68,7 @@ public final class ArtifactImportOperationFactory {
       if (transaction == null) {
          executeTransaction = true;
          transaction =
-            new SkynetTransaction(destinationArtifact.getBranch(),
+            TransactionManager.createTransaction(destinationArtifact.getBranch(),
                "ArtifactImportOperationFactory: Artifact Import Wizard transaction");
       }
 
@@ -118,7 +119,7 @@ public final class ArtifactImportOperationFactory {
     */
    public static IOperation createRoughToRealOperation(String opName, final Artifact destinationArtifact, IArtifactImportResolver resolver, boolean stopOnError, RoughArtifactCollector collector, boolean deleteUnmatchedArtifacts) throws OseeCoreException {
       SkynetTransaction transaction =
-         new SkynetTransaction(destinationArtifact.getBranch(), "Artifact Import Wizard transaction");
+         TransactionManager.createTransaction(destinationArtifact.getBranch(), "Artifact Import Wizard transaction");
 
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(new RoughToRealArtifactOperation(transaction, destinationArtifact, collector, resolver,

@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
@@ -71,7 +72,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       }
 
       WordTemplateRenderer renderer = new WordTemplateRenderer();
-      SkynetTransaction transaction = new SkynetTransaction(branch, "BLAM: Publish with specified template");
+      SkynetTransaction transaction = TransactionManager.createTransaction(branch, "BLAM: Publish with specified template");
       Object[] options =
          new Object[] {
             "Branch",

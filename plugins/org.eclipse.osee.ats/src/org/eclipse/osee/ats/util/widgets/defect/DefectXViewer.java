@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.events.DisposeEvent;
@@ -558,7 +559,7 @@ public class DefectXViewer extends XViewer {
 
    public boolean executeTransaction(Collection<ReviewDefectItem> defectItems) throws OseeCoreException {
       SkynetTransaction transaction =
-         new SkynetTransaction(xDefectViewer.getReviewArt().getArtifact().getBranch(), "Modify Review Defects");
+         TransactionManager.createTransaction(xDefectViewer.getReviewArt().getArtifact().getBranch(), "Modify Review Defects");
       for (ReviewDefectItem defectItem : defectItems) {
          xDefectViewer.getDefectManager().addOrUpdateDefectItem(defectItem);
          update(defectItem, null);

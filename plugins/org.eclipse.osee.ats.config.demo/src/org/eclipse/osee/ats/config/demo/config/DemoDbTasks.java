@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.DemoUsers;
 
 /**
@@ -37,7 +38,7 @@ public class DemoDbTasks {
       }
       Date createdDate = new Date();
       IBasicUser createdBy = UserManager.getUser();
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - Create Tasks");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - Create Tasks");
       boolean firstTaskWorkflow = true;
       for (TeamWorkFlowArtifact codeArt : DemoDbUtil.getSampleCodeWorkflows()) {
          List<IBasicUser> demoUsers = new ArrayList<IBasicUser>();

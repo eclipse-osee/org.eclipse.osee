@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListe
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -327,7 +328,7 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
                MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
          ed.setFillVertically(true);
          if (ed.open() == 0) {
-            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Import Review Defects");
+            SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Import Review Defects");
             for (String str : ed.getEntry().split("\n")) {
                str = str.replaceAll("\r", "");
                if (!str.equals("")) {
@@ -359,7 +360,7 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
             "Are You Sure You Wish to Delete the Defects(s):\n\n" + builder.toString());
       if (delete) {
          try {
-            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete Review Defects");
+            SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Delete Review Defects");
             deleteDefectHelper(items, persist, transaction);
             transaction.execute();
          } catch (Exception ex) {
@@ -386,7 +387,7 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
       ed.setFillVertically(true);
       if (ed.open() == 0) {
          try {
-            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Add Review Defect");
+            SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Add Review Defect");
             ReviewDefectItem item = new ReviewDefectItem();
             item.setDescription(ed.getEntry());
             if (ed.getSeverity() != null) {

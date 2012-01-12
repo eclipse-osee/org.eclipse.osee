@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -51,7 +52,8 @@ public class ArtifactCacheQueryTest {
    @AfterClass
    public static void testCleanupForReRun() throws OseeCoreException {
       SkynetTransaction transaction =
-         new SkynetTransaction(BranchManager.getCommonBranch(), "Static ID Manager test cleanup for re-run");
+         TransactionManager.createTransaction(BranchManager.getCommonBranch(),
+            "Static ID Manager test cleanup for re-run");
       for (String staticIdValue : ALL_STATIC_IDS) {
          for (Artifact artifact : ArtifactQuery.getArtifactListFromAttribute(CoreAttributeTypes.StaticId,
             staticIdValue, BranchManager.getCommonBranch())) {
@@ -170,7 +172,7 @@ public class ArtifactCacheQueryTest {
 
       Collection<Artifact> artifacts = new ArrayList<Artifact>();
       SkynetTransaction transaction =
-         new SkynetTransaction(BranchManager.getCommonBranch(), "testGetSingletonArtifactOrException");
+         TransactionManager.createTransaction(BranchManager.getCommonBranch(), "testGetSingletonArtifactOrException");
       for (int index = 0; index < 2; index++) {
          Artifact artifact =
             ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
@@ -203,7 +205,7 @@ public class ArtifactCacheQueryTest {
             toDelete.iterator().next().deleteAndPersist();
          } else {
             SkynetTransaction transaction =
-               new SkynetTransaction(BranchManager.getCommonBranch(), "Delete collection of artifacts");
+               TransactionManager.createTransaction(BranchManager.getCommonBranch(), "Delete collection of artifacts");
             for (Artifact artifact : toDelete) {
                artifact.delete();
             }

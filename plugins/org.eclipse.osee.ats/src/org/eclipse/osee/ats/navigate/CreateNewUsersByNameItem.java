@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -81,7 +82,7 @@ public class CreateNewUsersByNameItem extends XNavigateItemAction {
             return;
          }
          try {
-            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Create New User(s)");
+            SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Create New User(s)");
             Set<Artifact> newUsers = createNewUserItemTx(transaction, newUserNames);
             transaction.execute();
 

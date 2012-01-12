@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Ryan D. Brooks
@@ -93,7 +94,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
 
             ArtifactQuery.getArtifactListFromIds(artifactGuids, branch, EXCLUDE_DELETED); // bulk load for speed
             SkynetTransaction transaction =
-               new SkynetTransaction(branch, "Delete Repeat Attribute Values for" + branch.getShortName());
+               TransactionManager.createTransaction(branch, "Delete Repeat Attribute Values for" + branch.getShortName());
             for (AttrData attrData : attributeData) {
                Artifact artifact = ArtifactQuery.getArtifactFromId(attrData.getArtifactGuid(), branch);
                AttributeType attributeType = AttributeTypeManager.getType(attrData.getAttributeTypeId());

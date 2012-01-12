@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.commit.CommitHandler;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -117,7 +118,8 @@ public class AtsBranchCommitJob extends Job {
          }
          if (branchCommitted) {
             // Create reviews as necessary
-            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Create Reviews upon Commit");
+            SkynetTransaction transaction =
+               TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Create Reviews upon Commit");
             AtsBranchManagerCore.createNecessaryBranchEventReviews(StateEventType.CommitBranch, teamArt, new Date(),
                UserManager.getUser(SystemUser.OseeSystem), transaction);
             transaction.execute();

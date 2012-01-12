@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -55,7 +56,7 @@ public class SaveImportRecordAction extends Action {
          "Overwrite coverage import record with current import information?")) {
          try {
             SkynetTransaction transaction =
-               new SkynetTransaction(saveable.getBranch(),
+               TransactionManager.createTransaction(saveable.getBranch(),
                   "Coverage - Save Import Record - " + coverageImport.getName());
             saveable.saveImportRecord(transaction, coverageImport);
             transaction.execute();

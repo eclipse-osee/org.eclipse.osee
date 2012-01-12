@@ -49,6 +49,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.ui.progress.UIJob;
@@ -103,7 +104,8 @@ public class AtsConfigManager extends AbstractOperation {
       checkWorkItemNamespaceUnique();
       monitor.worked(calculateWork(0.10));
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Configure ATS for Default Team");
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Configure ATS for Default Team");
 
       TeamDefinitionArtifact teamDefinition = createTeamDefinition(transaction);
 

@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 public class TransitionManager {
 
@@ -241,7 +242,7 @@ public class TransitionManager {
    public void handleTransition(TransitionResults results) {
       try {
          if (transaction == null) {
-            transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), helper.getName());
+            transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), helper.getName());
          }
          for (AbstractWorkflowArtifact awa : helper.getAwas()) {
             try {

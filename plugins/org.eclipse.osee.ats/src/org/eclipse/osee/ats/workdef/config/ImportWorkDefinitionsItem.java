@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -45,7 +46,7 @@ public class ImportWorkDefinitionsItem extends XNavigateItemAction {
       dialog.setMessage("Select Work Definition Sheet(s) to import");
       if (dialog.open() == 0) {
          XResultData resultData = new XResultData(false);
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), getName());
+         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), getName());
          Artifact folder =
             OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.WorkDefinitionsFolder, AtsUtil.getAtsBranch());
          AtsWorkDefinitionSheetProviders.importWorkDefinitionSheets(resultData, true, transaction, folder,

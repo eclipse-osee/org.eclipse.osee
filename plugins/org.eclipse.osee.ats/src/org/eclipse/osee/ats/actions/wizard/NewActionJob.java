@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 
 /**
@@ -68,7 +69,7 @@ public class NewActionJob extends Job {
          if (actionableItems.isEmpty()) {
             throw new OseeArgumentException("Actionable Items can not be empty for New Action");
          }
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Create New Action");
+         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Create New Action");
          if ("tt".equals(title)) {
             title += " " + AtsUtil.getAtsDeveloperIncrementingNum();
          }

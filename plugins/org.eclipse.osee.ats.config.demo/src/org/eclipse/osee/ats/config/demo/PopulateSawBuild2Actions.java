@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 
 /**
@@ -62,7 +63,7 @@ public class PopulateSawBuild2Actions {
    public static void run() throws OseeCoreException {
       // Create SAW_Bld_2 Actions
       SkynetTransaction transaction =
-         new SkynetTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - PopulateSawBuild2Actions");
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - PopulateSawBuild2Actions");
 
       // SawBuild2Action1
       ActionArtifact committedAction = sawBuild2Action1_createCommittedAction(transaction);

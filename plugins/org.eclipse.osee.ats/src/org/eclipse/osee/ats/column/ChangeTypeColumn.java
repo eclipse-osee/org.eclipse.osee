@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -93,7 +94,7 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
 
             SkynetTransaction transaction = null;
             if (persist) {
-               transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Type");
+               transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Type");
             }
 
             ChangeType newChangeType = dialog.getSelection();

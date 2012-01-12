@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -164,7 +165,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
    }
 
    private void makeChanges7(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
       TransitionHelper helper =
          new TransitionHelper("Remote Event Test", Arrays.asList(teamArt), TeamState.Analyze.getPageName(),
             Collections.singleton(UserManager.getUser()), null, TransitionOption.None);

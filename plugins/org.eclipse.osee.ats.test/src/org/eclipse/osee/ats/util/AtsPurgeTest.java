@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.mocks.DbTestUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Before;
 
@@ -66,7 +67,7 @@ public class AtsPurgeTest {
       Set<Artifact> artsToPurge = new HashSet<Artifact>();
 
       // Create Action, Workflow and Tasks
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Purge Test");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Purge Test");
       Artifact actionArt =
          ActionManager.createAction(
             null,

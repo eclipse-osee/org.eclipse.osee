@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderFactory;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -65,7 +66,7 @@ public class RelationOrderRepairBlam extends AbstractBlam {
       }
       recurse = variableMap.getBoolean("Recurse Over Hierarchy");
       IOseeBranch branch = getBranch(inputArtifacts);
-      transaction = new SkynetTransaction(branch, getName());
+      transaction = TransactionManager.createTransaction(branch, getName());
       for (Artifact art : inputArtifacts) {
          resetRelationOrder(art);
       }

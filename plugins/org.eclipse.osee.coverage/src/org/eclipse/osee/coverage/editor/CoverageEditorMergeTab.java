@@ -55,6 +55,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -183,7 +184,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
                   return;
                }
                SkynetTransaction transaction =
-                  new SkynetTransaction(branch, "Save Import Record - " + coverageImport.getName());
+                  TransactionManager.createTransaction(branch, "Save Import Record - " + coverageImport.getName());
                saveImportRecord(transaction, coverageImport);
                transaction.execute();
             }

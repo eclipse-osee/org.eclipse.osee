@@ -95,7 +95,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       //         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       //      }
 
-      //      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Admin Cleanup");
+      //      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Admin Cleanup");
       //      Artifact verArt =
       //            ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, "0.9.0", AtsUtil.getAtsBranch());
       //      for (Attribute<?> attr : verArt.getAttributes()) {

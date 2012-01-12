@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -123,7 +124,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
 
    private void handleCreateNewWorkflow(Collection<TeamWorkFlowArtifact> teamArts, String title) throws OseeCoreException {
       Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<TeamWorkFlowArtifact>();
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Duplicate Workflow");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Duplicate Workflow");
       Date createdDate = new Date();
       User createdBy = UserManager.getUser();
       for (TeamWorkFlowArtifact teamArt : teamArts) {
@@ -150,7 +151,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
 
    private void handleCreateDuplicate(Collection<TeamWorkFlowArtifact> teamArts, boolean duplicateTasks, String title) throws OseeCoreException {
       Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<TeamWorkFlowArtifact>();
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Duplicate Workflow");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Duplicate Workflow");
       for (TeamWorkFlowArtifact teamArt : teamArts) {
          TeamWorkFlowArtifact dupArt = (TeamWorkFlowArtifact) teamArt.duplicate(AtsUtil.getAtsBranch());
          if (Strings.isValid(title)) {

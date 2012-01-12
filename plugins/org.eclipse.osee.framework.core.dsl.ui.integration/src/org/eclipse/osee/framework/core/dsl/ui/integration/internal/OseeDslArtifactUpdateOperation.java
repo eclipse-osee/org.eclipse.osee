@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Roberto E. Escobar
@@ -78,7 +79,7 @@ public class OseeDslArtifactUpdateOperation extends AbstractOperation {
       Branch branch = BranchManager.getBranchByGuid(branchGuid);
       SkynetTransaction transaction = transactionMap.get(branch);
       if (transaction == null) {
-         transaction = new SkynetTransaction(branch, "OseeDslArtifactUpdate");
+         transaction = TransactionManager.createTransaction(branch, "OseeDslArtifactUpdate");
          transactionMap.put(branch, transaction);
       }
       Artifact artifact = ArtifactQuery.getArtifactFromId(artifactGuid, branch);

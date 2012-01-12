@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactList;
@@ -68,7 +69,7 @@ public class PopulateUserGroupBlam extends AbstractBlam {
       }
       logf("addresses: " + count);
 
-      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), getName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(BranchManager.getCommonBranch(), getName());
       for (Artifact group : groups) {
          for (User user : users) {
             group.addRelation(CoreRelationTypes.Users_User, user);

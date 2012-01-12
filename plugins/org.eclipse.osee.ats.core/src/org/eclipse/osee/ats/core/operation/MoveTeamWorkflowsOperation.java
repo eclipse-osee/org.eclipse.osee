@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 public class MoveTeamWorkflowsOperation extends AbstractOperation {
 
@@ -41,7 +42,7 @@ public class MoveTeamWorkflowsOperation extends AbstractOperation {
          throw new OseeArgumentException("ERROR", "Must provide Destination Team Workflow.");
       }
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getName());
       if (Strings.isValid(destActionTitle)) {
          destTeamWorkflow.getParentActionArtifact().setName(destActionTitle);
       }

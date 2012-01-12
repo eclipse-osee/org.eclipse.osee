@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -63,7 +64,7 @@ public class BooleanHandlePromptChange implements IHandlePromptChange {
    public boolean store() throws OseeCoreException {
       if (artifacts.size() > 0) {
          SkynetTransaction transaction =
-            !persist ? null : new SkynetTransaction(artifacts.iterator().next().getBranch(), "Prompt change boolean");
+            !persist ? null : TransactionManager.createTransaction(artifacts.iterator().next().getBranch(), "Prompt change boolean");
          for (Artifact artifact : artifacts) {
             artifact.setSoleAttributeValue(attributeType, dialog.getToggleState());
             if (persist) {

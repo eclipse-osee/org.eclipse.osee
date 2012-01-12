@@ -1021,7 +1021,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    }
 
    public final void persist(String comment) throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(branch, comment);
+      SkynetTransaction transaction = TransactionManager.createTransaction(branch, comment);
       persist(transaction);
       transaction.execute();
    }
@@ -1074,7 +1074,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
     * Removes artifact from a specific branch
     */
    public final void deleteAndPersist() throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(branch, "Delete artifact from a specific branch");
+      SkynetTransaction transaction = TransactionManager.createTransaction(branch, "Delete artifact from a specific branch");
       deleteAndPersist(transaction);
       transaction.execute();
    }

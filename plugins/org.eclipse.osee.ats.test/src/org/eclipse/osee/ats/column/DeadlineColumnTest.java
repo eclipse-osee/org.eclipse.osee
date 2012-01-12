@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -42,7 +43,7 @@ public class DeadlineColumnTest {
       SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
 
       SkynetTransaction transaction =
-         new SkynetTransaction(AtsUtil.getAtsBranch(), CancelledDateColumnTest.class.getSimpleName());
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), CancelledDateColumnTest.class.getSimpleName());
       TeamWorkFlowArtifact teamArt =
          DemoTestUtil.createSimpleAction(CancelledDateColumnTest.class.getSimpleName(), transaction);
       transaction.execute();

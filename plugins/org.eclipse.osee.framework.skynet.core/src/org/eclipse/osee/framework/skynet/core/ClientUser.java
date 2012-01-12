@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Roberto E. Escobar
@@ -73,7 +74,7 @@ final class ClientUser {
             } else {
                if (ClientSessionManager.isUserCreationRequired()) {
                   SkynetTransaction transaction =
-                     new SkynetTransaction(BranchManager.getCommonBranch(), "Populate current user");
+                     TransactionManager.createTransaction(BranchManager.getCommonBranch(), "Populate current user");
                   UserManager.createMainUser(ClientSessionManager.getCurrentUserToken(), transaction);
                   setCurrentUser(UserManager.getUserByUserId(ClientSessionManager.getCurrentUserToken().getUserId()));
                   Operations.executeWorkAndCheckStatus(transaction);
