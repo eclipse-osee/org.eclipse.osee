@@ -106,6 +106,7 @@ public enum FrameworkImage implements KeyedImage {
    INCOMING_NEW("INCOMING_New.gif"),
    INFO_SM("info_sm.gif"),
    INFO_LG("info_lg.gif"),
+   JAVA_COMPILATION_UNIT("jcu_obj.gif"),
    LASER("laser_16_16.gif"),
    LASER_OVERLAY("laser_8_8.gif"),
    LEFT_ARROW_1("leftarrow1.png"),
