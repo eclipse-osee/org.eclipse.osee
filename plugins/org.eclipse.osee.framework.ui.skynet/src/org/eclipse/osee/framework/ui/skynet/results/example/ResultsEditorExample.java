@@ -41,7 +41,12 @@ import org.eclipse.birt.chart.model.type.LineSeries;
 import org.eclipse.birt.chart.model.type.impl.LineSeriesImpl;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -209,8 +214,26 @@ public class ResultsEditorExample extends XNavigateItemAction {
                   new XViewerColumn(Columns.Goal.name(), Columns.Goal.name(), 80, SWT.LEFT, true, SortDataType.Integer,
                      false, ""));
 
+            List<XViewerColumn> artColumns =
+               Arrays.asList(new XViewerColumn("Artifact", "Artifact", 200, SWT.LEFT, true, SortDataType.String, false,
+                  "Requirement Artifact"), new XViewerColumn("GUID", "GUID", 200, SWT.LEFT, true, SortDataType.String,
+                  false, "TestScript Name"));
+
+            List<IResultsXViewerRow> artRows = new ArrayList<IResultsXViewerRow>();
+            List<Artifact> userArts = null;
+            try {
+               userArts = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, CoreBranches.COMMON);
+            } catch (OseeCoreException ex) {
+               // do nothing
+            }
+            for (int x = 0; x < (userArts.size() > 10 ? 10 : userArts.size()); x++) {
+               Artifact artifact = userArts.get(x);
+               artRows.add(new ResultsXViewerRow(new String[] {artifact.getName(), artifact.getGuid()}, artifact));
+            }
+
             return Arrays.asList(new ResultsEditorChartTab("Chart", createChart()), new ResultsEditorTableTab("Data",
-               columns, rows), new ResultsEditorHtmlTab(TITLE, "Report", html));
+               columns, rows), new ResultsEditorHtmlTab(TITLE, "Report", html), new ResultsEditorTableTab("Artifact",
+               artColumns, artRows));
          }
 
       });
