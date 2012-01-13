@@ -12,10 +12,14 @@ package org.eclipse.osee.framework.ui.skynet.results.table.xresults;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
@@ -34,9 +38,9 @@ public class ResultsXViewer extends XViewer {
    @Override
    public void handleDoubleClick() {
       if (getSelectedRows().size() > 0) {
-         Artifact art = getSelectedRows().iterator().next().getDoubleClickOpenArtifact();
-         if (art != null) {
-            RendererManager.openInJob(art, PresentationType.DEFAULT_OPEN);
+         Object data = getSelectedRows().iterator().next().getData();
+         if (data instanceof Artifact) {
+            RendererManager.openInJob((Artifact) data, PresentationType.DEFAULT_OPEN);
          }
       }
    }
@@ -49,4 +53,36 @@ public class ResultsXViewer extends XViewer {
       }
       return arts;
    }
+
+   @Override
+   protected void createSupportWidgets(Composite parent) {
+      super.createSupportWidgets(parent);
+      getMenuManager().addMenuListener(new IMenuListener() {
+         @Override
+         public void menuAboutToShow(IMenuManager manager) {
+            getPopupMenu();
+         }
+      });
+   }
+
+   private boolean isArtifactContent() {
+      TreeItem items[] = getTree().getSelection();
+      for (TreeItem item : items) {
+         if (item.getData() instanceof ResultsXViewerRow) {
+            if (((ResultsXViewerRow) item.getData()).getData() instanceof Artifact) {
+               return true;
+            }
+         }
+      }
+      return false;
+   }
+
+   private void getPopupMenu() {
+      MenuManager menuManager = getMenuManager();
+      if (isArtifactContent()) {
+         OpenContributionItem contrib = new OpenContributionItem(getClass().getSimpleName() + ".open");
+         menuManager.insertBefore(XViewer.MENU_GROUP_PRE, contrib);
+      }
+   }
+
 }

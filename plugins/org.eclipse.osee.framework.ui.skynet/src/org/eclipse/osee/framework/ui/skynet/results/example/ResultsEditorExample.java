@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.results.example;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.birt.chart.model.Chart;
 import org.eclipse.birt.chart.model.ChartWithAxes;
@@ -84,7 +85,80 @@ public class ResultsEditorExample extends XNavigateItemAction {
       super(parent, TITLE, PluginUiImage.ADMIN);
    }
 
-   public String getStatusReport() {
+   @Override
+   public void run(TableLoadOption... tableLoadOptions) throws Exception {
+      ResultsEditor.open(new IResultsEditorProvider() {
+
+         private List<IResultsEditorTab> tabs;
+
+         @Override
+         public String getEditorName() {
+            return TITLE;
+         }
+
+         @Override
+         public List<IResultsEditorTab> getResultsEditorTabs() {
+            if (tabs == null) {
+               tabs = new LinkedList<IResultsEditorTab>();
+               tabs.add(createChartTab());
+               tabs.add(createDataTab());
+               tabs.add(createHtmlTab());
+               tabs.add(createArtifactTab());
+            }
+            return tabs;
+         }
+      });
+   }
+
+   private IResultsEditorTab createChartTab() {
+      return new ResultsEditorChartTab("Chart", createChart());
+   }
+
+   private IResultsEditorTab createDataTab() {
+      List<IResultsXViewerRow> rows = new ArrayList<IResultsXViewerRow>();
+      for (int x = 0; x < chartDateStrs.size(); x++) {
+         rows.add(new ResultsXViewerRow(new String[] {
+            chartDateStrs.get(x),
+            String.valueOf(chartValueStrs.get(x)),
+            String.valueOf(chartValueStrsGoal.get(x))}));
+      }
+      List<XViewerColumn> columns =
+         Arrays.asList(new XViewerColumn(Columns.Date.name(), Columns.Date.name(), 80, SWT.LEFT, true,
+            SortDataType.Date, false, ""), new XViewerColumn(Columns.Priority_123_Open_Bugs.name(),
+            Columns.Priority_123_Open_Bugs.name(), 80, SWT.LEFT, true, SortDataType.Integer, false, ""),
+            new XViewerColumn(Columns.Goal.name(), Columns.Goal.name(), 80, SWT.LEFT, true, SortDataType.Integer,
+               false, ""));
+
+      return new ResultsEditorTableTab("Data", columns, rows);
+
+   }
+
+   private IResultsEditorTab createHtmlTab() {
+      return new ResultsEditorHtmlTab(TITLE, "Report", AHTML.simplePage(getHtmlReport()));
+   }
+
+   private IResultsEditorTab createArtifactTab() {
+      List<XViewerColumn> artColumns =
+         Arrays.asList(new XViewerColumn("Artifact", "Artifact", 200, SWT.LEFT, true, SortDataType.String, false,
+            "Requirement Artifact"), new XViewerColumn("GUID", "GUID", 200, SWT.LEFT, true, SortDataType.String, false,
+            "TestScript Name"));
+
+      List<IResultsXViewerRow> artRows = new ArrayList<IResultsXViewerRow>();
+      List<Artifact> userArts = null;
+      try {
+         userArts = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, CoreBranches.COMMON);
+      } catch (OseeCoreException ex) {
+         // do nothing
+      }
+      for (int x = 0; x < (userArts.size() > 10 ? 10 : userArts.size()); x++) {
+         Artifact artifact = userArts.get(x);
+         artRows.add(new ResultsXViewerRow(new String[] {artifact.getName(), artifact.getGuid()}, artifact));
+      }
+      return new ResultsEditorTableTab("Artifact", artColumns, artRows);
+
+   }
+
+   public String getHtmlReport() {
 
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.heading(3, TITLE));
@@ -186,57 +260,6 @@ public class ResultsEditorExample extends XNavigateItemAction {
       sdY.getSeries().add(ls1);
 
       return cwaLine;
-   }
-
-   @Override
-   public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      final String html = AHTML.simplePage(getStatusReport());
-      ResultsEditor.open(new IResultsEditorProvider() {
-
-         @Override
-         public String getEditorName() {
-            return TITLE;
-         }
-
-         @Override
-         public List<IResultsEditorTab> getResultsEditorTabs() {
-            List<IResultsXViewerRow> rows = new ArrayList<IResultsXViewerRow>();
-            for (int x = 0; x < chartDateStrs.size(); x++) {
-               rows.add(new ResultsXViewerRow(new String[] {
-                  chartDateStrs.get(x),
-                  String.valueOf(chartValueStrs.get(x)),
-                  String.valueOf(chartValueStrsGoal.get(x))}));
-            }
-            List<XViewerColumn> columns =
-               Arrays.asList(new XViewerColumn(Columns.Date.name(), Columns.Date.name(), 80, SWT.LEFT, true,
-                  SortDataType.Date, false, ""), new XViewerColumn(Columns.Priority_123_Open_Bugs.name(),
-                  Columns.Priority_123_Open_Bugs.name(), 80, SWT.LEFT, true, SortDataType.Integer, false, ""),
-                  new XViewerColumn(Columns.Goal.name(), Columns.Goal.name(), 80, SWT.LEFT, true, SortDataType.Integer,
-                     false, ""));
-
-            List<XViewerColumn> artColumns =
-               Arrays.asList(new XViewerColumn("Artifact", "Artifact", 200, SWT.LEFT, true, SortDataType.String, false,
-                  "Requirement Artifact"), new XViewerColumn("GUID", "GUID", 200, SWT.LEFT, true, SortDataType.String,
-                  false, "TestScript Name"));
-
-            List<IResultsXViewerRow> artRows = new ArrayList<IResultsXViewerRow>();
-            List<Artifact> userArts = null;
-            try {
-               userArts = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, CoreBranches.COMMON);
-            } catch (OseeCoreException ex) {
-               // do nothing
-            }
-            for (int x = 0; x < (userArts.size() > 10 ? 10 : userArts.size()); x++) {
-               Artifact artifact = userArts.get(x);
-               artRows.add(new ResultsXViewerRow(new String[] {artifact.getName(), artifact.getGuid()}, artifact));
-            }
-
-            return Arrays.asList(new ResultsEditorChartTab("Chart", createChart()), new ResultsEditorTableTab("Data",
-               columns, rows), new ResultsEditorHtmlTab(TITLE, "Report", html), new ResultsEditorTableTab("Artifact",
-               artColumns, artRows));
-         }
-
-      });
    }
 
 }

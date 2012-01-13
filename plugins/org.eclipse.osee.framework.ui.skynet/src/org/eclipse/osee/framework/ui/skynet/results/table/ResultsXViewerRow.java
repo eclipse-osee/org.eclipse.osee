@@ -20,10 +20,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class ResultsXViewerRow implements IResultsXViewerRow {
 
    private final List<String> values;
-   private final Artifact doubleClickOpenArtifact;
+   private final Object data;
 
-   public ResultsXViewerRow(List<String> values, Artifact doubleClickOpenArtifact) {
-      this.doubleClickOpenArtifact = doubleClickOpenArtifact;
+   public ResultsXViewerRow(List<String> values, Object data) {
+      this.data = data;
       this.values = values;
    }
 
@@ -49,11 +49,9 @@ public class ResultsXViewerRow implements IResultsXViewerRow {
       return values.toArray(new String[values.size()]);
    }
 
-   /**
-    * @return the doubleClickOpenArtifact
-    */
-   public Artifact getDoubleClickOpenArtifact() {
-      return doubleClickOpenArtifact;
+   @Override
+   public Object getData() {
+      return data;
    }
 
 }

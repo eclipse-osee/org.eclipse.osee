@@ -21,4 +21,5 @@ public interface IResultsEditorTab {
    public String getTabName();
 
    public Composite createTab(Composite parent, ResultsEditor resultsEditor) throws OseeCoreException;
+
 }

@@ -18,4 +18,6 @@ public interface IResultsXViewerRow {
    public String getValue(int col);
 
    public String[] values();
+
+   public Object getData();
 }

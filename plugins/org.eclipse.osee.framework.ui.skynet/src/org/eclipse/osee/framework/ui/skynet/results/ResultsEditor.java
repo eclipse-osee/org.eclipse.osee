@@ -12,9 +12,14 @@ package org.eclipse.osee.framework.ui.skynet.results;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -26,12 +31,16 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEdit
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.html.ResultsEditorHtmlTab;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
+import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
+import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
+import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewer;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
@@ -43,6 +52,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 public class ResultsEditor extends AbstractArtifactEditor {
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.results.ResultsEditor";
    private Integer startPage = null;
+   private List<IResultsEditorTab> pages;
 
    @Override
    protected void addPages() {
@@ -51,9 +61,9 @@ public class ResultsEditor extends AbstractArtifactEditor {
          OseeStatusContributionItemFactory.addTo(this, true);
 
          IResultsEditorProvider provider = getResultsEditorProvider();
-         List<IResultsEditorTab> tabs = provider.getResultsEditorTabs();
-         if (tabs.isEmpty()) {
-            tabs.add(new ResultsEditorHtmlTab("Error", "Error",
+         pages = provider.getResultsEditorTabs();
+         if (pages.isEmpty()) {
+            pages.add(new ResultsEditorHtmlTab("Error", "Error",
                AHTML.simplePage("Error: No tabs were defined for \"" + provider.getEditorName() + "\"")));
          }
          for (IResultsEditorTab tab : provider.getResultsEditorTabs()) {
@@ -69,6 +79,46 @@ public class ResultsEditor extends AbstractArtifactEditor {
          setActivePage(startPage);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+   }
+   private final class ResultsEditorSelectionProvider implements ISelectionProvider {
+
+      @Override
+      public void addSelectionChangedListener(ISelectionChangedListener listener) {
+         // do nothing
+      }
+
+      @Override
+      public ISelection getSelection() {
+         List<Object> objects = new LinkedList<Object>();
+         try {
+            IResultsEditorProvider provider = getResultsEditorProvider();
+            IResultsEditorTab iResultsEditorTab = provider.getResultsEditorTabs().get(getActivePage());
+            if (iResultsEditorTab instanceof ResultsEditorTableTab) {
+               ResultsEditorTableTab tableTab = (ResultsEditorTableTab) iResultsEditorTab;
+               ResultsXViewer viewer = tableTab.getResultsXViewer();
+               if (viewer != null) {
+                  for (ResultsXViewerRow row : viewer.getSelectedRows()) {
+                     if (row.getData() != null) {
+                        objects.add(row.getData());
+                     }
+                  }
+               }
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         }
+         return new StructuredSelection(objects.toArray());
+      }
+
+      @Override
+      public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+         // do nothing
+      }
+
+      @Override
+      public void setSelection(ISelection selection) {
+         // do nothing
       }
    }
 
@@ -194,11 +244,6 @@ public class ResultsEditor extends AbstractArtifactEditor {
             IWorkbenchPage page = AWorkbench.getActivePage();
             try {
                ResultsEditorInput input = new ResultsEditorInput(provider);
-               //               try {
-               //                  Thread.sleep(5000);
-               //               } catch (InterruptedException ex) {
-               //                  ex.printStackTrace();
-               //               }
                page.openEditor(input, EDITOR_ID);
             } catch (PartInitException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -239,6 +284,13 @@ public class ResultsEditor extends AbstractArtifactEditor {
             }
          }
       });
+   }
+
+   @Override
+   public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+      super.init(site, input);
+      defaultSelectionProvider = new ResultsEditorSelectionProvider();
+      getSite().setSelectionProvider(defaultSelectionProvider);
    }
 
 }
