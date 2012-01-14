@@ -368,23 +368,31 @@ public class AtsTestUtil {
       reset(name);
    }
 
+   private static void delete(SkynetTransaction transaction, Artifact artifact) throws OseeCoreException {
+      if (artifact != null) {
+         artifact.deleteAndPersist(transaction);
+      }
+   }
+
    /**
     * Cleanup all artifacts and confirm that ArtifactCache has no dirty artifacts. Should be called at beginning at end
     * of each test.
     */
    public static void cleanup() throws OseeCoreException {
-      SkynetTransaction transaction =
+      SkynetTransaction transaction1 =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName() + " - cleanup 1");
-      if (peerRevArt != null) {
-         peerRevArt.deleteAndPersist(transaction);
-      }
-      if (decRevArt != null) {
-         decRevArt.deleteAndPersist(transaction);
-      }
-      if (taskArt != null) {
-         taskArt.deleteAndPersist(transaction);
-      }
+      delete(transaction1, peerRevArt);
+      delete(transaction1, decRevArt);
+      delete(transaction1, taskArt);
+      delete(transaction1, teamArt2);
+      delete(transaction1, actionArt);
+      delete(transaction1, actionArt2);
+      transaction1.execute();
+
       if (teamArt != null) {
+         SkynetTransaction transaction2 =
+            TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName() + " - cleanup 2");
+
          if (teamArt.getWorkingBranch() != null) {
             Result result = AtsBranchManagerCore.deleteWorkingBranch(teamArt, true);
             if (result.isFalse()) {
@@ -392,42 +400,26 @@ public class AtsTestUtil {
             }
          }
          for (TaskArtifact taskArt : teamArt.getTaskArtifacts()) {
-            taskArt.deleteAndPersist(transaction);
+            taskArt.deleteAndPersist(transaction2);
          }
          for (AbstractReviewArtifact revArt : ReviewManager.getReviews(teamArt)) {
-            revArt.deleteAndPersist(transaction);
+            revArt.deleteAndPersist(transaction2);
          }
-         teamArt.deleteAndPersist(transaction);
-      }
-      if (teamArt2 != null) {
-         teamArt2.deleteAndPersist(transaction);
-      }
-      if (actionArt != null) {
-         actionArt.deleteAndPersist(transaction);
-      }
-      if (actionArt2 != null) {
-         actionArt2.deleteAndPersist(transaction);
-      }
-      transaction.execute();
 
-      transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName() + " - cleanup 2");
-      if (testAi != null) {
-         testAi.deleteAndPersist(transaction);
+         delete(transaction2, teamArt);
+         transaction2.execute();
       }
-      if (testAi2 != null) {
-         testAi2.deleteAndPersist(transaction);
-      }
-      if (verArt1 != null) {
-         verArt1.deleteAndPersist(transaction);
-      }
-      if (verArt2 != null) {
-         verArt2.deleteAndPersist(transaction);
-      }
-      if (teamDef != null) {
-         teamDef.deleteAndPersist(transaction);
-      }
-      transaction.execute();
+
+      SkynetTransaction transaction3 =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName() + " - cleanup 3");
+
+      delete(transaction3, testAi);
+      delete(transaction3, testAi2);
+      delete(transaction3, verArt1);
+      delete(transaction3, verArt2);
+      delete(transaction3, teamDef);
+
+      transaction3.execute();
 
       clearCaches();
 

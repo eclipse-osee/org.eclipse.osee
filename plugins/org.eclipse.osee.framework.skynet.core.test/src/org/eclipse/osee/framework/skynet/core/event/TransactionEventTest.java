@@ -89,9 +89,9 @@ public abstract class TransactionEventTest {
       // Make a change that we can delete
       newArt.setName(CHANGE_NAME);
       SkynetTransaction transaction = TransactionManager.createTransaction(newArt.getBranch(), "changed");
-      int transIdToDelete = transaction.getTransactionNumber();
       newArt.persist(transaction);
       transaction.execute();
+      int transIdToDelete = transaction.getTransactionId();
 
       if (!isRemoteTest()) {
          Assert.assertEquals(CHANGE_NAME, newArt.getName());

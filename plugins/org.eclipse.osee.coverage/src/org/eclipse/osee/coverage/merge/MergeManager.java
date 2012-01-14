@@ -53,10 +53,8 @@ public class MergeManager {
       List<IMergeItem> mergeItems = new ArrayList<IMergeItem>();
       processedImportCoverages.clear();
       Collection<? extends ICoverage> children = coverageImport.getChildren();
-      int count = 0;
       for (ICoverage importCoverage : children) {
          processImportCoverage(importCoverage, mergeItems, resultData);
-         count++;
       }
       if (mergeItems.isEmpty()) {
          mergeItems.add(new MessageMergeItem("Nothing to Import"));

@@ -133,7 +133,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       convertActionableItemsAction = new ConvertActionableItemsAction(this);
       favoritesAction = new FavoriteAction(this);
       subscribedAction = new SubscribedAction(this);
-      deletePurgeAtsObjectAction = new DeletePurgeAtsArtifactsAction(this);
+      deletePurgeAtsObjectAction = new DeletePurgeAtsArtifactsAction(this, false);
       emailAction = new EmailActionAction(this);
       editStatusAction = new EditStatusAction(this, this, this, true);
       editAssigneeAction = new EditAssigneeAction(this, this);

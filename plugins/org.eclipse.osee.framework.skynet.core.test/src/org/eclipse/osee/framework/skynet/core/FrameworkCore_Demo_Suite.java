@@ -47,8 +47,7 @@ import org.eclipse.osee.framework.skynet.core.importing.parsers.ParsersSuite;
 import org.eclipse.osee.framework.skynet.core.relation.CrossBranchLinkTest;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTestSuite;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictTest;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransactionTest;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManagerTest;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionTestSuite;
 import org.eclipse.osee.framework.skynet.core.utility.CsvArtifactTest;
 import org.eclipse.osee.framework.skynet.core.word.UpdateBookmarkIdTest;
 import org.junit.AfterClass;
@@ -76,8 +75,7 @@ import org.junit.runners.Suite;
    EventBasicGuidRelationTest.class,
    EventChangeTypeBasicGuidArtifactTest.class,
    ArtifactQueryTestDemo.class,
-   SkynetTransactionTest.class,
-   TransactionManagerTest.class,
+   TransactionTestSuite.class,
    ArtifactTestSuite.class,
    RelationTestSuite.class,
    ArtifactTypeInheritanceTest.class,

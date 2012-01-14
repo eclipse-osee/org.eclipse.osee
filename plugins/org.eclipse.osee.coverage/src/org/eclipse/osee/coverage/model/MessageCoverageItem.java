@@ -12,7 +12,6 @@ package org.eclipse.osee.coverage.model;
 
 import java.util.Collection;
 import java.util.Collections;
-
 import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.GUID;

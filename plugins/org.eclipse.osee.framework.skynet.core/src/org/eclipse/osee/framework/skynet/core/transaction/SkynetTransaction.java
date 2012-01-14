@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
-import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
@@ -47,6 +46,7 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTransactionData;
+import org.eclipse.osee.framework.skynet.core.transaction.TxMonitorImpl.TxState;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
@@ -55,31 +55,23 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
  * @author Ryan D. Brooks
  * @author Jeff C. Phillips
  */
-public final class SkynetTransaction extends AbstractOperation {
-
-   private TransactionRecord transactionId;
+public final class SkynetTransaction extends TransactionOperation<Branch> {
 
    private final CompositeKeyHashMap<Class<? extends BaseTransactionData>, Integer, BaseTransactionData> transactionDataItems =
       new CompositeKeyHashMap<Class<? extends BaseTransactionData>, Integer, BaseTransactionData>();
 
-   // Used to avoid garbage collection of artifacts until the transaction has been committed;
-   private final Set<Artifact> artifactReferences = new HashSet<Artifact>();
+   // Used to avoid garbage collection of artifacts until the transaction has been committed and determine attribute events;
+   private final Set<Artifact> modifiedArtifacts = new HashSet<Artifact>();
    private final Set<Artifact> alreadyProcessedArtifacts = new HashSet<Artifact>();
-
-   private final Branch branch;
-   private boolean madeChanges = false;
 
    private final String comment;
    private User user;
 
    private AccessPolicy access;
+   private int transactionId = -1;
 
-   private final TransactionMonitor txMonitor;
-
-   protected SkynetTransaction(TransactionMonitor txMonitor, Branch branch, String comment) {
-      super(comment, Activator.PLUGIN_ID);
-      this.txMonitor = txMonitor;
-      this.branch = branch;
+   protected SkynetTransaction(TxMonitor<Branch> txMonitor, Branch branch, String uuid, String comment) {
+      super(txMonitor, branch, uuid, comment);
       this.comment = comment;
    }
 
@@ -183,47 +175,32 @@ public final class SkynetTransaction extends AbstractOperation {
    }
 
    private Collection<Artifact> getArtifactReferences() {
-      return artifactReferences;
-   }
-
-   private TransactionRecord getTransactionRecord() throws OseeCoreException {
-      if (transactionId == null) {
-         transactionId = TransactionManager.internalCreateTransactionRecord(branch, getAuthor(), comment);
-      }
-      return transactionId;
+      return modifiedArtifacts;
    }
 
    /**
     * Reset state so transaction object can be re-used
     */
-   private void reset() {
-      madeChanges = false;
+   @Override
+   protected void clear() {
       transactionDataItems.clear();
-      artifactReferences.clear();
+      modifiedArtifacts.clear();
       alreadyProcessedArtifacts.clear();
-      transactionId = null;
    }
 
    public Branch getBranch() {
-      return branch;
-   }
-
-   /**
-    * Returns the next transaction to be used by the system<br>
-    * <br>
-    * IF transaction has not been executed, this is the transaction that will be used.<br>
-    * ELSE this is next transaction to be used upon execute
-    */
-   public int getTransactionNumber() throws OseeCoreException {
-      return getTransactionRecord().getId();
+      return getKey();
    }
 
    public void addArtifact(Artifact artifact) throws OseeCoreException {
-      addArtifact(artifact, true);
+      synchronized (getTxMonitor()) {
+         addArtifact(artifact, true);
+      }
    }
 
    private void addArtifact(Artifact artifact, boolean force) throws OseeCoreException {
       if (artifact != null) {
+         ensureCanBeAdded(artifact);
          boolean wasAdded = alreadyProcessedArtifacts.add(artifact);
          if (wasAdded || force) {
             addArtifactAndAttributes(artifact);
@@ -243,12 +220,12 @@ public final class SkynetTransaction extends AbstractOperation {
             return;
          }
          checkAccess(artifact);
-         madeChanges = true;
+         setTxState(TxState.MODIFIED);
 
          if (!artifact.isInDb() || artifact.hasDirtyArtifactType() || artifact.getModType().isDeleted() || artifact.getModType() == ModificationType.REPLACED_WITH_VERSION) {
             BaseTransactionData txItem = transactionDataItems.get(ArtifactTransactionData.class, artifact.getArtId());
             if (txItem == null) {
-               artifactReferences.add(artifact);
+               modifiedArtifacts.add(artifact);
                txItem = new ArtifactTransactionData(artifact);
                transactionDataItems.put(ArtifactTransactionData.class, artifact.getArtId(), txItem);
             } else {
@@ -258,7 +235,7 @@ public final class SkynetTransaction extends AbstractOperation {
 
          for (Attribute<?> attribute : artifact.internalGetAttributes()) {
             if (attribute.isDirty()) {
-               artifactReferences.add(artifact);
+               modifiedArtifacts.add(artifact);
                addAttribute(artifact, attribute);
             }
          }
@@ -302,58 +279,65 @@ public final class SkynetTransaction extends AbstractOperation {
    }
 
    public void addRelation(Artifact artifact, RelationLink link) throws OseeCoreException {
-      checkAccess(artifact, link);
-      madeChanges = true;
-      link.setNotDirty();
+      synchronized (getTxMonitor()) {
+         checkAccess(artifact, link);
+         setTxState(TxState.MODIFIED);
+         link.setNotDirty();
 
-      ModificationType modificationType;
-      RelationEventType relationEventType; // needed until persist undeleted modtypes and modified == rational only change
+         ModificationType modificationType;
+         RelationEventType relationEventType; // needed until persist undeleted modtypes and modified == rational only change
 
-      IOseeBranch branch = link.getBranch();
-      Artifact aArtifact = getArtifact(link.getAArtifactId(), branch);
-      Artifact bArtifact = getArtifact(link.getBArtifactId(), branch);
-      if (link.isInDb()) {
-         if (link.isUnDeleted()) {
-            modificationType = ModificationType.MODIFIED; // Temporary until UNDELETED persisted to DB
-            relationEventType = RelationEventType.Undeleted;
-         } else if (link.isDeleted()) {
-            if (aArtifact != null && aArtifact.isDeleted() || bArtifact != null && bArtifact.isDeleted()) {
-               modificationType = ModificationType.ARTIFACT_DELETED;
-               relationEventType = RelationEventType.Deleted;
+         IOseeBranch branch = link.getBranch();
+         Artifact aArtifact = getArtifact(link.getAArtifactId(), branch);
+         Artifact bArtifact = getArtifact(link.getBArtifactId(), branch);
+
+         if (link.isInDb()) {
+            if (link.isUnDeleted()) {
+               modificationType = ModificationType.MODIFIED; // Temporary until UNDELETED persisted to DB
+               relationEventType = RelationEventType.Undeleted;
+            } else if (link.isDeleted()) {
+               if (aArtifact != null && aArtifact.isDeleted() || bArtifact != null && bArtifact.isDeleted()) {
+                  modificationType = ModificationType.ARTIFACT_DELETED;
+                  relationEventType = RelationEventType.Deleted;
+               } else {
+                  modificationType = ModificationType.DELETED;
+                  relationEventType = RelationEventType.Deleted;
+               }
             } else {
-               modificationType = ModificationType.DELETED;
-               relationEventType = RelationEventType.Deleted;
+               if (link.getModificationType() == ModificationType.REPLACED_WITH_VERSION) {
+                  modificationType = link.getModificationType();
+               } else {
+                  modificationType = ModificationType.MODIFIED;
+               }
+               relationEventType = RelationEventType.ModifiedRationale;
             }
          } else {
-            if (link.getModificationType() == ModificationType.REPLACED_WITH_VERSION) {
-               modificationType = link.getModificationType();
-            } else {
-               modificationType = ModificationType.MODIFIED;
+            if (link.isDeleted()) {
+               return;
             }
-            relationEventType = RelationEventType.ModifiedRationale;
+            link.internalSetRelationId(getNewRelationId());
+            modificationType = ModificationType.NEW;
+            relationEventType = RelationEventType.Added;
          }
-      } else {
-         if (link.isDeleted()) {
-            return;
+
+         /**
+          * Always want to persist artifacts on other side of dirty relation. This is necessary for ordering attribute
+          * to be persisted and desired for other cases.
+          */
+         addArtifact(aArtifact, false);
+         addArtifact(bArtifact, false);
+
+         BaseTransactionData txItem = transactionDataItems.get(RelationTransactionData.class, link.getId());
+         if (txItem == null) {
+            txItem = new RelationTransactionData(link, modificationType, relationEventType);
+            transactionDataItems.put(RelationTransactionData.class, link.getId(), txItem);
+
+            modifiedArtifacts.add(aArtifact);
+            modifiedArtifacts.add(bArtifact);
+
+         } else {
+            updateTxItem(txItem, modificationType);
          }
-         link.internalSetRelationId(getNewRelationId());
-         modificationType = ModificationType.NEW;
-         relationEventType = RelationEventType.Added;
-      }
-
-      /**
-       * Always want to persist artifacts on other side of dirty relation. This is necessary for ordering attribute to
-       * be persisted and desired for other cases.
-       */
-      addArtifact(aArtifact, false);
-      addArtifact(bArtifact, false);
-
-      BaseTransactionData txItem = transactionDataItems.get(RelationTransactionData.class, link.getId());
-      if (txItem == null) {
-         txItem = new RelationTransactionData(link, modificationType, relationEventType);
-         transactionDataItems.put(RelationTransactionData.class, link.getId(), txItem);
-      } else {
-         updateTxItem(txItem, modificationType);
       }
    }
 
@@ -365,26 +349,34 @@ public final class SkynetTransaction extends AbstractOperation {
       }
    }
 
+   private IOperation createStorageOp() throws OseeCoreException {
+      TransactionRecord transaction =
+         TransactionManager.internalCreateTransactionRecord(getBranch(), getAuthor(), comment);
+      transactionId = transaction.getId();
+      return new StoreSkynetTransactionOperation(getName(), getBranch(), transaction, getTransactionData(),
+         getArtifactReferences());
+   }
+
+   public int getTransactionId() {
+      return transactionId;
+   }
+
    @Override
-   protected void doWork(IProgressMonitor monitor) throws Exception {
-      int smallWork = calculateWork(0.10);
-      try {
-         txMonitor.reportTxStart(SkynetTransaction.this, getBranch());
-         monitor.worked(smallWork);
-         if (madeChanges) {
-            IOperation subOp = createStorageOp();
-            doSubWork(subOp, monitor, 0.80);
-         }
-      } finally {
-         reset();
-         txMonitor.reportTxEnd(SkynetTransaction.this, getBranch());
-         monitor.worked(smallWork);
+   public boolean containsItem(Object object) {
+      synchronized (getTxMonitor()) {
+         return modifiedArtifacts.contains(object);
       }
    }
 
-   private IOperation createStorageOp() throws OseeCoreException {
-      return new StoreSkynetTransactionOperation(getName(), getBranch(), getTransactionRecord(), getTransactionData(),
-         getArtifactReferences());
+   @Override
+   protected void txWork(IProgressMonitor monitor) throws Exception {
+      IOperation subOp = createStorageOp();
+      doSubWork(subOp, monitor, 1.00);
+   }
+
+   @Override
+   public String toString() {
+      return String.format("uuid:[%s] branch[%s] comment[%s]", getUuid(), getBranch(), comment);
    }
 
    //TODO this method needs to be removed

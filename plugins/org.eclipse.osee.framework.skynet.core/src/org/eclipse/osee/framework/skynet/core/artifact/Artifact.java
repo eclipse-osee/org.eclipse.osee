@@ -1074,7 +1074,8 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
     * Removes artifact from a specific branch
     */
    public final void deleteAndPersist() throws OseeCoreException {
-      SkynetTransaction transaction = TransactionManager.createTransaction(branch, "Delete artifact from a specific branch");
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(branch, "Delete artifact from a specific branch");
       deleteAndPersist(transaction);
       transaction.execute();
    }
@@ -1524,10 +1525,8 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
 
    @Override
    public final int hashCode() {
-      int hashCode = 11;
-      hashCode = hashCode * 37 + getGuid().hashCode();
-      hashCode = hashCode * 37 + getBranch().hashCode();
-      return hashCode;
+      // Don't use branch so we are consistent with equals method
+      return super.hashCode();
    }
 
    /**
@@ -1548,7 +1547,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
       }
       if (obj instanceof IArtifact) {
          IArtifact other = (IArtifact) obj;
-         boolean result = getArtId() == other.getArtId();
+         boolean result = getGuid().equals(other.getGuid());
          if (result) {
             if (getBranch() != null && other.getBranch() != null) {
                result = getBranch().equals(other.getBranch());

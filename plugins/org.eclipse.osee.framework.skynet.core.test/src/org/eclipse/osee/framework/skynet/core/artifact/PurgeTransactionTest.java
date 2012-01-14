@@ -92,8 +92,8 @@ public class PurgeTransactionTest {
       for (Artifact softArt : softArts) {
          softArt.persist(createTransaction);
       }
-      createId = createTransaction.getTransactionNumber();
       createTransaction.execute();
+      createId = createTransaction.getTransactionId();
    }
 
    private void modifyArtifacts() throws Exception {
@@ -103,8 +103,8 @@ public class PurgeTransactionTest {
          softArt.addAttribute(CoreAttributeTypes.StaticId, getClass().getSimpleName());
          softArt.persist(modifyTransaction);
       }
-      modifyId = modifyTransaction.getTransactionNumber();
       modifyTransaction.execute();
+      modifyId = modifyTransaction.getTransactionId();
    }
 
    private void purge(int transactionId, Map<String, Integer> dbCount) throws Exception {

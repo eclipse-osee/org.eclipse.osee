@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.OseeSql;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -66,13 +67,13 @@ public final class TransactionManager {
    private static final HashMap<Integer, List<TransactionRecord>> commitArtifactIdMap =
       new HashMap<Integer, List<TransactionRecord>>();
 
-   private static TransactionMonitor txMonitor = new TransactionMonitor();
+   private static final TxMonitorImpl<Branch> txMonitor = new TxMonitorImpl<Branch>(new TxMonitorCache<Branch>());
 
    public static SkynetTransaction createTransaction(IOseeBranch branch, String comment) throws OseeCoreException {
       Branch actualBranch = BranchManager.getBranch(branch);
-      SkynetTransaction transaction = new SkynetTransaction(txMonitor, actualBranch, comment);
-      txMonitor.reportTxCreation(transaction, branch, comment);
-      return transaction;
+      SkynetTransaction tx = new SkynetTransaction(txMonitor, actualBranch, GUID.create(), comment);
+      txMonitor.createTx(actualBranch, tx);
+      return tx;
    }
 
    public static List<TransactionRecord> getTransaction(String comment) throws OseeCoreException {

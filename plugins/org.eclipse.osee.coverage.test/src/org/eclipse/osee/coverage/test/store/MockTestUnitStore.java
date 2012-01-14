@@ -13,7 +13,6 @@ package org.eclipse.osee.coverage.test.store;
 import org.eclipse.osee.coverage.store.ITestUnitStore;
 import org.eclipse.osee.coverage.store.TestUnitCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author John Misinco
@@ -28,7 +27,7 @@ public class MockTestUnitStore implements ITestUnitStore {
 
    @SuppressWarnings("unused")
    @Override
-   public void store(TestUnitCache cache, SkynetTransaction transaction) throws OseeCoreException {
+   public void store(TestUnitCache cache) throws OseeCoreException {
       // do nothing
    }
 

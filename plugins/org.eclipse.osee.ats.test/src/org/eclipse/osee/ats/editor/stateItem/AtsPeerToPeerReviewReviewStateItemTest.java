@@ -48,7 +48,8 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
 
       if (peerRevArt == null) {
          // setup fake review artifact with decision options set
-         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
+         SkynetTransaction transaction =
+            TransactionManager.createTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
          peerRevArt = PeerToPeerReviewManager.createNewPeerToPeerReview(null, getClass().getName(), "", transaction);
          peerRevArt.setName(getClass().getSimpleName());
          peerRevArt.persist(transaction);

@@ -12,8 +12,6 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import java.util.List;
-
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -23,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

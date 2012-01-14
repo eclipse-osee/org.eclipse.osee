@@ -82,14 +82,16 @@ public class ArtifactTestUnitStoreTest {
 
    @Test
    public void testStore() throws OseeCoreException {
-      SkynetTransaction transaction = TransactionManager.createTransaction(testBranch, getClass().getSimpleName());
+
       ArtifactTestUnitStore store = new ArtifactTestUnitStore(testBranch);
       TestUnitCache tc = new TestUnitCache(store);
       CoverageItem ci = createCoverageItem(tc);
       ci.addTestUnitName("test1");
       ci.addTestUnitName("test10");
 
-      store.store(tc, transaction);
+      store.store(tc);
+
+      SkynetTransaction transaction = TransactionManager.createTransaction(testBranch, getClass().getSimpleName());
       Artifact testArtifact =
          ArtifactQuery.getOrCreate(ArtifactTestUnitStore.COVERAGE_GUID, null, CoreArtifactTypes.GeneralData, testBranch);
       String actual = testArtifact.getSoleAttributeValueAsString(CoreAttributeTypes.GeneralStringData, "");

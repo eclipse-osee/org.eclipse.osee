@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author John Misinco
@@ -57,8 +58,10 @@ public class ArtifactTestUnitStore implements ITestUnitStore {
    }
 
    @Override
-   public void store(TestUnitCache cache, SkynetTransaction transaction) throws OseeCoreException {
+   public void store(TestUnitCache cache) throws OseeCoreException {
       Artifact artifact = getCoverageTestUnitArtifact();
+
+      SkynetTransaction transaction = TransactionManager.createTransaction(branch, "Store CoverageTestUnitArtifact");
 
       Set<Entry<Integer, String>> entries = cache.getAllCachedTestUnitEntries();
       List<Entry<Integer, String>> entriesList = new ArrayList<Entry<Integer, String>>(entries);
@@ -73,6 +76,7 @@ public class ArtifactTestUnitStore implements ITestUnitStore {
       String storage = asStorage(entriesList);
       artifact.setSoleAttributeFromString(CoreAttributeTypes.GeneralStringData, storage);
       artifact.persist(transaction);
+      transaction.execute();
    }
 
    protected String asStorage(List<Entry<Integer, String>> entries) {

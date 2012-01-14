@@ -8,21 +8,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.traceability;
+package org.eclipse.osee.framework.skynet.core.transaction;
 
-import java.nio.CharBuffer;
-import org.eclipse.osee.define.utility.IResourceLocator;
-import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+   TxMonitorCacheTest.class,
+   TxMonitorImplTest.class,
+   TransactionManagerTest.class,
+   SkynetTransactionTest.class})
 /**
  * @author Roberto E. Escobar
  */
-public interface ITraceUnitResourceLocator extends IResourceLocator {
-
-   public String UNIT_TYPE_UNKNOWN = "Unknown";
-
-   public IArtifactType getTraceUnitType(String name, CharBuffer fileBuffer) throws OseeCoreException;
-
-
+public class TransactionTestSuite {
+   // Test Suite
 }

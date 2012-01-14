@@ -52,7 +52,8 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
       assertFalse("Test should not be run in production db", AtsUtil.isProductionDb());
 
       if (teamArt == null) {
-         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
+         SkynetTransaction transaction =
+            TransactionManager.createTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
          teamArt = DemoTestUtil.createSimpleAction(getClass().getSimpleName(), transaction);
          transaction.execute();
       }
@@ -99,7 +100,8 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
 
       // make call to state item that should set options based on artifact's attribute value
       AtsForceAssigneesToTeamLeadsStateItem stateItem = new AtsForceAssigneesToTeamLeadsStateItem();
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
       stateItem.transitioned(teamArt, fromState, toState, Arrays.asList((IBasicUser) UserManager.getUser()),
          transaction);
       transaction.execute();

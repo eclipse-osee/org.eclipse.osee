@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import com.google.common.collect.HashBiMap;
 
 /**
@@ -42,8 +41,9 @@ public class TestUnitCache implements ITestUnitProvider {
    private final HashBiMap<Integer, String> idToNameCache;
 
    private final ITestUnitStore testUnitStore;
-   private boolean ensurePopulatedRanOnce;
-   private boolean cacheIsDirty;
+
+   private volatile boolean ensurePopulatedRanOnce;
+   private volatile boolean cacheIsDirty;
 
    public TestUnitCache(ITestUnitStore testUnitStore) {
       super();
@@ -70,7 +70,7 @@ public class TestUnitCache implements ITestUnitProvider {
       put(key, testUnitName);
    }
 
-   public void put(Integer key, String testUnitName) throws OseeCoreException {
+   public synchronized void put(Integer key, String testUnitName) throws OseeCoreException {
       ensurePopulated();
       if (idToNameCache.containsKey(key) && !idToNameCache.get(key).equalsIgnoreCase(testUnitName)) {
          throw new OseeArgumentException("TestUnit key: [%s] has already been used", key);
@@ -194,10 +194,10 @@ public class TestUnitCache implements ITestUnitProvider {
    }
 
    @Override
-   public void save(SkynetTransaction transaction) throws OseeCoreException {
+   public synchronized void save() throws OseeCoreException {
       ensurePopulated();
       if (cacheIsDirty) {
-         testUnitStore.store(this, transaction);
+         testUnitStore.store(this);
          cacheIsDirty = false;
       }
    }

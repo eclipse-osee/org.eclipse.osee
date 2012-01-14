@@ -187,7 +187,7 @@ public class SMAOperationsSection extends SectionPart {
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       new XButtonViaAction(new RefreshDirtyAction(editor)).createWidgets(sectionBody, 2);
-      new XButtonViaAction(new DeletePurgeAtsArtifactsAction(editor)).createWidgets(sectionBody, 2);
+      new XButtonViaAction(new DeletePurgeAtsArtifactsAction(editor, false)).createWidgets(sectionBody, 2);
       if (ShowBranchChangeDataAction.isApplicable(editor.getAwa())) {
          new XButtonViaAction(new ShowBranchChangeDataAction(editor.getAwa())).createWidgets(sectionBody, 2);
       }

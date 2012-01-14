@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2011 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,21 +8,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.traceability;
+package org.eclipse.osee.framework.skynet.core.transaction;
 
-import java.nio.CharBuffer;
-import org.eclipse.osee.define.utility.IResourceLocator;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.transaction.TxMonitorImpl.MonitoredTx;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface ITraceUnitResourceLocator extends IResourceLocator {
+public interface TxMonitor<K> {
 
-   public String UNIT_TYPE_UNKNOWN = "Unknown";
+   void checkForComodification(K key, MonitoredTx tx, Object object) throws OseeCoreException;
 
-   public IArtifactType getTraceUnitType(String name, CharBuffer fileBuffer) throws OseeCoreException;
+   void createTx(K key, MonitoredTx tx) throws OseeCoreException;
 
+   void beginTx(K key, MonitoredTx tx) throws OseeCoreException;
+
+   void endTx(K key, MonitoredTx tx) throws OseeCoreException;
+
+   void rollbackTx(K key, MonitoredTx tx) throws OseeCoreException;
 
 }

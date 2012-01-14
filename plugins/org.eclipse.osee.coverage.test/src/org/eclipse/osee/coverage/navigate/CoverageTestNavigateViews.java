@@ -24,7 +24,6 @@ import org.eclipse.osee.coverage.import08.CoveragePackage1Import8;
 import org.eclipse.osee.coverage.import09.CoveragePackage1Import9;
 import org.eclipse.osee.coverage.import10.CoveragePackage1Import10;
 import org.eclipse.osee.coverage.import10.CoveragePackage1Import10a;
-import org.eclipse.osee.coverage.navigate.ICoverageNavigateItem;
 import org.eclipse.osee.coverage.package1.CoveragePackage1;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;

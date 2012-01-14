@@ -96,7 +96,8 @@ public class CategoryColumnTest {
       Assert.assertTrue(actionArtStr.contains("that"));
       Assert.assertTrue(actionArtStr.contains("the other"));
 
-      transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), CategoryColumnTest.class.getSimpleName());
+      transaction =
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), CategoryColumnTest.class.getSimpleName());
       codeArt.deleteAttributes(AtsAttributeTypes.Category1);
       codeArt.persist(transaction);
       reqArt.deleteSoleAttribute(AtsAttributeTypes.Category1);

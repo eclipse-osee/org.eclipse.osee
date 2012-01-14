@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.model;
 
-import org.eclipse.osee.coverage.model.CoverageOption;
-import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageOptionManager.EnabledOption;
-import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.junit.Assert;
 import org.junit.Test;

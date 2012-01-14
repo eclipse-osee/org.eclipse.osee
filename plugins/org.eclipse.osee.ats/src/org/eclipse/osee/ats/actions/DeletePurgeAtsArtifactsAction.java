@@ -25,17 +25,19 @@ public class DeletePurgeAtsArtifactsAction extends AbstractAtsAction {
    private static final String MSG = "Delete/Purge Ats Artifact(s)";
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
    private boolean prompt = true;
+   private final boolean executeInCurrentThread;
 
-   public DeletePurgeAtsArtifactsAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
+   public DeletePurgeAtsArtifactsAction(ISelectedAtsArtifacts selectedAtsArtifacts, boolean executeInCurrentThread) {
       super(MSG, ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_EDITOR));
       this.selectedAtsArtifacts = selectedAtsArtifacts;
       setToolTipText(getText());
+      this.executeInCurrentThread = executeInCurrentThread;
    }
 
    @Override
    public void runWithException() throws OseeCoreException {
-      AtsDeleteManager.handleDeletePurgeAtsObject(selectedAtsArtifacts.getSelectedSMAArtifacts(), false,
-         (prompt ? DeleteOption.Prompt : null));
+      AtsDeleteManager.handleDeletePurgeAtsObject(selectedAtsArtifacts.getSelectedSMAArtifacts(),
+         executeInCurrentThread, (prompt ? DeleteOption.Prompt : null));
    }
 
    public void setPrompt(boolean prompt) {
