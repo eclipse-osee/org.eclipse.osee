@@ -24,7 +24,7 @@ public interface ITransitionHelper {
 
    public String getName();
 
-   public boolean isPriviledgedEditEnabled();
+   public boolean isPrivilegedEditEnabled();
 
    public boolean isOverrideTransitionValidityCheck();
 

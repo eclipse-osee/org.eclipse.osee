@@ -131,8 +131,8 @@
           </elements>
         </elements>
         <elements xsi:type="xtext:Group" cardinality="*">
-          <elements xsi:type="xtext:Keyword" value="priviledged"/>
-          <elements xsi:type="xtext:Assignment" feature="priviledged" operator="+=">
+          <elements xsi:type="xtext:Keyword" value="privileged"/>
+          <elements xsi:type="xtext:Assignment" feature="privileged" operator="+=">
             <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.21"/>
           </elements>
         </elements>
@@ -980,9 +980,9 @@
         <elements xsi:type="xtext:Keyword" value="AllowTransitionWithWorkingBranch"/>
         <elements xsi:type="xtext:Keyword" value="ForceAssigneesToTeamLeads"/>
         <elements xsi:type="xtext:Keyword" value="RequireTargetedVersion"/>
-        <elements xsi:type="xtext:Keyword" value="AllowPriviledgedEditToTeamMember"/>
-        <elements xsi:type="xtext:Keyword" value="AllowPriviledgedEditToTeamMemberAndOriginator"/>
-        <elements xsi:type="xtext:Keyword" value="AllowPriviledgedEditToAll"/>
+        <elements xsi:type="xtext:Keyword" value="AllowPrivilegedEditToTeamMember"/>
+        <elements xsi:type="xtext:Keyword" value="AllowPrivilegedEditToTeamMemberAndOriginator"/>
+        <elements xsi:type="xtext:Keyword" value="AllowPrivilegedEditToAll"/>
         <elements xsi:type="xtext:Keyword" value="AllowEditToAll"/>
         <elements xsi:type="xtext:Keyword" value="AllowAssigneeToAll"/>
         <elements xsi:type="xtext:Keyword" value="AllowTransitionWithoutTaskCompletion"/>

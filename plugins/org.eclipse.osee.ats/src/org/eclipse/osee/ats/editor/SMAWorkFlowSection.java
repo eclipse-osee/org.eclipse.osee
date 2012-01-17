@@ -82,8 +82,8 @@ public class SMAWorkFlowSection extends SectionPart {
       this.editor = editor;
 
       isEditable =
-         WorkflowManagerCore.isEditable(sma, page.getStateDefinition(), editor.isPriviledgedEditModeEnabled());
-      isGlobalEditable = !sma.isReadOnly() && sma.isAccessControlWrite() && editor.isPriviledgedEditModeEnabled();
+         WorkflowManagerCore.isEditable(sma, page.getStateDefinition(), editor.isPrivilegedEditModeEnabled());
+      isGlobalEditable = !sma.isReadOnly() && sma.isAccessControlWrite() && editor.isPrivilegedEditModeEnabled();
       isCurrentState = sma.isInState(page);
       // parent.setBackground(Displays.getSystemColor(SWT.COLOR_CYAN));
    }
@@ -240,7 +240,7 @@ public class SMAWorkFlowSection extends SectionPart {
       xWidget.createWidgets(parent, 1);
       allXWidgets.add(xWidget);
 
-      if (editor.isPriviledgedEditModeEnabled()) {
+      if (editor.isPrivilegedEditModeEnabled()) {
          xWidget = new XCancellationReasonTextWidget(sma);
          xWidget.addXModifiedListener(xModListener);
       } else {

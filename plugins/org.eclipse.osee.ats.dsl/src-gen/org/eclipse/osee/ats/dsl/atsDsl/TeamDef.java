@@ -25,7 +25,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getStaticId <em>Static Id</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getLead <em>Lead</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getMember <em>Member</em>}</li>
- *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getPriviledged <em>Priviledged</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getPrivileged <em>Privileged</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getWorkDefinition <em>Work Definition</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getRelatedTaskWorkDefinition <em>Related Task Work Definition</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getAccessContextId <em>Access Context Id</em>}</li>
@@ -189,20 +189,20 @@ public interface TeamDef extends EObject
   EList<UserRef> getMember();
 
   /**
-   * Returns the value of the '<em><b>Priviledged</b></em>' containment reference list.
+   * Returns the value of the '<em><b>Privileged</b></em>' containment reference list.
    * The list contents are of type {@link org.eclipse.osee.ats.dsl.atsDsl.UserRef}.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Priviledged</em>' containment reference list isn't clear,
+   * If the meaning of the '<em>Privileged</em>' containment reference list isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Priviledged</em>' containment reference list.
-   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getTeamDef_Priviledged()
+   * @return the value of the '<em>Privileged</em>' containment reference list.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getTeamDef_Privileged()
    * @model containment="true"
    * @generated
    */
-  EList<UserRef> getPriviledged();
+  EList<UserRef> getPrivileged();
 
   /**
    * Returns the value of the '<em><b>Work Definition</b></em>' attribute.

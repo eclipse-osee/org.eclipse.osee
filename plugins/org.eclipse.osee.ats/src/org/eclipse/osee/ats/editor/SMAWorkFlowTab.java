@@ -423,15 +423,15 @@ public class SMAWorkFlowTab extends FormPage {
       }
 
       // Create Privileged Edit label
-      if (editor.isPriviledgedEditModeEnabled()) {
-         Label label = toolkit.createLabel(comp, "(Priviledged Edit Enabled)");
+      if (editor.isPrivilegedEditModeEnabled()) {
+         Label label = toolkit.createLabel(comp, "(Privileged Edit Enabled)");
          label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-         label.setToolTipText("Priviledged Edit Mode is Enabled.  Editing any field in any state is authorized.  Select icon to disable");
+         label.setToolTipText("Privileged Edit Mode is Enabled.  Editing any field in any state is authorized.  Select icon to disable");
       }
 
       // Current Assignees
       if (isCurrentNonCompleteCanceledState) {
-         boolean editable = WorkflowManager.isAssigneeEditable(awa, editor.isPriviledgedEditModeEnabled());
+         boolean editable = WorkflowManager.isAssigneeEditable(awa, editor.isPrivilegedEditModeEnabled());
 
          new SMAAssigneesHeader(comp, SWT.NONE, awa, editable, editor);
       }

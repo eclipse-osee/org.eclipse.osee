@@ -27,7 +27,7 @@ public class AtsDslFormatter extends AbstractDeclarativeFormatter implements IIn
       "baslineBranchGuid",
       "workDefinition",
       "teamDefinition",
-      "priviledged",
+      "privileged",
       "userDefinition",
       "actionableItem",
       "allowCreateBranch",

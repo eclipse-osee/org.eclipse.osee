@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 public abstract class TransitionHelperAdapter implements ITransitionHelper {
 
    @Override
-   public boolean isPriviledgedEditEnabled() {
+   public boolean isPrivilegedEditEnabled() {
       return false;
    }
 

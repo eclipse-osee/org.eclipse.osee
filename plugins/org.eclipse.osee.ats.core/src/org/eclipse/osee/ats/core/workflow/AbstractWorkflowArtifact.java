@@ -751,13 +751,13 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return this instanceof AbstractReviewArtifact;
    }
 
-   protected void addPriviledgedUsersUpTeamDefinitionTree(TeamDefinitionArtifact tda, Set<IBasicUser> users) throws OseeCoreException {
+   protected void addPrivilegedUsersUpTeamDefinitionTree(TeamDefinitionArtifact tda, Set<IBasicUser> users) throws OseeCoreException {
       users.addAll(tda.getLeads());
       users.addAll(tda.getPrivilegedMembers());
 
       // Walk up tree to get other editors
       if (tda.getParent() != null && tda.getParent() instanceof TeamDefinitionArtifact) {
-         addPriviledgedUsersUpTeamDefinitionTree((TeamDefinitionArtifact) tda.getParent(), users);
+         addPrivilegedUsersUpTeamDefinitionTree((TeamDefinitionArtifact) tda.getParent(), users);
       }
    }
 

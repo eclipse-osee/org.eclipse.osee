@@ -263,13 +263,13 @@ public interface AtsDslPackage extends EPackage
   int TEAM_DEF__MEMBER = 6;
 
   /**
-   * The feature id for the '<em><b>Priviledged</b></em>' containment reference list.
+   * The feature id for the '<em><b>Privileged</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TEAM_DEF__PRIVILEDGED = 7;
+  int TEAM_DEF__PRIVILEGED = 7;
 
   /**
    * The feature id for the '<em><b>Work Definition</b></em>' attribute.
@@ -1712,15 +1712,15 @@ public interface AtsDslPackage extends EPackage
   EReference getTeamDef_Member();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getPriviledged <em>Priviledged</em>}'.
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getPrivileged <em>Privileged</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Priviledged</em>'.
-   * @see org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getPriviledged()
+   * @return the meta object for the containment reference list '<em>Privileged</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getPrivileged()
    * @see #getTeamDef()
    * @generated
    */
-  EReference getTeamDef_Priviledged();
+  EReference getTeamDef_Privileged();
 
   /**
    * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getWorkDefinition <em>Work Definition</em>}'.
@@ -3097,12 +3097,12 @@ public interface AtsDslPackage extends EPackage
     EReference TEAM_DEF__MEMBER = eINSTANCE.getTeamDef_Member();
 
     /**
-     * The meta object literal for the '<em><b>Priviledged</b></em>' containment reference list feature.
+     * The meta object literal for the '<em><b>Privileged</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference TEAM_DEF__PRIVILEDGED = eINSTANCE.getTeamDef_Priviledged();
+    EReference TEAM_DEF__PRIVILEGED = eINSTANCE.getTeamDef_Privileged();
 
     /**
      * The meta object literal for the '<em><b>Work Definition</b></em>' attribute feature.

@@ -128,7 +128,7 @@ public class ConvertAIsAndTeamsToAtsDsl {
          dslTeamDef.getMember().add(getUserByName(user));
       }
       for (User user : teamDef.getPrivilegedMembers()) {
-         dslTeamDef.getPriviledged().add(getUserByName(user));
+         dslTeamDef.getPrivileged().add(getUserByName(user));
       }
       for (Artifact verArt : teamDef.getVersionsArtifacts()) {
          convertVersionArtifact(dslTeamDef, verArt, teamDef);

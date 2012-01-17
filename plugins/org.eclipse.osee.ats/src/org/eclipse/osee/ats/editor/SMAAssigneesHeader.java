@@ -67,7 +67,7 @@ public class SMAAssigneesHeader extends Composite {
                         UserManager.getUser())) {
                         AWorkbench.popup(
                            "ERROR",
-                           "You must be assigned to modify assignees.\nContact current Assignee or Select Priviledged Edit for Authorized Overriders.");
+                           "You must be assigned to modify assignees.\nContact current Assignee or Select Privileged Edit for Authorized Overriders.");
                         return;
                      }
                      if (AssigneeColumn.promptChangeAssignees(sma, false)) {

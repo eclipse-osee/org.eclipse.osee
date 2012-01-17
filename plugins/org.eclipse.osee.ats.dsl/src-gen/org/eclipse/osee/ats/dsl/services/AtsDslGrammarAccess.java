@@ -254,9 +254,9 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Assignment cMemberAssignment_7_1 = (Assignment)cGroup_7.eContents().get(1);
 		private final RuleCall cMemberUserRefParserRuleCall_7_1_0 = (RuleCall)cMemberAssignment_7_1.eContents().get(0);
 		private final Group cGroup_8 = (Group)cGroup.eContents().get(8);
-		private final Keyword cPriviledgedKeyword_8_0 = (Keyword)cGroup_8.eContents().get(0);
-		private final Assignment cPriviledgedAssignment_8_1 = (Assignment)cGroup_8.eContents().get(1);
-		private final RuleCall cPriviledgedUserRefParserRuleCall_8_1_0 = (RuleCall)cPriviledgedAssignment_8_1.eContents().get(0);
+		private final Keyword cPrivilegedKeyword_8_0 = (Keyword)cGroup_8.eContents().get(0);
+		private final Assignment cPrivilegedAssignment_8_1 = (Assignment)cGroup_8.eContents().get(1);
+		private final RuleCall cPrivilegedUserRefParserRuleCall_8_1_0 = (RuleCall)cPrivilegedAssignment_8_1.eContents().get(0);
 		private final Group cGroup_9 = (Group)cGroup.eContents().get(9);
 		private final Keyword cWorkDefinitionKeyword_9_0 = (Keyword)cGroup_9.eContents().get(0);
 		private final Assignment cWorkDefinitionAssignment_9_1 = (Assignment)cGroup_9.eContents().get(1);
@@ -286,14 +286,14 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		//TeamDef:
 		//	name=TEAM_DEF_REFERENCE teamDefOption+=TeamDefOption* "{" ("active" active=BooleanDef)? ("usesVersions"
 		//	usesVersions=BooleanDef)? ("staticId" staticId+=STRING)* ("lead" lead+=UserRef)* ("member" member+=UserRef)*
-		//	("priviledged" priviledged+=UserRef)* ("workDefinition" workDefinition=STRING)? ("relatedTaskWorkDefinition"
+		//	("privileged" privileged+=UserRef)* ("workDefinition" workDefinition=STRING)? ("relatedTaskWorkDefinition"
 		//	relatedTaskWorkDefinition=STRING)? ("accessContextId" accessContextId+=STRING)* ("version" version+=VersionDef)*
 		//	("children" "{" ("teamDefinition" children+=TeamDef)+ "}")? "}";
 		public ParserRule getRule() { return rule; }
 
 		//name=TEAM_DEF_REFERENCE teamDefOption+=TeamDefOption* "{" ("active" active=BooleanDef)? ("usesVersions"
 		//usesVersions=BooleanDef)? ("staticId" staticId+=STRING)* ("lead" lead+=UserRef)* ("member" member+=UserRef)*
-		//("priviledged" priviledged+=UserRef)* ("workDefinition" workDefinition=STRING)? ("relatedTaskWorkDefinition"
+		//("privileged" privileged+=UserRef)* ("workDefinition" workDefinition=STRING)? ("relatedTaskWorkDefinition"
 		//relatedTaskWorkDefinition=STRING)? ("accessContextId" accessContextId+=STRING)* ("version" version+=VersionDef)*
 		//("children" "{" ("teamDefinition" children+=TeamDef)+ "}")? "}"
 		public Group getGroup() { return cGroup; }
@@ -373,17 +373,17 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		//UserRef
 		public RuleCall getMemberUserRefParserRuleCall_7_1_0() { return cMemberUserRefParserRuleCall_7_1_0; }
 
-		//("priviledged" priviledged+=UserRef)*
+		//("privileged" privileged+=UserRef)*
 		public Group getGroup_8() { return cGroup_8; }
 
-		//"priviledged"
-		public Keyword getPriviledgedKeyword_8_0() { return cPriviledgedKeyword_8_0; }
+		//"privileged"
+		public Keyword getPrivilegedKeyword_8_0() { return cPrivilegedKeyword_8_0; }
 
-		//priviledged+=UserRef
-		public Assignment getPriviledgedAssignment_8_1() { return cPriviledgedAssignment_8_1; }
+		//privileged+=UserRef
+		public Assignment getPrivilegedAssignment_8_1() { return cPrivilegedAssignment_8_1; }
 
 		//UserRef
-		public RuleCall getPriviledgedUserRefParserRuleCall_8_1_0() { return cPriviledgedUserRefParserRuleCall_8_1_0; }
+		public RuleCall getPrivilegedUserRefParserRuleCall_8_1_0() { return cPrivilegedUserRefParserRuleCall_8_1_0; }
 
 		//("workDefinition" workDefinition=STRING)?
 		public Group getGroup_9() { return cGroup_9; }
@@ -2267,9 +2267,9 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cAllowTransitionWithWorkingBranchKeyword_3 = (Keyword)cAlternatives.eContents().get(3);
 		private final Keyword cForceAssigneesToTeamLeadsKeyword_4 = (Keyword)cAlternatives.eContents().get(4);
 		private final Keyword cRequireTargetedVersionKeyword_5 = (Keyword)cAlternatives.eContents().get(5);
-		private final Keyword cAllowPriviledgedEditToTeamMemberKeyword_6 = (Keyword)cAlternatives.eContents().get(6);
-		private final Keyword cAllowPriviledgedEditToTeamMemberAndOriginatorKeyword_7 = (Keyword)cAlternatives.eContents().get(7);
-		private final Keyword cAllowPriviledgedEditToAllKeyword_8 = (Keyword)cAlternatives.eContents().get(8);
+		private final Keyword cAllowPrivilegedEditToTeamMemberKeyword_6 = (Keyword)cAlternatives.eContents().get(6);
+		private final Keyword cAllowPrivilegedEditToTeamMemberAndOriginatorKeyword_7 = (Keyword)cAlternatives.eContents().get(7);
+		private final Keyword cAllowPrivilegedEditToAllKeyword_8 = (Keyword)cAlternatives.eContents().get(8);
 		private final Keyword cAllowEditToAllKeyword_9 = (Keyword)cAlternatives.eContents().get(9);
 		private final Keyword cAllowAssigneeToAllKeyword_10 = (Keyword)cAlternatives.eContents().get(10);
 		private final Keyword cAllowTransitionWithoutTaskCompletionKeyword_11 = (Keyword)cAlternatives.eContents().get(11);
@@ -2280,13 +2280,13 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		//Rule:
 		//	"RequireStateHourSpentPrompt" | "AddDecisionValidateBlockingReview" | "AddDecisionValidateNonBlockingReview" |
 		//	"AllowTransitionWithWorkingBranch" | "ForceAssigneesToTeamLeads" | "RequireTargetedVersion" |
-		//	"AllowPriviledgedEditToTeamMember" | "AllowPriviledgedEditToTeamMemberAndOriginator" | "AllowPriviledgedEditToAll" |
+		//	"AllowPrivilegedEditToTeamMember" | "AllowPrivilegedEditToTeamMemberAndOriginator" | "AllowPrivilegedEditToAll" |
 		//	"AllowEditToAll" | "AllowAssigneeToAll" | "AllowTransitionWithoutTaskCompletion" | RULE_NAME;
 		public ParserRule getRule() { return rule; }
 
 		//"RequireStateHourSpentPrompt" | "AddDecisionValidateBlockingReview" | "AddDecisionValidateNonBlockingReview" |
 		//"AllowTransitionWithWorkingBranch" | "ForceAssigneesToTeamLeads" | "RequireTargetedVersion" |
-		//"AllowPriviledgedEditToTeamMember" | "AllowPriviledgedEditToTeamMemberAndOriginator" | "AllowPriviledgedEditToAll" |
+		//"AllowPrivilegedEditToTeamMember" | "AllowPrivilegedEditToTeamMemberAndOriginator" | "AllowPrivilegedEditToAll" |
 		//"AllowEditToAll" | "AllowAssigneeToAll" | "AllowTransitionWithoutTaskCompletion" | RULE_NAME
 		public Alternatives getAlternatives() { return cAlternatives; }
 
@@ -2308,14 +2308,14 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		//"RequireTargetedVersion"
 		public Keyword getRequireTargetedVersionKeyword_5() { return cRequireTargetedVersionKeyword_5; }
 
-		//"AllowPriviledgedEditToTeamMember"
-		public Keyword getAllowPriviledgedEditToTeamMemberKeyword_6() { return cAllowPriviledgedEditToTeamMemberKeyword_6; }
+		//"AllowPrivilegedEditToTeamMember"
+		public Keyword getAllowPrivilegedEditToTeamMemberKeyword_6() { return cAllowPrivilegedEditToTeamMemberKeyword_6; }
 
-		//"AllowPriviledgedEditToTeamMemberAndOriginator"
-		public Keyword getAllowPriviledgedEditToTeamMemberAndOriginatorKeyword_7() { return cAllowPriviledgedEditToTeamMemberAndOriginatorKeyword_7; }
+		//"AllowPrivilegedEditToTeamMemberAndOriginator"
+		public Keyword getAllowPrivilegedEditToTeamMemberAndOriginatorKeyword_7() { return cAllowPrivilegedEditToTeamMemberAndOriginatorKeyword_7; }
 
-		//"AllowPriviledgedEditToAll"
-		public Keyword getAllowPriviledgedEditToAllKeyword_8() { return cAllowPriviledgedEditToAllKeyword_8; }
+		//"AllowPrivilegedEditToAll"
+		public Keyword getAllowPrivilegedEditToAllKeyword_8() { return cAllowPrivilegedEditToAllKeyword_8; }
 
 		//"AllowEditToAll"
 		public Keyword getAllowEditToAllKeyword_9() { return cAllowEditToAllKeyword_9; }
@@ -2852,7 +2852,7 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 	//TeamDef:
 	//	name=TEAM_DEF_REFERENCE teamDefOption+=TeamDefOption* "{" ("active" active=BooleanDef)? ("usesVersions"
 	//	usesVersions=BooleanDef)? ("staticId" staticId+=STRING)* ("lead" lead+=UserRef)* ("member" member+=UserRef)*
-	//	("priviledged" priviledged+=UserRef)* ("workDefinition" workDefinition=STRING)? ("relatedTaskWorkDefinition"
+	//	("privileged" privileged+=UserRef)* ("workDefinition" workDefinition=STRING)? ("relatedTaskWorkDefinition"
 	//	relatedTaskWorkDefinition=STRING)? ("accessContextId" accessContextId+=STRING)* ("version" version+=VersionDef)*
 	//	("children" "{" ("teamDefinition" children+=TeamDef)+ "}")? "}";
 	public TeamDefElements getTeamDefAccess() {
@@ -3334,7 +3334,7 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 	//Rule:
 	//	"RequireStateHourSpentPrompt" | "AddDecisionValidateBlockingReview" | "AddDecisionValidateNonBlockingReview" |
 	//	"AllowTransitionWithWorkingBranch" | "ForceAssigneesToTeamLeads" | "RequireTargetedVersion" |
-	//	"AllowPriviledgedEditToTeamMember" | "AllowPriviledgedEditToTeamMemberAndOriginator" | "AllowPriviledgedEditToAll" |
+	//	"AllowPrivilegedEditToTeamMember" | "AllowPrivilegedEditToTeamMemberAndOriginator" | "AllowPrivilegedEditToAll" |
 	//	"AllowEditToAll" | "AllowAssigneeToAll" | "AllowTransitionWithoutTaskCompletion" | RULE_NAME;
 	public RuleElements getRuleAccess() {
 		return (pRule != null) ? pRule : (pRule = new RuleElements());

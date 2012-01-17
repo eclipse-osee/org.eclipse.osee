@@ -517,7 +517,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getTeamDef_Priviledged()
+  public EReference getTeamDef_Privileged()
   {
     return (EReference)teamDefEClass.getEStructuralFeatures().get(7);
   }
@@ -1674,7 +1674,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     createEAttribute(teamDefEClass, TEAM_DEF__STATIC_ID);
     createEReference(teamDefEClass, TEAM_DEF__LEAD);
     createEReference(teamDefEClass, TEAM_DEF__MEMBER);
-    createEReference(teamDefEClass, TEAM_DEF__PRIVILEDGED);
+    createEReference(teamDefEClass, TEAM_DEF__PRIVILEGED);
     createEAttribute(teamDefEClass, TEAM_DEF__WORK_DEFINITION);
     createEAttribute(teamDefEClass, TEAM_DEF__RELATED_TASK_WORK_DEFINITION);
     createEAttribute(teamDefEClass, TEAM_DEF__ACCESS_CONTEXT_ID);
@@ -1871,7 +1871,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     initEAttribute(getTeamDef_StaticId(), ecorePackage.getEString(), "staticId", null, 0, -1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getTeamDef_Lead(), this.getUserRef(), null, "lead", null, 0, -1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getTeamDef_Member(), this.getUserRef(), null, "member", null, 0, -1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getTeamDef_Priviledged(), this.getUserRef(), null, "priviledged", null, 0, -1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getTeamDef_Privileged(), this.getUserRef(), null, "privileged", null, 0, -1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTeamDef_WorkDefinition(), ecorePackage.getEString(), "workDefinition", null, 0, 1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTeamDef_RelatedTaskWorkDefinition(), ecorePackage.getEString(), "relatedTaskWorkDefinition", null, 0, 1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTeamDef_AccessContextId(), ecorePackage.getEString(), "accessContextId", null, 0, -1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

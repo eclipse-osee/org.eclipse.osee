@@ -154,7 +154,7 @@ public class AtsDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getTeamDefAccess().getStaticIdAssignment_5_1(), "rule__TeamDef__StaticIdAssignment_5_1");
 					put(grammarAccess.getTeamDefAccess().getLeadAssignment_6_1(), "rule__TeamDef__LeadAssignment_6_1");
 					put(grammarAccess.getTeamDefAccess().getMemberAssignment_7_1(), "rule__TeamDef__MemberAssignment_7_1");
-					put(grammarAccess.getTeamDefAccess().getPriviledgedAssignment_8_1(), "rule__TeamDef__PriviledgedAssignment_8_1");
+					put(grammarAccess.getTeamDefAccess().getPrivilegedAssignment_8_1(), "rule__TeamDef__PrivilegedAssignment_8_1");
 					put(grammarAccess.getTeamDefAccess().getWorkDefinitionAssignment_9_1(), "rule__TeamDef__WorkDefinitionAssignment_9_1");
 					put(grammarAccess.getTeamDefAccess().getRelatedTaskWorkDefinitionAssignment_10_1(), "rule__TeamDef__RelatedTaskWorkDefinitionAssignment_10_1");
 					put(grammarAccess.getTeamDefAccess().getAccessContextIdAssignment_11_1(), "rule__TeamDef__AccessContextIdAssignment_11_1");

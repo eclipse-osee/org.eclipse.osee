@@ -94,7 +94,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
    private SMAWorkFlowTab workFlowTab;
    int attributesPageIndex;
    private AttributesComposite attributesComposite;
-   private boolean priviledgedEditModeEnabled = false;
+   private boolean privilegedEditModeEnabled = false;
    private Action printAction;
    private TaskTabXWidgetActionPage taskTabXWidgetActionPage;
    private final List<ISMAEditorListener> editorListeners = new ArrayList<ISMAEditorListener>();
@@ -135,7 +135,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
          SMAEditorBranchEventManager.add(this);
 
          updatePartName();
-         setContentDescription(priviledgedEditModeEnabled ? " PRIVILEGED EDIT MODE ENABLED" : "");
+         setContentDescription(privilegedEditModeEnabled ? " PRIVILEGED EDIT MODE ENABLED" : "");
 
          createWorkflowTab();
          createTaskTab();
@@ -568,15 +568,15 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
       return true;
    }
 
-   public boolean isPriviledgedEditModeEnabled() {
-      return priviledgedEditModeEnabled;
+   public boolean isPrivilegedEditModeEnabled() {
+      return privilegedEditModeEnabled;
    }
 
    /**
-    * @param priviledgedEditMode the priviledgedEditMode to set s
+    * @param privilegedEditMode the privilegedEditMode to set s
     */
-   public void setPriviledgedEditMode(boolean enabled) {
-      this.priviledgedEditModeEnabled = enabled;
+   public void setPrivilegedEditMode(boolean enabled) {
+      this.privilegedEditModeEnabled = enabled;
       doSave(null);
       workFlowTab.refresh();
    }

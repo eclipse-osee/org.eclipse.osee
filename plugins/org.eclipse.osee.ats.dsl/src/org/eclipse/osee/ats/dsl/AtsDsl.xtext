@@ -31,7 +31,7 @@ TeamDef:
 		('staticId' staticId+=STRING)*
 		('lead' lead+=UserRef)*
 		('member' member+=UserRef)*
-		('priviledged' priviledged+=UserRef)*
+		('privileged' privileged+=UserRef)*
 		('workDefinition' workDefinition=STRING)?
 		('relatedTaskWorkDefinition' relatedTaskWorkDefinition=STRING)?
 		('accessContextId' accessContextId+=STRING)*
@@ -269,9 +269,9 @@ Rule:
 	'AllowTransitionWithWorkingBranch' |
 	'ForceAssigneesToTeamLeads' |
 	'RequireTargetedVersion' |
-	'AllowPriviledgedEditToTeamMember' |
-	'AllowPriviledgedEditToTeamMemberAndOriginator' |
-	'AllowPriviledgedEditToAll' |
+	'AllowPrivilegedEditToTeamMember' |
+	'AllowPrivilegedEditToTeamMemberAndOriginator' |
+	'AllowPrivilegedEditToAll' |
 	'AllowEditToAll' |
 	'AllowAssigneeToAll' |
 	'AllowTransitionWithoutTaskCompletion' |

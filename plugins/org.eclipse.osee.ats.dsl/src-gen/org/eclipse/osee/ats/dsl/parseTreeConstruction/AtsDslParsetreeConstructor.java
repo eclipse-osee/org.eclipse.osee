@@ -988,7 +988,7 @@ protected class UserDef_RightCurlyBracketKeyword_2_5 extends KeywordToken  {
  * TeamDef:
  * 	name=TEAM_DEF_REFERENCE teamDefOption+=TeamDefOption* "{" ("active" active=BooleanDef)? ("usesVersions"
  * 	usesVersions=BooleanDef)? ("staticId" staticId+=STRING)* ("lead" lead+=UserRef)* ("member" member+=UserRef)*
- * 	("priviledged" priviledged+=UserRef)* ("workDefinition" workDefinition=STRING)? ("relatedTaskWorkDefinition"
+ * 	("privileged" privileged+=UserRef)* ("workDefinition" workDefinition=STRING)? ("relatedTaskWorkDefinition"
  * 	relatedTaskWorkDefinition=STRING)? ("accessContextId" accessContextId+=STRING)* ("version" version+=VersionDef)*
  * 	("children" "{" ("teamDefinition" children+=TeamDef)+ "}")? "}";
  *
@@ -996,7 +996,7 @@ protected class UserDef_RightCurlyBracketKeyword_2_5 extends KeywordToken  {
 
 // name=TEAM_DEF_REFERENCE teamDefOption+=TeamDefOption* "{" ("active" active=BooleanDef)? ("usesVersions"
 // usesVersions=BooleanDef)? ("staticId" staticId+=STRING)* ("lead" lead+=UserRef)* ("member" member+=UserRef)*
-// ("priviledged" priviledged+=UserRef)* ("workDefinition" workDefinition=STRING)? ("relatedTaskWorkDefinition"
+// ("privileged" privileged+=UserRef)* ("workDefinition" workDefinition=STRING)? ("relatedTaskWorkDefinition"
 // relatedTaskWorkDefinition=STRING)? ("accessContextId" accessContextId+=STRING)* ("version" version+=VersionDef)*
 // ("children" "{" ("teamDefinition" children+=TeamDef)+ "}")? "}"
 protected class TeamDef_Group extends GroupToken {
@@ -1550,7 +1550,7 @@ protected class TeamDef_MemberAssignment_7_1 extends AssignmentToken  {
 }
 
 
-// ("priviledged" priviledged+=UserRef)*
+// ("privileged" privileged+=UserRef)*
 protected class TeamDef_Group_8 extends GroupToken {
 	
 	public TeamDef_Group_8(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -1565,23 +1565,23 @@ protected class TeamDef_Group_8 extends GroupToken {
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new TeamDef_PriviledgedAssignment_8_1(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new TeamDef_PrivilegedAssignment_8_1(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
 
 }
 
-// "priviledged"
-protected class TeamDef_PriviledgedKeyword_8_0 extends KeywordToken  {
+// "privileged"
+protected class TeamDef_PrivilegedKeyword_8_0 extends KeywordToken  {
 	
-	public TeamDef_PriviledgedKeyword_8_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public TeamDef_PrivilegedKeyword_8_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getTeamDefAccess().getPriviledgedKeyword_8_0();
+		return grammarAccess.getTeamDefAccess().getPrivilegedKeyword_8_0();
 	}
 
     @Override
@@ -1600,16 +1600,16 @@ protected class TeamDef_PriviledgedKeyword_8_0 extends KeywordToken  {
 
 }
 
-// priviledged+=UserRef
-protected class TeamDef_PriviledgedAssignment_8_1 extends AssignmentToken  {
+// privileged+=UserRef
+protected class TeamDef_PrivilegedAssignment_8_1 extends AssignmentToken  {
 	
-	public TeamDef_PriviledgedAssignment_8_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public TeamDef_PrivilegedAssignment_8_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Assignment getGrammarElement() {
-		return grammarAccess.getTeamDefAccess().getPriviledgedAssignment_8_1();
+		return grammarAccess.getTeamDefAccess().getPrivilegedAssignment_8_1();
 	}
 
     @Override
@@ -1622,13 +1622,13 @@ protected class TeamDef_PriviledgedAssignment_8_1 extends AssignmentToken  {
 
     @Override	
 	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("priviledged",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("priviledged");
+		if((value = eObjectConsumer.getConsumable("privileged",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("privileged");
 		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
 			IEObjectConsumer param = createEObjectConsumer((EObject)value);
 			if(param.isInstanceOf(grammarAccess.getUserRefRule().getType().getClassifier())) {
 				type = AssignmentType.PARSER_RULE_CALL;
-				element = grammarAccess.getTeamDefAccess().getPriviledgedUserRefParserRuleCall_8_1_0(); 
+				element = grammarAccess.getTeamDefAccess().getPrivilegedUserRefParserRuleCall_8_1_0(); 
 				consumed = obj;
 				return param;
 			}
@@ -1640,7 +1640,7 @@ protected class TeamDef_PriviledgedAssignment_8_1 extends AssignmentToken  {
 	public AbstractToken createFollowerAfterReturn(AbstractToken next,	int actIndex, int index, IEObjectConsumer inst) {
 		if(value == inst.getEObject() && !inst.isConsumed()) return null;
 		switch(index) {
-			case 0: return new TeamDef_PriviledgedKeyword_8_0(lastRuleCallOrigin, next, actIndex, consumed);
+			case 0: return new TeamDef_PrivilegedKeyword_8_0(lastRuleCallOrigin, next, actIndex, consumed);
 			default: return null;
 		}	
 	}	

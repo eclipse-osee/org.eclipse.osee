@@ -167,7 +167,7 @@ teamDefinition "Teams" GetOrCreate {
 					usesVersions True
 					staticId "saw.test"
 					lead named "Kay Jones"
-					member named "Kay Jones" priviledged named "Joe Smith"
+					member named "Kay Jones" privileged named "Joe Smith"
 					workDefinition "WorkDef_Team_Demo_Test"
 				}
 			}

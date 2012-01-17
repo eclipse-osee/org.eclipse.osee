@@ -171,7 +171,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
          if (!members.contains(user)) {
             existingArtifacts.add(user);
             newTeamDef.addRelation(AtsRelationTypes.PrivilegedMember_Member, user);
-            resultData.log("   - Relating priviledged member " + user);
+            resultData.log("   - Relating privileged member " + user);
          }
       }
    }

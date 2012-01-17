@@ -23,7 +23,7 @@ public class TransitionResult implements ITransitionResult {
       "To-State can not be null for transition.");
    public static TransitionResult MUST_BE_ASSIGNED =
       new TransitionResult(
-         "You must be assigned to transition this workflow.\nContact Assignee or Select Priviledged Edit for Authorized Overriders.");
+         "You must be assigned to transition this workflow.\nContact Assignee or Select Privileged Edit for Authorized Overriders.");
    public static TransitionResult TASK_CANT_TRANSITION_IF_PARENT_COMPLETED = new TransitionResult(
       "You can not transition a task that belongs to a completed Workflow.  Un-complete workflow first.");
    public static TransitionResult DELETE_WORKING_BRANCH_BEFORE_CANCEL = new TransitionResult(

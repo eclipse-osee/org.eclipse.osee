@@ -187,8 +187,8 @@ public class WETransitionComposite extends Composite {
       ITransitionHelper helper = new TransitionHelperAdapter() {
 
          @Override
-         public boolean isPriviledgedEditEnabled() {
-            return editor.isPriviledgedEditModeEnabled();
+         public boolean isPrivilegedEditEnabled() {
+            return editor.isPrivilegedEditModeEnabled();
          }
 
          @Override

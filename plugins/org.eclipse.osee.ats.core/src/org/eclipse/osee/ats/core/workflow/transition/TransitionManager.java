@@ -129,7 +129,7 @@ public class TransitionManager {
 
             // Validate Editable
             boolean stateIsEditable =
-               WorkflowManagerCore.isEditable(awa, awa.getStateDefinition(), helper.isPriviledgedEditEnabled());
+               WorkflowManagerCore.isEditable(awa, awa.getStateDefinition(), helper.isPrivilegedEditEnabled());
             boolean currentlyUnAssigned =
                awa.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned));
             boolean overrideAssigneeCheck = helper.isOverrideAssigneeCheck();

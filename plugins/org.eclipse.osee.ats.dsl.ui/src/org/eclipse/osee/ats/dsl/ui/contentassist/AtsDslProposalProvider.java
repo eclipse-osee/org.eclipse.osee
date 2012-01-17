@@ -52,8 +52,8 @@ public class AtsDslProposalProvider extends AbstractAtsDslProposalProvider {
          List<String> rules =
             Arrays.asList("RequireStateHourSpentPrompt", "AddDecisionValidateBlockingReview",
                "AddDecisionValidateNonBlockingReview", "AllowTransitionWithWorkingBranch", "ForceAssigneesToTeamLeads",
-               "RequireTargetedVersion", "AllowPriviledgedEditToTeamMember",
-               "AllowPriviledgedEditToTeamMemberAndOriginator", "AllowPriviledgedEditToAll", "AllowEditToAll",
+               "RequireTargetedVersion", "AllowPrivilegedEditToTeamMember",
+               "AllowPrivilegedEditToTeamMemberAndOriginator", "AllowPrivilegedEditToAll", "AllowEditToAll",
                "AllowAssigneeToAll");
          Collections.sort(rules);
          for (String stateName : rules) {

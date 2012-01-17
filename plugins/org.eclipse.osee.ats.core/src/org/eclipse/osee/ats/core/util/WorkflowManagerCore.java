@@ -40,7 +40,7 @@ public class WorkflowManagerCore {
       return null;
    }
 
-   public static boolean isEditable(AbstractWorkflowArtifact sma, StateDefinition stateDef, boolean priviledgedEditEnabled) throws OseeCoreException {
+   public static boolean isEditable(AbstractWorkflowArtifact sma, StateDefinition stateDef, boolean privilegedEditEnabled) throws OseeCoreException {
       // must be writeable
       return !sma.isReadOnly() &&
       // and access control writeable
@@ -52,11 +52,11 @@ public class WorkflowManagerCore {
       // page is define to allow anyone to edit
       (sma.getStateDefinition().hasRule(RuleDefinitionOption.AllowEditToAll) ||
       // team definition has allowed anyone to edit
-      sma.teamDefHasRule(RuleDefinitionOption.AllowEditToAll) ||
-      // priviledged edit mode is on
-      priviledgedEditEnabled ||
-      // current user is assigned
-      sma.isAssigneeMe() ||
+         sma.teamDefHasRule(RuleDefinitionOption.AllowEditToAll) ||
+         // privileged edit mode is on
+         privilegedEditEnabled ||
+         // current user is assigned
+         sma.isAssigneeMe() ||
       // current user is ats admin
       AtsUtilCore.isAtsAdmin());
    }

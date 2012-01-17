@@ -46,12 +46,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 public class WorkflowManager {
 
-   public static boolean isAssigneeEditable(AbstractWorkflowArtifact awa, boolean priviledgedEditEnabled) throws OseeCoreException {
+   public static boolean isAssigneeEditable(AbstractWorkflowArtifact awa, boolean privilegedEditEnabled) throws OseeCoreException {
       return !awa.isCompletedOrCancelled() && !awa.isReadOnly() &&
       // and access control writeable
       awa.isAccessControlWrite() && //
 
-      (WorkflowManagerCore.isEditable(awa, awa.getStateDefinition(), priviledgedEditEnabled) || //
+      (WorkflowManagerCore.isEditable(awa, awa.getStateDefinition(), privilegedEditEnabled) || //
          // page is define to allow anyone to edit
          awa.getStateDefinition().hasRule(RuleDefinitionOption.AllowAssigneeToAll) ||
          // awa is child of TeamWorkflow that has AllowAssigneeToAll rule

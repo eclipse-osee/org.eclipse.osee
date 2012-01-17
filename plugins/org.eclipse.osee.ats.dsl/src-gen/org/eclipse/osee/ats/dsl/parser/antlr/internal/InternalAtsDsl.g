@@ -546,23 +546,23 @@ ruleTeamDef returns [EObject current=null]
 	    }
 
 )
-))*(	otherlv_13='priviledged' 
+))*(	otherlv_13='privileged' 
     {
-    	newLeafNode(otherlv_13, grammarAccess.getTeamDefAccess().getPriviledgedKeyword_8_0());
+    	newLeafNode(otherlv_13, grammarAccess.getTeamDefAccess().getPrivilegedKeyword_8_0());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getTeamDefAccess().getPriviledgedUserRefParserRuleCall_8_1_0()); 
+	        newCompositeNode(grammarAccess.getTeamDefAccess().getPrivilegedUserRefParserRuleCall_8_1_0()); 
 	    }
-		lv_priviledged_14_0=ruleUserRef		{
+		lv_privileged_14_0=ruleUserRef		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getTeamDefRule());
 	        }
        		add(
        			$current, 
-       			"priviledged",
-        		lv_priviledged_14_0, 
+       			"privileged",
+        		lv_privileged_14_0, 
         		"UserRef");
 	        afterParserOrEnumRuleCall();
 	    }
@@ -3645,24 +3645,24 @@ ruleRule returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()]
     }
 
     |
-	kw='AllowPriviledgedEditToTeamMember' 
+	kw='AllowPrivilegedEditToTeamMember' 
     {
         $current.merge(kw);
-        newLeafNode(kw, grammarAccess.getRuleAccess().getAllowPriviledgedEditToTeamMemberKeyword_6()); 
+        newLeafNode(kw, grammarAccess.getRuleAccess().getAllowPrivilegedEditToTeamMemberKeyword_6()); 
     }
 
     |
-	kw='AllowPriviledgedEditToTeamMemberAndOriginator' 
+	kw='AllowPrivilegedEditToTeamMemberAndOriginator' 
     {
         $current.merge(kw);
-        newLeafNode(kw, grammarAccess.getRuleAccess().getAllowPriviledgedEditToTeamMemberAndOriginatorKeyword_7()); 
+        newLeafNode(kw, grammarAccess.getRuleAccess().getAllowPrivilegedEditToTeamMemberAndOriginatorKeyword_7()); 
     }
 
     |
-	kw='AllowPriviledgedEditToAll' 
+	kw='AllowPrivilegedEditToAll' 
     {
         $current.merge(kw);
-        newLeafNode(kw, grammarAccess.getRuleAccess().getAllowPriviledgedEditToAllKeyword_8()); 
+        newLeafNode(kw, grammarAccess.getRuleAccess().getAllowPrivilegedEditToAllKeyword_8()); 
     }
 
     |

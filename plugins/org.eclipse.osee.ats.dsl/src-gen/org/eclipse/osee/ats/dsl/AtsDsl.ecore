@@ -38,7 +38,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="member" upperBound="-1"
         eType="ecore:EClass platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//UserRef"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="priviledged" upperBound="-1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="privileged" upperBound="-1"
         eType="ecore:EClass platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//UserRef"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="workDefinition" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

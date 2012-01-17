@@ -40,8 +40,8 @@ public class TransitionHelper extends TransitionHelperAdapter {
    }
 
    @Override
-   public boolean isPriviledgedEditEnabled() {
-      return Collections.getAggregate(transitionOption).contains(TransitionOption.PriviledgedEditEnabled);
+   public boolean isPrivilegedEditEnabled() {
+      return Collections.getAggregate(transitionOption).contains(TransitionOption.PrivilegedEditEnabled);
    }
 
    @Override

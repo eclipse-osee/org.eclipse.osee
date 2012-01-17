@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 
-public class PriviledgedUserManager {
+public class PrivilegedUserManager {
 
    public static Set<IBasicUser> getPrivilegedUsers(AbstractWorkflowArtifact workflow) throws OseeCoreException {
       Set<IBasicUser> users = new HashSet<IBasicUser>();
@@ -35,7 +35,7 @@ public class PriviledgedUserManager {
       } else {
          for (ActionableItemArtifact aia : workflow.getParentTeamWorkflow().getActionableItemsDam().getActionableItems()) {
             for (TeamDefinitionArtifact teamDef : aia.getImpactedTeamDefs()) {
-               addPriviledgedUsersUpTeamDefinitionTree(teamDef, users);
+               addPrivilegedUsersUpTeamDefinitionTree(teamDef, users);
             }
          }
       }
@@ -52,20 +52,20 @@ public class PriviledgedUserManager {
    public static Set<IBasicUser> getPrivilegedUsers(TeamWorkFlowArtifact teamArt) {
       Set<IBasicUser> users = new HashSet<IBasicUser>();
       try {
-         addPriviledgedUsersUpTeamDefinitionTree(teamArt.getTeamDefinition(), users);
+         addPrivilegedUsersUpTeamDefinitionTree(teamArt.getTeamDefinition(), users);
 
          StateDefinition stateDefinition = teamArt.getStateDefinition();
 
          // Add user if allowing privileged edit to all users
-         if (!users.contains(UserManager.getUser()) && (stateDefinition.hasRule(RuleDefinitionOption.AllowPriviledgedEditToAll) || teamArt.getTeamDefinition().hasRule(
-            RuleDefinitionOption.AllowPriviledgedEditToAll))) {
+         if (!users.contains(UserManager.getUser()) && (stateDefinition.hasRule(RuleDefinitionOption.AllowPrivilegedEditToAll) || teamArt.getTeamDefinition().hasRule(
+            RuleDefinitionOption.AllowPrivilegedEditToAll))) {
             users.add(UserManager.getUser());
          }
 
          // Add user if user is team member and rule exists
-         boolean workPageToTeamMember = stateDefinition.hasRule(RuleDefinitionOption.AllowPriviledgedEditToTeamMember);
+         boolean workPageToTeamMember = stateDefinition.hasRule(RuleDefinitionOption.AllowPrivilegedEditToTeamMember);
          boolean teamDefToTeamMember =
-            teamArt.getTeamDefinition().hasRule(RuleDefinitionOption.AllowPriviledgedEditToTeamMember);
+            teamArt.getTeamDefinition().hasRule(RuleDefinitionOption.AllowPrivilegedEditToTeamMember);
          if (!users.contains(UserManager.getUser()) && (workPageToTeamMember || teamDefToTeamMember) && //
          teamArt.getTeamDefinition().getMembers().contains(UserManager.getUser())) {
             users.add(UserManager.getUser());
@@ -73,9 +73,9 @@ public class PriviledgedUserManager {
 
          // Add user if team member is originator and rule exists
          boolean workPageToMemberAndOriginator =
-            stateDefinition.hasRule(RuleDefinitionOption.AllowPriviledgedEditToTeamMemberAndOriginator);
+            stateDefinition.hasRule(RuleDefinitionOption.AllowPrivilegedEditToTeamMemberAndOriginator);
          boolean teamDefToMemberAndOriginator =
-            teamArt.getTeamDefinition().hasRule(RuleDefinitionOption.AllowPriviledgedEditToTeamMemberAndOriginator);
+            teamArt.getTeamDefinition().hasRule(RuleDefinitionOption.AllowPrivilegedEditToTeamMemberAndOriginator);
          if (!users.contains(UserManager.getUser()) && (workPageToMemberAndOriginator || teamDefToMemberAndOriginator) && //
          teamArt.getCreatedBy().equals(UserManager.getUser()) && teamArt.getTeamDefinition().getMembers().contains(
             UserManager.getUser())) {
@@ -88,13 +88,13 @@ public class PriviledgedUserManager {
       return users;
    }
 
-   protected static void addPriviledgedUsersUpTeamDefinitionTree(TeamDefinitionArtifact tda, Set<IBasicUser> users) throws OseeCoreException {
+   protected static void addPrivilegedUsersUpTeamDefinitionTree(TeamDefinitionArtifact tda, Set<IBasicUser> users) throws OseeCoreException {
       users.addAll(tda.getLeads());
       users.addAll(tda.getPrivilegedMembers());
 
       // Walk up tree to get other editors
       if (tda.getParent() instanceof TeamDefinitionArtifact) {
-         addPriviledgedUsersUpTeamDefinitionTree((TeamDefinitionArtifact) tda.getParent(), users);
+         addPrivilegedUsersUpTeamDefinitionTree((TeamDefinitionArtifact) tda.getParent(), users);
       }
    }
 

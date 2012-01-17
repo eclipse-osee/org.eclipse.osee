@@ -117,7 +117,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
          for (Artifact user : UserRefUtil.getUsers(dslTeamDef.getMember())) {
             newTeam.addRelation(AtsRelationTypes.TeamMember_Member, user);
          }
-         for (Artifact user : UserRefUtil.getUsers(dslTeamDef.getPriviledged())) {
+         for (Artifact user : UserRefUtil.getUsers(dslTeamDef.getPrivileged())) {
             newTeam.addRelation(AtsRelationTypes.PrivilegedMember_Member, user);
          }
          if (Strings.isValid(dslTeamDef.getWorkDefinition())) {

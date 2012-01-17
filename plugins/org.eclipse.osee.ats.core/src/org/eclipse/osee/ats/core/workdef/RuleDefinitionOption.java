@@ -18,9 +18,9 @@ public enum RuleDefinitionOption {
    AllowTransitionWithWorkingBranch("StateDefinition Option: Will allow transition to next state without committing current working branch."),
    ForceAssigneesToTeamLeads("StateDefinition Option: Will force this state to be assigned back to the configured team leads.  Useful for authorization state."),
    RequireTargetedVersion("StateDefinition and Team Definition Option: Requires workflow to be targeted for version before transition is allowed."),
-   AllowPriviledgedEditToTeamMember("StateDefinition and Team Definition Option: Allow team member to priviledged edit workflow assigned to team."),
-   AllowPriviledgedEditToTeamMemberAndOriginator("StateDefinition and Team Definition Option: Allow team member to priviledged edit workflow assigned to team if user is originator."),
-   AllowPriviledgedEditToAll("StateDefinition and Team Definition Option: Allow anyone to priviledged edit workflow assigned to team."),
+   AllowPrivilegedEditToTeamMember("StateDefinition and Team Definition Option: Allow team member to privileged edit workflow assigned to team."),
+   AllowPrivilegedEditToTeamMemberAndOriginator("StateDefinition and Team Definition Option: Allow team member to privileged edit workflow assigned to team if user is originator."),
+   AllowPrivilegedEditToAll("StateDefinition and Team Definition Option: Allow anyone to privileged edit workflow assigned to team."),
    AllowEditToAll("StateDefinition and Team Definition Option: Allow anyone to edit workflow without being assignee."),
    AllowAssigneeToAll("StateDefinition and Team Definition Option: Allow anyone to change workflow assignee without being assignee."),
    AllowTransitionWithoutTaskCompletion("StateDefinition Option: Allow tasks to transition to other InWork states without completion.");

@@ -43,7 +43,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getStaticId <em>Static Id</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getLead <em>Lead</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getMember <em>Member</em>}</li>
- *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getPriviledged <em>Priviledged</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getPrivileged <em>Privileged</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getWorkDefinition <em>Work Definition</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getRelatedTaskWorkDefinition <em>Related Task Work Definition</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getAccessContextId <em>Access Context Id</em>}</li>
@@ -157,14 +157,14 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
   protected EList<UserRef> member;
 
   /**
-   * The cached value of the '{@link #getPriviledged() <em>Priviledged</em>}' containment reference list.
+   * The cached value of the '{@link #getPrivileged() <em>Privileged</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getPriviledged()
+   * @see #getPrivileged()
    * @generated
    * @ordered
    */
-  protected EList<UserRef> priviledged;
+  protected EList<UserRef> privileged;
 
   /**
    * The default value of the '{@link #getWorkDefinition() <em>Work Definition</em>}' attribute.
@@ -387,13 +387,13 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<UserRef> getPriviledged()
+  public EList<UserRef> getPrivileged()
   {
-    if (priviledged == null)
+    if (privileged == null)
     {
-      priviledged = new EObjectContainmentEList<UserRef>(UserRef.class, this, AtsDslPackage.TEAM_DEF__PRIVILEDGED);
+      privileged = new EObjectContainmentEList<UserRef>(UserRef.class, this, AtsDslPackage.TEAM_DEF__PRIVILEGED);
     }
-    return priviledged;
+    return privileged;
   }
 
   /**
@@ -498,8 +498,8 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
         return ((InternalEList<?>)getLead()).basicRemove(otherEnd, msgs);
       case AtsDslPackage.TEAM_DEF__MEMBER:
         return ((InternalEList<?>)getMember()).basicRemove(otherEnd, msgs);
-      case AtsDslPackage.TEAM_DEF__PRIVILEDGED:
-        return ((InternalEList<?>)getPriviledged()).basicRemove(otherEnd, msgs);
+      case AtsDslPackage.TEAM_DEF__PRIVILEGED:
+        return ((InternalEList<?>)getPrivileged()).basicRemove(otherEnd, msgs);
       case AtsDslPackage.TEAM_DEF__VERSION:
         return ((InternalEList<?>)getVersion()).basicRemove(otherEnd, msgs);
       case AtsDslPackage.TEAM_DEF__CHILDREN:
@@ -532,8 +532,8 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
         return getLead();
       case AtsDslPackage.TEAM_DEF__MEMBER:
         return getMember();
-      case AtsDslPackage.TEAM_DEF__PRIVILEDGED:
-        return getPriviledged();
+      case AtsDslPackage.TEAM_DEF__PRIVILEGED:
+        return getPrivileged();
       case AtsDslPackage.TEAM_DEF__WORK_DEFINITION:
         return getWorkDefinition();
       case AtsDslPackage.TEAM_DEF__RELATED_TASK_WORK_DEFINITION:
@@ -584,9 +584,9 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
         getMember().clear();
         getMember().addAll((Collection<? extends UserRef>)newValue);
         return;
-      case AtsDslPackage.TEAM_DEF__PRIVILEDGED:
-        getPriviledged().clear();
-        getPriviledged().addAll((Collection<? extends UserRef>)newValue);
+      case AtsDslPackage.TEAM_DEF__PRIVILEGED:
+        getPrivileged().clear();
+        getPrivileged().addAll((Collection<? extends UserRef>)newValue);
         return;
       case AtsDslPackage.TEAM_DEF__WORK_DEFINITION:
         setWorkDefinition((String)newValue);
@@ -641,8 +641,8 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
       case AtsDslPackage.TEAM_DEF__MEMBER:
         getMember().clear();
         return;
-      case AtsDslPackage.TEAM_DEF__PRIVILEDGED:
-        getPriviledged().clear();
+      case AtsDslPackage.TEAM_DEF__PRIVILEGED:
+        getPrivileged().clear();
         return;
       case AtsDslPackage.TEAM_DEF__WORK_DEFINITION:
         setWorkDefinition(WORK_DEFINITION_EDEFAULT);
@@ -687,8 +687,8 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
         return lead != null && !lead.isEmpty();
       case AtsDslPackage.TEAM_DEF__MEMBER:
         return member != null && !member.isEmpty();
-      case AtsDslPackage.TEAM_DEF__PRIVILEDGED:
-        return priviledged != null && !priviledged.isEmpty();
+      case AtsDslPackage.TEAM_DEF__PRIVILEGED:
+        return privileged != null && !privileged.isEmpty();
       case AtsDslPackage.TEAM_DEF__WORK_DEFINITION:
         return WORK_DEFINITION_EDEFAULT == null ? workDefinition != null : !WORK_DEFINITION_EDEFAULT.equals(workDefinition);
       case AtsDslPackage.TEAM_DEF__RELATED_TASK_WORK_DEFINITION:
