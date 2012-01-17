@@ -12,13 +12,15 @@ package org.eclipse.osee.framework.ui.skynet.results;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -34,6 +36,7 @@ import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewer;
+import org.eclipse.osee.framework.ui.skynet.util.SelectionProvider;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.widgets.Composite;
@@ -53,10 +56,83 @@ public class ResultsEditor extends AbstractArtifactEditor {
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.results.ResultsEditor";
    private Integer startPage = null;
    private List<IResultsEditorTab> pages;
+   private int lastPageSelected = -1;
+   private ISelectionChangedListener selectionListener;
+
+   @Override
+   public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+      super.init(site, input);
+      defaultSelectionProvider = new SelectionProvider();
+      getSite().setSelectionProvider(defaultSelectionProvider);
+
+      selectionListener = new ISelectionChangedListener() {
+
+         @Override
+         public void selectionChanged(SelectionChangedEvent event) {
+            ISelection selection = event.getSelection();
+            List<Object> objects = rowsToData(selection);
+            getSite().getSelectionProvider().setSelection(new StructuredSelection(objects));
+
+         }
+      };
+   }
+
+   private List<Object> rowsToData(ISelection selection) {
+      List<Object> datas = new LinkedList<Object>();
+      if (selection instanceof IStructuredSelection) {
+         IStructuredSelection selected = (IStructuredSelection) selection;
+         Iterator<?> iterator = selected.iterator();
+         while (iterator.hasNext()) {
+            Object object = iterator.next();
+            if (object instanceof ResultsXViewerRow) {
+               Object data = ((ResultsXViewerRow) object).getData();
+               if (data != null) {
+                  datas.add(data);
+               }
+            }
+         }
+      }
+      return datas;
+   }
+
+   @Override
+   protected void pageChange(int newPageIndex) {
+      super.pageChange(newPageIndex);
+      setSelectionListenerOn(newPageIndex);
+   }
+
+   private synchronized void setSelectionListenerOn(int pageIndex) {
+      if (lastPageSelected > -1) {
+         ResultsXViewer oldViewer = getViewerForPage(lastPageSelected);
+         if (oldViewer != null) {
+            oldViewer.removeSelectionChangedListener(selectionListener);
+         }
+      }
+      lastPageSelected = pageIndex;
+      ResultsXViewer viewer = getViewerForPage(pageIndex);
+      if (viewer != null) {
+         viewer.addSelectionChangedListener(selectionListener);
+      }
+   }
+
+   private ResultsXViewer getViewerForPage(int index) {
+      ResultsXViewer viewer = null;
+      IResultsEditorProvider provider = getResultsEditorProvider();
+      try {
+         List<IResultsEditorTab> tabs = provider.getResultsEditorTabs();
+         IResultsEditorTab iResultsEditorTab = tabs.get(index);
+         if (iResultsEditorTab instanceof ResultsEditorTableTab) {
+            ResultsEditorTableTab tableTab = (ResultsEditorTableTab) iResultsEditorTab;
+            viewer = tableTab.getResultsXViewer();
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      return viewer;
+   }
 
    @Override
    protected void addPages() {
-
       try {
          OseeStatusContributionItemFactory.addTo(this, true);
 
@@ -79,46 +155,6 @@ public class ResultsEditor extends AbstractArtifactEditor {
          setActivePage(startPage);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-   }
-   private final class ResultsEditorSelectionProvider implements ISelectionProvider {
-
-      @Override
-      public void addSelectionChangedListener(ISelectionChangedListener listener) {
-         // do nothing
-      }
-
-      @Override
-      public ISelection getSelection() {
-         List<Object> objects = new LinkedList<Object>();
-         try {
-            IResultsEditorProvider provider = getResultsEditorProvider();
-            IResultsEditorTab iResultsEditorTab = provider.getResultsEditorTabs().get(getActivePage());
-            if (iResultsEditorTab instanceof ResultsEditorTableTab) {
-               ResultsEditorTableTab tableTab = (ResultsEditorTableTab) iResultsEditorTab;
-               ResultsXViewer viewer = tableTab.getResultsXViewer();
-               if (viewer != null) {
-                  for (ResultsXViewerRow row : viewer.getSelectedRows()) {
-                     if (row.getData() != null) {
-                        objects.add(row.getData());
-                     }
-                  }
-               }
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         }
-         return new StructuredSelection(objects.toArray());
-      }
-
-      @Override
-      public void removeSelectionChangedListener(ISelectionChangedListener listener) {
-         // do nothing
-      }
-
-      @Override
-      public void setSelection(ISelection selection) {
-         // do nothing
       }
    }
 
@@ -285,12 +321,4 @@ public class ResultsEditor extends AbstractArtifactEditor {
          }
       });
    }
-
-   @Override
-   public void init(IEditorSite site, IEditorInput input) throws PartInitException {
-      super.init(site, input);
-      defaultSelectionProvider = new ResultsEditorSelectionProvider();
-      getSite().setSelectionProvider(defaultSelectionProvider);
-   }
-
 }

@@ -11,12 +11,11 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
+import org.eclipse.osee.framework.ui.skynet.util.SelectionProvider;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -70,7 +69,7 @@ public abstract class AbstractArtifactEditor extends FormEditor implements IDirt
    @Override
    public void init(IEditorSite site, IEditorInput input) throws PartInitException {
       super.init(site, input);
-      defaultSelectionProvider = new ArtifactEditorSelectionProvider();
+      defaultSelectionProvider = new SelectionProvider();
       Artifact artifact = getArtifactFromEditorInput();
       Object[] selected = artifact != null ? new Object[] {artifact} : EMPTY_ARRAY;
       defaultSelectionProvider.setSelection(new StructuredSelection(selected));
@@ -81,27 +80,4 @@ public abstract class AbstractArtifactEditor extends FormEditor implements IDirt
       return defaultSelectionProvider;
    }
 
-   private final class ArtifactEditorSelectionProvider implements ISelectionProvider {
-      private ISelection selection;
-
-      @Override
-      public void addSelectionChangedListener(ISelectionChangedListener listener) {
-         // do nothing
-      }
-
-      @Override
-      public ISelection getSelection() {
-         return selection;
-      }
-
-      @Override
-      public void removeSelectionChangedListener(ISelectionChangedListener listener) {
-         // do nothing
-      }
-
-      @Override
-      public void setSelection(ISelection selection) {
-         this.selection = selection;
-      }
-   }
 }
