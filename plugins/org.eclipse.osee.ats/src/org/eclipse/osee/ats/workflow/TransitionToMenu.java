@@ -13,9 +13,7 @@ package org.eclipse.osee.ats.workflow;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -41,7 +39,6 @@ import org.eclipse.osee.ats.util.widgets.dialog.TransitionStatusDialog;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.core.util.WorkPageType;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -84,31 +81,46 @@ public class TransitionToMenu {
 
          });
       } else {
-         Map<String, StateDefinition> nameToState = new HashMap<String, StateDefinition>();
+         Set<Integer> stateOrdinals = new HashSet<Integer>();
          for (final StateDefinition stateDef : toStateDefs) {
-            nameToState.put(stateDef.getPageName(), stateDef);
+            stateOrdinals.add(stateDef.getOrdinal());
          }
-         String[] toStates = nameToState.keySet().toArray(new String[nameToState.size()]);
+         Integer[] toStates = stateOrdinals.toArray(new Integer[stateOrdinals.size()]);
          Arrays.sort(toStates);
-         for (String toState : toStates) {
-            final StateDefinition stateDef = nameToState.get(toState);
-            editMenuManager.add(new Action(getTransitionToString(stateDef),
-               ImageManager.getImageDescriptor(AtsImage.TRANSITION)) {
+         for (Integer stateOrdinal : stateOrdinals) {
+            for (final StateDefinition stateDef : toStateDefs) {
+               if (stateDef.getOrdinal() == stateOrdinal) {
+                  editMenuManager.add(new Action(getTransitionToString(stateDef),
+                     ImageManager.getImageDescriptor(AtsImage.TRANSITION)) {
 
-               @Override
-               public void run() {
-                  handleTransitionToSelected(stateDef.getName(), awas);
+                     @Override
+                     public void run() {
+                        handleTransitionToSelected(stateDef.getName(), awas);
+                     }
+
+                  });
                }
-
-            });
+            }
          }
       }
       return editMenuManager;
    }
 
    private static String getTransitionToString(StateDefinition stateDef) {
-      return stateDef.getPageName() + (stateDef.getWorkPageType() == WorkPageType.Working || stateDef.getPageName().equals(
-         TeamState.Completed.getPageName()) || stateDef.getPageName().equals(TeamState.Cancelled.getPageName()) ? "" : " (" + stateDef.getWorkPageType().name() + ")");
+      return String.format("%s%s%s", stateDef.getPageName(), getStateTypeName(stateDef),
+         getDefaultStatePercent(stateDef));
+   }
+
+   private static Object getDefaultStatePercent(StateDefinition stateDef) {
+      if (stateDef.getRecommendedPercentComplete() != null && stateDef.getRecommendedPercentComplete() != 0) {
+         return String.format(" - %d%%", stateDef.getRecommendedPercentComplete());
+      }
+      return "";
+   }
+
+   private static String getStateTypeName(StateDefinition stateDef) {
+      return stateDef.isWorkingPage() || stateDef.getPageName().equals(TeamState.Completed.getPageName()) || stateDef.getPageName().equals(
+         TeamState.Cancelled.getPageName()) ? "" : " (" + stateDef.getWorkPageType().name() + ")";
    }
 
    private static void handleTransitionToSelected(final String toStateName, final Set<AbstractWorkflowArtifact> awas) {
