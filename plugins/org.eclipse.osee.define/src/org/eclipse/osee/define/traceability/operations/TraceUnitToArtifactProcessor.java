@@ -293,20 +293,15 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
 
    private static final class TestRunHandler {
 
-      private static void createGuidLink(Artifact testCase, Artifact testRun) throws OseeCoreException {
-         if (testCase != null) {
-            testRun.setSoleAttributeValue(CoreAttributeTypes.TestScriptGuid, testCase.getGuid());
-         }
-      }
-
       public static void linkWithTestUnit(SkynetTransaction transaction, Artifact testCase) throws OseeCoreException {
-         if (testCase.isOfType(CoreArtifactTypes.TestCase)) {
+         if (testCase != null && testCase.isOfType(CoreArtifactTypes.TestCase)) {
             List<Artifact> testRuns =
                ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.TestRun, testCase.getName(),
                   transaction.getBranch());
 
             for (Artifact testRun : testRuns) {
-               createGuidLink(testCase, testRun);
+               testRun.setSoleAttributeValue(CoreAttributeTypes.TestScriptGuid, testCase.getGuid());
+               testRun.persist(transaction);
             }
          }
       }
