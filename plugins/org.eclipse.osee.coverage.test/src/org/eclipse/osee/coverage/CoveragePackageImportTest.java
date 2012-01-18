@@ -59,7 +59,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -378,7 +377,6 @@ public class CoveragePackageImportTest {
 
    }
 
-   @Ignore
    @Test
    // Add PowerUnit1.initAdded to end; Change getColumnCount.line1 from TestUnit2 to TestUnit3
    public void testImport3() throws Exception {
