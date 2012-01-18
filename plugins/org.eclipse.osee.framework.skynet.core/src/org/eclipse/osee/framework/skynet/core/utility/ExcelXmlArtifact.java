@@ -1,8 +1,13 @@
-/*
- * Created on Jan 11, 2012
+/*******************************************************************************
+ * Copyright (c) 2011 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.io.IOException;
@@ -23,8 +28,10 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+/**
+ * @author Shawn F. Cook
+ */
 public class ExcelXmlArtifact implements RowProcessor {
-   private final boolean firstRowIsHeader;
    private final XMLReader xmlReader;
    private final String staticId;
    private final IOseeBranch branch;
@@ -33,9 +40,7 @@ public class ExcelXmlArtifact implements RowProcessor {
    private Worksheet currentWorksheet = null;
    private boolean initialized = false;
 
-   public ExcelXmlArtifact(boolean firstRowIsHeader, String staticId, IOseeBranch branch) throws SAXException, OseeCoreException, IOException {
-      this.firstRowIsHeader = firstRowIsHeader;
-
+   public ExcelXmlArtifact(boolean firstRowIsHeader, String staticId, IOseeBranch branch) throws SAXException {
       excelHandler = new ExcelSaxHandler(this, firstRowIsHeader, true);
       xmlReader = XMLReaderFactory.createXMLReader();
       xmlReader.setContentHandler(excelHandler);
