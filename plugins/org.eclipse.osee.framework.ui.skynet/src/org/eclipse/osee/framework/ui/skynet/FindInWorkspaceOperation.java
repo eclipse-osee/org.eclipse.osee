@@ -39,16 +39,21 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
  */
 public class FindInWorkspaceOperation extends AbstractOperation {
 
+   public static interface FindInWorkspaceCollector {
+
+      void onResource(IResource resource);
+
+      void onNotFound(Artifact artifact);
+   }
+
    private final List<Artifact> artifacts;
-   private final List<IResource> matches;
-   private final List<Artifact> notMatched;
+   private final FindInWorkspaceCollector collector;
    final static Pattern objectIdPattern = Pattern.compile("ObjectId\\(\"(.*)?\"");
 
-   public FindInWorkspaceOperation(List<Artifact> artifacts, List<IResource> matches, List<Artifact> notMatched) {
+   public FindInWorkspaceOperation(List<Artifact> artifacts, FindInWorkspaceCollector collector) {
       super("Find In Workspace", Activator.PLUGIN_ID);
       this.artifacts = artifacts;
-      this.matches = matches;
-      this.notMatched = notMatched;
+      this.collector = collector;
    }
 
    private Map<String, Artifact> getGuidMap() {
@@ -85,7 +90,7 @@ public class FindInWorkspaceOperation extends AbstractOperation {
                String uuid = matcher.group(1);
                if (guids.containsKey(uuid)) {
                   monitor.worked(1);
-                  matches.add(unit.getResource());
+                  collector.onResource(unit.getResource());
                   guids.remove(uuid);
                   if (guids.isEmpty()) {
                      subMonitor.setCanceled(true);
@@ -104,7 +109,7 @@ public class FindInWorkspaceOperation extends AbstractOperation {
       }
 
       for (Artifact artifact : guids.values()) {
-         notMatched.add(artifact);
+         collector.onNotFound(artifact);
       }
    }
 }

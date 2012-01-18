@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.filesystem.IFileSystem;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -35,11 +36,11 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FindInWorkspaceOperation;
+import org.eclipse.osee.framework.ui.skynet.FindInWorkspaceOperation.FindInWorkspaceCollector;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -95,58 +96,62 @@ public class JavaRenderer extends FileSystemRenderer {
 
    @Override
    public void open(final List<Artifact> artifacts, PresentationType presentationType) {
-      final List<IResource> matches = new LinkedList<IResource>();
       final List<Artifact> notMatched = new LinkedList<Artifact>();
+      final StringBuffer findErrorMessage = new StringBuffer();
 
-      IOperation op = new FindInWorkspaceOperation(artifacts, matches, notMatched);
-      Operations.executeAsJob(op, true, Job.LONG, new JobChangeAdapter() {
+      FindInWorkspaceCollector collector = new FindInWorkspaceCollector() {
 
          @Override
+         public void onResource(final IResource resource) {
+            Displays.ensureInDisplayThread(new Runnable() {
+               @Override
+               public void run() {
+                  IFileSystem fs = EFS.getLocalFileSystem();
+
+                  IPath fullPath = resource.getLocation();
+                  final File fileToOpen = fullPath.toFile();
+                  if (fileToOpen != null && fileToOpen.exists() && fileToOpen.isFile()) {
+                     try {
+                        IFileStore fileStore = fs.getStore(fileToOpen.toURI());
+                        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+                        IDE.openEditorOnFileStore(page, fileStore);
+                     } catch (PartInitException e) {
+                        findErrorMessage.append(e.toString());
+                     }
+                  }
+               }
+            });
+         }
+
+         @Override
+         public void onNotFound(Artifact artifact) {
+            notMatched.add(artifact);
+         }
+      };
+      IOperation op = new FindInWorkspaceOperation(artifacts, collector);
+      Operations.executeAsJob(op, true, Job.LONG, new JobChangeAdapter() {
+         @Override
          public void done(IJobChangeEvent event) {
-            super.done(event);
             if (event.getResult().isOK()) {
                Displays.ensureInDisplayThread(new Runnable() {
-
                   @Override
                   public void run() {
-                     String errorMsg = "";
-                     if (matches.isEmpty()) {
-                        errorMsg =
-                           String.format("Unable to find test scripts for: [%s] in the workspace.\n",
-                              Collections.toString(",", notMatched));
-                     } else {
-                        for (IResource resource : matches) {
-                           IPath fullPath = resource.getLocation();
-                           final File fileToOpen = fullPath.toFile();
-                           if (fileToOpen != null && fileToOpen.exists() && fileToOpen.isFile()) {
-                              try {
-                                 IFileStore fileStore = EFS.getLocalFileSystem().getStore(fileToOpen.toURI());
-                                 IWorkbenchPage page =
-                                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-                                 IDE.openEditorOnFileStore(page, fileStore);
-                              } catch (PartInitException e) {
-                                 errorMsg = e.toString();
-                              }
-                           } else {
-                              errorMsg += String.format("Unable to find: [%s] in the workspace.\n", fullPath);
-                           }
-                        }
-                        if (!notMatched.isEmpty()) {
-                           errorMsg +=
-                              String.format("Unable to scripts for: [%s] in the workspace.\n",
-                                 Collections.toString(",", notMatched));
-                        }
+                     StringBuilder builder = new StringBuilder();
+                     builder.append(findErrorMessage);
+                     if (!notMatched.isEmpty()) {
+                        builder.append(String.format("Unable to scripts for: [%s] in the workspace.\n",
+                           Collections.toString(",", notMatched)));
                      }
-                     if (Strings.isValid(errorMsg)) {
+
+                     if (builder.length() > 0) {
                         Shell shell = AWorkbench.getActiveShell();
-                        MessageDialog.openError(shell, getName(), errorMsg);
+                        MessageDialog.openError(shell, getName(), builder.toString());
                      }
                   }
                });
             }
          }
       });
-
    }
 
    @Override
@@ -168,7 +173,20 @@ public class JavaRenderer extends FileSystemRenderer {
    public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
       final List<IResource> matches = new LinkedList<IResource>();
       final List<Artifact> notMatched = new LinkedList<Artifact>();
-      IOperation op = new FindInWorkspaceOperation(artifacts.subList(0, 1), matches, notMatched);
+
+      FindInWorkspaceCollector collector = new FindInWorkspaceCollector() {
+
+         @Override
+         public void onResource(IResource resource) {
+            matches.add(resource);
+         }
+
+         @Override
+         public void onNotFound(Artifact artifact) {
+            notMatched.add(artifact);
+         }
+      };
+      IOperation op = new FindInWorkspaceOperation(artifacts.subList(0, 1), collector);
       Operations.executeWorkAndCheckStatus(op);
       for (IResource resource : matches) {
          IPath fullPath = resource.getLocation();
