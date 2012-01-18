@@ -55,10 +55,16 @@ public class AccessPolicyImpl implements AccessPolicy {
       boolean notMatched = !permissionStatus.matched();
 
       if (notMatched) {
+         String objectString = org.eclipse.osee.framework.jdk.core.util.Collections.toString("; ", objects);
+         String reasonString = permissionStatus.getReason();
+         if (Strings.isValid(reasonString)) {
+            reasonString = String.format("\n reason:[%s]", reasonString);
+         } else {
+            reasonString = "";
+         }
          OseeLog.logf(Activator.class, level,
-            "Access Denied - [%s] does not have valid permission to edit item(s) : [%s]%s", user,
-            org.eclipse.osee.framework.jdk.core.util.Collections.toString("; ", objects),
-            (Strings.isValid(permissionStatus.getReason()) ? "\n reason:[%s]" : ""));
+            "Access Denied - [%s] does not have valid permission to edit\n item(s) : [%s]%s", user, objectString,
+            reasonString);
       }
       return notMatched;
    }
