@@ -59,6 +59,12 @@ public final class AtsRelationTypes {
       0x2000000000000169L, "TeamLead");
    public static final IRelationTypeSide TeamLead_Team = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A,
       0x2000000000000169L, "TeamLead");
+
+   public static final IRelationTypeSide ActionableItemLead_AI = TokenFactory.createRelationTypeSide(
+      RelationSide.SIDE_A, 0x2000000000000179L, "ActionableItemLead");
+   public static final IRelationTypeSide ActionableItemLead_Lead = TokenFactory.createRelationTypeSide(
+      RelationSide.SIDE_B, 0x2000000000000179L, "ActionableItemLead");
+
    public static final IRelationTypeSide TeamMember_Member = TokenFactory.createRelationTypeSide(RelationSide.SIDE_B,
       0x200000000000016AL, "TeamMember");
    public static final IRelationTypeSide TeamMember_Team = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A,

@@ -32,7 +32,7 @@ public class ActionableItemArtifact extends Artifact {
    }
 
    public Collection<User> getLeads() throws OseeCoreException {
-      return getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead, User.class);
+      return getRelatedArtifacts(AtsRelationTypes.ActionableItemLead_Lead, User.class);
    }
 
    public boolean isActionable() throws OseeCoreException {

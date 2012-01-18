@@ -966,6 +966,17 @@ relationType "TeamLead" {
    multiplicity MANY_TO_MANY
 }
 
+relationType "ActionableItemLead" {
+   guid "BHjFmzMBsi6okwNJeVgA"
+   uuid 0x2000000000000179
+   sideAName "Actionable Item"
+   sideAArtifactType "Actionable Item"
+   sideBName "User"
+   sideBArtifactType "User"
+   defaultOrderType Unordered
+   multiplicity MANY_TO_MANY
+}
+
 relationType "TeamMember" {
    guid "AAMFE92A6gCO9WJ2ijQA"
    uuid 0x200000000000016A
