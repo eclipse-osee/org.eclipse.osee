@@ -125,7 +125,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       int count =
          getDatabaseService().runPreparedQueryFetchObject(0, SELECT_SOURCE_BRANCH_STATE, sourceBranch.getId(),
             BranchState.COMMIT_IN_PROGRESS.getValue());
-      if (sourceBranch.getBranchState().equals(BranchState.COMMIT_IN_PROGRESS) || sourceBranch.getArchiveState().isArchived() || count > 0) {
+      if (sourceBranch.getBranchState().isCommitInProgress() || sourceBranch.getArchiveState().isArchived() || count > 0) {
          throw new OseeStateException("Commit completed or in progress for [%s]", sourceBranch);
       }
 

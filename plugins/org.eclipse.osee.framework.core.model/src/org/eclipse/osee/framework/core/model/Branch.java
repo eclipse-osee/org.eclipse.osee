@@ -151,7 +151,7 @@ public class Branch extends AbstractOseeType<String> implements IAdaptable, IOse
 
    public boolean isEditable() {
       BranchState state = getBranchState();
-      return !state.isCommitted() && !state.isRebaselined() && //
+      return !state.isCommitInProgress() && !state.isCommitted() && !state.isRebaselined() && //
       !state.isDeleted() && !state.isCreationInProgress() && //
       !getArchiveState().isArchived() && !isPurged();
    }

@@ -34,6 +34,10 @@ public enum BranchState {
       return value;
    }
 
+   public boolean isCommitInProgress() {
+      return this == BranchState.COMMIT_IN_PROGRESS;
+   }
+
    public boolean isCommitted() {
       return this == BranchState.COMMITTED;
    }
