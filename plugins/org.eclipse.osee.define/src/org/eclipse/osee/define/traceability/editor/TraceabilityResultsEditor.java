@@ -44,20 +44,28 @@ public class TraceabilityResultsEditor extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      final HashCollection<Artifact, Artifact> traceArtifacts = new HashCollection<Artifact, Artifact>();
+      final HashCollection<Artifact, Artifact> verifiesArtifacts = new HashCollection<Artifact, Artifact>();
+      final HashCollection<Artifact, Artifact> usesArtifacts = new HashCollection<Artifact, Artifact>();
       for (Artifact req : requirementArtifacts) {
          if (req.isOfType(CoreArtifactTypes.Requirement)) {
-            traceArtifacts.put(req, req.getRelatedArtifacts(CoreRelationTypes.Verification__Verifier));
+            verifiesArtifacts.put(req, req.getRelatedArtifacts(CoreRelationTypes.Verification__Verifier));
+            usesArtifacts.put(req, req.getRelatedArtifacts(CoreRelationTypes.Uses__TestUnit));
          }
       }
       List<XViewerColumn> artColumns =
-         Arrays.asList(new XViewerColumn("Requirement", "Requirement", 200, SWT.LEFT, true, SortDataType.String, false,
-            "Requirement Artifact"), new XViewerColumn("TestScript", "TestScript", 200, SWT.LEFT, true,
-            SortDataType.String, false, "TestScript Name"));
+         Arrays.asList(new XViewerColumn("Requirement", "Requirement", 300, SWT.LEFT, true, SortDataType.String, false,
+            "Requirement Artifact"), new XViewerColumn("TestScript", "TestScript", 400, SWT.LEFT, true,
+            SortDataType.String, false, "TestScript Name"), new XViewerColumn("Relation", "Relation", 100, SWT.LEFT,
+            true, SortDataType.String, false, "Relation Type"));
       List<IResultsXViewerRow> artRows = new LinkedList<IResultsXViewerRow>();
-      for (Artifact key : traceArtifacts.keySet()) {
-         for (Artifact script : traceArtifacts.getValues(key)) {
-            artRows.add(new ResultsXViewerRow(new String[] {key.getName(), script.getName()}, script));
+      for (Artifact key : verifiesArtifacts.keySet()) {
+         for (Artifact script : verifiesArtifacts.getValues(key)) {
+            artRows.add(new ResultsXViewerRow(new String[] {key.getName(), script.getName(), "SRS"}, script));
+         }
+         if (usesArtifacts.containsKey(key)) {
+            for (Artifact script : usesArtifacts.getValues(key)) {
+               artRows.add(new ResultsXViewerRow(new String[] {key.getName(), script.getName(), "USES_SRS"}, script));
+            }
          }
       }
       final List<IResultsEditorTab> toReturn = new LinkedList<IResultsEditorTab>();
