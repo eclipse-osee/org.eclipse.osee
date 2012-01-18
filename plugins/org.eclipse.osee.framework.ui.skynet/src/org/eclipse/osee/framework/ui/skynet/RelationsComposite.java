@@ -305,7 +305,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       revealInArtifactExporerMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
       revealInArtifactExporerMenuItem.setText("&Reveal in Artifact Explorer");
       revealInArtifactExporerMenuItem.setImage(ImageManager.getImage(FrameworkImage.MAGNIFY));
-      needSelectedArtifactListener.add(revealInArtifactExporerMenuItem);
+      needSelectedArtifactListener.addArtifactEnabled(revealInArtifactExporerMenuItem);
       final RelationsComposite fRelComp = this;
       revealInArtifactExporerMenuItem.addSelectionListener(new SelectionAdapter() {
 
@@ -508,7 +508,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
          }
 
          for (MenuItem item : artEnabledOnlyitems) {
-            item.setEnabled(valid);
+            item.setEnabled(true);
          }
       }
    }

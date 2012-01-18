@@ -122,10 +122,7 @@ public class OpenContributionItem extends ContributionItem {
       toolItem.setImage(ImageManager.getImage(FrameworkImage.OPEN));
       toolItem.setToolTipText("Open the Artifact");
 
-      final Menu previewMenu = new Menu(parent.getShell(), SWT.POP_UP);
-      fillOpenWithSubMenu(previewMenu);
-
-      final OpenWithToolItemListener listener = new OpenWithToolItemListener(previewMenu);
+      final OpenWithToolItemListener listener = new OpenWithToolItemListener(parent);
       toolItem.addListener(SWT.Selection, listener);
 
       dirty = false;
@@ -307,11 +304,12 @@ public class OpenContributionItem extends ContributionItem {
       }
    }
 
-   private static final class OpenWithToolItemListener implements Listener {
-      private final Menu subMenu;
+   private final class OpenWithToolItemListener implements Listener {
 
-      public OpenWithToolItemListener(Menu subMenu) {
-         this.subMenu = subMenu;
+      private final ToolBar parent;
+
+      public OpenWithToolItemListener(ToolBar parent) {
+         this.parent = parent;
       }
 
       @Override
@@ -325,6 +323,9 @@ public class OpenContributionItem extends ContributionItem {
                Rectangle rect = toolItem.getBounds();
                Point pt = new Point(rect.x, rect.y + rect.height);
                pt = toolBar.toDisplay(pt);
+
+               Menu subMenu = new Menu(parent.getShell(), SWT.POP_UP);
+               fillOpenWithSubMenu(subMenu);
                subMenu.setLocation(pt.x, pt.y);
                subMenu.setVisible(true);
             }
