@@ -547,4 +547,18 @@ public class StateManager {
       return "";
    }
 
+   public List<IBasicUser> getAssignees(String stateName) throws OseeCoreException {
+      List<IBasicUser> assignees = new ArrayList<IBasicUser>();
+      if (currentStateDam.getState().getName().equals(stateName)) {
+         assignees.addAll(currentStateDam.getState().getAssignees());
+      } else {
+         for (SMAState state : stateDam.getStates()) {
+            if (state.getName().equals(stateName)) {
+               assignees.addAll(state.getAssignees());
+            }
+         }
+      }
+      return assignees;
+   }
+
 }

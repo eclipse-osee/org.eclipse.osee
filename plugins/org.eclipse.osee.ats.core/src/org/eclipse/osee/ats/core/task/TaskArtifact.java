@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.core.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.workflow.StateManager;
 import org.eclipse.osee.ats.core.workflow.log.AtsLog;
 import org.eclipse.osee.ats.core.workflow.log.LogItem;
+import org.eclipse.osee.ats.core.workflow.log.LogType;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
@@ -174,7 +175,16 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
 
    @Override
    public List<IBasicUser> getImplementers() throws OseeCoreException {
-      return StateManager.getImplementersByState(this, TaskStates.InWork);
+      List<IBasicUser> implementers = StateManager.getImplementersByState(this, TaskStates.InWork);
+      LogItem lastEvent = getLog().getLastEvent(LogType.StateComplete);
+      if (lastEvent != null && lastEvent.getUser() != null) {
+         for (IBasicUser user : getStateMgr().getAssignees(lastEvent.getState())) {
+            if (!UserManager.isUnAssignedUser(user) && !implementers.contains(user)) {
+               implementers.add(user);
+            }
+         }
+      }
+      return implementers;
    }
 
    @Override

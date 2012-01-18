@@ -331,6 +331,10 @@ public final class UserManager {
       return false;
    }
 
+   public static boolean isUnAssignedUser(IBasicUser user) throws OseeCoreException {
+      return (SystemUser.UnAssigned.getUserId().equals(user.getUserId()));
+   }
+
    public static boolean isUserCurrentUser(Collection<? extends IBasicUser> users) throws OseeCoreException {
       for (IBasicUser user : users) {
          if (UserManager.getUser().equals(user)) {
