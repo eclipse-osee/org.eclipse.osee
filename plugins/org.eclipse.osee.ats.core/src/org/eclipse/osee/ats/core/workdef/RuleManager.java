@@ -24,12 +24,16 @@ public class RuleManager {
    static Map<String, RuleDefinition> ruleMap = new HashMap<String, RuleDefinition>(30);
 
    public static RuleDefinition getOrCreateRule(String ruleId) {
+      // Remove after 0.9.9_SR4 release and database rules converted to new spelling
+      if (ruleId != null) {
+         ruleId = ruleId.replaceFirst("riviledged", "rivileged");
+      }
       if (!ruleMap.containsKey(ruleId)) {
          try {
             RuleDefinitionOption ruleOption = RuleDefinitionOption.valueOf(ruleId);
             ruleMap.put(ruleId, new RuleDefinition(ruleOption));
          } catch (Exception ex) {
-            OseeLog.logf(Activator.class, Level.SEVERE, "Unrecognized rule definition [%s]", ruleId);
+            OseeLog.logf(Activator.class, Level.SEVERE, "Unrecognized rule definition [%s]", ruleId, ex);
          }
       }
       return ruleMap.get(ruleId);
