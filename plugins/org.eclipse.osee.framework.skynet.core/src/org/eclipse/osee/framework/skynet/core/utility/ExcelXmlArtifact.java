@@ -115,7 +115,7 @@ public class ExcelXmlArtifact implements RowProcessor {
       }
    }
 
-   public class Row {
+   public static class Row {
       private final List<String> row = new ArrayList<String>();
 
       public Row() {
@@ -145,7 +145,7 @@ public class ExcelXmlArtifact implements RowProcessor {
       }
    }
 
-   public class Worksheet {
+   public static class Worksheet {
       private final List<Row> rows = new ArrayList<Row>();
       private Row headerRow = null;
       private final String name;
