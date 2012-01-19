@@ -4,7 +4,6 @@ Bundle-Name: DDS Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ote.messaging.dds;singleton:=true
 Bundle-Version: 0.9.9.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-Localization: plugin
 Export-Package: org.eclipse.osee.ote.messaging.dds,
  org.eclipse.osee.ote.messaging.dds.condition,
  org.eclipse.osee.ote.messaging.dds.entity,
