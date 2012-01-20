@@ -1026,8 +1026,31 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
       transaction.execute();
    }
 
-   public final void persist(SkynetTransaction transaction) throws OseeCoreException {
-      transaction.addArtifact(this);
+   /**
+    * <b>THIS ASSUMES YOU ARE MAINTAINING YOUR OWN TRANSACTION</b> vs {@link #SkynetTransaction.persist(String)} where
+    * silently you are provided a transaction.
+    * <p>
+    * Example:
+    *
+    * <pre>
+    * ...
+    * Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, ARTIFACT_BRANCH);
+    * ...
+    * <b>SkynetTransaction transaction = TransactionManager.createTransaction(ARTIFACT_BRANCH, name);</b>
+    * ...
+    * <b>artifact.persist(transaction);</b>
+    * ...
+    * <b>transaction.execute();</b>
+    * ...
+    * </pre>
+    *
+    * </p>
+    *
+    * @param managedTransaction
+    * @throws OseeCoreException
+    */
+   public final void persist(SkynetTransaction managedTransaction) throws OseeCoreException {
+      managedTransaction.addArtifact(this);
    }
 
    /**

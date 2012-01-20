@@ -10,32 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.IStatusHandler;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 /**
  * @see WordOutlineTest
- * @author Karol M. Wilk
  */
 public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate {
    private static final String WORD_OUTLINE_PARSER_NAME = "Word Outline";
@@ -46,7 +36,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    private static final Pattern OUTLINE_NUMBER_REGEX = Pattern.compile("((?>\\d+\\.)+\\d*(?>-\\d+)*)\\s*");
 
    // This assumes that the user uses a generated Table of Contents from Word and does not come up with
-   // his/hers own version of of a style can call it "TOC\d+"
+   // his/hers own version of a style can call it "TOC\d+"
    private static final Pattern TOC_HYPERLINK_PATTERN = Pattern.compile(".*<w:pStyle w:val=\"TOC\\d+?\"/>.*",
       Pattern.DOTALL);
    private boolean possibleTableOfContents;
@@ -63,12 +53,9 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
     * Keeps state whether on what user decided last
     */
    private ContentType lastDeterminedContentType = ContentType.OUTLINE_TITLE;
-   /**
-    * Keeps state whether user was asked for help.
-    */
-   private boolean userAskedForHelp;
 
    private Map<String, RoughArtifact> duplicateCatcher;
+   private Map<String, String> roughArtMeta;
 
    private RoughArtifact previousNamedArtifact;
    private RoughArtifact roughArtifact;
@@ -81,36 +68,6 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    private boolean initalized;
 
    private final OutlineResolution outlineResolution = new OutlineResolution();
-   private IConflictResolvingGui conflictResolvingGui = null;
-
-   public WordOutlineExtractorDelegate() {
-      this(new IConflictResolvingGui() {
-         @Override
-         public ContentType determineContentType(Collection<String> paramList) throws OseeCoreException {
-            Status status = new Status(IStatus.WARNING, Activator.PLUGIN_ID, 258, "", null);
-            IStatusHandler handler = DebugPlugin.getDefault().getStatusHandler(status);
-            Object object = null;
-            try {
-               object = handler.handleStatus(status, paramList);
-            } catch (CoreException ex) {
-               OseeExceptions.wrapAndThrow(ex);
-            }
-            return (ContentType) object;
-         }
-      });
-   }
-
-   public WordOutlineExtractorDelegate(IConflictResolvingGui gui) {
-      conflictResolvingGui = gui;
-   }
-
-   public IConflictResolvingGui getOutlineResolvingUi() {
-      return conflictResolvingGui;
-   }
-
-   public interface IConflictResolvingGui {
-      ContentType determineContentType(Collection<String> paramList) throws OseeCoreException;
-   }
 
    @Override
    public boolean isApplicable(IArtifactExtractor parser) {
@@ -123,6 +80,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    @Override
    public void initialize() {
       duplicateCatcher = new HashMap<String, RoughArtifact>();
+      roughArtMeta = new HashMap<String, String>();
       lastHeaderNumber = new StringBuffer();
       lastHeaderName = new StringBuffer();
       lastContent = new StringBuffer();
@@ -131,7 +89,6 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
       wordFormattedContent = new StringBuilder();
       initalized = true;
       possibleTableOfContents = false;
-      userAskedForHelp = false;
    }
 
    /**
@@ -140,19 +97,20 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    @Override
    public void dispose() {
       duplicateCatcher = null;
+      roughArtMeta = null;
       previousNamedArtifact = null;
       roughArtifact = null;
       lastHeaderNumber = null;
       lastHeaderName = null;
       lastContent = null;
       initalized = false;
-      userAskedForHelp = false;
       possibleTableOfContents = false;
    }
 
    @Override
    public final void processContent(OperationLogger logger, RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) throws OseeCoreException {
       if (Strings.isValid(content) && initalized) {
+
          if (!possibleTableOfContents) {
             possibleTableOfContents = TOC_HYPERLINK_PATTERN.matcher(content).matches();
             if (possibleTableOfContents && logger != null) {
@@ -164,21 +122,20 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
          StringBuilder outlineName = new StringBuilder(); //Title i.e. Scope
          StringBuilder outlineContent = null; // Content, text, table content, etc.
 
-         boolean newOutlineNumber = processOutlineNumberAndName(content, outlineNumber, outlineName);
+         boolean newOutlineNumber = processOutlineNumberAndName(content, outlineNumber, outlineName, paragraphStyle);
 
-         //outline number detection failed, try content
-         if (!newOutlineNumber) {
-            processContentOfParagraph(content, outlineContent);
-         }
-
-         if (collector != null && newOutlineNumber) {
+         if (newOutlineNumber) {
             setContent();
-            roughArtifact = setUpNewArtifact(collector, outlineNumber.toString());
+            String number = outlineNumber.toString();
+            roughArtifact = setUpNewArtifact(collector, number);
             previousNamedArtifact = roughArtifact;
             processHeadingText(roughArtifact, WordUtil.textOnly(outlineName.toString()));
-         } else if (roughArtifact != null) {
+            roughArtMeta.put(number, paragraphStyle);
+         } else {
+            processContentOfParagraph(content, outlineContent);
             wordFormattedContent.append(content);
          }
+
       } else {
          throw new OseeCoreException(
             "%s::processContent() Either passed in content is invalid or *Delegate hasn't been initialized...",
@@ -212,22 +169,37 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
     * Gets content and attempts to extract outline number and title, if it fails with regular regex, it tries
     * specializedOutlineNumberTitleExtract()
     */
-   private boolean processOutlineNumberAndName(String content, StringBuilder outlineNumber, StringBuilder outlineName) throws OseeCoreException {
+   private boolean processOutlineNumberAndName(String content, StringBuilder outlineNumberStorage, StringBuilder outlineName, String paragraphStyle) {
       Matcher listItemMatcher = LIST_ITEM_REGEX.matcher(content);
       if (listItemMatcher.find()) { // wx:val grab
-         //does duplicate catcher contain this number already?
+
          String number = listItemMatcher.group(1).trim();
+
          if (duplicateCatcher.get(number) == null) {
-            outlineNumber.append(number);
+
+            if (previousNamedArtifact == null) {
+
+               outlineNumberStorage.append(number); //definitely store because no other artifact exist so far
+
+            } else {
+
+               boolean valid = determineIfValid(number, paragraphStyle);
+               if (valid) {
+                  outlineNumberStorage.append(number);
+               }
+
+            }
+
          }
+
       } else {
-         specializedOutlineNumberTitleExtract(content, outlineNumber, outlineName);
+         specializedOutlineNumberTitleExtract(content, outlineNumberStorage, outlineName, paragraphStyle);
       }
 
-      boolean outlineNumberDetected = outlineNumber.length() != 0;
+      boolean outlineNumberDetected = outlineNumberStorage.length() != 0;
       if (outlineNumberDetected) {
          lastHeaderNumber.setLength(0);
-         setLastHeaderNumber(outlineNumber.toString());
+         setLastHeaderNumber(outlineNumberStorage.toString());
          grabNameAndTemplateContent(content, outlineName);
 
          if (outlineName.length() != 0) {
@@ -236,6 +208,24 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
          }
       }
       return outlineNumberDetected;
+   }
+
+   private boolean determineIfValid(String number, String paragraphStyle) {
+      boolean result = false;
+
+      if (previousNamedArtifact != null) {
+         String metaData = roughArtMeta.get(previousNamedArtifact.getSectionNumber().getNumberString());
+
+         paragraphStyle = Strings.isValid(paragraphStyle) ? paragraphStyle : Strings.EMPTY_STRING;
+
+         boolean invalid =
+            outlineResolution.isInvalidOutlineNumber(number, previousNamedArtifact.getSectionNumber().getNumberString());
+         result = !invalid && RoughArtifactMetaData.matches(metaData, paragraphStyle);
+      } else {
+         result = true; //accept since there is no previous
+      }
+
+      return result;
    }
 
    /**
@@ -259,7 +249,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
     * 
     * @note Paragraph numbering must be zero based. "1.0 SCOPE" instead of "1. SCOPE"
     */
-   private void specializedOutlineNumberTitleExtract(String paragraph, StringBuilder outlineNumberStorage, StringBuilder outlineTitleStorage) throws OseeCoreException {
+   private void specializedOutlineNumberTitleExtract(String paragraph, StringBuilder outlineNumberStorage, StringBuilder outlineTitleStorage, String paragraphStyle) {
       StringBuilder wtStorage = new StringBuilder(paragraph.length());
       Matcher wtElementMatcher = WT_ELEMENT_REGEX.matcher(paragraph);
       while (wtElementMatcher.find()) {
@@ -273,7 +263,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
          if (outlineNumberMatcher.matches() && paragraphNumber.length() > 2) { //length check excludes 1. non-zero based paragraph numbers.
             processSpecializedOutlineNumberAndTitle(outlineNumberMatcher.group(),
                wtStorage.subSequence(indexOfFirstSpace, wtStorage.length()).toString(), outlineNumberStorage,
-               outlineTitleStorage);
+               outlineTitleStorage, paragraphStyle);
          } else {
             outlineTitleStorage = wtStorage;
          }
@@ -284,24 +274,9 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
 
    }
 
-   private void processSpecializedOutlineNumberAndTitle(String currentOutlineNumber, String formOfOutlineTitle, StringBuilder outlineNumberStorage, StringBuilder outlineTitleStorage) throws OseeCoreException {
-      String lastOutlineNumber = getLastHeaderNumber();
-
-      lastDeterminedContentType = ContentType.OUTLINE_TITLE;
-
-      if (outlineResolution.isInvalidOutlineNumber(currentOutlineNumber, lastOutlineNumber)) {
-         if (duplicateCatcher.get(currentOutlineNumber) == null) {
-            userAskedForHelp = true;
-            Collection<String> paramList = new ArrayList<String>();
-            paramList.add(lastOutlineNumber);
-            paramList.add(currentOutlineNumber);
-            lastDeterminedContentType = conflictResolvingGui.determineContentType(paramList);
-         } else {
-            lastDeterminedContentType = ContentType.CONTENT;
-         }
-      } else {
-         userAskedForHelp = false;
-      }
+   private void processSpecializedOutlineNumberAndTitle(String currentOutlineNumber, String formOfOutlineTitle, StringBuilder outlineNumberStorage, StringBuilder outlineTitleStorage, String paragraphStyle) {
+      boolean valid = determineIfValid(currentOutlineNumber, paragraphStyle);
+      lastDeterminedContentType = valid ? ContentType.OUTLINE_TITLE : ContentType.CONTENT;
 
       switch (lastDeterminedContentType) {
          case CONTENT:
@@ -317,10 +292,9 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
       }
    }
 
-   public boolean userAskedForHelp() {
-      return userAskedForHelp;
-   }
-
+   /**
+    * Sets up storage (word formatted storage) for new artifact.
+    */
    private void setContent() {
       if (roughArtifact != null) {
          roughArtifact.addAttribute(CoreAttributeTypes.WordTemplateContent, wordFormattedContent.toString());
@@ -346,15 +320,18 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
          RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY);
          duplicateCatcher.put(outlineNumber, roughArtifact);
 
-         collector.addRoughArtifact(roughArtifact);
+         if (collector != null) {
+            collector.addRoughArtifact(roughArtifact);
+         }
          roughArtifact.setSectionNumber(outlineNumber);
 
          roughArtifact.addAttribute(CoreAttributeTypes.ParagraphNumber, outlineNumber);
 
          return roughArtifact;
       } else {
+         String previousArtifcatName = previousNamedArtifact != null ? previousNamedArtifact.getName() : "null";
          throw new OseeStateException("Paragraph %s found more than once following \"%s\" which is a duplicate of %s",
-            outlineNumber, previousNamedArtifact.getName(), duplicateArtifact.getName());
+            outlineNumber, previousArtifcatName, duplicateArtifact.getName());
       }
    }
 

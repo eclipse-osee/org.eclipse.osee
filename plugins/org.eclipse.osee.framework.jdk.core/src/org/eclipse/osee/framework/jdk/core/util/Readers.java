@@ -42,7 +42,7 @@ public final class Readers {
       final String EMPTY_TAG = "<" + elementName + "/>";
       final String OPEN_TAG = "<" + elementName + ">";
       final String OPEN_TAG_WITH_ATTR = "<" + elementName + " ";
-      final CharSequence[] TAGS = new CharSequence[] {CLOSE_TAG, EMPTY_TAG, OPEN_TAG, OPEN_TAG_WITH_ATTR};
+      final CharSequence[] TAGS = {CLOSE_TAG, EMPTY_TAG, OPEN_TAG, OPEN_TAG_WITH_ATTR};
 
       int elementDepthCount = 1;
       StringBuilder read = null;

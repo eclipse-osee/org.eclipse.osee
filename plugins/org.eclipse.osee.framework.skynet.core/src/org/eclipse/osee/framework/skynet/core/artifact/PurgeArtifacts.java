@@ -54,15 +54,15 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
    private boolean success;
    private final boolean recurseChildrenBranches;
 
+   public PurgeArtifacts(Collection<? extends Artifact> artifactsToPurge) {
+      this(artifactsToPurge, false);
+   }
+
    public PurgeArtifacts(Collection<? extends Artifact> artifactsToPurge, boolean recurseChildrenBranches) {
       super(Activator.getInstance().getOseeDatabaseService(), "Purge Artifact", Activator.PLUGIN_ID);
       this.artifactsToPurge = new LinkedList<Artifact>(artifactsToPurge);
       this.success = false;
       this.recurseChildrenBranches = recurseChildrenBranches;
-   }
-
-   public PurgeArtifacts(Collection<? extends Artifact> artifactsToPurge) {
-      this(artifactsToPurge, false);
    }
 
    @Override

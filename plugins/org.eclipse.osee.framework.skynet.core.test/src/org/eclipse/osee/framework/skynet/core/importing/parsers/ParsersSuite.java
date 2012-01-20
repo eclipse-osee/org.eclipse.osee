@@ -14,12 +14,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ //
-WordMLExtractorDelegateTableOfContentsTest.class, //
-   WordOutlineTest.class, //
-   OutlineResolutionAndNumberTest.class, //
-   WordMlResolutionGuiTest.class, //
-})
+@Suite.SuiteClasses({
+   WordMLExtractorDelegateTableOfContentsTest.class,
+   WordOutlineTest.class,
+   OutlineResolutionAndNumberTest.class,
+   RoughArtifactMetaDataTest.class})
 public class ParsersSuite {
    // do nothing
 }

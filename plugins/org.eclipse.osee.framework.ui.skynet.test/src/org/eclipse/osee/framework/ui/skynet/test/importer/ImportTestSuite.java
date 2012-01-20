@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ArtifactImportWizardTest.class})
+@Suite.SuiteClasses({ArtifactImportWizardTest.class, WordOutlineAndStyleTest.class})
 /**
  * @author Karol M. Wilk
  */

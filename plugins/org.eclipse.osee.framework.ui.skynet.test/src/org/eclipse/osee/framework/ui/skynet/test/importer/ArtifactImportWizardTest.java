@@ -10,18 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.test.importer;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -115,21 +111,12 @@ public final class ArtifactImportWizardTest {
 
    private void buildAndRunCoreTest(String nameOfExcelImportFile) throws Exception {
       File inputExcelFile = OseeData.getFile("artifact.import.wizard.test." + nameOfExcelImportFile);
-
       URL url = ArtifactImportWizardTest.class.getResource(nameOfExcelImportFile);
+      url = FileLocator.resolve(url);
+
       Assert.assertNotNull(url);
 
-      // Copy input file from jar file during build and test 
-      InputStream inputStream = null;
-      OutputStream outputStream = null;
-      try {
-         inputStream = new BufferedInputStream(url.openStream());
-         outputStream = new BufferedOutputStream(new FileOutputStream(inputExcelFile));
-         Lib.inputStreamToOutputStream(inputStream, outputStream);
-      } finally {
-         Lib.close(inputStream);
-         Lib.close(outputStream);
-      }
+      Lib.copyFile(new File(url.toURI()), inputExcelFile);
 
       Assert.assertTrue(inputExcelFile.exists());
       try {
@@ -140,10 +127,10 @@ public final class ArtifactImportWizardTest {
          collector.reset();
 
          IOperation operation =
-            ArtifactImportOperationFactory.createArtifactAndRoughToRealOperation(inputExcelFile, myRootArtifact, null,
+            ArtifactImportOperationFactory.createOperation(inputExcelFile, myRootArtifact, null,
                new ExcelArtifactExtractor(), resolver, collector, Arrays.asList(CoreArtifactTypes.SystemRequirement),
                true, true, false);
-         Operations.executeWork(operation);
+         Operations.executeWorkAndCheckStatus(operation);
 
          Assert.assertFalse(collector.getRoughArtifacts().isEmpty());
       } finally {
@@ -151,23 +138,24 @@ public final class ArtifactImportWizardTest {
       }
    }
 
+   /**
+    * setup artifact tree of this form:
+    * 
+    * <pre>
+    * myRootArtifact
+    *              |
+    *              `--A
+    *              |   \._ C
+    *              |   |
+    *              |   `._ D
+    *              |
+    *              `--B
+    * </pre>
+    * 
+    * Where myRootArtifact real name is "ArtifactImportWizardTest_Root"
+    */
    @Before
    public void setUp() throws Exception {
-      //@formatter:off
-      /*
-       setup artifact tree of this form:
-         myRootArtifact
-                      |
-                      `--A
-                      |   \._ C
-                      |   |
-                      |   `._ D
-                      |
-                      `--B
-         Where myRootArtifact real name is "ArtifactImportWizardTest_Root"
-       */
-      //@formatter:on
-
       myRootArtifact =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, DemoSawBuilds.SAW_Bld_1,
             "ArtifactImportWizardTest_Root", "ArtifatImpWizaTestGUID", "12345");
@@ -193,8 +181,7 @@ public final class ArtifactImportWizardTest {
 
    @After
    public void tearDown() throws Exception {
-      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(myRootArtifact.getDescendants()));
-      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(Collections.singletonList(myRootArtifact)));
+      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(Collections.singletonList(myRootArtifact), true));
    }
 
    @BeforeClass

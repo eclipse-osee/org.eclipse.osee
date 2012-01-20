@@ -35,6 +35,7 @@ public class BootStrapUser extends User {
       return instance;
    }
 
+   @SuppressWarnings("unused")
    private static final long serialVersionUID = 1L;
 
    @Override

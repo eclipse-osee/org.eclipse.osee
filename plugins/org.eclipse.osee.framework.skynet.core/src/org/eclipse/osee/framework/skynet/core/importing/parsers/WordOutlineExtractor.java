@@ -39,7 +39,7 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
    private static final String TABLE_TAG_WITH_ATTRS = "<w:tbl ";
    private static final String TABLE_TAG_EMPTY = "<w:tbl/>";
    private static final String TABLE_TAG = "<w:tbl>";
-   private static final CharSequence[] BODY_TAGS = new CharSequence[] {
+   private static final CharSequence[] BODY_TAGS = {
       PARAGRAPH_TAG,
       PARAGRAPH_TAG_EMPTY,
       PARAGRAPH_TAG_WITH_ATTRS,
@@ -69,10 +69,6 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
    private boolean forceBody;
    private boolean forcePrimaryType;
    private String paragraphStyle;
-
-   public WordOutlineExtractor() {
-      //
-   }
 
    @Override
    public String getName() {
@@ -185,15 +181,15 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
             matcher.group(ATTRIBUTE_BLOCK_GROUP) == null ? "" : matcher.group(ATTRIBUTE_BLOCK_GROUP);
          String elementContent = matcher.group(CONTENT_GROUP) == null ? "" : matcher.group(CONTENT_GROUP);
 
-         if (elementName.equals("forceBodyOn")) {
+         if ("forceBodyOn".equals(elementName)) {
             forceBody = true;
-         } else if (elementName.equals("forceBodyOff")) {
+         } else if ("forceBodyOff".equals(elementName)) {
             forceBody = false;
-         } else if (elementName.equals("pStyle")) {
+         } else if ("pStyle".equals(elementName)) {
             paragraphStyle = getAttributeValue("w:val", elementAttributes);
-         } else if (elementName.equals("forcePrimaryType")) {
+         } else if ("forcePrimaryType".equals(elementName)) {
             forcePrimaryType = true;
-         } else if (elementNamespace.startsWith("w") && elementName.equals("t")) {
+         } else if (elementNamespace.startsWith("w") && "t".equals(elementName)) {
             String numberCandidate = getAttributeValue("wx:val", elementAttributes);
 
             reqNumberMatcher.reset(numberCandidate);

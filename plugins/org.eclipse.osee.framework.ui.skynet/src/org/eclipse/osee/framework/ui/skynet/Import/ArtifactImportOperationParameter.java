@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  * Example:
  *
  * <pre>
+ * {@code
  * ...
  * ArtifactImportOperationParameter <b>importParams</b> = new ArtifactImportOperationParameter();
  * importParameters.setSourceFile(sourceFile);
@@ -39,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  * ...
  * IOperation operation = ArtifactImportOperationFactory.createOperation(<b>importParams</b>);
  * ...
+ * }
  * </pre>
  */
 public class ArtifactImportOperationParameter {

@@ -13,12 +13,10 @@ package org.eclipse.osee.framework.skynet.core.word;
 import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Stack;
-
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.xpath.XPath;
-
 import org.apache.xml.serialize.OutputFormat;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -29,10 +27,6 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
-
-
-
 
 public class UpdateBookmarkIds {
    private static final String WORD_PREFIX =
@@ -119,9 +113,9 @@ public class UpdateBookmarkIds {
             }
          }
          if (changesMade) {
-        	 //This technique is necessary because Word does not support start and ending empty tags.
-             OutputFormat myOutputFormat = Jaxp.getCompactFormat(document);
-             toReturn = stripOffBodyTag(Jaxp.xmlToString(document, myOutputFormat));
+            //This technique is necessary because Word does not support start and ending empty tags.
+            OutputFormat myOutputFormat = Jaxp.getCompactFormat(document);
+            toReturn = stripOffBodyTag(Jaxp.xmlToString(document, myOutputFormat));
          }
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
@@ -138,6 +132,7 @@ public class UpdateBookmarkIds {
       return bookMarkId;
    }
 
+   @SuppressWarnings("unused")
    private static String xmlSectionToString(Node root) throws XMLStreamException {
       StringWriter writer = new StringWriter();
       XMLOutputFactory factory = XMLOutputFactory.newInstance();

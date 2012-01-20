@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.DatabaseTransactions;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
@@ -110,9 +109,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
       try {
          TransactionDelta txDelta = new TransactionDelta(fromTransactionId, toTransactionId);
 
-         int count = 0;
          while (chStmt.next()) {
-            count++;
             int attrId = chStmt.getInt("attr_id");
             int artId = chStmt.getInt("art_id");
             int sourceGamma = chStmt.getInt("gamma_id");
@@ -168,7 +165,6 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
 
    private void loadAttributeWasValues(Branch sourceBranch, TransactionRecord transactionId, Set<Integer> artIds, IProgressMonitor monitor, Map<Integer, ChangeBuilder> attributesWasValueCache, boolean hasBranch) throws OseeCoreException, OseeDataStoreException {
       if (!artIds.isEmpty()) {
-         int count = 0;
          int sqlParamter; // Will either be a branch id or transaction id
          Branch wasValueBranch;
          String sql;
@@ -198,7 +194,6 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
             int previousAttrId = -1;
 
             while (chStmt.next()) {
-               count++;
                int attrId = chStmt.getInt("attr_id");
 
                if (previousAttrId != attrId) {

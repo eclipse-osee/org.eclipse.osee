@@ -28,6 +28,9 @@ import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
+ * Usually used as part of the import process to filter items found by the {@link RoughArtifactCollector}
+ * {@link #collector}. Result fills the {@link #selectedArtifactTypes}.
+ *
  * @author Roberto E. Escobar
  */
 public class FilterArtifactTypesByAttributeTypes extends AbstractOperation {
@@ -36,6 +39,12 @@ public class FilterArtifactTypesByAttributeTypes extends AbstractOperation {
    private final Collection<IArtifactType> selectedArtifactTypes;
    private final RoughArtifactCollector collector;
 
+   /**
+    * @param branch
+    * @param collector
+    * @param selectedArtifactTypes ----> <b>MUTABLE</b> list of items {{@link #doWork(IProgressMonitor)} will operate
+    * on.
+    */
    public FilterArtifactTypesByAttributeTypes(IOseeBranch branch, RoughArtifactCollector collector, Collection<IArtifactType> selectedArtifactTypes) {
       super("Filter Artifact Types", Activator.PLUGIN_ID);
       this.branch = branch;

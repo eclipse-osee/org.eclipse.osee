@@ -152,6 +152,10 @@ public class RoughArtifact {
       this.number = new ReqNumbering(number);
    }
 
+   public ReqNumbering getSectionNumber() {
+      return this.number;
+   }
+
    public RoughAttributeSet getAttributes() {
       return attributes;
    }

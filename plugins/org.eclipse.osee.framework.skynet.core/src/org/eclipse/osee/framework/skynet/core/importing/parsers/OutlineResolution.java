@@ -10,56 +10,111 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.importing.ReqNumbering;
 
+/**
+ * Decides whether a outline number is valid or invalid.
+ *
+ * @see OutlineResolutionAndNumberTest
+ * @author Karol Wilk
+ */
 public final class OutlineResolution {
 
-   public final boolean isInvalidOutlineNumber(String currentOutlineNumber, String lastOutlineNumber) {
-      if (Strings.isValid(currentOutlineNumber, lastOutlineNumber)) {
+   /**
+    * Converts <code>currentOutlineNumber</code> and <code>lastOutlineNumber</code> to ReqNumbering (without trimming
+    * ending 0s) and runs
+    * <code>isInvalidOutlineNumber(ReqNumbering currentOutlineNumber, ReqNumbering lastOutlineNumber)</code>
+    *
+    * @param currentOutlineNumber
+    * @param lastOutlineNumber
+    * @return
+    */
+   public boolean isInvalidOutlineNumber(String currentOutlineNumber, String lastOutlineNumber) {
 
+      boolean resolution = Strings.isValid(currentOutlineNumber, lastOutlineNumber);
+
+      if (resolution) {
          ReqNumbering current = new ReqNumbering(currentOutlineNumber, false);
          ReqNumbering last = new ReqNumbering(lastOutlineNumber, false);
 
+         resolution = isInvalidOutlineNumber(current, last);
+      }
+
+      return resolution;
+   }
+
+   /**
+    * Compares <code>currentOutlineNumber</code> and <code>lastOutlineNumber</code> to determine if current is not next
+    * in outline numbering sequence. Assumes that <code>last</code> is the last valid outline number. <b>NOTE</b>
+    * Accepts larger paragraph numbers
+    *
+    * @param currentOutlineNumber
+    * @param lastOutlineNumber
+    * @return
+    */
+   public boolean isInvalidOutlineNumber(ReqNumbering current, ReqNumbering last) {
+      boolean invalid = Conditions.notNull(current, last);
+      if (invalid) {
          switch (last.compareTo(current)) {
+            case -1: //just test upper bound of last, assuming last is last correct paragraph no
+               invalid = !generateNextSet(last).contains(current.getNumberString());
+               //and if the current is generally larger but has not been generated, due to sequence of from:
+               // $current.n.k, st "n -> oo, k -> oo", "n, k in Z", "oo is infinity"
+               if (invalid) {
+                  invalid = current.getNumberString().length() - last.getNumberString().length() < 4;
+                  //TODO: another check could be delta should be at most 1?
+               }
+               break;
             case 1:
-            case -1:
-               boolean check = !generateNextSet(last).contains(current.getNumberString());
-               return check;
             case 0:
             default:
-               return false;
+               invalid = true;
+               break;
          }
-      } else {
-         return false;
       }
+      return invalid;
    }
 
    /**
     * @param lastNumberParagrah i.e. new ReqNumbering("4.0");
-    * @return set of combinations i.e ["4.1, 5.0"]
+    * @return set of combinations i.e ["4.1, 5.0, 5., 4.0.1"]
     */
-   public Collection<String> generateNextSet(ReqNumbering lastNumberParagrah) {
+   public Set<String> generateNextSet(ReqNumbering lastNumberParagrah) {
+
+      Set<String> nextParagraphs = new HashSet<String>();
+
       String last = lastNumberParagrah.getNumberString();
-      Collection<String> nextParagraphs = new HashSet<String>();
-
-      for (int i = last.length() - 1; i >= 0; i--) {
-
-         if (last.charAt(i) != '.') {
-            int currentInt = extractDigitsSafely(last.subSequence(i, i + 1).toString());
-
-            if (i == last.length() - 1) {
-               nextParagraphs.add(String.format("%s%s", last, ".0.1"));
-               nextParagraphs.add(String.format("%s%s", last, ".1"));
-            }
-
-            nextParagraphs.add(String.format("%s%s", last.subSequence(0, i),
-               (i != 0) ? currentInt + 1 : String.format("%s.0", currentInt + 1)));
-         }
+      if (last.endsWith(".0")) {
+         last = last.substring(0, last.length() - ".0".length());
       }
 
+      last = Strings.truncateEndChar(last, '.');
+
+      if (!last.endsWith(".0.1")) { //special s p
+         nextParagraphs.add(last + ".0.1");
+         nextParagraphs.add(last + ".1");
+      }
+
+      String[] digits = last.split("\\.");
+      for (int i = 0; i < digits.length; i++) {
+         int incDigit = extractDigitsSafely(digits[i]) + 1;
+
+         if (i == 0) {
+            nextParagraphs.add(incDigit + ".0");
+            nextParagraphs.add(incDigit + ".");
+         } else {
+            StringBuilder nextNew = new StringBuilder(digits.length * 2);
+            for (int j = 0; j < i; j++) {
+               nextNew.append(digits[j] + ".");
+            }
+            nextParagraphs.add(nextNew.toString() + Integer.toString(incDigit));
+         }
+
+      }
       return nextParagraphs;
    }
 
@@ -68,7 +123,7 @@ public final class OutlineResolution {
       try {
          returnValue = Integer.parseInt(stringContainingDigit);
       } catch (NumberFormatException ex) {
-         returnValue = 0;
+         //Do nothing
       }
       return returnValue;
    }

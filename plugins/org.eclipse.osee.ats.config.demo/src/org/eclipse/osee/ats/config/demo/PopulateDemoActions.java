@@ -384,7 +384,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       importOptions.setExtractor(extractor);
       importOptions.setResolver(artifactResolver);
 
-      IOperation operation = ArtifactImportOperationFactory.createOperation(importOptions);
+      IOperation operation = ArtifactImportOperationFactory.completeOperation(importOptions);
       Operations.executeWorkAndCheckStatus(operation);
 
       // Validate that something was imported
