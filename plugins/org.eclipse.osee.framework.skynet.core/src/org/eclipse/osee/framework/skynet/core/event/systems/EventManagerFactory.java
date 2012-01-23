@@ -35,6 +35,9 @@ public class EventManagerFactory {
 
    private ExecutorService createExecutor(String threadPrefix) {
       int numberOfProcessors = Runtime.getRuntime().availableProcessors();
+      if (numberOfProcessors > 4) {
+         numberOfProcessors = 4;
+      }
       ThreadFactory threadFactory = new OseeEventThreadFactory(threadPrefix);
       return Executors.newFixedThreadPool(numberOfProcessors, threadFactory);
    }
