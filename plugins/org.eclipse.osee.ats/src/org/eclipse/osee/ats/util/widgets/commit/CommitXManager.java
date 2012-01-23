@@ -21,8 +21,10 @@ import org.eclipse.osee.ats.core.branch.CommitStatus;
 import org.eclipse.osee.ats.core.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsBranchManager;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -57,12 +59,12 @@ public class CommitXManager extends XViewer {
       getLabelProvider().dispose();
    }
 
-   public List<ICommitConfigArtifact> getSelectedConfigArtifacts() {
-      List<ICommitConfigArtifact> arts = new ArrayList<ICommitConfigArtifact>();
+   public List<Object> getSelectedArtifacts() {
+      List<Object> arts = new ArrayList<Object>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
-            arts.add((ICommitConfigArtifact) item.getData());
+            arts.add(item.getData());
          }
       }
       return arts;
@@ -78,9 +80,22 @@ public class CommitXManager extends XViewer {
    @Override
    public void handleDoubleClick() {
       try {
-         ICommitConfigArtifact configArt = getSelectedConfigArtifacts().iterator().next();
-         Branch destBranch = configArt.getParentBranch();
-         CommitStatus commitStatus = AtsBranchManagerCore.getCommitStatus(xCommitManager.getTeamArt(), configArt);
+         Object firstSelectedArt = getSelectedArtifacts().iterator().next();
+         Branch branch = null;
+         String displayName = "";
+         if (firstSelectedArt instanceof ICommitConfigArtifact) {
+            ICommitConfigArtifact configArt = (ICommitConfigArtifact) firstSelectedArt;
+            branch = configArt.getParentBranch();
+            displayName = configArt.toString();
+         } else if (firstSelectedArt instanceof TransactionRecord) {
+            TransactionRecord txRecord = (TransactionRecord) firstSelectedArt;
+            branch = txRecord.getBranch();
+            displayName = txRecord.toString();
+         } else {
+            throw new OseeArgumentException("Unhandled element type [%s]", firstSelectedArt.getClass().toString());
+         }
+
+         CommitStatus commitStatus = AtsBranchManagerCore.getCommitStatus(xCommitManager.getTeamArt(), branch);
          if (commitStatus == CommitStatus.Working_Branch_Not_Created) {
             AWorkbench.popup(commitStatus.getDisplayName(), "Need to create a working branch");
          } else if (commitStatus == CommitStatus.No_Commit_Needed) {
@@ -88,22 +103,19 @@ public class CommitXManager extends XViewer {
                "Destination Branch creation date is after commit to Parent Destination Branch; No Action Needed");
          } else if (commitStatus == CommitStatus.Branch_Not_Configured) {
             AWorkbench.popup(commitStatus.getDisplayName(),
-               "Talk to project lead to configure branch for version [" + configArt + "]");
+               "Talk to project lead to configure branch for version [" + displayName + "]");
          } else if (commitStatus == CommitStatus.Branch_Commit_Disabled) {
             AWorkbench.popup(commitStatus.getDisplayName(),
-               "Talk to project lead as to why commit disabled for version [" + configArt + "]");
+               "Talk to project lead as to why commit disabled for version [" + displayName + "]");
          } else if (commitStatus == CommitStatus.Commit_Needed) {
-            destBranch = configArt.getParentBranch();
-            AtsBranchManager.commitWorkingBranch(xCommitManager.getTeamArt(), true, false, destBranch,
-               AtsBranchManagerCore.isBranchesAllCommittedExcept(xCommitManager.getTeamArt(), destBranch));
+            AtsBranchManager.commitWorkingBranch(xCommitManager.getTeamArt(), true, false, branch,
+               AtsBranchManagerCore.isBranchesAllCommittedExcept(xCommitManager.getTeamArt(), branch));
          } else if (commitStatus == CommitStatus.Merge_In_Progress) {
-            destBranch = configArt.getParentBranch();
-            AtsBranchManager.commitWorkingBranch(xCommitManager.getTeamArt(), true, false, destBranch,
-               AtsBranchManagerCore.isBranchesAllCommittedExcept(xCommitManager.getTeamArt(), destBranch));
+            AtsBranchManager.commitWorkingBranch(xCommitManager.getTeamArt(), true, false, branch,
+               AtsBranchManagerCore.isBranchesAllCommittedExcept(xCommitManager.getTeamArt(), branch));
          } else if (commitStatus == CommitStatus.Committed) {
-            AtsBranchManager.showChangeReportForBranch(xCommitManager.getTeamArt(), destBranch);
+            AtsBranchManager.showChangeReportForBranch(xCommitManager.getTeamArt(), branch);
          } else if (commitStatus == CommitStatus.Committed_With_Merge) {
-            destBranch = configArt.getParentBranch();
             MessageDialog dialog =
                new MessageDialog(Displays.getActiveShell(), "Select Report", null,
                   "Both Change Report and Merge Manager exist.\n\nSelect to open.", MessageDialog.QUESTION,
@@ -114,11 +126,11 @@ public class CommitXManager extends XViewer {
             }
             // change report
             if (result == 0) {
-               AtsBranchManager.showChangeReportForBranch(xCommitManager.getTeamArt(), destBranch);
+               AtsBranchManager.showChangeReportForBranch(xCommitManager.getTeamArt(), branch);
             }
             // merge manager
             else {
-               AtsBranchManager.showMergeManager(xCommitManager.getTeamArt(), destBranch);
+               AtsBranchManager.showMergeManager(xCommitManager.getTeamArt(), branch);
             }
          }
       } catch (OseeCoreException ex) {

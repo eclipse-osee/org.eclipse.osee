@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
-import org.eclipse.osee.ats.core.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
@@ -254,12 +253,13 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
 
    }
 
+   @SuppressWarnings("unused")
    public void loadTable() {
       try {
          if (xCommitManager != null && teamArt != null && xCommitManager.getContentProvider() != null) {
-            Collection<ICommitConfigArtifact> configArtSet =
-               AtsBranchManagerCore.getConfigArtifactsConfiguredToCommitTo(teamArt);
-            xCommitManager.setInput(configArtSet);
+            Collection<Object> commitMgrInputObjs =
+               AtsBranchManagerCore.getCommitTransactionsAndConfigItemsForTeamWf(teamArt);
+            xCommitManager.setInput(commitMgrInputObjs);
             xCommitManager.refresh();
             refresh();
          }

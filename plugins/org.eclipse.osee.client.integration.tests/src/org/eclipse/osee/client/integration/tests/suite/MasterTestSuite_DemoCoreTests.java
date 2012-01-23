@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.config.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.core.AtsCore_JT_Suite;
 import org.eclipse.osee.ats.core.AtsCore_PT_Suite;
+import org.eclipse.osee.ats.core.branch.AtsBranchManagerCoreTest;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClientSession;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -28,7 +29,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AtsCore_JT_Suite.class, AtsCore_PT_Suite.class})
+@Suite.SuiteClasses({AtsCore_JT_Suite.class, AtsCore_PT_Suite.class, AtsBranchManagerCoreTest.class})
 /**
  * Core tests that are necessary before populate demo database is run
  * @author Donald G. Dunne

@@ -150,8 +150,7 @@ public class AtsBranchManagerCore {
       return !conflictManager.remainingConflictsExist();
    }
 
-   public static TransactionRecord getCommitTransactionRecord(TeamWorkFlowArtifact teamArt, ICommitConfigArtifact configArt) throws OseeCoreException {
-      Branch branch = configArt.getParentBranch();
+   public static TransactionRecord getCommitTransactionRecord(TeamWorkFlowArtifact teamArt, Branch branch) throws OseeCoreException {
       if (branch == null) {
          return null;
       }
@@ -163,6 +162,11 @@ public class AtsBranchManagerCore {
          }
       }
       return null;
+   }
+
+   public static TransactionRecord getCommitTransactionRecord(TeamWorkFlowArtifact teamArt, ICommitConfigArtifact configArt) throws OseeCoreException {
+      Branch branch = configArt.getParentBranch();
+      return getCommitTransactionRecord(teamArt, branch);
    }
 
    public static CommitStatus getCommitStatus(TeamWorkFlowArtifact teamArt, ICommitConfigArtifact configArt) throws OseeCoreException {
@@ -440,6 +444,55 @@ public class AtsBranchManagerCore {
          return null;
       }
       return branch.getId();
+   }
+
+   /**
+    * @return Logically combines the results from getConfigArtifactsConfiguredToCommitTo() and
+    * getCommitTransactionsToUnarchivedBaslineBranchs() into a single Collection of Objects. Objects are selected from
+    * getConfigArtifactsConfiguredToCommitTo() first. Then compared to the branches in the Collection of TxRecords from
+    * getCommitTransactionsToUnarchivedBaslineBranchs(). The TxRecords take LESS priority than the ICommitConfigArts
+    * from getConfigArtifactsConfiguredToCommitTo()
+    */
+   public static Collection<Object> getCommitTransactionsAndConfigItemsForTeamWf(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+      Collection<ICommitConfigArtifact> configArtSet = getConfigArtifactsConfiguredToCommitTo(teamArt);
+      Collection<TransactionRecord> commitTxs = getCommitTransactionsToUnarchivedBaslineBranchs(teamArt);
+      Collection<Object> commitMgrInputObjs = combineCommitTransactionsAndConfigItems(configArtSet, commitTxs);
+      return commitMgrInputObjs;
+   }
+
+   /**
+    * This method was refactored from above so it could be tested independently
+    *
+    * @param configArtSet
+    * @param commitTxs
+    * @return
+    * @throws OseeCoreException
+    */
+   public static Collection<Object> combineCommitTransactionsAndConfigItems(Collection<ICommitConfigArtifact> configArtSet, Collection<TransactionRecord> commitTxs) throws OseeCoreException {
+      // commitMgrInputObjs will hold a union of all commits from configArtSet and commitTxs.
+      // - first, we addAll configArtSet
+      // - next, we loop through commitTxs and for any tx that has the same branch as ANY pre-existing commit
+      //    in configArtSet we do NOT add it to commitMgrInputObjs.
+      Collection<Object> commitMgrInputObjs = new HashSet<Object>();
+      commitMgrInputObjs.addAll(configArtSet);
+      //for each tx commit...
+      for (TransactionRecord txRecord : commitTxs) {
+         Branch txBranch = txRecord.getBranch();
+         boolean isCommitAlreadyPresent = false;
+         // ... compare the branch of the tx commit to all the parent branches in configArtSet and do NOT add the tx
+         // commit if it is already represented.
+         for (ICommitConfigArtifact configArt : configArtSet) {
+            Branch configArtBranch = configArt.getParentBranch();
+            if (txBranch == configArtBranch) {
+               isCommitAlreadyPresent = true;
+               break;
+            }
+         }
+         if (!isCommitAlreadyPresent) {
+            commitMgrInputObjs.add(txRecord);
+         }
+      }
+      return commitMgrInputObjs;
    }
 
    private static Collection<TransactionRecord> getCommitTransactionsToUnarchivedBaslineBranchs(TeamWorkFlowArtifact teamArt) throws OseeCoreException {

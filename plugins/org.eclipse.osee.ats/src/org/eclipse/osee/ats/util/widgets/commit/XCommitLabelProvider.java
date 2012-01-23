@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.core.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.version.VersionArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -41,8 +42,17 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
 
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
-      ICommitConfigArtifact configArt = (ICommitConfigArtifact) element;
-      Branch branch = configArt.getParentBranch();
+      Branch branch = null;
+      if (element instanceof ICommitConfigArtifact) {
+         ICommitConfigArtifact configArt = (ICommitConfigArtifact) element;
+         branch = configArt.getParentBranch();
+      } else if (element instanceof TransactionRecord) {
+         TransactionRecord txRecord = (TransactionRecord) element;
+         branch = txRecord.getBranch();
+      } else {
+         throw new OseeArgumentException("Unhandled element type [%s]", element.getClass().toString());
+      }
+
       if (xCol.equals(CommitXManagerFactory.Action_Col)) {
          return ImageManager.getImage(FrameworkImage.ARROW_RIGHT_YELLOW);
       }
@@ -52,7 +62,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       if (xCol.equals(CommitXManagerFactory.Status_Col)) {
          try {
             CommitStatus commitStatus =
-               AtsBranchManagerCore.getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), configArt);
+               AtsBranchManagerCore.getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), branch);
             if (commitStatus == CommitStatus.Branch_Not_Configured || commitStatus == CommitStatus.Branch_Commit_Disabled ||
             //
             commitStatus == CommitStatus.Commit_Needed || commitStatus == CommitStatus.Working_Branch_Not_Created) {
@@ -73,7 +83,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       } else if (xCol.equals(CommitXManagerFactory.Merge_Col)) {
          try {
             CommitStatus commitStatus =
-               AtsBranchManagerCore.getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), configArt);
+               AtsBranchManagerCore.getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), branch);
             if (commitStatus == CommitStatus.Merge_In_Progress || commitStatus == CommitStatus.Committed_With_Merge) {
                return ImageManager.getImage(FrameworkImage.OUTGOING_MERGED);
             }
@@ -87,34 +97,58 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
 
    @Override
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
-      ICommitConfigArtifact configArt = (ICommitConfigArtifact) element;
-      Branch branch = configArt.getParentBranch();
+      Branch branch = null;
+      if (element instanceof ICommitConfigArtifact) {
+         ICommitConfigArtifact configArt = (ICommitConfigArtifact) element;
+         branch = configArt.getParentBranch();
+      } else if (element instanceof TransactionRecord) {
+         TransactionRecord txRecord = (TransactionRecord) element;
+         branch = txRecord.getBranch();
+      } else {
+         throw new OseeArgumentException("Unhandled element type [%s]", element.getClass().toString());
+      }
 
       if (xCol.equals(CommitXManagerFactory.Status_Col)) {
-         return AtsBranchManagerCore.getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), configArt).getDisplayName();
+         return AtsBranchManagerCore.getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), branch).getDisplayName();
       } else if (xCol.equals(CommitXManagerFactory.Merge_Col)) {
          return "";
       } else if (xCol.equals(CommitXManagerFactory.Version_Col)) {
-         return ((Artifact) element).getName();
+         return handleVersionColumn(element);
       } else if (xCol.equals(CommitXManagerFactory.Configuring_Object_Col)) {
-         return ((Artifact) element).getArtifactTypeName();
+         return handleArtifactTypeNameColumn(element);
       } else if (xCol.equals(CommitXManagerFactory.Commit_Date)) {
-         return handleCommitDateColumn(configArt);
+         return handleCommitDateColumn(branch);
       } else if (xCol.equals(CommitXManagerFactory.Commit_Comment)) {
-         return handleCommitCommentColumn(configArt);
+         return handleCommitCommentColumn(branch);
       } else if (xCol.equals(CommitXManagerFactory.Dest_Branch_Col)) {
          return handleDestBranchColumn(element, branch);
       } else if (xCol.equals(CommitXManagerFactory.Dest_Branch_Create_Date_Col)) {
          return handleDestBranchCreationDateColumn(element, branch);
       } else if (xCol.equals(CommitXManagerFactory.Action_Col)) {
-         return handleActionColumn(configArt);
+         return handleActionColumn(branch);
       }
       return "unhandled column";
    }
 
-   private String handleCommitDateColumn(ICommitConfigArtifact configArt) throws OseeCoreException {
+   private String handleVersionColumn(Object element) {
+      if (element instanceof ICommitConfigArtifact) {
+         return ((Artifact) element).getName();
+      } else {
+         return "";
+      }
+   }
+
+   private String handleArtifactTypeNameColumn(Object element) {
+      if (element instanceof ICommitConfigArtifact) {
+         return ((Artifact) element).getArtifactTypeName();
+      } else {
+         return "";
+      }
+   }
+
+   private String handleCommitDateColumn(Branch branch) throws OseeCoreException {
       TransactionRecord transactionRecord =
-         AtsBranchManagerCore.getCommitTransactionRecord(commitXManager.getXCommitViewer().getTeamArt(), configArt);
+         AtsBranchManagerCore.getCommitTransactionRecord(commitXManager.getXCommitViewer().getTeamArt(), branch);
       if (transactionRecord != null) {
          new DateUtil();
          return DateUtil.getMMDDYYHHMM(transactionRecord.getTimeStamp());
@@ -122,9 +156,9 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       return "Not Committed";
    }
 
-   private String handleCommitCommentColumn(ICommitConfigArtifact configArt) throws OseeCoreException {
+   private String handleCommitCommentColumn(Branch branch) throws OseeCoreException {
       TransactionRecord transactionRecord =
-         AtsBranchManagerCore.getCommitTransactionRecord(commitXManager.getXCommitViewer().getTeamArt(), configArt);
+         AtsBranchManagerCore.getCommitTransactionRecord(commitXManager.getXCommitViewer().getTeamArt(), branch);
       if (transactionRecord != null) {
          return transactionRecord.getComment();
       }
@@ -136,6 +170,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          return branch == null ? "Parent Branch Not Configured for Version [" + element + "]" : branch.getShortName();
       } else if (element instanceof TeamDefinitionArtifact) {
          return branch == null ? "Parent Branch Not Configured for Team Definition [" + element + "]" : branch.getShortName();
+      } else if (element instanceof TransactionRecord) {
+         return branch.getShortName();
       }
       return "";
    }
@@ -145,13 +181,15 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          return branch == null ? "Parent Branch Not Configured for Version [" + element + "]" : DateUtil.getMMDDYYHHMM(branch.getBaseTransaction().getTimeStamp());
       } else if (element instanceof TeamDefinitionArtifact) {
          return branch == null ? "Parent Branch Not Configured for Team Definition [" + element + "]" : DateUtil.getMMDDYYHHMM(branch.getBaseTransaction().getTimeStamp());
+      } else if (element instanceof TransactionRecord) {
+         return DateUtil.getMMDDYYHHMM(branch.getBaseTransaction().getTimeStamp());
       }
       return "";
    }
 
-   private String handleActionColumn(ICommitConfigArtifact configArt) throws OseeCoreException {
+   private String handleActionColumn(Branch branch) throws OseeCoreException {
       CommitStatus commitStatus =
-         AtsBranchManagerCore.getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), configArt);
+         AtsBranchManagerCore.getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), branch);
       if (commitStatus == CommitStatus.Branch_Not_Configured) {
          return "Configure Branch";
       } else if (commitStatus == CommitStatus.Branch_Commit_Disabled) {
