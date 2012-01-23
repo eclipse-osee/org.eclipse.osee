@@ -29,15 +29,13 @@ public class EditStatusAction extends AbstractAtsAction {
 
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
    private final XViewer xViewer;
-   private final boolean persist;
    private final IDirtiableEditor editor;
 
-   public EditStatusAction(ISelectedAtsArtifacts selectedAtsArtifacts, IDirtiableEditor editor, XViewer xViewer, boolean persist) {
+   public EditStatusAction(ISelectedAtsArtifacts selectedAtsArtifacts, IDirtiableEditor editor, XViewer xViewer) {
       super("Edit Status", IAction.AS_PUSH_BUTTON);
       this.selectedAtsArtifacts = selectedAtsArtifacts;
       this.editor = editor;
       this.xViewer = xViewer;
-      this.persist = persist;
       setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EDIT));
    }
 
@@ -45,7 +43,7 @@ public class EditStatusAction extends AbstractAtsAction {
    public void runWithException() throws OseeCoreException {
       Collection<AbstractWorkflowArtifact> smaArts =
          Collections.castMatching(AbstractWorkflowArtifact.class, selectedAtsArtifacts.getSelectedSMAArtifacts());
-      if (SMAPromptChangeStatus.promptChangeStatus(smaArts, persist)) {
+      if (SMAPromptChangeStatus.promptChangeStatus(smaArts, true)) {
          if (xViewer != null) {
             xViewer.update(selectedAtsArtifacts.getSelectedSMAArtifacts().toArray(), null);
          }
@@ -53,6 +51,7 @@ public class EditStatusAction extends AbstractAtsAction {
             editor.onDirtied();
          }
       }
+
    }
 
 }

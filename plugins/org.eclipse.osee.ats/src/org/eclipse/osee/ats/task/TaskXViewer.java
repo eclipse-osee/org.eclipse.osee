@@ -125,7 +125,7 @@ public class TaskXViewer extends WorldXViewer {
    public void createMenuActions() {
       super.createMenuActions();
 
-      editStatusAction = new EditStatusAction(this, this, this, false);
+      editStatusAction = new EditStatusAction(this, this, this);
       editAssigneeAction = new EditAssigneeAction(this, this);
 
       addNewTaskAction = new Action("New Task", IAction.AS_PUSH_BUTTON) {
