@@ -13,14 +13,18 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.swt.SWT;
+import com.google.common.collect.MapMaker;
 
 /**
  * @author Roberto E. Escobar
@@ -72,20 +76,29 @@ public class HierarchyIndexColumn extends XViewerValueColumn {
       }
    }
 
-   private String computeHierarchyIndex(Artifact artifact) throws OseeCoreException {
-      StringBuilder builder = new StringBuilder();
-      Artifact artifactCursor = artifact;
-      Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(artifact.getBranch());
+   private final ConcurrentMap<Artifact, String> artToIndexStr = new MapMaker()//
+   .expiration(2, TimeUnit.MINUTES)//
+   .makeMap();
 
-      while (!artifactCursor.equals(root)) {
-         Artifact parent = artifactCursor.getParent();
-         if (parent == null) {
-            return "not connected to root";
+   private String computeHierarchyIndex(Artifact artifact) throws OseeCoreException {
+      String indexStr = artToIndexStr.get(artifact);
+      if (!Strings.isValid(indexStr)) {
+         StringBuilder builder = new StringBuilder(20);
+         Artifact artifactCursor = artifact;
+         Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(artifact.getBranch());
+
+         while (!artifactCursor.equals(root)) {
+            Artifact parent = artifactCursor.getParent();
+            if (parent == null) {
+               return "not connected to root";
+            }
+            builder.insert(0, getPosition(artifactCursor) + ".");
+            artifactCursor = parent;
          }
-         builder.insert(0, getPosition(artifactCursor) + ".");
-         artifactCursor = parent;
+         indexStr = builder.substring(0, builder.length() - 1);
+         artToIndexStr.put(artifact, indexStr);
       }
-      return builder.substring(0, builder.length() - 1);
+      return indexStr;
    }
 
    private int getPosition(Artifact artifact) throws OseeCoreException {

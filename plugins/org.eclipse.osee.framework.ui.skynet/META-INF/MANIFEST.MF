@@ -37,7 +37,8 @@ Require-Bundle: javax.mail.glassfish,
  org.eclipse.core.filesystem
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Import-Package: com.lowagie.text;version="2.1.7",
+Import-Package: com.google.common.collect,
+ com.lowagie.text;version="2.1.7",
  com.lowagie.text.html;version="2.1.7",
  com.lowagie.text.pdf;version="2.1.7",
  com.lowagie.text.rtf;version="2.1.7",
