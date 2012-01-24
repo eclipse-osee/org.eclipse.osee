@@ -24,6 +24,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.AbstractSourceTagger;
+import org.eclipse.osee.define.traceability.HierarchyHandler;
 import org.eclipse.osee.define.traceability.TestUnitTagger;
 import org.eclipse.osee.define.traceability.TraceabilityExtractor;
 import org.eclipse.osee.define.traceability.data.CodeUnitData;
@@ -45,13 +46,11 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
@@ -304,78 +303,6 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
                testRun.persist(transaction);
             }
          }
-      }
-   }
-
-   private static final class HierarchyHandler {
-
-      public static void addArtifact(SkynetTransaction transaction, Artifact testUnit) throws OseeCoreException {
-         Artifact folder = null;
-         if (testUnit.isOfType(CoreArtifactTypes.TestCase)) {
-            folder = getOrCreateTestCaseFolder(transaction);
-         } else if (testUnit.isOfType(CoreArtifactTypes.TestSupport)) {
-            folder = getOrCreateTestSupportFolder(transaction);
-         } else if (testUnit.isOfType(CoreArtifactTypes.CodeUnit)) {
-            folder = getOrCreateCodeUnitFolder(transaction);
-         } else {
-            folder = getOrCreateUnknownTestUnitFolder(transaction);
-         }
-
-         if (folder != null && !folder.isRelated(CoreRelationTypes.Default_Hierarchical__Child, testUnit)) {
-            folder.addChild(testUnit);
-            folder.persist(transaction);
-         }
-      }
-
-      private static Artifact getOrCreateUnknownTestUnitFolder(SkynetTransaction transaction) throws OseeCoreException {
-         return getOrCreateTestUnitSubFolder(transaction, "Unknown Test Unit Type");
-      }
-
-      private static Artifact getOrCreateTestSupportFolder(SkynetTransaction transaction) throws OseeCoreException {
-         return getOrCreateTestUnitSubFolder(transaction, Requirements.TEST_SUPPORT_UNITS);
-      }
-
-      private static Artifact getOrCreateTestCaseFolder(SkynetTransaction transaction) throws OseeCoreException {
-         return getOrCreateTestUnitSubFolder(transaction, "Test Cases");
-      }
-
-      private static Artifact getOrCreateCodeUnitFolder(SkynetTransaction transaction) throws OseeCoreException {
-         Artifact codeUnitFolder = getOrCreateFolder(transaction, "Code Units");
-         Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(transaction.getBranch());
-         if (!root.isRelated(CoreRelationTypes.Default_Hierarchical__Child, codeUnitFolder)) {
-            root.addChild(codeUnitFolder);
-            root.persist(transaction);
-         }
-         return codeUnitFolder;
-      }
-
-      private static Artifact getOrCreateTestUnitSubFolder(SkynetTransaction transaction, String folderName) throws OseeCoreException {
-         Artifact subFolder = getOrCreateFolder(transaction, folderName);
-         Artifact testUnits = getOrCreateTestUnitsFolder(transaction);
-         if (!testUnits.isRelated(CoreRelationTypes.Default_Hierarchical__Child, subFolder)) {
-            testUnits.addChild(subFolder);
-            testUnits.persist(transaction);
-         }
-         return subFolder;
-      }
-
-      private static Artifact getOrCreateTestUnitsFolder(SkynetTransaction transaction) throws OseeCoreException {
-         Artifact testFolder = getOrCreateFolder(transaction, "Test");
-         Artifact testUnitFolder = getOrCreateFolder(transaction, "Test Units");
-         Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(transaction.getBranch());
-         if (!root.isRelated(CoreRelationTypes.Default_Hierarchical__Child, testFolder)) {
-            root.addChild(testFolder);
-            root.persist(transaction);
-         }
-         if (!testFolder.isRelated(CoreRelationTypes.Default_Hierarchical__Child, testUnitFolder)) {
-            testFolder.addChild(testUnitFolder);
-            testFolder.persist(transaction);
-         }
-         return testUnitFolder;
-      }
-
-      private static Artifact getOrCreateFolder(SkynetTransaction transaction, String folderName) throws OseeCoreException {
-         return OseeSystemArtifacts.getOrCreateArtifact(CoreArtifactTypes.Folder, folderName, transaction.getBranch());
       }
    }
 

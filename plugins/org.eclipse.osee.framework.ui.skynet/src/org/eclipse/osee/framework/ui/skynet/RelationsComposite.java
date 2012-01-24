@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -30,9 +29,6 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
-import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
-import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -42,27 +38,21 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.RelationOrderContributionItem.SelectionListener;
 import org.eclipse.osee.framework.ui.skynet.action.RevealInExplorerAction;
-import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.relation.explorer.RelationExplorerWindow;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MenuEvent;
@@ -78,11 +68,8 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolTip;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
-import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Ryan D. Brooks
@@ -95,7 +82,6 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
    public static final String VIEW_ID = "osee.define.relation.RelationExplorer";
    public static final String[] columnNames = new String[] {" ", "Rationale"};
    public static final Integer[] columnLengths = new Integer[] {500, 50};
-   private final ToolTip errorToolTip;
 
    // the index of column order
    private static int COLUMN_ORDER = 1;
@@ -124,7 +110,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       this.toolBar = toolBar;
 
       createPartControl();
-      errorToolTip = new ToolTip(Displays.getActiveShell(), SWT.ICON_ERROR);
+
    }
 
    public TreeViewer getTreeViewer() {
@@ -181,7 +167,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       tree.addKeyListener(new KeySelectedListener());
 
       expandItemsThatHaveChildren();
-      new RelationSkynetDragAndDrop(tree, VIEW_ID);
+      new RelationSkynetDragAndDrop(VIEW_ID, treeViewer, artifact, editor);
    }
 
    private void expandItemsThatHaveChildren() {
@@ -564,7 +550,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
    private void performDeleteRelation(IStructuredSelection selection) {
       Object[] objects = selection.toArray();
       for (Object object : objects) {
-         if (hasWriteRelationTypePermission(object)) {
+         if (hasWriteRelationTypePermission(artifact, object)) {
             if (object instanceof WrapperForRelationLink) {
                WrapperForRelationLink wrapper = (WrapperForRelationLink) object;
                try {
@@ -631,200 +617,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       refresh();
    }
 
-   private class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
-      boolean isFeedbackAfter = false;
-
-      public RelationSkynetDragAndDrop(Tree tree, String viewId) {
-         super(tree, viewId);
-      }
-
-      @Override
-      public Artifact[] getArtifacts() {
-         IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-         Object[] objects = selection.toArray();
-         Artifact[] artifacts = null;
-
-         if (objects.length > 0 && objects[0] instanceof WrapperForRelationLink) {
-            artifacts = new Artifact[objects.length];
-
-            for (int index = 0; index < objects.length; index++) {
-               WrapperForRelationLink link = (WrapperForRelationLink) objects[index];
-               artifacts[index] = link.getOther();
-            }
-         }
-         return artifacts;
-      }
-
-      private boolean ensureRelationCanBeAdded(IRelationType relationType, Artifact artifactA, Artifact artifactB) {
-         try {
-            RelationManager.ensureRelationCanBeAdded(relationType, artifactA, artifactB);
-         } catch (OseeCoreException ex) {
-            return false;
-         }
-         return true;
-      }
-
-      @Override
-      public void performDragOver(DropTargetEvent event) {
-         Tree tree = treeViewer.getTree();
-         TreeItem selected = tree.getItem(treeViewer.getTree().toControl(event.x, event.y));
-
-         event.feedback = DND.FEEDBACK_EXPAND;
-         event.detail = DND.DROP_NONE;
-
-         if (selected != null && selected.getData() instanceof RelationTypeSideSorter) {
-            try {
-               RelationTypeSideSorter data = (RelationTypeSideSorter) selected.getData();
-               ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
-               Artifact[] selectedArtifacts = artData.getArtifacts();
-               String toolTipText = "";
-               Artifact relationArtifact = data.getArtifact();
-
-               boolean canRelate = false;
-               for (Artifact i : selectedArtifacts) {
-                  Artifact sideA = i;
-                  Artifact sideB = relationArtifact;
-                  if (data.getSide() == RelationSide.SIDE_B) {
-                     sideA = relationArtifact;
-                     sideB = i;
-                  }
-                  canRelate = ensureRelationCanBeAdded(data.getRelationType(), sideA, sideB);
-                  if (!canRelate) {
-                     toolTipText +=
-                        String.format("Relation: [%s] cannot be added to [%s] of [%s]\n", i.getName(),
-                           data.getSide().name(), data.getRelationType().getName());
-
-                  }
-               }
-
-               AccessPolicy policyHandlerService = Activator.getInstance().getAccessPolicy();
-
-               boolean matched =
-                  policyHandlerService.canRelationBeModified(artifact, Arrays.asList(selectedArtifacts), data,
-                     Level.INFO).matched();
-
-               if (matched) {
-                  event.detail = DND.DROP_COPY;
-                  tree.setInsertMark(null, false);
-               } else {
-                  toolTipText += (toolTipText.length() == 0 ? "" : " \n");
-                  toolTipText += "Access: Access Control has prevented this relation";
-
-               }
-               if (!matched || !canRelate) {
-                  errorToolTip.setText("RELATION ERROR");
-                  errorToolTip.setMessage(toolTipText);
-                  errorToolTip.setVisible(true);
-               } else {
-                  errorToolTip.setVisible(false);
-               }
-
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
-
-         } else if (selected != null && selected.getData() instanceof WrapperForRelationLink) {
-            WrapperForRelationLink targetLink = (WrapperForRelationLink) selected.getData();
-            IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-            Object obj = selection.getFirstElement();
-            if (obj instanceof WrapperForRelationLink) {
-               WrapperForRelationLink dropTarget = (WrapperForRelationLink) obj;
-               boolean matched = false;
-               try {
-                  AccessPolicy policyHandlerService = Activator.getInstance().getAccessPolicy();
-                  RelationTypeSide rts =
-                     new RelationTypeSide(dropTarget.getRelationType(), dropTarget.getRelationSide());
-
-                  matched =
-                     policyHandlerService.canRelationBeModified(
-                        artifact,
-                        Arrays.asList(artifact.equals(dropTarget.getArtifactA()) ? dropTarget.getArtifactB() : dropTarget.getArtifactA()),
-                        rts, Level.INFO).matched();
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
-               }
-               if (!matched) {
-                  event.detail = DND.DROP_NONE;
-                  ToolTip tt = new ToolTip(Displays.getActiveShell(), SWT.ICON_ERROR);
-                  tt.setText("MOVE ERROR");
-                  tt.setMessage("Access Control has restricted this action.");
-                  tt.setVisible(true);
-                  return;
-               }
-               // the links must be in the same group
-               if (relationLinkIsInSameGroup(targetLink, dropTarget)) {
-                  if (isFeedbackAfter) {
-                     event.feedback = DND.FEEDBACK_INSERT_AFTER;
-                  } else {
-                     event.feedback = DND.FEEDBACK_INSERT_BEFORE;
-                  }
-                  event.detail = DND.DROP_MOVE;
-               }
-            }
-         } else {
-            tree.setInsertMark(null, false);
-         }
-      }
-
-      private boolean relationLinkIsInSameGroup(WrapperForRelationLink targetLink, WrapperForRelationLink dropTarget) {
-         return targetLink.getRelationType().equals(dropTarget.getRelationType()) && //same type
-         (targetLink.getArtifactA().equals(dropTarget.getArtifactA()) || //either the A or B side is equal, meaning they are on the same side
-         targetLink.getArtifactB().equals(dropTarget.getArtifactB()));
-      }
-
-      @Override
-      public void operationChanged(DropTargetEvent event) {
-         if (!isCtrlPressed(event)) {
-            isFeedbackAfter = false;
-         }
-      }
-
-      private boolean isCtrlPressed(DropTargetEvent event) {
-         boolean ctrPressed = event.detail == 1;
-
-         if (ctrPressed) {
-            isFeedbackAfter = true;
-         }
-         return ctrPressed;
-      }
-
-      @Override
-      public void performDrop(DropTargetEvent event) {
-         TreeItem selected = treeViewer.getTree().getItem(treeViewer.getTree().toControl(event.x, event.y));
-         Object object = selected.getData();
-         try {
-            if (hasWriteRelationTypePermission(object)) {
-               if (object instanceof WrapperForRelationLink) {//used for ordering
-                  WrapperForRelationLink targetLink = (WrapperForRelationLink) object;
-                  Artifact[] artifactsToMove = ((ArtifactData) event.data).getArtifacts();
-                  for (Artifact artifactToMove : artifactsToMove) {
-                     IRelationTypeSide typeSide =
-                        new RelationTypeSide(targetLink.getRelationType(), targetLink.getRelationSide());
-                     artifact.setRelationOrder(typeSide, targetLink.getOther(), isFeedbackAfter, artifactToMove);
-                  }
-                  treeViewer.refresh();
-                  editor.onDirtied();
-               } else if (object instanceof RelationTypeSideSorter) {
-                  RelationTypeSideSorter group = (RelationTypeSideSorter) object;
-
-                  RelationExplorerWindow window = new RelationExplorerWindow(treeViewer, group);
-
-                  ArtifactDragDropSupport.performDragDrop(event, window,
-                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
-                  window.createArtifactInformationBox();
-                  treeViewer.refresh();
-                  editor.onDirtied();
-               }
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         }
-
-         isFeedbackAfter = false;
-      }
-   }
-
-   private boolean hasWriteRelationTypePermission(Object object) {
+   public static boolean hasWriteRelationTypePermission(Artifact toCheck, Object object) {
       boolean hasPermission = false;
       try {
          RelationTypeSide relationTypeSide = null;
@@ -832,7 +625,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
          if (object instanceof WrapperForRelationLink) {//used for ordering
             WrapperForRelationLink targetLink = (WrapperForRelationLink) object;
             relationTypeSide = new RelationTypeSide(targetLink.getRelationType(), targetLink.getRelationSide());
-            artifacts.add(artifact.equals(targetLink.getArtifactA()) ? targetLink.getArtifactB() : targetLink.getArtifactA());
+            artifacts.add(toCheck.equals(targetLink.getArtifactA()) ? targetLink.getArtifactB() : targetLink.getArtifactA());
          } else if (object instanceof RelationTypeSideSorter) {
             RelationTypeSideSorter group = (RelationTypeSideSorter) object;
             relationTypeSide = new RelationTypeSide(group.getRelationType(), group.getSide());
@@ -842,7 +635,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
          AccessPolicy policyHandlerService = Activator.getInstance().getAccessPolicy();
 
          hasPermission =
-            policyHandlerService.canRelationBeModified(artifact, artifacts, relationTypeSide, Level.INFO).matched();
+            policyHandlerService.canRelationBeModified(toCheck, artifacts, relationTypeSide, Level.INFO).matched();
 
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
