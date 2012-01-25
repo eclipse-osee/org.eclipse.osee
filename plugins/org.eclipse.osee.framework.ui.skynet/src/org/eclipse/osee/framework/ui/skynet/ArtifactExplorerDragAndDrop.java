@@ -165,7 +165,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                parentArtifact.getBranch())) {
                boolean recurseChildren =
                   MessageDialog.openQuestion(viewPart.getViewSite().getShell(), "Recurse Children",
-                     "Do you want to move the children of the selected artifact(s)?");
+                     "Do you want to include the children of the selected artifact(s)?");
                InterArtifactExplorerDropHandlerOperation interDropHandler =
                   new InterArtifactExplorerDropHandlerOperation(parentArtifact, artifactsToBeRelated, true,
                      recurseChildren);
