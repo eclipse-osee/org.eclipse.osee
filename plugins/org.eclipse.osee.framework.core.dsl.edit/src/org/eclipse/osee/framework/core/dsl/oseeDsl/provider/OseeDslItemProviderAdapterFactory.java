@@ -536,6 +536,75 @@ public class OseeDslItemProviderAdapterFactory extends OseeDslAdapterFactory imp
    }
 
    /**
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactTypePredicate} instances.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected RelationTypeArtifactTypePredicateItemProvider relationTypeArtifactTypePredicateItemProvider;
+
+   /**
+    * This creates an adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactTypePredicate}.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   @Override
+   public Adapter createRelationTypeArtifactTypePredicateAdapter() {
+      if (relationTypeArtifactTypePredicateItemProvider == null) {
+         relationTypeArtifactTypePredicateItemProvider = new RelationTypeArtifactTypePredicateItemProvider(this);
+      }
+
+      return relationTypeArtifactTypePredicateItemProvider;
+   }
+
+   /**
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactPredicate} instances.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected RelationTypeArtifactPredicateItemProvider relationTypeArtifactPredicateItemProvider;
+
+   /**
+    * This creates an adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactPredicate}.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   @Override
+   public Adapter createRelationTypeArtifactPredicateAdapter() {
+      if (relationTypeArtifactPredicateItemProvider == null) {
+         relationTypeArtifactPredicateItemProvider = new RelationTypeArtifactPredicateItemProvider(this);
+      }
+
+      return relationTypeArtifactPredicateItemProvider;
+   }
+
+   /**
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypePredicate} instances.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected RelationTypePredicateItemProvider relationTypePredicateItemProvider;
+
+   /**
+    * This creates an adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypePredicate}.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   @Override
+   public Adapter createRelationTypePredicateAdapter() {
+      if (relationTypePredicateItemProvider == null) {
+         relationTypePredicateItemProvider = new RelationTypePredicateItemProvider(this);
+      }
+
+      return relationTypePredicateItemProvider;
+   }
+
+   /**
     * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction} instances.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
@@ -625,6 +694,29 @@ public class OseeDslItemProviderAdapterFactory extends OseeDslAdapterFactory imp
       }
 
       return attributeTypeRestrictionItemProvider;
+   }
+
+   /**
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.core.dsl.oseeDsl.LegacyRelationTypeRestriction} instances.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected LegacyRelationTypeRestrictionItemProvider legacyRelationTypeRestrictionItemProvider;
+
+   /**
+    * This creates an adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.LegacyRelationTypeRestriction}.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   @Override
+   public Adapter createLegacyRelationTypeRestrictionAdapter() {
+      if (legacyRelationTypeRestrictionItemProvider == null) {
+         legacyRelationTypeRestrictionItemProvider = new LegacyRelationTypeRestrictionItemProvider(this);
+      }
+
+      return legacyRelationTypeRestrictionItemProvider;
    }
 
    /**
@@ -769,10 +861,14 @@ public class OseeDslItemProviderAdapterFactory extends OseeDslAdapterFactory imp
       if (xArtifactMatcherItemProvider != null) xArtifactMatcherItemProvider.dispose();
       if (accessContextItemProvider != null) accessContextItemProvider.dispose();
       if (hierarchyRestrictionItemProvider != null) hierarchyRestrictionItemProvider.dispose();
+      if (relationTypeArtifactTypePredicateItemProvider != null) relationTypeArtifactTypePredicateItemProvider.dispose();
+      if (relationTypeArtifactPredicateItemProvider != null) relationTypeArtifactPredicateItemProvider.dispose();
+      if (relationTypePredicateItemProvider != null) relationTypePredicateItemProvider.dispose();
       if (objectRestrictionItemProvider != null) objectRestrictionItemProvider.dispose();
       if (artifactMatchRestrictionItemProvider != null) artifactMatchRestrictionItemProvider.dispose();
       if (artifactTypeRestrictionItemProvider != null) artifactTypeRestrictionItemProvider.dispose();
       if (attributeTypeRestrictionItemProvider != null) attributeTypeRestrictionItemProvider.dispose();
+      if (legacyRelationTypeRestrictionItemProvider != null) legacyRelationTypeRestrictionItemProvider.dispose();
       if (relationTypeRestrictionItemProvider != null) relationTypeRestrictionItemProvider.dispose();
    }
 

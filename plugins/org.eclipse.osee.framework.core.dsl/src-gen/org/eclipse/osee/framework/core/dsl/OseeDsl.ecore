@@ -159,6 +159,13 @@
     <eLiterals name="ALLOW" literal="ALLOW"/>
     <eLiterals name="DENY" value="1" literal="DENY"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RelationTypeArtifactTypePredicate" eSuperTypes="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//RelationTypePredicate">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="artifactTypeRef" eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XArtifactType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RelationTypeArtifactPredicate" eSuperTypes="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//RelationTypePredicate">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="artifactMatcherRef" eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XArtifactMatcher"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RelationTypePredicate"/>
   <eClassifiers xsi:type="ecore:EClass" name="ObjectRestriction">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="permission" eType="ecore:EEnum platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//AccessPermissionEnum"/>
   </eClassifiers>
@@ -172,10 +179,21 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="attributeTypeRef" eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XAttributeType"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="artifactTypeRef" eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XArtifactType"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="RelationTypeRestriction" eSuperTypes="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//ObjectRestriction">
+  <eClassifiers xsi:type="ecore:EClass" name="LegacyRelationTypeRestriction">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="permission" eType="ecore:EEnum platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//AccessPermissionEnum"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="relationTypeRef" eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XRelationType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="restrictedToSide" eType="ecore:EEnum platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XRelationSideEnum"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="artifactMatcherRef" eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XArtifactMatcher"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RelationTypeRestriction" eSuperTypes="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//ObjectRestriction">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="relationTypeMatch" eType="ecore:EEnum platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//RelationTypeMatch"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="relationTypeRef" eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XRelationType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="restrictedToSide" eType="ecore:EEnum platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XRelationSideEnum"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="predicate" eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//RelationTypePredicate"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="RelationTypeMatch">
+    <eLiterals name="ALL" literal="ALL"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="XRelationSideEnum">
     <eLiterals name="SIDE_A" literal="SIDE_A"/>

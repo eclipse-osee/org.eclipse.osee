@@ -15,9 +15,10 @@ package org.eclipse.osee.framework.core.dsl.oseeDsl;
  * <p>
  * The following features are supported:
  * <ul>
+ *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#getRelationTypeMatch <em>Relation Type Match</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#getRelationTypeRef <em>Relation Type Ref</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#getRestrictedToSide <em>Restricted To Side</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#getArtifactMatcherRef <em>Artifact Matcher Ref</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#getPredicate <em>Predicate</em>}</li>
  * </ul>
  * </p>
  *
@@ -27,6 +28,35 @@ package org.eclipse.osee.framework.core.dsl.oseeDsl;
  */
 public interface RelationTypeRestriction extends ObjectRestriction
 {
+  /**
+   * Returns the value of the '<em><b>Relation Type Match</b></em>' attribute.
+   * The literals are from the enumeration {@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeMatch}.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Relation Type Match</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Relation Type Match</em>' attribute.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeMatch
+   * @see #setRelationTypeMatch(RelationTypeMatch)
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getRelationTypeRestriction_RelationTypeMatch()
+   * @model
+   * @generated
+   */
+  RelationTypeMatch getRelationTypeMatch();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#getRelationTypeMatch <em>Relation Type Match</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Relation Type Match</em>' attribute.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeMatch
+   * @see #getRelationTypeMatch()
+   * @generated
+   */
+  void setRelationTypeMatch(RelationTypeMatch value);
+
   /**
    * Returns the value of the '<em><b>Relation Type Ref</b></em>' reference.
    * <!-- begin-user-doc -->
@@ -83,29 +113,29 @@ public interface RelationTypeRestriction extends ObjectRestriction
   void setRestrictedToSide(XRelationSideEnum value);
 
   /**
-   * Returns the value of the '<em><b>Artifact Matcher Ref</b></em>' reference.
+   * Returns the value of the '<em><b>Predicate</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Artifact Matcher Ref</em>' reference isn't clear,
+   * If the meaning of the '<em>Predicate</em>' containment reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Artifact Matcher Ref</em>' reference.
-   * @see #setArtifactMatcherRef(XArtifactMatcher)
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getRelationTypeRestriction_ArtifactMatcherRef()
-   * @model
+   * @return the value of the '<em>Predicate</em>' containment reference.
+   * @see #setPredicate(RelationTypePredicate)
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getRelationTypeRestriction_Predicate()
+   * @model containment="true"
    * @generated
    */
-  XArtifactMatcher getArtifactMatcherRef();
+  RelationTypePredicate getPredicate();
 
   /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#getArtifactMatcherRef <em>Artifact Matcher Ref</em>}' reference.
+   * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#getPredicate <em>Predicate</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Artifact Matcher Ref</em>' reference.
-   * @see #getArtifactMatcherRef()
+   * @param value the new value of the '<em>Predicate</em>' containment reference.
+   * @see #getPredicate()
    * @generated
    */
-  void setArtifactMatcherRef(XArtifactMatcher value);
+  void setPredicate(RelationTypePredicate value);
 
 } // RelationTypeRestriction

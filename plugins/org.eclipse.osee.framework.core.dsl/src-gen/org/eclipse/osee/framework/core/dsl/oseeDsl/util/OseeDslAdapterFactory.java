@@ -179,6 +179,21 @@ public class OseeDslAdapterFactory extends AdapterFactoryImpl
         return createHierarchyRestrictionAdapter();
       }
       @Override
+      public Adapter caseRelationTypeArtifactTypePredicate(RelationTypeArtifactTypePredicate object)
+      {
+        return createRelationTypeArtifactTypePredicateAdapter();
+      }
+      @Override
+      public Adapter caseRelationTypeArtifactPredicate(RelationTypeArtifactPredicate object)
+      {
+        return createRelationTypeArtifactPredicateAdapter();
+      }
+      @Override
+      public Adapter caseRelationTypePredicate(RelationTypePredicate object)
+      {
+        return createRelationTypePredicateAdapter();
+      }
+      @Override
       public Adapter caseObjectRestriction(ObjectRestriction object)
       {
         return createObjectRestrictionAdapter();
@@ -197,6 +212,11 @@ public class OseeDslAdapterFactory extends AdapterFactoryImpl
       public Adapter caseAttributeTypeRestriction(AttributeTypeRestriction object)
       {
         return createAttributeTypeRestrictionAdapter();
+      }
+      @Override
+      public Adapter caseLegacyRelationTypeRestriction(LegacyRelationTypeRestriction object)
+      {
+        return createLegacyRelationTypeRestrictionAdapter();
       }
       @Override
       public Adapter caseRelationTypeRestriction(RelationTypeRestriction object)
@@ -526,6 +546,51 @@ public class OseeDslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactTypePredicate <em>Relation Type Artifact Type Predicate</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactTypePredicate
+   * @generated
+   */
+  public Adapter createRelationTypeArtifactTypePredicateAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactPredicate <em>Relation Type Artifact Predicate</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactPredicate
+   * @generated
+   */
+  public Adapter createRelationTypeArtifactPredicateAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypePredicate <em>Relation Type Predicate</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypePredicate
+   * @generated
+   */
+  public Adapter createRelationTypePredicateAdapter()
+  {
+    return null;
+  }
+
+  /**
    * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction <em>Object Restriction</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -581,6 +646,21 @@ public class OseeDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createAttributeTypeRestrictionAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.LegacyRelationTypeRestriction <em>Legacy Relation Type Restriction</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.LegacyRelationTypeRestriction
+   * @generated
+   */
+  public Adapter createLegacyRelationTypeRestrictionAdapter()
   {
     return null;
   }

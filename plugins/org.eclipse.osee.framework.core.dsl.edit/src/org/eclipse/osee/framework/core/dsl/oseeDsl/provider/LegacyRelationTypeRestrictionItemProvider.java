@@ -13,7 +13,8 @@ import java.util.List;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
-import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.common.util.ResourceLocator;
+
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -22,21 +23,21 @@ import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
+import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslFactory;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.LegacyRelationTypeRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction;
 
 /**
- * This is the item provider adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction} object.
+ * This is the item provider adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.LegacyRelationTypeRestriction} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class RelationTypeRestrictionItemProvider
-   extends ObjectRestrictionItemProvider
+public class LegacyRelationTypeRestrictionItemProvider
+   extends ItemProviderAdapter
    implements
       IEditingDomainItemProvider,
       IStructuredItemContentProvider,
@@ -49,7 +50,7 @@ public class RelationTypeRestrictionItemProvider
     * <!-- end-user-doc -->
     * @generated
     */
-   public RelationTypeRestrictionItemProvider(AdapterFactory adapterFactory) {
+   public LegacyRelationTypeRestrictionItemProvider(AdapterFactory adapterFactory) {
       super(adapterFactory);
    }
 
@@ -64,27 +65,28 @@ public class RelationTypeRestrictionItemProvider
       if (itemPropertyDescriptors == null) {
          super.getPropertyDescriptors(object);
 
-         addRelationTypeMatchPropertyDescriptor(object);
+         addPermissionPropertyDescriptor(object);
          addRelationTypeRefPropertyDescriptor(object);
          addRestrictedToSidePropertyDescriptor(object);
+         addArtifactMatcherRefPropertyDescriptor(object);
       }
       return itemPropertyDescriptors;
    }
 
    /**
-    * This adds a property descriptor for the Relation Type Match feature.
+    * This adds a property descriptor for the Permission feature.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
-   protected void addRelationTypeMatchPropertyDescriptor(Object object) {
+   protected void addPermissionPropertyDescriptor(Object object) {
       itemPropertyDescriptors.add
          (createItemPropertyDescriptor
             (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
              getResourceLocator(),
-             getString("_UI_RelationTypeRestriction_relationTypeMatch_feature"),
-             getString("_UI_PropertyDescriptor_description", "_UI_RelationTypeRestriction_relationTypeMatch_feature", "_UI_RelationTypeRestriction_type"),
-             OseeDslPackage.Literals.RELATION_TYPE_RESTRICTION__RELATION_TYPE_MATCH,
+             getString("_UI_LegacyRelationTypeRestriction_permission_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_LegacyRelationTypeRestriction_permission_feature", "_UI_LegacyRelationTypeRestriction_type"),
+             OseeDslPackage.Literals.LEGACY_RELATION_TYPE_RESTRICTION__PERMISSION,
              true,
              false,
              false,
@@ -104,9 +106,9 @@ public class RelationTypeRestrictionItemProvider
          (createItemPropertyDescriptor
             (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
              getResourceLocator(),
-             getString("_UI_RelationTypeRestriction_relationTypeRef_feature"),
-             getString("_UI_PropertyDescriptor_description", "_UI_RelationTypeRestriction_relationTypeRef_feature", "_UI_RelationTypeRestriction_type"),
-             OseeDslPackage.Literals.RELATION_TYPE_RESTRICTION__RELATION_TYPE_REF,
+             getString("_UI_LegacyRelationTypeRestriction_relationTypeRef_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_LegacyRelationTypeRestriction_relationTypeRef_feature", "_UI_LegacyRelationTypeRestriction_type"),
+             OseeDslPackage.Literals.LEGACY_RELATION_TYPE_RESTRICTION__RELATION_TYPE_REF,
              true,
              false,
              true,
@@ -126,9 +128,9 @@ public class RelationTypeRestrictionItemProvider
          (createItemPropertyDescriptor
             (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
              getResourceLocator(),
-             getString("_UI_RelationTypeRestriction_restrictedToSide_feature"),
-             getString("_UI_PropertyDescriptor_description", "_UI_RelationTypeRestriction_restrictedToSide_feature", "_UI_RelationTypeRestriction_type"),
-             OseeDslPackage.Literals.RELATION_TYPE_RESTRICTION__RESTRICTED_TO_SIDE,
+             getString("_UI_LegacyRelationTypeRestriction_restrictedToSide_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_LegacyRelationTypeRestriction_restrictedToSide_feature", "_UI_LegacyRelationTypeRestriction_type"),
+             OseeDslPackage.Literals.LEGACY_RELATION_TYPE_RESTRICTION__RESTRICTED_TO_SIDE,
              true,
              false,
              false,
@@ -138,44 +140,36 @@ public class RelationTypeRestrictionItemProvider
    }
 
    /**
-    * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
-    * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
-    * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
+    * This adds a property descriptor for the Artifact Matcher Ref feature.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
-   @Override
-   public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
-      if (childrenFeatures == null) {
-         super.getChildrenFeatures(object);
-         childrenFeatures.add(OseeDslPackage.Literals.RELATION_TYPE_RESTRICTION__PREDICATE);
-      }
-      return childrenFeatures;
+   protected void addArtifactMatcherRefPropertyDescriptor(Object object) {
+      itemPropertyDescriptors.add
+         (createItemPropertyDescriptor
+            (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+             getResourceLocator(),
+             getString("_UI_LegacyRelationTypeRestriction_artifactMatcherRef_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_LegacyRelationTypeRestriction_artifactMatcherRef_feature", "_UI_LegacyRelationTypeRestriction_type"),
+             OseeDslPackage.Literals.LEGACY_RELATION_TYPE_RESTRICTION__ARTIFACT_MATCHER_REF,
+             true,
+             false,
+             true,
+             null,
+             null,
+             null));
    }
 
    /**
-    * <!-- begin-user-doc -->
-    * <!-- end-user-doc -->
-    * @generated
-    */
-   @Override
-   protected EStructuralFeature getChildFeature(Object object, Object child) {
-      // Check the type of the specified child object and return the proper feature to use for
-      // adding (see {@link AddCommand}) it as a child.
-
-      return super.getChildFeature(object, child);
-   }
-
-   /**
-    * This returns RelationTypeRestriction.gif.
+    * This returns LegacyRelationTypeRestriction.gif.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
    @Override
    public Object getImage(Object object) {
-      return overlayImage(object, getResourceLocator().getImage("full/obj16/RelationTypeRestriction"));
+      return overlayImage(object, getResourceLocator().getImage("full/obj16/LegacyRelationTypeRestriction"));
    }
 
    /**
@@ -186,11 +180,11 @@ public class RelationTypeRestrictionItemProvider
     */
    @Override
    public String getText(Object object) {
-      AccessPermissionEnum labelValue = ((RelationTypeRestriction)object).getPermission();
+      AccessPermissionEnum labelValue = ((LegacyRelationTypeRestriction)object).getPermission();
       String label = labelValue == null ? null : labelValue.toString();
       return label == null || label.length() == 0 ?
-         getString("_UI_RelationTypeRestriction_type") :
-         getString("_UI_RelationTypeRestriction_type") + " " + label;
+         getString("_UI_LegacyRelationTypeRestriction_type") :
+         getString("_UI_LegacyRelationTypeRestriction_type") + " " + label;
    }
 
    /**
@@ -204,13 +198,10 @@ public class RelationTypeRestrictionItemProvider
    public void notifyChanged(Notification notification) {
       updateChildren(notification);
 
-      switch (notification.getFeatureID(RelationTypeRestriction.class)) {
-         case OseeDslPackage.RELATION_TYPE_RESTRICTION__RELATION_TYPE_MATCH:
-         case OseeDslPackage.RELATION_TYPE_RESTRICTION__RESTRICTED_TO_SIDE:
+      switch (notification.getFeatureID(LegacyRelationTypeRestriction.class)) {
+         case OseeDslPackage.LEGACY_RELATION_TYPE_RESTRICTION__PERMISSION:
+         case OseeDslPackage.LEGACY_RELATION_TYPE_RESTRICTION__RESTRICTED_TO_SIDE:
             fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
-            return;
-         case OseeDslPackage.RELATION_TYPE_RESTRICTION__PREDICATE:
-            fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
             return;
       }
       super.notifyChanged(notification);
@@ -226,21 +217,17 @@ public class RelationTypeRestrictionItemProvider
    @Override
    protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
       super.collectNewChildDescriptors(newChildDescriptors, object);
+   }
 
-      newChildDescriptors.add
-         (createChildParameter
-            (OseeDslPackage.Literals.RELATION_TYPE_RESTRICTION__PREDICATE,
-             OseeDslFactory.eINSTANCE.createRelationTypePredicate()));
-
-      newChildDescriptors.add
-         (createChildParameter
-            (OseeDslPackage.Literals.RELATION_TYPE_RESTRICTION__PREDICATE,
-             OseeDslFactory.eINSTANCE.createRelationTypeArtifactTypePredicate()));
-
-      newChildDescriptors.add
-         (createChildParameter
-            (OseeDslPackage.Literals.RELATION_TYPE_RESTRICTION__PREDICATE,
-             OseeDslFactory.eINSTANCE.createRelationTypeArtifactPredicate()));
+   /**
+    * Return the resource locator for this item provider's resources.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   @Override
+   public ResourceLocator getResourceLocator() {
+      return OseeDslEditPlugin.INSTANCE;
    }
 
 }

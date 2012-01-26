@@ -230,6 +230,29 @@ public class OseeDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case OseeDslPackage.RELATION_TYPE_ARTIFACT_TYPE_PREDICATE:
+      {
+        RelationTypeArtifactTypePredicate relationTypeArtifactTypePredicate = (RelationTypeArtifactTypePredicate)theEObject;
+        T result = caseRelationTypeArtifactTypePredicate(relationTypeArtifactTypePredicate);
+        if (result == null) result = caseRelationTypePredicate(relationTypeArtifactTypePredicate);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case OseeDslPackage.RELATION_TYPE_ARTIFACT_PREDICATE:
+      {
+        RelationTypeArtifactPredicate relationTypeArtifactPredicate = (RelationTypeArtifactPredicate)theEObject;
+        T result = caseRelationTypeArtifactPredicate(relationTypeArtifactPredicate);
+        if (result == null) result = caseRelationTypePredicate(relationTypeArtifactPredicate);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case OseeDslPackage.RELATION_TYPE_PREDICATE:
+      {
+        RelationTypePredicate relationTypePredicate = (RelationTypePredicate)theEObject;
+        T result = caseRelationTypePredicate(relationTypePredicate);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case OseeDslPackage.OBJECT_RESTRICTION:
       {
         ObjectRestriction objectRestriction = (ObjectRestriction)theEObject;
@@ -258,6 +281,13 @@ public class OseeDslSwitch<T> extends Switch<T>
         AttributeTypeRestriction attributeTypeRestriction = (AttributeTypeRestriction)theEObject;
         T result = caseAttributeTypeRestriction(attributeTypeRestriction);
         if (result == null) result = caseObjectRestriction(attributeTypeRestriction);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case OseeDslPackage.LEGACY_RELATION_TYPE_RESTRICTION:
+      {
+        LegacyRelationTypeRestriction legacyRelationTypeRestriction = (LegacyRelationTypeRestriction)theEObject;
+        T result = caseLegacyRelationTypeRestriction(legacyRelationTypeRestriction);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -594,6 +624,54 @@ public class OseeDslSwitch<T> extends Switch<T>
   }
 
   /**
+   * Returns the result of interpreting the object as an instance of '<em>Relation Type Artifact Type Predicate</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Relation Type Artifact Type Predicate</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRelationTypeArtifactTypePredicate(RelationTypeArtifactTypePredicate object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Relation Type Artifact Predicate</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Relation Type Artifact Predicate</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRelationTypeArtifactPredicate(RelationTypeArtifactPredicate object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Relation Type Predicate</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Relation Type Predicate</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRelationTypePredicate(RelationTypePredicate object)
+  {
+    return null;
+  }
+
+  /**
    * Returns the result of interpreting the object as an instance of '<em>Object Restriction</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -653,6 +731,22 @@ public class OseeDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseAttributeTypeRestriction(AttributeTypeRestriction object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Legacy Relation Type Restriction</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Legacy Relation Type Restriction</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseLegacyRelationTypeRestriction(LegacyRelationTypeRestriction object)
   {
     return null;
   }

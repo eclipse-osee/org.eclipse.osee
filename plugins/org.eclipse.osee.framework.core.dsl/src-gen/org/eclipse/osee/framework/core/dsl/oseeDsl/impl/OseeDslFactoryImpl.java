@@ -89,10 +89,14 @@ public class OseeDslFactoryImpl extends EFactoryImpl implements OseeDslFactory
       case OseeDslPackage.XARTIFACT_MATCHER: return createXArtifactMatcher();
       case OseeDslPackage.ACCESS_CONTEXT: return createAccessContext();
       case OseeDslPackage.HIERARCHY_RESTRICTION: return createHierarchyRestriction();
+      case OseeDslPackage.RELATION_TYPE_ARTIFACT_TYPE_PREDICATE: return createRelationTypeArtifactTypePredicate();
+      case OseeDslPackage.RELATION_TYPE_ARTIFACT_PREDICATE: return createRelationTypeArtifactPredicate();
+      case OseeDslPackage.RELATION_TYPE_PREDICATE: return createRelationTypePredicate();
       case OseeDslPackage.OBJECT_RESTRICTION: return createObjectRestriction();
       case OseeDslPackage.ARTIFACT_MATCH_RESTRICTION: return createArtifactMatchRestriction();
       case OseeDslPackage.ARTIFACT_TYPE_RESTRICTION: return createArtifactTypeRestriction();
       case OseeDslPackage.ATTRIBUTE_TYPE_RESTRICTION: return createAttributeTypeRestriction();
+      case OseeDslPackage.LEGACY_RELATION_TYPE_RESTRICTION: return createLegacyRelationTypeRestriction();
       case OseeDslPackage.RELATION_TYPE_RESTRICTION: return createRelationTypeRestriction();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
@@ -119,6 +123,8 @@ public class OseeDslFactoryImpl extends EFactoryImpl implements OseeDslFactory
         return createMatchFieldFromString(eDataType, initialValue);
       case OseeDslPackage.ACCESS_PERMISSION_ENUM:
         return createAccessPermissionEnumFromString(eDataType, initialValue);
+      case OseeDslPackage.RELATION_TYPE_MATCH:
+        return createRelationTypeMatchFromString(eDataType, initialValue);
       case OseeDslPackage.XRELATION_SIDE_ENUM:
         return createXRelationSideEnumFromString(eDataType, initialValue);
       default:
@@ -146,6 +152,8 @@ public class OseeDslFactoryImpl extends EFactoryImpl implements OseeDslFactory
         return convertMatchFieldToString(eDataType, instanceValue);
       case OseeDslPackage.ACCESS_PERMISSION_ENUM:
         return convertAccessPermissionEnumToString(eDataType, instanceValue);
+      case OseeDslPackage.RELATION_TYPE_MATCH:
+        return convertRelationTypeMatchToString(eDataType, instanceValue);
       case OseeDslPackage.XRELATION_SIDE_ENUM:
         return convertXRelationSideEnumToString(eDataType, instanceValue);
       default:
@@ -378,6 +386,39 @@ public class OseeDslFactoryImpl extends EFactoryImpl implements OseeDslFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public RelationTypeArtifactTypePredicate createRelationTypeArtifactTypePredicate()
+  {
+    RelationTypeArtifactTypePredicateImpl relationTypeArtifactTypePredicate = new RelationTypeArtifactTypePredicateImpl();
+    return relationTypeArtifactTypePredicate;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RelationTypeArtifactPredicate createRelationTypeArtifactPredicate()
+  {
+    RelationTypeArtifactPredicateImpl relationTypeArtifactPredicate = new RelationTypeArtifactPredicateImpl();
+    return relationTypeArtifactPredicate;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RelationTypePredicate createRelationTypePredicate()
+  {
+    RelationTypePredicateImpl relationTypePredicate = new RelationTypePredicateImpl();
+    return relationTypePredicate;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public ObjectRestriction createObjectRestriction()
   {
     ObjectRestrictionImpl objectRestriction = new ObjectRestrictionImpl();
@@ -415,6 +456,17 @@ public class OseeDslFactoryImpl extends EFactoryImpl implements OseeDslFactory
   {
     AttributeTypeRestrictionImpl attributeTypeRestriction = new AttributeTypeRestrictionImpl();
     return attributeTypeRestriction;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LegacyRelationTypeRestriction createLegacyRelationTypeRestriction()
+  {
+    LegacyRelationTypeRestrictionImpl legacyRelationTypeRestriction = new LegacyRelationTypeRestrictionImpl();
+    return legacyRelationTypeRestriction;
   }
 
   /**
@@ -534,6 +586,28 @@ public class OseeDslFactoryImpl extends EFactoryImpl implements OseeDslFactory
    * @generated
    */
   public String convertAccessPermissionEnumToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RelationTypeMatch createRelationTypeMatchFromString(EDataType eDataType, String initialValue)
+  {
+    RelationTypeMatch result = RelationTypeMatch.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertRelationTypeMatchToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }

@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.CompoundCondition;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.Condition;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.HierarchyRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.Import;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.LegacyRelationTypeRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.MatchField;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
@@ -34,6 +35,10 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeElement;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OverrideOption;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationMultiplicityEnum;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactPredicate;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactTypePredicate;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeMatch;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypePredicate;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RemoveEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.SimpleCondition;
@@ -201,6 +206,27 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass relationTypeArtifactTypePredicateEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass relationTypeArtifactPredicateEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass relationTypePredicateEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass objectRestrictionEClass = null;
 
   /**
@@ -223,6 +249,13 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * @generated
    */
   private EClass attributeTypeRestrictionEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass legacyRelationTypeRestrictionEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -265,6 +298,13 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * @generated
    */
   private EEnum accessPermissionEnumEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum relationTypeMatchEEnum = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1131,6 +1171,56 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getRelationTypeArtifactTypePredicate()
+  {
+    return relationTypeArtifactTypePredicateEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getRelationTypeArtifactTypePredicate_ArtifactTypeRef()
+  {
+    return (EReference)relationTypeArtifactTypePredicateEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getRelationTypeArtifactPredicate()
+  {
+    return relationTypeArtifactPredicateEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getRelationTypeArtifactPredicate_ArtifactMatcherRef()
+  {
+    return (EReference)relationTypeArtifactPredicateEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getRelationTypePredicate()
+  {
+    return relationTypePredicateEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getObjectRestriction()
   {
     return objectRestrictionEClass;
@@ -1221,6 +1311,56 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getLegacyRelationTypeRestriction()
+  {
+    return legacyRelationTypeRestrictionEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLegacyRelationTypeRestriction_Permission()
+  {
+    return (EAttribute)legacyRelationTypeRestrictionEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getLegacyRelationTypeRestriction_RelationTypeRef()
+  {
+    return (EReference)legacyRelationTypeRestrictionEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLegacyRelationTypeRestriction_RestrictedToSide()
+  {
+    return (EAttribute)legacyRelationTypeRestrictionEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getLegacyRelationTypeRestriction_ArtifactMatcherRef()
+  {
+    return (EReference)legacyRelationTypeRestrictionEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getRelationTypeRestriction()
   {
     return relationTypeRestrictionEClass;
@@ -1231,9 +1371,19 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getRelationTypeRestriction_RelationTypeMatch()
+  {
+    return (EAttribute)relationTypeRestrictionEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EReference getRelationTypeRestriction_RelationTypeRef()
   {
-    return (EReference)relationTypeRestrictionEClass.getEStructuralFeatures().get(0);
+    return (EReference)relationTypeRestrictionEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -1243,7 +1393,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    */
   public EAttribute getRelationTypeRestriction_RestrictedToSide()
   {
-    return (EAttribute)relationTypeRestrictionEClass.getEStructuralFeatures().get(1);
+    return (EAttribute)relationTypeRestrictionEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -1251,9 +1401,9 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getRelationTypeRestriction_ArtifactMatcherRef()
+  public EReference getRelationTypeRestriction_Predicate()
   {
-    return (EReference)relationTypeRestrictionEClass.getEStructuralFeatures().get(2);
+    return (EReference)relationTypeRestrictionEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -1304,6 +1454,16 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
   public EEnum getAccessPermissionEnum()
   {
     return accessPermissionEnumEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getRelationTypeMatch()
+  {
+    return relationTypeMatchEEnum;
   }
 
   /**
@@ -1445,6 +1605,14 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     createEReference(hierarchyRestrictionEClass, HIERARCHY_RESTRICTION__ARTIFACT_MATCHER_REF);
     createEReference(hierarchyRestrictionEClass, HIERARCHY_RESTRICTION__ACCESS_RULES);
 
+    relationTypeArtifactTypePredicateEClass = createEClass(RELATION_TYPE_ARTIFACT_TYPE_PREDICATE);
+    createEReference(relationTypeArtifactTypePredicateEClass, RELATION_TYPE_ARTIFACT_TYPE_PREDICATE__ARTIFACT_TYPE_REF);
+
+    relationTypeArtifactPredicateEClass = createEClass(RELATION_TYPE_ARTIFACT_PREDICATE);
+    createEReference(relationTypeArtifactPredicateEClass, RELATION_TYPE_ARTIFACT_PREDICATE__ARTIFACT_MATCHER_REF);
+
+    relationTypePredicateEClass = createEClass(RELATION_TYPE_PREDICATE);
+
     objectRestrictionEClass = createEClass(OBJECT_RESTRICTION);
     createEAttribute(objectRestrictionEClass, OBJECT_RESTRICTION__PERMISSION);
 
@@ -1458,10 +1626,17 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     createEReference(attributeTypeRestrictionEClass, ATTRIBUTE_TYPE_RESTRICTION__ATTRIBUTE_TYPE_REF);
     createEReference(attributeTypeRestrictionEClass, ATTRIBUTE_TYPE_RESTRICTION__ARTIFACT_TYPE_REF);
 
+    legacyRelationTypeRestrictionEClass = createEClass(LEGACY_RELATION_TYPE_RESTRICTION);
+    createEAttribute(legacyRelationTypeRestrictionEClass, LEGACY_RELATION_TYPE_RESTRICTION__PERMISSION);
+    createEReference(legacyRelationTypeRestrictionEClass, LEGACY_RELATION_TYPE_RESTRICTION__RELATION_TYPE_REF);
+    createEAttribute(legacyRelationTypeRestrictionEClass, LEGACY_RELATION_TYPE_RESTRICTION__RESTRICTED_TO_SIDE);
+    createEReference(legacyRelationTypeRestrictionEClass, LEGACY_RELATION_TYPE_RESTRICTION__ARTIFACT_MATCHER_REF);
+
     relationTypeRestrictionEClass = createEClass(RELATION_TYPE_RESTRICTION);
+    createEAttribute(relationTypeRestrictionEClass, RELATION_TYPE_RESTRICTION__RELATION_TYPE_MATCH);
     createEReference(relationTypeRestrictionEClass, RELATION_TYPE_RESTRICTION__RELATION_TYPE_REF);
     createEAttribute(relationTypeRestrictionEClass, RELATION_TYPE_RESTRICTION__RESTRICTED_TO_SIDE);
-    createEReference(relationTypeRestrictionEClass, RELATION_TYPE_RESTRICTION__ARTIFACT_MATCHER_REF);
+    createEReference(relationTypeRestrictionEClass, RELATION_TYPE_RESTRICTION__PREDICATE);
 
     // Create enums
     relationMultiplicityEnumEEnum = createEEnum(RELATION_MULTIPLICITY_ENUM);
@@ -1469,6 +1644,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     xLogicOperatorEEnum = createEEnum(XLOGIC_OPERATOR);
     matchFieldEEnum = createEEnum(MATCH_FIELD);
     accessPermissionEnumEEnum = createEEnum(ACCESS_PERMISSION_ENUM);
+    relationTypeMatchEEnum = createEEnum(RELATION_TYPE_MATCH);
     xRelationSideEnumEEnum = createEEnum(XRELATION_SIDE_ENUM);
   }
 
@@ -1511,6 +1687,8 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     xRelationTypeEClass.getESuperTypes().add(this.getOseeType());
     simpleConditionEClass.getESuperTypes().add(this.getCondition());
     compoundConditionEClass.getESuperTypes().add(this.getCondition());
+    relationTypeArtifactTypePredicateEClass.getESuperTypes().add(this.getRelationTypePredicate());
+    relationTypeArtifactPredicateEClass.getESuperTypes().add(this.getRelationTypePredicate());
     artifactMatchRestrictionEClass.getESuperTypes().add(this.getObjectRestriction());
     artifactTypeRestrictionEClass.getESuperTypes().add(this.getObjectRestriction());
     attributeTypeRestrictionEClass.getESuperTypes().add(this.getObjectRestriction());
@@ -1616,6 +1794,14 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     initEReference(getHierarchyRestriction_ArtifactMatcherRef(), this.getXArtifactMatcher(), null, "artifactMatcherRef", null, 0, 1, HierarchyRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getHierarchyRestriction_AccessRules(), this.getObjectRestriction(), null, "accessRules", null, 0, -1, HierarchyRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    initEClass(relationTypeArtifactTypePredicateEClass, RelationTypeArtifactTypePredicate.class, "RelationTypeArtifactTypePredicate", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getRelationTypeArtifactTypePredicate_ArtifactTypeRef(), this.getXArtifactType(), null, "artifactTypeRef", null, 0, 1, RelationTypeArtifactTypePredicate.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(relationTypeArtifactPredicateEClass, RelationTypeArtifactPredicate.class, "RelationTypeArtifactPredicate", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getRelationTypeArtifactPredicate_ArtifactMatcherRef(), this.getXArtifactMatcher(), null, "artifactMatcherRef", null, 0, 1, RelationTypeArtifactPredicate.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(relationTypePredicateEClass, RelationTypePredicate.class, "RelationTypePredicate", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
     initEClass(objectRestrictionEClass, ObjectRestriction.class, "ObjectRestriction", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getObjectRestriction_Permission(), this.getAccessPermissionEnum(), "permission", null, 0, 1, ObjectRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -1629,10 +1815,17 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     initEReference(getAttributeTypeRestriction_AttributeTypeRef(), this.getXAttributeType(), null, "attributeTypeRef", null, 0, 1, AttributeTypeRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAttributeTypeRestriction_ArtifactTypeRef(), this.getXArtifactType(), null, "artifactTypeRef", null, 0, 1, AttributeTypeRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    initEClass(legacyRelationTypeRestrictionEClass, LegacyRelationTypeRestriction.class, "LegacyRelationTypeRestriction", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getLegacyRelationTypeRestriction_Permission(), this.getAccessPermissionEnum(), "permission", null, 0, 1, LegacyRelationTypeRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getLegacyRelationTypeRestriction_RelationTypeRef(), this.getXRelationType(), null, "relationTypeRef", null, 0, 1, LegacyRelationTypeRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLegacyRelationTypeRestriction_RestrictedToSide(), this.getXRelationSideEnum(), "restrictedToSide", null, 0, 1, LegacyRelationTypeRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getLegacyRelationTypeRestriction_ArtifactMatcherRef(), this.getXArtifactMatcher(), null, "artifactMatcherRef", null, 0, 1, LegacyRelationTypeRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     initEClass(relationTypeRestrictionEClass, RelationTypeRestriction.class, "RelationTypeRestriction", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getRelationTypeRestriction_RelationTypeMatch(), this.getRelationTypeMatch(), "relationTypeMatch", null, 0, 1, RelationTypeRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getRelationTypeRestriction_RelationTypeRef(), this.getXRelationType(), null, "relationTypeRef", null, 0, 1, RelationTypeRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getRelationTypeRestriction_RestrictedToSide(), this.getXRelationSideEnum(), "restrictedToSide", null, 0, 1, RelationTypeRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getRelationTypeRestriction_ArtifactMatcherRef(), this.getXArtifactMatcher(), null, "artifactMatcherRef", null, 0, 1, RelationTypeRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getRelationTypeRestriction_Predicate(), this.getRelationTypePredicate(), null, "predicate", null, 0, 1, RelationTypeRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Initialize enums and add enum literals
     initEEnum(relationMultiplicityEnumEEnum, RelationMultiplicityEnum.class, "RelationMultiplicityEnum");
@@ -1658,6 +1851,9 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     initEEnum(accessPermissionEnumEEnum, AccessPermissionEnum.class, "AccessPermissionEnum");
     addEEnumLiteral(accessPermissionEnumEEnum, AccessPermissionEnum.ALLOW);
     addEEnumLiteral(accessPermissionEnumEEnum, AccessPermissionEnum.DENY);
+
+    initEEnum(relationTypeMatchEEnum, RelationTypeMatch.class, "RelationTypeMatch");
+    addEEnumLiteral(relationTypeMatchEEnum, RelationTypeMatch.ALL);
 
     initEEnum(xRelationSideEnumEEnum, XRelationSideEnum.class, "XRelationSideEnum");
     addEEnumLiteral(xRelationSideEnumEEnum, XRelationSideEnum.SIDE_A);

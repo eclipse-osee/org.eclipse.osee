@@ -2260,6 +2260,122 @@ ruleHierarchyRestriction returns [EObject current=null]
 
 
 
+// Entry rule entryRuleRelationTypeArtifactTypePredicate
+entryRuleRelationTypeArtifactTypePredicate returns [EObject current=null] 
+	:
+	{ newCompositeNode(grammarAccess.getRelationTypeArtifactTypePredicateRule()); }
+	 iv_ruleRelationTypeArtifactTypePredicate=ruleRelationTypeArtifactTypePredicate 
+	 { $current=$iv_ruleRelationTypeArtifactTypePredicate.current; } 
+	 EOF 
+;
+
+// Rule RelationTypeArtifactTypePredicate
+ruleRelationTypeArtifactTypePredicate returns [EObject current=null] 
+    @init { enterRule(); 
+    }
+    @after { leaveRule(); }:
+(	otherlv_0='artifactType' 
+    {
+    	newLeafNode(otherlv_0, grammarAccess.getRelationTypeArtifactTypePredicateAccess().getArtifactTypeKeyword_0());
+    }
+(
+(
+		{
+			if ($current==null) {
+	            $current = createModelElement(grammarAccess.getRelationTypeArtifactTypePredicateRule());
+	        }
+        }
+	otherlv_1=RULE_STRING
+	{
+		newLeafNode(otherlv_1, grammarAccess.getRelationTypeArtifactTypePredicateAccess().getArtifactTypeRefXArtifactTypeCrossReference_1_0()); 
+	}
+
+)
+))
+;
+
+
+
+
+
+// Entry rule entryRuleRelationTypeArtifactPredicate
+entryRuleRelationTypeArtifactPredicate returns [EObject current=null] 
+	:
+	{ newCompositeNode(grammarAccess.getRelationTypeArtifactPredicateRule()); }
+	 iv_ruleRelationTypeArtifactPredicate=ruleRelationTypeArtifactPredicate 
+	 { $current=$iv_ruleRelationTypeArtifactPredicate.current; } 
+	 EOF 
+;
+
+// Rule RelationTypeArtifactPredicate
+ruleRelationTypeArtifactPredicate returns [EObject current=null] 
+    @init { enterRule(); 
+    }
+    @after { leaveRule(); }:
+(	otherlv_0='artifact' 
+    {
+    	newLeafNode(otherlv_0, grammarAccess.getRelationTypeArtifactPredicateAccess().getArtifactKeyword_0());
+    }
+(
+(
+		{
+			if ($current==null) {
+	            $current = createModelElement(grammarAccess.getRelationTypeArtifactPredicateRule());
+	        }
+        }
+	otherlv_1=RULE_STRING
+	{
+		newLeafNode(otherlv_1, grammarAccess.getRelationTypeArtifactPredicateAccess().getArtifactMatcherRefXArtifactMatcherCrossReference_1_0()); 
+	}
+
+)
+))
+;
+
+
+
+
+
+// Entry rule entryRuleRelationTypePredicate
+entryRuleRelationTypePredicate returns [EObject current=null] 
+	:
+	{ newCompositeNode(grammarAccess.getRelationTypePredicateRule()); }
+	 iv_ruleRelationTypePredicate=ruleRelationTypePredicate 
+	 { $current=$iv_ruleRelationTypePredicate.current; } 
+	 EOF 
+;
+
+// Rule RelationTypePredicate
+ruleRelationTypePredicate returns [EObject current=null] 
+    @init { enterRule(); 
+    }
+    @after { leaveRule(); }:
+(
+    { 
+        newCompositeNode(grammarAccess.getRelationTypePredicateAccess().getRelationTypeArtifactPredicateParserRuleCall_0()); 
+    }
+    this_RelationTypeArtifactPredicate_0=ruleRelationTypeArtifactPredicate
+    { 
+        $current = $this_RelationTypeArtifactPredicate_0.current; 
+        afterParserOrEnumRuleCall();
+    }
+
+    |
+    { 
+        newCompositeNode(grammarAccess.getRelationTypePredicateAccess().getRelationTypeArtifactTypePredicateParserRuleCall_1()); 
+    }
+    this_RelationTypeArtifactTypePredicate_1=ruleRelationTypeArtifactTypePredicate
+    { 
+        $current = $this_RelationTypeArtifactTypePredicate_1.current; 
+        afterParserOrEnumRuleCall();
+    }
+)
+;
+
+
+
+
+
 // Entry rule entryRuleObjectRestriction
 entryRuleObjectRestriction returns [EObject current=null] 
 	:
@@ -2533,6 +2649,8 @@ ruleAttributeTypeRestriction returns [EObject current=null]
 
 
 
+
+
 // Entry rule entryRuleRelationTypeRestriction
 entryRuleRelationTypeRestriction returns [EObject current=null] 
 	:
@@ -2573,55 +2691,75 @@ ruleRelationTypeRestriction returns [EObject current=null]
     {
     	newLeafNode(otherlv_2, grammarAccess.getRelationTypeRestrictionAccess().getRelationTypeKeyword_2());
     }
+((
 (
+		{ 
+	        newCompositeNode(grammarAccess.getRelationTypeRestrictionAccess().getRelationTypeMatchRelationTypeMatchEnumRuleCall_3_0_0()); 
+	    }
+		lv_relationTypeMatch_3_0=ruleRelationTypeMatch		{
+	        if ($current==null) {
+	            $current = createModelElementForParent(grammarAccess.getRelationTypeRestrictionRule());
+	        }
+       		set(
+       			$current, 
+       			"relationTypeMatch",
+        		lv_relationTypeMatch_3_0, 
+        		"RelationTypeMatch");
+	        afterParserOrEnumRuleCall();
+	    }
+
+)
+)
+    |(
 (
 		{
 			if ($current==null) {
 	            $current = createModelElement(grammarAccess.getRelationTypeRestrictionRule());
 	        }
         }
-	otherlv_3=RULE_STRING
+	otherlv_4=RULE_STRING
 	{
-		newLeafNode(otherlv_3, grammarAccess.getRelationTypeRestrictionAccess().getRelationTypeRefXRelationTypeCrossReference_3_0()); 
+		newLeafNode(otherlv_4, grammarAccess.getRelationTypeRestrictionAccess().getRelationTypeRefXRelationTypeCrossReference_3_1_0()); 
 	}
 
 )
-)(
+))(
 (
 		{ 
 	        newCompositeNode(grammarAccess.getRelationTypeRestrictionAccess().getRestrictedToSideXRelationSideEnumEnumRuleCall_4_0()); 
 	    }
-		lv_restrictedToSide_4_0=ruleXRelationSideEnum		{
+		lv_restrictedToSide_5_0=ruleXRelationSideEnum		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getRelationTypeRestrictionRule());
 	        }
        		set(
        			$current, 
        			"restrictedToSide",
-        		lv_restrictedToSide_4_0, 
+        		lv_restrictedToSide_5_0, 
         		"XRelationSideEnum");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-)(	otherlv_5='artifact' 
-    {
-    	newLeafNode(otherlv_5, grammarAccess.getRelationTypeRestrictionAccess().getArtifactKeyword_5_0());
-    }
+)(
 (
-(
-		{
-			if ($current==null) {
-	            $current = createModelElement(grammarAccess.getRelationTypeRestrictionRule());
+		{ 
+	        newCompositeNode(grammarAccess.getRelationTypeRestrictionAccess().getPredicateRelationTypePredicateParserRuleCall_5_0()); 
+	    }
+		lv_predicate_6_0=ruleRelationTypePredicate		{
+	        if ($current==null) {
+	            $current = createModelElementForParent(grammarAccess.getRelationTypeRestrictionRule());
 	        }
-        }
-	otherlv_6=RULE_STRING
-	{
-		newLeafNode(otherlv_6, grammarAccess.getRelationTypeRestrictionAccess().getArtifactMatcherRefXArtifactMatcherCrossReference_5_1_0()); 
-	}
+       		set(
+       			$current, 
+       			"predicate",
+        		lv_predicate_6_0, 
+        		"RelationTypePredicate");
+	        afterParserOrEnumRuleCall();
+	    }
 
 )
-))?	otherlv_7=';' 
+)?	otherlv_7=';' 
     {
     	newLeafNode(otherlv_7, grammarAccess.getRelationTypeRestrictionAccess().getSemicolonKeyword_6());
     }
@@ -2748,6 +2886,19 @@ ruleAccessPermissionEnum returns [Enumerator current=null]
         newLeafNode(enumLiteral_1, grammarAccess.getAccessPermissionEnumAccess().getDENYEnumLiteralDeclaration_1()); 
     }
 ));
+
+
+
+// Rule RelationTypeMatch
+ruleRelationTypeMatch returns [Enumerator current=null] 
+    @init { enterRule(); }
+    @after { leaveRule(); }:
+(	enumLiteral_0='ALL' 
+	{
+        $current = grammarAccess.getRelationTypeMatchAccess().getALLEnumLiteralDeclaration().getEnumLiteral().getInstance();
+        newLeafNode(enumLiteral_0, grammarAccess.getRelationTypeMatchAccess().getALLEnumLiteralDeclaration()); 
+    }
+);
 
 
 

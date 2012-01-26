@@ -21,8 +21,13 @@ import org.eclipse.osee.framework.core.dsl.integration.mocks.DslAsserts;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockModel;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslFactory;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactPredicate;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactTypePredicate;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeMatch;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationSideEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -220,6 +225,91 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       Assert.assertEquals(expectedObject2, actualAccess.getAccessObject());
    }
 
+   @Test
+   public void testProcessRelationWithRelationTypeAll() throws OseeCoreException {
+      RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
+      restriction.setPermission(AccessPermissionEnum.ALLOW);
+      restriction.setRelationTypeMatch(RelationTypeMatch.ALL);
+      restriction.setRestrictedToSide(XRelationSideEnum.BOTH);
+
+      IRelationType relationType = CoreRelationTypes.Default_Hierarchical__Child;
+
+      RelationType testRelationType =
+         getTestRelationType(relationType, CoreArtifactTypes.SoftwareRequirement, CoreArtifactTypes.Artifact);
+
+      IArtifactType artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
+      ArtifactType artArtType = new ArtifactType(artTypeToken1.getGuid(), artTypeToken1.getName(), false);
+      Set<ArtifactType> superTypes = new HashSet<ArtifactType>();
+      superTypes.add(new ArtifactType(CoreArtifactTypes.Artifact.getGuid(), CoreArtifactTypes.Artifact.getName(), false));
+      artArtType.setSuperTypes(superTypes);
+
+      MockArtifactProxy artData =
+         new MockArtifactProxy(GUID.create(), artArtType, null, null, Collections.singleton(testRelationType));
+      RelationTypeSide expectedObject1 = new RelationTypeSide(testRelationType, RelationSide.SIDE_A);
+      RelationTypeSide expectedObject2 = new RelationTypeSide(testRelationType, RelationSide.SIDE_B);
+
+      final List<AccessDetail<?>> actualAccesses = new ArrayList<AccessDetail<?>>();
+      AccessDetailCollector collector = new AccessDetailCollector() {
+
+         @Override
+         public void collect(AccessDetail<?> accessDetail) {
+            Assert.assertNotNull(accessDetail);
+            actualAccesses.add(accessDetail);
+         }
+      };
+
+      Scope expectedScope = new Scope();
+      getRestrictionHandler().process(restriction, artData, collector, expectedScope);
+
+      AccessDetail<?> actualAccess = actualAccesses.get(0);
+      Assert.assertEquals(actualAccess.getPermission(), PermissionEnum.WRITE);
+      Assert.assertEquals(expectedObject1, actualAccess.getAccessObject());
+
+      actualAccess = actualAccesses.get(1);
+      Assert.assertEquals(actualAccess.getPermission(), PermissionEnum.WRITE);
+      Assert.assertEquals(expectedObject2, actualAccess.getAccessObject());
+   }
+
+   @Test
+   public void testProcessDataArtifactTypeMatch() throws OseeCoreException {
+      IRelationType relationType = CoreRelationTypes.Default_Hierarchical__Child;
+
+      IArtifactType artifactType = CoreArtifactTypes.AbstractSoftwareRequirement;
+      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getGuid(), artifactType.getName());
+
+      RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
+      restriction.setPermission(AccessPermissionEnum.ALLOW);
+      restriction.setRelationTypeMatch(RelationTypeMatch.ALL);
+
+      RelationTypeArtifactTypePredicate predicate = OseeDslFactory.eINSTANCE.createRelationTypeArtifactTypePredicate();
+      predicate.setArtifactTypeRef(artifactTypeRef);
+
+      restriction.setPredicate(predicate);
+      restriction.setRestrictedToSide(XRelationSideEnum.SIDE_B);
+
+      RelationType testRelationType =
+         getTestRelationType(relationType, CoreArtifactTypes.SoftwareRequirement, CoreArtifactTypes.Artifact);
+
+      IArtifactType artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
+      ArtifactType artArtType = new ArtifactType(artTypeToken1.getGuid(), artTypeToken1.getName(), false);
+      Set<ArtifactType> superTypes = new HashSet<ArtifactType>();
+      superTypes.add(new ArtifactType(CoreArtifactTypes.AbstractSoftwareRequirement.getGuid(),
+         CoreArtifactTypes.AbstractSoftwareRequirement.getName(), false));
+      artArtType.setSuperTypes(superTypes);
+
+      DefaultBasicArtifact expectedAccessObject = new DefaultBasicArtifact(1, GUID.create(), "Another Artifact");
+      MockArtifactProxy artData =
+         new MockArtifactProxy(expectedAccessObject.getGuid(), artArtType, expectedAccessObject, null,
+            Collections.singleton(testRelationType));
+
+      RelationTypeSide expectedObject = new RelationTypeSide(testRelationType, RelationSide.SIDE_B);
+
+      Scope expectedScope = new Scope();
+      expectedScope.addSubPath(artData.getName());
+      DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artData, expectedObject,
+         PermissionEnum.WRITE, expectedScope);
+   }
+
    private void testProcessRelationWithArtifactHelper(String artifactName, String matcherArtifactName, Scope expectedScope) throws OseeCoreException {
       IRelationType relationType = CoreRelationTypes.Default_Hierarchical__Child;
       XRelationType relationTypeRef = MockModel.createXRelationType(relationType.getGuid(), relationType.getName());
@@ -231,7 +321,10 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
       XArtifactMatcher matcher =
          MockModel.createMatcher("artifactMatcher \"Test\" where artifactName EQ \"" + matcherArtifactName + "\";");
-      restriction.setArtifactMatcherRef(matcher);
+
+      RelationTypeArtifactPredicate predicate = OseeDslFactory.eINSTANCE.createRelationTypeArtifactPredicate();
+      predicate.setArtifactMatcherRef(matcher);
+      restriction.setPredicate(predicate);
 
       RelationType testRelationType =
          getTestRelationType(relationType, CoreArtifactTypes.SoftwareRequirement, CoreArtifactTypes.Artifact);

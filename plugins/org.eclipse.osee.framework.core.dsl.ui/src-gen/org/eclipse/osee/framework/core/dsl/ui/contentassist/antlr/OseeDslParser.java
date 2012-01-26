@@ -49,7 +49,9 @@ public class OseeDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getCONDITION_VALUEAccess().getAlternatives(), "rule__CONDITION_VALUE__Alternatives");
 					put(grammarAccess.getConditionAccess().getAlternatives(), "rule__Condition__Alternatives");
 					put(grammarAccess.getAccessContextAccess().getAlternatives_7(), "rule__AccessContext__Alternatives_7");
+					put(grammarAccess.getRelationTypePredicateAccess().getAlternatives(), "rule__RelationTypePredicate__Alternatives");
 					put(grammarAccess.getObjectRestrictionAccess().getAlternatives(), "rule__ObjectRestriction__Alternatives");
+					put(grammarAccess.getRelationTypeRestrictionAccess().getAlternatives_3(), "rule__RelationTypeRestriction__Alternatives_3");
 					put(grammarAccess.getRelationMultiplicityEnumAccess().getAlternatives(), "rule__RelationMultiplicityEnum__Alternatives");
 					put(grammarAccess.getCompareOpAccess().getAlternatives(), "rule__CompareOp__Alternatives");
 					put(grammarAccess.getXLogicOperatorAccess().getAlternatives(), "rule__XLogicOperator__Alternatives");
@@ -93,12 +95,15 @@ public class OseeDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getAccessContextAccess().getGroup(), "rule__AccessContext__Group__0");
 					put(grammarAccess.getAccessContextAccess().getGroup_2(), "rule__AccessContext__Group_2__0");
 					put(grammarAccess.getHierarchyRestrictionAccess().getGroup(), "rule__HierarchyRestriction__Group__0");
+					put(grammarAccess.getRelationTypeArtifactTypePredicateAccess().getGroup(), "rule__RelationTypeArtifactTypePredicate__Group__0");
+					put(grammarAccess.getRelationTypeArtifactPredicateAccess().getGroup(), "rule__RelationTypeArtifactPredicate__Group__0");
 					put(grammarAccess.getArtifactMatchRestrictionAccess().getGroup(), "rule__ArtifactMatchRestriction__Group__0");
 					put(grammarAccess.getArtifactTypeRestrictionAccess().getGroup(), "rule__ArtifactTypeRestriction__Group__0");
 					put(grammarAccess.getAttributeTypeRestrictionAccess().getGroup(), "rule__AttributeTypeRestriction__Group__0");
 					put(grammarAccess.getAttributeTypeRestrictionAccess().getGroup_4(), "rule__AttributeTypeRestriction__Group_4__0");
+					put(grammarAccess.getLegacyRelationTypeRestrictionAccess().getGroup(), "rule__LegacyRelationTypeRestriction__Group__0");
+					put(grammarAccess.getLegacyRelationTypeRestrictionAccess().getGroup_5(), "rule__LegacyRelationTypeRestriction__Group_5__0");
 					put(grammarAccess.getRelationTypeRestrictionAccess().getGroup(), "rule__RelationTypeRestriction__Group__0");
-					put(grammarAccess.getRelationTypeRestrictionAccess().getGroup_5(), "rule__RelationTypeRestriction__Group_5__0");
 					put(grammarAccess.getOseeDslAccess().getImportsAssignment_0(), "rule__OseeDsl__ImportsAssignment_0");
 					put(grammarAccess.getOseeDslAccess().getArtifactTypesAssignment_1_0(), "rule__OseeDsl__ArtifactTypesAssignment_1_0");
 					put(grammarAccess.getOseeDslAccess().getRelationTypesAssignment_1_1(), "rule__OseeDsl__RelationTypesAssignment_1_1");
@@ -170,6 +175,8 @@ public class OseeDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getAccessContextAccess().getHierarchyRestrictionsAssignment_7_1(), "rule__AccessContext__HierarchyRestrictionsAssignment_7_1");
 					put(grammarAccess.getHierarchyRestrictionAccess().getArtifactMatcherRefAssignment_1(), "rule__HierarchyRestriction__ArtifactMatcherRefAssignment_1");
 					put(grammarAccess.getHierarchyRestrictionAccess().getAccessRulesAssignment_3(), "rule__HierarchyRestriction__AccessRulesAssignment_3");
+					put(grammarAccess.getRelationTypeArtifactTypePredicateAccess().getArtifactTypeRefAssignment_1(), "rule__RelationTypeArtifactTypePredicate__ArtifactTypeRefAssignment_1");
+					put(grammarAccess.getRelationTypeArtifactPredicateAccess().getArtifactMatcherRefAssignment_1(), "rule__RelationTypeArtifactPredicate__ArtifactMatcherRefAssignment_1");
 					put(grammarAccess.getArtifactMatchRestrictionAccess().getPermissionAssignment_0(), "rule__ArtifactMatchRestriction__PermissionAssignment_0");
 					put(grammarAccess.getArtifactMatchRestrictionAccess().getArtifactMatcherRefAssignment_3(), "rule__ArtifactMatchRestriction__ArtifactMatcherRefAssignment_3");
 					put(grammarAccess.getArtifactTypeRestrictionAccess().getPermissionAssignment_0(), "rule__ArtifactTypeRestriction__PermissionAssignment_0");
@@ -177,10 +184,15 @@ public class OseeDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getAttributeTypeRestrictionAccess().getPermissionAssignment_0(), "rule__AttributeTypeRestriction__PermissionAssignment_0");
 					put(grammarAccess.getAttributeTypeRestrictionAccess().getAttributeTypeRefAssignment_3(), "rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3");
 					put(grammarAccess.getAttributeTypeRestrictionAccess().getArtifactTypeRefAssignment_4_2(), "rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2");
+					put(grammarAccess.getLegacyRelationTypeRestrictionAccess().getPermissionAssignment_0(), "rule__LegacyRelationTypeRestriction__PermissionAssignment_0");
+					put(grammarAccess.getLegacyRelationTypeRestrictionAccess().getRelationTypeRefAssignment_3(), "rule__LegacyRelationTypeRestriction__RelationTypeRefAssignment_3");
+					put(grammarAccess.getLegacyRelationTypeRestrictionAccess().getRestrictedToSideAssignment_4(), "rule__LegacyRelationTypeRestriction__RestrictedToSideAssignment_4");
+					put(grammarAccess.getLegacyRelationTypeRestrictionAccess().getArtifactMatcherRefAssignment_5_1(), "rule__LegacyRelationTypeRestriction__ArtifactMatcherRefAssignment_5_1");
 					put(grammarAccess.getRelationTypeRestrictionAccess().getPermissionAssignment_0(), "rule__RelationTypeRestriction__PermissionAssignment_0");
-					put(grammarAccess.getRelationTypeRestrictionAccess().getRelationTypeRefAssignment_3(), "rule__RelationTypeRestriction__RelationTypeRefAssignment_3");
+					put(grammarAccess.getRelationTypeRestrictionAccess().getRelationTypeMatchAssignment_3_0(), "rule__RelationTypeRestriction__RelationTypeMatchAssignment_3_0");
+					put(grammarAccess.getRelationTypeRestrictionAccess().getRelationTypeRefAssignment_3_1(), "rule__RelationTypeRestriction__RelationTypeRefAssignment_3_1");
 					put(grammarAccess.getRelationTypeRestrictionAccess().getRestrictedToSideAssignment_4(), "rule__RelationTypeRestriction__RestrictedToSideAssignment_4");
-					put(grammarAccess.getRelationTypeRestrictionAccess().getArtifactMatcherRefAssignment_5_1(), "rule__RelationTypeRestriction__ArtifactMatcherRefAssignment_5_1");
+					put(grammarAccess.getRelationTypeRestrictionAccess().getPredicateAssignment_5(), "rule__RelationTypeRestriction__PredicateAssignment_5");
 				}
 			};
 		}

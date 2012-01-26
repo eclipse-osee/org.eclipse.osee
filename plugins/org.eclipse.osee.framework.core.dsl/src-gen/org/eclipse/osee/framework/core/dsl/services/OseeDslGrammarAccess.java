@@ -1438,6 +1438,82 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		public Keyword getRightCurlyBracketKeyword_4() { return cRightCurlyBracketKeyword_4; }
 	}
 
+	public class RelationTypeArtifactTypePredicateElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "RelationTypeArtifactTypePredicate");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cArtifactTypeKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Assignment cArtifactTypeRefAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final CrossReference cArtifactTypeRefXArtifactTypeCrossReference_1_0 = (CrossReference)cArtifactTypeRefAssignment_1.eContents().get(0);
+		private final RuleCall cArtifactTypeRefXArtifactTypeSTRINGTerminalRuleCall_1_0_1 = (RuleCall)cArtifactTypeRefXArtifactTypeCrossReference_1_0.eContents().get(1);
+		
+		//RelationTypeArtifactTypePredicate:
+		//	"artifactType" artifactTypeRef=[XArtifactType|STRING];
+		public ParserRule getRule() { return rule; }
+
+		//"artifactType" artifactTypeRef=[XArtifactType|STRING]
+		public Group getGroup() { return cGroup; }
+
+		//"artifactType"
+		public Keyword getArtifactTypeKeyword_0() { return cArtifactTypeKeyword_0; }
+
+		//artifactTypeRef=[XArtifactType|STRING]
+		public Assignment getArtifactTypeRefAssignment_1() { return cArtifactTypeRefAssignment_1; }
+
+		//[XArtifactType|STRING]
+		public CrossReference getArtifactTypeRefXArtifactTypeCrossReference_1_0() { return cArtifactTypeRefXArtifactTypeCrossReference_1_0; }
+
+		//STRING
+		public RuleCall getArtifactTypeRefXArtifactTypeSTRINGTerminalRuleCall_1_0_1() { return cArtifactTypeRefXArtifactTypeSTRINGTerminalRuleCall_1_0_1; }
+	}
+
+	public class RelationTypeArtifactPredicateElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "RelationTypeArtifactPredicate");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cArtifactKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Assignment cArtifactMatcherRefAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final CrossReference cArtifactMatcherRefXArtifactMatcherCrossReference_1_0 = (CrossReference)cArtifactMatcherRefAssignment_1.eContents().get(0);
+		private final RuleCall cArtifactMatcherRefXArtifactMatcherSTRINGTerminalRuleCall_1_0_1 = (RuleCall)cArtifactMatcherRefXArtifactMatcherCrossReference_1_0.eContents().get(1);
+		
+		//RelationTypeArtifactPredicate:
+		//	"artifact" artifactMatcherRef=[XArtifactMatcher|STRING];
+		public ParserRule getRule() { return rule; }
+
+		//"artifact" artifactMatcherRef=[XArtifactMatcher|STRING]
+		public Group getGroup() { return cGroup; }
+
+		//"artifact"
+		public Keyword getArtifactKeyword_0() { return cArtifactKeyword_0; }
+
+		//artifactMatcherRef=[XArtifactMatcher|STRING]
+		public Assignment getArtifactMatcherRefAssignment_1() { return cArtifactMatcherRefAssignment_1; }
+
+		//[XArtifactMatcher|STRING]
+		public CrossReference getArtifactMatcherRefXArtifactMatcherCrossReference_1_0() { return cArtifactMatcherRefXArtifactMatcherCrossReference_1_0; }
+
+		//STRING
+		public RuleCall getArtifactMatcherRefXArtifactMatcherSTRINGTerminalRuleCall_1_0_1() { return cArtifactMatcherRefXArtifactMatcherSTRINGTerminalRuleCall_1_0_1; }
+	}
+
+	public class RelationTypePredicateElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "RelationTypePredicate");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final RuleCall cRelationTypeArtifactPredicateParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
+		private final RuleCall cRelationTypeArtifactTypePredicateParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
+		
+		//RelationTypePredicate:
+		//	RelationTypeArtifactPredicate | RelationTypeArtifactTypePredicate;
+		public ParserRule getRule() { return rule; }
+
+		//RelationTypeArtifactPredicate | RelationTypeArtifactTypePredicate
+		public Alternatives getAlternatives() { return cAlternatives; }
+
+		//RelationTypeArtifactPredicate
+		public RuleCall getRelationTypeArtifactPredicateParserRuleCall_0() { return cRelationTypeArtifactPredicateParserRuleCall_0; }
+
+		//RelationTypeArtifactTypePredicate
+		public RuleCall getRelationTypeArtifactTypePredicateParserRuleCall_1() { return cRelationTypeArtifactTypePredicateParserRuleCall_1; }
+	}
+
 	public class ObjectRestrictionElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ObjectRestriction");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
@@ -1624,8 +1700,8 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		public Keyword getSemicolonKeyword_5() { return cSemicolonKeyword_5; }
 	}
 
-	public class RelationTypeRestrictionElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "RelationTypeRestriction");
+	public class LegacyRelationTypeRestrictionElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "LegacyRelationTypeRestriction");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Assignment cPermissionAssignment_0 = (Assignment)cGroup.eContents().get(0);
 		private final RuleCall cPermissionAccessPermissionEnumEnumRuleCall_0_0 = (RuleCall)cPermissionAssignment_0.eContents().get(0);
@@ -1643,7 +1719,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cArtifactMatcherRefXArtifactMatcherSTRINGTerminalRuleCall_5_1_0_1 = (RuleCall)cArtifactMatcherRefXArtifactMatcherCrossReference_5_1_0.eContents().get(1);
 		private final Keyword cSemicolonKeyword_6 = (Keyword)cGroup.eContents().get(6);
 		
-		//RelationTypeRestriction:
+		//LegacyRelationTypeRestriction:
 		//	permission=AccessPermissionEnum "edit" "relationType" relationTypeRef=[XRelationType|STRING]
 		//	restrictedToSide=XRelationSideEnum ("artifact" artifactMatcherRef=[XArtifactMatcher|STRING])? ";";
 		public ParserRule getRule() { return rule; }
@@ -1693,6 +1769,80 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 
 		//STRING
 		public RuleCall getArtifactMatcherRefXArtifactMatcherSTRINGTerminalRuleCall_5_1_0_1() { return cArtifactMatcherRefXArtifactMatcherSTRINGTerminalRuleCall_5_1_0_1; }
+
+		//";"
+		public Keyword getSemicolonKeyword_6() { return cSemicolonKeyword_6; }
+	}
+
+	public class RelationTypeRestrictionElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "RelationTypeRestriction");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Assignment cPermissionAssignment_0 = (Assignment)cGroup.eContents().get(0);
+		private final RuleCall cPermissionAccessPermissionEnumEnumRuleCall_0_0 = (RuleCall)cPermissionAssignment_0.eContents().get(0);
+		private final Keyword cEditKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Keyword cRelationTypeKeyword_2 = (Keyword)cGroup.eContents().get(2);
+		private final Alternatives cAlternatives_3 = (Alternatives)cGroup.eContents().get(3);
+		private final Assignment cRelationTypeMatchAssignment_3_0 = (Assignment)cAlternatives_3.eContents().get(0);
+		private final RuleCall cRelationTypeMatchRelationTypeMatchEnumRuleCall_3_0_0 = (RuleCall)cRelationTypeMatchAssignment_3_0.eContents().get(0);
+		private final Assignment cRelationTypeRefAssignment_3_1 = (Assignment)cAlternatives_3.eContents().get(1);
+		private final CrossReference cRelationTypeRefXRelationTypeCrossReference_3_1_0 = (CrossReference)cRelationTypeRefAssignment_3_1.eContents().get(0);
+		private final RuleCall cRelationTypeRefXRelationTypeSTRINGTerminalRuleCall_3_1_0_1 = (RuleCall)cRelationTypeRefXRelationTypeCrossReference_3_1_0.eContents().get(1);
+		private final Assignment cRestrictedToSideAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cRestrictedToSideXRelationSideEnumEnumRuleCall_4_0 = (RuleCall)cRestrictedToSideAssignment_4.eContents().get(0);
+		private final Assignment cPredicateAssignment_5 = (Assignment)cGroup.eContents().get(5);
+		private final RuleCall cPredicateRelationTypePredicateParserRuleCall_5_0 = (RuleCall)cPredicateAssignment_5.eContents().get(0);
+		private final Keyword cSemicolonKeyword_6 = (Keyword)cGroup.eContents().get(6);
+		
+		//RelationTypeRestriction:
+		//	permission=AccessPermissionEnum "edit" "relationType" (relationTypeMatch=RelationTypeMatch |
+		//	relationTypeRef=[XRelationType|STRING]) restrictedToSide=XRelationSideEnum predicate=RelationTypePredicate? ";";
+		public ParserRule getRule() { return rule; }
+
+		//permission=AccessPermissionEnum "edit" "relationType" (relationTypeMatch=RelationTypeMatch |
+		//relationTypeRef=[XRelationType|STRING]) restrictedToSide=XRelationSideEnum predicate=RelationTypePredicate? ";"
+		public Group getGroup() { return cGroup; }
+
+		//permission=AccessPermissionEnum
+		public Assignment getPermissionAssignment_0() { return cPermissionAssignment_0; }
+
+		//AccessPermissionEnum
+		public RuleCall getPermissionAccessPermissionEnumEnumRuleCall_0_0() { return cPermissionAccessPermissionEnumEnumRuleCall_0_0; }
+
+		//"edit"
+		public Keyword getEditKeyword_1() { return cEditKeyword_1; }
+
+		//"relationType"
+		public Keyword getRelationTypeKeyword_2() { return cRelationTypeKeyword_2; }
+
+		//relationTypeMatch=RelationTypeMatch | relationTypeRef=[XRelationType|STRING]
+		public Alternatives getAlternatives_3() { return cAlternatives_3; }
+
+		//relationTypeMatch=RelationTypeMatch
+		public Assignment getRelationTypeMatchAssignment_3_0() { return cRelationTypeMatchAssignment_3_0; }
+
+		//RelationTypeMatch
+		public RuleCall getRelationTypeMatchRelationTypeMatchEnumRuleCall_3_0_0() { return cRelationTypeMatchRelationTypeMatchEnumRuleCall_3_0_0; }
+
+		//relationTypeRef=[XRelationType|STRING]
+		public Assignment getRelationTypeRefAssignment_3_1() { return cRelationTypeRefAssignment_3_1; }
+
+		//[XRelationType|STRING]
+		public CrossReference getRelationTypeRefXRelationTypeCrossReference_3_1_0() { return cRelationTypeRefXRelationTypeCrossReference_3_1_0; }
+
+		//STRING
+		public RuleCall getRelationTypeRefXRelationTypeSTRINGTerminalRuleCall_3_1_0_1() { return cRelationTypeRefXRelationTypeSTRINGTerminalRuleCall_3_1_0_1; }
+
+		//restrictedToSide=XRelationSideEnum
+		public Assignment getRestrictedToSideAssignment_4() { return cRestrictedToSideAssignment_4; }
+
+		//XRelationSideEnum
+		public RuleCall getRestrictedToSideXRelationSideEnumEnumRuleCall_4_0() { return cRestrictedToSideXRelationSideEnumEnumRuleCall_4_0; }
+
+		//predicate=RelationTypePredicate?
+		public Assignment getPredicateAssignment_5() { return cPredicateAssignment_5; }
+
+		//RelationTypePredicate
+		public RuleCall getPredicateRelationTypePredicateParserRuleCall_5_0() { return cPredicateRelationTypePredicateParserRuleCall_5_0; }
 
 		//";"
 		public Keyword getSemicolonKeyword_6() { return cSemicolonKeyword_6; }
@@ -1874,6 +2024,22 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		public Keyword getDENYDENYKeyword_1_0() { return cDENYDENYKeyword_1_0; }
 	}
 
+	public class RelationTypeMatchElements extends AbstractEnumRuleElementFinder {
+		private final EnumRule rule = (EnumRule) GrammarUtil.findRuleForName(getGrammar(), "RelationTypeMatch");
+		private final EnumLiteralDeclaration cALLEnumLiteralDeclaration = (EnumLiteralDeclaration)rule.eContents().get(1);
+		private final Keyword cALLALLKeyword_0 = (Keyword)cALLEnumLiteralDeclaration.eContents().get(0);
+		
+		//enum RelationTypeMatch:
+		//	ALL;
+		public EnumRule getRule() { return rule; }
+
+		//ALL
+		public EnumLiteralDeclaration getALLEnumLiteralDeclaration() { return cALLEnumLiteralDeclaration; }
+
+		//"ALL"
+		public Keyword getALLALLKeyword_0() { return cALLALLKeyword_0; }
+	}
+
 	public class XRelationSideEnumElements extends AbstractEnumRuleElementFinder {
 		private final EnumRule rule = (EnumRule) GrammarUtil.findRuleForName(getGrammar(), "XRelationSideEnum");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
@@ -1942,11 +2108,16 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	private AccessContextElements pAccessContext;
 	private HierarchyRestrictionElements pHierarchyRestriction;
 	private AccessPermissionEnumElements unknownRuleAccessPermissionEnum;
+	private RelationTypeArtifactTypePredicateElements pRelationTypeArtifactTypePredicate;
+	private RelationTypeArtifactPredicateElements pRelationTypeArtifactPredicate;
+	private RelationTypePredicateElements pRelationTypePredicate;
 	private ObjectRestrictionElements pObjectRestriction;
 	private ArtifactMatchRestrictionElements pArtifactMatchRestriction;
 	private ArtifactTypeRestrictionElements pArtifactTypeRestriction;
 	private AttributeTypeRestrictionElements pAttributeTypeRestriction;
+	private LegacyRelationTypeRestrictionElements pLegacyRelationTypeRestriction;
 	private RelationTypeRestrictionElements pRelationTypeRestriction;
+	private RelationTypeMatchElements unknownRuleRelationTypeMatch;
 	private XRelationSideEnumElements unknownRuleXRelationSideEnum;
 	
 	private final GrammarProvider grammarProvider;
@@ -2302,6 +2473,36 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		return getAccessPermissionEnumAccess().getRule();
 	}
 
+	//RelationTypeArtifactTypePredicate:
+	//	"artifactType" artifactTypeRef=[XArtifactType|STRING];
+	public RelationTypeArtifactTypePredicateElements getRelationTypeArtifactTypePredicateAccess() {
+		return (pRelationTypeArtifactTypePredicate != null) ? pRelationTypeArtifactTypePredicate : (pRelationTypeArtifactTypePredicate = new RelationTypeArtifactTypePredicateElements());
+	}
+	
+	public ParserRule getRelationTypeArtifactTypePredicateRule() {
+		return getRelationTypeArtifactTypePredicateAccess().getRule();
+	}
+
+	//RelationTypeArtifactPredicate:
+	//	"artifact" artifactMatcherRef=[XArtifactMatcher|STRING];
+	public RelationTypeArtifactPredicateElements getRelationTypeArtifactPredicateAccess() {
+		return (pRelationTypeArtifactPredicate != null) ? pRelationTypeArtifactPredicate : (pRelationTypeArtifactPredicate = new RelationTypeArtifactPredicateElements());
+	}
+	
+	public ParserRule getRelationTypeArtifactPredicateRule() {
+		return getRelationTypeArtifactPredicateAccess().getRule();
+	}
+
+	//RelationTypePredicate:
+	//	RelationTypeArtifactPredicate | RelationTypeArtifactTypePredicate;
+	public RelationTypePredicateElements getRelationTypePredicateAccess() {
+		return (pRelationTypePredicate != null) ? pRelationTypePredicate : (pRelationTypePredicate = new RelationTypePredicateElements());
+	}
+	
+	public ParserRule getRelationTypePredicateRule() {
+		return getRelationTypePredicateAccess().getRule();
+	}
+
 	//ObjectRestriction:
 	//	ArtifactMatchRestriction | ArtifactTypeRestriction | RelationTypeRestriction | AttributeTypeRestriction;
 	public ObjectRestrictionElements getObjectRestrictionAccess() {
@@ -2343,15 +2544,36 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		return getAttributeTypeRestrictionAccess().getRule();
 	}
 
-	//RelationTypeRestriction:
+	//LegacyRelationTypeRestriction:
 	//	permission=AccessPermissionEnum "edit" "relationType" relationTypeRef=[XRelationType|STRING]
 	//	restrictedToSide=XRelationSideEnum ("artifact" artifactMatcherRef=[XArtifactMatcher|STRING])? ";";
+	public LegacyRelationTypeRestrictionElements getLegacyRelationTypeRestrictionAccess() {
+		return (pLegacyRelationTypeRestriction != null) ? pLegacyRelationTypeRestriction : (pLegacyRelationTypeRestriction = new LegacyRelationTypeRestrictionElements());
+	}
+	
+	public ParserRule getLegacyRelationTypeRestrictionRule() {
+		return getLegacyRelationTypeRestrictionAccess().getRule();
+	}
+
+	//RelationTypeRestriction:
+	//	permission=AccessPermissionEnum "edit" "relationType" (relationTypeMatch=RelationTypeMatch |
+	//	relationTypeRef=[XRelationType|STRING]) restrictedToSide=XRelationSideEnum predicate=RelationTypePredicate? ";";
 	public RelationTypeRestrictionElements getRelationTypeRestrictionAccess() {
 		return (pRelationTypeRestriction != null) ? pRelationTypeRestriction : (pRelationTypeRestriction = new RelationTypeRestrictionElements());
 	}
 	
 	public ParserRule getRelationTypeRestrictionRule() {
 		return getRelationTypeRestrictionAccess().getRule();
+	}
+
+	//enum RelationTypeMatch:
+	//	ALL;
+	public RelationTypeMatchElements getRelationTypeMatchAccess() {
+		return (unknownRuleRelationTypeMatch != null) ? unknownRuleRelationTypeMatch : (unknownRuleRelationTypeMatch = new RelationTypeMatchElements());
+	}
+	
+	public EnumRule getRelationTypeMatchRule() {
+		return getRelationTypeMatchAccess().getRule();
 	}
 
 	//enum XRelationSideEnum:

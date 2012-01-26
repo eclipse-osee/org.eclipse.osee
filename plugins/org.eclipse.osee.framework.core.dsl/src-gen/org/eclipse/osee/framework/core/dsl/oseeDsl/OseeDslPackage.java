@@ -1081,6 +1081,81 @@ public interface OseeDslPackage extends EPackage
   int HIERARCHY_RESTRICTION_FEATURE_COUNT = 2;
 
   /**
+   * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RelationTypePredicateImpl <em>Relation Type Predicate</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RelationTypePredicateImpl
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRelationTypePredicate()
+   * @generated
+   */
+  int RELATION_TYPE_PREDICATE = 22;
+
+  /**
+   * The number of structural features of the '<em>Relation Type Predicate</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RELATION_TYPE_PREDICATE_FEATURE_COUNT = 0;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RelationTypeArtifactTypePredicateImpl <em>Relation Type Artifact Type Predicate</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RelationTypeArtifactTypePredicateImpl
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRelationTypeArtifactTypePredicate()
+   * @generated
+   */
+  int RELATION_TYPE_ARTIFACT_TYPE_PREDICATE = 20;
+
+  /**
+   * The feature id for the '<em><b>Artifact Type Ref</b></em>' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RELATION_TYPE_ARTIFACT_TYPE_PREDICATE__ARTIFACT_TYPE_REF = RELATION_TYPE_PREDICATE_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Relation Type Artifact Type Predicate</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RELATION_TYPE_ARTIFACT_TYPE_PREDICATE_FEATURE_COUNT = RELATION_TYPE_PREDICATE_FEATURE_COUNT + 1;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RelationTypeArtifactPredicateImpl <em>Relation Type Artifact Predicate</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RelationTypeArtifactPredicateImpl
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRelationTypeArtifactPredicate()
+   * @generated
+   */
+  int RELATION_TYPE_ARTIFACT_PREDICATE = 21;
+
+  /**
+   * The feature id for the '<em><b>Artifact Matcher Ref</b></em>' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RELATION_TYPE_ARTIFACT_PREDICATE__ARTIFACT_MATCHER_REF = RELATION_TYPE_PREDICATE_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Relation Type Artifact Predicate</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RELATION_TYPE_ARTIFACT_PREDICATE_FEATURE_COUNT = RELATION_TYPE_PREDICATE_FEATURE_COUNT + 1;
+
+  /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.ObjectRestrictionImpl <em>Object Restriction</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1088,7 +1163,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getObjectRestriction()
    * @generated
    */
-  int OBJECT_RESTRICTION = 20;
+  int OBJECT_RESTRICTION = 23;
 
   /**
    * The feature id for the '<em><b>Permission</b></em>' attribute.
@@ -1116,7 +1191,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getArtifactMatchRestriction()
    * @generated
    */
-  int ARTIFACT_MATCH_RESTRICTION = 21;
+  int ARTIFACT_MATCH_RESTRICTION = 24;
 
   /**
    * The feature id for the '<em><b>Permission</b></em>' attribute.
@@ -1153,7 +1228,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getArtifactTypeRestriction()
    * @generated
    */
-  int ARTIFACT_TYPE_RESTRICTION = 22;
+  int ARTIFACT_TYPE_RESTRICTION = 25;
 
   /**
    * The feature id for the '<em><b>Permission</b></em>' attribute.
@@ -1190,7 +1265,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getAttributeTypeRestriction()
    * @generated
    */
-  int ATTRIBUTE_TYPE_RESTRICTION = 23;
+  int ATTRIBUTE_TYPE_RESTRICTION = 26;
 
   /**
    * The feature id for the '<em><b>Permission</b></em>' attribute.
@@ -1229,6 +1304,61 @@ public interface OseeDslPackage extends EPackage
   int ATTRIBUTE_TYPE_RESTRICTION_FEATURE_COUNT = OBJECT_RESTRICTION_FEATURE_COUNT + 2;
 
   /**
+   * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.LegacyRelationTypeRestrictionImpl <em>Legacy Relation Type Restriction</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.LegacyRelationTypeRestrictionImpl
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getLegacyRelationTypeRestriction()
+   * @generated
+   */
+  int LEGACY_RELATION_TYPE_RESTRICTION = 27;
+
+  /**
+   * The feature id for the '<em><b>Permission</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LEGACY_RELATION_TYPE_RESTRICTION__PERMISSION = 0;
+
+  /**
+   * The feature id for the '<em><b>Relation Type Ref</b></em>' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LEGACY_RELATION_TYPE_RESTRICTION__RELATION_TYPE_REF = 1;
+
+  /**
+   * The feature id for the '<em><b>Restricted To Side</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LEGACY_RELATION_TYPE_RESTRICTION__RESTRICTED_TO_SIDE = 2;
+
+  /**
+   * The feature id for the '<em><b>Artifact Matcher Ref</b></em>' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LEGACY_RELATION_TYPE_RESTRICTION__ARTIFACT_MATCHER_REF = 3;
+
+  /**
+   * The number of structural features of the '<em>Legacy Relation Type Restriction</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LEGACY_RELATION_TYPE_RESTRICTION_FEATURE_COUNT = 4;
+
+  /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RelationTypeRestrictionImpl <em>Relation Type Restriction</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1236,7 +1366,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRelationTypeRestriction()
    * @generated
    */
-  int RELATION_TYPE_RESTRICTION = 24;
+  int RELATION_TYPE_RESTRICTION = 28;
 
   /**
    * The feature id for the '<em><b>Permission</b></em>' attribute.
@@ -1248,13 +1378,22 @@ public interface OseeDslPackage extends EPackage
   int RELATION_TYPE_RESTRICTION__PERMISSION = OBJECT_RESTRICTION__PERMISSION;
 
   /**
+   * The feature id for the '<em><b>Relation Type Match</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RELATION_TYPE_RESTRICTION__RELATION_TYPE_MATCH = OBJECT_RESTRICTION_FEATURE_COUNT + 0;
+
+  /**
    * The feature id for the '<em><b>Relation Type Ref</b></em>' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int RELATION_TYPE_RESTRICTION__RELATION_TYPE_REF = OBJECT_RESTRICTION_FEATURE_COUNT + 0;
+  int RELATION_TYPE_RESTRICTION__RELATION_TYPE_REF = OBJECT_RESTRICTION_FEATURE_COUNT + 1;
 
   /**
    * The feature id for the '<em><b>Restricted To Side</b></em>' attribute.
@@ -1263,16 +1402,16 @@ public interface OseeDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int RELATION_TYPE_RESTRICTION__RESTRICTED_TO_SIDE = OBJECT_RESTRICTION_FEATURE_COUNT + 1;
+  int RELATION_TYPE_RESTRICTION__RESTRICTED_TO_SIDE = OBJECT_RESTRICTION_FEATURE_COUNT + 2;
 
   /**
-   * The feature id for the '<em><b>Artifact Matcher Ref</b></em>' reference.
+   * The feature id for the '<em><b>Predicate</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int RELATION_TYPE_RESTRICTION__ARTIFACT_MATCHER_REF = OBJECT_RESTRICTION_FEATURE_COUNT + 2;
+  int RELATION_TYPE_RESTRICTION__PREDICATE = OBJECT_RESTRICTION_FEATURE_COUNT + 3;
 
   /**
    * The number of structural features of the '<em>Relation Type Restriction</em>' class.
@@ -1281,7 +1420,7 @@ public interface OseeDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int RELATION_TYPE_RESTRICTION_FEATURE_COUNT = OBJECT_RESTRICTION_FEATURE_COUNT + 3;
+  int RELATION_TYPE_RESTRICTION_FEATURE_COUNT = OBJECT_RESTRICTION_FEATURE_COUNT + 4;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationMultiplicityEnum <em>Relation Multiplicity Enum</em>}' enum.
@@ -1291,7 +1430,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRelationMultiplicityEnum()
    * @generated
    */
-  int RELATION_MULTIPLICITY_ENUM = 25;
+  int RELATION_MULTIPLICITY_ENUM = 29;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.CompareOp <em>Compare Op</em>}' enum.
@@ -1301,7 +1440,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getCompareOp()
    * @generated
    */
-  int COMPARE_OP = 26;
+  int COMPARE_OP = 30;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XLogicOperator <em>XLogic Operator</em>}' enum.
@@ -1311,7 +1450,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getXLogicOperator()
    * @generated
    */
-  int XLOGIC_OPERATOR = 27;
+  int XLOGIC_OPERATOR = 31;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.MatchField <em>Match Field</em>}' enum.
@@ -1321,7 +1460,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getMatchField()
    * @generated
    */
-  int MATCH_FIELD = 28;
+  int MATCH_FIELD = 32;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum <em>Access Permission Enum</em>}' enum.
@@ -1331,7 +1470,17 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getAccessPermissionEnum()
    * @generated
    */
-  int ACCESS_PERMISSION_ENUM = 29;
+  int ACCESS_PERMISSION_ENUM = 33;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeMatch <em>Relation Type Match</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeMatch
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRelationTypeMatch()
+   * @generated
+   */
+  int RELATION_TYPE_MATCH = 34;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationSideEnum <em>XRelation Side Enum</em>}' enum.
@@ -1341,7 +1490,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getXRelationSideEnum()
    * @generated
    */
-  int XRELATION_SIDE_ENUM = 30;
+  int XRELATION_SIDE_ENUM = 35;
 
 
   /**
@@ -2194,6 +2343,58 @@ public interface OseeDslPackage extends EPackage
   EReference getHierarchyRestriction_AccessRules();
 
   /**
+   * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactTypePredicate <em>Relation Type Artifact Type Predicate</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Relation Type Artifact Type Predicate</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactTypePredicate
+   * @generated
+   */
+  EClass getRelationTypeArtifactTypePredicate();
+
+  /**
+   * Returns the meta object for the reference '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactTypePredicate#getArtifactTypeRef <em>Artifact Type Ref</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the reference '<em>Artifact Type Ref</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactTypePredicate#getArtifactTypeRef()
+   * @see #getRelationTypeArtifactTypePredicate()
+   * @generated
+   */
+  EReference getRelationTypeArtifactTypePredicate_ArtifactTypeRef();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactPredicate <em>Relation Type Artifact Predicate</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Relation Type Artifact Predicate</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactPredicate
+   * @generated
+   */
+  EClass getRelationTypeArtifactPredicate();
+
+  /**
+   * Returns the meta object for the reference '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactPredicate#getArtifactMatcherRef <em>Artifact Matcher Ref</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the reference '<em>Artifact Matcher Ref</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactPredicate#getArtifactMatcherRef()
+   * @see #getRelationTypeArtifactPredicate()
+   * @generated
+   */
+  EReference getRelationTypeArtifactPredicate_ArtifactMatcherRef();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypePredicate <em>Relation Type Predicate</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Relation Type Predicate</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypePredicate
+   * @generated
+   */
+  EClass getRelationTypePredicate();
+
+  /**
    * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction <em>Object Restriction</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2289,6 +2490,60 @@ public interface OseeDslPackage extends EPackage
   EReference getAttributeTypeRestriction_ArtifactTypeRef();
 
   /**
+   * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.LegacyRelationTypeRestriction <em>Legacy Relation Type Restriction</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Legacy Relation Type Restriction</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.LegacyRelationTypeRestriction
+   * @generated
+   */
+  EClass getLegacyRelationTypeRestriction();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.LegacyRelationTypeRestriction#getPermission <em>Permission</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Permission</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.LegacyRelationTypeRestriction#getPermission()
+   * @see #getLegacyRelationTypeRestriction()
+   * @generated
+   */
+  EAttribute getLegacyRelationTypeRestriction_Permission();
+
+  /**
+   * Returns the meta object for the reference '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.LegacyRelationTypeRestriction#getRelationTypeRef <em>Relation Type Ref</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the reference '<em>Relation Type Ref</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.LegacyRelationTypeRestriction#getRelationTypeRef()
+   * @see #getLegacyRelationTypeRestriction()
+   * @generated
+   */
+  EReference getLegacyRelationTypeRestriction_RelationTypeRef();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.LegacyRelationTypeRestriction#getRestrictedToSide <em>Restricted To Side</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Restricted To Side</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.LegacyRelationTypeRestriction#getRestrictedToSide()
+   * @see #getLegacyRelationTypeRestriction()
+   * @generated
+   */
+  EAttribute getLegacyRelationTypeRestriction_RestrictedToSide();
+
+  /**
+   * Returns the meta object for the reference '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.LegacyRelationTypeRestriction#getArtifactMatcherRef <em>Artifact Matcher Ref</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the reference '<em>Artifact Matcher Ref</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.LegacyRelationTypeRestriction#getArtifactMatcherRef()
+   * @see #getLegacyRelationTypeRestriction()
+   * @generated
+   */
+  EReference getLegacyRelationTypeRestriction_ArtifactMatcherRef();
+
+  /**
    * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction <em>Relation Type Restriction</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2297,6 +2552,17 @@ public interface OseeDslPackage extends EPackage
    * @generated
    */
   EClass getRelationTypeRestriction();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#getRelationTypeMatch <em>Relation Type Match</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Relation Type Match</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#getRelationTypeMatch()
+   * @see #getRelationTypeRestriction()
+   * @generated
+   */
+  EAttribute getRelationTypeRestriction_RelationTypeMatch();
 
   /**
    * Returns the meta object for the reference '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#getRelationTypeRef <em>Relation Type Ref</em>}'.
@@ -2321,15 +2587,15 @@ public interface OseeDslPackage extends EPackage
   EAttribute getRelationTypeRestriction_RestrictedToSide();
 
   /**
-   * Returns the meta object for the reference '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#getArtifactMatcherRef <em>Artifact Matcher Ref</em>}'.
+   * Returns the meta object for the containment reference '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#getPredicate <em>Predicate</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the reference '<em>Artifact Matcher Ref</em>'.
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#getArtifactMatcherRef()
+   * @return the meta object for the containment reference '<em>Predicate</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#getPredicate()
    * @see #getRelationTypeRestriction()
    * @generated
    */
-  EReference getRelationTypeRestriction_ArtifactMatcherRef();
+  EReference getRelationTypeRestriction_Predicate();
 
   /**
    * Returns the meta object for enum '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationMultiplicityEnum <em>Relation Multiplicity Enum</em>}'.
@@ -2380,6 +2646,16 @@ public interface OseeDslPackage extends EPackage
    * @generated
    */
   EEnum getAccessPermissionEnum();
+
+  /**
+   * Returns the meta object for enum '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeMatch <em>Relation Type Match</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Relation Type Match</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeMatch
+   * @generated
+   */
+  EEnum getRelationTypeMatch();
 
   /**
    * Returns the meta object for enum '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationSideEnum <em>XRelation Side Enum</em>}'.
@@ -3087,6 +3363,52 @@ public interface OseeDslPackage extends EPackage
     EReference HIERARCHY_RESTRICTION__ACCESS_RULES = eINSTANCE.getHierarchyRestriction_AccessRules();
 
     /**
+     * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RelationTypeArtifactTypePredicateImpl <em>Relation Type Artifact Type Predicate</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RelationTypeArtifactTypePredicateImpl
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRelationTypeArtifactTypePredicate()
+     * @generated
+     */
+    EClass RELATION_TYPE_ARTIFACT_TYPE_PREDICATE = eINSTANCE.getRelationTypeArtifactTypePredicate();
+
+    /**
+     * The meta object literal for the '<em><b>Artifact Type Ref</b></em>' reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference RELATION_TYPE_ARTIFACT_TYPE_PREDICATE__ARTIFACT_TYPE_REF = eINSTANCE.getRelationTypeArtifactTypePredicate_ArtifactTypeRef();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RelationTypeArtifactPredicateImpl <em>Relation Type Artifact Predicate</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RelationTypeArtifactPredicateImpl
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRelationTypeArtifactPredicate()
+     * @generated
+     */
+    EClass RELATION_TYPE_ARTIFACT_PREDICATE = eINSTANCE.getRelationTypeArtifactPredicate();
+
+    /**
+     * The meta object literal for the '<em><b>Artifact Matcher Ref</b></em>' reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference RELATION_TYPE_ARTIFACT_PREDICATE__ARTIFACT_MATCHER_REF = eINSTANCE.getRelationTypeArtifactPredicate_ArtifactMatcherRef();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RelationTypePredicateImpl <em>Relation Type Predicate</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RelationTypePredicateImpl
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRelationTypePredicate()
+     * @generated
+     */
+    EClass RELATION_TYPE_PREDICATE = eINSTANCE.getRelationTypePredicate();
+
+    /**
      * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.ObjectRestrictionImpl <em>Object Restriction</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -3167,6 +3489,48 @@ public interface OseeDslPackage extends EPackage
     EReference ATTRIBUTE_TYPE_RESTRICTION__ARTIFACT_TYPE_REF = eINSTANCE.getAttributeTypeRestriction_ArtifactTypeRef();
 
     /**
+     * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.LegacyRelationTypeRestrictionImpl <em>Legacy Relation Type Restriction</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.LegacyRelationTypeRestrictionImpl
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getLegacyRelationTypeRestriction()
+     * @generated
+     */
+    EClass LEGACY_RELATION_TYPE_RESTRICTION = eINSTANCE.getLegacyRelationTypeRestriction();
+
+    /**
+     * The meta object literal for the '<em><b>Permission</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute LEGACY_RELATION_TYPE_RESTRICTION__PERMISSION = eINSTANCE.getLegacyRelationTypeRestriction_Permission();
+
+    /**
+     * The meta object literal for the '<em><b>Relation Type Ref</b></em>' reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference LEGACY_RELATION_TYPE_RESTRICTION__RELATION_TYPE_REF = eINSTANCE.getLegacyRelationTypeRestriction_RelationTypeRef();
+
+    /**
+     * The meta object literal for the '<em><b>Restricted To Side</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute LEGACY_RELATION_TYPE_RESTRICTION__RESTRICTED_TO_SIDE = eINSTANCE.getLegacyRelationTypeRestriction_RestrictedToSide();
+
+    /**
+     * The meta object literal for the '<em><b>Artifact Matcher Ref</b></em>' reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference LEGACY_RELATION_TYPE_RESTRICTION__ARTIFACT_MATCHER_REF = eINSTANCE.getLegacyRelationTypeRestriction_ArtifactMatcherRef();
+
+    /**
      * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RelationTypeRestrictionImpl <em>Relation Type Restriction</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -3175,6 +3539,14 @@ public interface OseeDslPackage extends EPackage
      * @generated
      */
     EClass RELATION_TYPE_RESTRICTION = eINSTANCE.getRelationTypeRestriction();
+
+    /**
+     * The meta object literal for the '<em><b>Relation Type Match</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute RELATION_TYPE_RESTRICTION__RELATION_TYPE_MATCH = eINSTANCE.getRelationTypeRestriction_RelationTypeMatch();
 
     /**
      * The meta object literal for the '<em><b>Relation Type Ref</b></em>' reference feature.
@@ -3193,12 +3565,12 @@ public interface OseeDslPackage extends EPackage
     EAttribute RELATION_TYPE_RESTRICTION__RESTRICTED_TO_SIDE = eINSTANCE.getRelationTypeRestriction_RestrictedToSide();
 
     /**
-     * The meta object literal for the '<em><b>Artifact Matcher Ref</b></em>' reference feature.
+     * The meta object literal for the '<em><b>Predicate</b></em>' containment reference feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference RELATION_TYPE_RESTRICTION__ARTIFACT_MATCHER_REF = eINSTANCE.getRelationTypeRestriction_ArtifactMatcherRef();
+    EReference RELATION_TYPE_RESTRICTION__PREDICATE = eINSTANCE.getRelationTypeRestriction_Predicate();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationMultiplicityEnum <em>Relation Multiplicity Enum</em>}' enum.
@@ -3249,6 +3621,16 @@ public interface OseeDslPackage extends EPackage
      * @generated
      */
     EEnum ACCESS_PERMISSION_ENUM = eINSTANCE.getAccessPermissionEnum();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeMatch <em>Relation Type Match</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeMatch
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRelationTypeMatch()
+     * @generated
+     */
+    EEnum RELATION_TYPE_MATCH = eINSTANCE.getRelationTypeMatch();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationSideEnum <em>XRelation Side Enum</em>}' enum.

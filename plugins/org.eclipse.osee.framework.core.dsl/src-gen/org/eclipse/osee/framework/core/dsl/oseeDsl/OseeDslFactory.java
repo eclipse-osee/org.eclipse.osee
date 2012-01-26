@@ -207,6 +207,33 @@ public interface OseeDslFactory extends EFactory
   HierarchyRestriction createHierarchyRestriction();
 
   /**
+   * Returns a new object of class '<em>Relation Type Artifact Type Predicate</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Relation Type Artifact Type Predicate</em>'.
+   * @generated
+   */
+  RelationTypeArtifactTypePredicate createRelationTypeArtifactTypePredicate();
+
+  /**
+   * Returns a new object of class '<em>Relation Type Artifact Predicate</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Relation Type Artifact Predicate</em>'.
+   * @generated
+   */
+  RelationTypeArtifactPredicate createRelationTypeArtifactPredicate();
+
+  /**
+   * Returns a new object of class '<em>Relation Type Predicate</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Relation Type Predicate</em>'.
+   * @generated
+   */
+  RelationTypePredicate createRelationTypePredicate();
+
+  /**
    * Returns a new object of class '<em>Object Restriction</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -241,6 +268,15 @@ public interface OseeDslFactory extends EFactory
    * @generated
    */
   AttributeTypeRestriction createAttributeTypeRestriction();
+
+  /**
+   * Returns a new object of class '<em>Legacy Relation Type Restriction</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Legacy Relation Type Restriction</em>'.
+   * @generated
+   */
+  LegacyRelationTypeRestriction createLegacyRelationTypeRestriction();
 
   /**
    * Returns a new object of class '<em>Relation Type Restriction</em>'.
