@@ -22,16 +22,15 @@ import org.eclipse.osee.define.traceability.HierarchyHandler;
 import org.eclipse.osee.define.traceability.TestUnitTagger;
 import org.eclipse.osee.define.utility.IResourceLocator;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
@@ -40,14 +39,16 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  */
 public class TraceResourceDropOperation extends AbstractOperation {
 
-   private final RelationTypeSideSorter sorter;
    private final Collection<URI> resources;
    private final IResourceLocator locator;
+   private final IRelationTypeSide relTypeSide;
+   private final Artifact requirement;
    private final boolean persistChanges;
 
-   public TraceResourceDropOperation(Collection<URI> resources, RelationTypeSideSorter sorter, IResourceLocator locator, boolean persistChanges) {
+   public TraceResourceDropOperation(Collection<URI> resources, IRelationTypeSide relTypeSide, Artifact requirement, IResourceLocator locator, boolean persistChanges) {
       super("Trace Resource Drop Operation", Activator.PLUGIN_ID);
-      this.sorter = sorter;
+      this.relTypeSide = relTypeSide;
+      this.requirement = requirement;
       this.resources = resources;
       this.locator = locator;
       this.persistChanges = persistChanges;
@@ -56,8 +57,6 @@ public class TraceResourceDropOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       if (!resources.isEmpty()) {
-         RelationTypeSide rts = new RelationTypeSide(sorter.getRelationType(), sorter.getSide());
-         Artifact requirement = sorter.getArtifact();
          IOseeBranch branch = requirement.getBranch();
          SkynetTransaction transaction = null;
          if (persistChanges) {
@@ -66,7 +65,7 @@ public class TraceResourceDropOperation extends AbstractOperation {
          for (URI resource : resources) {
             File file = new File(resource);
             if (!file.isDirectory()) {
-               processFile(file, transaction, rts);
+               processFile(file, transaction);
             }
          }
          if (persistChanges) {
@@ -76,14 +75,14 @@ public class TraceResourceDropOperation extends AbstractOperation {
       }
    }
 
-   private void processFile(File file, SkynetTransaction transaction, RelationTypeSide rts) throws Exception {
+   private void processFile(File file, SkynetTransaction transaction) throws Exception {
       CharBuffer fileBuffer = Lib.fileToCharBuffer(file);
       IFileStore fileStore = EFS.getStore(file.toURI());
       String name = locator.getIdentifier(fileStore, fileBuffer).getName();
       TestUnitTagger tagger = TestUnitTagger.getInstance();
       String tag = tagger.getSourceTag(file.toURI());
       Artifact testUnitArtifact = null;
-      IOseeBranch branch = sorter.getArtifact().getBranch();
+      IOseeBranch branch = requirement.getBranch();
       boolean tagSource = false;
       if (GUID.isValid(tag)) {
          try {
@@ -109,7 +108,7 @@ public class TraceResourceDropOperation extends AbstractOperation {
          testUnitArtifact.setName(name);
       }
 
-      sorter.getArtifact().addRelation(rts, testUnitArtifact);
+      requirement.addRelation(relTypeSide, testUnitArtifact);
       if (persistChanges) {
          testUnitArtifact.persist(transaction);
       }
