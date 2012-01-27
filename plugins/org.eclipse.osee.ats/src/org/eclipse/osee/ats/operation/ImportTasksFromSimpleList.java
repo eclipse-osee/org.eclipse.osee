@@ -125,15 +125,15 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
    public String getXWidgetsXml() {
       StringBuffer buffer = new StringBuffer("<xWidgets>");
       buffer.append("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + TEAM_WORKFLOW + "\" />");
-      buffer.append("<XWidget xwidgetType=\"XText\" fill=\"Vertically\" displayName=\"" + TASK_IMPORT_TITLES + "\" />");
-      buffer.append("<XWidget xwidgetType=\"XMembersList\" displayName=\"" + ASSIGNEES + "\" />");
+      buffer.append("<XWidget xwidgetType=\"XText\" fill=\"Vertically\" height=\"80\" displayName=\"" + TASK_IMPORT_TITLES + "\" />");
+      buffer.append("<XWidget xwidgetType=\"XHyperlabelMemberSelection\" displayName=\"" + ASSIGNEES + "\" />");
       buffer.append("</xWidgets>");
       return buffer.toString();
    }
 
    @Override
    public String getDescriptionUsage() {
-      return "Import tasks from spreadsheet into given Team Workflow";
+      return "Import tasks from spreadsheet into given Team Workflow.  Assignee for tasks will be current user unless otherwise specified.";
    }
 
    /**

@@ -57,6 +57,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XFileTextWithSelectionDialog
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloatDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelMemberSelDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelMemberSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XInteger;
 import org.eclipse.osee.framework.ui.skynet.widgets.XIntegerDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabel;
@@ -303,6 +304,8 @@ public final class FrameworkXWidgetProvider {
             }
          } else if (xWidgetName.equals("XHyperlabelMemberSelDam")) {
             xWidget = new XHyperlabelMemberSelDam(name);
+         } else if (xWidgetName.equals("XHyperlabelMemberSelection")) {
+            xWidget = new XHyperlabelMemberSelection(name);
          } else if (xWidgetName.startsWith("XListDropViewer")) {
             xWidget = new XListDropViewer(name);
          } else if (xWidgetName.startsWith("XList")) {

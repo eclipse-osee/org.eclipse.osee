@@ -45,6 +45,11 @@ public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection
    }
 
    @Override
+   public Object getData() {
+      return getSelectedUsers();
+   }
+
+   @Override
    public boolean handleSelection() {
       try {
          UserCheckTreeDialog uld = new UserCheckTreeDialog();
