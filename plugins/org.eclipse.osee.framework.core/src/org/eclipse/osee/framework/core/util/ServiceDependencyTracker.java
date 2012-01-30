@@ -66,7 +66,10 @@ public final class ServiceDependencyTracker implements Closeable {
       for (ServiceTracker tracker : trackers) {
          tracker.close();
       }
-      handler.onDeActivate();
+      try {
+         handler.onDeActivate();
+      } catch (Exception ex) {
+         // Do Nothing
+      }
    }
-
 }
