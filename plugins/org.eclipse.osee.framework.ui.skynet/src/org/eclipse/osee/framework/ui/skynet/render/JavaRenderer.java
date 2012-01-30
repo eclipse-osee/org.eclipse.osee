@@ -70,14 +70,14 @@ public class JavaRenderer extends FileSystemRenderer {
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact) throws OseeCoreException {
+      int toReturn = NO_MATCH;
       Artifact aArtifact = artifact.getFullArtifact();
       if (aArtifact.isOfType(CoreArtifactTypes.TestCase)) {
-         if (presentationType.matches(PresentationType.SPECIALIZED_EDIT, PresentationType.PREVIEW,
-            PresentationType.DEFAULT_OPEN)) {
-            return PRESENTATION_SUBTYPE_MATCH;
+         if (presentationType.matches(PresentationType.SPECIALIZED_EDIT, PresentationType.DEFAULT_OPEN)) {
+            toReturn = PRESENTATION_SUBTYPE_MATCH;
          }
       }
-      return NO_MATCH;
+      return toReturn;
    }
 
    @Override
@@ -91,7 +91,7 @@ public class JavaRenderer extends FileSystemRenderer {
 
    @Override
    public boolean supportsCompare() {
-      return true;
+      return false;
    }
 
    @Override
@@ -205,6 +205,7 @@ public class JavaRenderer extends FileSystemRenderer {
       return ImageManager.getImageDescriptor(FrameworkImage.JAVA_COMPILATION_UNIT);
    }
 
+   @SuppressWarnings("unused")
    @Override
    protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, IOseeBranch branch, PresentationType presentationType) throws OseeCoreException {
       throw new UnsupportedOperationException();

@@ -17,6 +17,7 @@ import static org.eclipse.osee.ats.render.RendererManagerTest.DefaultOption.On;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GeneralDocument;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirement;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestCase;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestInformationSheet;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestProcedureWML;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
@@ -38,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.JavaRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.NativeRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -171,6 +173,15 @@ public class RendererManagerTest {
       addTest(data, TestInformationSheet, DEFAULT_OPEN, TisRenderer.class, Off);
       addTest(data, TestInformationSheet, DEFAULT_OPEN, DefaultArtifactRenderer.class, On);
       addTest(data, TestInformationSheet, PRODUCE_ATTRIBUTE, WordTemplateRenderer.class, Both);
+
+      addTest(data, TestCase, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
+      addTest(data, TestCase, SPECIALIZED_EDIT, JavaRenderer.class, Both);
+      addTest(data, TestCase, DIFF, WordTemplateRenderer.class, Off);
+      addTest(data, TestCase, PREVIEW, WordTemplateRenderer.class, Both);
+      addTest(data, TestCase, MERGE, null, Both);
+      addTest(data, TestCase, DEFAULT_OPEN, JavaRenderer.class, Off);
+      addTest(data, TestCase, DEFAULT_OPEN, DefaultArtifactRenderer.class, On);
+      addTest(data, TestCase, PRODUCE_ATTRIBUTE, DefaultArtifactRenderer.class, Both);
 
       return data;
    }
