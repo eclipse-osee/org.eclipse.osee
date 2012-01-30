@@ -139,7 +139,7 @@ public class JavaRenderer extends FileSystemRenderer {
                      StringBuilder builder = new StringBuilder();
                      builder.append(findErrorMessage);
                      if (!notMatched.isEmpty()) {
-                        builder.append(String.format("Unable to scripts for: [%s] in the workspace.\n",
+                        builder.append(String.format("Item(s) not found in the workspace: [%s]\n",
                            Collections.toString(",", notMatched)));
                      }
 
