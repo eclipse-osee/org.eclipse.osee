@@ -17,7 +17,6 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.xpath.XPath;
-import org.apache.xml.serialize.OutputFormat;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -114,8 +113,7 @@ public class UpdateBookmarkIds {
          }
          if (changesMade) {
             //This technique is necessary because Word does not support start and ending empty tags.
-            OutputFormat myOutputFormat = Jaxp.getCompactFormat(document);
-            toReturn = stripOffBodyTag(Jaxp.xmlToString(document, myOutputFormat));
+            toReturn = stripOffBodyTag(Jaxp.xmlToString(document, false));
          }
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);

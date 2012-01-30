@@ -310,7 +310,7 @@ public class Xml {
             }
          }
       }
-      String myString = Jaxp.xmlToString(myDocument, Jaxp.getPrettyFormat(myDocument));
+      String myString = Jaxp.xmlToString(myDocument, true);
       return myString;
    }
 

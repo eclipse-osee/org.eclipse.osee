@@ -44,7 +44,7 @@ public class SaveScriptPage implements ISaveConfig, ScriptPageConstants, Xmlizab
    public void printXmlTree() {
       OseeLog.log(TestManagerPlugin.class, Level.INFO, "Script Page Tree: ");
       try {
-         OseeLog.log(TestManagerPlugin.class, Level.INFO, Jaxp.xmlToString(doc, Jaxp.getPrettyFormat(doc)));
+         OseeLog.log(TestManagerPlugin.class, Level.INFO, Jaxp.xmlToString(doc, true));
       } catch (IOException ex) {
          OseeLog.log(TestManagerPlugin.class, Level.SEVERE, ex);
       }

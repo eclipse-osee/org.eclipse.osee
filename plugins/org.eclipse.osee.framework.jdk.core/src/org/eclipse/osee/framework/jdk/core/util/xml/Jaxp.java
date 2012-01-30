@@ -519,12 +519,12 @@ public class Jaxp {
     * Gets the XML document 'document' as a string
     * 
     * @param document The XML document to output
-    * @param file Where to put the output
-    * @param prettyOutput If true, turns on indention so the output is more easily readable, if False turns indention
-    * off and is assumed to provide the XML as compactly as possible.
+    * @param prettyOutput If true, turns on indentation so the output is more easily readable, if False turns
+    * indentation off and is assumed to provide the XML as compactly as possible.
     */
-   public static String xmlToString(Document document, OutputFormat format) throws IOException {
+   public static String xmlToString(Document document, boolean prettyOutput) throws IOException {
       StringWriter stringWriter = new StringWriter();
+      OutputFormat format = prettyOutput ? getPrettyFormat(document) : getCompactFormat(document);
       outputXmlDocument(document, stringWriter, format);
       return stringWriter.toString();
    }
