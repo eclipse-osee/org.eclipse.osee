@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.results.table;
 
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
@@ -31,8 +30,8 @@ public class ResultsXViewerRow implements IResultsXViewerRow {
       this(values, null);
    }
 
-   public ResultsXViewerRow(String[] values, Artifact doubleClickOpenArtifact) {
-      this(Arrays.asList(values), doubleClickOpenArtifact);
+   public ResultsXViewerRow(String[] values, Object data) {
+      this(Arrays.asList(values), data);
    }
 
    public ResultsXViewerRow(String[] values) {

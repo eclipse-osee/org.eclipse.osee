@@ -16,8 +16,10 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
+import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewerTreeReport;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -46,23 +48,35 @@ import org.eclipse.swt.widgets.ToolItem;
  */
 public class ResultsEditorTableTab implements IResultsEditorTableTab {
 
-   private final String tabName;
-   private List<XViewerColumn> columns;
-   private Collection<IResultsXViewerRow> rows;
-   private ResultsXViewer resultsXViewer;
-   private XViewerFactory xViewerFactory;
+   public interface IResultsEditorLabelProvider {
 
-   public ResultsEditorTableTab(String tabName) {
-      this(tabName, null, null);
-      this.columns = new ArrayList<XViewerColumn>();
-      this.rows = new ArrayList<IResultsXViewerRow>();
+      XViewerLabelProvider getLabelProvider(ResultsXViewer xViewer);
+
    }
 
-   public ResultsEditorTableTab(String tabName, List<XViewerColumn> columns, Collection<IResultsXViewerRow> rows) {
+   private final String tabName;
+   private final List<XViewerColumn> columns;
+   private final Collection<IResultsXViewerRow> rows;
+   private ResultsXViewer resultsXViewer;
+   private XViewerFactory xViewerFactory;
+   private final ITreeContentProvider contentProvider;
+   private final IResultsEditorLabelProvider labelProvider;
+
+   public ResultsEditorTableTab(String tabName, List<XViewerColumn> columns, Collection<IResultsXViewerRow> rows, ITreeContentProvider contentProvider, IResultsEditorLabelProvider labelProvider) {
       this.tabName = tabName;
       this.columns = columns;
       this.rows = rows;
       this.xViewerFactory = new ResultsXViewerFactory(columns);
+      this.contentProvider = contentProvider;
+      this.labelProvider = labelProvider;
+   }
+
+   public ResultsEditorTableTab(String tabName) {
+      this(tabName, null, null);
+   }
+
+   public ResultsEditorTableTab(String tabName, List<XViewerColumn> columns, Collection<IResultsXViewerRow> rows) {
+      this(tabName, columns, rows, new ResultsXViewerContentProvider(), null);
    }
 
    public void addColumn(XViewerColumn xViewerColumn) {
@@ -101,8 +115,15 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
       resultsXViewer =
          new ResultsXViewer(comp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, getTableColumns(), xViewerFactory);
       resultsXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
-      resultsXViewer.setContentProvider(new ResultsXViewerContentProvider());
-      resultsXViewer.setLabelProvider(new ResultsXViewerLabelProvider(resultsXViewer));
+
+      resultsXViewer.setContentProvider(contentProvider);
+      XViewerLabelProvider provider = null;
+      if (labelProvider == null) {
+         provider = new ResultsXViewerLabelProvider(resultsXViewer);
+      } else {
+         provider = labelProvider.getLabelProvider(resultsXViewer);
+      }
+      resultsXViewer.setLabelProvider(provider);
       resultsXViewer.setInput(getTableRows());
       resultsXViewer.getTree().setLayoutData(gd);
       return comp;
@@ -204,4 +225,5 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
    public void setxViewerFactory(XViewerFactory xViewerFactory) {
       this.xViewerFactory = xViewerFactory;
    }
+
 }
