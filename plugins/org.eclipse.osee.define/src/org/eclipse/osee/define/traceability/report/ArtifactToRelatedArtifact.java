@@ -69,7 +69,7 @@ public class ArtifactToRelatedArtifact extends AbstractArtifactRelationReport {
          for (IRelationTypeSide relationEnum : relations) {
             String typeName = relationEnum.getName();
             for (Artifact relArtifact : artifact.getRelatedArtifacts(relationEnum)) {
-               notifyOnRowData(name, typeName, relArtifact.getName());
+               notifyOnRowData(artifact, name, typeName, relArtifact.getName());
             }
          }
       }

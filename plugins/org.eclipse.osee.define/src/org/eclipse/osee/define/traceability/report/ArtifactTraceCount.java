@@ -70,7 +70,7 @@ public class ArtifactTraceCount extends AbstractArtifactRelationReport {
          } else {
             rowData[index++] = Collections.toString(",", art.getAttributesToStringList(attributeType));
          }
-         notifyOnRowData(rowData);
+         notifyOnRowData(art, rowData);
       }
       notifyOnEndTable();
    }

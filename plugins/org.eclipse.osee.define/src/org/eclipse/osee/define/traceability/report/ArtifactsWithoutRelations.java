@@ -33,7 +33,7 @@ public class ArtifactsWithoutRelations extends AbstractArtifactRelationReport {
             count += artifact.getRelatedArtifactsCount(relation);
          }
          if (count <= 0) {
-            notifyOnRowData(artifact.getName(), artifact.getArtifactTypeName());
+            notifyOnRowData(artifact, artifact.getName(), artifact.getArtifactTypeName());
          }
       }
       notifyOnEndTable();

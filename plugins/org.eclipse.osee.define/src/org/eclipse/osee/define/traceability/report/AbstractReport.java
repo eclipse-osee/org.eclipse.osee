@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Roberto E. Escobar
@@ -46,10 +47,10 @@ public abstract class AbstractReport {
       }
    }
 
-   protected void notifyOnRowData(String... rowData) {
+   protected void notifyOnRowData(Artifact rowArt, String... rowData) {
       if (rowData != null && rowData.length > 0) {
          for (IReportDataCollector collector : dataCollectors) {
-            collector.addRow(rowData);
+            collector.addRow(rowArt, rowData);
          }
       }
    }

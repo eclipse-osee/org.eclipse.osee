@@ -445,9 +445,9 @@ public class TraceReportBlam extends AbstractBlam {
       }
 
       @Override
-      public void addRow(String... data) {
+      public void addRow(Object data, String... row) {
          try {
-            sheetWriter.writeRow(data);
+            sheetWriter.writeRow(row);
          } catch (IOException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
@@ -485,11 +485,11 @@ public class TraceReportBlam extends AbstractBlam {
       }
 
       @Override
-      public void addRow(String... data) {
+      public void addRow(Object data, String... row) {
          if (rows == null) {
             rows = new ArrayList<IResultsXViewerRow>();
          }
-         rows.add(new ResultsXViewerRow(data));
+         rows.add(new ResultsXViewerRow(row, data));
       }
 
       @Override

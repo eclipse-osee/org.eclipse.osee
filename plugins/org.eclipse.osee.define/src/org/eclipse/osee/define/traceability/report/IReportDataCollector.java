@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.traceability.report;
 
+
 /**
  * @author Roberto E. Escobar
  */
@@ -17,7 +18,7 @@ public interface IReportDataCollector {
 
    public void addTableHeader(String... header);
 
-   public void addRow(String... data);
+   public void addRow(Object data, String... row);
 
    public void endTable();
 }
