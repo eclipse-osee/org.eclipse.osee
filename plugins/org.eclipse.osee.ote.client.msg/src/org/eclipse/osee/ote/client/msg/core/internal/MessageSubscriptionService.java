@@ -24,6 +24,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -53,7 +54,7 @@ import org.eclipse.osee.ote.service.ITestConnectionListener;
 public class MessageSubscriptionService implements IOteMessageService, IMessageDictionaryListener, ITestConnectionListener, IMsgToolServiceClient {
 
    /** * Static Fields ** */
-   private static final int MAX_CONCURRENT_WORKER_THREADS = Runtime.getRuntime().availableProcessors() + 1;
+   private static final int MAX_CONCURRENT_WORKER_THREADS = Math.min(Runtime.getRuntime().availableProcessors() + 1, 4);
 
    private final InetAddress localAddress;
    private final LinkedList<MessageSubscription> subscriptions = new LinkedList<MessageSubscription>();
