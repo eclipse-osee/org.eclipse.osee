@@ -241,7 +241,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
    public void testAtsAttributevaluesWithPersist(Collection<Artifact> artifacts) {
       try {
-         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Validate ATS Database");
+         SkynetTransaction transaction =
+            TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Validate ATS Database");
          testAtsAttributeValues(transaction, testNameToTimeSpentMap, testNameToResultsMap, fixAttributeValues,
             artifacts);
          transaction.execute();
@@ -484,8 +485,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             "Error: [%s][%s][%s] has Parent Branch Id attribute [%s] that references a non-existant",
             artifact.getArtifactTypeName(), artifact.getHumanReadableId(), artifact, parentBranchGuid));
       } catch (Exception ex) {
-         testNameToResultsMap.put("validateBranchGuid",
-            "Error: " + artifact.getArtifactTypeName() + " exception: " + ex.getLocalizedMessage());
+         testNameToResultsMap.put(
+            "validateBranchGuid",
+            "Error: " + artifact.getArtifactTypeName() + " [" + artifact.toStringWithId() + "] exception: " + ex.getLocalizedMessage());
       }
       logTestTimeSpent(date, "validateBranchGuid", testNameToTimeSpentMap);
    }
