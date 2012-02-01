@@ -10,12 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -30,9 +35,13 @@ import org.eclipse.jdt.core.search.SearchMatch;
 import org.eclipse.jdt.core.search.SearchParticipant;
 import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.SearchRequestor;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.ws.AWorkspace;
 
 /**
  * @author John Misinco
@@ -64,10 +73,53 @@ public class FindInWorkspaceOperation extends AbstractOperation {
       return guids;
    }
 
+   private void findByName(Map<String, Artifact> guids, IProgressMonitor monitor) throws Exception {
+      IContainer ws = ResourcesPlugin.getWorkspace().getRoot();
+      List<Artifact> toSearch = new LinkedList<Artifact>(guids.values());
+      for (Artifact artifact : toSearch) {
+         if (artifact.getArtifactType().equals(CoreArtifactTypes.TestCase)) {
+            String artifactName = artifact.getName();
+            int endOfPackageName = artifactName.lastIndexOf(".");
+            if (endOfPackageName != -1) {
+               String packageName = artifactName.substring(0, endOfPackageName);
+               String fileName = artifactName.substring(endOfPackageName + 1) + ".java";
+               List<IResource> finds = new ArrayList<IResource>();
+               AWorkspace.recursiveFileFind(fileName, ws, finds);
+               for (IResource find : finds) {
+                  if (find.toString().contains(packageName)) {
+                     String source = Lib.fileToString(new File(find.getLocationURI()));
+                     String uuid = getGuid(source);
+                     if (guids.containsKey(uuid)) {
+                        monitor.worked(1);
+                        collector.onResource(find);
+                        guids.remove(uuid);
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
+
+   private String getGuid(String source) {
+      Matcher matcher = objectIdPattern.matcher(source);
+      if (matcher.find()) {
+         String uuid = matcher.group(1);
+         return uuid;
+      }
+      return Strings.EMPTY_STRING;
+   }
+
    @Override
    protected void doWork(final IProgressMonitor monitor) throws Exception {
       final Map<String, Artifact> guids = getGuidMap();
       monitor.beginTask("Searching Java Files", guids.size());
+      findByName(guids, monitor);
+
+      if (guids.isEmpty()) {
+         return;
+      }
+
       final NullProgressMonitor subMonitor = new NullProgressMonitor();
 
       SearchPattern searchPattern =
@@ -85,16 +137,13 @@ public class FindInWorkspaceOperation extends AbstractOperation {
                unit = (ICompilationUnit) jElement;
             }
 
-            Matcher matcher = objectIdPattern.matcher(unit.getSource());
-            if (matcher.find()) {
-               String uuid = matcher.group(1);
-               if (guids.containsKey(uuid)) {
-                  monitor.worked(1);
-                  collector.onResource(unit.getResource());
-                  guids.remove(uuid);
-                  if (guids.isEmpty()) {
-                     subMonitor.setCanceled(true);
-                  }
+            String uuid = getGuid(unit.getSource());
+            if (guids.containsKey(uuid)) {
+               monitor.worked(1);
+               collector.onResource(unit.getResource());
+               guids.remove(uuid);
+               if (guids.isEmpty()) {
+                  subMonitor.setCanceled(true);
                }
             }
          }
