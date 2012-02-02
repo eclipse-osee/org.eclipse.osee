@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.config.AtsLoadConfigArtifactsOperation;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
@@ -179,6 +180,8 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
    private void persistOrUndoChanges() throws OseeCoreException {
       if (data.isPersistChanges()) {
          Artifacts.persistInTransaction("Copy ATS Configuration", newArtifacts);
+         AtsLoadConfigArtifactsOperation operation = new AtsLoadConfigArtifactsOperation();
+         operation.forceReload();
       } else {
          resultData.log("\n\nCleanup of created / modified artifacts\n\n");
          for (Artifact artifact : newArtifacts) {
