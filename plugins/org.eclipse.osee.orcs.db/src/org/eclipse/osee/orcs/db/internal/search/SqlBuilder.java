@@ -67,6 +67,10 @@ public class SqlBuilder {
       paramList.add("art1");
       if (queryType != QueryType.COUNT_ARTIFACTS) {
          paramList.add("txs1");
+      } else {
+         if (writer.getOptions().isHistorical()) {
+            paramList.add("txs1");
+         }
       }
       return paramList;
    }

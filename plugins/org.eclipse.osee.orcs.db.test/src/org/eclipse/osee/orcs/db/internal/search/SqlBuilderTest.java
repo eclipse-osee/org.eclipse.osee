@@ -129,6 +129,42 @@ public class SqlBuilderTest {
    }
 
    @Test
+   public void testHistoricalCountSql() throws OseeCoreException {
+      int branchId = 4;
+      int transactionId = 45678;
+      List<SqlHandler> handlers = SqlUtility.createHandlers(CoreBranches.COMMON, TYPES);
+
+      QueryOptions options = new QueryOptions();
+      options.setFromTransaction(transactionId);
+
+      SqlContext context = new SqlContext("mysession", options);
+      SqlBuilder builder = new SqlBuilder(sqlProvider, null);
+      builder.generateSql(context, branchId, handlers, QueryType.COUNT_ARTIFACTS);
+
+      String sql = context.getSql();
+      Assert.assertEquals("SELECT count(xTable.art_id) FROM (\n" + //
+      " SELECT max(transaction_id), art1.art_id, txs1.branch_id\n" + //
+      " FROM \n" + //
+      "osee_artifact art1, osee_txs txs1\n" + //
+      " WHERE \n" + //
+      "art1.art_type_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ? AND txs1.branch_id = ?\n" + //
+      " GROUP BY art_id, branch_id\n" + //
+      ") xTable",//
+         sql);
+
+      List<Object> parameters = context.getParameters();
+      Assert.assertEquals(3, parameters.size());
+
+      List<AbstractJoinQuery> joins = context.getJoins();
+      Assert.assertEquals(0, joins.size());
+
+      Iterator<Object> iterator = parameters.iterator();
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
+      Assert.assertEquals(transactionId, iterator.next());
+      Assert.assertEquals(branchId, iterator.next());
+   }
+
+   @Test
    public void testBuildSql() throws OseeCoreException {
       int branchId = 4;
       List<SqlHandler> handlers = SqlUtility.createHandlers(CoreBranches.COMMON, GUIDS, IDS, HRIDS, TYPES);

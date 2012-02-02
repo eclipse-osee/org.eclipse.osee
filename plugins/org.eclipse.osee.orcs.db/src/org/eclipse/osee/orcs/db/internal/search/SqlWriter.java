@@ -48,7 +48,8 @@ public class SqlWriter {
 
    public void writeCountSelect() throws OseeCoreException {
       if (context.getOptions().isHistorical()) {
-         throw new OseeCoreException("Count historical is not supported.");
+         write("SELECT count(xTable.art_id) FROM (\n ");
+         writeSelect();
       } else {
          write("SELECT%s count(%s.art_id)");
       }
@@ -137,6 +138,10 @@ public class SqlWriter {
       }
       if (type != QueryType.COUNT_ARTIFACTS) {
          write("\n ORDER BY art_id, branch_id");
+      } else {
+         if (context.getOptions().isHistorical()) {
+            write("\n) xTable");
+         }
       }
    }
 
