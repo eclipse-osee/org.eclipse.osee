@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -30,8 +31,9 @@ import org.eclipse.osee.ats.actions.TaskDeleteAction.ITaskDeleteActionHandler;
 import org.eclipse.osee.ats.core.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
+import org.eclipse.osee.ats.core.task.TaskManager;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.util.AtsCacheManager;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
@@ -180,7 +182,8 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
             builder.toString());
       if (delete) {
          try {
-            SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Delete Tasks");
+            SkynetTransaction transaction =
+               TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Delete Tasks");
             // Done for concurrent modification purposes
             ArrayList<TaskArtifact> delItems = new ArrayList<TaskArtifact>();
             ArrayList<TaskArtifact> tasksNotInDb = new ArrayList<TaskArtifact>();
@@ -304,25 +307,17 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
             if (iXTaskViewer.getAwa() == null) {
                return;
             }
-            final Artifact[] artsToRelate = ((ArtifactData) e.data).getArtifacts();
-            SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Drop Add Tasks");
-            for (Artifact art : artsToRelate) {
+            List<TaskArtifact> taskArts = new LinkedList<TaskArtifact>();
+            for (Artifact art : ((ArtifactData) e.data).getArtifacts()) {
                if (art.isOfType(AtsArtifactTypes.Task)) {
-                  TaskArtifact taskArt = (TaskArtifact) art;
-                  taskArt.clearCaches();
-                  // task dropped on same awa as current parent; do nothing
-                  if (taskArt.getParentAWA().equals(iXTaskViewer.getAwa())) {
-                     return;
-                  }
-                  if (taskArt.getParentAWA() != null) {
-                     taskArt.deleteRelation(AtsRelationTypes.SmaToTask_Sma, taskArt.getParentAWA());
-                  }
-                  taskArt.addRelation(AtsRelationTypes.SmaToTask_Sma, iXTaskViewer.getAwa());
-                  taskArt.persist(transaction);
-                  taskArt.clearCaches();
+                  taskArts.add((TaskArtifact) art);
                }
             }
-            transaction.execute();
+            if (taskArts.isEmpty()) {
+               AWorkbench.popup("No Tasks To Drop");
+               return;
+            }
+            TaskManager.moveTasks((TeamWorkFlowArtifact) iXTaskViewer.getAwa(), taskArts);
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }

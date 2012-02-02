@@ -38,9 +38,9 @@ public class CopyActionDetailsTest {
 
    @Test
    public void testGetDetailsStringForTask() throws OseeCoreException {
-      String str = new CopyActionDetails(AtsTestUtil.getOrCreateTask()).getDetailsString();
+      String str = new CopyActionDetails(AtsTestUtil.getOrCreateTaskOffTeamWf1()).getDetailsString();
       Assert.assertEquals(
-         "\"Task\" - " + AtsTestUtil.getOrCreateTask().getHumanReadableId() + " - \"AtsTestUtil - Task [CopyActionDetailsTest]\"",
+         "\"Task\" - " + AtsTestUtil.getOrCreateTaskOffTeamWf1().getHumanReadableId() + " - \"AtsTestUtil - Task [CopyActionDetailsTest]\"",
          str);
    }
 

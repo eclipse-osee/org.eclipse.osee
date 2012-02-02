@@ -79,17 +79,14 @@ import org.eclipse.osee.support.test.util.TestUtil;
  */
 public class AtsTestUtil {
 
-   private static TeamWorkFlowArtifact teamArt = null;
-   private static TeamWorkFlowArtifact teamArt2 = null;
+   private static TeamWorkFlowArtifact teamArt = null, teamArt2 = null;
    private static TeamDefinitionArtifact teamDef = null;
    private static VersionArtifact verArt1, verArt2 = null;
    private static DecisionReviewArtifact decRevArt = null;
    private static PeerToPeerReviewArtifact peerRevArt = null;
-   private static TaskArtifact taskArt = null;
-   private static ActionableItemArtifact testAi = null;
-   private static ActionableItemArtifact testAi2 = null;
-   private static ActionArtifact actionArt = null;
-   private static ActionArtifact actionArt2 = null;
+   private static TaskArtifact taskArtWf1 = null, taskArtWf2 = null;
+   private static ActionableItemArtifact testAi = null, testAi2 = null;
+   private static ActionArtifact actionArt = null, actionArt2 = null;
    private static StateDefinition analyze, implement, completed, cancelled = null;
    private static WorkDefinition workDef = null;
    public static String WORK_DEF_NAME = "Test_Team _Workflow_Definition";
@@ -116,7 +113,8 @@ public class AtsTestUtil {
       validateObjectsNull("verArt2", verArt2);
       validateObjectsNull("decRevArt", decRevArt);
       validateObjectsNull("peerRevArt", peerRevArt);
-      validateObjectsNull("taskArt", taskArt);
+      validateObjectsNull("taskArt1", taskArtWf1);
+      validateObjectsNull("taskArt2", taskArtWf2);
       validateObjectsNull("testAi", testAi);
       validateObjectsNull("testAi2", testAi2);
       validateObjectsNull("actionArt", actionArt);
@@ -191,7 +189,8 @@ public class AtsTestUtil {
       teamArt = null;
       teamArt2 = null;
       teamDef = null;
-      taskArt = null;
+      taskArtWf1 = null;
+      taskArtWf2 = null;
       testAi = null;
       testAi2 = null;
       actionArt = null;
@@ -315,14 +314,24 @@ public class AtsTestUtil {
       transaction.execute();
    }
 
-   public static TaskArtifact getOrCreateTask() throws OseeCoreException {
+   public static TaskArtifact getOrCreateTaskOffTeamWf1() throws OseeCoreException {
       ensureLoaded();
-      if (taskArt == null) {
-         taskArt = teamArt.createNewTask(getTitle("Task", postFixName), new Date(), UserManager.getUser());
-         taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, teamArt.getCurrentStateName());
-         taskArt.persist("AtsTestUtil - addTask");
+      if (taskArtWf1 == null) {
+         taskArtWf1 = teamArt.createNewTask(getTitle("Task", postFixName), new Date(), UserManager.getUser());
+         taskArtWf1.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, teamArt.getCurrentStateName());
+         taskArtWf1.persist("AtsTestUtil - addTaskWf1");
       }
-      return taskArt;
+      return taskArtWf1;
+   }
+
+   public static TaskArtifact getOrCreateTaskOffTeamWf2() throws OseeCoreException {
+      ensureLoaded();
+      if (taskArtWf2 == null) {
+         taskArtWf2 = teamArt.createNewTask(getTitle("Task", postFixName), new Date(), UserManager.getUser());
+         taskArtWf2.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, teamArt.getCurrentStateName());
+         taskArtWf2.persist("AtsTestUtil - addTaskWf2");
+      }
+      return taskArtWf2;
    }
 
    public static DecisionReviewArtifact getOrCreateDecisionReview(ReviewBlockType reviewBlockType, AtsTestUtilState relatedToState) throws OseeCoreException {
@@ -380,10 +389,12 @@ public class AtsTestUtil {
     */
    public static void cleanup() throws OseeCoreException {
       SkynetTransaction transaction1 =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName() + " - cleanup 1");
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
+            AtsTestUtil.class.getSimpleName() + " - cleanup 1");
       delete(transaction1, peerRevArt);
       delete(transaction1, decRevArt);
-      delete(transaction1, taskArt);
+      delete(transaction1, taskArtWf1);
+      delete(transaction1, taskArtWf2);
       delete(transaction1, teamArt2);
       delete(transaction1, actionArt);
       delete(transaction1, actionArt2);
@@ -391,7 +402,8 @@ public class AtsTestUtil {
 
       if (teamArt != null) {
          SkynetTransaction transaction2 =
-            TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName() + " - cleanup 2");
+            TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
+               AtsTestUtil.class.getSimpleName() + " - cleanup 2");
 
          if (teamArt.getWorkingBranch() != null) {
             Result result = AtsBranchManagerCore.deleteWorkingBranch(teamArt, true);
@@ -411,7 +423,8 @@ public class AtsTestUtil {
       }
 
       SkynetTransaction transaction3 =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName() + " - cleanup 3");
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
+            AtsTestUtil.class.getSimpleName() + " - cleanup 3");
 
       delete(transaction3, testAi);
       delete(transaction3, testAi2);

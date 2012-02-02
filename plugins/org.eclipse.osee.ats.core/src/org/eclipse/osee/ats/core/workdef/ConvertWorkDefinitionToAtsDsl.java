@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.workdef.provider;
+package org.eclipse.osee.ats.core.workdef;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,17 +16,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.ats.core.workdef.CompositeStateItem;
-import org.eclipse.osee.ats.core.workdef.DecisionReviewDefinition;
-import org.eclipse.osee.ats.core.workdef.DecisionReviewOption;
-import org.eclipse.osee.ats.core.workdef.PeerReviewDefinition;
-import org.eclipse.osee.ats.core.workdef.RuleDefinition;
-import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
-import org.eclipse.osee.ats.core.workdef.StateItem;
-import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
-import org.eclipse.osee.ats.core.workdef.WidgetOption;
-import org.eclipse.osee.ats.core.workdef.WorkDefinition;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.dsl.atsDsl.AttrWidget;
 import org.eclipse.osee.ats.dsl.atsDsl.BooleanDef;

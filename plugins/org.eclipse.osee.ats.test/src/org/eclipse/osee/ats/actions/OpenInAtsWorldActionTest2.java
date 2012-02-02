@@ -15,7 +15,7 @@ public class OpenInAtsWorldActionTest2 extends AbstractAtsActionRunTest {
 
    @Override
    public OpenInAtsWorldAction createAction() throws OseeCoreException {
-      return new OpenInAtsWorldAction(AtsTestUtil.getOrCreateTask());
+      return new OpenInAtsWorldAction(AtsTestUtil.getOrCreateTaskOffTeamWf1());
    }
 
 }

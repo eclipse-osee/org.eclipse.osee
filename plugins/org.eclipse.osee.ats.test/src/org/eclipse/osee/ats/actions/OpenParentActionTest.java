@@ -15,7 +15,7 @@ public class OpenParentActionTest extends AbstractAtsActionRunTest {
 
    @Override
    public OpenParentAction createAction() throws OseeCoreException {
-      return new OpenParentAction(AtsTestUtil.getOrCreateTask());
+      return new OpenParentAction(AtsTestUtil.getOrCreateTaskOffTeamWf1());
    }
 
 }

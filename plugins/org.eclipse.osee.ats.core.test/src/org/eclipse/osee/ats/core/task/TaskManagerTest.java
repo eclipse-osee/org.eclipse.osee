@@ -10,13 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.task;
 
+import java.util.Arrays;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.core.AtsTestUtil;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workdef.WorkDefinition;
+import org.eclipse.osee.ats.core.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.workflow.HoursSpentUtil;
 import org.eclipse.osee.ats.core.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -36,12 +42,96 @@ public class TaskManagerTest extends TaskManager {
       AtsTestUtil.cleanup();
    }
 
+   /**
+    * Test can move task between teamWfs that have same Task WorkDefinition
+    */
+   @org.junit.Test
+   public void testMoveTasks_sameWorkDefinitions() throws OseeCoreException {
+      AtsTestUtil.cleanupAndReset("testMoveTasks - sameWorkDefs");
+      TaskArtifact taskToMove = AtsTestUtil.getOrCreateTaskOffTeamWf1();
+      TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
+
+      WorkDefinition taskWorkDef = WorkDefinitionFactory.getWorkDefinitionForTask(taskToMove).getWorkDefinition();
+      WorkDefinition newTaskWorkDef =
+         WorkDefinitionFactory.getWorkDefinitionForTaskNotYetCreated(teamWf2).getWorkDefinition();
+      Assert.assertNotNull(taskWorkDef);
+
+      Assert.assertEquals(taskWorkDef, newTaskWorkDef);
+      Result result = TaskManager.moveTasks(teamWf2, Arrays.asList(taskToMove));
+
+      Assert.assertTrue("This failed: " + result.getText(), result.isTrue());
+   }
+
+   /**
+    * Test can't move task between teamWfs with differing Task WorkDefinitions
+    */
+   @org.junit.Test
+   public void testMoveTasks_differentWorkDefinitions() throws OseeCoreException {
+      AtsTestUtil.cleanupAndReset("testMoveTasks - diffWorkDefs");
+      TaskArtifact taskToMove = AtsTestUtil.getOrCreateTaskOffTeamWf1();
+      TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
+      WorkDefinition taskWorkDef = WorkDefinitionFactory.getWorkDefinitionForTask(taskToMove).getWorkDefinition();
+
+      // create new task work def
+      XResultData resultData = new XResultData();
+      WorkDefinition differentTaskWorkDef =
+         WorkDefinitionFactory.copyWorkDefinition(taskWorkDef.getName() + "2", taskWorkDef, resultData);
+      differentTaskWorkDef.setName(taskWorkDef.getName() + "2");
+      Assert.assertFalse("Should be no errors", resultData.isErrors());
+      WorkDefinitionFactory.addWorkDefinition(differentTaskWorkDef);
+
+      // set teamWf2 to use that work def for tasks
+      teamWf2.getTeamDefinition().setSoleAttributeValue(AtsAttributeTypes.RelatedTaskWorkDefinition,
+         differentTaskWorkDef.getName());
+      teamWf2.getTeamDefinition().persist("testMoveTasks - set related task workDef");
+
+      WorkDefinition newTaskWorkDef =
+         WorkDefinitionFactory.getWorkDefinitionForTaskNotYetCreated(teamWf2).getWorkDefinition();
+      Assert.assertNotNull(taskWorkDef);
+      Assert.assertNotSame("Should be different", taskWorkDef, newTaskWorkDef);
+      Result result = TaskManager.moveTasks(teamWf2, Arrays.asList(taskToMove));
+
+      Assert.assertTrue("This should failed: " + result.getText(), result.isFalse());
+   }
+
+   /**
+    * Test can move task to teamWf if it defines/overrides i t's own WorkDefinition; eg. WorkDef specified in Task
+    * attribute
+    */
+   @org.junit.Test
+   public void testMoveTasks_diffWorkDefinitionsButTaskOverride() throws OseeCoreException {
+      AtsTestUtil.cleanupAndReset("testMoveTasks - diffWorkDefinitionsButTaskOverride");
+      TaskArtifact taskToMove = AtsTestUtil.getOrCreateTaskOffTeamWf1();
+      TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
+      WorkDefinition taskWorkDef = WorkDefinitionFactory.getWorkDefinitionForTask(taskToMove).getWorkDefinition();
+
+      // create new task work def
+      XResultData resultData = new XResultData();
+      WorkDefinition differentTaskWorkDef =
+         WorkDefinitionFactory.copyWorkDefinition(taskWorkDef.getName() + "2", taskWorkDef, resultData);
+      differentTaskWorkDef.setName(taskWorkDef.getName() + "2");
+      Assert.assertFalse("Should be no errors", resultData.isErrors());
+      WorkDefinitionFactory.addWorkDefinition(differentTaskWorkDef);
+
+      // set work definition override on task; move should go through
+      taskToMove.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, differentTaskWorkDef.getName());
+      taskToMove.persist("testMoveTasks - set workDef attribute on task");
+
+      WorkDefinition newTaskWorkDef =
+         WorkDefinitionFactory.getWorkDefinitionForTaskNotYetCreated(teamWf2).getWorkDefinition();
+      Assert.assertNotNull(taskWorkDef);
+      Assert.assertSame("Should be same", taskWorkDef, newTaskWorkDef);
+      Result result = TaskManager.moveTasks(teamWf2, Arrays.asList(taskToMove));
+
+      Assert.assertTrue("This should pass: " + result.getText(), result.isTrue());
+   }
+
    @org.junit.Test
    public void testTransitionToCompletedThenInWork() throws OseeCoreException {
 
       AtsTestUtil.cleanupAndReset("TaskManagerTest - TransitionToCompleted");
 
-      TaskArtifact taskArt = AtsTestUtil.getOrCreateTask();
+      TaskArtifact taskArt = AtsTestUtil.getOrCreateTaskOffTeamWf1();
 
       // ensure nothing dirty
       AtsTestUtil.validateArtifactCache();
@@ -81,14 +171,15 @@ public class TaskManagerTest extends TaskManager {
 
       AtsTestUtil.cleanupAndReset("TaskManagerTest - StatusPercentChanged");
 
-      TaskArtifact taskArt = AtsTestUtil.getOrCreateTask();
+      TaskArtifact taskArt = AtsTestUtil.getOrCreateTaskOffTeamWf1();
 
       // ensure nothing dirty
       AtsTestUtil.validateArtifactCache();
 
       // status 34% completed
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName() + " testStatusPercentChanged() 1");
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
+            getClass().getSimpleName() + " testStatusPercentChanged() 1");
       Result result = TaskManager.statusPercentChanged(taskArt, 3, 34, transaction);
       Assert.assertEquals(Result.TrueResult, result);
       transaction.execute();
@@ -103,7 +194,8 @@ public class TaskManagerTest extends TaskManager {
 
       // status 100% completed
       transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName() + " testStatusPercentChanged() 2");
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
+            getClass().getSimpleName() + " testStatusPercentChanged() 2");
       result = TaskManager.statusPercentChanged(taskArt, 3, 100, transaction);
       Assert.assertEquals(Result.TrueResult, result);
       transaction.execute();
@@ -118,7 +210,8 @@ public class TaskManagerTest extends TaskManager {
 
       // status back to 25%
       transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName() + " testStatusPercentChanged() 3");
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
+            getClass().getSimpleName() + " testStatusPercentChanged() 3");
       result = TaskManager.statusPercentChanged(taskArt, 1, 25, transaction);
       Assert.assertEquals(Result.TrueResult, result);
       transaction.execute();

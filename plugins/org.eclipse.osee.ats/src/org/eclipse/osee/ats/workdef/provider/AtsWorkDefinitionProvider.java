@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.ConvertAtsDslToWorkDefinition;
+import org.eclipse.osee.ats.core.workdef.ConvertWorkDefinitionToAtsDsl;
 import org.eclipse.osee.ats.core.workdef.ModelUtil;
 import org.eclipse.osee.ats.core.workdef.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;

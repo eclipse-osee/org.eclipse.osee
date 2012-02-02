@@ -10,8 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workdef;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -28,8 +31,11 @@ import org.eclipse.osee.ats.core.util.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.workdef.provider.AtsWorkDefinitionProviderCore;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvider;
+import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -71,6 +77,16 @@ public class WorkDefinitionFactory {
          awaArtIdToWorkDefinition.put(artifact.getArtId(), match);
       }
       return awaArtIdToWorkDefinition.get(artifact.getArtId());
+   }
+
+   public static Collection<WorkDefinition> getLoadedWorkDefinitions() {
+      List<WorkDefinition> workDefs = new ArrayList<WorkDefinition>();
+      for (WorkDefinitionMatch match : workDefIdToWorkDefintion.values()) {
+         if (match.getWorkDefinition() != null) {
+            workDefs.add(match.getWorkDefinition());
+         }
+      }
+      return workDefs;
    }
 
    public static WorkDefinitionMatch getWorkDefinition(String id) throws OseeCoreException {
@@ -139,9 +155,25 @@ public class WorkDefinitionFactory {
       return new WorkDefinitionMatch();
    }
 
-   private static WorkDefinitionMatch getWorkDefinitionForTask(TaskArtifact taskArt) throws OseeCoreException {
-      WorkDefinitionMatch match = new WorkDefinitionMatch();
+   public static WorkDefinitionMatch getWorkDefinitionForTask(TaskArtifact taskArt) throws OseeCoreException {
       TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) WorkflowManagerCore.getParentTeamWorkflow(taskArt);
+      return getWorkDefinitionForTask(teamWf, taskArt);
+   }
+
+   /**
+    * Return the WorkDefinition that would be assigned to a new Task. This is not necessarily the actual WorkDefinition
+    * used because it can be overridden once the Task artifact is created.
+    */
+   public static WorkDefinitionMatch getWorkDefinitionForTaskNotYetCreated(TeamWorkFlowArtifact teamWf) throws OseeCoreException {
+      return getWorkDefinitionForTask(teamWf, null);
+   }
+
+   /**
+    * @param teamWf
+    * @param taskArt - if null, returned WorkDefinition will be proposed; else returned will be actual
+    */
+   private static WorkDefinitionMatch getWorkDefinitionForTask(TeamWorkFlowArtifact teamWf, TaskArtifact taskArt) throws OseeCoreException {
+      WorkDefinitionMatch match = new WorkDefinitionMatch();
       for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getAtsTeamWorkflowProviders()) {
          String workFlowDefId = provider.getRelatedTaskWorkflowDefinitionId(teamWf);
          if (Strings.isValid(workFlowDefId)) {
@@ -151,7 +183,7 @@ public class WorkDefinitionFactory {
             break;
          }
       }
-      if (!match.isMatched()) {
+      if (!match.isMatched() && taskArt != null) {
          // If task specifies it's own workflow id, use it
          match = getWorkDefinitionFromArtifactsAttributeValue(taskArt);
       }
@@ -165,7 +197,7 @@ public class WorkDefinitionFactory {
       }
       if (!match.isMatched()) {
          // Else If parent TeamWorkflow's TeamDefinition has a related task definition workflow id, use it
-         match = getTaskWorkDefinitionFromArtifactsAttributeValue(WorkflowManagerCore.getTeamDefinition(taskArt));
+         match = getTaskWorkDefinitionFromArtifactsAttributeValue(teamWf.getTeamDefinition());
       }
       if (!match.isMatched()) {
          match = getWorkDefinition(TaskWorkflowDefinitionId);
@@ -229,5 +261,19 @@ public class WorkDefinitionFactory {
          }
       }
       return workDefs;
+   }
+
+   public static boolean isTaskOverridingItsWorkDefinition(TaskArtifact taskArt) throws MultipleAttributesExist, OseeCoreException {
+      return taskArt.getSoleAttributeValueAsString(AtsAttributeTypes.WorkflowDefinition, null) != null;
+   }
+
+   public static WorkDefinition copyWorkDefinition(String newName, WorkDefinition workDef, XResultData resultData) {
+      ConvertWorkDefinitionToAtsDsl converter = new ConvertWorkDefinitionToAtsDsl(workDef, resultData);
+      AtsDsl atsDsl = converter.convert(newName);
+
+      // Convert back to WorkDefinition
+      ConvertAtsDslToWorkDefinition converter2 = new ConvertAtsDslToWorkDefinition(newName, atsDsl);
+      WorkDefinition newWorkDef = converter2.convert();
+      return newWorkDef;
    }
 }

@@ -11,10 +11,17 @@
 package org.eclipse.osee.ats.core.task;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.internal.Activator;
 import org.eclipse.osee.ats.core.team.TeamState;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workdef.WorkDefinitionFactory;
+import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
@@ -26,6 +33,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 public class TaskManager {
 
@@ -117,6 +125,41 @@ public class TaskManager {
       if (transaction != null) {
          taskArt.persist(transaction);
       }
+      return Result.TrueResult;
+   }
+
+   public static Result moveTasks(TeamWorkFlowArtifact newParent, List<TaskArtifact> taskArts) throws OseeCoreException {
+      for (TaskArtifact taskArt : taskArts) {
+         // task dropped on same awa as current parent; do nothing
+         if (taskArt.getParentAWA().equals(newParent)) {
+            return Result.FalseResult;
+         }
+
+         // Validate able to move tasks; WorkDefinitions must match
+         boolean taskOverridesItsWorkDefinition = WorkDefinitionFactory.isTaskOverridingItsWorkDefinition(taskArt);
+         WorkDefinitionMatch match = WorkDefinitionFactory.getWorkDefinitionForTaskNotYetCreated(newParent);
+         if (!taskOverridesItsWorkDefinition && !taskArt.getWorkDefinition().equals(match.getWorkDefinition())) {
+            return new Result(
+               "Desitination Task WorkDefinition does not match current Task WorkDefintion; Move Aborted");
+         }
+      }
+
+      // Move Tasks
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Drop Add Tasks");
+      for (Artifact art : taskArts) {
+         if (art.isOfType(AtsArtifactTypes.Task)) {
+            TaskArtifact taskArt = (TaskArtifact) art;
+            taskArt.clearCaches();
+            if (taskArt.getParentAWA() != null) {
+               taskArt.deleteRelation(AtsRelationTypes.SmaToTask_Sma, taskArt.getParentAWA());
+            }
+            taskArt.addRelation(AtsRelationTypes.SmaToTask_Sma, newParent);
+            taskArt.persist(transaction);
+            taskArt.clearCaches();
+         }
+      }
+      transaction.execute();
       return Result.TrueResult;
    }
 
