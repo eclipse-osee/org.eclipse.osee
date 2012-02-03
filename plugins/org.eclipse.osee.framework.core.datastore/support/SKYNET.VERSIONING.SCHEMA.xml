@@ -390,11 +390,12 @@
    </Table>
    
    <TableDescription referenceTable="OSEE_MERGE">
-		<Note purpose="Core table describing merge branches"/>
-		<Column id="SOURCE_BRANCH_ID" description="" />
-		<Column id="DEST_BRANCH_ID" description="" />
-		<Column id="MERGE_BRANCH_ID" description="" />
-		<Column id="COMMIT_TRANSACTION_ID" description="" />
+		<Note purpose="Core table describing merge branches, these entries stay around because it is currently the only way to view merges.
+							Please refer to http://wiki.eclipse.org/osee/branch for a developer guide on OSEE branches."/>
+		<Column id="SOURCE_BRANCH_ID" description="branch being committed, 'working branch' " />
+		<Column id="DEST_BRANCH_ID" description="branch being committed into, most commonly parent branch of source." />
+		<Column id="MERGE_BRANCH_ID" description="self-explanatory" />
+		<Column id="COMMIT_TRANSACTION_ID" description="if the merge branch has been already commited" />
 	</TableDescription>
 
    <Table name="OSEE_CONFLICT" schema="OSEE" tablespace="osee_data">
