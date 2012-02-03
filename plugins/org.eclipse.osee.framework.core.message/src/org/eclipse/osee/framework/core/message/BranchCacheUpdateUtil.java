@@ -17,8 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.message.internal.Activator;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.model.MergeBranch;
@@ -28,6 +30,7 @@ import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Megumi Telles
@@ -89,9 +92,18 @@ public final class BranchCacheUpdateUtil {
       for (Triplet<String, String, String> entry : cacheMessage.getMergeBranches()) {
          IOseeBranch sourceBranch = Strings.isValid(entry.getFirst()) ? cache.getByGuid(entry.getFirst()) : null;
          IOseeBranch destinationBranch = Strings.isValid(entry.getSecond()) ? cache.getByGuid(entry.getSecond()) : null;
-         MergeBranch mergeBranch = (MergeBranch) cache.getByGuid(entry.getThird());
-         mergeBranch.setSourceBranch(sourceBranch);
-         mergeBranch.setDestinationBranch(destinationBranch);
+
+         Branch branch = cache.getByGuid(entry.getThird());
+         MergeBranch mergeBranch = null;
+         try {
+            mergeBranch = (MergeBranch) branch;
+            mergeBranch.setSourceBranch(sourceBranch);
+            mergeBranch.setDestinationBranch(destinationBranch);
+         } catch (ClassCastException ex) {
+            OseeLog.logf(Activator.class, Level.SEVERE,
+               "Problem casting branch [%s] to MergeBranch, source: [%s], dest: [%s]\r\nException: %s", branch,
+               sourceBranch, destinationBranch, ex);
+         }
       }
       return updatedItems;
    }
