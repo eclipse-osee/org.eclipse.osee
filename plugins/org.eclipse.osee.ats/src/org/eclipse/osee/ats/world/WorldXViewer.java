@@ -362,15 +362,14 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    public void updateMenuActionsForTable() {
       MenuManager mm = getMenuManager();
 
-      mm.insertBefore(XViewer.MENU_GROUP_PRE, new GroupMarker(MENU_GROUP_ATS_WORLD_EDIT));
-
-      updateEditMenuActions();
-
-      mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
-
       // OPEN MENU BLOCK
       OpenContributionItem contrib = new OpenContributionItem(getClass().getSimpleName() + ".open");
       mm.insertBefore(XViewer.MENU_GROUP_PRE, contrib);
+      mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
+
+      mm.insertBefore(XViewer.MENU_GROUP_PRE, new GroupMarker(MENU_GROUP_ATS_WORLD_EDIT));
+
+      updateEditMenuActions();
 
       if (AtsUtilCore.isAtsAdmin()) {
          mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
