@@ -158,8 +158,8 @@ public class DefaultArtifactRenderer implements IRenderer {
       StringBuilder builder = new StringBuilder();
       ArtifactGuidToWordML guidResolver = new ArtifactGuidToWordML(new OseeLinkBuilder());
       RelationOrderRenderer renderer =
-         new RelationOrderRenderer(Activator.getInstance().getOseeCacheService().getRelationTypeCache(),
-            guidResolver, RelationManager.getSorterProvider());
+         new RelationOrderRenderer(Activator.getInstance().getOseeCacheService().getRelationTypeCache(), guidResolver,
+            RelationManager.getSorterProvider());
 
       WordMLProducer producer = new WordMLProducer(builder);
       RelationOrderData relationOrderData = RelationManager.createRelationOrderData(artifact);
@@ -265,7 +265,7 @@ public class DefaultArtifactRenderer implements IRenderer {
       });
    }
 
-   private boolean isRenderOption(String value) {
+   protected boolean isRenderOption(String value) {
       boolean result = false;
       try {
          result = getBooleanOption(value);
