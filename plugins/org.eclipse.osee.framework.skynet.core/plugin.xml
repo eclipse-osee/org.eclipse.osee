@@ -94,6 +94,14 @@
          </CharacterBackedAttributeType>
       </extension>
       <extension
+            id="OutlineNumberAttribute"
+            name="OutlineNumberAttribute"
+            point="org.eclipse.osee.framework.skynet.core.AttributeType">
+         <CharacterBackedAttributeType
+               class="org.eclipse.osee.framework.skynet.core.attribute.OutlineNumberAttribute">
+         </CharacterBackedAttributeType>
+      </extension>
+      <extension
             id="WordAttribute"
             name="WordAttribute"
             point="org.eclipse.osee.framework.skynet.core.AttributeType">

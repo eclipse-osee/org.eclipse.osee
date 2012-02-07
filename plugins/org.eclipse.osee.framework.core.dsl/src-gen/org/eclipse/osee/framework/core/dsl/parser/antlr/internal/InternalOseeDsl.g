@@ -1041,11 +1041,18 @@ ruleAttributeBaseType returns [AntlrDatatypeRuleToken current=new AntlrDatatypeR
     }
 
     |
-    { 
-        newCompositeNode(grammarAccess.getAttributeBaseTypeAccess().getQUALIFIED_NAMEParserRuleCall_9()); 
+	kw='OutlineNumberAttribute' 
+    {
+        $current.merge(kw);
+        newLeafNode(kw, grammarAccess.getAttributeBaseTypeAccess().getOutlineNumberAttributeKeyword_9()); 
     }
-    this_QUALIFIED_NAME_9=ruleQUALIFIED_NAME    {
-		$current.merge(this_QUALIFIED_NAME_9);
+
+    |
+    { 
+        newCompositeNode(grammarAccess.getAttributeBaseTypeAccess().getQUALIFIED_NAMEParserRuleCall_10()); 
+    }
+    this_QUALIFIED_NAME_10=ruleQUALIFIED_NAME    {
+		$current.merge(this_QUALIFIED_NAME_10);
     }
 
     { 

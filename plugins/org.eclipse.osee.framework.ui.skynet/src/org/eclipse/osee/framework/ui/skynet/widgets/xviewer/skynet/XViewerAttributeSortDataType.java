@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.OutlineNumberAttribute;
 
 /**
  * @author Donald G. Dunne
@@ -34,6 +35,8 @@ public class XViewerAttributeSortDataType {
          sortType = SortDataType.Integer;
       } else if (AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeType)) {
          sortType = SortDataType.Boolean;
+      } else if (AttributeTypeManager.isBaseTypeCompatible(OutlineNumberAttribute.class, attributeType)) {
+         sortType = SortDataType.Paragraph_Number;
       }
       return sortType;
    }

@@ -53,7 +53,7 @@ XAttributeType:
 
 AttributeBaseType:
 	'BooleanAttribute' | 'CompressedContentAttribute' | 'DateAttribute' | 'EnumeratedAttribute' |
-	'FloatingPointAttribute' | 'IntegerAttribute' | 'JavaObjectAttribute' | 'StringAttribute' | 'WordAttribute' |
+	'FloatingPointAttribute' | 'IntegerAttribute' | 'JavaObjectAttribute' | 'StringAttribute' | 'WordAttribute' | 'OutlineNumberAttribute' |
 	QUALIFIED_NAME;
 
 XOseeEnumType:

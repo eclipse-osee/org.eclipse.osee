@@ -324,6 +324,7 @@
         <elements xsi:type="xtext:Keyword" value="JavaObjectAttribute"/>
         <elements xsi:type="xtext:Keyword" value="StringAttribute"/>
         <elements xsi:type="xtext:Keyword" value="WordAttribute"/>
+        <elements xsi:type="xtext:Keyword" value="OutlineNumberAttribute"/>
         <elements xsi:type="xtext:RuleCall" rule="/0/@rules.5"/>
       </alternatives>
     </rules>

@@ -635,15 +635,18 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cJavaObjectAttributeKeyword_6 = (Keyword)cAlternatives.eContents().get(6);
 		private final Keyword cStringAttributeKeyword_7 = (Keyword)cAlternatives.eContents().get(7);
 		private final Keyword cWordAttributeKeyword_8 = (Keyword)cAlternatives.eContents().get(8);
-		private final RuleCall cQUALIFIED_NAMEParserRuleCall_9 = (RuleCall)cAlternatives.eContents().get(9);
+		private final Keyword cOutlineNumberAttributeKeyword_9 = (Keyword)cAlternatives.eContents().get(9);
+		private final RuleCall cQUALIFIED_NAMEParserRuleCall_10 = (RuleCall)cAlternatives.eContents().get(10);
 		
 		//AttributeBaseType:
 		//	"BooleanAttribute" | "CompressedContentAttribute" | "DateAttribute" | "EnumeratedAttribute" | "FloatingPointAttribute"
-		//	| "IntegerAttribute" | "JavaObjectAttribute" | "StringAttribute" | "WordAttribute" | QUALIFIED_NAME;
+		//	| "IntegerAttribute" | "JavaObjectAttribute" | "StringAttribute" | "WordAttribute" | "OutlineNumberAttribute" |
+		//	QUALIFIED_NAME;
 		public ParserRule getRule() { return rule; }
 
 		//"BooleanAttribute" | "CompressedContentAttribute" | "DateAttribute" | "EnumeratedAttribute" | "FloatingPointAttribute" |
-		//"IntegerAttribute" | "JavaObjectAttribute" | "StringAttribute" | "WordAttribute" | QUALIFIED_NAME
+		//"IntegerAttribute" | "JavaObjectAttribute" | "StringAttribute" | "WordAttribute" | "OutlineNumberAttribute" |
+		//QUALIFIED_NAME
 		public Alternatives getAlternatives() { return cAlternatives; }
 
 		//"BooleanAttribute"
@@ -673,8 +676,11 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		//"WordAttribute"
 		public Keyword getWordAttributeKeyword_8() { return cWordAttributeKeyword_8; }
 
+		//"OutlineNumberAttribute"
+		public Keyword getOutlineNumberAttributeKeyword_9() { return cOutlineNumberAttributeKeyword_9; }
+
 		//QUALIFIED_NAME
-		public RuleCall getQUALIFIED_NAMEParserRuleCall_9() { return cQUALIFIED_NAMEParserRuleCall_9; }
+		public RuleCall getQUALIFIED_NAMEParserRuleCall_10() { return cQUALIFIED_NAMEParserRuleCall_10; }
 	}
 
 	public class XOseeEnumTypeElements extends AbstractParserRuleElementFinder {
@@ -2253,7 +2259,8 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 
 	//AttributeBaseType:
 	//	"BooleanAttribute" | "CompressedContentAttribute" | "DateAttribute" | "EnumeratedAttribute" | "FloatingPointAttribute"
-	//	| "IntegerAttribute" | "JavaObjectAttribute" | "StringAttribute" | "WordAttribute" | QUALIFIED_NAME;
+	//	| "IntegerAttribute" | "JavaObjectAttribute" | "StringAttribute" | "WordAttribute" | "OutlineNumberAttribute" |
+	//	QUALIFIED_NAME;
 	public AttributeBaseTypeElements getAttributeBaseTypeAccess() {
 		return (pAttributeBaseType != null) ? pAttributeBaseType : (pAttributeBaseType = new AttributeBaseTypeElements());
 	}

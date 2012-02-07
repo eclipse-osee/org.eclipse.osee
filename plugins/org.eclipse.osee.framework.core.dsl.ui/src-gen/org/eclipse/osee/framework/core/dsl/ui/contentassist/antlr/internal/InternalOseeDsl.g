@@ -1270,9 +1270,17 @@ rule__AttributeBaseType__Alternatives
 )
 
     |(
-{ before(grammarAccess.getAttributeBaseTypeAccess().getQUALIFIED_NAMEParserRuleCall_9()); }
+{ before(grammarAccess.getAttributeBaseTypeAccess().getOutlineNumberAttributeKeyword_9()); }
+
+	'OutlineNumberAttribute' 
+
+{ after(grammarAccess.getAttributeBaseTypeAccess().getOutlineNumberAttributeKeyword_9()); }
+)
+
+    |(
+{ before(grammarAccess.getAttributeBaseTypeAccess().getQUALIFIED_NAMEParserRuleCall_10()); }
 	ruleQUALIFIED_NAME
-{ after(grammarAccess.getAttributeBaseTypeAccess().getQUALIFIED_NAMEParserRuleCall_9()); }
+{ after(grammarAccess.getAttributeBaseTypeAccess().getQUALIFIED_NAMEParserRuleCall_10()); }
 )
 
 ;

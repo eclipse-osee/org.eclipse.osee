@@ -561,7 +561,7 @@ attributeType "Content URL" extends StringAttribute {
    max 1
 }
 
-attributeType "Imported Paragraph Number" extends StringAttribute {
+attributeType "Imported Paragraph Number" extends OutlineNumberAttribute {
    guid "AAMFEQ3boD3sp6VfArAA"
    uuid 0x100000000000007D
    dataProvider DefaultAttributeDataProvider
