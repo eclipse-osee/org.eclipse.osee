@@ -115,8 +115,12 @@ public class AttributeConflict extends Conflict {
          }
       }
       if (sourceAttribute == null) {
-         throw new AttributeDoesNotExist("Attribute %d could not be found on artifact %d on branch %s", attrId,
-            getArtId(), sourceBranch.getGuid());
+         if (sourceBranch != null) {
+            throw new AttributeDoesNotExist("Attribute %d could not be found on artifact %d on branch %s", attrId,
+               getArtId(), sourceBranch.getGuid());
+         } else {
+            throw new AttributeDoesNotExist("Attribute %d could not be found on artifact %d", attrId, getArtId());
+         }
       }
       return sourceAttribute;
    }
