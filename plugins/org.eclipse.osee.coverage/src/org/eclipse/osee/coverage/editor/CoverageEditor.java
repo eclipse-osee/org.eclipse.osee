@@ -162,8 +162,8 @@ public class CoverageEditor extends FormEditor {
             coverageEditorWorkProductTab =
                new CoverageEditorWorkProductTab("Work Product Tracking", this,
                   (CoveragePackage) getCoveragePackageBase());
+            addFormPage(coverageEditorWorkProductTab);
          }
-         addFormPage(coverageEditorWorkProductTab);
          if (getCoveragePackageBase().isImportAllowed()) {
             coverageEditorImportTab = new CoverageEditorImportTab(this);
             addFormPage(coverageEditorImportTab);
@@ -298,7 +298,9 @@ public class CoverageEditor extends FormEditor {
          @Override
          public void run() {
             coverageEditorCoverageTab.refresh();
-            coverageEditorWorkProductTab.refresh();
+            if (coverageEditorWorkProductTab != null) {
+               coverageEditorWorkProductTab.refresh();
+            }
             coverageEditorOverviewTab.refreshActionHandler();
          }
       });
@@ -309,7 +311,9 @@ public class CoverageEditor extends FormEditor {
 
          @Override
          public void run() {
-            coverageEditorWorkProductTab.refresh();
+            if (coverageEditorWorkProductTab != null) {
+               coverageEditorWorkProductTab.refresh();
+            }
          }
       });
    }
