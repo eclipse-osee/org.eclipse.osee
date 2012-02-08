@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.access.internal.data.ArtifactAccessObject;
 import org.eclipse.osee.framework.access.internal.data.BranchAccessObject;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
@@ -63,8 +64,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.BranchGuidEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.osgi.framework.Bundle;
 import org.osgi.util.tracker.ServiceTracker;
@@ -119,6 +126,7 @@ public class AccessControlService implements IAccessControlService {
       this.databaseService = databaseService;
       this.cachingService = cachingService;
       this.identityService = identityService;
+      OseeEventManager.addListener(new AccessControlUpdateListener());
       try {
          reloadCache();
       } catch (OseeCoreException ex) {
@@ -148,11 +156,11 @@ public class AccessControlService implements IAccessControlService {
    }
 
    public synchronized void clearCache() {
-      accessDataCache.clear();
       initializeCaches();
    }
 
    private void initializeCaches() {
+      accessDataCache.clear();
       accessControlListCache.clear();
       objectToSubjectCache.clear();
       subjectToGroupCache.clear();
@@ -686,6 +694,31 @@ public class AccessControlService implements IAccessControlService {
          isOseeAdmin = SystemGroup.OseeAdmin.isCurrentUserMember();
       }
       return isOseeAdmin;
+   }
+
+   private final class AccessControlUpdateListener implements IArtifactEventListener {
+
+      //@formatter:off
+      private final List<? extends IEventFilter> eventFilters =
+         Arrays.asList(
+            new ArtifactTypeEventFilter(CoreArtifactTypes.AccessControlModel),
+            new BranchGuidEventFilter(CoreBranches.COMMON)
+            );
+      //@formatter:on
+
+      @Override
+      public List<? extends IEventFilter> getEventFilters() {
+         return eventFilters;
+      }
+
+      @Override
+      public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+         try {
+            reloadCache();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
    }
 
 }
