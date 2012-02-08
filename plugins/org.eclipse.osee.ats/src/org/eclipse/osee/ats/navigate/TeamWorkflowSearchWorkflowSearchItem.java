@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.navigate;
 
 import java.util.Collection;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
@@ -97,19 +98,10 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    }
 
    @Override
-   public Collection<? extends Artifact> performSearchGetResults(SearchType searchType) throws OseeCoreException {
-      Collection<Artifact> artifacts =
-         new TeamWorldSearchItem("", getSelectedTeamDefinitions(), isIncludeCompletedCheckbox(),
-            isIncludeCancelledCheckbox(), false, false, getSelectedVersionArtifact(), getSelectedUser(),
-            getSelectedReleased(), getSelectedState()).performSearchGetResults(false);
-      return artifacts;
-   }
-
-   @Override
    public String getSelectedName(SearchType searchType) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
-      if (teamDefs.size() > 0) {
+      if (!teamDefs.isEmpty()) {
          sb.append(" - Teams: ");
          sb.append(org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", teamDefs));
       }
@@ -200,7 +192,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       }
    }
 
-   protected User getSelectedUser() {
+   public User getSelectedUser() {
       if (assigneeCombo == null) {
          return null;
       }
@@ -213,14 +205,14 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       }
    }
 
-   protected String getSelectedState() {
+   public String getSelectedState() {
       if (stateCombo == null) {
          return null;
       }
       return stateCombo.getSelectedState();
    }
 
-   protected boolean isIncludeCancelledCheckbox() {
+   public boolean isIncludeCancelledCheckbox() {
       if (includeCancelledCheckbox == null) {
          return false;
       }
@@ -233,7 +225,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       }
    }
 
-   protected boolean isIncludeCompletedCheckbox() {
+   public boolean isIncludeCompletedCheckbox() {
       if (includeCompletedCheckbox == null) {
          return false;
       }
@@ -246,7 +238,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       }
    }
 
-   protected Artifact getSelectedVersionArtifact() throws OseeCoreException {
+   public Artifact getSelectedVersionArtifact() throws OseeCoreException {
       if (versionCombo == null) {
          return null;
       }
@@ -289,7 +281,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       }
    }
 
-   protected ReleasedOption getSelectedReleased() {
+   public ReleasedOption getSelectedReleased() {
       if (releasedCombo == null || !Strings.isValid(releasedCombo.get())) {
          return ReleasedOption.Both;
       }
@@ -357,6 +349,22 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
          return null;
       }
       return getSelectedVersionArtifact();
+   }
+
+   @Override
+   public Callable<Collection<? extends Artifact>> createSearch() throws OseeCoreException {
+      TeamWorkflowSearchWorkflowSearchItem params = this;
+      final TeamWorldSearchItem searchItem =
+         new TeamWorldSearchItem("", params.getSelectedTeamDefinitions(), params.isIncludeCompletedCheckbox(),
+            params.isIncludeCancelledCheckbox(), false, false, params.getSelectedVersionArtifact(),
+            params.getSelectedUser(), params.getSelectedReleased(), params.getSelectedState());
+      return new Callable<Collection<? extends Artifact>>() {
+
+         @Override
+         public Collection<? extends Artifact> call() throws Exception {
+            return searchItem.performSearchGetResults(false);
+         }
+      };
    }
 
 }

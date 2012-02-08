@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
-import java.util.Collection;
-import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
 
@@ -23,8 +20,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutLis
 public interface IWorldEditorParameterProvider extends IWorldEditorProvider {
 
    public String getParameterXWidgetXml() throws OseeCoreException;
-
-   public Collection<? extends Artifact> performSearchGetResults(SearchType searchType) throws OseeCoreException;
 
    public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener();
 

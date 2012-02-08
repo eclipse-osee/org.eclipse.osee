@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.review;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
@@ -98,15 +99,6 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
       "<XWidget displayName=\"Include Cancelled\" xwidgetType=\"XCheckBox\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
       //
       "</xWidgets>";
-   }
-
-   @Override
-   public Collection<? extends Artifact> performSearchGetResults(SearchType searchType) throws OseeCoreException {
-      Collection<Artifact> artifacts =
-         new ReviewWorldSearchItem("", getSelectedAIs(), isIncludeCompletedCheckbox(), isIncludeCancelledCheckbox(),
-            false, getSelectedVersionArtifact(), getSelectedUser(), getSelectedReviewFormalType(),
-            getSelectedReviewType(), getSelectedState()).performSearchGetResults(false);
-      return artifacts;
    }
 
    @Override
@@ -213,7 +205,7 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
       }
    }
 
-   protected ReviewType getSelectedReviewType() {
+   public ReviewType getSelectedReviewType() {
       if (reviewTypeCombo == null) {
          return null;
       }
@@ -224,7 +216,7 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
       }
    }
 
-   protected ReviewFormalType getSelectedReviewFormalType() {
+   public ReviewFormalType getSelectedReviewFormalType() {
       if (reviewFormalCombo == null) {
          return null;
       }
@@ -235,7 +227,7 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
       }
    }
 
-   protected User getSelectedUser() {
+   public User getSelectedUser() {
       if (assigneeCombo == null) {
          return null;
       }
@@ -248,14 +240,14 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
       }
    }
 
-   private String getSelectedState() {
+   public String getSelectedState() {
       if (stateCombo == null) {
          return null;
       }
       return stateCombo.getSelectedState();
    }
 
-   protected boolean isIncludeCancelledCheckbox() {
+   public boolean isIncludeCancelledCheckbox() {
       if (includeCancelledCheckbox == null) {
          return false;
       }
@@ -268,7 +260,7 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
       }
    }
 
-   protected boolean isIncludeCompletedCheckbox() {
+   public boolean isIncludeCompletedCheckbox() {
       if (includeCompletedCheckbox == null) {
          return false;
       }
@@ -281,7 +273,7 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
       }
    }
 
-   protected Artifact getSelectedVersionArtifact() throws OseeCoreException {
+   public Artifact getSelectedVersionArtifact() throws OseeCoreException {
       if (versionCombo == null) {
          return null;
       }
@@ -387,6 +379,23 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
          return null;
       }
       return getSelectedVersionArtifact();
+   }
+
+   @Override
+   public Callable<Collection<? extends Artifact>> createSearch() throws OseeCoreException {
+      ReviewSearchWorkflowSearchItem params = this;
+      final ReviewWorldSearchItem searchItem =
+         new ReviewWorldSearchItem("", params.getSelectedAIs(), params.isIncludeCompletedCheckbox(),
+            params.isIncludeCancelledCheckbox(), false, params.getSelectedVersionArtifact(), params.getSelectedUser(),
+            params.getSelectedReviewFormalType(), params.getSelectedReviewType(), params.getSelectedState());
+
+      return new Callable<Collection<? extends Artifact>>() {
+
+         @Override
+         public Collection<? extends Artifact> call() throws Exception {
+            return searchItem.performSearchGetResults(false);
+         }
+      };
    }
 
 }

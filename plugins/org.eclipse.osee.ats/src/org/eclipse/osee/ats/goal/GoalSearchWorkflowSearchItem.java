@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.goal;
 
 import java.util.Collection;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
@@ -79,12 +80,6 @@ public class GoalSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    }
 
    @Override
-   public Collection<? extends Artifact> performSearchGetResults(SearchType searchType) throws OseeCoreException {
-      return new GoalSearchItem("", getSelectedTeamDefinitions(), isIncludeCompletedCancelledCheckbox(),
-         getSelectedUser()).performSearchGetResults(false);
-   }
-
-   @Override
    public String getSelectedName(SearchType searchType) {
       StringBuffer sb = new StringBuffer();
       Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
@@ -115,7 +110,7 @@ public class GoalSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       }
    }
 
-   private User getSelectedUser() {
+   public User getSelectedUser() {
       if (assigneeCombo == null) {
          return null;
       }
@@ -128,7 +123,7 @@ public class GoalSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       }
    }
 
-   private boolean isIncludeCompletedCancelledCheckbox() {
+   public boolean isIncludeCompletedCancelledCheckbox() {
       if (includeCompletedCancelledCheckbox == null) {
          return false;
       }
@@ -188,6 +183,21 @@ public class GoalSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    @Override
    public Artifact getTargetedVersionArtifact() {
       return null;
+   }
+
+   @Override
+   public Callable<Collection<? extends Artifact>> createSearch() throws OseeCoreException {
+      final GoalSearchItem searchItem =
+         new GoalSearchItem("", this.getSelectedTeamDefinitions(), this.isIncludeCompletedCancelledCheckbox(),
+            this.getSelectedUser());
+      searchItem.performSearchGetResults(false);
+      return new Callable<Collection<? extends Artifact>>() {
+
+         @Override
+         public Collection<? extends Artifact> call() throws Exception {
+            return searchItem.performSearchGetResults(false);
+         }
+      };
    }
 
 }

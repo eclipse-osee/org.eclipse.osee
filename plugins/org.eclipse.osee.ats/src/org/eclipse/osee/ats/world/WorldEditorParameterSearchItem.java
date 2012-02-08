@@ -10,10 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
+import java.util.Collection;
+import java.util.concurrent.Callable;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
@@ -90,5 +93,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    public boolean isSaveButtonAvailable() {
       return false;
    }
+
+   public abstract Callable<Collection<? extends Artifact>> createSearch() throws OseeCoreException;
 
 }

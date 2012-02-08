@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.version.VersionLockedType;
@@ -114,28 +115,6 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       "<XWidget displayName=\"Include Cancelled\" xwidgetType=\"XCheckBox\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
       //
       "</xWidgets>";
-   }
-
-   @Override
-   public Collection<? extends Artifact> performSearchGetResults(SearchType searchType) throws OseeCoreException {
-      return new UserWorldSearchItem(
-         getSelectedUser(),
-         getSelectedTeamDefinitions(),
-         (getSelectedVersionArtifact() != null ? Collections.singleton(getSelectedVersionArtifact()) : null),
-         getSelectedState(),
-         //
-         (isAssigneeCheckbox() ? UserSearchOption.Assignee : UserSearchOption.None),
-         (isFavoritesCheckbox() ? UserSearchOption.Favorites : UserSearchOption.None),
-         (isOriginatedCheckbox() ? UserSearchOption.Originator : UserSearchOption.None),
-         (isSubscribedCheckbox() ? UserSearchOption.Subscribed : UserSearchOption.None),
-         (isReviewsCheckbox() ? UserSearchOption.IncludeReviews : UserSearchOption.None),
-         (isTeamWorkflowsCheckbox() ? UserSearchOption.IncludeTeamWorkflows : UserSearchOption.None),
-         (isTasksCheckbox() ? UserSearchOption.IncludeTasks : UserSearchOption.None),
-         (isIncludeCancelledCheckbox() ? UserSearchOption.IncludeCancelled : UserSearchOption.None),
-         (isIncludeCompletedCheckbox() ? UserSearchOption.IncludeCompleted : UserSearchOption.None)
-
-      //
-      ).performSearch();
    }
 
    @Override
@@ -264,7 +243,7 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       }
    }
 
-   private User getSelectedUser() {
+   public User getSelectedUser() {
       if (userCombo == null) {
          return null;
       }
@@ -277,7 +256,7 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       }
    }
 
-   private String getSelectedState() {
+   public String getSelectedState() {
       if (stateCombo == null) {
          return null;
       }
@@ -317,63 +296,63 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       }
    }
 
-   private boolean isIncludeCompletedCheckbox() {
+   public boolean isIncludeCompletedCheckbox() {
       if (includeCompletedCheckbox == null) {
          return false;
       }
       return includeCompletedCheckbox.isSelected();
    }
 
-   private boolean isIncludeCancelledCheckbox() {
+   public boolean isIncludeCancelledCheckbox() {
       if (includeCancelledCheckbox == null) {
          return false;
       }
       return includeCancelledCheckbox.isSelected();
    }
 
-   private boolean isAssigneeCheckbox() {
+   public boolean isAssigneeCheckbox() {
       if (assigneeCheckbox == null) {
          return false;
       }
       return assigneeCheckbox.isSelected();
    }
 
-   private boolean isFavoritesCheckbox() {
+   public boolean isFavoritesCheckbox() {
       if (favoriteCheckbox == null) {
          return false;
       }
       return favoriteCheckbox.isSelected();
    }
 
-   private boolean isOriginatedCheckbox() {
+   public boolean isOriginatedCheckbox() {
       if (originatorCheckbox == null) {
          return false;
       }
       return originatorCheckbox.isSelected();
    }
 
-   private boolean isSubscribedCheckbox() {
+   public boolean isSubscribedCheckbox() {
       if (subscribedCheckbox == null) {
          return false;
       }
       return subscribedCheckbox.isSelected();
    }
 
-   private boolean isTeamWorkflowsCheckbox() {
+   public boolean isTeamWorkflowsCheckbox() {
       if (teamWorkflowsCheckbox == null) {
          return false;
       }
       return teamWorkflowsCheckbox.isSelected();
    }
 
-   private boolean isReviewsCheckbox() {
+   public boolean isReviewsCheckbox() {
       if (reviewsCheckbox == null) {
          return false;
       }
       return reviewsCheckbox.isSelected();
    }
 
-   private boolean isTasksCheckbox() {
+   public boolean isTasksCheckbox() {
       if (tasksCheckbox == null) {
          return false;
       }
@@ -392,7 +371,7 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       }
    }
 
-   private Artifact getSelectedVersionArtifact() throws OseeCoreException {
+   public Artifact getSelectedVersionArtifact() throws OseeCoreException {
       if (versionCombo == null) {
          return null;
       }
@@ -477,6 +456,35 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
          return null;
       }
       return getSelectedVersionArtifact();
+   }
+
+   @Override
+   public Callable<Collection<? extends Artifact>> createSearch() throws OseeCoreException {
+      UserSearchWorkflowSearchItem params = this;
+      Artifact version = params.getSelectedVersionArtifact();
+      final UserWorldSearchItem searchItem =
+         new UserWorldSearchItem(
+            params.getSelectedUser(),
+            params.getSelectedTeamDefinitions(),
+            (version != null ? Collections.singleton(version) : null),
+            params.getSelectedState(),
+            //
+            (params.isAssigneeCheckbox() ? UserSearchOption.Assignee : UserSearchOption.None),
+            (params.isFavoritesCheckbox() ? UserSearchOption.Favorites : UserSearchOption.None),
+            (params.isOriginatedCheckbox() ? UserSearchOption.Originator : UserSearchOption.None),
+            (params.isSubscribedCheckbox() ? UserSearchOption.Subscribed : UserSearchOption.None),
+            (params.isReviewsCheckbox() ? UserSearchOption.IncludeReviews : UserSearchOption.None),
+            (params.isTeamWorkflowsCheckbox() ? UserSearchOption.IncludeTeamWorkflows : UserSearchOption.None),
+            (params.isTasksCheckbox() ? UserSearchOption.IncludeTasks : UserSearchOption.None),
+            (params.isIncludeCancelledCheckbox() ? UserSearchOption.IncludeCancelled : UserSearchOption.None),
+            (params.isIncludeCompletedCheckbox() ? UserSearchOption.IncludeCompleted : UserSearchOption.None));
+      return new Callable<Collection<? extends Artifact>>() {
+
+         @Override
+         public Collection<? extends Artifact> call() throws Exception {
+            return searchItem.performSearch();
+         }
+      };
    }
 
 }

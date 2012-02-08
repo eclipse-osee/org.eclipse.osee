@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.world;
 
 import java.util.Collection;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -135,9 +136,11 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
             worldEditor.setTableTitle("Loading \"" + (selectedName != null ? selectedName : "") + "\"...", false);
             cancel = false;
             worldParameterSearchItem.setCancelled(cancel);
-            final Collection<? extends Artifact> artifacts;
             worldEditor.getWorldComposite().getXViewer().clear(forcePend);
-            artifacts = worldParameterSearchItem.performSearchGetResults(searchType);
+
+            Callable<Collection<? extends Artifact>> worker = worldParameterSearchItem.createSearch();
+            Collection<? extends Artifact> artifacts = worker.call();
+
             if (artifacts.isEmpty()) {
                if (worldParameterSearchItem.isCancelled()) {
                   monitor.done();
@@ -175,11 +178,6 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
    @Override
    public String getParameterXWidgetXml() throws OseeCoreException {
       return worldParameterSearchItem.getParameterXWidgetXml();
-   }
-
-   @Override
-   public Collection<? extends Artifact> performSearchGetResults(SearchType searchType) throws OseeCoreException {
-      return worldParameterSearchItem.performSearchGetResults(searchType);
    }
 
    @Override
