@@ -84,7 +84,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 /**
  * @author Ryan D. Brooks
  */
-public class DetailedTestStatus extends AbstractBlam {
+public class DetailedTestStatusOld extends AbstractBlam {
    private static final Pattern taskNamePattern = Pattern.compile("(?:\"([^\"]+)\")? for \"([^\"]+)\"");
    private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy");
    private final Matcher taskNameMatcher = taskNamePattern.matcher("");
@@ -594,8 +594,19 @@ public class DetailedTestStatus extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml() throws OseeCoreException {
-      return getXWidgetsXmlFromUiFile(getClass().getSimpleName(), Activator.PLUGIN_ID);
+   public String getXWidgetsXml() {
+      StringBuilder sb = new StringBuilder();
+      sb.append("<xWidgets>");
+      sb.append("<XWidget xwidgetType=\"XAtsProgramComboWidget\" horizontalLabel=\"true\" displayName=\"Program\" />");
+      sb.append("<XWidget xwidgetType=\"XArtifactList\" displayName=\"Versions\" multiSelect=\"true\" />");
+      sb.append("<XWidget xwidgetType=\"XText\" displayName=\"Script Root Directory\" defaultValue=\"C:/UserData/workspaceScripts\" />");
+      sb.append("<XWidget xwidgetType=\"XLabel\" displayName=\"or (Note: If traceability branch is selected, requirements branch is not used as they will be pulled from the traceability branch)\"/>");
+      sb.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Traceability Branch\" toolTip=\"Select a requirements branch.\" />");
+      sb.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Requirements Branch\" toolTip=\"Select a requirements branch.\" />");
+      sb.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Test Results Branch\" toolTip=\"Select a scripts results branch.\" />");
+      sb.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Test Procedure Branch\" toolTip=\"Select a test procedures branch.\" />");
+      sb.append("</xWidgets>");
+      return sb.toString();
    }
 
    @Override

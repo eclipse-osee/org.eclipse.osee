@@ -37,9 +37,20 @@ import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayout;
+import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.program.Program;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * @author Ryan D. Brooks
@@ -51,6 +62,11 @@ public class SubsystemFullTraceReport extends AbstractBlam {
    private static int SOFTWARE_REQUIREMENT_INDEX = 9;
    private static int TEST_INDEX = 13;
    private final ArrayList<String> tests = new ArrayList<String>(50);
+
+   private final String SCRIPT_ROOT_DIR = "Script Root Directory";
+   private final String USE_TRACE_IN_OSEE = "Use traceability from Subsystem Requirements";
+   private XCheckBox useTraceInOsee;
+   private XText scriptDir;
 
    @Override
    public String getName() {
@@ -69,15 +85,19 @@ public class SubsystemFullTraceReport extends AbstractBlam {
          throw new OseeArgumentException("must specify a set of artifacts");
       }
       IOseeBranch branch = artifacts.get(0).getBranch();
-      String scriptPath = variableMap.getString("Script Root Directory");
 
       init();
+      String scriptDir = variableMap.getString(SCRIPT_ROOT_DIR);
+      Boolean checked = variableMap.getBoolean(USE_TRACE_IN_OSEE);
 
-      if (!scriptPath.equals("")) {
-         File scriptDir = new File(variableMap.getString("Script Root Directory"));
-         ScriptTraceabilityOperation traceOperation = new ScriptTraceabilityOperation(scriptDir, branch, false);
-         Operations.executeWorkAndCheckStatus(traceOperation, monitor);
-         requirementsToCodeUnits = traceOperation.getRequirementToCodeUnitsMap();
+      if (!checked) {
+         File dir = new File(scriptDir);
+         if (dir.exists()) {
+            ScriptTraceabilityOperation traceOperation =
+               new ScriptTraceabilityOperation(dir.getParentFile(), branch, false);
+            Operations.executeWorkAndCheckStatus(traceOperation, monitor);
+            requirementsToCodeUnits = traceOperation.getRequirementToCodeUnitsMap();
+         }
       }
 
       writeMainSheet(prepareSubsystemRequirements(artifacts));
@@ -159,12 +179,17 @@ public class SubsystemFullTraceReport extends AbstractBlam {
       for (Artifact testProcedure : softwareRequirement.getRelatedArtifacts(CoreRelationTypes.Validation__Validator)) {
          tests.add(testProcedure.getName());
       }
+      Collection<String> testScripts = null;
       if (requirementsToCodeUnits != null) {
-         Collection<String> testScripts = requirementsToCodeUnits.getValues(softwareRequirement);
-         if (testScripts != null) {
-            for (String testScript : testScripts) {
-               tests.add(new File(testScript).getName());
-            }
+         testScripts = requirementsToCodeUnits.getValues(softwareRequirement);
+      } else {
+         List<Artifact> relatedArtifacts =
+            softwareRequirement.getRelatedArtifacts(CoreRelationTypes.Verification__Verifier);
+         testScripts = Artifacts.getNames(relatedArtifacts);
+      }
+      if (testScripts != null) {
+         for (String testScript : testScripts) {
+            tests.add(new File(testScript).getName());
          }
       }
       writer.writeCell(Collections.toString(", ", tests), TEST_INDEX);
@@ -173,7 +198,13 @@ public class SubsystemFullTraceReport extends AbstractBlam {
 
    @Override
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XText\" displayName=\"Script Root Directory\" defaultValue=\"C:/UserData/workspaceScripts\" toolTip=\"Leave blank if test script traceability is not needed.\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Subsystem Requirements\" /></xWidgets>";
+      StringBuilder sb = new StringBuilder();
+      sb.append("<xWidgets>");
+      sb.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + USE_TRACE_IN_OSEE + "\" defaultValue=\"true\" labelAfter=\"true\" horizontalLabel=\"true\" />");
+      sb.append("<XWidget xwidgetType=\"XText\" displayName=\"" + SCRIPT_ROOT_DIR + "\" defaultValue=\"C:/UserData/workspaceScripts\" toolTip=\"Leave blank if test script traceability is not needed.\" />");
+      sb.append("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"Subsystem Requirements\" />");
+      sb.append("</xWidgets>");
+      return sb.toString();
    }
 
    @Override
@@ -184,5 +215,38 @@ public class SubsystemFullTraceReport extends AbstractBlam {
    @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Define.Trace");
+   }
+
+   @Override
+   public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
+      super.widgetCreated(widget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
+
+      if (widget.getLabel().equals(SCRIPT_ROOT_DIR)) {
+         scriptDir = (XText) widget;
+         scriptDir.setEnabled(false);
+         scriptDir.getControl().setBackground(Displays.getSystemColor(SWT.COLOR_GRAY));
+      }
+
+      if (widget.getLabel().equals(USE_TRACE_IN_OSEE)) {
+         useTraceInOsee = (XCheckBox) widget;
+         useTraceInOsee.addSelectionListener(new SelectionListener() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               if (useTraceInOsee.isChecked()) {
+                  scriptDir.setEnabled(false);
+                  scriptDir.getControl().setBackground(Displays.getSystemColor(SWT.COLOR_GRAY));
+               } else {
+                  scriptDir.setEnabled(true);
+                  scriptDir.getControl().setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
+               }
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+               //Do Nothing
+            }
+         });
+      }
    }
 }

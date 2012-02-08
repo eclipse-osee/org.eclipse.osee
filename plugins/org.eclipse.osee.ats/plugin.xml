@@ -475,8 +475,13 @@
          </UserNavigateItem>
       </extension>
    <extension
+         id="DetailedTestStatusOld" name="DetailedTestStatusOld"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation className="org.eclipse.osee.ats.operation.DetailedTestStatusOld"/>
+   </extension>
+   <extension
          id="DetailedTestStatus" name="DetailedTestStatus"
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation className="org.eclipse.osee.ats.operation.DetailedTestStatus"/>
+      <Operation className="org.eclipse.osee.ats.operation.DetailedTestStatusBlam"/>
    </extension>
 </plugin>
