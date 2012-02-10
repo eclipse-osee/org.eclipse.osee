@@ -44,9 +44,11 @@ import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
+ * {@link CreateBranchOperationTest}
+ *
  * @author Roberto E. Escobar
  */
-public class CreateBranchOperation extends AbstractDbTxOperation {
+public final class CreateBranchOperation extends AbstractDbTxOperation {
 
    private static final String INSERT_TX_DETAILS =
       "INSERT INTO osee_tx_details (branch_id, transaction_id, osee_comment, time, author, tx_type) VALUES (?,?,?,?,?,?)";
@@ -115,8 +117,8 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
          if (associatedArtifactId > -1 && associatedArtifactId != systemUserId) {
             int count =
                getDatabaseService().runPreparedQueryFetchObject(0,
-                  "select (1) from osee_branch where associated_art_id=? and branch_state <> ?",
-                  request.getAssociatedArtifactId(), BranchState.DELETED.getValue());
+                  "SELECT (1) FROM osee_branch WHERE associated_art_id = ? AND branch_state NOT IN (?, ?)",
+                  request.getAssociatedArtifactId(), BranchState.DELETED.getValue(), BranchState.REBASELINED.getValue());
             if (count > 0) {
                throw new OseeStateException("Existing branch creation detected for [%s]", request.getBranchName());
             }

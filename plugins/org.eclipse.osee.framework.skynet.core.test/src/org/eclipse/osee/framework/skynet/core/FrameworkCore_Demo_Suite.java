@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.RelationOrderingTest;
 import org.eclipse.osee.framework.skynet.core.artifact.ReplaceAttributeWithTest;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactLoaderTest;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryTestDemo;
+import org.eclipse.osee.framework.skynet.core.branch.BranchSuite;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactEventFiltersTest;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchEventFiltersTest;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEventLoopbackTest;
@@ -57,6 +58,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   BranchSuite.class,
    UserManagerTest.class,
    ReplaceAttributeWithTest.class,
    AttributePurgeTest.class,
