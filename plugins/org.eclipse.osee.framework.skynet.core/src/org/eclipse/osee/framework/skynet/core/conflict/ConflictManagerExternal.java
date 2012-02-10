@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
@@ -24,6 +25,8 @@ import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
  * @author Donald G. Dunne
  */
 public class ConflictManagerExternal {
+
+   private static final IProgressMonitor monitor = new NullProgressMonitor();
 
    private final Branch destinationBranch;
    private final Branch sourceBranch;
@@ -38,7 +41,7 @@ public class ConflictManagerExternal {
       if (originalConflicts == null) {
          originalConflicts =
             ConflictManagerInternal.getConflictsPerBranch(sourceBranch, destinationBranch,
-               sourceBranch.getBaseTransaction(), new NullProgressMonitor());
+               sourceBranch.getBaseTransaction(), monitor);
       }
       return originalConflicts;
    }

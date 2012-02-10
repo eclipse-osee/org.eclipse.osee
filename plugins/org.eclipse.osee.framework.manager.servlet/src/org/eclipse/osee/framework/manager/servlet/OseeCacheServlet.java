@@ -62,7 +62,6 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
    private final ISessionManager sessionManager;
 
    public OseeCacheServlet(ISessionManager sessionManager, IDataTranslationService translationService, IOseeCachingService cachingService, IOseeModelFactoryService factoryService) {
-      super();
       this.sessionManager = sessionManager;
       this.translationService = translationService;
       this.cachingService = cachingService;

@@ -76,7 +76,7 @@ public class BranchEventTest {
    }
 
    /**
-    * If all branch tests take longer than 10seconds, fail test, something went wrong.
+    * If all branch tests take longer than 20seconds, fail test, something went wrong.
     */
    @org.junit.Test(timeout = 20000)
    public void testEvents() throws Exception {

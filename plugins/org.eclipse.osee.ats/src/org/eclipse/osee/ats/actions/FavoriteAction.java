@@ -31,21 +31,21 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 public class FavoriteAction extends AbstractAtsAction {
 
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
-   private boolean prompt = true;
+   private boolean prompt;
 
    public FavoriteAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
-      super();
       this.selectedAtsArtifacts = selectedAtsArtifacts;
+      this.prompt = true;
       updateEnablement();
    }
 
    public void updateEnablement() {
       String title = "Favorite";
       try {
-         setEnabled(getSelectedFavoritableArts().size() > 0);
-         if (getSelectedFavoritableArts().size() == 1) {
-            title =
-               FavoritesManager.amIFavorite(getSelectedFavoritableArts().iterator().next()) ? "Remove Favorite" : "Add as Favorite";
+         Collection<AbstractWorkflowArtifact> workflows = getSelectedFavoritableArts();
+         setEnabled(!workflows.isEmpty());
+         if (workflows.size() == 1) {
+            title = FavoritesManager.amIFavorite(workflows.iterator().next()) ? "Remove Favorite" : "Add as Favorite";
          } else {
             title = "Toggle Favorites";
          }

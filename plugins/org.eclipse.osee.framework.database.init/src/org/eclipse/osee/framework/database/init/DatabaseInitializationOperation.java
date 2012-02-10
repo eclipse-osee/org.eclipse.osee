@@ -256,7 +256,6 @@ public class DatabaseInitializationOperation {
       boolean serverOk = isApplicationServerAlive(serverUrl);
       Conditions.checkExpressionFailOnTrue(!serverOk,
          "Error connecting to application server [%s].\nPlease ensure server is running and try again.", serverUrl);
-      // System.out.println("OSEE Application Server Validation [PASSED]");
    }
 
    public static void executeWithoutPrompting(String choice) throws OseeCoreException {

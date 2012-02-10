@@ -17,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.Collection;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -35,7 +34,6 @@ import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.conflict.RelationConflict;
 import org.eclipse.osee.framework.skynet.core.rule.OseeHousekeepingRule;
-import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -47,8 +45,6 @@ import org.junit.rules.MethodRule;
  * @author Theron Virgin
  */
 public class ConflictTest {
-   private static final boolean DEBUG =
-      "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core.test/debug/Junit"));
 
    @Rule
    public MethodRule oseeHousekeepingRule = new OseeHousekeepingRule();
@@ -69,7 +65,6 @@ public class ConflictTest {
     */
    @org.junit.Test
    public void testGetMergeBranchNotCreated() throws Exception {
-      TestUtil.sleep(5000);
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       try {
@@ -117,7 +112,6 @@ public class ConflictTest {
     */
    @org.junit.Test
    public void testGetMergeBranchCreated() throws Exception {
-      //TestUtil.sleep(5000);
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       try {
@@ -125,14 +119,6 @@ public class ConflictTest {
             BranchManager.getMergeBranch(ConflictTestManager.getSourceBranch(), ConflictTestManager.getDestBranch());
          assertFalse(mergeBranch == null);
          Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromBranch(mergeBranch, INCLUDE_DELETED);
-         if (DEBUG) {
-            System.out.println("Found the following Artifacts on the branch ");
-            System.out.print("     ");
-            for (Artifact artifact : artifacts) {
-               System.out.print(artifact.getArtId() + ", ");
-            }
-            System.out.println("\n");
-         }
 
          int expectedNumber = ConflictTestManager.numberOfArtifactsOnMergeBranch();
          int actualNumber = artifacts.size();
@@ -155,7 +141,6 @@ public class ConflictTest {
             ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
                ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch().getBaseTransaction(),
                new NullProgressMonitor());
-         int whichChange = 1;
 
          for (Conflict conflict : conflicts) {
             if (conflict instanceof AttributeConflict) {
@@ -164,7 +149,6 @@ public class ConflictTest {
             } else if (conflict instanceof RelationConflict) {
                fail("Relation Conflicts are not supported yet");
             }
-            whichChange++;
          }
 
          conflicts =
@@ -226,10 +210,12 @@ public class ConflictTest {
       "WHERE txs1.gamma_id = t1.gamma_id AND txs1.tx_current = 0 %s " +
       "SELECT distinct t2.%s, txs2.branch_id FROM osee_txs txs2, %s t2 " +
       "WHERE txs2.gamma_id = t2.gamma_id AND txs2.tx_current != 0";
-   //@formatter:on
 
    private static final String MULTIPLE_TX_CURRENT_SET =
-      "SELECT resulttable.branch_id, resulttable.%s, COUNT(resulttable.branch_id) AS numoccurrences FROM " + "(SELECT txs1.branch_id, t1.%s FROM osee_txs txs1, %s t1 WHERE txs1.gamma_id = t1.gamma_id AND txs1.tx_current != 0) resulttable " + "GROUP BY resulttable.branch_id, resulttable.%s HAVING(COUNT(resulttable.branch_id) > 1) order by branch_id";
+         "SELECT resulttable.branch_id, resulttable.%s, COUNT(resulttable.branch_id) AS numoccurrences FROM " +
+         "(SELECT txs1.branch_id, t1.%s FROM osee_txs txs1, %s t1 WHERE txs1.gamma_id = t1.gamma_id AND txs1.tx_current != 0) resulttable " +
+         "GROUP BY resulttable.branch_id, resulttable.%s HAVING(COUNT(resulttable.branch_id) > 1) order by branch_id";
+   //@formatter:on
 
    private static void checkNoTxCurrent(String dataId, String dataTable) throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();

@@ -78,7 +78,7 @@ public final class MockBranchProvider implements IBranchesProvider {
 
    public static Branch getRootBranch(Collection<Branch> branches) {
       for (Branch branch : branches) {
-         if (branch.getName().equals(ROOT_BRANCH_NAME)) {
+         if (ROOT_BRANCH_NAME.equals(branch.getName())) {
             return branch;
          }
       }

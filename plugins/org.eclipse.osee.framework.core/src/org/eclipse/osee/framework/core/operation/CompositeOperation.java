@@ -36,9 +36,7 @@ public class CompositeOperation extends AbstractOperation {
    }
 
    public CompositeOperation(String name, String pluginId, OperationBehavior behavior, List<? extends IOperation> operations) {
-      super(name, pluginId);
-      this.operations = operations;
-      this.behavior = behavior;
+      this(name, pluginId, behavior, NullOperationLogger.getSingleton(), operations);
    }
 
    public CompositeOperation(String name, String pluginId, OperationLogger logger, List<? extends IOperation> operations) {

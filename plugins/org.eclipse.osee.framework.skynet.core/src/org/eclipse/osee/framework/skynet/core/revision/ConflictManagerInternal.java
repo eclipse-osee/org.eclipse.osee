@@ -292,7 +292,7 @@ public class ConflictManagerInternal {
     */
    private static boolean isAttributeConflictValidOnBranch(int destinationGammaId, Branch branch, int endTransactionNumber) throws OseeCoreException {
       String sql =
-         "select count(1) from osee_txs txs where txs.gamma_id = ? and txs.branch_id = ? and txs.transaction_id <= ?";
+         "SELECT count(1) FROM osee_txs txs WHERE txs.gamma_id = ? AND txs.branch_id = ? AND txs.transaction_id <= ?";
       return ConnectionHandler.runPreparedQueryFetchInt(0, sql, destinationGammaId, branch.getId(),
          endTransactionNumber) == 0;
    }
@@ -333,7 +333,9 @@ public class ConflictManagerInternal {
       } finally {
          chStmt.close();
       }
-      Collections.sort(destinationBranches);
+      if (destinationBranches.size() > 1) {
+         Collections.sort(destinationBranches);
+      }
       return destinationBranches;
    }
 

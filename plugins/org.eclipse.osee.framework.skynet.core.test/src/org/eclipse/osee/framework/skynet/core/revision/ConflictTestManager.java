@@ -61,7 +61,6 @@ public class ConflictTestManager {
    };
 
    private static final boolean DEBUG = false;
-   //         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core.test/debug/Junit"));
 
    private static final String FOLDER = "System Requirements";
    private static final String SOURCE_BRANCH = "Conflict_Test_Source_Branch";

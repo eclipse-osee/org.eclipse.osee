@@ -21,5 +21,5 @@ BranchCommitServiceTest.class //
  * @author Roberto E. Escobar
  */
 public class CommitTestSuite {
-
+   //
 }

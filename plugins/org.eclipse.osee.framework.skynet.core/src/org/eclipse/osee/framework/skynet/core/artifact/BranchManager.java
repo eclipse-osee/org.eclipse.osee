@@ -82,8 +82,10 @@ public class BranchManager {
       // this private empty constructor exists to prevent the default constructor from allowing public construction
    }
 
+   /**
+    * use static methods instead
+    */
    @Deprecated
-   // use static methods instead
    public static BranchManager getInstance() {
       return instance;
    }

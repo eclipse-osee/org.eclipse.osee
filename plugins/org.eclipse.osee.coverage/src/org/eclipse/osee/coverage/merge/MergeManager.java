@@ -114,18 +114,6 @@ public class MergeManager {
             }
          }
 
-         if (debug) {
-            if (importCoverage.getGuid().equals("AAte3i2bH3L1MvsFMqAA")) {
-               System.out.println("here");
-            }
-            if (importCoverage.getName().equals("NavigationButton2.java")) {
-               System.out.println("here");
-            }
-            if (importCoverage.getName().equals("getImage")) {
-               System.out.println("here");
-            }
-         }
-
          int count = 0;
          // Determine match for all import item children
          for (ICoverage childCoverage : importItemChildren) {
