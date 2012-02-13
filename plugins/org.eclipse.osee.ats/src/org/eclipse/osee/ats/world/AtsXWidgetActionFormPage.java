@@ -125,6 +125,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
 
       createButtonCompositeOnLeft(mainComp);
       createSearchParametersOnRight(managedForm, mainComp);
+      createSaveButtonCompositeOnRight(mainComp);
 
       return parameterSection;
    }
@@ -156,7 +157,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       buttonComp.setLayoutData(new GridData(SWT.NONE, SWT.FILL, false, true));
 
       Button runButton = toolkit.createButton(buttonComp, "Search", SWT.PUSH);
-      GridData gridData = new GridData(SWT.FILL, SWT.TOP, true, false);
+      GridData gridData = new GridData(SWT.FILL, SWT.BOTTOM, true, true);
       runButton.setLayoutData(gridData);
       runButton.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -165,10 +166,19 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
          }
       });
 
+      buttonComp.layout();
+   }
+
+   public void createSaveButtonCompositeOnRight(Composite mainComp) {
       if (isSaveButtonAvailable()) {
-         Button saveButton = toolkit.createButton(buttonComp, "Save", SWT.PUSH);
+         Composite buttonComp = toolkit.createComposite(mainComp, SWT.NONE);
+         buttonComp.setLayout(ALayout.getZeroMarginLayout(1, false));
+         buttonComp.setLayoutData(new GridData(SWT.NONE, SWT.FILL, false, true));
+         GridData gridData = new GridData(SWT.FILL, SWT.TOP, true, false);
+
+         Button saveButton = toolkit.createButton(buttonComp, "Save Options", SWT.PUSH);
          saveButton.setToolTipText("Save search selections as default");
-         gridData = new GridData(SWT.FILL, SWT.BOTTOM, true, true);
+         gridData = new GridData(SWT.FILL, SWT.TOP, true, true);
          saveButton.setLayoutData(gridData);
          saveButton.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -180,7 +190,6 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
             }
          });
       }
-      buttonComp.layout();
    }
 
    @SuppressWarnings("unused")
