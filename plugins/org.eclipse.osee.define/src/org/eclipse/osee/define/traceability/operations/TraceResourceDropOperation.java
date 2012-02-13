@@ -17,9 +17,15 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.logging.Level;
+
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.nebula.widgets.xviewer.Activator;
 import org.eclipse.osee.define.traceability.HierarchyHandler;
 import org.eclipse.osee.define.traceability.TestUnitTagger;
@@ -31,6 +37,7 @@ import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -104,10 +111,11 @@ public class TraceResourceDropOperation extends AbstractOperation {
 
    private void processFile(File file, SkynetTransaction transaction, Map<Artifact, String> nameUpdateRequired) throws Exception {
       CharBuffer fileBuffer = Lib.fileToCharBuffer(file);
-      IFileStore fileStore = EFS.getStore(file.toURI());
+      URI fileUri = file.toURI();
+      IFileStore fileStore = EFS.getStore(fileUri);
       String name = locator.getIdentifier(fileStore, fileBuffer).getName();
       TestUnitTagger tagger = TestUnitTagger.getInstance();
-      String tag = tagger.getSourceTag(file.toURI());
+      String tag = tagger.getSourceTag(fileUri);
       Artifact testUnitArtifact = null;
       IOseeBranch branch = requirement.getBranch();
       boolean tagSource = false;
@@ -128,7 +136,8 @@ public class TraceResourceDropOperation extends AbstractOperation {
          testUnitArtifact.setName(name);
          HierarchyHandler.addArtifact(transaction, testUnitArtifact);
          if (tagSource) {
-            tagger.addSourceTag(file.toURI(), testUnitArtifact.getGuid());
+            tagger.addSourceTag(fileUri, testUnitArtifact.getGuid());
+            refreshFile(file.getAbsolutePath());
          }
       }
 
@@ -139,6 +148,17 @@ public class TraceResourceDropOperation extends AbstractOperation {
       requirement.addRelation(relTypeSide, testUnitArtifact);
       if (persistChanges) {
          testUnitArtifact.persist(transaction);
+      }
+   }
+
+   private void refreshFile(String uri) {
+      IResource eclipseResource = ResourcesPlugin.getWorkspace().getRoot().findMember(uri);
+      if (eclipseResource != null) {
+         try {
+            eclipseResource.refreshLocal(0, new NullProgressMonitor());
+         } catch (CoreException ex) {
+            OseeLog.log(Activator.class, Level.INFO, "Refreshing resource failed.");
+         }
       }
    }
 
