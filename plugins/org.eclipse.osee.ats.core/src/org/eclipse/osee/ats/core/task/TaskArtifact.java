@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.task;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -26,7 +27,6 @@ import org.eclipse.osee.ats.core.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.workflow.StateManager;
 import org.eclipse.osee.ats.core.workflow.log.AtsLog;
 import org.eclipse.osee.ats.core.workflow.log.LogItem;
-import org.eclipse.osee.ats.core.workflow.log.LogType;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -175,12 +176,13 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
 
    @Override
    public List<IBasicUser> getImplementers() throws OseeCoreException {
-      List<IBasicUser> implementers = StateManager.getImplementersByState(this, TaskStates.InWork);
-      LogItem lastEvent = getLog().getLastEvent(LogType.StateComplete);
-      if (lastEvent != null && lastEvent.getUser() != null) {
-         for (IBasicUser user : getStateMgr().getAssignees(lastEvent.getState())) {
-            if (!UserManager.isUnAssignedUser(user) && !implementers.contains(user)) {
-               implementers.add(user);
+      List<IBasicUser> implementers = new ArrayList<IBasicUser>();
+      if (isCompleted()) {
+         String completedFromStateStr = getSoleAttributeValue(AtsAttributeTypes.CompletedFromState, "");
+         if (Strings.isValid(completedFromStateStr)) {
+            StateDefinition completedFromState = getWorkDefinition().getStateByName(completedFromStateStr);
+            if (completedFromState != null) {
+               implementers.addAll(StateManager.getAssigneesByState(this, completedFromState));
             }
          }
       }
