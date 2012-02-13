@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.core.notify.AtsNotifyType;
 import org.eclipse.osee.ats.core.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.review.ReviewManager;
 import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
-import org.eclipse.osee.ats.core.team.TeamState;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
@@ -535,48 +534,27 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public Date getCreatedDate() throws OseeCoreException {
-      Date date = getSoleAttributeValue(AtsAttributeTypes.CreatedDate, null);
-      if (date == null) {
-         // Keep this for backward compatibility
-         return getLog().internalGetCreationDate();
-      }
-      return date;
+      return getSoleAttributeValue(AtsAttributeTypes.CreatedDate, null);
    }
 
    public IBasicUser getCreatedBy() throws OseeCoreException {
       String userId = getSoleAttributeValue(AtsAttributeTypes.CreatedBy, null);
-      if (!Strings.isValid(userId)) {
-         return getLog().internalGetOriginator();
-      } else {
+      if (Strings.isValid(userId)) {
          return UserManager.getUserByUserId(userId);
       }
+      return null;
    }
 
    public Date internalGetCancelledDate() throws OseeCoreException {
-      Date date = getSoleAttributeValue(AtsAttributeTypes.CancelledDate, null);
-      if (date == null) {
-         // Keep this for backward compatibility
-         LogItem item = getLog().internalGetCancelledLogItem();
-         if (item != null) {
-            return item.getDate();
-         }
-         return null;
-      }
-      return date;
+      return getSoleAttributeValue(AtsAttributeTypes.CancelledDate, null);
    }
 
    public IBasicUser getCancelledBy() throws OseeCoreException {
       String userId = getSoleAttributeValue(AtsAttributeTypes.CancelledBy, null);
-      if (!Strings.isValid(userId)) {
-         // Keep this for backward compatibility
-         LogItem item = getLog().internalGetCancelledLogItem();
-         if (item != null) {
-            return item.getUser();
-         }
-         return null;
-      } else {
+      if (Strings.isValid(userId)) {
          return UserManager.getUserByUserId(userId);
       }
+      return null;
    }
 
    public String getCancelledReason() throws OseeCoreException {
@@ -588,47 +566,23 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public void setCancellationReason(String reason) throws OseeCoreException {
-      // Keep this for backward compatibility
-      getLog().internalSetCancellationReason(reason);
-      if (isAttributeTypeValid(AtsAttributeTypes.CancelledReason)) {
-         setSoleAttributeValue(AtsAttributeTypes.CancelledReason, reason);
-      }
+      setSoleAttributeValue(AtsAttributeTypes.CancelledReason, reason);
    }
 
    public String getCancelledFromState() throws OseeCoreException {
-      String fromState = getSoleAttributeValue(AtsAttributeTypes.CancelledFromState, null);
-      if (!Strings.isValid(fromState)) {
-         // Keep this for backward compatibility
-         return getLog().internalGetCancelledFromState();
-      }
-      return fromState;
+      return getSoleAttributeValue(AtsAttributeTypes.CancelledFromState, null);
    }
 
    public Date getCompletedDate() throws OseeCoreException {
-      Date date = getSoleAttributeValue(AtsAttributeTypes.CompletedDate, null);
-      if (date == null) {
-         // Keep this for backward compatibility
-         LogItem item = getLog().internalGetCompletedLogItem();
-         if (item != null) {
-            return item.getDate();
-         }
-         return null;
-      }
-      return date;
+      return getSoleAttributeValue(AtsAttributeTypes.CompletedDate, null);
    }
 
    public IBasicUser getCompletedBy() throws OseeCoreException {
       String userId = getSoleAttributeValue(AtsAttributeTypes.CompletedBy, null);
-      if (!Strings.isValid(userId)) {
-         // Keep this for backward compatibility
-         LogItem item = getLog().internalGetCompletedLogItem();
-         if (item != null) {
-            return item.getUser();
-         }
-         return null;
-      } else {
+      if (Strings.isValid(userId)) {
          return UserManager.getUserByUserId(userId);
       }
+      return null;
    }
 
    public LogItem getStateCompletedData(IWorkPage state) throws OseeCoreException {
@@ -664,33 +618,15 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public boolean isInWork() throws OseeCoreException {
-      // Backward compatibility; remove this once 0.9.7 released
-      if (isAttributeTypeValid(AtsAttributeTypes.CurrentStateType) && getSoleAttributeValue(
-         AtsAttributeTypes.CurrentStateType, null) != null) {
-         return getSoleAttributeValue(AtsAttributeTypes.CurrentStateType, "").equals(WorkPageType.Working.name());
-      } else {
-         return !isCompletedOrCancelled();
-      }
-
+      return getSoleAttributeValue(AtsAttributeTypes.CurrentStateType, "").equals(WorkPageType.Working.name());
    }
 
    public boolean isCompleted() throws OseeCoreException {
-      if (isAttributeTypeValid(AtsAttributeTypes.CurrentStateType) && getSoleAttributeValue(
-         AtsAttributeTypes.CurrentStateType, null) != null) {
-         return getSoleAttributeValue(AtsAttributeTypes.CurrentStateType, "").equals(WorkPageType.Completed.name());
-      } else {
-         return getCurrentStateName().equals(TeamState.Completed.getPageName());
-      }
+      return getSoleAttributeValue(AtsAttributeTypes.CurrentStateType, "").equals(WorkPageType.Completed.name());
    }
 
    public boolean isCancelled() throws OseeCoreException {
-      // Backward compatibility; remove this once 0.9.7 released
-      if (isAttributeTypeValid(AtsAttributeTypes.CurrentStateType) && getSoleAttributeValue(
-         AtsAttributeTypes.CurrentStateType, null) != null) {
-         return getSoleAttributeValue(AtsAttributeTypes.CurrentStateType, "").equals(WorkPageType.Cancelled.name());
-      } else {
-         return getCurrentStateName().equals(TeamState.Cancelled.getPageName());
-      }
+      return getSoleAttributeValue(AtsAttributeTypes.CurrentStateType, "").equals(WorkPageType.Cancelled.name());
    }
 
    public boolean isCompletedOrCancelled() throws OseeCoreException {

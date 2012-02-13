@@ -245,13 +245,17 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
          if (awa.isCompletedOrCancelled()) {
             if (awa.implementersStr == null && !awa.getImplementers().isEmpty()) {
                List<IBasicUser> implementers = awa.getImplementers();
-               IBasicUser completedBy = awa.getCompletedBy();
-               if (awa.isCompleted() && completedBy != null && !implementers.contains(completedBy)) {
-                  implementers.add(completedBy);
+               if (awa.isCompleted()) {
+                  IBasicUser completedBy = awa.getCompletedBy();
+                  if (completedBy != null && !implementers.contains(completedBy)) {
+                     implementers.add(completedBy);
+                  }
                }
-               IBasicUser cancelledBy = awa.getCancelledBy();
-               if (awa.isCancelled() && cancelledBy != null && !implementers.contains(cancelledBy)) {
-                  implementers.add(cancelledBy);
+               if (awa.isCancelled()) {
+                  IBasicUser cancelledBy = awa.getCancelledBy();
+                  if (cancelledBy != null && !implementers.contains(cancelledBy)) {
+                     implementers.add(cancelledBy);
+                  }
                }
                Collections.sort(implementers);
                awa.implementersStr = "(" + Artifacts.toString("; ", implementers) + ")";

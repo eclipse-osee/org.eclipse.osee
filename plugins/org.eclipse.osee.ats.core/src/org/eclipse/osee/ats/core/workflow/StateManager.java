@@ -505,9 +505,11 @@ public class StateManager {
                users.add(user);
             }
          }
-         IBasicUser user = workflow.getCompletedBy();
-         if (user != null && !users.contains(user)) {
-            users.add(user);
+         if (workflow.isCompleted()) {
+            IBasicUser user = workflow.getCompletedBy();
+            if (user != null && !users.contains(user)) {
+               users.add(user);
+            }
          }
       }
       return users;
