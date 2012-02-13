@@ -149,9 +149,7 @@ public class AttributeFindReplaceDialog extends Dialog {
    }
 
    private void checkEnabled() {
-      boolean enable =
-         cmbAttributeDescriptors.getInput() instanceof AttributeType[] && txtFindRegEx.getText().length() > 0 && !artifacts.isEmpty();
-
+      boolean enable = txtFindRegEx.getText().length() > 0 && !artifacts.isEmpty();
       getButton(IDialogConstants.OK_ID).setEnabled(enable);
    }
 
