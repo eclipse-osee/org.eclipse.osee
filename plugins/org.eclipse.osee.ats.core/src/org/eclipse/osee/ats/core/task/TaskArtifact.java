@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.workflow.StateManager;
 import org.eclipse.osee.ats.core.workflow.log.AtsLog;
 import org.eclipse.osee.ats.core.workflow.log.LogItem;
 import org.eclipse.osee.ats.core.workflow.log.LogType;
@@ -120,21 +119,6 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
          parentTeamArt = (TeamWorkFlowArtifact) awa;
       }
       return parentTeamArt;
-   }
-
-   @Override
-   public List<IBasicUser> getImplementers() throws OseeCoreException {
-      List<IBasicUser> implementers = new ArrayList<IBasicUser>();
-      if (isCompleted()) {
-         String completedFromStateStr = getSoleAttributeValue(AtsAttributeTypes.CompletedFromState, "");
-         if (Strings.isValid(completedFromStateStr)) {
-            StateDefinition completedFromState = getWorkDefinition().getStateByName(completedFromStateStr);
-            if (completedFromState != null) {
-               implementers.addAll(StateManager.getAssigneesByState(this, completedFromState));
-            }
-         }
-      }
-      return implementers;
    }
 
    @Override

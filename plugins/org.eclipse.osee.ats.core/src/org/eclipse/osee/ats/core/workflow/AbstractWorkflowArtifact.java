@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.core.workflow;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -123,9 +122,20 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return getArtifactTypeName();
    }
 
-   @SuppressWarnings("unused")
    public List<IBasicUser> getImplementers() throws OseeCoreException {
-      return Collections.emptyList();
+      List<IBasicUser> implementers = new ArrayList<IBasicUser>();
+      if (isCompleted()) {
+         String completedFromState = getSoleAttributeValue(AtsAttributeTypes.CompletedFromState, "");
+         if (Strings.isValid(completedFromState)) {
+            StateDefinition stateDef = getWorkDefinition().getStateByName(completedFromState);
+            for (IBasicUser user : getStateMgr().getAssignees(stateDef)) {
+               if (!implementers.contains(user)) {
+                  implementers.add(user);
+               }
+            }
+         }
+      }
+      return implementers;
    }
 
    @SuppressWarnings("unused")
