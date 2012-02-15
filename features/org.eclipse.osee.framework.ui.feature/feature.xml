@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.osee.framework.ui.feature"
       label="%featureName"
-      version="0.9.9.qualifier"
+      version="0.10.0.qualifier"
       provider-name="%providerName"
       plugin="org.eclipse.osee.framework.ui.product">
 
@@ -22,7 +22,7 @@
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.osee.framework.ui.ws"/>
-      <import plugin="org.eclipse.osee.framework.skynet.core" version="0.9.5" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osee.framework.skynet.core"/>
       <import plugin="org.eclipse.osee.framework.core.client"/>
       <import plugin="org.eclipse.osee.framework.core"/>
       <import plugin="org.eclipse.osee.framework.database"/>

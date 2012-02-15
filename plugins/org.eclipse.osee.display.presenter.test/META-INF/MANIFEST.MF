@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Display Presenter Test
 Bundle-SymbolicName: org.eclipse.osee.display.presenter.test
-Bundle-Version: 0.9.9.qualifier
-Fragment-Host: org.eclipse.osee.display.presenter;bundle-version="0.9.9.qualifier"
+Bundle-Version: 0.10.0.qualifier
+Fragment-Host: org.eclipse.osee.display.presenter
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Import-Package: org.eclipse.osee.display.api.components,

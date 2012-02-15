@@ -7,7 +7,7 @@
 	<artifactId>org.eclipse.osee.client.all.parent</artifactId>
 	<packaging>pom</packaging>
 	<name>OSEE MASTER - Parent (Incubation)</name>
-	<version>0.9.9-SNAPSHOT</version>
+	<version>0.10.0-SNAPSHOT</version>
 
 	<modules>
 		<module>../../features/org.eclipse.osee.client.all.feature</module>
