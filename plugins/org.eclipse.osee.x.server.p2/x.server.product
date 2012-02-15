@@ -36,7 +36,7 @@
    </plugins>
 
    <features>
-      <feature id="org.eclipse.osee.x.server.feature" version="0.9.9.qualifier"/>
+      <feature id="org.eclipse.osee.x.server.feature"/>
    </features>
 
 
