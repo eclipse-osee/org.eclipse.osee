@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.notify;
 
 import java.util.List;
-import org.eclipse.osee.ats.core.notify.AtsNotificationManager;
-import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
+import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailWizard;

@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.util.widgets;
 
 import java.util.Collections;
-import org.eclipse.osee.ats.core.review.DecisionReviewState;
-import org.eclipse.osee.ats.core.review.PeerToPeerReviewState;
+import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
+import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewState;
 
 /**
  * @author Donald G. Dunne

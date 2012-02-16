@@ -12,8 +12,8 @@
 package org.eclipse.osee.ats.navigate;
 
 import java.util.List;
-import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionCheckTreeDialog;
 import org.eclipse.osee.framework.core.enums.Active;

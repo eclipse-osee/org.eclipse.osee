@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core;
 
-import org.eclipse.osee.ats.core.review.AtsCore_Review_JT_Suite;
 import org.eclipse.osee.ats.core.validator.AtsCore_Validator_JT_Suite;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;
@@ -19,7 +18,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AtsCore_Review_JT_Suite.class, AtsCore_Validator_JT_Suite.class})
+@Suite.SuiteClasses({AtsCore_Validator_JT_Suite.class})
 /**
  * This test suite contains tests that can be run as stand-alone JUnit tests (JT)
  * 

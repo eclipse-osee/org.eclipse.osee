@@ -12,10 +12,10 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.column.ActionableItemsColumn;
-import org.eclipse.osee.ats.core.action.ActionArtifact;
-import org.eclipse.osee.ats.core.action.ActionManager;
-import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.client.action.ActionArtifact;
+import org.eclipse.osee.ats.core.client.action.ActionManager;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

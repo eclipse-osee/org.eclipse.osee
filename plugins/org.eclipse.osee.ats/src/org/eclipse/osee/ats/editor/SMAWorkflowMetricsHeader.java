@@ -12,10 +12,10 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.column.RemainingHoursColumn;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.workflow.HoursSpentUtil;
-import org.eclipse.osee.ats.core.workflow.PercentCompleteTotalUtil;
+import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.client.workflow.HoursSpentUtil;
+import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;

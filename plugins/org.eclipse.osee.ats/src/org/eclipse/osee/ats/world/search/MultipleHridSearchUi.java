@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.world.search;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;

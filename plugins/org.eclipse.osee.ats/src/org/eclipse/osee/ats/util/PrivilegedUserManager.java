@@ -12,13 +12,13 @@ package org.eclipse.osee.ats.util;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
-import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicUser;

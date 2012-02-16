@@ -448,7 +448,7 @@
       <extension
             id="AtsTransitionListener"
             name="AtsTransitionListener"
-            point="org.eclipse.osee.ats.core.AtsTransitionListener">
+            point="org.eclipse.osee.ats.core.client.AtsTransitionListener">
          <AtsTransitionListener
                classname="org.eclipse.osee.ats.editor.stateItem.AtsDecisionReviewPrepareStateItem">
          </AtsTransitionListener>

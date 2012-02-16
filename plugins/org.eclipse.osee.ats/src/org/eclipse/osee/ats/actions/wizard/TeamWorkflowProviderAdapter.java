@@ -11,11 +11,11 @@
 package org.eclipse.osee.ats.actions.wizard;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvider;
+import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.client.workflow.ITeamWorkflowProvider;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 

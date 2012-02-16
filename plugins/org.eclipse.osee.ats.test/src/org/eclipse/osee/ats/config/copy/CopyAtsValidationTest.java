@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.config.copy;
 
 import junit.framework.Assert;
-import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.XResultData;

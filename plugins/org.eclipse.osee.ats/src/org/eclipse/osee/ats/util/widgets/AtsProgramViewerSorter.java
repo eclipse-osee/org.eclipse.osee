@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.util.widgets;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.ats.core.config.IAtsProgram;
+import org.eclipse.osee.ats.core.client.config.IAtsProgram;
 
 /**
  * @author Donald G. Dunne

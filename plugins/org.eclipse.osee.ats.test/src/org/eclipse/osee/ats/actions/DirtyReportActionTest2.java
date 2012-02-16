@@ -5,7 +5,7 @@
  */
 package org.eclipse.osee.ats.actions;
 
-import org.eclipse.osee.ats.core.AtsTestUtil;
+import org.eclipse.osee.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.junit.Test;

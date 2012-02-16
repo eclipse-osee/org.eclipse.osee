@@ -13,7 +13,8 @@ package org.eclipse.osee.ats.util.widgets;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+
+import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.ActionableItemTreeWithChildrenDialog;
 import org.eclipse.osee.ats.world.WorldEditor;

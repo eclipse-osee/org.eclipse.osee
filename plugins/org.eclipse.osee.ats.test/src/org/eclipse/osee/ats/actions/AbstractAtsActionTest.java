@@ -7,7 +7,7 @@ package org.eclipse.osee.ats.actions;
 
 import junit.framework.Assert;
 import org.eclipse.jface.action.Action;
-import org.eclipse.osee.ats.core.AtsTestUtil;
+import org.eclipse.osee.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

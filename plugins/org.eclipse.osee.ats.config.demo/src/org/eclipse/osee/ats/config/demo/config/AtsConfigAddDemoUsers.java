@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.config.demo.config;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.core.util.AtsGroup;
+import org.eclipse.osee.ats.core.client.util.AtsGroup;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;

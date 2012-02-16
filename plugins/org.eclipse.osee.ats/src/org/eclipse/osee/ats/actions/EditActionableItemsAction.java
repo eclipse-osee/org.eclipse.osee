@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.actions;
 
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.core.action.ActionArtifact;
-import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.action.ActionArtifact;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;

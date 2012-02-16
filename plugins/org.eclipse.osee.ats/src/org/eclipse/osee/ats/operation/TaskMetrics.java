@@ -20,15 +20,15 @@ import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.task.TaskArtifact;
-import org.eclipse.osee.ats.core.task.TaskStates;
-import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.type.AtsRelationTypes;
-import org.eclipse.osee.ats.core.workflow.SMAState;
-import org.eclipse.osee.ats.core.workflow.XCurrentStateDam;
-import org.eclipse.osee.ats.core.workflow.XStateDam;
+import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.client.task.TaskArtifact;
+import org.eclipse.osee.ats.core.client.task.TaskStates;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.workflow.SMAState;
+import org.eclipse.osee.ats.core.client.workflow.XCurrentStateDam;
+import org.eclipse.osee.ats.core.client.workflow.XStateDam;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -140,9 +140,9 @@ public class TaskMetrics extends AbstractBlam {
 
          if (percentComplete == 100) {
             task.getCompletedDate();
-            String stateStr = task.getCurrentStateName();
+            String stateName = task.getCurrentStateName();
 
-            if (stateStr.equals("Complete")) {
+            if (stateName.equals("Complete")) {
                metrics.put(user, 100);
             } else {
                metrics.put(user, 5);

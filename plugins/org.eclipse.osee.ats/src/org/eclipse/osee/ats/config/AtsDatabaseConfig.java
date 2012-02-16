@@ -11,12 +11,12 @@
 package org.eclipse.osee.ats.config;
 
 import java.util.Arrays;
-import org.eclipse.osee.ats.core.config.AtsArtifactToken;
-import org.eclipse.osee.ats.core.config.TeamDefinitionManager;
-import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.util.AtsGroup;
-import org.eclipse.osee.ats.core.workdef.WorkDefinitionFactory;
-import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.client.config.AtsArtifactToken;
+import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.util.AtsGroup;
+import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
+import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.framework.core.data.IArtifactToken;

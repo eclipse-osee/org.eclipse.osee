@@ -12,9 +12,9 @@ package org.eclipse.osee.ats.column;
 
 import java.util.Calendar;
 import java.util.Date;
-import org.eclipse.osee.ats.core.AtsTestUtil;
-import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.AtsTestUtil;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;

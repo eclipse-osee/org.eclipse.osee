@@ -12,12 +12,12 @@ package org.eclipse.osee.ats.editor.stateItem;
 
 import static org.junit.Assert.assertFalse;
 import java.util.Collection;
-import org.eclipse.osee.ats.core.AtsTestUtil;
-import org.eclipse.osee.ats.core.review.DecisionReviewArtifact;
-import org.eclipse.osee.ats.core.review.DecisionReviewManager;
-import org.eclipse.osee.ats.core.review.DecisionReviewState;
-import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.AtsTestUtil;
+import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
+import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
+import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
+import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

@@ -12,6 +12,9 @@ package org.eclipse.osee.ats.core.validator;
 
 import java.util.Arrays;
 import junit.framework.Assert;
+import org.eclipse.osee.ats.core.validator.AtsXListValidator;
+import org.eclipse.osee.ats.core.validator.WidgetResult;
+import org.eclipse.osee.ats.core.validator.WidgetStatus;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
 import org.eclipse.osee.ats.core.workdef.WidgetDefinitionListMinMaxSelectedConstraint;

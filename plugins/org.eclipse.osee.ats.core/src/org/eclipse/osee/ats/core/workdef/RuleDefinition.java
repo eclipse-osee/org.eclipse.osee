@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workdef;
 
+
 public class RuleDefinition extends AbstractWorkDefItem {
 
    public RuleDefinition(String id) {

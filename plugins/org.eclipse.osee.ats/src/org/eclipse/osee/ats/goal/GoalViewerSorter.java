@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.goal;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.ats.core.artifact.GoalArtifact;
+import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

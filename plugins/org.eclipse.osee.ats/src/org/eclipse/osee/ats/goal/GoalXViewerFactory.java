@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.column.StateColumn;
 import org.eclipse.osee.ats.column.TargetedVersionColumn;
 import org.eclipse.osee.ats.column.TitleColumn;
 import org.eclipse.osee.ats.column.TypeColumn;
-import org.eclipse.osee.ats.core.artifact.GoalArtifact;
+import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.AtsWorldEditorItems;
 import org.eclipse.osee.ats.world.IAtsWorldEditorItem;

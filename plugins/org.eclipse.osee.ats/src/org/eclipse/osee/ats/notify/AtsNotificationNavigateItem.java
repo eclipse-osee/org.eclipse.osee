@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.notify;
 
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.core.notify.IAtsNotification;
+import org.eclipse.osee.ats.core.client.notify.IAtsNotification;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.config.demo.config;
 
 import org.eclipse.osee.ats.config.demo.DemoCISBuilds;
 import org.eclipse.osee.ats.config.demo.DemoSubsystems;
-import org.eclipse.osee.ats.core.util.AtsGroup;
+import org.eclipse.osee.ats.core.client.util.AtsGroup;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

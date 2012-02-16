@@ -13,14 +13,14 @@ package org.eclipse.osee.ats.workdef.config;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.config.TeamDefinitionManager;
-import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.workdef.provider.UserRefUtilClient;
+import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.workdef.provider.BooleanDefUtil;
-import org.eclipse.osee.ats.core.workdef.provider.UserRefUtil;
-import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.dsl.atsDsl.TeamDef;
@@ -111,13 +111,13 @@ public class ImportAIsAndTeamDefinitionsToDb {
          for (String staticId : dslTeamDef.getStaticId()) {
             newTeam.setSingletonAttributeValue(CoreAttributeTypes.StaticId, staticId);
          }
-         for (Artifact user : UserRefUtil.getUsers(dslTeamDef.getLead())) {
+         for (Artifact user : UserRefUtilClient.getUsers(dslTeamDef.getLead())) {
             newTeam.addRelation(AtsRelationTypes.TeamLead_Lead, user);
          }
-         for (Artifact user : UserRefUtil.getUsers(dslTeamDef.getMember())) {
+         for (Artifact user : UserRefUtilClient.getUsers(dslTeamDef.getMember())) {
             newTeam.addRelation(AtsRelationTypes.TeamMember_Member, user);
          }
-         for (Artifact user : UserRefUtil.getUsers(dslTeamDef.getPrivileged())) {
+         for (Artifact user : UserRefUtilClient.getUsers(dslTeamDef.getPrivileged())) {
             newTeam.addRelation(AtsRelationTypes.PrivilegedMember_Member, user);
          }
          if (Strings.isValid(dslTeamDef.getWorkDefinition())) {
@@ -200,10 +200,10 @@ public class ImportAIsAndTeamDefinitionsToDb {
          for (String staticId : dslAIDef.getStaticId()) {
             newAi.setSingletonAttributeValue(CoreAttributeTypes.StaticId, staticId);
          }
-         for (Artifact user : UserRefUtil.getUsers(dslAIDef.getLead())) {
+         for (Artifact user : UserRefUtilClient.getUsers(dslAIDef.getLead())) {
             newAi.addRelation(AtsRelationTypes.TeamLead_Lead, user);
          }
-         for (Artifact user : UserRefUtil.getUsers(dslAIDef.getOwner())) {
+         for (Artifact user : UserRefUtilClient.getUsers(dslAIDef.getOwner())) {
             newAi.addRelation(AtsRelationTypes.ActionableItem_User, user);
          }
          if (dslAIDef.getTeamDef() != null) {

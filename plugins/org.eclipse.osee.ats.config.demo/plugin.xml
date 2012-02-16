@@ -37,7 +37,7 @@
       </OseeTypes>
    </extension>
    <extension
-         point="org.eclipse.osee.ats.core.AtsTeamWorkflowProvider">
+         point="org.eclipse.osee.ats.core.client.AtsTeamWorkflowProvider">
       <AtsTeamWorkflowProvider
             classname="org.eclipse.osee.ats.config.demo.artifact.DemoTeamWorkflows">
       </AtsTeamWorkflowProvider>

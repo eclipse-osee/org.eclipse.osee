@@ -14,7 +14,7 @@ import org.eclipse.osee.ats.config.copy.ConfigDataTest;
 import org.eclipse.osee.ats.config.copy.CopyAtsConfigurationOperationTest;
 import org.eclipse.osee.ats.config.copy.CopyAtsUtilTest;
 import org.eclipse.osee.ats.config.copy.CopyAtsValidationTest;
-import org.eclipse.osee.ats.core.config.AtsCore_Config_Demo_PT_Suite;
+import org.eclipse.osee.ats.core.client.config.AtsCoreClient_Config_Demo_PT_Suite;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -27,7 +27,7 @@ import org.junit.runners.Suite;
    CopyAtsUtilTest.class,
    CopyAtsValidationTest.class,
    CopyAtsConfigurationOperationTest.class,
-   AtsCore_Config_Demo_PT_Suite.class})
+   AtsCoreClient_Config_Demo_PT_Suite.class})
 /**
  * This test suite contains test that can be run against any production db
  * 

@@ -23,14 +23,14 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.core.team.TeamState;
+import org.eclipse.osee.ats.core.client.team.TeamState;
+import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.client.workflow.transition.ITransitionHelper;
+import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelperAdapter;
+import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.client.workflow.transition.TransitionStatusData;
+import org.eclipse.osee.ats.core.client.workflow.transition.TransitionToOperation;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
-import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.workflow.transition.ITransitionHelper;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionHelperAdapter;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionToOperation;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.TransitionStatusDialog;
@@ -155,8 +155,8 @@ public class TransitionToMenu {
                   int dialogResult = dialog.open();
                   if (dialogResult == 0) {
                      try {
-                        SMAPromptChangeStatus.performChangeStatus(awas, data.getAdditionalHours(), data.getPercent(),
-                           data.isSplitHoursBetweenItems(), true);
+                        SMAPromptChangeStatus.performChangeStatus(awas, null, data.getAdditionalHours(),
+                           data.getPercent(), data.isSplitHoursBetweenItems(), true);
                      } catch (OseeCoreException ex) {
                         OseeLog.log(Activator.class, Level.SEVERE, ex);
                         result.set(false);

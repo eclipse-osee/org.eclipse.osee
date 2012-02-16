@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.Arrays;
 import java.util.Collection;
-import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
+import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.client.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.util.widgets.dialog.TransitionStatusDialog;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
@@ -51,7 +51,7 @@ public class SMAPromptChangeHoursSpent {
          new TransitionStatusDialog("Enter Hours Spent",
             "Enter percent complete and number of hours you spent since last status.", data);
       if (dialog.open() == 0) {
-         SMAPromptChangeStatus.performChangeStatus(awas, data.getAdditionalHours(), data.getPercent(),
+         SMAPromptChangeStatus.performChangeStatus(awas, null, data.getAdditionalHours(), data.getPercent(),
             data.isSplitHoursBetweenItems(), persist);
          return Result.TrueResult;
       }

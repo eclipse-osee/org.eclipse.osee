@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.internal;
 import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.ats.access.AtsBranchAccessManager;
-import org.eclipse.osee.ats.core.config.AtsBulkLoad;
+import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;

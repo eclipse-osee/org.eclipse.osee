@@ -12,11 +12,11 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.Arrays;
 import java.util.Collection;
-import org.eclipse.osee.ats.core.task.TaskArtifact;
-import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
+import org.eclipse.osee.ats.core.client.task.TaskArtifact;
+import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.client.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TransitionStatusDialog;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -89,14 +89,14 @@ public class SMAPromptChangeStatus {
          new TransitionStatusDialog("Enter Hours Spent",
             "Enter percent complete and number of hours you spent since last status.", data);
       if (dialog.open() == 0) {
-         performChangeStatus(awas, data.getAdditionalHours(), data.getPercent(), data.isSplitHoursBetweenItems(),
+         performChangeStatus(awas, null, data.getAdditionalHours(), data.getPercent(), data.isSplitHoursBetweenItems(),
             persist);
          return Result.TrueResult;
       }
       return Result.FalseResult;
    }
 
-   public static void performChangeStatus(Collection<? extends AbstractWorkflowArtifact> awas, double hours, int percent, boolean splitHours, boolean persist) throws OseeCoreException {
+   public static void performChangeStatus(Collection<? extends AbstractWorkflowArtifact> awas, String selectedOption, double hours, int percent, boolean splitHours, boolean persist) throws OseeCoreException {
       if (splitHours) {
          hours = hours / awas.size();
       }

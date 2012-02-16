@@ -16,11 +16,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.osee.ats.dsl.atsDsl.UserByName;
 import org.eclipse.osee.ats.dsl.atsDsl.UserByUserId;
 import org.eclipse.osee.ats.dsl.atsDsl.UserRef;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public class UserRefUtil {
 
@@ -44,18 +40,4 @@ public class UserRefUtil {
       return userNames;
    }
 
-   public static Set<Artifact> getUsers(EList<UserRef> userRefs) throws OseeCoreException {
-      Set<Artifact> users = new HashSet<Artifact>();
-      if (userRefs != null) {
-         for (String userId : getUserIds(userRefs)) {
-            User user = UserManager.getUserByUserId(userId);
-            users.add(user);
-         }
-         for (String userName : getUserNames(userRefs)) {
-            User user = UserManager.getUserByName(Strings.unquote(userName));
-            users.add(user);
-         }
-      }
-      return users;
-   }
 }

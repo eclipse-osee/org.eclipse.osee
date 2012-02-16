@@ -48,6 +48,7 @@
 		<module>../../plugins/org.eclipse.osee.ats.help.ui</module>
 		<module>../../plugins/org.eclipse.osee.ats</module>
 		<module>../../plugins/org.eclipse.osee.ats.core</module>
+		<module>../../plugins/org.eclipse.osee.ats.core.client</module>
 		<module>../../plugins/org.eclipse.osee.ats.dsl</module>
 		<module>../../plugins/org.eclipse.osee.ats.dsl.ui</module>
 		<module>../../plugins/org.eclipse.osee.ats.config.demo</module>

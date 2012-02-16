@@ -5,8 +5,8 @@
  */
 package org.eclipse.osee.ats.actions;
 
-import org.eclipse.osee.ats.core.AtsTestUtil;
-import org.eclipse.osee.ats.core.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.AtsTestUtil;
+import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.junit.Test;

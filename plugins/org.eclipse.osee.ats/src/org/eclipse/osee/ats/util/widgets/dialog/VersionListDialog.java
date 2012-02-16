@@ -13,9 +13,10 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.logging.Level;
+
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.version.VersionArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.version.VersionArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;

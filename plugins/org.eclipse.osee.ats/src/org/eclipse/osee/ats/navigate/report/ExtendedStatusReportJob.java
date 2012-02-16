@@ -19,15 +19,15 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.column.CreatedDateColumn;
-import org.eclipse.osee.ats.core.action.ActionManager;
-import org.eclipse.osee.ats.core.task.TaskArtifact;
-import org.eclipse.osee.ats.core.team.TeamState;
-import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.workflow.ChangeType;
-import org.eclipse.osee.ats.core.workflow.ChangeTypeUtil;
+import org.eclipse.osee.ats.core.client.action.ActionManager;
+import org.eclipse.osee.ats.core.client.task.TaskArtifact;
+import org.eclipse.osee.ats.core.client.team.TeamState;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.client.workflow.ChangeType;
+import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -208,7 +208,7 @@ public class ExtendedStatusReportJob extends Job {
       }
    }
 
-   private static void handleAnalysisColumn(AbstractWorkflowArtifact awa, List<String> values) {
+   private static void handleAnalysisColumn(AbstractWorkflowArtifact awa, List<String> values) throws OseeCoreException {
       String desc = awa.getDescription();
       if (awa.isOfType(AtsArtifactTypes.Task)) {
          TaskArtifact taskArt = (TaskArtifact) awa;

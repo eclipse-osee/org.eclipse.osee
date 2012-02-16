@@ -13,10 +13,10 @@ package org.eclipse.osee.ats.util.widgets;
 
 import org.eclipse.osee.ats.column.OperationalImpactWithWorkaroundXWidget;
 import org.eclipse.osee.ats.column.OperationalImpactXWidget;
-import org.eclipse.osee.ats.core.review.defect.AtsXDefectValidator;
-import org.eclipse.osee.ats.core.review.role.AtsXUserRoleValidator;
-import org.eclipse.osee.ats.core.validator.AtsOperationalImpactValidator;
-import org.eclipse.osee.ats.core.validator.AtsOperationalImpactWithWorkaroundValidator;
+import org.eclipse.osee.ats.core.client.review.defect.AtsXDefectValidator;
+import org.eclipse.osee.ats.core.client.review.role.AtsXUserRoleValidator;
+import org.eclipse.osee.ats.core.client.validator.AtsOperationalImpactValidator;
+import org.eclipse.osee.ats.core.client.validator.AtsOperationalImpactWithWorkaroundValidator;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.ats.util.widgets.defect.XDefectViewer;

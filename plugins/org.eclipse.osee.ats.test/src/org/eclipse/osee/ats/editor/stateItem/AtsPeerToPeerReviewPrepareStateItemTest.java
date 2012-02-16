@@ -11,11 +11,11 @@
 package org.eclipse.osee.ats.editor.stateItem;
 
 import static org.junit.Assert.assertFalse;
-import org.eclipse.osee.ats.core.AtsTestUtil;
-import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.core.review.PeerToPeerReviewState;
-import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.AtsTestUtil;
+import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewState;
+import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DemoTestUtil;

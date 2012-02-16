@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.internal;
 
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.navigate.NavigateView;
 import org.eclipse.osee.ats.walker.ActionWalkerView;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;

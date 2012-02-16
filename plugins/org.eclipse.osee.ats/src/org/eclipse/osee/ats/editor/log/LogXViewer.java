@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.editor.log;
 
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;

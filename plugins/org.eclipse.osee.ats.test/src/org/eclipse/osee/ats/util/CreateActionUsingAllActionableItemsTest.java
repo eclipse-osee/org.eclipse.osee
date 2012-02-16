@@ -6,7 +6,7 @@
 package org.eclipse.osee.ats.util;
 
 import junit.framework.Assert;
-import org.eclipse.osee.ats.core.action.ActionArtifact;
+import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;

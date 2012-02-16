@@ -12,6 +12,10 @@ package org.eclipse.osee.ats.core.validator;
 
 import java.util.Arrays;
 import java.util.Date;
+import org.eclipse.osee.ats.core.validator.AtsXWidgetValidator;
+import org.eclipse.osee.ats.core.validator.IValueProvider;
+import org.eclipse.osee.ats.core.validator.WidgetResult;
+import org.eclipse.osee.ats.core.validator.WidgetStatus;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
 import org.eclipse.osee.ats.core.workdef.WidgetDefinitionFloatMinMaxConstraint;

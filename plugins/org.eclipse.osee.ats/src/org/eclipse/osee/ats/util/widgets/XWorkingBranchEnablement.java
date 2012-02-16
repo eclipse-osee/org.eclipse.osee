@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets;
 
-import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
-import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.XWorkingBranch.BranchStatus;
 import org.eclipse.osee.framework.core.enums.BranchState;

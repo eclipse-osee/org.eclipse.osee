@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.internal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;

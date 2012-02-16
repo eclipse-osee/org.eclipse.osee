@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.health;
 import static org.junit.Assert.fail;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.ats.core.config.AtsBulkLoad;
+import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;

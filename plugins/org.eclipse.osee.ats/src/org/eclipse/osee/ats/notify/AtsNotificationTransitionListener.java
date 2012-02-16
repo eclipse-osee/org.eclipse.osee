@@ -11,11 +11,11 @@
 package org.eclipse.osee.ats.notify;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.core.notify.AtsNotificationManager;
-import org.eclipse.osee.ats.core.notify.AtsNotifyType;
-import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.workflow.transition.ITransitionListener;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
+import org.eclipse.osee.ats.core.client.notify.AtsNotifyType;
+import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.client.workflow.transition.ITransitionListener;
+import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.IWorkPage;

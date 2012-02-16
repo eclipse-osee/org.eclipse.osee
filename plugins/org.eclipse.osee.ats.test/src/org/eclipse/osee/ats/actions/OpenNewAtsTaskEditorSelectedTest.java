@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected.IOpenNewAtsTaskEditorSelectedHandler;
-import org.eclipse.osee.ats.core.AtsTestUtil;
+import org.eclipse.osee.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 

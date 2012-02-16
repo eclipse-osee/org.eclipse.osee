@@ -12,11 +12,11 @@ package org.eclipse.osee.ats.editor.widget;
 
 import java.util.Collections;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.core.review.ReviewManager;
-import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
-import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.workflow.PercentCompleteTotalUtil;
+import org.eclipse.osee.ats.core.client.review.ReviewManager;
+import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.Activator;

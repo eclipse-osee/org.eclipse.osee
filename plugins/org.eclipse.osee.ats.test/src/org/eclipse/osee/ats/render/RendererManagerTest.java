@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.render;
 
-import static org.eclipse.osee.ats.core.type.AtsArtifactTypes.Action;
+import static org.eclipse.osee.ats.core.client.type.AtsArtifactTypes.Action;
 import static org.eclipse.osee.ats.render.RendererManagerTest.DefaultOption.Both;
 import static org.eclipse.osee.ats.render.RendererManagerTest.DefaultOption.Off;
 import static org.eclipse.osee.ats.render.RendererManagerTest.DefaultOption.On;

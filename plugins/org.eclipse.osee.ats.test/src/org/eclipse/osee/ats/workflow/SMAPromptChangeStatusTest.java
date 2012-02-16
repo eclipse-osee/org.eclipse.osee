@@ -16,16 +16,16 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Collection;
 import junit.framework.Assert;
-import org.eclipse.osee.ats.core.AtsTestUtil;
-import org.eclipse.osee.ats.core.task.TaskArtifact;
-import org.eclipse.osee.ats.core.task.TaskStates;
-import org.eclipse.osee.ats.core.team.TeamState;
-import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.client.AtsTestUtil;
+import org.eclipse.osee.ats.core.client.task.TaskArtifact;
+import org.eclipse.osee.ats.core.client.task.TaskStates;
+import org.eclipse.osee.ats.core.client.team.TeamState;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
+import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
+import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DemoTestUtil;
@@ -78,23 +78,23 @@ public class SMAPromptChangeStatusTest {
       assertTrue(SMAPromptChangeStatus.isValidToChangeStatus(tasks).isTrue());
 
       // Change two to 100, 1 hr split
-      SMAPromptChangeStatus.performChangeStatus(tasks, 1, 100, true, true);
+      SMAPromptChangeStatus.performChangeStatus(tasks, null, 1, 100, true, true);
       SMATestUtil.validateSMAs(tasks, TaskStates.InWork.getPageName(), 100, 0.25);
 
       // Change two to 100, 1 hr split
       // hours should be added to inwork state; make sure completed state isn't statused
-      SMAPromptChangeStatus.performChangeStatus(tasks, 1, 100, true, true);
+      SMAPromptChangeStatus.performChangeStatus(tasks, null, 1, 100, true, true);
       SMATestUtil.validateSMAs(tasks, TaskStates.InWork.getPageName(), 100, 0.50);
 
       // Change two to 99, 1 hr split
       // transitions to InWork and adds hours
       // make sure hours not added to completed state
-      SMAPromptChangeStatus.performChangeStatus(tasks, 1, 99, true, true);
+      SMAPromptChangeStatus.performChangeStatus(tasks, null, 1, 99, true, true);
       SMATestUtil.validateSMAs(tasks, TaskStates.InWork.getPageName(), 99, 0.75);
 
       // Change two to 55, 0
       // no transition, no hours spent
-      SMAPromptChangeStatus.performChangeStatus(tasks, 0, 55, true, true);
+      SMAPromptChangeStatus.performChangeStatus(tasks, null, 0, 55, true, true);
       SMATestUtil.validateSMAs(tasks, TaskStates.InWork.getPageName(), 55, 0.75);
 
    }

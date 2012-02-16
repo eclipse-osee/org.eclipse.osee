@@ -12,9 +12,6 @@ package org.eclipse.osee.ats.core.workdef;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import org.eclipse.osee.ats.core.internal.Activator;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
@@ -29,12 +26,8 @@ public class RuleManager {
          ruleId = ruleId.replaceFirst("riviledged", "rivileged");
       }
       if (!ruleMap.containsKey(ruleId)) {
-         try {
-            RuleDefinitionOption ruleOption = RuleDefinitionOption.valueOf(ruleId);
-            ruleMap.put(ruleId, new RuleDefinition(ruleOption));
-         } catch (Exception ex) {
-            OseeLog.logf(Activator.class, Level.SEVERE, "Unrecognized rule definition [%s]", ruleId, ex);
-         }
+         RuleDefinitionOption ruleOption = RuleDefinitionOption.valueOf(ruleId);
+         ruleMap.put(ruleId, new RuleDefinition(ruleOption));
       }
       return ruleMap.get(ruleId);
    }

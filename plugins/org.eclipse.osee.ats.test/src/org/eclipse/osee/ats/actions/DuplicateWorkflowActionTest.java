@@ -6,7 +6,7 @@
 package org.eclipse.osee.ats.actions;
 
 import java.util.Collections;
-import org.eclipse.osee.ats.core.AtsTestUtil;
+import org.eclipse.osee.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**

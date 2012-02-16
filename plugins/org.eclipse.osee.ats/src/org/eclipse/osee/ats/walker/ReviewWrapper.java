@@ -6,8 +6,8 @@
 package org.eclipse.osee.ats.walker;
 
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.core.review.ReviewManager;
-import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.review.ReviewManager;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

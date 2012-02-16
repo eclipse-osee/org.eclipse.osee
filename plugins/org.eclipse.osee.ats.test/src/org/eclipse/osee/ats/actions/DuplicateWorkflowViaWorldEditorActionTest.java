@@ -6,8 +6,8 @@
 package org.eclipse.osee.ats.actions;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.osee.ats.core.AtsTestUtil;
-import org.eclipse.osee.ats.core.actions.SelectedAtsArtifactsAdapter;
+import org.eclipse.osee.ats.core.client.AtsTestUtil;
+import org.eclipse.osee.ats.core.client.actions.SelectedAtsArtifactsAdapter;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.junit.Test;

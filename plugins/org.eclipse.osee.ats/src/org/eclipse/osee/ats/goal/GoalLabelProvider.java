@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.goal;
 
-import org.eclipse.osee.ats.core.artifact.GoalArtifact;
+import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.logging.Level;
-import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.history.XHistoryViewer;
 import org.eclipse.osee.ats.editor.log.XLogViewer;
 import org.eclipse.osee.ats.internal.Activator;

@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.util.widgets;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.osee.ats.core.config.IAtsProgram;
+import org.eclipse.osee.ats.core.client.config.IAtsProgram;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;

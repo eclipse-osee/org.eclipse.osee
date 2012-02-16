@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.actions;
 
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.GoalManager;
-import org.eclipse.osee.ats.core.artifact.GoalArtifact;
-import org.eclipse.osee.ats.core.config.AtsBulkLoad;
+import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
+import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;

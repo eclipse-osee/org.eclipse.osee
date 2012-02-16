@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workdef;
 
+
 public class StateItem extends AbstractWorkDefItem {
 
    public StateItem(String name) {

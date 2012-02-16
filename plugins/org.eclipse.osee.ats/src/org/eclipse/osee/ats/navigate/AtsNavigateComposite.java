@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.navigate;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.Result;

@@ -11,6 +11,9 @@
 package org.eclipse.osee.ats.core.validator;
 
 import junit.framework.Assert;
+import org.eclipse.osee.ats.core.validator.AtsXComboBooleanValidator;
+import org.eclipse.osee.ats.core.validator.WidgetResult;
+import org.eclipse.osee.ats.core.validator.WidgetStatus;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
 import org.eclipse.osee.ats.core.workdef.WidgetOption;

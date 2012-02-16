@@ -12,10 +12,10 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.ArrayList;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.config.TeamDefinitionManager;
-import org.eclipse.osee.ats.core.version.VersionLockedType;
-import org.eclipse.osee.ats.core.version.VersionReleaseType;
+import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.client.version.VersionLockedType;
+import org.eclipse.osee.ats.core.client.version.VersionReleaseType;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;

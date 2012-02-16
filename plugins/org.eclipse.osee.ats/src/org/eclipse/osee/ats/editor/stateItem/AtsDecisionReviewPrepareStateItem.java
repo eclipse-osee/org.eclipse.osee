@@ -11,12 +11,12 @@
 package org.eclipse.osee.ats.editor.stateItem;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.core.review.DecisionReviewState;
-import org.eclipse.osee.ats.core.review.XDecisionOptions;
-import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.workflow.transition.ITransitionListener;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
+import org.eclipse.osee.ats.core.client.review.XDecisionOptions;
+import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.client.workflow.transition.ITransitionListener;
+import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.IWorkPage;

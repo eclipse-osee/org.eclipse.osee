@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.task;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.core.task.TaskArtifact;
+import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 
 /**
  * @author Megumi Telles

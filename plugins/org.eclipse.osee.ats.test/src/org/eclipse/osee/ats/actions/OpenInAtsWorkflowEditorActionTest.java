@@ -5,7 +5,8 @@
  */
 package org.eclipse.osee.ats.actions;
 
-import org.eclipse.osee.ats.core.AtsTestUtil;
+import org.eclipse.osee.ats.core.client.AtsTestUtil;
+
 
 /**
  * @author Donald G. Dunne
