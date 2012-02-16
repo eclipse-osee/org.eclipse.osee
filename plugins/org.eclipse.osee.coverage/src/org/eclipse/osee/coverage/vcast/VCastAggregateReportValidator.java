@@ -38,6 +38,9 @@ public class VCastAggregateReportValidator {
       Pattern.compile("Code&nbsp;Coverage&nbsp;for&nbsp;Unit:&nbsp;(.*?)<");
    private static final Pattern resultsPattern =
       Pattern.compile("&nbsp;([0-9]+)&nbsp;of&nbsp;([0-9]+)&nbsp;Lines&nbsp;Covered&nbsp;");
+   //TODO: For VectorCast Version 5.3:
+   //String NO_COVERAGE_DATA_EXISTS = "No&nbsp;Coverage&nbsp;Data&nbsp;Available";
+   //For VectorCast Version 5.0:
    String NO_COVERAGE_DATA_EXISTS = "No&nbsp;Coverage&nbsp;Data&nbsp;Exists";
    boolean error = false;
    private VectorCastAdaCoverageImporter importer;
