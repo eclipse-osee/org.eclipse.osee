@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.utility;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -36,7 +37,9 @@ public final class WordOrderMatcher {
       List<MatchLocation> matchLocations = new ArrayList<MatchLocation>();
       Reader reader = null;
       try {
-         reader = new InputStreamReader(inputStream, "UTF-8");
+         boolean matchedAWhitespace = false;
+         int savedCharCount = 0;
+         reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
          boolean isCaseInsensitive = !options.isCaseSensitive();
          char[] charsToSearch = WordsUtil.removeExtraSpacesAndSpecialCharacters(toSearch, isCaseInsensitive);
          int charCount = 0;
@@ -45,6 +48,7 @@ public final class WordOrderMatcher {
          boolean lastCharacterAddedWasWhiteSpace = false;
          boolean currCharValid = false;
          MatchLocation matchLocation = new MatchLocation();
+         reader.mark(charsToSearch.length);
          while (value != -1) {
             value = reader.read();
             charCount++;
@@ -53,31 +57,39 @@ public final class WordOrderMatcher {
                currChar = Character.toLowerCase(currChar);
             }
 
-            if (currChar != '\r' && currChar != '\n') {
-               if (WordsUtil.isPunctuationOrApostrophe(currChar)) {
-                  currChar = ' ';
-               }
+            if (WordsUtil.isPunctuationOrApostrophe(currChar)) {
+               currChar = ' ';
+            }
 
-               if (Character.isWhitespace(currChar)) {
-                  if (!lastCharacterAddedWasWhiteSpace) {
-                     currCharValid = true;
-                     lastCharacterAddedWasWhiteSpace = true;
-                  } else {
-                     currCharValid = false;
-                  }
-               } else {
+            if (Character.isWhitespace(currChar)) {
+               reader.mark(toSearch.length());
+               savedCharCount = charCount;
+               if (!lastCharacterAddedWasWhiteSpace) {
                   currCharValid = true;
-                  lastCharacterAddedWasWhiteSpace = false;
+                  lastCharacterAddedWasWhiteSpace = true;
+               } else {
+                  currCharValid = false;
                }
+            } else {
+               currCharValid = true;
+               lastCharacterAddedWasWhiteSpace = false;
             }
 
             if (currCharValid) {
                if (charsToSearch[index] != currChar) {
-                  index = 0;
                   matchLocation.reset();
+                  if (matchedAWhitespace) {
+                     reader.reset();
+                     charCount = savedCharCount;
+                  }
+                  index = 0;
+                  matchedAWhitespace = false;
                }
 
                if (charsToSearch[index] == currChar) {
+                  if (currChar == ' ' && index > 0) {
+                     matchedAWhitespace = true;
+                  }
                   if (index == 0) {
                      matchLocation.setStartPosition(charCount);
                   }

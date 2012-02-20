@@ -63,6 +63,16 @@ public class WordOrderMatcherTest {
       addTest(data, "Why is this here this again.", "THIS", false, true, getLocs(8, 11, 18, 21));
       addTest(data, "hello #@!@$$%'- again.", "hello again", false, false, getLocs(1, 21));
       addTest(data, "hello word again.", "hello again", false, false, getLocs());
+      addTest(data, " (Selected) -> [.SELECTED_STRING_ID]      Selected -> ", "SELECTED_STRING_ID", false, false,
+         getLocs(18, 35));
+      addTest(data, " (Selected) -> [.SELECTED_STRING_ID]      Selected -> ", "SELECTED_STRING_ID", true, false,
+         getLocs(18, 35));
+      addTest(data, " (Selected) -> [.SELECTED_STRING_IWRONG SELECTED_STRING_ID_TWO]      Selected -> ",
+         "SELECTED_STRING_ID", true, false, getLocs(41, 58));
+      addTest(data, " (Selected) -> [.SELECTED_STRING_IWRONG SELECTED_STRING_ID_TWO]      Selected -> ",
+         "SELECTED_STRING_ID", false, false, getLocs(41, 58));
+      addTest(data, " (Selected) -> [.SELECTED_STRING_IWRONG SELECTED_STRING_\nID_TWO]      Selected -> ",
+         "SELECTED_STRING_ID", false, false, getLocs(41, 59));
       return data;
    }
 
