@@ -77,7 +77,7 @@ public abstract class AbstractJoinQuery {
    }
 
    public void store(OseeConnection connection) throws OseeCoreException {
-      if (this.wasStored != true) {
+      if (!this.wasStored) {
          List<Object[]> data = new ArrayList<Object[]>();
          for (IJoinRow joinArray : entries) {
             data.add(joinArray.toArray());

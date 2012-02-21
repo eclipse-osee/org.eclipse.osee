@@ -64,6 +64,11 @@ public class SqlBuilder {
 
       List<String> paramList = new ArrayList<String>();
       paramList.add(sqlProvider.getSql(OseeSql.QUERY_BUILDER));
+
+      if (writer.getOptions().isHistorical()) {
+         paramList.add("txs1");
+      }
+
       paramList.add("art1");
       if (queryType != QueryType.COUNT_ARTIFACTS) {
          paramList.add("txs1");

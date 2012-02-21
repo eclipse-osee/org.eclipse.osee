@@ -57,7 +57,7 @@ public class SqlWriter {
 
    public void writeSelect() throws OseeCoreException {
       if (context.getOptions().isHistorical()) {
-         write("SELECT%s max(transaction_id), %s.art_id, %s.branch_id");
+         write("SELECT%s max(%s.transaction_id), %s.art_id, %s.branch_id");
       } else {
          write("SELECT%s %s.art_id, %s.branch_id");
       }
@@ -134,10 +134,16 @@ public class SqlWriter {
 
    public void writeGroupAndOrder(QueryType type) throws OseeCoreException {
       if (context.getOptions().isHistorical()) {
-         write("\n GROUP BY art_id, branch_id");
+         String artAlias = aliasManager.getAliases(TableEnum.ARTIFACT_TABLE).get(0);
+         String txAlias = aliasManager.getAliases(TableEnum.TXS_TABLE).get(0);
+
+         write(String.format("\n GROUP BY %s.art_id, %s.branch_id", artAlias, txAlias));
       }
       if (type != QueryType.COUNT_ARTIFACTS) {
-         write("\n ORDER BY art_id, branch_id");
+         String artAlias = aliasManager.getAliases(TableEnum.ARTIFACT_TABLE).get(0);
+         String txAlias = aliasManager.getAliases(TableEnum.TXS_TABLE).get(0);
+
+         write(String.format("\n ORDER BY %s.art_id, %s.branch_id", artAlias, txAlias));
       } else {
          if (context.getOptions().isHistorical()) {
             write("\n) xTable");
@@ -168,6 +174,16 @@ public class SqlWriter {
          write(txsAlias);
          write(".transaction_id <= ?");
          addParameter(context.getOptions().getFromTransaction());
+         if (!context.getOptions().areDeletedIncluded()) {
+            write("\n AND \n");
+            write(txsAlias);
+            write(".tx_current");
+            write(" IN (");
+            write(String.valueOf(TxChange.CURRENT.getValue()));
+            write(", ");
+            write(String.valueOf(TxChange.NOT_CURRENT.getValue()));
+            write(")");
+         }
       } else {
          write(txsAlias);
          write(".tx_current");
@@ -176,6 +192,8 @@ public class SqlWriter {
             write(String.valueOf(TxChange.CURRENT.getValue()));
             write(", ");
             write(String.valueOf(TxChange.DELETED.getValue()));
+            write(", ");
+            write(String.valueOf(TxChange.ARTIFACT_DELETED.getValue()));
             write(")");
          } else {
             write(" = ");

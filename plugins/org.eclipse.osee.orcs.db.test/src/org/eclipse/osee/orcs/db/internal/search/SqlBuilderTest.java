@@ -143,12 +143,14 @@ public class SqlBuilderTest {
 
       String sql = context.getSql();
       Assert.assertEquals("SELECT count(xTable.art_id) FROM (\n" + //
-      " SELECT max(transaction_id), art1.art_id, txs1.branch_id\n" + //
+      " SELECT max(txs1.transaction_id), art1.art_id, txs1.branch_id\n" + //
       " FROM \n" + //
       "osee_artifact art1, osee_txs txs1\n" + //
       " WHERE \n" + //
-      "art1.art_type_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ? AND txs1.branch_id = ?\n" + //
-      " GROUP BY art_id, branch_id\n" + //
+      "art1.art_type_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ?\n" + //
+      " AND \n" + // 
+      "txs1.tx_current IN (1, 0) AND txs1.branch_id = ?\n" + //
+      " GROUP BY art1.art_id, txs1.branch_id\n" + //
       ") xTable",//
          sql);
 
@@ -187,7 +189,7 @@ public class SqlBuilderTest {
          "art3.human_readable_id = jch2.id AND jch2.query_id = ? AND art3.gamma_id = txs3.gamma_id AND txs3.tx_current = 1 AND txs3.branch_id = ?\n" + //
          " AND \n" + //
          "art1.art_type_id = ? AND art2.art_type_id = ? AND art3.art_type_id = ?\n" + //
-         " ORDER BY art_id, branch_id",//
+         " ORDER BY art1.art_id, txs1.branch_id",//
          sql);
 
       List<Object> parameters = context.getParameters();
@@ -225,14 +227,14 @@ public class SqlBuilderTest {
          " FROM \n" + //
          "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, osee_join_char_id jch2, osee_artifact art3, osee_txs txs3\n" + //
          " WHERE \n" + //
-         "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current IN (1, 2) AND txs1.branch_id = ?\n" + //
+         "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = ?\n" + //
          " AND \n" + //
-         "art2.guid = jch1.id AND jch1.query_id = ? AND art2.gamma_id = txs2.gamma_id AND txs2.tx_current IN (1, 2) AND txs2.branch_id = ?\n" + //
+         "art2.guid = jch1.id AND jch1.query_id = ? AND art2.gamma_id = txs2.gamma_id AND txs2.tx_current IN (1, 2, 3) AND txs2.branch_id = ?\n" + //
          " AND \n" + //
-         "art3.human_readable_id = jch2.id AND jch2.query_id = ? AND art3.gamma_id = txs3.gamma_id AND txs3.tx_current IN (1, 2) AND txs3.branch_id = ?\n" + //
-         " AND \n" + //
+         "art3.human_readable_id = jch2.id AND jch2.query_id = ? AND art3.gamma_id = txs3.gamma_id AND txs3.tx_current IN (1, 2, 3) AND txs3.branch_id = ?\n" + //
+         " AND \n" + // 
          "art1.art_type_id = ? AND art2.art_type_id = ? AND art3.art_type_id = ?\n" + //
-         " ORDER BY art_id, branch_id",//
+         " ORDER BY art1.art_id, txs1.branch_id",//
          sql);
 
       List<Object> parameters = context.getParameters();
@@ -268,19 +270,25 @@ public class SqlBuilderTest {
 
       String sql = context.getSql();
       Assert.assertEquals(
-         "SELECT max(transaction_id), art1.art_id, txs1.branch_id\n" + // 
+         "SELECT max(txs1.transaction_id), art1.art_id, txs1.branch_id\n" + // 
          " FROM \n" + //
          "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, osee_join_char_id jch2, osee_artifact art3, osee_txs txs3\n" + //
          " WHERE \n" + //
-         "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ? AND txs1.branch_id = ?\n" + //
+         "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ?\n" + //
          " AND \n" + //
-         "art2.guid = jch1.id AND jch1.query_id = ? AND art2.gamma_id = txs2.gamma_id AND txs2.transaction_id <= ? AND txs2.branch_id = ?\n" + //
+         "txs1.tx_current IN (1, 0) AND txs1.branch_id = ?\n" + //
          " AND \n" + //
-         "art3.human_readable_id = jch2.id AND jch2.query_id = ? AND art3.gamma_id = txs3.gamma_id AND txs3.transaction_id <= ? AND txs3.branch_id = ?\n" + //
+         "art2.guid = jch1.id AND jch1.query_id = ? AND art2.gamma_id = txs2.gamma_id AND txs2.transaction_id <= ?\n" + //
+         " AND \n" + //
+         "txs2.tx_current IN (1, 0) AND txs2.branch_id = ?\n" + //
+         " AND \n" + //
+         "art3.human_readable_id = jch2.id AND jch2.query_id = ? AND art3.gamma_id = txs3.gamma_id AND txs3.transaction_id <= ?\n" + //
+         " AND \n" + //
+         "txs3.tx_current IN (1, 0) AND txs3.branch_id = ?\n" + //
          " AND \n" + //
          "art1.art_type_id = ? AND art2.art_type_id = ? AND art3.art_type_id = ?\n" + //
-         " GROUP BY art_id, branch_id\n" + //
-         " ORDER BY art_id, branch_id",//
+         " GROUP BY art1.art_id, txs1.branch_id\n" + //
+         " ORDER BY art1.art_id, txs1.branch_id",//
          sql);
 
       List<Object> parameters = context.getParameters();
@@ -322,7 +330,7 @@ public class SqlBuilderTest {
          "osee_join_id jid1, osee_artifact art1, osee_txs txs1\n" + //
          " WHERE \n" + //
          "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
-         " ORDER BY art_id, branch_id",//
+         " ORDER BY art1.art_id, txs1.branch_id",//
          sql);
 
       List<Object> parameters = context.getParameters();
@@ -351,7 +359,7 @@ public class SqlBuilderTest {
       "osee_artifact art1, osee_txs txs1\n" + //
       " WHERE \n" + //
       "art1.art_type_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
-      " ORDER BY art_id, branch_id",//
+      " ORDER BY art1.art_id, txs1.branch_id",//
          sql);
 
       List<Object> parameters = context.getParameters();
@@ -384,7 +392,7 @@ public class SqlBuilderTest {
       "art1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
       " AND \n" + //
       "art1.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
-      " ORDER BY art_id, branch_id",//
+      " ORDER BY art1.art_id, txs1.branch_id",//
          sql);
 
       List<Object> parameters = context.getParameters();
@@ -426,7 +434,7 @@ public class SqlBuilderTest {
          "tag1.gamma_id = att1.gamma_id AND att1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
          " AND \n" + //
          "art1.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
-         " ORDER BY art_id, branch_id",//
+         " ORDER BY art1.art_id, txs1.branch_id",//
          sql);
 
       List<Object> parameters = context.getParameters();
@@ -476,7 +484,7 @@ public class SqlBuilderTest {
          "tag1.gamma_id = att2.gamma_id AND att2.gamma_id = txs3.gamma_id AND txs3.tx_current = 1 AND txs3.branch_id = ?\n" + //
          " AND \n" + //
          "art1.art_type_id = ?\n" + //
-         " ORDER BY art_id, branch_id" //
+         " ORDER BY art1.art_id, txs1.branch_id" //
          , sql);
 
       List<Object> parameters = context.getParameters();

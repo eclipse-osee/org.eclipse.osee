@@ -115,7 +115,6 @@ public class AttributeOtherSqlHandler extends SqlHandler {
             writer.write(".value AND query_id = ?)");
          }
          writer.addParameter(joinQuery.getQueryId());
-         joinQuery.store();
       }
 
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
