@@ -48,6 +48,11 @@ public class ArtifactsResource {
       this.branchUuid = branchUuid;
    }
 
+   @Path("search")
+   public ArtifactSearchResource getSearch() {
+      return new ArtifactSearchResource(uriInfo, request, branchUuid);
+   }
+
    @Path("{uuid}")
    public ArtifactResource getArtifact(@PathParam("uuid") String artifactUuid) {
       return new ArtifactResource(uriInfo, request, branchUuid, artifactUuid);
@@ -58,7 +63,8 @@ public class ArtifactsResource {
    public String getAsHtml() throws OseeCoreException {
       IOseeBranch branch = TokenFactory.createBranch(branchUuid, "");
       QueryFactory factory = OrcsApplication.getOrcsApi().getQueryFactory(null);
-      ResultSet<ReadableArtifact> results = factory.fromBranch(branch).andNameEquals(DEFAULT_HIERARCHY_ROOT_NAME).getResults();
+      ResultSet<ReadableArtifact> results =
+         factory.fromBranch(branch).andNameEquals(DEFAULT_HIERARCHY_ROOT_NAME).getResults();
       ReadableArtifact rootArtifact = results.getExactlyOne();
 
       Graph graph = OrcsApplication.getOrcsApi().getGraph(null);

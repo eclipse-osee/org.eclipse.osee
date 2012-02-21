@@ -21,11 +21,15 @@ public final class HexUtil {
       // Utility class
    }
 
+   public static boolean isHexString(String hexString) {
+      return hexString.startsWith("0x");
+   }
+
    public static long toLong(String hexString) throws OseeCoreException {
       Long toReturn = -1L;
       try {
          String hex = hexString;
-         if (hexString.startsWith("0x")) {
+         if (isHexString(hex)) {
             hex = hexString.substring(2);
          }
          toReturn = Long.parseLong(hex, 16);
