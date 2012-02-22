@@ -16,8 +16,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 /**
  * @author Ryan D. Brooks
  */
-public class NamedIdentity<T> implements Identity<T>, FullyNamed, HasDescription {
-   private T guid;
+public class NamedIdentity<T> extends BaseIdentity<T> implements FullyNamed, HasDescription {
    private String name;
    private final String description;
 
@@ -26,17 +25,12 @@ public class NamedIdentity<T> implements Identity<T>, FullyNamed, HasDescription
    }
 
    public NamedIdentity(T guid, String name, String description) {
-      this.guid = guid;
+      super(guid);
       if (guid == null) {
          throw new IllegalArgumentException("uuid cannot be null");
       }
       this.name = name;
       this.description = description;
-   }
-
-   @Override
-   public T getGuid() {
-      return guid;
    }
 
    @Override
@@ -50,19 +44,6 @@ public class NamedIdentity<T> implements Identity<T>, FullyNamed, HasDescription
    }
 
    @Override
-   public int hashCode() {
-      return getGuid().hashCode();
-   }
-
-   @Override
-   public boolean equals(Object obj) {
-      if (obj instanceof NamedIdentity) {
-         return getGuid().equals(((NamedIdentity<?>) obj).getGuid());
-      }
-      return false;
-   }
-
-   @Override
    public String toString() {
       return getName();
    }
@@ -70,16 +51,6 @@ public class NamedIdentity<T> implements Identity<T>, FullyNamed, HasDescription
    @Override
    public String getDescription() {
       return description;
-   }
-
-   @Override
-   public boolean matches(Identity<?>... identities) {
-      for (Identity<?> identity : identities) {
-         if (equals(identity)) {
-            return true;
-         }
-      }
-      return false;
    }
 
    @SuppressWarnings("unused")

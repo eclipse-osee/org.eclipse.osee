@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.core.model;
 
 import java.util.Date;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.framework.core.data.BaseIdentity;
+import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
@@ -21,9 +23,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Jeff C. Phillips
  */
-public final class TransactionRecord implements IAdaptable {
+public final class TransactionRecord extends BaseIdentity<Integer> implements ITransaction, IAdaptable {
    private static final int NON_EXISTING_BRANCH = -1;
-   private final int transactionNumber;
    private final TransactionDetailsType txType;
 
    private final int branchId;
@@ -34,7 +35,7 @@ public final class TransactionRecord implements IAdaptable {
    private BranchCache branchCache;
 
    public TransactionRecord(int transactionNumber, int branchId, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
-      this.transactionNumber = transactionNumber;
+      super(transactionNumber);
       this.branchId = branchId;
       this.comment = Strings.intern(comment);
       this.time = time;
@@ -62,7 +63,7 @@ public final class TransactionRecord implements IAdaptable {
    }
 
    public int getId() {
-      return transactionNumber;
+      return getGuid();
    }
 
    public String getComment() {
@@ -103,9 +104,9 @@ public final class TransactionRecord implements IAdaptable {
 
    @Override
    public boolean equals(Object obj) {
-      if (obj instanceof TransactionRecord) {
-         TransactionRecord other = (TransactionRecord) obj;
-         return other.transactionNumber == transactionNumber;
+      if (obj instanceof ITransaction) {
+         ITransaction other = (ITransaction) obj;
+         return super.equals(other);
       }
       return false;
    }
@@ -121,17 +122,15 @@ public final class TransactionRecord implements IAdaptable {
 
    @Override
    public int hashCode() {
-      int result = 17;
-      result = 37 * result + transactionNumber;
-      return result;
+      return super.hashCode();
    }
 
    @Override
    public String toString() {
       try {
-         return String.format("%s (%s:%s)", getBranch(), transactionNumber, getBranchId());
+         return String.format("%s (%s:%s)", getBranch(), getGuid(), getBranchId());
       } catch (OseeCoreException ex) {
-         return String.format("%s:%s", transactionNumber, getBranchId());
+         return String.format("%s:%s", getGuid(), getBranchId());
       }
    }
 

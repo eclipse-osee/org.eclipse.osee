@@ -61,6 +61,16 @@ public final class TokenFactory {
       }
    }
 
+   public static ITransaction createTransaction(int txId) {
+      return new TransactionToken(txId);
+   }
+
+   private static final class TransactionToken extends BaseIdentity<Integer> implements ITransaction {
+      public TransactionToken(Integer txId) {
+         super(txId);
+      }
+   }
+
    private static final class BranchToken extends NamedIdentity<String> implements IOseeBranch {
       public BranchToken(String guid, String name) {
          super(guid, name);
