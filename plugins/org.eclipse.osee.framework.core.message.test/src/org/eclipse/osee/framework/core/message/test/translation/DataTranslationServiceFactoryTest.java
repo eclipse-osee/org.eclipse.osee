@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.message.test.translation;
 
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.message.internal.DataTranslationService;
 import org.eclipse.osee.framework.core.message.internal.DataTranslationServiceFactory;
 import org.eclipse.osee.framework.core.message.internal.translation.ArtifactTypeCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.AttributeTypeCacheUpdateResponseTranslator;
@@ -35,11 +35,17 @@ import org.eclipse.osee.framework.core.message.internal.translation.SearchRespon
 import org.eclipse.osee.framework.core.message.internal.translation.TableDataTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.TransactionCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.TransactionRecordTranslator;
+import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
+import org.eclipse.osee.framework.core.model.type.ArtifactTypeFactory;
 import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
+import org.eclipse.osee.framework.core.model.type.OseeEnumTypeFactory;
+import org.eclipse.osee.framework.core.model.type.RelationTypeFactory;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.core.translation.ITranslatorId;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -51,9 +57,9 @@ public class DataTranslationServiceFactoryTest {
 
    @Test
    public void testServiceCreation() throws OseeCoreException {
-      DataTranslationServiceFactory transalationFactoryService = new DataTranslationServiceFactory();
-      IDataTranslationService srvc =
-         transalationFactoryService.createService(new TransactionRecordFactory(), new AttributeTypeFactory());
+      DataTranslationService srvc = new DataTranslationService();
+      srvc.setModelFactory(new MockModelFactoryService());
+      srvc.start();
 
       checkExists(srvc, TransactionRecordTranslator.class, CoreTranslatorId.TRANSACTION_RECORD);
 
@@ -88,11 +94,45 @@ public class DataTranslationServiceFactoryTest {
       checkExists(srvc, SearchRequestTranslator.class, CoreTranslatorId.SEARCH_REQUEST);
       checkExists(srvc, SearchResponseTranslator.class, CoreTranslatorId.SEARCH_RESPONSE);
 
+      srvc.stop();
    }
 
    private void checkExists(IDataTranslationService service, Class<? extends ITranslator<?>> expected, ITranslatorId key) throws OseeCoreException {
       ITranslator<?> actual = service.getTranslator(key);
       Assert.assertNotNull(actual);
       Assert.assertEquals(expected, actual.getClass());
+   }
+
+   private final class MockModelFactoryService implements IOseeModelFactoryService {
+
+      @Override
+      public TransactionRecordFactory getTransactionFactory() {
+         return new TransactionRecordFactory();
+      }
+
+      @Override
+      public RelationTypeFactory getRelationTypeFactory() {
+         return null;
+      }
+
+      @Override
+      public OseeEnumTypeFactory getOseeEnumTypeFactory() {
+         return null;
+      }
+
+      @Override
+      public BranchFactory getBranchFactory() {
+         return null;
+      }
+
+      @Override
+      public AttributeTypeFactory getAttributeTypeFactory() {
+         return new AttributeTypeFactory();
+      }
+
+      @Override
+      public ArtifactTypeFactory getArtifactTypeFactory() {
+         return null;
+      }
    }
 }

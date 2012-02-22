@@ -14,12 +14,15 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
+import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.core.translation.ITranslatorId;
@@ -31,10 +34,26 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  */
 public class DataTranslationService implements IDataTranslationService {
 
-   private final Map<ITranslatorId, ITranslator<?>> translators;
+   private final DataTranslationServiceFactory factoryConfigurator = new DataTranslationServiceFactory();
+   private final Map<ITranslatorId, ITranslator<?>> translators =
+      new ConcurrentHashMap<ITranslatorId, ITranslator<?>>();
 
-   public DataTranslationService() {
-      this.translators = new HashMap<ITranslatorId, ITranslator<?>>();
+   private IOseeModelFactoryService modelFactory;
+
+   public void setModelFactory(IOseeModelFactoryService modelFactory) {
+      this.modelFactory = modelFactory;
+   }
+
+   public void start() throws OseeCoreException {
+      TransactionRecordFactory txFactory = modelFactory.getTransactionFactory();
+      AttributeTypeFactory attributeTypeFactory = modelFactory.getAttributeTypeFactory();
+
+      translators.clear();
+      factoryConfigurator.configureService(this, txFactory, attributeTypeFactory);
+   }
+
+   public void stop() {
+      translators.clear();
    }
 
    @SuppressWarnings("unchecked")

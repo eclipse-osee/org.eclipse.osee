@@ -3,11 +3,14 @@ Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Core Message
 Bundle-SymbolicName: org.eclipse.osee.framework.core.message;singleton:=true
 Bundle-Version: 0.9.9.qualifier
-Bundle-Activator: org.eclipse.osee.framework.core.message.internal.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.core.runtime,
- org.eclipse.osee.framework.core.data,
+Export-Package: org.eclipse.osee.framework.core.message
+Bundle-ActivationPolicy: lazy
+Eclipse-ExtensibleAPI: true
+Service-Component: OSGI-INF/*.xml
+Require-Bundle: org.eclipse.core.runtime
+Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.model,
@@ -18,10 +21,4 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.core.translation,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.type,
- org.eclipse.osee.framework.jdk.core.util,
- org.eclipse.osee.framework.logging,
- org.osgi.framework,
- org.osgi.util.tracker
-Export-Package: org.eclipse.osee.framework.core.message
-Bundle-ActivationPolicy: lazy
-Eclipse-ExtensibleAPI: true
+ org.eclipse.osee.framework.jdk.core.util

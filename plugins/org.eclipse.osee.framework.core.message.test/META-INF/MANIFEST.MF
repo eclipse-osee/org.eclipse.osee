@@ -9,5 +9,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit
 Export-Package: org.eclipse.osee.framework.core.message.test,
  org.eclipse.osee.framework.core.message.test.mocks
-Import-Package: org.eclipse.osee.framework.core.model.mocks,
+Import-Package: org.eclipse.osee.framework.core.model.change,
+ org.eclipse.osee.framework.core.model.mocks,
  org.eclipse.osee.framework.jdk.core.util

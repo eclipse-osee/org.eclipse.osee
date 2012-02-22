@@ -51,9 +51,7 @@ public class DataTranslationServiceFactory {
       //
    }
 
-   public IDataTranslationService createService(TransactionRecordFactory txRecordFactory, AttributeTypeFactory attributeTypeFactory) throws OseeCoreException {
-      IDataTranslationService service = new DataTranslationService();
-
+   public void configureService(IDataTranslationService service, TransactionRecordFactory txRecordFactory, AttributeTypeFactory attributeTypeFactory) throws OseeCoreException {
       service.addTranslator(new TransactionRecordTranslator(txRecordFactory), CoreTranslatorId.TRANSACTION_RECORD);
 
       service.addTranslator(new BranchCreationRequestTranslator(), CoreTranslatorId.BRANCH_CREATION_REQUEST);
@@ -98,6 +96,5 @@ public class DataTranslationServiceFactory {
 
       service.addTranslator(new SearchRequestTranslator(), CoreTranslatorId.SEARCH_REQUEST);
       service.addTranslator(new SearchResponseTranslator(), CoreTranslatorId.SEARCH_RESPONSE);
-      return service;
    }
 }
