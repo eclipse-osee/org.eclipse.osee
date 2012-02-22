@@ -16,7 +16,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
-import org.eclipse.osee.framework.core.message.ChangeItem;
+import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 
 /**

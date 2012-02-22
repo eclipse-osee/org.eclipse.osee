@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.core.message.test.data;
+package org.eclipse.osee.framework.core.model.change;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -20,10 +20,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.message.ChangeItem;
-import org.eclipse.osee.framework.core.message.ChangeItemUtil;
-import org.eclipse.osee.framework.core.message.ChangeVersion;
-import org.eclipse.osee.framework.core.message.test.mocks.ChangeTestUtility;
+import org.eclipse.osee.framework.core.model.mocks.ChangeTestUtility;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
 import org.junit.Assert;
 import org.junit.Test;

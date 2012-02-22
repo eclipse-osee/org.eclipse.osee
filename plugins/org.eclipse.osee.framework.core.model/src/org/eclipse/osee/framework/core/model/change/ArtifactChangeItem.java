@@ -8,24 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
+package org.eclipse.osee.framework.core.model.change;
 
-package org.eclipse.osee.framework.core.message.test.data;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-   BranchCommitRequestTest.class,
-   BranchCommitResponseTest.class,
-   CacheUpdateRequestTest.class,
-   PurgeBranchRequestTest.class,
-   SearchRequestTest.class,
-   SearchResponseTest.class,
-   TransactionCacheUpdateResponseTest.class,})
 /**
- * @author Roberto E. Escobar
+ * @author Jeff C. Phillips
  */
-public class DataTestSuite {
-   // Test Suite
+public class ArtifactChangeItem extends ChangeItem {
+
+   public ArtifactChangeItem(int artId, int artTypeId, long currentSourceGammaId, ModificationType currentSourceModType) {
+      super(artId, artTypeId, artId, currentSourceGammaId, currentSourceModType);
+   }
 }

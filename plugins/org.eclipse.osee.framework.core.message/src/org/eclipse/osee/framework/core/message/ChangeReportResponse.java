@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.message;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.model.change.ChangeItem;
 
 /**
  * @author Jeff C. Phillips

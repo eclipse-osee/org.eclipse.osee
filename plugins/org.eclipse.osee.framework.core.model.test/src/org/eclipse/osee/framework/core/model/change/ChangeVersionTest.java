@@ -8,11 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.message.test.data;
+package org.eclipse.osee.framework.core.model.change;
 
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.message.ChangeVersion;
-import org.eclipse.osee.framework.core.message.test.mocks.ChangeTestUtility;
+import org.eclipse.osee.framework.core.model.mocks.ChangeTestUtility;
 import org.junit.Assert;
 import org.junit.Test;
 

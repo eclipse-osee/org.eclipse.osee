@@ -17,8 +17,8 @@ import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.message.ChangeItem;
-import org.eclipse.osee.framework.core.message.ChangeItemUtil;
+import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 
 /**

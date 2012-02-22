@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.message.ArtifactChangeItem;
-import org.eclipse.osee.framework.core.message.AttributeChangeItem;
-import org.eclipse.osee.framework.core.message.ChangeItem;
-import org.eclipse.osee.framework.core.message.ChangeItemUtil;
+import org.eclipse.osee.framework.core.model.change.ArtifactChangeItem;
+import org.eclipse.osee.framework.core.model.change.AttributeChangeItem;
+import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 
 public class AddArtifactChangeData extends AbstractOperation {

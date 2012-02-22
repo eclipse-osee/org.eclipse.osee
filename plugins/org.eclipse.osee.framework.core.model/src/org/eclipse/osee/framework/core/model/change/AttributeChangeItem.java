@@ -8,16 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.message;
+package org.eclipse.osee.framework.core.model.change;
 
 import org.eclipse.osee.framework.core.enums.ModificationType;
 
 /**
  * @author Jeff C. Phillips
  */
-public class ArtifactChangeItem extends ChangeItem {
+public class AttributeChangeItem extends ChangeItem {
 
-   public ArtifactChangeItem(int artId, int artTypeId, long currentSourceGammaId, ModificationType currentSourceModType) {
-      super(artId, artTypeId, artId, currentSourceGammaId, currentSourceModType);
+   public AttributeChangeItem(int attrId, int attrTypeId, int artId, long currentSourceGammaId, ModificationType currentSourceModType, String value) {
+      super(attrId, attrTypeId, artId, currentSourceGammaId, currentSourceModType);
+      this.getCurrentVersion().setValue(value);
    }
+
 }

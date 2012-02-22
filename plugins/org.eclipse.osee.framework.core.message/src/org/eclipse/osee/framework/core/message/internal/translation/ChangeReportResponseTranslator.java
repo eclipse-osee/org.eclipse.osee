@@ -16,13 +16,13 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.message.ArtifactChangeItem;
-import org.eclipse.osee.framework.core.message.AttributeChangeItem;
-import org.eclipse.osee.framework.core.message.ChangeItem;
 import org.eclipse.osee.framework.core.message.ChangeReportResponse;
-import org.eclipse.osee.framework.core.message.ChangeVersion;
-import org.eclipse.osee.framework.core.message.RelationChangeItem;
 import org.eclipse.osee.framework.core.message.TranslationUtil;
+import org.eclipse.osee.framework.core.model.change.ArtifactChangeItem;
+import org.eclipse.osee.framework.core.model.change.AttributeChangeItem;
+import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.core.model.change.ChangeVersion;
+import org.eclipse.osee.framework.core.model.change.RelationChangeItem;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 

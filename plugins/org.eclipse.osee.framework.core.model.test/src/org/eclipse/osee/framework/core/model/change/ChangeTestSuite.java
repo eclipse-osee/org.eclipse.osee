@@ -8,18 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.message;
+package org.eclipse.osee.framework.core.model.change;
 
-import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses({ChangeItemTest.class, ChangeItemUtilTest.class, ChangeVersionTest.class})
 /**
- * @author Jeff C. Phillips
+ * @author Roberto E. Escobar
  */
-public class AttributeChangeItem extends ChangeItem {
-
-   public AttributeChangeItem(int attrId, int attrTypeId, int artId, long currentSourceGammaId, ModificationType currentSourceModType, String value) {
-      super(attrId, attrTypeId, artId, currentSourceGammaId, currentSourceModType);
-      this.getCurrentVersion().setValue(value);
-   }
-
+public class ChangeTestSuite {
+   // Test Suite
 }
