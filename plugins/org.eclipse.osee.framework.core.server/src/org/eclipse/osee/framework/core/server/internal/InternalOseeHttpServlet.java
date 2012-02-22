@@ -11,14 +11,13 @@
 package org.eclipse.osee.framework.core.server.internal;
 
 import java.io.IOException;
-import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
@@ -29,12 +28,18 @@ public abstract class InternalOseeHttpServlet extends HttpServlet {
    private boolean areLogsAllowed;
    private ProcessingStateEnum processingState;
    private HttpServletRequest request;
+   private final Log logger;
 
-   public InternalOseeHttpServlet() {
+   public InternalOseeHttpServlet(Log logger) {
+      this.logger = logger;
       this.areRequestsAllowed = true;
       this.areLogsAllowed = false;
       this.processingState = ProcessingStateEnum.IDLE;
       this.request = null;
+   }
+
+   protected Log getLogger() {
+      return logger;
    }
 
    protected boolean areRequestsAllowed() {
@@ -89,8 +94,8 @@ public abstract class InternalOseeHttpServlet extends HttpServlet {
       } finally {
          if (areLogsAllowed()) {
             long elapsed = System.currentTimeMillis() - start;
-            OseeLog.logf(this.getClass(), Level.INFO, "[%s] [%s - %s] serviced in [%s] ms",
-               request.getMethod(), request.getContextPath(), request.getQueryString(), elapsed);
+            getLogger().info("[%s] [%s - %s] serviced in [%s] ms", request.getMethod(), request.getContextPath(),
+               request.getQueryString(), elapsed);
          }
          this.processingState = ProcessingStateEnum.IDLE;
          this.request = null;

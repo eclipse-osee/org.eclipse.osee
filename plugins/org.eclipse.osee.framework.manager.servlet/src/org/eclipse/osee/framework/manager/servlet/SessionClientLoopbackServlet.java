@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.internal.Activator;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
@@ -42,8 +43,8 @@ public class SessionClientLoopbackServlet extends UnsecuredOseeHttpServlet {
 
    private final ISessionManager sessionManager;
 
-   public SessionClientLoopbackServlet(ISessionManager sessionManager) {
-      super();
+   public SessionClientLoopbackServlet(Log logger, ISessionManager sessionManager) {
+      super(logger);
       this.sessionManager = sessionManager;
    }
 

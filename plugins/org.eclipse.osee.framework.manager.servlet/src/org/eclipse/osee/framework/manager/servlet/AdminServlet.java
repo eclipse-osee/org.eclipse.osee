@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.osgi.framework.Bundle;
@@ -44,7 +45,8 @@ public class AdminServlet extends UnsecuredOseeHttpServlet {
 
    private final BundleContext context;
 
-   public AdminServlet(BundleContext context) {
+   public AdminServlet(Log logger, BundleContext context) {
+      super(logger);
       this.context = context;
    }
 

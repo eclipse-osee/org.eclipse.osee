@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.internal.Activator;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
@@ -53,7 +54,8 @@ public class ConfigurationServlet extends UnsecuredOseeHttpServlet {
    private final IApplicationServerManager appServerService;
    private final IdentityService identityService;
 
-   public ConfigurationServlet(IApplicationServerManager appServerService, IDataTranslationService translationService, IOseeDatabaseService databaseService, IOseeCachingService cachingService, IOseeBranchService branchService, IdentityService identityService) {
+   public ConfigurationServlet(Log logger, IApplicationServerManager appServerService, IDataTranslationService translationService, IOseeDatabaseService databaseService, IOseeCachingService cachingService, IOseeBranchService branchService, IdentityService identityService) {
+      super(logger);
       this.translationService = translationService;
       this.databaseService = databaseService;
       this.branchService = branchService;

@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.data.TagListener;
 import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
@@ -31,8 +32,8 @@ public class SearchEngineTaggerServlet extends SecureOseeHttpServlet {
 
    private final ISearchEngineTagger searchTaggerService;
 
-   public SearchEngineTaggerServlet(ISessionManager sessionManager, ISearchEngineTagger searchTaggerService) {
-      super(sessionManager);
+   public SearchEngineTaggerServlet(Log logger, ISessionManager sessionManager, ISearchEngineTagger searchTaggerService) {
+      super(logger, sessionManager);
       this.searchTaggerService = searchTaggerService;
    }
 

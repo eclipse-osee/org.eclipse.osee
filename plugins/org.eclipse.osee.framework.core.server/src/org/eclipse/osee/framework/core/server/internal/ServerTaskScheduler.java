@@ -10,36 +10,54 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.internal;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
+import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IServerTask;
 import org.eclipse.osee.framework.core.server.IServerTaskScheduler;
-import org.eclipse.osee.framework.core.server.ServerThreads;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ServerTaskScheduler implements IServerTaskScheduler {
-   private final Map<Runnable, ScheduledFuture<?>> futures;
-   private final ScheduledExecutorService executor;
 
-   public ServerTaskScheduler() {
-      futures = Collections.synchronizedMap(new HashMap<Runnable, ScheduledFuture<?>>());
-      executor =
-         Executors.newSingleThreadScheduledExecutor(ServerThreads.createNewThreadFactory("Osee Task Scheduler"));
+   private Log logger;
+
+   private final Map<Runnable, ScheduledFuture<?>> futures = new ConcurrentHashMap<Runnable, ScheduledFuture<?>>();
+
+   private ScheduledExecutorService executor;
+   private IApplicationServerManager serverManager;
+
+   public void setLogger(Log logger) {
+      this.logger = logger;
+   }
+
+   public void setServerManager(IApplicationServerManager serverManager) {
+      this.serverManager = serverManager;
+   }
+
+   public void start() {
+      ThreadFactory factory = serverManager.createNewThreadFactory("Osee Task Scheduler", Thread.NORM_PRIORITY);
+      executor = Executors.newSingleThreadScheduledExecutor(factory);
+   }
+
+   public void stop() {
+      if (executor != null) {
+         executor.shutdown();
+      }
+      futures.clear();
    }
 
    @Override
    public void addServerTask(IServerTask taskProvider) {
       if (taskProvider != null) {
-         OseeLog.log(ServerActivator.class, Level.INFO, "Adding task: " + taskProvider.getName());
+         logger.info("Adding task: [%s]", taskProvider.getName());
          switch (taskProvider.getSchedulingScheme()) {
             case ONE_SHOT:
                scheduleOneShot(taskProvider, taskProvider.getInitialDelay(), taskProvider.getTimeUnit());
@@ -61,7 +79,7 @@ public class ServerTaskScheduler implements IServerTaskScheduler {
    @Override
    public void removeServerTask(IServerTask taskProvider) {
       if (taskProvider != null) {
-         OseeLog.log(ServerActivator.class, Level.INFO, "Removing task: " + taskProvider.getName());
+         logger.info("Removing task: [%s]", taskProvider.getName());
          ScheduledFuture<?> future = futures.get(taskProvider);
          if (future != null) {
             future.cancel(true);

@@ -12,21 +12,20 @@ package org.eclipse.osee.framework.core.server.internal.authentication;
 
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.OseeCredential;
-import org.eclipse.osee.framework.core.server.IAuthenticationProvider;
-import org.eclipse.osee.framework.core.server.UserDataStore;
+import org.eclipse.osee.framework.core.server.AbstractAuthenticationProvider;
 
 /**
  * @author Roberto E. Escobar
  */
-public class DemoAuthenticationProvider implements IAuthenticationProvider {
+public class DemoAuthenticationProvider extends AbstractAuthenticationProvider {
 
    private final boolean autoAuthenticate = true;
    private final String DEMO_USER = "Joe Smith";
 
    @Override
    public IUserToken asOseeUserId(OseeCredential credential) {
-      IUserToken userToken = UserDataStore.getUserTokenFromOseeDb(DEMO_USER);
-      return userToken != null ? userToken : UserDataStore.createUserToken(true, DEMO_USER, DEMO_USER, "", true);
+      IUserToken userToken = getUserTokenFromOseeDb(DEMO_USER);
+      return userToken != null ? userToken : createUserToken(true, DEMO_USER, DEMO_USER, "", true);
    }
 
    @Override

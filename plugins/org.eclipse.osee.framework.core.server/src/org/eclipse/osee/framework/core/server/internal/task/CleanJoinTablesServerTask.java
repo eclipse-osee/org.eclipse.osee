@@ -14,17 +14,15 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.server.IServerTask;
 import org.eclipse.osee.framework.core.server.ISession;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.SchedulingScheme;
-import org.eclipse.osee.framework.core.server.SessionUtil;
-import org.eclipse.osee.framework.core.server.internal.ServerActivator;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
@@ -48,6 +46,22 @@ public class CleanJoinTablesServerTask implements IServerTask {
       "osee_tag_gamma_queue",
       "osee_join_id"};
 
+   private IOseeDatabaseService dbService;
+   private Log logger;
+   private ISessionManager sessionManager;
+
+   public void setDbService(IOseeDatabaseService dbService) {
+      this.dbService = dbService;
+   }
+
+   public void setLogger(Log logger) {
+      this.logger = logger;
+   }
+
+   public void setSessionManager(ISessionManager sessionManager) {
+      this.sessionManager = sessionManager;
+   }
+
    @Override
    public String getName() {
       return NAME;
@@ -62,15 +76,15 @@ public class CleanJoinTablesServerTask implements IServerTask {
          }
          deleteFromJoinCleanup();
       } catch (OseeCoreException ex) {
-         OseeLog.log(ServerActivator.class, Level.WARNING, ex);
+         logger.warn(ex, "Error cleaning up tables");
       }
    }
 
    private void deleteFromJoinCleanup() throws OseeCoreException {
       List<Integer[]> queryIds = new ArrayList<Integer[]>();
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = dbService.getStatement();
       boolean isAlive = false;
-      ISessionManager manager = ServerActivator.getSessionManager();
+      ISessionManager manager = sessionManager;
       try {
          chStmt.runPreparedQuery(SELECT_SESSION_FROM_JOIN);
 

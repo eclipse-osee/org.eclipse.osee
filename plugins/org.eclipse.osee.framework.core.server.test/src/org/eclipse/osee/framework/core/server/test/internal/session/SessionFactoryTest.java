@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.server.internal.session.Session;
 import org.eclipse.osee.framework.core.server.internal.session.SessionCache;
 import org.eclipse.osee.framework.core.server.internal.session.SessionFactory;
 import org.eclipse.osee.framework.core.server.test.mocks.MockBuildTypeIdentifier;
+import org.eclipse.osee.framework.core.server.test.mocks.MockLog;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +48,7 @@ public class SessionFactoryTest {
    private final Date lastInteractionDate;
    private final String lastInteractionDetails;
    private final MockBuildTypeIdentifier typeIdentifier = new MockBuildTypeIdentifier();
-   private final SessionFactory factory = new SessionFactory(typeIdentifier);
+   private final SessionFactory factory = new SessionFactory(new MockLog(), typeIdentifier);
 
    public SessionFactoryTest(String guid, String userId, Date creationDate, String managedByServerId, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) {
       super();

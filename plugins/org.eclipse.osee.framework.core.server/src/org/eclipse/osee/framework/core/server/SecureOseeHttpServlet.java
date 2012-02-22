@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.server;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
@@ -22,7 +23,8 @@ public class SecureOseeHttpServlet extends OseeHttpServlet {
    private static final long serialVersionUID = -4034231476048459552L;
    private final ISessionManager sessionManager;
 
-   public SecureOseeHttpServlet(ISessionManager sessionManager) {
+   public SecureOseeHttpServlet(Log logger, ISessionManager sessionManager) {
+      super(logger);
       this.sessionManager = sessionManager;
    }
 

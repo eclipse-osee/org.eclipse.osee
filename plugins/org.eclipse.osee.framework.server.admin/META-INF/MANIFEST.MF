@@ -32,6 +32,7 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.resource.management.util,
  org.eclipse.osee.framework.search.engine,
  org.eclipse.osee.framework.search.engine.attribute,
+ org.eclipse.osee.logger,
  org.eclipse.osgi.framework.console,
  org.osgi.framework,
  org.osgi.util.tracker

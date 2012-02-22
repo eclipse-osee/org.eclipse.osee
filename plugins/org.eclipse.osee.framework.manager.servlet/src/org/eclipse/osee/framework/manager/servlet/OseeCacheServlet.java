@@ -49,6 +49,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.internal.Activator;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
@@ -61,7 +62,8 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
    private final IOseeModelFactoryService factoryService;
    private final ISessionManager sessionManager;
 
-   public OseeCacheServlet(ISessionManager sessionManager, IDataTranslationService translationService, IOseeCachingService cachingService, IOseeModelFactoryService factoryService) {
+   public OseeCacheServlet(Log logger, ISessionManager sessionManager, IDataTranslationService translationService, IOseeCachingService cachingService, IOseeModelFactoryService factoryService) {
+      super(logger);
       this.sessionManager = sessionManager;
       this.translationService = translationService;
       this.cachingService = cachingService;

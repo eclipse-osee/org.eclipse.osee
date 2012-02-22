@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.manager.servlet.data.ArtifactUtil;
 import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.logger.Log;
 
 public class DataServlet extends UnsecuredOseeHttpServlet {
 
@@ -39,8 +40,8 @@ public class DataServlet extends UnsecuredOseeHttpServlet {
    private final IResourceManager resourceManager;
    private final BranchCache branchCache;
 
-   public DataServlet(IResourceLocatorManager locatorManager, IResourceManager resourceManager, IOseeCachingService cacheService) {
-      super();
+   public DataServlet(Log logger, IResourceLocatorManager locatorManager, IResourceManager resourceManager, IOseeCachingService cacheService) {
+      super(logger);
       this.locatorManager = locatorManager;
       this.resourceManager = resourceManager;
       branchCache = cacheService.getBranchCache();

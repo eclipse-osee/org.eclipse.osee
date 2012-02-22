@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.manager.servlet.function.CreateBranchFunction;
 import org.eclipse.osee.framework.manager.servlet.function.CreateCommitFunction;
 import org.eclipse.osee.framework.manager.servlet.function.PurgeBranchFunction;
 import org.eclipse.osee.framework.manager.servlet.internal.Activator;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -46,8 +47,8 @@ public class BranchManagerServlet extends SecureOseeHttpServlet {
    private final IOseeBranchService branchService;
    private final IDataTranslationService translationService;
 
-   public BranchManagerServlet(ISessionManager sessionManager, IOseeBranchService branchService, IDataTranslationService translationService) {
-      super(sessionManager);
+   public BranchManagerServlet(Log logger, ISessionManager sessionManager, IOseeBranchService branchService, IDataTranslationService translationService) {
+      super(logger, sessionManager);
       this.branchService = branchService;
       this.translationService = translationService;
    }
@@ -87,8 +88,7 @@ public class BranchManagerServlet extends SecureOseeHttpServlet {
          }
          Operations.executeWorkAndCheckStatus(op, new LogProgressMonitor());
       } catch (Exception ex) {
-         OseeLog.logf(Activator.class, Level.SEVERE,
-            ex, "Branch servlet request error: [%s]", req.toString());
+         OseeLog.logf(Activator.class, Level.SEVERE, ex, "Branch servlet request error: [%s]", req.toString());
          resp.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
          resp.setContentType("text/plain");
          resp.getWriter().write(Lib.exceptionToString(ex));

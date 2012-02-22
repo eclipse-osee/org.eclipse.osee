@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" name="org.eclipse.osee.framework.core.server.internal.session.SessionManagerService">
+   <implementation class="org.eclipse.osee.framework.core.server.internal.session.SessionManagerService"/>
+   <service>
+      <provide interface="org.eclipse.osee.framework.core.server.ISessionManager"/>
+   </service>
+   <reference bind="setDbService" cardinality="1..1" interface="org.eclipse.osee.framework.database.IOseeDatabaseService" name="IOseeDatabaseService" policy="static"/>
+   <reference bind="setServerManager" cardinality="1..1" interface="org.eclipse.osee.framework.core.server.IApplicationServerManager" name="IApplicationServerManager" policy="static"/>
+   <reference bind="setAuthenticationManager" cardinality="1..1" interface="org.eclipse.osee.framework.core.server.IAuthenticationManager" name="IAuthenticationManager" policy="static"/>
+</scr:component>

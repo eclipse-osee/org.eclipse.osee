@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.internal.Activator;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
@@ -35,7 +36,8 @@ public class ServerLookupServlet extends UnsecuredOseeHttpServlet {
    private final IApplicationServerLookup lookupService;
    private final IApplicationServerManager applicationServerManager;
 
-   public ServerLookupServlet(IApplicationServerLookup lookupService, IApplicationServerManager applicationServerManager) {
+   public ServerLookupServlet(Log logger, IApplicationServerLookup lookupService, IApplicationServerManager applicationServerManager) {
+      super(logger);
       this.lookupService = lookupService;
       this.applicationServerManager = applicationServerManager;
 
@@ -74,8 +76,8 @@ public class ServerLookupServlet extends UnsecuredOseeHttpServlet {
             response.getOutputStream().flush();
          }
       } catch (Exception ex) {
-         OseeLog.logf(Activator.class, Level.SEVERE,
-            ex, "Failed to process application server lookup request [%s]", request.toString());
+         OseeLog.logf(Activator.class, Level.SEVERE, ex, "Failed to process application server lookup request [%s]",
+            request.toString());
          response.getWriter().write(Lib.exceptionToString(ex));
          response.getWriter().flush();
          response.getWriter().close();
@@ -94,8 +96,8 @@ public class ServerLookupServlet extends UnsecuredOseeHttpServlet {
                String.format("Registration into server lookup was a [%s]", wasSuccessful ? "success" : "failure"));
          }
       } catch (Exception ex) {
-         OseeLog.logf(Activator.class, Level.SEVERE,
-            ex, "Failed to process application server lookup request [%s]", request.toString());
+         OseeLog.logf(Activator.class, Level.SEVERE, ex, "Failed to process application server lookup request [%s]",
+            request.toString());
          response.getWriter().write(Lib.exceptionToString(ex));
       }
       response.getWriter().flush();

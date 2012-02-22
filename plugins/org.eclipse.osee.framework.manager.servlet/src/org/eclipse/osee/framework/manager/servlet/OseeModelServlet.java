@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.internal.Activator;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
@@ -40,8 +41,8 @@ public class OseeModelServlet extends SecureOseeHttpServlet {
    private final IOseeModelingService modelingService;
    private final IDataTranslationService dataTransalatorService;
 
-   public OseeModelServlet(ISessionManager sessionManager, IDataTranslationService dataTransalatorService, IOseeModelingService modelingService) {
-      super(sessionManager);
+   public OseeModelServlet(Log logger, ISessionManager sessionManager, IDataTranslationService dataTransalatorService, IOseeModelingService modelingService) {
+      super(logger, sessionManager);
       this.dataTransalatorService = dataTransalatorService;
       this.modelingService = modelingService;
    }

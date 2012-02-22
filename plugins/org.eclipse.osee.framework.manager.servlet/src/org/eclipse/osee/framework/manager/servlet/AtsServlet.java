@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
@@ -40,7 +41,8 @@ public class AtsServlet extends UnsecuredOseeHttpServlet {
    private final IResourceLocatorManager locatorManager;
    private final IResourceManager resourceManager;
 
-   public AtsServlet(IResourceLocatorManager locatorManager, IResourceManager resourceManager, IOseeCachingService cacheService) {
+   public AtsServlet(Log logger, IResourceLocatorManager locatorManager, IResourceManager resourceManager, IOseeCachingService cacheService) {
+      super(logger);
       this.locatorManager = locatorManager;
       this.resourceManager = resourceManager;
       AtsService.IResourceProvider provider = new ResourceProvider();

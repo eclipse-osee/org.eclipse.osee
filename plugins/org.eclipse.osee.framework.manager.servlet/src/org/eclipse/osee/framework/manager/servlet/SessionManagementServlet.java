@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.internal.Activator;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
@@ -53,8 +54,8 @@ public class SessionManagementServlet extends UnsecuredOseeHttpServlet {
    private final IAuthenticationManager authenticationManager;
    private final ISessionManager sessionManager;
 
-   public SessionManagementServlet(ISessionManager sessionManager, IAuthenticationManager authenticationManager) {
-      super();
+   public SessionManagementServlet(Log logger, ISessionManager sessionManager, IAuthenticationManager authenticationManager) {
+      super(logger);
       this.sessionManager = sessionManager;
       this.authenticationManager = authenticationManager;
    }

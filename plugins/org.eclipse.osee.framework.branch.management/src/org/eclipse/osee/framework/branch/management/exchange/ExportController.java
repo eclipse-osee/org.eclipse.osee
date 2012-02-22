@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.branch.management.exchange.export.AbstractExpo
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.server.ServerThreads;
 import org.eclipse.osee.framework.database.core.ExportImportJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -100,9 +99,8 @@ final class ExportController implements IExchangeTaskListener {
          options.put(ExportOptions.MAX_TXS.name(), Long.toString(maxTx));
       }
 
-      executorService =
-         Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(),
-            ServerThreads.createNewThreadFactory("branch.export.worker"));
+      //ServerThreads.createNewThreadFactory("branch.export.worker")
+      executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
    }
 
    protected void handleTxWork() throws OseeCoreException {

@@ -16,24 +16,23 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadFactory;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.OperationJob;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.ChecksumUtil;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
@@ -42,14 +41,37 @@ public class ApplicationServerManager implements IApplicationServerManager {
    private final Map<String, OseeServerThreadFactory> threadFactories;
    private final Map<String, InternalOseeHttpServlet> oseeHttpServlets;
 
-   private final InternalOseeServerInfo applicationServerInfo;
-   private final Timer timer;
+   private Log logger;
+   private IOseeDatabaseService dbService;
+
+   private ApplicationServerDataStore serverDataStore;
+   private InternalOseeServerInfo applicationServerInfo;
+   private Timer timer;
 
    public ApplicationServerManager() {
-      this.oseeHttpServlets = Collections.synchronizedMap(new HashMap<String, InternalOseeHttpServlet>());
-      this.threadFactories = Collections.synchronizedMap(new HashMap<String, OseeServerThreadFactory>());
-      this.applicationServerInfo = createOseeServerInfo();
-      applicationServerInfo.setAcceptingRequests(true);
+      this.oseeHttpServlets = new ConcurrentHashMap<String, InternalOseeHttpServlet>();
+      this.threadFactories = new ConcurrentHashMap<String, OseeServerThreadFactory>();
+   }
+
+   public void setLogger(Log logger) {
+      this.logger = logger;
+   }
+
+   public Log getLogger() {
+      return logger;
+   }
+
+   public void setDatabaseService(IOseeDatabaseService dbService) {
+      this.dbService = dbService;
+   }
+
+   private IOseeDatabaseService getDatabaseService() {
+      return dbService;
+   }
+
+   public void start() throws Exception {
+      serverDataStore = new ApplicationServerDataStore(getLogger(), getDatabaseService());
+      applicationServerInfo = createOseeServerInfo(getLogger(), serverDataStore);
 
       timer = new Timer();
       timer.schedule(new TimerTask() {
@@ -58,19 +80,26 @@ public class ApplicationServerManager implements IApplicationServerManager {
             try {
                executeLookupRegistration();
             } catch (Exception ex) {
-               OseeLog.log(ServerActivator.class, Level.SEVERE, ex);
+               getLogger().error(ex, "Error during lookup registration");
             } finally {
                timer.cancel();
             }
          }
       }, 5 * 1000);
+
+      applicationServerInfo.setAcceptingRequests(true);
    }
 
-   private InternalOseeServerInfo createOseeServerInfo() {
+   public void stop() throws OseeCoreException {
+      shutdown();
+   }
+
+   private static InternalOseeServerInfo createOseeServerInfo(Log logger, ApplicationServerDataStore dataStore) {
       String serverAddress = "127.0.0.1";
       try {
          serverAddress = InetAddress.getLocalHost().getCanonicalHostName();
       } catch (UnknownHostException ex) {
+         //
       }
       int port = OseeServerProperties.getOseeApplicationServerPort();
 
@@ -80,18 +109,18 @@ public class ApplicationServerManager implements IApplicationServerManager {
          ByteArrayInputStream inputStream = new ByteArrayInputStream(address.getBytes("UTF-8"));
          checkSum = ChecksumUtil.createChecksumAsString(inputStream, ChecksumUtil.MD5);
       } catch (Exception ex) {
-         OseeLog.log(ServerActivator.class, Level.SEVERE, "Error generating application server id", ex);
+         logger.error(ex, "Error generating application server id");
       }
 
-      return new InternalOseeServerInfo(checkSum, serverAddress, port, GlobalTime.GreenwichMeanTimestamp(), false);
+      return new InternalOseeServerInfo(logger, dataStore, checkSum, serverAddress, port,
+         GlobalTime.GreenwichMeanTimestamp(), false);
    }
 
    @Override
    public boolean executeLookupRegistration() {
       boolean isRegistered = getApplicationServerInfo().updateRegistration();
       if (isRegistered) {
-         OseeLog.logf(ServerActivator.class, Level.INFO,
-            "Application Server: [%s] registered.", getApplicationServerInfo().getServerId());
+         getLogger().info("Application Server: [%s] registered.", getApplicationServerInfo().getServerId());
       }
       return isRegistered;
    }
@@ -149,7 +178,7 @@ public class ApplicationServerManager implements IApplicationServerManager {
    @Override
    public synchronized void setServletRequestsAllowed(final boolean value) throws OseeCoreException {
       if (getApplicationServerInfo().isAcceptingRequests() != value) {
-         boolean wasSuccessful = ApplicationServerDataStore.updateServerState(getApplicationServerInfo(), value);
+         boolean wasSuccessful = serverDataStore.updateServerState(getApplicationServerInfo(), value);
          if (wasSuccessful) {
             getApplicationServerInfo().setAcceptingRequests(value);
             updateServletRequestsAllowed(value);
@@ -159,7 +188,9 @@ public class ApplicationServerManager implements IApplicationServerManager {
 
    @Override
    public void shutdown() throws OseeCoreException {
-      timer.cancel();
+      if (timer != null) {
+         timer.cancel();
+      }
       setServletRequestsAllowed(false);
    }
 

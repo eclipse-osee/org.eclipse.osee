@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.server;
 
 import javax.servlet.http.HttpServletRequest;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
@@ -19,12 +20,13 @@ public class UnsecuredOseeHttpServlet extends OseeHttpServlet {
 
    private static final long serialVersionUID = 6633402530554659368L;
 
-   public UnsecuredOseeHttpServlet() {
-      super();
+   public UnsecuredOseeHttpServlet(Log logger) {
+      super(logger);
    }
 
    @Override
    protected final void checkAccessControl(HttpServletRequest request) {
+      //
    }
 
 }

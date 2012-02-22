@@ -10,6 +10,9 @@
 	<version>0.9.9-SNAPSHOT</version>
 
 	<modules>
+		<module>../../plugins/org.eclipse.osee.framework.core.server</module>
+		<module>../../plugins/org.eclipse.osee.framework.core.server.test</module>
+	
 		<module>../../plugins/org.eclipse.osee.display.api</module>
 		<module>../../plugins/org.eclipse.osee.display.view.web</module>
 		<module>../../plugins/org.eclipse.osee.display.presenter</module>
@@ -22,8 +25,12 @@
 		<module>../../plugins/org.eclipse.osee.ats.presenter</module>
 		<module>../../plugins/org.eclipse.osee.ats.presenter.test</module>
 
+		<module>../../features/org.eclipse.osee.x.server.legacy.feature</module>
+		
 		<module>../../features/org.eclipse.osee.x.server.feature</module>
 		<module>../../features/org.eclipse.osee.x.server.external.feature</module>
+		
+		<module>../../features/org.eclipse.osee.x.server.legacy.feature.source</module>
 		<module>../../features/org.eclipse.osee.x.server.feature.source</module>
 
 		<module>../../plugins/org.eclipse.osee.x.server.p2</module>

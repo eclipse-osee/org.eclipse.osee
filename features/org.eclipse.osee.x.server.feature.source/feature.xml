@@ -25,6 +25,10 @@
          id="org.eclipse.osee.orcs.feature.source"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.osee.x.server.legacy.feature.source"
+         version="0.0.0"/>
+
    <plugin
          id="org.eclipse.osee.display.presenter.source"
          download-size="0"

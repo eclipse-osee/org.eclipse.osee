@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
@@ -36,8 +37,8 @@ public class SearchEngineServlet extends SecureOseeHttpServlet {
    private final ISearchEngine searchEngine;
    private final IDataTranslationService translationService;
 
-   public SearchEngineServlet(ISessionManager sessionManager, ISearchEngine searchEngine, IDataTranslationService translationService) {
-      super(sessionManager);
+   public SearchEngineServlet(Log logger, ISessionManager sessionManager, ISearchEngine searchEngine, IDataTranslationService translationService) {
+      super(logger, sessionManager);
       this.searchEngine = searchEngine;
       this.translationService = translationService;
    }
@@ -59,8 +60,8 @@ public class SearchEngineServlet extends SecureOseeHttpServlet {
          Lib.inputStreamToOutputStream(inputStream, response.getOutputStream());
 
       } catch (Exception ex) {
-         OseeLog.logf(Activator.class, Level.SEVERE,
-            ex, "Failed to respond to a search engine servlet request [%s]", request.getRequestURL());
+         OseeLog.logf(Activator.class, Level.SEVERE, ex, "Failed to respond to a search engine servlet request [%s]",
+            request.getRequestURL());
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          response.setContentType("text/plain");
          response.getWriter().write(Lib.exceptionToString(ex));

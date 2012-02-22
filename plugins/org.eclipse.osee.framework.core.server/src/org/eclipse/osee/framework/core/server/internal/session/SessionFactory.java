@@ -26,15 +26,18 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DatabaseInfoManager;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
  */
 public final class SessionFactory implements IOseeTypeFactory {
    private final BuildTypeIdentifier typeIdentifier;
+   private final Log logger;
 
-   public SessionFactory(BuildTypeIdentifier typeIdentifier) {
+   public SessionFactory(Log logger, BuildTypeIdentifier typeIdentifier) {
       this.typeIdentifier = typeIdentifier;
+      this.logger = logger;
    }
 
    public Session createOrUpdate(IOseeCache<String, Session> cache, int uniqueId, StorageState storageState, String guid, String userId, Date creationDate, String managedByServerId, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) throws OseeCoreException {
@@ -71,7 +74,7 @@ public final class SessionFactory implements IOseeTypeFactory {
       Properties properties = getSQLProperties(session.getClientVersion());
       sessionGrant.setSqlProperties(properties);
 
-      sessionGrant.setDataStorePath(OseeServerProperties.getOseeApplicationServerData());
+      sessionGrant.setDataStorePath(OseeServerProperties.getOseeApplicationServerData(logger));
       sessionGrant.setClientBuildDesination(typeIdentifier.getBuildDesignation(session.getClientVersion()));
       return sessionGrant;
    }

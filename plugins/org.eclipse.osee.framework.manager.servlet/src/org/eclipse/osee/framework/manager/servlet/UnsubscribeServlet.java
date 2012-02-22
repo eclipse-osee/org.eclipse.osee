@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.internal.Activator;
+import org.eclipse.osee.logger.Log;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -38,7 +39,8 @@ public class UnsubscribeServlet extends UnsecuredOseeHttpServlet {
    private final BundleContext bundleContext;
    private final IdentityService identityService;
 
-   public UnsubscribeServlet(BundleContext bundleContext, IOseeDatabaseService databaseService, IOseeCachingService cacheService, IdentityService identityService) {
+   public UnsubscribeServlet(Log logger, BundleContext bundleContext, IOseeDatabaseService databaseService, IOseeCachingService cacheService, IdentityService identityService) {
+      super(logger);
       this.databaseService = databaseService;
       this.cacheService = cacheService;
       this.bundleContext = bundleContext;

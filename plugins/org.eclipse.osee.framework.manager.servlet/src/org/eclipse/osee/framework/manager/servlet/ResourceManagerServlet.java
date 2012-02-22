@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
+import org.eclipse.osee.logger.Log;
 
 /**
  * This class is responsible for managing server-side resources. The class accepts HTTP requests to perform uploads,
@@ -46,8 +47,8 @@ public class ResourceManagerServlet extends SecureOseeHttpServlet {
    private final IResourceLocatorManager locatorManager;
    private final IResourceManager resourceManager;
 
-   public ResourceManagerServlet(ISessionManager sessionManager, IResourceLocatorManager locatorManager, IResourceManager resourceManager) {
-      super(sessionManager);
+   public ResourceManagerServlet(Log logger, ISessionManager sessionManager, IResourceLocatorManager locatorManager, IResourceManager resourceManager) {
+      super(logger, sessionManager);
       this.locatorManager = locatorManager;
       this.resourceManager = resourceManager;
    }

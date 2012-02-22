@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
+import org.eclipse.osee.logger.Log;
 import org.osgi.framework.FrameworkUtil;
 
 /**
@@ -55,7 +56,8 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
 
    private static Map<Integer, String> branchIdToGuidMap;
 
-   public ArtifactFileServlet(IResourceLocatorManager locatorManager, IResourceManager resourceManager, IOseeCachingService cachingService) {
+   public ArtifactFileServlet(Log logger, IResourceLocatorManager locatorManager, IResourceManager resourceManager, IOseeCachingService cachingService) {
+      super(logger);
       this.locatorManager = locatorManager;
       this.resourceManager = resourceManager;
       this.branchCache = cachingService.getBranchCache();

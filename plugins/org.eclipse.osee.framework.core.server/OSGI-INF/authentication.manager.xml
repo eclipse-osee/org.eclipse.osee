@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<component name="authentication.manager">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="authentication.manager">
 	<implementation class="org.eclipse.osee.framework.core.server.internal.AuthenticationManager"/>
 	<service>
 		<provide interface="org.eclipse.osee.framework.core.server.IAuthenticationManager"/>
@@ -10,4 +10,4 @@
 		unbind="removeAuthenticationProvider"
 		cardinality="0..n"
 		policy="dynamic"/>
-</component>
+</scr:component>

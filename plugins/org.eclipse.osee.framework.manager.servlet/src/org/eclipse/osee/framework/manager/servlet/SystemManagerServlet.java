@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.data.HttpSystemManagerCreationInfo;
 import org.eclipse.osee.framework.manager.servlet.internal.Activator;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Donald G. Dunne
@@ -51,7 +52,8 @@ public class SystemManagerServlet extends UnsecuredOseeHttpServlet {
 
    private final ISessionManager sessionManager;
 
-   public SystemManagerServlet(ISessionManager sessionManager) {
+   public SystemManagerServlet(Log logger, ISessionManager sessionManager) {
+      super(logger);
       this.sessionManager = sessionManager;
    }
 
@@ -88,8 +90,8 @@ public class SystemManagerServlet extends UnsecuredOseeHttpServlet {
          response.setCharacterEncoding("UTF-8");
          response.getWriter().write(appendable.toString() + AHTML.newline() + "As of: " + new Date());
       } catch (Exception ex) {
-         OseeLog.logf(Activator.class, Level.SEVERE,
-            ex, "Error processing request for protocols [%s]", request.toString());
+         OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error processing request for protocols [%s]",
+            request.toString());
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          response.setContentType("text/plain");
          response.getWriter().write(Lib.exceptionToString(ex));

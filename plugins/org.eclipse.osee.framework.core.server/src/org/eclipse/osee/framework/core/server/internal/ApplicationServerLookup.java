@@ -14,14 +14,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.server.IApplicationServerLookup;
-import org.eclipse.osee.framework.core.server.ServerThreads;
+import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
@@ -30,9 +30,48 @@ public class ApplicationServerLookup implements IApplicationServerLookup {
 
    private static ThreadFactory threadFactory = null;
 
+   private Log logger;
+   private IOseeDatabaseService dbService;
+
+   private IApplicationServerManager serverManager;
+   private ApplicationServerDataStore serverDataStore;
+
+   public void setLogger(Log logger) {
+      this.logger = logger;
+   }
+
+   private Log getLogger() {
+      return logger;
+   }
+
+   public void setDatabaseService(IOseeDatabaseService dbService) {
+      this.dbService = dbService;
+   }
+
+   private IOseeDatabaseService getDatabaseService() {
+      return dbService;
+   }
+
+   public void setServerManager(IApplicationServerManager serverManager) {
+      this.serverManager = serverManager;
+   }
+
+   public void start() {
+      serverDataStore = new ApplicationServerDataStore(getLogger(), getDatabaseService());
+   }
+
+   public void stop() {
+      serverDataStore = null;
+   }
+
+   private ApplicationServerDataStore getDataStore() {
+      return serverDataStore;
+   }
+
    @Override
    public Collection<OseeServerInfo> getAvailableServers() throws OseeCoreException {
-      return getHealthyServers(ApplicationServerDataStore.getAllApplicationServerInfos());
+      Collection<OseeServerInfo> infos = getDataStore().getAllApplicationServerInfos();
+      return getHealthyServers(infos);
    }
 
    private Collection<OseeServerInfo> getHealthyServers(Collection<OseeServerInfo> infos) {
@@ -53,25 +92,26 @@ public class ApplicationServerLookup implements IApplicationServerLookup {
 
    @Override
    public OseeServerInfo getServerInfoBy(String version) throws OseeCoreException {
-      Collection<OseeServerInfo> healthyServers =
-         getHealthyServers(ApplicationServerDataStore.getApplicationServerInfos(version));
+      Collection<OseeServerInfo> healthyServers = getHealthyServers(serverDataStore.getApplicationServerInfos(version));
       return getBestAvailable(healthyServers);
    }
 
-   private static void cleanUpServers(final Collection<OseeServerInfo> unHealthyServers) {
+   private synchronized void cleanUpServers(final Collection<OseeServerInfo> unHealthyServers) {
       if (!unHealthyServers.isEmpty()) {
          if (threadFactory == null) {
-            threadFactory = ServerThreads.createNewThreadFactory("Server Status Thread Factory");
+            threadFactory = serverManager.createNewThreadFactory("Server Status Thread Factory", Thread.NORM_PRIORITY);
          }
 
          Thread thread = threadFactory.newThread(new Runnable() {
             @Override
             public void run() {
-               try {
-                  ApplicationServerDataStore.removeByServerId(unHealthyServers);
-               } catch (OseeCoreException ex) {
-                  OseeLog.logf(ServerActivator.class, Level.SEVERE,
-                     ex, "Error removing unhealthy server entries: [%s]", unHealthyServers);
+               final ApplicationServerDataStore store = serverDataStore;
+               if (store != null) {
+                  try {
+                     store.removeByServerId(unHealthyServers);
+                  } catch (OseeCoreException ex) {
+                     logger.error(ex, "Error removing unhealthy server entries: [%s]", unHealthyServers);
+                  }
                }
             }
          });
@@ -87,13 +127,13 @@ public class ApplicationServerLookup implements IApplicationServerLookup {
          int minSessions = Integer.MAX_VALUE;
          for (OseeServerInfo info : infos) {
             try {
-               int numberOfSessions = ApplicationServerDataStore.getNumberOfSessions(info.getServerId());
+               int numberOfSessions = serverDataStore.getNumberOfSessions(info.getServerId());
                if (minSessions > numberOfSessions) {
                   result = info;
                   minSessions = numberOfSessions;
                }
             } catch (OseeDataStoreException ex) {
-               OseeLog.log(ServerActivator.class, Level.SEVERE, ex);
+               logger.error(ex, "Error getting number of sessions");
             }
          }
       }

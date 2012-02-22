@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
+import org.eclipse.osee.logger.Log;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.http.HttpService;
 
@@ -77,6 +78,7 @@ public class ServletRegistrationHandler extends AbstractTrackingHandler {
       IResourceManager.class,
       HttpService.class,
       IdentityService.class,
+      Log.class
    };
    //@formatter:on
 
@@ -107,35 +109,42 @@ public class ServletRegistrationHandler extends AbstractTrackingHandler {
       IResourceLocatorManager locatorManager = getService(IResourceLocatorManager.class, services);
       IResourceManager resourceManager = getService(IResourceManager.class, services);
       IdentityService identityService = getService(IdentityService.class, services);
+      Log logger = getService(Log.class, services);
 
       httpService = getService(HttpService.class, services);
       appServerManager = getService(IApplicationServerManager.class, services);
 
-      register(new SystemManagerServlet(sessionManager), OseeServerContext.MANAGER_CONTEXT);
-      register(new ResourceManagerServlet(sessionManager, locatorManager, resourceManager),
+      register(new SystemManagerServlet(logger, sessionManager), OseeServerContext.MANAGER_CONTEXT);
+      register(new ResourceManagerServlet(logger, sessionManager, locatorManager, resourceManager),
          OseeServerContext.RESOURCE_CONTEXT);
-      register(new ArtifactFileServlet(locatorManager, resourceManager, caching), OseeServerContext.PROCESS_CONTEXT);
-      register(new ArtifactFileServlet(locatorManager, resourceManager, caching), OseeServerContext.ARTIFACT_CONTEXT);
-      register(new ArtifactFileServlet(locatorManager, resourceManager, caching), "index");
-      register(new BranchExchangeServlet(sessionManager, branchExchangeService, locatorManager, resourceManager),
+      register(new ArtifactFileServlet(logger, locatorManager, resourceManager, caching),
+         OseeServerContext.PROCESS_CONTEXT);
+      register(new ArtifactFileServlet(logger, locatorManager, resourceManager, caching),
+         OseeServerContext.ARTIFACT_CONTEXT);
+      register(new ArtifactFileServlet(logger, locatorManager, resourceManager, caching), "index");
+      register(
+         new BranchExchangeServlet(logger, sessionManager, branchExchangeService, locatorManager, resourceManager),
          OseeServerContext.BRANCH_EXCHANGE_CONTEXT);
-      register(new BranchManagerServlet(sessionManager, branchService, translationService),
+      register(new BranchManagerServlet(logger, sessionManager, branchService, translationService),
          OseeServerContext.BRANCH_CONTEXT);
-      register(new SearchEngineServlet(sessionManager, search, translationService), OseeServerContext.SEARCH_CONTEXT);
-      register(new SearchEngineTaggerServlet(sessionManager, tagger), OseeServerContext.SEARCH_TAGGING_CONTEXT);
-      register(new ServerLookupServlet(serverLookup, appServerManager), OseeServerContext.LOOKUP_CONTEXT);
-      register(new SessionManagementServlet(sessionManager, authenticationManager), OseeServerContext.SESSION_CONTEXT);
-      register(new SessionClientLoopbackServlet(sessionManager), OseeServerContext.CLIENT_LOOPBACK_CONTEXT);
-      register(new OseeCacheServlet(sessionManager, translationService, caching, factoryService),
+      register(new SearchEngineServlet(logger, sessionManager, search, translationService),
+         OseeServerContext.SEARCH_CONTEXT);
+      register(new SearchEngineTaggerServlet(logger, sessionManager, tagger), OseeServerContext.SEARCH_TAGGING_CONTEXT);
+      register(new ServerLookupServlet(logger, serverLookup, appServerManager), OseeServerContext.LOOKUP_CONTEXT);
+      register(new SessionManagementServlet(logger, sessionManager, authenticationManager),
+         OseeServerContext.SESSION_CONTEXT);
+      register(new SessionClientLoopbackServlet(logger, sessionManager), OseeServerContext.CLIENT_LOOPBACK_CONTEXT);
+      register(new OseeCacheServlet(logger, sessionManager, translationService, caching, factoryService),
          OseeServerContext.CACHE_CONTEXT);
-      register(new OseeModelServlet(sessionManager, translationService, modeling), OseeServerContext.OSEE_MODEL_CONTEXT);
-      register(new UnsubscribeServlet(context, databaseService, caching, identityService), "osee/unsubscribe");
+      register(new OseeModelServlet(logger, sessionManager, translationService, modeling),
+         OseeServerContext.OSEE_MODEL_CONTEXT);
+      register(new UnsubscribeServlet(logger, context, databaseService, caching, identityService), "osee/unsubscribe");
 
-      register(new AtsServlet(locatorManager, resourceManager, caching), "osee/ats");
-      register(new ConfigurationServlet(appServerManager, translationService, databaseService, caching, branchService,
-         identityService), OseeServerContext.OSEE_CONFIGURE_CONTEXT);
-      register(new DataServlet(locatorManager, resourceManager, caching), "osee/data");
-      register(new AdminServlet(context), "osee/console");
+      register(new AtsServlet(logger, locatorManager, resourceManager, caching), "osee/ats");
+      register(new ConfigurationServlet(logger, appServerManager, translationService, databaseService, caching,
+         branchService, identityService), OseeServerContext.OSEE_CONFIGURE_CONTEXT);
+      register(new DataServlet(logger, locatorManager, resourceManager, caching), "osee/data");
+      register(new AdminServlet(logger, context), "osee/console");
    }
 
    private void register(OseeHttpServlet servlet, String... contexts) {

@@ -33,6 +33,7 @@ Import-Package: org.apache.commons.lang,
  org.eclipse.osee.framework.jdk.core.util.xml,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.resource.management,
+ org.eclipse.osee.logger,
  org.osgi.framework,
  org.osgi.util.tracker
 Bundle-ActivationPolicy: lazy

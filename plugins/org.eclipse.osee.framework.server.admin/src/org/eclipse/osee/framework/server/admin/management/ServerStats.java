@@ -52,7 +52,7 @@ public class ServerStats extends AbstractOperation {
 
       logf("Code Base Location: [%s]", System.getProperty("user.dir"));
       logf("Datastore: [%s]", DatabaseInfoManager.getDefault().toString());
-      logf("Binary Data Path: [%s]\n", OseeServerProperties.getOseeApplicationServerData());
+      logf("Binary Data Path: [%s]\n", OseeServerProperties.getOseeApplicationServerData(null));
 
       logf("Supported Versions: %s", Arrays.deepToString(manager.getSupportedVersions()));
       logf("Accepting Requests: [%s]", manager.isAcceptingRequests());

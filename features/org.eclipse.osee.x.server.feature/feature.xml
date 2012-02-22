@@ -29,6 +29,10 @@
          id="org.eclipse.osee.orcs.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.osee.x.server.legacy.feature"
+         version="0.0.0"/>
+
    <requires>
       <import plugin="com.vaadin" version="6.6.6" match="greaterOrEqual"/>
       <import plugin="javax.servlet"/>

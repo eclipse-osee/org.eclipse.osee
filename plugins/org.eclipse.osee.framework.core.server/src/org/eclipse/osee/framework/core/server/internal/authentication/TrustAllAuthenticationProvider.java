@@ -13,14 +13,13 @@ package org.eclipse.osee.framework.core.server.internal.authentication;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.server.IAuthenticationProvider;
-import org.eclipse.osee.framework.core.server.UserDataStore;
+import org.eclipse.osee.framework.core.server.AbstractAuthenticationProvider;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
  */
-public class TrustAllAuthenticationProvider implements IAuthenticationProvider {
+public class TrustAllAuthenticationProvider extends AbstractAuthenticationProvider {
 
    @Override
    public boolean authenticate(OseeCredential credential) {
@@ -37,9 +36,9 @@ public class TrustAllAuthenticationProvider implements IAuthenticationProvider {
       IUserToken userToken = SystemUser.Guest;
       String userName = credential.getUserName();
       if (Strings.isValid(userName)) {
-         userToken = UserDataStore.getUserTokenFromOseeDb(userName);
+         userToken = getUserTokenFromOseeDb(userName);
          if (userToken == null) {
-            userToken = UserDataStore.createUserToken(true, userName, userName, "", true);
+            userToken = createUserToken(true, userName, userName, "", true);
          }
       }
       return userToken;

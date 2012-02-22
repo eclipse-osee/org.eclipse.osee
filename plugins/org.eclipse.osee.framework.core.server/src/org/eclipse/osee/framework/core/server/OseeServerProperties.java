@@ -11,11 +11,9 @@
 package org.eclipse.osee.framework.core.server;
 
 import java.io.File;
-import java.util.logging.Level;
-import org.eclipse.osee.framework.core.server.internal.ServerActivator;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
@@ -62,15 +60,16 @@ public class OseeServerProperties {
     * 
     * @return OSEE application server binary data path
     */
-   public static String getOseeApplicationServerData() {
+   public static String getOseeApplicationServerData(Log logger) {
       String toReturn = internalGetOseeApplicationServerData();
       if (!wasBinaryDataChecked) {
          File file = new File(toReturn);
-         if (file.exists()) {
-            OseeLog.logf(ServerActivator.class, Level.INFO, "Application Server Data: [%s]", toReturn);
-         } else {
-            OseeLog.logf(ServerActivator.class, Level.WARNING,
-               "Application Server Data: [%s] does not exist and will be created", toReturn);
+         if (logger != null) {
+            if (file.exists()) {
+               logger.info("Application Server Data: [%s]", toReturn);
+            } else {
+               logger.warn("Application Server Data: [%s] does not exist and will be created", toReturn);
+            }
          }
          wasBinaryDataChecked = true;
       }

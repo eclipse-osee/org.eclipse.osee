@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
@@ -41,8 +42,8 @@ public class BranchExchangeServlet extends SecureOseeHttpServlet {
    private final IResourceLocatorManager locatorManager;
    private final IResourceManager resourceManager;
 
-   public BranchExchangeServlet(ISessionManager sessionManager, IBranchExchange branchExchangeService, IResourceLocatorManager locatorManager, IResourceManager resourceManager) {
-      super(sessionManager);
+   public BranchExchangeServlet(Log logger, ISessionManager sessionManager, IBranchExchange branchExchangeService, IResourceLocatorManager locatorManager, IResourceManager resourceManager) {
+      super(logger, sessionManager);
       this.branchExchangeService = branchExchangeService;
       this.locatorManager = locatorManager;
       this.resourceManager = resourceManager;
