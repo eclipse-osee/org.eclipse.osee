@@ -11,11 +11,7 @@ Bundle-ActivationPolicy: lazy
 Eclipse-ExtensibleAPI: true
 DynamicImport-Package: *
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Import-Package: org.apache.commons.lang,
- org.eclipse.core.runtime,
- org.eclipse.core.runtime.jobs,
- org.eclipse.equinox.app,
- org.eclipse.osee.framework.core.data,
+Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.model,
@@ -25,7 +21,6 @@ Import-Package: org.apache.commons.lang,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
- org.eclipse.osee.framework.jdk.core.util.io.xml,
  org.eclipse.osee.framework.jdk.core.util.time,
  org.eclipse.osee.framework.jdk.core.util.xml,
  org.eclipse.osee.framework.logging,
@@ -33,4 +28,5 @@ Import-Package: org.apache.commons.lang,
  org.osgi.util.tracker
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/*.xml
-Require-Bundle: org.eclipse.equinox.ds
+Require-Bundle: org.eclipse.equinox.ds,
+ org.eclipse.core.runtime
