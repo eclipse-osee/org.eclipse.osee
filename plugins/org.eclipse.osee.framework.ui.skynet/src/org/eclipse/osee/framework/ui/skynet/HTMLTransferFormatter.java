@@ -13,7 +13,9 @@ package org.eclipse.osee.framework.ui.skynet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.osee.framework.core.client.CoreClientActivator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -21,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
 import org.eclipse.osee.framework.skynet.core.preferences.PreferenceConstants;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /**
  * @author Jeff C. Phillips
@@ -28,12 +31,24 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 public class HTMLTransferFormatter {
    private static final String START = "<A href=\"";
    private static final String END = "</A>";
-   private static IPreferenceStore prefStore = Activator.getInstance().getPreferenceStore();
+   private static IPreferenceStore preferenceStore;
+
+   private synchronized static IPreferenceStore getPreferenceStore() {
+      if (preferenceStore == null) {
+         preferenceStore =
+            new ScopedPreferenceStore(new InstanceScope(),
+               CoreClientActivator.getBundleContext().getBundle().getSymbolicName());
+      }
+      return preferenceStore;
+   }
+
+   private static boolean isWordTagWrapEnabled() {
+      String wrapKey = getPreferenceStore().getString(PreferenceConstants.WORDWRAP_KEY);
+      return IPreferenceStore.TRUE.equals(wrapKey);
+   }
 
    public static String getHtml(Artifact... artifacts) {
-      boolean applyWordTagWrap =
-         prefStore.getString(PreferenceConstants.WORDWRAP_KEY) != null && prefStore.getString(
-            PreferenceConstants.WORDWRAP_KEY).equals(IPreferenceStore.TRUE);
+      boolean applyWordTagWrap = isWordTagWrapEnabled();
 
       if (artifacts != null) {
          StringBuilder sb = new StringBuilder();

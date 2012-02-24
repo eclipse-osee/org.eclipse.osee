@@ -14,7 +14,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.osee.framework.core.client.CoreClientActivator;
@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /**
  * This class represents a preference page that is contributed to the Preferences dialog.
@@ -59,7 +60,7 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
       Group networkAdapter = new Group(parent, SWT.NONE);
       networkAdapter.setLayout(new GridLayout());
       networkAdapter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-      networkAdapter.setText("Select a Default Network Adaptor");
+      networkAdapter.setText("Select a Default Network Adapter");
 
       setupInetAddressButtons(networkAdapter);
 
@@ -94,8 +95,7 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
          networkButtons.put(addrs[i], button);
       }
 
-      Preferences prefStore = CoreClientActivator.getInstance().getPluginPreferences();
-      String inetaddress = prefStore.getString(CorePreferences.INETADDRESS_KEY);
+      String inetaddress = getPreferenceStore().getString(CorePreferences.INETADDRESS_KEY);
 
       boolean addressSelected = false;
       if (Strings.isValid(inetaddress)) {
@@ -113,7 +113,7 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
    }
 
    private void setupWordWrapChkButton() {
-      IPreferenceStore prefStore = Activator.getInstance().getPreferenceStore();
+      IPreferenceStore prefStore = getPreferenceStore();
       wordWrapChkBox.setSelection(prefStore.getString(PreferenceConstants.WORDWRAP_KEY) != null && prefStore.getString(
          PreferenceConstants.WORDWRAP_KEY).equals(IPreferenceStore.TRUE));
    }
@@ -135,8 +135,8 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
          connectedUrlCheckBox.setText("Temporary Server Link");
       }
 
-      Preferences prefStore = CoreClientActivator.getInstance().getPluginPreferences();
-      boolean useConnected = prefStore.getBoolean(HttpUrlBuilderClient.USE_CONNECTED_SERVER_URL_FOR_PERM_LINKS);
+      boolean useConnected =
+         getPreferenceStore().getBoolean(HttpUrlBuilderClient.USE_CONNECTED_SERVER_URL_FOR_PERM_LINKS);
       connectedUrlCheckBox.setSelection(useConnected);
       baseUrlCheckBox.setSelection(!useConnected);
    }
@@ -163,10 +163,14 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
    /**
     * initialize the preference store to use with the workbench
     */
+   @SuppressWarnings("deprecation")
    @Override
    public void init(IWorkbench workbench) {
       // Initialize the preference store we wish to use
-      setPreferenceStore(Activator.getInstance().getPreferenceStore());
+      IPreferenceStore preferenceStore =
+         new ScopedPreferenceStore(new InstanceScope(),
+            CoreClientActivator.getBundleContext().getBundle().getSymbolicName());
+      setPreferenceStore(preferenceStore);
    }
 
    @Override
@@ -181,19 +185,18 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
 
    @Override
    public boolean performOk() {
-      Preferences prefStore = CoreClientActivator.getInstance().getPluginPreferences();
-      prefStore.setValue(CorePreferences.INETADDRESS_KEY, "");
+      getPreferenceStore().setValue(CorePreferences.INETADDRESS_KEY, "");
       for (InetAddress address : networkButtons.keySet()) {
          if (networkButtons.get(address).getSelection()) {
-            prefStore.setValue(CorePreferences.INETADDRESS_KEY, address.getHostAddress());
+            getPreferenceStore().setValue(CorePreferences.INETADDRESS_KEY, address.getHostAddress());
             break;
          }
       }
 
-      prefStore.setValue(HttpUrlBuilderClient.USE_CONNECTED_SERVER_URL_FOR_PERM_LINKS,
+      getPreferenceStore().setValue(HttpUrlBuilderClient.USE_CONNECTED_SERVER_URL_FOR_PERM_LINKS,
          connectedUrlCheckBox.getSelection());
 
-      Activator.getInstance().getPreferenceStore().putValue(PreferenceConstants.WORDWRAP_KEY,
+      getPreferenceStore().putValue(PreferenceConstants.WORDWRAP_KEY,
          wordWrapChkBox.getSelection() ? IPreferenceStore.TRUE : IPreferenceStore.FALSE);
 
       return super.performOk();

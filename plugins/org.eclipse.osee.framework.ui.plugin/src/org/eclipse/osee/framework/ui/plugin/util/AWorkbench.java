@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -35,7 +35,6 @@ import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
  * @author Donald G. Dunne
@@ -45,10 +44,8 @@ public final class AWorkbench {
    public static void openPerspective(String perspId) {
       IAdaptable input = ResourcesPlugin.getWorkspace();
       // Get "Open Behavior" preference.
-      @SuppressWarnings("deprecation")
-      AbstractUIPlugin plugin = (AbstractUIPlugin) Platform.getPlugin(PlatformUI.PLUGIN_ID);
-      IPreferenceStore store = plugin.getPreferenceStore();
-      String pref = store.getString(IWorkbenchPreferenceConstants.OPEN_NEW_PERSPECTIVE);
+      IEclipsePreferences node = InstanceScope.INSTANCE.getNode(PlatformUI.PLUGIN_ID);
+      String pref = node.get(IWorkbenchPreferenceConstants.OPEN_NEW_PERSPECTIVE, "");
 
       // Implement open behavior.
       try {
