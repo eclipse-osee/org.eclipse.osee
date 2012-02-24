@@ -14,7 +14,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.data.OseeCredential;
@@ -23,8 +22,6 @@ import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -69,8 +66,7 @@ public class SessionManagementServlet extends UnsecuredOseeHttpServlet {
          response.setCharacterEncoding("UTF-8");
          response.getWriter().write(Arrays.deepToString(protocols));
       } catch (Exception ex) {
-         OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error processing request for protocols [%s]",
-            request.toString());
+         getLogger().error(ex, "Error processing request for protocols [%s]", request.toString());
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          response.setContentType("text/plain");
          response.getWriter().write(Lib.exceptionToString(ex));
@@ -96,7 +92,7 @@ public class SessionManagementServlet extends UnsecuredOseeHttpServlet {
                break;
          }
       } catch (Exception ex) {
-         OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error processing session request [%s]", request.toString());
+         getLogger().error(ex, "Error processing session request [%s]", request.toString());
          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
          response.getWriter().write(Lib.exceptionToString(ex));
          response.getWriter().flush();

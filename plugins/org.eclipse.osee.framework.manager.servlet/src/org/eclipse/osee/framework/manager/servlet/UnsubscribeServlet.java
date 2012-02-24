@@ -13,19 +13,19 @@ package org.eclipse.osee.framework.manager.servlet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.osee.framework.core.operation.LogProgressMonitor;
-import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
-import org.eclipse.osee.framework.core.services.IdentityService;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.search.QueryFactory;
+import org.eclipse.osee.orcs.transaction.OrcsTransaction;
+import org.eclipse.osee.orcs.transaction.TransactionFactory;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -34,17 +34,17 @@ import org.osgi.framework.BundleContext;
 public class UnsubscribeServlet extends UnsecuredOseeHttpServlet {
 
    private static final long serialVersionUID = -263648072167664572L;
-   private final IOseeDatabaseService databaseService;
-   private final IOseeCachingService cacheService;
    private final BundleContext bundleContext;
-   private final IdentityService identityService;
+   private final OrcsApi orcsApi;
 
-   public UnsubscribeServlet(Log logger, BundleContext bundleContext, IOseeDatabaseService databaseService, IOseeCachingService cacheService, IdentityService identityService) {
+   public UnsubscribeServlet(Log logger, BundleContext bundleContext, OrcsApi orcsApi) {
       super(logger);
-      this.databaseService = databaseService;
-      this.cacheService = cacheService;
       this.bundleContext = bundleContext;
-      this.identityService = identityService;
+      this.orcsApi = orcsApi;
+   }
+
+   private OrcsApi getOrcsApi() {
+      return orcsApi;
    }
 
    @Override
@@ -68,7 +68,7 @@ public class UnsubscribeServlet extends UnsecuredOseeHttpServlet {
    private void handleError(HttpServletResponse response, int status, String message, Throwable ex) throws IOException {
       response.setStatus(status);
       response.setContentType("text/plain");
-      OseeLog.log(Activator.class, Level.SEVERE, message, ex);
+      getLogger().error(ex, message);
       response.getWriter().write(ex.toString());
    }
 
@@ -88,15 +88,36 @@ public class UnsubscribeServlet extends UnsecuredOseeHttpServlet {
    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
       try {
          UnsubscribeRequest data = UnsubscribeRequest.createFromXML(request);
-         UnsubscribeTransaction del = new UnsubscribeTransaction(databaseService, cacheService, data, identityService);
-         Operations.executeWorkAndCheckStatus(del, new LogProgressMonitor());
+
+         int groupId = data.getGroupId();
+         int userId = data.getUserId();
+         String comment = String.format("User %s requested unsubscribe from group %s", userId, groupId);
+
+         TransactionFactory factory = orcsApi.getTransactionFactory(null);
+
+         ReadableArtifact authorArtifact = getArtifactById(data.getUserId());
+
+         OrcsTransaction txn = factory.createTransaction(CoreBranches.COMMON, comment, authorArtifact);
+         txn.deleteRelation(CoreRelationTypes.Users_Artifact, groupId, userId);
+         txn.build().call();
+
+         String message = String.format("<br/>You have been successfully unsubscribed.");
+
          response.setStatus(HttpServletResponse.SC_OK);
          response.setContentType("text/plain");
-         String message = del.getCompletionMessage();
          response.setContentLength(message.length());
          response.getWriter().append(message);
       } catch (Exception ex) {
          handleError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error unsubscribing", ex);
       }
+   }
+
+   protected ReadableArtifact getArtifactById(int id) throws OseeCoreException {
+      ReadableArtifact artifact = null;
+      if (id > 0) {
+         QueryFactory factory = getOrcsApi().getQueryFactory(null);
+         artifact = factory.fromBranch(CoreBranches.COMMON).andLocalId(id).getResults().getExactlyOne();
+      }
+      return artifact;
    }
 }

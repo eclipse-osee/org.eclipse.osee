@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -25,9 +24,7 @@ import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.data.ArtifactUtil;
-import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
@@ -59,7 +56,7 @@ public class DataServlet extends UnsecuredOseeHttpServlet {
 
    private void handleError(HttpServletResponse response, int status, String message, Throwable ex) throws IOException {
       response.setContentType("text/plain");
-      OseeLog.log(Activator.class, Level.SEVERE, message, ex);
+      getLogger().error(ex, message);
       response.sendError(status, Lib.exceptionToString(ex));
    }
 

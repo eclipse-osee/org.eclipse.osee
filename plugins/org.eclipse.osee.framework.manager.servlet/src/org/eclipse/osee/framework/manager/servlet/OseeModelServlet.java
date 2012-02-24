@@ -14,7 +14,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
@@ -27,8 +26,6 @@ import org.eclipse.osee.framework.core.server.SecureOseeHttpServlet;
 import org.eclipse.osee.framework.core.services.IOseeModelingService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -59,7 +56,7 @@ public class OseeModelServlet extends SecureOseeHttpServlet {
    }
 
    private void handleError(HttpServletResponse resp, String request, Throwable th) throws IOException {
-      OseeLog.logf(Activator.class, Level.SEVERE, th, "Osee Cache request error: [%s]", request);
+      getLogger().error(th, "Osee Cache request error: [%s]", request);
       resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       resp.setContentType("text/plain");
       resp.getWriter().write(Lib.exceptionToString(th));

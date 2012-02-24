@@ -20,7 +20,6 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
@@ -30,8 +29,6 @@ import org.eclipse.osee.framework.core.server.ISession;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -79,7 +76,7 @@ public class SessionClientLoopbackServlet extends UnsecuredOseeHttpServlet {
             clientAddress = "localhost";
          }
       } catch (UnknownHostException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         getLogger().error(ex, "Error resolving host for clientAddress [%s]", clientAddress);
       }
       return String.format("http://%s:%s/", clientAddress, session.getClientPort());
    }
@@ -151,6 +148,7 @@ public class SessionClientLoopbackServlet extends UnsecuredOseeHttpServlet {
             String urlString = getRemoteHostUrl(session);
             result = canConnect(urlString);
          } catch (Exception ex) {
+            // Do nothing
          }
       }
       return result;

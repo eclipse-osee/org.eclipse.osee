@@ -13,29 +13,25 @@ package org.eclipse.osee.framework.manager.servlet;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.osee.framework.branch.management.IOseeBranchService;
+import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.enums.Function;
-import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.LogProgressMonitor;
-import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.core.operation.WriterOperationLogger;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.SecureOseeHttpServlet;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.manager.servlet.function.ChangeBranchArchiveStateFunction;
-import org.eclipse.osee.framework.manager.servlet.function.ChangeBranchStateFunction;
-import org.eclipse.osee.framework.manager.servlet.function.ChangeBranchTypeFunction;
-import org.eclipse.osee.framework.manager.servlet.function.ChangeReportFunction;
-import org.eclipse.osee.framework.manager.servlet.function.CreateBranchFunction;
-import org.eclipse.osee.framework.manager.servlet.function.CreateCommitFunction;
-import org.eclipse.osee.framework.manager.servlet.function.PurgeBranchFunction;
-import org.eclipse.osee.framework.manager.servlet.internal.Activator;
+import org.eclipse.osee.framework.manager.servlet.branch.AbstractBranchCallable;
+import org.eclipse.osee.framework.manager.servlet.branch.ArchiveBranchCallable;
+import org.eclipse.osee.framework.manager.servlet.branch.ChangeBranchStateCallable;
+import org.eclipse.osee.framework.manager.servlet.branch.ChangeBranchTypeCallable;
+import org.eclipse.osee.framework.manager.servlet.branch.CommitBranchCallable;
+import org.eclipse.osee.framework.manager.servlet.branch.CompareBranchCallable;
+import org.eclipse.osee.framework.manager.servlet.branch.CreateBranchCallable;
+import org.eclipse.osee.framework.manager.servlet.branch.PurgeBranchCallable;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.ApplicationContext;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -44,56 +40,67 @@ public class BranchManagerServlet extends SecureOseeHttpServlet {
 
    private static final long serialVersionUID = 226986283540461526L;
 
-   private final IOseeBranchService branchService;
+   private final OrcsApi orcsApi;
    private final IDataTranslationService translationService;
 
-   public BranchManagerServlet(Log logger, ISessionManager sessionManager, IOseeBranchService branchService, IDataTranslationService translationService) {
+   public BranchManagerServlet(Log logger, ISessionManager sessionManager, IDataTranslationService translationService, OrcsApi orcsApi) {
       super(logger, sessionManager);
-      this.branchService = branchService;
       this.translationService = translationService;
+      this.orcsApi = orcsApi;
    }
 
    @Override
    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
       try {
-         String rawFunction = req.getParameter("function");
-         Function function = Function.fromString(rawFunction);
-         IOperation op = null;
-         switch (function) {
-            case BRANCH_COMMIT:
-               op = new CreateCommitFunction(req, resp, branchService, translationService);
-               break;
-            case CREATE_BRANCH:
-               op = new CreateBranchFunction(req, resp, branchService, translationService);
-               break;
-            case CHANGE_REPORT:
-               op = new ChangeReportFunction(req, resp, branchService, translationService);
-               break;
-            case PURGE_BRANCH:
-               op =
-                  new PurgeBranchFunction(req, resp, branchService, translationService, new WriterOperationLogger(
-                     resp.getWriter()));
-               break;
-            case UPDATE_BRANCH_TYPE:
-               op = new ChangeBranchTypeFunction(req, resp, branchService, translationService);
-               break;
-            case UPDATE_BRANCH_STATE:
-               op = new ChangeBranchStateFunction(req, resp, branchService, translationService);
-               break;
-            case UPDATE_ARCHIVE_STATE:
-               op = new ChangeBranchArchiveStateFunction(req, resp, branchService, translationService);
-               break;
-            default:
-               throw new UnsupportedOperationException();
-         }
-         Operations.executeWorkAndCheckStatus(op, new LogProgressMonitor());
+         CancellableCallable<?> callable = createCallable(req, resp);
+         callable.call();
       } catch (Exception ex) {
-         OseeLog.logf(Activator.class, Level.SEVERE, ex, "Branch servlet request error: [%s]", req.toString());
+         getLogger().error(ex, "Branch servlet request error: [%s]", req.toString());
          resp.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
          resp.setContentType("text/plain");
          resp.getWriter().write(Lib.exceptionToString(ex));
          resp.getWriter().flush();
          resp.getWriter().close();
       }
+   }
+
+   private ApplicationContext getContext() {
+      // TODO Do Something;
+      return null;
+   }
+
+   private AbstractBranchCallable<?, ?> createCallable(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+      String rawFunction = req.getParameter("function");
+      Function function = Function.fromString(rawFunction);
+
+      ApplicationContext applicationContext = getContext();
+
+      AbstractBranchCallable<?, ?> callable = null;
+      switch (function) {
+         case BRANCH_COMMIT:
+            callable = new CommitBranchCallable(applicationContext, req, resp, translationService, orcsApi);
+            break;
+         case CREATE_BRANCH:
+            callable = new CreateBranchCallable(applicationContext, req, resp, translationService, orcsApi);
+            break;
+         case CHANGE_REPORT:
+            callable = new CompareBranchCallable(applicationContext, req, resp, translationService, orcsApi);
+            break;
+         case PURGE_BRANCH:
+            callable = new PurgeBranchCallable(applicationContext, req, resp, translationService, orcsApi);
+            break;
+         case UPDATE_ARCHIVE_STATE:
+            callable = new ArchiveBranchCallable(applicationContext, req, resp, translationService, orcsApi);
+            break;
+         case UPDATE_BRANCH_TYPE:
+            callable = new ChangeBranchTypeCallable(applicationContext, req, resp, translationService, orcsApi);
+            break;
+         case UPDATE_BRANCH_STATE:
+            callable = new ChangeBranchStateCallable(applicationContext, req, resp, translationService, orcsApi);
+            break;
+         default:
+            throw new UnsupportedOperationException();
+      }
+      return callable;
    }
 }

@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.manager.servlet;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
@@ -22,8 +21,6 @@ import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -76,8 +73,7 @@ public class ServerLookupServlet extends UnsecuredOseeHttpServlet {
             response.getOutputStream().flush();
          }
       } catch (Exception ex) {
-         OseeLog.logf(Activator.class, Level.SEVERE, ex, "Failed to process application server lookup request [%s]",
-            request.toString());
+         getLogger().error(ex, "Failed to process application server lookup request [%s]", request.toString());
          response.getWriter().write(Lib.exceptionToString(ex));
          response.getWriter().flush();
          response.getWriter().close();
@@ -96,8 +92,7 @@ public class ServerLookupServlet extends UnsecuredOseeHttpServlet {
                String.format("Registration into server lookup was a [%s]", wasSuccessful ? "success" : "failure"));
          }
       } catch (Exception ex) {
-         OseeLog.logf(Activator.class, Level.SEVERE, ex, "Failed to process application server lookup request [%s]",
-            request.toString());
+         getLogger().error(ex, "Failed to process application server lookup request [%s]", request.toString());
          response.getWriter().write(Lib.exceptionToString(ex));
       }
       response.getWriter().flush();

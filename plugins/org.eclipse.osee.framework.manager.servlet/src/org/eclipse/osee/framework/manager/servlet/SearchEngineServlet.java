@@ -12,20 +12,27 @@ package org.eclipse.osee.framework.manager.servlet;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
+import org.eclipse.osee.framework.core.message.SearchOptions;
 import org.eclipse.osee.framework.core.message.SearchRequest;
 import org.eclipse.osee.framework.core.message.SearchResponse;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.SecureOseeHttpServlet;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.manager.servlet.internal.Activator;
-import org.eclipse.osee.framework.search.engine.ISearchEngine;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.search.CaseType;
+import org.eclipse.osee.orcs.search.Match;
+import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.eclipse.osee.orcs.search.QueryFactory;
+import org.eclipse.osee.orcs.search.StringOperator;
 
 /**
  * @author Roberto E. Escobar
@@ -34,13 +41,13 @@ public class SearchEngineServlet extends SecureOseeHttpServlet {
 
    private static final long serialVersionUID = 3722992788943330970L;
 
-   private final ISearchEngine searchEngine;
    private final IDataTranslationService translationService;
+   private final OrcsApi orcsApi;
 
-   public SearchEngineServlet(Log logger, ISessionManager sessionManager, ISearchEngine searchEngine, IDataTranslationService translationService) {
+   public SearchEngineServlet(Log logger, ISessionManager sessionManager, IDataTranslationService translationService, OrcsApi orcsApi) {
       super(logger, sessionManager);
-      this.searchEngine = searchEngine;
       this.translationService = translationService;
+      this.orcsApi = orcsApi;
    }
 
    @Override
@@ -48,9 +55,36 @@ public class SearchEngineServlet extends SecureOseeHttpServlet {
       try {
          SearchRequest searchRequest =
             translationService.convert(request.getInputStream(), CoreTranslatorId.SEARCH_REQUEST);
+         SearchOptions options = searchRequest.getOptions();
+
+         StringOperator operator =
+            options.isMatchWordOrder() ? StringOperator.TOKENIZED_MATCH_ORDER : StringOperator.TOKENIZED_ANY_ORDER;
+         CaseType caseType = options.isCaseSensitive() ? CaseType.MATCH_CASE : CaseType.IGNORE_CASE;
+
+         QueryFactory factory = orcsApi.getQueryFactory(null);
+         QueryBuilder builder = factory.fromBranch(searchRequest.getBranch());
+         builder.includeDeleted(options.getDeletionFlag().areDeletedAllowed());
+         builder.and(options.getAttributeTypeFilter(), operator, caseType, searchRequest.getRawSearch());
+
+         BranchCache branchCache = orcsApi.getBranchCache();
 
          SearchResponse searchResponse = new SearchResponse();
-         searchEngine.search(searchRequest, searchResponse);
+         if (options.isFindAllLocationsEnabled()) {
+            ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> results = builder.getMatches();
+            for (Match<ReadableArtifact, ReadableAttribute<?>> match : results.getList()) {
+               ReadableArtifact artifact = match.getItem();
+               int branchId = branchCache.getLocalId(artifact.getBranch());
+               for (ReadableAttribute<?> attribute : match.getElements()) {
+                  searchResponse.add(branchId, artifact.getId(), attribute.getGammaId(), match.getLocation(attribute));
+               }
+            }
+         } else {
+            ResultSet<ReadableArtifact> results = builder.getResults();
+            for (ReadableArtifact artifact : results.getList()) {
+               int branchId = branchCache.getLocalId(artifact.getBranch());
+               searchResponse.add(branchId, artifact.getId(), -1);
+            }
+         }
 
          response.setStatus(HttpServletResponse.SC_ACCEPTED);
          response.setContentType("text/xml");
@@ -60,8 +94,7 @@ public class SearchEngineServlet extends SecureOseeHttpServlet {
          Lib.inputStreamToOutputStream(inputStream, response.getOutputStream());
 
       } catch (Exception ex) {
-         OseeLog.logf(Activator.class, Level.SEVERE, ex, "Failed to respond to a search engine servlet request [%s]",
-            request.getRequestURL());
+         getLogger().error(ex, "Failed to respond to a search engine servlet request [%s]", request.getRequestURL());
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          response.setContentType("text/plain");
          response.getWriter().write(Lib.exceptionToString(ex));
@@ -69,46 +102,5 @@ public class SearchEngineServlet extends SecureOseeHttpServlet {
          response.getWriter().close();
       }
    }
-
-   //         StringWriter writer = new StringWriter();
-   //         IOperation operation = new SearchResultToXmlOperation(results, writer);
-   //         Operations.executeWork(operation);
-   //
-   //         response.setStatus(HttpServletResponse.SC_ACCEPTED);
-   //         response.setCharacterEncoding("UTF-8");
-   //         response.setContentType("text/xml");
-   //         response.getWriter().write(writer.toString());
-   //
-   //         if (results.isEmpty() && Strings.isValid(results.getErrorMessage())) {
-   //
-   //            sendEmptyAsXml(response, results);
-   //         } else if (!results.isEmpty()) {
-   //            long start = System.currentTimeMillis();
-   //            if (!searchInfo.getOptions().getBoolean(SearchOptionsEnum.as_xml.asStringOption())) {
-   //               sendAsDbJoin(response, results);
-   //            } else {
-   //               response.setCharacterEncoding("UTF-8");
-   //               response.setContentType("text/xml");
-   //               sendAsXml(response, results);
-   //            }
-   //            System.out.println(String.format("Search for [%s] - [%d results sent in %d ms]", searchInfo.getQuery(),
-   //               results.size(), System.currentTimeMillis() - start));
-   //         } else {
-   //            response.setCharacterEncoding("UTF-8");
-   //            response.setContentType("text/plain");
-   //         }
-   //   private void sendAsDbJoin(HttpServletResponse response, SearchResult results) throws Exception {
-   //      response.setCharacterEncoding("UTF-8");
-   //      response.setContentType("text/plain");
-   //
-   //      ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
-   //      for (Integer branchId : results.getBranchIds()) {
-   //         for (Integer artId : results.getArtifactIds(branchId)) {
-   //            joinQuery.add(artId, branchId);
-   //         }
-   //      }
-   //      joinQuery.store();
-   //      response.getWriter().write(String.format("%d,%d", joinQuery.getQueryId(), joinQuery.size()));
-   //   }
 
 }

@@ -17,7 +17,6 @@ import java.io.InputStreamReader;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -30,11 +29,9 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.data.ArtifactUtil;
 import org.eclipse.osee.framework.manager.servlet.data.DefaultOseeArtifact;
 import org.eclipse.osee.framework.manager.servlet.data.HttpArtifactFileInfo;
-import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
@@ -169,11 +166,11 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
    private void handleError(HttpServletResponse response, int status, String message, Throwable ex) throws IOException {
       response.setStatus(status);
       response.setContentType("text/plain");
-      OseeLog.log(Activator.class, Level.SEVERE, message, ex);
+      getLogger().error(ex, message);
       response.getWriter().write(Lib.exceptionToString(ex));
    }
 
-   private synchronized static void loadIdToGuidMapping() {
+   private synchronized void loadIdToGuidMapping() {
       if (branchIdToGuidMap == null) {
          branchIdToGuidMap = new HashMap<Integer, String>();
          BufferedReader reader = null;
@@ -198,7 +195,7 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
                branchIdToGuidMap.put(branchId, idAndGuid[1].trim());
             }
          } catch (Exception e) {
-            OseeLog.log(ArtifactFileServlet.class, Level.SEVERE, e);
+            getLogger().error(e, "Error mapping branchIds to guids");
          } finally {
             Lib.close(reader);
          }

@@ -14,6 +14,7 @@
 		<module>../../plugins/org.eclipse.osee.framework.core.server.test</module>
 		<module>../../plugins/org.eclipse.osee.framework.core.message</module>
 		<module>../../plugins/org.eclipse.osee.framework.core.message.test</module>
+		<module>../../plugins/org.eclipse.osee.framework.manager.servlet</module>
 			
 		<module>../../plugins/org.eclipse.osee.display.api</module>
 		<module>../../plugins/org.eclipse.osee.display.view.web</module>

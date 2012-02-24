@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.net.URLConnection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,7 +24,6 @@ import org.eclipse.osee.framework.core.server.SecureOseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.data.HttpRequestDecoder;
 import org.eclipse.osee.framework.manager.servlet.data.ServletResourceBridge;
 import org.eclipse.osee.framework.resource.management.IResource;
@@ -54,11 +52,11 @@ public class ResourceManagerServlet extends SecureOseeHttpServlet {
    }
 
    private void handleError(HttpServletResponse response, String message, Throwable ex) {
-      OseeLog.log(this.getClass(), Level.SEVERE, message, ex);
+      getLogger().error(ex, message);
       try {
          response.getWriter().println(message);
       } catch (IOException ex1) {
-         OseeLog.log(this.getClass(), Level.SEVERE, message, ex);
+         getLogger().error(ex, message);
       }
    }
 
@@ -187,6 +185,7 @@ public class ResourceManagerServlet extends SecureOseeHttpServlet {
             PropertyStore options = new PropertyStore();
             resourceManager.acquire(locator, options);
          } catch (OseeCoreException ex) {
+            //
          }
       }
    }

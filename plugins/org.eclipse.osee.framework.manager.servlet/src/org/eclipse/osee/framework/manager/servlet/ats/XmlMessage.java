@@ -17,7 +17,6 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URLConnection;
 import java.util.Collection;
-import java.util.logging.Level;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -26,10 +25,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.util.Resource;
+import org.eclipse.osee.logger.Log;
 import org.w3c.dom.Node;
 
 /**
@@ -37,19 +35,26 @@ import org.w3c.dom.Node;
  */
 public class XmlMessage {
 
-   public XmlMessage() {
+   private final Log logger;
+
+   public XmlMessage(Log logger) {
+      this.logger = logger;
+   }
+
+   private Log getLogger() {
+      return logger;
    }
 
    public void sendError(HttpServletResponse response, String name, Throwable ex) {
       String errorMessage = Lib.exceptionToString(ex);
-      OseeLog.log(Activator.class, Level.SEVERE, errorMessage, ex);
+      getLogger().error(ex, errorMessage);
       try {
          StringWriter writer = new StringWriter();
          createXmlErrorMessage(writer, "0", errorMessage);
          IResource resource = new StreamResource(name, writer.toString());
          sendMessage(response, name, resource, false);
       } catch (Throwable ex1) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex1.toString(), ex1);
+         getLogger().error(ex1, "Error sending error");
       }
    }
 
@@ -174,7 +179,7 @@ public class XmlMessage {
          if (isErrorSendingAllowed) {
             sendError(response, name, ex);
          } else {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            getLogger().error(ex, "Error sending message");
          }
       } finally {
          Lib.close(inputStream);

@@ -47,7 +47,7 @@ public class AtsServlet extends UnsecuredOseeHttpServlet {
       this.resourceManager = resourceManager;
       AtsService.IResourceProvider provider = new ResourceProvider();
       AtsXmlSearch xmlSearch = new AtsXmlSearch();
-      AtsXmlMessages messages = new AtsXmlMessages(new XmlMessage());
+      AtsXmlMessages messages = new AtsXmlMessages(new XmlMessage(getLogger()));
       this.atsService = new AtsService(provider, xmlSearch, messages, locatorManager, resourceManager, cacheService);
    }
 

@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.enums.CacheOperation;
@@ -47,8 +46,6 @@ import org.eclipse.osee.framework.core.translation.ITranslatorId;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -92,7 +89,7 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
          OutputStream outputStream = resp.getOutputStream();
          Lib.inputStreamToOutputStream(inputStream, outputStream);
       } catch (Exception ex) {
-         OseeLog.log(getClass(), Level.SEVERE, ex);
+         getLogger().error(ex, "Error acquiring cache [%s]", cacheId);
       }
    }
 
@@ -120,7 +117,7 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
    }
 
    private void handleError(HttpServletResponse resp, String request, Throwable th) throws IOException {
-      OseeLog.logf(Activator.class, Level.SEVERE, th, "Osee Cache request error: [%s]", request);
+      getLogger().error(th, "Osee Cache request error: [%s]", request);
       resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       resp.setContentType("text/plain");
       resp.getWriter().write(Lib.exceptionToString(th));

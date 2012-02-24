@@ -12,24 +12,26 @@ package org.eclipse.osee.framework.manager.servlet;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.osee.framework.branch.management.IBranchExchange;
-import org.eclipse.osee.framework.core.operation.ConsoleLogger;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.SecureOseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.data.HttpBranchExchangeInfo;
-import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.OrcsBranch;
 
 /**
  * @author Roberto E. Escobar
@@ -38,15 +40,19 @@ public class BranchExchangeServlet extends SecureOseeHttpServlet {
 
    private static final long serialVersionUID = -1642995618810911260L;
 
-   private final IBranchExchange branchExchangeService;
    private final IResourceLocatorManager locatorManager;
    private final IResourceManager resourceManager;
+   private final OrcsApi orcsApi;
 
-   public BranchExchangeServlet(Log logger, ISessionManager sessionManager, IBranchExchange branchExchangeService, IResourceLocatorManager locatorManager, IResourceManager resourceManager) {
+   public BranchExchangeServlet(Log logger, ISessionManager sessionManager, IResourceLocatorManager locatorManager, IResourceManager resourceManager, OrcsApi orcsApi) {
       super(logger, sessionManager);
-      this.branchExchangeService = branchExchangeService;
+      this.orcsApi = orcsApi;
       this.locatorManager = locatorManager;
       this.resourceManager = resourceManager;
+   }
+
+   private OrcsBranch getBranchOps() {
+      return orcsApi.getBranchOps(null);
    }
 
    @Override
@@ -68,7 +74,7 @@ public class BranchExchangeServlet extends SecureOseeHttpServlet {
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
          response.setContentType("text/plain");
-         OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error processing [%s]", req);
+         getLogger().error(ex, "Error processing [%s]", req);
          response.getWriter().write(Lib.exceptionToString(ex));
       }
       response.getWriter().flush();
@@ -81,9 +87,10 @@ public class BranchExchangeServlet extends SecureOseeHttpServlet {
 
       String path = exchangeInfo.getPath();
       IResourceLocator exchangeLocator = locatorManager.getResourceLocator(path);
-      IResourceLocator verifyLocator = branchExchangeService.checkIntegrity(exchangeLocator);
+      Callable<URI> callable = getBranchOps().checkBranchExchangeIntegrity(exchangeLocator.getLocation());
+      URI verifyUri = callable.call();
       status = HttpServletResponse.SC_ACCEPTED;
-      message.append(String.format("Verification at: [%s]", verifyLocator.getLocation().toASCIIString()));
+      message.append(String.format("Verification at: [%s]", verifyUri.toASCIIString()));
 
       response.setStatus(status);
       response.setContentType("text/plain");
@@ -93,9 +100,19 @@ public class BranchExchangeServlet extends SecureOseeHttpServlet {
    private void executeExport(HttpBranchExchangeInfo exchangeInfo, HttpServletResponse response) throws Exception {
       int status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
       StringBuffer message = new StringBuffer();
-      IResourceLocator exchangeLocator =
-         branchExchangeService.exportBranch(exchangeInfo.getExchangeFileName(), exchangeInfo.getOptions(),
-            exchangeInfo.getSelectedBranchIds());
+
+      OrcsBranch orcsBranch = getBranchOps();
+
+      List<IOseeBranch> branches = new ArrayList<IOseeBranch>();
+      for (Integer branchIds : exchangeInfo.getSelectedBranchIds()) {
+         branches.add(orcsBranch.getBranchFromId(branchIds));
+      }
+
+      Callable<URI> callable =
+         getBranchOps().exportBranch(branches, exchangeInfo.getOptions(), exchangeInfo.getExchangeFileName());
+      URI exportURI = callable.call();
+
+      IResourceLocator exchangeLocator = locatorManager.getResourceLocator(exportURI.toASCIIString());
       status = HttpServletResponse.SC_ACCEPTED;
       message.append(String.format("Exported: [%s]", exchangeLocator.getLocation().toASCIIString()));
 
@@ -133,13 +150,20 @@ public class BranchExchangeServlet extends SecureOseeHttpServlet {
    }
 
    private void executeImport(HttpBranchExchangeInfo exchangeInfo, HttpServletResponse response) throws Exception {
-      IResourceLocator locator = locatorManager.getResourceLocator(exchangeInfo.getPath());
-      branchExchangeService.importBranch(locator, exchangeInfo.getOptions(), exchangeInfo.getSelectedBranchIds(),
-         new ConsoleLogger());
 
+      OrcsBranch orcsBranch = getBranchOps();
+
+      List<IOseeBranch> branches = new ArrayList<IOseeBranch>();
+      for (Integer branchIds : exchangeInfo.getSelectedBranchIds()) {
+         branches.add(orcsBranch.getBranchFromId(branchIds));
+      }
+
+      IResourceLocator locator = locatorManager.getResourceLocator(exchangeInfo.getPath());
+      Callable<URI> callable = orcsBranch.importBranch(locator.getLocation(), branches, exchangeInfo.getOptions());
+      URI importURI = callable.call();
       response.setStatus(HttpServletResponse.SC_ACCEPTED);
       response.setContentType("text/plain");
-      response.getWriter().write(String.format("Successfully imported: [%s]", exchangeInfo.getPath()));
+      response.getWriter().write(String.format("Successfully imported: [%s]", importURI.toASCIIString()));
    }
 
    @Override

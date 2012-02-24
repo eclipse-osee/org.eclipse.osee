@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
@@ -30,9 +29,7 @@ import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.data.HttpSystemManagerCreationInfo;
-import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -90,8 +87,7 @@ public class SystemManagerServlet extends UnsecuredOseeHttpServlet {
          response.setCharacterEncoding("UTF-8");
          response.getWriter().write(appendable.toString() + AHTML.newline() + "As of: " + new Date());
       } catch (Exception ex) {
-         OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error processing request for protocols [%s]",
-            request.toString());
+         getLogger().error(ex, "Error processing request for protocols [%s]", request.toString());
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          response.setContentType("text/plain");
          response.getWriter().write(Lib.exceptionToString(ex));
@@ -181,7 +177,7 @@ public class SystemManagerServlet extends UnsecuredOseeHttpServlet {
                appendable.append("ALIVE - [" + info.getSessionId() + "]");
             }
          } catch (Exception ex) {
-            OseeLog.log(this.getClass(), Level.SEVERE, ex);
+            getLogger().error(ex, "Error writeSessionAlive");
             appendable.append("Exception: " + ex.getLocalizedMessage());
          }
       }

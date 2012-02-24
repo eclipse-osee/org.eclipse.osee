@@ -15,12 +15,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.framework.search.engine.TagListenerAdapter;
 
 /**
  * @author Roberto E. Escobar
  */
-public class TagListener extends TagListenerAdapter {
+public class TagListener {
+   // TODO Fix this
+   //   extends TagListenerAdapter {
+   //}
 
    private volatile Map<Integer, Throwable> tagErrors;
    private volatile Set<Integer> queryIds;
@@ -57,32 +59,32 @@ public class TagListener extends TagListenerAdapter {
       return tagErrors;
    }
 
-   @Override
+   //   @Override
    public void onTagExpectedQueryIdSubmits(int totalQueries) {
       this.expectedTotal = totalQueries;
    }
 
-   @Override
+   //   @Override
    synchronized public void onTagError(int queryId, Throwable throwable) {
       tagErrors.put(queryId, throwable);
       this.wasProcessed = true;
       this.notify();
    }
 
-   @Override
+   //   @Override
    synchronized public void onTagQueryIdSubmit(int queryId) {
       queryCount++;
       queryIds.add(queryId);
    }
 
-   @Override
+   //   @Override
    public void onAttributeTagComplete(int queryId, long gammaId, int totalTags, long processingTime) {
       if (this.queryIds.contains(queryId)) {
          attributeCount++;
       }
    }
 
-   @Override
+   //   @Override
    synchronized public void onTagQueryIdTagComplete(int queryId, long waitTime, long processingTime) {
       if (this.queryIds.contains(queryId)) {
          this.queryIds.remove(queryId);
