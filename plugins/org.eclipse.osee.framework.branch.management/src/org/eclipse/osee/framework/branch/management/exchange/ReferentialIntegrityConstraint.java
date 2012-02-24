@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Ryan D. Brooks
@@ -87,15 +88,16 @@ public class ReferentialIntegrityConstraint {
       return collector.getUnreferencedPrimaryKeys();
    }
 
-   public void checkConstraint(IOseeDatabaseService service, ExchangeDataProcessor processor) throws OseeCoreException {
-      collector = new PrimaryKeyCollector(service);
+   public void checkConstraint(Log logger, IOseeDatabaseService service, ExchangeDataProcessor processor) throws OseeCoreException {
+      collector = new PrimaryKeyCollector(logger, service);
 
       for (IExportItem primaryTable : getPrimaryItems()) {
          collector.setPrimaryKey(getPrimaryKey());
          processor.parse(primaryTable, collector);
       }
       for (IExportItem foreignTable : getForeignItems()) {
-         ForeignKeyReader foreignKeyReader = new ForeignKeyReader(service, collector, foreignTable, getForeignKeys());
+         ForeignKeyReader foreignKeyReader =
+            new ForeignKeyReader(logger, service, collector, foreignTable, getForeignKeys());
          processor.parse(foreignTable, foreignKeyReader);
       }
    }

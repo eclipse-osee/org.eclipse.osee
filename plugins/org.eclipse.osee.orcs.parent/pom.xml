@@ -23,6 +23,7 @@
 		<module>../../plugins/org.eclipse.osee.framework.database.test</module>
 
 		<module>../../plugins/org.eclipse.osee.database</module>
+		<module>../../plugins/org.eclipse.osee.database.schema</module>
 
 		<module>../../plugins/org.eclipse.osee.orcs</module>
 		<module>../../plugins/org.eclipse.osee.orcs.core</module>
@@ -439,19 +440,10 @@
 									<append>true</append>
 								</configuration>
 							</execution>
-								<!-- <execution>
-								<id>create-coverage-reports</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>report</goal>
-								</goals>
-								<configuration>
-									<dataFile>${sonar.jacoco.reportPath}</dataFile>
-									<includes>*.osee.*</includes>
-									<outputDirectory>${coverage.reportPath}</outputDirectory>
-									<outputEncoding>UTF-8</outputEncoding>
-								</configuration>
-							</execution>-->
+							<!-- <execution> <id>create-coverage-reports</id> <phase>verify</phase> 
+								<goals> <goal>report</goal> </goals> <configuration> <dataFile>${sonar.jacoco.reportPath}</dataFile> 
+								<includes>*.osee.*</includes> <outputDirectory>${coverage.reportPath}</outputDirectory> 
+								<outputEncoding>UTF-8</outputEncoding> </configuration> </execution> -->
 						</executions>
 					</plugin>
 				</plugins>

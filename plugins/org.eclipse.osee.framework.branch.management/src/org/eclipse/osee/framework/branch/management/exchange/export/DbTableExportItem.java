@@ -19,11 +19,9 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.branch.management.exchange.OseeServices;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
-import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
@@ -34,7 +32,6 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 
@@ -184,7 +181,7 @@ public class DbTableExportItem extends AbstractXmlExportItem {
          } catch (NoSuchMethodException ex) {
             // Do Nothing
          } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.WARNING, ex);
+            services.getLogger().warn(ex, "Error converting [%s] to timestamp", value);
          }
       }
       return toReturn;

@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.branch.management.exchange;
 
 import java.io.File;
 import org.eclipse.osee.framework.branch.management.exchange.handler.IExportItem;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Ryan D. Brooks
@@ -25,4 +26,8 @@ public interface IOseeExchangeDataProvider {
    public File getFile(IExportItem item);
 
    public File getFile(String fileName);
+
+   public Log getLogger();
+
+   public String getExchangeBasePath();
 }

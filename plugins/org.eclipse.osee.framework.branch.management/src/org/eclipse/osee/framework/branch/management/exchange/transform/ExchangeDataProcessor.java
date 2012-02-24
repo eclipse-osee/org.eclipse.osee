@@ -126,6 +126,7 @@ public final class ExchangeDataProcessor {
    }
 
    public void cleanUp() {
-      ExchangeUtil.cleanUpTempExchangeFile(dataProvider.getExportedDataRoot(), dataProvider.wasZipExtractionRequired());
+      ExchangeUtil.cleanUpTempExchangeFile(dataProvider.getExchangeBasePath(), dataProvider.getLogger(),
+         dataProvider.getExportedDataRoot(), dataProvider.wasZipExtractionRequired());
    }
 }

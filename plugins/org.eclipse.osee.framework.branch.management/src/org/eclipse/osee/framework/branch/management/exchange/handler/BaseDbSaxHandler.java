@@ -15,15 +15,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.exchange.TranslationManager;
-import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
@@ -38,13 +36,15 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
    private TranslationManager translator;
    private PropertyStore options;
    private final IOseeDatabaseService service;
+   private final Log logger;
 
-   protected BaseDbSaxHandler(IOseeDatabaseService service, boolean isCacheAll, int cacheLimit) {
+   protected BaseDbSaxHandler(Log logger, IOseeDatabaseService service, boolean isCacheAll, int cacheLimit) {
       super();
       if (cacheLimit < 0) {
          throw new IllegalArgumentException(String.format("Cache limit cannot be less than zero - cacheLimit=[%d]",
             cacheLimit));
       }
+      this.logger = logger;
       this.service = service;
       this.options = new PropertyStore();
       this.translator = null;
@@ -52,6 +52,10 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
       this.isCacheAll = isCacheAll;
       this.cacheLimit = cacheLimit;
       this.data = new ArrayList<Object[]>();
+   }
+
+   protected Log getLogger() {
+      return logger;
    }
 
    public void setOptions(PropertyStore options) {
@@ -115,7 +119,7 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
                }
             }
          } catch (SQLException ex1) {
-            OseeLog.log(Activator.class, Level.INFO, ex1);
+            logger.info(ex1, "Error determining truncate support");
          } finally {
             if (resultSet != null) {
                try {
@@ -137,7 +141,7 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
       try {
          getDatabaseService().runPreparedUpdate(deleteSql);
       } catch (OseeCoreException ex) {
-         OseeLog.logf(Activator.class, Level.INFO, ex, "Error clearing: %s", deleteSql);
+         logger.info(ex, "Error clearing: %s", deleteSql);
          throw ex;
       }
    }

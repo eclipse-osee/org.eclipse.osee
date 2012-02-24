@@ -10,19 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.test;
 
-import org.eclipse.osee.framework.branch.management.test.change.ChangeTestSuite;
-import org.eclipse.osee.framework.branch.management.test.commit.CommitTestSuite;
 import org.eclipse.osee.framework.branch.management.test.exchange.ExchangeTestSuite;
-import org.eclipse.osee.framework.branch.management.test.purge.PurgeTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({//
-ChangeTestSuite.class, //
-   CommitTestSuite.class, //
-   ExchangeTestSuite.class,//
-   PurgeTestSuite.class,//
+ExchangeTestSuite.class,//
 })
 /**
  * @author Roberto E. Escobar

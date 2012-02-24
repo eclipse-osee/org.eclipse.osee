@@ -18,6 +18,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.branch.management.exchange.handler.BaseDbSaxHandler;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Ryan D. Brooks
@@ -31,8 +32,8 @@ public class PrimaryKeyCollector extends BaseDbSaxHandler {
       this.primaryKey = primaryKey;
    }
 
-   public PrimaryKeyCollector(IOseeDatabaseService service) {
-      super(service, true, 0);
+   public PrimaryKeyCollector(Log logger, IOseeDatabaseService service) {
+      super(logger, service, true, 0);
    }
 
    @Override

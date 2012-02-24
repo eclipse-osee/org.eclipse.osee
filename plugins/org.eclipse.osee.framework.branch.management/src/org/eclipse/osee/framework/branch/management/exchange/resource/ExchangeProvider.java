@@ -22,7 +22,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.server.OseeServerProperties;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.IResource;
@@ -31,20 +31,64 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.IResourceProvider;
 import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
 import org.eclipse.osee.framework.resource.management.util.OptionsProcessor;
+import org.eclipse.osee.orcs.core.SystemPreferences;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ExchangeProvider implements IResourceProvider {
-   private static final String BASE_PATH = OseeServerProperties.getOseeApplicationServerData(null);
-   private static final String RESOLVED_PATH =
-      BASE_PATH + File.separator + ExchangeLocatorProvider.PROTOCOL + File.separator;
+
+   private String binaryDataPath;
+   private String exchangeDataPath;
+   private SystemPreferences preferences;
+   private boolean isInitialized;
 
    public ExchangeProvider() {
+      super();
+      isInitialized = false;
    }
 
-   public static String getExchangeFilePath() {
-      return RESOLVED_PATH;
+   public void setSystemPreferences(SystemPreferences preferences) {
+      this.preferences = preferences;
+   }
+
+   public static String getBinaryDataPath(SystemPreferences preferences) throws OseeCoreException {
+      return preferences.getValue("osee.application.server.data");
+   }
+
+   public static String getExchangeDataPath(SystemPreferences preferences) throws OseeCoreException {
+      String binaryDataPath = preferences.getValue("osee.application.server.data");
+      return binaryDataPath + File.separator + ExchangeLocatorProvider.PROTOCOL + File.separator;
+   }
+
+   public void start() throws OseeCoreException {
+      // TODO: Use Constants
+      binaryDataPath = getBinaryDataPath(preferences);
+      exchangeDataPath = getExchangeDataPath(preferences);
+      isInitialized = true;
+   }
+
+   public void stop() {
+      binaryDataPath = null;
+      exchangeDataPath = null;
+      isInitialized = false;
+   }
+
+   private void ensureInitialized() throws OseeCoreException {
+      Conditions.checkExpressionFailOnTrue(!isInitialized,
+         "Exchange Data Path - not initialized - ensure start() was called");
+      Conditions.checkNotNull(binaryDataPath, "exchange data path");
+      Conditions.checkNotNull(exchangeDataPath, "exchange data path");
+   }
+
+   public String getExchangeDataPath() throws OseeCoreException {
+      ensureInitialized();
+      return exchangeDataPath;
+   }
+
+   public String getBinaryDataPath() throws OseeCoreException {
+      ensureInitialized();
+      return binaryDataPath;
    }
 
    private URI resolve(IResourceLocator locator) throws OseeCoreException {
@@ -52,7 +96,7 @@ public class ExchangeProvider implements IResourceProvider {
       StringBuilder builder = new StringBuilder();
       String rawPath = locator.getRawPath();
       if (!rawPath.startsWith("file:/")) {
-         builder.append(RESOLVED_PATH);
+         builder.append(getExchangeDataPath());
          builder.append(rawPath);
          File file = new File(builder.toString());
          toReturn = file.toURI();
@@ -82,7 +126,7 @@ public class ExchangeProvider implements IResourceProvider {
       if (file.exists() != true) {
          toReturn = IResourceManager.RESOURCE_NOT_FOUND;
       } else if (file.exists() == true && file.canWrite() == true) {
-         boolean result = Lib.deleteFileAndEmptyParents(BASE_PATH, file);
+         boolean result = Lib.deleteFileAndEmptyParents(getBinaryDataPath(), file);
          if (result) {
             toReturn = IResourceManager.OK;
          }

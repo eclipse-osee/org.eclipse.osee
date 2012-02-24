@@ -11,11 +11,13 @@ Import-Package: org.eclipse.osee.executor.admin,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.model,
  org.eclipse.osee.framework.core.model.cache,
+ org.eclipse.osee.framework.core.model.change,
  org.eclipse.osee.framework.core.model.type,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util
 Export-Package: org.eclipse.osee.orcs,
  org.eclipse.osee.orcs.data,
  org.eclipse.osee.orcs.search,
+ org.eclipse.osee.orcs.transaction,
  org.eclipse.osee.orcs.utility
 Require-Bundle: org.eclipse.core.runtime

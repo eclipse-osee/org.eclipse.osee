@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.orcs.search.QueryFacade;
 import org.eclipse.osee.orcs.search.QueryFactory;
+import org.eclipse.osee.orcs.transaction.TransactionFactory;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -26,8 +27,13 @@ public interface OrcsApi {
 
    Graph getGraph(ApplicationContext context);
 
-   DataStoreTypeCache getDataStoreTypeCache();
+   OrcsBranch getBranchOps(ApplicationContext context);
 
+   OrcsAdmin getAdminOps(ApplicationContext context);
+
+   TransactionFactory getTransactionFactory(ApplicationContext context);
+
+   // TODO remove this call
    BranchCache getBranchCache();
 
 }

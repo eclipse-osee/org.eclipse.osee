@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -30,7 +29,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
@@ -40,16 +39,16 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
    private final Map<Integer, BranchData> idToImportFileBranchData;
    private OseeConnection connection;
 
-   public static BranchDataSaxHandler createWithCacheAll(IOseeDatabaseService service) {
-      return new BranchDataSaxHandler(service, true, 0);
+   public static BranchDataSaxHandler createWithCacheAll(Log logger, IOseeDatabaseService service) {
+      return new BranchDataSaxHandler(logger, service, true, 0);
    }
 
-   public static BranchDataSaxHandler newLimitedCacheBranchDataSaxHandler(IOseeDatabaseService service, int cacheLimit) {
-      return new BranchDataSaxHandler(service, false, cacheLimit);
+   public static BranchDataSaxHandler newLimitedCacheBranchDataSaxHandler(Log logger, IOseeDatabaseService service, int cacheLimit) {
+      return new BranchDataSaxHandler(logger, service, false, cacheLimit);
    }
 
-   private BranchDataSaxHandler(IOseeDatabaseService service, boolean isCacheAll, int cacheLimit) {
-      super(service, isCacheAll, cacheLimit);
+   private BranchDataSaxHandler(Log logger, IOseeDatabaseService service, boolean isCacheAll, int cacheLimit) {
+      super(logger, service, isCacheAll, cacheLimit);
       this.idToImportFileBranchData = new HashMap<Integer, BranchData>();
       this.connection = null;
    }
@@ -171,12 +170,10 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
          String query =
             "update osee_branch set parent_transaction_id = ?, baseline_transaction_id = ? where branch_id = ?";
          int updateCount = getDatabaseService().runBatchUpdate(query, data);
-         OseeLog.logf(this.getClass(), Level.INFO,
-            "Updated [%s] baseline and parent transaction id info on branches [%s]", updateCount,
+         getLogger().info("Updated [%s] baseline and parent transaction id info on branches [%s]", updateCount,
             Arrays.toString(branchesStored));
       } else {
-         OseeLog.logf(this.getClass(), Level.INFO,
-            "No branches found to update baseline and parent txs: branches - [%s] - skipping",
+         getLogger().info("No branches found to update baseline and parent txs: branches - [%s] - skipping",
             Arrays.toString(branchesStored));
       }
    }

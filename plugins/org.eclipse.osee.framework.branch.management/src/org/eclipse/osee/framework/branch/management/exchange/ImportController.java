@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.branch.management.exchange.handler.BaseDbSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.BranchDataSaxHandler;
@@ -34,7 +33,6 @@ import org.eclipse.osee.framework.branch.management.exchange.transform.ExchangeD
 import org.eclipse.osee.framework.branch.management.exchange.transform.ExchangeTransformProvider;
 import org.eclipse.osee.framework.branch.management.exchange.transform.ExchangeTransformer;
 import org.eclipse.osee.framework.branch.management.exchange.transform.IExchangeTransformProvider;
-import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -46,7 +44,6 @@ import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
@@ -130,7 +127,7 @@ public final class ImportController {
          CommitImportSavePointsTx saveImportState = new CommitImportSavePointsTx();
          saveImportState.execute();
       } catch (OseeCoreException ex) {
-         OseeLog.log(this.getClass(), Level.WARNING,
+         oseeServices.getLogger().warn(ex,
             "Error during save point save - you will not be able to reimport from last source again.");
          throw ex;
       } finally {
@@ -172,7 +169,7 @@ public final class ImportController {
          addSavePoint(currentSavePoint);
       } catch (Throwable ex) {
          reportError(currentSavePoint, ex);
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         oseeServices.getLogger().error(ex, "Error importing");
       } finally {
          cleanup();
       }
@@ -189,7 +186,7 @@ public final class ImportController {
       initializeHandler(handler, metadata);
       boolean cleanDataTable = options.getBoolean(ImportOptions.CLEAN_BEFORE_IMPORT.name());
       cleanDataTable &= !doesSavePointExist(currentSavePoint);
-      OseeLog.logf(this.getClass(), Level.INFO, "Importing: [%s] %s Meta: %s", exportItem.getSource(),
+      oseeServices.getLogger().info("Importing: [%s] %s Meta: %s", exportItem.getSource(),
          cleanDataTable ? "clean before import" : "", metadata.getColumnNames());
       if (cleanDataTable) {
          handler.clearDataTable();
@@ -214,11 +211,11 @@ public final class ImportController {
 
    private void processImportFiles(Collection<IExportItem> importItems) throws Exception {
       final DbTableSaxHandler handler =
-         DbTableSaxHandler.createWithLimitedCache(oseeServices, exportDataProvider, 50000);
+         DbTableSaxHandler.createWithLimitedCache(oseeServices.getLogger(), oseeServices, exportDataProvider, 50000);
       handler.setSelectedBranchIds(branchesToImport);
 
       for (final IExportItem item : importItems) {
-         OseeLog.logf(Activator.class, Level.INFO, "starting import for [%s]", item);
+         oseeServices.getLogger().info("starting import for [%s]", item);
          currentSavePoint = item.getSource();
          handler.setExportItem(item);
          if (!doesSavePointExist(currentSavePoint)) {
@@ -227,7 +224,7 @@ public final class ImportController {
             handler.reset();
             addSavePoint(currentSavePoint);
          } else {
-            OseeLog.logf(Activator.class, Level.INFO, "Save point found for: [%s] - skipping", item.getSource());
+            oseeServices.getLogger().info("Save point found for: [%s] - skipping", item.getSource());
          }
       }
    }
@@ -282,7 +279,8 @@ public final class ImportController {
 
       public ImportBranchesTx() {
          super();
-         branchHandler = BranchDataSaxHandler.createWithCacheAll(oseeServices.getDatabaseService());
+         branchHandler =
+            BranchDataSaxHandler.createWithCacheAll(oseeServices.getLogger(), oseeServices.getDatabaseService());
          branchesStored = new int[0];
       }
 
@@ -292,7 +290,7 @@ public final class ImportController {
             branchHandler.updateBaselineAndParentTransactionId(branchesStored);
             addSavePoint(currentSavePoint);
          } else {
-            OseeLog.logf(this.getClass(), Level.INFO, "Save point found for: [%s] - skipping", currentSavePoint);
+            oseeServices.getLogger().info("Save point found for: [%s] - skipping", currentSavePoint);
          }
       }
 
@@ -308,7 +306,7 @@ public final class ImportController {
             addSavePoint(currentSavePoint);
          } else {
             // This step has already been performed - only get branches needed for remaining operations
-            OseeLog.logf(this.getClass(), Level.INFO, "Save point found for: [%s] - skipping", currentSavePoint);
+            oseeServices.getLogger().info("Save point found for: [%s] - skipping", currentSavePoint);
             branchesStored = branchHandler.store(connection, false, branchesToImport);
          }
       }

@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.model.OseeImportModelRequest;
 import org.eclipse.osee.framework.core.model.OseeImportModelResponse;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -25,7 +24,7 @@ public class ImportOseeModelHandler extends AbstractOperation {
    private final URI model;
 
    public ImportOseeModelHandler(IOseeModelingService modelingService, OperationLogger logger, URI model) {
-      super("Import Exchange Type Model", Activator.PLUGIN_ID, logger);
+      super("Import Exchange Type Model", "pluginId", logger);
       this.modelingService = modelingService;
       this.model = model;
    }

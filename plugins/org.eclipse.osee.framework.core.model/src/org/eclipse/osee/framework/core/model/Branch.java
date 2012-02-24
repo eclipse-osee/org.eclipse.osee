@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Roberto E. Escobar
  */
-public class Branch extends AbstractOseeType<String> implements IAdaptable, IOseeBranch {
+public class Branch extends AbstractOseeType<String> implements WriteableBranch, IAdaptable {
 
    private static final int SHORT_NAME_LIMIT = 35;
 
@@ -58,6 +58,7 @@ public class Branch extends AbstractOseeType<String> implements IAdaptable, IOse
       addField(BranchField.BRANCH_CHILDREN, new CollectionField<Branch>(childBranches));
    }
 
+   @Override
    public Branch getParentBranch() throws OseeCoreException {
       return getFieldValue(BranchField.PARENT_BRANCH);
    }
@@ -77,10 +78,12 @@ public class Branch extends AbstractOseeType<String> implements IAdaptable, IOse
       }
    }
 
+   @Override
    public boolean hasParentBranch() throws OseeCoreException {
       return getParentBranch() != null;
    }
 
+   @Override
    public String getShortName() {
       return getShortName(this);
    }
@@ -89,18 +92,22 @@ public class Branch extends AbstractOseeType<String> implements IAdaptable, IOse
       return Strings.truncate(branch.getName(), SHORT_NAME_LIMIT);
    }
 
+   @Override
    public BranchType getBranchType() {
       return getFieldValueLogException(null, BranchField.BRANCH_TYPE_FIELD_KEY);
    }
 
+   @Override
    public BranchState getBranchState() {
       return getFieldValueLogException(null, BranchField.BRANCH_STATE_FIELD_KEY);
    }
 
+   @Override
    public BranchArchivedState getArchiveState() {
       return getFieldValueLogException(null, BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY);
    }
 
+   @Override
    public Integer getAssociatedArtifactId() throws OseeCoreException {
       return getFieldValue(BranchField.BRANCH_ASSOCIATED_ARTIFACT_ID_FIELD_KEY);
    }
@@ -109,10 +116,12 @@ public class Branch extends AbstractOseeType<String> implements IAdaptable, IOse
       setField(BranchField.BRANCH_ASSOCIATED_ARTIFACT_ID_FIELD_KEY, artId);
    }
 
+   @Override
    public TransactionRecord getBaseTransaction() throws OseeCoreException {
       return getFieldValue(BranchField.BRANCH_BASE_TRANSACTION);
    }
 
+   @Override
    public TransactionRecord getSourceTransaction() throws OseeCoreException {
       return getFieldValue(BranchField.BRANCH_SOURCE_TRANSACTION);
    }
@@ -149,6 +158,7 @@ public class Branch extends AbstractOseeType<String> implements IAdaptable, IOse
       setField(BranchField.BRANCH_SOURCE_TRANSACTION, srcTx);
    }
 
+   @Override
    public boolean isEditable() {
       BranchState state = getBranchState();
       return !state.isCommitInProgress() && !state.isCommitted() && !state.isRebaselined() && //
@@ -177,6 +187,7 @@ public class Branch extends AbstractOseeType<String> implements IAdaptable, IOse
       return this;
    }
 
+   @Override
    public Collection<Branch> getChildBranches() throws OseeCoreException {
       return getChildBranches(false);
    }
@@ -186,6 +197,7 @@ public class Branch extends AbstractOseeType<String> implements IAdaptable, IOse
     * @return all unarchived child branches that are not of type merge
     * @throws OseeCoreException
     */
+   @Override
    public Collection<Branch> getChildBranches(boolean recurse) throws OseeCoreException {
       Set<Branch> children = new HashSet<Branch>();
       BranchFilter filter = new BranchFilter(BranchArchivedState.UNARCHIVED);
@@ -200,13 +212,20 @@ public class Branch extends AbstractOseeType<String> implements IAdaptable, IOse
     * branches are excluded)
     * @throws OseeCoreException
     */
+   @Override
    public Collection<Branch> getAllChildBranches(boolean recurse) throws OseeCoreException {
       Set<Branch> children = new HashSet<Branch>();
       getChildBranches(children, recurse, new BranchFilter());
       return children;
    }
 
-   public void getChildBranches(Collection<Branch> children, boolean recurse, BranchFilter filter) throws OseeCoreException {
+   @Override
+   public void getChildBranches(Collection<? extends ReadableBranch> children, boolean recurse, BranchFilter filter) throws OseeCoreException {
+      uncheckedGetChildBranches(children, recurse, filter);
+   }
+
+   @SuppressWarnings({"unchecked", "rawtypes"})
+   private void uncheckedGetChildBranches(Collection children, boolean recurse, BranchFilter filter) throws OseeCoreException {
       for (Branch branch : getChildren()) {
          if (filter.matches(branch)) {
             children.add(branch);
@@ -217,6 +236,7 @@ public class Branch extends AbstractOseeType<String> implements IAdaptable, IOse
       }
    }
 
+   @Override
    public Collection<Branch> getAncestors() throws OseeCoreException {
       List<Branch> ancestors = new ArrayList<Branch>();
       Branch branchCursor = this;
@@ -241,6 +261,7 @@ public class Branch extends AbstractOseeType<String> implements IAdaptable, IOse
       return null;
    }
 
+   @Override
    public boolean isAncestorOf(IOseeBranch branch) throws OseeCoreException {
       return getChildBranches(true).contains(branch);
    }

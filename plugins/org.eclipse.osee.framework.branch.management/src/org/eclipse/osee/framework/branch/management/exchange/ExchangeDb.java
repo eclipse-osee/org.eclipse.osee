@@ -21,6 +21,7 @@ import static org.eclipse.osee.framework.branch.management.exchange.handler.Expo
 import static org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem.OSEE_TXS_ARCHIVED_DATA;
 import static org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem.OSEE_TXS_DATA;
 import static org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem.OSEE_TX_DETAILS_DATA;
+import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -38,6 +39,7 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
+import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -154,11 +156,20 @@ public final class ExchangeDb {
       this.exportJoinId = exportJoinId;
    }
 
+   private DatabaseMetaData getMetaData() throws OseeCoreException {
+      OseeConnection connection = services.getDatabaseService().getConnection();
+      try {
+         return connection.getMetaData();
+      } finally {
+         connection.close();
+      }
+   }
+
    List<AbstractExportItem> createTaskList() throws OseeCoreException {
       this.gammaJoinId = setupGammaJoin();
 
       items.add(new ManifestExportItem(items, options));
-      items.add(new MetadataExportItem(items, services.getDatabaseService().getConnection().getMetaData()));
+      items.add(new MetadataExportItem(items, getMetaData()));
       items.add(new OseeTypeModelExportItem(services.getModelingService()));
       addExportItem(OSEE_BRANCH_DATA, BRANCH_TABLE_QUERY);
       addExportItem(OSEE_TX_DETAILS_DATA, TX_DETAILS_TABLE_QUERY);

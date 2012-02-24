@@ -51,8 +51,8 @@ public class AttributeProvider implements IResourceProvider {
    }
 
    public void start() throws OseeCoreException {
-      binaryDataPath = preferences.getValue(ResourceConstants.BINARY_DATA_PATH);
-      attributeDataPath = binaryDataPath + File.separator + ResourceConstants.RESOURCE_PROTOCOL + File.separator;
+      binaryDataPath = ResourceConstants.getBinaryDataPath(preferences);
+      attributeDataPath = ResourceConstants.getAttributeDataPath(preferences);
       isInitialized = true;
    }
 

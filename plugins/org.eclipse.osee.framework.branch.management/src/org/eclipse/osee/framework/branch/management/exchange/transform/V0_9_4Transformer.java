@@ -31,5 +31,6 @@ public class V0_9_4Transformer implements IOseeExchangeVersionTransformer {
 
    @Override
    public void finalizeTransform(ExchangeDataProcessor processor, OperationLogger logger) {
+      //
    }
 }

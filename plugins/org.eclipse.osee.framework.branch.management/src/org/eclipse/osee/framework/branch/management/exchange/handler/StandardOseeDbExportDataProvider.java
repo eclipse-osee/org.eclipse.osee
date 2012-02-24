@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.branch.management.exchange.handler;
 
 import java.io.File;
 import org.eclipse.osee.framework.branch.management.exchange.IOseeExchangeDataProvider;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Ryan D. Brooks
@@ -20,8 +21,12 @@ import org.eclipse.osee.framework.branch.management.exchange.IOseeExchangeDataPr
 public class StandardOseeDbExportDataProvider implements IOseeExchangeDataProvider {
    private final File exportDataRootPath;
    private final boolean wasZipExtractionRequired;
+   private final Log logger;
+   private final String exchangeBasePath;
 
-   public StandardOseeDbExportDataProvider(File exportDataRootPath, boolean wasZipExtractionRequired) {
+   public StandardOseeDbExportDataProvider(String exchangeBasePath, Log logger, File exportDataRootPath, boolean wasZipExtractionRequired) {
+      this.exchangeBasePath = exchangeBasePath;
+      this.logger = logger;
       this.wasZipExtractionRequired = wasZipExtractionRequired;
       this.exportDataRootPath = exportDataRootPath;
 
@@ -46,4 +51,15 @@ public class StandardOseeDbExportDataProvider implements IOseeExchangeDataProvid
    public File getExportedDataRoot() {
       return exportDataRootPath;
    }
+
+   @Override
+   public Log getLogger() {
+      return logger;
+   }
+
+   @Override
+   public String getExchangeBasePath() {
+      return exchangeBasePath;
+   }
+
 }

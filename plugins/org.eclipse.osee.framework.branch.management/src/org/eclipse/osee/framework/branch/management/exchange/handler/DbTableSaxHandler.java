@@ -16,13 +16,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.branch.management.exchange.IOseeExchangeDataProvider;
 import org.eclipse.osee.framework.branch.management.exchange.OseeServices;
 import org.eclipse.osee.framework.branch.management.exchange.resource.ZipBinaryResource;
-import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -32,17 +30,17 @@ import org.eclipse.osee.framework.core.util.HexUtil;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
  */
 public class DbTableSaxHandler extends BaseDbSaxHandler {
 
-   public static DbTableSaxHandler createWithLimitedCache(OseeServices services, IOseeExchangeDataProvider exportDataProvider, int cacheLimit) {
-      return new DbTableSaxHandler(services, exportDataProvider, false, cacheLimit);
+   public static DbTableSaxHandler createWithLimitedCache(Log logger, OseeServices services, IOseeExchangeDataProvider exportDataProvider, int cacheLimit) {
+      return new DbTableSaxHandler(logger, services, exportDataProvider, false, cacheLimit);
    }
 
    private final List<IResourceLocator> transferredBinaryContent;
@@ -51,8 +49,8 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
    private final OseeServices services;
    private IExportItem exportItem;
 
-   protected DbTableSaxHandler(OseeServices services, IOseeExchangeDataProvider exportDataProvider, boolean isCacheAll, int cacheLimit) {
-      super(services.getDatabaseService(), isCacheAll, cacheLimit);
+   protected DbTableSaxHandler(Log logger, OseeServices services, IOseeExchangeDataProvider exportDataProvider, boolean isCacheAll, int cacheLimit) {
+      super(logger, services.getDatabaseService(), isCacheAll, cacheLimit);
       this.branchesToImport = new HashSet<Integer>();
       this.transferredBinaryContent = new ArrayList<IResourceLocator>();
       this.exportDataProvider = exportDataProvider;
@@ -180,7 +178,7 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
          }
       } catch (OseeCoreException ex) {
          cleanUpBinaryContent();
-         OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error processing in [%s]", getMetaData().getTableName());
+         services.getLogger().error(ex, "Error processing in [%s]", getMetaData().getTableName());
          throw ex;
       }
    }
@@ -203,10 +201,9 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
          }
       }
       if (errorMessage.length() > 0) {
-         OseeLog.log(
-            this.getClass(),
-            Level.SEVERE,
-            "Error deleting binary data after transfer error. Please delete all content manually. " + errorMessage.toString());
+         services.getLogger().error(
+            "Error deleting binary data after transfer error. Please delete all content manually. [%s]",
+            errorMessage.toString());
       }
    }
 

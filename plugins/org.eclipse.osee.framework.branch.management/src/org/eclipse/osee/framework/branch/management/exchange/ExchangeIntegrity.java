@@ -16,16 +16,14 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.transform.ExchangeDataProcessor;
-import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
@@ -97,9 +95,11 @@ public class ExchangeIntegrity {
       try {
          writer = openResults();
 
+         Log logger = services.getLogger();
          for (ReferentialIntegrityConstraint constraint : constraints) {
-            OseeLog.logf(Activator.class, Level.INFO, "Verifing constraint [%s]", constraint.getPrimaryKeyListing());
-            constraint.checkConstraint(services.getDatabaseService(), processor);
+            logger.info("Verifing constraint [%s]", constraint.getPrimaryKeyListing());
+
+            constraint.checkConstraint(logger, services.getDatabaseService(), processor);
             writeConstraintResults(writer, constraint);
          }
          ExportImportXml.closeXmlNode(writer, ExportImportXml.DATA);
@@ -108,7 +108,7 @@ public class ExchangeIntegrity {
       } finally {
          Lib.close(writer);
          processor.cleanUp();
-         OseeLog.logf(Activator.class, Level.INFO, "Verified [%s] in [%s]", exportDataProvider.getExportedDataRoot(),
+         services.getLogger().info("Verified [%s] in [%s]", exportDataProvider.getExportedDataRoot(),
             Lib.getElapseString(startTime));
       }
    }

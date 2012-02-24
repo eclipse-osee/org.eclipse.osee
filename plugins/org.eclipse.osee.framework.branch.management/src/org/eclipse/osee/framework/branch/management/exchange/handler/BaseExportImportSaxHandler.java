@@ -68,6 +68,7 @@ public abstract class BaseExportImportSaxHandler extends AbstractSaxHandler {
    }
 
    protected void finishData() {
+      //
    }
 
    private void handleEntry(Attributes attributes) {

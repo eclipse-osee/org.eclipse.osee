@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.resource;
 
+import java.io.File;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.core.SystemPreferences;
+
 /**
  * @author Roberto E. Escobar
  */
@@ -22,4 +26,13 @@ public final class ResourceConstants {
    public static final String RESOURCE_PROTOCOL = "attr";
 
    public static final String BINARY_DATA_PATH = "osee.application.server.data";
+
+   public static String getAttributeDataPath(SystemPreferences preferences) throws OseeCoreException {
+      String binaryDataPath = getBinaryDataPath(preferences);
+      return binaryDataPath + File.separator + ResourceConstants.RESOURCE_PROTOCOL + File.separator;
+   }
+
+   public static String getBinaryDataPath(SystemPreferences preferences) throws OseeCoreException {
+      return preferences.getValue(ResourceConstants.BINARY_DATA_PATH);
+   }
 }

@@ -4,9 +4,7 @@ Bundle-Name: Branch Management Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.branch.management;singleton:=true
 Bundle-Version: 0.9.9.qualifier
 Eclipse-ExtensibleAPI: true
-Bundle-Activator: org.eclipse.osee.framework.branch.management.internal.Activator
-Import-Package: org.eclipse.core.runtime,
- org.eclipse.core.runtime.jobs,
+Import-Package: org.eclipse.osee.executor.admin,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
@@ -14,11 +12,8 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.core.model,
  org.eclipse.osee.framework.core.model.cache,
  org.eclipse.osee.framework.core.model.change,
- org.eclipse.osee.framework.core.model.type,
  org.eclipse.osee.framework.core.operation,
- org.eclipse.osee.framework.core.server,
  org.eclipse.osee.framework.core.services,
- org.eclipse.osee.framework.core.translation,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.database,
  org.eclipse.osee.framework.database.core,
@@ -29,20 +24,14 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.io.xml,
- org.eclipse.osee.framework.jdk.core.util.time,
  org.eclipse.osee.framework.jdk.core.util.xml,
- org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.resource.management,
  org.eclipse.osee.framework.resource.management.exception,
  org.eclipse.osee.framework.resource.management.util,
  org.eclipse.osee.logger,
- org.eclipse.osgi.framework.console,
- org.osgi.framework,
- org.osgi.util.tracker
+ org.eclipse.osee.orcs.core
 Bundle-ActivationPolicy: lazy
-Export-Package: org.eclipse.osee.framework.branch.management,
- org.eclipse.osee.framework.branch.management.commit,
- org.eclipse.osee.framework.branch.management.purge
-Service-Component: OSGI-INF/exchange.provider.xml,
- OSGI-INF/locator.provider.exchange.xml
+Export-Package: org.eclipse.osee.framework.branch.management
+Service-Component: OSGI-INF/*.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.core.runtime

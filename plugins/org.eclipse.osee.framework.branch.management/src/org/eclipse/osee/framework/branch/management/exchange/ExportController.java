@@ -15,11 +15,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.logging.Level;
+import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.branch.management.ExportOptions;
 import org.eclipse.osee.framework.branch.management.IExchangeTaskListener;
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractExportItem;
@@ -31,7 +28,6 @@ import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
@@ -43,7 +39,6 @@ final class ExportController implements IExchangeTaskListener {
    private final PropertyStore options;
    private final List<Integer> branchIds;
    private final ExportImportJoinQuery exportJoinId;
-   private ExecutorService executorService;
    private final List<String> errorList = new CopyOnWriteArrayList<String>();
    private final OseeServices oseeServices;
 
@@ -75,12 +70,10 @@ final class ExportController implements IExchangeTaskListener {
       } catch (OseeCoreException ex) {
          onException("Export Clean-Up", ex);
       }
-      this.executorService.shutdown();
-      this.executorService = null;
    }
 
-   private File createTempFolder() {
-      File rootDirectory = ExchangeUtil.createTempFolder();
+   private File createTempFolder() throws OseeCoreException {
+      File rootDirectory = ExchangeUtil.createTempFolder(oseeServices.getExchangeBasePath());
       if (!Strings.isValid(getExchangeFileName())) {
          setExchangeFileName(rootDirectory.getName());
       }
@@ -98,9 +91,6 @@ final class ExportController implements IExchangeTaskListener {
       if (userMaxTx == Long.MIN_VALUE || userMaxTx > maxTx) {
          options.put(ExportOptions.MAX_TXS.name(), Long.toString(maxTx));
       }
-
-      //ServerThreads.createNewThreadFactory("branch.export.worker")
-      executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
    }
 
    protected void handleTxWork() throws OseeCoreException {
@@ -125,33 +115,35 @@ final class ExportController implements IExchangeTaskListener {
       } finally {
          cleanUp(taskList);
       }
-      OseeLog.logf(this.getClass(), Level.INFO, "Exported [%s] branch%s in [%s]", branchIds.size(),
+      oseeServices.getLogger().info("Exported [%s] branch%s in [%s]", branchIds.size(),
          branchIds.size() != 1 ? "es" : "", Lib.getElapseString(startTime));
    }
 
    private void finishExport(File tempFolder) throws IllegalArgumentException, IOException {
       String zipTargetName = getExchangeFileName() + ZIP_EXTENSION;
       if (options.getBoolean(ExportOptions.COMPRESS.name())) {
-         OseeLog.logf(this.getClass(), Level.INFO, "Compressing Branch Export Data - [%s]", zipTargetName);
+         oseeServices.getLogger().info("Compressing Branch Export Data - [%s]", zipTargetName);
          File zipTarget = new File(tempFolder.getParent(), zipTargetName);
          Lib.compressDirectory(tempFolder, zipTarget.getAbsolutePath(), true);
-         OseeLog.logf(this.getClass(), Level.INFO, "Deleting Branch Export Temp Folder - [%s]", tempFolder);
+         oseeServices.getLogger().info("Deleting Branch Export Temp Folder - [%s]", tempFolder);
          Lib.deleteDir(tempFolder);
       } else {
          File target = new File(tempFolder.getParent(), getExchangeFileName());
          if (!target.equals(tempFolder)) {
             if (!tempFolder.renameTo(target)) {
-               OseeLog.logf(this.getClass(), Level.INFO, "Unable to move [%s] to [%s]", tempFolder.getAbsolutePath(),
+               oseeServices.getLogger().info("Unable to move [%s] to [%s]", tempFolder.getAbsolutePath(),
                   target.getAbsolutePath());
             }
          }
       }
    }
 
-   private void sendTasksToExecutor(List<AbstractExportItem> taskList, final File exportFolder) throws InterruptedException, ExecutionException, OseeCoreException {
+   private void sendTasksToExecutor(List<AbstractExportItem> taskList, final File exportFolder) throws Exception {
       List<Future<?>> futures = new ArrayList<Future<?>>();
+
+      ExecutorAdmin executor = oseeServices.getExecutorAdmin();
       for (AbstractExportItem exportItem : taskList) {
-         futures.add(this.executorService.submit(exportItem));
+         futures.add(executor.schedule("branch.export.worker", exportItem));
       }
 
       for (Future<?> future : futures) {

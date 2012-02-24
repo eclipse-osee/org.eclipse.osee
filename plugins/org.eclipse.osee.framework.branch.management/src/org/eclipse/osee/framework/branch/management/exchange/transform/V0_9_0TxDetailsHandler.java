@@ -22,6 +22,7 @@ public class V0_9_0TxDetailsHandler extends AbstractSaxHandler {
 
    @Override
    public void endElementFound(String uri, String localName, String qName) {
+      //
    }
 
    @Override

@@ -25,6 +25,7 @@ public class V0_9_2ArtifactVersionHandler extends AbstractSaxHandler {
 
    @Override
    public void endElementFound(String uri, String localName, String qName) {
+      //
    }
 
    public Map<Long, Long> getArtifactGammaToNetGammaId() {

@@ -1,0 +1,88 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.orcs.core.internal.admin;
+
+import java.util.concurrent.Callable;
+import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.core.internal.SessionContext;
+
+/**
+ * @author Roberto E. Escobar
+ */
+public abstract class AbstractAdminCallable<T> extends CancellableCallable<T> {
+
+   private final Log logger;
+   private final SessionContext sessionContext;
+   private Callable<?> innerWorker;
+
+   public AbstractAdminCallable(Log logger, SessionContext sessionContext) {
+      super();
+      this.logger = logger;
+      this.sessionContext = sessionContext;
+   }
+
+   protected Log getLogger() {
+      return logger;
+   }
+
+   protected SessionContext getSessionContext() {
+      return sessionContext;
+   }
+
+   @Override
+   public final T call() throws Exception {
+      long startTime = 0;
+      if (logger.isTraceEnabled()) {
+         startTime = System.currentTimeMillis();
+      }
+      T result;
+      try {
+         Conditions.checkNotNull(sessionContext, "sessionContext");
+         //         Conditions.checkNotNull(branchStore, "branchDataStore");
+         result = innerCall();
+      } finally {
+         if (logger.isTraceEnabled()) {
+            logger.trace("Branch [%s] completed in [%s]", getClass().getSimpleName(), Lib.getElapseString(startTime));
+         }
+      }
+      return result;
+   }
+
+   protected abstract T innerCall() throws Exception;
+
+   protected <K> K callAndCheckForCancel(Callable<K> callable) throws Exception {
+      checkForCancelled();
+      setInnerWorker(callable);
+      K result = callable.call();
+      setInnerWorker(null);
+      return result;
+   }
+
+   private synchronized void setInnerWorker(Callable<?> callable) {
+      innerWorker = callable;
+   }
+
+   @Override
+   public void setCancel(boolean isCancelled) {
+      super.setCancel(isCancelled);
+      final Callable<?> inner = innerWorker;
+      if (inner != null) {
+         synchronized (inner) {
+            if (inner instanceof CancellableCallable) {
+               ((CancellableCallable<?>) inner).setCancel(isCancelled);
+            }
+         }
+      }
+   }
+}

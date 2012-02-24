@@ -92,7 +92,7 @@ public class MappedDataProxy extends AbstractDataProxy implements CharacterDataP
    }
 
    @Override
-   public void purge() throws OseeCoreException {
+   public void purge() {
       // TODO
       //      try {
       //         if (isRemoteUriValid()) {

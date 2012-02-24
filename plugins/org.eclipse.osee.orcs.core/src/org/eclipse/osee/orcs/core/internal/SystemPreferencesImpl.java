@@ -15,14 +15,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.SystemPreferences;
+import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.core.ds.KeyValueDataAccessor;
 
 /**
  * @author Roberto E. Escobar
  */
 public class SystemPreferencesImpl implements SystemPreferences {
-
-   private static final String DATASTORE_ID_KEY = "osee.db.guid";
 
    private Map<String, String> cache;
    private KeyValueDataAccessor accessor;
@@ -41,7 +40,7 @@ public class SystemPreferencesImpl implements SystemPreferences {
 
    @Override
    public String getSystemUuid() throws OseeCoreException {
-      return getValue(DATASTORE_ID_KEY);
+      return getValue(DataStoreConstants.DATASTORE_ID_KEY);
    }
 
    @Override

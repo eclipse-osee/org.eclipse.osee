@@ -19,18 +19,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.logging.Level;
-import org.eclipse.osee.framework.branch.management.exchange.resource.ExchangeProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.logger.Log;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -54,7 +52,7 @@ public class ExchangeUtil {
       return writer;
    }
 
-   public static Pair<Boolean, File> getTempExchangeFile(IResourceLocator locator, IResourceManager resourceManager) throws OseeCoreException {
+   public static Pair<Boolean, File> getTempExchangeFile(String exchangePath, Log logger, IResourceLocator locator, IResourceManager resourceManager) throws OseeCoreException {
       File importSource = null;
       boolean wasZipExtractionRequired = false;
       IResource resource = resourceManager.acquire(locator, new PropertyStore());
@@ -63,9 +61,8 @@ public class ExchangeUtil {
       File source = new File(resource.getLocation());
       if (source.isFile()) {
          wasZipExtractionRequired = true;
-         importSource = ExchangeUtil.createTempFolder();
-         OseeLog.logf(ExchangeUtil.class, Level.INFO,
-            "Extracting Exchange File: [%s] to [%s]", source.getName(), importSource);
+         importSource = ExchangeUtil.createTempFolder(exchangePath);
+         logger.info("Extracting Exchange File: [%s] to [%s]", source.getName(), importSource);
          try {
             Lib.decompressStream(new FileInputStream(source), importSource);
          } catch (Exception ex) {
@@ -79,19 +76,17 @@ public class ExchangeUtil {
       return new Pair<Boolean, File>(wasZipExtractionRequired, importSource);
    }
 
-   public static void cleanUpTempExchangeFile(File exchangeSource, boolean wasZipExtractionRequired) {
+   public static void cleanUpTempExchangeFile(String exchangePath, Log logger, File exchangeSource, boolean wasZipExtractionRequired) {
       if (wasZipExtractionRequired && exchangeSource != null && exchangeSource.exists() && !exchangeSource.getAbsolutePath().equals(
-         ExchangeProvider.getExchangeFilePath())) {
-         OseeLog.logf(ExchangeUtil.class, Level.INFO,
-            "Deleting Branch Import Temp Folder - [%s]", exchangeSource);
+         exchangePath)) {
+         logger.info("Deleting Branch Import Temp Folder - [%s]", exchangeSource);
          Lib.deleteDir(exchangeSource);
       }
    }
 
-   public static File createTempFolder() {
-      String basePath = ExchangeProvider.getExchangeFilePath();
+   public static File createTempFolder(String exchangePath) {
       String fileName = TEMP_NAME_PREFIX + Lib.getDateTimeString();
-      File rootDirectory = new File(basePath, fileName + File.separator);
+      File rootDirectory = new File(exchangePath, fileName + File.separator);
       rootDirectory.mkdirs();
       return rootDirectory;
    }

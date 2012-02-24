@@ -54,6 +54,7 @@ public class V0_9_0Transformer implements IOseeExchangeVersionTransformer {
       return MAX_VERSION;
    }
 
+   @SuppressWarnings("rawtypes")
    private void replaceDataTypeIdsWithGuids(ExchangeDataProcessor processor, AbstractOseeCache cache, ExportItem exportItem, String typeIdColumn, String typeNameColumn) throws OseeCoreException {
       V0_9_0TypeHandler typeHandler = new V0_9_0TypeHandler(cache, typeIdColumn, typeNameColumn);
       processor.parse(exportItem + ".type.xml", typeHandler);
@@ -64,6 +65,7 @@ public class V0_9_0Transformer implements IOseeExchangeVersionTransformer {
 
    @Override
    public void finalizeTransform(ExchangeDataProcessor processor, OperationLogger logger) {
+      //
    }
 
    @Override

@@ -14,13 +14,14 @@ import java.io.File;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.branch.management.IExchangeTaskListener;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractExportItem implements Runnable {
+public abstract class AbstractExportItem implements Callable<Boolean> {
    private final ExportItem id;
    private final String fileName;
    private final Set<IExchangeTaskListener> exportListeners;
@@ -81,17 +82,21 @@ public abstract class AbstractExportItem implements Runnable {
    }
 
    @Override
-   public final void run() {
+   public final Boolean call() throws Exception {
+      boolean wasSuccessful = false;
       long startTime = System.currentTimeMillis();
       try {
          if (!isCancel()) {
             executeWork();
          }
+         wasSuccessful = true;
       } catch (Exception ex) {
          notifyOnExportException(ex);
+         throw ex;
       } finally {
          notifyOnExportItemCompleted(System.currentTimeMillis() - startTime);
       }
+      return wasSuccessful;
    }
 
    protected void notifyOnExportException(Throwable ex) {

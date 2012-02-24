@@ -14,6 +14,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.branch.management.exchange.handler.BaseDbSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.IExportItem;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Ryan D. Brooks
@@ -23,8 +24,8 @@ public class ForeignKeyReader extends BaseDbSaxHandler {
    private final PrimaryKeyCollector primaryKeyCollector;
    private final IExportItem foreignTable;
 
-   public ForeignKeyReader(IOseeDatabaseService service, PrimaryKeyCollector primaryKeyCollector, IExportItem foreignTable, String... foreignKeys) {
-      super(service, true, 0);
+   public ForeignKeyReader(Log logger, IOseeDatabaseService service, PrimaryKeyCollector primaryKeyCollector, IExportItem foreignTable, String... foreignKeys) {
+      super(logger, service, true, 0);
       this.primaryKeyCollector = primaryKeyCollector;
       this.foreignKeys = foreignKeys;
       this.foreignTable = foreignTable;

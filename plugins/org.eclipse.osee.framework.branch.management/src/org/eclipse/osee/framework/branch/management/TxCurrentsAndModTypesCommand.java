@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.branch.management;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
@@ -22,8 +21,9 @@ import org.eclipse.osee.framework.database.operation.InvalidTxCurrentsAndModType
  * @author Ryan D. Brooks
  */
 public class TxCurrentsAndModTypesCommand extends CompositeOperation {
+
    public TxCurrentsAndModTypesCommand(OperationLogger logger, boolean archived) {
-      super("TxCurrents And Mod Types", Activator.PLUGIN_ID, logger, buildSubOperations(logger, archived));
+      super("TxCurrents And Mod Types", "Plugin Id", logger, buildSubOperations(logger, archived));
    }
 
    private static List<IOperation> buildSubOperations(OperationLogger logger, boolean archived) {

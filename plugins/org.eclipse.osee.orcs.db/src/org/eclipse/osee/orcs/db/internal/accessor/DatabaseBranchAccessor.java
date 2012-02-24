@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.db.internal.callable.StoreBranchCallable;
+import org.eclipse.osee.orcs.db.internal.callable.StoreBranchDatabaseCallable;
 
 /**
  * @author Roberto E. Escobar
@@ -200,8 +200,9 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<String, Branch>
 
    @Override
    public void store(Collection<Branch> branches) throws OseeCoreException {
-      StoreBranchCallable task =
-         new StoreBranchCallable(getDatabaseService(), getExecutorAdmin(), getEventService(), branches);
+      StoreBranchDatabaseCallable task =
+         new StoreBranchDatabaseCallable(getLogger(), getDatabaseService(), getExecutorAdmin(), getEventService(),
+            branches);
       try {
          Future<IStatus> future = getExecutorAdmin().schedule(task);
          IStatus status = future.get();
