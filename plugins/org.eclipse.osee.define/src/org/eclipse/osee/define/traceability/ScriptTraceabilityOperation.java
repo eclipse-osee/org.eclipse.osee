@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -36,10 +37,12 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
+import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -224,5 +227,24 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
    @Override
    public RequirementData getRequirementData() {
       return requirementData;
+   }
+
+   @Override
+   public Collection<Artifact> getTestUnitArtifacts(Artifact requirement) {
+      Collection<Artifact> toReturn = new HashSet<Artifact>();
+      Collection<String> scriptNames = requirementToCodeUnitsMap.getValues(requirement);
+      if (scriptNames != null) {
+         for (String script : scriptNames) {
+            Artifact testScript;
+            try {
+               testScript = TestRunOperator.getTestScriptFetcher().getNewArtifact(requirement.getBranch());
+               testScript.setName(script);
+               toReturn.add(testScript);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
+      }
+      return toReturn;
    }
 }

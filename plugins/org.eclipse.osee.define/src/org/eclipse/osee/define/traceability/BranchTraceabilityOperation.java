@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -107,6 +108,11 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
       for (Artifact unit : unitsOnBranch) {
          codeUnits.add(convertToJavaFileName(unit.getName()));
       }
+   }
+
+   @Override
+   public Collection<Artifact> getTestUnitArtifacts(Artifact requirement) throws OseeCoreException {
+      return requirement.getRelatedArtifacts(CoreRelationTypes.Verification__Verifier);
    }
 
 }

@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 public class TraceabilityTable {
    private static final Pattern WORKSHEET_START_PATTERN = Pattern.compile("(<Worksheet.*?>)");
    private static final Pattern TABLE_START_PATTERN = Pattern.compile("(<Table.*?>)");
+   private static final Pattern STYLE_PATTERN = Pattern.compile("<Styles>.*</Styles>\\s*", Pattern.DOTALL);
 
    private CharSequence result;
    private final StringWriter stringWriter;
@@ -56,9 +57,9 @@ public class TraceabilityTable {
       String source = stringWriter.toString();
       ChangeSet changeSet = new ChangeSet(source);
 
-      Matcher match = WORKSHEET_START_PATTERN.matcher(source);
+      Matcher match = STYLE_PATTERN.matcher(source);
       if (match.find()) {
-         changeSet.insertBefore(match.start(), style.getHeaderStyles());
+         changeSet.replace(match.start(), match.end(), style.getHeaderStyles());
       }
       Matcher match2 = TABLE_START_PATTERN.matcher(source);
       if (match2.find()) {

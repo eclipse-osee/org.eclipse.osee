@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.traceability;
 
+import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.define.traceability.data.RequirementData;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -26,4 +27,6 @@ public interface ITraceabilityProvider {
    public HashCollection<Artifact, String> getRequirementToCodeUnitsMap() throws OseeCoreException;
 
    public HashSet<String> getCodeUnits();
+
+   public Collection<Artifact> getTestUnitArtifacts(Artifact requirement) throws OseeCoreException;
 }

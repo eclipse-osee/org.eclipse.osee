@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
 
 /**
  * @author Roberto E. Escobar
@@ -186,22 +185,14 @@ public class RequirementTraceabilityData {
     * 
     * @param artifact requirement to find
     * @return the test scripts associated with this requirement
+    * @throws OseeCoreException
     */
-   public Collection<Artifact> getTestScriptsForRequirement(Artifact artifact) {
-      Set<Artifact> toReturn = new HashSet<Artifact>();
-      Collection<String> scriptNames = getRequirementsToCodeUnits().getValues(artifact);
-      for (String script : scriptNames) {
-         Artifact testScript;
-         try {
-            testScript = TestRunOperator.getTestScriptFetcher().getNewArtifact(testProcedureBranch);
-            testScript.setName(script);
-            testScripts.put(getScriptName(script), testScript);
-            toReturn.add(testScript);
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
+   public Collection<Artifact> getTestScriptsForRequirement(Artifact artifact) throws OseeCoreException {
+      Collection<Artifact> testUnitArtifacts = traceabilityProvider.getTestUnitArtifacts(artifact);
+      for (Artifact art : testUnitArtifacts) {
+         testScripts.put(getScriptName(art.getName()), art);
       }
-      return toReturn;
+      return testUnitArtifacts;
    }
 
    public Artifact getTestProcedureByName(String name) {
@@ -212,9 +203,12 @@ public class RequirementTraceabilityData {
       return testScripts.get(name);
    }
 
-   private String getScriptName(String scriptPath) {
-      return scriptPath.substring(scriptPath.lastIndexOf(File.separatorChar) + 1,
-         scriptPath.length() - ".java".length());
+   private String getScriptName(String name) {
+      int endOfPackageName = name.lastIndexOf(".");
+      if (endOfPackageName != -1) {
+         name = name.substring(endOfPackageName + 1) + ".java";
+      }
+      return name;
    }
 
    public void setTestProcedureFilterFile(File filter) {
