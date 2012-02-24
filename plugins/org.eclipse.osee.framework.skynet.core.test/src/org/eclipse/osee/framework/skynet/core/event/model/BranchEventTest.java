@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -122,8 +121,7 @@ public class BranchEventTest {
    }
 
    private Branch testEvents__committed() throws Exception {
-      Branch workingBranch =
-         BranchManager.createWorkingBranch(topLevel, BRANCH_NAME_PREFIX + " - to commit", UserManager.getUser());
+      Branch workingBranch = BranchManager.createWorkingBranch(topLevel, BRANCH_NAME_PREFIX + " - to commit");
 
       Assert.assertNotNull(workingBranch);
 
@@ -144,8 +142,7 @@ public class BranchEventTest {
    }
 
    private Branch testEvents__purged() throws Exception {
-      Branch workingBranch =
-         BranchManager.createWorkingBranch(topLevel, BRANCH_NAME_PREFIX + " - to purge", UserManager.getUser());
+      Branch workingBranch = BranchManager.createWorkingBranch(topLevel, BRANCH_NAME_PREFIX + " - to purge");
 
       Assert.assertNotNull(workingBranch);
 
@@ -231,8 +228,7 @@ public class BranchEventTest {
    private Branch testEvents__workingAdded() throws Exception {
       branchEventListener.reset();
 
-      Branch workingBranch =
-         BranchManager.createWorkingBranch(topLevel, BRANCH_NAME_PREFIX + " - working", UserManager.getUser());
+      Branch workingBranch = BranchManager.createWorkingBranch(topLevel, BRANCH_NAME_PREFIX + " - working");
       Assert.assertNotNull(workingBranch);
 
       verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.Added, null);

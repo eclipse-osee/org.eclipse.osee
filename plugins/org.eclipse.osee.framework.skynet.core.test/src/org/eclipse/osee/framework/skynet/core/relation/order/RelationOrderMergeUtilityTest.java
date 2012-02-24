@@ -58,7 +58,7 @@ public class RelationOrderMergeUtilityTest {
    public void createBranch() throws OseeCoreException {
       destBranch =
          BranchManager.createWorkingBranch(BranchManager.getSystemRootBranch(),
-            "RelationOrderMergeUtilityTest.createBranch", null);
+            "RelationOrderMergeUtilityTest.createBranch");
       hierType = RelationTypeManager.getType(defaultHierarchy);
       hierSide = defaultHierarchy.getSide();
    }
@@ -96,7 +96,7 @@ public class RelationOrderMergeUtilityTest {
       }
       destParent.persist(getClass().getSimpleName() + ".testOrderMerge()_1");
 
-      Branch sourceBranch = BranchManager.createWorkingBranch(destBranch, "Source Branch", null);
+      Branch sourceBranch = BranchManager.createWorkingBranch(destBranch, "Source Branch");
       Artifact srcParent = ArtifactQuery.getArtifactFromId(destParent.getGuid(), sourceBranch);
       Artifact srcChild = ArtifactQuery.getArtifactFromId(destChildren[4].getGuid(), sourceBranch);
       setAsChild(srcParent, srcChild, USER_DEFINED);

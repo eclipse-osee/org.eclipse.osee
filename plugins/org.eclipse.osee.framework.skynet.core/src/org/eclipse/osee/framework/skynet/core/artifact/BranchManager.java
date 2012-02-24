@@ -352,6 +352,11 @@ public class BranchManager {
    /**
     * Creates a new Branch based on the transaction number selected and the parent branch.
     */
+   public static Branch createWorkingBranch(TransactionRecord parentTransactionId, String childBranchName, String childBranchGuid) throws OseeCoreException {
+      return createWorkingBranch(parentTransactionId, childBranchName, childBranchGuid,
+         UserManager.getUser(SystemUser.OseeSystem));
+   }
+
    public static Branch createWorkingBranch(TransactionRecord parentTransactionId, String childBranchName, String childBranchGuid, Artifact associatedArtifact) throws OseeCoreException {
       String creationComment =
          String.format("New Branch from %s (%s)", parentTransactionId.getBranch().getName(),
@@ -365,9 +370,17 @@ public class BranchManager {
    /**
     * Creates a new Branch based on the most recent transaction on the parent branch.
     */
+   public static Branch createWorkingBranch(IOseeBranch parentBranch, String childBranchName) throws OseeCoreException {
+      return createWorkingBranch(parentBranch, childBranchName, UserManager.getUser(SystemUser.OseeSystem));
+   }
+
    public static Branch createWorkingBranch(IOseeBranch parentBranch, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
       TransactionRecord parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
       return createWorkingBranch(parentTransactionId, childBranchName, null, associatedArtifact);
+   }
+
+   public static Branch createWorkingBranch(IOseeBranch parentBranch, IOseeBranch childBranch) throws OseeCoreException {
+      return createWorkingBranch(parentBranch, childBranch, UserManager.getUser(SystemUser.OseeSystem));
    }
 
    public static Branch createWorkingBranch(IOseeBranch parentBranch, IOseeBranch childBranch, Artifact associatedArtifact) throws OseeCoreException {
@@ -378,6 +391,10 @@ public class BranchManager {
    /**
     * Creates a new Branch based on the most recent transaction on the parent branch.
     */
+   public static Branch createBaselineBranch(IOseeBranch parentBranch, IOseeBranch childBranch) throws OseeCoreException {
+      return createBaselineBranch(parentBranch, childBranch, UserManager.getUser(SystemUser.OseeSystem));
+   }
+
    public static Branch createBaselineBranch(IOseeBranch parentBranch, IOseeBranch childBranch, Artifact associatedArtifact) throws OseeCoreException {
       TransactionRecord parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
       String creationComment = String.format("Branch Creation for %s", childBranch.getName());

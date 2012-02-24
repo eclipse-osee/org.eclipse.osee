@@ -51,7 +51,6 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -218,9 +217,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
             OseeLog.log(Activator.class, Level.INFO, "Creating SAW_Bld_2 branch off SAW_Bld_1");
          }
          // Create SAW_Bld_2 branch off SAW_Bld_1
-         Branch childBranch =
-            BranchManager.createBaselineBranch(DemoSawBuilds.SAW_Bld_1, DemoSawBuilds.SAW_Bld_2,
-               UserManager.getUser(SystemUser.OseeSystem));
+         Branch childBranch = BranchManager.createBaselineBranch(DemoSawBuilds.SAW_Bld_1, DemoSawBuilds.SAW_Bld_2);
 
          DemoDbUtil.sleep(5000);
          // need to update the branch type;
@@ -266,8 +263,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
    private void createGenericDemoActions() throws Exception {
       if (DEBUG) {
-         OseeLog.log(Activator.class, Level.INFO,
-            "createNonReqChangeDemoActions - getGenericActionData");
+         OseeLog.log(Activator.class, Level.INFO, "createNonReqChangeDemoActions - getGenericActionData");
       }
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - Create Generic Actions");
@@ -291,8 +287,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       int currNum = 1;
       for (DemoDbActionData aData : actionDatas) {
          if (DEBUG) {
-            OseeLog.log(Activator.class, Level.INFO,
-               "Creating " + currNum++ + "/" + actionDatas.size());
+            OseeLog.log(Activator.class, Level.INFO, "Creating " + currNum++ + "/" + actionDatas.size());
          }
          int x = 0;
          Date createdDate = new Date();
@@ -367,8 +362,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
    private void importRequirements(IOseeBranch branch, String rootArtifactName, IArtifactType requirementType, String filename) throws Exception {
 
       if (DEBUG) {
-         OseeLog.logf(Activator.class, Level.INFO, "Importing \"%s\" requirements on branch \"%s\"",
-            rootArtifactName, branch);
+         OseeLog.logf(Activator.class, Level.INFO, "Importing \"%s\" requirements on branch \"%s\"", rootArtifactName,
+            branch);
       }
       Artifact systemReq = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, rootArtifactName, branch);
 

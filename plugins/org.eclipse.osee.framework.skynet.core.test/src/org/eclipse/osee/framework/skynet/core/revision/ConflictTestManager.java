@@ -158,7 +158,7 @@ public class ConflictTestManager {
    public static void initializeConflictTest() throws Exception {
       cleanUpConflictTest();
       createConflictDefinitions();
-      destBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, DEST_BRANCH, null);
+      destBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, DEST_BRANCH);
 
       Artifact rootArtifact = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, FOLDER, destBranch);
 
@@ -179,7 +179,7 @@ public class ConflictTestManager {
          destArtifacts[i].persist(ConflictTestManager.class.getSimpleName());
       }
       // Create the source branch
-      sourceBranch = BranchManager.createWorkingBranch(destBranch, SOURCE_BRANCH, null);
+      sourceBranch = BranchManager.createWorkingBranch(destBranch, SOURCE_BRANCH);
 
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
          sourceArtifacts[i] = ArtifactQuery.getArtifactFromId(destArtifacts[i].getArtId(), sourceBranch);

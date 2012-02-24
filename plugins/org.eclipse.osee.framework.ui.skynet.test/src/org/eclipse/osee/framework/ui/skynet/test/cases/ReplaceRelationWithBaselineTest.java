@@ -54,7 +54,7 @@ public final class ReplaceRelationWithBaselineTest {
 
       Branch childBranch =
          BranchManager.createWorkingBranch(branch,
-            String.format("Test Child branch [%s] [%s]", name, testName.getMethodName()), null);
+            String.format("Test Child branch [%s] [%s]", name, testName.getMethodName()));
       transaction = TransactionManager.createTransaction(childBranch, name + ".testReplaceAttributeVersion 2");
       Artifact childArtifact1 = ArtifactQuery.getArtifactFromId(artifact1.getArtId(), childBranch);
       Artifact childArtifact2 = ArtifactQuery.getArtifactFromId(artifact2.getArtId(), childBranch);

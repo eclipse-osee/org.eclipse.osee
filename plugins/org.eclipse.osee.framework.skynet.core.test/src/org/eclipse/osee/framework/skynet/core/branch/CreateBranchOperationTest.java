@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -41,7 +42,8 @@ public class CreateBranchOperationTest {
 
    @Test
    public void test_checkPreconditions_AllowWorkingBranchCreationIfDeleted() throws OseeCoreException {
-      Artifact folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, DemoSawBuilds.SAW_Bld_1);
+      Artifact folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, CoreBranches.COMMON);
+      folder.persist("");
 
       Branch workingBranch =
          BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, String.format(NAME, testName.getMethodName()),
@@ -58,7 +60,8 @@ public class CreateBranchOperationTest {
 
    @Test
    public void test_checkPreconditions_AllowWorkingBranchCreationIfRebaselined() throws OseeCoreException {
-      Artifact folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, DemoSawBuilds.SAW_Bld_1);
+      Artifact folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, CoreBranches.COMMON);
+      folder.persist("");
 
       Branch workingBranch =
          BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, String.format(NAME, testName.getMethodName()),
@@ -86,7 +89,8 @@ public class CreateBranchOperationTest {
 
       int exceptionsCaught = 0;
       for (BranchState state : subset) {
-         Artifact folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, DemoSawBuilds.SAW_Bld_1);
+         Artifact folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, CoreBranches.COMMON);
+         folder.persist("");
 
          Branch workingBranch =
             BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, String.format(NAME, testName.getMethodName()),

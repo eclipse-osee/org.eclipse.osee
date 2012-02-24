@@ -18,13 +18,11 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.operation.PurgeUnusedBackingDataAndTransactions;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.httpRequests.PurgeBranchHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.mocks.DbTestUtil;
@@ -69,8 +67,7 @@ public class BranchPurgeTest {
       DbTestUtil.getTableRowCounts(preCreateCount, tables);
 
       // create a new working branch
-      Branch branch =
-         BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_2, name, UserManager.getUser(SystemUser.OseeSystem));
+      Branch branch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_2, name);
 
       // create some software artifacts
       Collection<Artifact> softArts =

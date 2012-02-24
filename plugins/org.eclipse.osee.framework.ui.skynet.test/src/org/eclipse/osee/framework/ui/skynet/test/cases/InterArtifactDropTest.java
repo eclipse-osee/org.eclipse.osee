@@ -15,14 +15,12 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -51,25 +49,17 @@ public class InterArtifactDropTest {
       String updateSourceBranchName = "updateTestParentSourceBranch" + GUID.create();
       String updateTestSourceName = "updateTestSourceBranch" + GUID.create();
 
-      sourceBranch =
-         BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, sourceBranchName,
-            UserManager.getUser(SystemUser.OseeSystem));
+      sourceBranch = BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, sourceBranchName);
       sleep(5000);
 
       sourceArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, sourceBranch);
       sourceArtifact.persist(getClass().getSimpleName());
 
-      destinationBranch =
-         BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, destinationBranchName,
-            UserManager.getUser(SystemUser.OseeSystem));
+      destinationBranch = BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, destinationBranchName);
 
-      updateTestParentSourceBranch =
-         BranchManager.createWorkingBranch(sourceBranch, updateSourceBranchName,
-            UserManager.getUser(SystemUser.OseeSystem));
+      updateTestParentSourceBranch = BranchManager.createWorkingBranch(sourceBranch, updateSourceBranchName);
 
-      updateTestSourceBranch =
-         BranchManager.createWorkingBranch(updateTestParentSourceBranch, updateTestSourceName,
-            UserManager.getUser(SystemUser.OseeSystem));
+      updateTestSourceBranch = BranchManager.createWorkingBranch(updateTestParentSourceBranch, updateTestSourceName);
 
       sleep(5000);
    }

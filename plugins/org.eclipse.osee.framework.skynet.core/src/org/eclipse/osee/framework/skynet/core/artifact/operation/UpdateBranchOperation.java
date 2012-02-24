@@ -12,14 +12,12 @@ package org.eclipse.osee.framework.skynet.core.artifact.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOperation;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
@@ -53,8 +51,7 @@ public class UpdateBranchOperation extends AbstractOperation {
    private Branch createTempBranch(Branch originalBranch) throws OseeCoreException {
       Branch parentBranch = originalBranch.getParentBranch();
       String branchUpdateName = getUpdatedName(originalBranch.getName());
-      Branch newWorkingBranch =
-         BranchManager.createWorkingBranch(parentBranch, branchUpdateName, UserManager.getUser(SystemUser.OseeSystem));
+      Branch newWorkingBranch = BranchManager.createWorkingBranch(parentBranch, branchUpdateName);
       return newWorkingBranch;
    }
 

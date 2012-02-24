@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.test.mocks.Asserts;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.operation.FinishUpdateBranchOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.operation.UpdateBranchOperation;
@@ -56,8 +55,7 @@ public class BranchStateTest {
       String originalBranchName = "Create State Branch";
       Branch workingBranch = null;
       try {
-         User user = UserManager.getUser(SystemUser.OseeSystem);
-         workingBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, originalBranchName, user);
+         workingBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, originalBranchName);
          assertEquals(BranchState.CREATED, workingBranch.getBranchState());
          assertTrue(workingBranch.isEditable());
       } finally {
@@ -72,8 +70,7 @@ public class BranchStateTest {
       String originalBranchName = "Modified State Branch";
       Branch workingBranch = null;
       try {
-         User user = UserManager.getUser(SystemUser.OseeSystem);
-         workingBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, originalBranchName, user);
+         workingBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, originalBranchName);
          assertEquals(BranchState.CREATED, workingBranch.getBranchState());
          assertTrue(workingBranch.isEditable());
 
@@ -96,8 +93,7 @@ public class BranchStateTest {
       String originalBranchName = "Deleted State Branch";
       Branch workingBranch = null;
       try {
-         User user = UserManager.getUser(SystemUser.OseeSystem);
-         workingBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, originalBranchName, user);
+         workingBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, originalBranchName);
          assertEquals(BranchState.CREATED, workingBranch.getBranchState());
          assertTrue(workingBranch.isEditable());
 
@@ -122,8 +118,7 @@ public class BranchStateTest {
       Branch workingBranch = null;
       Artifact change = null;
       try {
-         User user = UserManager.getUser(SystemUser.OseeSystem);
-         workingBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, originalBranchName, user);
+         workingBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, originalBranchName);
          assertEquals(BranchState.CREATED, workingBranch.getBranchState());
          assertTrue(workingBranch.isEditable());
 
@@ -154,8 +149,7 @@ public class BranchStateTest {
       String originalBranchName = "UpdateBranch No Changes Test";
       Branch workingBranch = null;
       try {
-         User user = UserManager.getUser(SystemUser.OseeSystem);
-         workingBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, originalBranchName, user);
+         workingBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, originalBranchName);
 
          // Update the branch
          ConflictResolverOperation resolverOperation =
@@ -171,7 +165,8 @@ public class BranchStateTest {
          Asserts.testOperation(operation, IStatus.OK);
 
          Assert.assertEquals(BranchState.DELETED, workingBranch.getBranchState());
-         Assert.assertEquals(user.getArtId(), BranchManager.getAssociatedArtifact(workingBranch).getArtId());
+         Assert.assertEquals(UserManager.getUser(SystemUser.OseeSystem).getArtId(),
+            BranchManager.getAssociatedArtifact(workingBranch).getArtId());
 
          Collection<Branch> branches = BranchManager.getBranchesByName(originalBranchName);
          assertEquals("Check only 1 original branch", 1, branches.size());
@@ -199,8 +194,7 @@ public class BranchStateTest {
          baseArtifact.setSoleAttributeFromString(CoreAttributeTypes.Annotation, "This is the base annotation");
          baseArtifact.persist(getClass().getSimpleName());
 
-         User user = UserManager.getUser(SystemUser.OseeSystem);
-         workingBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, originalBranchName, user);
+         workingBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, originalBranchName);
 
          // Add a new artifact on the working branch
          change =
@@ -228,7 +222,8 @@ public class BranchStateTest {
 
          checkBranchWasRebaselined(originalBranchName, workingBranch);
          // Check that the associated artifact remained unchanged
-         assertEquals(workingBranch.getAssociatedArtifactId().intValue(), user.getArtId());
+         assertEquals(workingBranch.getAssociatedArtifactId().intValue(),
+            UserManager.getUser(SystemUser.OseeSystem).getArtId());
 
          Collection<Branch> branches = BranchManager.getBranchesByName(originalBranchName);
          assertEquals("Check only 1 original branch", 1, branches.size());
@@ -256,8 +251,7 @@ public class BranchStateTest {
          baseArtifact.setSoleAttributeFromString(CoreAttributeTypes.Annotation, "This is the base annotation");
          baseArtifact.persist(getClass().getSimpleName());
 
-         User user = UserManager.getUser(SystemUser.OseeSystem);
-         workingBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, originalBranchName, user);
+         workingBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, originalBranchName);
 
          // Modify same artifact on working branch
          sameArtifact = ArtifactQuery.getArtifactFromId(baseArtifact.getGuid(), workingBranch);

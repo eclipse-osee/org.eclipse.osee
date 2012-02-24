@@ -6,13 +6,11 @@ import java.util.HashSet;
 import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.operation.StringOperationLogger;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -26,7 +24,7 @@ import org.junit.Test;
 
 /**
  * {@link StringGuidsToArtifactListOperation}
- *
+ * 
  * @author Karol M. Wilk
  */
 public class StringGuidsToArtifactListOperationTest {
@@ -43,8 +41,7 @@ public class StringGuidsToArtifactListOperationTest {
    public static void setUpOnce() throws OseeCoreException {
       testBranch =
          BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1,
-            StringGuidsToArtifactListOperationTest.class.getSimpleName() + " Branch",
-            UserManager.getUser(SystemUser.OseeSystem));
+            StringGuidsToArtifactListOperationTest.class.getSimpleName() + " Branch");
 
       for (int i = 0; i < capacity; ++i) {
          Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, testBranch, "Test" + i);

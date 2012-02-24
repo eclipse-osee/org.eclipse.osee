@@ -15,7 +15,6 @@ import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -24,7 +23,6 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -122,9 +120,7 @@ public class RelationIntegrityCheckTest {
       art_A.persist(getClass().getSimpleName());
       BranchManager.persist(parentBranch);
 
-      workingBranch =
-         BranchManager.createWorkingBranch(parentBranch, TokenFactory.createBranch(GUID.create(), "2"),
-            UserManager.getUser(SystemUser.OseeSystem));
+      workingBranch = BranchManager.createWorkingBranch(parentBranch, TokenFactory.createBranch(GUID.create(), "2"));
 
       art_A.deleteAndPersist();
 

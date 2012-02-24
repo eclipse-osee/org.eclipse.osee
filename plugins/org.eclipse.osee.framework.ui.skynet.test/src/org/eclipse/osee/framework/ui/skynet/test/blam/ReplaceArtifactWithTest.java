@@ -18,12 +18,10 @@ import java.util.List;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -56,8 +54,7 @@ public class ReplaceArtifactWithTest {
       int previousGamma = nameAttribute.getGammaId();
       String previousName = nameAttribute.getDisplayableString();
 
-      Branch childBranch =
-         BranchManager.createWorkingBranch(parentBranch, "Branchy branch", UserManager.getUser(SystemUser.OseeSystem));
+      Branch childBranch = BranchManager.createWorkingBranch(parentBranch, "Branchy branch");
 
       Thread.sleep(3000);
 
@@ -103,9 +100,7 @@ public class ReplaceArtifactWithTest {
       artifact.setAttributeValues(CoreAttributeTypes.Name, Collections.singletonList("Deleted my name"));
       artifact.persist(getClass().getName());
 
-      Branch childBranch =
-         BranchManager.createWorkingBranch(parentBranch, "Branchy Deleted case branch",
-            UserManager.getUser(SystemUser.OseeSystem));
+      Branch childBranch = BranchManager.createWorkingBranch(parentBranch, "Branchy Deleted case branch");
 
       Thread.sleep(3000);
 
@@ -132,9 +127,7 @@ public class ReplaceArtifactWithTest {
       Branch parentBranch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
       Assert.assertNotNull(parentBranch);
 
-      Branch childBranch =
-         BranchManager.createWorkingBranch(parentBranch, "Branchy Deleted case branch",
-            UserManager.getUser(SystemUser.OseeSystem));
+      Branch childBranch = BranchManager.createWorkingBranch(parentBranch, "Branchy Deleted case branch");
 
       Artifact artifact =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, childBranch, getClass().getSimpleName());
@@ -157,9 +150,7 @@ public class ReplaceArtifactWithTest {
       Branch parentBranch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
       Assert.assertNotNull(parentBranch);
 
-      Branch childBranch =
-         BranchManager.createWorkingBranch(parentBranch, "Branchy Deleted case branch",
-            UserManager.getUser(SystemUser.OseeSystem));
+      Branch childBranch = BranchManager.createWorkingBranch(parentBranch, "Branchy Deleted case branch");
 
       Branch sourceBranch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_2.getGuid());
       Assert.assertNotNull(sourceBranch);
@@ -197,13 +188,9 @@ public class ReplaceArtifactWithTest {
       artifactToIntroduce.setAttributeValues(CoreAttributeTypes.Name, Collections.singletonList("Deleted my name"));
       artifactToIntroduce.persist(getClass().getName());
 
-      Branch childBranch =
-         BranchManager.createWorkingBranch(parentBranch, "Branchy Deleted case branch",
-            UserManager.getUser(SystemUser.OseeSystem));
+      Branch childBranch = BranchManager.createWorkingBranch(parentBranch, "Branchy Deleted case branch");
 
-      Branch anotherChildBranch =
-         BranchManager.createWorkingBranch(parentBranch, "Another child branch",
-            UserManager.getUser(SystemUser.OseeSystem));
+      Branch anotherChildBranch = BranchManager.createWorkingBranch(parentBranch, "Another child branch");
 
       Artifact childBranchArtifact =
          ArtifactQuery.getArtifactFromId(artifactToIntroduce.getArtId(), anotherChildBranch);

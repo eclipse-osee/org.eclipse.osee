@@ -11,11 +11,9 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.junit.Assert.assertFalse;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -37,9 +35,7 @@ public class BranchManagerTest {
       // This test should only be run on test db
       assertFalse(TestUtil.isProductionDb());
 
-      testBranch =
-         BranchManager.createWorkingBranch(BranchManager.getCommonBranch(), branchName,
-            UserManager.getUser(SystemUser.OseeSystem));
+      testBranch = BranchManager.createWorkingBranch(BranchManager.getCommonBranch(), branchName);
    }
 
    @Test

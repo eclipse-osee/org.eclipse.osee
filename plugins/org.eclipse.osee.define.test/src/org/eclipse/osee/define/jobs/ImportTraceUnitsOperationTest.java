@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -67,7 +66,7 @@ public final class ImportTraceUnitsOperationTest {
       if (BranchManager.branchExists(TEST_BRANCH)) {
          BranchManager.purgeBranch(TEST_BRANCH);
       }
-      importToBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_2, TEST_BRANCH, UserManager.getUser());
+      importToBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_2, TEST_BRANCH);
    }
 
    @After

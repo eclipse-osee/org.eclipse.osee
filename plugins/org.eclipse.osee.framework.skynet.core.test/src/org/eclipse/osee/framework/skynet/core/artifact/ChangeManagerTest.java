@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -27,7 +26,6 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
@@ -57,9 +55,7 @@ public class ChangeManagerTest {
 
       String branchName = "Change Manager Test Branch" + GUID.create();
 
-      branch =
-         BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, branchName,
-            UserManager.getUser(SystemUser.OseeSystem));
+      branch = BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, branchName);
       sleep(5000);
 
       newArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch);
