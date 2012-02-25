@@ -23,6 +23,7 @@ public final class ResourceConstants {
       // Constants class
    }
 
+   public static final String EXCHANGE_PROTOCOL = "exchange";
    public static final String RESOURCE_PROTOCOL = "attr";
 
    public static final String BINARY_DATA_PATH = "osee.application.server.data";

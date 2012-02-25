@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -28,20 +29,21 @@ import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.IResourceProvider;
+import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
 import org.eclipse.osee.framework.resource.management.util.OptionsProcessor;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeProvider implements IResourceProvider {
+public class ExchangeProvider implements IResourceProvider {
 
    private String binaryDataPath;
-   private String attributeDataPath;
+   private String exchangeDataPath;
    private SystemPreferences preferences;
    private boolean isInitialized;
 
-   public AttributeProvider() {
+   public ExchangeProvider() {
       super();
       isInitialized = false;
    }
@@ -50,28 +52,39 @@ public class AttributeProvider implements IResourceProvider {
       this.preferences = preferences;
    }
 
+   // TODO Remove this
+   public static String getBinaryDataPath(SystemPreferences preferences) throws OseeCoreException {
+      return preferences.getValue("osee.application.server.data");
+   }
+
+   // TODO Remove this
+   public static String getExchangeDataPath(SystemPreferences preferences) throws OseeCoreException {
+      String binaryDataPath = preferences.getValue("osee.application.server.data");
+      return binaryDataPath + File.separator + ResourceConstants.EXCHANGE_PROTOCOL + File.separator;
+   }
+
    public void start() throws OseeCoreException {
       binaryDataPath = ResourceConstants.getBinaryDataPath(preferences);
-      attributeDataPath = ResourceConstants.getAttributeDataPath(preferences);
+      exchangeDataPath = ResourceConstants.getAttributeDataPath(preferences);
       isInitialized = true;
    }
 
    public void stop() {
       binaryDataPath = null;
-      attributeDataPath = null;
+      exchangeDataPath = null;
       isInitialized = false;
    }
 
    private synchronized void ensureInitialized() throws OseeCoreException {
       Conditions.checkExpressionFailOnTrue(!isInitialized,
-         "Osee Data Store - not initialized - ensure start() was called");
+         "Exchange Data Path - not initialized - ensure start() was called");
       Conditions.checkNotNull(binaryDataPath, "binary data path");
-      Conditions.checkNotNull(attributeDataPath, "attribute data path");
+      Conditions.checkNotNull(exchangeDataPath, "exchange data path");
    }
 
-   public String getAttributeDataPath() throws OseeCoreException {
+   public String getExchangeDataPath() throws OseeCoreException {
       ensureInitialized();
-      return attributeDataPath;
+      return exchangeDataPath;
    }
 
    public String getBinaryDataPath() throws OseeCoreException {
@@ -80,22 +93,38 @@ public class AttributeProvider implements IResourceProvider {
    }
 
    private URI resolve(IResourceLocator locator) throws OseeCoreException {
-      StringBuilder builder = new StringBuilder(getAttributeDataPath());
-      builder.append(locator.getRawPath());
-      File file = new File(builder.toString());
-      return file.toURI();
+      URI toReturn = null;
+      StringBuilder builder = new StringBuilder();
+      String rawPath = locator.getRawPath();
+      if (!rawPath.startsWith("file:/")) {
+         builder.append(getExchangeDataPath());
+         builder.append(rawPath);
+         File file = new File(builder.toString());
+         toReturn = file.toURI();
+      } else {
+         rawPath = rawPath.replaceAll(" ", "%20");
+         try {
+            toReturn = new URI(rawPath);
+         } catch (URISyntaxException ex) {
+            throw new MalformedLocatorException(ex);
+         }
+      }
+      return toReturn;
    }
 
    @Override
-   public boolean isValid(IResourceLocator locator) {
-      return locator != null && getSupportedProtocols().contains(locator.getProtocol());
+   public IResource acquire(IResourceLocator locator, PropertyStore options) throws OseeCoreException {
+      IResource toReturn = null;
+      OptionsProcessor optionsProcessor = new OptionsProcessor(resolve(locator), locator, null, options);
+      toReturn = optionsProcessor.getResourceToServer();
+      return toReturn;
    }
 
    @Override
    public int delete(IResourceLocator locator) throws OseeCoreException {
       int toReturn = IResourceManager.FAIL;
       File file = new File(resolve(locator));
-      if (!file.exists()) {
+      if (file.exists() != true) {
          toReturn = IResourceManager.RESOURCE_NOT_FOUND;
       } else if (file.exists() == true && file.canWrite() == true) {
          boolean result = Lib.deleteFileAndEmptyParents(getBinaryDataPath(), file);
@@ -107,9 +136,8 @@ public class AttributeProvider implements IResourceProvider {
    }
 
    @Override
-   public IResource acquire(IResourceLocator locator, PropertyStore options) throws OseeCoreException {
-      OptionsProcessor optionsProcessor = new OptionsProcessor(resolve(locator), locator, null, options);
-      return optionsProcessor.getResourceToServer();
+   public boolean isValid(IResourceLocator locator) {
+      return locator != null && getSupportedProtocols().contains(locator.getProtocol());
    }
 
    @Override
@@ -120,6 +148,11 @@ public class AttributeProvider implements IResourceProvider {
       InputStream inputStream = null;
       try {
          File storageFile = optionsProcessor.getStorageFile();
+         // Remove all other files from this folder
+         File parent = storageFile.getParentFile();
+         if (parent != null) {
+            Lib.emptyDirectory(parent);
+         }
          IResource resourceToStore = optionsProcessor.getResourceToStore();
 
          outputStream = new FileOutputStream(storageFile);
@@ -147,6 +180,6 @@ public class AttributeProvider implements IResourceProvider {
 
    @Override
    public Collection<String> getSupportedProtocols() {
-      return Arrays.asList(ResourceConstants.RESOURCE_PROTOCOL);
+      return Arrays.asList(ResourceConstants.EXCHANGE_PROTOCOL);
    }
 }

@@ -8,12 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal;
+package org.eclipse.osee.orcs.db.internal.exchange.transformer;
 
-import org.eclipse.osee.orcs.db.internal.exchange.ExchangeTestSuite;
-import org.eclipse.osee.orcs.db.internal.proxy.ProxyTestSuite;
-import org.eclipse.osee.orcs.db.internal.resource.ResourceTestSuite;
-import org.eclipse.osee.orcs.db.internal.search.SearchTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -21,7 +17,9 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ExchangeTestSuite.class, ProxyTestSuite.class, ResourceTestSuite.class, SearchTestSuite.class})
-public class InternalJunitTestSuite {
-   // Test Suite
+@Suite.SuiteClasses({ //
+ExchangeTransformProviderTest.class, //
+})
+public class TransformerTestSuite {
+   //
 }
