@@ -21,6 +21,9 @@
 		<module>../../plugins/org.eclipse.osee.event</module>
 		<module>../../plugins/org.eclipse.osee.event.osgi</module>
 
+		<module>../../plugins/org.eclipse.osee.console.admin</module>
+		<module>../../plugins/org.eclipse.osee.console.admin.test</module>
+
 		<module>../../plugins/org.eclipse.osee.executor.admin</module>
 		<module>../../plugins/org.eclipse.osee.executor.admin.test</module>
 
@@ -438,7 +441,7 @@
 			</activation>
 			<properties>
 				<sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
-				
+
 				<coverage.reportPath>../../plugins/org.eclipse.osee.x.core.parent/target/coverage</coverage.reportPath>
 				<sonar.jacoco.reportPath>${coverage.reportPath}/jacoco.exec</sonar.jacoco.reportPath>
 			</properties>
@@ -460,19 +463,10 @@
 									<append>true</append>
 								</configuration>
 							</execution>
-						<!-- <execution>
-								<id>create-coverage-reports</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>report</goal>
-								</goals>
-								<configuration>
-									<dataFile>${sonar.jacoco.reportPath}</dataFile>
-									<includes>*.osee.*</includes>
-									<outputDirectory>${coverage.reportPath}</outputDirectory>
-									<outputEncoding>UTF-8</outputEncoding>
-								</configuration>
-							</execution> -->
+							<!-- <execution> <id>create-coverage-reports</id> <phase>verify</phase> 
+								<goals> <goal>report</goal> </goals> <configuration> <dataFile>${sonar.jacoco.reportPath}</dataFile> 
+								<includes>*.osee.*</includes> <outputDirectory>${coverage.reportPath}</outputDirectory> 
+								<outputEncoding>UTF-8</outputEncoding> </configuration> </execution> -->
 						</executions>
 					</plugin>
 				</plugins>
