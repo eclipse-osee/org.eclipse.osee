@@ -27,8 +27,11 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -37,7 +40,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
-import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
@@ -46,7 +48,7 @@ import org.eclipse.ui.forms.widgets.Section;
  */
 public class SMADetailsSection extends SectionPart {
 
-   private FormText formText;
+   private Browser browser;
    private final SMAEditor editor;
    private boolean sectionCreated = false;
 
@@ -77,30 +79,33 @@ public class SMADetailsSection extends SectionPart {
       if (!sectionCreated) {
          final FormToolkit toolkit = getManagedForm().getToolkit();
          Composite composite = toolkit.createComposite(getSection(), toolkit.getBorderStyle() | SWT.WRAP);
-         composite.setLayout(new GridLayout());
+         composite.setLayout(ALayout.getZeroMarginLayout());
          composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-         formText = toolkit.createFormText(composite, false);
+         browser = new Browser(composite, SWT.NONE);
          GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
          gd.widthHint = 200;
-         formText.setLayoutData(gd);
+         gd.heightHint = 300;
+         browser.setLayoutData(gd);
 
          getSection().setClient(composite);
          toolkit.paintBordersFor(composite);
          sectionCreated = true;
       }
 
-      if (Widgets.isAccessible(formText)) {
+      if (Widgets.isAccessible(browser)) {
          AbstractWorkflowArtifact workflow = editor.getAwa();
 
          try {
             Map<String, String> smaDetails = Artifacts.getDetailsKeyValues(workflow);
             addSMADetails(workflow, smaDetails);
 
-            String formattedDetails = Artifacts.getDetailsFormText(smaDetails);
-            formText.setText(formattedDetails, true, true);
+            FontData systemFont = browser.getDisplay().getSystemFont().getFontData()[0];
+            String formattedDetails =
+               Artifacts.getDetailsFormText(smaDetails, systemFont.getName(), systemFont.getHeight());
+            browser.setText(formattedDetails);
          } catch (Exception ex) {
-            formText.setText(Lib.exceptionToString(ex), false, false);
+            browser.setText(Lib.exceptionToString(ex));
          }
          getManagedForm().reflow(true);
       }
@@ -159,8 +164,8 @@ public class SMADetailsSection extends SectionPart {
 
    @Override
    public void dispose() {
-      if (Widgets.isAccessible(formText)) {
-         formText.dispose();
+      if (Widgets.isAccessible(browser)) {
+         browser.dispose();
       }
       super.dispose();
    }

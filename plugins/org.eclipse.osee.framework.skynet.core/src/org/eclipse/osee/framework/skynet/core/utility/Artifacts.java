@@ -195,10 +195,15 @@ public final class Artifacts {
       return details;
    }
 
-   public static String getDetailsFormText(Map<String, String> keyValues) {
-      String template = "<p><b>%s:</b> %s</p>";
+   public static String getDetailsFormText(Map<String, String> keyValues, String fontName, int fontSize) {
+      String template = "<b>%s:</b> %s<br/>";
       StringBuilder sb = new StringBuilder();
-      sb.append("<form>");
+      sb.append("<body style='overflow:hidden'>");
+      sb.append("<div style=\"font-size : ");
+      sb.append(fontSize);
+      sb.append("pt; font-family : ");
+      sb.append(fontName);
+      sb.append("\"> ");
       if (keyValues != null) {
          String[] keys = keyValues.keySet().toArray(new String[keyValues.keySet().size()]);
          Arrays.sort(keys);
@@ -210,7 +215,7 @@ public final class Artifacts {
             }
          }
       }
-      sb.append("</form>");
+      sb.append("</div></body>");
       return sb.toString();
    }
 

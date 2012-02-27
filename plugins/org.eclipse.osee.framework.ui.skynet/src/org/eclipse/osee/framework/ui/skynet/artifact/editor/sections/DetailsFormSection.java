@@ -10,20 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.sections;
 
+import java.util.Map;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
@@ -32,7 +35,7 @@ import org.eclipse.ui.forms.widgets.Section;
  */
 public class DetailsFormSection extends ArtifactEditorFormSection {
 
-   private FormText formText;
+   private Browser browser;
    private boolean sectionCreated = false;
    private Section section;
 
@@ -62,28 +65,30 @@ public class DetailsFormSection extends ArtifactEditorFormSection {
       if (!sectionCreated) {
          final FormToolkit toolkit = getManagedForm().getToolkit();
          Composite composite = toolkit.createComposite(getSection(), toolkit.getBorderStyle() | SWT.WRAP);
-         composite.setLayout(new GridLayout());
+         composite.setLayout(ALayout.getZeroMarginLayout());
          composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-         formText = toolkit.createFormText(composite, false);
+         browser = new Browser(composite, SWT.NONE);
          GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
          gd.widthHint = 200;
-         formText.setLayoutData(gd);
+         gd.heightHint = 250;
+         browser.setLayoutData(gd);
 
          getSection().setClient(composite);
          toolkit.paintBordersFor(composite);
          sectionCreated = true;
 
          HelpUtil.setHelp(composite, OseeHelpContext.ARTIFACT_EDITOR__DETAILS);
-         HelpUtil.setHelp(formText, OseeHelpContext.ARTIFACT_EDITOR__DETAILS);
+         HelpUtil.setHelp(browser, OseeHelpContext.ARTIFACT_EDITOR__DETAILS);
       }
 
-      if (Widgets.isAccessible(formText)) {
+      if (Widgets.isAccessible(browser)) {
          try {
-            formText.setText(
-               Artifacts.getDetailsFormText(Artifacts.getDetailsKeyValues(getEditorInput().getArtifact())), true, true);
+            FontData systemFont = browser.getDisplay().getSystemFont().getFontData()[0];
+            Map<String, String> detailsKeyValues = Artifacts.getDetailsKeyValues(getEditorInput().getArtifact());
+            browser.setText(Artifacts.getDetailsFormText(detailsKeyValues, systemFont.getName(), systemFont.getHeight()));
          } catch (Exception ex) {
-            formText.setText(Lib.exceptionToString(ex), false, false);
+            browser.setText(Lib.exceptionToString(ex));
          }
          getManagedForm().reflow(true);
       }
@@ -91,8 +96,8 @@ public class DetailsFormSection extends ArtifactEditorFormSection {
 
    @Override
    public void dispose() {
-      if (formText != null && !formText.isDisposed()) {
-         formText.dispose();
+      if (browser != null && !browser.isDisposed()) {
+         browser.dispose();
       }
       super.dispose();
    }
