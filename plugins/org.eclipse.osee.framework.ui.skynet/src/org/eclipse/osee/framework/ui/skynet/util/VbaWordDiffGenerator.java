@@ -33,6 +33,8 @@ import org.eclipse.osee.framework.ui.skynet.render.compare.CompareData;
  */
 public class VbaWordDiffGenerator implements IVbaDiffGenerator {
 
+   private static final String OSEE_WORD_DIFF_SLEEP_MS = "osee.word.diff.sleep.ms";
+
    //   private final static String header =
    //      "Option Explicit\n\nDim oWord\nDim baseDoc\nDim compareDoc\nDim authorName\nDim detectFormatChanges\nDim ver1\nDim ver2\nDim wdCompareTargetSelectedDiff\nDim wdCompareTargetSelectedMerge\nDim wdFormattingFromCurrent\nDim wdFormatXML\nDim wdDoNotSaveChanges\nDim mainDoc\n\nPublic Sub main()\n On error resume next\n    wdCompareTargetSelectedDiff = 0\n    wdCompareTargetSelectedMerge = 1\n    wdDoNotSaveChanges = 0\n    wdFormattingFromCurrent = 3\n    wdFormatXML = 11\n\n    authorName = \"OSEE Doc compare\"\n    set oWord = WScript.CreateObject(\"Word.Application\")\n    oWord.Visible = False\n    detectFormatChanges = ";
 
@@ -111,14 +113,17 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
       if (executeVbScript) {
          executeScript(new File(compareData.getGeneratorScriptPath()));
       } else {
-         OseeLog.logf(Activator.class, Level.INFO, "Test - Skip launch of [%s]",
-            compareData.getGeneratorScriptPath());
+         OseeLog.logf(Activator.class, Level.INFO, "Test - Skip launch of [%s]", compareData.getGeneratorScriptPath());
       }
    }
 
    private void addComparison(Appendable appendable, CompareData compareData, boolean merge) throws IOException {
       boolean first = true;
       for (Entry<String, String> entry : compareData.entrySet()) {
+
+         //Unforunately Word seems to need a little extra time to close, otherwise Word 2007 will crash periodically if too many files are being compared.
+         String propertyWordDiffSleepMs = System.getProperty(OSEE_WORD_DIFF_SLEEP_MS, "250");// Quarter second is the default sleep value
+         appendable.append("WScript.sleep(" + propertyWordDiffSleepMs + ")\n");
 
          appendable.append("    ver1 = \"");
          appendable.append(entry.getKey());
