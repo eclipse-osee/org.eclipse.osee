@@ -41,6 +41,7 @@ import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.version.VersionArtifact;
 import org.eclipse.osee.ats.core.workdef.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
@@ -202,26 +203,27 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             count += artifacts.size();
 
             testArtifactIds(artifacts);
-            testAtsAttributevaluesWithPersist(artifacts);
-            testStateInWorkDefinition(artifacts);
-            testAttributeSetWorkDefinitionsExist(artifacts);
-            testAtsActionsHaveTeamWorkflow(artifacts);
-            testAtsWorkflowsHaveAction(artifacts);
-            testAtsWorkflowsHaveZeroOrOneVersion(artifacts);
-            testTasksHaveParentWorkflow(artifacts);
-            testReviewsHaveParentWorkflowOrActionableItems(artifacts);
-            testReviewsHaveValidDefectAndRoleXml(artifacts);
-            testTeamWorkflows(artifacts);
-            testAtsBranchManager(artifacts);
-            testTeamDefinitions(artifacts);
-            testVersionArtifacts(artifacts);
-            testStateMachineAssignees(artifacts);
-            testAtsLogs(artifacts);
-            testActionableItemToTeamDefinition(artifacts);
-
-            for (IAtsHealthCheck atsHealthCheck : AtsHealthCheck.getAtsHealthCheckItems()) {
-               atsHealthCheck.validateAtsDatabase(artifacts, testNameToResultsMap, testNameToTimeSpentMap);
-            }
+            //            testAtsAttributevaluesWithPersist(artifacts);
+            //            testStateInWorkDefinition(artifacts);
+            //            testAttributeSetWorkDefinitionsExist(artifacts);
+            //            testAtsActionsHaveTeamWorkflow(artifacts);
+            //            testAtsWorkflowsHaveAction(artifacts);
+            //            testAtsWorkflowsHaveZeroOrOneVersion(artifacts);
+            testAtsWorkflowsValidVersion(artifacts);
+            //            testTasksHaveParentWorkflow(artifacts);
+            //            testReviewsHaveParentWorkflowOrActionableItems(artifacts);
+            //            testReviewsHaveValidDefectAndRoleXml(artifacts);
+            //            testTeamWorkflows(artifacts);
+            //            testAtsBranchManager(artifacts);
+            //            testTeamDefinitions(artifacts);
+            //            testVersionArtifacts(artifacts);
+            //            testStateMachineAssignees(artifacts);
+            //            testAtsLogs(artifacts);
+            //            testActionableItemToTeamDefinition(artifacts);
+            //
+            //            for (IAtsHealthCheck atsHealthCheck : AtsHealthCheck.getAtsHealthCheckItems()) {
+            //               atsHealthCheck.validateAtsDatabase(artifacts, testNameToResultsMap, testNameToTimeSpentMap);
+            //            }
 
             if (monitor != null) {
                monitor.worked(1);
@@ -370,6 +372,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             continue;
          }
          if (artifact.isOfType(AtsArtifactTypes.Version)) {
+            // Test baseline branch guid
             Artifact verArt = artifact;
             try {
                String parentBranchGuid =
@@ -641,6 +644,18 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      "Error: Team workflow " + XResultDataUI.getHyperlink(teamArt) + " has " + teamArt.getRelatedArtifacts(
                         AtsRelationTypes.TeamWorkflowTargetedForVersion_Version).size() + " versions");
                }
+               // Test that targeted version belongs to teamDefHoldingVersion
+               else {
+                  VersionArtifact verArt = teamArt.getTargetedVersion();
+                  if (verArt != null) {
+                     if (!teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions().getVersionsArtifacts().contains(
+                        verArt)) {
+                        testNameToResultsMap.put(
+                           "testAtsWorkflowsHaveZeroOrOneVersion",
+                           "Error: Team workflow " + XResultDataUI.getHyperlink(teamArt) + " has version" + XResultDataUI.getHyperlink(teamArt) + " that does not belong to teamDefHoldingVersions" + XResultDataUI.getHyperlink(teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions()));
+                     }
+                  }
+               }
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -649,6 +664,33 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
       }
       logTestTimeSpent(date, "testAtsWorkflowsHaveZeroOrOneVersion", testNameToTimeSpentMap);
+   }
+
+   private void testAtsWorkflowsValidVersion(Collection<Artifact> artifacts) {
+      Date date = new Date();
+      for (Artifact artifact : artifacts) {
+         if (artifact.isDeleted()) {
+            continue;
+         }
+         try {
+            if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+               TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
+               VersionArtifact verArt = teamArt.getTargetedVersion();
+               if (verArt != null && teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions() != null) {
+                  if (!teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions().getVersionsArtifacts().contains(
+                     verArt)) {
+                     testNameToResultsMap.put(
+                        "testAtsWorkflowsValidVersion",
+                        "Error: Team workflow " + XResultDataUI.getHyperlink(teamArt) + " has version" + XResultDataUI.getHyperlink(verArt) + " that does not belong to teamDefHoldingVersions" + XResultDataUI.getHyperlink(teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions()));
+                  }
+               }
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            testNameToResultsMap.put("testAtsWorkflowsValidVersion", "Error: Exception: " + ex.getLocalizedMessage());
+         }
+      }
+      logTestTimeSpent(date, "testAtsWorkflowsValidVersion", testNameToTimeSpentMap);
    }
 
    private void testTasksHaveParentWorkflow(Collection<Artifact> artifacts) {
