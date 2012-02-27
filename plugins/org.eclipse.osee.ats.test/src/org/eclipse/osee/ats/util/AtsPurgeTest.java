@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.mocks.DbTestUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.skynet.core.utility.ElapsedTime;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Before;
 
@@ -100,7 +101,9 @@ public class AtsPurgeTest {
       TestUtil.checkThatIncreased(preCreateActionCount, postCreateActionCount);
 
       // Purge Action, Workflow and Tasks
+      ElapsedTime time = new ElapsedTime("AtsPurgeTest");
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artsToPurge));
+      time.end();
 
       // Count rows and check that same as when began
       txPrune();
@@ -109,7 +112,8 @@ public class AtsPurgeTest {
    }
 
    private void txPrune() throws OseeCoreException {
-      Operations.executeWorkAndCheckStatus(new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
+      Operations.executeWorkAndCheckStatus(new PurgeUnusedBackingDataAndTransactions(
+         NullOperationLogger.getSingleton(), AtsUtilCore.getAtsBranch().getId()));
    }
 
 }
