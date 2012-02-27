@@ -11,29 +11,31 @@
 package org.eclipse.osee.orcs.db.internal.exchange.export;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import org.eclipse.osee.orcs.db.internal.exchange.IExchangeTaskListener;
+import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
 
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractExportItem implements Callable<Boolean> {
+public abstract class AbstractExportItem extends CancellableCallable<Boolean> {
    private final ExportItem id;
    private final String fileName;
-   private final Set<IExchangeTaskListener> exportListeners;
 
    private File writeLocation;
    private boolean cancel;
+   private final Log logger;
 
-   public AbstractExportItem(ExportItem id) {
+   public AbstractExportItem(Log logger, ExportItem id) {
+      this.logger = logger;
       this.id = id;
       this.fileName = id.getFileName();
       this.cancel = false;
-      this.exportListeners = Collections.synchronizedSet(new HashSet<IExchangeTaskListener>());
+   }
+
+   protected Log getLogger() {
+      return logger;
    }
 
    public String getSource() {
@@ -64,55 +66,25 @@ public abstract class AbstractExportItem implements Callable<Boolean> {
       return writeLocation;
    }
 
-   public void addExportListener(IExchangeTaskListener exportListener) {
-      if (exportListener != null) {
-         this.exportListeners.add(exportListener);
-      }
-   }
-
-   public void removeExportListener(IExchangeTaskListener exportListener) {
-      if (exportListener != null) {
-         this.exportListeners.remove(exportListener);
-      }
-   }
-
    public void cleanUp() {
       this.setWriteLocation(null);
-      this.exportListeners.clear();
    }
 
    @Override
    public final Boolean call() throws Exception {
-      boolean wasSuccessful = false;
       long startTime = System.currentTimeMillis();
       try {
-         if (!isCancel()) {
-            executeWork();
-         }
-         wasSuccessful = true;
-      } catch (Exception ex) {
-         notifyOnExportException(ex);
-         throw ex;
+         checkForCancelled();
+         executeWork();
       } finally {
-         notifyOnExportItemCompleted(System.currentTimeMillis() - startTime);
+         getLogger().info("Exported: [%s] in [%s]", getName(), Lib.getElapseString(startTime));
       }
-      return wasSuccessful;
-   }
-
-   protected void notifyOnExportException(Throwable ex) {
-      for (IExchangeTaskListener listener : this.exportListeners) {
-         listener.onException(getName(), ex);
-      }
-   }
-
-   protected void notifyOnExportItemCompleted(long timeToProcess) {
-      for (IExchangeTaskListener listener : this.exportListeners) {
-         listener.onExportItemCompleted(getName(), timeToProcess);
-      }
+      return true;
    }
 
    protected abstract void executeWork() throws Exception;
 
+   @Override
    public void setCancel(boolean cancel) {
       this.cancel = cancel;
    }

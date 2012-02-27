@@ -9,11 +9,11 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.orcs.db.internal.exchange.handler;
+package org.eclipse.osee.orcs.db.internal.exchange;
 
 import java.io.File;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.db.internal.exchange.IOseeExchangeDataProvider;
+import org.eclipse.osee.orcs.db.internal.exchange.handler.IExportItem;
 
 /**
  * @author Ryan D. Brooks

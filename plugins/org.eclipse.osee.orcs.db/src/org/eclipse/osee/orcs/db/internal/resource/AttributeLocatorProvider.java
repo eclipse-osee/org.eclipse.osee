@@ -92,7 +92,7 @@ public class AttributeLocatorProvider implements IResourceLocatorProvider {
 
    @Override
    public String getSupportedProtocol() {
-      return ResourceConstants.RESOURCE_PROTOCOL;
+      return ResourceConstants.ATTRIBUTE_RESOURCE_PROTOCOL;
    }
 
 }

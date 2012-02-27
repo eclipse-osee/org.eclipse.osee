@@ -52,20 +52,9 @@ public class ExchangeProvider implements IResourceProvider {
       this.preferences = preferences;
    }
 
-   // TODO Remove this
-   public static String getBinaryDataPath(SystemPreferences preferences) throws OseeCoreException {
-      return preferences.getValue("osee.application.server.data");
-   }
-
-   // TODO Remove this
-   public static String getExchangeDataPath(SystemPreferences preferences) throws OseeCoreException {
-      String binaryDataPath = preferences.getValue("osee.application.server.data");
-      return binaryDataPath + File.separator + ResourceConstants.EXCHANGE_PROTOCOL + File.separator;
-   }
-
    public void start() throws OseeCoreException {
       binaryDataPath = ResourceConstants.getBinaryDataPath(preferences);
-      exchangeDataPath = ResourceConstants.getAttributeDataPath(preferences);
+      exchangeDataPath = ResourceConstants.getExchangeDataPath(preferences);
       isInitialized = true;
    }
 
@@ -180,6 +169,6 @@ public class ExchangeProvider implements IResourceProvider {
 
    @Override
    public Collection<String> getSupportedProtocols() {
-      return Arrays.asList(ResourceConstants.EXCHANGE_PROTOCOL);
+      return Arrays.asList(ResourceConstants.EXCHANGE_RESOURCE_PROTOCOL);
    }
 }

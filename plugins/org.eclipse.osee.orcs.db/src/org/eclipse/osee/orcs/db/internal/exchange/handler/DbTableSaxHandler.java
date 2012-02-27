@@ -22,16 +22,17 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.core.util.HexUtil;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
+import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.internal.exchange.ExchangeDb;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
 import org.eclipse.osee.orcs.db.internal.exchange.IOseeExchangeDataProvider;
-import org.eclipse.osee.orcs.db.internal.exchange.OseeServices;
 import org.eclipse.osee.orcs.db.internal.util.ZipBinaryResource;
 
 /**
@@ -39,22 +40,40 @@ import org.eclipse.osee.orcs.db.internal.util.ZipBinaryResource;
  */
 public class DbTableSaxHandler extends BaseDbSaxHandler {
 
-   public static DbTableSaxHandler createWithLimitedCache(Log logger, OseeServices services, IOseeExchangeDataProvider exportDataProvider, int cacheLimit) {
-      return new DbTableSaxHandler(logger, services, exportDataProvider, false, cacheLimit);
+   public static DbTableSaxHandler createWithLimitedCache(Log logger, IOseeDatabaseService dbService, IResourceManager resourceManager, IResourceLocatorManager locatorService, IdentityService identityService, IOseeExchangeDataProvider exportDataProvider, int cacheLimit) {
+      return new DbTableSaxHandler(logger, dbService, resourceManager, locatorService, identityService,
+         exportDataProvider, false, cacheLimit);
    }
 
    private final List<IResourceLocator> transferredBinaryContent;
    private final Set<Integer> branchesToImport;
    private final IOseeExchangeDataProvider exportDataProvider;
-   private final OseeServices services;
+
+   private final IResourceManager resourceManager;
+   private final IResourceLocatorManager locatorService;
+   private final IdentityService identityService;
    private IExportItem exportItem;
 
-   protected DbTableSaxHandler(Log logger, OseeServices services, IOseeExchangeDataProvider exportDataProvider, boolean isCacheAll, int cacheLimit) {
-      super(logger, services.getDatabaseService(), isCacheAll, cacheLimit);
+   protected DbTableSaxHandler(Log logger, IOseeDatabaseService dbService, IResourceManager resourceManager, IResourceLocatorManager locatorService, IdentityService identityService, IOseeExchangeDataProvider exportDataProvider, boolean isCacheAll, int cacheLimit) {
+      super(logger, dbService, isCacheAll, cacheLimit);
+      this.resourceManager = resourceManager;
+      this.locatorService = locatorService;
+      this.identityService = identityService;
       this.branchesToImport = new HashSet<Integer>();
       this.transferredBinaryContent = new ArrayList<IResourceLocator>();
       this.exportDataProvider = exportDataProvider;
-      this.services = services;
+   }
+
+   private IResourceLocatorManager getResourceLocatorManager() {
+      return locatorService;
+   }
+
+   private IResourceManager getResourceManager() {
+      return resourceManager;
+   }
+
+   private IdentityService getIdentityService() {
+      return identityService;
    }
 
    public void setSelectedBranchIds(int... branchIds) {
@@ -74,12 +93,10 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
          if (entry.exists()) {
 
             String name = uriValue.substring(uriValue.lastIndexOf('\\') + 1, uriValue.length());
-            IResourceLocator locatorHint =
-               services.getResourceLocatorManager().generateResourceLocator("attr", gammaId, name);
+            IResourceLocator locatorHint = getResourceLocatorManager().generateResourceLocator("attr", gammaId, name);
 
             IResourceLocator locator =
-               services.getResourceManager().save(locatorHint, new ZipBinaryResource(entry, locatorHint),
-                  new PropertyStore());
+               getResourceManager().save(locatorHint, new ZipBinaryResource(entry, locatorHint), new PropertyStore());
             transferredBinaryContent.add(locator);
             return locator.getLocation().toASCIIString();
          } else {
@@ -95,10 +112,6 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
       String hexString = fieldMap.get(ExchangeDb.TYPE_GUID);
       Long uuid = HexUtil.toLong(hexString);
       return identityService.getLocalId(uuid);
-   }
-
-   private IdentityService getIdentityService() {
-      return services.getIdentityService();
    }
 
    @Override
@@ -178,7 +191,7 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
          }
       } catch (OseeCoreException ex) {
          cleanUpBinaryContent();
-         services.getLogger().error(ex, "Error processing in [%s]", getMetaData().getTableName());
+         getLogger().error(ex, "Error processing in [%s]", getMetaData().getTableName());
          throw ex;
       }
    }
@@ -191,7 +204,7 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
 
    private void cleanUpBinaryContent() {
       StringBuilder errorMessage = new StringBuilder();
-      IResourceManager manager = services.getResourceManager();
+      IResourceManager manager = getResourceManager();
       for (IResourceLocator locator : transferredBinaryContent) {
          try {
             manager.delete(locator);
@@ -201,8 +214,7 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
          }
       }
       if (errorMessage.length() > 0) {
-         services.getLogger().error(
-            "Error deleting binary data after transfer error. Please delete all content manually. [%s]",
+         getLogger().error("Error deleting binary data after transfer error. Please delete all content manually. [%s]",
             errorMessage.toString());
       }
    }

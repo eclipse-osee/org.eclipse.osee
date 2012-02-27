@@ -1,0 +1,387 @@
+/*******************************************************************************
+ * Copyright (c) 2012 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.orcs.db.internal.callable;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.net.URI;
+import java.sql.Timestamp;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.database.schema.DatabaseCallable;
+import org.eclipse.osee.database.schema.DatabaseTxCallable;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.OseeImportModelRequest;
+import org.eclipse.osee.framework.core.model.OseeImportModelResponse;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IOseeModelingService;
+import org.eclipse.osee.framework.core.services.IdentityService;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.resource.management.IResourceLocator;
+import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.core.SystemPreferences;
+import org.eclipse.osee.orcs.db.internal.exchange.ExchangeUtil;
+import org.eclipse.osee.orcs.db.internal.exchange.IOseeExchangeDataProvider;
+import org.eclipse.osee.orcs.db.internal.exchange.ImportOptions;
+import org.eclipse.osee.orcs.db.internal.exchange.SavePointManager;
+import org.eclipse.osee.orcs.db.internal.exchange.StandardOseeDbExportDataProvider;
+import org.eclipse.osee.orcs.db.internal.exchange.TranslationManager;
+import org.eclipse.osee.orcs.db.internal.exchange.handler.BaseDbSaxHandler;
+import org.eclipse.osee.orcs.db.internal.exchange.handler.BranchDataSaxHandler;
+import org.eclipse.osee.orcs.db.internal.exchange.handler.DbTableSaxHandler;
+import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
+import org.eclipse.osee.orcs.db.internal.exchange.handler.IExportItem;
+import org.eclipse.osee.orcs.db.internal.exchange.handler.ManifestSaxHandler;
+import org.eclipse.osee.orcs.db.internal.exchange.handler.MetaData;
+import org.eclipse.osee.orcs.db.internal.exchange.handler.MetaDataSaxHandler;
+import org.eclipse.osee.orcs.db.internal.exchange.transform.ExchangeDataProcessor;
+import org.eclipse.osee.orcs.db.internal.exchange.transform.ExchangeTransformProvider;
+import org.eclipse.osee.orcs.db.internal.exchange.transform.ExchangeTransformer;
+import org.eclipse.osee.orcs.db.internal.exchange.transform.IExchangeTransformProvider;
+import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
+
+/**
+ * @author Roberto E. Escobar
+ */
+public class ImportBranchDatabaseCallable extends DatabaseCallable<URI> {
+
+   private final SystemPreferences preferences;
+   private final IOseeCachingService cachingService;
+   private final IOseeModelingService typeModelService;
+   private final IResourceManager resourceManager;
+   private final IResourceLocatorManager locatorService;
+   private final IdentityService identityService;
+
+   private final SavePointManager savePointManager;
+   private final OperationLogger legacyLogger;
+
+   private final URI exchangeFile;
+   private final List<IOseeBranch> selectedBranches;
+   private final PropertyStore options;
+
+   private ExchangeTransformer exchangeTransformer;
+   private ManifestSaxHandler manifestHandler;
+   private TranslationManager translator;
+   private MetaDataSaxHandler metadataHandler;
+   private IOseeExchangeDataProvider exportDataProvider;
+   private ExchangeDataProcessor exchangeDataProcessor;
+   private int[] branchesToImport;
+
+   public ImportBranchDatabaseCallable(Log logger, IOseeDatabaseService dbService, SystemPreferences preferences, IOseeCachingService cachingService, IOseeModelingService typeModelService, IResourceManager resourceManager, IResourceLocatorManager locatorService, IdentityService identityService, URI exchangeFile, List<IOseeBranch> selectedBranches, PropertyStore options) {
+      super(logger, dbService);
+      this.preferences = preferences;
+      this.cachingService = cachingService;
+      this.typeModelService = typeModelService;
+      this.resourceManager = resourceManager;
+      this.locatorService = locatorService;
+      this.identityService = identityService;
+      this.savePointManager = new SavePointManager(dbService);
+      this.legacyLogger = new OperationLoggerAdaptor();
+      this.exchangeFile = exchangeFile;
+      this.selectedBranches = selectedBranches;
+      this.options = options;
+   }
+
+   @Override
+   public URI call() throws Exception {
+      URI importedURI = null;
+
+      checkPreconditions();
+      savePointManager.clear();
+      try {
+         savePointManager.setCurrentSetPointId("start");
+         savePointManager.addCurrentSavePointToProcessed();
+
+         setup();
+
+         URI modelUri = exportDataProvider.getFile(manifestHandler.getTypeModel()).toURI();
+         loadTypeModel(modelUri);
+
+         ImportBranchesTx importBranchesTx =
+            new ImportBranchesTx(getLogger(), getDatabaseService(), savePointManager, manifestHandler.getBranchFile());
+         callAndCheckForCancel(importBranchesTx);
+
+         savePointManager.setCurrentSetPointId("init_relational_objects");
+         savePointManager.addCurrentSavePointToProcessed();
+
+         branchesToImport = new int[selectedBranches.size()];
+         int index = 0;
+         for (IOseeBranch branch : selectedBranches) {
+            branchesToImport[index++] = cachingService.getBranchCache().getLocalId(branch);
+         }
+
+         processImportFiles(branchesToImport, manifestHandler.getImportFiles());
+
+         importBranchesTx.updateBaselineAndParentTransactionId();
+
+         exchangeTransformer.applyFinalTransforms(legacyLogger);
+
+         savePointManager.setCurrentSetPointId("stop");
+         savePointManager.addCurrentSavePointToProcessed();
+
+         importedURI = exportDataProvider.getExportedDataRoot().toURI();
+      } catch (Throwable ex) {
+         savePointManager.reportError(ex);
+         getLogger().error(ex, "Error importing");
+      } finally {
+         cleanup();
+      }
+      return importedURI;
+   }
+
+   private void checkPreconditions() throws OseeCoreException {
+      if (getDatabaseService().isProduction()) {
+         throw new OseeStateException("DO NOT IMPORT ON PRODUCTION");
+      }
+
+   }
+
+   private IResourceLocator findResourceToCheck(URI fileToCheck) throws OseeCoreException {
+      IResourceLocator locator = locatorService.getResourceLocator(fileToCheck.toASCIIString());
+      return locator;
+   }
+
+   private IOseeExchangeDataProvider createExportDataProvider(IResourceLocator exportDataLocator) throws OseeCoreException {
+      String exchangeBasePath = ResourceConstants.getExchangeDataPath(preferences);
+      Pair<Boolean, File> result =
+         ExchangeUtil.getTempExchangeFile(exchangeBasePath, getLogger(), exportDataLocator, resourceManager);
+      return new StandardOseeDbExportDataProvider(exchangeBasePath, getLogger(), result.getSecond(), result.getFirst());
+   }
+
+   private void setup() throws Exception {
+      IResourceLocator exportDataLocator = findResourceToCheck(exchangeFile);
+      exportDataProvider = createExportDataProvider(exportDataLocator);
+      exchangeDataProcessor = new ExchangeDataProcessor(exportDataProvider);
+
+      savePointManager.setCurrentSetPointId("sourceSetup");
+
+      IExchangeTransformProvider transformProvider = new ExchangeTransformProvider(cachingService);
+      exchangeTransformer = new ExchangeTransformer(transformProvider, exchangeDataProcessor);
+      exchangeTransformer.applyTransforms(legacyLogger);
+
+      savePointManager.setCurrentSetPointId("manifest");
+      manifestHandler = new ManifestSaxHandler();
+      exchangeDataProcessor.parse(ExportItem.EXPORT_MANIFEST, manifestHandler);
+
+      savePointManager.setCurrentSetPointId("setup");
+      translator = new TranslationManager(getDatabaseService());
+      translator.configure(options);
+
+      // Process database meta data
+      savePointManager.setCurrentSetPointId(manifestHandler.getMetadataFile());
+      metadataHandler = new MetaDataSaxHandler(getDatabaseService());
+      exchangeDataProcessor.parse(ExportItem.EXPORT_DB_SCHEMA, metadataHandler);
+      metadataHandler.checkAndLoadTargetDbMetadata();
+
+      // Load Import Indexes
+      savePointManager.setCurrentSetPointId("load.translator");
+      translator.loadTranslators(manifestHandler.getSourceDatabaseId());
+
+      savePointManager.loadSavePoints(manifestHandler.getSourceDatabaseId(), manifestHandler.getSourceExportDate());
+   }
+
+   private void processImportFiles(int[] branchesToImport, Collection<IExportItem> importItems) throws Exception {
+      final DbTableSaxHandler handler =
+         DbTableSaxHandler.createWithLimitedCache(getLogger(), getDatabaseService(), resourceManager, locatorService,
+            identityService, exportDataProvider, 50000);
+      handler.setSelectedBranchIds(branchesToImport);
+
+      for (final IExportItem item : importItems) {
+         getLogger().info("starting import for [%s]", item);
+         savePointManager.setCurrentSetPointId(item.getSource());
+         handler.setExportItem(item);
+         if (!savePointManager.isCurrentInProcessed()) {
+            process(handler, item);
+            handler.store();
+            handler.reset();
+            savePointManager.addCurrentSavePointToProcessed();
+         } else {
+            getLogger().info("Save point found for: [%s] - skipping", item.getSource());
+         }
+      }
+   }
+
+   private void process(BaseDbSaxHandler handler, IExportItem exportItem) throws OseeCoreException {
+      MetaData metadata = checkMetadata(exportItem);
+      handler.setMetaData(metadata);
+      handler.setOptions(options);
+      handler.setTranslator(translator);
+      boolean cleanDataTable = options.getBoolean(ImportOptions.CLEAN_BEFORE_IMPORT.name());
+      cleanDataTable &= !savePointManager.isCurrentInProcessed();
+      getLogger().info("Importing: [%s] %s Meta: %s", exportItem.getSource(),
+         cleanDataTable ? "clean before import" : "", metadata.getColumnNames());
+      if (cleanDataTable) {
+         handler.clearDataTable();
+      }
+      try {
+         exchangeDataProcessor.parse(exportItem, handler);
+      } catch (Exception ex) {
+         if (ex instanceof OseeCoreException) {
+            throw (OseeCoreException) ex;
+         }
+         OseeExceptions.wrapAndThrow(ex);
+      }
+   }
+
+   private MetaData checkMetadata(IExportItem importFile) throws OseeArgumentException {
+      MetaData metadata = metadataHandler.getMetadata(importFile.getSource());
+      if (metadata == null) {
+         throw new OseeArgumentException("Invalid metadata for [%s]", importFile.getSource());
+      }
+      return metadata;
+   }
+
+   private void cleanup() throws Exception {
+      try {
+         CommitImportSavePointsTx callable = new CommitImportSavePointsTx(getLogger(), getDatabaseService());
+         callAndCheckForCancel(callable);
+      } catch (Exception ex) {
+         getLogger().warn(ex, "Error during save point save - you will not be able to reimport from last source again.");
+         throw ex;
+      } finally {
+         exchangeDataProcessor.cleanUp();
+         translator = null;
+         manifestHandler = null;
+         metadataHandler = null;
+         exchangeTransformer = null;
+         savePointManager.clear();
+      }
+   }
+
+   private void loadTypeModel(URI modelUri) throws Exception {
+      String name = modelUri.toASCIIString();
+      int index = name.lastIndexOf("/");
+      if (index > 0) {
+         name = name.substring(index + 1, name.length());
+      }
+
+      String model;
+      InputStream inputStream = null;
+      try {
+         inputStream = new BufferedInputStream(modelUri.toURL().openStream());
+         model = Lib.inputStreamToString(inputStream);
+      } finally {
+         Lib.close(inputStream);
+      }
+
+      OseeImportModelRequest modelRequest = new OseeImportModelRequest(name, model, false, false, true);
+      OseeImportModelResponse response = new OseeImportModelResponse();
+
+      getLogger().info("Updating Type Model with [%s]", model);
+      typeModelService.importOseeTypes(new NullProgressMonitor(), true, modelRequest, response);
+      getLogger().info("Type Model Import complete");
+   }
+
+   private final class CommitImportSavePointsTx extends DatabaseTxCallable<Boolean> {
+      private static final String INSERT_INTO_IMPORT_SOURCES =
+         "INSERT INTO osee_import_source (import_id, db_source_guid, source_export_date, date_imported) VALUES (?, ?, ?, ?)";
+
+      public CommitImportSavePointsTx(Log logger, IOseeDatabaseService dbService) {
+         super(logger, dbService, "Commit Import Save Points Tx");
+      }
+
+      @SuppressWarnings("unchecked")
+      @Override
+      protected Boolean handleTxWork(OseeConnection connection) throws OseeCoreException {
+         if (manifestHandler != null && translator != null) {
+            int importIdIndex = getDatabaseService().getSequence().getNextImportId();
+            String sourceDatabaseId = manifestHandler.getSourceDatabaseId();
+            Timestamp importDate = new Timestamp(new Date().getTime());
+            Timestamp exportDate = new Timestamp(manifestHandler.getSourceExportDate().getTime());
+            getDatabaseService().runPreparedUpdate(connection, INSERT_INTO_IMPORT_SOURCES, importIdIndex,
+               sourceDatabaseId, exportDate, importDate);
+
+            translator.store(connection, importIdIndex);
+
+            savePointManager.storeSavePoints(connection, importIdIndex);
+         } else {
+            throw new OseeStateException("Import didn't make it past initialization");
+         }
+         return Boolean.TRUE;
+      }
+   }
+
+   private final class OperationLoggerAdaptor extends OperationLogger {
+
+      @Override
+      public void log(String... rows) {
+         for (String row : rows) {
+            getLogger().info(row);
+         }
+      }
+   }
+
+   private final class ImportBranchesTx extends DatabaseTxCallable<Object> {
+
+      private final SavePointManager savePointManager;
+      private final BranchDataSaxHandler branchHandler;
+      private final IExportItem branchExportItem;
+      private int[] branchesStored;
+
+      public ImportBranchesTx(Log logger, IOseeDatabaseService dbService, SavePointManager savePointManager, IExportItem branchExportItem) {
+         super(logger, dbService, "Import Branch Tx");
+         this.savePointManager = savePointManager;
+         this.branchExportItem = branchExportItem;
+         branchHandler = BranchDataSaxHandler.createWithCacheAll(logger, dbService);
+         branchesStored = new int[0];
+      }
+
+      public void updateBaselineAndParentTransactionId() throws OseeCoreException {
+         savePointManager.setCurrentSetPointId("update_branch_baseline_parent_tx_ids");
+         if (!savePointManager.isCurrentInProcessed()) {
+            branchHandler.updateBaselineAndParentTransactionId(branchesStored);
+            savePointManager.addCurrentSavePointToProcessed();
+         } else {
+            getLogger().info("Save point found for: [%s] - skipping", savePointManager.getCurrentSetPointId());
+         }
+      }
+
+      @Override
+      protected Object handleTxWork(OseeConnection connection) throws OseeCoreException {
+         // Import Branches
+         savePointManager.setCurrentSetPointId(branchExportItem.getSource());
+         branchHandler.setConnection(connection);
+         process(branchHandler, branchExportItem);
+
+         if (!savePointManager.isCurrentInProcessed()) {
+            branchesStored = branchHandler.store(connection, true, branchesToImport);
+            savePointManager.addCurrentSavePointToProcessed();
+         } else {
+            // This step has already been performed - only get branches needed for remaining operations
+            getLogger().info("Save point found for: [%s] - skipping", savePointManager.getCurrentSetPointId());
+            branchesStored = branchHandler.store(connection, false, branchesToImport);
+         }
+
+         return null;
+      }
+
+      @Override
+      protected void handleTxFinally() throws OseeCoreException {
+         super.handleTxFinally();
+         branchHandler.setConnection(null);
+      }
+   }
+
+}

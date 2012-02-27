@@ -8,7 +8,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-
 package org.eclipse.osee.orcs.db.internal.callable;
 
 import java.sql.Timestamp;

@@ -23,14 +23,20 @@ public final class ResourceConstants {
       // Constants class
    }
 
-   public static final String EXCHANGE_PROTOCOL = "exchange";
-   public static final String RESOURCE_PROTOCOL = "attr";
+   public static final String ZIP_EXTENSION = "zip";
+   public static final String EXCHANGE_RESOURCE_PROTOCOL = "exchange";
+   public static final String ATTRIBUTE_RESOURCE_PROTOCOL = "attr";
 
    public static final String BINARY_DATA_PATH = "osee.application.server.data";
 
+   public static String getExchangeDataPath(SystemPreferences preferences) throws OseeCoreException {
+      String binaryDataPath = getBinaryDataPath(preferences);
+      return binaryDataPath + File.separator + ResourceConstants.EXCHANGE_RESOURCE_PROTOCOL + File.separator;
+   }
+
    public static String getAttributeDataPath(SystemPreferences preferences) throws OseeCoreException {
       String binaryDataPath = getBinaryDataPath(preferences);
-      return binaryDataPath + File.separator + ResourceConstants.RESOURCE_PROTOCOL + File.separator;
+      return binaryDataPath + File.separator + ResourceConstants.ATTRIBUTE_RESOURCE_PROTOCOL + File.separator;
    }
 
    public static String getBinaryDataPath(SystemPreferences preferences) throws OseeCoreException {

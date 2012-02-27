@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.services.IOseeModelingService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
 
 /**
@@ -24,8 +25,8 @@ import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
 public class OseeTypeModelExportItem extends AbstractExportItem {
    private final IOseeModelingService modelingService;
 
-   public OseeTypeModelExportItem(IOseeModelingService modelingService) {
-      super(ExportItem.EXPORT_TYPE_MODEL);
+   public OseeTypeModelExportItem(Log logger, IOseeModelingService modelingService) {
+      super(logger, ExportItem.EXPORT_TYPE_MODEL);
       this.modelingService = modelingService;
    }
 

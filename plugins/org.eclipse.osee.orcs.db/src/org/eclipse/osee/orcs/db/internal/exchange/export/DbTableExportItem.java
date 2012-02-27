@@ -22,8 +22,10 @@ import java.sql.Timestamp;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.core.util.HexUtil;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -31,8 +33,10 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
+import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
-import org.eclipse.osee.orcs.db.internal.exchange.OseeServices;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
 
 /**
@@ -45,15 +49,26 @@ public class DbTableExportItem extends AbstractXmlExportItem {
    private final StringBuilder oseeCommentBuffer = new StringBuilder();
    private final StringBuilder branchNameBuffer = new StringBuilder();
    private final StringBuilder rationaleBuffer = new StringBuilder();
-   private final OseeServices services;
    private final String query;
    private final Object[] bindData;
 
-   public DbTableExportItem(OseeServices services, ExportItem id, String query, Object[] bindData) {
-      super(id);
-      this.services = services;
+   private final IOseeDatabaseService dbService;
+   private final IOseeCachingService cachingService;
+   private final IResourceManager resourceManager;
+   private final IResourceLocatorManager locatorManager;
+
+   public DbTableExportItem(Log logger, IOseeDatabaseService dbService, IOseeCachingService cachingService, IResourceManager resourceManager, IResourceLocatorManager locatorManager, ExportItem id, String query, Object[] bindData) {
+      super(logger, id);
+      this.dbService = dbService;
+      this.cachingService = cachingService;
+      this.resourceManager = resourceManager;
+      this.locatorManager = locatorManager;
       this.query = query;
       this.bindData = bindData;
+   }
+
+   private IOseeDatabaseService getDatabaseService() {
+      return dbService;
    }
 
    protected String exportBinaryDataTo(File tempFolder, String uriTarget) throws OseeCoreException, IOException {
@@ -62,8 +77,8 @@ public class DbTableExportItem extends AbstractXmlExportItem {
          tempFolder.mkdirs();
       }
 
-      IResourceLocator locator = services.getResourceLocatorManager().getResourceLocator(uriTarget);
-      IResource resource = services.getResourceManager().acquire(locator, new PropertyStore());
+      IResourceLocator locator = locatorManager.getResourceLocator(uriTarget);
+      IResource resource = resourceManager.acquire(locator, new PropertyStore());
 
       File target = new File(tempFolder, locator.getRawPath());
       if (target.getParentFile() != null) {
@@ -85,7 +100,7 @@ public class DbTableExportItem extends AbstractXmlExportItem {
 
    @Override
    protected void doWork(Appendable appendable) throws Exception {
-      IOseeStatement chStmt = services.getDatabaseService().getStatement();
+      IOseeStatement chStmt = getDatabaseService().getStatement();
       try {
          chStmt.runPreparedQuery(10000, query, bindData);
          while (chStmt.next()) {
@@ -116,11 +131,11 @@ public class DbTableExportItem extends AbstractXmlExportItem {
             } else if (columnName.equals(ExportImportXml.RATIONALE)) {
                handleStringContent(rationaleBuffer, value, columnName);
             } else if (columnName.equals(ExportImportXml.ART_TYPE_ID)) {
-               handleTypeId(appendable, value, services.getCachingService().getArtifactTypeCache());
+               handleTypeId(appendable, value, cachingService.getArtifactTypeCache());
             } else if (columnName.equals(ExportImportXml.ATTR_TYPE_ID)) {
-               handleTypeId(appendable, value, services.getCachingService().getAttributeTypeCache());
+               handleTypeId(appendable, value, cachingService.getAttributeTypeCache());
             } else if (columnName.equals(ExportImportXml.REL_TYPE_ID)) {
-               handleTypeId(appendable, value, services.getCachingService().getRelationTypeCache());
+               handleTypeId(appendable, value, cachingService.getRelationTypeCache());
             } else {
                Timestamp timestamp = asTimestamp(value);
                if (timestamp != null) {
@@ -129,8 +144,8 @@ public class DbTableExportItem extends AbstractXmlExportItem {
                   try {
                      ExportImportXml.addXmlAttribute(appendable, columnName, value);
                   } catch (Exception ex) {
-                     throw new Exception(String.format("Unable to convert [%s] of raw type [%s] to string.",
-                        columnName, chStmt.getColumnTypeName(columnIndex)), ex);
+                     throw new OseeCoreException(ex, "Unable to convert [%s] of raw type [%s] to string.", columnName,
+                        chStmt.getColumnTypeName(columnIndex));
                   }
                }
             }
@@ -181,7 +196,7 @@ public class DbTableExportItem extends AbstractXmlExportItem {
          } catch (NoSuchMethodException ex) {
             // Do Nothing
          } catch (Exception ex) {
-            services.getLogger().warn(ex, "Error converting [%s] to timestamp", value);
+            getLogger().warn(ex, "Error converting [%s] to timestamp", value);
          }
       }
       return toReturn;

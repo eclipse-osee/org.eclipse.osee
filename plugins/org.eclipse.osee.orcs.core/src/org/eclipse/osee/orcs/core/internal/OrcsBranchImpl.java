@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
+import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -22,6 +23,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
@@ -100,5 +102,20 @@ public class OrcsBranchImpl implements OrcsBranch {
    @Override
    public ReadableBranch getBranchFromId(int id) throws OseeCoreException {
       return branchCache.getById(id);
+   }
+
+   @Override
+   public Callable<URI> exportBranch(List<IOseeBranch> branches, PropertyStore options, String exportName) {
+      return branchStore.exportBranch(branches, options, exportName);
+   }
+
+   @Override
+   public Callable<URI> importBranch(URI fileToImport, List<IOseeBranch> branches, PropertyStore options) {
+      return branchStore.importBranch(fileToImport, branches, options);
+   }
+
+   @Override
+   public Callable<URI> checkBranchExchangeIntegrity(URI fileToCheck) {
+      return branchStore.checkBranchExchangeIntegrity(fileToCheck);
    }
 }

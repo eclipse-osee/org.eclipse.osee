@@ -147,6 +147,6 @@ public class AttributeProvider implements IResourceProvider {
 
    @Override
    public Collection<String> getSupportedProtocols() {
-      return Arrays.asList(ResourceConstants.RESOURCE_PROTOCOL);
+      return Arrays.asList(ResourceConstants.ATTRIBUTE_RESOURCE_PROTOCOL);
    }
 }

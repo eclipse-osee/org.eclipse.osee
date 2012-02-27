@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2012 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,44 +8,103 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.exchange;
+package org.eclipse.osee.orcs.db.internal.callable;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.database.schema.DatabaseCallable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
+import org.eclipse.osee.framework.resource.management.IResourceLocator;
+import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.core.SystemPreferences;
+import org.eclipse.osee.orcs.db.internal.exchange.ExchangeUtil;
+import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
+import org.eclipse.osee.orcs.db.internal.exchange.IOseeExchangeDataProvider;
+import org.eclipse.osee.orcs.db.internal.exchange.ReferentialIntegrityConstraint;
+import org.eclipse.osee.orcs.db.internal.exchange.StandardOseeDbExportDataProvider;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.transform.ExchangeDataProcessor;
+import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ExchangeIntegrity {
-   private final OseeServices services;
-   private final IOseeExchangeDataProvider exportDataProvider;
-   private final ExchangeDataProcessor processor;
-   private final List<ReferentialIntegrityConstraint> constraints = new ArrayList<ReferentialIntegrityConstraint>();
-   private String verifyFile;
+public class CheckBranchExchangeIntegrityCallable extends DatabaseCallable<URI> {
 
-   public ExchangeIntegrity(OseeServices services, IOseeExchangeDataProvider exportDataProvider, ExchangeDataProcessor processor) {
-      this.services = services;
-      this.exportDataProvider = exportDataProvider;
-      this.processor = processor;
+   private final URI fileToCheck;
+   private final SystemPreferences preferences;
+   private final IResourceManager resourceManager;
+   private final IResourceLocatorManager locatorService;
+
+   public CheckBranchExchangeIntegrityCallable(Log logger, IOseeDatabaseService service, SystemPreferences preferences, IResourceManager resourceManager, IResourceLocatorManager locatorService, URI fileToCheck) {
+      super(logger, service);
+      this.fileToCheck = fileToCheck;
+      this.preferences = preferences;
+      this.resourceManager = resourceManager;
+      this.locatorService = locatorService;
    }
 
-   public String getExchangeCheckFileName() {
-      return verifyFile;
+   private IResourceLocator findResourceToCheck(URI fileToCheck) throws OseeCoreException {
+      IResourceLocator locator = locatorService.getResourceLocator(fileToCheck.toASCIIString());
+      return locator;
    }
 
-   private void initializeConstraints() {
+   private IOseeExchangeDataProvider createExportDataProvider(IResourceLocator exportDataLocator) throws OseeCoreException {
+      String exchangeBasePath = ResourceConstants.getExchangeDataPath(preferences);
+      Pair<Boolean, File> result =
+         ExchangeUtil.getTempExchangeFile(exchangeBasePath, getLogger(), exportDataLocator, resourceManager);
+      return new StandardOseeDbExportDataProvider(exchangeBasePath, getLogger(), result.getSecond(), result.getFirst());
+   }
+
+   @Override
+   public URI call() throws Exception {
+      List<ReferentialIntegrityConstraint> constraints = new ArrayList<ReferentialIntegrityConstraint>();
+      long startTime = System.currentTimeMillis();
+
+      IResourceLocator resourceLocator = findResourceToCheck(fileToCheck);
+
+      IOseeExchangeDataProvider exportDataProvider = createExportDataProvider(resourceLocator);
+      ExchangeDataProcessor processor = new ExchangeDataProcessor(exportDataProvider);
+
+      initializeConstraints(constraints);
+
+      String verifyFile = exportDataProvider.getExportedDataRoot().getName() + ".verify.xml";
+      File writeLocation = exportDataProvider.getExportedDataRoot().getParentFile();
+
+      Writer writer = null;
+      try {
+         writer = ExchangeUtil.createXmlWriter(writeLocation, verifyFile, (int) Math.pow(2, 20));
+         ExportImportXml.openXmlNode(writer, ExportImportXml.DATA);
+
+         for (ReferentialIntegrityConstraint constraint : constraints) {
+            getLogger().info("Verifing constraint [%s]", constraint.getPrimaryKeyListing());
+
+            constraint.checkConstraint(getLogger(), getDatabaseService(), processor);
+            writeConstraintResults(writer, constraint);
+         }
+         ExportImportXml.closeXmlNode(writer, ExportImportXml.DATA);
+      } finally {
+         Lib.close(writer);
+         processor.cleanUp();
+         getLogger().info("Verified [%s] in [%s]", exportDataProvider.getExportedDataRoot(),
+            Lib.getElapseString(startTime));
+      }
+      return new File(writeLocation, verifyFile).toURI();
+   }
+
+   private void initializeConstraints(List<ReferentialIntegrityConstraint> constraints) {
       ReferentialIntegrityConstraint constraint;
 
       constraint = new ReferentialIntegrityConstraint(ExportItem.OSEE_TX_DETAILS_DATA, "transaction_id");
@@ -86,33 +145,6 @@ public class ExchangeIntegrity {
       constraints.add(constraint);
    }
 
-   public void execute() throws OseeCoreException {
-      long startTime = System.currentTimeMillis();
-
-      initializeConstraints();
-
-      Writer writer = null;
-      try {
-         writer = openResults();
-
-         Log logger = services.getLogger();
-         for (ReferentialIntegrityConstraint constraint : constraints) {
-            logger.info("Verifing constraint [%s]", constraint.getPrimaryKeyListing());
-
-            constraint.checkConstraint(logger, services.getDatabaseService(), processor);
-            writeConstraintResults(writer, constraint);
-         }
-         ExportImportXml.closeXmlNode(writer, ExportImportXml.DATA);
-      } catch (IOException ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      } finally {
-         Lib.close(writer);
-         processor.cleanUp();
-         services.getLogger().info("Verified [%s] in [%s]", exportDataProvider.getExportedDataRoot(),
-            Lib.getElapseString(startTime));
-      }
-   }
-
    private void writeConstraintResults(Writer writer, ReferentialIntegrityConstraint constraint) throws IOException {
       HashCollection<String, Long> missingPrimaryKeys = constraint.getMissingPrimaryKeys();
 
@@ -148,12 +180,4 @@ public class ExchangeIntegrity {
       }
    }
 
-   private Writer openResults() throws IOException {
-      verifyFile = exportDataProvider.getExportedDataRoot().getName() + ".verify.xml";
-      File writeLocation = exportDataProvider.getExportedDataRoot().getParentFile();
-
-      Writer writer = ExchangeUtil.createXmlWriter(writeLocation, verifyFile, (int) Math.pow(2, 20));
-      ExportImportXml.openXmlNode(writer, ExportImportXml.DATA);
-      return writer;
-   }
 }

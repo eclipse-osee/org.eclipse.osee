@@ -16,6 +16,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportOptions;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
@@ -27,8 +28,8 @@ public class ManifestExportItem extends AbstractXmlExportItem {
    private final List<AbstractExportItem> exportItems;
    private final PropertyStore options;
 
-   public ManifestExportItem(List<AbstractExportItem> exportItems, PropertyStore options) {
-      super(ExportItem.EXPORT_MANIFEST);
+   public ManifestExportItem(Log logger, List<AbstractExportItem> exportItems, PropertyStore options) {
+      super(logger, ExportItem.EXPORT_MANIFEST);
       this.exportItems = exportItems;
       this.options = options;
    }

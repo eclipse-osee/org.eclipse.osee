@@ -114,7 +114,7 @@ public class AttributeProviderTest {
 
       Assert.assertEquals("123/456/testData.zip", savedLocator.getRawPath());
       Assert.assertEquals("attr://123/456/testData.zip", savedLocator.getLocation().toASCIIString());
-      Assert.assertEquals(ResourceConstants.RESOURCE_PROTOCOL, savedLocator.getProtocol());
+      Assert.assertEquals(ResourceConstants.ATTRIBUTE_RESOURCE_PROTOCOL, savedLocator.getProtocol());
 
       //check file was written
       File file = new File(folder.getRoot().getAbsolutePath() + "/attr/123/456/", "testData.zip");

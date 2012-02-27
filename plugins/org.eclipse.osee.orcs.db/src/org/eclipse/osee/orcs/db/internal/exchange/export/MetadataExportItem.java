@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
 
@@ -31,8 +32,8 @@ public class MetadataExportItem extends AbstractXmlExportItem {
    private final List<AbstractExportItem> exportItems;
    private final DatabaseMetaData metaData;
 
-   public MetadataExportItem(List<AbstractExportItem> exportItems, DatabaseMetaData metaData) {
-      super(ExportItem.EXPORT_DB_SCHEMA);
+   public MetadataExportItem(Log logger, List<AbstractExportItem> exportItems, DatabaseMetaData metaData) {
+      super(logger, ExportItem.EXPORT_DB_SCHEMA);
       this.exportItems = exportItems;
       this.metaData = metaData;
    }

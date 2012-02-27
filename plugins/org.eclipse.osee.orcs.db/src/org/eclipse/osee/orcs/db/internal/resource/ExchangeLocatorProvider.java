@@ -51,7 +51,7 @@ public class ExchangeLocatorProvider implements IResourceLocatorProvider {
 
    @Override
    public String getSupportedProtocol() {
-      return ResourceConstants.EXCHANGE_PROTOCOL;
+      return ResourceConstants.EXCHANGE_RESOURCE_PROTOCOL;
    }
 
    @Override
