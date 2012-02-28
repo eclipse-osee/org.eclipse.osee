@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.ChangeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
