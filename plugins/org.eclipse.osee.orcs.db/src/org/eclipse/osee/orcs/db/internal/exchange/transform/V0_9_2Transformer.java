@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.operation.Address;
 import org.eclipse.osee.framework.jdk.core.text.rules.ReplaceAll;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -81,9 +82,9 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
    }
 
    @Override
-   public void finalizeTransform(ExchangeDataProcessor processor, OperationLogger logger) throws OseeCoreException {
-      Operations.executeWorkAndCheckStatus(new TxCurrentsAndModTypesCommand(logger, false));
-      Operations.executeWorkAndCheckStatus(new TxCurrentsAndModTypesCommand(logger, true));
+   public void finalizeTransform(IOseeDatabaseService dbService, ExchangeDataProcessor processor, OperationLogger logger) throws OseeCoreException {
+      Operations.executeWorkAndCheckStatus(new TxCurrentsAndModTypesCommand(dbService, logger, false));
+      Operations.executeWorkAndCheckStatus(new TxCurrentsAndModTypesCommand(dbService, logger, true));
    }
 
    private List<Integer> convertBranchTable(ExchangeDataProcessor processor) throws OseeCoreException {

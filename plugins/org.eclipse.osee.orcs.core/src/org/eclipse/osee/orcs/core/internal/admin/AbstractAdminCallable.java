@@ -53,7 +53,7 @@ public abstract class AbstractAdminCallable<T> extends CancellableCallable<T> {
          result = innerCall();
       } finally {
          if (logger.isTraceEnabled()) {
-            logger.trace("Branch [%s] completed in [%s]", getClass().getSimpleName(), Lib.getElapseString(startTime));
+            logger.trace("Admin [%s] completed in [%s]", getClass().getSimpleName(), Lib.getElapseString(startTime));
          }
       }
       return result;

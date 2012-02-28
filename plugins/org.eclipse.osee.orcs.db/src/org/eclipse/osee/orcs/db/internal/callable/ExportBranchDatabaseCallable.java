@@ -31,10 +31,10 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
+import org.eclipse.osee.orcs.ExportOptions;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.db.internal.exchange.ExchangeUtil;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportItemFactory;
-import org.eclipse.osee.orcs.db.internal.exchange.ExportOptions;
 import org.eclipse.osee.orcs.db.internal.exchange.export.AbstractExportItem;
 import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 

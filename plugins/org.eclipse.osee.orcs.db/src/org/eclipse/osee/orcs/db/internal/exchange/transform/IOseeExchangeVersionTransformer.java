@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.exchange.transform;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.osgi.framework.Version;
 
 /**
@@ -23,5 +24,5 @@ public interface IOseeExchangeVersionTransformer {
 
    public abstract Version getMaxVersion();
 
-   public abstract void finalizeTransform(ExchangeDataProcessor processor, OperationLogger logger) throws OseeCoreException;
+   public abstract void finalizeTransform(IOseeDatabaseService dbService, ExchangeDataProcessor processor, OperationLogger logger) throws OseeCoreException;
 }

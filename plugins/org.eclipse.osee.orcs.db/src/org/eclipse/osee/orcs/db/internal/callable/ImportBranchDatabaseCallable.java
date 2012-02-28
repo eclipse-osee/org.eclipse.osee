@@ -41,10 +41,10 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.ImportOptions;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.db.internal.exchange.ExchangeUtil;
 import org.eclipse.osee.orcs.db.internal.exchange.IOseeExchangeDataProvider;
-import org.eclipse.osee.orcs.db.internal.exchange.ImportOptions;
 import org.eclipse.osee.orcs.db.internal.exchange.SavePointManager;
 import org.eclipse.osee.orcs.db.internal.exchange.StandardOseeDbExportDataProvider;
 import org.eclipse.osee.orcs.db.internal.exchange.TranslationManager;
@@ -178,7 +178,7 @@ public class ImportBranchDatabaseCallable extends DatabaseCallable<URI> {
       savePointManager.setCurrentSetPointId("sourceSetup");
 
       IExchangeTransformProvider transformProvider = new ExchangeTransformProvider(cachingService);
-      exchangeTransformer = new ExchangeTransformer(transformProvider, exchangeDataProcessor);
+      exchangeTransformer = new ExchangeTransformer(getDatabaseService(), transformProvider, exchangeDataProcessor);
       exchangeTransformer.applyTransforms(legacyLogger);
 
       savePointManager.setCurrentSetPointId("manifest");

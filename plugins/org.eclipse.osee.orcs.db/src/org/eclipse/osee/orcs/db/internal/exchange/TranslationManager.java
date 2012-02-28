@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+import org.eclipse.osee.orcs.ImportOptions;
 
 public class TranslationManager {
    private static final String INSERT_INTO_IMPORT_MAP =

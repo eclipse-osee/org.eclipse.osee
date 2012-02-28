@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<component name="search.tagger.cmds">
-	<implementation class="org.eclipse.osee.framework.server.admin.SearchTaggerCommandProvider"/>
-	<service>
-		<provide interface="org.eclipse.osgi.framework.console.CommandProvider"/>
-	</service>
-</component>

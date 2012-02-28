@@ -14,18 +14,21 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
 import org.osgi.framework.Version;
 
 public class ExchangeTransformer {
 
+   private final IOseeDatabaseService dbService;
    private final IExchangeTransformProvider provider;
    private final ExchangeDataProcessor processor;
 
    private Collection<IOseeExchangeVersionTransformer> transformers;
 
-   public ExchangeTransformer(IExchangeTransformProvider provider, ExchangeDataProcessor processor) {
+   public ExchangeTransformer(IOseeDatabaseService dbService, IExchangeTransformProvider provider, ExchangeDataProcessor processor) {
+      this.dbService = dbService;
       this.provider = provider;
       this.processor = processor;
    }
@@ -48,7 +51,7 @@ public class ExchangeTransformer {
    public void applyFinalTransforms(OperationLogger logger) throws Exception {
       Conditions.checkNotNull(transformers, "transformers", "forgot to call apply transforms first");
       for (IOseeExchangeVersionTransformer transform : transformers) {
-         transform.finalizeTransform(processor, logger);
+         transform.finalizeTransform(dbService, processor, logger);
       }
       transformers = null;
    }

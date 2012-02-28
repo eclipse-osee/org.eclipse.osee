@@ -17,9 +17,10 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.internal.Activator;
 
@@ -43,22 +44,33 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
    private final String columnName;
    private final boolean isFixOperationEnabled;
    private final String txsTableName;
+   private final IOseeDatabaseService dbService;
 
-   public InvalidTxCurrentsAndModTypes(String operationName, String tableName, String columnName, OperationLogger logger, boolean isFixOperationEnabled, boolean archived) {
+   public InvalidTxCurrentsAndModTypes(String operationName, String tableName, String columnName, OperationLogger logger, boolean isFixOperationEnabled, boolean archived) throws OseeDataStoreException {
+      this(Activator.getInstance().getOseeDatabaseService(), operationName, tableName, columnName, logger,
+         isFixOperationEnabled, archived);
+   }
+
+   public InvalidTxCurrentsAndModTypes(IOseeDatabaseService dbService, String operationName, String tableName, String columnName, OperationLogger logger, boolean isFixOperationEnabled, boolean archived) {
       super(
          "InvalidTxCurrentsAndModTypes " + operationName + tableName + " fix:" + isFixOperationEnabled + " archived:" + archived,
          Activator.PLUGIN_ID, logger);
+      this.dbService = dbService;
       this.tableName = tableName;
       this.columnName = columnName;
       this.isFixOperationEnabled = isFixOperationEnabled;
       txsTableName = archived ? "_archived" : "";
    }
 
+   private IOseeDatabaseService getDatabaseService() {
+      return dbService;
+   }
+
    private void fixIssues(IProgressMonitor monitor) throws OseeCoreException {
       if (isFixOperationEnabled) {
          checkForCancelledStatus(monitor);
-         ConnectionHandler.runBatchUpdate(String.format(DELETE_ADDRESS, txsTableName), purgeData);
-         ConnectionHandler.runBatchUpdate(String.format(UPDATE_ADDRESS, txsTableName), currentData);
+         getDatabaseService().runBatchUpdate(String.format(DELETE_ADDRESS, txsTableName), purgeData);
+         getDatabaseService().runBatchUpdate(String.format(UPDATE_ADDRESS, txsTableName), currentData);
       }
       monitor.worked(calculateWork(0.1));
    }
@@ -164,7 +176,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
 
       checkForCancelledStatus(monitor);
 
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = getDatabaseService().getStatement();
       String sql = String.format(SELECT_ADDRESSES, columnName, tableName, txsTableName, columnName);
       try {
          chStmt.runPreparedQuery(10000, sql);

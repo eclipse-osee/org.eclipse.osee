@@ -6,7 +6,8 @@ Bundle-Version: 0.9.9.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/*.xml
-Import-Package: org.eclipse.osee.database.schema,
+Import-Package: org.eclipse.osee.console.admin,
+ org.eclipse.osee.database.schema,
  org.eclipse.osee.event,
  org.eclipse.osee.executor.admin,
  org.eclipse.osee.framework.core.data,

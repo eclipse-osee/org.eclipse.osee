@@ -14,8 +14,10 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.internal.Activator;
@@ -52,18 +54,33 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractOperation {
       "DELETE FROM osee_tx_details WHERE branch_id = ? and transaction_id = ?";
    private final Integer forBranchId;
 
-   public PurgeUnusedBackingDataAndTransactions(OperationLogger logger) {
-      this(logger, null);
+   private final IOseeDatabaseService dbService;
+
+   public PurgeUnusedBackingDataAndTransactions(OperationLogger logger) throws OseeDataStoreException {
+      this(Activator.getInstance().getOseeDatabaseService(), logger, null);
    }
 
-   public PurgeUnusedBackingDataAndTransactions(OperationLogger logger, Integer forBranchId) {
+   public PurgeUnusedBackingDataAndTransactions(OperationLogger logger, Integer forBranchId) throws OseeDataStoreException {
+      this(Activator.getInstance().getOseeDatabaseService(), logger, forBranchId);
+   }
+
+   public PurgeUnusedBackingDataAndTransactions(IOseeDatabaseService dbService, OperationLogger logger) {
+      this(dbService, logger, null);
+   }
+
+   public PurgeUnusedBackingDataAndTransactions(IOseeDatabaseService dbService, OperationLogger logger, Integer forBranchId) {
       super("Data with no TXS Addressing and empty transactions", Activator.PLUGIN_ID, logger);
+      this.dbService = dbService;
       this.forBranchId = forBranchId;
+   }
+
+   private IOseeDatabaseService getDatabaseService() {
+      return dbService;
    }
 
    private void processNotAddressedGammas(String tableName) throws OseeCoreException {
       List<Object[]> notAddressedGammas = new LinkedList<Object[]>();
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = getDatabaseService().getStatement();
       String sql = null;
       if (forBranchId == null) {
          sql = String.format(NOT_ADDRESSESED_GAMMAS, tableName);
@@ -82,12 +99,12 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractOperation {
       }
 
       sql = String.format(DELETE_GAMMAS, tableName);
-      ConnectionHandler.runBatchUpdate(sql, notAddressedGammas);
+      getDatabaseService().runBatchUpdate(sql, notAddressedGammas);
    }
 
    private void processAddressedButNonexistentGammas(String tableName) throws OseeCoreException {
       List<Object[]> nonexistentGammas = new LinkedList<Object[]>();
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = getDatabaseService().getStatement();
 
       try {
          String sql = null;
@@ -106,7 +123,7 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractOperation {
          chStmt.close();
       }
 
-      ConnectionHandler.runBatchUpdate(String.format(DELETE_GAMMAS, tableName), nonexistentGammas);
+      getDatabaseService().runBatchUpdate(String.format(DELETE_GAMMAS, tableName), nonexistentGammas);
    }
 
    private void processEmptyTransactions() throws OseeCoreException {

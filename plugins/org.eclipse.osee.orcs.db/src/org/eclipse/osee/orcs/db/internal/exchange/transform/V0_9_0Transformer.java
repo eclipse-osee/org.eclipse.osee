@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.text.rules.ReplaceAll;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.SaxTransformer;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
@@ -64,7 +65,7 @@ public class V0_9_0Transformer implements IOseeExchangeVersionTransformer {
    }
 
    @Override
-   public void finalizeTransform(ExchangeDataProcessor processor, OperationLogger logger) {
+   public void finalizeTransform(IOseeDatabaseService dbService, ExchangeDataProcessor processor, OperationLogger logger) {
       //
    }
 

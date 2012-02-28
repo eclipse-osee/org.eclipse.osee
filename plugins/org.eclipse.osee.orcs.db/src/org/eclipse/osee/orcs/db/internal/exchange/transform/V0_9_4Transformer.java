@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.exchange.transform;
 
 import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.osgi.framework.Version;
 
 /**
@@ -30,7 +31,7 @@ public class V0_9_4Transformer implements IOseeExchangeVersionTransformer {
    }
 
    @Override
-   public void finalizeTransform(ExchangeDataProcessor processor, OperationLogger logger) {
+   public void finalizeTransform(IOseeDatabaseService dbService, ExchangeDataProcessor processor, OperationLogger logger) {
       //
    }
 }

@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.exchange.transform;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.text.rules.ReplaceAll;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
@@ -41,7 +42,7 @@ public class V0_8_3Transformer implements IOseeExchangeVersionTransformer {
    }
 
    @Override
-   public void finalizeTransform(ExchangeDataProcessor ruleProcessor, OperationLogger logger) {
+   public void finalizeTransform(IOseeDatabaseService dbService, ExchangeDataProcessor ruleProcessor, OperationLogger logger) {
       //
    }
 

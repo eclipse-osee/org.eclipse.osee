@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.operation.InvalidTxCurrentsAndModTypes;
 
 /**
@@ -22,19 +23,19 @@ import org.eclipse.osee.framework.database.operation.InvalidTxCurrentsAndModType
  */
 public class TxCurrentsAndModTypesCommand extends CompositeOperation {
 
-   public TxCurrentsAndModTypesCommand(OperationLogger logger, boolean archived) {
-      super("TxCurrents And Mod Types", "Plugin Id", logger, buildSubOperations(logger, archived));
+   public TxCurrentsAndModTypesCommand(IOseeDatabaseService db, OperationLogger logger, boolean archived) {
+      super("TxCurrents And Mod Types", "Plugin Id", logger, buildSubOperations(db, logger, archived));
    }
 
-   private static List<IOperation> buildSubOperations(OperationLogger logger, boolean archived) {
+   private static List<IOperation> buildSubOperations(IOseeDatabaseService db, OperationLogger logger, boolean archived) {
       List<IOperation> operations = new ArrayList<IOperation>(3);
-      operations.add(buildFixOperation(logger, archived, "1/3 ", "osee_artifact", "art_id"));
-      operations.add(buildFixOperation(logger, archived, "2/3 ", "osee_attribute", "attr_id"));
-      operations.add(buildFixOperation(logger, archived, "3/3 ", "osee_relation_link", "rel_link_id"));
+      operations.add(buildFixOperation(db, logger, archived, "1/3 ", "osee_artifact", "art_id"));
+      operations.add(buildFixOperation(db, logger, archived, "2/3 ", "osee_attribute", "attr_id"));
+      operations.add(buildFixOperation(db, logger, archived, "3/3 ", "osee_relation_link", "rel_link_id"));
       return operations;
    }
 
-   private static IOperation buildFixOperation(OperationLogger logger, boolean archived, String operationName, String tableName, String columnName) {
-      return new InvalidTxCurrentsAndModTypes(operationName, tableName, columnName, logger, true, archived);
+   private static IOperation buildFixOperation(IOseeDatabaseService db, OperationLogger logger, boolean archived, String operationName, String tableName, String columnName) {
+      return new InvalidTxCurrentsAndModTypes(db, operationName, tableName, columnName, logger, true, archived);
    }
 }
