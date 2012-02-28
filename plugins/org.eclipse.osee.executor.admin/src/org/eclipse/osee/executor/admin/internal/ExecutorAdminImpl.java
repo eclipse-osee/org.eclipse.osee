@@ -139,7 +139,12 @@ public class ExecutorAdminImpl implements ExecutorAdmin {
    private void shutdown(String id, ExecutorService executor) {
       try {
          executor.shutdown();
-         boolean completed = executor.awaitTermination(10000, TimeUnit.SECONDS);
+         boolean completed = false;
+         try {
+            completed = executor.awaitTermination(10000, TimeUnit.SECONDS);
+         } catch (Exception ex) {
+            // Do nothing;
+         }
          if (!completed) {
             //List<Runnable> runnables = 
             executor.shutdownNow();
@@ -148,7 +153,7 @@ public class ExecutorAdminImpl implements ExecutorAdmin {
             //                  runnable.
             //               }
          }
-      } catch (InterruptedException ex) {
+      } catch (Exception ex) {
          getLogger().error(ex, "Error shutting down executor [%s]", id);
       }
    }
