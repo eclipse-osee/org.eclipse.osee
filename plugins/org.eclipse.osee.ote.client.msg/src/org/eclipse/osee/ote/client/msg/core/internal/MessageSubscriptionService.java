@@ -151,8 +151,11 @@ public class MessageSubscriptionService implements IOteMessageService, IMessageD
             }
             exportedThis = (IMsgToolServiceClient) event.getConnector().export(this);
          } catch (Exception e) {
+        	String message = String.format(
+        			"failed to create exported Message Tool Client. Connector class is %s", 
+        			event.getConnector().getClass().getName());
             OseeLog.log(MessageSubscriptionService.class, Level.SEVERE,
-               "failed to create exported Message Tool Client", e);
+               message, e);
             service = null;
             exportedThis = null;
             return;
