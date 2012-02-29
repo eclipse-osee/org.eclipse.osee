@@ -96,15 +96,17 @@ public final class ConsoleAdminUtils {
                commandName = arg.toLowerCase();
             } else {
                String[] entries = arg.split("=");
-               String key = entries[0];
-               String value = entries[1];
-               if (Strings.isValid(key) && Strings.isValid(value)) {
-                  value = removeQuotes(value);
-                  store.put(key, value);
+               if (entries.length == 2) {
+                  String key = entries[0];
+                  String value = entries[1];
+                  if (Strings.isValid(key) && Strings.isValid(value)) {
+                     value = removeQuotes(value);
+                     store.put(key, value);
 
-                  String[] arrayVal = value.split("[,;& ]\\s*");
-                  if (arrayVal != null && arrayVal.length > 0) {
-                     store.put(key, arrayVal);
+                     String[] arrayVal = value.split("[,;& ]\\s*");
+                     if (arrayVal != null && arrayVal.length > 0) {
+                        store.put(key, arrayVal);
+                     }
                   }
                }
             }

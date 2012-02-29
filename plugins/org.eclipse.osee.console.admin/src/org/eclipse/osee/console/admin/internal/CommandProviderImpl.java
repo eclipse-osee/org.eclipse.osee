@@ -27,6 +27,7 @@ public class CommandProviderImpl implements CommandProvider {
    private static final String NEW_LINE = "\r\n";
    private static final String TAB = "\t";
    private static final String PREFIX = "osee";
+   private static final String HELP_COMMAND = "help";
 
    private ConsoleAdmin consoleAdmin;
 
@@ -49,7 +50,31 @@ public class CommandProviderImpl implements CommandProvider {
    public void _osee(CommandInterpreter ci) throws Exception {
       ConsoleParameters parameters = getParameters(ci);
       Console console = getConsole(ci);
-      getDispatcher().dispatch(console, parameters);
+      if (HELP_COMMAND.equalsIgnoreCase(parameters.getCommandName())) {
+         help(console, parameters);
+      } else {
+         getDispatcher().dispatch(console, parameters);
+      }
+   }
+
+   private String getHelpSubCommand(ConsoleParameters parameters) {
+      String subCommandName = null;
+      String[] tokens = parameters.getRawString().split(" ");
+      if (tokens.length > 1) {
+         subCommandName = tokens[1];
+      }
+      return subCommandName;
+   }
+
+   private void help(Console console, ConsoleParameters parameters) throws Exception {
+      String subCommandName = getHelpSubCommand(parameters);
+      writeSubCommandHelp(console, subCommandName);
+   }
+
+   private void writeSubCommandHelp(Console console, String subCommandName) throws Exception {
+      ConsoleCommand command = getDispatcher().getCommandByName(subCommandName);
+      ConsoleAdminUtils.checkNotNull(command, "command", "Unable to find help for subCommand:[%s]", subCommandName);
+      console.writeln(command.getUsage());
    }
 
    @Override
@@ -64,6 +89,7 @@ public class CommandProviderImpl implements CommandProvider {
       for (ConsoleCommand command : sorted) {
          addCommand(help, command);
       }
+      addHelp(help);
       return help.toString();
    }
 
@@ -94,4 +120,11 @@ public class CommandProviderImpl implements CommandProvider {
       help.append(NEW_LINE);
    }
 
+   private void addHelp(StringBuilder help) {
+      help.append("Help:");
+      help.append(NEW_LINE);
+      help.append(TAB);
+      help.append("osee help [sub-command]");
+      help.append(NEW_LINE);
+   }
 }

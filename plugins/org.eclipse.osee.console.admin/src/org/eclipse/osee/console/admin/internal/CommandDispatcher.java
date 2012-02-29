@@ -63,8 +63,6 @@ public class CommandDispatcher {
 
    public void dispatch(Console console, ConsoleParameters params) throws Exception {
       String cmdId = getCommandId(params);
-
-      ConsoleAdminUtils.checkNotNull(cmdId, "commandId");
       ConsoleCommand command = getCommandById(cmdId);
 
       ConsoleAdminUtils.checkNotNull(command, "command", "Unable to find command for [%s]", cmdId);
@@ -127,13 +125,23 @@ public class CommandDispatcher {
    }
 
    private ConsoleCommand getCommandById(String commandId) throws Exception {
+      ConsoleAdminUtils.checkNotNull(commandId, "commandId");
       return registered.get(commandId);
+   }
+
+   public ConsoleCommand getCommandByName(String commandName) throws Exception {
+      String commandId = getCommandIdByName(commandName);
+      return getCommandById(commandId);
+   }
+
+   private String getCommandIdByName(String commandName) {
+      ConsoleAdminUtils.checkNotNullOrEmpty(commandName, "command name");
+      return commandNameToId.get(commandName);
    }
 
    private String getCommandId(ConsoleParameters params) throws Exception {
       String commandName = params.getCommandName();
-      ConsoleAdminUtils.checkNotNullOrEmpty(commandName, "command name");
-      return commandNameToId.get(commandName);
+      return getCommandIdByName(commandName);
    }
 
    private ExecutorAdmin getExecutorAdmin() {
