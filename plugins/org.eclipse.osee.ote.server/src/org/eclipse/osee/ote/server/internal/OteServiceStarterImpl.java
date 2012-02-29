@@ -89,19 +89,28 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 			throw new OseeStateException("An ote Server has already been started.");
 		}
 
+		System.out.printf("start called for connecotr %s, factory=%s, class=%s\n", serviceSideConnector.getClass().getName(), factory.getClass().getName(), environmentFactoryClass);
+
 		this.serviceSideConnector = serviceSideConnector;
 		brokerService = new BrokerService();
-		String addressAsString = getAddress();
-		int port = getServerPort();
-		String strUri = String.format("tcp://%s:%d", addressAsString, port);
 
+		String strUri;
 		try {
-			brokerService.addConnector(strUri);
-			OseeLog.log(Activator.class, Level.WARNING, "Added TCP connector: " + strUri);
+			String addressAsString = getAddress();
+			int port = getServerPort();
+			strUri = String.format("tcp://%s:%d", addressAsString, port);
+			try {
+				brokerService.addConnector(strUri);
+				OseeLog.log(Activator.class, Level.WARNING, "Added TCP connector: " + strUri);			
+			} catch (Exception e) {
+				OseeLog.log(Activator.class, Level.SEVERE, "could not add connector for " + strUri, e);
+				strUri = "vm://localhost?broker.persistent=false";
+			}
 		} catch (Exception e) {
-			OseeLog.log(Activator.class, Level.SEVERE, "could not add connector for " + strUri, e);
+			OseeLog.log(Activator.class, Level.SEVERE, "could acquire a TCP address", e);
 			strUri = "vm://localhost?broker.persistent=false";
 		}
+		
 		brokerService.setEnableStatistics(false);
 		brokerService.setBrokerName("OTEServer");
 		brokerService.setPersistent(false);
