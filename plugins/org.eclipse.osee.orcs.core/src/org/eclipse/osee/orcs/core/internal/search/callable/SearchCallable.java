@@ -16,14 +16,14 @@ import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.data.ResultSetList;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
+import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
 import org.eclipse.osee.orcs.core.internal.OrcsObjectLoader;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
+import org.eclipse.osee.orcs.core.internal.search.QueryCollector;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.search.Match;
@@ -35,14 +35,15 @@ public class SearchCallable extends AbstractSearchCallable<ResultSet<ReadableArt
 
    private QueryContext queryContext;
 
-   public SearchCallable(Log logger, QueryEngine queryEngine, OrcsObjectLoader objectLoader, SessionContext sessionContext, LoadLevel loadLevel, CriteriaSet criteriaSet, QueryOptions options) {
-      super(logger, queryEngine, objectLoader, sessionContext, loadLevel, criteriaSet, options);
+   public SearchCallable(Log logger, QueryEngine queryEngine, QueryCollector collector, OrcsObjectLoader objectLoader, SessionContext sessionContext, LoadLevel loadLevel, QueryData queryData) {
+      super(logger, queryEngine, collector, objectLoader, sessionContext, loadLevel, queryData);
    }
 
    @Override
    protected ResultSet<ReadableArtifact> innerCall() throws Exception {
-      QueryContext queryContext = queryEngine.create(sessionContext.getSessionId(), criteriaSet, options);
-      LoadOptions loadOptions = new LoadOptions(options.isHistorical(), options.areDeletedIncluded(), loadLevel);
+      QueryContext queryContext = queryEngine.create(sessionContext.getSessionId(), queryData);
+      LoadOptions loadOptions =
+         new LoadOptions(queryData.getOptions().isHistorical(), queryData.getOptions().areDeletedIncluded(), loadLevel);
       checkForCancelled();
       List<ReadableArtifact> artifacts = objectLoader.load(this, queryContext, loadOptions, sessionContext);
 
@@ -74,4 +75,8 @@ public class SearchCallable extends AbstractSearchCallable<ResultSet<ReadableArt
       }
    }
 
+   @Override
+   protected int getCount(ResultSet<ReadableArtifact> results) throws Exception {
+      return results.getList().size();
+   }
 }

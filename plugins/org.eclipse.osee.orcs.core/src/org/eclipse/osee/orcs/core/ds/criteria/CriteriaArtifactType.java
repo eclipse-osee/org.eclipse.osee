@@ -39,4 +39,9 @@ public class CriteriaArtifactType extends Criteria {
       return artifactTypes;
    }
 
+   @Override
+   public String toString() {
+      return "CriteriaArtifactType [artifactTypes=" + artifactTypes + "]";
+   }
+
 }

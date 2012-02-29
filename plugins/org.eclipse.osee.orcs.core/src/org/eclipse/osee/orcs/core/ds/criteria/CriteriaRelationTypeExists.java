@@ -37,4 +37,9 @@ public class CriteriaRelationTypeExists extends Criteria {
       Conditions.checkNotNull(getType(), "relation type side");
    }
 
+   @Override
+   public String toString() {
+      return "CriteriaRelationTypeExists [relationType=" + relationType + "]";
+   }
+
 }

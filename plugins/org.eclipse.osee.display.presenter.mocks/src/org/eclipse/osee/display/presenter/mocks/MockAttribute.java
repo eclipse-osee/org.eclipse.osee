@@ -28,7 +28,7 @@ public class MockAttribute implements ReadableAttribute<String> {
    }
 
    @Override
-   public int getGammaId() {
+   public long getGammaId() {
       return 0;
    }
 

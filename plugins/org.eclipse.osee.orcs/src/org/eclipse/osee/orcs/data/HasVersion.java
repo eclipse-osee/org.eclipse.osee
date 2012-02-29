@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
  */
 public interface HasVersion {
 
-   int getGammaId();
+   long getGammaId();
 
    ModificationType getModificationType();
 }

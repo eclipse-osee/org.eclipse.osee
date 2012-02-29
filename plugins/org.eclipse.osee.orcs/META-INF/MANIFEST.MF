@@ -18,6 +18,7 @@ Import-Package: org.eclipse.osee.executor.admin,
 Export-Package: org.eclipse.osee.orcs,
  org.eclipse.osee.orcs.data,
  org.eclipse.osee.orcs.search,
+ org.eclipse.osee.orcs.statistics,
  org.eclipse.osee.orcs.transaction,
  org.eclipse.osee.orcs.utility
 Require-Bundle: org.eclipse.core.runtime

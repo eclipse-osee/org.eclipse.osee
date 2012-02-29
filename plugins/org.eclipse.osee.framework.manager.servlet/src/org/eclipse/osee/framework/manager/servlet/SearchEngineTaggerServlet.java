@@ -10,16 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.manager.servlet;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.concurrent.Callable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.SecureOseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.manager.servlet.data.TagListener;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.search.QueryIndexer;
 
 /**
  * @author Roberto E. Escobar
@@ -34,26 +35,22 @@ public class SearchEngineTaggerServlet extends SecureOseeHttpServlet {
       this.orcsApi = orcsApi;
    }
 
+   private QueryIndexer getQueryIndexer(HttpServletRequest request) {
+      return orcsApi.getQueryIndexer(null);
+   }
+
    @Override
    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      InputStream inputStream = null;
       try {
          boolean waitForTags = Boolean.parseBoolean(request.getParameter("wait"));
-         inputStream = request.getInputStream();
+         QueryIndexer indexer = getQueryIndexer(request);
          if (waitForTags) {
-            TagListener listener = new TagListener();
-
-            //TODO            searchTaggerService.tagFromXmlStream(listener, inputStream);
-            //            if (listener.wasProcessed() != true) {
-            //               synchronized (listener) {
-            //                  listener.wait();
-            //               }
-            //            }
+            Callable<?> callable = indexer.indexXmlStream(request.getInputStream());
+            callable.call();
          } else {
-            //TODO            searchTaggerService.tagFromXmlStream(inputStream);
+            byte[] bytes = Lib.inputStreamToBytes(request.getInputStream());
+            indexer.submitXmlStream(new ByteArrayInputStream(bytes));
          }
-         Lib.inputStreamToBytes(inputStream);
-
          response.setContentType("text/plain");
          response.setCharacterEncoding("UTF-8");
          response.setStatus(HttpServletResponse.SC_CREATED);
@@ -62,10 +59,6 @@ public class SearchEngineTaggerServlet extends SecureOseeHttpServlet {
          response.setContentType("text/plain");
          getLogger().error(ex, "Error submitting for tagging - [%s]", request.toString());
          response.getWriter().write(Lib.exceptionToString(ex));
-      } finally {
-         Lib.close(inputStream);
-         response.getWriter().flush();
-         response.getWriter().close();
       }
    }
 
@@ -73,7 +66,8 @@ public class SearchEngineTaggerServlet extends SecureOseeHttpServlet {
    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
       try {
          String queryId = request.getParameter("queryId");
-         int value = 1; //TODO         searchTaggerService.deleteTags(Integer.parseInt(queryId));
+         Callable<Integer> callable = getQueryIndexer(request).deleteIndexByQueryId(Integer.parseInt(queryId));
+         int value = callable.call();
          response.setContentType("text/plain");
          response.setCharacterEncoding("UTF-8");
          if (value > 0) {

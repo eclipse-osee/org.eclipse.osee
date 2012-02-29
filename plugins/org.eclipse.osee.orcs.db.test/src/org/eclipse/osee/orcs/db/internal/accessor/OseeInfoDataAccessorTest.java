@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
+import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
@@ -113,5 +114,36 @@ public class OseeInfoDataAccessorTest {
          connection.close();
       }
       Assert.assertEquals(expected, Boolean.parseBoolean(original));
+   }
+
+   @org.junit.Test(expected = OseeStateException.class)
+   public void testSetCheckTagQueueOnStartupAllowed() throws OseeCoreException {
+      IOseeDatabaseService dbService = OsgiUtil.getService(IOseeDatabaseService.class);
+
+      OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
+      accessor.setLogger(new MockLog());
+      accessor.setDatabaseService(dbService);
+
+      accessor.putValue(DataStoreConstants.DATASTORE_INDEX_ON_START_UP, "dummy");
+   }
+
+   @org.junit.Test
+   public void testGetCheckTagQueueOnStartupAllowed() throws OseeCoreException {
+      IOseeDatabaseService dbService = OsgiUtil.getService(IOseeDatabaseService.class);
+
+      OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
+      accessor.setLogger(new MockLog());
+      accessor.setDatabaseService(dbService);
+
+      String original = accessor.getValue(DataStoreConstants.DATASTORE_INDEX_ON_START_UP);
+      Assert.assertEquals(System.getProperty(DataStoreConstants.DATASTORE_INDEX_ON_START_UP, "false"), original);
+
+      System.setProperty(DataStoreConstants.DATASTORE_INDEX_ON_START_UP, "true");
+      try {
+         String actual = accessor.getValue(DataStoreConstants.DATASTORE_INDEX_ON_START_UP);
+         Assert.assertEquals("true", actual);
+      } finally {
+         System.setProperty(DataStoreConstants.DATASTORE_INDEX_ON_START_UP, original);
+      }
    }
 }

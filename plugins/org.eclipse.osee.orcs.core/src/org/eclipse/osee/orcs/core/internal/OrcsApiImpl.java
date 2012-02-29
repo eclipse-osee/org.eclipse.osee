@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
+import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -20,6 +21,8 @@ import org.eclipse.osee.orcs.Graph;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
+import org.eclipse.osee.orcs.OrcsPerformance;
+import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
@@ -27,13 +30,13 @@ import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeClassResolver;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
-import org.eclipse.osee.orcs.core.internal.search.CallableQueryFactory;
-import org.eclipse.osee.orcs.core.internal.search.CriteriaFactory;
-import org.eclipse.osee.orcs.core.internal.search.QueryFactoryImpl;
+import org.eclipse.osee.orcs.core.internal.indexer.IndexerModule;
+import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.core.internal.session.SessionContextImpl;
 import org.eclipse.osee.orcs.core.internal.transaction.TransactionFactoryImpl;
 import org.eclipse.osee.orcs.search.QueryFacade;
 import org.eclipse.osee.orcs.search.QueryFactory;
+import org.eclipse.osee.orcs.search.QueryIndexer;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 
 /**
@@ -48,11 +51,14 @@ public class OrcsApiImpl implements OrcsApi {
    private IOseeCachingService cacheService;
    private DataStoreTypeCache dataStoreTypeCache;
 
-   private OrcsObjectLoader objectLoader;
-   private CriteriaFactory criteriaFctry;
-   private CallableQueryFactory callableQueryFactory;
    private BranchDataStore branchStore;
    private DataStoreAdmin dataStoreAdmin;
+   private ExecutorAdmin executorAdmin;
+   private SystemPreferences preferences;
+
+   private OrcsObjectLoader objectLoader;
+   private QueryModule queryModule;
+   private IndexerModule indexerModule;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -86,6 +92,14 @@ public class OrcsApiImpl implements OrcsApi {
       this.dataStoreAdmin = dataStoreAdmin;
    }
 
+   public void setExecutorAdmin(ExecutorAdmin executorAdmin) {
+      this.executorAdmin = executorAdmin;
+   }
+
+   public void setSystemPreferences(SystemPreferences preferences) {
+      this.preferences = preferences;
+   }
+
    public void start() {
       ArtifactFactory artifactFactory = new ArtifactFactory(dataStoreTypeCache.getRelationTypeCache());
       AttributeFactory attributeFactory =
@@ -94,20 +108,24 @@ public class OrcsApiImpl implements OrcsApi {
          new OrcsObjectLoader(logger, dataLoader, artifactFactory, attributeFactory,
             dataStoreTypeCache.getArtifactTypeCache(), cacheService.getBranchCache());
 
-      criteriaFctry = new CriteriaFactory(dataStoreTypeCache.getAttributeTypeCache());
-      callableQueryFactory = new CallableQueryFactory(logger, queryEngine, objectLoader);
+      queryModule = new QueryModule(logger, queryEngine, objectLoader, dataStoreTypeCache.getAttributeTypeCache());
+
+      indexerModule = new IndexerModule(logger, preferences, executorAdmin, queryEngine.getQueryIndexer());
+      indexerModule.start();
    }
 
    public void stop() {
-      criteriaFctry = null;
+      if (indexerModule != null) {
+         indexerModule.stop();
+      }
       objectLoader = null;
-      callableQueryFactory = null;
+      queryModule = null;
    }
 
    @Override
    public QueryFactory getQueryFactory(ApplicationContext context) {
       SessionContext sessionContext = getSessionContext(context);
-      return new QueryFactoryImpl(sessionContext, criteriaFctry, callableQueryFactory);
+      return queryModule.createQueryFactory(sessionContext);
    }
 
    @Override
@@ -145,10 +163,21 @@ public class OrcsApiImpl implements OrcsApi {
       return new OrcsAdminImpl(logger, sessionContext, dataStoreAdmin);
    }
 
+   @Override
+   public OrcsPerformance getOrcsPerformance(ApplicationContext context) {
+      SessionContext sessionContext = getSessionContext(context);
+      return new OrcsPerformanceImpl(logger, sessionContext, queryModule, indexerModule);
+   }
+
+   @Override
+   public QueryIndexer getQueryIndexer(ApplicationContext context) {
+      SessionContext sessionContext = getSessionContext(context);
+      return indexerModule.createQueryIndexer(sessionContext);
+   }
+
    private SessionContext getSessionContext(ApplicationContext context) {
       // TODO get sessions from a session context cache
       String sessionId = GUID.create(); // TODO context.getSessionId() attach to application context
       return new SessionContextImpl(sessionId);
    }
-
 }

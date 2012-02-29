@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.ds;
 import java.util.Collection;
 import java.util.Iterator;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import com.google.common.collect.HashMultimap;
 
 /**
@@ -65,6 +66,11 @@ public class CriteriaSet implements Cloneable, Iterable<Criteria> {
 
    @Override
    public String toString() {
-      return "CriteriaSet [branch=" + branch + ", criterias=" + criterias + "]";
+      StringBuilder builder = new StringBuilder();
+      builder.append("CriteriaSet:\n\tbranch=[");
+      builder.append(branch);
+      builder.append("]\n\tcriterias=\n\t\t");
+      builder.append(Collections.toString("\n\t\t", criterias.values()));
+      return builder.toString();
    }
 }

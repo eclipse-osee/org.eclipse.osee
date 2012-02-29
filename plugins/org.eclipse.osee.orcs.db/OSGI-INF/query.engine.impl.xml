@@ -11,4 +11,6 @@
    <reference bind="setCachingService" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IOseeCachingService" name="IOseeCachingService" policy="static"/>
    <reference bind="setDataStoreTypeCache" cardinality="1..1" interface="org.eclipse.osee.orcs.DataStoreTypeCache" name="DataStoreTypeCache" policy="static"/>
    <reference bind="setExecutorAdmin" cardinality="1..1" interface="org.eclipse.osee.executor.admin.ExecutorAdmin" name="ExecutorAdmin" policy="static"/>
+   <reference bind="setResourceManager" cardinality="1..1" interface="org.eclipse.osee.framework.resource.management.IResourceManager" name="IResourceManager" policy="static"/>
+   <reference bind="setLocatorService" cardinality="1..1" interface="org.eclipse.osee.framework.resource.management.IResourceLocatorManager" name="IResourceLocatorManager" policy="static"/>
 </scr:component>

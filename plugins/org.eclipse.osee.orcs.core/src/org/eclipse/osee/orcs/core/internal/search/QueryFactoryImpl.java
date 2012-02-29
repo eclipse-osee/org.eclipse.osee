@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
+import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
@@ -31,20 +32,21 @@ public class QueryFactoryImpl implements QueryFactory {
 
    private final SessionContext context;
    private final CriteriaFactory criteriaFctry;
-   private final CallableQueryFactory queryExecutor;
+   private final CallableQueryFactory queryFctry;
 
-   public QueryFactoryImpl(SessionContext context, CriteriaFactory criteriaFctry, CallableQueryFactory queryExecutor) {
+   public QueryFactoryImpl(SessionContext context, CriteriaFactory criteriaFctry, CallableQueryFactory queryFctry) {
       super();
       this.context = context;
       this.criteriaFctry = criteriaFctry;
-      this.queryExecutor = queryExecutor;
+      this.queryFctry = queryFctry;
    }
 
    @SuppressWarnings("unused")
    private QueryBuilder createBuilder(IOseeBranch branch) throws OseeCoreException {
       QueryOptions options = new QueryOptions();
       CriteriaSet criteriaSet = new CriteriaSet(branch);
-      QueryBuilder builder = new QueryBuilderImpl(queryExecutor, criteriaFctry, context, criteriaSet, options);
+      QueryData queryData = new QueryData(criteriaSet, options);
+      QueryBuilder builder = new QueryBuilderImpl(queryFctry, criteriaFctry, context, queryData);
       return builder;
    }
 

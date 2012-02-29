@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.core.ds.KeyValueDataAccessor;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
@@ -63,6 +64,8 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
          toReturn = getOseeApplicationServerData();
       } else if (SqlProvider.SQL_DATABASE_HINTS_SUPPORTED_KEY.equals(key)) {
          toReturn = String.valueOf(areHintsSupported());
+      } else if (DataStoreConstants.DATASTORE_INDEX_ON_START_UP.equals(key)) {
+         toReturn = String.valueOf(isCheckTagQueueOnStartupAllowed());
       } else {
          toReturn = dbService.runPreparedQueryFetchObject("", GET_VALUE_SQL, key);
       }
@@ -80,12 +83,25 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
          throw new OseeStateException(
             "Unsupported modification - attempt to modify database hints supported. This is an unmodifiable database specific setting.",
             SqlProvider.SQL_DATABASE_HINTS_SUPPORTED_KEY);
+      } else if (DataStoreConstants.DATASTORE_INDEX_ON_START_UP.equals(key)) {
+         throw new OseeStateException(
+            "Unsupported modification - attempt to modify index start-up flag. This is an launch time setting.",
+            DataStoreConstants.DATASTORE_INDEX_ON_START_UP);
       } else {
          ConnectionHandler.runPreparedUpdate(DELETE_KEY_SQL, key);
          int updated = ConnectionHandler.runPreparedUpdate(INSERT_KEY_VALUE_SQL, key, value);
          wasUpdated = updated == 1;
       }
       return wasUpdated;
+   }
+
+   /**
+    * Check Tag Queue on start up. Entries found in the tag queue are tagged by the server on start up.
+    * 
+    * @return whether tag queue should be checked upon server start-up.
+    */
+   public static boolean isCheckTagQueueOnStartupAllowed() {
+      return Boolean.valueOf(System.getProperty(DataStoreConstants.DATASTORE_INDEX_ON_START_UP, "false"));
    }
 
    /**

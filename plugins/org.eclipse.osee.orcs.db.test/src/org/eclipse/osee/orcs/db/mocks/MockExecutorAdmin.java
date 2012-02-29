@@ -40,4 +40,9 @@ public class MockExecutorAdmin implements ExecutorAdmin {
       return null;
    }
 
+   @Override
+   public int cancelTasks(String id) throws Exception {
+      return 0;
+   }
+
 }

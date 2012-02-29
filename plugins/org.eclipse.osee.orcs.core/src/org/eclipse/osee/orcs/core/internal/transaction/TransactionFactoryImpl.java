@@ -35,7 +35,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
 
    @Override
    public OrcsTransaction createTransaction(IOseeBranch branch, String comment, ReadableArtifact userArtifact) {
-      OrcsTransactionImpl orcsTxn = new OrcsTransactionImpl(logger, branchDataStore, branch);
+      OrcsTransactionImpl orcsTxn = new OrcsTransactionImpl(logger, sessionContext, branchDataStore, branch);
       orcsTxn.setComment(comment);
       orcsTxn.setAuthor(userArtifact);
       return orcsTxn;

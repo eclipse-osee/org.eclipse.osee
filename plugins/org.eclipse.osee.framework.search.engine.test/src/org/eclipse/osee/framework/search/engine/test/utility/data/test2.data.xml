@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<standard>
-	<entry>
-		<a:entry>Inside element</a:entry>
-		outside element
-	</entry>
-	<entry>no nesting.</entry>
-</standard>

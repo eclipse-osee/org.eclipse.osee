@@ -65,4 +65,9 @@ public class CriteriaAttributeOther extends Criteria {
       }
    }
 
+   @Override
+   public String toString() {
+      return "CriteriaAttributeOther [attributeType=" + attributeType + ", values=" + values + ", operator=" + operator + "]";
+   }
+
 }

@@ -48,4 +48,9 @@ public class CriteriaArtifactGuids extends Criteria {
       return artifactGuids;
    }
 
+   @Override
+   public String toString() {
+      return "CriteriaArtifactGuids [artifactGuids=" + artifactGuids + "]";
+   }
+
 }

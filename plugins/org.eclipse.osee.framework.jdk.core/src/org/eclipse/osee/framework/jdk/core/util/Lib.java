@@ -1380,7 +1380,7 @@ public final class Lib {
       return asTimeString(System.currentTimeMillis() - startTime);
    }
 
-   private static String asTimeString(long value) {
+   public static String asTimeString(long value) {
       long leftOverMs = value % 1000;
       long seconds = value / 1000;
       long leftOverSeconds = seconds % 60;

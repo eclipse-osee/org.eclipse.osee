@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
+import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.transaction.OrcsTransaction;
 
@@ -35,7 +36,7 @@ public class OrcsTransactionImpl implements OrcsTransaction {
 
    private final List<Callable<?>> callables = new ArrayList<Callable<?>>();
 
-   public OrcsTransactionImpl(Log logger, BranchDataStore dataStore, IOseeBranch branch) {
+   public OrcsTransactionImpl(Log logger, SessionContext sessionContext, BranchDataStore dataStore, IOseeBranch branch) {
       super();
       this.dataStore = dataStore;
       this.logger = logger;

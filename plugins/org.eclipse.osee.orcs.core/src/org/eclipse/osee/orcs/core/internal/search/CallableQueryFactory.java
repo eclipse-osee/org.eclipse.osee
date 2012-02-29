@@ -14,9 +14,8 @@ import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.CriteriaSet;
+import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.internal.OrcsObjectLoader;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.search.callable.SearchCallable;
@@ -34,25 +33,27 @@ public class CallableQueryFactory {
    private final Log logger;
    private final QueryEngine queryEngine;
    private final OrcsObjectLoader objectLoader;
+   private final QueryCollector collector;
 
-   public CallableQueryFactory(Log logger, QueryEngine queryEngine, OrcsObjectLoader objectLoader) {
+   public CallableQueryFactory(Log logger, QueryEngine queryEngine, QueryCollector collector, OrcsObjectLoader objectLoader) {
       super();
       this.logger = logger;
       this.queryEngine = queryEngine;
       this.objectLoader = objectLoader;
+      this.collector = collector;
    }
 
-   public CancellableCallable<Integer> createCount(SessionContext sessionContext, CriteriaSet criteriaSet, QueryOptions options) {
-      return new SearchCountCallable(logger, queryEngine, objectLoader, sessionContext, LoadLevel.ATTRIBUTE,
-         criteriaSet, options);
+   public CancellableCallable<Integer> createCount(SessionContext sessionContext, QueryData queryData) {
+      return new SearchCountCallable(logger, queryEngine, collector, objectLoader, sessionContext, LoadLevel.ATTRIBUTE,
+         queryData);
    }
 
-   public CancellableCallable<ResultSet<ReadableArtifact>> createSearch(SessionContext sessionContext, CriteriaSet criteriaSet, QueryOptions options) {
-      return new SearchCallable(logger, queryEngine, objectLoader, sessionContext, LoadLevel.FULL, criteriaSet, options);
+   public CancellableCallable<ResultSet<ReadableArtifact>> createSearch(SessionContext sessionContext, QueryData queryData) {
+      return new SearchCallable(logger, queryEngine, collector, objectLoader, sessionContext, LoadLevel.FULL, queryData);
    }
 
-   public CancellableCallable<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> createSearchWithMatches(SessionContext sessionContext, CriteriaSet criteriaSet, QueryOptions options) {
-      return new SearchMatchesCallable(logger, queryEngine, objectLoader, sessionContext, LoadLevel.FULL, criteriaSet,
-         options);
+   public CancellableCallable<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> createSearchWithMatches(SessionContext sessionContext, QueryData queryData) {
+      return new SearchMatchesCallable(logger, queryEngine, collector, objectLoader, sessionContext, LoadLevel.FULL,
+         queryData);
    }
 }

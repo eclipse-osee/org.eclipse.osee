@@ -14,11 +14,11 @@ import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.CriteriaSet;
+import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.internal.OrcsObjectLoader;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
+import org.eclipse.osee.orcs.core.internal.search.QueryCollector;
 
 /**
  * @author Roberto E. Escobar
@@ -31,18 +31,18 @@ public abstract class AbstractSearchCallable<T> extends CancellableCallable<T> {
 
    protected final SessionContext sessionContext;
    protected final LoadLevel loadLevel;
-   protected final CriteriaSet criteriaSet;
-   protected final QueryOptions options;
+   protected final QueryData queryData;
+   private final QueryCollector collector;
 
-   public AbstractSearchCallable(Log logger, QueryEngine queryEngine, OrcsObjectLoader objectLoader, SessionContext sessionContext, LoadLevel loadLevel, CriteriaSet criteriaSet, QueryOptions options) {
+   public AbstractSearchCallable(Log logger, QueryEngine queryEngine, QueryCollector collector, OrcsObjectLoader objectLoader, SessionContext sessionContext, LoadLevel loadLevel, QueryData queryData) {
       super();
       this.logger = logger;
       this.queryEngine = queryEngine;
+      this.collector = collector;
       this.objectLoader = objectLoader;
       this.sessionContext = sessionContext;
       this.loadLevel = loadLevel;
-      this.criteriaSet = criteriaSet;
-      this.options = options;
+      this.queryData = queryData;
    }
 
    protected Log getLogger() {
@@ -51,19 +51,36 @@ public abstract class AbstractSearchCallable<T> extends CancellableCallable<T> {
 
    @Override
    public final T call() throws Exception {
-      long startTime = 0;
-      if (logger.isTraceEnabled()) {
-         startTime = System.currentTimeMillis();
+      long startTime = System.currentTimeMillis();
+      long endTime = startTime;
+      T result = null;
+      try {
+         result = innerCall();
+      } finally {
+         endTime = System.currentTimeMillis() - startTime;
       }
-
-      T result = innerCall();
-
+      if (result != null) {
+         notifyStats(result, endTime);
+      }
       if (logger.isTraceEnabled()) {
-         logger.trace("Search [%s] completed in [%s]\n\tCriteria - [%s]\n\tOptions  - [%s]",
-            getClass().getSimpleName(), Lib.getElapseString(startTime), criteriaSet, options);
+         logger.trace("Search [%s] completed in [%s]\n\t[%s]", getClass().getSimpleName(), Lib.asTimeString(endTime),
+            queryData);
       }
       return result;
    }
+
+   private void notifyStats(T result, long processingTime) {
+      if (collector != null) {
+         try {
+            int itemsFound = getCount(result);
+            collector.collect(sessionContext.getSessionId(), itemsFound, processingTime, queryData);
+         } catch (Exception ex) {
+            logger.error(ex, "Error reporting search to search collector\n%s", queryData);
+         }
+      }
+   }
+
+   protected abstract int getCount(T results) throws Exception;
 
    protected abstract T innerCall() throws Exception;
 }

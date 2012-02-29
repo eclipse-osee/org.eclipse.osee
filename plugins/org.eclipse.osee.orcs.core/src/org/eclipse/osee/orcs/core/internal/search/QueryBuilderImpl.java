@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.CriteriaSet;
+import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
@@ -44,19 +44,25 @@ import org.eclipse.osee.orcs.search.StringOperator;
  */
 public class QueryBuilderImpl implements QueryBuilder {
 
-   private final CallableQueryFactory queryExecutor;
+   private final CallableQueryFactory queryFactory;
    private final CriteriaFactory criteriaFactory;
 
    private final SessionContext sessionContext;
-   private final CriteriaSet criteriaSet;
-   private final QueryOptions options;
+   private final QueryData queryData;
 
-   public QueryBuilderImpl(CallableQueryFactory queryExecutor, CriteriaFactory criteriaFactory, SessionContext sessionContext, CriteriaSet criteriaSet, QueryOptions options) {
-      this.queryExecutor = queryExecutor;
+   public QueryBuilderImpl(CallableQueryFactory queryFactory, CriteriaFactory criteriaFactory, SessionContext sessionContext, QueryData queryData) {
+      this.queryFactory = queryFactory;
       this.criteriaFactory = criteriaFactory;
       this.sessionContext = sessionContext;
-      this.criteriaSet = criteriaSet;
-      this.options = options;
+      this.queryData = queryData;
+   }
+
+   private QueryData getQueryData() {
+      return queryData;
+   }
+
+   private QueryOptions getOptions() {
+      return queryData.getOptions();
    }
 
    @Override
@@ -67,13 +73,13 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public QueryBuilder includeCache(boolean enabled) {
-      options.setIncludeCache(enabled);
+      getOptions().setIncludeCache(enabled);
       return this;
    }
 
    @Override
    public boolean isCacheIncluded() {
-      return options.isCacheIncluded();
+      return getOptions().isCacheIncluded();
    }
 
    @Override
@@ -84,13 +90,13 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public QueryBuilder includeDeleted(boolean enabled) {
-      options.setIncludeDeleted(enabled);
+      getOptions().setIncludeDeleted(enabled);
       return this;
    }
 
    @Override
    public boolean areDeletedIncluded() {
-      return options.areDeletedIncluded();
+      return getOptions().areDeletedIncluded();
    }
 
    @Override
@@ -101,35 +107,35 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public QueryBuilder includeTypeInheritance(boolean enabled) {
-      options.setIncludeTypeInheritance(enabled);
+      getOptions().setIncludeTypeInheritance(enabled);
       return this;
    }
 
    @Override
    public boolean isTypeInheritanceIncluded() {
-      return options.isTypeInheritanceIncluded();
+      return getOptions().isTypeInheritanceIncluded();
    }
 
    @Override
    public QueryBuilder fromTransaction(int transactionId) {
-      options.setFromTransaction(transactionId);
+      getOptions().setFromTransaction(transactionId);
       return this;
    }
 
    @Override
    public int getFromTransaction() {
-      return options.getFromTransaction();
+      return getOptions().getFromTransaction();
    }
 
    @Override
    public QueryBuilder headTransaction() {
-      options.setHeadTransaction();
+      getOptions().setHeadTransaction();
       return this;
    }
 
    @Override
    public boolean isHeadTransaction() {
-      return options.isHeadTransaction();
+      return getOptions().isHeadTransaction();
    }
 
    @Override
@@ -152,8 +158,7 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public QueryBuilder resetToDefaults() {
-      options.reset();
-      criteriaSet.reset();
+      getOptions().reset();
       return this;
    }
 
@@ -260,8 +265,8 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    private QueryBuilder addAndCheck(Criteria criteria) throws OseeCoreException {
-      criteria.checkValid(options);
-      criteriaSet.add(criteria);
+      criteria.checkValid(getOptions());
+      getQueryData().addCriteria(criteria);
       return this;
    }
 
@@ -319,16 +324,16 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public CancellableCallable<Integer> createCount() {
-      return queryExecutor.createCount(sessionContext, criteriaSet.clone(), options.clone());
+      return queryFactory.createCount(sessionContext, getQueryData().clone());
    }
 
    @Override
    public CancellableCallable<ResultSet<ReadableArtifact>> createSearch() {
-      return queryExecutor.createSearch(sessionContext, criteriaSet.clone(), options.clone());
+      return queryFactory.createSearch(sessionContext, getQueryData().clone());
    }
 
    @Override
    public CancellableCallable<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> createSearchWithMatches() {
-      return queryExecutor.createSearchWithMatches(sessionContext, criteriaSet.clone(), options.clone());
+      return queryFactory.createSearchWithMatches(sessionContext, getQueryData().clone());
    }
 }

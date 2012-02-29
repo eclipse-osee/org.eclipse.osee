@@ -98,7 +98,7 @@ public class MockArtifact implements ReadableArtifact {
    }
 
    @Override
-   public int getGammaId() {
+   public long getGammaId() {
       return 0;
    }
 

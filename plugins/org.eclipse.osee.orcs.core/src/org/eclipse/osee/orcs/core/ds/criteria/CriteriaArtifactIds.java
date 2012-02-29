@@ -37,4 +37,9 @@ public class CriteriaArtifactIds extends Criteria {
    public Collection<Integer> getIds() {
       return ids;
    }
+
+   @Override
+   public String toString() {
+      return "CriteriaArtifactIds [ids=" + ids + "]";
+   }
 }

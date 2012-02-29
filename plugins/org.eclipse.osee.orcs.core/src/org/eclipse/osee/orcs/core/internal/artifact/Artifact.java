@@ -60,7 +60,7 @@ public class Artifact extends NamedIdentity<String> implements ReadableArtifact 
    }
 
    @Override
-   public int getGammaId() {
+   public long getGammaId() {
       return gammaId;
    }
 

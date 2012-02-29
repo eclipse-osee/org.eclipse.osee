@@ -286,7 +286,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Writable
    }
 
    @Override
-   public int getGammaId() {
+   public long getGammaId() {
       return gammaId;
    }
 

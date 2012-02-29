@@ -12,4 +12,6 @@
    <reference bind="setDataStoreTypeCache" cardinality="1..1" interface="org.eclipse.osee.orcs.DataStoreTypeCache" name="DataStoreTypeCache" policy="static"/>
    <reference bind="setBranchDataStore" cardinality="1..1" interface="org.eclipse.osee.orcs.core.ds.BranchDataStore" name="BranchDataStore" policy="static"/>
    <reference bind="setDataStoreAdmin" cardinality="1..1" interface="org.eclipse.osee.orcs.core.ds.DataStoreAdmin" name="DataStoreAdmin" policy="static"/>
+   <reference bind="setExecutorAdmin" cardinality="1..1" interface="org.eclipse.osee.executor.admin.ExecutorAdmin" name="ExecutorAdmin" policy="static"/>
+   <reference bind="setSystemPreferences" cardinality="1..1" interface="org.eclipse.osee.orcs.core.SystemPreferences" name="SystemPreferences" policy="static"/>
 </scr:component>

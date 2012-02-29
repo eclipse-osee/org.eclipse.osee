@@ -38,4 +38,9 @@ public class CriteriaAttributeTypeExists extends Criteria {
       super.checkValid(options);
       Conditions.checkNotNullOrEmpty(getTypes(), "attribute types");
    }
+
+   @Override
+   public String toString() {
+      return "CriteriaAttributeTypeExists [attributeTypes=" + attributeTypes + "]";
+   }
 }

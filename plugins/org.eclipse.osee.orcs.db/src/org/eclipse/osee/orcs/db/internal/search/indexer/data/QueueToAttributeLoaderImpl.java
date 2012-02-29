@@ -1,0 +1,97 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.orcs.db.internal.search.indexer.data;
+
+import java.util.Collection;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
+import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.db.internal.search.indexer.IndexerConstants;
+import org.eclipse.osee.orcs.db.internal.search.indexer.QueueToAttributeLoader;
+
+/**
+ * @author Roberto E. Escobar
+ */
+public class QueueToAttributeLoaderImpl implements QueueToAttributeLoader {
+   private static final String LOAD_ATTRIBUTE =
+      "SELECT attr1.gamma_id, attr1.VALUE, attr1.uri, attr1.attr_type_id, attr1.attr_id FROM osee_attribute attr1, osee_tag_gamma_queue tgq1 WHERE attr1.gamma_id = tgq1.gamma_id AND tgq1.query_id = ?";
+
+   private final Log logger;
+   private final IOseeDatabaseService dbService;
+   private final AttributeTypeCache cache;
+   private final IResourceManager resourceManager;
+   private final IResourceLocatorManager locatorManager;
+
+   public QueueToAttributeLoaderImpl(Log logger, IOseeDatabaseService dbService, AttributeTypeCache cache, IResourceManager resourceManager, IResourceLocatorManager locatorManager) {
+      super();
+      this.logger = logger;
+      this.dbService = dbService;
+      this.cache = cache;
+      this.resourceManager = resourceManager;
+      this.locatorManager = locatorManager;
+   }
+
+   private IOseeDatabaseService getDatabaseService() {
+      return dbService;
+   }
+
+   private AttributeTypeCache getAttributeCache() {
+      return cache;
+   }
+
+   private IResourceManager getResourceManager() {
+      return resourceManager;
+   }
+
+   private IResourceLocatorManager getLocatorManager() {
+      return locatorManager;
+   }
+
+   private void loadAttributeData(Collection<ReadableAttribute<?>> attributeDatas, OseeConnection connection, int tagQueueQueryId) throws OseeCoreException {
+      IOseeStatement chStmt = getDatabaseService().getStatement(connection);
+      try {
+         chStmt.runPreparedQuery(LOAD_ATTRIBUTE, tagQueueQueryId);
+         AttributeTypeCache typeCache = getAttributeCache();
+         while (chStmt.next()) {
+            AttributeType attributeType = typeCache.getById(chStmt.getInt("attr_type_id"));
+            attributeDatas.add(new AttributeData(getResourceManager(), getLocatorManager(), chStmt.getInt("attr_id"),
+               chStmt.getLong("gamma_id"), attributeType, chStmt.getString("value"), chStmt.getString("uri")));
+         }
+      } finally {
+         chStmt.close();
+      }
+   }
+
+   @Override
+   public void loadAttributes(OseeConnection connection, int tagQueueQueryId, Collection<ReadableAttribute<?>> attributeDatas) throws OseeCoreException {
+      loadAttributeData(attributeDatas, connection, tagQueueQueryId);
+
+      // Re-try in case query id hasn't been committed to the database
+      int retry = 0;
+      while (attributeDatas.isEmpty() && retry < IndexerConstants.INDEX_QUERY_ID_LOADER_TOTAL_RETRIES) {
+         try {
+            Thread.sleep(2000);
+         } catch (InterruptedException ex) {
+            // Do Nothing
+         }
+         logger.debug("Retrying attribute load from gammas - queryId[%s] attempt[%s]", tagQueueQueryId, retry);
+         loadAttributeData(attributeDatas, connection, tagQueueQueryId);
+         retry++;
+      }
+   }
+}

@@ -11,19 +11,15 @@
 package org.eclipse.osee.orcs.db.internal.search.tagger;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.db.internal.search.util.WordOrderMatcher;
-import org.eclipse.osee.orcs.search.CaseType;
 
 /**
  * @author Roberto E. Escobar
@@ -82,13 +78,13 @@ public class TaggingEngine {
       return tagger;
    }
 
-   public void tagIt(ReadableAttribute<?> attribute, TagCollector collector) throws OseeCoreException {
-      Tagger tagger = getTagger(attribute.getAttributeType());
-      tagger.tagIt(attribute, collector);
-   }
-
-   public List<MatchLocation> find(ReadableAttribute<?> attribute, String toSearch, CaseType caseType, boolean matchAllLocations) throws OseeCoreException {
-      Tagger tagger = getTagger(attribute.getAttributeType());
-      return tagger.find(attribute, toSearch, caseType, matchAllLocations);
-   }
+   //   public void tagIt(ReadableAttribute<?> attribute, TagCollector collector) throws OseeCoreException {
+   //      Tagger tagger = getTagger(attribute.getAttributeType());
+   //      tagger.tagIt(attribute, collector);
+   //   }
+   //
+   //   public List<MatchLocation> find(ReadableAttribute<?> attribute, String toSearch, CaseType caseType, boolean matchAllLocations) throws OseeCoreException {
+   //      Tagger tagger = getTagger(attribute.getAttributeType());
+   //      return tagger.find(attribute, toSearch, caseType, matchAllLocations);
+   //   }
 }

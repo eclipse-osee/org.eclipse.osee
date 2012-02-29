@@ -27,4 +27,5 @@ public interface QueryFactory {
    QueryBuilder fromArtifactTypeAllBranches(IArtifactType artifactType) throws OseeCoreException;
 
    QueryBuilder fromArtifacts(Collection<? extends ReadableArtifact> artifacts) throws OseeCoreException;
+
 }

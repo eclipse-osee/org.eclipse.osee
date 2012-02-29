@@ -45,7 +45,7 @@ public class CacheUpdateCommand implements ConsoleCommand {
 
    @Override
    public String getName() {
-      return "update_cache";
+      return "cache_update";
    }
 
    @Override

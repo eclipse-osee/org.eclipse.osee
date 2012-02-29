@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.orcs.search.QueryFacade;
 import org.eclipse.osee.orcs.search.QueryFactory;
+import org.eclipse.osee.orcs.search.QueryIndexer;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 
 /**
@@ -20,6 +21,8 @@ import org.eclipse.osee.orcs.transaction.TransactionFactory;
  * @author Roberto E. Escobar
  */
 public interface OrcsApi {
+
+   QueryIndexer getQueryIndexer(ApplicationContext context);
 
    QueryFactory getQueryFactory(ApplicationContext context);
 
@@ -32,6 +35,8 @@ public interface OrcsApi {
    OrcsAdmin getAdminOps(ApplicationContext context);
 
    TransactionFactory getTransactionFactory(ApplicationContext context);
+
+   OrcsPerformance getOrcsPerformance(ApplicationContext context);
 
    // TODO remove this call
    BranchCache getBranchCache();

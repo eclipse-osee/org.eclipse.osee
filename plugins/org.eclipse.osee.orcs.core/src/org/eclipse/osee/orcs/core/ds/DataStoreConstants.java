@@ -20,4 +20,6 @@ public final class DataStoreConstants {
    }
 
    public static final String DATASTORE_ID_KEY = "osee.db.guid";
+   public static final String DATASTORE_INDEX_ON_START_UP = "osee.check.tag.queue.on.startup";
+
 }

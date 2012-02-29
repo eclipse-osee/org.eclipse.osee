@@ -21,7 +21,6 @@ import org.eclipse.osee.logger.Log;
 public class OseeServerProperties {
    private static final String OSEE_APPLICATION_SERVER_DATA = "osee.application.server.data";
    private static final String OSGI_PORT_PROPERTY = "org.osgi.service.http.port";
-   private static final String CHECK_TAG_QUEUE_ON_START_UP = "osee.check.tag.queue.on.startup";
    private static final String OSEE_VERSION = "osee.version";
 
    private static boolean wasBinaryDataChecked = false;
@@ -83,15 +82,6 @@ public class OseeServerProperties {
     */
    public static int getOseeApplicationServerPort() {
       return Integer.valueOf(System.getProperty(OSGI_PORT_PROPERTY, "-1"));
-   }
-
-   /**
-    * Check Tag Queue on start up. Entries found in the tag queue are tagged by the server on start up.
-    * 
-    * @return whether tag queue should be checked upon server start-up.
-    */
-   public static boolean isCheckTagQueueOnStartupAllowed() {
-      return Boolean.valueOf(System.getProperty(CHECK_TAG_QUEUE_ON_START_UP, "false"));
    }
 
    /**

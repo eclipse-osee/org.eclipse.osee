@@ -59,4 +59,9 @@ public class CriteriaAttributeKeyword extends Criteria {
       Conditions.checkNotNullOrEmpty(getValue(), "search value");
    }
 
+   @Override
+   public String toString() {
+      return "CriteriaAttributeKeyword [attributeType=" + attributeType + ", value=" + value + ", stringOp=" + stringOp + ", match=" + match + "]";
+   }
+
 }

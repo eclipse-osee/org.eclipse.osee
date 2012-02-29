@@ -58,10 +58,10 @@ public class DataStoreAdminImpl implements DataStoreAdmin {
 
    @Override
    public Callable<DataStoreInfo> createDataStore(String sessionId, Map<String, String> parameters) {
-      String tableDataSpace = getOption(parameters, DataStoreConstants.SCHEMA_TABLE_DATA_NAMESPACE, "");
-      String indexDataSpace = getOption(parameters, DataStoreConstants.SCHEMA_INDEX_DATA_NAMESPACE, "");
+      String tableDataSpace = getOption(parameters, DataStoreConfigConstants.SCHEMA_TABLE_DATA_NAMESPACE, "");
+      String indexDataSpace = getOption(parameters, DataStoreConfigConstants.SCHEMA_INDEX_DATA_NAMESPACE, "");
       boolean useFileSpecifiedSchemas =
-         getOption(parameters, DataStoreConstants.SCHEMA_USER_FILE_SPECIFIED_NAMESPACE, false);
+         getOption(parameters, DataStoreConfigConstants.SCHEMA_USER_FILE_SPECIFIED_NAMESPACE, false);
 
       SchemaResourceProvider schemaProvider = new DynamicSchemaResourceProvider(logger);
 
