@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.dsl.integration.util.OseeUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactPredicate;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactTypePredicate;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeMatch;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypePredicate;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
@@ -107,7 +106,7 @@ public class RelationTypeRestrictionHandler implements RestrictionHandler<Relati
    private Collection<RelationType> getRelationTypes(ArtifactProxy artifactProxy, RelationTypeRestriction restriction) throws OseeCoreException {
       Collection<RelationType> types;
 
-      if (RelationTypeMatch.ALL == restriction.getRelationTypeMatch()) {
+      if (restriction.eIsSet(restriction.eClass().getEStructuralFeature("relationTypeMatch"))) {
          types = artifactProxy.getValidRelationTypes();
       } else {
          XRelationType xRelationType = restriction.getRelationTypeRef();
