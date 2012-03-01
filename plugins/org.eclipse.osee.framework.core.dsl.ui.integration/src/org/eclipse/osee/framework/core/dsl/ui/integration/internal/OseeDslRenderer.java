@@ -162,4 +162,9 @@ public final class OseeDslRenderer extends FileSystemRenderer {
       }
       return op;
    }
+
+   @Override
+   public int minimumRanking() {
+      return GENERAL_MATCH;
+   }
 }
