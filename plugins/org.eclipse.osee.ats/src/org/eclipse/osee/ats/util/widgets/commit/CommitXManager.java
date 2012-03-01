@@ -83,8 +83,9 @@ public class CommitXManager extends XViewer {
          Object firstSelectedArt = getSelectedArtifacts().iterator().next();
          Branch branch = null;
          String displayName = "";
+         ICommitConfigArtifact configArt = null;
          if (firstSelectedArt instanceof ICommitConfigArtifact) {
-            ICommitConfigArtifact configArt = (ICommitConfigArtifact) firstSelectedArt;
+            configArt = (ICommitConfigArtifact) firstSelectedArt;
             branch = configArt.getParentBranch();
             displayName = configArt.toString();
          } else if (firstSelectedArt instanceof TransactionRecord) {
@@ -95,7 +96,8 @@ public class CommitXManager extends XViewer {
             throw new OseeArgumentException("Unhandled element type [%s]", firstSelectedArt.getClass().toString());
          }
 
-         CommitStatus commitStatus = AtsBranchManagerCore.getCommitStatus(xCommitManager.getTeamArt(), branch);
+         CommitStatus commitStatus =
+            AtsBranchManagerCore.getCommitStatus(xCommitManager.getTeamArt(), branch, configArt);
          if (commitStatus == CommitStatus.Working_Branch_Not_Created) {
             AWorkbench.popup(commitStatus.getDisplayName(), "Need to create a working branch");
          } else if (commitStatus == CommitStatus.No_Commit_Needed) {
