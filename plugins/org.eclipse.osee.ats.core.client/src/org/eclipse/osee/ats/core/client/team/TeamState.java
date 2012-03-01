@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.core.client.team;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.util.WorkPageAdapter;
-import org.eclipse.osee.framework.core.util.WorkPageType;
+import org.eclipse.osee.ats.core.workflow.WorkPageAdapter;
+import org.eclipse.osee.ats.core.workflow.WorkPageType;
 
 public class TeamState extends WorkPageAdapter {
    public static TeamState Endorse = new TeamState("Endorse", WorkPageType.Working);

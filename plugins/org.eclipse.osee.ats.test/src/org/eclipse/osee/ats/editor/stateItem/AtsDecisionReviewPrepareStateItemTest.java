@@ -18,12 +18,11 @@ import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.workflow.IWorkPage;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
-import org.eclipse.osee.framework.core.util.IWorkPage;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -77,7 +76,7 @@ public class AtsDecisionReviewPrepareStateItemTest {
       // make call to state item that should set options based on artifact's attribute value
       AtsDecisionReviewPrepareStateItem stateItem = new AtsDecisionReviewPrepareStateItem();
       TransitionResults results = new TransitionResults();
-      stateItem.transitioning(results, decRevArt, fromState, toState, Arrays.asList((IBasicUser) UserManager.getUser()));
+      stateItem.transitioning(results, decRevArt, fromState, toState, Arrays.asList(AtsUsers.getUser()));
 
       // verify no errors
       Assert.assertTrue(results.toString(), results.isEmpty());
@@ -86,7 +85,7 @@ public class AtsDecisionReviewPrepareStateItemTest {
       decisionOptionStr = decisionOptionStr.replaceFirst("Completed", "NoState");
       decRevArt.setSoleAttributeValue(AtsAttributeTypes.DecisionReviewOptions, decisionOptionStr);
       decRevArt.persist(getClass().getSimpleName());
-      stateItem.transitioning(results, decRevArt, fromState, toState, Arrays.asList((IBasicUser) UserManager.getUser()));
+      stateItem.transitioning(results, decRevArt, fromState, toState, Arrays.asList(AtsUsers.getUser()));
       Assert.assertTrue(results.contains("Invalid Decision Option"));
 
    }

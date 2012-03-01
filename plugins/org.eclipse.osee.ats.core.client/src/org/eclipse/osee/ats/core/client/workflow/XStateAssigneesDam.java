@@ -17,13 +17,13 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.workflow.IWorkPage;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 
 /**
@@ -61,7 +61,7 @@ public abstract class XStateAssigneesDam {
       smaState.setPercentComplete(percentComplete);
       setState(smaState);
       if (logMetrics) {
-         logMetrics(state, UserManager.getUser(), new Date());
+         logMetrics(state, AtsUsers.getUser(), new Date());
       }
    }
 
@@ -78,7 +78,6 @@ public abstract class XStateAssigneesDam {
       }
    }
 
-   public void setMetrics(IWorkPage state, double hours, int percentComplete, boolean logMetrics, User user, Date date) throws OseeCoreException {
       SMAState currState = getState(state, false);
       currState.setHoursSpent(hours);
       currState.setPercentComplete(percentComplete);
@@ -101,7 +100,7 @@ public abstract class XStateAssigneesDam {
       }
    }
 
-   protected void logMetrics(IWorkPage state, User user, Date date) throws OseeCoreException {
+   protected void logMetrics(IWorkPage state, IAtsUser user, Date date) throws OseeCoreException {
       String hoursSpent = AtsUtilCore.doubleToI18nString(HoursSpentUtil.getHoursSpentTotal(awa));
       XCurrentStateDam.logMetrics(awa, PercentCompleteTotalUtil.getPercentCompleteTotal(awa) + "", hoursSpent, state,
          user, date);

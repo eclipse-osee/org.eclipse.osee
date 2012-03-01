@@ -13,8 +13,12 @@ package org.eclipse.osee.ats.core.client.config;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -31,8 +35,12 @@ public class ActionableItemArtifact extends Artifact {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
-   public Collection<User> getLeads() throws OseeCoreException {
-      return getRelatedArtifacts(AtsRelationTypes.ActionableItemLead_Lead, User.class);
+   public Collection<IAtsUser> getLeads() throws OseeCoreException {
+      List<IAtsUser> leads = new LinkedList<IAtsUser>();
+      for (User user : getRelatedArtifacts(AtsRelationTypes.ActionableItemLead_Lead, User.class)) {
+         leads.add(AtsUsers.getUser(user.getUserId()));
+      }
+      return leads;
    }
 
    public boolean isActionable() throws OseeCoreException {

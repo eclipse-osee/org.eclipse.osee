@@ -23,8 +23,10 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.version.VersionLockedType;
 import org.eclipse.osee.ats.core.client.version.VersionReleaseType;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.task.ITaskEditorProvider;
 import org.eclipse.osee.ats.task.TaskEditor;
@@ -105,7 +107,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
       Artifact verArt = getSelectedVersionArtifact();
       Collection<Artifact> groups = getSelectedGroups();
-      User user = getSelectedUser();
+      IAtsUser user = getSelectedUser();
 
       // If user selected, handle that case separately cause it's faster to start with assigned
       if (user != null) {
@@ -348,11 +350,11 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       }
    }
 
-   private User getSelectedUser() {
+   private IAtsUser getSelectedUser() throws OseeCoreException {
       if (assigneeCombo == null) {
          return null;
       }
-      return assigneeCombo.getUser();
+      return AtsUsers.getUserFromOseeUser(assigneeCombo.getUser());
    }
 
    public void setSelectedUser(User user) {

@@ -21,8 +21,8 @@ import org.eclipse.osee.ats.core.validator.WidgetStatus;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
 import org.eclipse.osee.ats.core.workdef.WidgetOption;
+import org.eclipse.osee.ats.core.workflow.WorkPageType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.util.WorkPageType;
 
 /**
  * @author Donald G. Dunne

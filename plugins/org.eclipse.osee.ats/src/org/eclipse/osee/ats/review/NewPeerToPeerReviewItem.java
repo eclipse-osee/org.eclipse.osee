@@ -16,13 +16,13 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.ActionableItemListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -51,7 +51,7 @@ public class NewPeerToPeerReviewItem extends XNavigateItemAction {
                SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "New Peer To Peer Review");
                PeerToPeerReviewArtifact peerArt =
                   PeerToPeerReviewManager.createNewPeerToPeerReview(null, ed.getEntry(), null, new Date(),
-                     UserManager.getUser(), transaction);
+                     AtsUsers.getUser(), transaction);
                peerArt.getActionableItemsDam().setActionableItems(ld.getSelected());
                peerArt.persist(transaction);
                AtsUtil.openATSAction(peerArt, AtsOpenOption.OpenAll);

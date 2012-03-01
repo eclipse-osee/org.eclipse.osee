@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelperAdap
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionToOperation;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.Activator;
@@ -39,7 +40,6 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench.MessageType;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -177,7 +177,7 @@ public class TransitionToMenu {
          }
 
          @Override
-         public Collection<User> getToAssignees() {
+         public Collection<? extends IAtsUser> getToAssignees() {
             return Collections.emptyList();
          }
 

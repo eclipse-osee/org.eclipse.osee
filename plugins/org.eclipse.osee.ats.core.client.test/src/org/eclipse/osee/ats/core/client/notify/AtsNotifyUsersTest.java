@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager.ConfigurationProvider;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.util.SubscribeManager;
 import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
@@ -30,7 +31,6 @@ import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -98,11 +98,11 @@ public class AtsNotifyUsersTest {
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       teamArt.setName(AtsNotifyUsersTest.class.getSimpleName());
-      teamArt.internalSetCreatedBy(kay_ValidEmail);
-      List<IBasicUser> assignees = new ArrayList<IBasicUser>();
+      teamArt.internalSetCreatedBy(AtsUsers.getUserFromOseeUser(kay_ValidEmail));
+      List<User> assignees = new ArrayList<User>();
       assignees.addAll(Arrays.asList(inactiveSteve, alex_NoValidEmail, jason_ValidEmail, kay_ValidEmail,
          joeSmith_CurrentUser));
-      teamArt.getStateMgr().setAssignees(assignees);
+      teamArt.getStateMgr().setAssignees(AtsUsers.getAtsUsers(assignees));
       teamArt.persist(transaction);
       transaction.execute();
 
@@ -117,11 +117,11 @@ public class AtsNotifyUsersTest {
          event.getDescription());
 
       notifyManager.clear();
-      teamArt.internalSetCreatedBy(inactiveSteve);
+      teamArt.internalSetCreatedBy(AtsUsers.getUserFromOseeUser(inactiveSteve));
       teamArt.persist(getClass().getSimpleName());
       AtsNotificationManager.notify(teamArt, AtsNotifyType.Originator);
       Assert.assertEquals(0, notifyManager.getNotificationEvents().size());
-      teamArt.internalSetCreatedBy(kay_ValidEmail);
+      teamArt.internalSetCreatedBy(AtsUsers.getUserFromOseeUser(kay_ValidEmail));
       teamArt.persist(getClass().getSimpleName());
 
       notifyManager.clear();
@@ -131,10 +131,10 @@ public class AtsNotifyUsersTest {
       Assert.assertEquals(AtsNotifyType.Assigned.name(), event.getType());
       // joe smith should be removed from list cause it's current user
       // alex should be removed cause not valid email
-      List<IBasicUser> expected = new ArrayList<IBasicUser>();
+      List<User> expected = new ArrayList<User>();
       expected.add(jason_ValidEmail);
       expected.add(kay_ValidEmail);
-      List<IBasicUser> users = new ArrayList<IBasicUser>();
+      List<User> users = new ArrayList<User>();
       users.addAll(event.getUsers());
       Assert.assertTrue(org.eclipse.osee.framework.jdk.core.util.Collections.isEqual(expected, users));
       Assert.assertEquals(
@@ -142,13 +142,14 @@ public class AtsNotifyUsersTest {
          event.getDescription());
 
       notifyManager.clear();
-      AtsNotificationManager.notify(teamArt, Collections.singleton((IBasicUser) jason_ValidEmail),
+      AtsNotificationManager.notify(teamArt, Collections.singleton(AtsUsers.getUserFromOseeUser(jason_ValidEmail)),
          AtsNotifyType.Assigned);
       Assert.assertEquals(1, notifyManager.getNotificationEvents().size());
       event = notifyManager.getNotificationEvents().get(0);
       Assert.assertEquals(AtsNotifyType.Assigned.name(), event.getType());
       // only alex should be emailed cause sent in list
-      Assert.assertEquals(Collections.singleton(jason_ValidEmail), event.getUsers());
+      Assert.assertEquals(1, event.getUsers().size());
+      Assert.assertEquals(jason_ValidEmail, event.getUsers().iterator().next());
       Assert.assertEquals(
          "You have been set as the assignee of [Team Workflow] in state [Analyze] titled [AtsNotifyUsersTest]",
          event.getDescription());
@@ -157,7 +158,7 @@ public class AtsNotifyUsersTest {
       SubscribeManager.toggleSubscribe(teamArt);
       transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "AtsNotifyUsersTests.toggle.subscribed");
-      SubscribeManager.addSubscribed(teamArt, inactiveSteve, transaction);
+      SubscribeManager.addSubscribed(teamArt, AtsUsers.getUserFromOseeUser(inactiveSteve), transaction);
       transaction.execute();
       AtsNotificationManager.notify(teamArt, AtsNotifyType.Subscribed);
       Assert.assertEquals(1, notifyManager.getNotificationEvents().size());
@@ -182,12 +183,12 @@ public class AtsNotifyUsersTest {
       Assert.assertEquals("[Team Workflow] titled [AtsNotifyUsersTest] is [Completed]", event.getDescription());
 
       notifyManager.clear();
-      teamArt.internalSetCreatedBy(inactiveSteve);
+      teamArt.internalSetCreatedBy(AtsUsers.getUserFromOseeUser(inactiveSteve));
       teamArt.persist(getClass().getSimpleName());
       teamArt.getStateMgr().initializeStateMachine(TeamState.Completed, null);
       AtsNotificationManager.notify(teamArt, AtsNotifyType.Completed);
       Assert.assertEquals(0, notifyManager.getNotificationEvents().size());
-      teamArt.internalSetCreatedBy(kay_ValidEmail);
+      teamArt.internalSetCreatedBy(AtsUsers.getUserFromOseeUser(kay_ValidEmail));
       teamArt.persist(getClass().getSimpleName());
 
       notifyManager.clear();
@@ -227,7 +228,7 @@ public class AtsNotifyUsersTest {
       ActionManager.createAction(null, getClass().getSimpleName() + "-OnNewAction", "Description",
          ChangeType.Improvement, "2", false, null,
          ActionableItemManagerCore.getActionableItems(Arrays.asList(DemoActionableItems.SAW_SW_Design.getName())),
-         new Date(), UserManager.getUser(), null, transaction);
+         new Date(), AtsUsers.getUser(), null, transaction);
       transaction.execute();
 
       Assert.assertEquals(1, notifyManager.getNotificationEvents().size());

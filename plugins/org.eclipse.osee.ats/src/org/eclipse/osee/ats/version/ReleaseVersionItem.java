@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.version.VersionArtifact;
 import org.eclipse.osee.ats.core.client.version.VersionLockedType;
@@ -29,7 +30,6 @@ import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -70,7 +70,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
 
             // Validate team lead status
             if (!AtsUtilCore.isAtsAdmin() && !verArt.getParentTeamDefinition().getLeads().contains(
-               UserManager.getUser())) {
+               AtsUsers.getUser())) {
                AWorkbench.popup("ERROR", "Only lead can release version.");
                return;
             }

@@ -17,18 +17,18 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskStates;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.workflow.IWorkPage;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -132,7 +132,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
                         for (TaskArtifact taskArt : taskableArt.getTaskArtifacts(forState)) {
                            if (!taskArt.isCompletedOrCancelled()) {
                               if (taskArt.getStateMgr().isUnAssigned()) {
-                                 taskArt.getStateMgr().setAssignee(UserManager.getUser());
+                                 taskArt.getStateMgr().setAssignee(AtsUsers.getUser());
                               }
                               TransitionHelper helper =
                                  new TransitionHelper("Transition to Completed", Arrays.asList(taskArt),

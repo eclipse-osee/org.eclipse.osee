@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import org.eclipse.osee.ats.core.client.AtsTestUtil;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -29,7 +28,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
@@ -44,12 +42,9 @@ import org.junit.Test;
  * @author Shawn F. Cook
  */
 public class AtsBranchManagerCoreTest {
-   private final Date todaysDate = new Date();
-   private static User user = null;
 
    @BeforeClass
    public static void setUp() throws Exception {
-      user = UserManager.getUser();
       OseeProperties.setIsInTest(true);
       TestUtil.setIsInTest(true);
       AtsTestUtil.cleanupAndReset("AtsBranchManagerCoreTest");
@@ -63,7 +58,7 @@ public class AtsBranchManagerCoreTest {
    }
 
    @Test
-   public void testGetCommitTransactionsAndConfigItemsForTeamWf() throws OseeCoreException, InterruptedException {
+   public void testGetCommitTransactionsAndConfigItemsForTeamWf() throws OseeCoreException {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
 
       //Test Version-based Team Arts

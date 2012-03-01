@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.actions.OpenChangeReportByIdAction;
 import org.eclipse.osee.ats.actions.OpenWorkflowByIdAction;
 import org.eclipse.osee.ats.actions.OpenWorldByIdAction;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.Activator;
@@ -44,7 +45,6 @@ import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateEventListener;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateEventManager;
@@ -237,7 +237,7 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
 
    private String getWhoAmI() {
       try {
-         String userName = UserManager.getUser().getName();
+         String userName = AtsUsers.getUser().getName();
          return String.format("%s - %s:%s", userName, ClientSessionManager.getDataStoreName(),
             ClientSessionManager.getDataStoreLoginName());
       } catch (Exception ex) {

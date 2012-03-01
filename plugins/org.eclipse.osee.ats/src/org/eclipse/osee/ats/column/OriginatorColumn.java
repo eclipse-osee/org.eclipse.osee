@@ -23,7 +23,9 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -33,7 +35,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
@@ -109,7 +110,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
       UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New Originator", Active.Active);
       int result = ld.open();
       if (result == 0) {
-         User selectedUser = ld.getSelection();
+         IAtsUser selectedUser = AtsUsers.getUserFromOseeUser(ld.getSelection());
          Date createdDate = new Date();
 
          for (AbstractWorkflowArtifact awa : awas) {
@@ -147,13 +148,13 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
       try {
          if (element instanceof AbstractWorkflowArtifact) {
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) element;
-            User origUser = UserManager.getUser(awa.getCreatedBy());
+            User origUser = AtsUsers.getOseeUser(awa.getCreatedBy());
             return FrameworkArtifactImageProvider.getUserImage(Arrays.asList(origUser));
          }
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<User> users = new HashSet<User>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
-               users.add(UserManager.getUser(team.getCreatedBy()));
+               users.add(AtsUsers.getOseeUser(team.getCreatedBy()));
             }
             return FrameworkArtifactImageProvider.getUserImage(users);
          }

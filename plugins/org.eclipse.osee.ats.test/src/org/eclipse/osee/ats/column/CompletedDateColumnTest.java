@@ -15,6 +15,7 @@ import java.util.Date;
 import org.eclipse.osee.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
@@ -23,7 +24,6 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -74,7 +74,7 @@ public class CompletedDateColumnTest {
 
       helper =
          new TransitionHelper("Transition to Endorse", Arrays.asList(teamArt), TeamState.Endorse.getPageName(),
-            Arrays.asList(UserManager.getUser()), null, TransitionOption.OverrideTransitionValidityCheck,
+            Arrays.asList(AtsUsers.getUser()), null, TransitionOption.OverrideTransitionValidityCheck,
             TransitionOption.OverrideAssigneeCheck);
       transitionMgr = new TransitionManager(helper);
       results = transitionMgr.handleAll();

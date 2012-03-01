@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.core.client.task.TaskManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.util.AtsCacheManager;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -47,7 +48,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
@@ -222,7 +222,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
          try {
             taskArt =
                ((AbstractTaskableArtifact) iXTaskViewer.getAwa()).createNewTask(ed.getEntry(), new Date(),
-                  UserManager.getUser());
+                  AtsUsers.getUser());
             taskArt.persist("Create New Task");
             AtsCacheManager.decache((AbstractTaskableArtifact) iXTaskViewer.getAwa());
          } catch (Exception ex) {

@@ -25,7 +25,8 @@ Require-Bundle: org.eclipse.gef,
  org.eclipse.nebula.widgets.xviewer,
  org.eclipse.birt.chart.engine,
  org.eclipse.search,
- org.eclipse.osee.ats.help.ui
+ org.eclipse.osee.ats.help.ui,
+ org.eclipse.osee.ats.core
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.ats,
  org.eclipse.osee.ats.access,
@@ -91,6 +92,7 @@ Import-Package: com.google.inject,
  org.eclipse.osee.ats.core.client.workflow.transition,
  org.eclipse.osee.ats.core.workdef,
  org.eclipse.osee.ats.core.workdef.provider,
+ org.eclipse.osee.ats.core.workflow,
  org.eclipse.osee.ats.dsl,
  org.eclipse.osee.ats.dsl.atsDsl,
  org.eclipse.osee.ats.dsl.atsDsl.impl,

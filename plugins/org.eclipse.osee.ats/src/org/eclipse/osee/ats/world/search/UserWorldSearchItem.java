@@ -21,12 +21,13 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
@@ -38,7 +39,7 @@ public class UserWorldSearchItem {
    private final Collection<TeamDefinitionArtifact> teamDefs;
    private final Collection<Artifact> versions;
    private final Collection<UserSearchOption> options;
-   private final User user;
+   private final IAtsUser user;
    private final String selectedState;
 
    public static enum UserSearchOption {
@@ -54,7 +55,7 @@ public class UserWorldSearchItem {
       IncludeTasks
    };
 
-   public UserWorldSearchItem(User user, Collection<TeamDefinitionArtifact> teamDefs, Collection<Artifact> versions, String selectedState, UserSearchOption... userSearchOption) {
+   public UserWorldSearchItem(IAtsUser user, Collection<TeamDefinitionArtifact> teamDefs, Collection<Artifact> versions, String selectedState, UserSearchOption... userSearchOption) {
       this.user = user;
       this.teamDefs = teamDefs;
       this.versions = versions;
@@ -127,11 +128,13 @@ public class UserWorldSearchItem {
    }
 
    private Collection<AbstractWorkflowArtifact> getSubscribedArtifacts() throws OseeCoreException {
-      return user.getRelatedArtifactsOfType(AtsRelationTypes.SubscribedUser_Artifact, AbstractWorkflowArtifact.class);
+      return AtsUsers.getOseeUser(user).getRelatedArtifactsOfType(AtsRelationTypes.SubscribedUser_Artifact,
+         AbstractWorkflowArtifact.class);
    }
 
    private Collection<AbstractWorkflowArtifact> getFavoritesArtifacts() throws OseeCoreException {
-      return user.getRelatedArtifactsOfType(AtsRelationTypes.FavoriteUser_Artifact, AbstractWorkflowArtifact.class);
+      return AtsUsers.getOseeUser(user).getRelatedArtifactsOfType(AtsRelationTypes.FavoriteUser_Artifact,
+         AbstractWorkflowArtifact.class);
    }
 
 }

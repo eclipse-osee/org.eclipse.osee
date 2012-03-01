@@ -18,16 +18,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.validator.ArtifactValueProvider;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.validator.IValueProvider;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -85,7 +84,7 @@ public class ReviewDefectManager {
       return defectItems;
    }
 
-   public int getNumMajor(User user) throws OseeCoreException {
+   public int getNumMajor(IAtsUser user) throws OseeCoreException {
       int x = 0;
       for (ReviewDefectItem dItem : getDefectItems()) {
          if (dItem.getSeverity() == Severity.Major && dItem.getUser() == user) {
@@ -95,7 +94,7 @@ public class ReviewDefectManager {
       return x;
    }
 
-   public int getNumMinor(User user) throws OseeCoreException {
+   public int getNumMinor(IAtsUser user) throws OseeCoreException {
       int x = 0;
       for (ReviewDefectItem dItem : getDefectItems()) {
          if (dItem.getSeverity() == Severity.Minor && dItem.getUser() == user) {
@@ -105,7 +104,7 @@ public class ReviewDefectManager {
       return x;
    }
 
-   public int getNumIssues(User user) throws OseeCoreException {
+   public int getNumIssues(IAtsUser user) throws OseeCoreException {
       int x = 0;
       for (ReviewDefectItem dItem : getDefectItems()) {
          if (dItem.getSeverity() == Severity.Issue && dItem.getUser() == user) {
@@ -213,12 +212,12 @@ public class ReviewDefectManager {
       StringBuilder builder = new StringBuilder();
       builder.append("<TABLE BORDER=\"1\" cellspacing=\"1\" cellpadding=\"3%\" width=\"100%\"><THEAD><TR><TH>Severity</TH>" + "<TH>Disposition</TH><TH>Injection</TH><TH>User</TH><TH>Date</TH><TH>Description</TH><TH>Location</TH>" + "<TH>Resolution</TH><TH>Guid</TH><TH>Completed</TH></THEAD></TR>");
       for (ReviewDefectItem item : getDefectItems()) {
-         IBasicUser user = item.getUser();
+         IAtsUser user = item.getUser();
          builder.append("<TR>");
          builder.append("<TD>" + item.getSeverity() + "</TD>");
          builder.append("<TD>" + item.getDisposition() + "</TD>");
          builder.append("<TD>" + item.getInjectionActivity() + "</TD>");
-         if (user != null && user.equals(UserManager.getUser())) {
+         if (user != null && user.equals(AtsUsers.getUser())) {
             builder.append("<TD bgcolor=\"#CCCCCC\">" + user.getName() + "</TD>");
          } else {
             builder.append("<TD>NONE</TD>");

@@ -16,15 +16,15 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 
 public class DecisionOption {
    private String name;
-   private Collection<IBasicUser> assignees = new HashSet<IBasicUser>();
+   private Collection<IAtsUser> assignees = new HashSet<IAtsUser>();
    private boolean followupRequired;
 
    @Override
@@ -35,7 +35,7 @@ public class DecisionOption {
       return result;
    }
 
-   public DecisionOption(String name, Collection<IBasicUser> assignees, boolean followup) {
+   public DecisionOption(String name, Collection<IAtsUser> assignees, boolean followup) {
       this.name = name;
       this.followupRequired = followup;
       if (assignees != null) {
@@ -43,7 +43,7 @@ public class DecisionOption {
       }
    }
 
-   public DecisionOption(String name, IBasicUser assignee, boolean followup) {
+   public DecisionOption(String name, IAtsUser assignee, boolean followup) {
       this.name = name;
       this.followupRequired = followup;
       if (assignee != null) {
@@ -52,11 +52,11 @@ public class DecisionOption {
    }
 
    public DecisionOption(String name) {
-      this(name, (IBasicUser) null, false);
+      this(name, (IAtsUser) null, false);
    }
 
    public DecisionOption() {
-      this("", (IBasicUser) null, false);
+      this("", (IAtsUser) null, false);
    }
 
    @Override
@@ -76,14 +76,14 @@ public class DecisionOption {
       return super.equals(obj);
    }
 
-   public Collection<IBasicUser> getAssignees() {
+   public Collection<IAtsUser> getAssignees() {
       return assignees;
    }
 
    /**
     * Sets the assigness but DOES NOT write to SMA. This method should NOT be called outside the StateMachineArtifact.
     */
-   public void setAssignees(Collection<IBasicUser> assignees) {
+   public void setAssignees(Collection<IAtsUser> assignees) {
       this.assignees.clear();
       if (assignees != null) {
          this.assignees.addAll(assignees);
@@ -93,14 +93,14 @@ public class DecisionOption {
    /**
     * Sets the assignes but DOES NOT write to SMA. This method should NOT be called outside the StateMachineArtifact.
     */
-   public void setAssignee(IBasicUser assignee) {
+   public void setAssignee(IAtsUser assignee) {
       this.assignees.clear();
       if (assignee != null) {
          this.assignees.add(assignee);
       }
    }
 
-   public void addAssignee(IBasicUser assignee) {
+   public void addAssignee(IAtsUser assignee) {
       if (assignee != null) {
          this.assignees.add(assignee);
       }
@@ -123,7 +123,7 @@ public class DecisionOption {
    public String toXml() throws OseeCoreException {
       StringBuffer sb = new StringBuffer(name);
       sb.append(";");
-      for (IBasicUser u : assignees) {
+      for (IAtsUser u : assignees) {
          sb.append("<" + u.getUserId() + ">");
       }
       sb.append(";");
@@ -149,7 +149,7 @@ public class DecisionOption {
          m = Pattern.compile("<(.*?)>").matcher(m.group(3));
          while (m.find()) {
             try {
-               assignees.add(UserManager.getUserByUserId(m.group(1)));
+               assignees.add(AtsUsers.getUserByUserId(m.group(1)));
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }

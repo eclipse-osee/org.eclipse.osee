@@ -22,8 +22,8 @@ import org.eclipse.osee.ats.core.workdef.WidgetDefinitionFloatMinMaxConstraint;
 import org.eclipse.osee.ats.core.workdef.WidgetDefinitionIntMinMaxConstraint;
 import org.eclipse.osee.ats.core.workdef.WidgetDefinitionListMinMaxSelectedConstraint;
 import org.eclipse.osee.ats.core.workdef.WidgetOption;
+import org.eclipse.osee.ats.core.workflow.WorkPageType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.util.WorkPageType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.junit.Assert;
 

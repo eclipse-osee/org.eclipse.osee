@@ -20,18 +20,17 @@ import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.core.workdef.StateEventType;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -121,7 +120,7 @@ public class AtsBranchCommitJob extends Job {
             SkynetTransaction transaction =
                TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Create Reviews upon Commit");
             AtsBranchManagerCore.createNecessaryBranchEventReviews(StateEventType.CommitBranch, teamArt, new Date(),
-               UserManager.getUser(SystemUser.OseeSystem), transaction);
+               AtsUsers.getOseeSystemUser(), transaction);
             transaction.execute();
          }
       } catch (OseeCoreException ex) {

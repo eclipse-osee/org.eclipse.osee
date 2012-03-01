@@ -21,10 +21,10 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.WorkflowMetrics;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -270,7 +270,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
 
    public void createCompletedByAssigneesChart(WorkflowMetrics sMet, Composite parent) {
       List<XBarGraphLine> lines = new ArrayList<XBarGraphLine>();
-      for (IBasicUser user : sMet.getAssigneesAssignedOrCompleted()) {
+      for (IAtsUser user : sMet.getAssigneesAssignedOrCompleted()) {
          try {
             int numCompleted = sMet.getUserToCompletedSmas(user).size();
             double cummulativePercentComplete = numCompleted * 100;
@@ -327,11 +327,11 @@ public class AtsMetricsComposite extends ScrolledComposite {
       if (sMet.getEstRelDate() != null) {
          hoursRemain = sMet.getHoursTillRel();
       }
-      for (IBasicUser user : sMet.getAssigneesAssignedOrCompleted()) {
+      for (IAtsUser user : sMet.getAssigneesAssignedOrCompleted()) {
          try {
             double userHoursRemain = 0;
             for (TeamWorkFlowArtifact team : sMet.getTeamArts()) {
-               Collection<IBasicUser> users = new HashSet<IBasicUser>();
+               Collection<IAtsUser> users = new HashSet<IAtsUser>();
                users.addAll(team.getStateMgr().getAssignees());
                if (users.contains(user)) {
                   double hours = team.getRemainHoursTotal();

@@ -22,21 +22,21 @@ import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.workflow.IWorkPage;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -63,7 +63,7 @@ public class TeamWorkFlowManager {
     *
     * @param user User to transition to OR null if should use user of current state
     */
-   public Result transitionTo(TeamState toState, User user, boolean popup, SkynetTransaction transaction) throws OseeCoreException {
+   public Result transitionTo(TeamState toState, IAtsUser user, boolean popup, SkynetTransaction transaction) throws OseeCoreException {
       Date date = new Date();
       if (toState == TeamState.Endorse) {
          if (!teamArt.getCurrentStateName().equals(TeamState.Endorse.getPageName())) {
@@ -113,50 +113,50 @@ public class TeamWorkFlowManager {
 
    }
 
-   private User getUserOrDefault(User user) throws OseeCoreException {
+   private IAtsUser getUserOrDefault(IAtsUser user) throws OseeCoreException {
       if (user == null) {
-         return UserManager.getUser();
+         return AtsUsers.getUser();
       }
       return user;
    }
 
-   private Result processAuthorizeState(boolean popup, TeamWorkFlowArtifact teamArt, User user, Date date, SkynetTransaction transaction) throws OseeCoreException {
+   private Result processAuthorizeState(boolean popup, TeamWorkFlowArtifact teamArt, IAtsUser user, Date date, SkynetTransaction transaction) throws OseeCoreException {
       Result result = setAuthorizeData(popup, 100, .2, getUserOrDefault(user), date);
       if (result.isFalse()) {
          return result;
       }
-      result = transitionToState(popup, teamArt, TeamState.Implement, user, transaction);
+      result = transitionToState(popup, teamArt, TeamState.Implement, getUserOrDefault(user), transaction);
       if (result.isFalse()) {
          return result;
       }
       return Result.TrueResult;
    }
 
-   private Result processAnalyzeState(boolean popup, TeamWorkFlowArtifact teamArt, User user, Date date, SkynetTransaction transaction) throws OseeCoreException {
+   private Result processAnalyzeState(boolean popup, TeamWorkFlowArtifact teamArt, IAtsUser user, Date date, SkynetTransaction transaction) throws OseeCoreException {
       Result result = setAnalyzeData(popup, null, null, 1, 100, .2, getUserOrDefault(user), date);
       if (result.isFalse()) {
          return result;
       }
-      result = transitionToState(popup, teamArt, TeamState.Authorize, user, transaction);
+      result = transitionToState(popup, teamArt, TeamState.Authorize, getUserOrDefault(user), transaction);
       if (result.isFalse()) {
          return result;
       }
       return Result.TrueResult;
    }
 
-   private Result processEndorseState(boolean popup, TeamWorkFlowArtifact teamArt, User user, Date date, SkynetTransaction transaction) throws OseeCoreException {
+   private Result processEndorseState(boolean popup, TeamWorkFlowArtifact teamArt, IAtsUser user, Date date, SkynetTransaction transaction) throws OseeCoreException {
       Result result = setEndorseData(popup, null, 100, .2, getUserOrDefault(user), date);
       if (result.isFalse()) {
          return result;
       }
-      result = transitionToState(popup, teamArt, TeamState.Analyze, user, transaction);
+      result = transitionToState(popup, teamArt, TeamState.Analyze, getUserOrDefault(user), transaction);
       if (result.isFalse()) {
          return result;
       }
       return Result.TrueResult;
    }
 
-   private Result transitionToState(boolean popup, TeamWorkFlowArtifact teamArt, IWorkPage toState, User user, SkynetTransaction transaction) {
+   private Result transitionToState(boolean popup, TeamWorkFlowArtifact teamArt, IWorkPage toState, IAtsUser user, SkynetTransaction transaction) {
       TransitionHelper helper =
          new TransitionHelper("Transition to " + toState.getPageName(), Arrays.asList(teamArt), toState.getPageName(),
             Arrays.asList(user), null, transitionOptions);
@@ -168,7 +168,7 @@ public class TeamWorkFlowManager {
       return new Result("Transition Error %s", results.toString());
    }
 
-   public Result setEndorseData(boolean popup, String propRes, int statePercentComplete, double stateHoursSpent, User user, Date date) throws OseeCoreException {
+   public Result setEndorseData(boolean popup, String propRes, int statePercentComplete, double stateHoursSpent, IAtsUser user, Date date) throws OseeCoreException {
       if (!teamArt.isInState(TeamState.Endorse)) {
          Result result = new Result("Action not in Endorse state");
          if (result.isFalse() && popup) {
@@ -179,7 +179,7 @@ public class TeamWorkFlowManager {
       return Result.TrueResult;
    }
 
-   public Result setAnalyzeData(boolean popup, String problem, String propRes, double hourEstimate, int statePercentComplete, double stateHoursSpent, User user, Date date) throws OseeCoreException {
+   public Result setAnalyzeData(boolean popup, String problem, String propRes, double hourEstimate, int statePercentComplete, double stateHoursSpent, IAtsUser user, Date date) throws OseeCoreException {
       if (!teamArt.isInState(TeamState.Analyze)) {
          Result result = new Result("Action not in Analyze state");
          if (result.isFalse() && popup) {
@@ -191,7 +191,7 @@ public class TeamWorkFlowManager {
       return Result.TrueResult;
    }
 
-   public Result setAuthorizeData(boolean popup, int statePercentComplete, double stateHoursSpent, User user, Date date) throws OseeCoreException {
+   public Result setAuthorizeData(boolean popup, int statePercentComplete, double stateHoursSpent, IAtsUser user, Date date) throws OseeCoreException {
       if (!teamArt.isInState(TeamState.Authorize)) {
          Result result = new Result("Action not in Authorize state");
          if (result.isFalse() && popup) {
@@ -202,7 +202,7 @@ public class TeamWorkFlowManager {
       return Result.TrueResult;
    }
 
-   public Result setImplementData(boolean popup, String resolution, int statePercentComplete, double stateHoursSpent, User user, Date date) throws OseeCoreException {
+   public Result setImplementData(boolean popup, String resolution, int statePercentComplete, double stateHoursSpent, IAtsUser user, Date date) throws OseeCoreException {
       if (!teamArt.isInState(TeamState.Implement)) {
          Result result = new Result("Action not in Implement state");
          if (result.isFalse() && popup) {

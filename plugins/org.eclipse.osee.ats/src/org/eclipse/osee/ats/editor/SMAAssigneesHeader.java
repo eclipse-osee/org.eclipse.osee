@@ -12,14 +12,13 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.column.AssigneeColumn;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -62,9 +61,8 @@ public class SMAAssigneesHeader extends Composite {
                @Override
                public void linkActivated(HyperlinkEvent e) {
                   try {
-                     if (!isEditable && !sma.getStateMgr().getAssignees().contains(
-                        UserManager.getUser(SystemUser.UnAssigned)) && !sma.getStateMgr().getAssignees().contains(
-                        UserManager.getUser())) {
+                     if (!isEditable && !sma.getStateMgr().getAssignees().contains(AtsUsers.getUnAssigned()) && !sma.getStateMgr().getAssignees().contains(
+                        AtsUsers.getUser())) {
                         AWorkbench.popup(
                            "ERROR",
                            "You must be assigned to modify assignees.\nContact current Assignee or Select Privileged Edit for Authorized Overriders.");

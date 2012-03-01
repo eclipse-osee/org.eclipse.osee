@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.core.client.workflow.transition;
 import java.util.Collection;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.Result;
 
 /**
@@ -44,7 +44,7 @@ public interface ITransitionHelper {
     */
    public Result handleExtraHoursSpent();
 
-   public Collection<? extends IBasicUser> getToAssignees() throws OseeCoreException;
+   public Collection<? extends IAtsUser> getToAssignees() throws OseeCoreException;
 
    public String getToStateName();
 

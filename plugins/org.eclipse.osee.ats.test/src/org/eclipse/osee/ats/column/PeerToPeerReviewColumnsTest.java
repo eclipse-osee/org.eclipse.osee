@@ -25,10 +25,10 @@ import org.eclipse.osee.ats.core.client.review.role.Role;
 import org.eclipse.osee.ats.core.client.review.role.UserRole;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.DemoUsers;
@@ -70,52 +70,53 @@ public class PeerToPeerReviewColumnsTest {
       Assert.assertEquals("", ReviewModeratorColumn.getInstance().getColumnText(peerArt, null, 0));
       Assert.assertEquals("", ReviewReviewerColumn.getInstance().getColumnText(peerArt, null, 0));
 
-      transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), PeerToPeerReviewColumnsTest.class.getSimpleName());
+      transaction =
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), PeerToPeerReviewColumnsTest.class.getSimpleName());
       ReviewDefectItem item =
-         new ReviewDefectItem(UserManager.getUser(), Severity.Issue, Disposition.None, InjectionActivity.Code,
+         new ReviewDefectItem(AtsUsers.getUser(), Severity.Issue, Disposition.None, InjectionActivity.Code,
             "description", "resolution", "location", new Date());
       ReviewDefectManager defectManager = new ReviewDefectManager(peerArt);
       defectManager.addOrUpdateDefectItem(item);
       item =
-         new ReviewDefectItem(UserManager.getUser(), Severity.Issue, Disposition.None, InjectionActivity.Code,
+         new ReviewDefectItem(AtsUsers.getUser(), Severity.Issue, Disposition.None, InjectionActivity.Code,
             "description 2", "resolution", "location", new Date());
       defectManager.addOrUpdateDefectItem(item);
       item =
-         new ReviewDefectItem(UserManager.getUser(), Severity.Issue, Disposition.None, InjectionActivity.Code,
+         new ReviewDefectItem(AtsUsers.getUser(), Severity.Issue, Disposition.None, InjectionActivity.Code,
             "description 3", "resolution", "location", new Date());
       defectManager.addOrUpdateDefectItem(item);
       item =
-         new ReviewDefectItem(UserManager.getUser(), Severity.Issue, Disposition.None, InjectionActivity.Code,
+         new ReviewDefectItem(AtsUsers.getUser(), Severity.Issue, Disposition.None, InjectionActivity.Code,
             "description 34", "resolution", "location", new Date());
       defectManager.addOrUpdateDefectItem(item);
       item =
-         new ReviewDefectItem(UserManager.getUser(), Severity.Major, Disposition.None, InjectionActivity.Code,
+         new ReviewDefectItem(AtsUsers.getUser(), Severity.Major, Disposition.None, InjectionActivity.Code,
             "description 4", "resolution", "location", new Date());
       defectManager.addOrUpdateDefectItem(item);
       item =
-         new ReviewDefectItem(UserManager.getUser(), Severity.Minor, Disposition.None, InjectionActivity.Code,
+         new ReviewDefectItem(AtsUsers.getUser(), Severity.Minor, Disposition.None, InjectionActivity.Code,
             "description 5", "resolution", "location", new Date());
       defectManager.addOrUpdateDefectItem(item);
       item =
-         new ReviewDefectItem(UserManager.getUser(), Severity.Minor, Disposition.None, InjectionActivity.Code,
+         new ReviewDefectItem(AtsUsers.getUser(), Severity.Minor, Disposition.None, InjectionActivity.Code,
             "description 6", "resolution", "location", new Date());
       defectManager.addOrUpdateDefectItem(item);
       item =
-         new ReviewDefectItem(UserManager.getUser(), Severity.Minor, Disposition.None, InjectionActivity.Code,
+         new ReviewDefectItem(AtsUsers.getUser(), Severity.Minor, Disposition.None, InjectionActivity.Code,
             "description 6", "resolution", "location", new Date());
       defectManager.addOrUpdateDefectItem(item);
       defectManager.saveToArtifact(peerArt);
 
-      UserRole role = new UserRole(Role.Author, UserManager.getUser(DemoUsers.Alex_Kay));
+      UserRole role = new UserRole(Role.Author, AtsUsers.getUserFromToken(DemoUsers.Alex_Kay));
       UserRoleManager roleMgr = new UserRoleManager(peerArt);
       roleMgr.addOrUpdateUserRole(role);
 
-      role = new UserRole(Role.Moderator, UserManager.getUser(DemoUsers.Jason_Michael));
+      role = new UserRole(Role.Moderator, AtsUsers.getUserFromToken(DemoUsers.Jason_Michael));
       roleMgr.addOrUpdateUserRole(role);
 
-      role = new UserRole(Role.Reviewer, UserManager.getUser(DemoUsers.Joe_Smith));
+      role = new UserRole(Role.Reviewer, AtsUsers.getUserFromToken(DemoUsers.Joe_Smith));
       roleMgr.addOrUpdateUserRole(role);
-      role = new UserRole(Role.Reviewer, UserManager.getUser(DemoUsers.Kay_Jones));
+      role = new UserRole(Role.Reviewer, AtsUsers.getUserFromToken(DemoUsers.Kay_Jones));
       roleMgr.addOrUpdateUserRole(role);
       roleMgr.saveToArtifact(transaction);
       peerArt.persist(transaction);

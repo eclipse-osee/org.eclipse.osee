@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.Activator;
@@ -42,7 +43,6 @@ import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
@@ -368,7 +368,7 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
    public String getAssignee(Artifact artifact) {
       try {
          if (artifact instanceof AbstractWorkflowArtifact) {
-            return Artifacts.toString("; ", ((AbstractWorkflowArtifact) artifact).getStateMgr().getAssignees());
+            return AtsObjects.toString("; ", ((AbstractWorkflowArtifact) artifact).getStateMgr().getAssignees());
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

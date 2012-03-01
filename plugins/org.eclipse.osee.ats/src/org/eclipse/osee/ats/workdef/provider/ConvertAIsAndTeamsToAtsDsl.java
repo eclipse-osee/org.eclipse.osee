@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.dsl.atsDsl.BooleanDef;
@@ -29,11 +30,9 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -86,7 +85,7 @@ public class ConvertAIsAndTeamsToAtsDsl {
       for (String staticId : aiArt.getAttributesToStringList(CoreAttributeTypes.StaticId)) {
          dslAIDef.getStaticId().add(staticId);
       }
-      for (User user : aiArt.getLeads()) {
+      for (IAtsUser user : aiArt.getLeads()) {
          dslAIDef.getLead().add(getUserByName(user));
       }
       try {
@@ -121,13 +120,13 @@ public class ConvertAIsAndTeamsToAtsDsl {
       for (String staticId : teamDef.getAttributesToStringList(CoreAttributeTypes.StaticId)) {
          dslTeamDef.getStaticId().add(staticId);
       }
-      for (IBasicUser user : teamDef.getLeads()) {
+      for (IAtsUser user : teamDef.getLeads()) {
          dslTeamDef.getLead().add(getUserByName(user));
       }
-      for (IBasicUser user : teamDef.getMembers()) {
+      for (IAtsUser user : teamDef.getMembers()) {
          dslTeamDef.getMember().add(getUserByName(user));
       }
-      for (User user : teamDef.getPrivilegedMembers()) {
+      for (IAtsUser user : teamDef.getPrivilegedMembers()) {
          dslTeamDef.getPrivileged().add(getUserByName(user));
       }
       for (Artifact verArt : teamDef.getVersionsArtifacts()) {
@@ -164,7 +163,7 @@ public class ConvertAIsAndTeamsToAtsDsl {
       dslTeamDef.getVersion().add(dslVerDef);
    }
 
-   private UserByName getUserByName(IBasicUser user) {
+   private UserByName getUserByName(IAtsUser user) {
       UserByName userByName = AtsDslFactoryImpl.init().createUserByName();
       userByName.setUserName(user.getName());
       return userByName;

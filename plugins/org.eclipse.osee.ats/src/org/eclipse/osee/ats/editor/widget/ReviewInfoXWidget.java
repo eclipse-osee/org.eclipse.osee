@@ -24,12 +24,14 @@ import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.workflow.IWorkPage;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.review.NewDecisionReviewJob;
@@ -38,12 +40,10 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.widgets.dialog.StateListAndTitleDialog;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValueBase;
@@ -135,7 +135,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                      NewDecisionReviewJob job =
                         new NewDecisionReviewJob(teamArt, null, dialog.getReviewTitle(), dialog.getSelectedState(),
                            null, DecisionReviewManager.getDefaultDecisionReviewOptions(), null, new Date(),
-                           UserManager.getUser());
+                           AtsUsers.getUser());
                      job.setUser(true);
                      job.setPriority(Job.LONG);
                      job.schedule();
@@ -296,7 +296,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                      for (AbstractReviewArtifact revArt : ReviewManager.getReviewsFromCurrentState(teamArt)) {
                         if (!revArt.isCompletedOrCancelled()) {
                            if (revArt.getStateMgr().isUnAssigned()) {
-                              revArt.getStateMgr().setAssignee(UserManager.getUser());
+                              revArt.getStateMgr().setAssignee(AtsUsers.getUser());
                            }
                            awas.add(revArt);
                         }

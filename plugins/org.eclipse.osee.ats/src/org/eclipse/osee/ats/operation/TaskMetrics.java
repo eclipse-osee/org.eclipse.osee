@@ -29,11 +29,11 @@ import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.workflow.SMAState;
 import org.eclipse.osee.ats.core.client.workflow.XCurrentStateDam;
 import org.eclipse.osee.ats.core.client.workflow.XStateDam;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -57,7 +57,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Ryan D. Brooks
  */
 public class TaskMetrics extends AbstractBlam {
-   private final CountingMap<IBasicUser> metrics;
+   private final CountingMap<IAtsUser> metrics;
    private CharBackedInputStream charBak;
    private ISheetWriter excelWriter;
 
@@ -65,7 +65,7 @@ public class TaskMetrics extends AbstractBlam {
    private XArtifactMultiChoiceSelect versionsWidget;
 
    public TaskMetrics() {
-      metrics = new CountingMap<IBasicUser>();
+      metrics = new CountingMap<IAtsUser>();
    }
 
    @Override
@@ -135,7 +135,7 @@ public class TaskMetrics extends AbstractBlam {
          state = currentStateDam.getState(TaskStates.InWork, false);
       }
 
-      for (IBasicUser user : state.getAssignees()) {
+      for (IAtsUser user : state.getAssignees()) {
          int percentComplete = state.getPercentComplete();
 
          if (percentComplete == 100) {
@@ -157,8 +157,8 @@ public class TaskMetrics extends AbstractBlam {
       excelWriter.startSheet("task metrics", 6);
       excelWriter.writeRow("Engineer", "TaskMetric");
 
-      for (Entry<IBasicUser, MutableInteger> entry : metrics.getCounts()) {
-         IBasicUser user = entry.getKey();
+      for (Entry<IAtsUser, MutableInteger> entry : metrics.getCounts()) {
+         IAtsUser user = entry.getKey();
          MutableInteger metric = entry.getValue();
          excelWriter.writeRow(user.getName(), metric.toString());
       }

@@ -13,12 +13,9 @@ package org.eclipse.osee.ats.core.client.review;
 import java.util.Arrays;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.core.client.AtsTestUtil;
-import org.eclipse.osee.ats.core.client.review.PeerReviewDefinitionManager;
-import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewState;
-import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.transition.MockTransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
@@ -30,7 +27,6 @@ import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workdef.StateEventType;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.AfterClass;
@@ -69,10 +65,11 @@ public class PeerReviewDefinitionManagerTest extends PeerReviewDefinitionManager
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       Assert.assertEquals("No reviews should be present", 0, ReviewManager.getReviews(teamArt).size());
 
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       MockTransitionHelper helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), implement.getPageName(),
-            Arrays.asList(UserManager.getUser()), null, TransitionOption.None);
+            Arrays.asList(AtsUsers.getUser()), null, TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper, transaction);
       TransitionResults results = transMgr.handleAll();
       transaction.execute();

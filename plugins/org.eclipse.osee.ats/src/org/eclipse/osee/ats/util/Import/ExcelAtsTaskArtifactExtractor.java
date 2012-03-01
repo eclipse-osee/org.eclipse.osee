@@ -27,20 +27,19 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.xml.sax.InputSource;
@@ -107,7 +106,7 @@ public class ExcelAtsTaskArtifactExtractor {
       private final SkynetTransaction transaction;
       private final boolean emailPOCs;
       private final Date createdDate;
-      private final User createdBy;
+      private final IAtsUser createdBy;
 
       protected InternalRowProcessor(IProgressMonitor monitor, SkynetTransaction transaction, AbstractWorkflowArtifact sma, boolean emailPOCs) throws OseeCoreException {
          this.monitor = monitor;
@@ -115,7 +114,7 @@ public class ExcelAtsTaskArtifactExtractor {
          this.emailPOCs = emailPOCs;
          this.sma = sma;
          createdDate = new Date();
-         createdBy = UserManager.getUser();
+         createdBy = AtsUsers.getUser();
       }
 
       @Override
@@ -296,16 +295,16 @@ public class ExcelAtsTaskArtifactExtractor {
       }
 
       private void processAssignees(String[] row, TaskArtifact taskArt, int i) throws OseeCoreException {
-         Set<IBasicUser> assignees = new HashSet<IBasicUser>();
+         Set<IAtsUser> assignees = new HashSet<IAtsUser>();
          for (String userName : row[i].split(";")) {
             userName = userName.replaceAll("^\\s+", "");
             userName = userName.replaceAll("\\+$", "");
-            IBasicUser user = null;
+            IAtsUser user = null;
             if (!Strings.isValid(userName)) {
-               user = UserManager.getUser();
+               user = AtsUsers.getUser();
             } else {
                try {
-                  user = UserManager.getUserByName(userName);
+                  user = AtsUsers.getUserByName(userName);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
@@ -313,7 +312,7 @@ public class ExcelAtsTaskArtifactExtractor {
             if (user == null) {
                OseeLog.logf(Activator.class, Level.SEVERE, "Invalid Assignee \"%s\" for row %d.  Using current user.",
                   userName, rowNum);
-               user = UserManager.getUser();
+               user = AtsUsers.getUser();
             }
             assignees.add(user);
          }
@@ -322,17 +321,17 @@ public class ExcelAtsTaskArtifactExtractor {
 
       private void processOriginator(String[] row, TaskArtifact taskArt, int i) throws OseeCoreException {
          String userName = row[i];
-         User u = null;
+         IAtsUser user = null;
          if (!Strings.isValid(userName)) {
-            u = UserManager.getUser();
+            user = AtsUsers.getUser();
          } else {
-            u = UserManager.getUserByName(userName);
+            user = AtsUsers.getUserByName(userName);
          }
-         if (u == null) {
+         if (user == null) {
             OseeLog.logf(Activator.class, Level.SEVERE,
                "Invalid Originator \"%s\" for row %d\nSetting to current user.", userName, rowNum);
          }
-         taskArt.internalSetCreatedBy(u);
+         taskArt.internalSetCreatedBy(user);
       }
    }
 }

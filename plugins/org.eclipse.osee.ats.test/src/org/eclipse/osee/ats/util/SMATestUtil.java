@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.core.client.workflow.HoursSpentUtil;
 import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.client.workflow.SMAState;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
-import org.eclipse.osee.framework.core.util.WorkPageType;
+import org.eclipse.osee.ats.core.workflow.WorkPageType;
 import org.junit.Assert;
 
 /**

@@ -16,8 +16,8 @@ import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.role.UserRole;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.swt.SWT;
 
 /**
@@ -25,7 +25,7 @@ import org.eclipse.swt.SWT;
  */
 public class XViewerReviewRoleColumn extends XViewerValueColumn {
 
-   private final User user;
+   private final IAtsUser user;
 
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
@@ -37,12 +37,12 @@ public class XViewerReviewRoleColumn extends XViewerValueColumn {
          getSortDataType(), isMultiColumnEditable(), getDescription());
    }
 
-   public XViewerReviewRoleColumn(User user) {
+   public XViewerReviewRoleColumn(IAtsUser user) {
       super("ats.column.role", "Role", 75, SWT.LEFT, true, SortDataType.String, false, null);
       this.user = user;
    }
 
-   public XViewerReviewRoleColumn(User user, String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+   public XViewerReviewRoleColumn(IAtsUser user, String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
       this.user = user;
    }
@@ -59,7 +59,7 @@ public class XViewerReviewRoleColumn extends XViewerValueColumn {
       }
    }
 
-   private static String getRolesStr(AbstractReviewArtifact reviewArt, User user) throws OseeCoreException {
+   private static String getRolesStr(AbstractReviewArtifact reviewArt, IAtsUser user) throws OseeCoreException {
       StringBuilder builder = new StringBuilder();
       for (UserRole role : UserRoleManager.getUserRoles(reviewArt)) {
          if (role.getUser().equals(user)) {
@@ -71,7 +71,7 @@ public class XViewerReviewRoleColumn extends XViewerValueColumn {
       return builder.toString().replaceFirst(", $", "");
    }
 
-   public User getUser() {
+   public IAtsUser getUser() {
       return user;
    }
 

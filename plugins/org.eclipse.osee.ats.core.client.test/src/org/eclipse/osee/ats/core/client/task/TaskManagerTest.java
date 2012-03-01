@@ -13,11 +13,9 @@ package org.eclipse.osee.ats.core.client.task;
 import java.util.Arrays;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.core.client.AtsTestUtil;
-import org.eclipse.osee.ats.core.client.task.TaskArtifact;
-import org.eclipse.osee.ats.core.client.task.TaskManager;
-import org.eclipse.osee.ats.core.client.task.TaskStates;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.client.workflow.HoursSpentUtil;
@@ -26,7 +24,6 @@ import org.eclipse.osee.ats.core.workdef.WorkDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.core.util.XResultData;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.AfterClass;
@@ -158,7 +155,7 @@ public class TaskManagerTest extends TaskManager {
       transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
             getClass().getSimpleName() + " testTransitionToCompletedThenInWork() 2");
-      result = TaskManager.transitionToInWork(taskArt, UserManager.getUser(), 45, .5, transaction);
+      result = TaskManager.transitionToInWork(taskArt, AtsUsers.getUser(), 45, .5, transaction);
       Assert.assertEquals(Result.TrueResult, result);
       transaction.execute();
 

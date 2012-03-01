@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.notify;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.core.client.notify.IAtsNotification;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -22,7 +23,6 @@ import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.skynet.core.utility.OseeNotificationEvent;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -88,7 +88,7 @@ public class AtsNotificationNavigateItem extends XNavigateItemAction {
                   numEvents++;
                   rd.addRaw(AHTML.addRowMultiColumnTable(event.getType(), event.getDescription(),
                      XResultDataUI.getHyperlink(event.getId(), event.getId(), AtsUtil.getAtsBranch().getId()),
-                     Artifacts.toString("; ", event.getUsers()), OseeNotifyUsersJob.getHyperlink(event)));
+                     AtsObjects.toString("; ", event.getUsers()), OseeNotifyUsersJob.getHyperlink(event)));
                   if (sendNotifications) {
                      OseeNotificationManager.getInstance().addNotificationEvent(event);
                   }

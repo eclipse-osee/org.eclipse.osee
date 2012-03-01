@@ -13,15 +13,12 @@ package org.eclipse.osee.ats.core.client.review;
 import java.util.Date;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.core.client.AtsTestUtil;
-import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
-import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -47,12 +44,13 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
 
       // create and transition peer review
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       String reviewTitle = "Test Review - " + teamArt.getName();
 
       PeerToPeerReviewArtifact peerArt =
          PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt, reviewTitle,
-            AtsTestUtil.getAnalyzeStateDef().getPageName(), new Date(), UserManager.getUser(SystemUser.OseeSystem),
+            AtsTestUtil.getAnalyzeStateDef().getPageName(), new Date(), AtsUsers.getUserFromToken(SystemUser.OseeSystem),
             transaction);
       transaction.execute();
 
@@ -74,7 +72,8 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
 
       // create and transition peer review
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       String reviewTitle = "Test Review - " + teamArt.getName();
 
       PeerToPeerReviewArtifact peerArt =

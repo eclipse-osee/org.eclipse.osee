@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.role;
 
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
@@ -17,11 +18,11 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.core.client.review.role.UserRole;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.defect.DefectSeverityToImage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
@@ -42,7 +43,7 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
       UserRole roleItem = (UserRole) element;
       try {
          if (dCol.equals(UserRoleXViewerFactory.User_Col)) {
-            return ArtifactImageManager.getImage(roleItem.getUser());
+            return ArtifactImageManager.getImage(AtsUsers.getOseeUser(roleItem.getUser()));
          } else if (dCol.equals(UserRoleXViewerFactory.Role_Col)) {
             return ImageManager.getImage(AtsImage.ROLE);
          } else if (dCol.equals(UserRoleXViewerFactory.Hours_Spent_Col)) {
@@ -57,7 +58,7 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
             return DefectSeverityToImage.getImage(Severity.Issue);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return null;
    }

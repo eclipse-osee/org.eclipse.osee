@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.EstimatedHoursUtil;
 import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
@@ -28,14 +29,13 @@ import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
@@ -64,7 +64,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
       }
    }
 
-   public Result parentWorkFlowTransitioned(StateDefinition fromState, StateDefinition toState, Collection<? extends IBasicUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+   public Result parentWorkFlowTransitioned(StateDefinition fromState, StateDefinition toState, Collection<? extends IAtsUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
       if (toState.getPageName().equals(TeamState.Cancelled.getPageName()) && isInWork()) {
          TransitionHelper helper =
             new TransitionHelper("Transition to Cancelled", Arrays.asList(this), TaskStates.Cancelled.getPageName(),
@@ -75,7 +75,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
             return new Result("Transition Error %s", results.toString());
          }
       } else if (fromState.getPageName().equals(TeamState.Cancelled.getPageName()) && isCancelled()) {
-         Result result = TaskManager.transitionToInWork(this, UserManager.getUser(), 99, 0, transaction);
+         Result result = TaskManager.transitionToInWork(this, AtsUsers.getUser(), 99, 0, transaction);
          return result;
       }
       return Result.TrueResult;

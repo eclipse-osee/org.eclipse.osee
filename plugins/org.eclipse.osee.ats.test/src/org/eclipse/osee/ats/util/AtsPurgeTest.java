@@ -22,13 +22,13 @@ import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.operation.PurgeUnusedBackingDataAndTransactions;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -82,7 +82,7 @@ public class AtsPurgeTest {
             org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
                ActionableItemArtifact.class,
                ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.ActionableItem, "SAW Test",
-                  AtsUtil.getAtsBranch())), new Date(), UserManager.getUser(), null, transaction);
+                  AtsUtil.getAtsBranch())), new Date(), AtsUsers.getUser(), null, transaction);
       actionArt.persist(transaction);
       transaction.execute();
 
@@ -92,7 +92,7 @@ public class AtsPurgeTest {
       for (int x = 0; x < 30; x++) {
          TaskArtifact taskArt =
             ActionManager.getFirstTeam(actionArt).createNewTask(getClass().getSimpleName() + x, new Date(),
-               UserManager.getUser());
+               AtsUsers.getUser());
          taskArt.persist(getClass().getSimpleName());
          artsToPurge.add(taskArt);
       }

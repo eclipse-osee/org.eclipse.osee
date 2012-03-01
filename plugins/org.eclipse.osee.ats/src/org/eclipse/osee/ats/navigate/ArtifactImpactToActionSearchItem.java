@@ -20,9 +20,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -137,7 +136,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             if (branches != null) {
                for (Branch branch : branches) {
                   Artifact assocArt = BranchManager.getAssociatedArtifact(branch);
-                  if (assocArt != null && !assocArt.equals(UserManager.getUser(SystemUser.OseeSystem))) {
+                  if (assocArt != null && !assocArt.equals(AtsUsers.getOseeSystemUser())) {
                      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
                         assocArt.getArtifactTypeName(),
                         "Working",

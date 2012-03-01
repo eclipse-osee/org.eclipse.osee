@@ -16,11 +16,11 @@ import java.util.LinkedList;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IDefaultInitialBranchesProvider;
 
 /**
@@ -30,10 +30,10 @@ public class TeamBasedDefaultBranchProvider implements IDefaultInitialBranchesPr
 
    @Override
    public Collection<Branch> getDefaultInitialBranches() throws OseeCoreException {
-      User user = UserManager.getUser();
+      IAtsUser user = AtsUsers.getUser();
       try {
          Collection<TeamDefinitionArtifact> teams =
-            user.getRelatedArtifacts(AtsRelationTypes.TeamMember_Team, TeamDefinitionArtifact.class);
+            AtsUsers.getOseeUser(user).getRelatedArtifacts(AtsRelationTypes.TeamMember_Team, TeamDefinitionArtifact.class);
          Collection<Branch> branches = new LinkedList<Branch>();
 
          Branch branch;

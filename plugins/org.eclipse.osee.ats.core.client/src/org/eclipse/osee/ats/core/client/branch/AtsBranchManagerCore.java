@@ -32,15 +32,16 @@ import org.eclipse.osee.ats.core.client.review.PeerReviewDefinitionManager;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.version.VersionArtifact;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.workdef.DecisionReviewDefinition;
 import org.eclipse.osee.ats.core.workdef.PeerReviewDefinition;
 import org.eclipse.osee.ats.core.workdef.StateEventType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -54,8 +55,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.CatchAndReleaseJob;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -617,7 +616,7 @@ public class AtsBranchManagerCore {
             SkynetTransaction transaction =
                TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Create Reviews upon Transition");
             createNecessaryBranchEventReviews(StateEventType.CreateBranch, teamArt, new Date(),
-               UserManager.getUser(SystemUser.OseeSystem), transaction);
+               AtsUsers.getOseeSystemUser(), transaction);
             transaction.execute();
             return Status.OK_STATUS;
          }
@@ -636,7 +635,7 @@ public class AtsBranchManagerCore {
       return job;
    }
 
-   public static void createNecessaryBranchEventReviews(StateEventType stateEventType, TeamWorkFlowArtifact teamArt, Date createdDate, User createdBy, SkynetTransaction transaction) throws OseeCoreException {
+   public static void createNecessaryBranchEventReviews(StateEventType stateEventType, TeamWorkFlowArtifact teamArt, Date createdDate, IAtsUser createdBy, SkynetTransaction transaction) throws OseeCoreException {
       if (stateEventType != StateEventType.CommitBranch && stateEventType != StateEventType.CreateBranch) {
          throw new OseeStateException("Invalid stateEventType [%s]", stateEventType);
       }

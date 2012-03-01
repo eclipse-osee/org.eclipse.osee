@@ -22,11 +22,11 @@ import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.workdef.DecisionReviewOption;
 import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 
 /**
  * @author Donald G. Dunne
@@ -37,12 +37,12 @@ public class NewDecisionReviewJob extends Job {
    private final String reviewTitle;
    private final String againstState;
    private final List<DecisionReviewOption> options;
-   private final Collection<IBasicUser> assignees;
+   private final Collection<IAtsUser> assignees;
    private final String description;
    private final Date createdDate;
-   private final IBasicUser createdBy;
+   private final IAtsUser createdBy;
 
-   public NewDecisionReviewJob(TeamWorkFlowArtifact teamParent, ReviewBlockType reviewBlockType, String reviewTitle, String againstState, String description, List<DecisionReviewOption> options, Collection<IBasicUser> assignees, Date createdDate, IBasicUser createdBy) {
+   public NewDecisionReviewJob(TeamWorkFlowArtifact teamParent, ReviewBlockType reviewBlockType, String reviewTitle, String againstState, String description, List<DecisionReviewOption> options, Collection<IAtsUser> assignees, Date createdDate, IAtsUser createdBy) {
       super("Creating New Decision Review");
       this.teamParent = teamParent;
       this.reviewTitle = reviewTitle;

@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.navigate;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -69,7 +69,7 @@ public class CreateNewUsersByNameItem extends XNavigateItemAction {
                resultData.logError("user name can't be blank");
             }
             try {
-               if (UserManager.getUserByName(newUserName) != null) {
+               if (AtsUsers.getUserByName(newUserName) != null) {
                   resultData.logError(String.format("User [%s] already exists", newUserName));
                }
             } catch (UserNotInDatabase ex) {
@@ -82,7 +82,8 @@ public class CreateNewUsersByNameItem extends XNavigateItemAction {
             return;
          }
          try {
-            SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Create New User(s)");
+            SkynetTransaction transaction =
+               TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Create New User(s)");
             Set<Artifact> newUsers = createNewUserItemTx(transaction, newUserNames);
             transaction.execute();
 

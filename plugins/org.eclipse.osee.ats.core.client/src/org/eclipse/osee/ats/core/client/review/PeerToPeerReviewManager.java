@@ -22,19 +22,18 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
+import org.eclipse.osee.ats.core.workflow.IWorkPage;
+import org.eclipse.osee.ats.core.workflow.WorkPageType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
-import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.core.util.WorkPageType;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
@@ -60,7 +59,7 @@ public class PeerToPeerReviewManager {
     *
     * @param user User to transition to OR null if should use user of current state
     */
-   public static Result transitionTo(PeerToPeerReviewArtifact reviewArt, PeerToPeerReviewState toState, Collection<UserRole> roles, Collection<ReviewDefectItem> defects, User user, boolean popup, SkynetTransaction transaction) throws OseeCoreException {
+   public static Result transitionTo(PeerToPeerReviewArtifact reviewArt, PeerToPeerReviewState toState, Collection<UserRole> roles, Collection<ReviewDefectItem> defects, IAtsUser user, boolean popup, SkynetTransaction transaction) throws OseeCoreException {
       Result result = setPrepareStateData(popup, reviewArt, roles, "DoThis.java", 100, .2, transaction);
       if (result.isFalse()) {
          return result;
@@ -92,9 +91,8 @@ public class PeerToPeerReviewManager {
    private static Result transitionToState(WorkPageType workPageType, boolean popup, PeerToPeerReviewArtifact reviewArt, IWorkPage toState, SkynetTransaction transaction) throws OseeCoreException {
       TransitionHelper helper =
          new TransitionHelper("Transition to " + toState.getPageName(), Arrays.asList(reviewArt),
-            toState.getPageName(),
-            Arrays.asList((IBasicUser) reviewArt.getStateMgr().getAssignees().iterator().next()), null,
-            TransitionOption.OverrideAssigneeCheck);
+            toState.getPageName(), Arrays.asList((IAtsUser) reviewArt.getStateMgr().getAssignees().iterator().next()),
+            null, TransitionOption.OverrideAssigneeCheck);
       TransitionManager transitionMgr = new TransitionManager(helper, transaction);
       TransitionResults results = transitionMgr.handleAll();
       if (results.isEmpty()) {
@@ -143,11 +141,10 @@ public class PeerToPeerReviewManager {
    }
 
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, SkynetTransaction transaction) throws OseeCoreException {
-      return createNewPeerToPeerReview(teamArt, reviewTitle, againstState, new Date(), UserManager.getUser(),
-         transaction);
+      return createNewPeerToPeerReview(teamArt, reviewTitle, againstState, new Date(), AtsUsers.getUser(), transaction);
    }
 
-   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, Date createdDate, User createdBy, SkynetTransaction transaction) throws OseeCoreException {
+   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, SkynetTransaction transaction) throws OseeCoreException {
       PeerToPeerReviewArtifact peerToPeerRev =
          (PeerToPeerReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.PeerToPeerReview,
             AtsUtilCore.getAtsBranch(), reviewTitle == null ? "Peer to Peer Review" : reviewTitle);

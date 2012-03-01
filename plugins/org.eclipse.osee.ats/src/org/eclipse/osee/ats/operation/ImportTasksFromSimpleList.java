@@ -19,16 +19,15 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -64,7 +63,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
          public void run() {
             try {
                List<Artifact> artifacts = variableMap.getArtifacts(TEAM_WORKFLOW);
-               final List<IBasicUser> assignees = Collections.castAll(variableMap.getArtifacts(ASSIGNEES));
+               final List<IAtsUser> assignees = Collections.castAll(variableMap.getArtifacts(ASSIGNEES));
                final List<String> titles = new ArrayList<String>();
                for (String title : variableMap.getString(TASK_IMPORT_TITLES).split("\n")) {
                   title = title.replaceAll("\r", "");
@@ -95,7 +94,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                   SkynetTransaction transaction =
                      TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Import Tasks from Simple List");
                   Date createdDate = new Date();
-                  User createdBy = UserManager.getUser();
+                  IAtsUser createdBy = AtsUsers.getUser();
                   teamArt.createTasks(titles, assignees, createdDate, createdBy, transaction);
                   teamArt.persist(transaction);
                   transaction.execute();

@@ -20,6 +20,8 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.column.LegacyPcrIdColumn;
 import org.eclipse.osee.ats.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.column.StateColumn;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerReviewRoleColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerSmaCompletedDateColumn;
@@ -30,7 +32,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -53,7 +54,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
 
    private static final String MASS_XVIEWER_CUSTOMIZE_NAMESPACE = "org.eclipse.osee.ats.ReviewParticipationReport";
 
-   private User selectedUser = null;
+   private IAtsUser selectedUser = null;
 
    public GenerateReviewParticipationReport(XNavigateItem parent) {
       super(parent, "Generate Review Participation Report", AtsImage.REPORT);
@@ -61,7 +62,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      User useUser = null;
+      IAtsUser useUser = null;
       if (selectedUser != null) {
          useUser = selectedUser;
       } else {
@@ -72,7 +73,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
                AWorkbench.popup("ERROR", "Must select user");
                return;
             }
-            useUser = ld.getSelection();
+            useUser = AtsUsers.getUserFromOseeUser(ld.getSelection());
          }
       }
 
@@ -95,10 +96,10 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
    }
    private static class ParticipationReportJob extends Job {
 
-      private final User user;
+      private final IAtsUser user;
       private final boolean forcePend;
 
-      public ParticipationReportJob(String title, User user, boolean forcePend) {
+      public ParticipationReportJob(String title, IAtsUser user, boolean forcePend) {
          super(title);
          this.user = user;
          this.forcePend = forcePend;
@@ -131,7 +132,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
 
    public static class ReviewParticipationXViewerFactory extends SkynetXViewerFactory {
 
-      public ReviewParticipationXViewerFactory(User user) {
+      public ReviewParticipationXViewerFactory(IAtsUser user) {
          super(MASS_XVIEWER_CUSTOMIZE_NAMESPACE);
          registerColumns(ArtifactTypeColumn.getInstance());
          registerColumns(new HridColumn());
@@ -147,11 +148,11 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
 
    }
 
-   public User getSelectedUser() {
+   public IAtsUser getSelectedUser() {
       return selectedUser;
    }
 
-   public void setSelectedUser(User selectedUser) {
+   public void setSelectedUser(IAtsUser selectedUser) {
       this.selectedUser = selectedUser;
    }
 }

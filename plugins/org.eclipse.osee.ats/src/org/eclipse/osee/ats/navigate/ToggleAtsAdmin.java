@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.navigate;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
@@ -19,7 +20,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -57,7 +57,7 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
                SystemGroup.OseeAdmin.setTemporaryOverride(true);
             } else {
                AtsGroup.AtsAdmin.removeTemporaryOverride();
-               SystemGroup.OseeAdmin.addMember(UserManager.getUser());
+               SystemGroup.OseeAdmin.addMember(AtsUsers.getOseeUser());
             }
             AtsNavigateViewItems.getInstance().clearCaches();
             for (SMAEditor editor : SMAEditor.getSmaEditors()) {

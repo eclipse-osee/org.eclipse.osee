@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.util.AtsCacheManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.StateManager;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.task.TaskEditor;
@@ -48,7 +49,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -352,7 +352,7 @@ public final class AtsUtil {
       return item;
    }
 
-   public static Set<Artifact> getAssigned(User user) throws OseeCoreException {
+   public static Set<Artifact> getAssigned(IAtsUser user) throws OseeCoreException {
       return StateManager.getAssigned(user);
    }
 
@@ -361,7 +361,7 @@ public final class AtsUtil {
     * 
     * @param clazz to match or all if null
     */
-   public static Set<Artifact> getAssigned(User user, Class<?> clazz) throws OseeCoreException {
+   public static Set<Artifact> getAssigned(IAtsUser user, Class<?> clazz) throws OseeCoreException {
       return StateManager.getAssigned(user, clazz);
    }
 

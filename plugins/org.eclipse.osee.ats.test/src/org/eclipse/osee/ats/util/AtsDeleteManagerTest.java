@@ -24,17 +24,16 @@ import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.Named;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -74,7 +73,8 @@ public class AtsDeleteManagerTest {
     */
    @org.junit.Test
    public void testTeamArtDeleteOneWorkflow() throws Exception {
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
          createAction(TestNames.TeamArtDeleteOneWorkflow,
@@ -99,7 +99,8 @@ public class AtsDeleteManagerTest {
     */
    @org.junit.Test
    public void testTeamArtDeleteWithTwoWorkflows() throws Exception {
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
          createAction(TestNames.TeamArtDeleteWithTwoWorkflows,
@@ -119,7 +120,8 @@ public class AtsDeleteManagerTest {
 
    @org.junit.Test
    public void testTeamArtPurge() throws Exception {
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
          createAction(TestNames.TeamArtPurge,
@@ -139,7 +141,8 @@ public class AtsDeleteManagerTest {
 
    @org.junit.Test
    public void testActionDelete() throws Exception {
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
          createAction(TestNames.ActionDelete,
@@ -159,7 +162,8 @@ public class AtsDeleteManagerTest {
 
    @org.junit.Test
    public void testActionPurge() throws Exception {
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
          createAction(TestNames.ActionPurge,
@@ -199,7 +203,7 @@ public class AtsDeleteManagerTest {
 
    private TeamWorkFlowArtifact createAction(TestNames testName, Collection<ActionableItemArtifact> actionableItems, SkynetTransaction transaction) throws OseeCoreException {
       Date createdDate = new Date();
-      User createdBy = UserManager.getUser();
+      IAtsUser createdBy = AtsUsers.getUser();
       Artifact actionArt =
          ActionManager.createAction(null, testName.name(), "Description", ChangeType.Improvement, "2", false, null,
             actionableItems, createdDate, createdBy, null, transaction);
@@ -217,7 +221,7 @@ public class AtsDeleteManagerTest {
       DecisionReviewArtifact decRev =
          DecisionReviewManager.createNewDecisionReview(teamArt, ReviewBlockType.None, testName.name(),
             TeamState.Endorse.getPageName(), "Description", DecisionReviewManager.getDefaultDecisionReviewOptions(),
-            Arrays.asList((IBasicUser) UserManager.getUser()), createdDate, createdBy);
+            Arrays.asList(AtsUsers.getUser()), createdDate, createdBy);
       decRev.persist(transaction);
 
       return teamArt;

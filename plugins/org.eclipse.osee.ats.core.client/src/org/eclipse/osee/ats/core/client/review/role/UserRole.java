@@ -13,14 +13,15 @@ package org.eclipse.osee.ats.core.client.review.role;
 import java.text.NumberFormat;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 
 /**
  * @author Donald G. Dunne
@@ -34,10 +35,10 @@ public class UserRole {
    private Boolean completed = false;
 
    public UserRole() throws OseeCoreException {
-      this(Role.Reviewer, UserManager.getUser().getUserId(), null, false);
+      this(Role.Reviewer, AtsUsers.getUser().getUserId(), null, false);
    }
 
-   public UserRole(Role role, User user) throws OseeCoreException {
+   public UserRole(Role role, IAtsUser user) throws OseeCoreException {
       this(role, user.getUserId());
    }
 
@@ -45,7 +46,7 @@ public class UserRole {
       this(role, userId, 0.0, false);
    }
 
-   public UserRole(Role role, User user, Double hoursSpent, Boolean completed) throws OseeCoreException {
+   public UserRole(Role role, IAtsUser user, Double hoursSpent, Boolean completed) throws OseeCoreException {
       this(role, user.getUserId(), hoursSpent, completed);
    }
 
@@ -123,8 +124,8 @@ public class UserRole {
       this.role = role;
    }
 
-   public User getUser() throws OseeCoreException {
-      return UserManager.getUserByUserId(userId);
+   public IAtsUser getUser() throws OseeCoreException {
+      return AtsUsers.getUserByUserId(userId);
    }
 
    public void setUser(User user) throws OseeCoreException {

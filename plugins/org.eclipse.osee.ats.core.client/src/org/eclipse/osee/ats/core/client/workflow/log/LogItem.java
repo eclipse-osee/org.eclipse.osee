@@ -16,13 +16,12 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.client.internal.Activator;
-import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 
 /**
  * @author Donald G. Dunne
@@ -32,11 +31,11 @@ public class LogItem {
    private Date date;
    private String msg;
    private String state;
-   private IBasicUser user;
+   private IAtsUser user;
    private LogType type = LogType.None;
    private final String userId;
 
-   public LogItem(LogType type, Date date, IBasicUser user, String state, String msg, String hrid) throws OseeCoreException {
+   public LogItem(LogType type, Date date, IAtsUser user, String state, String msg, String hrid) throws OseeCoreException {
       this(type.name(), String.valueOf(date.getTime()), user.getUserId(), state, msg, hrid);
    }
 
@@ -47,11 +46,11 @@ public class LogItem {
       this.state = intern(state);
       this.userId = intern(userId);
       try {
-         this.user = UserManager.getUserByUserId(userId);
+         this.user = AtsUsers.getUserByUserId(userId);
       } catch (UserNotInDatabase ex) {
-         this.user = UserManager.getUser(SystemUser.Guest);
-         OseeLog.logf(Activator.class, Level.SEVERE,
-            ex, "Error parsing ATS Log for %s - %s", hrid, ex.getLocalizedMessage());
+         this.user = AtsUsers.getGuestUser();
+         OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error parsing ATS Log for %s - %s", hrid,
+            ex.getLocalizedMessage());
       }
       this.type = type;
    }
@@ -105,7 +104,7 @@ public class LogItem {
       return msg.isEmpty() ? "" : msg;
    }
 
-   public IBasicUser getUser() {
+   public IAtsUser getUser() {
       return user;
    }
 
@@ -121,7 +120,7 @@ public class LogItem {
       return "NOTE (" + type + "): " + msg + " (" + user.getName() + ")";
    }
 
-   public void setUser(IBasicUser user) {
+   public void setUser(IAtsUser user) {
       this.user = user;
    }
 

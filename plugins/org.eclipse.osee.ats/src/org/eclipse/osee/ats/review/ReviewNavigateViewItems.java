@@ -16,6 +16,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem;
@@ -23,8 +25,6 @@ import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem.ReviewState;
 import org.eclipse.osee.ats.world.search.ShowOpenWorkflowsByArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.OpenPerspectiveNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateCommonItem;
@@ -67,7 +67,7 @@ public class ReviewNavigateViewItems implements XNavigateViewItems, IXNavigateCo
 
    public void addOseePeerSectionChildren(XNavigateItem item) throws OseeCoreException {
       try {
-         User user = UserManager.getUser();
+         IAtsUser user = AtsUsers.getUser();
          items.add(new SearchNavigateItem(item, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
          items.add(new SearchNavigateItem(item, new MyReviewWorkflowItem("User's Reviews", null, ReviewState.InWork)));
       } catch (OseeCoreException ex) {

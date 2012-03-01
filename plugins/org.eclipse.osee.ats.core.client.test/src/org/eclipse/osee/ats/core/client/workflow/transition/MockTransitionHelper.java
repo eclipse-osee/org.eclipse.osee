@@ -13,10 +13,8 @@ package org.eclipse.osee.ats.core.client.workflow.transition;
 import java.util.Collection;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 
 /**
  * Allows setting of workingBranchInWork and branchInCommit for testing purposes. If not set, uses default from
@@ -31,7 +29,7 @@ public class MockTransitionHelper extends TransitionHelper {
    public Boolean systemUserAssigned = null;
    public Boolean overrideTransitionValidityCheck = null;
 
-   public MockTransitionHelper(String name, Collection<? extends AbstractWorkflowArtifact> awas, String toStateName, Collection<? extends IBasicUser> toAssignees, String cancellationReason, TransitionOption... transitionOption) {
+   public MockTransitionHelper(String name, Collection<? extends AbstractWorkflowArtifact> awas, String toStateName, Collection<? extends IAtsUser> toAssignees, String cancellationReason, TransitionOption... transitionOption) {
       super(name, awas, toStateName, toAssignees, cancellationReason, transitionOption);
    }
 

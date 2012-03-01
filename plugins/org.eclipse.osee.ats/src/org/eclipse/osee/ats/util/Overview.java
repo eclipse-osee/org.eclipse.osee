@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.log.AtsLog;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -32,7 +33,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultBrowserHyperCmd;
 
@@ -143,9 +143,9 @@ public class Overview {
          getLabelValue("Creation Date", DateUtil.getMMDDYYHHMM(awa.getCreatedDate())));
       if (awa.isTeamWorkflow()) {
          addTable(getLabelValue("Team", ((TeamWorkFlowArtifact) awa).getTeamName()),
-            getLabelValue("Assignees", Artifacts.toString("; ", awa.getStateMgr().getAssignees())));
+            getLabelValue("Assignees", AtsObjects.toString("; ", awa.getStateMgr().getAssignees())));
       } else {
-         addTable(getLabelValue("Assignees", Artifacts.toString("; ", awa.getStateMgr().getAssignees())));
+         addTable(getLabelValue("Assignees", AtsObjects.toString("; ", awa.getStateMgr().getAssignees())));
       }
       addTable(getLabelValue("Description", awa.getDescription()));
       if (awa.isCancelled()) {
@@ -158,7 +158,7 @@ public class Overview {
             this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent Workflow: ") + parentArt.getName()}));
             this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent State: ") + ((TaskArtifact) awa).getStateMgr().getCurrentStateName()}));
          }
-         this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Task Owner: ") + Artifacts.toString(
+         this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Task Owner: ") + AtsObjects.toString(
             "; ", awa.getStateMgr().getAssignees())}));
       }
       endBorderTable();

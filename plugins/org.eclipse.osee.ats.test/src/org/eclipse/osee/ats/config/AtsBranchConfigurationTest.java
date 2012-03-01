@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.workdef.WorkDefinition;
@@ -48,7 +49,6 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -160,7 +160,7 @@ public class AtsBranchConfigurationTest {
       SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
       Artifact actionArt =
          ActionManager.createAction(null, BRANCH_VIA_VERSIONS.getName() + " Req Changes", "description",
-            ChangeType.Problem, "1", false, null, selectedActionableItems, new Date(), UserManager.getUser(), null,
+            ChangeType.Problem, "1", false, null, selectedActionableItems, new Date(), AtsUsers.getUser(), null,
             transaction);
       ActionManager.getTeams(actionArt).iterator().next().addRelation(
          AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, verArtToTarget);
@@ -272,7 +272,7 @@ public class AtsBranchConfigurationTest {
       String actionTitle = BRANCH_VIA_TEAM_DEFINITION.getName() + " Req Changes";
       Artifact actionArt =
          ActionManager.createAction(null, actionTitle, "description", ChangeType.Problem, "1", false, null,
-            selectedActionableItems, new Date(), UserManager.getUser(), null, transaction);
+            selectedActionableItems, new Date(), AtsUsers.getUser(), null, transaction);
       transaction.execute();
 
       final TeamWorkFlowArtifact teamWf = ActionManager.getTeams(actionArt).iterator().next();

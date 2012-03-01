@@ -23,14 +23,14 @@ import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -45,7 +45,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
    private Date createdDate;
-   private User createdBy;
+   private IAtsUser createdBy;
 
    public CreateGoalTestDemoArtifacts(XNavigateItem parent) {
       super(parent, "Create Test Goal Artifacts - Demo", AtsImage.GOAL);
@@ -61,7 +61,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
          return;
       }
       createdDate = new Date();
-      createdBy = UserManager.getUser();
+      createdBy = AtsUsers.getUser();
       SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), getName());
       GoalArtifact sawCodeGoal = GoalManager.createGoal("SAW Code");
       GoalArtifact sawTestGoal = GoalManager.createGoal("SAW Test");

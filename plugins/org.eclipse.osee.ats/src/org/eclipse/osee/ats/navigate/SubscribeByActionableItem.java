@@ -14,13 +14,13 @@ package org.eclipse.osee.ats.navigate;
 import java.util.List;
 import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -43,15 +43,15 @@ public class SubscribeByActionableItem extends XNavigateItemAction {
             "Select Actionable Items\n\nEmail will be sent for every Action created against these AIs.", Active.Active);
       try {
          List<ActionableItemArtifact> objs =
-            Collections.castAll(UserManager.getUser().getRelatedArtifactsOfType(
+            Collections.castAll(AtsUsers.getOseeUser().getRelatedArtifactsOfType(
                AtsRelationTypes.SubscribedUser_Artifact, ActionableItemArtifact.class));
          diag.setInitialAias(objs);
          if (diag.open() != 0) {
             return;
          }
-         UserManager.getUser().setRelationsOfTypeUseCurrentOrder(AtsRelationTypes.SubscribedUser_Artifact,
+         AtsUsers.getOseeUser().setRelationsOfTypeUseCurrentOrder(AtsRelationTypes.SubscribedUser_Artifact,
             diag.getChecked(), ActionableItemArtifact.class);
-         UserManager.getUser().persist(getClass().getSimpleName());
+         AtsUsers.getOseeUser().persist(getClass().getSimpleName());
          AWorkbench.popup(getName(), "Subscriptions updated.");
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

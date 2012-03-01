@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.transition.ITransitionHelper;
@@ -31,6 +32,7 @@ import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelperAdap
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionToOperation;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
@@ -41,7 +43,6 @@ import org.eclipse.osee.ats.util.widgets.dialog.TransitionStatusDialog;
 import org.eclipse.osee.ats.workdef.StateDefinitionLabelProvider;
 import org.eclipse.osee.ats.workdef.StateDefinitionViewSorter;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -196,7 +197,7 @@ public class WETransitionComposite extends Composite {
          }
 
          @Override
-         public Collection<? extends IBasicUser> getToAssignees() throws OseeCoreException {
+         public Collection<? extends IAtsUser> getToAssignees() throws OseeCoreException {
             return awa.getTransitionAssignees();
          }
 
@@ -339,7 +340,7 @@ public class WETransitionComposite extends Composite {
    }
 
    public void updateTransitionToAssignees() throws OseeCoreException {
-      Collection<IBasicUser> assignees = null;
+      Collection<IAtsUser> assignees = null;
       // Determine if the is an override set of assigness
       for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
          String decisionValueIfApplicable = null;
@@ -415,14 +416,14 @@ public class WETransitionComposite extends Composite {
       }
       UserCheckTreeDialog uld = new UserCheckTreeDialog();
       uld.setMessage("Select users to transition to.");
-      uld.setInitialSelections(aba.getTransitionAssignees());
+      uld.setInitialSelections(AtsUsers.getOseeUsers(aba.getTransitionAssignees()));
       if (awa.getParentTeamWorkflow() != null) {
-         uld.setTeamMembers(awa.getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads());
+         uld.setTeamMembers(AtsUsers.getOseeUsers(awa.getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads()));
       }
       if (uld.open() != 0) {
          return;
       }
-      Collection<IBasicUser> users = uld.getUsersSelected();
+      Collection<IAtsUser> users = AtsUsers.getAtsUsers(uld.getUsersSelected());
       if (users.isEmpty()) {
          AWorkbench.popup("ERROR", "Must have at least one assignee");
          return;

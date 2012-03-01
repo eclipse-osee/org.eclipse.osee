@@ -29,12 +29,12 @@ import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.DemoTeam;
@@ -460,7 +460,7 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(title, revArt.getName());
       Assert.assertEquals(currentStateName, revArt.getCurrentStateName());
 
-      Collection<String> assigneeNames = Artifacts.getNames(revArt.getStateMgr().getAssignees());
+      Collection<String> assigneeNames = AtsObjects.getNames(revArt.getStateMgr().getAssignees());
 
       Assert.assertEquals(assigneeNames.size(), assigneeStrs.length);
       for (String assignee : assigneeStrs) {

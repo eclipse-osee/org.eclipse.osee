@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.client.workflow.transition;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.framework.core.model.IBasicUser;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -27,10 +27,10 @@ public class TransitionHelper extends TransitionHelperAdapter {
    private final Collection<? extends AbstractWorkflowArtifact> awas;
    private final String name;
    private TransitionOption[] transitionOption;
-   private final Collection<? extends IBasicUser> toAssignees;
+   private final Collection<? extends IAtsUser> toAssignees;
    private String toStateName;
 
-   public TransitionHelper(String name, Collection<? extends AbstractWorkflowArtifact> awas, String toStateName, Collection<? extends IBasicUser> toAssignees, String cancellationReason, TransitionOption... transitionOption) {
+   public TransitionHelper(String name, Collection<? extends AbstractWorkflowArtifact> awas, String toStateName, Collection<? extends IAtsUser> toAssignees, String cancellationReason, TransitionOption... transitionOption) {
       this.name = name;
       this.awas = awas;
       this.toStateName = toStateName;
@@ -73,7 +73,7 @@ public class TransitionHelper extends TransitionHelperAdapter {
    }
 
    @Override
-   public Collection<? extends IBasicUser> getToAssignees() {
+   public Collection<? extends IAtsUser> getToAssignees() {
       return toAssignees;
    }
 

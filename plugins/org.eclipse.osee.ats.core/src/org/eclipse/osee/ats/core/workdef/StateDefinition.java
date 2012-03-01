@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import org.eclipse.osee.framework.core.util.IWorkPage;
-import org.eclipse.osee.framework.core.util.WorkPageType;
+import org.eclipse.osee.ats.core.workflow.IWorkPage;
+import org.eclipse.osee.ats.core.workflow.WorkPageType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 
 public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {

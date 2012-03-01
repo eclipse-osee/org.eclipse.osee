@@ -11,27 +11,27 @@
 package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.model.IBasicUser;
+import org.eclipse.osee.framework.skynet.core.User;
 
 /**
  * @author Donald G. Dunne
  */
 public class OseeNotificationEvent {
 
-   private Collection<? extends IBasicUser> users;
+   private Collection<User> users;
    private final String id;
    private String type;
    private String description;
    private String url;
 
-   public OseeNotificationEvent(Collection<? extends IBasicUser> users, String id, String type, String description) {
+   public OseeNotificationEvent(Collection<User> users, String id, String type, String description) {
       this.users = users;
       this.id = id;
       this.type = type;
       this.description = description;
    }
 
-   public OseeNotificationEvent(Collection<? extends IBasicUser> users, String id, String type, String description, String url) {
+   public OseeNotificationEvent(Collection<User> users, String id, String type, String description, String url) {
       this(users, id, type, description);
       this.url = url;
    }
@@ -53,11 +53,11 @@ public class OseeNotificationEvent {
       return description;
    }
 
-   public Collection<? extends IBasicUser> getUsers() {
+   public Collection<User> getUsers() {
       return users;
    }
 
-   public void setUsers(Collection<? extends IBasicUser> users) {
+   public void setUsers(Collection<User> users) {
       this.users = users;
    }
 

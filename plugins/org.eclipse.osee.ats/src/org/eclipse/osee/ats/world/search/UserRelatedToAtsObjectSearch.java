@@ -16,6 +16,8 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -32,7 +34,7 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
 
    private final boolean activeObjectsOnly;
 
-   public UserRelatedToAtsObjectSearch(String name, User user, boolean activeObjectsOnly, LoadView loadView) {
+   public UserRelatedToAtsObjectSearch(String name, IAtsUser user, boolean activeObjectsOnly, LoadView loadView) {
       super(name, user);
       this.activeObjectsOnly = activeObjectsOnly;
       setLoadView(loadView);
@@ -46,7 +48,7 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
    }
 
    @Override
-   protected Collection<Artifact> searchIt(User user) throws OseeCoreException {
+   protected Collection<Artifact> searchIt(IAtsUser atsUser) throws OseeCoreException {
       // SMA having user as portion of current state attribute (Team WorkFlow and Task)
 
       if (isCancelled()) {
@@ -62,6 +64,7 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
             false, EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentState, AtsAttributeTypes.State,
             AtsAttributeTypes.Log));
       }
+      User user = AtsUsers.getOseeUser(atsUser);
       arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.TeamLead_Team));
       arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.TeamMember_Team));
       arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.FavoriteUser_Artifact));

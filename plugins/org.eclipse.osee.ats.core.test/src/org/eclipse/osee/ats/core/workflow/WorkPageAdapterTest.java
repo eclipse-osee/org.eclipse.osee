@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.test.widgets.workflow;
+package org.eclipse.osee.ats.core.workflow;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -37,7 +37,7 @@ public class WorkPageAdapterTest {
    public void testValues() {
       Assert.assertEquals(8, OrderedStates.values().size());
 
-      // values should return in ordinal order 
+      // values should return in ordinal order
       Assert.assertEquals(OrderedStates.One.getPageName(), OrderedStates.values().get(0).getPageName());
       Assert.assertEquals(OrderedStates.Five.getPageName(), OrderedStates.values().get(4).getPageName());
       Assert.assertEquals(OrderedStates.Completed.getPageName(), OrderedStates.values().get(7).getPageName());

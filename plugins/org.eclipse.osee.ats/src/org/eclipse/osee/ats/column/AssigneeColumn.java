@@ -26,15 +26,18 @@ import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -123,16 +126,16 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
       UserCheckTreeDialog uld = new UserCheckTreeDialog();
       uld.setMessage("Select to assign.\nDeSelect to un-assign.");
       if (awas.iterator().next().getParentTeamWorkflow() != null) {
-         uld.setTeamMembers(awas.iterator().next().getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads());
+         uld.setTeamMembers(AtsUsers.getOseeUsers(awas.iterator().next().getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads()));
       }
 
       if (awas.size() == 1) {
-         uld.setInitialSelections(awas.iterator().next().getStateMgr().getAssignees());
+         uld.setInitialSelections(AtsUsers.getOseeUsers(awas.iterator().next().getStateMgr().getAssignees()));
       }
       if (uld.open() != 0) {
          return false;
       }
-      Collection<IBasicUser> users = uld.getUsersSelected();
+      Collection<User> users = uld.getUsersSelected();
       if (users.isEmpty()) {
          AWorkbench.popup("ERROR", "Must have at least one assignee");
          return false;
@@ -142,7 +145,7 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
          users.remove(UserManager.getUser(SystemUser.UnAssigned));
       }
       for (AbstractWorkflowArtifact awa : awas) {
-         awa.getStateMgr().setAssignees(users);
+         awa.getStateMgr().setAssignees(AtsUsers.getAtsUsers(users));
       }
       if (persist) {
          Artifacts.persistInTransaction("Assignee - Prompt Change", awas);
@@ -202,7 +205,7 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
          return null;
       }
       if (artifact instanceof AbstractWorkflowArtifact) {
-         return FrameworkArtifactImageProvider.getUserImage(((AbstractWorkflowArtifact) artifact).getStateMgr().getAssignees());
+         return FrameworkArtifactImageProvider.getUserImage(AtsUsers.getOseeUsers(((AbstractWorkflowArtifact) artifact).getStateMgr().getAssignees()));
       }
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
          for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
@@ -219,17 +222,17 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
    public static String getAssigneeStr(Artifact artifact) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
          // ensure consistent order by using lists
-         List<IBasicUser> pocs = new ArrayList<IBasicUser>();
-         List<IBasicUser> implementers = new ArrayList<IBasicUser>();
+         List<IAtsUser> pocs = new ArrayList<IAtsUser>();
+         List<IAtsUser> implementers = new ArrayList<IAtsUser>();
          for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
             if (team.isCompletedOrCancelled()) {
-               for (IBasicUser user : team.getImplementers()) {
+               for (IAtsUser user : team.getImplementers()) {
                   if (!implementers.contains(user)) {
                      implementers.add(user);
                   }
                }
             } else {
-               for (IBasicUser user : team.getStateMgr().getAssignees()) {
+               for (IAtsUser user : team.getStateMgr().getAssignees()) {
                   if (!pocs.contains(user)) {
                      pocs.add(user);
                   }
@@ -238,31 +241,31 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
          }
          Collections.sort(pocs);
          Collections.sort(implementers);
-         return Artifacts.toString("; ", pocs) + (implementers.isEmpty() ? "" : "(" + Artifacts.toString("; ",
+         return AtsObjects.toString("; ", pocs) + (implementers.isEmpty() ? "" : "(" + AtsObjects.toString("; ",
             implementers) + ")");
       } else if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
          AbstractWorkflowArtifact awa = WorkflowManager.cast(artifact);
          if (awa.isCompletedOrCancelled()) {
             if (awa.implementersStr == null && !awa.getImplementers().isEmpty()) {
-               List<IBasicUser> implementers = awa.getImplementers();
+               List<IAtsUser> implementers = awa.getImplementers();
                if (awa.isCompleted()) {
-                  IBasicUser completedBy = awa.getCompletedBy();
+                  IAtsUser completedBy = awa.getCompletedBy();
                   if (completedBy != null && !implementers.contains(completedBy)) {
                      implementers.add(completedBy);
                   }
                }
                if (awa.isCancelled()) {
-                  IBasicUser cancelledBy = awa.getCancelledBy();
+                  IAtsUser cancelledBy = awa.getCancelledBy();
                   if (cancelledBy != null && !implementers.contains(cancelledBy)) {
                      implementers.add(cancelledBy);
                   }
                }
                Collections.sort(implementers);
-               awa.implementersStr = "(" + Artifacts.toString("; ", implementers) + ")";
+               awa.implementersStr = "(" + AtsObjects.toString("; ", implementers) + ")";
             }
             return awa.implementersStr;
          }
-         return Artifacts.toString("; ", awa.getStateMgr().getAssignees());
+         return AtsObjects.toString("; ", awa.getStateMgr().getAssignees());
 
       }
       return "";

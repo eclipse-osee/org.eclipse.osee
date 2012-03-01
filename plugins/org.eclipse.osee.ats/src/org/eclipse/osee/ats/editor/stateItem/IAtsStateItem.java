@@ -13,10 +13,10 @@ package org.eclipse.osee.ats.editor.stateItem;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -39,7 +39,7 @@ public interface IAtsStateItem {
 
    public String getOverrideTransitionToStateName(SMAWorkFlowSection section) throws OseeCoreException;
 
-   public Collection<IBasicUser> getOverrideTransitionToAssignees(AbstractWorkflowArtifact awa, String decision) throws OseeCoreException;
+   public Collection<IAtsUser> getOverrideTransitionToAssignees(AbstractWorkflowArtifact awa, String decision) throws OseeCoreException;
 
    public String getDescription();
 

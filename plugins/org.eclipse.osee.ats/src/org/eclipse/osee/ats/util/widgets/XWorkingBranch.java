@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.access.AccessControlData;
@@ -33,7 +34,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
@@ -259,7 +259,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
 
    private void markWorkingBranchAsFavorite() {
       try {
-         User user = UserManager.getUser();
+         User user = AtsUsers.getOseeUser(AtsUsers.getUser());
          if (user.isSystemUser()) {
             AWorkbench.popup("Can't set preference as System User = " + user);
             return;

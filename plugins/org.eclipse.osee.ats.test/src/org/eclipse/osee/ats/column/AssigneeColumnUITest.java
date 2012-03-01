@@ -24,7 +24,7 @@ import org.junit.Assert;
  * @tests AssigneeColumn
  * @author Donald G. Dunne
  */
-public class AssigneeColumnTest {
+public class AssigneeColumnUITest {
 
    @org.junit.Test
    public void testGetColumnText() throws Exception {

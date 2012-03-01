@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.core.client.config;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -22,10 +23,12 @@ import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.version.VersionArtifact;
 import org.eclipse.osee.ats.core.client.version.VersionLockedType;
 import org.eclipse.osee.ats.core.client.version.VersionReleaseType;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.workdef.RuleDefinition;
 import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.core.workdef.RuleManager;
@@ -33,7 +36,6 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -188,12 +190,20 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
     *
     * @return users configured as leads for this TeamDefinitionArtifact
     */
-   public Collection<IBasicUser> getLeads() throws OseeCoreException {
-      return Collections.castAll(getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead, User.class));
+   public Collection<IAtsUser> getLeads() throws OseeCoreException {
+      List<IAtsUser> users = new LinkedList<IAtsUser>();
+      for (User user : getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead, User.class)) {
+         users.add(AtsUsers.getUser(user.getUserId()));
+      }
+      return users;
    }
 
-   public Collection<User> getPrivilegedMembers() throws OseeCoreException {
-      return getRelatedArtifacts(AtsRelationTypes.PrivilegedMember_Member, User.class);
+   public Collection<IAtsUser> getPrivilegedMembers() throws OseeCoreException {
+      List<IAtsUser> users = new LinkedList<IAtsUser>();
+      for (User user : getRelatedArtifacts(AtsRelationTypes.PrivilegedMember_Member, User.class)) {
+         users.add(AtsUsers.getUser(user.getUserId()));
+      }
+      return users;
    }
 
    /**
@@ -202,8 +212,8 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
     *
     * @return users configured as leads by ActionableItems, then by TeamDefinition
     */
-   public Collection<IBasicUser> getLeads(Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException {
-      Set<IBasicUser> leads = new HashSet<IBasicUser>();
+   public Collection<IAtsUser> getLeads(Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException {
+      Set<IAtsUser> leads = new HashSet<IAtsUser>();
       for (ActionableItemArtifact aia : actionableItems) {
          if (aia.getImpactedTeamDefs().contains(this)) {
             // If leads are specified for this aia, add them
@@ -223,12 +233,16 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    }
 
    @SuppressWarnings("unchecked")
-   public Collection<IBasicUser> getMembersAndLeads() throws OseeCoreException {
+   public Collection<IAtsUser> getMembersAndLeads() throws OseeCoreException {
       return Collections.setUnion(getMembers(), getLeads());
    }
 
-   public Collection<IBasicUser> getMembers() throws OseeCoreException {
-      return Collections.castAll(getRelatedArtifacts(AtsRelationTypes.TeamMember_Member, User.class));
+   public Collection<IAtsUser> getMembers() throws OseeCoreException {
+      List<IAtsUser> users = new LinkedList<IAtsUser>();
+      for (User user : getRelatedArtifacts(AtsRelationTypes.TeamMember_Member, User.class)) {
+         users.add(AtsUsers.getUser(user.getUserId()));
+      }
+      return users;
    }
 
    public Artifact getVersionArtifact(String name, boolean create) throws OseeCoreException {

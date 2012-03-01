@@ -16,7 +16,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.client.internal.Activator;
-import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -24,8 +25,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -35,12 +34,12 @@ public class NoteItem {
    private Date date;
    private final String state;
    private String msg;
-   private User user;
+   private IAtsUser user;
    private NoteType type = NoteType.Other;
    protected final static String LOG_ITEM_TAG = "Item";
    private final static String ATS_NOTE_TAG = "AtsNote";
 
-   public NoteItem(NoteType type, String state, String date, User user, String msg) {
+   public NoteItem(NoteType type, String state, String date, IAtsUser user, String msg) {
       Long l = Long.valueOf(date);
       this.date = new Date(l.longValue());
       this.state = Strings.intern(state);
@@ -49,7 +48,7 @@ public class NoteItem {
       this.type = type;
    }
 
-   public NoteItem(String type, String state, String date, User user, String msg) throws OseeCoreException {
+   public NoteItem(String type, String state, String date, IAtsUser user, String msg) throws OseeCoreException {
       this(NoteType.getType(type), state, date, user, msg);
    }
 
@@ -79,7 +78,7 @@ public class NoteItem {
       return (state.isEmpty() ? "" : " for \"" + state + "\"");
    }
 
-   public User getUser() {
+   public IAtsUser getUser() {
       return user;
    }
 
@@ -99,7 +98,7 @@ public class NoteItem {
       return state;
    }
 
-   public void setUser(User user) {
+   public void setUser(IAtsUser user) {
       this.user = user;
    }
 
@@ -111,14 +110,14 @@ public class NoteItem {
             for (int i = 0; i < nodes.getLength(); i++) {
                Element element = (Element) nodes.item(i);
                try {
-                  User user = UserManager.getUserByUserId(element.getAttribute("userId"));
+                  IAtsUser user = AtsUsers.getUserByUserId(element.getAttribute("userId"));
                   NoteItem item = new NoteItem(element.getAttribute("type"), element.getAttribute("state"), // NOPMD by b0727536 on 9/29/10 8:52 AM
                      element.getAttribute("date"), user, element.getAttribute("msg"));
                   logItems.add(item);
                } catch (UserNotInDatabase ex) {
                   OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error parsing notes for [%s]", hrid);
                   NoteItem item = new NoteItem(element.getAttribute("type"), element.getAttribute("state"), // NOPMD by b0727536 on 9/29/10 8:52 AM
-                     element.getAttribute("date"), UserManager.getUser(SystemUser.Guest), element.getAttribute("msg"));
+                     element.getAttribute("date"), AtsUsers.getGuestUser(), element.getAttribute("msg"));
                   logItems.add(item);
                }
             }

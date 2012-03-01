@@ -12,7 +12,7 @@ package org.eclipse.osee.ats;
 
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.column.ActionableItemsColumnTest;
-import org.eclipse.osee.ats.column.AssigneeColumnTest;
+import org.eclipse.osee.ats.column.AssigneeColumnUITest;
 import org.eclipse.osee.ats.column.BranchStatusColumnTest;
 import org.eclipse.osee.ats.column.CancelledDateColumnTest;
 import org.eclipse.osee.ats.column.CategoryColumnTest;
@@ -59,7 +59,7 @@ import org.junit.runners.Suite;
    DeadlineColumnTest.class,
    CreatedDateColumnTest.class,
    ActionableItemsColumnTest.class,
-   AssigneeColumnTest.class,
+   AssigneeColumnUITest.class,
    BranchStatusColumnTest.class,
    CancelledDateColumnTest.class,
    CompletedDateColumnTest.class,

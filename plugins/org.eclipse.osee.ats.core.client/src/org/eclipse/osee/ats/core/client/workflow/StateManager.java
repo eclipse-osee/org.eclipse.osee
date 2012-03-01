@@ -26,26 +26,25 @@ import org.eclipse.osee.ats.core.client.notify.AtsNotifyType;
 import org.eclipse.osee.ats.core.client.team.SimpleTeamState;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
 import org.eclipse.osee.ats.core.client.workflow.log.LogType;
+import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workdef.WorkDefinition;
+import org.eclipse.osee.ats.core.workflow.IWorkPage;
+import org.eclipse.osee.ats.core.workflow.WorkPageType;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
-import org.eclipse.osee.framework.core.util.IWorkPage;
-import org.eclipse.osee.framework.core.util.WorkPageType;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
  * @author Donald G. Dunne
@@ -107,7 +106,7 @@ public class StateManager {
     * @return true if UnAssigned user is currently an assignee
     */
    public boolean isUnAssigned() throws OseeCoreException {
-      return getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned));
+      return getAssignees().contains(AtsUsers.getUnAssigned());
    }
 
    public boolean isUnAssignedSolely() throws OseeCoreException {
@@ -201,7 +200,7 @@ public class StateManager {
    }
 
    public String getAssigneesStr() throws OseeCoreException {
-      return Artifacts.toString("; ", sma.getStateMgr().getAssignees());
+      return AtsObjects.toString("; ", sma.getStateMgr().getAssignees());
    }
 
    public String getAssigneesStr(IWorkPage state, int length) throws OseeCoreException {
@@ -213,7 +212,7 @@ public class StateManager {
    }
 
    public String getAssigneesStr(IWorkPage state) throws OseeCoreException {
-      return Artifacts.toString("; ", sma.getStateMgr().getAssignees(state));
+      return AtsObjects.toString("; ", sma.getStateMgr().getAssignees(state));
    }
 
    public String getAssigneesStr(int length) throws OseeCoreException {
@@ -224,11 +223,11 @@ public class StateManager {
       return str;
    }
 
-   public Collection<? extends IBasicUser> getAssignees() throws OseeCoreException {
+   public Collection<? extends IAtsUser> getAssignees() throws OseeCoreException {
       return getAssignees(getCurrentState());
    }
 
-   public Collection<? extends IBasicUser> getAssignees(IWorkPage state) throws OseeCoreException {
+   public Collection<? extends IAtsUser> getAssignees(IWorkPage state) throws OseeCoreException {
       SMAState smaState = getSMAState(state, false);
       if (smaState == null) {
          return Collections.emptyList();
@@ -254,7 +253,7 @@ public class StateManager {
       }
    }
 
-   public void setMetrics(IWorkPage state, double hours, int percentComplete, boolean logMetrics, User user, Date date) throws OseeCoreException {
+   public void setMetrics(IWorkPage state, double hours, int percentComplete, boolean logMetrics, IAtsUser user, Date date) throws OseeCoreException {
       if (state.getPageName().equals(getCurrentStateName())) {
          if (sma.getWorkDefinition().isStateWeightingEnabled()) {
             currentStateDam.setMetrics(hours, percentComplete, logMetrics, user, date);
@@ -275,57 +274,55 @@ public class StateManager {
     * Adds the assignee AND writes to artifact. Does not persist. Will remove UnAssigned user if another assignee
     * exists.
     */
-   public void addAssignee(IBasicUser assignee) throws OseeCoreException {
+   public void addAssignee(IAtsUser assignee) throws OseeCoreException {
       addAssignee(getSMAState(getCurrentState(), false), assignee);
    }
 
-   public void addAssignee(SMAState smaState, IBasicUser assignee) throws OseeCoreException {
+   public void addAssignee(SMAState smaState, IAtsUser assignee) throws OseeCoreException {
       addAssignees(smaState, Arrays.asList(assignee));
    }
 
-   public void addAssignees(Collection<IBasicUser> assignees) throws OseeCoreException {
+   public void addAssignees(Collection<IAtsUser> assignees) throws OseeCoreException {
       addAssignees(getSMAState(getCurrentState(), false), assignees);
    }
 
-   public void addAssignees(SMAState smaState, Collection<IBasicUser> assignees) throws OseeCoreException {
-      List<IBasicUser> notifyAssignees = new ArrayList<IBasicUser>();
-      for (IBasicUser assignee : assignees) {
+   public void addAssignees(SMAState smaState, Collection<IAtsUser> assignees) throws OseeCoreException {
+      List<IAtsUser> notifyAssignees = new ArrayList<IAtsUser>();
+      for (IAtsUser assignee : assignees) {
          if (!smaState.getAssignees().contains(assignee)) {
             notifyAssignees.add(assignee);
             smaState.addAssignee(assignee);
          }
       }
       AtsNotificationManager.notify(sma, notifyAssignees, AtsNotifyType.Assigned);
-      if (smaState.getAssignees().size() > 1 && smaState.getAssignees().contains(
-         UserManager.getUser(SystemUser.UnAssigned))) {
-         smaState.removeAssignee(UserManager.getUser(SystemUser.UnAssigned));
+      if (smaState.getAssignees().size() > 1 && smaState.getAssignees().contains(AtsUsers.getUnAssigned())) {
+         smaState.removeAssignee(AtsUsers.getUnAssigned());
       }
       putState(smaState);
    }
 
-   public void setAssignee(IBasicUser assignee) throws OseeCoreException {
+   public void setAssignee(IAtsUser assignee) throws OseeCoreException {
       setAssignees(Arrays.asList(assignee));
    }
 
-   public void setAssignees(Collection<IBasicUser> newAssignees) throws OseeCoreException {
+   public void setAssignees(Collection<IAtsUser> newAssignees) throws OseeCoreException {
       setAssignees(getSMAState(getCurrentState(), false), newAssignees);
    }
 
    /**
     * Sets the assignees as attributes and relations AND writes to artifact. Does not persist.
     */
-   public void setAssignees(SMAState smaState, Collection<IBasicUser> newAssignees) throws OseeCoreException {
-      Collection<? extends IBasicUser> currentAssignees = smaState.getAssignees();
-      List<IBasicUser> notifyAssignees = new ArrayList<IBasicUser>();
-      for (IBasicUser user : newAssignees) {
+   public void setAssignees(SMAState smaState, Collection<IAtsUser> newAssignees) throws OseeCoreException {
+      Collection<? extends IAtsUser> currentAssignees = smaState.getAssignees();
+      List<IAtsUser> notifyAssignees = new ArrayList<IAtsUser>();
+      for (IAtsUser user : newAssignees) {
          if (!currentAssignees.contains(user)) {
             notifyAssignees.add(user);
          }
       }
       AtsNotificationManager.notify(sma, notifyAssignees, AtsNotifyType.Assigned);
-      if (smaState.getAssignees().size() > 1 && smaState.getAssignees().contains(
-         UserManager.getUser(SystemUser.UnAssigned))) {
-         smaState.removeAssignee(UserManager.getUser(SystemUser.UnAssigned));
+      if (smaState.getAssignees().size() > 1 && smaState.getAssignees().contains(AtsUsers.getUnAssigned())) {
+         smaState.removeAssignee(AtsUsers.getUnAssigned());
       }
       smaState.setAssignees(newAssignees);
       putState(smaState);
@@ -334,7 +331,7 @@ public class StateManager {
    /**
     * Sets the assignee AND writes to artifact. Does not persist.
     */
-   public void setAssignee(IWorkPage state, IBasicUser assignee) throws OseeCoreException {
+   public void setAssignee(IWorkPage state, IAtsUser assignee) throws OseeCoreException {
       SMAState smaState = getSMAState(state, false);
       if (!isStateVisited(state)) {
          throw new OseeArgumentException("State [%s] does not exist.", state);
@@ -345,7 +342,7 @@ public class StateManager {
    /**
     * Removes the assignee from stateName state AND writes to SMA. Does not persist.
     */
-   public void removeAssignee(IWorkPage state, User assignee) throws OseeCoreException {
+   public void removeAssignee(IWorkPage state, IAtsUser assignee) throws OseeCoreException {
       if (!isStateVisited(state)) {
          return;
       }
@@ -357,7 +354,7 @@ public class StateManager {
    /**
     * Removes the assignee AND writes to SMA. Does not persist.
     */
-   public void removeAssignee(User assignee) throws OseeCoreException {
+   public void removeAssignee(IAtsUser assignee) throws OseeCoreException {
       SMAState smaState = getSMAState(getCurrentState(), false);
       smaState.removeAssignee(assignee);
       putState(smaState);
@@ -376,7 +373,7 @@ public class StateManager {
       return getVisitedStateNames().contains(state.getPageName());
    }
 
-   public void transitionHelper(Collection<? extends IBasicUser> toAssignees, StateDefinition fromState, StateDefinition toState, String cancelReason) throws OseeCoreException {
+   public void transitionHelper(Collection<? extends IAtsUser> toAssignees, StateDefinition fromState, StateDefinition toState, String cancelReason) throws OseeCoreException {
       // Set XCurrentState info to XState
       stateDam.setState(currentStateDam.getState());
 
@@ -385,14 +382,14 @@ public class StateManager {
       if (previousState == null) {
          currentStateDam.setState(new SMAState(toState, toAssignees));
       } else {
-         List<IBasicUser> previousAssignees = new ArrayList<IBasicUser>();
+         List<IAtsUser> previousAssignees = new ArrayList<IAtsUser>();
          previousAssignees.addAll(previousState.getAssignees());
-         List<IBasicUser> nextAssignees = new ArrayList<IBasicUser>();
+         List<IAtsUser> nextAssignees = new ArrayList<IAtsUser>();
          nextAssignees.addAll(toAssignees);
          if (!org.eclipse.osee.framework.jdk.core.util.Collections.isEqual(previousAssignees, nextAssignees)) {
             previousState.setAssignees(nextAssignees);
          }
-         for (IBasicUser user : previousAssignees) {
+         for (IAtsUser user : previousAssignees) {
             if (!previousAssignees.contains(user)) {
                AtsNotificationManager.notify(sma, Arrays.asList(user), AtsNotifyType.Assigned);
             }
@@ -406,15 +403,15 @@ public class StateManager {
    /**
     * Initializes state machine and sets the current state to stateName
     */
-   public void initializeStateMachine(IWorkPage state, Collection<IBasicUser> assignees) throws OseeCoreException {
+   public void initializeStateMachine(IWorkPage state, Collection<IAtsUser> assignees) throws OseeCoreException {
       SMAState smaState = null;
       if (getVisitedStateNames().contains(state.getPageName())) {
          smaState = getSMAState(state, false);
       } else {
          if (assignees == null) {
-            List<IBasicUser> assigned = new ArrayList<IBasicUser>();
+            List<IAtsUser> assigned = new ArrayList<IAtsUser>();
             if (state.isWorkingPage()) {
-               assigned.add(UserManager.getUser());
+               assigned.add(AtsUsers.getUser());
             }
             smaState = new SMAState(state, assigned);
          } else {
@@ -425,7 +422,7 @@ public class StateManager {
       if (sma.isAttributeTypeValid(AtsAttributeTypes.CurrentStateType)) {
          sma.setSoleAttributeValue(AtsAttributeTypes.CurrentStateType, state.getWorkPageType().name());
       }
-      Collection<IBasicUser> notifyUsers = new ArrayList<IBasicUser>();
+      Collection<IAtsUser> notifyUsers = new ArrayList<IAtsUser>();
       notifyUsers.addAll(smaState.getAssignees());
       AtsNotificationManager.notify(sma, notifyUsers, AtsNotifyType.Assigned);
    }
@@ -465,7 +462,7 @@ public class StateManager {
    /**
     * return currently assigned state machine artifacts
     */
-   public static Set<Artifact> getAssigned(User user) throws OseeCoreException {
+   public static Set<Artifact> getAssigned(IAtsUser user) throws OseeCoreException {
       return getAssigned(user, null);
    }
 
@@ -474,7 +471,7 @@ public class StateManager {
     *
     * @param clazz to match or all if null
     */
-   public static Set<Artifact> getAssigned(User user, Class<?> clazz) throws OseeCoreException {
+   public static Set<Artifact> getAssigned(IAtsUser user, Class<?> clazz) throws OseeCoreException {
       return getAssigned(user.getUserId(), clazz);
    }
 
@@ -495,18 +492,18 @@ public class StateManager {
 
    }
 
-   public static List<IBasicUser> getImplementersByState(AbstractWorkflowArtifact workflow, IWorkPage state) throws OseeCoreException {
-      List<IBasicUser> users = new ArrayList<IBasicUser>();
+   public static List<IAtsUser> getImplementersByState(AbstractWorkflowArtifact workflow, IWorkPage state) throws OseeCoreException {
+      List<IAtsUser> users = new ArrayList<IAtsUser>();
       if (workflow.isCancelled()) {
          users.add(workflow.getCancelledBy());
       } else {
-         for (IBasicUser user : workflow.getStateMgr().getAssignees(state)) {
+         for (IAtsUser user : workflow.getStateMgr().getAssignees(state)) {
             if (!users.contains(user)) {
                users.add(user);
             }
          }
          if (workflow.isCompleted()) {
-            IBasicUser user = workflow.getCompletedBy();
+            IAtsUser user = workflow.getCompletedBy();
             if (user != null && !users.contains(user)) {
                users.add(user);
             }
@@ -523,13 +520,13 @@ public class StateManager {
       currentStateDam.setState(state);
    }
 
-   public static Collection<? extends IBasicUser> getAssigneesByState(AbstractWorkflowArtifact workflow, StateDefinition state) throws OseeCoreException {
-      Set<IBasicUser> users = new HashSet<IBasicUser>();
+   public static Collection<? extends IAtsUser> getAssigneesByState(AbstractWorkflowArtifact workflow, StateDefinition state) throws OseeCoreException {
+      Set<IAtsUser> users = new HashSet<IAtsUser>();
       SMAState smaState = workflow.getStateMgr().getSMAState(state, false);
       if (smaState != null) {
          users.addAll(smaState.getAssignees());
       }
-      users.remove(UserManager.getUser(SystemUser.UnAssigned));
+      users.remove(AtsUsers.getUnAssigned());
       return users;
    }
 
@@ -560,8 +557,8 @@ public class StateManager {
       return "";
    }
 
-   public List<IBasicUser> getAssignees(String stateName) throws OseeCoreException {
-      List<IBasicUser> assignees = new ArrayList<IBasicUser>();
+   public List<IAtsUser> getAssignees(String stateName) throws OseeCoreException {
+      List<IAtsUser> assignees = new ArrayList<IAtsUser>();
       if (currentStateDam.getState().getName().equals(stateName)) {
          assignees.addAll(currentStateDam.getState().getAssignees());
       } else {
@@ -575,7 +572,7 @@ public class StateManager {
    }
 
    public void validateNoBootstrapUser() throws OseeCoreException {
-      for (IBasicUser user : getAssignees()) {
+      for (IAtsUser user : getAssignees()) {
          if (user.getUserId().equals(SystemUser.BootStrap.getUserId())) {
             throw new OseeStateException("Assignee can't be bootstrap user");
          }

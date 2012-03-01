@@ -25,11 +25,11 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    AtsTestUtilTest.class,
+   AtsCoreClient_Util_PT_Suite.class,
    AtsCoreClient_Notify_PT_Suite.class,
    AtsCoreClient_Operation_PT_Suite.class,
    AtsCoreClient_Review_PT_Suite.class,
    AtsCoreClient_Task_PT_Suite.class,
-   AtsCoreClient_Util_PT_Suite.class,
    AtsCoreClient_Transition_PT_Suite.class})
 /**
  * This test suite contains tests that must be run as PDE Junit (PT) through test launch config

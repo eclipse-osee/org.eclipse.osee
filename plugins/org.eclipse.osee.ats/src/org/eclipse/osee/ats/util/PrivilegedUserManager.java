@@ -15,21 +15,21 @@ import java.util.Set;
 import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 
 public class PrivilegedUserManager {
 
-   public static Set<IBasicUser> getPrivilegedUsers(AbstractWorkflowArtifact workflow) throws OseeCoreException {
-      Set<IBasicUser> users = new HashSet<IBasicUser>();
+   public static Set<IAtsUser> getPrivilegedUsers(AbstractWorkflowArtifact workflow) throws OseeCoreException {
+      Set<IAtsUser> users = new HashSet<IAtsUser>();
       if (workflow.getParentTeamWorkflow() != null) {
          users.addAll(getPrivilegedUsers(workflow.getParentTeamWorkflow()));
       } else {
@@ -44,31 +44,31 @@ public class PrivilegedUserManager {
          users.addAll(parentSma.getStateMgr().getAssignees());
       }
       if (AtsUtilCore.isAtsAdmin()) {
-         users.add(UserManager.getUser());
+         users.add(AtsUsers.getUser());
       }
       return users;
    }
 
-   public static Set<IBasicUser> getPrivilegedUsers(TeamWorkFlowArtifact teamArt) {
-      Set<IBasicUser> users = new HashSet<IBasicUser>();
+   public static Set<IAtsUser> getPrivilegedUsers(TeamWorkFlowArtifact teamArt) {
+      Set<IAtsUser> users = new HashSet<IAtsUser>();
       try {
          addPrivilegedUsersUpTeamDefinitionTree(teamArt.getTeamDefinition(), users);
 
          StateDefinition stateDefinition = teamArt.getStateDefinition();
 
          // Add user if allowing privileged edit to all users
-         if (!users.contains(UserManager.getUser()) && (stateDefinition.hasRule(RuleDefinitionOption.AllowPrivilegedEditToAll) || teamArt.getTeamDefinition().hasRule(
+         if (!users.contains(AtsUsers.getUser()) && (stateDefinition.hasRule(RuleDefinitionOption.AllowPrivilegedEditToAll) || teamArt.getTeamDefinition().hasRule(
             RuleDefinitionOption.AllowPrivilegedEditToAll))) {
-            users.add(UserManager.getUser());
+            users.add(AtsUsers.getUser());
          }
 
          // Add user if user is team member and rule exists
          boolean workPageToTeamMember = stateDefinition.hasRule(RuleDefinitionOption.AllowPrivilegedEditToTeamMember);
          boolean teamDefToTeamMember =
             teamArt.getTeamDefinition().hasRule(RuleDefinitionOption.AllowPrivilegedEditToTeamMember);
-         if (!users.contains(UserManager.getUser()) && (workPageToTeamMember || teamDefToTeamMember) && //
-         teamArt.getTeamDefinition().getMembers().contains(UserManager.getUser())) {
-            users.add(UserManager.getUser());
+         if (!users.contains(AtsUsers.getUser()) && (workPageToTeamMember || teamDefToTeamMember) && //
+         teamArt.getTeamDefinition().getMembers().contains(AtsUsers.getUser())) {
+            users.add(AtsUsers.getUser());
          }
 
          // Add user if team member is originator and rule exists
@@ -76,10 +76,10 @@ public class PrivilegedUserManager {
             stateDefinition.hasRule(RuleDefinitionOption.AllowPrivilegedEditToTeamMemberAndOriginator);
          boolean teamDefToMemberAndOriginator =
             teamArt.getTeamDefinition().hasRule(RuleDefinitionOption.AllowPrivilegedEditToTeamMemberAndOriginator);
-         if (!users.contains(UserManager.getUser()) && (workPageToMemberAndOriginator || teamDefToMemberAndOriginator) && //
-         teamArt.getCreatedBy().equals(UserManager.getUser()) && teamArt.getTeamDefinition().getMembers().contains(
-            UserManager.getUser())) {
-            users.add(UserManager.getUser());
+         if (!users.contains(AtsUsers.getUser()) && (workPageToMemberAndOriginator || teamDefToMemberAndOriginator) && //
+         teamArt.getCreatedBy().equals(AtsUsers.getUser()) && teamArt.getTeamDefinition().getMembers().contains(
+            AtsUsers.getUser())) {
+            users.add(AtsUsers.getUser());
          }
 
       } catch (Exception ex) {
@@ -88,7 +88,7 @@ public class PrivilegedUserManager {
       return users;
    }
 
-   protected static void addPrivilegedUsersUpTeamDefinitionTree(TeamDefinitionArtifact tda, Set<IBasicUser> users) throws OseeCoreException {
+   protected static void addPrivilegedUsersUpTeamDefinitionTree(TeamDefinitionArtifact tda, Set<IAtsUser> users) throws OseeCoreException {
       users.addAll(tda.getLeads());
       users.addAll(tda.getPrivilegedMembers());
 

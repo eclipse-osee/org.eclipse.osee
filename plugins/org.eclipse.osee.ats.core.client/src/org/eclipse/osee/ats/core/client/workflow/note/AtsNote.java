@@ -19,11 +19,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 
 /**
  * @author Donald G. Dunne
@@ -36,7 +36,7 @@ public class AtsNote {
       this.storeProvder = storeProvder;
    }
 
-   public void addNote(NoteType type, String state, String msg, User user) {
+   public void addNote(NoteType type, String state, String msg, IAtsUser user) {
       addNote(type, state, msg, new Date(), user);
    }
 
@@ -44,7 +44,7 @@ public class AtsNote {
       addNote(noteItem.getType(), noteItem.getState(), noteItem.getMsg(), noteItem.getDate(), noteItem.getUser());
    }
 
-   public void addNote(NoteType type, String state, String msg, Date date, User user) {
+   public void addNote(NoteType type, String state, String msg, Date date, IAtsUser user) {
       if (!enabled) {
          return;
       }
@@ -109,7 +109,7 @@ public class AtsNote {
       builder.append(AHTML.addHeaderRowMultiColumnTable(Arrays.asList("Type", "State", "Message", "User", "Date")));
       DateFormat dateFormat = getDateFormat();
       for (NoteItem note : showNotes) {
-         User user = note.getUser();
+         IAtsUser user = note.getUser();
          String name = "";
          if (user != null) {
             name = user.getName();

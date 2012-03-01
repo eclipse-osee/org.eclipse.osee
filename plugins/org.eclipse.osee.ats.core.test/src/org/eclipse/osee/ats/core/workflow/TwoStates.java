@@ -8,11 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.test.widgets.workflow;
+package org.eclipse.osee.ats.core.workflow;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.util.WorkPageAdapter;
-import org.eclipse.osee.framework.core.util.WorkPageType;
+import org.eclipse.osee.ats.core.workflow.WorkPageAdapter;
+import org.eclipse.osee.ats.core.workflow.WorkPageType;
 
 public class TwoStates extends WorkPageAdapter {
 

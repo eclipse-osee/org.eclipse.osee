@@ -18,12 +18,12 @@ import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 import org.junit.AfterClass;
@@ -99,9 +99,9 @@ public class AtsDecisionReviewDecisionStateItemTest {
       decisionComboDam.set(1);
 
       AtsDecisionReviewDecisionStateItem stateItem = new AtsDecisionReviewDecisionStateItem();
-      Collection<IBasicUser> users = stateItem.getOverrideTransitionToAssignees(decRevArt, decisionComboDam.get());
+      Collection<IAtsUser> users = stateItem.getOverrideTransitionToAssignees(decRevArt, decisionComboDam.get());
       Assert.assertEquals(1, users.size());
-      Assert.assertEquals(UserManager.getUser(), users.iterator().next());
+      Assert.assertEquals(AtsUsers.getUser(), users.iterator().next());
 
       // Set No
       decisionComboDam.set(2);

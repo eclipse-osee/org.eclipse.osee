@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.util.AtsCacheManager;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
@@ -65,7 +66,7 @@ public class ActionableItemManagerCore {
    }
 
    public String getActionableItemsStr() throws OseeCoreException {
-      return Artifacts.toString("; ", getActionableItems());
+      return AtsObjects.toString("; ", getActionableItems());
    }
 
    public List<String> getActionableItemGuids() throws OseeCoreException {

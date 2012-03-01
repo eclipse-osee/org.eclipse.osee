@@ -14,18 +14,15 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.framework.core.model.IBasicUser;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 
-/**
- * @author Ryan D. Brooks
- */
 public class RequirementStatus implements Comparable<RequirementStatus> {
    private final String requirementName;
    private final String legacyId;
    private final String swEnhancement;
    private final StringBuilder partitionStatuses;
    private final List<Integer> percents;
-   private final HashSet<IBasicUser> testPocs;
+   private final HashSet<IAtsUser> testPocs;
 
    public RequirementStatus(String requirementName, String legacyId, String swEnhancement) {
       this.requirementName = requirementName;
@@ -33,7 +30,7 @@ public class RequirementStatus implements Comparable<RequirementStatus> {
       this.swEnhancement = swEnhancement;
       this.partitionStatuses = new StringBuilder();
       this.percents = new LinkedList<Integer>();
-      this.testPocs = new HashSet<IBasicUser>();
+      this.testPocs = new HashSet<IAtsUser>();
    }
 
    public void addPartitionStatus(int percentComplete, String partition, String resolution) {
@@ -60,11 +57,11 @@ public class RequirementStatus implements Comparable<RequirementStatus> {
       return total / percents.size();
    }
 
-   public void setTestPocs(Collection<IBasicUser> poc) {
+   public void setTestPocs(Collection<IAtsUser> poc) {
       testPocs.addAll(poc);
    }
 
-   public HashSet<IBasicUser> getTestPocs() {
+   public HashSet<IAtsUser> getTestPocs() {
       return testPocs;
    }
 

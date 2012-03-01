@@ -42,23 +42,24 @@ import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.version.VersionArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.log.AtsLog;
 import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
+import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workdef.WorkDefinition;
+import org.eclipse.osee.ats.core.workflow.IWorkPage;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -69,8 +70,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -78,7 +77,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.skynet.core.utility.ElapsedTime;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -874,15 +872,15 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       logTestTimeSpent(date, "testAtsLogs", testNameToTimeSpentMap);
    }
 
-   private static User unAssignedUser;
-   private static User oseeSystemUser;
+   private static IAtsUser unAssignedUser;
+   private static IAtsUser oseeSystemUser;
 
    private void testStateMachineAssignees(Collection<Artifact> artifacts) {
       Date date = new Date();
       if (unAssignedUser == null) {
          try {
-            unAssignedUser = UserManager.getUser(SystemUser.UnAssigned);
-            oseeSystemUser = UserManager.getUser(SystemUser.OseeSystem);
+            unAssignedUser = AtsUsers.getUnAssigned();
+            oseeSystemUser = AtsUsers.getOseeSystemUser();
          } catch (OseeCoreException ex) {
             testNameToResultsMap.put("testStateMachineAssignees",
                "Error: Exception retrieving users: " + ex.getLocalizedMessage());
@@ -896,7 +894,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (art instanceof AbstractWorkflowArtifact) {
             try {
                AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) art;
-               Collection<? extends IBasicUser> assignees = awa.getStateMgr().getAssignees();
+               Collection<? extends IAtsUser> assignees = awa.getStateMgr().getAssignees();
                if ((awa.isCompleted() || awa.isCancelled()) && assignees.size() > 0) {
                   testNameToResultsMap.put(
                      "testStateMachineAssignees",
@@ -910,7 +908,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                if (assignees.size() > 1 && assignees.contains(unAssignedUser)) {
                   testNameToResultsMap.put(
                      "testStateMachineAssignees",
-                     "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " is unassigned and assigned => " + Artifacts.toString(
+                     "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " is unassigned and assigned => " + AtsObjects.toString(
                         "; ", assignees));
                   if (fixAssignees) {
                      awa.getStateMgr().removeAssignee(unAssignedUser);

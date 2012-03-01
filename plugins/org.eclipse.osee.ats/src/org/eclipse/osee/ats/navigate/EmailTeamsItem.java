@@ -16,12 +16,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionTreeWithChildrenDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -65,16 +64,16 @@ public class EmailTeamsItem extends XNavigateItemAction {
       Set<String> emails = new HashSet<String>();
       for (TeamDefinitionArtifact teamDef : teamDefs) {
          if (memberTypes.contains(MemberType.Members) || memberTypes.contains(MemberType.Both)) {
-            for (IBasicUser user : teamDef.getMembers()) {
-               if (Strings.isValid(UserManager.getEmail(user))) {
-                  emails.add(UserManager.getEmail(user));
+            for (IAtsUser user : teamDef.getMembers()) {
+               if (Strings.isValid(user.getEmail())) {
+                  emails.add(user.getEmail());
                }
             }
          }
          if (memberTypes.contains(MemberType.Leads) || memberTypes.contains(MemberType.Both)) {
-            for (IBasicUser user : teamDef.getLeads()) {
-               if (Strings.isValid(UserManager.getEmail(user))) {
-                  emails.add(UserManager.getEmail(user));
+            for (IAtsUser user : teamDef.getLeads()) {
+               if (Strings.isValid(user.getEmail())) {
+                  emails.add(user.getEmail());
                }
             }
          }

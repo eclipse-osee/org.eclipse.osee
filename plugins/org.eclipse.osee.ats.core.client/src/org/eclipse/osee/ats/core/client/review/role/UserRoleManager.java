@@ -22,20 +22,19 @@ import org.eclipse.osee.ats.core.client.notify.AtsNotifyType;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.validator.ArtifactValueProvider;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.validator.IValueProvider;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -113,8 +112,8 @@ public class UserRoleManager {
       return roles;
    }
 
-   public List<IBasicUser> getRoleUsers(Role role) throws OseeCoreException {
-      List<IBasicUser> users = new ArrayList<IBasicUser>();
+   public List<IAtsUser> getRoleUsers(Role role) throws OseeCoreException {
+      List<IAtsUser> users = new ArrayList<IAtsUser>();
       for (UserRole uRole : getUserRoles()) {
          if (uRole.getRole() == role && !users.contains(uRole.getUser())) {
             users.add(uRole.getUser());
@@ -225,7 +224,7 @@ public class UserRoleManager {
    private static void updateAssignees(Artifact artifact) throws OseeCoreException {
       UserRoleManager roleManager = new UserRoleManager(artifact);
       // Set assignees based on roles that are not set as completed
-      List<IBasicUser> assignees = new ArrayList<IBasicUser>();
+      List<IAtsUser> assignees = new ArrayList<IAtsUser>();
       for (UserRole uRole : roleManager.getUserRoles()) {
          if (!uRole.isCompleted() && uRole.getUser() != null && !assignees.contains(uRole.getUser())) {
             assignees.add(uRole.getUser());
@@ -246,8 +245,8 @@ public class UserRoleManager {
                }
             }
          } else {
-            if (!assignees.contains(UserManager.getUser())) {
-               assignees.add(UserManager.getUser());
+            if (!assignees.contains(AtsUsers.getUser())) {
+               assignees.add(AtsUsers.getUser());
             }
          }
       }
@@ -264,7 +263,7 @@ public class UserRoleManager {
       StringBuilder builder = new StringBuilder();
       builder.append("<TABLE BORDER=\"1\" cellspacing=\"1\" cellpadding=\"3%\" width=\"100%\"><THEAD><TR><TH>Role</TH>" + "<TH>User</TH><TH>Hours</TH><TH>Major</TH><TH>Minor</TH><TH>Issues</TH>");
       for (UserRole item : getUserRoles(peerArt)) {
-         User user = item.getUser();
+         IAtsUser user = item.getUser();
          String name = "";
          if (user != null) {
             name = user.getName();
@@ -294,6 +293,6 @@ public class UserRoleManager {
       }
       AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
       awa.getStateMgr().setMetrics(awa.getStateDefinition(), hoursSpent, awa.getStateMgr().getPercentComplete(), true,
-         UserManager.getUser(), new Date());
+         AtsUsers.getUser(), new Date());
    }
 }

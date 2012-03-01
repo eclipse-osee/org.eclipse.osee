@@ -18,8 +18,10 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.version.VersionLockedType;
 import org.eclipse.osee.ats.core.client.version.VersionReleaseType;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.util.widgets.XStateSearchCombo;
@@ -33,7 +35,6 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -243,16 +244,16 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       }
    }
 
-   public User getSelectedUser() {
+   public IAtsUser getSelectedUser() throws OseeCoreException {
       if (userCombo == null) {
          return null;
       }
-      return userCombo.getUser();
+      return AtsUsers.getUserFromOseeUser(userCombo.getUser());
    }
 
-   public void setSelectedUser(User user) {
+   public void setSelectedUser(IAtsUser user) throws OseeCoreException {
       if (userCombo != null) {
-         userCombo.set(user);
+         userCombo.set(AtsUsers.getOseeUser(user));
       }
    }
 
@@ -428,7 +429,7 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    @Override
    public Result isParameterSelectionValid() {
       try {
-         User user = getSelectedUser();
+         IAtsUser user = getSelectedUser();
          if (user == null) {
             return new Result("You must select at User.");
          }

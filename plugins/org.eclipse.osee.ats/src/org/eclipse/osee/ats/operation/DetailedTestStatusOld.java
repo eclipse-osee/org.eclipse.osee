@@ -40,6 +40,8 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.version.VersionArtifact;
 import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
+import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.XAtsProgramComboWidget;
 import org.eclipse.osee.define.traceability.BranchTraceabilityOperation;
@@ -53,7 +55,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -67,7 +68,6 @@ import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactList;
@@ -96,10 +96,10 @@ public class DetailedTestStatusOld extends AbstractBlam {
    private int rowNumber;
    private HashCollection<Artifact, String> requirementToCodeUnitsMap;
    private final HashMap<String, String> testProcedureInfo = new HashMap<String, String>();
-   private final HashCollection<String, IBasicUser> legacyIdToImplementers = new HashCollection<String, IBasicUser>();
+   private final HashCollection<String, IAtsUser> legacyIdToImplementers = new HashCollection<String, IAtsUser>();
    private final HashMap<String, Artifact> testRunArtifacts = new HashMap<String, Artifact>();
    private final HashMap<String, String> scriptCategories = new HashMap<String, String>();
-   private final HashSet<IBasicUser> testPocs = new HashSet<IBasicUser>();
+   private final HashSet<IAtsUser> testPocs = new HashSet<IAtsUser>();
    private final HashSet<String> requirementPocs = new HashSet<String>();
    private final ArrayList<String[]> statusLines = new ArrayList<String[]>();
    private final ArrayList<RequirementStatus> statuses = new ArrayList<RequirementStatus>(100);
@@ -383,9 +383,9 @@ public class DetailedTestStatusOld extends AbstractBlam {
 
                statusLine[columnIndex++] = status.getPartitionStatuses();
 
-               Collection<IBasicUser> implementers = legacyIdToImplementers.getValues(status.getLegacyId());
+               Collection<IAtsUser> implementers = legacyIdToImplementers.getValues(status.getLegacyId());
                if (implementers != null) {
-                  for (IBasicUser implementer : implementers) {
+                  for (IAtsUser implementer : implementers) {
                      requirementPocs.add(implementer.getName());
                   }
                }
@@ -473,7 +473,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
          statusLine[Index.Category.ordinal()] = "I";
       }
 
-      statusLine[Index.TEST_POC.ordinal()] = Artifacts.toString("; ", testPocs);
+      statusLine[Index.TEST_POC.ordinal()] = AtsObjects.toString("; ", testPocs);
       statusLine[Index.PARTITION.ordinal()] = requirement.getAttributesToString(CoreAttributeTypes.Partition);
       statusLine[Index.SUBSYSTEM.ordinal()] = requirement.getSoleAttributeValue(CoreAttributeTypes.Subsystem, "");
       statusLine[Index.REQUIREMENT_NAME.ordinal()] = requirement.getName();
@@ -555,7 +555,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
       Collection<TaskArtifact> tasks = workflow.getTaskArtifacts(TeamState.Implement);
       String legacyId = workflow.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
 
-      List<IBasicUser> implementers = workflow.getImplementers();
+      List<IAtsUser> implementers = workflow.getImplementers();
       legacyIdToImplementers.put(legacyId, implementers);
 
       for (TaskArtifact task : tasks) {

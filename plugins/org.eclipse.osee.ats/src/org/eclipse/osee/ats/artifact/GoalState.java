@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.artifact;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.util.WorkPageAdapter;
-import org.eclipse.osee.framework.core.util.WorkPageType;
+import org.eclipse.osee.ats.core.workflow.WorkPageAdapter;
+import org.eclipse.osee.ats.core.workflow.WorkPageType;
 
 public class GoalState extends WorkPageAdapter {
    public static GoalState InWork = new GoalState("InWork", WorkPageType.Working);

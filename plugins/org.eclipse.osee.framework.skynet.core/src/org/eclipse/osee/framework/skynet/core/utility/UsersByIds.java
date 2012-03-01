@@ -17,7 +17,6 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -31,16 +30,16 @@ public class UsersByIds {
 
    public static Pattern userPattern = Pattern.compile("<(.*?)>");
 
-   public static String getStorageString(Collection<IBasicUser> users) throws OseeCoreException {
+   public static String getStorageString(Collection<User> users) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
-      for (IBasicUser u : users) {
+      for (User u : users) {
          sb.append("<" + u.getUserId() + ">");
       }
       return sb.toString();
    }
 
-   public static List<IBasicUser> getUsers(String sorageString) {
-      List<IBasicUser> users = new ArrayList<IBasicUser>();
+   public static List<User> getUsers(String sorageString) {
+      List<User> users = new ArrayList<User>();
       Matcher m = userPattern.matcher(sorageString);
       while (m.find()) {
          String userId = m.group(1);

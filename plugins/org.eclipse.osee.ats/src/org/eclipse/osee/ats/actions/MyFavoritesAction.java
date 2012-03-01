@@ -12,11 +12,11 @@ package org.eclipse.osee.ats.actions;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorUISearchItemProvider;
 import org.eclipse.osee.ats.world.search.MyFavoritesSearchItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -33,7 +33,7 @@ public class MyFavoritesAction extends AbstractAtsAction {
    @Override
    public void runWithException() throws OseeCoreException {
       WorldEditor.open(new WorldEditorUISearchItemProvider(new MyFavoritesSearchItem("My Favorites",
-         UserManager.getUser()), null, TableLoadOption.None));
+         AtsUsers.getUser()), null, TableLoadOption.None));
    }
 
    @Override

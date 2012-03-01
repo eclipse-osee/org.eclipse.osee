@@ -19,14 +19,14 @@ import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.workflow.SMAState;
+import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
+import org.eclipse.osee.ats.core.workflow.WorkPageType;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.framework.core.model.IBasicUser;
-import org.eclipse.osee.framework.core.util.WorkPageType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -116,25 +116,25 @@ public class EventColumn extends XViewerValueColumn {
             is.getHoursSpentStr()))) {
             return "Statused [" + is.getName() + "] to: " + is.getPercentComplete() + "% and " + getHoursSpent(is) + " hrs";
          }
-         Collection<? extends IBasicUser> wasAssignees = was.getAssignees();
-         Collection<? extends IBasicUser> isAssignees = is.getAssignees();
-         Set<IBasicUser> assigned = new HashSet<IBasicUser>();
-         Set<IBasicUser> unAssigned = new HashSet<IBasicUser>();
-         for (IBasicUser isAssignee : isAssignees) {
+         Collection<? extends IAtsUser> wasAssignees = was.getAssignees();
+         Collection<? extends IAtsUser> isAssignees = is.getAssignees();
+         Set<IAtsUser> assigned = new HashSet<IAtsUser>();
+         Set<IAtsUser> unAssigned = new HashSet<IAtsUser>();
+         for (IAtsUser isAssignee : isAssignees) {
             if (!wasAssignees.contains(isAssignee)) {
                assigned.add(isAssignee);
             }
          }
-         for (IBasicUser wasAssignee : wasAssignees) {
+         for (IAtsUser wasAssignee : wasAssignees) {
             if (!isAssignees.contains(wasAssignee)) {
                unAssigned.add(wasAssignee);
             }
          }
          if (unAssigned.size() > 0) {
-            return "UnAssigned [" + is.getName() + "] removed " + Artifacts.toString("; ", unAssigned);
+            return "UnAssigned [" + is.getName() + "] removed " + AtsObjects.toString("; ", unAssigned);
          }
          if (assigned.size() > 0) {
-            return "Assigned [" + is.getName() + "] to " + Artifacts.toString("; ", assigned);
+            return "Assigned [" + is.getName() + "] to " + AtsObjects.toString("; ", assigned);
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

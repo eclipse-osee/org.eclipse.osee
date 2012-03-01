@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.StateManager;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -71,7 +72,7 @@ public class StateCompletedColumn extends XViewerAtsColumn implements IXViewerVa
                   }
                }
             }
-            return Artifacts.toString(";", dates);
+            return AtsObjects.toString(";", dates);
 
          }
       } catch (OseeCoreException ex) {

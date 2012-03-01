@@ -15,14 +15,13 @@ import java.util.Collection;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TransitionStatusDialog;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -106,8 +105,8 @@ public class SMAPromptChangeStatus {
       }
       for (AbstractWorkflowArtifact awa : awas) {
          if (awa.getStateMgr().isUnAssigned()) {
-            awa.getStateMgr().removeAssignee(UserManager.getUser(SystemUser.UnAssigned));
-            awa.getStateMgr().addAssignee(UserManager.getUser());
+            awa.getStateMgr().removeAssignee(AtsUsers.getUnAssigned());
+            awa.getStateMgr().addAssignee(AtsUsers.getUser());
          }
          awa.getStateMgr().updateMetrics(awa.getStateDefinition(), hours, percent, true);
          if (persist) {

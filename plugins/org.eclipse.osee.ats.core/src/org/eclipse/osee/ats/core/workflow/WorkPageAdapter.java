@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.util;
+package org.eclipse.osee.ats.core.workflow;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * Provides enum like capabilities to Work Pages (like ordinal, values and valueOf) while providing for the inheritance
  * of classes.
- * 
+ *
  * @author Donald G. Dunne
  */
 public abstract class WorkPageAdapter implements IWorkPage {

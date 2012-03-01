@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.version.VersionArtifact;
 import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
@@ -44,21 +45,19 @@ import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.workdef.DecisionReviewOption;
 import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
 import org.eclipse.osee.ats.core.workdef.WorkDefinition;
+import org.eclipse.osee.ats.core.workflow.IWorkPage;
+import org.eclipse.osee.ats.core.workflow.WorkPageAdapter;
+import org.eclipse.osee.ats.core.workflow.WorkPageType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.core.util.WorkPageAdapter;
-import org.eclipse.osee.framework.core.util.WorkPageType;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -283,7 +282,7 @@ public class AtsTestUtil {
       teamDef.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, WORK_DEF_NAME);
       teamDef.setSoleAttributeValue(AtsAttributeTypes.Active, true);
       teamDef.setSoleAttributeValue(AtsAttributeTypes.TeamUsesVersions, true);
-      teamDef.addRelation(AtsRelationTypes.TeamLead_Lead, UserManager.getUser());
+      teamDef.addRelation(AtsRelationTypes.TeamLead_Lead, AtsUsers.getOseeUser());
 
       testAi.addRelation(AtsRelationTypes.TeamActionableItem_Team, teamDef);
       testAi2.addRelation(AtsRelationTypes.TeamActionableItem_Team, teamDef);
@@ -300,7 +299,7 @@ public class AtsTestUtil {
 
       actionArt =
          ActionManager.createAction(null, getTitle("Team WF", postFixName), "description", ChangeType.Improvement, "1",
-            false, null, Arrays.asList(testAi), new Date(), UserManager.getUser(), null, transaction);
+            false, null, Arrays.asList(testAi), new Date(), AtsUsers.getUser(), null, transaction);
 
       teamArt = actionArt.getFirstTeam();
 
@@ -317,7 +316,7 @@ public class AtsTestUtil {
    public static TaskArtifact getOrCreateTaskOffTeamWf1() throws OseeCoreException {
       ensureLoaded();
       if (taskArtWf1 == null) {
-         taskArtWf1 = teamArt.createNewTask(getTitle("Task", postFixName), new Date(), UserManager.getUser());
+         taskArtWf1 = teamArt.createNewTask(getTitle("Task", postFixName), new Date(), AtsUsers.getUser());
          taskArtWf1.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, teamArt.getCurrentStateName());
          taskArtWf1.persist("AtsTestUtil - addTaskWf1");
       }
@@ -327,7 +326,7 @@ public class AtsTestUtil {
    public static TaskArtifact getOrCreateTaskOffTeamWf2() throws OseeCoreException {
       ensureLoaded();
       if (taskArtWf2 == null) {
-         taskArtWf2 = teamArt.createNewTask(getTitle("Task", postFixName), new Date(), UserManager.getUser());
+         taskArtWf2 = teamArt.createNewTask(getTitle("Task", postFixName), new Date(), AtsUsers.getUser());
          taskArtWf2.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, teamArt.getCurrentStateName());
          taskArtWf2.persist("AtsTestUtil - addTaskWf2");
       }
@@ -340,12 +339,11 @@ public class AtsTestUtil {
          List<DecisionReviewOption> options = new ArrayList<DecisionReviewOption>();
          options.add(new DecisionReviewOption(DecisionReviewState.Completed.getPageName(), false, null));
          options.add(new DecisionReviewOption(DecisionReviewState.Followup.getPageName(), true,
-            Arrays.asList(UserManager.getUser().getUserId())));
+            Arrays.asList(AtsUsers.getUser().getUserId())));
          decRevArt =
             DecisionReviewManager.createNewDecisionReview(teamArt, reviewBlockType,
                AtsTestUtil.class.getSimpleName() + " Test Decision Review", relatedToState.getPageName(),
-               "Decision Review", options, Arrays.asList((IBasicUser) UserManager.getUser()), new Date(),
-               UserManager.getUser());
+               "Decision Review", options, Arrays.asList(AtsUsers.getUser()), new Date(), AtsUsers.getUser());
       }
       return decRevArt;
    }
@@ -468,7 +466,7 @@ public class AtsTestUtil {
       TestUtil.sleep(4000);
    }
 
-   public static Result transitionTo(AtsTestUtilState atsTestUtilState, User user, SkynetTransaction transaction, TransitionOption... transitionOptions) {
+   public static Result transitionTo(AtsTestUtilState atsTestUtilState, IAtsUser user, SkynetTransaction transaction, TransitionOption... transitionOptions) {
       if (atsTestUtilState == AtsTestUtilState.Analyze && teamArt.isInState(AtsTestUtilState.Analyze)) {
          return Result.TrueResult;
       }
@@ -501,7 +499,7 @@ public class AtsTestUtil {
 
    }
 
-   private static Result transitionToState(TeamWorkFlowArtifact teamArt, IWorkPage toState, User user, SkynetTransaction transaction, TransitionOption... transitionOptions) {
+   private static Result transitionToState(TeamWorkFlowArtifact teamArt, IWorkPage toState, IAtsUser user, SkynetTransaction transaction, TransitionOption... transitionOptions) {
       TransitionHelper helper =
          new TransitionHelper("Transition to " + toState.getPageName(), Arrays.asList(teamArt), toState.getPageName(),
             Arrays.asList(user), null, transitionOptions);
@@ -549,7 +547,7 @@ public class AtsTestUtil {
             TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName());
          actionArt2 =
             ActionManager.createAction(null, getTitle("Team WF2", postFixName), "description", ChangeType.Improvement,
-               "1", false, null, Arrays.asList(testAi2), new Date(), UserManager.getUser(), null, transaction);
+               "1", false, null, Arrays.asList(testAi2), new Date(), AtsUsers.getUser(), null, transaction);
 
          teamArt2 = actionArt2.getFirstTeam();
          transaction.execute();

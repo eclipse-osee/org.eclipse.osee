@@ -26,11 +26,11 @@ import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.client.workflow.StateManager;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -49,11 +49,11 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
    }
 
    @Override
-   public List<IBasicUser> getImplementers() throws OseeCoreException {
+   public List<IAtsUser> getImplementers() throws OseeCoreException {
       if (this.isOfType(AtsArtifactTypes.DecisionReview)) {
          return StateManager.getImplementersByState(this, DecisionReviewState.Decision);
       } else {
-         List<IBasicUser> users = StateManager.getImplementersByState(this, PeerToPeerReviewState.Review);
+         List<IAtsUser> users = StateManager.getImplementersByState(this, PeerToPeerReviewState.Review);
          for (UserRole role : UserRoleManager.getUserRoles(this)) {
             if (!users.contains(role.getUser())) {
                users.add(role.getUser());

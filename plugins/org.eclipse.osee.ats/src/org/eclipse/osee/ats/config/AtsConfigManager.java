@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workdef.ConvertAtsDslToWorkDefinition;
 import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
@@ -44,7 +45,6 @@ import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -130,8 +130,8 @@ public class AtsConfigManager extends AbstractOperation {
       if (versionNames == null || versionNames.size() > 0) {
          teamDefinition.setSoleAttributeValue(AtsAttributeTypes.TeamUsesVersions, true);
       }
-      teamDefinition.addRelation(AtsRelationTypes.TeamLead_Lead, UserManager.getUser());
-      teamDefinition.addRelation(AtsRelationTypes.TeamMember_Member, UserManager.getUser());
+      teamDefinition.addRelation(AtsRelationTypes.TeamLead_Lead, AtsUsers.getOseeUser());
+      teamDefinition.addRelation(AtsRelationTypes.TeamMember_Member, AtsUsers.getOseeUser());
       AtsUtilCore.getFromToken(AtsArtifactToken.TopTeamDefinition).addChild(teamDefinition);
       teamDefinition.persist(transaction);
       return teamDefinition;

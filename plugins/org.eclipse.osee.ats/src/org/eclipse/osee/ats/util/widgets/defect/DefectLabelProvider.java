@@ -18,12 +18,11 @@ import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Disposition;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.InjectionActivity;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -52,8 +51,7 @@ public class DefectLabelProvider extends XViewerLabelProvider {
          return ImageManager.getImage(defectItem.isClosed() ? PluginUiImage.CHECKBOX_ENABLED : PluginUiImage.CHECKBOX_DISABLED);
       } else if (dCol.equals(DefectXViewerFactory.User_Col)) {
          try {
-            User user = UserManager.getUser(defectItem.getUser());
-            return ArtifactImageManager.getImage(user);
+            return ArtifactImageManager.getImage(AtsUsers.getOseeUser(defectItem.getUser()));
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }

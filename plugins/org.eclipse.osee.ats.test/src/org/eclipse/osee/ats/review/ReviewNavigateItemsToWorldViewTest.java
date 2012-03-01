@@ -13,6 +13,8 @@ package org.eclipse.osee.ats.review;
 import static org.junit.Assert.assertTrue;
 import java.util.Collection;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.util.DemoTestUtil;
@@ -22,8 +24,6 @@ import org.eclipse.osee.ats.util.WorldEditorUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.search.UserSearchItem;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -55,14 +55,14 @@ public class ReviewNavigateItemsToWorldViewTest {
    @org.junit.Test
    public void testOtherUsersWorld_KayJones() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItems("User's Reviews").iterator().next();
-      runGeneralLoadingTest(item, AtsArtifactTypes.PeerToPeerReview, 1, DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
+      runGeneralLoadingTest(item, AtsArtifactTypes.PeerToPeerReview, 1, AtsUsers.getUserFromToken(DemoUsers.Kay_Jones));
    }
 
    @org.junit.Test
    public void testOtherUsersWorld_JoeSmith() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItems("User's Reviews").iterator().next();
-      runGeneralLoadingTest(item, AtsArtifactTypes.DecisionReview, 2, DemoTestUtil.getDemoUser(DemoUsers.Joe_Smith));
-      runGeneralLoadingTest(item, AtsArtifactTypes.PeerToPeerReview, 2, DemoTestUtil.getDemoUser(DemoUsers.Joe_Smith));
+      runGeneralLoadingTest(item, AtsArtifactTypes.DecisionReview, 2, AtsUsers.getUserFromToken(DemoUsers.Joe_Smith));
+      runGeneralLoadingTest(item, AtsArtifactTypes.PeerToPeerReview, 2, AtsUsers.getUserFromToken(DemoUsers.Joe_Smith));
    }
 
    @org.junit.Test
@@ -90,7 +90,7 @@ public class ReviewNavigateItemsToWorldViewTest {
       MassArtifactEditor.closeAll();
       XNavigateItem item =
          NavigateTestUtil.getAtsNavigateItems("Generate Review Participation Report").iterator().next();
-      ((GenerateReviewParticipationReport) item).setSelectedUser(UserManager.getUser(DemoUsers.Joe_Smith));
+      ((GenerateReviewParticipationReport) item).setSelectedUser(AtsUsers.getUserFromToken(DemoUsers.Joe_Smith));
 
       item.run(TableLoadOption.ForcePend);
 
@@ -100,16 +100,16 @@ public class ReviewNavigateItemsToWorldViewTest {
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.DecisionReview, 3);
    }
 
-   private Collection<Artifact> runGeneralLoadingTest(String xNavigateItemName, IArtifactType artifactType, int numOfType, User user) throws Exception {
+   private Collection<Artifact> runGeneralLoadingTest(String xNavigateItemName, IArtifactType artifactType, int numOfType, IAtsUser user) throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem(xNavigateItemName);
       return runGeneralLoadingTest(item, artifactType, numOfType, user);
    }
 
-   private Collection<Artifact> runGeneralLoadingTest(XNavigateItem item, IArtifactType artifactType, int numOfType, User user) throws Exception {
+   private Collection<Artifact> runGeneralLoadingTest(XNavigateItem item, IArtifactType artifactType, int numOfType, IAtsUser user) throws Exception {
       return runGeneralLoadingTest(item, artifactType, numOfType, user, TableLoadOption.None);
    }
 
-   private Collection<Artifact> runGeneralLoadingTest(XNavigateItem item, IArtifactType artifactType, int numOfType, User user, TableLoadOption tableLoadOption) throws Exception {
+   private Collection<Artifact> runGeneralLoadingTest(XNavigateItem item, IArtifactType artifactType, int numOfType, IAtsUser user, TableLoadOption tableLoadOption) throws Exception {
       WorldEditor.closeAll();
       // Find the correct navigate item
       if (user != null && item instanceof SearchNavigateItem) {

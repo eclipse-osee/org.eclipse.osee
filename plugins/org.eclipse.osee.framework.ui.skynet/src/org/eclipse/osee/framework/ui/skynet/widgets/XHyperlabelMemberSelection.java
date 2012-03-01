@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
@@ -24,13 +24,13 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
  */
 public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection {
 
-   Set<IBasicUser> selectedUsers = new HashSet<IBasicUser>();
+   Set<User> selectedUsers = new HashSet<User>();
 
    public XHyperlabelMemberSelection(String label) {
       super(label, false, 80);
    }
 
-   public Set<IBasicUser> getSelectedUsers() {
+   public Set<User> getSelectedUsers() {
       return selectedUsers;
    }
 
@@ -39,7 +39,7 @@ public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection
       return Artifacts.toString("; ", selectedUsers);
    }
 
-   public void setSelectedUsers(Set<IBasicUser> selectedUsers) {
+   public void setSelectedUsers(Set<User> selectedUsers) {
       this.selectedUsers = selectedUsers;
       refresh();
    }
@@ -59,7 +59,7 @@ public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection
             return false;
          }
          selectedUsers.clear();
-         for (IBasicUser art : uld.getUsersSelected()) {
+         for (User art : uld.getUsersSelected()) {
             selectedUsers.add(art);
          }
          return true;

@@ -24,18 +24,18 @@ import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.util.AtsCacheManager;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
+import org.eclipse.osee.ats.core.workflow.IWorkPage;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.IBasicUser;
-import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -65,7 +65,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
    }
 
    @Override
-   public void transitioned(StateDefinition fromState, StateDefinition toState, Collection<? extends IBasicUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+   public void transitioned(StateDefinition fromState, StateDefinition toState, Collection<? extends IAtsUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
       super.transitioned(fromState, toState, toAssignees, transaction);
       for (TaskArtifact taskArt : getTaskArtifacts()) {
          taskArt.parentWorkFlowTransitioned(fromState, toState, toAssignees, transaction);
@@ -98,17 +98,17 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
       return getRelatedArtifactsCount(AtsRelationTypes.SmaToTask_Task) > 0;
    }
 
-   public TaskArtifact createNewTask(String title, Date createdDate, IBasicUser createdBy) throws OseeCoreException {
-      return createNewTask(Arrays.asList((IBasicUser) UserManager.getUser()), title, createdDate, createdBy);
+   public TaskArtifact createNewTask(String title, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
+      return createNewTask(Arrays.asList(AtsUsers.getUser()), title, createdDate, createdBy);
    }
 
-   public TaskArtifact createNewTask(Collection<IBasicUser> assignees, String title, Date createdDate, IBasicUser createdBy) throws OseeCoreException {
+   public TaskArtifact createNewTask(Collection<IAtsUser> assignees, String title, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
       TaskArtifact taskArt = null;
       taskArt =
          (TaskArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Task, AtsUtilCore.getAtsBranch(), title);
 
       addRelation(AtsRelationTypes.SmaToTask_Task, taskArt);
-      taskArt.initializeNewStateMachine(assignees, new Date(), (createdBy == null ? UserManager.getUser() : createdBy));
+      taskArt.initializeNewStateMachine(assignees, new Date(), (createdBy == null ? AtsUsers.getUser() : createdBy));
 
       // Set parent state task is related to
       taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, getStateMgr().getCurrentStateName());
@@ -230,13 +230,13 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
       return spent / taskArts.size();
    }
 
-   public Collection<TaskArtifact> createTasks(List<String> titles, List<IBasicUser> assignees, Date createdDate, IBasicUser createdBy, SkynetTransaction transaction) throws OseeCoreException {
+   public Collection<TaskArtifact> createTasks(List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, SkynetTransaction transaction) throws OseeCoreException {
       List<TaskArtifact> tasks = new ArrayList<TaskArtifact>();
       for (String title : titles) {
          TaskArtifact taskArt = createNewTask(title, createdDate, createdBy);
          if (assignees != null && !assignees.isEmpty()) {
-            Set<IBasicUser> users = new HashSet<IBasicUser>(); // NOPMD by b0727536 on 9/29/10 8:51 AM
-            for (IBasicUser art : assignees) {
+            Set<IAtsUser> users = new HashSet<IAtsUser>(); // NOPMD by b0727536 on 9/29/10 8:51 AM
+            for (IAtsUser art : assignees) {
                users.add(art);
             }
             taskArt.getStateMgr().setAssignees(users);

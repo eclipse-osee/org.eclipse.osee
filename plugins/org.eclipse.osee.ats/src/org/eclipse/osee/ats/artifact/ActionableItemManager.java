@@ -23,13 +23,13 @@ import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.config.TeamDefinitionManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -80,7 +80,7 @@ public class ActionableItemManager {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Edit Actionable Items");
       Date createdDate = new Date();
-      User createdBy = UserManager.getUser();
+      IAtsUser createdBy = AtsUsers.getUser();
 
       // Add new aias
       for (ActionableItemArtifact aia : diag.getChecked()) {
@@ -101,7 +101,7 @@ public class ActionableItemManager {
       return new Result(true, sb.toString());
    }
 
-   public static Result addActionableItemToTeamsOrAddTeams(Artifact actionArt, ActionableItemArtifact aia, Date createdDate, User createdBy, SkynetTransaction transaction) throws OseeCoreException {
+   public static Result addActionableItemToTeamsOrAddTeams(Artifact actionArt, ActionableItemArtifact aia, Date createdDate, IAtsUser createdBy, SkynetTransaction transaction) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       for (TeamDefinitionArtifact tda : TeamDefinitionManagerCore.getImpactedTeamDefs(Arrays.asList(aia))) {
          boolean teamExists = false;

@@ -8,8 +8,8 @@ package org.eclipse.osee.ats.actions;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Test;
 
@@ -22,11 +22,11 @@ public class FavoriteActionTest extends AbstractAtsActionTest {
    public void test() throws Exception {
       SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
-      Assert.assertFalse(UserManager.getUser().getRelatedArtifacts(AtsRelationTypes.FavoriteUser_Artifact).contains(
+      Assert.assertFalse(AtsUsers.getOseeUser().getRelatedArtifacts(AtsRelationTypes.FavoriteUser_Artifact).contains(
          AtsTestUtil.getTeamWf()));
       FavoriteAction action = createAction();
       action.runWithException();
-      Assert.assertTrue(UserManager.getUser().getRelatedArtifacts(AtsRelationTypes.FavoriteUser_Artifact).contains(
+      Assert.assertTrue(AtsUsers.getOseeUser().getRelatedArtifacts(AtsRelationTypes.FavoriteUser_Artifact).contains(
          AtsTestUtil.getTeamWf()));
       TestUtil.severeLoggingEnd(monitor);
    }

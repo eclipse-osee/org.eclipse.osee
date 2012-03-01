@@ -11,9 +11,10 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
@@ -27,16 +28,16 @@ import org.eclipse.swt.graphics.Image;
  */
 public abstract class UserSearchItem extends WorldUISearchItem {
 
-   protected final User user;
-   protected User selectedUser;
+   protected final IAtsUser user;
+   protected IAtsUser selectedUser;
    private Active active = Active.Active;
 
-   public UserSearchItem(String name, User user) {
+   public UserSearchItem(String name, IAtsUser user) {
       super(name);
       this.user = user;
    }
 
-   public UserSearchItem(String name, User user, KeyedImage oseeImage) {
+   public UserSearchItem(String name, IAtsUser user, KeyedImage oseeImage) {
       super(name, oseeImage);
       this.user = user;
    }
@@ -65,7 +66,7 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       return "";
    }
 
-   public User getSearchUser() {
+   public IAtsUser getSearchUser() {
       if (user != null) {
          return user;
       }
@@ -85,7 +86,7 @@ public abstract class UserSearchItem extends WorldUISearchItem {
    }
 
    @SuppressWarnings("unused")
-   protected Collection<Artifact> searchIt(User user) throws OseeCoreException {
+   protected Collection<Artifact> searchIt(IAtsUser user) throws OseeCoreException {
       return EMPTY_SET;
    }
 
@@ -111,7 +112,7 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       UserListDialog ld = new UserListDialog(Displays.getActiveShell(), active);
       int result = ld.open();
       if (result == 0) {
-         selectedUser = ld.getSelection();
+         selectedUser = AtsUsers.getUserFromOseeUser(ld.getSelection());
          return;
       }
       cancelled = true;
@@ -120,14 +121,14 @@ public abstract class UserSearchItem extends WorldUISearchItem {
    /**
     * @param selectedUser the selectedUser to set
     */
-   public void setSelectedUser(User selectedUser) {
+   public void setSelectedUser(IAtsUser selectedUser) {
       this.selectedUser = selectedUser;
    }
 
    /**
     * @return the user
     */
-   public User getDefaultUser() {
+   public IAtsUser getDefaultUser() {
       return user;
    }
 

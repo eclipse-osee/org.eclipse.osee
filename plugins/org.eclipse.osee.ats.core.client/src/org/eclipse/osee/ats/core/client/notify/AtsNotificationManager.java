@@ -19,13 +19,15 @@ import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.email.EmailGroup;
 import org.eclipse.osee.framework.skynet.core.utility.INotificationManager;
@@ -62,7 +64,7 @@ public class AtsNotificationManager {
       boolean notificationAdded = false;
       try {
          // Handle Team Definitions
-         Collection<IBasicUser> subscribedUsers =
+         Collection<User> subscribedUsers =
             Collections.castAll(teamArt.getTeamDefinition().getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User));
          if (subscribedUsers.size() > 0) {
             notificationAdded = true;
@@ -125,7 +127,7 @@ public class AtsNotificationManager {
       notify(sma, null, notifyTypes);
    }
 
-   public static void notify(AbstractWorkflowArtifact awa, Collection<IBasicUser> notifyUsers, AtsNotifyType... notifyTypes) throws OseeCoreException {
+   public static void notify(AbstractWorkflowArtifact awa, Collection<IAtsUser> notifyUsers, AtsNotifyType... notifyTypes) throws OseeCoreException {
       if (isInTest() || !AtsUtilCore.isEmailEnabled() || !isProduction() || awa.getName().startsWith("tt ")) {
          return;
       }
@@ -135,12 +137,12 @@ public class AtsNotificationManager {
    public static List<EmailGroup> getEmailableGroups(AbstractWorkflowArtifact workflow) throws OseeCoreException {
       ArrayList<EmailGroup> groupNames = new ArrayList<EmailGroup>();
       ArrayList<String> emails = new ArrayList<String>();
-      emails.add(UserManager.getEmail(workflow.getCreatedBy()));
+      emails.add(UserManager.getEmail(AtsUsers.getOseeUser(workflow.getCreatedBy())));
       groupNames.add(new EmailGroup("Originator", emails));
       if (workflow.getStateMgr().getAssignees().size() > 0) {
          emails = new ArrayList<String>();
-         for (IBasicUser u : workflow.getStateMgr().getAssignees()) {
-            emails.add(UserManager.getEmail(u));
+         for (IAtsUser u : workflow.getStateMgr().getAssignees()) {
+            emails.add(UserManager.getEmail(AtsUsers.getOseeUser(u)));
          }
          groupNames.add(new EmailGroup("Assignees", emails));
       }

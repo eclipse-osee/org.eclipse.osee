@@ -14,13 +14,13 @@ import java.util.Date;
 import java.util.Set;
 
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
 import org.eclipse.osee.ats.core.client.workflow.log.LogType;
+import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.workflow.IWorkPage;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.util.IWorkPage;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 
 /**
  * @author Donald G. Dunne
@@ -50,7 +50,7 @@ public class XCurrentStateDam extends XStateAssigneesDam {
       currState.setPercentComplete(percentComplete);
       setState(currState);
       if (logMetrics) {
-         logMetrics(awa.getStateMgr().getCurrentState(), UserManager.getUser(), new Date());
+         logMetrics(awa.getStateMgr().getCurrentState(), AtsUsers.getUser(), new Date());
       }
    }
 
@@ -68,7 +68,6 @@ public class XCurrentStateDam extends XStateAssigneesDam {
       }
    }
 
-   public void setMetrics(double hours, int percentComplete, boolean logMetrics, User user, Date date) throws OseeCoreException {
       SMAState currState = getState();
       currState.setHoursSpent(hours);
       currState.setPercentComplete(percentComplete);
@@ -91,7 +90,6 @@ public class XCurrentStateDam extends XStateAssigneesDam {
       }
    }
 
-   public static void logMetrics(AbstractWorkflowArtifact sma, String percent, String hours, IWorkPage state, User user, Date date) throws OseeCoreException {
       LogItem logItem =
          new LogItem(LogType.Metrics, date, user, state.getPageName(), String.format("Percent %s Hours %s", percent,
             hours), sma.getHumanReadableId());

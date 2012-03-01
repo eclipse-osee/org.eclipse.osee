@@ -37,23 +37,22 @@ import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.util.AtsCacheManager;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -140,7 +139,7 @@ public class ExcelAtsActionArtifactExtractor {
                try {
                   assignee = assignee.replaceFirst("^ *", "");
                   assignee = assignee.replaceFirst(" *$", "");
-                  User user = UserManager.getUserByName(assignee);
+                  IAtsUser user = AtsUsers.getUserByName(assignee);
                   if (user == null) {
                      rd.logError("Row " + rowNum + ": Couldn't retrieve user \"" + assignee + "\"");
                   } else {
@@ -160,7 +159,7 @@ public class ExcelAtsActionArtifactExtractor {
       Set<TeamWorkFlowArtifact> teamWfs = new HashSet<TeamWorkFlowArtifact>();
       Date createdDate = new Date();
       try {
-         User createdBy = UserManager.getUser();
+         IAtsUser createdBy = AtsUsers.getUser();
          for (ActionData aData : actionDatas) {
             Artifact actionArt = actionNameToAction.get(aData.title);
             Collection<TeamWorkFlowArtifact> newTeamArts = new HashSet<TeamWorkFlowArtifact>();
@@ -292,7 +291,7 @@ public class ExcelAtsActionArtifactExtractor {
       protected Set<String> userComms = new HashSet<String>();
       protected String changeType = "";
       protected Set<String> assigneeStrs = new HashSet<String>();
-      protected Set<IBasicUser> assignees = new HashSet<IBasicUser>();
+      protected Set<IAtsUser> assignees = new HashSet<IAtsUser>();
       protected Set<String> actionableItems = new HashSet<String>();
       protected String version = "";
       protected Double estimatedHours = null;

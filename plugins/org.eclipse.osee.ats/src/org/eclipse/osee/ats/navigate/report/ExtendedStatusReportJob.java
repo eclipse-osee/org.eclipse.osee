@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -36,7 +37,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
@@ -163,7 +163,7 @@ public class ExtendedStatusReportJob extends Job {
          } else if (col == Columns.Originator) {
             handleOriginatorColumn(sma, values);
          } else if (col == Columns.Assignees) {
-            values.add(Artifacts.toString("; ", sma.getStateMgr().getAssignees()));
+            values.add(AtsObjects.toString("; ", sma.getStateMgr().getAssignees()));
          } else if (col == Columns.Status_State) {
             values.add(sma.getStateMgr().getCurrentStateName());
          } else if (col == Columns.Date_Created) {

@@ -18,25 +18,23 @@ import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.util.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.client.validator.AtsXWidgetValidateManagerClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.log.LogType;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.validator.WidgetResult;
 import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
+import org.eclipse.osee.ats.core.workflow.IWorkPage;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionResult;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
-import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
@@ -45,7 +43,7 @@ public class TransitionManager {
    private final ITransitionHelper helper;
    private String completedCancellationReason = null;
    private SkynetTransaction transaction;
-   private IBasicUser transitionAsUser;
+   private IAtsUser transitionAsUser;
    private Date transitionOnDate;
 
    public TransitionManager(ITransitionHelper helper) {
@@ -131,8 +129,7 @@ public class TransitionManager {
             // Validate Editable
             boolean stateIsEditable =
                WorkflowManagerCore.isEditable(awa, awa.getStateDefinition(), helper.isPrivilegedEditEnabled());
-            boolean currentlyUnAssigned =
-               awa.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned));
+            boolean currentlyUnAssigned = awa.getStateMgr().getAssignees().contains(AtsUsers.getUnAssigned());
             awa.getStateMgr().validateNoBootstrapUser();
             boolean overrideAssigneeCheck = helper.isOverrideAssigneeCheck();
             // Allow anyone to transition any task to completed/cancelled/working if parent is working
@@ -252,7 +249,7 @@ public class TransitionManager {
                StateDefinition toState = awa.getStateDefinitionByName(helper.getToStateName());
 
                Date transitionDate = getTransitionOnDate();
-               User transitionUser = UserManager.getUser(getTransitionAsUser());
+               IAtsUser transitionUser = getTransitionAsUser();
                // Log transition
                if (fromState.isCancelledPage()) {
                   logWorkflowUnCancelledEvent(awa);
@@ -272,17 +269,17 @@ public class TransitionManager {
                logStateStartedEvent(awa, toState, transitionDate, transitionUser);
 
                // Get transition to assignees
-               Collection<IBasicUser> toAssignees = new HashSet<IBasicUser>();
+               Collection<IAtsUser> toAssignees = new HashSet<IAtsUser>();
                if (!toState.isCompletedOrCancelledPage()) {
                   if (helper.getToAssignees() != null) {
                      toAssignees.addAll(helper.getToAssignees());
                   }
-                  if (toAssignees.contains(UserManager.getUser(SystemUser.UnAssigned))) {
-                     toAssignees.remove(UserManager.getUser(SystemUser.UnAssigned));
-                     toAssignees.add(UserManager.getUser());
+                  if (toAssignees.contains(AtsUsers.getUnAssigned())) {
+                     toAssignees.remove(AtsUsers.getUnAssigned());
+                     toAssignees.add(AtsUsers.getUser());
                   }
                   if (toAssignees.isEmpty()) {
-                     toAssignees.add(UserManager.getUser());
+                     toAssignees.add(AtsUsers.getUser());
                   }
                }
 
@@ -410,7 +407,7 @@ public class TransitionManager {
       }
    }
 
-   public static void logWorkflowCancelledEvent(AbstractWorkflowArtifact awa, String fromStateName, String reason, Date cancelDate, User cancelBy) throws OseeCoreException {
+   public static void logWorkflowCancelledEvent(AbstractWorkflowArtifact awa, String fromStateName, String reason, Date cancelDate, IAtsUser cancelBy) throws OseeCoreException {
       awa.getLog().addLog(LogType.StateCancelled, fromStateName, reason, cancelDate, cancelBy);
       if (awa.isAttributeTypeValid(AtsAttributeTypes.CreatedBy)) {
          awa.setSoleAttributeValue(AtsAttributeTypes.CancelledBy, cancelBy.getUserId());
@@ -429,7 +426,7 @@ public class TransitionManager {
       }
    }
 
-   private void logWorkflowCompletedEvent(AbstractWorkflowArtifact awa, String fromStateName, String reason, Date cancelDate, User cancelBy) throws OseeCoreException {
+   private void logWorkflowCompletedEvent(AbstractWorkflowArtifact awa, String fromStateName, String reason, Date cancelDate, IAtsUser cancelBy) throws OseeCoreException {
       awa.getLog().addLog(LogType.StateComplete, fromStateName, Strings.isValid(reason) ? reason : "", cancelDate,
          cancelBy);
       if (awa.isAttributeTypeValid(AtsAttributeTypes.CreatedBy)) {
@@ -447,13 +444,12 @@ public class TransitionManager {
       }
    }
 
-   private void logStateCompletedEvent(AbstractWorkflowArtifact awa, String fromStateName, String reason, Date date, IBasicUser user) throws OseeCoreException {
-      awa.getLog().addLog(LogType.StateComplete, fromStateName, Strings.isValid(reason) ? reason : "", date,
-         UserManager.getUser(user));
+   private void logStateCompletedEvent(AbstractWorkflowArtifact awa, String fromStateName, String reason, Date date, IAtsUser user) throws OseeCoreException {
+      awa.getLog().addLog(LogType.StateComplete, fromStateName, Strings.isValid(reason) ? reason : "", date, user);
    }
 
-   public static void logStateStartedEvent(AbstractWorkflowArtifact awa, IWorkPage state, Date date, IBasicUser user) throws OseeCoreException {
-      awa.getLog().addLog(LogType.StateEntered, state.getPageName(), "", date, UserManager.getUser(user));
+   public static void logStateStartedEvent(AbstractWorkflowArtifact awa, IWorkPage state, Date date, IAtsUser user) throws OseeCoreException {
+      awa.getLog().addLog(LogType.StateEntered, state.getPageName(), "", date, user);
    }
 
    public SkynetTransaction getTransaction() {
@@ -476,14 +472,14 @@ public class TransitionManager {
     * Allow transition date to be used in log to be overridden for importing Actions from other systems and other
     * programatic transitions.
     */
-   public IBasicUser getTransitionAsUser() throws OseeCoreException {
+   public IAtsUser getTransitionAsUser() throws OseeCoreException {
       if (transitionAsUser == null) {
-         return UserManager.getUser();
+         return AtsUsers.getUser();
       }
       return transitionAsUser;
    }
 
-   public void setTransitionAsUser(IBasicUser transitionAsUser) {
+   public void setTransitionAsUser(IAtsUser transitionAsUser) {
       this.transitionAsUser = transitionAsUser;
    }
 

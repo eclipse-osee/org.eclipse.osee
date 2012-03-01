@@ -12,10 +12,9 @@ package org.eclipse.osee.ats.core.client.workflow.transition;
 
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 
 /**
  * @author Donald G. Dunne
@@ -49,13 +48,12 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
 
    @Override
    public boolean isSystemUser() throws OseeCoreException {
-      return UserManager.getUser(SystemUser.Guest) == UserManager.getUser() || UserManager.getUser(SystemUser.OseeSystem) == UserManager.getUser();
+      return AtsUsers.isGuestUser(AtsUsers.getUser()) || AtsUsers.isOseeSystemUser(AtsUsers.getUser());
    }
 
    @Override
    public boolean isSystemUserAssingee(AbstractWorkflowArtifact awa) throws OseeCoreException {
-      return awa.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.Guest)) || awa.getStateMgr().getAssignees().contains(
-         UserManager.getUser(SystemUser.OseeSystem));
+      return awa.getStateMgr().getAssignees().contains(AtsUsers.getGuestUser()) || awa.getStateMgr().getAssignees().contains(
+         AtsUsers.getOseeSystemUser());
    }
-
 }

@@ -22,6 +22,8 @@ import java.util.logging.Level;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.workdef.CompositeStateItem;
 import org.eclipse.osee.ats.core.workdef.DecisionReviewDefinition;
 import org.eclipse.osee.ats.core.workdef.DecisionReviewOption;
@@ -40,6 +42,7 @@ import org.eclipse.osee.ats.core.workdef.WidgetOption;
 import org.eclipse.osee.ats.core.workdef.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.provider.BooleanDefUtil;
 import org.eclipse.osee.ats.core.workdef.provider.UserRefUtil;
+import org.eclipse.osee.ats.core.workflow.WorkPageType;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.dsl.atsDsl.AttrWidget;
 import org.eclipse.osee.ats.dsl.atsDsl.Composite;
@@ -62,11 +65,8 @@ import org.eclipse.osee.ats.dsl.atsDsl.WidgetDef;
 import org.eclipse.osee.ats.dsl.atsDsl.WidgetRef;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.core.util.WorkPageType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.AttributeTypeToXWidgetName;
 
@@ -322,7 +322,7 @@ public class ConvertAtsDslToWorkDefinition {
                continue;
             }
             try {
-               User user = UserManager.getUserByName(name);
+               IAtsUser user = AtsUsers.getUserByName(name);
                userIds.add(user.getUserId());
             } catch (OseeCoreException ex) {
                OseeLog.logf(Activator.class, Level.WARNING, "No user by name [%s] [%s]", name, ex.getLocalizedMessage());
@@ -335,7 +335,7 @@ public class ConvertAtsDslToWorkDefinition {
                continue;
             }
             try {
-               User user = UserManager.getUserByUserId(userId);
+               IAtsUser user = AtsUsers.getUserByUserId(userId);
                userIds.add(user.getUserId());
             } catch (OseeCoreException ex) {
                OseeLog.logf(Activator.class, Level.WARNING, "No user by id [%s] [%s]", userId, ex.getLocalizedMessage());

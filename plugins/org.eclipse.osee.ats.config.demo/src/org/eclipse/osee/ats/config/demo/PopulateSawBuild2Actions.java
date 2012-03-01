@@ -30,8 +30,10 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -42,8 +44,6 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -98,7 +98,7 @@ public class PopulateSawBuild2Actions {
       Collection<ActionableItemArtifact> aias =
          DemoDbUtil.getActionableItems(new String[] {DemoDbAIs.SAW_Requirements.getAIName()});
       Date createdDate = new Date();
-      User createdBy = UserManager.getUser();
+      IAtsUser createdBy = AtsUsers.getUser();
       String priority = "3";
 
       ActionArtifact actionArt =
@@ -140,7 +140,7 @@ public class PopulateSawBuild2Actions {
             DemoDbAIs.SAW_Requirements.getAIName(),
             DemoDbAIs.SAW_Test.getAIName()});
       Date createdDate = new Date();
-      User createdBy = UserManager.getUser();
+      IAtsUser createdBy = AtsUsers.getUser();
       String priority = "3";
 
       ActionArtifact actionArt =
@@ -214,7 +214,7 @@ public class PopulateSawBuild2Actions {
             DemoDbAIs.SAW_Requirements.getAIName(),
             DemoDbAIs.SAW_Test.getAIName()});
       Date createdDate = new Date();
-      User createdBy = UserManager.getUser();
+      IAtsUser createdBy = AtsUsers.getUser();
       String priority = "3";
 
       ActionArtifact actionArt =
@@ -290,7 +290,7 @@ public class PopulateSawBuild2Actions {
             DemoDbAIs.SAW_Code.getAIName(),
             DemoDbAIs.SAW_Test.getAIName()});
       Date createdDate = new Date();
-      User createdBy = UserManager.getUser();
+      IAtsUser createdBy = AtsUsers.getUser();
       String priority = "1";
 
       ActionArtifact actionArt =
@@ -370,8 +370,7 @@ public class PopulateSawBuild2Actions {
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.Robot,
          reqTeam.getWorkingBranch())) {
          if (DEBUG) {
-            OseeLog.log(Activator.class, Level.INFO,
-               new StringBuilder("Modifying artifact => ").append(art).toString());
+            OseeLog.log(Activator.class, Level.INFO, new StringBuilder("Modifying artifact => ").append(art).toString());
          }
          art.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Navigation.name());
          art.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Navigation.name());
@@ -385,8 +384,7 @@ public class PopulateSawBuild2Actions {
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.Event,
          reqTeam.getWorkingBranch())) {
          if (DEBUG) {
-            OseeLog.log(Activator.class, Level.INFO,
-               new StringBuilder("Modifying artifact => ").append(art).toString());
+            OseeLog.log(Activator.class, Level.INFO, new StringBuilder("Modifying artifact => ").append(art).toString());
          }
          art.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Interface.name());
          art.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Communications.name());
@@ -401,8 +399,7 @@ public class PopulateSawBuild2Actions {
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.daVinci,
          reqTeam.getWorkingBranch())) {
          if (DEBUG) {
-            OseeLog.log(Activator.class, Level.INFO,
-               new StringBuilder("Deleting artifact => ").append(art).toString());
+            OseeLog.log(Activator.class, Level.INFO, new StringBuilder("Deleting artifact => ").append(art).toString());
          }
          art.deleteAndPersist();
       }
@@ -517,8 +514,7 @@ public class PopulateSawBuild2Actions {
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.Functional,
          reqTeam.getWorkingBranch())) {
          if (DEBUG) {
-            OseeLog.log(Activator.class, Level.INFO,
-               new StringBuilder("Modifying artifact => ").append(art).toString());
+            OseeLog.log(Activator.class, Level.INFO, new StringBuilder("Modifying artifact => ").append(art).toString());
          }
          art.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Interface.name());
          art.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Communications.name());
@@ -534,8 +530,7 @@ public class PopulateSawBuild2Actions {
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.CISST,
          reqTeam.getWorkingBranch())) {
          if (DEBUG) {
-            OseeLog.log(Activator.class, Level.INFO,
-               new StringBuilder("Deleting artifact => ").append(art).toString());
+            OseeLog.log(Activator.class, Level.INFO, new StringBuilder("Deleting artifact => ").append(art).toString());
          }
          art.deleteAndPersist();
       }

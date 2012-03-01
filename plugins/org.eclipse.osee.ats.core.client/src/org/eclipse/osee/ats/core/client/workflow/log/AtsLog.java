@@ -20,8 +20,9 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -29,8 +30,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -145,7 +144,7 @@ public class AtsLog {
    /**
     * Used to reset the original originated user. Only for internal use. Kept for backward compatibility.
     */
-   public void internalResetOriginator(IBasicUser user) throws OseeCoreException {
+   public void internalResetOriginator(IAtsUser user) throws OseeCoreException {
       List<LogItem> logItems = getLogItems();
       for (LogItem item : logItems) {
          if (item.getType() == LogType.Originated) {
@@ -229,7 +228,7 @@ public class AtsLog {
    /**
     * Since originator change be changed, return the last originated event's user. Kept for backward compatibility.
     */
-   public IBasicUser internalGetOriginator() throws OseeCoreException {
+   public IAtsUser internalGetOriginator() throws OseeCoreException {
       LogItem logItem = getLastEvent(LogType.Originated);
       if (logItem == null) {
          return null;
@@ -275,13 +274,13 @@ public class AtsLog {
     * @param state name of state or null
     */
    public void addLog(LogType type, String state, String msg) throws OseeCoreException {
-      addLog(type, state, msg, new Date(), UserManager.getUser());
+      addLog(type, state, msg, new Date(), AtsUsers.getUser());
    }
 
    /**
     * @param state name of state or null
     */
-   public void addLog(LogType type, String state, String msg, User user) throws OseeCoreException {
+   public void addLog(LogType type, String state, String msg, IAtsUser user) throws OseeCoreException {
       addLog(type, state, msg, new Date(), user);
    }
 
@@ -289,7 +288,7 @@ public class AtsLog {
       addLog(item.getType(), item.getState(), item.getMsg(), item.getDate(), item.getUser());
    }
 
-   public void addLog(LogType type, String state, String msg, Date date, IBasicUser user) throws OseeCoreException {
+   public void addLog(LogType type, String state, String msg, Date date, IAtsUser user) throws OseeCoreException {
       if (!enabled) {
          return;
       }
@@ -309,7 +308,7 @@ public class AtsLog {
       builder.append(AHTML.beginMultiColumnTable(100, 1));
       builder.append(AHTML.addHeaderRowMultiColumnTable(Arrays.asList("Event", "State", "Message", "User", "Date")));
       for (LogItem item : logItems) {
-         IBasicUser user = item.getUser();
+         IAtsUser user = item.getUser();
          String userStr = null;
          if (user == null) {
             userStr = item.getUserId();

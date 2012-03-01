@@ -15,11 +15,11 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -56,8 +56,8 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
       super.setSelectedUsers(getStoredUsers());
    }
 
-   public Set<IBasicUser> getStoredUsers() {
-      Set<IBasicUser> users = new HashSet<IBasicUser>();
+   public Set<User> getStoredUsers() {
+      Set<User> users = new HashSet<User>();
       try {
          for (String userId : artifact.getAttributesToStringList(attributeType)) {
             try {
@@ -77,7 +77,7 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
    public void saveToArtifact() {
       try {
          Set<String> userIds = new HashSet<String>();
-         for (IBasicUser user : getSelectedUsers()) {
+         for (User user : getSelectedUsers()) {
             userIds.add(user.getUserId());
          }
          artifact.setAttributeValues(attributeType, userIds);
@@ -89,8 +89,8 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
    @Override
    public Result isDirty() {
       if (isEditable()) {
-         Set<IBasicUser> selected = getSelectedUsers();
-         Set<IBasicUser> stored = getStoredUsers();
+         Set<User> selected = getSelectedUsers();
+         Set<User> stored = getStoredUsers();
          if (!Collections.isEqual(selected, stored)) {
             return new Result(true, attributeType + " is dirty");
          }

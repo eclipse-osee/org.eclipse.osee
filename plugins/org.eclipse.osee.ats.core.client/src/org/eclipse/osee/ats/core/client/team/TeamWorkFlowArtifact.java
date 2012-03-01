@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.core.client.team;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -31,13 +30,11 @@ import org.eclipse.osee.ats.core.client.util.AtsCacheManager;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
-import org.eclipse.osee.ats.core.client.workflow.StateManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -205,11 +202,6 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return super.getManHrsPerDayPreference();
-   }
-
-   @Override
-   public List<IBasicUser> getImplementers() throws OseeCoreException {
-      return StateManager.getImplementersByState(this, TeamState.Implement);
    }
 
    @Override

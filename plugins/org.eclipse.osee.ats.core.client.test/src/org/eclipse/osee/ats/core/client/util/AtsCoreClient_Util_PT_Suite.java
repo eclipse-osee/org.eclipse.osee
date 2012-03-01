@@ -17,7 +17,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({CopyActionDetailsTest.class})
+@Suite.SuiteClasses({AtsUserTest.class, CopyActionDetailsTest.class})
 /**
  * This test suite contains tests that must be run against demo database as Plugin JUnit (PT)
  *

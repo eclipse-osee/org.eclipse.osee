@@ -20,7 +20,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.core.data.FullyNamed;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -33,9 +32,9 @@ import org.eclipse.swt.widgets.Control;
  */
 public class UserCheckTreeDialog extends FullyNamedCheckTreeDialog {
 
-   private Collection<IBasicUser> teamMembers;
+   private Collection<User> teamMembers;
 
-   public UserCheckTreeDialog(Collection<? extends IBasicUser> artifacts) {
+   public UserCheckTreeDialog(Collection<? extends User> artifacts) {
       super(artifacts);
    }
 
@@ -43,10 +42,10 @@ public class UserCheckTreeDialog extends FullyNamedCheckTreeDialog {
       this(UserManager.getUsers());
    }
 
-   public Collection<IBasicUser> getUsersSelected() {
-      Set<IBasicUser> selected = new HashSet<IBasicUser>();
+   public Collection<User> getUsersSelected() {
+      Set<User> selected = new HashSet<User>();
       for (FullyNamed art : getSelection()) {
-         selected.add((IBasicUser) art);
+         selected.add((User) art);
       }
       return selected;
    }
@@ -99,16 +98,16 @@ public class UserCheckTreeDialog extends FullyNamedCheckTreeDialog {
       return c;
    }
 
-   public Collection<IBasicUser> getTeamMembers() {
+   public Collection<User> getTeamMembers() {
       return teamMembers;
    }
 
    /**
     * If set, team members will be shown prior to rest of un-checked users
     */
-   public void setTeamMembers(Collection<? extends IBasicUser> teamMembers) {
+   public void setTeamMembers(Collection<? extends User> teamMembers) {
       if (this.teamMembers == null) {
-         this.teamMembers = new HashSet<IBasicUser>();
+         this.teamMembers = new HashSet<User>();
       }
       this.teamMembers.addAll(teamMembers);
    }

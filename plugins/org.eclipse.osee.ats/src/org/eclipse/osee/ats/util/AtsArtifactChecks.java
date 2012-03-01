@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
@@ -132,7 +133,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
       }
       for (User user : users) {
          UserRelatedToAtsObjectSearch srch =
-            new UserRelatedToAtsObjectSearch("User search", user, false, LoadView.None);
+            new UserRelatedToAtsObjectSearch("User search", AtsUsers.getUserFromOseeUser(user), false, LoadView.None);
          if (srch.performSearchGetResults().size() > 0) {
             return String.format(
                "User name: \"%s\" userId: \"%s\" selected to delete has related ATS Objects; Un-relate to ATS first before deleting.",

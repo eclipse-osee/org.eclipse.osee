@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.UserInDatabaseMultipleTimes;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -75,8 +74,8 @@ public final class UserManager {
       userCacheIsLoaded = false;
    }
 
-   public static List<IBasicUser> getUsersByUserId(Collection<String> userIds) throws OseeCoreException {
-      List<IBasicUser> users = new ArrayList<IBasicUser>();
+   public static List<User> getUsersByUserId(Collection<String> userIds) throws OseeCoreException {
+      List<User> users = new ArrayList<User>();
       for (String userId : userIds) {
          try {
             users.add(getUserByUserId(userId));
@@ -193,7 +192,7 @@ public final class UserManager {
       return (User) ArtifactCache.cacheByTextId(CACHE_PREFIX + userToCache.getUserId(), userToCache);
    }
 
-   public static User getUser(IBasicUser user) throws OseeCoreException {
+   public static User getUser(User user) throws OseeCoreException {
       return getUserByUserId(user.getUserId());
    }
 
@@ -201,7 +200,7 @@ public final class UserManager {
       return getUserByUserId(user.getUserId());
    }
 
-   public static String getEmail(IBasicUser user) throws OseeCoreException {
+   public static String getEmail(User user) throws OseeCoreException {
       return getUser(user).getEmail();
    }
 
@@ -304,8 +303,8 @@ public final class UserManager {
       }
    }
 
-   public static boolean isUserInactive(Collection<? extends IBasicUser> users) throws OseeCoreException {
-      for (IBasicUser user : users) {
+   public static boolean isUserInactive(Collection<User> users) throws OseeCoreException {
+      for (User user : users) {
          if (!user.isActive()) {
             return true;
          }
@@ -313,8 +312,8 @@ public final class UserManager {
       return false;
    }
 
-   public static boolean isUserSystem(Collection<? extends IBasicUser> users) throws OseeCoreException {
-      for (IBasicUser user : users) {
+   public static boolean isUserSystem(Collection<User> users) throws OseeCoreException {
+      for (User user : users) {
          if (isSystemUser(user)) {
             return true;
          }
@@ -322,7 +321,7 @@ public final class UserManager {
       return false;
    }
 
-   public static boolean isSystemUser(IBasicUser user) throws OseeCoreException {
+   public static boolean isSystemUser(User user) throws OseeCoreException {
       if (UserManager.getUser(SystemUser.OseeSystem).equals(user) || UserManager.getUser(SystemUser.UnAssigned).equals(
          user) || UserManager.getUser(SystemUser.Guest).equals(user)) {
          return true;
@@ -331,12 +330,12 @@ public final class UserManager {
       return false;
    }
 
-   public static boolean isUnAssignedUser(IBasicUser user) throws OseeCoreException {
+   public static boolean isUnAssignedUser(User user) throws OseeCoreException {
       return (SystemUser.UnAssigned.getUserId().equals(user.getUserId()));
    }
 
-   public static boolean isUserCurrentUser(Collection<? extends IBasicUser> users) throws OseeCoreException {
-      for (IBasicUser user : users) {
+   public static boolean isUserCurrentUser(Collection<User> users) throws OseeCoreException {
+      for (User user : users) {
          if (UserManager.getUser().equals(user)) {
             return true;
          }
@@ -356,9 +355,9 @@ public final class UserManager {
       getUser().setSetting(key, value);
    }
 
-   public static Collection<User> getUsers(Collection<IBasicUser> users) throws OseeCoreException {
+   public static Collection<User> getUsers(Collection<User> users) throws OseeCoreException {
       List<User> arts = new ArrayList<User>();
-      for (IBasicUser user : users) {
+      for (User user : users) {
          arts.add(UserManager.getUser(user));
       }
       return arts;

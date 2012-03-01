@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.core.client.review;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.util.WorkPageAdapter;
-import org.eclipse.osee.framework.core.util.WorkPageType;
+import org.eclipse.osee.ats.core.workflow.WorkPageAdapter;
+import org.eclipse.osee.ats.core.workflow.WorkPageType;
 
 public class PeerToPeerReviewState extends WorkPageAdapter {
    public static PeerToPeerReviewState Prepare = new PeerToPeerReviewState("Prepare", WorkPageType.Working);

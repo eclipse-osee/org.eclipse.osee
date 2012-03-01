@@ -19,18 +19,18 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -51,7 +51,7 @@ public class TaskManager {
       // Assign current user if unassigned
       try {
          if (taskArt.getStateMgr().isUnAssigned()) {
-            taskArt.getStateMgr().setAssignee(UserManager.getUser());
+            taskArt.getStateMgr().setAssignee(AtsUsers.getUser());
          }
          taskArt.getStateMgr().updateMetrics(taskArt.getStateDefinition(), additionalHours, 100, true);
          taskArt.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, 100);
@@ -74,7 +74,7 @@ public class TaskManager {
       }
    }
 
-   public static Result transitionToInWork(TaskArtifact taskArt, IBasicUser toUser, int percentComplete, double additionalHours, SkynetTransaction transaction) throws OseeCoreException {
+   public static Result transitionToInWork(TaskArtifact taskArt, IAtsUser toUser, int percentComplete, double additionalHours, SkynetTransaction transaction) throws OseeCoreException {
       if (taskArt.isInState(TaskStates.InWork)) {
          return Result.TrueResult;
       }

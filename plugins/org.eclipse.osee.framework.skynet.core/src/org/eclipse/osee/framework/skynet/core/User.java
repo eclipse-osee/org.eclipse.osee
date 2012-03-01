@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -34,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 /**
  * @author Donald G. Dunne
  */
-public class User extends Artifact implements IBasicUser {
+public class User extends Artifact {
    private PropertyStore userSettings;
 
    public User(ArtifactFactory parentFactory, String guid, String humanReadableId, IOseeBranch branch, IArtifactType artifactType) throws OseeCoreException {
@@ -66,7 +65,6 @@ public class User extends Artifact implements IBasicUser {
       }
    }
 
-   @Override
    public String getUserId() throws OseeCoreException {
       return getSoleAttributeValue(CoreAttributeTypes.UserId, "");
    }
@@ -91,7 +89,6 @@ public class User extends Artifact implements IBasicUser {
       setSoleAttributeValue(CoreAttributeTypes.Phone, phone);
    }
 
-   @Override
    public boolean isActive() throws OseeCoreException {
       return getSoleAttributeValue(CoreAttributeTypes.Active);
    }

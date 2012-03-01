@@ -15,12 +15,13 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 
 /**
  * @author Donald G. Dunne
@@ -53,10 +54,10 @@ public class ReviewDefectItem {
    };
 
    public ReviewDefectItem() throws OseeCoreException {
-      userId = UserManager.getUser().getUserId();
+      userId = AtsUsers.getUser().getUserId();
    }
 
-   public ReviewDefectItem(User user, Severity severity, Disposition disposition, InjectionActivity injectionActivity, String description, String resolution, String location, Date date) throws OseeCoreException {
+   public ReviewDefectItem(IAtsUser user, Severity severity, Disposition disposition, InjectionActivity injectionActivity, String description, String resolution, String location, Date date) throws OseeCoreException {
       this(user.getUserId(), severity, disposition, injectionActivity, description, resolution, location, date);
    }
 
@@ -185,8 +186,8 @@ public class ReviewDefectItem {
       return severity + " - " + disposition + " - " + injectionActivity + " - " + userId + " on " + DateUtil.getMMDDYYHHMM(date) + "\n";
    }
 
-   public User getUser() throws OseeCoreException {
-      return UserManager.getUserByUserId(userId);
+   public IAtsUser getUser() throws OseeCoreException {
+      return AtsUsers.getUserByUserId(userId);
    }
 
    public String getUserId() {

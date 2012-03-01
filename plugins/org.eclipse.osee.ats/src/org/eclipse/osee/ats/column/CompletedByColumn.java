@@ -18,10 +18,11 @@ import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
@@ -54,19 +55,19 @@ public class CompletedByColumn extends XViewerAtsColumn implements IXViewerValue
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof AbstractWorkflowArtifact) {
-            IBasicUser user = ((AbstractWorkflowArtifact) element).getCompletedBy();
+            IAtsUser user = ((AbstractWorkflowArtifact) element).getCompletedBy();
             if (user != null) {
                return user.getName();
             }
          } else if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-            Set<IBasicUser> users = new HashSet<IBasicUser>();
+            Set<IAtsUser> users = new HashSet<IAtsUser>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
-               IBasicUser user = team.getCompletedBy();
+               IAtsUser user = team.getCompletedBy();
                if (user != null) {
                   users.add(user);
                }
             }
-            return Artifacts.toString(";", users);
+            return AtsObjects.toString(";", users);
 
          }
       } catch (OseeCoreException ex) {

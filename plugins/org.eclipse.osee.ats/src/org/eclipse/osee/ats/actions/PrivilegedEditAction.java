@@ -15,14 +15,14 @@ import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.util.PrivilegedUserManager;
 import org.eclipse.osee.ats.util.ReadOnlyHyperlinkListener;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -53,17 +53,17 @@ public class PrivilegedEditAction extends AbstractAtsAction {
             editor.setPrivilegedEditMode(false);
          }
       } else {
-         Set<IBasicUser> users = PrivilegedUserManager.getPrivilegedUsers(sma);
+         Set<IAtsUser> users = PrivilegedUserManager.getPrivilegedUsers(sma);
          if (AtsUtilCore.isAtsAdmin()) {
-            users.add(UserManager.getUser());
+            users.add(AtsUsers.getUser());
          }
          StringBuffer stringBuffer = new StringBuffer();
-         for (IBasicUser user : users) {
+         for (IAtsUser user : users) {
             stringBuffer.append(user.getName());
             stringBuffer.append("\n");
          }
          String buttons[];
-         boolean iAmPrivileged = users.contains(UserManager.getUser());
+         boolean iAmPrivileged = users.contains(AtsUsers.getUser());
          if (iAmPrivileged) {
             buttons = new String[] {"Override and Edit", "Cancel"};
          } else {

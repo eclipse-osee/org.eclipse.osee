@@ -11,12 +11,12 @@
 package org.eclipse.osee.ats.goal;
 
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 
 /**
@@ -28,7 +28,7 @@ public class GoalLabelProvider extends ArtifactLabelProvider {
    public String getText(Object element) {
       GoalArtifact goal = (GoalArtifact) element;
       try {
-         if (FavoritesManager.isFavorite(goal, UserManager.getUser())) {
+         if (FavoritesManager.isFavorite(goal, AtsUsers.getUser())) {
             return "(Favorite) " + goal.toString();
          } else if (goal.isAssigneeMe()) {
             return "(Assignee) " + goal.toString();

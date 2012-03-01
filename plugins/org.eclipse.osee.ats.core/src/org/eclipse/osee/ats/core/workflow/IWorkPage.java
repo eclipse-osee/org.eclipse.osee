@@ -8,26 +8,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.util;
+package org.eclipse.osee.ats.core.workflow;
 
-public enum WorkPageType {
-   Working,
-   Completed,
-   Cancelled;
 
-   public boolean isCompletedPage() {
-      return this == Completed;
-   }
+public interface IWorkPage {
 
-   public boolean isCompletedOrCancelledPage() {
-      return isCompletedPage() || isCancelledPage();
-   }
+   public WorkPageType getWorkPageType();
 
-   public boolean isCancelledPage() {
-      return this == Cancelled;
-   }
+   public String getPageName();
 
-   public boolean isWorkingPage() {
-      return this == Working;
-   }
+   public String getDescription();
+
+   public boolean isCompletedPage();
+
+   public boolean isCancelledPage();
+
+   public boolean isWorkingPage();
+
+   public boolean isCompletedOrCancelledPage();
+
 }

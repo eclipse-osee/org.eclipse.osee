@@ -15,11 +15,11 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
+import org.eclipse.osee.ats.core.workflow.IWorkPage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
-import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
@@ -37,9 +37,9 @@ public class AtsForceAssigneesToTeamLeadsStateItem extends AtsStateItem implemen
    }
 
    @Override
-   public void transitioned(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<? extends IBasicUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+   public void transitioned(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<? extends IAtsUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
       if (sma.isTeamWorkflow() && isForceAssigneesToTeamLeads(sma.getStateDefinitionByName(toState.getPageName()))) {
-         Collection<IBasicUser> teamLeads = ((TeamWorkFlowArtifact) sma).getTeamDefinition().getLeads();
+         Collection<IAtsUser> teamLeads = ((TeamWorkFlowArtifact) sma).getTeamDefinition().getLeads();
          if (!teamLeads.isEmpty()) {
             sma.getStateMgr().setAssignees(teamLeads);
             sma.persist(transaction);
@@ -52,7 +52,7 @@ public class AtsForceAssigneesToTeamLeadsStateItem extends AtsStateItem implemen
    }
 
    @Override
-   public void transitioning(TransitionResults results, AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<? extends IBasicUser> toAssignees) {
+   public void transitioning(TransitionResults results, AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<? extends IAtsUser> toAssignees) {
       // do nothing
    }
 

@@ -23,16 +23,14 @@ import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.utility.UsersByIds;
 
 /**
  * Convenience methods used to create a validation decision review if so selected on the new action wizard
@@ -58,7 +56,7 @@ public class ValidateReviewManager {
     *
     * @param force will force the creation of the review without checking that a review should be created
     */
-   public static DecisionReviewArtifact createValidateReview(TeamWorkFlowArtifact teamArt, boolean force, Date createdDate, User createdBy, SkynetTransaction transaction) throws OseeCoreException {
+   public static DecisionReviewArtifact createValidateReview(TeamWorkFlowArtifact teamArt, boolean force, Date createdDate, IAtsUser createdBy, SkynetTransaction transaction) throws OseeCoreException {
       // If not validate page, don't do anything
       if (!force && !isValidatePage(teamArt.getStateDefinition())) {
          return null;
@@ -108,15 +106,15 @@ public class ValidateReviewManager {
 
    public static String getValidateReviewFollowupUsersStr(TeamWorkFlowArtifact teamArt) {
       try {
-         return UsersByIds.getStorageString(getValidateReviewFollowupUsers(teamArt));
+         return org.eclipse.osee.ats.core.client.util.UsersByIds.getStorageString(getValidateReviewFollowupUsers(teamArt));
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return ex.getLocalizedMessage();
       }
    }
 
-   public static Collection<IBasicUser> getValidateReviewFollowupUsers(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      Collection<IBasicUser> users = new HashSet<IBasicUser>();
+   public static Collection<IAtsUser> getValidateReviewFollowupUsers(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+      Collection<IAtsUser> users = new HashSet<IAtsUser>();
       users.addAll(teamArt.getStateMgr().getAssignees(TeamState.Implement));
       if (users.size() > 0) {
          return users;

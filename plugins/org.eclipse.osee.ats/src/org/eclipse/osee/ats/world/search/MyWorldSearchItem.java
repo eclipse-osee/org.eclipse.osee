@@ -18,9 +18,9 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -36,7 +36,7 @@ public class MyWorldSearchItem extends UserSearchItem {
       this("My World", null);
    }
 
-   public MyWorldSearchItem(String name, User user) {
+   public MyWorldSearchItem(String name, IAtsUser user) {
       super(name, user, AtsImage.GLOBE);
    }
 
@@ -45,7 +45,7 @@ public class MyWorldSearchItem extends UserSearchItem {
    }
 
    @Override
-   public Collection<Artifact> searchIt(User user) throws OseeCoreException {
+   public Collection<Artifact> searchIt(IAtsUser user) throws OseeCoreException {
       Set<Artifact> assigned = AtsUtil.getAssigned(user);
 
       List<Artifact> artifactsToReturn = new ArrayList<Artifact>(assigned.size());

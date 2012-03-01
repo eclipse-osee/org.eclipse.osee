@@ -20,22 +20,21 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.workdef.DecisionReviewOption;
 import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
+import org.eclipse.osee.ats.core.workflow.IWorkPage;
+import org.eclipse.osee.ats.core.workflow.WorkPageType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
-import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.core.util.WorkPageType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
@@ -56,7 +55,7 @@ public class DecisionReviewManager {
     *
     * @param user User to transition to OR null if should use user of current state
     */
-   public static Result transitionTo(DecisionReviewArtifact reviewArt, DecisionReviewState toState, User user, boolean popup, SkynetTransaction transaction) throws OseeCoreException {
+   public static Result transitionTo(DecisionReviewArtifact reviewArt, DecisionReviewState toState, IAtsUser user, boolean popup, SkynetTransaction transaction) throws OseeCoreException {
       Result result = Result.TrueResult;
       // If in Prepare state, set data and transition to Decision
       if (reviewArt.isInState(DecisionReviewState.Prepare)) {
@@ -102,7 +101,7 @@ public class DecisionReviewManager {
       return Result.TrueResult;
    }
 
-   public static Result transitionToState(WorkPageType workPageType, boolean popup, IWorkPage toState, DecisionReviewArtifact reviewArt, User user, SkynetTransaction transaction) throws OseeCoreException {
+   public static Result transitionToState(WorkPageType workPageType, boolean popup, IWorkPage toState, DecisionReviewArtifact reviewArt, IAtsUser user, SkynetTransaction transaction) throws OseeCoreException {
       TransitionHelper helper =
          new TransitionHelper("Transition to " + toState.getPageName(), Arrays.asList(reviewArt),
             toState.getPageName(),
@@ -128,7 +127,7 @@ public class DecisionReviewManager {
       return Result.TrueResult;
    }
 
-   public static DecisionReviewArtifact createNewDecisionReviewAndTransitionToDecision(TeamWorkFlowArtifact teamArt, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, Collection<DecisionReviewOption> options, Collection<IBasicUser> assignees, Date createdDate, IBasicUser createdBy, SkynetTransaction transaction) throws OseeCoreException {
+   public static DecisionReviewArtifact createNewDecisionReviewAndTransitionToDecision(TeamWorkFlowArtifact teamArt, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, Collection<DecisionReviewOption> options, Collection<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, SkynetTransaction transaction) throws OseeCoreException {
       DecisionReviewArtifact decRev =
          createNewDecisionReview(teamArt, reviewBlockType, reviewTitle, againstState, description, options, assignees,
             createdDate, createdBy);
@@ -151,7 +150,7 @@ public class DecisionReviewManager {
       return decRev;
    }
 
-   public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, ReviewBlockType reviewBlockType, boolean againstCurrentState, Date createdDate, User createdBy) throws OseeCoreException {
+   public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, ReviewBlockType reviewBlockType, boolean againstCurrentState, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
       return createNewDecisionReview(teamArt, reviewBlockType,
          "Should we do this?  Yes will require followup, No will not",
          againstCurrentState ? teamArt.getStateMgr().getCurrentStateName() : null,
@@ -160,7 +159,7 @@ public class DecisionReviewManager {
 
    public static List<DecisionReviewOption> getDefaultDecisionReviewOptions() throws OseeCoreException {
       List<DecisionReviewOption> options = new ArrayList<DecisionReviewOption>();
-      options.add(new DecisionReviewOption("Yes", true, Arrays.asList(UserManager.getUser().getUserId())));
+      options.add(new DecisionReviewOption("Yes", true, Arrays.asList(AtsUsers.getUser().getUserId())));
       options.add(new DecisionReviewOption("No", false, null));
       return options;
    }
@@ -180,7 +179,7 @@ public class DecisionReviewManager {
       return sb.toString();
    }
 
-   public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, Collection<DecisionReviewOption> options, Collection<IBasicUser> assignees, Date createdDate, IBasicUser createdBy) throws OseeCoreException {
+   public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, Collection<DecisionReviewOption> options, Collection<IAtsUser> assignees, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
       DecisionReviewArtifact decRev =
          (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.DecisionReview,
             AtsUtilCore.getAtsBranch(), title);

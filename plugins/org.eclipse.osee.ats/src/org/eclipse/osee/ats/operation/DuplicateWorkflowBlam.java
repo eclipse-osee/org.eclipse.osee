@@ -25,21 +25,20 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkflowProviders;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.core.client.workflow.log.LogType;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -128,12 +127,12 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Duplicate Workflow");
       Date createdDate = new Date();
-      User createdBy = UserManager.getUser();
+      IAtsUser createdBy = AtsUsers.getUser();
       for (TeamWorkFlowArtifact teamArt : teamArts) {
-         Collection<IBasicUser> assignees = new HashSet<IBasicUser>();
+         Collection<IAtsUser> assignees = new HashSet<IAtsUser>();
          assignees.addAll(teamArt.getStateMgr().getAssignees());
-         if (!assignees.contains(UserManager.getUser())) {
-            assignees.add(UserManager.getUser());
+         if (!assignees.contains(AtsUsers.getUser())) {
+            assignees.add(AtsUsers.getUser());
          }
          TeamWorkFlowArtifact newTeamArt =
             ActionManager.createTeamWorkflow(teamArt.getParentActionArtifact(), teamArt.getTeamDefinition(),

@@ -13,8 +13,9 @@ package org.eclipse.osee.ats.world.search;
 import java.util.Collection;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -30,7 +31,7 @@ public class MyFavoritesSearchItem extends UserSearchItem {
       this("My Favorites", null);
    }
 
-   public MyFavoritesSearchItem(String name, User user) {
+   public MyFavoritesSearchItem(String name, IAtsUser user) {
       super(name, user, AtsImage.FAVORITE);
    }
 
@@ -39,8 +40,8 @@ public class MyFavoritesSearchItem extends UserSearchItem {
    }
 
    @Override
-   protected Collection<Artifact> searchIt(User user) throws OseeCoreException {
-      return user.getRelatedArtifacts(AtsRelationTypes.FavoriteUser_Artifact);
+   protected Collection<Artifact> searchIt(IAtsUser user) throws OseeCoreException {
+      return AtsUsers.getOseeUser(user).getRelatedArtifacts(AtsRelationTypes.FavoriteUser_Artifact);
    }
 
    @Override

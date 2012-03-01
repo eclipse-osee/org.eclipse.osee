@@ -27,8 +27,11 @@ Import-Package: com.google.inject,
  org.eclipse.xtext.resource,
  org.osgi.framework;version="1.3.0"
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Export-Package: org.eclipse.osee.ats.core.validator,
+Export-Package: org.eclipse.osee.ats.core.model,
+ org.eclipse.osee.ats.core.util,
+ org.eclipse.osee.ats.core.validator,
  org.eclipse.osee.ats.core.workdef,
  org.eclipse.osee.ats.core.workdef.provider,
+ org.eclipse.osee.ats.core.workflow,
  org.eclipse.osee.ats.core.workflow.transition
 Bundle-Activator: org.eclipse.osee.ats.core.internal.Activator

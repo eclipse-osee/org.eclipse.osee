@@ -22,11 +22,11 @@ import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.utility.UsersByIds;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -72,7 +72,7 @@ public class EditAssigneesAction extends Action {
       }
 
       try {
-         Set<IBasicUser> initalUsers = new HashSet<IBasicUser>();
+         Set<User> initalUsers = new HashSet<User>();
          for (ICoverage coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
             if (coverageItem.isAssignable()) {
                if (Strings.isValid(((CoverageUnit) coverageItem).getAssignees())) {
@@ -85,7 +85,7 @@ public class EditAssigneesAction extends Action {
          uld.setInitialSelections(initalUsers);
          uld.setMessage("Select to assign.\nDeSelect to un-assign.");
          if (uld.open() == 0) {
-            Collection<IBasicUser> users = uld.getUsersSelected();
+            Collection<User> users = uld.getUsersSelected();
             Set<ICoverage> coveragesToSave = new HashSet<ICoverage>();
             for (ICoverage coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
                if (coverageItem.isAssignable()) {

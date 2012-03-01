@@ -20,9 +20,9 @@ import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -39,7 +39,7 @@ public class MyReviewWorkflowItem extends UserSearchItem {
       All
    };
 
-   public MyReviewWorkflowItem(String name, User user, ReviewState reviewState) {
+   public MyReviewWorkflowItem(String name, IAtsUser user, ReviewState reviewState) {
       super(name, user, AtsImage.REVIEW);
       this.reviewState = reviewState;
    }
@@ -50,7 +50,7 @@ public class MyReviewWorkflowItem extends UserSearchItem {
    }
 
    @Override
-   protected Collection<Artifact> searchIt(User user) throws OseeCoreException {
+   protected Collection<Artifact> searchIt(IAtsUser user) throws OseeCoreException {
 
       Set<Artifact> assigned = AtsUtil.getAssigned(user);
       Set<Artifact> artifacts = new HashSet<Artifact>(50);

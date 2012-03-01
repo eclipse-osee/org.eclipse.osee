@@ -14,14 +14,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
+import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -56,27 +54,15 @@ public class AtsQueryPerformanceTests {
    @org.junit.Test
    public void testUserWorldSearch() throws Exception {
       AtsBulkLoad.loadConfig(true);
-      User usr = getAUser();
-      assertNotNull("User does not exist", usr);
+      IAtsUser user = AtsUsers.getUserByName("Finkbeiner, Andrew M");
+      assertNotNull("User does not exist", user);
       MyWorldSearchItem search = new MyWorldSearchItem();
       long startTime = System.currentTimeMillis();
-      Collection<Artifact> artifacts = search.searchIt(usr);
+      Collection<Artifact> artifacts = search.searchIt(user);
       long elapsedTime = System.currentTimeMillis() - startTime;
       System.out.println(String.format("testUserWorldSearch took %dms for %d artifacts", elapsedTime, artifacts.size()));
       assertTrue("No artifacts found", artifacts.size() > 0);
       assertTrue("testUserWorldSearch should take less than 2500ms currently " + elapsedTime + "ms", elapsedTime < 2500);
-   }
-
-   private User getAUser() throws OseeCoreException {
-      List<User> users = UserManager.getUsers();
-      User andy = null;
-      for (User usr : users) {
-         if (usr.getName().contains("Finkbeiner")) {
-            andy = usr;
-            break;
-         }
-      }
-      return andy;
    }
 
 }
