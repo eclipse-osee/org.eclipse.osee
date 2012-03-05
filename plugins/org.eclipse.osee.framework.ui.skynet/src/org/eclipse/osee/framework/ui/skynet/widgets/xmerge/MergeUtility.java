@@ -49,7 +49,7 @@ public class MergeUtility {
    public static final String ATTRIBUTE_DELETED_PROMPT =
       "This Attribute has been changed on the source branch, but has been deleted on the destination branch.  In order to commit this branch and resolve this conflict the Attribute will need to be reverted on the source branch.  \n\nReverting the attribute is irreversible and you will need to restart OSEE after reverting to see changes.";
    public static final String INFORMATIONAL_CONFLICT =
-      "This Item has been deleted on the Source Branch, but has been changed on the destination branch.  This conflict is informational only and will not prevent your from commiting, however when you commit it will delete the item on the destination branch.";
+      "This Item has been %1$s on the Source Branch, but has been %2$s on the destination branch.  This conflict is informational only and will not prevent your from commiting, however when you commit the item will be DELETED.";
    public static final String OPEN_MERGE_DIALOG =
       "This will open a window that will allow in-document merging in Word.  You will need to right click on every difference and either accept or reject the change.  If you begin an in-document merge you will not be able to finalize the conflict until you resolve every change in the document.\n Computing a Merge will wipe out any merge changes you have made and start with a fresh diff of the two files.  If you want to only view the changes use the difference options.\n Change that touch the entire file are better handled using copy and paste. \n\nWARNING:  Word will occasionaly show incorrect changes especially when users have both modified the same block of text.  Check your final version.";
 
@@ -100,9 +100,11 @@ public class MergeUtility {
       RendererManager.diffInJob(new ArtifactDelta(art1, art2), filePrefix);
    }
 
-   public static boolean showInformationalConflict(Shell shell) {
-      MessageDialog dialog =
-         new MessageDialog(shell, "Informational Conflict", null, INFORMATIONAL_CONFLICT, 2, new String[] {"OK"}, 1);
+   public static boolean showInformationalConflict(Shell shell, Conflict conflict) throws OseeCoreException {
+      String srcDisplay = conflict.getSourceDisplayData();
+      String destDisplay = conflict.getDestDisplayData();
+      String msg = String.format(INFORMATIONAL_CONFLICT, srcDisplay, destDisplay);
+      MessageDialog dialog = new MessageDialog(shell, "Informational Conflict", null, msg, 2, new String[] {"OK"}, 1);
       dialog.open();
       return false;
    }

@@ -125,7 +125,7 @@ public class MergeXViewer extends XViewer {
 
       try {
          if (conflict.getStatus().isInformational()) {
-            MergeUtility.showInformationalConflict(shell);
+            MergeUtility.showInformationalConflict(shell, conflict);
          } else {
             handleResolvableConflictClick(treeColumn, conflict, shell);
          }
