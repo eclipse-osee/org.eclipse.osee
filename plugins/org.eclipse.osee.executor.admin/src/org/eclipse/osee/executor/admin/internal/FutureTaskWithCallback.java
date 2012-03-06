@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.executor.admin.internal;
 
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -28,12 +29,14 @@ import org.eclipse.osee.logger.Log;
  */
 public class FutureTaskWithCallback<T> implements RunnableFuture<T>, HasExecutionCallback<T> {
 
+   private final UUID uuid;
    private final Log logger;
    private final ExecutionCallback<T> callback;
    private final Sync sync;
    private final Runnable runnable;
 
-   public FutureTaskWithCallback(Log logger, Callable<T> callable, ExecutionCallback<T> callback) {
+   public FutureTaskWithCallback(UUID uuid, Log logger, Callable<T> callable, ExecutionCallback<T> callback) {
+      this.uuid = uuid;
       if (callable == null) {
          throw new NullPointerException();
       }
@@ -44,11 +47,16 @@ public class FutureTaskWithCallback<T> implements RunnableFuture<T>, HasExecutio
       this.runnable = null;
    }
 
-   public FutureTaskWithCallback(Log logger, Runnable runnable, T result, ExecutionCallback<T> callback) {
+   public FutureTaskWithCallback(UUID uuid, Log logger, Runnable runnable, T result, ExecutionCallback<T> callback) {
+      this.uuid = uuid;
       this.runnable = runnable;
       sync = new Sync(Executors.callable(runnable, result));
       this.logger = logger;
       this.callback = callback;
+   }
+
+   public UUID getUUID() {
+      return uuid;
    }
 
    @Override
@@ -96,6 +104,36 @@ public class FutureTaskWithCallback<T> implements RunnableFuture<T>, HasExecutio
    @Override
    public void run() {
       sync.innerRun();
+   }
+
+   @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (this == obj) {
+         return true;
+      }
+      if (obj == null) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
+      FutureTaskWithCallback<?> other = (FutureTaskWithCallback<?>) obj;
+      if (uuid == null) {
+         if (other.uuid != null) {
+            return false;
+         }
+      } else if (!uuid.equals(other.uuid)) {
+         return false;
+      }
+      return true;
    }
 
    protected boolean runAndReset() {

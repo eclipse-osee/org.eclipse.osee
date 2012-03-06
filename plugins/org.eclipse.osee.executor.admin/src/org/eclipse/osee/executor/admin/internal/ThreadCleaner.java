@@ -30,12 +30,28 @@ public class ThreadCleaner extends TimerTask {
 
    @Override
    public void run() {
+      cleanUpThreadFactory();
+      cleanUpExecutionCache();
+   }
+
+   private void cleanUpThreadFactory() {
       for (Entry<String, ExecutorThreadFactory> entry : cache.getThreadFactories().entrySet()) {
          try {
             ExecutorThreadFactory factory = entry.getValue();
             factory.cleanUp();
          } catch (Throwable ex) {
             logger.error(ex, "Error removing dead threads for [%s]", entry.getKey());
+         }
+      }
+   }
+
+   private void cleanUpExecutionCache() {
+      for (Entry<String, ExecutorWorkCache> entry : cache.getWorkers().entrySet()) {
+         try {
+            ExecutorWorkCache workers = entry.getValue();
+            workers.cleanUp();
+         } catch (Throwable ex) {
+            logger.error(ex, "Error removing dead workers for [%s]", entry.getKey());
          }
       }
    }

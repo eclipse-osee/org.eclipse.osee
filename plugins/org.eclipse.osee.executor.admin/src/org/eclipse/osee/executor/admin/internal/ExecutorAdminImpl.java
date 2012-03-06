@@ -158,4 +158,14 @@ public class ExecutorAdminImpl implements ExecutorAdmin {
       }
    }
 
+   @Override
+   public int cancelTasks(String id) throws Exception {
+      ensureInitialized();
+      int itemsCancelled = 0;
+      ExecutorWorkCache workCache = cache.getWorkerCache(id);
+      if (workCache != null) {
+         itemsCancelled = workCache.cancelAll();
+      }
+      return itemsCancelled;
+   }
 }

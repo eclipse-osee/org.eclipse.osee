@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.executor.admin.internal;
 
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RunnableFuture;
@@ -36,6 +37,10 @@ public class ExecutorServiceImpl extends ThreadPoolExecutor {
       this.listener = listener;
    }
 
+   public String getId() {
+      return id;
+   }
+
    private Log getLogger() {
       return logger;
    }
@@ -43,7 +48,7 @@ public class ExecutorServiceImpl extends ThreadPoolExecutor {
    @Override
    protected void terminated() {
       super.terminated();
-      listener.onTerminate(id);
+      listener.onTerminate(getId());
    }
 
    @SuppressWarnings("unchecked")
@@ -58,13 +63,58 @@ public class ExecutorServiceImpl extends ThreadPoolExecutor {
 
    @Override
    protected <T> RunnableFuture<T> newTaskFor(Runnable runnable, T value) {
+      UUID uuid = createID();
       ExecutionCallback<T> callback = getCallBack(runnable);
-      return new FutureTaskWithCallback<T>(getLogger(), runnable, value, callback);
+      FutureTaskWithCallback<T> future = new FutureTaskWithCallback<T>(uuid, getLogger(), runnable, value, callback);
+      onScheduled(future);
+      return future;
    }
 
    @Override
    protected <T> RunnableFuture<T> newTaskFor(Callable<T> callable) {
+      UUID uuid = createID();
       ExecutionCallback<T> callback = getCallBack(callable);
-      return new FutureTaskWithCallback<T>(getLogger(), callable, callback);
+      FutureTaskWithCallback<T> future = new FutureTaskWithCallback<T>(uuid, getLogger(), callable, callback);
+      onScheduled(future);
+      return future;
    }
+
+   private UUID createID() {
+      return UUID.randomUUID();
+   }
+
+   /**
+    * Tasks waiting
+    */
+   @Override
+   public long getTaskCount() {
+      return super.getTaskCount();
+   }
+
+   /**
+    * Number of Tasks Completed
+    */
+   @Override
+   public long getCompletedTaskCount() {
+      return super.getCompletedTaskCount();
+   }
+
+   private void onScheduled(FutureTaskWithCallback<?> future) {
+      listener.onScheduled(getId(), future.getUUID(), future);
+   }
+
+   @Override
+   protected void beforeExecute(Thread t, Runnable r) {
+      FutureTaskWithCallback<?> future = (FutureTaskWithCallback<?>) r;
+      listener.onBeforeExecute(getId(), future.getUUID(), future);
+      super.beforeExecute(t, r);
+   }
+
+   @Override
+   protected void afterExecute(Runnable r, Throwable t) {
+      FutureTaskWithCallback<?> future = (FutureTaskWithCallback<?>) r;
+      listener.onAfterExecute(getId(), future.getUUID(), future);
+      super.afterExecute(r, t);
+   }
+
 }

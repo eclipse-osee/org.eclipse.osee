@@ -31,4 +31,6 @@ public interface ExecutorAdmin {
    <T> Future<T> schedule(Callable<T> callable) throws Exception;
 
    <T> Future<T> schedule(String id, Callable<T> callable) throws Exception;
+
+   int cancelTasks(String id) throws Exception;
 }

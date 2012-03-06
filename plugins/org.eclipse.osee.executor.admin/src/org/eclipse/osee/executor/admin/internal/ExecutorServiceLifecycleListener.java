@@ -10,10 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.executor.admin.internal;
 
+import java.util.UUID;
+import java.util.concurrent.Future;
+
 /**
  * @author Roberto E. Escobar
  */
 public interface ExecutorServiceLifecycleListener {
 
    void onTerminate(String id);
+
+   void onScheduled(String id, UUID workId, Future<?> future);
+
+   void onBeforeExecute(String id, UUID workId, Future<?> future);
+
+   void onAfterExecute(String id, UUID workId, Future<?> future);
 }
