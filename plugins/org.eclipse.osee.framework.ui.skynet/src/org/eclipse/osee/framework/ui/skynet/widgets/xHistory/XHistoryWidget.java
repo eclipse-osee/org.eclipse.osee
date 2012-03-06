@@ -67,9 +67,11 @@ public class XHistoryWidget extends GenericXWidget {
    private Artifact artifact;
    private ToolBar toolBar;
    private Composite rightComp;
+   private final HistoryView historyView;
 
-   public XHistoryWidget() {
+   public XHistoryWidget(HistoryView historyView) {
       super("History");
+      this.historyView = historyView;
    }
 
    @Override
@@ -149,6 +151,7 @@ public class XHistoryWidget extends GenericXWidget {
          @Override
          public void widgetSelected(SelectionEvent e) {
             setInputData(artifact, true);
+            refreshTitle();
          }
       });
 
@@ -156,6 +159,10 @@ public class XHistoryWidget extends GenericXWidget {
 
       rightComp.layout();
       rightComp.getParent().layout();
+   }
+
+   protected void refreshTitle() {
+      historyView.refreshTitle();
    }
 
    public void loadTable() {

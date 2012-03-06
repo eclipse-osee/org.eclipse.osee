@@ -143,7 +143,7 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
       parent.setLayout(layout);
       parent.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      xHistoryWidget = new XHistoryWidget();
+      xHistoryWidget = new XHistoryWidget(this);
       xHistoryWidget.setDisplayLabel(false);
       xHistoryWidget.createWidgets(parent, 1);
 
@@ -387,6 +387,11 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
 
    @Override
    public void refreshUI(ArrayList<TransactionRecord> records) {
+      setPartName("History: " + artifact.getName());
       xHistoryWidget.refresh();
+   }
+
+   public void refreshTitle() {
+      setPartName("History: " + artifact.getName());
    }
 }
