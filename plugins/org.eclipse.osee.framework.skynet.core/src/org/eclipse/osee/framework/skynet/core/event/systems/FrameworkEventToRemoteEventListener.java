@@ -103,7 +103,7 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
          try {
             RemotePersistEvent1 event1 = (RemotePersistEvent1) remoteEvent;
             ArtifactEvent transEvent = FrameworkEventUtil.getPersistEvent(event1);
-            updateArtifacts(sender, transEvent);
+            updateArtifacts(sender, transEvent, ((RemotePersistEvent1) remoteEvent).getTransactionId());
             updateRelations(sender, transEvent);
             eventManager.kickArtifactEvent(sender, transEvent);
          } catch (Exception ex) {
@@ -151,7 +151,7 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
    /**
     * Updates local cache
     **/
-   private void updateArtifacts(Sender sender, ArtifactEvent transEvent) {
+   private void updateArtifacts(Sender sender, ArtifactEvent transEvent, int transactionId) {
       // Don't crash on any one artifact update problem (no update method throughs exceptions)
       for (EventBasicGuidArtifact guidArt : transEvent.getArtifacts()) {
          EventUtil.eventLog(String.format("REM: updateArtifact -> [%s]", guidArt));
@@ -166,7 +166,7 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
          }
          // Handle Modified Artifacts
          else if (guidArt.getModType() == EventModType.Modified) {
-            updateModifiedArtifact((EventModifiedBasicGuidArtifact) guidArt);
+            updateModifiedArtifact((EventModifiedBasicGuidArtifact) guidArt, transactionId);
          }
          // Handle Change Type Artifacts
          else if (guidArt.getModType() == EventModType.ChangeType) {
@@ -277,12 +277,13 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
       }
    }
 
-   private void updateModifiedArtifact(EventModifiedBasicGuidArtifact guidArt) {
+   private void updateModifiedArtifact(EventModifiedBasicGuidArtifact guidArt, int transactionId) {
       try {
          Artifact artifact = ArtifactCache.getActive(guidArt);
          if (artifact == null) {
             // do nothing, artifact not in cache, so don't need to update
          } else if (!artifact.isHistorical()) {
+            artifact.setTransactionId(transactionId);
             for (AttributeChange attrChange : guidArt.getAttributeChanges()) {
                if (!OseeEventManager.getPreferences().isEnableRemoteEventLoopback()) {
                   ModificationType modificationType =

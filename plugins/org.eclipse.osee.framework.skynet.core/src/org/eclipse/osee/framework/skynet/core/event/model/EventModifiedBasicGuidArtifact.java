@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.event.model;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
@@ -19,11 +18,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class EventModifiedBasicGuidArtifact extends EventBasicGuidArtifact {
 
    private final Collection<AttributeChange> attributeChanges;
-
-   public EventModifiedBasicGuidArtifact(Artifact artifact, Collection<AttributeChange> attributeChanges) {
-      super(EventModType.Modified, artifact.getBasicGuidArtifact());
-      this.attributeChanges = attributeChanges;
-   }
 
    public EventModifiedBasicGuidArtifact(String branchGuid, Long artTypeGuid, String guid, Collection<AttributeChange> attributeChanges) {
       super(EventModType.Modified, branchGuid, artTypeGuid, guid);
