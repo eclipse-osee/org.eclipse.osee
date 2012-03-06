@@ -154,11 +154,7 @@ public final class UserManager {
 
    public static User getUserByArtId(int userArtifactId) throws OseeCoreException {
       ensurePopulated();
-      User user = (User) ArtifactCache.getActive(userArtifactId, BranchManager.getCommonBranch());
-      if (user == null) {
-         throw new UserNotInDatabase("User requested by artId \"%d\" was not found.", userArtifactId);
-      }
-      return user;
+      return (User) ArtifactQuery.getArtifactFromId(userArtifactId, CoreBranches.COMMON);
    }
 
    public static boolean userExistsWithName(String name) throws OseeCoreException {

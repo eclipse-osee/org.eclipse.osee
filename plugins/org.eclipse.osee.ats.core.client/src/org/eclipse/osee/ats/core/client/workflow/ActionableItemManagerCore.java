@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
@@ -52,12 +52,8 @@ public class ActionableItemManagerCore {
       for (String guid : getActionableItemGuids()) {
          try {
             ActionableItemArtifact aia =
-               (ActionableItemArtifact) ArtifactCache.getActive(guid, AtsUtilCore.getAtsBranch());
-            if (aia == null) {
-               OseeLog.log(Activator.class, Level.SEVERE, "Can't find Actionable Item for guid " + guid);
-            } else {
-               ais.add(aia);
-            }
+               (ActionableItemArtifact) ArtifactQuery.getArtifactFromId(guid, AtsUtilCore.getAtsBranch());
+            ais.add(aia);
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, "Error getting actionable item for guid " + guid, ex);
          }

@@ -597,11 +597,7 @@ public class RelationManager {
 
       @Override
       public Artifact getArtifact(int artifactId, IOseeBranch branch) throws OseeCoreException {
-         Artifact relatedArtifact = ArtifactCache.getActive(artifactId, branch);
-         if (relatedArtifact == null) {
-            return ArtifactQuery.getArtifactFromId(artifactId, branch);
-         }
-         return relatedArtifact;
+         return ArtifactQuery.getArtifactFromId(artifactId, branch);
       }
 
       @Override

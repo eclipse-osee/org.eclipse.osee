@@ -11,13 +11,14 @@
 package org.eclipse.osee.framework.skynet.core.change;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Jeff C. Phillips
@@ -37,13 +38,16 @@ public class RelationChangeBuilder extends ChangeBuilder {
    }
 
    @Override
-   public Change build(Branch branch) throws OseeArgumentException {
+   public Change build(Branch branch) throws OseeCoreException {
       Artifact bArtifact;
+
       if (isHistorical()) {
-         bArtifact = ArtifactCache.getHistorical(bArtId, getTxDelta().getEndTx().getId());
+         bArtifact =
+            ArtifactQuery.getHistoricalArtifactFromId(bArtId, getTxDelta().getEndTx(), DeletionFlag.INCLUDE_DELETED);
       } else {
-         bArtifact = ArtifactCache.getActive(bArtId, branch);
+         bArtifact = ArtifactQuery.getArtifactFromId(bArtId, getBranch());
       }
+
       return new RelationChange(branch, getSourceGamma(), getArtId(), getTxDelta(), getModType(), bArtId, relLinkId,
          rationale, relationType, isHistorical(), loadArtifact(),
          new ArtifactDelta(getTxDelta(), loadArtifact(), null), bArtifact);

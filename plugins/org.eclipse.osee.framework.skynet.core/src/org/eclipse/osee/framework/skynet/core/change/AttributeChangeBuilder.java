@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.change;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -45,7 +45,7 @@ public final class AttributeChangeBuilder extends ChangeBuilder {
    }
 
    @Override
-   public Change build(Branch branch) throws OseeArgumentException {
+   public Change build(Branch branch) throws OseeCoreException {
       return new AttributeChange(branch, getSourceGamma(), getArtId(), getTxDelta(), getModType(), isValue, wasValue,
          attrId, attributeType, artModType, isHistorical(), loadArtifact(), new ArtifactDelta(getTxDelta(),
             loadArtifact(), null));

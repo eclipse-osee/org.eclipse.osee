@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactKey;
@@ -68,10 +67,6 @@ public class ActiveArtifactCache extends AbstractArtifactCache {
 
    public Artifact getByGuid(String artGuid, Integer branchId) {
       return asArtifact(getObjectByGuid(artGuid, branchId));
-   }
-
-   public Artifact getByGuid(String artGuid, Branch branch) {
-      return asArtifact(getByGuid(artGuid, branch.getId()));
    }
 
    public List<Artifact> getByType(IArtifactType artifactType) {

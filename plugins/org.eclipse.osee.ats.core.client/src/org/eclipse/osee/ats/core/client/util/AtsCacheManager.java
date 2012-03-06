@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.internal.Activator;
@@ -28,6 +27,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * Common cache storage for ATS configuration artifacts:<br>
@@ -88,14 +88,10 @@ public class AtsCacheManager {
       return ArtifactCache.getArtifactsByName(artifactType, name);
    }
 
-   public static ActionableItemArtifact getActionableItemByGuid(String guid) throws OseeCoreException {
-      AtsBulkLoad.loadConfig(true);
-      return (ActionableItemArtifact) ArtifactCache.getActive(guid, AtsUtilCore.getAtsBranch().getId());
-   }
-
    public static TeamDefinitionArtifact getTeamDefinitionArtifact(String guid) throws OseeCoreException {
       AtsBulkLoad.loadConfig(true);
-      return (TeamDefinitionArtifact) ArtifactCache.getActive(guid, AtsUtilCore.getAtsBranch().getId());
+      //AtsBulkLoad should load the artifact into the cache and ArtifactQuery should return the cached artifact
+      return (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromId(guid, AtsUtilCore.getAtsBranch());
    }
 
    public static List<Artifact> getArtifactsByActive(IArtifactType artifactType, Active active) throws OseeCoreException {

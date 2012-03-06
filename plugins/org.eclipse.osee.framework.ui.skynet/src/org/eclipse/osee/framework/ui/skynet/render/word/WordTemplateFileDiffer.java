@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -25,7 +24,6 @@ import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -74,16 +72,15 @@ public final class WordTemplateFileDiffer {
 
       for (Artifact artifact : endArtifacts) {
          try {
-            diff(isDiffFromBaseline, txDelta, startBranch,
-               ArtifactCache.getActive(artifact.getArtId(), artifact.getBranch()), diffPrefix);
+            diff(isDiffFromBaseline, txDelta, startBranch, artifact, diffPrefix);
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
 
-   private void diff(boolean isDiffFromBaseline, TransactionDelta txDelta, Branch startBranch, Artifact artifact, String diffPrefix) throws OseeCoreException {
-      List<Artifact> endArtifacts = Arrays.asList(artifact);
+   private void diff(boolean isDiffFromBaseline, TransactionDelta txDelta, Branch startBranch, Artifact endArtifact, String diffPrefix) throws OseeCoreException {
+      List<Artifact> endArtifacts = Arrays.asList(endArtifact);
       List<Artifact> startArtifacts = getStartArtifacts(endArtifacts, startBranch);
 
       Collection<ArtifactDelta> artifactDeltas = new ArrayList<ArtifactDelta>();
@@ -105,15 +102,8 @@ public final class WordTemplateFileDiffer {
    }
 
    private List<Artifact> getStartArtifacts(List<Artifact> artifacts, Branch startBranch) throws OseeCoreException {
-      List<Artifact> startArtifacts = new ArrayList<Artifact>(artifacts.size());
-      @SuppressWarnings("unused")
-      Collection<Artifact> bulkLoadedArtifacts =
-         ArtifactQuery.getArtifactListFromIds(Artifacts.toGuids(artifacts), startBranch, DeletionFlag.INCLUDE_DELETED);
-
-      for (Artifact artifact : artifacts) {
-         startArtifacts.add(ArtifactCache.getActive(artifact.getArtId(), startBranch));
-      }
-      return startArtifacts;
+      return ArtifactQuery.getArtifactListFromIds(Artifacts.toGuids(artifacts), startBranch,
+         DeletionFlag.INCLUDE_DELETED);
    }
 
    private boolean isDeleted(Artifact artifact) {
