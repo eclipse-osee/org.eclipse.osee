@@ -31,16 +31,29 @@ public abstract class DatabaseTxCallable<T> extends DatabaseCallable<T> {
 
    @Override
    public final T call() throws Exception {
-      OseeConnection connection = getDatabaseService().getConnection();
       T value = null;
+      onExecutionStart();
       try {
-         InternalTxWork work = new InternalTxWork();
-         DatabaseTransactions.execute(connection, work);
-         value = work.getResult();
+         OseeConnection connection = getDatabaseService().getConnection();
+         try {
+            InternalTxWork work = new InternalTxWork();
+            DatabaseTransactions.execute(connection, work);
+            value = work.getResult();
+         } finally {
+            connection.close();
+         }
       } finally {
-         connection.close();
+         onExecutionComplete();
       }
       return value;
+   }
+
+   protected void onExecutionStart() {
+      // 
+   }
+
+   protected void onExecutionComplete() {
+      // 
    }
 
    protected abstract T handleTxWork(OseeConnection connection) throws OseeCoreException;
