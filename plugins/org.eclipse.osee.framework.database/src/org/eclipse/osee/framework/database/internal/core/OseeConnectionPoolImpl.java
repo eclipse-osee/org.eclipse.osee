@@ -11,21 +11,23 @@
 package org.eclipse.osee.framework.database.internal.core;
 
 import java.sql.Connection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.database.core.IConnectionFactory;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.internal.Activator;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 public class OseeConnectionPoolImpl {
-   private static final int MAX_CONNECTIONS_PER_CLIENT = Math.max(8, 2 * Runtime.getRuntime().availableProcessors());
-   private final List<OseeConnectionImpl> connections = new CopyOnWriteArrayList<OseeConnectionImpl>();
+   private static final int MAX_CONNECTIONS_PER_CLIENT = OseeProperties.getOseeDbConnectionCount();
+   private final List<OseeConnectionImpl> connections = new LinkedList<OseeConnectionImpl>();
+   private final Semaphore connectionsSemaphore = new Semaphore(MAX_CONNECTIONS_PER_CLIENT, true);
    private final String dbUrl;
    private final Properties properties;
    private final IConnectionFactory connectionFactory;
@@ -36,40 +38,34 @@ public class OseeConnectionPoolImpl {
       this.properties = properties;
    }
 
-   public synchronized boolean hasOpenConnection() {
-      return connections.size() > 0;
-   }
-
-   /**
-    * at a minimum this should be called on jvm shutdown
-    */
-   public synchronized void closeConnections() {
-      for (OseeConnection connection : connections) {
-         connection.close();
+   void removeConnection(OseeConnection conn) {
+      synchronized (connections) {
+         connections.remove(conn);
       }
-      connections.clear();
    }
 
-   synchronized void removeConnection(OseeConnection conn) {
-      connections.remove(conn);
-   }
+   public OseeConnectionImpl getConnection() throws OseeCoreException {
+      connectionsSemaphore.acquireUninterruptibly();
 
-   public synchronized OseeConnectionImpl getConnection() throws OseeCoreException {
-      for (OseeConnectionImpl connection : connections) {
-         if (connection.lease()) {
-            return connection;
+      OseeConnectionImpl toReturn = null;
+
+      synchronized (connections) {
+         for (OseeConnectionImpl connection : connections) {
+            if (connection.lease()) {
+               toReturn = connection;
+               break;
+            }
+         }
+
+         if (toReturn == null) {
+            OseeConnectionImpl connection = getOseeConnection();
+            connections.add(connection);
+            OseeLog.logf(Activator.class, Level.INFO, "DbConnection: [%s] - [%d]", dbUrl, connections.size());
+            toReturn = connection;
          }
       }
 
-      if (connections.size() >= MAX_CONNECTIONS_PER_CLIENT) {
-         throw new OseeDataStoreException(
-            "This client has reached the maximum number of allowed simultaneous database connections of %d.",
-            MAX_CONNECTIONS_PER_CLIENT);
-      }
-      OseeConnectionImpl connection = getOseeConnection();
-      connections.add(connection);
-      OseeLog.logf(Activator.class, Level.INFO, "DbConnection: [%s] - [%d]", dbUrl, connections.size());
-      return connection;
+      return toReturn;
    }
 
    private OseeConnectionImpl getOseeConnection() throws OseeCoreException {
@@ -83,7 +79,7 @@ public class OseeConnectionPoolImpl {
       }
    }
 
-   synchronized void returnConnection(OseeConnectionImpl connection) {
+   void returnConnection(OseeConnectionImpl connection) {
       try {
          if (connection.isClosed()) {
             removeConnection(connection);
@@ -94,10 +90,15 @@ public class OseeConnectionPoolImpl {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          removeConnection(connection);
       }
+      connectionsSemaphore.release();
    }
 
-   synchronized void releaseUneededConnections() throws OseeCoreException {
-      for (OseeConnectionImpl connection : connections) {
+   void releaseUneededConnections() throws OseeCoreException {
+      List<OseeConnectionImpl> copy;
+      synchronized (connections) {
+         copy = new LinkedList<OseeConnectionImpl>(connections);
+      }
+      for (OseeConnectionImpl connection : copy) {
          if (connection.isStale()) {
             connection.destroy();
          }
