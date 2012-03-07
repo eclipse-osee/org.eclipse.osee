@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -48,6 +49,12 @@ public final class ArtifactLoader {
       "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id, transaction_id) VALUES (?, ?, ?, ?, ?)";
    private static final String DELETE_FROM_JOIN_ARTIFACT = "DELETE FROM osee_join_artifact WHERE query_id = ?";
 
+   private static final CompositeKeyHashMap<Integer, Integer, ReentrantLock> loadingActiveMap =
+      new CompositeKeyHashMap<Integer, Integer, ReentrantLock>(1000, true);
+   private static final CompositeKeyHashMap<Integer, Integer, ReentrantLock> loadingHistoricalMap =
+      new CompositeKeyHashMap<Integer, Integer, ReentrantLock>(1000, true);
+   private static final Random queryRandom = new Random();
+
    /**
     * (re)loads the artifacts selected by sql and then returns them in a list
     */
@@ -59,25 +66,19 @@ public final class ArtifactLoader {
       selectArtifacts(artifacts, queryId, insertParameters, sql, queryParameters, artifactCountEstimate, transactionId,
          reload);
 
-      boolean historical = transactionId != null;
       if (!insertParameters.isEmpty()) {
          artifacts.addAll(loadArtifacts(queryId, loadLevel, confirmer,
-            new ArrayList<Object[]>(insertParameters.values()), reload, historical, allowDeleted));
+            new ArrayList<Object[]>(insertParameters.values()), reload, transactionId, allowDeleted));
       } else if (confirmer != null) {
          confirmer.canProceed(artifacts.size());
       }
       return artifacts;
    }
 
-   public static List<Artifact> loadArtifactsFromQueryId(int queryId, LoadLevel loadLevel, ISearchConfirmer confirmer, int fetchSize, LoadType reload, boolean historical, DeletionFlag allowDeleted) throws OseeCoreException {
-      List<Artifact> loadedItems = new ArrayList<Artifact>(fetchSize);
-      loadArtifactsFromQueryId(loadedItems, queryId, loadLevel, confirmer, fetchSize, reload, historical, allowDeleted);
-      return loadedItems;
-   }
-
-   private static void loadArtifactsFromQueryId(Collection<Artifact> loadedItems, int queryId, LoadLevel loadLevel, ISearchConfirmer confirmer, int fetchSize, LoadType reload, boolean historical, DeletionFlag allowDeleted) throws OseeCoreException {
+   private static void loadArtifactsFromQueryId(Collection<Artifact> loadedItems, int queryId, LoadLevel loadLevel, ISearchConfirmer confirmer, int fetchSize, LoadType reload, TransactionRecord transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
       try {
          OseeSql sqlKey;
+         boolean historical = transactionId != null;
          if (historical) {
             sqlKey = OseeSql.LOAD_HISTORICAL_ARTIFACTS;
          } else if (allowDeleted == DeletionFlag.INCLUDE_DELETED) {
@@ -102,7 +103,8 @@ public final class ArtifactLoader {
                if (previousArtId != artId || previousBranchId != branchId) {
                   // assumption: sql is returning unwanted deleted artifacts only in the historical case
                   if (!historical || allowDeleted == DeletionFlag.INCLUDE_DELETED || ModificationType.getMod(chStmt.getInt("mod_type")) != ModificationType.DELETED) {
-                     loadedItems.add(retrieveShallowArtifact(chStmt, reload, historical));
+                     Artifact shallowArtifact = retrieveShallowArtifact(chStmt, reload, historical);
+                     loadedItems.add(shallowArtifact);
                   }
                }
                previousArtId = artId;
@@ -116,7 +118,7 @@ public final class ArtifactLoader {
          }
 
          if (confirmer == null || confirmer.canProceed(loadedItems.size())) {
-            loadArtifactsData(queryId, loadedItems, loadLevel, reload, historical, allowDeleted);
+            loadArtifactsData(queryId, loadedItems, loadLevel, reload, transactionId, allowDeleted);
          }
       } finally {
          clearQuery(queryId);
@@ -143,18 +145,10 @@ public final class ArtifactLoader {
       }
    }
 
-   private static Artifact getArtifactFromCache(Integer artId, TransactionRecord transactionId, IOseeBranch branch) throws OseeCoreException {
-      boolean historical = transactionId != null;
-      if (historical) {
-         return ArtifactCache.getHistorical(artId, transactionId.getId());
-      }
-      return ArtifactCache.getActive(artId, branch);
-   }
-
    /**
     * loads or reloads artifacts based on artifact ids and branch ids
     */
-   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, IOseeBranch branch, LoadLevel loadLevel, TransactionRecord transactionId, LoadType reload, DeletionFlag allowDeleted) throws OseeCoreException {
+   private static List<Artifact> loadArtifacts(Collection<Integer> artIds, IOseeBranch branch, LoadLevel loadLevel, TransactionRecord transactionId, LoadType reload, DeletionFlag allowDeleted) throws OseeCoreException {
       ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
 
       checkArtifactCache(artifacts, artIds, transactionId, branch, allowDeleted);
@@ -174,7 +168,7 @@ public final class ArtifactLoader {
                historical ? transactionId.getId() : SQL3DataType.INTEGER});
          }
 
-         for (Artifact artifact : loadArtifacts(queryId, loadLevel, null, insertParameters, reload, historical,
+         for (Artifact artifact : loadArtifacts(queryId, loadLevel, null, insertParameters, reload, transactionId,
             allowDeleted)) {
             artifacts.add(artifact);
          }
@@ -185,13 +179,13 @@ public final class ArtifactLoader {
    /**
     * loads or reloads artifacts based on artifact ids and branch ids in the insertParameters
     */
-   public static List<Artifact> loadArtifacts(int queryId, LoadLevel loadLevel, ISearchConfirmer confirmer, List<Object[]> insertParameters, LoadType reload, boolean historical, DeletionFlag allowDeleted) throws OseeCoreException {
+   private static List<Artifact> loadArtifacts(int queryId, LoadLevel loadLevel, ISearchConfirmer confirmer, List<Object[]> insertParameters, LoadType reload, TransactionRecord transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
       List<Artifact> loadedItems = new ArrayList<Artifact>(insertParameters.size());
-      loadArtifacts(loadedItems, queryId, loadLevel, confirmer, insertParameters, reload, historical, allowDeleted);
+      loadArtifacts(loadedItems, queryId, loadLevel, confirmer, insertParameters, reload, transactionId, allowDeleted);
       return loadedItems;
    }
 
-   public static void loadArtifacts(Collection<Artifact> loadedItems, int queryId, LoadLevel loadLevel, ISearchConfirmer confirmer, List<Object[]> insertParameters, LoadType reload, boolean historical, DeletionFlag allowDeleted) throws OseeCoreException {
+   private static void loadArtifacts(Collection<Artifact> loadedItems, int queryId, LoadLevel loadLevel, ISearchConfirmer confirmer, List<Object[]> insertParameters, LoadType reload, TransactionRecord transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
       if (!insertParameters.isEmpty()) {
          Collection<Artifact> data;
          if (loadedItems.isEmpty()) {
@@ -203,8 +197,8 @@ public final class ArtifactLoader {
          long time = System.currentTimeMillis();
          try {
             insertIntoArtifactJoin(insertParameters);
-            loadArtifactsFromQueryId(data, queryId, loadLevel, confirmer, insertParameters.size(), reload, historical,
-               allowDeleted);
+            loadArtifactsFromQueryId(data, queryId, loadLevel, confirmer, insertParameters.size(), reload,
+               transactionId, allowDeleted);
          } finally {
             if (data != loadedItems) {
                loadedItems.addAll(data);
@@ -292,29 +286,28 @@ public final class ArtifactLoader {
          "Artifact Selection Time [%s], [%d] artifacts selected", Lib.getElapseString(time), insertParameters.size());
    }
 
+   /**
+    * This method is called only after the cache has been checked
+    */
    private static Artifact retrieveShallowArtifact(IOseeStatement chStmt, LoadType reload, boolean historical) throws OseeCoreException {
       int artifactId = chStmt.getInt("art_id");
       Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));
-      Artifact artifact;
+      Artifact artifact = null;
       int transactionId = Artifact.TRANSACTION_SENTINEL;
       if (historical) {
          int stripeTransactionNumber = chStmt.getInt("stripe_transaction_id");
          transactionId = stripeTransactionNumber;
-         artifact = ArtifactCache.getHistorical(artifactId, stripeTransactionNumber);
-      } else {
-         artifact = ArtifactCache.getActive(artifactId, branch);
       }
 
-      if (artifact == null) {
-         IArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getInt("art_type_id"));
-         ArtifactFactory factory = ArtifactTypeManager.getFactory(artifactType);
+      IArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getInt("art_type_id"));
+      ArtifactFactory factory = ArtifactTypeManager.getFactory(artifactType);
 
-         artifact =
-            factory.loadExisitingArtifact(artifactId, chStmt.getString("guid"), chStmt.getString("human_readable_id"),
-               artifactType, chStmt.getInt("gamma_id"), branch, transactionId,
-               ModificationType.getMod(chStmt.getInt("mod_type")), historical);
+      artifact =
+         factory.loadExisitingArtifact(artifactId, chStmt.getString("guid"), chStmt.getString("human_readable_id"),
+            artifactType, chStmt.getInt("gamma_id"), branch, transactionId,
+            ModificationType.getMod(chStmt.getInt("mod_type")), historical);
 
-      } else if (reload == LoadType.RELOAD_CACHE) {
+      if (reload == LoadType.RELOAD_CACHE) {
          artifact.internalSetPersistenceData(chStmt.getInt("gamma_id"), transactionId,
             ModificationType.getMod(chStmt.getInt("mod_type")), historical);
       }
@@ -332,24 +325,85 @@ public final class ArtifactLoader {
 
          List<Artifact> artifacts = new ArrayList<Artifact>(1);
          artifacts.add(artifact);
-         loadArtifactsData(queryId, artifacts, loadLevel, LoadType.INCLUDE_CACHE, false,
+         loadArtifactsData(queryId, artifacts, loadLevel, LoadType.INCLUDE_CACHE, null,
             artifact.isDeleted() ? DeletionFlag.INCLUDE_DELETED : DeletionFlag.EXCLUDE_DELETED);
       } finally {
          clearQuery(queryId);
       }
    }
 
-   private static void loadArtifactsData(int queryId, Collection<Artifact> artifacts, LoadLevel loadLevel, LoadType reload, boolean historical, DeletionFlag allowDeleted) throws OseeCoreException {
+   private static Artifact getArtifactFromCache(Integer artId, TransactionRecord transactionId, IOseeBranch branch) throws OseeCoreException {
+      boolean historical = transactionId != null;
+      CompositeKeyHashMap<Integer, Integer, ReentrantLock> loadingMap;
+      int key2 = historical ? transactionId.getId() : BranchManager.getBranchId(branch);
+      Artifact cached;
+
+      if (historical) {
+         loadingMap = loadingHistoricalMap;
+      } else {
+         loadingMap = loadingActiveMap;
+      }
+
+      synchronized (loadingMap) {
+         if (loadingMap.containsKey(artId, key2)) {
+            ReentrantLock lock = loadingMap.get(artId, key2);
+            lock.lock();
+            lock.unlock();
+         }
+
+         if (historical) {
+            cached = ArtifactCache.getHistorical(artId, key2);
+         } else {
+            cached = ArtifactCache.getActive(artId, key2);
+         }
+
+         if (cached == null) {
+            ReentrantLock lock = new ReentrantLock();
+            lock.lock();
+            loadingMap.put(artId, key2, lock);
+         }
+      }
+
+      return cached;
+   }
+
+   private static void loadArtifactsData(int queryId, Collection<Artifact> artifacts, LoadLevel loadLevel, LoadType reload, TransactionRecord transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
+
       if (reload == LoadType.RELOAD_CACHE) {
          for (Artifact artifact : artifacts) {
             artifact.prepareForReload();
          }
       }
-      AttributeLoader.loadAttributeData(queryId, artifacts, historical, allowDeleted, loadLevel);
+      boolean historical = transactionId != null;
+      int key2;
+
+      CompositeKeyHashMap<Integer, Integer, Artifact> tempCache =
+         new CompositeKeyHashMap<Integer, Integer, Artifact>(artifacts.size(), true);
+
+      for (Artifact artifact : artifacts) {
+         key2 = historical ? transactionId.getId() : BranchManager.getBranchId(artifact.getBranch());
+         tempCache.put(artifact.getArtId(), key2, artifact);
+      }
+
+      AttributeLoader.loadAttributeData(queryId, tempCache, historical, allowDeleted, loadLevel);
       RelationLoader.loadRelationData(queryId, artifacts, historical, loadLevel);
+
+      CompositeKeyHashMap<Integer, Integer, ReentrantLock> loadingMap;
+      loadingMap = historical ? loadingHistoricalMap : loadingActiveMap;
+
+      for (Artifact artifact : artifacts) {
+         key2 = historical ? transactionId.getId() : BranchManager.getBranchId(artifact.getBranch());
+
+         if (loadingMap.containsKey(artifact.getArtId(), key2)) {
+            ReentrantLock lock = loadingMap.remove(artifact.getArtId(), key2);
+            if (lock.isLocked()) {
+               lock.unlock();
+            }
+         }
+      }
    }
 
    public static int getNewQueryId() {
-      return new Random().nextInt(Integer.MAX_VALUE);
+      return queryRandom.nextInt(Integer.MAX_VALUE);
    }
 }

@@ -14,7 +14,6 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED
 import static org.eclipse.osee.framework.core.enums.LoadLevel.RELATION;
 import static org.eclipse.osee.framework.core.enums.LoadLevel.SHALLOW;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -26,6 +25,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeSql;
+import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
  */
 public class AttributeLoader {
 
-   static void loadAttributeData(int queryId, Collection<Artifact> artifacts, boolean historical, DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel) throws OseeCoreException {
+   static void loadAttributeData(int queryId, CompositeKeyHashMap<Integer, Integer, Artifact> tempCache, boolean historical, DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel) throws OseeCoreException {
       if (loadLevel == SHALLOW || loadLevel == RELATION) {
          return;
       }
@@ -45,7 +45,7 @@ public class AttributeLoader {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          String sql = getSql(allowDeletedArtifacts, loadLevel, historical);
-         chStmt.runPreparedQuery(artifacts.size() * 8, sql, queryId);
+         chStmt.runPreparedQuery(tempCache.size() * 8, sql, queryId);
 
          Artifact currentArtifact = null;
          AttrData previousAttr = new AttrData();
@@ -57,7 +57,7 @@ public class AttributeLoader {
             if (AttrData.isDifferentArtifact(previousAttr, nextAttr)) {
                loadAttributesFor(currentArtifact, currentAttributes, historical);
                currentAttributes.clear();
-               currentArtifact = getArtifact(nextAttr, historical);
+               currentArtifact = getArtifact(nextAttr, historical, tempCache);
             }
 
             currentAttributes.add(nextAttr);
@@ -66,6 +66,9 @@ public class AttributeLoader {
          loadAttributesFor(currentArtifact, currentAttributes, historical);
       } finally {
          chStmt.close();
+      }
+      for (Artifact art : tempCache.values()) {
+         ArtifactCache.cache(art);
       }
    }
 
@@ -110,16 +113,13 @@ public class AttributeLoader {
       }
    }
 
-   private static Artifact getArtifact(AttrData current, boolean historical) {
+   private static Artifact getArtifact(AttrData current, boolean historical, CompositeKeyHashMap<Integer, Integer, Artifact> tempCache) {
       Artifact artifact = null;
-      if (historical) {
-         artifact = ArtifactCache.getHistorical(current.artifactId, current.stripeId);
-      } else {
-         artifact = ArtifactCache.getActive(current.artifactId, current.branchId);
-      }
+      int key2 = historical ? current.stripeId : current.branchId;
+      artifact = tempCache.get(current.artifactId, key2);
       if (artifact == null) {
-         OseeLog.logf(ArtifactLoader.class, Level.WARNING,
-            "Orphaned attribute for artifact id[%d] branch[%d]", current.artifactId, current.branchId);
+         OseeLog.logf(ArtifactLoader.class, Level.WARNING, "Orphaned attribute for artifact id[%d] branch[%d]",
+            current.artifactId, current.branchId);
       }
       return artifact;
    }
@@ -154,10 +154,10 @@ public class AttributeLoader {
          OseeLog.logf(
             ArtifactLoader.class,
             Level.WARNING,
-            
-               "multiple attribute version for attribute id [%d] artifact id[%d] branch[%d] previousGammaId[%s] currentGammaId[%s] previousModType[%s] currentModType[%s]",
-               current.attrId, current.artifactId, current.branchId, previous.gammaId, current.gammaId,
-               previous.modType, current.modType);
+
+            "multiple attribute version for attribute id [%d] artifact id[%d] branch[%d] previousGammaId[%s] currentGammaId[%s] previousModType[%s] currentModType[%s]",
+            current.attrId, current.artifactId, current.branchId, previous.gammaId, current.gammaId, previous.modType,
+            current.modType);
       }
    }
 

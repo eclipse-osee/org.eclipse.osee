@@ -14,6 +14,7 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED
 import static org.junit.Assert.assertFalse;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -23,6 +24,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -129,6 +131,62 @@ public class ArtifactLoaderTest {
          Assert.assertEquals(ATTRIBUTE_VALUE, artifact.getSoleAttributeValue(CoreAttributeTypes.DefaultMailServer));
          Assert.assertEquals(1, artifact.getAttributesToStringList(CoreAttributeTypes.DefaultMailServer).size());
       }
+   }
+
+   @org.junit.Test
+   public void testThreadSafeLoadingSameArtifact() throws Exception {
+      // Create some software artifacts
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(BranchManager.getCommonBranch(), "ArtifactLoaderTest");
+      Artifact testArt =
+         FrameworkTestUtil.createSimpleArtifact(CoreArtifactTypes.GlobalPreferences, "ArtifactLoaderTest",
+            BranchManager.getCommonBranch());
+      testArt.setName("ArtifactLoaderTest");
+      testArt.addAttribute(CoreAttributeTypes.DefaultMailServer, ATTRIBUTE_VALUE);
+      testArt.persist(transaction);
+      transaction.execute();
+
+      final String guid = testArt.getGuid();
+
+      // now, de-cache them
+      ArtifactCache.deCache(testArt);
+
+      List<Callable<String>> callables = new LinkedList<Callable<String>>();
+
+      int size = 4;
+      //create 4 threads to load the same artifact
+      for (int i = 0; i < size; i++) {
+         MultiThreadCallable mtc = new MultiThreadCallable(guid);
+         callables.add(mtc);
+      }
+
+      ExecutorService executor = Executors.newFixedThreadPool(size);
+      for (Future<String> future : executor.invokeAll(callables, 81, TimeUnit.SECONDS)) {
+         Assert.assertEquals(ATTRIBUTE_VALUE, future.get());
+      }
+
+      //double check
+      ArtifactCache.deCache(testArt);
+      for (Future<String> future : executor.invokeAll(callables, 81, TimeUnit.SECONDS)) {
+         Assert.assertEquals(ATTRIBUTE_VALUE, future.get());
+      }
+
+   }
+
+   private final class MultiThreadCallable implements Callable<String> {
+
+      private final String guid;
+
+      public MultiThreadCallable(String guid) {
+         this.guid = guid;
+      }
+
+      @Override
+      public String call() throws Exception {
+         Artifact art = ArtifactQuery.getArtifactFromId(guid, CoreBranches.COMMON);
+         return art.getSoleAttributeValueAsString(CoreAttributeTypes.DefaultMailServer, "");
+      }
+
    }
 
    private static final class LoadArtifacts implements Callable<List<Artifact>> {
