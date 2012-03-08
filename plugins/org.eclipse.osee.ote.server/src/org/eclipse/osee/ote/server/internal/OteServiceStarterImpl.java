@@ -89,8 +89,6 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 			throw new OseeStateException("An ote Server has already been started.");
 		}
 
-		System.out.printf("start called for connecotr %s, factory=%s, class=%s\n", serviceSideConnector.getClass().getName(), factory.getClass().getName(), environmentFactoryClass);
-
 		this.serviceSideConnector = serviceSideConnector;
 		brokerService = new BrokerService();
 

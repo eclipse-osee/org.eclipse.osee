@@ -64,6 +64,9 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
    private final ReentrantLock lock = new ReentrantLock();
 
    public RemoteTestEnvironment(MessageSystemTestEnvironment currentEnvironment, IServiceConnector serviceConnector, boolean keepEnvAliveWithNoUsers) {
+	  if (serviceConnector == null) {
+		  throw new NullPointerException("Servce connector cannot be null");
+	  }
       this.env = currentEnvironment;
       this.serviceConnector = serviceConnector;
       this.keepEnvAliveWithNoUsers = keepEnvAliveWithNoUsers;
@@ -117,7 +120,7 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
    @Override
    public IRemoteMessageService getMessageToolServiceProxy() throws RemoteException {
       try {
-         return messageToolServiceTracker.waitForService(10000);
+         return messageToolServiceTracker.waitForService(30000);
       } catch (InterruptedException e) {
          throw new RemoteException("", e);
       }

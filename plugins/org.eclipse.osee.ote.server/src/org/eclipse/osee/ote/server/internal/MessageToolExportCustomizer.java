@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.server.internal;
 
 import java.rmi.server.ExportException;
 import java.util.logging.Level;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.message.interfaces.IRemoteMessageService;
@@ -35,6 +36,8 @@ public class MessageToolExportCustomizer implements ServiceTrackerCustomizer {
       } catch (ExportException e) {
          OseeLog.log(MessageToolExportCustomizer.class, Level.SEVERE, "failed to export message tool service", e);
          return null;
+      } finally {
+    	  OseeLog.log(Activator.class, Level.WARNING, "!!!message tool service exported");
       }
 
    }
