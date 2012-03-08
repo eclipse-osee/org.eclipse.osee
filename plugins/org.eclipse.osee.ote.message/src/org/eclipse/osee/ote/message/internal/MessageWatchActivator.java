@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message.internal;
 
-import java.io.IOException;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.message.interfaces.IMessageManager;
 import org.eclipse.osee.ote.message.interfaces.IRemoteMessageService;
@@ -35,8 +35,8 @@ public class MessageWatchActivator extends ServiceTracker {
       try {
          AbstractMessageToolService toolService = new AbstractMessageToolService(manager);
          registration = context.registerService(IRemoteMessageService.class.getName(), toolService, null);
-      } catch (IOException e) {
-         OseeLog.log(MessageWatchActivator.class, Level.SEVERE, "failed to create message tool service", e);
+      } catch (Exception e) {
+         OseeLog.log(MessageWatchActivator.class, Level.SEVERE, "!!!failed to create message tool service", e);
       }
       return manager;
    }

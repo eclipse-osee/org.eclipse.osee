@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
@@ -341,8 +342,12 @@ public class AbstractMessageToolService implements IRemoteMessageService {
    public AbstractMessageToolService(IMessageManager messageManager) throws IOException {
       openXmitChannel();
       recorderOutputChannel = DatagramChannel.open();
-      recorderOutputChannel.socket().bind(
-         new InetSocketAddress(InetAddress.getLocalHost(), PortUtil.getInstance().getValidPort()));
+      InetSocketAddress address = new InetSocketAddress(InetAddress.getLocalHost(), 0);
+      try {
+		recorderOutputChannel.socket().bind(address);
+	} catch (BindException e) {
+		throw new IOException("could not bind to address " + address.toString());
+	}
       messageRequestor = messageManager.createMessageRequestor(getClass().getName());
    }
 

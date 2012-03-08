@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.message.enums.DataType;
 
@@ -31,7 +32,7 @@ import org.eclipse.osee.ote.message.enums.DataType;
  * @author Ken J. Aguilar
  */
 public final class UpdateDispatcher {
-   private static final int RECEIVE_BUFFER_SIZE = 1024 * 256;
+   private static final int RECEIVE_BUFFER_SIZE = 1024 * 512;
 
    /** * Class Instance Fields ** */
    private final Map<DataType, DatagramChannel> channelMap = new HashMap<DataType, DatagramChannel>();

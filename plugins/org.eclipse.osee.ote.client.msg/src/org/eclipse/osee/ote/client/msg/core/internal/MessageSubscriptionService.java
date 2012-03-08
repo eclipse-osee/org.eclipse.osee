@@ -190,13 +190,11 @@ public class MessageSubscriptionService implements IOteMessageService, IMessageD
    private void createProccessors() throws IOException {
       Set<? extends DataType> availableTypes = service.getAvailablePhysicalTypes();
 
-      int port = PortUtil.getInstance().getConsecutiveValidPorts(availableTypes.size());
       for (DataType type : availableTypes) {
          final ChannelProcessor handler =
             new ChannelProcessor(1, type.getToolingBufferSize(), threadPool, msgDatabase, type);
 
-         dispatcher.addChannel(localAddress, port, type, handler);
-         port++;
+         dispatcher.addChannel(localAddress, 0, type, handler);
       }
    }
 
