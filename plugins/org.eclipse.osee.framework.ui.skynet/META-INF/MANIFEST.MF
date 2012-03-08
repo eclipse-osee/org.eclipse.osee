@@ -34,7 +34,8 @@ Require-Bundle: javax.mail.glassfish,
  org.eclipse.osee.framework.ui.ws,
  org.eclipse.osee.framework.help.ui,
  org.eclipse.osee.framework.access,
- org.eclipse.core.filesystem
+ org.eclipse.core.filesystem,
+ org.eclipse.osee.framework.core
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Import-Package: com.google.common.collect,
