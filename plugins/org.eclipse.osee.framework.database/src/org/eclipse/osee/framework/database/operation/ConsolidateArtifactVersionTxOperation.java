@@ -41,8 +41,8 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
    private static final String SELECT_ADDRESSING =
       "select txs.*, idj.id1 as net_gamma_id from osee_join_export_import idj, osee_txs%s txs where idj.query_id = ? and idj.id2 = txs.gamma_id order by net_gamma_id, branch_id, transaction_id, gamma_id desc";
 
-   //   private static final String UPDATE_CONFLICTS =
-   //      "update osee_conflict set %s = (select gamma_id from osee_artifact_version where conflict_id = art_id) where conflict_type = 3";
+   private static final String UPDATE_CONFLICTS =
+      "update osee_conflict set %s = (select gamma_id from osee_artifact where conflict_id = art_id) where conflict_type = 3";
 
    private static final String UPDATE_TXS_GAMMAS =
       "update osee_txs%s set gamma_id = ?, mod_type = ? where transaction_id = ? and gamma_id = ?";
@@ -51,15 +51,8 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
 
    private static final String DELETE_ARTIFACT_VERSIONS = "delete from osee_artifact where gamma_id = ?";
 
-   private static final String SET_BASELINE_TRANSACTION =
-      "UPDATE osee_branch ob SET ob.baseline_transaction_id = (SELECT otd.transaction_id FROM osee_tx_details otd WHERE otd.branch_id = ob.branch_id AND otd.tx_type = 1)";
-
-   //   private static final String POPULATE_ARTS =
-   //      "insert into osee_artifact(gamma_id, art_id, art_type_id, guid, human_readable_id) select gamma_id, art.art_id, art_type_id, guid, human_readable_id from osee_artifact art, osee_artifact_version arv where art.art_id = arv.art_id and not exists (select 1 from osee_artifact arts where art.art_id = arts.art_id)";
-
    private static final String POPULATE_DUPLICATE_ARTID =
       "SELECT ART1.art_id as art_id, t1.branch_id as branch_id, art2.art_id as art_id_1, t2.branch_id as branch_id_1 FROM OSEE.OSEE_ARTIFACT ART1, OSEE.OSEE_ARTIFACT ART2, osee.osee_txs t1, osee.osee_txs t2 where t1.gamma_id = ART1.gamma_id and t2.gamma_id = ART2.gamma_id and  ART1.gamma_id <> ART2.gamma_id AND ART1.ART_ID = ART2.ART_ID order by art1.art_id";
-   //      "SELECT * FROM OSEE.OSEE_ARTIFACT ART1, OSEE.OSEE_ARTIFACT ART2 where ART1.gamma_id <> ART2.gamma_id AND ART1.ART_ID = ART2.ART_ID order by art1.art_id";
 
    private static final String FIND_ARTIFACT_MODS =
       "select * from osee_join_artifact jn1, osee_artifact art, osee_txs txs where art.gamma_id = txs.gamma_id and txs.branch_id = jn1.branch_id and art.art_id = jn1.art_id and jn1.query_id = ? order by art.art_id, txs.branch_id, txs.transaction_id";
@@ -99,7 +92,6 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       updateTxsCounter = 0;
       deleteTxsCounter = 0;
       chStmt = getDatabaseService().getStatement(connection);
-      //not sure if this is needed
       gammaJoin = JoinUtility.createExportImportJoinQuery();
    }
 
@@ -111,7 +103,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
          idJoinQuery.add(chStmt.getInt("art_id"), chStmt.getInt("branch_id"), -1);
          idJoinQuery.add(chStmt.getInt("art_id_1"), chStmt.getInt("branch_id_1"), -1);
       }
-      idJoinQuery.store();
+      idJoinQuery.store(connection);
       return idJoinQuery;
    }
 
@@ -138,6 +130,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
          }
       } finally {
          chStmt.close();
+         artifactJoinQuery.delete(connection);
       }
    }
 
@@ -208,9 +201,6 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       logf("updateTxsCurrentModData size: %d", updateTxsCurrentModData.size());
       logf("addressingToDelete size: %d", addressingToDelete.size());
 
-      //      if (true) {
-      //         return;
-      //      }
       getDatabaseService().runBatchUpdate(connection, prepareSql(UPDATE_TXS_MOD_CURRENT, false),
          updateTxsCurrentModData);
       getDatabaseService().runBatchUpdate(connection, prepareSql(DELETE_TXS, false), addressingToDelete);
@@ -224,12 +214,8 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
 
       gammaJoin.store(connection);
 
-      //      updataConflicts("source_gamma_id");
-      //      updataConflicts("dest_gamma_id");
-
-      setBaselineTransactions();
-
-      //      populateArts();
+      updataConflicts("source_gamma_id");
+      updataConflicts("dest_gamma_id");
 
       determineAffectedAddressingAndFix(false);
       determineAffectedAddressingAndFix(true);
@@ -237,20 +223,10 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       gammaJoin.delete(connection);
    }
 
-   //   private void updataConflicts(String columnName) throws OseeCoreException {
-   //      int count = getDatabaseService().runPreparedUpdate(connection, String.format(UPDATE_CONFLICTS, columnName));
-   //      logf("updated %s in %d rows", columnName, count);
-   //   }
-
-   private void setBaselineTransactions() throws OseeCoreException {
-      int count = getDatabaseService().runPreparedUpdate(connection, SET_BASELINE_TRANSACTION);
-      logf("updated %d baseline transactions", count);
+   private void updataConflicts(String columnName) throws OseeCoreException {
+      int count = getDatabaseService().runPreparedUpdate(connection, String.format(UPDATE_CONFLICTS, columnName));
+      logf("updated %s in %d rows", columnName, count);
    }
-
-   //   private void populateArts() throws OseeCoreException {
-   //      int count = getDatabaseService().runPreparedUpdate(connection, POPULATE_ARTS);
-   //      logf("inserted %d rows into osee_artifact", count);
-   //   }
 
    private void findObsoleteGammas() throws OseeCoreException {
       try {
