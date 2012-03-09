@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -64,16 +63,15 @@ public class RelationOrderingTest {
    @Before
    public void setupArtifacts() throws Exception {
       branch = BranchManager.getCommonBranch();
-      parent = createArtifact(CoreArtifactTypes.Folder, branch);
+      parent = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "parent");
+      addStaticIdToDelete(parent);
 
-      child1 = createArtifact(CoreArtifactTypes.Folder, branch);
-      child1.setName("a_child");
-
-      child2 = createArtifact(CoreArtifactTypes.Folder, branch);
-      child2.setName("b_child");
-
-      child3 = createArtifact(CoreArtifactTypes.Folder, branch);
-      child3.setName("c_child");
+      child1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "a_child");
+      addStaticIdToDelete(child1);
+      child2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "b_child");
+      addStaticIdToDelete(child2);
+      child3 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "c_child");
+      addStaticIdToDelete(child3);
 
       parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child1);
       parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child2);
@@ -105,22 +103,36 @@ public class RelationOrderingTest {
 
       checkDesc();
 
-      Artifact child4 = createArtifact(CoreArtifactTypes.User, branch);
-      child1.setName("a_child");
-      Artifact child5 = createArtifact(CoreArtifactTypes.User, branch);
-      child2.setName("b_child");
-      Artifact child6 = createArtifact(CoreArtifactTypes.User, branch);
+      /**
+       * set userId on Users so doesn't break user management
+       */
+      SkynetTransaction transaction = TransactionManager.createTransaction(branch, getClass().getSimpleName());
+      Artifact child4 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, branch, "a_child");
+      child4.setSoleAttributeValue(CoreAttributeTypes.UserId, "a_child");
+      child4.persist(transaction);
+      addStaticIdToDelete(child4);
+
+      Artifact child5 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, branch, "b_child");
+      child5.setSoleAttributeValue(CoreAttributeTypes.UserId, "b_child");
+      child5.persist(transaction);
+      addStaticIdToDelete(child5);
+
+      Artifact child6 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, branch, "c_child");
+      child6.setSoleAttributeValue(CoreAttributeTypes.UserId, "c_child");
+      child6.persist(transaction);
+      addStaticIdToDelete(child6);
 
       parent.addRelation(CoreRelationTypes.Users_User, child4);
       parent.addRelation(CoreRelationTypes.Users_User, child5);
       parent.addRelation(CoreRelationTypes.Users_User, child6);
-      parent.persist(getClass().getSimpleName());
+      parent.persist(transaction);
 
       parent.setRelationOrder(CoreRelationTypes.Users_User, RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);
 
       parent.setRelationOrder(CoreRelationTypes.Users_Artifact, RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);
 
       parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
+      transaction.execute();
 
       attribute = parent.getSoleAttribute(CoreAttributeTypes.RelationOrder);
       assertTrue("The attribute was deleted even though there was a still a non default sort order on the artifact.",
@@ -199,7 +211,7 @@ public class RelationOrderingTest {
             ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BranchManager.getCommonBranch(),
                "New Child " + x + " - " + guid);
          children.add(childArt);
-         childArt.setSingletonAttributeValue(CoreAttributeTypes.StaticId, STATIC_ID_TO_DELETE);
+         addStaticIdToDelete(childArt);
          mainFolder.addChild(childArt);
          childArt.persist(transaction);
       }
@@ -210,6 +222,7 @@ public class RelationOrderingTest {
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BranchManager.getCommonBranch(),
             "New Artifact " + guid);
       mainFolder.addChild(newArtifact);
+      addStaticIdToDelete(newArtifact);
       newArtifact.setSingletonAttributeValue(CoreAttributeTypes.StaticId, STATIC_ID_TO_DELETE);
       newArtifact.persist(getClass().getSimpleName());
 
@@ -221,7 +234,7 @@ public class RelationOrderingTest {
       Assert.assertFalse("Artifact should not be dirty.", mainFolder.isDirty());
    }
 
-   private Artifact createArtifact(IArtifactType artifactType, Branch branch) throws OseeCoreException {
-      return ArtifactTypeManager.addArtifact(artifactType, branch);
+   private void addStaticIdToDelete(Artifact artifact) throws OseeCoreException {
+      artifact.setSingletonAttributeValue(CoreAttributeTypes.StaticId, STATIC_ID_TO_DELETE);
    }
 }
