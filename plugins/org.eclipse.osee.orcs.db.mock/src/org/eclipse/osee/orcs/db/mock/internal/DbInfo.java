@@ -52,7 +52,8 @@ public class DbInfo implements IDatabaseInfo {
 
    @Override
    public String getConnectionUrl() {
-      return String.format("jdbc:h2:tcp://127.0.0.1:%s/%s/osee.h2.db;IGNORECASE=TRUE;SCHEMA_SEARCH_PATH=OSEE,PUBLIC",
+      return String.format(
+         "jdbc:h2:tcp://127.0.0.1:%s/%s/osee.h2.db;IGNORECASE=TRUE;SCHEMA_SEARCH_PATH=OSEE,PUBLIC;MVCC=TRUE;LOG=2",
          port, dbPath);
    }
 
