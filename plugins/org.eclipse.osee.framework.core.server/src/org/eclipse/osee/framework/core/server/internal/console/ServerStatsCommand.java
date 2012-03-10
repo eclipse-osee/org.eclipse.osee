@@ -112,24 +112,21 @@ public class ServerStatsCommand implements ConsoleCommand {
 
          IJobManager jobManager = Job.getJobManager();
          console.writeln("Job Manager: [%s]", jobManager.isIdle() ? "IDLE" : "BUSY");
-         console.writeln("Current Job: [%s]", jobManager.currentJob().getName());
 
-         console.writeln("Current Tasks: ");
+         Job current = jobManager.currentJob();
+
+         console.writeln("Current Job: [%s]", current != null ? current.getName() : "NONE");
+
+         console.write("Current Tasks: ");
          List<String> entries = manager.getCurrentProcesses();
          if (entries.isEmpty()) {
             console.writeln("[NONE]");
          } else {
             console.writeln();
             for (int index = 0; index < entries.size(); index++) {
-               console.writeln("[%s] ", index);
-               console.writeln(entries.get(index));
-               if (index + 1 < entries.size()) {
-                  console.writeln();
-               }
+               console.writeln("\t[%s] - %s", index, entries.get(index));
             }
          }
-
-         console.writeln();
          return Boolean.TRUE;
       }
 

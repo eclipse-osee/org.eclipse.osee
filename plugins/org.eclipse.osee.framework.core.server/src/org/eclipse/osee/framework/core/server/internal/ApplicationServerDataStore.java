@@ -88,7 +88,7 @@ public class ApplicationServerDataStore {
          getDbService().runBatchUpdate(DELETE_FROM_LOOKUP_TABLE, data);
          status = true;
       } catch (OseeCoreException ex) {
-         getLogger().info("Server lookup table not initialized");
+         getLogger().info("Server lookup table is not initialized");
       }
       return status;
    }
@@ -108,7 +108,7 @@ public class ApplicationServerDataStore {
          getDbService().runBatchUpdate(INSERT_LOOKUP_TABLE, data);
          status = true;
       } catch (OseeCoreException ex) {
-         getLogger().info("Server lookup table not initialized");
+         getLogger().info("Server lookup table is not initialized");
       }
       return status;
    }
