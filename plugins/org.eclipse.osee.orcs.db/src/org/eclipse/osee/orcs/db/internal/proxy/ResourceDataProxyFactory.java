@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
@@ -35,7 +34,6 @@ public class ResourceDataProxyFactory implements DataProxyFactory {
 
    private Log logger;
    private IResourceManager resourceManager;
-   private IResourceLocatorManager resourceLocator;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -51,14 +49,6 @@ public class ResourceDataProxyFactory implements DataProxyFactory {
 
    public void setResourceManager(IResourceManager resourceManager) {
       this.resourceManager = resourceManager;
-   }
-
-   public IResourceLocatorManager getResourceLocator() {
-      return resourceLocator;
-   }
-
-   public void setResourceLocator(IResourceLocatorManager resourceLocator) {
-      this.resourceLocator = resourceLocator;
    }
 
    private Class<? extends AbstractDataProxy> getProxyClazz(String id) {
@@ -111,9 +101,7 @@ public class ResourceDataProxyFactory implements DataProxyFactory {
 
    private Storage createStorage() {
       IResourceManager resourceManager = getResourceManager();
-      IResourceLocatorManager locatorManager = getResourceLocator();
-
-      DataHandler handler = new ResourceHandler(resourceManager, locatorManager);
+      DataHandler handler = new ResourceHandler(resourceManager);
       return new Storage(handler);
    }
 }

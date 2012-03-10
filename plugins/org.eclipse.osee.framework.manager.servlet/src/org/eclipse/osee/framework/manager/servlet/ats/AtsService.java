@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.manager.servlet.DataServlet;
 import org.eclipse.osee.framework.resource.management.IResource;
-import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.w3c.dom.Node;
 
@@ -45,15 +44,13 @@ public class AtsService {
    private final IResourceProvider resourceProvider;
    private final AtsXmlSearch xmlSearch;
    private final AtsXmlMessages messages;
-   private final IResourceLocatorManager locatorManager;
    private final IResourceManager resourceManager;
    private final BranchCache branchCache;
 
-   public AtsService(IResourceProvider resourceProvider, AtsXmlSearch xmlSearch, AtsXmlMessages messages, IResourceLocatorManager locatorManager, IResourceManager resourceManager, IOseeCachingService cacheService) {
+   public AtsService(IResourceProvider resourceProvider, AtsXmlSearch xmlSearch, AtsXmlMessages messages, IResourceManager resourceManager, IOseeCachingService cacheService) {
       this.xmlSearch = xmlSearch;
       this.messages = messages;
       this.resourceProvider = resourceProvider;
-      this.locatorManager = locatorManager;
       this.resourceManager = resourceManager;
       branchCache = cacheService.getBranchCache();
    }
@@ -138,7 +135,7 @@ public class AtsService {
             urlPath = request.getRequestURI().replace(servletPath, "");
 
             if (urlPath.contains("osee/data")) {
-               DataServlet.handleUriRequest(locatorManager, resourceManager, urlPath, response, branchCache);
+               DataServlet.handleUriRequest(resourceManager, urlPath, response, branchCache);
                return;
             } else {
                resource = getResource(urlPath);

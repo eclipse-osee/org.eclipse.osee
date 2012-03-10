@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
-import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.internal.exchange.ExchangeDb;
@@ -40,9 +39,9 @@ import org.eclipse.osee.orcs.db.internal.util.ZipBinaryResource;
  */
 public class DbTableSaxHandler extends BaseDbSaxHandler {
 
-   public static DbTableSaxHandler createWithLimitedCache(Log logger, IOseeDatabaseService dbService, IResourceManager resourceManager, IResourceLocatorManager locatorService, IdentityService identityService, IOseeExchangeDataProvider exportDataProvider, int cacheLimit) {
-      return new DbTableSaxHandler(logger, dbService, resourceManager, locatorService, identityService,
-         exportDataProvider, false, cacheLimit);
+   public static DbTableSaxHandler createWithLimitedCache(Log logger, IOseeDatabaseService dbService, IResourceManager resourceManager, IdentityService identityService, IOseeExchangeDataProvider exportDataProvider, int cacheLimit) {
+      return new DbTableSaxHandler(logger, dbService, resourceManager, identityService, exportDataProvider, false,
+         cacheLimit);
    }
 
    private final List<IResourceLocator> transferredBinaryContent;
@@ -50,22 +49,16 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
    private final IOseeExchangeDataProvider exportDataProvider;
 
    private final IResourceManager resourceManager;
-   private final IResourceLocatorManager locatorService;
    private final IdentityService identityService;
    private IExportItem exportItem;
 
-   protected DbTableSaxHandler(Log logger, IOseeDatabaseService dbService, IResourceManager resourceManager, IResourceLocatorManager locatorService, IdentityService identityService, IOseeExchangeDataProvider exportDataProvider, boolean isCacheAll, int cacheLimit) {
+   protected DbTableSaxHandler(Log logger, IOseeDatabaseService dbService, IResourceManager resourceManager, IdentityService identityService, IOseeExchangeDataProvider exportDataProvider, boolean isCacheAll, int cacheLimit) {
       super(logger, dbService, isCacheAll, cacheLimit);
       this.resourceManager = resourceManager;
-      this.locatorService = locatorService;
       this.identityService = identityService;
       this.branchesToImport = new HashSet<Integer>();
       this.transferredBinaryContent = new ArrayList<IResourceLocator>();
       this.exportDataProvider = exportDataProvider;
-   }
-
-   private IResourceLocatorManager getResourceLocatorManager() {
-      return locatorService;
    }
 
    private IResourceManager getResourceManager() {
@@ -93,7 +86,7 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
          if (entry.exists()) {
 
             String name = uriValue.substring(uriValue.lastIndexOf('\\') + 1, uriValue.length());
-            IResourceLocator locatorHint = getResourceLocatorManager().generateResourceLocator("attr", gammaId, name);
+            IResourceLocator locatorHint = getResourceManager().generateResourceLocator("attr", gammaId, name);
 
             IResourceLocator locator =
                getResourceManager().save(locatorHint, new ZipBinaryResource(entry, locatorHint), new PropertyStore());

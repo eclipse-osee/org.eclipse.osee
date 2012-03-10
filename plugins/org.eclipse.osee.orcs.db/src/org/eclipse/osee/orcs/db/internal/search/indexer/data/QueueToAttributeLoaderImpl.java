@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
@@ -35,15 +34,13 @@ public class QueueToAttributeLoaderImpl implements QueueToAttributeLoader {
    private final IOseeDatabaseService dbService;
    private final AttributeTypeCache cache;
    private final IResourceManager resourceManager;
-   private final IResourceLocatorManager locatorManager;
 
-   public QueueToAttributeLoaderImpl(Log logger, IOseeDatabaseService dbService, AttributeTypeCache cache, IResourceManager resourceManager, IResourceLocatorManager locatorManager) {
+   public QueueToAttributeLoaderImpl(Log logger, IOseeDatabaseService dbService, AttributeTypeCache cache, IResourceManager resourceManager) {
       super();
       this.logger = logger;
       this.dbService = dbService;
       this.cache = cache;
       this.resourceManager = resourceManager;
-      this.locatorManager = locatorManager;
    }
 
    private IOseeDatabaseService getDatabaseService() {
@@ -58,10 +55,6 @@ public class QueueToAttributeLoaderImpl implements QueueToAttributeLoader {
       return resourceManager;
    }
 
-   private IResourceLocatorManager getLocatorManager() {
-      return locatorManager;
-   }
-
    private void loadAttributeData(Collection<ReadableAttribute<?>> attributeDatas, OseeConnection connection, int tagQueueQueryId) throws OseeCoreException {
       IOseeStatement chStmt = getDatabaseService().getStatement(connection);
       try {
@@ -69,7 +62,7 @@ public class QueueToAttributeLoaderImpl implements QueueToAttributeLoader {
          AttributeTypeCache typeCache = getAttributeCache();
          while (chStmt.next()) {
             AttributeType attributeType = typeCache.getById(chStmt.getInt("attr_type_id"));
-            attributeDatas.add(new AttributeData(getResourceManager(), getLocatorManager(), chStmt.getInt("attr_id"),
+            attributeDatas.add(new AttributeData(getResourceManager(), chStmt.getInt("attr_id"),
                chStmt.getLong("gamma_id"), attributeType, chStmt.getString("value"), chStmt.getString("uri")));
          }
       } finally {

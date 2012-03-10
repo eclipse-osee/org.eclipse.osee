@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ExportOptions;
@@ -74,15 +73,13 @@ public class ExportItemFactory {
    private final IOseeCachingService cachingService;
    private final IOseeModelingService typeModelService;
    private final IResourceManager resourceManager;
-   private final IResourceLocatorManager locatorService;
 
-   public ExportItemFactory(Log logger, IOseeDatabaseService dbService, IOseeCachingService cachingService, IOseeModelingService typeModelService, IResourceManager resourceManager, IResourceLocatorManager locatorService) {
+   public ExportItemFactory(Log logger, IOseeDatabaseService dbService, IOseeCachingService cachingService, IOseeModelingService typeModelService, IResourceManager resourceManager) {
       this.logger = logger;
       this.dbService = dbService;
       this.cachingService = cachingService;
       this.typeModelService = typeModelService;
       this.resourceManager = resourceManager;
-      this.locatorService = locatorService;
    }
 
    public Log getLogger() {
@@ -99,10 +96,6 @@ public class ExportItemFactory {
 
    public IResourceManager getResourceManager() {
       return resourceManager;
-   }
-
-   public IResourceLocatorManager getResourceLocatorManager() {
-      return locatorService;
    }
 
    public IOseeCachingService getCachingService() {
@@ -138,7 +131,7 @@ public class ExportItemFactory {
       StringBuilder modifiedQuery = new StringBuilder(query);
       Object[] bindData = prepareQuery(exportItem, modifiedQuery, options, exportJoinId, gammaJoinId);
       items.add(new DbTableExportItem(getLogger(), getDbService(), getCachingService(), getResourceManager(),
-         getResourceLocatorManager(), exportItem, modifiedQuery.toString(), bindData));
+         exportItem, modifiedQuery.toString(), bindData));
    }
 
    private void processTxOptions(PropertyStore options) throws OseeCoreException {

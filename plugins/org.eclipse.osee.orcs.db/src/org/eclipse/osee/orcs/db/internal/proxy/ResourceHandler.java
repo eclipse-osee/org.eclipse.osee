@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
-import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.orcs.db.internal.util.BinaryContentUtils;
 import org.eclipse.osee.orcs.db.internal.util.ByteStreamResource;
@@ -32,12 +31,10 @@ public class ResourceHandler implements DataHandler {
    private static final PropertyStore DEFAULT_OPTIONS = new PropertyStore();
 
    private final IResourceManager resourceManager;
-   private final IResourceLocatorManager resourceLocator;
 
-   public ResourceHandler(IResourceManager resourceManager, IResourceLocatorManager resourceLocator) {
+   public ResourceHandler(IResourceManager resourceManager) {
       super();
       this.resourceManager = resourceManager;
-      this.resourceLocator = resourceLocator;
    }
 
    @Override
@@ -45,7 +42,7 @@ public class ResourceHandler implements DataHandler {
       String path = dataResource.getLocator();
       Conditions.checkNotNull(path, "resource path");
 
-      IResourceLocator locator = resourceLocator.getResourceLocator(path);
+      IResourceLocator locator = resourceManager.getResourceLocator(path);
       Conditions.checkNotNull(locator, "resource locator", "Unable to locate resource: [%s]",
          dataResource.getStorageName());
 
@@ -83,7 +80,7 @@ public class ResourceHandler implements DataHandler {
       }
 
       String seed = Integer.toString(storageId);
-      IResourceLocator locatorHint = resourceLocator.generateResourceLocator("attr", seed, storageName.toString());
+      IResourceLocator locatorHint = resourceManager.generateResourceLocator("attr", seed, storageName.toString());
 
       String contentType = dataResource.getContentType();
       boolean isCompressed = Strings.isValid(contentType) && contentType.contains("zip");
@@ -100,7 +97,7 @@ public class ResourceHandler implements DataHandler {
       String path = dataResource.getLocator();
       Conditions.checkNotNull(path, "resource path");
 
-      IResourceLocator locator = resourceLocator.getResourceLocator(path);
+      IResourceLocator locator = resourceManager.getResourceLocator(path);
       Conditions.checkNotNull(locator, "resource locator", "Unable to locate resource: [%s]",
          dataResource.getStorageName());
 

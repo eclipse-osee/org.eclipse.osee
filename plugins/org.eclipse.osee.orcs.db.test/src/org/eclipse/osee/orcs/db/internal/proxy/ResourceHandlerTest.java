@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.util.ResourceLocator;
 import org.eclipse.osee.orcs.db.mocks.MockResource;
-import org.eclipse.osee.orcs.db.mocks.MockResourceLocatorManager;
 import org.eclipse.osee.orcs.db.mocks.MockResourceManager;
 import org.eclipse.osee.orcs.db.mocks.MockResourceNameResolver;
 import org.eclipse.osee.orcs.db.mocks.Utility;
@@ -42,7 +41,7 @@ public class ResourceHandlerTest {
    @Test(expected = OseeCoreException.class)
    public void testAcquireException() throws OseeCoreException {
       DataResource resource = new DataResource();
-      ResourceHandler handler = new ResourceHandler(null, null);
+      ResourceHandler handler = new ResourceHandler(null);
       handler.acquire(resource);
    }
 
@@ -51,8 +50,7 @@ public class ResourceHandlerTest {
       DataResource resource = new DataResource();
       resource.setLocator("MyLocator");
       MockResourceManager resMgr = new MockResourceManager();
-      MockResourceLocatorManager locMgr = new MockResourceLocatorManager();
-      ResourceHandler handler = new ResourceHandler(resMgr, locMgr);
+      ResourceHandler handler = new ResourceHandler(resMgr);
       handler.acquire(resource);
    }
 
@@ -68,13 +66,6 @@ public class ResourceHandlerTest {
       final URI uri = new URI("file://mylocation.zip");
       final ResourceLocator locator = new ResourceLocator(uri);
       final MockResource remoteResource = new MockResource("data.zip", uri, zippedData, true);
-      MockResourceLocatorManager locMgr = new MockResourceLocatorManager() {
-         @Override
-         public IResourceLocator getResourceLocator(String path) {
-            Assert.assertEquals("MyLocator", path);
-            return locator;
-         }
-      };
       MockResourceManager resMgr = new MockResourceManager() {
 
          @Override
@@ -82,8 +73,14 @@ public class ResourceHandlerTest {
             Assert.assertEquals(locator, actualLoc);
             return remoteResource;
          }
+
+         @Override
+         public IResourceLocator getResourceLocator(String path) {
+            Assert.assertEquals("MyLocator", path);
+            return locator;
+         }
       };
-      ResourceHandler handler = new ResourceHandler(resMgr, locMgr);
+      ResourceHandler handler = new ResourceHandler(resMgr);
       byte[] actual = handler.acquire(resource);
 
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -106,15 +103,6 @@ public class ResourceHandlerTest {
       resource.setResolver(new MockResourceNameResolver("storageName", "internalFileName"));
       final URI uri = new URI("file://mylocation.zip");
       final ResourceLocator locator = new ResourceLocator(uri);
-      MockResourceLocatorManager locMgr = new MockResourceLocatorManager() {
-         @Override
-         public IResourceLocator generateResourceLocator(String protocol, String seed, String name) {
-            Assert.assertEquals("attr", protocol);
-            Assert.assertEquals(String.valueOf(storageId), seed);
-            Assert.assertEquals("storageName.osee", name);
-            return locator;
-         }
-      };
       MockResourceManager resMgr = new MockResourceManager() {
 
          @Override
@@ -129,9 +117,17 @@ public class ResourceHandlerTest {
             }
             return locator;
          }
+
+         @Override
+         public IResourceLocator generateResourceLocator(String protocol, String seed, String name) {
+            Assert.assertEquals("attr", protocol);
+            Assert.assertEquals(String.valueOf(storageId), seed);
+            Assert.assertEquals("storageName.osee", name);
+            return locator;
+         }
       };
 
-      ResourceHandler handler = new ResourceHandler(resMgr, locMgr);
+      ResourceHandler handler = new ResourceHandler(resMgr);
       Assert.assertEquals("attr://123/123/hello.txt", resource.getLocator());
       handler.save(storageId, resource, zippedData);
       Assert.assertEquals("file://mylocation.zip", resource.getLocator());
@@ -140,7 +136,7 @@ public class ResourceHandlerTest {
    @Test(expected = OseeCoreException.class)
    public void testDeleteException() throws OseeCoreException {
       DataResource resource = new DataResource();
-      ResourceHandler handler = new ResourceHandler(null, null);
+      ResourceHandler handler = new ResourceHandler(null);
       handler.delete(resource);
    }
 
@@ -149,8 +145,7 @@ public class ResourceHandlerTest {
       DataResource resource = new DataResource();
       resource.setLocator("MyLocator");
       MockResourceManager resMgr = new MockResourceManager();
-      MockResourceLocatorManager locMgr = new MockResourceLocatorManager();
-      ResourceHandler handler = new ResourceHandler(resMgr, locMgr);
+      ResourceHandler handler = new ResourceHandler(resMgr);
       handler.delete(resource);
    }
 
@@ -162,21 +157,20 @@ public class ResourceHandlerTest {
 
       final URI uri = new URI("file://mylocation");
       final ResourceLocator locator = new ResourceLocator(uri);
-      MockResourceLocatorManager locMgr = new MockResourceLocatorManager() {
-         @Override
-         public IResourceLocator getResourceLocator(String path) {
-            Assert.assertEquals("MyLocator", path);
-            return locator;
-         }
-      };
       MockResourceManager resMgr = new MockResourceManager() {
          @Override
          public int delete(IResourceLocator actualLoc) {
             Assert.assertEquals(locator, actualLoc);
             return IResourceManager.FAIL;
          }
+
+         @Override
+         public IResourceLocator getResourceLocator(String path) {
+            Assert.assertEquals("MyLocator", path);
+            return locator;
+         }
       };
-      ResourceHandler handler = new ResourceHandler(resMgr, locMgr);
+      ResourceHandler handler = new ResourceHandler(resMgr);
       handler.delete(resource);
    }
 
@@ -188,21 +182,20 @@ public class ResourceHandlerTest {
 
       final URI uri = new URI("file://mylocation");
       final ResourceLocator locator = new ResourceLocator(uri);
-      MockResourceLocatorManager locMgr = new MockResourceLocatorManager() {
-         @Override
-         public IResourceLocator getResourceLocator(String path) {
-            Assert.assertEquals("MyLocator", path);
-            return locator;
-         }
-      };
       MockResourceManager resMgr = new MockResourceManager() {
          @Override
          public int delete(IResourceLocator actualLoc) {
             Assert.assertEquals(locator, actualLoc);
             return IResourceManager.RESOURCE_NOT_FOUND;
          }
+
+         @Override
+         public IResourceLocator getResourceLocator(String path) {
+            Assert.assertEquals("MyLocator", path);
+            return locator;
+         }
       };
-      ResourceHandler handler = new ResourceHandler(resMgr, locMgr);
+      ResourceHandler handler = new ResourceHandler(resMgr);
       handler.delete(resource);
    }
 
@@ -214,21 +207,20 @@ public class ResourceHandlerTest {
 
       final URI uri = new URI("file://mylocation");
       final ResourceLocator locator = new ResourceLocator(uri);
-      MockResourceLocatorManager locMgr = new MockResourceLocatorManager() {
-         @Override
-         public IResourceLocator getResourceLocator(String path) {
-            Assert.assertEquals("MyLocator", path);
-            return locator;
-         }
-      };
       MockResourceManager resMgr = new MockResourceManager() {
          @Override
          public int delete(IResourceLocator actualLoc) {
             Assert.assertEquals(locator, actualLoc);
             return IResourceManager.OK;
          }
+
+         @Override
+         public IResourceLocator getResourceLocator(String path) {
+            Assert.assertEquals("MyLocator", path);
+            return locator;
+         }
       };
-      ResourceHandler handler = new ResourceHandler(resMgr, locMgr);
+      ResourceHandler handler = new ResourceHandler(resMgr);
       handler.delete(resource);
    }
 

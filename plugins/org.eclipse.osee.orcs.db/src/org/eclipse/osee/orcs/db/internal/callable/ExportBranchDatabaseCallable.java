@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.orcs.ExportOptions;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.db.internal.exchange.ExchangeUtil;
@@ -76,10 +75,6 @@ public class ExportBranchDatabaseCallable extends DatabaseCallable<URI> {
       return executorAdmin;
    }
 
-   private IResourceLocatorManager getResourceLocator() {
-      return factory.getResourceLocatorManager();
-   }
-
    private String getExchangeFileName() {
       return this.exportName;
    }
@@ -98,7 +93,7 @@ public class ExportBranchDatabaseCallable extends DatabaseCallable<URI> {
          Conditions.checkNotNullOrEmpty(branches, "branches");
          Conditions.checkNotNull(options, "options");
          doWork();
-         return getResourceLocator().generateResourceLocator(ResourceConstants.EXCHANGE_RESOURCE_PROTOCOL, "",
+         return factory.getResourceManager().generateResourceLocator(ResourceConstants.EXCHANGE_RESOURCE_PROTOCOL, "",
             getExchangeFileName()).getLocation();
       } finally {
          getLogger().info("Exported [%s] branch%s in [%s]", branches.size(), branches.size() != 1 ? "es" : "",

@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
-import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ImportOptions;
@@ -71,7 +70,6 @@ public class ImportBranchDatabaseCallable extends DatabaseCallable<URI> {
    private final IOseeCachingService cachingService;
    private final IOseeModelingService typeModelService;
    private final IResourceManager resourceManager;
-   private final IResourceLocatorManager locatorService;
    private final IdentityService identityService;
 
    private final SavePointManager savePointManager;
@@ -89,13 +87,12 @@ public class ImportBranchDatabaseCallable extends DatabaseCallable<URI> {
    private ExchangeDataProcessor exchangeDataProcessor;
    private int[] branchesToImport;
 
-   public ImportBranchDatabaseCallable(Log logger, IOseeDatabaseService dbService, SystemPreferences preferences, IOseeCachingService cachingService, IOseeModelingService typeModelService, IResourceManager resourceManager, IResourceLocatorManager locatorService, IdentityService identityService, URI exchangeFile, List<IOseeBranch> selectedBranches, PropertyStore options) {
+   public ImportBranchDatabaseCallable(Log logger, IOseeDatabaseService dbService, SystemPreferences preferences, IOseeCachingService cachingService, IOseeModelingService typeModelService, IResourceManager resourceManager, IdentityService identityService, URI exchangeFile, List<IOseeBranch> selectedBranches, PropertyStore options) {
       super(logger, dbService);
       this.preferences = preferences;
       this.cachingService = cachingService;
       this.typeModelService = typeModelService;
       this.resourceManager = resourceManager;
-      this.locatorService = locatorService;
       this.identityService = identityService;
       this.savePointManager = new SavePointManager(dbService);
       this.legacyLogger = new OperationLoggerAdaptor();
@@ -159,7 +156,7 @@ public class ImportBranchDatabaseCallable extends DatabaseCallable<URI> {
    }
 
    private IResourceLocator findResourceToCheck(URI fileToCheck) throws OseeCoreException {
-      IResourceLocator locator = locatorService.getResourceLocator(fileToCheck.toASCIIString());
+      IResourceLocator locator = resourceManager.getResourceLocator(fileToCheck.toASCIIString());
       return locator;
    }
 
@@ -204,8 +201,8 @@ public class ImportBranchDatabaseCallable extends DatabaseCallable<URI> {
 
    private void processImportFiles(int[] branchesToImport, Collection<IExportItem> importItems) throws Exception {
       final DbTableSaxHandler handler =
-         DbTableSaxHandler.createWithLimitedCache(getLogger(), getDatabaseService(), resourceManager, locatorService,
-            identityService, exportDataProvider, 50000);
+         DbTableSaxHandler.createWithLimitedCache(getLogger(), getDatabaseService(), resourceManager, identityService,
+            exportDataProvider, 50000);
       handler.setSelectedBranchIds(branchesToImport);
 
       for (final IExportItem item : importItems) {

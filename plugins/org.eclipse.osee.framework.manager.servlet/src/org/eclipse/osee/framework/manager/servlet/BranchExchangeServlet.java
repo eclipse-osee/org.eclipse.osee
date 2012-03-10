@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.manager.servlet.data.HttpBranchExchangeInfo;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
-import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -40,14 +39,12 @@ public class BranchExchangeServlet extends SecureOseeHttpServlet {
 
    private static final long serialVersionUID = -1642995618810911260L;
 
-   private final IResourceLocatorManager locatorManager;
    private final IResourceManager resourceManager;
    private final OrcsApi orcsApi;
 
-   public BranchExchangeServlet(Log logger, ISessionManager sessionManager, IResourceLocatorManager locatorManager, IResourceManager resourceManager, OrcsApi orcsApi) {
+   public BranchExchangeServlet(Log logger, ISessionManager sessionManager, IResourceManager resourceManager, OrcsApi orcsApi) {
       super(logger, sessionManager);
       this.orcsApi = orcsApi;
-      this.locatorManager = locatorManager;
       this.resourceManager = resourceManager;
    }
 
@@ -86,7 +83,7 @@ public class BranchExchangeServlet extends SecureOseeHttpServlet {
       StringBuffer message = new StringBuffer();
 
       String path = exchangeInfo.getPath();
-      IResourceLocator exchangeLocator = locatorManager.getResourceLocator(path);
+      IResourceLocator exchangeLocator = resourceManager.getResourceLocator(path);
       Callable<URI> callable = getBranchOps().checkBranchExchangeIntegrity(exchangeLocator.getLocation());
       URI verifyUri = callable.call();
       status = HttpServletResponse.SC_ACCEPTED;
@@ -112,7 +109,7 @@ public class BranchExchangeServlet extends SecureOseeHttpServlet {
          getBranchOps().exportBranch(branches, exchangeInfo.getOptions(), exchangeInfo.getExchangeFileName());
       URI exportURI = callable.call();
 
-      IResourceLocator exchangeLocator = locatorManager.getResourceLocator(exportURI.toASCIIString());
+      IResourceLocator exchangeLocator = resourceManager.getResourceLocator(exportURI.toASCIIString());
       status = HttpServletResponse.SC_ACCEPTED;
       message.append(String.format("Exported: [%s]", exchangeLocator.getLocation().toASCIIString()));
 
@@ -158,7 +155,7 @@ public class BranchExchangeServlet extends SecureOseeHttpServlet {
          branches.add(orcsBranch.getBranchFromId(branchIds));
       }
 
-      IResourceLocator locator = locatorManager.getResourceLocator(exchangeInfo.getPath());
+      IResourceLocator locator = resourceManager.getResourceLocator(exchangeInfo.getPath());
       Callable<URI> callable = orcsBranch.importBranch(locator.getLocation(), branches, exchangeInfo.getOptions());
       URI importURI = callable.call();
       response.setStatus(HttpServletResponse.SC_ACCEPTED);

@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.services.IOseeModelingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
-import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.SystemPreferences;
@@ -57,7 +56,6 @@ public class BranchDataStoreImpl implements BranchDataStore {
    private ExecutorAdmin executorAdmin;
    private IOseeModelingService typeModelService;
    private IResourceManager resourceManager;
-   private IResourceLocatorManager locatorService;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -91,10 +89,6 @@ public class BranchDataStoreImpl implements BranchDataStore {
       this.resourceManager = resourceManager;
    }
 
-   public void setLocatorService(IResourceLocatorManager locatorService) {
-      this.locatorService = locatorService;
-   }
-
    public void setIdentityService(IdentityService identityService) {
       this.identityService = identityService;
    }
@@ -126,7 +120,7 @@ public class BranchDataStoreImpl implements BranchDataStore {
    @Override
    public Callable<URI> exportBranch(List<IOseeBranch> branches, PropertyStore options, String exportName) {
       ExportItemFactory factory =
-         new ExportItemFactory(logger, dbService, cachingService, typeModelService, resourceManager, locatorService);
+         new ExportItemFactory(logger, dbService, cachingService, typeModelService, resourceManager);
       return new ExportBranchDatabaseCallable(factory, preferences, executorAdmin, branches, options, exportName);
    }
 
@@ -134,14 +128,13 @@ public class BranchDataStoreImpl implements BranchDataStore {
    public Callable<URI> importBranch(URI fileToImport, List<IOseeBranch> branches, PropertyStore options) {
       ImportBranchDatabaseCallable callable =
          new ImportBranchDatabaseCallable(logger, dbService, preferences, cachingService, typeModelService,
-            resourceManager, locatorService, identityService, fileToImport, branches, options);
+            resourceManager, identityService, fileToImport, branches, options);
       return callable;
    }
 
    @Override
    public Callable<URI> checkBranchExchangeIntegrity(URI fileToCheck) {
-      return new CheckBranchExchangeIntegrityCallable(logger, dbService, preferences, resourceManager, locatorService,
-         fileToCheck);
+      return new CheckBranchExchangeIntegrityCallable(logger, dbService, preferences, resourceManager, fileToCheck);
    }
 
    @Override

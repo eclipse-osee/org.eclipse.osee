@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
-import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.SystemPreferences;
@@ -46,19 +45,16 @@ public class CheckBranchExchangeIntegrityCallable extends DatabaseCallable<URI> 
    private final URI fileToCheck;
    private final SystemPreferences preferences;
    private final IResourceManager resourceManager;
-   private final IResourceLocatorManager locatorService;
 
-   public CheckBranchExchangeIntegrityCallable(Log logger, IOseeDatabaseService service, SystemPreferences preferences, IResourceManager resourceManager, IResourceLocatorManager locatorService, URI fileToCheck) {
+   public CheckBranchExchangeIntegrityCallable(Log logger, IOseeDatabaseService service, SystemPreferences preferences, IResourceManager resourceManager, URI fileToCheck) {
       super(logger, service);
       this.fileToCheck = fileToCheck;
       this.preferences = preferences;
       this.resourceManager = resourceManager;
-      this.locatorService = locatorService;
    }
 
    private IResourceLocator findResourceToCheck(URI fileToCheck) throws OseeCoreException {
-      IResourceLocator locator = locatorService.getResourceLocator(fileToCheck.toASCIIString());
-      return locator;
+      return resourceManager.getResourceLocator(fileToCheck.toASCIIString());
    }
 
    private IOseeExchangeDataProvider createExportDataProvider(IResourceLocator exportDataLocator) throws OseeCoreException {

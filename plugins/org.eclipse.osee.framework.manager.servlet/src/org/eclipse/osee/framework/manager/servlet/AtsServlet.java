@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.manager.servlet.ats.XmlMessage;
 import org.eclipse.osee.framework.manager.servlet.data.ServletResourceBridge;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
-import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 
@@ -38,17 +37,15 @@ public class AtsServlet extends UnsecuredOseeHttpServlet {
 
    private final AtsService atsService;
 
-   private final IResourceLocatorManager locatorManager;
    private final IResourceManager resourceManager;
 
-   public AtsServlet(Log logger, IResourceLocatorManager locatorManager, IResourceManager resourceManager, IOseeCachingService cacheService) {
+   public AtsServlet(Log logger, IResourceManager resourceManager, IOseeCachingService cacheService) {
       super(logger);
-      this.locatorManager = locatorManager;
       this.resourceManager = resourceManager;
       AtsService.IResourceProvider provider = new ResourceProvider();
       AtsXmlSearch xmlSearch = new AtsXmlSearch();
       AtsXmlMessages messages = new AtsXmlMessages(new XmlMessage(getLogger()));
-      this.atsService = new AtsService(provider, xmlSearch, messages, locatorManager, resourceManager, cacheService);
+      this.atsService = new AtsService(provider, xmlSearch, messages, resourceManager, cacheService);
    }
 
    @Override
@@ -85,7 +82,7 @@ public class AtsServlet extends UnsecuredOseeHttpServlet {
    private final class ResourceProvider implements AtsService.IResourceProvider {
       @Override
       public IResource getResource(String path) throws OseeCoreException {
-         IResourceLocator locator = locatorManager.getResourceLocator(path);
+         IResourceLocator locator = resourceManager.getResourceLocator(path);
          return resourceManager.acquire(locator, new PropertyStore());
       }
    }

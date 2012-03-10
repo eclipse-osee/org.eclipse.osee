@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.mocks;
 
+import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceListener;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
-import org.eclipse.osee.framework.resource.management.IResourceProvider;
 
 /**
  * @author Roberto E. Escobar
@@ -30,16 +30,6 @@ public class MockResourceManager implements IResourceManager {
 
    @Override
    public boolean removeResourceListener(IResourceListener listener) {
-      return false;
-   }
-
-   @Override
-   public boolean addResourceProvider(IResourceProvider resourceProvider) {
-      return false;
-   }
-
-   @Override
-   public boolean removeResourceProvider(IResourceProvider resourceProvider) {
       return false;
    }
 
@@ -65,6 +55,23 @@ public class MockResourceManager implements IResourceManager {
    @Override
    public int delete(IResourceLocator locator) throws OseeCoreException {
       return 0;
+   }
+
+   @SuppressWarnings("unused")
+   @Override
+   public IResourceLocator generateResourceLocator(String protocol, String seed, String name) throws OseeCoreException {
+      return null;
+   }
+
+   @SuppressWarnings("unused")
+   @Override
+   public IResourceLocator getResourceLocator(String path) throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public Collection<String> getProtocols() {
+      return null;
    }
 
 }

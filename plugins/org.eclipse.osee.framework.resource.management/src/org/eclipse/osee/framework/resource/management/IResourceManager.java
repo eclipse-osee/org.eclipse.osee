@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.resource.management;
 
+import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
@@ -25,26 +26,12 @@ public interface IResourceManager {
    /**
     * Add listener to list
     */
-   public boolean addResourceListener(IResourceListener listener);
+   boolean addResourceListener(IResourceListener listener);
 
    /**
     * Remove listener from list
     */
-   public boolean removeResourceListener(IResourceListener listener);
-
-   /**
-    * Add a resource provider
-    * 
-    * @param resourceProvider to add
-    */
-   public boolean addResourceProvider(IResourceProvider resourceProvider);
-
-   /**
-    * Remove a resource provider
-    * 
-    * @param resourceProvider to remove
-    */
-   public boolean removeResourceProvider(IResourceProvider resourceProvider);
+   boolean removeResourceListener(IResourceListener listener);
 
    /**
     * Acquire resource specified by resource locator
@@ -53,14 +40,14 @@ public interface IResourceManager {
     * @param options operation options
     * @return the resource
     */
-   public IResource acquire(IResourceLocator locator, PropertyStore options) throws OseeCoreException;
+   IResource acquire(IResourceLocator locator, PropertyStore options) throws OseeCoreException;
 
    /**
     * Determines if a resource exists for the given locator.
     * 
     * @param locator location of the data to check
     */
-   public boolean exists(IResourceLocator locator) throws OseeCoreException;
+   boolean exists(IResourceLocator locator) throws OseeCoreException;
 
    /**
     * Save input to location specified by resource locator
@@ -69,12 +56,33 @@ public interface IResourceManager {
     * @param resource to store
     * @param options operation options
     */
-   public IResourceLocator save(final IResourceLocator locatorHint, final IResource resource, final PropertyStore options) throws OseeCoreException;
+   IResourceLocator save(final IResourceLocator locatorHint, final IResource resource, final PropertyStore options) throws OseeCoreException;
 
    /**
     * Delete resource specified by resource locator
     * 
     * @param locator location of the resource to delete
     */
-   public int delete(IResourceLocator locator) throws OseeCoreException;
+   int delete(IResourceLocator locator) throws OseeCoreException;
+
+   /**
+    * Generate a resource locator based on protocol, seed and name
+    * 
+    * @return a resource locator
+    */
+   IResourceLocator generateResourceLocator(String protocol, String seed, String name) throws OseeCoreException;
+
+   /**
+    * Get resource locator based on protocol and path
+    * 
+    * @return a resource locator
+    */
+   IResourceLocator getResourceLocator(String path) throws OseeCoreException;
+
+   /**
+    * Supported Protocols
+    * 
+    * @return supported protocols
+    */
+   Collection<String> getProtocols();
 }

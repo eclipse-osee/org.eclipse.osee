@@ -1,10 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Management Plug-in (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.framework.resource.management;singleton:=true
+Bundle-SymbolicName: org.eclipse.osee.framework.resource.management
 Bundle-Version: 0.9.9.qualifier
 Eclipse-ExtensibleAPI: true
-Bundle-Activator: org.eclipse.osee.framework.resource.management.Activator
 Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.jdk.core.type,
@@ -13,10 +12,10 @@ Import-Package: org.eclipse.core.runtime,
  org.osgi.framework,
  org.osgi.service.log,
  org.osgi.util.tracker
-Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Service-Component: OSGI-INF/resource.provider.consumer.xml, OSGI-INF/resource.locator.consumer.xml
+Service-Component: OSGI-INF/*.xml
 Export-Package: org.eclipse.osee.framework.resource.management,
  org.eclipse.osee.framework.resource.management.exception,
  org.eclipse.osee.framework.resource.management.util
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy

@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.internal.accessor.ArtifactTypeDataAccessor;
@@ -43,7 +42,6 @@ import org.eclipse.osee.orcs.db.internal.accessor.TypeLoaderImpl;
 public class CacheFactoryService implements IOseeCachingServiceFactory {
 
    private IOseeDatabaseService dbService;
-   private IResourceLocatorManager resourceLocator;
    private IResourceManager resourceManager;
    private IOseeModelFactoryService factoryService;
    private IOseeModelingService modelingService;
@@ -66,10 +64,6 @@ public class CacheFactoryService implements IOseeCachingServiceFactory {
 
    public void setDatabaseService(IOseeDatabaseService dbService) {
       this.dbService = dbService;
-   }
-
-   public void setResourceLocator(IResourceLocatorManager resourceLocator) {
-      this.resourceLocator = resourceLocator;
    }
 
    public void setResourceManager(IResourceManager resourceManager) {
@@ -106,8 +100,7 @@ public class CacheFactoryService implements IOseeCachingServiceFactory {
          factoryService.getTransactionFactory()));
 
       TypeLoaderImpl loader =
-         new TypeLoaderImpl(modelingService, identityService, dbService, resourceLocator, resourceManager, branchCache,
-            needsPriming);
+         new TypeLoaderImpl(modelingService, identityService, dbService, resourceManager, branchCache, needsPriming);
 
       OseeEnumTypeCache oseeEnumTypeCache =
          new OseeEnumTypeCache(new ArtifactTypeDataAccessor<OseeEnumType>(identityService, loader));

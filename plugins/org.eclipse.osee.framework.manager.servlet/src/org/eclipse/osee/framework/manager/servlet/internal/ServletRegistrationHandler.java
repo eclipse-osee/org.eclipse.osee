@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.manager.servlet.SessionClientLoopbackServlet;
 import org.eclipse.osee.framework.manager.servlet.SessionManagementServlet;
 import org.eclipse.osee.framework.manager.servlet.SystemManagerServlet;
 import org.eclipse.osee.framework.manager.servlet.UnsubscribeServlet;
-import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -61,7 +60,6 @@ public class ServletRegistrationHandler {
    private IOseeCachingService caching;
    private IAuthenticationManager authenticationManager;
    private IOseeModelFactoryService factoryService;
-   private IResourceLocatorManager locatorManager;
    private IResourceManager resourceManager;
    private OrcsApi orcsApi;
 
@@ -99,10 +97,6 @@ public class ServletRegistrationHandler {
       this.factoryService = factoryService;
    }
 
-   public void setLocatorManager(IResourceLocatorManager locatorManager) {
-      this.locatorManager = locatorManager;
-   }
-
    public void setResourceManager(IResourceManager resourceManager) {
       this.resourceManager = resourceManager;
    }
@@ -136,14 +130,11 @@ public class ServletRegistrationHandler {
    private void registerServices(BundleContext context) {
       contexts.clear();
       register(new SystemManagerServlet(logger, sessionManager), OseeServerContext.MANAGER_CONTEXT);
-      register(new ResourceManagerServlet(logger, sessionManager, locatorManager, resourceManager),
-         OseeServerContext.RESOURCE_CONTEXT);
-      register(new ArtifactFileServlet(logger, locatorManager, resourceManager, caching),
-         OseeServerContext.PROCESS_CONTEXT);
-      register(new ArtifactFileServlet(logger, locatorManager, resourceManager, caching),
-         OseeServerContext.ARTIFACT_CONTEXT);
-      register(new ArtifactFileServlet(logger, locatorManager, resourceManager, caching), "index");
-      register(new BranchExchangeServlet(logger, sessionManager, locatorManager, resourceManager, orcsApi),
+      register(new ResourceManagerServlet(logger, sessionManager, resourceManager), OseeServerContext.RESOURCE_CONTEXT);
+      register(new ArtifactFileServlet(logger, resourceManager, caching), OseeServerContext.PROCESS_CONTEXT);
+      register(new ArtifactFileServlet(logger, resourceManager, caching), OseeServerContext.ARTIFACT_CONTEXT);
+      register(new ArtifactFileServlet(logger, resourceManager, caching), "index");
+      register(new BranchExchangeServlet(logger, sessionManager, resourceManager, orcsApi),
          OseeServerContext.BRANCH_EXCHANGE_CONTEXT);
       register(new BranchManagerServlet(logger, sessionManager, translationService, orcsApi),
          OseeServerContext.BRANCH_CONTEXT);
@@ -160,9 +151,9 @@ public class ServletRegistrationHandler {
          OseeServerContext.OSEE_MODEL_CONTEXT);
       register(new UnsubscribeServlet(logger, context, orcsApi), "osee/unsubscribe");
 
-      register(new AtsServlet(logger, locatorManager, resourceManager, caching), "osee/ats");
+      register(new AtsServlet(logger, resourceManager, caching), "osee/ats");
       register(new ConfigurationServlet(logger, translationService, orcsApi), OseeServerContext.OSEE_CONFIGURE_CONTEXT);
-      register(new DataServlet(logger, locatorManager, resourceManager, caching), "osee/data");
+      register(new DataServlet(logger, resourceManager, caching), "osee/data");
       register(new AdminServlet(logger, context), "osee/console");
    }
 

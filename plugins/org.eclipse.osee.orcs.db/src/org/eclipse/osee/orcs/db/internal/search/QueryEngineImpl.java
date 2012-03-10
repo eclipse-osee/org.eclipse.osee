@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.DataStoreTypeCache;
@@ -58,7 +57,6 @@ public class QueryEngineImpl implements QueryEngine {
    private ExecutorAdmin executorAdmin;
    private Log logger;
    private IResourceManager resourceManager;
-   private IResourceLocatorManager locatorService;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -94,17 +92,12 @@ public class QueryEngineImpl implements QueryEngine {
       this.resourceManager = resourceManager;
    }
 
-   public void setLocatorService(IResourceLocatorManager locatorService) {
-      this.locatorService = locatorService;
-   }
-
    public void start() {
       TagProcessor tagProcessor = new TagProcessor(new EnglishLanguage(logger), new TagEncoder());
       TaggingEngine taggingEngine = new TaggingEngine(tagProcessor, cache.getAttributeTypeCache());
 
       QueueToAttributeLoader attributeLoader =
-         new QueueToAttributeLoaderImpl(logger, dbService, cache.getAttributeTypeCache(), resourceManager,
-            locatorService);
+         new QueueToAttributeLoaderImpl(logger, dbService, cache.getAttributeTypeCache(), resourceManager);
       IndexerCallableFactory callableFactory =
          new IndexerCallableFactoryImpl(logger, dbService, taggingEngine, attributeLoader);
 

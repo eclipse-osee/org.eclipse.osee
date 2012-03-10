@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.manager.servlet.data.DefaultOseeArtifact;
 import org.eclipse.osee.framework.manager.servlet.data.HttpArtifactFileInfo;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
-import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
 import org.eclipse.osee.logger.Log;
@@ -47,15 +46,13 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
 
    private static final long serialVersionUID = -6334080268467740905L;
 
-   private final IResourceLocatorManager locatorManager;
    private final IResourceManager resourceManager;
    private final BranchCache branchCache;
 
    private static Map<Integer, String> branchIdToGuidMap;
 
-   public ArtifactFileServlet(Log logger, IResourceLocatorManager locatorManager, IResourceManager resourceManager, IOseeCachingService cachingService) {
+   public ArtifactFileServlet(Log logger, IResourceManager resourceManager, IOseeCachingService cachingService) {
       super(logger);
-      this.locatorManager = locatorManager;
       this.resourceManager = resourceManager;
       this.branchCache = cachingService.getBranchCache();
    }
@@ -102,7 +99,7 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
             }
             uri = ArtifactUtil.getUri(artifactFileInfo.getGuid(), branch);
          }
-         handleArtifactUri(locatorManager, resourceManager, request.getQueryString(), uri, response);
+         handleArtifactUri(resourceManager, request.getQueryString(), uri, response);
       } catch (NumberFormatException ex) {
          handleError(response, HttpServletResponse.SC_BAD_REQUEST,
             String.format("Invalid Branch Id: [%s]", request.getQueryString()), ex);
@@ -114,10 +111,10 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
       }
    }
 
-   public static void handleArtifactUri(IResourceLocatorManager locatorManager, IResourceManager resourceManager, String request, String uri, HttpServletResponse response) throws OseeCoreException {
+   public static void handleArtifactUri(IResourceManager resourceManager, String request, String uri, HttpServletResponse response) throws OseeCoreException {
       boolean wasProcessed = false;
       if (Strings.isValid(uri)) {
-         IResourceLocator locator = locatorManager.getResourceLocator(uri);
+         IResourceLocator locator = resourceManager.getResourceLocator(uri);
          PropertyStore options = new PropertyStore();
          options.put(StandardOptions.DecompressOnAquire.name(), true);
          IResource resource = resourceManager.acquire(locator, options);

@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
-import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
@@ -35,7 +34,6 @@ import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 public class AttributeData implements ReadableAttribute<String> {
 
    private final IResourceManager resourceManager;
-   private final IResourceLocatorManager locatorManager;
 
    private final int attrId;
    private final long gammaId;
@@ -45,10 +43,9 @@ public class AttributeData implements ReadableAttribute<String> {
    private final String value;
    private final String uri;
 
-   public AttributeData(IResourceManager resourceManager, IResourceLocatorManager locatorManager, int attrId, long gammaId, AttributeType attributeType, String value, String uri) {
+   public AttributeData(IResourceManager resourceManager, int attrId, long gammaId, AttributeType attributeType, String value, String uri) {
       super();
       this.resourceManager = resourceManager;
-      this.locatorManager = locatorManager;
       this.attrId = attrId;
       this.gammaId = gammaId;
       this.attributeType = attributeType;
@@ -149,7 +146,7 @@ public class AttributeData implements ReadableAttribute<String> {
       if (isUriValid()) {
          PropertyStore options = new PropertyStore();
          options.put(StandardOptions.DecompressOnAquire.name(), true);
-         IResourceLocator locator = locatorManager.getResourceLocator(getUri());
+         IResourceLocator locator = resourceManager.getResourceLocator(getUri());
          IResource resource = resourceManager.acquire(locator, options);
          toReturn = resource.getContent();
       }

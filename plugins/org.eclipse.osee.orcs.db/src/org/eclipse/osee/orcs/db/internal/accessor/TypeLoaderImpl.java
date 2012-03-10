@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
-import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
 import org.eclipse.osee.orcs.db.internal.accessor.ArtifactTypeDataAccessor.TypeLoader;
@@ -44,16 +43,14 @@ public class TypeLoaderImpl implements TypeLoader {
    private final IOseeModelingService modelingService;
    private final IdentityService identityService;
    private final IOseeDatabaseService dbService;
-   private final IResourceLocatorManager locatorManager;
    private final IResourceManager resourceManager;
    private final BranchCache branchCache;
 
-   public TypeLoaderImpl(IOseeModelingService modelingService, IdentityService identityService, IOseeDatabaseService dbService, IResourceLocatorManager locatorManager, IResourceManager resourceManager, BranchCache branchCache, boolean needsPriming) {
+   public TypeLoaderImpl(IOseeModelingService modelingService, IdentityService identityService, IOseeDatabaseService dbService, IResourceManager resourceManager, BranchCache branchCache, boolean needsPriming) {
       super();
       this.modelingService = modelingService;
       this.identityService = identityService;
       this.dbService = dbService;
-      this.locatorManager = locatorManager;
       this.resourceManager = resourceManager;
       this.branchCache = branchCache;
       this.needsPriming = needsPriming;
@@ -106,7 +103,7 @@ public class TypeLoaderImpl implements TypeLoader {
       PropertyStore options = new PropertyStore();
       options.put(StandardOptions.DecompressOnAquire.name(), "true");
       for (String path : paths) {
-         IResourceLocator locator = locatorManager.getResourceLocator(path);
+         IResourceLocator locator = resourceManager.getResourceLocator(path);
          IResource resource = resourceManager.acquire(locator, options);
          toReturn.add(resource);
       }

@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.manager.servlet.data.HttpRequestDecoder;
 import org.eclipse.osee.framework.manager.servlet.data.ServletResourceBridge;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
-import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
 import org.eclipse.osee.logger.Log;
@@ -42,12 +41,10 @@ import org.eclipse.osee.logger.Log;
 public class ResourceManagerServlet extends SecureOseeHttpServlet {
    private static final long serialVersionUID = 3777506351978711657L;
 
-   private final IResourceLocatorManager locatorManager;
    private final IResourceManager resourceManager;
 
-   public ResourceManagerServlet(Log logger, ISessionManager sessionManager, IResourceLocatorManager locatorManager, IResourceManager resourceManager) {
+   public ResourceManagerServlet(Log logger, ISessionManager sessionManager, IResourceManager resourceManager) {
       super(logger, sessionManager);
-      this.locatorManager = locatorManager;
       this.resourceManager = resourceManager;
    }
 
@@ -69,7 +66,7 @@ public class ResourceManagerServlet extends SecureOseeHttpServlet {
          boolean isCheckExistance = parameters.getSecond();
          PropertyStore options = HttpRequestDecoder.getOptions(request);
 
-         IResourceLocator locator = locatorManager.getResourceLocator(path);
+         IResourceLocator locator = resourceManager.getResourceLocator(path);
 
          if (isCheckExistance) {
             boolean exists = resourceManager.exists(locator);
@@ -125,7 +122,7 @@ public class ResourceManagerServlet extends SecureOseeHttpServlet {
          String[] args = HttpRequestDecoder.fromPutRequest(request);
          PropertyStore options = HttpRequestDecoder.getOptions(request);
 
-         IResourceLocator locator = locatorManager.generateResourceLocator(args[0], args[1], args[2]);
+         IResourceLocator locator = resourceManager.generateResourceLocator(args[0], args[1], args[2]);
          IResource tempResource = new ServletResourceBridge(request, locator);
 
          IResourceLocator actualLocator = resourceManager.save(locator, tempResource, options);
@@ -151,7 +148,7 @@ public class ResourceManagerServlet extends SecureOseeHttpServlet {
       int result = HttpServletResponse.SC_BAD_REQUEST;
       try {
          String path = HttpRequestDecoder.fromDeleteRequest(request);
-         IResourceLocator locator = locatorManager.getResourceLocator(path);
+         IResourceLocator locator = resourceManager.getResourceLocator(path);
          int status = IResourceManager.OK;
          //Activator.getInstance().getResourceManager().delete(locator);
          if (status == IResourceManager.OK) {

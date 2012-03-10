@@ -11,15 +11,20 @@
 package org.eclipse.osee.framework.resource.management.internal;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceListener;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
+import org.eclipse.osee.framework.resource.management.IResourceLocatorProvider;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.IResourceProvider;
+import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
 
 /**
  * @author Roberto E. Escobar
@@ -28,10 +33,12 @@ public class ResourceManager implements IResourceManager {
 
    private final Collection<IResourceListener> listeners;
    private final Collection<IResourceProvider> resourceProviders;
+   private final Collection<IResourceLocatorProvider> resourceLocatorProviders;
 
    public ResourceManager() {
       this.listeners = new CopyOnWriteArraySet<IResourceListener>();
       this.resourceProviders = new CopyOnWriteArraySet<IResourceProvider>();
+      this.resourceLocatorProviders = new CopyOnWriteArraySet<IResourceLocatorProvider>();
    }
 
    @Override
@@ -95,12 +102,10 @@ public class ResourceManager implements IResourceManager {
       return toReturn;
    }
 
-   @Override
    public boolean addResourceProvider(IResourceProvider resourceProvider) {
       return resourceProviders.add(resourceProvider);
    }
 
-   @Override
    public boolean removeResourceProvider(IResourceProvider resourceProvider) {
       return resourceProviders.remove(resourceProvider);
    }
@@ -137,5 +142,52 @@ public class ResourceManager implements IResourceManager {
    public boolean exists(IResourceLocator locator) throws OseeCoreException {
       IResourceProvider provider = getProvider(locator);
       return provider.exists(locator);
+   }
+
+   @Override
+   public Collection<String> getProtocols() {
+      Set<String> protocols = new HashSet<String>();
+      for (IResourceLocatorProvider provider : resourceLocatorProviders) {
+         protocols.add(provider.getSupportedProtocol());
+      }
+      return protocols;
+   }
+
+   public boolean addResourceLocatorProvider(IResourceLocatorProvider resourceLocatorProvider) {
+      return this.resourceLocatorProviders.add(resourceLocatorProvider);
+   }
+
+   public boolean removeResourceLocatorProvider(IResourceLocatorProvider resourceLocatorProvider) {
+      return this.resourceLocatorProviders.remove(resourceLocatorProvider);
+   }
+
+   @Override
+   public IResourceLocator generateResourceLocator(String protocol, String seed, String name) throws OseeCoreException {
+      IResourceLocatorProvider resourceLocatorProvider = getProvider(protocol);
+      return resourceLocatorProvider.generateResourceLocator(seed, name);
+   }
+
+   @Override
+   public IResourceLocator getResourceLocator(String path) throws OseeCoreException {
+      IResourceLocatorProvider resourceLocatorProvider = getProvider(path);
+      return resourceLocatorProvider.getResourceLocator(path);
+   }
+
+   private IResourceLocatorProvider getProvider(String protocol) throws OseeCoreException {
+      if (resourceLocatorProviders.isEmpty()) {
+         throw new OseeStateException("Resource locator providers are not available");
+      }
+      IResourceLocatorProvider toReturn = null;
+      for (IResourceLocatorProvider provider : resourceLocatorProviders) {
+         if (provider.isValid(protocol)) {
+            toReturn = provider;
+            break;
+         }
+      }
+      if (toReturn == null) {
+         throw new MalformedLocatorException("Error finding locator for [%s] in [%s]", protocol,
+            resourceLocatorProviders);
+      }
+      return toReturn;
    }
 }

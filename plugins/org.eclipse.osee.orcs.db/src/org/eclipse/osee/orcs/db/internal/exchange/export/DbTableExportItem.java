@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
-import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
@@ -55,14 +54,12 @@ public class DbTableExportItem extends AbstractXmlExportItem {
    private final IOseeDatabaseService dbService;
    private final IOseeCachingService cachingService;
    private final IResourceManager resourceManager;
-   private final IResourceLocatorManager locatorManager;
 
-   public DbTableExportItem(Log logger, IOseeDatabaseService dbService, IOseeCachingService cachingService, IResourceManager resourceManager, IResourceLocatorManager locatorManager, ExportItem id, String query, Object[] bindData) {
+   public DbTableExportItem(Log logger, IOseeDatabaseService dbService, IOseeCachingService cachingService, IResourceManager resourceManager, ExportItem id, String query, Object[] bindData) {
       super(logger, id);
       this.dbService = dbService;
       this.cachingService = cachingService;
       this.resourceManager = resourceManager;
-      this.locatorManager = locatorManager;
       this.query = query;
       this.bindData = bindData;
    }
@@ -77,7 +74,7 @@ public class DbTableExportItem extends AbstractXmlExportItem {
          tempFolder.mkdirs();
       }
 
-      IResourceLocator locator = locatorManager.getResourceLocator(uriTarget);
+      IResourceLocator locator = resourceManager.getResourceLocator(uriTarget);
       IResource resource = resourceManager.acquire(locator, new PropertyStore());
 
       File target = new File(tempFolder, locator.getRawPath());
