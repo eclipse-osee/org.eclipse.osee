@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.manager.servlet.internal;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
@@ -52,6 +51,8 @@ import org.osgi.service.http.HttpService;
  */
 public class ServletRegistrationHandler {
 
+   private HttpService httpService;
+   private Log logger;
    private ISessionManager sessionManager;
    private IApplicationServerLookup serverLookup;
    private IApplicationServerManager appServerManager;
@@ -62,12 +63,9 @@ public class ServletRegistrationHandler {
    private IOseeModelFactoryService factoryService;
    private IResourceLocatorManager locatorManager;
    private IResourceManager resourceManager;
-
-   private Log logger;
    private OrcsApi orcsApi;
 
    private final Set<String> contexts = new HashSet<String>();
-   private HttpService httpService;
 
    public void setSessionManager(ISessionManager sessionManager) {
       this.sessionManager = sessionManager;
@@ -117,22 +115,26 @@ public class ServletRegistrationHandler {
       this.logger = logger;
    }
 
+   public Log getLogger() {
+      return logger;
+   }
+
    public void setHttpService(HttpService httpService) {
       this.httpService = httpService;
    }
 
-   public void start(BundleContext context) {
+   public synchronized void start(BundleContext context) {
+      ServletUtil.unregister(httpService, appServerManager, contexts);
       registerServices(context);
    }
 
-   public void stop() {
-      if (httpService != null && appServerManager != null) {
-         ServletUtil.unregister(httpService, appServerManager, contexts);
-      }
+   public synchronized void stop() {
+      ServletUtil.unregister(httpService, appServerManager, contexts);
       contexts.clear();
    }
 
-   public synchronized void registerServices(BundleContext context) {
+   private void registerServices(BundleContext context) {
+      contexts.clear();
       register(new SystemManagerServlet(logger, sessionManager), OseeServerContext.MANAGER_CONTEXT);
       register(new ResourceManagerServlet(logger, sessionManager, locatorManager, resourceManager),
          OseeServerContext.RESOURCE_CONTEXT);
@@ -164,8 +166,8 @@ public class ServletRegistrationHandler {
       register(new AdminServlet(logger, context), "osee/console");
    }
 
-   private void register(OseeHttpServlet servlet, String... contexts) {
-      this.contexts.addAll(Arrays.asList(contexts));
+   private void register(OseeHttpServlet servlet, String contexts) {
+      this.contexts.add(contexts);
       ServletUtil.register(httpService, appServerManager, servlet, contexts);
    }
 }

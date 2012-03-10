@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" name="org.eclipse.osee.framework.manager.servlet.internal.ServletRegistrationHandler">
    <implementation class="org.eclipse.osee.framework.manager.servlet.internal.ServletRegistrationHandler"/>
+   <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
+   
    <reference bind="setHttpService" cardinality="1..1" interface="org.osgi.service.http.HttpService" name="HttpService" policy="static"/>
    <reference bind="setSessionManager" cardinality="1..1" interface="org.eclipse.osee.framework.core.server.ISessionManager" name="ISessionManager" policy="static"/>
    <reference bind="setServerLookup" cardinality="1..1" interface="org.eclipse.osee.framework.core.server.IApplicationServerLookup" name="IApplicationServerLookup" policy="static"/>
@@ -13,4 +15,5 @@
    <reference bind="setLocatorManager" cardinality="1..1" interface="org.eclipse.osee.framework.resource.management.IResourceLocatorManager" name="IResourceLocatorManager" policy="static"/>
    <reference bind="setResourceManager" cardinality="1..1" interface="org.eclipse.osee.framework.resource.management.IResourceManager" name="IResourceManager" policy="static"/>
    <reference bind="setOrcsApi" cardinality="1..1" interface="org.eclipse.osee.orcs.OrcsApi" name="OrcsApi" policy="static"/>
+   
 </scr:component>

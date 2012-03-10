@@ -1,7 +1,10 @@
-<?xml version="1.0"?>
-<component name="ats.resource.locator">
-	<implementation class="org.eclipse.osee.framework.manager.servlet.ats.AtsResourceLocatorProvider"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0"
+	name="ats.resource.locator">
+	<implementation
+		class="org.eclipse.osee.framework.manager.servlet.ats.AtsResourceLocatorProvider" />
 	<service>
-		<provide interface="org.eclipse.osee.framework.resource.management.IResourceLocatorProvider"/>
-	</service>	
-</component>
+		<provide
+			interface="org.eclipse.osee.framework.resource.management.IResourceLocatorProvider" />
+	</service>
+</scr:component>
