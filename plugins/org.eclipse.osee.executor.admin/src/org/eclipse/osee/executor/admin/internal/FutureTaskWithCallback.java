@@ -125,6 +125,8 @@ public class FutureTaskWithCallback<T> implements RunnableFuture<T>, HasExecutio
    }
 
    protected void notifyOnFailure(Throwable throwable) {
+      logger.error(throwable, "Error during execution");
+
       ExecutionCallback<T> callback = getExecutionCallback();
       if (callback != null) {
          try {
