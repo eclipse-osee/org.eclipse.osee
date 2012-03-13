@@ -144,6 +144,16 @@
 							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.osee.executor.admin</artifactId>
 							<version>0.0.0</version>
+						</dependency>
+						<dependency>
+							<type>eclipse-plugin</type>
+							<artifactId>org.eclipse.osee.console.admin</artifactId>
+							<version>0.0.0</version>
+						</dependency>	
+						<dependency>
+							<type>eclipse-plugin</type>
+							<artifactId>org.eclipse.osee.database.schema</artifactId>
+							<version>0.0.0</version>
 						</dependency>	
 						<!-- 
 
