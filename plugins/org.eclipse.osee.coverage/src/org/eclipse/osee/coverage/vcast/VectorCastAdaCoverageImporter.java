@@ -119,16 +119,19 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
       for (Entry<CoverageUnit, CoverageDataSubProgram> entry : methodCoverageUnitToCoverageDataSubProgram.entrySet()) {
          CoverageUnit methodCoverageUnit = entry.getKey();
          CoverageDataSubProgram coverageDataSubProgram = entry.getValue();
-         int totalCoverageItems = methodCoverageUnit.getCoverageItems(false).size();
-         int coveredCoverageItems =
-            methodCoverageUnit.getCoverageItemsCovered(false, CoverageOptionManager.Test_Unit).size();
-         if (totalCoverageItems != coverageDataSubProgram.getTotal() || coveredCoverageItems != coverageDataSubProgram.getCovered()) {
-            coverageImport.getLog().logError(
-               String.format(
-                  "Imported covered/total items [%d/%d] doesn't match VectorCast [%d/%d] reported in .xml file for coverage unit [%s]",
-                  coveredCoverageItems, totalCoverageItems, coverageDataSubProgram.getCovered(),
-                  coverageDataSubProgram.getTotal(), methodCoverageUnit));
-            error = true;
+         String usevectorcast53 = System.getProperty("usevectorcast53", null);
+         if (Strings.isValid(usevectorcast53)) {
+            int totalCoverageItems = methodCoverageUnit.getCoverageItems(false).size();
+            int coveredCoverageItems =
+               methodCoverageUnit.getCoverageItemsCovered(false, CoverageOptionManager.Test_Unit).size();
+            if (totalCoverageItems != coverageDataSubProgram.getTotal() || coveredCoverageItems != coverageDataSubProgram.getCovered()) {
+               coverageImport.getLog().logError(
+                  String.format(
+                     "Imported covered/total items [%d/%d] doesn't match VectorCast [%d/%d] reported in .xml file for coverage unit [%s]",
+                     coveredCoverageItems, totalCoverageItems, coverageDataSubProgram.getCovered(),
+                     coverageDataSubProgram.getTotal(), methodCoverageUnit));
+               error = true;
+            }
          }
       }
       if (!error) {

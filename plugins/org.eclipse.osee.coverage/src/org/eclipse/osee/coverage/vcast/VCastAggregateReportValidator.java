@@ -74,7 +74,8 @@ public class VCastAggregateReportValidator {
                coverageUnitMatcher.reset(subStr);
                if (coverageUnitMatcher.find()) {
                   if (result != null) {
-                     throw new OseeStateException("Found coverage begin before last coverage end");
+                     throw new OseeStateException(
+                        "Found coverage begin before last coverage end. Perhaps you forgot to define the uservectorcast53 system variable?");
                   }
                   result = new AggregateCoverageUnitResult(coverageUnitMatcher.group(1));
                   //               System.out.println("Found name " + m.group(1));
@@ -89,6 +90,13 @@ public class VCastAggregateReportValidator {
                   //               System.out.println("Found covered " + result.getNumCovered() + " of " + result.getNumLines());
                   verifyAggregateCoverageUnitResult(importer, coverageNameToCoverageUnit, result);
                   result = null;
+               }
+
+               String usevectorcast53 = System.getProperty("usevectorcast53", null);
+               if (Strings.isValid(usevectorcast53)) {
+                  NO_COVERAGE_DATA_EXISTS = "No&nbsp;Coverage&nbsp;Data&nbsp;Available";
+               } else {
+                  NO_COVERAGE_DATA_EXISTS = "No&nbsp;Coverage&nbsp;Data&nbsp;Exists";
                }
                if (subStr.contains(NO_COVERAGE_DATA_EXISTS)) {
                   if (result == null) {

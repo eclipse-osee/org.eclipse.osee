@@ -20,6 +20,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.vcast.CoverageDataUnit.CoverageDataType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -100,8 +101,17 @@ public class CoverageDataFile {
                   String coveredElement = Jaxp.getChildText(coverageElement, "covered");
                   String totalElement = Jaxp.getChildText(coverageElement, "total");
                   coverageDataSubProgram.setComplexity(new Integer(complexity).intValue());
-                  coverageDataSubProgram.setCovered(new Integer(coveredElement).intValue());
-                  coverageDataSubProgram.setTotal(new Integer(totalElement).intValue());
+
+                  String usevectorcast53 = System.getProperty("usevectorcast53", null);
+                  if (!Strings.isValid(usevectorcast53)) {
+                     if (coveredElement == null || totalElement == null) {
+                        throw new OseeStateException(
+                           "VectorCast syntax appears to be missing 'covered' or 'total' elements.  Perhaps you forgot to define the uservectorcast53 system variable?");
+                     } else {
+                        coverageDataSubProgram.setCovered(new Integer(coveredElement).intValue());
+                        coverageDataSubProgram.setTotal(new Integer(totalElement).intValue());
+                     }
+                  }
 
                   coverageDataUnit.addSubProgram(coverageDataSubProgram);
                }
