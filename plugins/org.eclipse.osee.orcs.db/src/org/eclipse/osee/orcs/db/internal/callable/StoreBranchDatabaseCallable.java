@@ -12,8 +12,10 @@ package org.eclipse.osee.orcs.db.internal.callable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.database.schema.DatabaseTxCallable;
@@ -104,7 +106,10 @@ public class StoreBranchDatabaseCallable extends DatabaseTxCallable<IStatus> {
       for (Branch branch : branches) {
          branch.clearDirty();
       }
-      getEventService().postEvent(OrcsConstants.BRANCH_CHANGE_EVENT, new HashMap<String, Object>());
+      Map<String, Object> eventData = new HashMap<String, Object>();
+      eventData.put(OrcsConstants.ORCS_BRANCH_EVENT_DATA, Collections.unmodifiableCollection(branches));
+
+      getEventService().postEvent(OrcsConstants.ORCS_BRANCH_MODIFIED_EVENT, eventData);
       return Status.OK_STATUS;
    }
 

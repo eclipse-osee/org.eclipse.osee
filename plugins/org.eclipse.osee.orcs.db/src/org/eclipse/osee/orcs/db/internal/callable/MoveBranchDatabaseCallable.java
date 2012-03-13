@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.callable;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.database.schema.DatabaseTxCallable;
@@ -61,8 +63,9 @@ public class MoveBranchDatabaseCallable extends DatabaseTxCallable<IStatus> {
       getDatabaseService().runPreparedUpdate(connection, sql, branch.getId());
       checkForCancelled();
 
-      // TODO Populated Event Data
-      getEventService().postEvent(OrcsConstants.BRANCH_MOVE_EVENT, new HashMap<String, Object>());
+      Map<String, Object> eventData = new HashMap<String, Object>();
+      eventData.put(OrcsConstants.ORCS_BRANCH_EVENT_DATA, Collections.singleton(branch));
+      getEventService().postEvent(OrcsConstants.ORCS_BRANCH_MOVE_EVENT, eventData);
       return Status.OK_STATUS;
    }
 }

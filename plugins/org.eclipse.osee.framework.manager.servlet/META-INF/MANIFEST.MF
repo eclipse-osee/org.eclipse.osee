@@ -4,7 +4,8 @@ Bundle-Name: Servlet Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.manager.servlet;singleton:=true
 Bundle-Version: 0.9.9.qualifier
 Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.osee.executor.admin,
+Import-Package: org.eclipse.osee.event,
+ org.eclipse.osee.executor.admin,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,

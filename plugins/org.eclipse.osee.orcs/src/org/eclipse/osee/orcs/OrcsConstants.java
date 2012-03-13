@@ -19,10 +19,13 @@ public final class OrcsConstants {
       // Constants class
    }
 
-   private static final String PREFIX = "org/eclipse/osee/orcs/event/";
+   private static final String ORCS_EVENT_PREFIX = "org/eclipse/osee/orcs/event/";
 
-   public static final String REGISTRATION_EVENT = PREFIX + "OSEE_ORCS_SERVICE_REGISTRATION";
+   public static final String ORCS_REGISTRATION_EVENT = ORCS_EVENT_PREFIX + "OSEE_ORCS_SERVICE_REGISTRATION";
+   public static final String ORCS_DEREGISTRATION_EVENT = ORCS_EVENT_PREFIX + "OSEE_ORCS_SERVICE_DEREGISTRATION";
 
-   public static final String BRANCH_CHANGE_EVENT = PREFIX + "branch/CHANGE";
-   public static final String BRANCH_MOVE_EVENT = PREFIX + "branch/MOVE";
+   public static final String ORCS_BRANCH_MODIFIED_EVENT = ORCS_EVENT_PREFIX + "branch/MODIFIED";
+   public static final String ORCS_BRANCH_MOVE_EVENT = ORCS_EVENT_PREFIX + "branch/MOVE";
+
+   public static final String ORCS_BRANCH_EVENT_DATA = ORCS_EVENT_PREFIX + "branch/data";
 }
