@@ -14,3 +14,4 @@ Import-Package: org.eclipse.osee.event,
  org.osgi.framework
 Service-Component: OSGI-INF/*.xml
 Export-Package: org.eclipse.osee.console.admin
+Bundle-ActivationPolicy: lazy

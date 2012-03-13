@@ -66,12 +66,24 @@ public class CommandDispatcher {
       ConsoleCommand command = getCommandById(cmdId);
 
       ConsoleAdminUtils.checkNotNull(command, "command", "Unable to find command for [%s]", cmdId);
-
-      Callable<?> callable = command.createCallable(console, params);
+      Callable<?> callable = createCallable(command, console, params);
       execute(cmdId, callable);
    }
 
-   private <T> void execute(final String cmdId, Callable<T> callable) throws Exception {
+   private Callable<?> createCallable(final ConsoleCommand command, final Console console, final ConsoleParameters params) {
+      Callable<?> wrapped = new AbstractConsoleCallable<Object>(console, params) {
+
+         @Override
+         protected Object innerCall() throws Exception {
+            Callable<?> callable = command.createCallable(console, params);
+            return callAndCheckForCancel(callable);
+         }
+
+      };
+      return wrapped;
+   }
+
+   private <T> void execute(final String cmdId, final Callable<T> callable) throws Exception {
 
       final String guid = GUID.create();
       Future<?> future = getExecutorAdmin().schedule(CONSOLE_EXECUTOR_ID, callable, new ExecutionCallback<T>() {

@@ -79,18 +79,19 @@ public class CommandProviderImpl implements CommandProvider {
 
    @Override
    public String getHelp() {
-      StringBuilder help = new StringBuilder();
-      addHeader(help, CONSOLE_HEADER);
-      addSyntax(help);
-      addSubCommandHeader(help);
+      StringBuilder buffer = new StringBuilder();
+      addHeader(buffer, CONSOLE_HEADER);
+      addSyntax(buffer);
+      addSubCommandHeader(buffer);
+      addHelp(buffer);
 
       Collection<ConsoleCommand> commands = getDispatcher().getRegistered();
       List<ConsoleCommand> sorted = ConsoleAdminUtils.sort(commands);
       for (ConsoleCommand command : sorted) {
-         addCommand(help, command);
+         addCommand(buffer, command);
       }
-      addHelp(help);
-      return help.toString();
+
+      return buffer.toString();
    }
 
    private void addHeader(StringBuilder help, String header) {
@@ -121,8 +122,6 @@ public class CommandProviderImpl implements CommandProvider {
    }
 
    private void addHelp(StringBuilder help) {
-      help.append("Help:");
-      help.append(NEW_LINE);
       help.append(TAB);
       help.append("osee help [sub-command]");
       help.append(NEW_LINE);

@@ -11,41 +11,35 @@
 package org.eclipse.osee.console.admin.internal;
 
 import java.util.concurrent.Callable;
+import org.eclipse.osee.console.admin.Console;
+import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
  */
 public abstract class AbstractConsoleCallable<T> extends CancellableCallable<T> {
 
-   private final Log logger;
+   private final Console console;
+   private final ConsoleParameters params;
    private Callable<?> innerWorker;
 
-   public AbstractConsoleCallable(Log logger) {
+   public AbstractConsoleCallable(Console console, ConsoleParameters params) {
       super();
-      this.logger = logger;
-   }
-
-   protected Log getLogger() {
-      return logger;
+      this.console = console;
+      this.params = params;
    }
 
    @Override
    public final T call() throws Exception {
-      long startTime = 0;
-      if (logger.isTraceEnabled()) {
-         startTime = System.currentTimeMillis();
-      }
+      long startTime = System.currentTimeMillis();
       T result;
       try {
          result = innerCall();
       } finally {
-         if (logger.isTraceEnabled()) {
-            logger.trace("Console Command - [%s] completed in [%s]", getClass().getSimpleName(),
-               Lib.getElapseString(startTime));
-         }
+         console.writeln("Console Command - [%s] completed in [%s]", params.getRawString(),
+            Lib.getElapseString(startTime));
       }
       return result;
    }
