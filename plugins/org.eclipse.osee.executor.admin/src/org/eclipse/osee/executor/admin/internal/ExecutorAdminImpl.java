@@ -132,8 +132,9 @@ public class ExecutorAdminImpl implements ExecutorAdmin {
       ExecutorThreadFactory threadFactory = new ExecutorThreadFactory(id, Thread.NORM_PRIORITY);
       cache.put(id, threadFactory);
 
-      int numberOfProcessor = Runtime.getRuntime().availableProcessors();
-      return new ExecutorServiceImpl(getLogger(), id, numberOfProcessor, threadFactory, cache);
+      // TODO: Better way to control pool size per executor service
+      int corePoolSize = Math.min(4, Runtime.getRuntime().availableProcessors());
+      return new ExecutorServiceImpl(getLogger(), id, corePoolSize, threadFactory, cache);
    }
 
    private void shutdown(String id, ExecutorService executor) {
