@@ -14,8 +14,6 @@ import org.eclipse.osee.framework.jdk.core.rules.JdkCoreRuleTestSuite;
 import org.eclipse.osee.framework.jdk.core.text.JdkCoreTextTestSuite;
 import org.eclipse.osee.framework.jdk.core.type.JdkCoreTypeTestSuite;
 import org.eclipse.osee.framework.jdk.core.util.JdkCoreUtilTestSuite;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -30,8 +28,5 @@ import org.junit.runners.Suite;
    JdkCoreTypeTestSuite.class,
    JdkCoreUtilTestSuite.class,})
 public class JdkCoreTestSuite {
-   @BeforeClass
-   public static void setUp() throws Exception {
-      OseeProperties.setIsInTest(true);
-   }
+   // Test Suite
 }

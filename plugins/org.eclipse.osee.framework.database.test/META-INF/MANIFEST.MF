@@ -7,4 +7,3 @@ Bundle-Vendor: Eclipse.org
 Fragment-Host: org.eclipse.osee.framework.database
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit
-Export-Package: org.eclipse.osee.framework.database.test

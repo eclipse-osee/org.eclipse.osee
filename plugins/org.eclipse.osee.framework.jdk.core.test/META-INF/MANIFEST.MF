@@ -6,7 +6,4 @@ Bundle-Version: 0.9.9.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.framework.jdk.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: org.eclipse.osee.framework.jdk.core,
- org.eclipse.osee.framework.jdk.core.mock,
- org.eclipse.osee.framework.jdk.core.type
 Require-Bundle: org.junit

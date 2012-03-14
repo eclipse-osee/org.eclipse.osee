@@ -14,12 +14,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.test.mocks.Asserts;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.lifecycle.AbstractLifecycleOperation;
 import org.eclipse.osee.framework.lifecycle.ILifecycleService;
 import org.eclipse.osee.framework.lifecycle.LifecycleServiceImpl;
 import org.eclipse.osee.framework.lifecycle.test.mock.MockHandler;
 import org.eclipse.osee.framework.lifecycle.test.mock.StrictMockLifecycePoint;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -37,7 +38,7 @@ public class LifecycleOperationTest {
       service.addHandler(StrictMockLifecycePoint.TYPE, new MockHandler());
 
       IOperation operation = new MockLifecycleOperation(service, "a string", "b string");
-      Asserts.testOperation(operation, IStatus.OK);
+      testOperation(operation, IStatus.OK);
    }
 
    private static class MockLifecycleOperation extends AbstractLifecycleOperation {
@@ -52,4 +53,9 @@ public class LifecycleOperationTest {
       }
    }
 
+   private static IStatus testOperation(IOperation operation, int expectedSeverity) {
+      IStatus status = Operations.executeWork(operation);
+      Assert.assertEquals(status.toString(), expectedSeverity, status.getSeverity());
+      return status;
+   }
 }

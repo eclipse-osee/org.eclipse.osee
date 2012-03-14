@@ -10,11 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.suite;
 
-import org.eclipse.osee.framework.core.message.test.AllCoreMessageTestSuite;
-import org.eclipse.osee.framework.core.model.AllCoreModelTestSuite;
-import org.eclipse.osee.framework.core.test.FrameworkCoreTestSuite;
-import org.eclipse.osee.framework.database.test.DatabaseTestSuite;
-import org.eclipse.osee.framework.jdk.core.JdkCoreTestSuite;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.lifecycle.test.AllLifecycleTestSuite;
 import org.junit.AfterClass;
@@ -23,13 +18,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-   JdkCoreTestSuite.class,
-   DatabaseTestSuite.class,
-   FrameworkCoreTestSuite.class,
-   AllCoreModelTestSuite.class,
-   AllCoreMessageTestSuite.class,
-   AllLifecycleTestSuite.class,})
+@Suite.SuiteClasses({AllLifecycleTestSuite.class,})
 public class CoreRuntimeFeatureTestsSuite {
    @BeforeClass
    public static void setUp() throws Exception {

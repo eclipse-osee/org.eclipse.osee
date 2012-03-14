@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.util.io.xml;
 
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -22,8 +20,5 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({ //
 ExcelXmlWriterTest.class})
 public class IoXmlTestSuite {
-   @BeforeClass
-   public static void setUp() throws Exception {
-      OseeProperties.setIsInTest(true);
-   }
+   // Test Suite
 }

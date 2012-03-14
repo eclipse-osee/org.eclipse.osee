@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.enums.OperationBehavior;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.test.mocks.Asserts;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.test.mocks.MockAbstractOperation;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,7 +32,7 @@ public class AbstractOperationTest {
    @Test
    public void testAbstractOperationOk() {
       IOperation operation = new MockAbstractOperation();
-      IStatus status = Asserts.testOperation(operation, IStatus.OK);
+      IStatus status = testOperation(operation, IStatus.OK);
       Assert.assertEquals(Status.OK_STATUS, status);
    }
 
@@ -40,7 +40,7 @@ public class AbstractOperationTest {
    public void testAbstractOperationWithOneError() {
       Exception expection = new Exception("What did you do?!");
       IOperation operation = new MockAbstractOperation("Test Status", expection);
-      IStatus status = Asserts.testOperation(operation, IStatus.ERROR);
+      IStatus status = testOperation(operation, IStatus.ERROR);
       Assert.assertEquals(expection.toString(), status.getMessage());
    }
 
@@ -48,7 +48,7 @@ public class AbstractOperationTest {
    public void testCompositeOperationOk() {
       CompositeOperation compositeOperation =
          new CompositeOperation("two oks", "test", new MockAbstractOperation(), new MockAbstractOperation());
-      IStatus status = Asserts.testOperation(compositeOperation, IStatus.OK);
+      IStatus status = testOperation(compositeOperation, IStatus.OK);
       Assert.assertEquals(0, status.getChildren().length);
    }
 
@@ -61,10 +61,16 @@ public class AbstractOperationTest {
       CompositeOperation compositeOperation =
          new CompositeOperation("two exceptions", "test", OperationBehavior.ContinueOnError, operation1, operation2);
 
-      IStatus status = Asserts.testOperation(compositeOperation, IStatus.ERROR);
+      IStatus status = testOperation(compositeOperation, IStatus.ERROR);
 
       Assert.assertEquals(MultiStatus.class, status.getClass());
       Assert.assertEquals(exception1.toString(), status.getChildren()[0].getMessage());
       Assert.assertEquals(exception2.toString(), status.getChildren()[1].getMessage());
+   }
+
+   private static IStatus testOperation(IOperation operation, int expectedSeverity) {
+      IStatus status = Operations.executeWork(operation);
+      Assert.assertEquals(status.toString(), expectedSeverity, status.getSeverity());
+      return status;
    }
 }

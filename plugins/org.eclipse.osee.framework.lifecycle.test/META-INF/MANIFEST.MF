@@ -8,4 +8,3 @@ Fragment-Host: org.eclipse.osee.framework.lifecycle
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit
 Export-Package: org.eclipse.osee.framework.lifecycle.test
-Import-Package: org.eclipse.osee.framework.core.test.mocks

@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.test.internal;
 
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -25,8 +23,5 @@ SingletonServiceBinderTest.class, //
  * @author Roberto E. Escobar
  */
 public class InternalCoreTestSuite {
-   @BeforeClass
-   public static void setUp() throws Exception {
-      OseeProperties.setIsInTest(true);
-   }
+   // Test Suite
 }

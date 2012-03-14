@@ -15,10 +15,12 @@ import static org.junit.Assert.assertNotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.framework.core.test.mocks.Asserts;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOpsExtensionManager;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +47,7 @@ public class DatabaseIntegrityTest {
       assertNotNull(operation);
 
       operation.setFixOperationEnabled(false);
-      Asserts.testOperation(operation, IStatus.OK);
+      testOperation(operation, IStatus.OK);
 
       int totalItemsToFix = operation.getItemsToFixCount();
       assertEquals(String.format("Error [%s]: found [%s] items", operation.getName(), totalItemsToFix), 0,
@@ -63,4 +65,11 @@ public class DatabaseIntegrityTest {
       }
       return data;
    }
+
+   public static IStatus testOperation(IOperation operation, int expectedSeverity) {
+      IStatus status = Operations.executeWork(operation);
+      Assert.assertEquals(status.toString(), expectedSeverity, status.getSeverity());
+      return status;
+   }
+
 }

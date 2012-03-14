@@ -21,8 +21,5 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({WordMLNewLineMakerRuleTest.class})
 public class JdkCoreRuleTestSuite {
-   @BeforeClass
-   public static void setUp() throws Exception {
-      OseeProperties.setIsInTest(true);
-   }
+   // Test Suite
 }

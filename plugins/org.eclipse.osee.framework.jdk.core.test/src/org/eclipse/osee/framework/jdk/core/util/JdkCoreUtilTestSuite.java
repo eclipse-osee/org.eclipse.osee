@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.jdk.core.util;
 
 import org.eclipse.osee.framework.jdk.core.util.io.IoTestSuite;
 import org.eclipse.osee.framework.jdk.core.util.xml.XmlTestSuite;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -32,8 +31,5 @@ import org.junit.runners.Suite;
    StringsTest.class,
    UrlQueryTest.class})
 public class JdkCoreUtilTestSuite {
-   @BeforeClass
-   public static void setUp() throws Exception {
-      OseeProperties.setIsInTest(true);
-   }
+   // Test Suite
 }

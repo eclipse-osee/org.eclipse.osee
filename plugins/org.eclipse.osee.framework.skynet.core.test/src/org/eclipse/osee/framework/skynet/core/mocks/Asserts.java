@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.test.mocks;
+package org.eclipse.osee.framework.skynet.core.mocks;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.operation.IOperation;
