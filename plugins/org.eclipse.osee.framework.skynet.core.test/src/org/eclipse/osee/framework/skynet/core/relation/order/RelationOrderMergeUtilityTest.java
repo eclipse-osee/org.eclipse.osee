@@ -101,7 +101,8 @@ public class RelationOrderMergeUtilityTest {
       Artifact srcChild = ArtifactQuery.getArtifactFromId(destChildren[4].getGuid(), sourceBranch);
       setAsChild(srcParent, srcChild, USER_DEFINED);
       srcParent.persist(getClass().getSimpleName() + ".testOrderMerge()_2");
-      RelationManager.deleteRelationsAll(destChildren[0], true);
+      RelationManager.deleteRelationsAll(destChildren[0], true,
+         TransactionManager.createTransaction(destBranch, "Delete the relations"));
 
       RelationOrderData mergedOrder = RelationOrderMergeUtility.mergeRelationOrder(destParent, srcParent);
       Assert.assertNotNull(mergedOrder);

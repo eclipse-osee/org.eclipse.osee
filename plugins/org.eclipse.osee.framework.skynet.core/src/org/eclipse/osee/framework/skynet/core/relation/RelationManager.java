@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink.ArtifactLink
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderFactory;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationSorterProvider;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
@@ -429,14 +430,14 @@ public class RelationManager {
          getRelatedArtifacts(artifactB, relationType, RelationSide.SIDE_A));
    }
 
-   public static void deleteRelationsAll(Artifact artifact, boolean reorderRelations) throws OseeCoreException {
+   public static void deleteRelationsAll(Artifact artifact, boolean reorderRelations, SkynetTransaction transaction) throws OseeCoreException {
       List<RelationLink> selectedRelations = relationCache.getAll(artifact);
       Set<Pair<IRelationType, RelationSide>> typesToUpdate = new HashSet<Pair<IRelationType, RelationSide>>();
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
             typesToUpdate.add(new Pair<IRelationType, RelationSide>(relation.getRelationType(),
                relation.getOppositeSide(artifact)));
-            relation.delete(reorderRelations);
+            relation.delete(reorderRelations, transaction);
          }
       }
 

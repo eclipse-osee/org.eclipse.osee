@@ -186,7 +186,7 @@ public class ArtifactPersistenceManager {
             // calling deCache here creates a race condition when the handleRelationModifiedEvent listeners fire - RS
             //          ArtifactCache.deCache(artifact);
             artifact.internalSetDeleted();
-            RelationManager.deleteRelationsAll(artifact, reorderRelations);
+            RelationManager.deleteRelationsAll(artifact, reorderRelations, transaction);
             if (transaction != null) {
                artifact.persist(transaction);
             }

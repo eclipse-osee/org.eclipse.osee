@@ -10,17 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation;
 
+import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.USER_DEFINED;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderFactory;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Jeff C. Phillips
@@ -120,7 +128,32 @@ public class RelationLink {
    }
 
    public void delete(boolean reorderRelations) {
+      delete(reorderRelations, null);
+
+   }
+
+   public void delete(boolean reorderRelations, SkynetTransaction transaction) {
       internalDelete(reorderRelations, true);
+
+      deleteEmptyRelationOrder(transaction);
+   }
+
+   private void deleteEmptyRelationOrder(SkynetTransaction transaction) {
+      try {
+         Artifact aArtifact = ArtifactQuery.getArtifactFromId(aArtifactId, branch);
+
+         if (aArtifact.getAttributeCount(CoreAttributeTypes.RelationOrder) == 1 && aArtifact.getChildren().isEmpty()) {
+            aArtifact.getSoleAttribute(CoreAttributeTypes.RelationOrder).delete();
+            if (transaction == null) {
+               aArtifact.persist("Delete empty relation order attribute for artifact: " + aArtifact.getGuid());
+            } else {
+               aArtifact.persist(transaction);
+            }
+         }
+
+      } catch (OseeCoreException ex) {
+         OseeLog.log(this.getClass(), Level.SEVERE, ex.toString(), ex);
+      }
    }
 
    public void undelete() {
@@ -346,4 +379,19 @@ public class RelationLink {
       return result;
    }
 
+   public boolean isUserDefined() throws OseeCoreException {
+      RelationOrderFactory factory = new RelationOrderFactory();
+      Artifact aArtifact = ArtifactQuery.getArtifactFromId(getAArtifactId(), branch);
+      Artifact bArtifact = ArtifactQuery.getArtifactFromId(getBArtifactId(), branch);
+
+      RelationOrderData leftData = factory.createRelationOrderData(aArtifact);
+      RelationOrderData rightData = factory.createRelationOrderData(bArtifact);
+
+      IRelationSorterId leftSorter =
+         RelationOrderBaseTypes.getFromGuid(leftData.getCurrentSorterGuid(getRelationType(), getSide(aArtifact)));
+      IRelationSorterId rightSorter =
+         RelationOrderBaseTypes.getFromGuid(rightData.getCurrentSorterGuid(getRelationType(), getSide(bArtifact)));
+
+      return (rightSorter.equals(USER_DEFINED) && leftSorter.equals(USER_DEFINED));
+   }
 }
