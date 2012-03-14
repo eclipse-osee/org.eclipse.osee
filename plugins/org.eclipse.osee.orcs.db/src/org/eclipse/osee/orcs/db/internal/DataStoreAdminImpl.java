@@ -22,6 +22,7 @@ import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
 import org.eclipse.osee.orcs.core.ds.DataStoreInfo;
+import org.eclipse.osee.orcs.db.internal.callable.FetchDatastoreInfoCallable;
 import org.eclipse.osee.orcs.db.internal.callable.InitializeDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.util.DynamicSchemaResourceProvider;
 
@@ -72,18 +73,8 @@ public class DataStoreAdminImpl implements DataStoreAdmin {
 
    @Override
    public Callable<DataStoreInfo> getDataStoreInfo(String sessionId) {
-      DataStoreInfo dataStoreInfo = null;
-      //         StringWriter writer = new StringWriter();
-      //         IOseeSchemaProvider schemaProvider = new OseeSchemaProvider();
-      //         for (IOseeSchemaResource resource : schemaProvider.getSchemaResources()) {
-      //            InputStream inputStream = null;
-      //            try {
-      //               inputStream = new BufferedInputStream(resource.getContent());
-      //               writer.write(Lib.inputStreamToString(inputStream));
-      //            
-      //         }
-
-      return null;
+      SchemaResourceProvider schemaProvider = new DynamicSchemaResourceProvider(logger);
+      return new FetchDatastoreInfoCallable(logger, dbService, schemaProvider, preferences);
    }
 
    private boolean getOption(Map<String, String> parameters, String key, boolean defaultValue) {

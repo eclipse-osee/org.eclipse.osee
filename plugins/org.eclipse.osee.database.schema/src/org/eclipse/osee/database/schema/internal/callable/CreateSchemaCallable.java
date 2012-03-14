@@ -54,7 +54,11 @@ public class CreateSchemaCallable extends DatabaseTxCallable<Object> {
       dbInit.dropTables(schemas, userSchema, dbSchema);
 
       if (dbType == SupportedDatabase.postgresql || dbType == SupportedDatabase.h2) {
-         dbInit.dropSchema(schemas);
+         try {
+            dbInit.dropSchema(schemas);
+         } catch (Exception ex) {
+            //
+         }
          dbInit.createSchema(schemas);
       }
       dbInit.addTables(schemas, userSchema);

@@ -10,12 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface KeyValueDataAccessor {
+
+   Set<String> getKeys() throws OseeCoreException;
 
    String getValue(String key) throws OseeCoreException;
 

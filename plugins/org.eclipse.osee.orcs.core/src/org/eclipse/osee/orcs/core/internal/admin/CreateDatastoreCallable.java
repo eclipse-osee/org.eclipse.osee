@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.admin;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsMetaData;
 import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
@@ -36,9 +38,20 @@ public class CreateDatastoreCallable extends AbstractAdminCallable<OrcsMetaData>
    protected OrcsMetaData innerCall() throws Exception {
       String sessionId = getSessionContext().getSessionId();
       Callable<DataStoreInfo> callable = dataStoreAdmin.createDataStore(sessionId, parameters);
-      DataStoreInfo dataStoreInfo = callAndCheckForCancel(callable);
+      final DataStoreInfo dataStoreInfo = callAndCheckForCancel(callable);
 
-      OrcsMetaData orcsMetaData = null;
+      OrcsMetaData orcsMetaData = new OrcsMetaData() {
+
+         @Override
+         public Map<String, String> getProperties() {
+            return dataStoreInfo.getProperties();
+         }
+
+         @Override
+         public List<IResource> getConfigurationResources() {
+            return dataStoreInfo.getConfigurationResources();
+         }
+      };
 
       return orcsMetaData;
    }

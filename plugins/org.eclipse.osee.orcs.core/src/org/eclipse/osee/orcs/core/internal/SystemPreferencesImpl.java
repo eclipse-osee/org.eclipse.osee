@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.internal;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -98,6 +99,11 @@ public class SystemPreferencesImpl implements SystemPreferences {
    public void putValue(String key, String value) throws OseeCoreException {
       accessor.putValue(key, value);
       cache.put(key, value);
+   }
+
+   @Override
+   public Set<String> getKeys() throws OseeCoreException {
+      return accessor.getKeys();
    }
 
 }

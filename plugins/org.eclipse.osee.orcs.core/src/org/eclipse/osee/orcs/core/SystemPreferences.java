@@ -10,12 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core;
 
+import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface SystemPreferences {
+
+   public Set<String> getKeys() throws OseeCoreException;
 
    public String getSystemUuid() throws OseeCoreException;
 

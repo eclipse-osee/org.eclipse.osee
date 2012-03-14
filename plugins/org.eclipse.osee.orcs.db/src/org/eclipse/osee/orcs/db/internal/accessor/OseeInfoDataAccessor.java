@@ -12,10 +12,12 @@ package org.eclipse.osee.orcs.db.internal.accessor;
 
 import java.io.File;
 import java.sql.DatabaseMetaData;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -25,14 +27,12 @@ import org.eclipse.osee.orcs.core.ds.KeyValueDataAccessor;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 
-/**
- * @author Roberto E. Escobar
- */
 public class OseeInfoDataAccessor implements KeyValueDataAccessor {
 
    private static final String GET_VALUE_SQL = "SELECT osee_value FROM osee_info WHERE OSEE_KEY = ?";
    private static final String INSERT_KEY_VALUE_SQL = "INSERT INTO osee_info (OSEE_KEY, OSEE_VALUE) VALUES (?, ?)";
    private static final String DELETE_KEY_SQL = "DELETE FROM osee_info WHERE OSEE_KEY = ?";
+   private static final String GET_KEYS_SQL = "SELECT osee_key FROM osee_info";
 
    private Log logger;
    private IOseeDatabaseService dbService;
@@ -88,8 +88,8 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
             "Unsupported modification - attempt to modify index start-up flag. This is an launch time setting.",
             DataStoreConstants.DATASTORE_INDEX_ON_START_UP);
       } else {
-         ConnectionHandler.runPreparedUpdate(DELETE_KEY_SQL, key);
-         int updated = ConnectionHandler.runPreparedUpdate(INSERT_KEY_VALUE_SQL, key, value);
+         dbService.runPreparedUpdate(DELETE_KEY_SQL, key);
+         int updated = dbService.runPreparedUpdate(INSERT_KEY_VALUE_SQL, key, value);
          wasUpdated = updated == 1;
       }
       return wasUpdated;
@@ -146,5 +146,20 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
          }
       }
       return areHintsSupported;
+   }
+
+   @Override
+   public Set<String> getKeys() throws OseeCoreException {
+      Set<String> keys = new HashSet<String>();
+      IOseeStatement chStmt = dbService.getStatement();
+      try {
+         chStmt.runPreparedQuery(GET_KEYS_SQL);
+         while (chStmt.next()) {
+            keys.add(chStmt.getString("osee_key"));
+         }
+      } finally {
+         chStmt.close();
+      }
+      return keys;
    }
 }

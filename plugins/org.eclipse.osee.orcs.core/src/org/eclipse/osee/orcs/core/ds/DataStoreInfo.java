@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.resource.management.IResource;
 
 /**
  * @author Roberto E. Escobar
@@ -18,5 +20,7 @@ import java.util.Map;
 public interface DataStoreInfo {
 
    Map<String, String> getProperties();
+
+   List<IResource> getConfigurationResources();
 
 }

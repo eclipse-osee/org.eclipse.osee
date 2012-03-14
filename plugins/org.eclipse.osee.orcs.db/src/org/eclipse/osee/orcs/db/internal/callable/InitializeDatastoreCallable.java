@@ -88,7 +88,11 @@ public class InitializeDatastoreCallable extends DatabaseCallable<DataStoreInfo>
       Callable<Branch> createSystemRoot = branchStore.createBranch("sessionId", systemRootData);
       Branch systemRoot = callAndCheckForCancel(createSystemRoot);
 
-      DataStoreInfo dataStoreInfo = null;
+      Conditions.checkNotNull(systemRoot, "System Root Branch");
+
+      Callable<DataStoreInfo> fetchCallable =
+         new FetchDatastoreInfoCallable(getLogger(), getDatabaseService(), schemaProvider, preferences);
+      DataStoreInfo dataStoreInfo = callAndCheckForCancel(fetchCallable);
       return dataStoreInfo;
 
    }

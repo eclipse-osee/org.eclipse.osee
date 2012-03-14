@@ -146,4 +146,14 @@ public class OseeInfoDataAccessorTest {
          System.setProperty(DataStoreConstants.DATASTORE_INDEX_ON_START_UP, original);
       }
    }
+
+   @org.junit.Test
+   public void testGetKeys() throws OseeCoreException {
+      IOseeDatabaseService dbService = OsgiUtil.getService(IOseeDatabaseService.class);
+      OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
+      accessor.setLogger(new MockLog());
+      accessor.setDatabaseService(dbService);
+      Assert.assertTrue(!accessor.getKeys().isEmpty());
+   }
+
 }

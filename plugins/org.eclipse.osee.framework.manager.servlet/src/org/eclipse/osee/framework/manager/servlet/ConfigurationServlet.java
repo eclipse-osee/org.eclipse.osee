@@ -10,10 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.manager.servlet;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +29,7 @@ import org.eclipse.osee.framework.core.message.DatastoreInitRequest;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -48,16 +55,20 @@ public class ConfigurationServlet extends UnsecuredOseeHttpServlet {
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
       String servletPath = request.getServletPath();
       String urlPath = request.getRequestURI().replace(servletPath, "");
-      if (urlPath.startsWith("/datastore/schema")) {
+      if (urlPath.startsWith("/datastore")) {
          OrcsAdmin adminOps = orcsApi.getAdminOps(null);
 
          Callable<OrcsMetaData> callable = adminOps.createFetchOrcsMetaData();
-
          try {
-            OrcsMetaData result = callable.call();
-
+            OrcsMetaData metaData = callable.call();
             StringWriter writer = new StringWriter();
-            writer.write(result.toString());
+
+            if (urlPath.contains("schema")) {
+               writeConfigResource(writer, metaData);
+            } else {
+               writeDatabaseInfo(writer, metaData);
+               writeConfigResource(writer, metaData);
+            }
             sendMessage(response, HttpURLConnection.HTTP_OK, writer.toString(), null);
 
          } catch (Exception ex) {
@@ -88,9 +99,13 @@ public class ConfigurationServlet extends UnsecuredOseeHttpServlet {
                Boolean.toString(data.isUseFileSpecifiedSchemas()));
 
             Callable<OrcsMetaData> callable = adminOps.createDatastore(parameters);
-            OrcsMetaData result = callable.call();
-            String message = "ok"; //result.toString();
-            sendMessage(response, HttpURLConnection.HTTP_ACCEPTED, message, null);
+            OrcsMetaData metaData = callable.call();
+
+            StringWriter writer = new StringWriter();
+            writeDatabaseInfo(writer, metaData);
+            writeConfigResource(writer, metaData);
+
+            sendMessage(response, HttpURLConnection.HTTP_ACCEPTED, writer.toString(), null);
          } catch (Exception ex) {
             String message = String.format("Datastore Initialization: [%s]\n%s", response.toString(), ex.toString());
             sendMessage(response, HttpURLConnection.HTTP_INTERNAL_ERROR, message, ex);
@@ -98,6 +113,39 @@ public class ConfigurationServlet extends UnsecuredOseeHttpServlet {
       } else {
          String message = String.format("[%s] not found", request.getRequestURI());
          sendMessage(response, HttpURLConnection.HTTP_NOT_FOUND, message, null);
+      }
+   }
+
+   private void writeDatabaseInfo(Writer writer, OrcsMetaData metaData) {
+      Map<String, String> data = metaData.getProperties();
+      List<String> keys = new ArrayList<String>(data.keySet());
+      Collections.sort(keys);
+
+      try {
+         writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+         writer.write("<datastore>\n");
+         writer.write("\t<config>\n");
+         for (String key : keys) {
+            writer.write(String.format("\t\t<%s>%s</s>\n", key, data.get(key), key));
+         }
+         writer.write("\t</config>\n");
+         writer.write("</datastore>\n");
+      } catch (Exception ex) {
+         getLogger().error(ex, "Error transferring data store config properties");
+      }
+   }
+
+   private void writeConfigResource(Writer writer, OrcsMetaData metaData) {
+      for (IResource resource : metaData.getConfigurationResources()) {
+         InputStream inputStream = null;
+         try {
+            inputStream = new BufferedInputStream(resource.getContent());
+            writer.write(Lib.inputStreamToString(inputStream));
+         } catch (Exception ex) {
+            getLogger().error(ex, "Error transferring data store config resource");
+         } finally {
+            Lib.close(inputStream);
+         }
       }
    }
 

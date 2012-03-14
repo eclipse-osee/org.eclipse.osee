@@ -11,6 +11,7 @@
 package org.eclipse.osee.database.schema;
 
 import java.io.InputStream;
+import java.net.URI;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -18,7 +19,10 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface SchemaResource {
 
-   public boolean isApplicable();
+   boolean isApplicable();
 
-   public InputStream getContent() throws OseeCoreException;
+   InputStream getContent() throws OseeCoreException;
+
+   URI getLocation() throws OseeCoreException;
+
 }
