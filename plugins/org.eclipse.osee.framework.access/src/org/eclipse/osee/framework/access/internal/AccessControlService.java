@@ -333,15 +333,18 @@ public class AccessControlService implements IAccessControlService {
          eventService.addListener(EventQosType.NORMAL, listener2);
       }
 
-      if (!accessDataCache.containsKey(key)) {
-         ILifecycleService service = getLifecycleService();
-         AccessData accessData = new AccessData();
-         if (!DbUtil.isDbInit()) {
-            AbstractLifecycleVisitor<?> visitor = new AccessProviderVisitor(userArtifact, objectsToCheck, accessData);
-            IStatus status = service.dispatch(new NullProgressMonitor(), visitor, ACCESS_POINT_ID);
-            Operations.checkForErrorStatus(status);
+      synchronized (accessDataCache) {
+         if (!accessDataCache.containsKey(key)) {
+            ILifecycleService service = getLifecycleService();
+            AccessData accessData = new AccessData();
+            if (!DbUtil.isDbInit()) {
+               AbstractLifecycleVisitor<?> visitor =
+                  new AccessProviderVisitor(userArtifact, objectsToCheck, accessData);
+               IStatus status = service.dispatch(new NullProgressMonitor(), visitor, ACCESS_POINT_ID);
+               Operations.checkForErrorStatus(status);
+            }
+            accessDataCache.put(key, new AccessDataQuery(accessData));
          }
-         accessDataCache.put(key, new AccessDataQuery(accessData));
       }
       return accessDataCache.get(key);
    }
