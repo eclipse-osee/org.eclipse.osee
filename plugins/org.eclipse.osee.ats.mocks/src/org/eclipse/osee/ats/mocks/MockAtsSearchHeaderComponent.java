@@ -80,6 +80,7 @@ public class MockAtsSearchHeaderComponent implements AtsSearchHeaderComponent {
 
    @Override
    public void setSearchCriteria(AtsSearchParameters params) {
+      //
    }
 
 }

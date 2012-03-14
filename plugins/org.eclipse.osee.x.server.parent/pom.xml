@@ -42,7 +42,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<tycho-version>0.12.0</tycho-version>
+		<tycho-version>0.14.1</tycho-version>
 		<maven-antrun-version>1.6</maven-antrun-version>
 		<ant-contrib-version>1.0b3</ant-contrib-version>
 		<jacoco-version>0.5.3.201107060350</jacoco-version>
@@ -58,8 +58,6 @@
 
 		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
-		<wikitext-site>http://download.eclipse.org/tools/mylyn/update/weekly</wikitext-site>
-		<swtbot-site>http://download.eclipse.org/technology/swtbot/${platform-version-name}/dev-build/update-site</swtbot-site>
 
 		<eclipse-ip-site-path>file:../../../org.eclipse.ip</eclipse-ip-site-path>
 		<eclipse-ip-site>${eclipse-ip-site-path}/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
@@ -96,16 +94,6 @@
 			<id>eclipse</id>
 			<layout>p2</layout>
 			<url>${eclipse-site}</url>
-		</repository>
-		<repository>
-			<id>swtbot</id>
-			<layout>p2</layout>
-			<url>${swtbot-site}</url>
-		</repository>
-		<repository>
-			<id>wikitext</id>
-			<layout>p2</layout>
-			<url>${wikitext-site}</url>
 		</repository>
 		<repository>
 			<id>orbit</id>
@@ -272,16 +260,6 @@
 
 	<profiles>
 		<profile>
-			<id>helpGeneration</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<update.osee.doc>true</update.osee.doc>
-			</properties>
-		</profile>
-
-		<profile>
 			<id>platform-helios</id>
 			<activation>
 				<property>
@@ -292,7 +270,6 @@
 			<properties>
 				<eclipse-site>http://download.eclipse.org/releases/helios</eclipse-site>
 				<platform-version>[3.6,3.7)</platform-version>
-				<swtbot-site>http://download.eclipse.org/technology/swtbot/helios/dev-build/update-site</swtbot-site>
 			</properties>
 		</profile>
 
@@ -307,7 +284,6 @@
 			<properties>
 				<eclipse-site>http://download.eclipse.org/releases/indigo</eclipse-site>
 				<platform-version>[3.7,3.8)</platform-version>
-				<swtbot-site>http://download.eclipse.org/technology/swtbot/indigo/dev-build/update-site</swtbot-site>
 			</properties>
 		</profile>
 
