@@ -11,18 +11,19 @@
 package org.eclipse.osee.ats.workdef.editor;
 
 import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.AbstractEditorHandler;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsWorkDefinitionHandler extends AbstractEditorHandler {
+public class AtsWorkDefinitionDslHandler extends AbstractEditorHandler {
 
    @Override
-   public Object executeWithException(ExecutionEvent event) {
+   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
       if (!artifacts.isEmpty()) {
-         AtsWorkDefinitionRenderer renderer = new AtsWorkDefinitionRenderer();
+         AtsWorkDefinitionDslRenderer renderer = new AtsWorkDefinitionDslRenderer();
          renderer.open(artifacts, PresentationType.SPECIALIZED_EDIT);
       }
       return null;
