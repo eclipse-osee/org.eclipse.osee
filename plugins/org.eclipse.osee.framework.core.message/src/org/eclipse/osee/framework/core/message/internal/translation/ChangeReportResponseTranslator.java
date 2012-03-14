@@ -115,10 +115,11 @@ public class ChangeReportResponseTranslator implements ITranslator<ChangeReportR
    private static String[] toArray(ChangeItem item) throws OseeStateException {
       String[] row;
       if (item instanceof ArtifactChangeItem) {
-         row = new String[3];
+         row = new String[4];
          row[0] = ChangeItemType.ARTIFACT.name();
          row[1] = String.valueOf(item.getItemId());
          row[2] = String.valueOf(item.getItemTypeId());
+         row[3] = String.valueOf(item.isSynthetic());
       } else if (item instanceof AttributeChangeItem) {
          row = new String[4];
          row[0] = ChangeItemType.ATTRIBUTE.name();
@@ -149,7 +150,9 @@ public class ChangeReportResponseTranslator implements ITranslator<ChangeReportR
       int itemTypeId = Integer.parseInt(row[2]);
       switch (type) {
          case ARTIFACT:
+            boolean synthetic = Boolean.parseBoolean(row[3]);
             changeItem = new ArtifactChangeItem(itemId, itemTypeId, -1, ModificationType.NEW);
+            changeItem.setSynthetic(synthetic);
             break;
          case ATTRIBUTE:
             int artId = Integer.parseInt(row[3]);

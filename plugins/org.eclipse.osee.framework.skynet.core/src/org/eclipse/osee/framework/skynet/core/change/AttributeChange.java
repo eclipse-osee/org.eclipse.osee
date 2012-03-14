@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 
 /**
  * @author Jeff C. Phillips
@@ -33,6 +34,7 @@ public final class AttributeChange extends Change {
    private final int attrId;
    private final AttributeType attributeType;
    private final ModificationType artModType;
+   public static LoadChangeType changeType = LoadChangeType.attribute;
 
    public AttributeChange(IOseeBranch branch, long sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, String isValue, String wasValue, int attrId, AttributeType attributeType, ModificationType artModType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
       super(branch, sourceGamma, artId, txDelta, modType, isHistorical, changeArtifact, artifactDelta);
@@ -137,5 +139,10 @@ public final class AttributeChange extends Change {
    @Override
    public int getItemId() {
       return attrId;
+   }
+
+   @Override
+   public LoadChangeType getChangeType() {
+      return changeType;
    }
 }

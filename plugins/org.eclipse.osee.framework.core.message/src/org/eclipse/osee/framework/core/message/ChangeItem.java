@@ -26,8 +26,9 @@ public abstract class ChangeItem {
    private final ChangeVersion destinationEntry;
    private final ChangeVersion netEntry;
 
+   private boolean synthetic;
+
    protected ChangeItem(int itemId, int itemTypeId, int artId, long currentSourceGammaId, ModificationType currentSourceModType) {
-      super();
       this.itemId = itemId;
       this.itemTypeId = itemTypeId;
       this.artId = artId;
@@ -38,6 +39,16 @@ public abstract class ChangeItem {
       this.firstChange = new ChangeVersion();
       this.destinationEntry = new ChangeVersion();
       this.netEntry = new ChangeVersion();
+
+      this.synthetic = false;
+   }
+
+   public void setSynthetic(boolean synthetic) {
+      this.synthetic = synthetic;
+   }
+
+   public boolean isSynthetic() {
+      return synthetic;
    }
 
    public int getArtId() {
@@ -75,8 +86,8 @@ public abstract class ChangeItem {
    @Override
    public String toString() {
       return String.format(
-         "ChangeItem - itemId:[%s] artId:%s typeId:%s base:%s first:%s current:%s destination:%s net:%s", itemId,
-         getArtId(), getItemTypeId(), getBaselineVersion(), getFirstNonCurrentChange(), getCurrentVersion(),
-         getDestinationVersion(), getNetChange());
+         "ChangeItem - itemId:[%s] artId:%s typeId:%s base:%s first:%s current:%s destination:%s net:%s synthetic:%s",
+         itemId, getArtId(), getItemTypeId(), getBaselineVersion(), getFirstNonCurrentChange(), getCurrentVersion(),
+         getDestinationVersion(), getNetChange(), isSynthetic());
    }
 }

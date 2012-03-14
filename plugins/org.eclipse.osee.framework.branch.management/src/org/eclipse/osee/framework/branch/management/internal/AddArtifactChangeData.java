@@ -55,6 +55,7 @@ public class AddArtifactChangeData extends AbstractOperation {
                if (artifactChange == null) {
                   artifactChange = new ArtifactChangeItem(artIdToCheck, -1, -1, null);
                   syntheticArtifactChanges.put(artIdToCheck, artifactChange);
+                  artifactChange.setSynthetic(true);
                }
                attrItems.add(attributeChange);
                updateArtifactChangeItem(artifactChange, attributeChange);

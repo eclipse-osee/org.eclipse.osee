@@ -13,6 +13,9 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -26,6 +29,11 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchSite;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Donald G. Dunne
@@ -80,5 +88,29 @@ public class Dialogs {
          return Result.FalseResult;
       }
       return new HtmlExportTable((title.equals("") ? "Exported Text" : title), htmlText, openInSystem).exportCsv();
+   }
+
+   public static IStructuredSelection getCurrentSelection() throws Exception {
+      IStructuredSelection structuredSelection = null;
+      IWorkbench workbench = PlatformUI.getWorkbench();
+      if (!workbench.isClosing() || !workbench.isStarting()) {
+         IWorkbenchPage page = AWorkbench.getActivePage();
+         if (page != null) {
+            IWorkbenchPart part = page.getActivePart();
+            if (part != null) {
+               IWorkbenchSite site = part.getSite();
+               if (site != null) {
+                  ISelectionProvider selectionProvider = site.getSelectionProvider();
+                  if (selectionProvider != null) {
+                     ISelection selection = selectionProvider.getSelection();
+                     if (selection instanceof IStructuredSelection) {
+                        structuredSelection = (IStructuredSelection) selection;
+                     }
+                  }
+               }
+            }
+         }
+      }
+      return structuredSelection;
    }
 }

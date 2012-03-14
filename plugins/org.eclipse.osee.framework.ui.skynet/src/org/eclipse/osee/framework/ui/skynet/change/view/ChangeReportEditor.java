@@ -77,6 +77,10 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
       OseeEventManager.addListener(eventRelay);
    }
 
+   public ChangeUiData getChanges() {
+      return changeReportPage.getEditorInput().getChangeData();
+   }
+
    @Override
    public void doSave(IProgressMonitor monitor) {
       // method overridden only to satisfy its defining interface

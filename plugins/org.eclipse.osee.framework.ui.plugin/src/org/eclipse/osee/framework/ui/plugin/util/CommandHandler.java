@@ -52,7 +52,6 @@ public abstract class CommandHandler extends AbstractHandler {
       try {
          return executeWithException(event);
       } catch (OseeCoreException ex) {
-         //         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          throw new ExecutionException("Error executing command handler: ", ex);
       }
    }

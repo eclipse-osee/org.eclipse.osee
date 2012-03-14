@@ -16,9 +16,11 @@ import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.message.ChangeItem;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 
 /**
  * @author Jeff C. Phillips
@@ -32,9 +34,9 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
    private final IOseeBranch branch;
    private final boolean isHistorical;
    private final Artifact changeArtifact;
+   private ChangeItem changeItem;
 
    public Change(IOseeBranch branch, long sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
-      super();
       this.branch = branch;
       this.sourceGamma = sourceGamma;
       this.artId = artId;
@@ -43,6 +45,14 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
       this.isHistorical = isHistorical;
       this.artifactDelta = artifactDelta;
       this.changeArtifact = changeArtifact;
+   }
+
+   public ChangeItem getChangeItem() {
+      return changeItem;
+   }
+
+   public void setChangeItem(ChangeItem changeItem) {
+      this.changeItem = changeItem;
    }
 
    @Override
@@ -78,6 +88,14 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
       hashCode += getModificationType() != null ? 13 * getModificationType().hashCode() : 0;
       hashCode += getTxDelta() != null ? 13 * getTxDelta().hashCode() : 0;
       return hashCode;
+   }
+
+   public long getBaselineGamma() {
+      return changeItem.getBaselineVersion().getGammaId();
+   }
+
+   public boolean isBaseline() {
+      return changeItem.getBaselineVersion().isValid();
    }
 
    public boolean isHistorical() {
@@ -140,6 +158,9 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
    public abstract String getItemKind();
 
    public abstract int getItemId();
+
+   public abstract LoadChangeType getChangeType();
+
 
    @Override
    @SuppressWarnings("rawtypes")

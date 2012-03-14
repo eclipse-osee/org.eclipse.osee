@@ -38,6 +38,7 @@ class RelationLoader {
       if (historical) {
          return; // TODO: someday we might have a use for historical relations, but not now
       }
+
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          String sqlQuery = ClientSessionManager.getSql(OseeSql.LOAD_RELATIONS);

@@ -16,11 +16,13 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 
 /**
  * @author Jeff C. Phillips
  */
 public final class RelationChange extends Change {
+   public static LoadChangeType changeType = LoadChangeType.relation;
    private final int bArtId;
    private final Artifact endTxBArtifact;
    private final int relLinkId;
@@ -66,6 +68,11 @@ public final class RelationChange extends Change {
     */
    public RelationType getRelationType() {
       return relationType;
+   }
+
+   @Override
+   public LoadChangeType getChangeType() {
+      return changeType;
    }
 
    @Override

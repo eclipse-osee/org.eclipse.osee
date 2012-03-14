@@ -72,6 +72,7 @@ public class ChangeDataLoader extends AbstractOperation {
    protected void doWork(IProgressMonitor monitor) throws Exception {
       ChangeReportResponse response = requestChanges(monitor, txDelta);
       Collection<ChangeItem> changeItems = response.getChangeItems();
+
       monitor.worked(calculateWork(0.20));
 
       if (changeItems.isEmpty()) {
@@ -125,6 +126,7 @@ public class ChangeDataLoader extends AbstractOperation {
 
          ArtifactDelta artifactDelta = new ArtifactDelta(txDelta, startTxArtifact, endTxArtifact);
          change = createChangeObject(item, txDelta, startTxBranch, artifactDelta);
+         change.setChangeItem(item);
 
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

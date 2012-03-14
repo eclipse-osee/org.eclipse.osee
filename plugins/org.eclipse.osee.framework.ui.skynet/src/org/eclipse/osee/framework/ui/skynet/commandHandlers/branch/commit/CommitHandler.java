@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.commit;
 
+import java.util.Iterator;
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -20,6 +21,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
@@ -28,7 +30,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -131,21 +132,28 @@ public abstract class CommitHandler extends CommandHandler {
 
    @Override
    public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
-      IStructuredSelection selection =
-         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+      try {
+         IStructuredSelection selection = getCurrentSelection();
+         if (selection != null) {
+            List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
+            Iterator<Branch> iterator = branches.iterator();
+            if (iterator.hasNext()) {
+               Branch sourceBranch = iterator.next();
 
-      List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
-      Branch sourceBranch = branches.iterator().next();
-
-      Branch destinationBranch = null;
-      if (useParentBranch) {
-         destinationBranch = sourceBranch.getParentBranch();
-      } else {
-         destinationBranch =
-            BranchManager.getBranch(Integer.parseInt(event.getParameter(BranchOptionsEnum.BRANCH_ID.origKeyName)));
+               Branch destinationBranch = null;
+               if (useParentBranch) {
+                  destinationBranch = sourceBranch.getParentBranch();
+               } else {
+                  destinationBranch =
+                     BranchManager.getBranch(Integer.parseInt(event.getParameter(BranchOptionsEnum.BRANCH_ID.origKeyName)));
+               }
+               Jobs.startJob(new CommitJob(sourceBranch, destinationBranch,
+                  Boolean.parseBoolean(event.getParameter(CommitBranchParameter.ARCHIVE_PARENT_BRANCH))));
+            }
+         }
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
       }
-      Jobs.startJob(new CommitJob(sourceBranch, destinationBranch,
-         Boolean.parseBoolean(event.getParameter(CommitBranchParameter.ARCHIVE_PARENT_BRANCH))));
       return null;
    }
 

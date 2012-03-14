@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -48,20 +49,29 @@ public final class RevisionChangeLoader {
     * @return Returns artifact, relation and attribute changes from a specific artifact
     */
    public Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
-      return getChangesPerArtifact(artifact, monitor, true);
+      return getChangesPerArtifact(artifact, monitor, LoadChangeType.artifact, LoadChangeType.attribute,
+         LoadChangeType.relation);
+   }
+
+   /**
+    * @return Returns artifact, relation and attribute changes from a specific artifact
+    */
+   public Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor, LoadChangeType... loadChangeTypes) throws OseeCoreException {
+      return getChangesPerArtifact(artifact, monitor, true, loadChangeTypes);
    }
 
    /**
     * @return Returns artifact, relation and attribute changes from a specific artifact made on the current branch only
     */
    public Collection<Change> getChangesMadeOnCurrentBranch(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
-      return getChangesPerArtifact(artifact, monitor, false);
+      return getChangesPerArtifact(artifact, monitor, false, LoadChangeType.artifact, LoadChangeType.attribute,
+         LoadChangeType.relation);
    }
 
    /**
     * @return Returns artifact, relation and attribute changes from a specific artifact
     */
-   private Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor, boolean recurseThroughBranchHierarchy) throws OseeCoreException {
+   private Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor, boolean recurseThroughBranchHierarchy, LoadChangeType... loadChangeTypes) throws OseeCoreException {
       Branch branch = artifact.getFullBranch();
       Set<TransactionRecord> transactionIds = new LinkedHashSet<TransactionRecord>();
       loadBranchTransactions(branch, artifact, transactionIds, TransactionManager.getHeadTransaction(branch),
@@ -70,7 +80,7 @@ public final class RevisionChangeLoader {
       Collection<Change> changes = new ArrayList<Change>();
 
       for (TransactionRecord transactionId : transactionIds) {
-         loadChanges(null, transactionId, monitor, artifact, changes);
+         loadChanges(null, transactionId, monitor, artifact, changes, loadChangeTypes);
       }
       return changes;
    }
@@ -111,7 +121,7 @@ public final class RevisionChangeLoader {
     * Not Part of Change Report Acquires artifact, relation and attribute changes from a source branch since its
     * creation.
     */
-   private void loadChanges(Branch sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor, Artifact specificArtifact, Collection<Change> changes) throws OseeCoreException {
+   private void loadChanges(Branch sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor, Artifact specificArtifact, Collection<Change> changes, LoadChangeType... loadChangeTypes) throws OseeCoreException {
       @SuppressWarnings("unused")
       //This is so weak references do not get collected from bulk loading
       Collection<Artifact> bulkLoadedArtifacts;
@@ -121,28 +131,38 @@ public final class RevisionChangeLoader {
       Set<Integer> newAndDeletedArtifactIds = new HashSet<Integer>();
       boolean historical = sourceBranch == null;
 
-      if (monitor != null) {
-         monitor.beginTask("Find Changes", 100);
+      if (monitor == null) {
+         monitor = new NullProgressMonitor();
       }
 
-      ArtifactChangeAcquirer artifactChangeAcquirer =
-         new ArtifactChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders,
-            newAndDeletedArtifactIds);
-      changeBuilders = artifactChangeAcquirer.acquireChanges();
+      monitor.beginTask("Find Changes", 100);
 
-      AttributeChangeAcquirer attributeChangeAcquirer =
-         new AttributeChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders,
-            newAndDeletedArtifactIds);
-      changeBuilders = attributeChangeAcquirer.acquireChanges();
-
-      RelationChangeAcquirer relationChangeAcquirer =
-         new RelationChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders,
-            newAndDeletedArtifactIds);
-      changeBuilders = relationChangeAcquirer.acquireChanges();
-
-      if (monitor != null) {
-         monitor.subTask("Loading Artifacts from the Database");
+      for (LoadChangeType changeType : loadChangeTypes) {
+         switch (changeType) {
+            case attribute:
+               AttributeChangeAcquirer attributeChangeAcquirer =
+                  new AttributeChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds,
+                     changeBuilders, newAndDeletedArtifactIds);
+               changeBuilders = attributeChangeAcquirer.acquireChanges();
+               break;
+            case relation:
+               RelationChangeAcquirer relationChangeAcquirer =
+                  new RelationChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds,
+                     changeBuilders, newAndDeletedArtifactIds);
+               changeBuilders = relationChangeAcquirer.acquireChanges();
+               break;
+            case artifact:
+               ArtifactChangeAcquirer artifactChangeAcquirer =
+                  new ArtifactChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds,
+                     changeBuilders, newAndDeletedArtifactIds);
+               changeBuilders = artifactChangeAcquirer.acquireChanges();
+               break;
+            default:
+               break;
+         }
       }
+      monitor.subTask("Loading Artifacts from the Database");
+
       Branch branch = historical ? transactionId.getBranch() : sourceBranch;
 
       if (historical) {
@@ -156,8 +176,6 @@ public final class RevisionChangeLoader {
          changes.add(builder.build(branch));
       }
 
-      if (monitor != null) {
-         monitor.done();
-      }
+      monitor.done();
    }
 }

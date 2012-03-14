@@ -10,118 +10,75 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.replace;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.ReplaceArtifactWithBaselineOperation;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.ReplaceAttributeWithBaselineOperation;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.ReplaceRelationsWithBaselineOperation;
-import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.jface.dialogs.TitleAreaDialog;
+import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Jeff C. Phillips
+ * @author Wilik Karol
  */
-public class ReplaceWithBaselineVersionDialog extends MessageDialog {
-   private ArrayList<AbstractOperation> operations;
-   private boolean replaceAttributeSelected;
-   private boolean replaceAllRelationsSelected;
-   private boolean replaceAllAttributesSelected;
+public class ReplaceWithBaselineVersionDialog extends TitleAreaDialog {
 
-   private final Collection<Artifact> artifacts;
-   private final Collection<Attribute<?>> attributes;
+   private static final String TITLE = "Replace with Baseline version";
+   private boolean attributesSelected;
+   private final boolean attrEnabled;
+   private final boolean artEnabled;
 
-   public ReplaceWithBaselineVersionDialog(String title, Collection<Artifact> artifacts, Collection<Attribute<?>> attributes) {
-      super(Displays.getActiveShell(), title, null, null, MessageDialog.NONE, new String[] {"Ok", "Cancel"}, 0);
-      setShellStyle(getShellStyle() | SWT.RESIZE);
+   public ReplaceWithBaselineVersionDialog(boolean artEnabled, boolean attrEnabled) {
+      super(Displays.getActiveShell());
+      setDialogHelpAvailable(true);
+      setShellStyle(SWT.SHELL_TRIM);
+      setTitle(TITLE);
+      this.attrEnabled = attrEnabled;
+      this.artEnabled = artEnabled;
+   }
 
-      this.artifacts = artifacts;
-      this.attributes = attributes;
+   @Override
+   protected void configureShell(Shell shell) {
+      super.configureShell(shell);
+      shell.setText(TITLE);
+      PlatformUI.getWorkbench().getHelpSystem().setHelp(shell, OseeHelpContext.CHANGE_REPORT_EDITOR.asReference());
    }
 
    @Override
    protected Control createDialogArea(Composite container) {
       Composite composite = new Composite(container, SWT.NONE);
-      new Label(composite, SWT.NONE).setText("Select the object(s) to be replaced with their baseline values");
-      new Label(composite, SWT.NONE);
-      new Label(composite, SWT.NONE);
-      new Label(composite, SWT.NONE);
-      final Button replaceSelectedAttribute = new Button(composite, SWT.CHECK);
-      replaceSelectedAttribute.setText("Replace a single Attribute");
-      replaceSelectedAttribute.addSelectionListener(new SelectionListener() {
 
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            replaceAttributeSelected = replaceSelectedAttribute.getEnabled();
-         }
+      Button attribute = new Button(composite, SWT.RADIO);
+      attribute.setText("Replace a single Attribute");
+      attribute.addSelectionListener(attributeListener);
+      attribute.setEnabled(attrEnabled);
 
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
-            //Do nothing
-         }
-      });
-      final Button replaceAllRelations = new Button(composite, SWT.CHECK);
-      replaceAllRelations.setText("Replace all Relations");
-      replaceAllRelations.addSelectionListener(new SelectionListener() {
+      Button artifact = new Button(composite, SWT.RADIO);
+      artifact.setText("Replace Artifact");
+      artifact.setEnabled(attrEnabled || artEnabled);
 
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            replaceAllRelationsSelected = replaceAllRelations.getEnabled();
-         }
-
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
-            //Do nothing
-         }
-      });
-      final Button replaceAllAttributes = new Button(composite, SWT.CHECK);
-      replaceAllAttributes.setText("Replace all Attributes");
-      replaceAllAttributes.addSelectionListener(new SelectionListener() {
-
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            replaceAllAttributesSelected = replaceAllAttributes.getEnabled();
-         }
-
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
-            //Do nothing
-         }
-      });
-
-      composite.setLayout(ALayout.getZeroMarginLayout());
-      composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+      composite.setLayout(new GridLayout());
+      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       return composite.getShell();
    }
 
-   private void handleUserRequest() {
-      operations = new ArrayList<AbstractOperation>();
-
-      if (replaceAttributeSelected && !replaceAllAttributesSelected && attributes != null) {
-         operations.add(new ReplaceAttributeWithBaselineOperation(attributes));
-      }
-      if (replaceAllAttributesSelected && artifacts != null) {
-         operations.add(new ReplaceArtifactWithBaselineOperation(artifacts));
-      }
-      if (replaceAllRelationsSelected && artifacts != null) {
-         operations.add(new ReplaceRelationsWithBaselineOperation(artifacts));
-      }
+   public boolean isAttributeSelected() {
+      return attributesSelected;
    }
 
-   public Collection<AbstractOperation> getOperations() {
-      handleUserRequest();
-      return operations;
-   }
+   private final SelectionAdapter attributeListener = new SelectionAdapter() {
+      @Override
+      public void widgetSelected(SelectionEvent e) {
+         super.widgetSelected(e);
+         attributesSelected = !attributesSelected;
+      }
+   };
 }
