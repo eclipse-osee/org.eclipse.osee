@@ -93,9 +93,11 @@ public class DatabaseInitializationOperation {
          OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Configuring Database...");
          // long startTime = System.currentTimeMillis();
 
+         OseeClientProperties.setInDbInit(true);
          try {
             processTasks();
          } finally {
+            OseeClientProperties.setInDbInit(false);
             // System.out.println(String.format("Database Configuration completed in [%s] ms",
             //   Lib.getElapseString(startTime)));
          }
@@ -148,8 +150,7 @@ public class DatabaseInitializationOperation {
             selectedChoice = choices.get(selection);
          }
       }
-      OseeLog.logf(DatabaseInitActivator.class, Level.INFO,
-         "DB Config Choice Selected: [%s]", selectedChoice);
+      OseeLog.logf(DatabaseInitActivator.class, Level.INFO, "DB Config Choice Selected: [%s]", selectedChoice);
       return selector.getDbInitConfiguration(selectedChoice);
    }
 
@@ -201,11 +202,9 @@ public class DatabaseInitializationOperation {
                isExecutionAllowed = rule.isAllowed();
             }
 
-            OseeLog.logf(
-               DatabaseInitActivator.class,
-               isExecutionAllowed ? Level.INFO : Level.WARNING,
+            OseeLog.logf(DatabaseInitActivator.class, isExecutionAllowed ? Level.INFO : Level.WARNING,
                "%s [%s] execution rule [%s]", isExecutionAllowed ? "Starting" : "Skipping",
-                  extension.getUniqueIdentifier(), Strings.isValid(initRuleClassName) ? initRuleClassName : "Default");
+               extension.getUniqueIdentifier(), Strings.isValid(initRuleClassName) ? initRuleClassName : "Default");
             if (isExecutionAllowed) {
                IDbInitializationTask task = (IDbInitializationTask) bundle.loadClass(classname).newInstance();
                if (task instanceof DbBootstrapTask) {

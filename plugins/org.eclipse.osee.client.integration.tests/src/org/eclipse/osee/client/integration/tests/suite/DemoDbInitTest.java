@@ -15,7 +15,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.config.demo.config.DemoDbUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.init.DatabaseInitializationOperation;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -36,13 +35,15 @@ public class DemoDbInitTest {
       assertTrue("Demo Application Server must be running",
          ClientSessionManager.getAuthenticationProtocols().contains("demo"));
       RenderingUtil.setPopupsAllowed(false);
-      try {
-         DemoDbUtil.setDbInitSuccessful(false);
-      } catch (OseeCoreException ex) {
-         if (!ex.getMessage().contains("Schema OSEE not found")) {
-            throw ex;
-         }
-      }
+
+      // This doesn't make sense if the schema hasn't been created 
+      // try {
+      //         DemoDbUtil.setDbInitSuccessful(false);
+      //      } catch (OseeCoreException ex) {
+      //         if (!ex.getMessage().contains("Schema OSEE not found")) {
+      //            throw ex;
+      //         }
+      //      }
    }
 
    @org.junit.Test

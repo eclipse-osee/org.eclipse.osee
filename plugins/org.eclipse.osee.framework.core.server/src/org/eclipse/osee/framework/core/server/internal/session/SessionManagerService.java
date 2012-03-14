@@ -76,6 +76,8 @@ public final class SessionManagerService implements ISessionManager {
          new DatabaseSessionAccessor(serverId, sessionFactory, sessionQuery, getDbService());
       SessionCache sessionCache = new SessionCache(accessor);
 
+      sessionCache.setIgnoreEnsurePopulateException(true);
+
       proxiedSessionManager =
          new SessionManagerImpl(serverId, sessionFactory, sessionQuery, sessionCache, getAuthenticationManager());
 

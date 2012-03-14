@@ -127,10 +127,13 @@ public class AccessControlService implements IAccessControlService {
       this.cachingService = cachingService;
       this.identityService = identityService;
       OseeEventManager.addListener(new AccessControlUpdateListener());
-      try {
-         reloadCache();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AccessControlService.class, Level.SEVERE, ex);
+
+      if (!DbUtil.isDbInit()) {
+         try {
+            reloadCache();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AccessControlService.class, Level.SEVERE, ex);
+         }
       }
    }
 
