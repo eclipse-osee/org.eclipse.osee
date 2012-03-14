@@ -26,7 +26,6 @@ Import-Package: org.eclipse.emf.compare.diff.metamodel,
  org.osgi.framework
 Require-Bundle: org.eclipse.xtext,
  org.eclipse.core.runtime
-Eclipse-ExtensibleAPI: true 
 Bundle-Activator: org.eclipse.osee.framework.core.dsl.integration.internal.Activator
 Export-Package: org.eclipse.osee.framework.core.dsl.integration,
  org.eclipse.osee.framework.core.dsl.integration.util
