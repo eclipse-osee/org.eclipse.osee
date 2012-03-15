@@ -25,7 +25,7 @@ public class OseeConnectionImpl extends OseeConnection {
    private final OseeConnectionPoolImpl pool;
    private final Connection conn;
    private volatile boolean inuse;
-   private long lastUsedTime;
+   private volatile long lastUsedTime;
 
    public OseeConnectionImpl(Connection conn, OseeConnectionPoolImpl pool) {
       super();
@@ -36,8 +36,12 @@ public class OseeConnectionImpl extends OseeConnection {
    }
 
    @Override
-   public void close() {
-      pool.returnConnection(this);
+   public void close() throws OseeCoreException {
+      if (isClosed()) {
+         destroy();
+      } else {
+         pool.returnConnection(this);
+      }
    }
 
    @Override
@@ -88,12 +92,12 @@ public class OseeConnectionImpl extends OseeConnection {
 
    @Override
    protected void destroy() throws OseeCoreException {
+      pool.removeConnection(this);
       try {
          conn.close();
       } catch (SQLException ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
-      pool.removeConnection(this);
    }
 
    boolean inUse() {
@@ -104,7 +108,7 @@ public class OseeConnectionImpl extends OseeConnection {
       return lastUsedTime;
    }
 
-   void expireLease() {
+   synchronized void expireLease() {
       inuse = false;
       lastUsedTime = System.currentTimeMillis();
    }
@@ -129,8 +133,12 @@ public class OseeConnectionImpl extends OseeConnection {
    }
 
    @Override
-   protected void commit() throws SQLException {
-      conn.commit();
+   protected void commit() throws OseeCoreException {
+      try {
+         conn.commit();
+      } catch (SQLException ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      }
    }
 
    @Override
@@ -141,4 +149,5 @@ public class OseeConnectionImpl extends OseeConnection {
          OseeExceptions.wrapAndThrow(ex);
       }
    }
+
 }

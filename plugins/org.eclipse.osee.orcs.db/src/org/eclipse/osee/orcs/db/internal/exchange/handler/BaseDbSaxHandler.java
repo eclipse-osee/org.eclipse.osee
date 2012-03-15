@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.internal.exchange.TranslationManager;
 
@@ -130,7 +129,7 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
             }
          }
       } finally {
-         Lib.close(connection);
+         connection.close();
       }
       return isTruncateSupported;
    }

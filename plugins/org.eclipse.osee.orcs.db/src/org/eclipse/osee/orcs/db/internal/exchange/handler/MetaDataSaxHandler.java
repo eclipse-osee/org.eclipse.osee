@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
@@ -106,7 +105,7 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
             processMetaData(targetDbMetadata, dbMetaData, sourceTables);
          }
       } finally {
-         Lib.close(connection);
+         connection.close();
       }
       return targetDbMetadata;
    }

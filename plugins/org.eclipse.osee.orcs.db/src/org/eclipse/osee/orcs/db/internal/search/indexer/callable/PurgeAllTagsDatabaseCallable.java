@@ -17,7 +17,6 @@ import org.eclipse.osee.database.schema.DatabaseCallable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -71,7 +70,7 @@ public final class PurgeAllTagsDatabaseCallable extends DatabaseCallable<Integer
             }
          }
       } finally {
-         Lib.close(connection);
+         connection.close();
       }
       return isTruncateSupported;
    }

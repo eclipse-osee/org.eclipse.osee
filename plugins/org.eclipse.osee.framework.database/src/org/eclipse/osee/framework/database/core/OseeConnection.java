@@ -10,15 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.core;
 
-import java.io.Closeable;
 import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
-public abstract class OseeConnection implements Closeable {
+public abstract class OseeConnection {
 
-   @Override
-   public abstract void close();
+   public abstract void close() throws OseeCoreException;
 
    public abstract boolean isClosed() throws OseeCoreException;
 
@@ -30,9 +27,10 @@ public abstract class OseeConnection implements Closeable {
 
    protected abstract boolean getAutoCommit() throws OseeCoreException;
 
-   protected abstract void commit() throws SQLException;
+   protected abstract void commit() throws OseeCoreException;
 
    protected abstract void rollback() throws OseeCoreException;
 
    protected abstract void destroy() throws OseeCoreException;
+
 }
