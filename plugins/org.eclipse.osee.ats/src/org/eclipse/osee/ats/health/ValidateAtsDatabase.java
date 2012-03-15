@@ -203,27 +203,27 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             count += artifacts.size();
 
             testArtifactIds(artifacts);
-            //            testAtsAttributevaluesWithPersist(artifacts);
-            //            testStateInWorkDefinition(artifacts);
-            //            testAttributeSetWorkDefinitionsExist(artifacts);
-            //            testAtsActionsHaveTeamWorkflow(artifacts);
-            //            testAtsWorkflowsHaveAction(artifacts);
-            //            testAtsWorkflowsHaveZeroOrOneVersion(artifacts);
+            testAtsAttributevaluesWithPersist(artifacts);
+            testStateInWorkDefinition(artifacts);
+            testAttributeSetWorkDefinitionsExist(artifacts);
+            testAtsActionsHaveTeamWorkflow(artifacts);
+            testAtsWorkflowsHaveAction(artifacts);
+            testAtsWorkflowsHaveZeroOrOneVersion(artifacts);
             testAtsWorkflowsValidVersion(artifacts);
-            //            testTasksHaveParentWorkflow(artifacts);
-            //            testReviewsHaveParentWorkflowOrActionableItems(artifacts);
-            //            testReviewsHaveValidDefectAndRoleXml(artifacts);
-            //            testTeamWorkflows(artifacts);
-            //            testAtsBranchManager(artifacts);
-            //            testTeamDefinitions(artifacts);
-            //            testVersionArtifacts(artifacts);
-            //            testStateMachineAssignees(artifacts);
-            //            testAtsLogs(artifacts);
-            //            testActionableItemToTeamDefinition(artifacts);
-            //
-            //            for (IAtsHealthCheck atsHealthCheck : AtsHealthCheck.getAtsHealthCheckItems()) {
-            //               atsHealthCheck.validateAtsDatabase(artifacts, testNameToResultsMap, testNameToTimeSpentMap);
-            //            }
+            testTasksHaveParentWorkflow(artifacts);
+            testReviewsHaveParentWorkflowOrActionableItems(artifacts);
+            testReviewsHaveValidDefectAndRoleXml(artifacts);
+            testTeamWorkflows(artifacts);
+            testAtsBranchManager(artifacts);
+            testTeamDefinitions(artifacts);
+            testVersionArtifacts(artifacts);
+            testStateMachineAssignees(artifacts);
+            testAtsLogs(artifacts);
+            testActionableItemToTeamDefinition(artifacts);
+
+            for (IAtsHealthCheck atsHealthCheck : AtsHealthCheck.getAtsHealthCheckItems()) {
+               atsHealthCheck.validateAtsDatabase(artifacts, testNameToResultsMap, testNameToTimeSpentMap);
+            }
 
             if (monitor != null) {
                monitor.worked(1);
