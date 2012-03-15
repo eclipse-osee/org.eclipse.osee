@@ -135,4 +135,20 @@ public enum ModificationType {
       }
       return ALL_STATES;
    }
+
+   public boolean isExistingVersionUsed() {
+      boolean result = false;
+      switch (this) {
+         case ARTIFACT_DELETED:
+         case DELETED:
+         case INTRODUCED:
+         case REPLACED_WITH_VERSION:
+            result = true;
+            break;
+         default:
+            result = false;
+            break;
+      }
+      return result;
+   }
 }

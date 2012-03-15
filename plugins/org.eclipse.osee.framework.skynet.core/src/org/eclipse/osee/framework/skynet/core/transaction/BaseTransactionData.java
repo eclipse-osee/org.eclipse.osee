@@ -45,15 +45,8 @@ public abstract class BaseTransactionData {
       this.itemId = itemId;
    }
 
-   protected boolean useExistingBackingData() {
-      switch (modificationType) {
-         case ARTIFACT_DELETED:
-         case DELETED:
-         case INTRODUCED:
-         case REPLACED_WITH_VERSION:
-            return true;
-      }
-      return false;
+   protected final boolean useExistingBackingData() {
+      return modificationType.isExistingVersionUsed();
    }
 
    @Override
