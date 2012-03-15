@@ -37,7 +37,7 @@ public abstract class DatabaseTxCallable<T> extends DatabaseCallable<T> {
          OseeConnection connection = getDatabaseService().getConnection();
          try {
             InternalTxWork work = new InternalTxWork();
-            DatabaseTransactions.execute(connection, work);
+            DatabaseTransactions.execute(getDatabaseService(), connection, work);
             value = work.getResult();
          } finally {
             connection.close();

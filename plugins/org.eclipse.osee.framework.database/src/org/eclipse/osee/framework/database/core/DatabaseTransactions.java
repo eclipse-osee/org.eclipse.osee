@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.database.core;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.internal.Activator;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -23,10 +24,10 @@ public final class DatabaseTransactions {
    }
 
    public static void execute(IDbTransactionWork dbWork) throws OseeCoreException {
-      execute(ConnectionHandler.getConnection(), dbWork);
+      execute(ConnectionHandler.getDatabase(), ConnectionHandler.getConnection(), dbWork);
    }
 
-   public static void execute(OseeConnection connection, IDbTransactionWork dbWork) throws OseeCoreException {
+   public static void execute(IOseeDatabaseService dbService, OseeConnection connection, IDbTransactionWork dbWork) throws OseeCoreException {
       boolean initialAutoCommit = true;
       Exception saveException = null;
       try {
@@ -34,7 +35,7 @@ public final class DatabaseTransactions {
 
          initialAutoCommit = connection.getAutoCommit();
          connection.setAutoCommit(false);
-         ConnectionHandler.deferConstraintChecking(connection);
+         deferConstraintChecking(dbService, connection);
          dbWork.handleTxWork(connection);
 
          connection.commit();
@@ -43,9 +44,12 @@ public final class DatabaseTransactions {
          saveException = ex;
          try {
             connection.rollback();
-            connection.destroy();
          } finally {
-            dbWork.handleTxException(ex);
+            try {
+               connection.destroy();
+            } finally {
+               dbWork.handleTxException(ex);
+            }
          }
       } finally {
          try {
@@ -67,6 +71,19 @@ public final class DatabaseTransactions {
          if (saveException != null) {
             OseeExceptions.wrapAndThrow(saveException);
          }
+      }
+   }
+
+   private static void deferConstraintChecking(IOseeDatabaseService dbService, OseeConnection connection) throws OseeCoreException {
+      SupportedDatabase dbType = SupportedDatabase.getDatabaseType(connection.getMetaData());
+      switch (dbType) {
+         case h2:
+            dbService.runPreparedUpdate(connection, "SET REFERENTIAL_INTEGRITY = FALSE");
+            break;
+         default:
+            // NOTE: this must be a PreparedStatement to play correctly with DB Transactions.
+            dbService.runPreparedUpdate(connection, "SET CONSTRAINTS ALL DEFERRED");
+            break;
       }
    }
 }

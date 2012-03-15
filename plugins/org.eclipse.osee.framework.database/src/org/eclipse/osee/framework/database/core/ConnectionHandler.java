@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.database.internal.Activator;
  */
 public final class ConnectionHandler {
 
-   private static IOseeDatabaseService getDatabase() throws OseeDataStoreException {
+   protected static IOseeDatabaseService getDatabase() throws OseeDataStoreException {
       return Activator.getInstance().getOseeDatabaseService();
    }
 
@@ -149,22 +149,6 @@ public final class ConnectionHandler {
 
    public static <O extends Object> String runPreparedQueryFetchString(OseeConnection connection, String defaultValue, String query, O... data) throws OseeCoreException {
       return getDatabase().runPreparedQueryFetchObject(connection, defaultValue, query, data);
-   }
-
-   /**
-    * Cause constraint checking to be deferred until the end of the current transaction.
-    */
-   public static void deferConstraintChecking(OseeConnection connection) throws OseeCoreException {
-      SupportedDatabase dbType = SupportedDatabase.getDatabaseType(connection.getMetaData());
-      switch (dbType) {
-         case h2:
-            runPreparedUpdate(connection, "SET REFERENTIAL_INTEGRITY = FALSE");
-            break;
-         default:
-            // NOTE: this must be a PreparedStatement to play correctly with DB Transactions.
-            runPreparedUpdate(connection, "SET CONSTRAINTS ALL DEFERRED");
-            break;
-      }
    }
 
    public static DatabaseMetaData getMetaData() throws OseeCoreException {
