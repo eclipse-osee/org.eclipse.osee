@@ -25,9 +25,11 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
@@ -77,7 +79,11 @@ public class HttpAttributeTaggingListener implements IArtifactEventListener, IBr
             if (guidArt instanceof EventModifiedBasicGuidArtifact) {
                for (AttributeChange change : ((EventModifiedBasicGuidArtifact) guidArt).getAttributeChanges()) {
                   if (AttributeTypeManager.getTypeByGuid(change.getAttrTypeGuid()).isTaggable()) {
-                     taggingInfo.add(change.getGammaId());
+                     ModificationType modType =
+                        AttributeEventModificationType.getType(change.getModTypeGuid()).getModificationType();
+                     if (!modType.isExistingVersionUsed()) {
+                        taggingInfo.add(change.getGammaId());
+                     }
                   }
                }
             }
@@ -142,8 +148,8 @@ public class HttpAttributeTaggingListener implements IArtifactEventListener, IBr
                HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SEARCH_TAGGING_CONTEXT,
                   parameters);
             response.append(HttpProcessor.put(new URL(url), inputStream, "application/xml", "UTF-8"));
-            OseeLog.logf(Activator.class, Level.FINEST,
-               "Transmitted to Tagger in [%d ms]", System.currentTimeMillis() - start);
+            OseeLog.logf(Activator.class, Level.FINEST, "Transmitted to Tagger in [%d ms]",
+               System.currentTimeMillis() - start);
          } catch (Exception ex) {
             if (response.length() > 0) {
                response.append("\n");
