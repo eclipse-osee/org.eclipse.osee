@@ -80,7 +80,7 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
 
    @Override
    public int hashCode() {
-      int hashCode = 0;
+      int hashCode = 7;
       hashCode += 13 * getArtId();
       hashCode += 13 * getGamma();
       hashCode += getChangeArtifact() != null ? 13 * getChangeArtifact().hashCode() : 0;
@@ -160,7 +160,6 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
    public abstract int getItemId();
 
    public abstract LoadChangeType getChangeType();
-
 
    @Override
    @SuppressWarnings("rawtypes")

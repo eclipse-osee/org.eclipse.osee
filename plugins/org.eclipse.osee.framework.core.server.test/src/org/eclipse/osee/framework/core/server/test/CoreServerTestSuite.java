@@ -22,5 +22,5 @@ CoreServerInternalTestSuite.class, //
  * @author Roberto E. Escobar
  */
 public class CoreServerTestSuite {
-
+   //
 }

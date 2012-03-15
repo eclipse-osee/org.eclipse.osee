@@ -23,5 +23,5 @@ BuildTypeIdentifierTest.class, //
  * @author Roberto E. Escobar
  */
 public class CoreServerInternalTestSuite {
-
+   //
 }
