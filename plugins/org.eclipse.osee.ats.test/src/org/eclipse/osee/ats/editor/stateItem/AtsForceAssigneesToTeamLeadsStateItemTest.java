@@ -17,7 +17,7 @@ import java.util.List;
 import org.eclipse.osee.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.workdef.RuleDefinition;
 import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
@@ -83,13 +83,13 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
 
       // assignee should be Joe Smith
       Assert.assertEquals(1, teamArt.getStateMgr().getAssignees().size());
-      Assert.assertEquals(AtsUsers.getUserByName(JOE_SMITH), teamArt.getStateMgr().getAssignees().iterator().next());
+      Assert.assertEquals(AtsUsersClient.getUserByName(JOE_SMITH), teamArt.getStateMgr().getAssignees().iterator().next());
 
       // set assignee to Alex Kay
-      teamArt.getStateMgr().setAssignee(AtsUsers.getUserByName(ALEX_KAY));
+      teamArt.getStateMgr().setAssignee(AtsUsersClient.getUserByName(ALEX_KAY));
       teamArt.persist(getClass().getSimpleName());
       Assert.assertEquals(1, teamArt.getStateMgr().getAssignees().size());
-      Assert.assertEquals(AtsUsers.getUserByName(ALEX_KAY), teamArt.getStateMgr().getAssignees().iterator().next());
+      Assert.assertEquals(AtsUsersClient.getUserByName(ALEX_KAY), teamArt.getStateMgr().getAssignees().iterator().next());
 
       IWorkPage fromState = teamArt.getWorkDefinition().getStateByName(TeamState.Analyze.getPageName());
       IWorkPage toState = teamArt.getWorkDefinition().getStateByName(TeamState.Authorize.getPageName());
@@ -101,11 +101,11 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
       AtsForceAssigneesToTeamLeadsStateItem stateItem = new AtsForceAssigneesToTeamLeadsStateItem();
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
-      stateItem.transitioned(teamArt, fromState, toState, Arrays.asList(AtsUsers.getUser()), transaction);
+      stateItem.transitioned(teamArt, fromState, toState, Arrays.asList(AtsUsersClient.getUser()), transaction);
       transaction.execute();
 
       // assignee should be Joe Smith
       Assert.assertEquals(1, teamArt.getStateMgr().getAssignees().size());
-      Assert.assertEquals(AtsUsers.getUserByName(JOE_SMITH), teamArt.getStateMgr().getAssignees().iterator().next());
+      Assert.assertEquals(AtsUsersClient.getUserByName(JOE_SMITH), teamArt.getStateMgr().getAssignees().iterator().next());
    }
 }

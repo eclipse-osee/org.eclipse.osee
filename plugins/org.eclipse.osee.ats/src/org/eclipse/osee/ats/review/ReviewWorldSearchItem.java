@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.util.AtsCacheManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.workflow.WorkPageType;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -37,7 +38,6 @@ import org.eclipse.osee.ats.world.search.WorldUISearchItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -55,13 +55,13 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
    private boolean includeCompleted;
    private final Collection<String> aiNames;
    private final Artifact versionArt;
-   private final User userArt;
+   private final IAtsUser userArt;
    private final boolean includeCancelled;
    private final String stateName;
    private final ReviewFormalType reviewFormalType;
    private final ReviewType reviewType;
 
-   public ReviewWorldSearchItem(String displayName, List<String> aiNames, boolean includeCompleted, boolean includeCancelled, boolean recurseChildren, Artifact versionArt, User userArt, ReviewFormalType reviewFormalType, ReviewType reviewType, String stateName) {
+   public ReviewWorldSearchItem(String displayName, List<String> aiNames, boolean includeCompleted, boolean includeCancelled, boolean recurseChildren, Artifact versionArt, IAtsUser userArt, ReviewFormalType reviewFormalType, ReviewType reviewType, String stateName) {
       super(displayName, AtsImage.REVIEW);
       this.includeCancelled = includeCancelled;
       this.versionArt = versionArt;
@@ -74,7 +74,7 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
       this.stateName = stateName;
    }
 
-   public ReviewWorldSearchItem(String displayName, Collection<ActionableItemArtifact> aias, boolean includeCompleted, boolean includeCancelled, boolean recurseChildren, Artifact versionArt, User userArt, ReviewFormalType reviewFormalType, ReviewType reviewType, String stateName) {
+   public ReviewWorldSearchItem(String displayName, Collection<ActionableItemArtifact> aias, boolean includeCompleted, boolean includeCancelled, boolean recurseChildren, Artifact versionArt, IAtsUser userArt, ReviewFormalType reviewFormalType, ReviewType reviewType, String stateName) {
       super(displayName, AtsImage.REVIEW);
       this.includeCancelled = includeCancelled;
       this.versionArt = versionArt;

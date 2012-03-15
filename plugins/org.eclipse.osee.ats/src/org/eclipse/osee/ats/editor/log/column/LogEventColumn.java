@@ -17,14 +17,15 @@ import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.core.client.workflow.SMAState;
+import org.eclipse.osee.ats.core.client.workflow.AtsWorkStateFactory;
 import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workflow.WorkPageType;
+import org.eclipse.osee.ats.editor.history.column.EventColumn;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -97,16 +98,16 @@ public class LogEventColumn extends XViewerValueColumn {
       try {
          StateDefinition stateDef = new StateDefinition("");
          stateDef.setWorkPageType(WorkPageType.Working);
-         SMAState was = new SMAState(stateDef, change.getWasValue());
-         SMAState is = new SMAState(stateDef, change.getIsValue());
+         WorkStateImpl was = AtsWorkStateFactory.getFromXml(change.getWasValue());
+         WorkStateImpl is = AtsWorkStateFactory.getFromXml(change.getIsValue());
          if (change.getWasValue().equals("")) {
             return "Created in [" + is.getName() + "] state";
          } else if (!was.getName().equals(is.getName())) {
             return "Transition from [" + was.getName() + "] to [" + is.getName() + "]";
          }
-         if (was.getName().equals(is.getName()) && (was.getPercentComplete() != is.getPercentComplete() || !was.getHoursSpentStr().equals(
-            is.getHoursSpentStr()))) {
-            return "Statused [" + is.getName() + "] to: " + is.getPercentComplete() + "% and " + getHoursSpent(is) + " hrs";
+         if (was.getName().equals(is.getName()) && (was.getPercentComplete() != is.getPercentComplete() || !EventColumn.getHoursSpentStr(
+            was).equals(EventColumn.getHoursSpentStr(is)))) {
+            return "Statused [" + is.getName() + "] to: " + is.getPercentComplete() + "% and " + is.getHoursSpent() + " hrs";
          }
          Collection<? extends IAtsUser> wasAssignees = was.getAssignees();
          Collection<? extends IAtsUser> isAssignees = is.getAssignees();
@@ -134,7 +135,4 @@ public class LogEventColumn extends XViewerValueColumn {
       return "";
    }
 
-   private String getHoursSpent(SMAState state) {
-      return Strings.isValid(state.getHoursSpentStr()) ? state.getHoursSpentStr() : "0";
-   }
 }

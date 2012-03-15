@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workdef;
 
-
 /**
  * @author Donald G. Dunne
  */
@@ -23,14 +22,10 @@ public class WidgetDefinitionIntMinMaxConstraint implements WidgetConstraint {
    }
 
    public WidgetDefinitionIntMinMaxConstraint(String minValue, String maxValue) {
-      if (minValue == null) {
-         this.minValue = null;
-      } else {
+      if (minValue != null) {
          this.minValue = new Integer(minValue);
       }
-      if (maxValue == null) {
-         this.maxValue = null;
-      } else {
+      if (maxValue != null) {
          this.maxValue = new Integer(maxValue);
       }
    }

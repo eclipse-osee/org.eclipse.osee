@@ -37,7 +37,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
@@ -64,7 +64,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -292,7 +291,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          }
          int x = 0;
          Date createdDate = new Date();
-         IAtsUser createdBy = AtsUsers.getUser();
+         IAtsUser createdBy = AtsUsersClient.getUser();
 
          for (String prefixTitle : aData.prefixTitles) {
             Artifact actionArt =
@@ -322,8 +321,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
                // Transition to desired state
                Result result =
-                  dtwm.transitionTo((toStateOverride != null ? toStateOverride : aData.toState), null, false,
-                     transaction);
+                  dtwm.transitionTo((toStateOverride != null ? toStateOverride : aData.toState),
+                     teamWf.getAssignees().iterator().next(), false, transaction);
                if (result.isFalse()) {
                   throw new OseeCoreException("Error transitioning [%s] to state [%s]: [%s]", teamWf.toStringWithId(),
                      aData.toState.getPageName(), result.getText());

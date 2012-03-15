@@ -13,6 +13,9 @@ package org.eclipse.osee.ats.core.workdef;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class PeerReviewDefinition {
 
    public String name;
@@ -69,7 +72,7 @@ public class PeerReviewDefinition {
       return name;
    }
 
-   public String getTitle() {
+   public String getReviewTitle() {
       return reviewTitle;
    }
 

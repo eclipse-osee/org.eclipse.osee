@@ -233,7 +233,7 @@ public class Overview {
       }
    }
 
-   public void addTeams(Collection<TeamWorkFlowArtifact> teams) {
+   public void addTeams(Collection<TeamWorkFlowArtifact> teams) throws OseeCoreException {
       startBorderTable(TABLE_WIDTH, false, "Team Workflows");
       StringBuffer sb = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
       sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "State"}, new Integer[] {70, 150}));

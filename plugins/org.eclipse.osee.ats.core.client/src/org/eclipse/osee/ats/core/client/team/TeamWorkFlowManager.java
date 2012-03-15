@@ -17,12 +17,13 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
@@ -64,6 +65,7 @@ public class TeamWorkFlowManager {
     * @param user User to transition to OR null if should use user of current state
     */
    public Result transitionTo(TeamState toState, IAtsUser user, boolean popup, SkynetTransaction transaction) throws OseeCoreException {
+      Assert.isNotNull(user);
       Date date = new Date();
       if (toState == TeamState.Endorse) {
          if (!teamArt.getCurrentStateName().equals(TeamState.Endorse.getPageName())) {
@@ -115,7 +117,7 @@ public class TeamWorkFlowManager {
 
    private IAtsUser getUserOrDefault(IAtsUser user) throws OseeCoreException {
       if (user == null) {
-         return AtsUsers.getUser();
+         return AtsUsersClient.getUser();
       }
       return user;
    }

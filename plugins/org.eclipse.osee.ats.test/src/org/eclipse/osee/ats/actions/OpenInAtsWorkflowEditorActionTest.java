@@ -6,7 +6,8 @@
 package org.eclipse.osee.ats.actions;
 
 import org.eclipse.osee.ats.core.client.AtsTestUtil;
-
+import org.eclipse.osee.ats.editor.SMAEditor;
+import org.junit.After;
 
 /**
  * @author Donald G. Dunne
@@ -18,4 +19,8 @@ public class OpenInAtsWorkflowEditorActionTest extends AbstractAtsActionRunTest 
       return new OpenInAtsWorkflowEditorAction(AtsTestUtil.getSelectedAtsArtifactsForTeamWf());
    }
 
+   @After
+   public void closeEditors() {
+      SMAEditor.closeAll();
+   }
 }

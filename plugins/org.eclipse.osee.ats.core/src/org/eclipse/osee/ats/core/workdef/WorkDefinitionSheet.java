@@ -12,6 +12,9 @@ package org.eclipse.osee.ats.core.workdef;
 
 import java.io.File;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class WorkDefinitionSheet {
 
    public File file;

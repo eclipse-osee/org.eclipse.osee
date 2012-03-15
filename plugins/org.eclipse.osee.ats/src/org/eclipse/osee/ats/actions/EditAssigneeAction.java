@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.actions;
 import java.util.Collection;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.osee.ats.column.AssigneeColumn;
+import org.eclipse.osee.ats.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -40,7 +40,7 @@ public class EditAssigneeAction extends AbstractAtsAction {
    public void runWithException() throws OseeCoreException {
       Collection<AbstractWorkflowArtifact> smaArts =
          Collections.castMatching(AbstractWorkflowArtifact.class, selectedAtsArtifacts.getSelectedSMAArtifacts());
-      if (AssigneeColumn.promptChangeAssignees(smaArts, true)) {
+      if (AssigneeColumnUI.promptChangeAssignees(smaArts, true)) {
          if (xViewer != null) {
             xViewer.update(selectedAtsArtifacts.getSelectedSMAArtifacts().toArray(), null);
          }

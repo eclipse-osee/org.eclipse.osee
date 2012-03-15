@@ -15,7 +15,7 @@ import junit.framework.Assert;
 import org.eclipse.osee.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.client.workflow.HoursSpentUtil;
@@ -155,10 +155,9 @@ public class TaskManagerTest extends TaskManager {
       transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
             getClass().getSimpleName() + " testTransitionToCompletedThenInWork() 2");
-      result = TaskManager.transitionToInWork(taskArt, AtsUsers.getUser(), 45, .5, transaction);
+      result = TaskManager.transitionToInWork(taskArt, AtsUsersClient.getUser(), 45, .5, transaction);
       Assert.assertEquals(Result.TrueResult, result);
       transaction.execute();
-
       Assert.assertEquals(TaskStates.InWork.getPageName(), taskArt.getCurrentStateName());
       Assert.assertEquals(3.5, HoursSpentUtil.getHoursSpentTotal(taskArt));
       Assert.assertEquals("Joe Smith", taskArt.getStateMgr().getAssigneesStr());

@@ -31,47 +31,28 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractOperation {
 
    private static final String NOT_ADDRESSESED_GAMMAS =
       "select gamma_id from %s t1 where not exists (select 1 from osee_txs txs1 where t1.gamma_id = txs1.gamma_id) and not exists (select 1 from osee_txs_archived txs3 where t1.gamma_id = txs3.gamma_id)";
-   private static final String NOT_ADDRESSESED_GAMMAS_FOR_BRANCH =
-      "select gamma_id from %s t1 where not exists (select 1 from osee_txs txs1 where txs1.branch_id = %d and t1.gamma_id = txs1.gamma_id) and not exists (select 1 from osee_txs_archived txs3 where txs3.branch_id = %d and t1.gamma_id = txs3.gamma_id)";
 
    private static final String EMPTY_TRANSACTIONS =
       "select branch_id, transaction_id from osee_tx_details txd where not exists (select 1 from osee_txs txs1 where txs1.branch_id = txd.branch_id and txs1.transaction_id = txd.transaction_id) and not exists (select 1 from osee_txs_archived txs2 where txs2.branch_id = txd.branch_id and txs2.transaction_id = txd.transaction_id)";
-   private static final String EMPTY_TRANSACTIONS_FOR_BRANCH =
-      "select branch_id, transaction_id from osee_tx_details txd where txd.branch_id = %d and not exists (select 1 from osee_txs txs1 where txs1.branch_id = txd.branch_id and txs1.transaction_id = txd.transaction_id) and not exists (select 1 from osee_txs_archived txs2 where txs2.branch_id = txd.branch_id and txs2.transaction_id = txd.transaction_id)";
 
    private static final String NONEXISTENT_GAMMAS = "SELECT gamma_id FROM %s txs WHERE " + //
    "NOT EXISTS (SELECT 1 FROM osee_attribute att WHERE txs.gamma_id = att.gamma_id) " + //
    "AND NOT EXISTS (SELECT 1 FROM osee_artifact art WHERE txs.gamma_id = art.gamma_id) " + //
    "AND NOT EXISTS (SELECT 1 FROM osee_relation_link rel WHERE txs.gamma_id = rel.gamma_id)";
-   private static final String NONEXISTENT_GAMMAS_FOR_BRANCH =
-      "SELECT gamma_id FROM %s txs WHERE txs.branch_id = %d and " + //
-      "NOT EXISTS (SELECT 1 FROM osee_attribute att WHERE txs.gamma_id = att.gamma_id) " + //
-      "AND NOT EXISTS (SELECT 1 FROM osee_artifact art WHERE txs.gamma_id = art.gamma_id) " + //
-      "AND NOT EXISTS (SELECT 1 FROM osee_relation_link rel WHERE txs.gamma_id = rel.gamma_id)";
 
    private static final String DELETE_GAMMAS = "DELETE FROM %s WHERE gamma_id = ?";
    private static final String DELETE_EMPTY_TRANSACTIONS =
       "DELETE FROM osee_tx_details WHERE branch_id = ? and transaction_id = ?";
-   private final Integer forBranchId;
 
    private final IOseeDatabaseService dbService;
 
    public PurgeUnusedBackingDataAndTransactions(OperationLogger logger) throws OseeDataStoreException {
-      this(DatabaseHelper.getOseeDatabaseService(), logger, null);
-   }
-
-   public PurgeUnusedBackingDataAndTransactions(OperationLogger logger, Integer forBranchId) throws OseeDataStoreException {
-      this(DatabaseHelper.getOseeDatabaseService(), logger, forBranchId);
+      this(DatabaseHelper.getOseeDatabaseService(), logger);
    }
 
    public PurgeUnusedBackingDataAndTransactions(IOseeDatabaseService dbService, OperationLogger logger) {
-      this(dbService, logger, null);
-   }
-
-   public PurgeUnusedBackingDataAndTransactions(IOseeDatabaseService dbService, OperationLogger logger, Integer forBranchId) {
       super("Data with no TXS Addressing and empty transactions", DatabaseHelper.PLUGIN_ID, logger);
       this.dbService = dbService;
-      this.forBranchId = forBranchId;
    }
 
    private IOseeDatabaseService getDatabaseService() {
@@ -80,13 +61,9 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractOperation {
 
    private void processNotAddressedGammas(String tableName) throws OseeCoreException {
       List<Object[]> notAddressedGammas = new LinkedList<Object[]>();
-      IOseeStatement chStmt = getDatabaseService().getStatement();
-      String sql = null;
-      if (forBranchId == null) {
-         sql = String.format(NOT_ADDRESSESED_GAMMAS, tableName);
-      } else {
-         sql = String.format(NOT_ADDRESSESED_GAMMAS_FOR_BRANCH, tableName, forBranchId, forBranchId);
-      }
+
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      String sql = String.format(NOT_ADDRESSESED_GAMMAS, tableName);
 
       try {
          chStmt.runPreparedQuery(sql);
@@ -107,12 +84,7 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractOperation {
       IOseeStatement chStmt = getDatabaseService().getStatement();
 
       try {
-         String sql = null;
-         if (forBranchId == null) {
-            sql = String.format(NONEXISTENT_GAMMAS, tableName);
-         } else {
-            sql = String.format(NONEXISTENT_GAMMAS_FOR_BRANCH, tableName, forBranchId);
-         }
+         String sql = String.format(NONEXISTENT_GAMMAS, tableName);
 
          chStmt.runPreparedQuery(sql);
          while (chStmt.next()) {
@@ -130,12 +102,7 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractOperation {
       List<Object[]> emptyTransactions = new LinkedList<Object[]>();
       IOseeStatement chStmt = ConnectionHandler.getStatement();
 
-      String sql = null;
-      if (forBranchId == null) {
-         sql = EMPTY_TRANSACTIONS;
-      } else {
-         sql = String.format(EMPTY_TRANSACTIONS_FOR_BRANCH, forBranchId);
-      }
+      String sql = EMPTY_TRANSACTIONS;
       try {
          chStmt.runPreparedQuery(sql);
          while (chStmt.next()) {

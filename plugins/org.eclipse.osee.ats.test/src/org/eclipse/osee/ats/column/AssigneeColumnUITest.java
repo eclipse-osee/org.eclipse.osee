@@ -21,7 +21,7 @@ import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Assert;
 
 /**
- * @tests AssigneeColumn
+ * @tests AssigneeColumnUI
  * @author Donald G. Dunne
  */
 public class AssigneeColumnUITest {
@@ -33,12 +33,12 @@ public class AssigneeColumnUITest {
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
       Assert.assertEquals("Joe Smith",
-         AssigneeColumn.getInstance().getColumnText(codeArt, AssigneeColumn.getInstance(), 0));
+         AssigneeColumnUI.getInstance().getColumnText(codeArt, AssigneeColumnUI.getInstance(), 0));
 
       Artifact actionArt = codeArt.getParentActionArtifact();
       List<String> results = Arrays.asList("Kay Jones; Joe Smith", "Joe Smith; Kay Jones");
-      Assert.assertTrue(results.contains(AssigneeColumn.getInstance().getColumnText(actionArt,
-         AssigneeColumn.getInstance(), 0)));
+      Assert.assertTrue(results.contains(AssigneeColumnUI.getInstance().getColumnText(actionArt,
+         AssigneeColumnUI.getInstance(), 0)));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }
@@ -48,13 +48,14 @@ public class AssigneeColumnUITest {
 
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
-      Assert.assertNotNull(ActionableItemsColumn.getInstance().getColumnImage(codeArt, AssigneeColumn.getInstance(), 0));
-
-      Artifact actionArt = codeArt.getParentActionArtifact();
-      Assert.assertNotNull(ActionableItemsColumn.getInstance().getColumnImage(actionArt, AssigneeColumn.getInstance(),
+      Assert.assertNotNull(ActionableItemsColumn.getInstance().getColumnImage(codeArt, AssigneeColumnUI.getInstance(),
          0));
 
-      Assert.assertNull(ActionableItemsColumn.getInstance().getColumnImage("String", AssigneeColumn.getInstance(), 0));
+      Artifact actionArt = codeArt.getParentActionArtifact();
+      Assert.assertNotNull(ActionableItemsColumn.getInstance().getColumnImage(actionArt,
+         AssigneeColumnUI.getInstance(), 0));
+
+      Assert.assertNull(ActionableItemsColumn.getInstance().getColumnImage("String", AssigneeColumnUI.getInstance(), 0));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

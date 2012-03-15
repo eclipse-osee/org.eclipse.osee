@@ -18,6 +18,9 @@ import org.eclipse.osee.ats.dsl.atsDsl.UserByUserId;
 import org.eclipse.osee.ats.dsl.atsDsl.UserRef;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class UserRefUtil {
 
    public static Set<String> getUserIds(EList<UserRef> userRefs) {

@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.workdef.WorkDefinition;
@@ -157,10 +157,11 @@ public class AtsBranchConfigurationTest {
          ActionableItemManagerCore.getActionableItems(appendToName(BRANCH_VIA_VERSIONS, "A1"));
       Assert.assertFalse(selectedActionableItems.isEmpty());
 
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
       Artifact actionArt =
          ActionManager.createAction(null, BRANCH_VIA_VERSIONS.getName() + " Req Changes", "description",
-            ChangeType.Problem, "1", false, null, selectedActionableItems, new Date(), AtsUsers.getUser(), null,
+            ChangeType.Problem, "1", false, null, selectedActionableItems, new Date(), AtsUsersClient.getUser(), null,
             transaction);
       ActionManager.getTeams(actionArt).iterator().next().addRelation(
          AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, verArtToTarget);
@@ -175,7 +176,7 @@ public class AtsBranchConfigurationTest {
          OseeLog.log(Activator.class, Level.INFO, "Transitioning to Implement state");
       }
 
-      dtwm.transitionTo(TeamState.Implement, null, false, transaction);
+      dtwm.transitionTo(TeamState.Implement, AtsUsersClient.getUser(), false, transaction);
       teamWf.persist("Branch Configuration Test");
 
       SMAEditor.editArtifact(teamWf);
@@ -272,7 +273,7 @@ public class AtsBranchConfigurationTest {
       String actionTitle = BRANCH_VIA_TEAM_DEFINITION.getName() + " Req Changes";
       Artifact actionArt =
          ActionManager.createAction(null, actionTitle, "description", ChangeType.Problem, "1", false, null,
-            selectedActionableItems, new Date(), AtsUsers.getUser(), null, transaction);
+            selectedActionableItems, new Date(), AtsUsersClient.getUser(), null, transaction);
       transaction.execute();
 
       final TeamWorkFlowArtifact teamWf = ActionManager.getTeams(actionArt).iterator().next();
@@ -282,7 +283,7 @@ public class AtsBranchConfigurationTest {
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "Transitioning to Implement state");
       }
-      dtwm.transitionTo(TeamState.Implement, null, false, transaction);
+      dtwm.transitionTo(TeamState.Implement, AtsUsersClient.getUser(), false, transaction);
       teamWf.persist("Test branch via team definition: Transition to desired state");
 
       // create branch
@@ -321,7 +322,8 @@ public class AtsBranchConfigurationTest {
          ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.Action, branch.getName() + " Req Changes",
             AtsUtil.getAtsBranch());
       if (aArt != null) {
-         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
+         SkynetTransaction transaction =
+            TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
          for (TeamWorkFlowArtifact teamArt : ActionManager.getTeams(aArt)) {
             SMAEditor.close(Collections.singleton(teamArt), false);
             teamArt.deleteAndPersist(transaction, true);
@@ -334,7 +336,8 @@ public class AtsBranchConfigurationTest {
       Collection<Artifact> arts =
          ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.Version, AtsUtil.getAtsBranch());
       if (arts.size() > 0) {
-         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
+         SkynetTransaction transaction =
+            TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
          for (Artifact verArt : arts) {
             if (verArt.getName().contains(branch.getName())) {
                verArt.deleteAndPersist(transaction, true);
@@ -348,7 +351,8 @@ public class AtsBranchConfigurationTest {
          ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition, branch.getName(),
             AtsUtil.getAtsBranch());
       if (art != null) {
-         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
+         SkynetTransaction transaction =
+            TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
          art.deleteAndPersist(transaction, true);
          transaction.execute();
       }
@@ -358,7 +362,8 @@ public class AtsBranchConfigurationTest {
          ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.ActionableItem, branch.getName(),
             AtsUtil.getAtsBranch());
       if (art != null) {
-         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
+         SkynetTransaction transaction =
+            TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
          for (Artifact childArt : art.getChildren()) {
             childArt.deleteAndPersist(transaction, true);
          }
@@ -369,7 +374,8 @@ public class AtsBranchConfigurationTest {
       // Work Definition
       arts = ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.WorkDefinition, AtsUtil.getAtsBranch());
       if (arts.size() > 0) {
-         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
+         SkynetTransaction transaction =
+            TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
          for (Artifact workArt : arts) {
             if (workArt.getName().startsWith(namespace)) {
                workArt.deleteAndPersist(transaction, true);

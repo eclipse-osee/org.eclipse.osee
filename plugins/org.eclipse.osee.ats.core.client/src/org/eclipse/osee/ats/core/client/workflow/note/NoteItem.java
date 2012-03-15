@@ -16,8 +16,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.client.internal.Activator;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -110,7 +110,7 @@ public class NoteItem {
             for (int i = 0; i < nodes.getLength(); i++) {
                Element element = (Element) nodes.item(i);
                try {
-                  IAtsUser user = AtsUsers.getUserByUserId(element.getAttribute("userId"));
+                  IAtsUser user = AtsUsers.getUser(element.getAttribute("userId"));
                   NoteItem item = new NoteItem(element.getAttribute("type"), element.getAttribute("state"), // NOPMD by b0727536 on 9/29/10 8:52 AM
                      element.getAttribute("date"), user, element.getAttribute("msg"));
                   logItems.add(item);

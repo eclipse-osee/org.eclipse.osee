@@ -25,8 +25,8 @@ import org.eclipse.osee.ats.navigate.AtsNavigateItemsToWorldViewTest;
 import org.eclipse.osee.ats.render.RendererManagerTest;
 import org.eclipse.osee.ats.util.AtsDeleteManagerTest;
 import org.eclipse.osee.ats.util.AtsImageTest;
-import org.eclipse.osee.ats.util.AtsPurgeTest;
 import org.eclipse.osee.ats.util.AtsXWidgetsExampleBlamTest;
+import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.ImportActionsViaSpreadsheetTest;
 import org.eclipse.osee.ats.workflow.SMAPromptChangeStatusTest;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -38,11 +38,11 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   AtsTest_Demo_Action_Suite.class,
-   AtsTest_Demo_Access_Suite.class,
    AtsNavigateItemsToMassEditorTest.class,
    AtsNavigateItemsToTaskEditorTest.class,
    AtsNavigateItemsToWorldViewTest.class,
+   AtsTest_Demo_Action_Suite.class,
+   AtsTest_Demo_Access_Suite.class,
    ImportActionsViaSpreadsheetTest.class,
    AtsTest_Demo_Column_Suite.class,
    AtsTest_Demo_Util_Suite.class,
@@ -58,11 +58,14 @@ import org.junit.runners.Suite;
    AtsBranchConfigurationTest.class,
    AtsValidateAtsDatabaseTest.class,
    AtsXWidgetsExampleBlamTest.class,
-   AtsPurgeTest.class,})
+//   AtsPurgeTest.class,
+//
+})
 /**
  * @author Donald G. Dunne
  */
 public class AtsTest_Demo_Suite {
+
    @BeforeClass
    public static void setUp() throws Exception {
       OseeProperties.setIsInTest(true);
@@ -71,6 +74,7 @@ public class AtsTest_Demo_Suite {
       assertTrue("Client must authenticate using demo protocol",
          ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
       System.out.println("\n\nBegin " + AtsTest_Demo_Suite.class.getSimpleName());
+      DemoTestUtil.setUpTest();
    }
 
    @AfterClass

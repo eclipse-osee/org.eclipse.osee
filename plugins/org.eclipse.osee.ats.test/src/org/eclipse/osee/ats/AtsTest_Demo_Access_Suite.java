@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats;
 
 import org.eclipse.osee.ats.access.AtsBranchAccessManagerTest;
+import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -27,6 +28,7 @@ public class AtsTest_Demo_Access_Suite {
    public static void setUp() throws Exception {
       OseeProperties.setIsInTest(true);
       System.out.println("\n\nBegin " + AtsTest_Demo_Access_Suite.class.getSimpleName());
+      DemoTestUtil.setUpTest();
    }
 
    @AfterClass

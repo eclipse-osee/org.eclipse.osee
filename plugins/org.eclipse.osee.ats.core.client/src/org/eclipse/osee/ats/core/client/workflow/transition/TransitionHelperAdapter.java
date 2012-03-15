@@ -12,8 +12,9 @@ package org.eclipse.osee.ats.core.client.workflow.transition;
 
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -48,12 +49,12 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
 
    @Override
    public boolean isSystemUser() throws OseeCoreException {
-      return AtsUsers.isGuestUser(AtsUsers.getUser()) || AtsUsers.isOseeSystemUser(AtsUsers.getUser());
+      return AtsUsers.isGuestUser(AtsUsersClient.getUser()) || AtsUsers.isSystemUser(AtsUsersClient.getUser());
    }
 
    @Override
    public boolean isSystemUserAssingee(AbstractWorkflowArtifact awa) throws OseeCoreException {
       return awa.getStateMgr().getAssignees().contains(AtsUsers.getGuestUser()) || awa.getStateMgr().getAssignees().contains(
-         AtsUsers.getOseeSystemUser());
+         AtsUsers.getSystemUser());
    }
 }

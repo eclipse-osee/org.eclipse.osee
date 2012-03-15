@@ -5,22 +5,23 @@
  */
 package org.eclipse.osee.ats.core.model.impl;
 
-import org.eclipse.osee.ats.core.model.IAtsChildren;
 import org.eclipse.osee.ats.core.model.IAtsObject;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsObject implements IAtsObject {
 
    private final String hrid;
    private final String name;
-   private final String guid;
-   private String desc;
-   private final IAtsChildren children = new AtsChildren();
+   private String guid;
 
-   @Override
-   public IAtsChildren getAtsChildren() {
-      return children;
+   public void setGuid(String guid) {
+      this.guid = guid;
    }
+
+   private String desc;
 
    public AtsObject(String name, String guid, String hrid) {
       this.name = name;
@@ -57,11 +58,6 @@ public class AtsObject implements IAtsObject {
    }
 
    @Override
-   public Integer getIdInt() {
-      return guid.hashCode();
-   }
-
-   @Override
    public int hashCode() {
       final int prime = 31;
       int result = 1;
@@ -83,6 +79,8 @@ public class AtsObject implements IAtsObject {
       AtsObject other = (AtsObject) obj;
       if (guid == null) {
          if (other.guid != null) {
+            return false;
+         } else {
             return false;
          }
       } else if (!guid.equals(other.guid)) {

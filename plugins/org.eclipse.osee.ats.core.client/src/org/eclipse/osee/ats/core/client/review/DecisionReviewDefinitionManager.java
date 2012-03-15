@@ -12,14 +12,15 @@ package org.eclipse.osee.ats.core.client.review;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.log.LogType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionAdapter;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.ats.core.workdef.DecisionReviewDefinition;
 import org.eclipse.osee.ats.core.workdef.StateEventType;
 import org.eclipse.osee.ats.core.workflow.IWorkPage;
@@ -40,29 +41,29 @@ public class DecisionReviewDefinitionManager extends TransitionAdapter {
     * Creates decision review if one of same name doesn't already exist
     */
    public static DecisionReviewArtifact createNewDecisionReview(DecisionReviewDefinition revDef, SkynetTransaction transaction, TeamWorkFlowArtifact teamArt, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
-      if (Artifacts.getNames(ReviewManager.getReviews(teamArt)).contains(revDef.getTitle())) {
+      if (Artifacts.getNames(ReviewManager.getReviews(teamArt)).contains(revDef.getReviewTitle())) {
          // Already created this review
          return null;
       }
       // Add current user if no valid users specified
-      Set<IAtsUser> users = new HashSet<IAtsUser>();
+      List<IAtsUser> users = new LinkedList<IAtsUser>();
       users.addAll(AtsUsers.getUsersByUserIds(revDef.getAssignees()));
       if (users.isEmpty()) {
-         users.add(AtsUsers.getUser());
+         users.add(AtsUsersClient.getUser());
       }
-      if (!Strings.isValid(revDef.getTitle())) {
+      if (!Strings.isValid(revDef.getReviewTitle())) {
          throw new OseeStateException("ReviewDefinition must specify title for Team Workflow [%s] WorkDefinition [%s]",
             teamArt.toStringWithId(), teamArt.getWorkDefinition());
       }
       DecisionReviewArtifact decArt = null;
       if (revDef.isAutoTransitionToDecision()) {
          decArt =
-            DecisionReviewManager.createNewDecisionReviewAndTransitionToDecision(teamArt, revDef.getTitle(),
+            DecisionReviewManager.createNewDecisionReviewAndTransitionToDecision(teamArt, revDef.getReviewTitle(),
                revDef.getDescription(), revDef.getRelatedToState(), revDef.getBlockingType(), revDef.getOptions(),
                users, createdDate, createdBy, transaction);
       } else {
          decArt =
-            DecisionReviewManager.createNewDecisionReview(teamArt, revDef.getBlockingType(), revDef.getTitle(),
+            DecisionReviewManager.createNewDecisionReview(teamArt, revDef.getBlockingType(), revDef.getReviewTitle(),
                revDef.getRelatedToState(), revDef.getDescription(), revDef.getOptions(), users, createdDate, createdBy);
       }
       decArt.getLog().addLog(LogType.Note, null, String.format("Review [%s] auto-generated", revDef.getName()));
@@ -80,7 +81,7 @@ public class DecisionReviewDefinitionManager extends TransitionAdapter {
          return;
       }
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsUsers.getOseeSystemUser();
+      IAtsUser createdBy = AtsUsers.getSystemUser();
       TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) sma;
 
       for (DecisionReviewDefinition decRevDef : teamArt.getStateDefinition().getDecisionReviews()) {

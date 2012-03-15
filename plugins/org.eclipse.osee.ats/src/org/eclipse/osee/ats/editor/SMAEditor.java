@@ -155,7 +155,11 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
    public Object getAdapter(Class adapter) {
       if (adapter == IContentOutlinePage.class) {
          SMAEditorOutlinePage page = getOutlinePage();
-         page.setInput(this);
+         try {
+            page.setInput(this);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
          return page;
       }
       return super.getAdapter(adapter);
@@ -281,7 +285,11 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
 
    @Override
    public boolean isDirty() {
-      return isDirtyResult().isTrue();
+      Result result = isDirtyResult();
+      if (result.isTrue()) {
+         System.out.println(result.getText());
+      }
+      return result.isTrue();
    }
 
    @Override

@@ -11,9 +11,10 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.logging.Level;
-import org.eclipse.osee.ats.column.AssigneeColumn;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.column.AssigneeColumnUI;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -62,13 +63,13 @@ public class SMAAssigneesHeader extends Composite {
                public void linkActivated(HyperlinkEvent e) {
                   try {
                      if (!isEditable && !sma.getStateMgr().getAssignees().contains(AtsUsers.getUnAssigned()) && !sma.getStateMgr().getAssignees().contains(
-                        AtsUsers.getUser())) {
+                        AtsUsersClient.getUser())) {
                         AWorkbench.popup(
                            "ERROR",
                            "You must be assigned to modify assignees.\nContact current Assignee or Select Privileged Edit for Authorized Overriders.");
                         return;
                      }
-                     if (AssigneeColumn.promptChangeAssignees(sma, false)) {
+                     if (AssigneeColumnUI.promptChangeAssignees(sma, false)) {
                         editor.doSave(null);
                      }
                   } catch (Exception ex) {

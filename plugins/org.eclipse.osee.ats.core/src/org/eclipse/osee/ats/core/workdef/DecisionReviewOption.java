@@ -11,14 +11,18 @@
 package org.eclipse.osee.ats.core.workdef;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class DecisionReviewOption {
 
    public String name;
    public boolean followupRequired;
    public List<String> userIds;
-   public List<String> userNames;
+   public List<String> userNames = new LinkedList<String>();
 
    public DecisionReviewOption(String name) {
       this(name, false, new ArrayList<String>());

@@ -40,9 +40,11 @@ import org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslFactoryImpl;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ConvertWorkDefinitionToAtsDsl {
 
-   private final WorkDefinition workDef;
    private WorkDef dslWorkDef;
    private final XResultData resultData;
    private final Map<String, WidgetDef> idToDslWidgetDefMap = new HashMap<String, WidgetDef>(15);
@@ -51,12 +53,11 @@ public class ConvertWorkDefinitionToAtsDsl {
       0);
    private final Map<String, PeerReviewDef> nameToDslPeerReviewDefMap = new HashMap<String, PeerReviewDef>(0);
 
-   public ConvertWorkDefinitionToAtsDsl(WorkDefinition workDef, XResultData resultData) {
-      this.workDef = workDef;
+   public ConvertWorkDefinitionToAtsDsl(XResultData resultData) {
       this.resultData = resultData;
    }
 
-   public AtsDsl convert(String definitionName) {
+   public AtsDsl convert(String definitionName, WorkDefinition workDef) {
       resultData.log("Converting " + workDef.getName() + " to " + definitionName);
       AtsDsl atsDsl = AtsDslFactoryImpl.init().createAtsDsl();
 
@@ -84,24 +85,11 @@ public class ConvertWorkDefinitionToAtsDsl {
          }
 
          // Process Work Rules for States
-         for (RuleDefinition ruleDef : stateDef.getRules()) {
-            String ruleName = ruleDef.getName();
-            ruleName = ruleName.replaceAll("^ats", "");
-            // If not valid option, need to quote
-            try {
-               RuleDefinitionOption.valueOf(ruleName);
-            } catch (IllegalArgumentException ex) {
-               ruleName = Strings.quote(ruleName);
-            }
-            dslState.getRules().add(ruleName);
-         }
+         List<RuleDefinition> rules = stateDef.getRules();
+         processWorkRulesForState(dslState, rules);
 
          // Process Widgets
-         if (!stateDef.getStateItems().isEmpty()) {
-            LayoutDef layout = AtsDslFactoryImpl.init().createLayoutDef();
-            dslState.setLayout(layout);
-            processStateItems(stateDef.getStateItems(), layout, null);
-         }
+         processStateWidgets(stateDef, dslState);
 
       }
 
@@ -173,7 +161,29 @@ public class ConvertWorkDefinitionToAtsDsl {
       return atsDsl;
    }
 
-   private DecisionReviewDef createDslDecisionReviewDef(DecisionReviewDefinition revDef) {
+   protected void processStateWidgets(StateDefinition stateDef, StateDef dslState) {
+      if (!stateDef.getStateItems().isEmpty()) {
+         LayoutDef layout = AtsDslFactoryImpl.init().createLayoutDef();
+         dslState.setLayout(layout);
+         processStateItems(stateDef.getStateItems(), layout, null);
+      }
+   }
+
+   protected void processWorkRulesForState(StateDef dslState, List<RuleDefinition> rules) {
+      for (RuleDefinition ruleDef : rules) {
+         String ruleName = ruleDef.getName();
+         ruleName = ruleName.replaceAll("^ats", "");
+         // If not valid option, need to quote
+         try {
+            RuleDefinitionOption.valueOf(ruleName);
+         } catch (IllegalArgumentException ex) {
+            ruleName = Strings.quote(ruleName);
+         }
+         dslState.getRules().add(ruleName);
+      }
+   }
+
+   protected DecisionReviewDef createDslDecisionReviewDef(DecisionReviewDefinition revDef) {
       DecisionReviewDef dslRevDef = AtsDslFactoryImpl.init().createDecisionReviewDef();
       dslRevDef.setName(revDef.getName());
       dslRevDef.setBlockingType(ReviewBlockingType.getByName(revDef.getBlockingType().name()));
@@ -181,7 +191,7 @@ public class ConvertWorkDefinitionToAtsDsl {
       dslRevDef.setStateEvent(WorkflowEventType.getByName(revDef.getStateEventType().name()));
       StateDef dslStateDef = nameToDslStateDefMap.get(revDef.getRelatedToState());
       dslRevDef.setRelatedToState(dslStateDef);
-      dslRevDef.setTitle(revDef.getTitle());
+      dslRevDef.setTitle(revDef.getReviewTitle());
       for (String userId : revDef.getAssignees()) {
          UserByUserId dslUserId = AtsDslFactoryImpl.init().createUserByUserId();
          dslUserId.setUserId(userId);
@@ -189,6 +199,8 @@ public class ConvertWorkDefinitionToAtsDsl {
       }
       if (revDef.isAutoTransitionToDecision()) {
          dslRevDef.setAutoTransitionToDecision(BooleanDef.TRUE);
+      } else {
+         dslRevDef.setAutoTransitionToDecision(BooleanDef.FALSE);
       }
       for (DecisionReviewOption revOpt : revDef.getOptions()) {
          DecisionReviewOpt dslRevOpt = AtsDslFactoryImpl.init().createDecisionReviewOpt();
@@ -212,7 +224,7 @@ public class ConvertWorkDefinitionToAtsDsl {
       return dslRevDef;
    }
 
-   private PeerReviewDef createDslPeerReviewDef(PeerReviewDefinition revDef) {
+   protected PeerReviewDef createDslPeerReviewDef(PeerReviewDefinition revDef) {
       PeerReviewDef peerRevDef = AtsDslFactoryImpl.init().createPeerReviewDef();
       peerRevDef.setName(revDef.getName());
       peerRevDef.setBlockingType(ReviewBlockingType.getByName(revDef.getBlockingType().name()));
@@ -220,8 +232,8 @@ public class ConvertWorkDefinitionToAtsDsl {
       if (Strings.isValid(revDef.getLocation())) {
          peerRevDef.setLocation(revDef.getLocation());
       }
-      if (Strings.isValid(revDef.getTitle())) {
-         peerRevDef.setTitle(revDef.getTitle());
+      if (Strings.isValid(revDef.getReviewTitle())) {
+         peerRevDef.setTitle(revDef.getReviewTitle());
       }
       for (String userId : revDef.getAssignees()) {
          UserByUserId dslUserId = AtsDslFactoryImpl.init().createUserByUserId();
@@ -236,38 +248,49 @@ public class ConvertWorkDefinitionToAtsDsl {
 
    private void processStateItems(List<StateItem> stateItems, LayoutDef layout, Composite dslComposite) {
       for (StateItem stateItem : stateItems) {
-         if (stateItem instanceof WidgetDefinition) {
+         processStateItem(layout, dslComposite, stateItem);
+      }
+   }
 
-            WidgetDefinition widgetDef = (WidgetDefinition) stateItem;
-            AttrWidget attrWidget = getAttrWidget(widgetDef);
-            if (attrWidget != null) {
-               if (dslComposite != null) {
-                  dslComposite.getLayoutItems().add(attrWidget);
-               } else {
-                  layout.getLayoutItems().add(attrWidget);
-               }
-            } else {
-               WidgetDef dslWidgetDef = getOrCreateWidget(widgetDef);
-               WidgetRef dslWidgetRef = AtsDslFactoryImpl.init().createWidgetRef();
-               dslWidgetRef.setWidget(dslWidgetDef);
-               if (dslComposite != null) {
-                  dslComposite.getLayoutItems().add(dslWidgetRef);
-               } else {
-                  layout.getLayoutItems().add(dslWidgetRef);
-               }
-            }
-         } else if (stateItem instanceof CompositeStateItem) {
-            CompositeStateItem composite = (CompositeStateItem) stateItem;
-            Composite newDslComposite = AtsDslFactoryImpl.init().createComposite();
-            newDslComposite.setNumColumns(composite.getNumColumns());
-            if (dslComposite != null) {
-               dslComposite.getLayoutItems().add(newDslComposite);
-            } else {
-               layout.getLayoutItems().add(newDslComposite);
-            }
-            processStateItems(composite.getStateItems(), layout, newDslComposite);
+   protected void processStateItem(LayoutDef layout, Composite dslComposite, StateItem stateItem) {
+      if (stateItem instanceof WidgetDefinition) {
+         WidgetDefinition widgetDef = (WidgetDefinition) stateItem;
+         processWidgetDefinition(layout, dslComposite, widgetDef);
+      } else if (stateItem instanceof CompositeStateItem) {
+         CompositeStateItem composite = (CompositeStateItem) stateItem;
+         processCompositeStateItem(layout, dslComposite, composite);
+      } else {
+         resultData.logError("Unexpected stateItem => " + stateItem.getName());
+      }
+   }
+
+   protected void processCompositeStateItem(LayoutDef layout, Composite dslComposite, CompositeStateItem composite) {
+      Composite newDslComposite = AtsDslFactoryImpl.init().createComposite();
+      newDslComposite.setNumColumns(composite.getNumColumns());
+      if (dslComposite != null) {
+         dslComposite.getLayoutItems().add(newDslComposite);
+      } else {
+         layout.getLayoutItems().add(newDslComposite);
+      }
+      processStateItems(composite.getStateItems(), layout, newDslComposite);
+   }
+
+   protected void processWidgetDefinition(LayoutDef layout, Composite dslComposite, WidgetDefinition widgetDef) {
+      AttrWidget attrWidget = getAttrWidget(widgetDef);
+      if (attrWidget != null) {
+         if (dslComposite != null) {
+            dslComposite.getLayoutItems().add(attrWidget);
          } else {
-            resultData.logError("Unexpected stateItem => " + stateItem.getName());
+            layout.getLayoutItems().add(attrWidget);
+         }
+      } else {
+         WidgetDef dslWidgetDef = getOrCreateWidget(widgetDef);
+         WidgetRef dslWidgetRef = AtsDslFactoryImpl.init().createWidgetRef();
+         dslWidgetRef.setWidget(dslWidgetDef);
+         if (dslComposite != null) {
+            dslComposite.getLayoutItems().add(dslWidgetRef);
+         } else {
+            layout.getLayoutItems().add(dslWidgetRef);
          }
       }
    }
@@ -286,7 +309,7 @@ public class ConvertWorkDefinitionToAtsDsl {
       return null;
    }
 
-   private WidgetDef getOrCreateWidget(WidgetDefinition widgetDef) {
+   protected WidgetDef getOrCreateWidget(WidgetDefinition widgetDef) {
       WidgetDef dslWidget = null;
       if (idToDslWidgetDefMap.containsKey(widgetDef.getName())) {
          dslWidget = idToDslWidgetDefMap.get(widgetDef.getName());
@@ -303,7 +326,9 @@ public class ConvertWorkDefinitionToAtsDsl {
          dslWidget.setXWidgetName(widgetDef.getXWidgetName());
          idToDslWidgetDefMap.put(widgetDef.getName(), dslWidget);
       }
-      dslWorkDef.getWidgetDefs().add(dslWidget);
+      if (dslWorkDef != null) {
+         dslWorkDef.getWidgetDefs().add(dslWidget);
+      }
       return dslWidget;
    }
 }

@@ -20,8 +20,8 @@ import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.core.workdef.StateEventType;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
@@ -120,7 +120,7 @@ public class AtsBranchCommitJob extends Job {
             SkynetTransaction transaction =
                TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Create Reviews upon Commit");
             AtsBranchManagerCore.createNecessaryBranchEventReviews(StateEventType.CommitBranch, teamArt, new Date(),
-               AtsUsers.getOseeSystemUser(), transaction);
+               AtsUsers.getSystemUser(), transaction);
             transaction.execute();
          }
       } catch (OseeCoreException ex) {

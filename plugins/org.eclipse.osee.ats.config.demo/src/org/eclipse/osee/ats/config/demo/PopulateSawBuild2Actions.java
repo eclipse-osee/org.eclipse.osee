@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.model.IAtsUser;
@@ -98,7 +98,7 @@ public class PopulateSawBuild2Actions {
       Collection<ActionableItemArtifact> aias =
          DemoDbUtil.getActionableItems(new String[] {DemoDbAIs.SAW_Requirements.getAIName()});
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsUsers.getUser();
+      IAtsUser createdBy = AtsUsersClient.getUser();
       String priority = "3";
 
       ActionArtifact actionArt =
@@ -111,7 +111,7 @@ public class PopulateSawBuild2Actions {
                TransitionOption.OverrideTransitionValidityCheck);
 
          // Transition to desired state
-         Result result = dtwm.transitionTo(toState, null, false, transaction);
+         Result result = dtwm.transitionTo(toState, teamWf.getAssignees().iterator().next(), false, transaction);
          if (result.isFalse()) {
             throw new OseeCoreException("Error transitioning [%s] to state [%s]: [%s]", teamWf.toStringWithId(),
                toState.getPageName(), result.getText());
@@ -140,7 +140,7 @@ public class PopulateSawBuild2Actions {
             DemoDbAIs.SAW_Requirements.getAIName(),
             DemoDbAIs.SAW_Test.getAIName()});
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsUsers.getUser();
+      IAtsUser createdBy = AtsUsersClient.getUser();
       String priority = "3";
 
       ActionArtifact actionArt =
@@ -154,7 +154,8 @@ public class PopulateSawBuild2Actions {
 
          if (isSwDesign) {
             // transition to analyze
-            Result result = dtwm.transitionTo(TeamState.Analyze, null, false, transaction);
+            Result result =
+               dtwm.transitionTo(TeamState.Analyze, teamWf.getAssignees().iterator().next(), false, transaction);
             if (result.isFalse()) {
                throw new OseeCoreException("Error transitioning [%s] to Analyze state: [%s]", teamWf.toStringWithId(),
                   toState.getPageName(), result.getText());
@@ -169,7 +170,8 @@ public class PopulateSawBuild2Actions {
             }
 
             // transition to authorize
-            result = dtwm.transitionTo(TeamState.Authorize, null, false, transaction);
+            result =
+               dtwm.transitionTo(TeamState.Authorize, teamWf.getAssignees().iterator().next(), false, transaction);
             if (result.isFalse()) {
                throw new OseeCoreException("Error transitioning [%s] to Authorize state: [%s]",
                   teamWf.toStringWithId(), toState.getPageName(), result.getText());
@@ -185,7 +187,7 @@ public class PopulateSawBuild2Actions {
             }
          }
          // Transition to final state
-         Result result = dtwm.transitionTo(toState, null, false, transaction);
+         Result result = dtwm.transitionTo(toState, teamWf.getAssignees().iterator().next(), false, transaction);
          if (result.isFalse()) {
             throw new OseeCoreException("Error transitioning [%s] to state [%s]: [%s]", teamWf.toStringWithId(),
                toState.getPageName(), result.getText());
@@ -214,7 +216,7 @@ public class PopulateSawBuild2Actions {
             DemoDbAIs.SAW_Requirements.getAIName(),
             DemoDbAIs.SAW_Test.getAIName()});
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsUsers.getUser();
+      IAtsUser createdBy = AtsUsersClient.getUser();
       String priority = "3";
 
       ActionArtifact actionArt =
@@ -229,7 +231,8 @@ public class PopulateSawBuild2Actions {
 
          if (isSwDesign) {
             // transition to analyze
-            Result result = dtwm.transitionTo(TeamState.Analyze, null, false, transaction);
+            Result result =
+               dtwm.transitionTo(TeamState.Analyze, teamWf.getAssignees().iterator().next(), false, transaction);
             if (result.isFalse()) {
                throw new OseeCoreException("Error transitioning [%s] to Analyze state: [%s]", teamWf.toStringWithId(),
                   toState.getPageName(), result.getText());
@@ -244,7 +247,8 @@ public class PopulateSawBuild2Actions {
             }
 
             // transition to authorize
-            result = dtwm.transitionTo(TeamState.Authorize, null, false, transaction);
+            result =
+               dtwm.transitionTo(TeamState.Authorize, teamWf.getAssignees().iterator().next(), false, transaction);
             if (result.isFalse()) {
                throw new OseeCoreException("Error transitioning [%s] to Authorize state: [%s]",
                   teamWf.toStringWithId(), toState.getPageName(), result.getText());
@@ -261,7 +265,7 @@ public class PopulateSawBuild2Actions {
          }
 
          // Transition to final state
-         Result result = dtwm.transitionTo(toState, null, false, transaction);
+         Result result = dtwm.transitionTo(toState, teamWf.getAssignees().iterator().next(), false, transaction);
          if (result.isFalse()) {
             throw new OseeCoreException("Error transitioning [%s] to state [%s]: [%s]", teamWf.toStringWithId(),
                toState.getPageName(), result.getText());
@@ -290,7 +294,7 @@ public class PopulateSawBuild2Actions {
             DemoDbAIs.SAW_Code.getAIName(),
             DemoDbAIs.SAW_Test.getAIName()});
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsUsers.getUser();
+      IAtsUser createdBy = AtsUsersClient.getUser();
       String priority = "1";
 
       ActionArtifact actionArt =
@@ -321,7 +325,7 @@ public class PopulateSawBuild2Actions {
                TransitionOption.OverrideTransitionValidityCheck);
 
          // Transition to desired state
-         Result result = dtwm.transitionTo(toState, null, false, transaction);
+         Result result = dtwm.transitionTo(toState, teamWf.getAssignees().iterator().next(), false, transaction);
          if (result.isFalse()) {
             throw new OseeCoreException("Error transitioning [%s] to state [%s]: [%s]", teamWf.toStringWithId(),
                toState.getPageName(), result.getText());

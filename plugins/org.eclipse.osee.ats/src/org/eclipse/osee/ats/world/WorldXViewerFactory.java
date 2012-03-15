@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.column.ActionableItemOwner;
 import org.eclipse.osee.ats.column.ActionableItemsColumn;
 import org.eclipse.osee.ats.column.ActivityIdColumn;
 import org.eclipse.osee.ats.column.AnnualCostAvoidanceColumn;
-import org.eclipse.osee.ats.column.AssigneeColumn;
+import org.eclipse.osee.ats.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.column.BranchStatusColumn;
 import org.eclipse.osee.ats.column.CancelledByColumn;
 import org.eclipse.osee.ats.column.CancelledDateColumn;
@@ -45,7 +45,7 @@ import org.eclipse.osee.ats.column.HoursSpentStateReviewColumn;
 import org.eclipse.osee.ats.column.HoursSpentStateTasksColumn;
 import org.eclipse.osee.ats.column.HoursSpentStateTotalColumn;
 import org.eclipse.osee.ats.column.HoursSpentTotalColumn;
-import org.eclipse.osee.ats.column.ImplementorColumn;
+import org.eclipse.osee.ats.column.ImplementorColumnUI;
 import org.eclipse.osee.ats.column.LastStatusedColumn;
 import org.eclipse.osee.ats.column.LegacyPcrIdColumn;
 import org.eclipse.osee.ats.column.LocChangedColumn;
@@ -123,7 +123,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       StateColumn.getInstance(),
       PriorityColumn.getInstance(),
       ChangeTypeColumn.getInstance(),
-      AssigneeColumn.getInstance(),
+      AssigneeColumnUI.getInstance(),
       TitleColumn.getInstance(),
       ActionableItemsColumn.getInstance(),
       UserCommunityColumn.getInstance(),
@@ -169,7 +169,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       OperationalImpactDesciptionColumn.getInstance(),
       OperationalImpactWorkaroundColumn.getInstance(),
       OperationalImpactWorkaroundDesciptionColumn.getInstance(),
-      ImplementorColumn.getInstance(),
+      ImplementorColumnUI.getInstance(),
       ReviewFormalTypeColumn.getInstance(),
       ReviewAuthorColumn.getInstance(),
       ReviewModeratorColumn.getInstance(),
@@ -234,10 +234,10 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      for (String stateName : StateManager.getStateNames()) {
+      for (String stateName : StateManager.getAllValidStateNames()) {
          registerColumns(new StateAssigneesColumn(stateName));
       }
-      for (String stateName : StateManager.getStateNames()) {
+      for (String stateName : StateManager.getAllValidStateNames()) {
          registerColumns(new StateCompletedColumn(stateName));
       }
    }

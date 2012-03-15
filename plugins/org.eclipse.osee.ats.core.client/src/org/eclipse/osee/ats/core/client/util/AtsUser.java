@@ -7,7 +7,6 @@ package org.eclipse.osee.ats.core.client.util;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.client.internal.Activator;
-import org.eclipse.osee.ats.core.model.IAtsChildren;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -40,16 +39,6 @@ public class AtsUser implements IAtsUser {
    @Override
    public String getHumanReadableId() {
       return user.getHumanReadableId();
-   }
-
-   @Override
-   public IAtsChildren getAtsChildren() {
-      return null;
-   }
-
-   @Override
-   public Integer getIdInt() {
-      return user.getArtId();
    }
 
    @Override

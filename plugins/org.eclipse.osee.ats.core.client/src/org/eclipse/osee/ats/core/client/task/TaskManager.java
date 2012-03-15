@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
@@ -51,7 +51,7 @@ public class TaskManager {
       // Assign current user if unassigned
       try {
          if (taskArt.getStateMgr().isUnAssigned()) {
-            taskArt.getStateMgr().setAssignee(AtsUsers.getUser());
+            taskArt.getStateMgr().setAssignee(AtsUsersClient.getUser());
          }
          taskArt.getStateMgr().updateMetrics(taskArt.getStateDefinition(), additionalHours, 100, true);
          taskArt.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, 100);
@@ -86,7 +86,7 @@ public class TaskManager {
       if (!results.isEmpty()) {
          return new Result("Transition Error %s", results.toString());
       }
-      if (taskArt.getStateMgr().getPercentComplete() != percentComplete || additionalHours > 0) {
+      if (taskArt.getStateMgr().getPercentComplete(taskArt.getCurrentStateName()) != percentComplete || additionalHours > 0) {
          taskArt.getStateMgr().updateMetrics(taskArt.getStateDefinition(), additionalHours, percentComplete, true);
          taskArt.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, percentComplete);
       }

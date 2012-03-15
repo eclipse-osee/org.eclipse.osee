@@ -18,6 +18,9 @@ import org.eclipse.osee.ats.core.workflow.IWorkPage;
 import org.eclipse.osee.ats.core.workflow.WorkPageType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
 
    private WorkPageType workPageType;
@@ -31,7 +34,7 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
    private final List<DecisionReviewDefinition> decisionReviews = new ArrayList<DecisionReviewDefinition>();
    private final List<PeerReviewDefinition> peerReviews = new ArrayList<PeerReviewDefinition>();
    private WorkDefinition workDefinition;
-   private int percentWeight = 0;
+   private int stateWeight = 0;
    private Integer recommendedPercentComplete = null;
    private StateColor color = null;
 
@@ -123,16 +126,6 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
       return false;
    }
 
-   public List<RuleDefinition> getRulesStartsWith(String name) {
-      List<RuleDefinition> results = new ArrayList<RuleDefinition>();
-      for (RuleDefinition rule : rules) {
-         if (rule.getName().startsWith(name)) {
-            results.add(rule);
-         }
-      }
-      return results;
-   }
-
    @Override
    public String toString() {
       return String.format("[%s][%s]", getName(), getWorkPageType());
@@ -174,6 +167,8 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
       StateDefinition other = (StateDefinition) obj;
       if (getFullName() == null) {
          if (other.getFullName() != null) {
+            return false;
+         } else {
             return false;
          }
       } else if (!getFullName().equals(other.getFullName())) {
@@ -220,7 +215,7 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
    }
 
    public int getStateWeight() {
-      return percentWeight;
+      return stateWeight;
    }
 
    /**
@@ -229,8 +224,8 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
     * 
     * @param percentWeight int value where all stateWeights in workdefinition == 100
     */
-   public void setPercentWeight(int percentWeight) {
-      this.percentWeight = percentWeight;
+   public void setStateWeight(int percentWeight) {
+      this.stateWeight = percentWeight;
    }
 
    public void setRecommendedPercentComplete(int recommendedPercentComplete) {
@@ -256,16 +251,6 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
          }
       }
       return false;
-   }
-
-   public boolean hasWidgetWithXWidgetName(String xWidgetName) {
-      for (WidgetDefinition widgetDef : getWidgetsFromStateItems()) {
-         if (widgetDef.getXWidgetName().equals(xWidgetName)) {
-            return true;
-         }
-      }
-      return false;
-
    }
 
    public void removeRule(RuleDefinition ruleToRemove) {

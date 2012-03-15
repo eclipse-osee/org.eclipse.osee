@@ -6,6 +6,8 @@ package org.eclipse.osee.ats.core.client.workflow.transition;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.client.internal.Activator;
@@ -18,13 +20,14 @@ import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.util.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.client.validator.AtsXWidgetValidateManagerClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.log.LogType;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.ats.core.validator.WidgetResult;
 import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
@@ -269,17 +272,17 @@ public class TransitionManager {
                logStateStartedEvent(awa, toState, transitionDate, transitionUser);
 
                // Get transition to assignees
-               Collection<IAtsUser> toAssignees = new HashSet<IAtsUser>();
+               List<IAtsUser> toAssignees = new LinkedList<IAtsUser>();
                if (!toState.isCompletedOrCancelledPage()) {
                   if (helper.getToAssignees() != null) {
                      toAssignees.addAll(helper.getToAssignees());
                   }
                   if (toAssignees.contains(AtsUsers.getUnAssigned())) {
                      toAssignees.remove(AtsUsers.getUnAssigned());
-                     toAssignees.add(AtsUsers.getUser());
+                     toAssignees.add(AtsUsersClient.getUser());
                   }
                   if (toAssignees.isEmpty()) {
-                     toAssignees.add(AtsUsers.getUser());
+                     toAssignees.add(AtsUsersClient.getUser());
                   }
                }
 
@@ -338,7 +341,8 @@ public class TransitionManager {
       } else if (!toStateDef.isCancelledPage() && !isOverrideAttributeValidationState) {
 
          // Validate XWidgets for transition
-         Collection<WidgetResult> widgetResults = AtsXWidgetValidateManagerClient.validateTransition(awa, toStateDef);
+         Collection<WidgetResult> widgetResults =
+            AtsXWidgetValidateManagerClient.instance.validateTransition(awa, toStateDef);
          for (WidgetResult widgetResult : widgetResults) {
             if (!widgetResult.isValid()) {
                results.addResult(awa, widgetResult);
@@ -474,7 +478,7 @@ public class TransitionManager {
     */
    public IAtsUser getTransitionAsUser() throws OseeCoreException {
       if (transitionAsUser == null) {
-         return AtsUsers.getUser();
+         return AtsUsersClient.getUser();
       }
       return transitionAsUser;
    }

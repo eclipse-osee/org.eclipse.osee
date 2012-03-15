@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.config.copy.CopyAtsConfigurationOperationTest;
 import org.eclipse.osee.ats.config.copy.CopyAtsUtilTest;
 import org.eclipse.osee.ats.config.copy.CopyAtsValidationTest;
 import org.eclipse.osee.ats.core.client.config.AtsCoreClient_Config_Demo_PT_Suite;
+import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -38,6 +39,7 @@ public class AtsTest_Demo_Config_Suite {
    public static void setUp() throws Exception {
       OseeProperties.setIsInTest(true);
       System.out.println("\n\nBegin " + AtsTest_Demo_Config_Suite.class.getSimpleName());
+      DemoTestUtil.setUpTest();
    }
 
    @AfterClass

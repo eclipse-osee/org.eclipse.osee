@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import junit.framework.Assert;
-import org.eclipse.osee.ats.core.model.IAtsChildren;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -56,13 +55,13 @@ public class AtsUserTest {
    @org.junit.Test
    public void testRemove() throws OseeCoreException {
       Collection<IAtsUser> assignees = new HashSet<IAtsUser>();
-      assignees.add(AtsUsers.getUserFromToken(DemoUsers.Alex_Kay));
-      assignees.add(AtsUsers.getUserFromToken(DemoUsers.Joe_Smith));
+      assignees.add(AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay));
+      assignees.add(AtsUsersClient.getUserFromToken(DemoUsers.Joe_Smith));
       Assert.assertTrue(Collections.isEqual(assignees,
-         Arrays.asList(AtsUsers.getUserFromToken(DemoUsers.Alex_Kay), AtsUsers.getUserFromToken(DemoUsers.Joe_Smith))));
+         Arrays.asList(AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay), AtsUsersClient.getUserFromToken(DemoUsers.Joe_Smith))));
 
-      assignees.remove(AtsUsers.getUser());
-      Assert.assertTrue(Collections.isEqual(assignees, Arrays.asList(AtsUsers.getUserFromToken(DemoUsers.Alex_Kay))));
+      assignees.remove(AtsUsersClient.getUser());
+      Assert.assertTrue(Collections.isEqual(assignees, Arrays.asList(AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay))));
    }
 
    public IAtsUser getAtsUser(final String name, final String userId) {
@@ -79,11 +78,6 @@ public class AtsUserTest {
          }
 
          @Override
-         public Integer getIdInt() {
-            return null;
-         }
-
-         @Override
          public String getHumanReadableId() {
             return null;
          }
@@ -95,11 +89,6 @@ public class AtsUserTest {
 
          @Override
          public String getDescription() {
-            return null;
-         }
-
-         @Override
-         public IAtsChildren getAtsChildren() {
             return null;
          }
 

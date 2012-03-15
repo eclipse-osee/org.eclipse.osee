@@ -23,7 +23,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.internal.Activator;
@@ -110,7 +110,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
       UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New Originator", Active.Active);
       int result = ld.open();
       if (result == 0) {
-         IAtsUser selectedUser = AtsUsers.getUserFromOseeUser(ld.getSelection());
+         IAtsUser selectedUser = AtsUsersClient.getUserFromOseeUser(ld.getSelection());
          Date createdDate = new Date();
 
          for (AbstractWorkflowArtifact awa : awas) {
@@ -148,13 +148,13 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
       try {
          if (element instanceof AbstractWorkflowArtifact) {
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) element;
-            User origUser = AtsUsers.getOseeUser(awa.getCreatedBy());
+            User origUser = AtsUsersClient.getOseeUser(awa.getCreatedBy());
             return FrameworkArtifactImageProvider.getUserImage(Arrays.asList(origUser));
          }
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<User> users = new HashSet<User>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
-               users.add(AtsUsers.getOseeUser(team.getCreatedBy()));
+               users.add(AtsUsersClient.getOseeUser(team.getCreatedBy()));
             }
             return FrameworkArtifactImageProvider.getUserImage(users);
          }

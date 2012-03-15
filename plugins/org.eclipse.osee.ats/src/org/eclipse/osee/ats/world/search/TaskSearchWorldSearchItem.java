@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.version.VersionLockedType;
 import org.eclipse.osee.ats.core.client.version.VersionReleaseType;
 import org.eclipse.osee.ats.core.model.IAtsUser;
@@ -354,7 +354,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       if (assigneeCombo == null) {
          return null;
       }
-      return AtsUsers.getUserFromOseeUser(assigneeCombo.getUser());
+      return AtsUsersClient.getUserFromOseeUser(assigneeCombo.getUser());
    }
 
    public void setSelectedUser(User user) {

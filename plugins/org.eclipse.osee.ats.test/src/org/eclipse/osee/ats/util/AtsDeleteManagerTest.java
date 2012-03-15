@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.model.IAtsUser;
@@ -203,7 +203,7 @@ public class AtsDeleteManagerTest {
 
    private TeamWorkFlowArtifact createAction(TestNames testName, Collection<ActionableItemArtifact> actionableItems, SkynetTransaction transaction) throws OseeCoreException {
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsUsers.getUser();
+      IAtsUser createdBy = AtsUsersClient.getUser();
       Artifact actionArt =
          ActionManager.createAction(null, testName.name(), "Description", ChangeType.Improvement, "2", false, null,
             actionableItems, createdDate, createdBy, null, transaction);
@@ -221,7 +221,7 @@ public class AtsDeleteManagerTest {
       DecisionReviewArtifact decRev =
          DecisionReviewManager.createNewDecisionReview(teamArt, ReviewBlockType.None, testName.name(),
             TeamState.Endorse.getPageName(), "Description", DecisionReviewManager.getDefaultDecisionReviewOptions(),
-            Arrays.asList(AtsUsers.getUser()), createdDate, createdBy);
+            Arrays.asList(AtsUsersClient.getUser()), createdDate, createdBy);
       decRev.persist(transaction);
 
       return teamArt;

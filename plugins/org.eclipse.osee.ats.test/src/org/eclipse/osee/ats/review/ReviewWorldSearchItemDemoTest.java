@@ -17,11 +17,12 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.NavigateTestUtil;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.support.test.util.DemoUsers;
 
@@ -41,7 +42,7 @@ public class ReviewWorldSearchItemDemoTest {
 
    @org.junit.Test
    public void testAiSearch() throws Exception {
-      User joe = DemoTestUtil.getDemoUser(DemoUsers.Joe_Smith);
+      IAtsUser joe = AtsUsersClient.getUserFromToken(DemoUsers.Joe_Smith);
       Set<ActionableItemArtifact> aias = ActionableItemManagerCore.getActionableItems(Arrays.asList("SAW Code"));
       ReviewWorldSearchItem search =
          new ReviewWorldSearchItem("", aias, false, false, false, null, joe, null, null, null);
@@ -52,7 +53,7 @@ public class ReviewWorldSearchItemDemoTest {
 
    @org.junit.Test
    public void testState() throws Exception {
-      User joe = DemoTestUtil.getDemoUser(DemoUsers.Joe_Smith);
+      IAtsUser joe = AtsUsersClient.getUserFromToken(DemoUsers.Joe_Smith);
       Set<ActionableItemArtifact> aias = ActionableItemManagerCore.getActionableItems(Arrays.asList("SAW Code"));
       ReviewWorldSearchItem search =
          new ReviewWorldSearchItem("", aias, false, false, false, null, joe, null, null, "Prepare");
@@ -73,7 +74,7 @@ public class ReviewWorldSearchItemDemoTest {
 
    @org.junit.Test
    public void testAssignee_Kay() throws Exception {
-      User Kay_Jones = DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones);
+      IAtsUser Kay_Jones = AtsUsersClient.getUserFromToken(DemoUsers.Kay_Jones);
       Set<ActionableItemArtifact> aias = ActionableItemManagerCore.getActionableItems(Arrays.asList("SAW Code"));
       ReviewWorldSearchItem search =
          new ReviewWorldSearchItem("", aias, false, false, false, null, Kay_Jones, null, null, null);
@@ -84,7 +85,7 @@ public class ReviewWorldSearchItemDemoTest {
 
    @org.junit.Test
    public void testAssignee_Joe() throws Exception {
-      User Joe_Smith = DemoTestUtil.getDemoUser(DemoUsers.Joe_Smith);
+      IAtsUser Joe_Smith = AtsUsersClient.getUserFromToken(DemoUsers.Joe_Smith);
       ReviewWorldSearchItem search =
          new ReviewWorldSearchItem("", (List<String>) null, false, false, false, null, Joe_Smith, null, null, null);
       Collection<Artifact> arts = search.performSearchGetResults();

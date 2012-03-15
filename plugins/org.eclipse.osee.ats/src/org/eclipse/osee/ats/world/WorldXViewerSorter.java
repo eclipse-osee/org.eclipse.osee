@@ -14,9 +14,10 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
-import org.eclipse.osee.ats.column.AssigneeColumn;
+import org.eclipse.osee.ats.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
+import org.eclipse.osee.ats.core.column.AssigneeColumn;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -42,10 +43,10 @@ public class WorldXViewerSorter extends XViewerSorter {
          Artifact m1 = (Artifact) o1;
          Artifact m2 = (Artifact) o2;
 
-         if (sortXCol.equals(AssigneeColumn.getInstance())) {
+         if (sortXCol.equals(AssigneeColumnUI.getInstance())) {
             int compareInt =
-               getComparator().compare(AssigneeColumn.getAssigneeStr(m1).replaceFirst("\\(", ""),
-                  AssigneeColumn.getAssigneeStr(m2).replaceFirst("\\(", ""));
+               getComparator().compare(AssigneeColumn.instance.getAssigneeStr(m1).replaceFirst("\\(", ""),
+                  AssigneeColumn.instance.getAssigneeStr(m2).replaceFirst("\\(", ""));
             return getCompareBasedOnDirection(sortXCol, compareInt, viewer, o1, o2, sortXColIndex);
          } else if (sortXCol.equals(ChangeTypeColumn.getInstance())) {
             int compareInt =

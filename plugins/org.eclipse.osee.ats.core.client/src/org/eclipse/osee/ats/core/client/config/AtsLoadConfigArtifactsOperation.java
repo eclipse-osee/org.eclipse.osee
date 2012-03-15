@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -48,6 +49,7 @@ public class AtsLoadConfigArtifactsOperation extends AbstractOperation {
          loaded = true;
          OseeLog.log(Activator.class, Level.INFO, "Loading ATS Configuration");
          //         ElapsedTime time = new ElapsedTime("  - QueryListFromType");
+         AtsUsersClient.start();
          List<Artifact> artifactListFromType =
             ArtifactQuery.getArtifactListFromType(Arrays.asList(AtsArtifactTypes.TeamDefinition,
                AtsArtifactTypes.ActionableItem, AtsArtifactTypes.Version, AtsArtifactTypes.WorkDefinition),

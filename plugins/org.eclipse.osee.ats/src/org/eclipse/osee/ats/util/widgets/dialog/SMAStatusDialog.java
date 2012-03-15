@@ -99,7 +99,8 @@ public class SMAStatusDialog extends MessageDialog {
                percent.set(defaultPercent);
                percentSet = true;
             } else if (awas.size() == 1) {
-               percent.set(awas.iterator().next().getStateMgr().getPercentComplete());
+               AbstractWorkflowArtifact awa = awas.iterator().next();
+               percent.set(awa.getStateMgr().getPercentComplete(awa.getCurrentStateName()));
                percentSet = true;
             }
          } catch (Exception ex) {

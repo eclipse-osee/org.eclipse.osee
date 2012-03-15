@@ -14,7 +14,6 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCacheQueryTest;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPurgeTest;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTestSuite;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeInheritanceTest;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact_getLastModified;
@@ -25,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchStateTest;
 import org.eclipse.osee.framework.skynet.core.artifact.ChangeManagerTest;
 import org.eclipse.osee.framework.skynet.core.artifact.DuplicateHridTest;
 import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifactTest;
+import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifactsTest;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeTransactionTest;
 import org.eclipse.osee.framework.skynet.core.artifact.RelationDeletionTest;
 import org.eclipse.osee.framework.skynet.core.artifact.RelationOrderingTest;
@@ -85,7 +85,7 @@ import org.junit.runners.Suite;
    ArtifactTestSuite.class,
    RelationTestSuite.class,
    ArtifactTypeInheritanceTest.class,
-   ArtifactPurgeTest.class,
+   PurgeArtifactsTest.class,
    BranchPurgeTest.class,
    PurgeTransactionTest.class,
    Artifact_setAttributeValues.class,

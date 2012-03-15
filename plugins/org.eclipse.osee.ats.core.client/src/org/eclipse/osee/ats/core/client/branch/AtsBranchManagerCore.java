@@ -32,10 +32,10 @@ import org.eclipse.osee.ats.core.client.review.PeerReviewDefinitionManager;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.version.VersionArtifact;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.ats.core.workdef.DecisionReviewDefinition;
 import org.eclipse.osee.ats.core.workdef.PeerReviewDefinition;
 import org.eclipse.osee.ats.core.workdef.StateEventType;
@@ -616,7 +616,7 @@ public class AtsBranchManagerCore {
             SkynetTransaction transaction =
                TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Create Reviews upon Transition");
             createNecessaryBranchEventReviews(StateEventType.CreateBranch, teamArt, new Date(),
-               AtsUsers.getOseeSystemUser(), transaction);
+               AtsUsers.getSystemUser(), transaction);
             transaction.execute();
             return Status.OK_STATUS;
          }

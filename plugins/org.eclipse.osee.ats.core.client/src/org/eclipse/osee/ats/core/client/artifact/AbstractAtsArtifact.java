@@ -10,13 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.artifact;
 
+import org.eclipse.osee.ats.core.model.IAtsObject;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 
-public abstract class AbstractAtsArtifact extends Artifact {
+public abstract class AbstractAtsArtifact extends Artifact implements IAtsObject {
 
    public AbstractAtsArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);

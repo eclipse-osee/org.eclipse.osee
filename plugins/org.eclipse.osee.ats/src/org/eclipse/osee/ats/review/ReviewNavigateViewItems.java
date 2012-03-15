@@ -16,7 +16,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
@@ -67,7 +67,7 @@ public class ReviewNavigateViewItems implements XNavigateViewItems, IXNavigateCo
 
    public void addOseePeerSectionChildren(XNavigateItem item) throws OseeCoreException {
       try {
-         IAtsUser user = AtsUsers.getUser();
+         IAtsUser user = AtsUsersClient.getUser();
          items.add(new SearchNavigateItem(item, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
          items.add(new SearchNavigateItem(item, new MyReviewWorkflowItem("User's Reviews", null, ReviewState.InWork)));
       } catch (OseeCoreException ex) {

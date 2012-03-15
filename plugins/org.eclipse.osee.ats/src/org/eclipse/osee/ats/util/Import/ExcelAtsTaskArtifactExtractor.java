@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.model.IAtsUser;
@@ -114,7 +114,7 @@ public class ExcelAtsTaskArtifactExtractor {
          this.emailPOCs = emailPOCs;
          this.sma = sma;
          createdDate = new Date();
-         createdBy = AtsUsers.getUser();
+         createdBy = AtsUsersClient.getUser();
       }
 
       @Override
@@ -272,7 +272,7 @@ public class ExcelAtsTaskArtifactExtractor {
             } catch (Exception ex) {
                throw new OseeArgumentException("Invalid Hours Spent \"%s\" for row %d", str, rowNum);
             }
-            sma.getStateMgr().updateMetrics(sma.getStateDefinition(), hours, sma.getStateMgr().getPercentComplete(),
+            sma.getStateMgr().updateMetrics(sma.getStateDefinition(), hours, sma.getStateMgr().getPercentComplete(sma.getCurrentStateName()),
                true);
          }
       }
@@ -301,10 +301,10 @@ public class ExcelAtsTaskArtifactExtractor {
             userName = userName.replaceAll("\\+$", "");
             IAtsUser user = null;
             if (!Strings.isValid(userName)) {
-               user = AtsUsers.getUser();
+               user = AtsUsersClient.getUser();
             } else {
                try {
-                  user = AtsUsers.getUserByName(userName);
+                  user = AtsUsersClient.getUserByName(userName);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
@@ -312,7 +312,7 @@ public class ExcelAtsTaskArtifactExtractor {
             if (user == null) {
                OseeLog.logf(Activator.class, Level.SEVERE, "Invalid Assignee \"%s\" for row %d.  Using current user.",
                   userName, rowNum);
-               user = AtsUsers.getUser();
+               user = AtsUsersClient.getUser();
             }
             assignees.add(user);
          }
@@ -323,9 +323,9 @@ public class ExcelAtsTaskArtifactExtractor {
          String userName = row[i];
          IAtsUser user = null;
          if (!Strings.isValid(userName)) {
-            user = AtsUsers.getUser();
+            user = AtsUsersClient.getUser();
          } else {
-            user = AtsUsers.getUserByName(userName);
+            user = AtsUsersClient.getUserByName(userName);
          }
          if (user == null) {
             OseeLog.logf(Activator.class, Level.SEVERE,

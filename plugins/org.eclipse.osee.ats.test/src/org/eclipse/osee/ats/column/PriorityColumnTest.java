@@ -33,22 +33,22 @@ public class PriorityColumnTest {
 
       TeamWorkFlowArtifact reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
-      Assert.assertEquals("3", PriorityColumn.getInstance().getColumnText(reqArt, AssigneeColumn.getInstance(), 0));
+      Assert.assertEquals("3", PriorityColumn.getInstance().getColumnText(reqArt, PriorityColumn.getInstance(), 0));
 
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
-      Assert.assertEquals("3", PriorityColumn.getInstance().getColumnText(codeArt, AssigneeColumn.getInstance(), 0));
+      Assert.assertEquals("3", PriorityColumn.getInstance().getColumnText(codeArt, PriorityColumn.getInstance(), 0));
 
       PeerToPeerReviewArtifact peerArt =
          (PeerToPeerReviewArtifact) codeArt.getRelatedArtifact(AtsRelationTypes.TeamWorkflowToReview_Review);
-      Assert.assertEquals("", PriorityColumn.getInstance().getColumnText(peerArt, AssigneeColumn.getInstance(), 0));
+      Assert.assertEquals("", PriorityColumn.getInstance().getColumnText(peerArt, PriorityColumn.getInstance(), 0));
 
       TaskArtifact taskArt =
          (TaskArtifact) codeArt.getRelatedArtifacts(AtsRelationTypes.SmaToTask_Task).iterator().next();
-      Assert.assertEquals("", PriorityColumn.getInstance().getColumnText(taskArt, AssigneeColumn.getInstance(), 0));
+      Assert.assertEquals("", PriorityColumn.getInstance().getColumnText(taskArt, PriorityColumn.getInstance(), 0));
 
       Artifact actionArt = reqArt.getParentActionArtifact();
-      Assert.assertEquals("3", PriorityColumn.getInstance().getColumnText(actionArt, AssigneeColumn.getInstance(), 0));
+      Assert.assertEquals("3", PriorityColumn.getInstance().getColumnText(actionArt, PriorityColumn.getInstance(), 0));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

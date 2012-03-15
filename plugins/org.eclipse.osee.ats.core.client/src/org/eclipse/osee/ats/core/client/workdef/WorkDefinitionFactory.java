@@ -269,8 +269,8 @@ public class WorkDefinitionFactory {
    }
 
    public static WorkDefinition copyWorkDefinition(String newName, WorkDefinition workDef, XResultData resultData) {
-      ConvertWorkDefinitionToAtsDsl converter = new ConvertWorkDefinitionToAtsDsl(workDef, resultData);
-      AtsDsl atsDsl = converter.convert(newName);
+      ConvertWorkDefinitionToAtsDsl converter = new ConvertWorkDefinitionToAtsDsl(resultData);
+      AtsDsl atsDsl = converter.convert(newName, workDef);
 
       // Convert back to WorkDefinition
       ConvertAtsDslToWorkDefinition converter2 = new ConvertAtsDslToWorkDefinition(newName, atsDsl);

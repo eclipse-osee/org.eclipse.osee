@@ -19,6 +19,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.core.internal.Activator;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class WorkDefinition extends AbstractWorkDefItem {
 
    private final List<StateDefinition> states = new ArrayList<StateDefinition>(5);
@@ -72,12 +75,10 @@ public class WorkDefinition extends AbstractWorkDefItem {
          orderedPages.remove(completedPage);
          orderedPages.add(completedPage);
       }
-      // for (WorkPage wPage : orderedPages)
-      //    System.out.println("Ordered Page: - " + wPage);
       return orderedPages;
    }
 
-   private void getStatesOrderedByDefaultToState(StateDefinition stateDefinition, List<StateDefinition> pages) {
+   protected void getStatesOrderedByDefaultToState(StateDefinition stateDefinition, List<StateDefinition> pages) {
       if (pages.contains(stateDefinition)) {
          return;
       }
@@ -126,16 +127,6 @@ public class WorkDefinition extends AbstractWorkDefItem {
       return false;
    }
 
-   public List<RuleDefinition> getRulesStartsWith(String name) {
-      List<RuleDefinition> results = new ArrayList<RuleDefinition>();
-      for (RuleDefinition rule : rules) {
-         if (rule.getName().startsWith(name)) {
-            results.add(rule);
-         }
-      }
-      return results;
-   }
-
    public List<RuleDefinition> getRules() {
       return rules;
    }
@@ -162,6 +153,8 @@ public class WorkDefinition extends AbstractWorkDefItem {
       AbstractWorkDefItem other = (AbstractWorkDefItem) obj;
       if (getName() == null) {
          if (other.getName() != null) {
+            return false;
+         } else {
             return false;
          }
       } else if (!getName().equals(other.getName())) {

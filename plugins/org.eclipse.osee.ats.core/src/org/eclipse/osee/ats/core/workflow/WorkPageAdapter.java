@@ -19,7 +19,6 @@ import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * Provides enum like capabilities to Work Pages (like ordinal, values and valueOf) while providing for the inheritance
@@ -39,8 +38,6 @@ public abstract class WorkPageAdapter implements IWorkPage {
    private final String pageName;
 
    public WorkPageAdapter(Class<?> clazz, String pageName, WorkPageType workPageType) {
-      assert (Strings.isValid(pageName));
-      assert (workPageType != null);
       this.pageName = pageName;
       this.workPageType = workPageType;
       classAndNameToPage.put(clazz, pageName, this);

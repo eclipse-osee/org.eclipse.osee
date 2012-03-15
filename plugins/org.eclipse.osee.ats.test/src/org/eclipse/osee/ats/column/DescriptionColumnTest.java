@@ -31,11 +31,11 @@ public class DescriptionColumnTest {
       TeamWorkFlowArtifact reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       Assert.assertEquals("Problem with the Diagram View",
-         DescriptionColumn.getInstance().getColumnText(reqArt, AssigneeColumn.getInstance(), 0));
+         DescriptionColumn.getInstance().getColumnText(reqArt, DescriptionColumn.getInstance(), 0));
 
       Artifact actionArt = reqArt.getParentActionArtifact();
       Assert.assertEquals("Problem with the Diagram View",
-         DescriptionColumn.getInstance().getColumnText(actionArt, AssigneeColumn.getInstance(), 0));
+         DescriptionColumn.getInstance().getColumnText(actionArt, DescriptionColumn.getInstance(), 0));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

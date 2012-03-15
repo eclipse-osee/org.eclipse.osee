@@ -36,7 +36,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.version.VersionArtifact;
 import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
@@ -282,7 +282,7 @@ public class AtsTestUtil {
       teamDef.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, WORK_DEF_NAME);
       teamDef.setSoleAttributeValue(AtsAttributeTypes.Active, true);
       teamDef.setSoleAttributeValue(AtsAttributeTypes.TeamUsesVersions, true);
-      teamDef.addRelation(AtsRelationTypes.TeamLead_Lead, AtsUsers.getOseeUser());
+      teamDef.addRelation(AtsRelationTypes.TeamLead_Lead, AtsUsersClient.getOseeUser());
 
       testAi.addRelation(AtsRelationTypes.TeamActionableItem_Team, teamDef);
       testAi2.addRelation(AtsRelationTypes.TeamActionableItem_Team, teamDef);
@@ -299,7 +299,7 @@ public class AtsTestUtil {
 
       actionArt =
          ActionManager.createAction(null, getTitle("Team WF", postFixName), "description", ChangeType.Improvement, "1",
-            false, null, Arrays.asList(testAi), new Date(), AtsUsers.getUser(), null, transaction);
+            false, null, Arrays.asList(testAi), new Date(), AtsUsersClient.getUser(), null, transaction);
 
       teamArt = actionArt.getFirstTeam();
 
@@ -316,7 +316,7 @@ public class AtsTestUtil {
    public static TaskArtifact getOrCreateTaskOffTeamWf1() throws OseeCoreException {
       ensureLoaded();
       if (taskArtWf1 == null) {
-         taskArtWf1 = teamArt.createNewTask(getTitle("Task", postFixName), new Date(), AtsUsers.getUser());
+         taskArtWf1 = teamArt.createNewTask(getTitle("Task", postFixName), new Date(), AtsUsersClient.getUser());
          taskArtWf1.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, teamArt.getCurrentStateName());
          taskArtWf1.persist("AtsTestUtil - addTaskWf1");
       }
@@ -326,7 +326,7 @@ public class AtsTestUtil {
    public static TaskArtifact getOrCreateTaskOffTeamWf2() throws OseeCoreException {
       ensureLoaded();
       if (taskArtWf2 == null) {
-         taskArtWf2 = teamArt.createNewTask(getTitle("Task", postFixName), new Date(), AtsUsers.getUser());
+         taskArtWf2 = teamArt.createNewTask(getTitle("Task", postFixName), new Date(), AtsUsersClient.getUser());
          taskArtWf2.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, teamArt.getCurrentStateName());
          taskArtWf2.persist("AtsTestUtil - addTaskWf2");
       }
@@ -339,11 +339,11 @@ public class AtsTestUtil {
          List<DecisionReviewOption> options = new ArrayList<DecisionReviewOption>();
          options.add(new DecisionReviewOption(DecisionReviewState.Completed.getPageName(), false, null));
          options.add(new DecisionReviewOption(DecisionReviewState.Followup.getPageName(), true,
-            Arrays.asList(AtsUsers.getUser().getUserId())));
+            Arrays.asList(AtsUsersClient.getUser().getUserId())));
          decRevArt =
             DecisionReviewManager.createNewDecisionReview(teamArt, reviewBlockType,
                AtsTestUtil.class.getSimpleName() + " Test Decision Review", relatedToState.getPageName(),
-               "Decision Review", options, Arrays.asList(AtsUsers.getUser()), new Date(), AtsUsers.getUser());
+               "Decision Review", options, Arrays.asList(AtsUsersClient.getUser()), new Date(), AtsUsersClient.getUser());
       }
       return decRevArt;
    }
@@ -547,7 +547,7 @@ public class AtsTestUtil {
             TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName());
          actionArt2 =
             ActionManager.createAction(null, getTitle("Team WF2", postFixName), "description", ChangeType.Improvement,
-               "1", false, null, Arrays.asList(testAi2), new Date(), AtsUsers.getUser(), null, transaction);
+               "1", false, null, Arrays.asList(testAi2), new Date(), AtsUsersClient.getUser(), null, transaction);
 
          teamArt2 = actionArt2.getFirstTeam();
          transaction.execute();

@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.core.client.util.AtsCacheManager;
 import org.eclipse.osee.ats.core.client.version.VersionArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.workflow.WorkPageType;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -37,7 +38,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -64,7 +64,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
    private final Collection<String> teamDefNames;
    private final ChangeType changeType;
    private final Artifact versionArt;
-   private final User userArt;
+   private final IAtsUser userArt;
    private final ReleasedOption releasedOption;
    private final boolean includeCancelled;
    private final String stateName;
@@ -72,7 +72,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
    private IAttributeType attrValueSearchType;
    private final List<String> attrValueSearchOrValues = new ArrayList<String>();
 
-   public TeamWorldSearchItem(String displayName, List<String> teamDefNames, boolean includeCompleted, boolean includeCancelled, boolean showAction, boolean recurseChildren, ChangeType changeType, Artifact versionArt, User userArt, ReleasedOption releasedOption, String stateName) {
+   public TeamWorldSearchItem(String displayName, List<String> teamDefNames, boolean includeCompleted, boolean includeCancelled, boolean showAction, boolean recurseChildren, ChangeType changeType, Artifact versionArt, IAtsUser userArt, ReleasedOption releasedOption, String stateName) {
       super(displayName, AtsImage.TEAM_WORKFLOW);
       this.includeCancelled = includeCancelled;
       this.versionArt = versionArt;
@@ -86,7 +86,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
       this.stateName = stateName;
    }
 
-   public TeamWorldSearchItem(String displayName, Collection<TeamDefinitionArtifact> teamDefs, boolean includeCompleted, boolean includeCancelled, boolean showAction, boolean recurseChildren, Artifact versionArt, User userArt, ReleasedOption releasedOption, String stateName) {
+   public TeamWorldSearchItem(String displayName, Collection<TeamDefinitionArtifact> teamDefs, boolean includeCompleted, boolean includeCancelled, boolean showAction, boolean recurseChildren, Artifact versionArt, IAtsUser userArt, ReleasedOption releasedOption, String stateName) {
       super(displayName, AtsImage.TEAM_WORKFLOW);
       this.includeCancelled = includeCancelled;
       this.versionArt = versionArt;

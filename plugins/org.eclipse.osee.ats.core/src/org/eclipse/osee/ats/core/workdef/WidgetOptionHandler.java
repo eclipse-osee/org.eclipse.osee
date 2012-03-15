@@ -22,7 +22,9 @@ public class WidgetOptionHandler {
    private final Set<WidgetOption> options = new HashSet<WidgetOption>();
 
    public WidgetOptionHandler(WidgetOption... xOption) {
-      set(xOption);
+      for (WidgetOption item : xOption) {
+         add(item);
+      }
    }
 
    public static Collection<WidgetOption> getCollection(WidgetOption... ats) {
@@ -69,12 +71,6 @@ public class WidgetOptionHandler {
       options.add(xOption);
    }
 
-   public void add(WidgetOption... xOption) {
-      for (WidgetOption xOpt : xOption) {
-         add(xOpt);
-      }
-   }
-
    public void add(Collection<WidgetOption> xOption) {
       for (WidgetOption xOpt : xOption) {
          add(xOpt);
@@ -87,22 +83,6 @@ public class WidgetOptionHandler {
 
    public Set<WidgetOption> getXOptions() {
       return options;
-   }
-
-   public void set(Set<WidgetOption> options) {
-      this.options.clear();
-      // Must go through the add method to ensure values set properly
-      for (WidgetOption xOption : options) {
-         add(xOption);
-      }
-   }
-
-   public void set(WidgetOption options[]) {
-      this.options.clear();
-      // Must go through the add method to ensure values set properly
-      for (WidgetOption xOption : options) {
-         add(xOption);
-      }
    }
 
    @Override

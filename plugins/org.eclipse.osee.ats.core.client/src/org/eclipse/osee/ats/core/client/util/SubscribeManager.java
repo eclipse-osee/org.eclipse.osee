@@ -30,13 +30,13 @@ public class SubscribeManager {
 
    public static void addSubscribed(AbstractWorkflowArtifact workflow, IAtsUser user, SkynetTransaction transaction) throws OseeCoreException {
       if (!workflow.getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User).contains(user)) {
-         workflow.addRelation(AtsRelationTypes.SubscribedUser_User, AtsUsers.getOseeUser(user));
+         workflow.addRelation(AtsRelationTypes.SubscribedUser_User, AtsUsersClient.getOseeUser(user));
          workflow.persist(transaction);
       }
    }
 
    public static void removeSubscribed(AbstractWorkflowArtifact workflow, IAtsUser user, SkynetTransaction transaction) throws OseeCoreException {
-      workflow.deleteRelation(AtsRelationTypes.SubscribedUser_User, AtsUsers.getOseeUser(user));
+      workflow.deleteRelation(AtsRelationTypes.SubscribedUser_User, AtsUsersClient.getOseeUser(user));
       workflow.persist(transaction);
    }
 
@@ -47,14 +47,14 @@ public class SubscribeManager {
    public static List<IAtsUser> getSubscribed(AbstractWorkflowArtifact workflow) throws OseeCoreException {
       ArrayList<IAtsUser> arts = new ArrayList<IAtsUser>();
       for (Artifact art : workflow.getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User)) {
-         arts.add(AtsUsers.getUserFromOseeUser((User) art));
+         arts.add(AtsUsersClient.getUserFromOseeUser((User) art));
       }
       return arts;
    }
 
    public static boolean amISubscribed(AbstractWorkflowArtifact workflow) {
       try {
-         return isSubscribed(workflow, AtsUsers.getUser());
+         return isSubscribed(workflow, AtsUsersClient.getUser());
       } catch (OseeCoreException ex) {
          return false;
       }
@@ -69,14 +69,14 @@ public class SubscribeManager {
          SkynetTransaction transaction =
             TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Toggle Subscribed");
          for (AbstractWorkflowArtifact awa : awas) {
-            SubscribeManager.removeSubscribed(awa, AtsUsers.getUser(), transaction);
+            SubscribeManager.removeSubscribed(awa, AtsUsersClient.getUser(), transaction);
          }
          transaction.execute();
       } else {
          SkynetTransaction transaction =
             TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Toggle Subscribed");
          for (AbstractWorkflowArtifact awa : awas) {
-            SubscribeManager.addSubscribed(awa, AtsUsers.getUser(), transaction);
+            SubscribeManager.addSubscribed(awa, AtsUsersClient.getUser(), transaction);
          }
          transaction.execute();
       }

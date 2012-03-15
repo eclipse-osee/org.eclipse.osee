@@ -55,14 +55,14 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
             WorkDefinitionFactory.getWorkDefinition(AtsWorkDefinitionSheetProviders.WORK_DEF_TEAM_DEFAULT).getWorkDefinition();
 
          XResultData resultData = new XResultData();
-         ConvertWorkDefinitionToAtsDsl converter = new ConvertWorkDefinitionToAtsDsl(workDef, resultData);
-         AtsDsl atsDsl = converter.convert(workDef.getName());
+         ConvertWorkDefinitionToAtsDsl converter = new ConvertWorkDefinitionToAtsDsl(resultData);
+         AtsDsl atsDsl = converter.convert(workDef.getName(), workDef);
 
          String filename = workDef.getName() + IncrementingNum.get() + ".ats";
          File file = OseeData.getFile(filename);
          try {
             FileOutputStream outputStream = new FileOutputStream(file);
-            ModelUtil.saveModel(atsDsl, "ats:/ats_fileanme" + Lib.getDateTimeString() + ".ats", outputStream, true);
+            ModelUtil.saveModel(atsDsl, "ats:/ats_fileanme" + Lib.getDateTimeString() + ".ats", outputStream);
             String contents = Lib.fileToString(file);
 
             //            contents = cleanupContents(atsDsl, workDef, contents);

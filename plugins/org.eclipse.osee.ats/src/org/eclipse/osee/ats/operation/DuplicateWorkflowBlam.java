@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -25,7 +26,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkflowProviders;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.core.client.workflow.log.LogType;
@@ -127,12 +128,12 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Duplicate Workflow");
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsUsers.getUser();
+      IAtsUser createdBy = AtsUsersClient.getUser();
       for (TeamWorkFlowArtifact teamArt : teamArts) {
-         Collection<IAtsUser> assignees = new HashSet<IAtsUser>();
+         List<IAtsUser> assignees = new LinkedList<IAtsUser>();
          assignees.addAll(teamArt.getStateMgr().getAssignees());
-         if (!assignees.contains(AtsUsers.getUser())) {
-            assignees.add(AtsUsers.getUser());
+         if (!assignees.contains(AtsUsersClient.getUser())) {
+            assignees.add(AtsUsersClient.getUser());
          }
          TeamWorkFlowArtifact newTeamArt =
             ActionManager.createTeamWorkflow(teamArt.getParentActionArtifact(), teamArt.getTeamDefinition(),

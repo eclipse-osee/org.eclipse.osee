@@ -12,9 +12,6 @@ package org.eclipse.osee.ats.core.validator;
 
 import java.util.Arrays;
 import junit.framework.Assert;
-import org.eclipse.osee.ats.core.validator.AtsXListValidator;
-import org.eclipse.osee.ats.core.validator.WidgetResult;
-import org.eclipse.osee.ats.core.validator.WidgetStatus;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
 import org.eclipse.osee.ats.core.workdef.WidgetDefinitionListMinMaxSelectedConstraint;
@@ -94,6 +91,12 @@ public class AtsXListValidatorTest {
       provider = new MockValueProvider(Arrays.asList("this", "is"));
       result = validator.validateTransition(provider, widgetDef, fromStateDef, toStateDef);
       ValidatorTestUtil.assertValidResult(result);
+
+      // test nulls
+      constraint = new WidgetDefinitionListMinMaxSelectedConstraint((String) null, null);
+      Assert.assertEquals(null, constraint.getMinSelected());
+      Assert.assertEquals(null, constraint.getMaxSelected());
+
    }
 
 }

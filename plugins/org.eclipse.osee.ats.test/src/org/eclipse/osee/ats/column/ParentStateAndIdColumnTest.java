@@ -36,18 +36,19 @@ public class ParentStateAndIdColumnTest {
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
       Artifact actionArt = codeArt.getParentActionArtifact();
 
-      Assert.assertEquals("", ParentStateColumn.getInstance().getColumnText(codeArt, AssigneeColumn.getInstance(), 0));
+      Assert.assertEquals("", ParentStateColumn.getInstance().getColumnText(codeArt, ParentHridColumn.getInstance(), 0));
       Assert.assertEquals(actionArt.getHumanReadableId(),
-         ParentHridColumn.getInstance().getColumnText(codeArt, AssigneeColumn.getInstance(), 0));
+         ParentHridColumn.getInstance().getColumnText(codeArt, ParentHridColumn.getInstance(), 0));
 
       PeerToPeerReviewArtifact peerArt =
          (PeerToPeerReviewArtifact) codeArt.getRelatedArtifact(AtsRelationTypes.TeamWorkflowToReview_Review);
       Assert.assertEquals(TeamState.Implement.getPageName(),
-         ParentStateColumn.getInstance().getColumnText(peerArt, AssigneeColumn.getInstance(), 0));
+         ParentStateColumn.getInstance().getColumnText(peerArt, ParentHridColumn.getInstance(), 0));
       Assert.assertEquals(codeArt.getHumanReadableId(),
-         ParentHridColumn.getInstance().getColumnText(peerArt, AssigneeColumn.getInstance(), 0));
+         ParentHridColumn.getInstance().getColumnText(peerArt, ParentHridColumn.getInstance(), 0));
 
-      Assert.assertEquals("", ParentStateColumn.getInstance().getColumnText(actionArt, AssigneeColumn.getInstance(), 0));
+      Assert.assertEquals("",
+         ParentStateColumn.getInstance().getColumnText(actionArt, ParentHridColumn.getInstance(), 0));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

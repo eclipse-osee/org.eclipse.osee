@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workdef;
 
+/**
+ * @author Donald G. Dunne
+ */
 public enum RuleDefinitionOption {
 
    RequireStateHourSpentPrompt("StateDefinition Option: Will popup a dialog to prompt user for time spent in this state."),

@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.model.IAtsUser;
@@ -127,7 +127,7 @@ public class AtsNotificationManager {
       notify(sma, null, notifyTypes);
    }
 
-   public static void notify(AbstractWorkflowArtifact awa, Collection<IAtsUser> notifyUsers, AtsNotifyType... notifyTypes) throws OseeCoreException {
+   public static void notify(AbstractWorkflowArtifact awa, Collection<? extends IAtsUser> notifyUsers, AtsNotifyType... notifyTypes) throws OseeCoreException {
       if (isInTest() || !AtsUtilCore.isEmailEnabled() || !isProduction() || awa.getName().startsWith("tt ")) {
          return;
       }
@@ -137,12 +137,12 @@ public class AtsNotificationManager {
    public static List<EmailGroup> getEmailableGroups(AbstractWorkflowArtifact workflow) throws OseeCoreException {
       ArrayList<EmailGroup> groupNames = new ArrayList<EmailGroup>();
       ArrayList<String> emails = new ArrayList<String>();
-      emails.add(UserManager.getEmail(AtsUsers.getOseeUser(workflow.getCreatedBy())));
+      emails.add(UserManager.getEmail(AtsUsersClient.getOseeUser(workflow.getCreatedBy())));
       groupNames.add(new EmailGroup("Originator", emails));
       if (workflow.getStateMgr().getAssignees().size() > 0) {
          emails = new ArrayList<String>();
          for (IAtsUser u : workflow.getStateMgr().getAssignees()) {
-            emails.add(UserManager.getEmail(AtsUsers.getOseeUser(u)));
+            emails.add(UserManager.getEmail(AtsUsersClient.getOseeUser(u)));
          }
          groupNames.add(new EmailGroup("Assignees", emails));
       }

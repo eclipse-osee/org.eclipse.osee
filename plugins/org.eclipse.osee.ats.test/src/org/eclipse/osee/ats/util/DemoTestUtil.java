@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.core.client.config.TeamDefinitionManagerCore;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.internal.Activator;
@@ -98,7 +98,7 @@ public class DemoTestUtil {
       Artifact actionArt =
          ActionManager.createAction(null, title, "Description", ChangeType.Improvement, "2", false, null,
             ActionableItemManagerCore.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
-            new Date(), AtsUsers.getUser(), null, transaction);
+            new Date(), AtsUsersClient.getUser(), null, transaction);
 
       TeamWorkFlowArtifact teamArt = null;
       for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
@@ -123,7 +123,7 @@ public class DemoTestUtil {
       Collection<TeamDefinitionArtifact> teamDefs = TeamDefinitionManagerCore.getImpactedTeamDefs(actionableItems);
 
       ActionManager.createTeamWorkflow(actionArt, teamDefs.iterator().next(), actionableItems,
-         Arrays.asList(AtsUsers.getUser()), transaction, new Date(), AtsUsers.getUser(), null);
+         Arrays.asList(AtsUsersClient.getUser()), transaction, new Date(), AtsUsersClient.getUser(), null);
 
       TeamWorkFlowArtifact teamArt = null;
       for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
@@ -142,7 +142,7 @@ public class DemoTestUtil {
       for (int x = 1; x < numTasks + 1; x++) {
          names.add(title + " " + x);
       }
-      return teamArt.createTasks(names, Arrays.asList(AtsUsers.getUser()), new Date(), AtsUsers.getUser(), transaction);
+      return teamArt.createTasks(names, Arrays.asList(AtsUsersClient.getUser()), new Date(), AtsUsersClient.getUser(), transaction);
    }
 
    public static TeamWorkFlowArtifact getToolsTeamWorkflow() throws OseeCoreException {
@@ -208,7 +208,7 @@ public class DemoTestUtil {
          // Confirm user is Joe Smith
          Assert.assertTrue(
             "Authenticated user should be \"Joe Smith\" and is not.  Check that Demo Application Server is being run.",
-            AtsUsers.getUser().getUserId().equals("Joe Smith"));
+            AtsUsersClient.getUser().getUserId().equals("Joe Smith"));
       } catch (OseeAuthenticationException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          Assert.fail("Can't authenticate, either Demo Application Server is not running or Demo DbInit has not been performed");

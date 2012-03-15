@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.model.IAtsUser;
@@ -61,7 +61,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
          return;
       }
       createdDate = new Date();
-      createdBy = AtsUsers.getUser();
+      createdBy = AtsUsersClient.getUser();
       SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), getName());
       GoalArtifact sawCodeGoal = GoalManager.createGoal("SAW Code");
       GoalArtifact sawTestGoal = GoalManager.createGoal("SAW Test");

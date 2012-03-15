@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
@@ -54,7 +54,7 @@ public class AtsQueryPerformanceTests {
    @org.junit.Test
    public void testUserWorldSearch() throws Exception {
       AtsBulkLoad.loadConfig(true);
-      IAtsUser user = AtsUsers.getUserByName("Finkbeiner, Andrew M");
+      IAtsUser user = AtsUsersClient.getUserByName("Finkbeiner, Andrew M");
       assertNotNull("User does not exist", user);
       MyWorldSearchItem search = new MyWorldSearchItem();
       long startTime = System.currentTimeMillis();

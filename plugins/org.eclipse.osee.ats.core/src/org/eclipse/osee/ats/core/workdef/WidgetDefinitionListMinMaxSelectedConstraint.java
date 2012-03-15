@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workdef;
 
-
 /**
  * @author Donald G. Dunne
  */
@@ -23,14 +22,10 @@ public class WidgetDefinitionListMinMaxSelectedConstraint implements WidgetConst
    }
 
    public WidgetDefinitionListMinMaxSelectedConstraint(String minSelected, String maxSelected) {
-      if (minSelected == null) {
-         this.minSelected = null;
-      } else {
+      if (minSelected != null) {
          this.minSelected = new Integer(minSelected);
       }
-      if (maxSelected == null) {
-         this.maxSelected = null;
-      } else {
+      if (maxSelected != null) {
          this.maxSelected = new Integer(maxSelected);
       }
    }

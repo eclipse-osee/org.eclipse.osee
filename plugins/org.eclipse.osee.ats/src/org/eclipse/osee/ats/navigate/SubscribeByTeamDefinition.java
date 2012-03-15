@@ -14,7 +14,7 @@ package org.eclipse.osee.ats.navigate;
 import java.util.List;
 import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionCheckTreeDialog;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -43,15 +43,15 @@ public class SubscribeByTeamDefinition extends XNavigateItemAction {
             "Select Team Definition\n\nEmail will be sent for every Action created against these Teams.", Active.Active);
       try {
          List<TeamDefinitionArtifact> objs =
-            Collections.castAll(AtsUsers.getOseeUser().getRelatedArtifactsOfType(
+            Collections.castAll(AtsUsersClient.getOseeUser().getRelatedArtifactsOfType(
                AtsRelationTypes.SubscribedUser_Artifact, TeamDefinitionArtifact.class));
          diag.setInitialTeamDefs(objs);
          if (diag.open() != 0) {
             return;
          }
-         AtsUsers.getOseeUser().setRelationsOfTypeUseCurrentOrder(AtsRelationTypes.SubscribedUser_Artifact,
+         AtsUsersClient.getOseeUser().setRelationsOfTypeUseCurrentOrder(AtsRelationTypes.SubscribedUser_Artifact,
             diag.getChecked(), TeamDefinitionArtifact.class);
-         AtsUsers.getOseeUser().persist(getClass().getSimpleName());
+         AtsUsersClient.getOseeUser().persist(getClass().getSimpleName());
          AWorkbench.popup(getName(), "Subscriptions updated.");
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

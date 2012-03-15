@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workdef;
 
-
+/**
+ * @author Donald G. Dunne
+ */
 public class AbstractWorkDefItem {
 
    private String name;

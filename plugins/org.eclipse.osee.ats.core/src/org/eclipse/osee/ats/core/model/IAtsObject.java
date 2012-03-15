@@ -20,7 +20,4 @@ public interface IAtsObject {
 
    public String getHumanReadableId();
 
-   public IAtsChildren getAtsChildren();
-
-   public Integer getIdInt();
 }

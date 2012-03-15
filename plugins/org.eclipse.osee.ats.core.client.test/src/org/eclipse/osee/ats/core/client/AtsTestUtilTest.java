@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.client;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
@@ -126,13 +126,13 @@ public class AtsTestUtilTest extends AtsTestUtil {
       SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "test");
 
       Result result =
-         AtsTestUtil.transitionTo(AtsTestUtilState.Implement, AtsUsers.getUser(), transaction,
+         AtsTestUtil.transitionTo(AtsTestUtilState.Implement, AtsUsersClient.getUser(), transaction,
             TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       Assert.assertEquals(Result.TrueResult, result);
       Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Implement.getPageName());
 
       result =
-         AtsTestUtil.transitionTo(AtsTestUtilState.Completed, AtsUsers.getUser(), transaction,
+         AtsTestUtil.transitionTo(AtsTestUtilState.Completed, AtsUsersClient.getUser(), transaction,
             TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       Assert.assertEquals(Result.TrueResult, result);
       Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Completed.getPageName());
@@ -155,7 +155,7 @@ public class AtsTestUtilTest extends AtsTestUtil {
       SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "test");
 
       Result result =
-         AtsTestUtil.transitionTo(AtsTestUtilState.Cancelled, AtsUsers.getUser(), transaction,
+         AtsTestUtil.transitionTo(AtsTestUtilState.Cancelled, AtsUsersClient.getUser(), transaction,
             TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       Assert.assertEquals(Result.TrueResult, result);
       Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Cancelled.getPageName());

@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.version.VersionArtifact;
 import org.eclipse.osee.ats.core.client.version.VersionLockedType;
@@ -70,7 +70,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
 
             // Validate team lead status
             if (!AtsUtilCore.isAtsAdmin() && !verArt.getParentTeamDefinition().getLeads().contains(
-               AtsUsers.getUser())) {
+               AtsUsersClient.getUser())) {
                AWorkbench.popup("ERROR", "Only lead can release version.");
                return;
             }

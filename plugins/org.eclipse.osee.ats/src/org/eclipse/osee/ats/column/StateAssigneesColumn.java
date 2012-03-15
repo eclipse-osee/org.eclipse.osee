@@ -18,10 +18,8 @@ import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.StateManager;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -57,18 +55,12 @@ public class StateAssigneesColumn extends XViewerAtsColumn implements IXViewerVa
          if (element instanceof AbstractWorkflowArtifact) {
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) element;
             Set<IAtsUser> users = new HashSet<IAtsUser>();
-            StateDefinition state = awa.getStateDefinitionByName(stateName);
-            if (state != null) {
-               users.addAll(StateManager.getAssigneesByState(awa, state));
-            }
+            users.addAll(awa.getStateMgr().getAssignees(stateName));
             return AtsObjects.toString(";", users);
          } else if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<IAtsUser> users = new HashSet<IAtsUser>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
-               StateDefinition state = team.getStateDefinitionByName(stateName);
-               if (state != null) {
-                  users.addAll(StateManager.getAssigneesByState(team, state));
-               }
+               users.addAll(team.getStateMgr().getAssignees(stateName));
             }
             return AtsObjects.toString(";", users);
 

@@ -16,7 +16,7 @@ import java.util.Date;
 import org.eclipse.osee.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
@@ -54,7 +54,8 @@ public class CancelledDateColumnTest {
          DemoTestUtil.createSimpleAction(CancelledDateColumnTest.class.getSimpleName(), transaction);
       transaction.execute();
 
-      Assert.assertEquals("", CancelledDateColumn.getInstance().getColumnText(teamArt, AssigneeColumn.getInstance(), 0));
+      Assert.assertEquals("",
+         CancelledDateColumn.getInstance().getColumnText(teamArt, CancelledDateColumn.getInstance(), 0));
       Date date = CancelledDateColumn.getDate(teamArt);
       Assert.assertNull(date);
       Assert.assertEquals("", CancelledDateColumn.getDateStr(teamArt));
@@ -71,11 +72,11 @@ public class CancelledDateColumnTest {
       Assert.assertNotNull(date);
       Assert.assertEquals(DateUtil.getMMDDYYHHMM(date), CancelledDateColumn.getDateStr(teamArt));
       Assert.assertEquals(DateUtil.getMMDDYYHHMM(date),
-         CancelledDateColumn.getInstance().getColumnText(teamArt, AssigneeColumn.getInstance(), 0));
+         CancelledDateColumn.getInstance().getColumnText(teamArt, CancelledDateColumn.getInstance(), 0));
 
       helper =
          new TransitionHelper("Transition to Endorse", Arrays.asList(teamArt), TeamState.Endorse.getPageName(),
-            Collections.singleton(AtsUsers.getUser()), null, TransitionOption.OverrideTransitionValidityCheck,
+            Collections.singleton(AtsUsersClient.getUser()), null, TransitionOption.OverrideTransitionValidityCheck,
             TransitionOption.OverrideAssigneeCheck);
       transitionMgr = new TransitionManager(helper);
       results = transitionMgr.handleAll();
@@ -83,7 +84,7 @@ public class CancelledDateColumnTest {
       transitionMgr.getTransaction().execute();
 
       Assert.assertEquals("Cancelled date should be blank again", "",
-         CancelledDateColumn.getInstance().getColumnText(teamArt, AssigneeColumn.getInstance(), 0));
+         CancelledDateColumn.getInstance().getColumnText(teamArt, CancelledDateColumn.getInstance(), 0));
       date = CancelledDateColumn.getDate(teamArt);
       Assert.assertNull(date);
 

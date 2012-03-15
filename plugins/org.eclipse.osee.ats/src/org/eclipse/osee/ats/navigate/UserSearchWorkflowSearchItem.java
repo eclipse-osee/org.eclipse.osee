@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.version.VersionLockedType;
 import org.eclipse.osee.ats.core.client.version.VersionReleaseType;
 import org.eclipse.osee.ats.core.model.IAtsUser;
@@ -248,12 +248,12 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       if (userCombo == null) {
          return null;
       }
-      return AtsUsers.getUserFromOseeUser(userCombo.getUser());
+      return AtsUsersClient.getUserFromOseeUser(userCombo.getUser());
    }
 
    public void setSelectedUser(IAtsUser user) throws OseeCoreException {
       if (userCombo != null) {
-         userCombo.set(AtsUsers.getOseeUser(user));
+         userCombo.set(AtsUsersClient.getOseeUser(user));
       }
    }
 

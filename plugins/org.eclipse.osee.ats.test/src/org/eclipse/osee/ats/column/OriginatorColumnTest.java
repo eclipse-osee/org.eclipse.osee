@@ -33,11 +33,11 @@ public class OriginatorColumnTest {
       TeamWorkFlowArtifact reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       Assert.assertEquals(UserManager.getUser(DemoUsers.Joe_Smith).getName(),
-         OriginatorColumn.getInstance().getColumnText(reqArt, AssigneeColumn.getInstance(), 0));
+         OriginatorColumn.getInstance().getColumnText(reqArt, OriginatorColumn.getInstance(), 0));
 
       Artifact actionArt = reqArt.getParentActionArtifact();
       Assert.assertEquals(UserManager.getUser(DemoUsers.Joe_Smith).getName(),
-         OriginatorColumn.getInstance().getColumnText(actionArt, AssigneeColumn.getInstance(), 0));
+         OriginatorColumn.getInstance().getColumnText(actionArt, OriginatorColumn.getInstance(), 0));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

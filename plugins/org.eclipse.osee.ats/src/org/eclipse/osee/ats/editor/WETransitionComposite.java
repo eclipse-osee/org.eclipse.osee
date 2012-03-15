@@ -24,7 +24,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.transition.ITransitionHelper;
@@ -416,14 +416,14 @@ public class WETransitionComposite extends Composite {
       }
       UserCheckTreeDialog uld = new UserCheckTreeDialog();
       uld.setMessage("Select users to transition to.");
-      uld.setInitialSelections(AtsUsers.getOseeUsers(aba.getTransitionAssignees()));
+      uld.setInitialSelections(AtsUsersClient.getOseeUsers(aba.getTransitionAssignees()));
       if (awa.getParentTeamWorkflow() != null) {
-         uld.setTeamMembers(AtsUsers.getOseeUsers(awa.getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads()));
+         uld.setTeamMembers(AtsUsersClient.getOseeUsers(awa.getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads()));
       }
       if (uld.open() != 0) {
          return;
       }
-      Collection<IAtsUser> users = AtsUsers.getAtsUsers(uld.getUsersSelected());
+      Collection<IAtsUser> users = AtsUsersClient.getAtsUsers(uld.getUsersSelected());
       if (users.isEmpty()) {
          AWorkbench.popup("ERROR", "Must have at least one assignee");
          return;

@@ -151,11 +151,11 @@ public class AtsWorkDefinitionProvider {
    };
 
    public String workFlowDefinitionToString(WorkDefinition workDef, XResultData resultData) throws OseeCoreException {
-      ConvertWorkDefinitionToAtsDsl converter = new ConvertWorkDefinitionToAtsDsl(workDef, resultData);
-      AtsDsl atsDsl = converter.convert(workDef.getName());
+      ConvertWorkDefinitionToAtsDsl converter = new ConvertWorkDefinitionToAtsDsl(resultData);
+      AtsDsl atsDsl = converter.convert(workDef.getName(), workDef);
       try {
          StringOutputStream writer = new StringOutputStream();
-         ModelUtil.saveModel(atsDsl, "ats:/mock" + Lib.getDateTimeString() + ".ats", writer, false);
+         ModelUtil.saveModel(atsDsl, "ats:/mock" + Lib.getDateTimeString() + ".ats", writer);
          return writer.toString();
       } catch (Exception ex) {
          throw new OseeWrappedException(ex);
@@ -243,12 +243,12 @@ public class AtsWorkDefinitionProvider {
    }
 
    public void convertAndOpenAtsDsl(WorkDefinition workDef, XResultData resultData, String filename) throws OseeCoreException {
-      ConvertWorkDefinitionToAtsDsl converter = new ConvertWorkDefinitionToAtsDsl(workDef, resultData);
-      AtsDsl atsDsl = converter.convert(filename.replaceFirst("\\.ats", ""));
+      ConvertWorkDefinitionToAtsDsl converter = new ConvertWorkDefinitionToAtsDsl(resultData);
+      AtsDsl atsDsl = converter.convert(filename.replaceFirst("\\.ats", ""), workDef);
       File file = OseeData.getFile(filename);
       try {
          FileOutputStream outputStream = new FileOutputStream(file);
-         ModelUtil.saveModel(atsDsl, "ats:/ats_fileanme" + Lib.getDateTimeString() + ".ats", outputStream, false);
+         ModelUtil.saveModel(atsDsl, "ats:/ats_fileanme" + Lib.getDateTimeString() + ".ats", outputStream);
          String contents = Lib.fileToString(file);
          Lib.writeStringToFile(contents, file);
          IFile iFile = OseeData.getIFile(filename);
@@ -265,7 +265,7 @@ public class AtsWorkDefinitionProvider {
       File file = OseeData.getFile("AIsAndTeams.ats");
       try {
          FileOutputStream outputStream = new FileOutputStream(file);
-         ModelUtil.saveModel(atsDsl, "ats:/ats_fileanme" + Lib.getDateTimeString() + ".ats", outputStream, false);
+         ModelUtil.saveModel(atsDsl, "ats:/ats_fileanme" + Lib.getDateTimeString() + ".ats", outputStream);
          String contents = Lib.fileToString(file);
 
          //         contents = cleanupContents(atsDsl, null, contents);

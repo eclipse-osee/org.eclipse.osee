@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.validator;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
@@ -19,38 +19,32 @@ import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
  * @author Donald G. Dunne
  */
 public class AtsXWidgetValidateManager {
-   private static List<IAtsXWidgetValidator> atsValidators;
    public static AtsXWidgetValidateManager instance = new AtsXWidgetValidateManager();
+   private final List<AtsXWidgetValidatorProvider> providers = new LinkedList<AtsXWidgetValidatorProvider>();
 
-   private AtsXWidgetValidateManager() {
-      atsValidators = new ArrayList<IAtsXWidgetValidator>();
-      atsValidators.add(new AtsXIntegerValidator());
-      atsValidators.add(new AtsXFloatValidator());
-      atsValidators.add(new AtsXTextValidator());
-      atsValidators.add(new AtsXDateValidator());
-      atsValidators.add(new AtsXComboValidator());
-      atsValidators.add(new AtsXComboBooleanValidator());
-      atsValidators.add(new AtsXListValidator());
-
+   protected AtsXWidgetValidateManager() {
    }
 
-   public void validateTransition(List<WidgetResult> results, IValueProvider provider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef) {
-      for (IAtsXWidgetValidator validator : atsValidators) {
-         try {
-            WidgetResult status = validator.validateTransition(provider, widgetDef, fromStateDef, toStateDef);
-            if (!status.isValid()) {
-               results.add(status);
+   public void validateTransition(List<WidgetResult> results, IValueProvider valueProvider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef) {
+      for (AtsXWidgetValidatorProvider provider : providers) {
+         for (IAtsXWidgetValidator validator : provider.getValidators()) {
+            try {
+               WidgetResult status = validator.validateTransition(valueProvider, widgetDef, fromStateDef, toStateDef);
+               if (!status.isValid()) {
+                  results.add(status);
+               }
+            } catch (Exception ex) {
+               results.add(new WidgetResult(WidgetStatus.Exception, widgetDef, ex, String.format(
+                  "Exception retriving validation for widget [%s] Exception [%s]",
+                  validator.getClass().getSimpleName(), ex.getLocalizedMessage()), ex));
+               return;
             }
-         } catch (Exception ex) {
-            results.add(new WidgetResult(WidgetStatus.Exception, widgetDef, ex, String.format(
-               "Exception retriving validation for widget [%s] Exception [%s]", validator.getClass().getSimpleName(),
-               ex.getLocalizedMessage()), ex));
-            return;
          }
       }
    }
 
-   public static void add(IAtsXWidgetValidator iAtsXWidgetValidator) {
-      atsValidators.add(iAtsXWidgetValidator);
+   public void add(AtsXWidgetValidatorProvider provider) {
+      providers.add(provider);
    }
+
 }

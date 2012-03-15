@@ -43,7 +43,8 @@ public class HoursSpentUtil {
          return hours;
       }
       if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-         return getHoursSpentTotal(artifact, new StateManager((AbstractWorkflowArtifact) artifact).getCurrentState());
+         AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
+         return getHoursSpentTotal(artifact, awa.getStateMgr().getCurrentState());
       }
       return 0;
    }
@@ -147,7 +148,7 @@ public class HoursSpentUtil {
     */
    public static double getHoursSpentSMAState(Artifact artifact, IWorkPage state) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-         return WorkflowManagerCore.getStateManager(artifact).getHoursSpent(state);
+         return WorkflowManagerCore.getStateManager(artifact).getHoursSpent(state.getPageName());
       }
       return 0;
    }

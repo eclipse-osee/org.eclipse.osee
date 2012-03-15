@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.navigate;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
@@ -57,7 +57,7 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
                SystemGroup.OseeAdmin.setTemporaryOverride(true);
             } else {
                AtsGroup.AtsAdmin.removeTemporaryOverride();
-               SystemGroup.OseeAdmin.addMember(AtsUsers.getOseeUser());
+               SystemGroup.OseeAdmin.addMember(AtsUsersClient.getOseeUser());
             }
             AtsNavigateViewItems.getInstance().clearCaches();
             for (SMAEditor editor : SMAEditor.getSmaEditors()) {

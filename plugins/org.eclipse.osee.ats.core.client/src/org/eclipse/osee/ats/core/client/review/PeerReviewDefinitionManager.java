@@ -14,11 +14,11 @@ import java.util.Collection;
 import java.util.Date;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.log.LogType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionAdapter;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.ats.core.workdef.PeerReviewDefinition;
 import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.core.workdef.StateEventType;
@@ -39,7 +39,7 @@ public class PeerReviewDefinitionManager extends TransitionAdapter {
     * Creates PeerToPeer review if one of same name doesn't already exist
     */
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(PeerReviewDefinition peerRevDef, SkynetTransaction transaction, TeamWorkFlowArtifact teamArt, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
-      String title = peerRevDef.getTitle();
+      String title = peerRevDef.getReviewTitle();
       if (!Strings.isValid(title)) {
          title = String.format("Review [%s]", teamArt.getName());
       }
@@ -78,7 +78,7 @@ public class PeerReviewDefinitionManager extends TransitionAdapter {
          return;
       }
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsUsers.getOseeSystemUser();
+      IAtsUser createdBy = AtsUsers.getSystemUser();
       TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) sma;
 
       for (PeerReviewDefinition peerRevDef : teamArt.getStateDefinition().getPeerReviews()) {

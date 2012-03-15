@@ -15,7 +15,7 @@ import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.model.IAtsUser;
@@ -55,7 +55,7 @@ public class PrivilegedEditAction extends AbstractAtsAction {
       } else {
          Set<IAtsUser> users = PrivilegedUserManager.getPrivilegedUsers(sma);
          if (AtsUtilCore.isAtsAdmin()) {
-            users.add(AtsUsers.getUser());
+            users.add(AtsUsersClient.getUser());
          }
          StringBuffer stringBuffer = new StringBuffer();
          for (IAtsUser user : users) {
@@ -63,7 +63,7 @@ public class PrivilegedEditAction extends AbstractAtsAction {
             stringBuffer.append("\n");
          }
          String buttons[];
-         boolean iAmPrivileged = users.contains(AtsUsers.getUser());
+         boolean iAmPrivileged = users.contains(AtsUsersClient.getUser());
          if (iAmPrivileged) {
             buttons = new String[] {"Override and Edit", "Cancel"};
          } else {

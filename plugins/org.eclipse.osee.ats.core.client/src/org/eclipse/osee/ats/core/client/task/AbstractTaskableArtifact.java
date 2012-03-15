@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.util.AtsCacheManager;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
@@ -99,16 +99,16 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
    }
 
    public TaskArtifact createNewTask(String title, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
-      return createNewTask(Arrays.asList(AtsUsers.getUser()), title, createdDate, createdBy);
+      return createNewTask(Arrays.asList(AtsUsersClient.getUser()), title, createdDate, createdBy);
    }
 
-   public TaskArtifact createNewTask(Collection<IAtsUser> assignees, String title, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
+   public TaskArtifact createNewTask(List<? extends IAtsUser> assignees, String title, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
       TaskArtifact taskArt = null;
       taskArt =
          (TaskArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Task, AtsUtilCore.getAtsBranch(), title);
 
       addRelation(AtsRelationTypes.SmaToTask_Task, taskArt);
-      taskArt.initializeNewStateMachine(assignees, new Date(), (createdBy == null ? AtsUsers.getUser() : createdBy));
+      taskArt.initializeNewStateMachine(assignees, new Date(), (createdBy == null ? AtsUsersClient.getUser() : createdBy));
 
       // Set parent state task is related to
       taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, getStateMgr().getCurrentStateName());

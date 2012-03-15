@@ -14,14 +14,10 @@ import static org.eclipse.osee.framework.jdk.core.util.Strings.intern;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.logging.Level;
-import org.eclipse.osee.ats.core.client.internal.Activator;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
@@ -39,19 +35,13 @@ public class LogItem {
       this(type.name(), String.valueOf(date.getTime()), user.getUserId(), state, msg, hrid);
    }
 
-   public LogItem(LogType type, String date, String userId, String state, String msg, String hrid) throws OseeCoreException {
+   public LogItem(LogType type, String date, String userId, String state, String msg, String hrid) {
       Long dateLong = Long.valueOf(date);
       this.date = new Date(dateLong.longValue());
       this.msg = msg;
       this.state = intern(state);
       this.userId = intern(userId);
-      try {
-         this.user = AtsUsers.getUserByUserId(userId);
-      } catch (UserNotInDatabase ex) {
-         this.user = AtsUsers.getGuestUser();
-         OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error parsing ATS Log for %s - %s", hrid,
-            ex.getLocalizedMessage());
-      }
+      this.user = AtsUsers.getUser(userId);
       this.type = type;
    }
 

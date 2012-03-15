@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workdef.ConvertAtsDslToWorkDefinition;
 import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
@@ -130,8 +130,8 @@ public class AtsConfigManager extends AbstractOperation {
       if (versionNames == null || versionNames.size() > 0) {
          teamDefinition.setSoleAttributeValue(AtsAttributeTypes.TeamUsesVersions, true);
       }
-      teamDefinition.addRelation(AtsRelationTypes.TeamLead_Lead, AtsUsers.getOseeUser());
-      teamDefinition.addRelation(AtsRelationTypes.TeamMember_Member, AtsUsers.getOseeUser());
+      teamDefinition.addRelation(AtsRelationTypes.TeamLead_Lead, AtsUsersClient.getOseeUser());
+      teamDefinition.addRelation(AtsRelationTypes.TeamMember_Member, AtsUsersClient.getOseeUser());
       AtsUtilCore.getFromToken(AtsArtifactToken.TopTeamDefinition).addChild(teamDefinition);
       teamDefinition.persist(transaction);
       return teamDefinition;
@@ -208,8 +208,8 @@ public class AtsConfigManager extends AbstractOperation {
          WorkDefinitionFactory.getWorkDefinition(AtsWorkDefinitionSheetProviders.WORK_DEF_TEAM_DEFAULT).getWorkDefinition();
 
       // Duplicate default team workflow definition w/ namespace changes
-      ConvertWorkDefinitionToAtsDsl converter = new ConvertWorkDefinitionToAtsDsl(defaultWorkDef, resultData);
-      AtsDsl atsDsl = converter.convert(name);
+      ConvertWorkDefinitionToAtsDsl converter = new ConvertWorkDefinitionToAtsDsl(resultData);
+      AtsDsl atsDsl = converter.convert(name, defaultWorkDef);
 
       // Convert back to WorkDefinition
       ConvertAtsDslToWorkDefinition converter2 = new ConvertAtsDslToWorkDefinition(name, atsDsl);

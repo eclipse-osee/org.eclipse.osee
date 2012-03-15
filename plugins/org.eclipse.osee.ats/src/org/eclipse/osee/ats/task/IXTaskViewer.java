@@ -38,7 +38,7 @@ public interface IXTaskViewer {
     */
    public boolean isTaskable() throws OseeCoreException;
 
-   public String getCurrentStateName();
+   public String getCurrentStateName() throws OseeCoreException;
 
    public AbstractWorkflowArtifact getAwa() throws OseeCoreException;
 

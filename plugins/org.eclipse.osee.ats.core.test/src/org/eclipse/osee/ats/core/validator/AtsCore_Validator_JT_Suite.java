@@ -18,6 +18,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   AtsCoreXWidgetValidatorProviderTest.class,
    AtsXWidgetValidatorTest.class,
    AtsXTextValidatorTest.class,
    AtsXIntegerValidatorTest.class,
@@ -25,7 +26,9 @@ import org.junit.runners.Suite;
    AtsXDateValidatorTest.class,
    AtsXListValidatorTest.class,
    AtsXComboBooleanValidatorTest.class,
-   AtsXComboValidatorTest.class})
+   AtsXComboValidatorTest.class,
+   AtsXWidgetValidateManagerTest.class,
+   WidgetStatusTest.class})
 /**
  * This test suite contains tests that can be run as stand-alone JUnit tests (JT)
  * 

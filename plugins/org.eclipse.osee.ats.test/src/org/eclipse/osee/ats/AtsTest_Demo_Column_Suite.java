@@ -12,7 +12,6 @@ package org.eclipse.osee.ats;
 
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.column.ActionableItemsColumnTest;
-import org.eclipse.osee.ats.column.AssigneeColumnUITest;
 import org.eclipse.osee.ats.column.BranchStatusColumnTest;
 import org.eclipse.osee.ats.column.CancelledDateColumnTest;
 import org.eclipse.osee.ats.column.CategoryColumnTest;
@@ -33,6 +32,7 @@ import org.eclipse.osee.ats.column.StateColumnTest;
 import org.eclipse.osee.ats.column.TargetedVersionColumnTest;
 import org.eclipse.osee.ats.column.TeamColumnTest;
 import org.eclipse.osee.ats.column.TypeColumnTest;
+import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;
@@ -59,7 +59,6 @@ import org.junit.runners.Suite;
    DeadlineColumnTest.class,
    CreatedDateColumnTest.class,
    ActionableItemsColumnTest.class,
-   AssigneeColumnUITest.class,
    BranchStatusColumnTest.class,
    CancelledDateColumnTest.class,
    CompletedDateColumnTest.class,
@@ -76,6 +75,7 @@ public class AtsTest_Demo_Column_Suite {
       assertTrue("Client must authenticate using demo protocol",
          ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
       System.out.println("\n\nBegin " + AtsTest_Demo_Column_Suite.class.getSimpleName());
+      DemoTestUtil.setUpTest();
    }
 
    @AfterClass

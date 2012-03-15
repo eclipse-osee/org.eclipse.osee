@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
@@ -127,7 +127,7 @@ public class DecisionReviewManager {
       return Result.TrueResult;
    }
 
-   public static DecisionReviewArtifact createNewDecisionReviewAndTransitionToDecision(TeamWorkFlowArtifact teamArt, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, Collection<DecisionReviewOption> options, Collection<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, SkynetTransaction transaction) throws OseeCoreException {
+   public static DecisionReviewArtifact createNewDecisionReviewAndTransitionToDecision(TeamWorkFlowArtifact teamArt, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, Collection<DecisionReviewOption> options, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, SkynetTransaction transaction) throws OseeCoreException {
       DecisionReviewArtifact decRev =
          createNewDecisionReview(teamArt, reviewBlockType, reviewTitle, againstState, description, options, assignees,
             createdDate, createdBy);
@@ -159,7 +159,7 @@ public class DecisionReviewManager {
 
    public static List<DecisionReviewOption> getDefaultDecisionReviewOptions() throws OseeCoreException {
       List<DecisionReviewOption> options = new ArrayList<DecisionReviewOption>();
-      options.add(new DecisionReviewOption("Yes", true, Arrays.asList(AtsUsers.getUser().getUserId())));
+      options.add(new DecisionReviewOption("Yes", true, Arrays.asList(AtsUsersClient.getUser().getUserId())));
       options.add(new DecisionReviewOption("No", false, null));
       return options;
    }
@@ -179,7 +179,7 @@ public class DecisionReviewManager {
       return sb.toString();
    }
 
-   public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, Collection<DecisionReviewOption> options, Collection<IAtsUser> assignees, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
+   public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, Collection<DecisionReviewOption> options, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
       DecisionReviewArtifact decRev =
          (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.DecisionReview,
             AtsUtilCore.getAtsBranch(), title);

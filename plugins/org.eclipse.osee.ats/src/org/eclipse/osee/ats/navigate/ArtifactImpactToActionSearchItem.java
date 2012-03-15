@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -136,7 +136,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             if (branches != null) {
                for (Branch branch : branches) {
                   Artifact assocArt = BranchManager.getAssociatedArtifact(branch);
-                  if (assocArt != null && !assocArt.equals(AtsUsers.getOseeSystemUser())) {
+                  if (assocArt != null && !assocArt.equals(AtsUsers.getSystemUser())) {
                      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
                         assocArt.getArtifactTypeName(),
                         "Working",

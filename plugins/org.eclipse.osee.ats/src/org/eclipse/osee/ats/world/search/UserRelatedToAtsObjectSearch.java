@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -64,7 +64,7 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
             false, EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentState, AtsAttributeTypes.State,
             AtsAttributeTypes.Log));
       }
-      User user = AtsUsers.getOseeUser(atsUser);
+      User user = AtsUsersClient.getOseeUser(atsUser);
       arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.TeamLead_Team));
       arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.TeamMember_Team));
       arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.FavoriteUser_Artifact));

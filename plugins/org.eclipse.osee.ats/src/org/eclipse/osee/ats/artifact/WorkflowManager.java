@@ -97,7 +97,7 @@ public class WorkflowManager {
       return artifactsToReturn;
    }
 
-   public static Collection<AbstractWorkflowArtifact> filterOutState(Collection<AbstractWorkflowArtifact> awas, Collection<String> stateNames) {
+   public static Collection<AbstractWorkflowArtifact> filterOutState(Collection<AbstractWorkflowArtifact> awas, Collection<String> stateNames) throws OseeCoreException {
       List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<AbstractWorkflowArtifact>(awas.size());
       for (AbstractWorkflowArtifact awa : awas) {
          if (!stateNames.contains(awa.getStateMgr().getCurrentStateName())) {
@@ -302,7 +302,7 @@ public class WorkflowManager {
 
    public static StateXWidgetPage getCurrentAtsWorkPage(AbstractWorkflowArtifact awa) {
       for (StateXWidgetPage statePage : getStatePagesOrderedByDefaultToState(awa)) {
-         if (awa.getStateMgr().isInState(statePage)) {
+         if (awa.getStateMgr().getCurrentStateName().equals(statePage.getPageName())) {
             return statePage;
          }
       }

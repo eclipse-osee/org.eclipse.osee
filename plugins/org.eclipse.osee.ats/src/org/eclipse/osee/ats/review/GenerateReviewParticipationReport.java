@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.column.LegacyPcrIdColumn;
 import org.eclipse.osee.ats.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.column.StateColumn;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerReviewRoleColumn;
@@ -73,7 +73,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
                AWorkbench.popup("ERROR", "Must select user");
                return;
             }
-            useUser = AtsUsers.getUserFromOseeUser(ld.getSelection());
+            useUser = AtsUsersClient.getUserFromOseeUser(ld.getSelection());
          }
       }
 

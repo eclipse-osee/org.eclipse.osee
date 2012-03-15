@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.actions.wizard.NewActionJob;
 import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
@@ -125,7 +125,7 @@ public class AtsOseeCmService implements IOseeCmService {
       try {
          Artifact artifact = ArtifactQuery.getArtifactFromId(parentPcrGuid, AtsUtil.getAtsBranch());
          if (artifact instanceof AbstractTaskableArtifact) {
-            return ((AbstractTaskableArtifact) artifact).createNewTask(name, new Date(), AtsUsers.getUser());
+            return ((AbstractTaskableArtifact) artifact).createNewTask(name, new Date(), AtsUsersClient.getUser());
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

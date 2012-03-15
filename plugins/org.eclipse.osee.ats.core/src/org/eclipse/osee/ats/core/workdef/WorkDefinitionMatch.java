@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class WorkDefinitionMatch {
 
    private WorkDefinition workDefinition;
@@ -39,7 +42,7 @@ public class WorkDefinitionMatch {
    }
 
    public void addTrace(String traceStr) {
-      if (trace.isEmpty() || (trace.size() >= 1 && !trace.get(trace.size() - 1).equals(traceStr))) {
+      if (trace.isEmpty() || (!trace.get(trace.size() - 1).equals(traceStr))) {
          trace.add(traceStr);
       }
    }

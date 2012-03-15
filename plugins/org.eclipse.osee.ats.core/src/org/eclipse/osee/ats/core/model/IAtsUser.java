@@ -7,6 +7,9 @@ package org.eclipse.osee.ats.core.model;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IAtsUser extends IAtsObject, Comparable<Object> {
 
    public String getUserId() throws OseeCoreException;

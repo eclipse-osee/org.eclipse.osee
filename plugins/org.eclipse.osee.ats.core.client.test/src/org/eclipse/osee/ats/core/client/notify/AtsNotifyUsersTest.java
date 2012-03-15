@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager.ConfigurationProvider;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.util.SubscribeManager;
 import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
@@ -64,6 +64,9 @@ public class AtsNotifyUsersTest {
       UserManager.getUser(DemoUsers.Inactive_Steve).reloadAttributesAndRelations();
       AtsTestUtil.cleanup();
       cleanUpAction();
+
+      AtsTestUtil.validateArtifactCache();
+
    }
 
    private static void cleanUpAction() throws OseeCoreException {
@@ -97,12 +100,12 @@ public class AtsNotifyUsersTest {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      teamArt.setName(AtsNotifyUsersTest.class.getSimpleName());
-      teamArt.internalSetCreatedBy(AtsUsers.getUserFromOseeUser(kay_ValidEmail));
+      teamArt.setName(AtsNotifyUsersTest.class.getSimpleName() + "-testNotify");
+      teamArt.internalSetCreatedBy(AtsUsersClient.getUserFromOseeUser(kay_ValidEmail));
       List<User> assignees = new ArrayList<User>();
       assignees.addAll(Arrays.asList(inactiveSteve, alex_NoValidEmail, jason_ValidEmail, kay_ValidEmail,
          joeSmith_CurrentUser));
-      teamArt.getStateMgr().setAssignees(AtsUsers.getAtsUsers(assignees));
+      teamArt.getStateMgr().setAssignees(AtsUsersClient.getAtsUsers(assignees));
       teamArt.persist(transaction);
       transaction.execute();
 
@@ -113,15 +116,15 @@ public class AtsNotifyUsersTest {
       Assert.assertEquals(AtsNotifyType.Originator.name(), event.getType());
       Assert.assertEquals(kay_ValidEmail, event.getUsers().iterator().next());
       Assert.assertEquals(
-         "You have been set as the originator of [Team Workflow] state [Analyze] titled [AtsNotifyUsersTest]",
+         "You have been set as the originator of [Team Workflow] state [Analyze] titled [AtsNotifyUsersTest-testNotify]",
          event.getDescription());
 
       notifyManager.clear();
-      teamArt.internalSetCreatedBy(AtsUsers.getUserFromOseeUser(inactiveSteve));
+      teamArt.internalSetCreatedBy(AtsUsersClient.getUserFromOseeUser(inactiveSteve));
       teamArt.persist(getClass().getSimpleName());
       AtsNotificationManager.notify(teamArt, AtsNotifyType.Originator);
       Assert.assertEquals(0, notifyManager.getNotificationEvents().size());
-      teamArt.internalSetCreatedBy(AtsUsers.getUserFromOseeUser(kay_ValidEmail));
+      teamArt.internalSetCreatedBy(AtsUsersClient.getUserFromOseeUser(kay_ValidEmail));
       teamArt.persist(getClass().getSimpleName());
 
       notifyManager.clear();
@@ -138,12 +141,12 @@ public class AtsNotifyUsersTest {
       users.addAll(event.getUsers());
       Assert.assertTrue(org.eclipse.osee.framework.jdk.core.util.Collections.isEqual(expected, users));
       Assert.assertEquals(
-         "You have been set as the assignee of [Team Workflow] in state [Analyze] titled [AtsNotifyUsersTest]",
+         "You have been set as the assignee of [Team Workflow] in state [Analyze] titled [AtsNotifyUsersTest-testNotify]",
          event.getDescription());
 
       notifyManager.clear();
-      AtsNotificationManager.notify(teamArt, Collections.singleton(AtsUsers.getUserFromOseeUser(jason_ValidEmail)),
-         AtsNotifyType.Assigned);
+      AtsNotificationManager.notify(teamArt,
+         Collections.singleton(AtsUsersClient.getUserFromOseeUser(jason_ValidEmail)), AtsNotifyType.Assigned);
       Assert.assertEquals(1, notifyManager.getNotificationEvents().size());
       event = notifyManager.getNotificationEvents().get(0);
       Assert.assertEquals(AtsNotifyType.Assigned.name(), event.getType());
@@ -151,14 +154,14 @@ public class AtsNotifyUsersTest {
       Assert.assertEquals(1, event.getUsers().size());
       Assert.assertEquals(jason_ValidEmail, event.getUsers().iterator().next());
       Assert.assertEquals(
-         "You have been set as the assignee of [Team Workflow] in state [Analyze] titled [AtsNotifyUsersTest]",
+         "You have been set as the assignee of [Team Workflow] in state [Analyze] titled [AtsNotifyUsersTest-testNotify]",
          event.getDescription());
 
       notifyManager.clear();
       SubscribeManager.toggleSubscribe(teamArt);
       transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "AtsNotifyUsersTests.toggle.subscribed");
-      SubscribeManager.addSubscribed(teamArt, AtsUsers.getUserFromOseeUser(inactiveSteve), transaction);
+      SubscribeManager.addSubscribed(teamArt, AtsUsersClient.getUserFromOseeUser(inactiveSteve), transaction);
       transaction.execute();
       AtsNotificationManager.notify(teamArt, AtsNotifyType.Subscribed);
       Assert.assertEquals(1, notifyManager.getNotificationEvents().size());
@@ -166,7 +169,7 @@ public class AtsNotifyUsersTest {
       Assert.assertEquals(AtsNotifyType.Subscribed.name(), event.getType());
       Assert.assertEquals(UserManager.getUser(), event.getUsers().iterator().next());
       Assert.assertEquals(
-         "[Team Workflow] titled [AtsNotifyUsersTest] transitioned to [Analyze] and you subscribed for notification.",
+         "[Team Workflow] titled [AtsNotifyUsersTest-testNotify] transitioned to [Analyze] and you subscribed for notification.",
          event.getDescription());
       SubscribeManager.toggleSubscribe(teamArt);
 
@@ -175,24 +178,25 @@ public class AtsNotifyUsersTest {
       Assert.assertEquals(0, notifyManager.getNotificationEvents().size());
 
       notifyManager.clear();
-      teamArt.getStateMgr().initializeStateMachine(TeamState.Completed, null);
+      teamArt.getStateMgr().initializeStateMachine(TeamState.Completed, null, AtsUsersClient.getUser());
       AtsNotificationManager.notify(teamArt, AtsNotifyType.Completed);
       event = notifyManager.getNotificationEvents().get(0);
       Assert.assertEquals(AtsNotifyType.Completed.name(), event.getType());
       Assert.assertEquals(kay_ValidEmail, event.getUsers().iterator().next());
-      Assert.assertEquals("[Team Workflow] titled [AtsNotifyUsersTest] is [Completed]", event.getDescription());
+      Assert.assertEquals("[Team Workflow] titled [AtsNotifyUsersTest-testNotify] is [Completed]",
+         event.getDescription());
 
       notifyManager.clear();
-      teamArt.internalSetCreatedBy(AtsUsers.getUserFromOseeUser(inactiveSteve));
+      teamArt.internalSetCreatedBy(AtsUsersClient.getUserFromOseeUser(inactiveSteve));
       teamArt.persist(getClass().getSimpleName());
-      teamArt.getStateMgr().initializeStateMachine(TeamState.Completed, null);
+      teamArt.getStateMgr().initializeStateMachine(TeamState.Completed, null, AtsUsersClient.getUser());
       AtsNotificationManager.notify(teamArt, AtsNotifyType.Completed);
       Assert.assertEquals(0, notifyManager.getNotificationEvents().size());
-      teamArt.internalSetCreatedBy(AtsUsers.getUserFromOseeUser(kay_ValidEmail));
+      teamArt.internalSetCreatedBy(AtsUsersClient.getUserFromOseeUser(kay_ValidEmail));
       teamArt.persist(getClass().getSimpleName());
 
       notifyManager.clear();
-      teamArt.getStateMgr().initializeStateMachine(TeamState.Analyze, null);
+      teamArt.getStateMgr().initializeStateMachine(TeamState.Analyze, null, AtsUsersClient.getUser());
       TransitionHelper helper =
          new TransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), TeamState.Cancelled.getPageName(),
             null, "this is the reason", TransitionOption.OverrideTransitionValidityCheck);
@@ -207,7 +211,7 @@ public class AtsNotifyUsersTest {
       Assert.assertEquals(AtsNotifyType.Cancelled.name(), event.getType());
       Assert.assertEquals(kay_ValidEmail, event.getUsers().iterator().next());
       Assert.assertTrue(event.getDescription().startsWith(
-         "[Team Workflow] titled [AtsNotifyUsersTest] was [Cancelled] from the [Analyze] state on"));
+         "[Team Workflow] titled [AtsNotifyUsersTest-testNotify] was [Cancelled] from the [Analyze] state on"));
       Assert.assertTrue(event.getDescription().endsWith(".<br>Reason: [this is the reason]"));
 
    }
@@ -228,7 +232,7 @@ public class AtsNotifyUsersTest {
       ActionManager.createAction(null, getClass().getSimpleName() + "-OnNewAction", "Description",
          ChangeType.Improvement, "2", false, null,
          ActionableItemManagerCore.getActionableItems(Arrays.asList(DemoActionableItems.SAW_SW_Design.getName())),
-         new Date(), AtsUsers.getUser(), null, transaction);
+         new Date(), AtsUsersClient.getUser(), null, transaction);
       transaction.execute();
 
       Assert.assertEquals(1, notifyManager.getNotificationEvents().size());

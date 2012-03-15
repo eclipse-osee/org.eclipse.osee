@@ -20,7 +20,9 @@ import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.config.TeamDefinitionManagerCore;
 import org.eclipse.osee.ats.core.client.review.ReviewFormalType;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.version.VersionArtifact;
+import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelActionableItemSelection;
 import org.eclipse.osee.ats.util.widgets.XReviewStateSearchCombo;
@@ -31,7 +33,6 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
@@ -227,16 +228,16 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
       }
    }
 
-   public User getSelectedUser() {
+   public IAtsUser getSelectedUser() throws OseeCoreException {
       if (assigneeCombo == null) {
          return null;
       }
-      return assigneeCombo.getUser();
+      return AtsUsersClient.getUserFromOseeUser(assigneeCombo.getUser());
    }
 
-   public void setSelectedUser(User user) {
+   public void setSelectedUser(IAtsUser user) throws OseeCoreException {
       if (assigneeCombo != null) {
-         assigneeCombo.set(user);
+         assigneeCombo.set(AtsUsersClient.getOseeUser(user));
       }
    }
 
@@ -347,7 +348,7 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
          if (verArt != null) {
             selected = true;
          }
-         User user = getSelectedUser();
+         IAtsUser user = getSelectedUser();
          if (user != null) {
             selected = true;
          }

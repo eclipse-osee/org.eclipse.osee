@@ -14,11 +14,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.client.workflow.AtsWorkStateFactory;
 import org.eclipse.osee.ats.core.client.workflow.HoursSpentUtil;
 import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
-import org.eclipse.osee.ats.core.client.workflow.SMAState;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
-import org.eclipse.osee.ats.core.workflow.WorkPageType;
+import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.junit.Assert;
 
 /**
@@ -46,15 +45,8 @@ public class SMATestUtil {
             HoursSpentUtil.getHoursSpentTotal(awa), hoursSpent, 0.0);
 
          for (String xml : awa.getAttributesToStringList(AtsAttributeTypes.State)) {
-            SMAState smaState = new SMAState(awa, xml);
-            String pageName = smaState.getName();
-            StateDefinition stateDef = awa.getStateDefinitionByName(pageName);
-            if (stateDef != null) {
-               smaState.setWorkPageType(stateDef.getWorkPageType());
-            } else {
-               smaState.setWorkPageType(WorkPageType.Working);
-            }
-            boolean isCompletedCancelledState = isCompletedCancelledState(awa, smaState.getName());
+            WorkStateImpl state = AtsWorkStateFactory.getFromXml(xml);
+            boolean isCompletedCancelledState = isCompletedCancelledState(awa, state.getName());
             if (isCompletedCancelledState) {
                Assert.assertTrue("completed/cancelled ats.State [" + xml + "] wrong " + awa.getHumanReadableId(),
                   xml.endsWith(";;;"));

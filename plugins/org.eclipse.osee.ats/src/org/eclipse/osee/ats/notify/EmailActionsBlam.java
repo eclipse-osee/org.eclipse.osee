@@ -22,7 +22,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
@@ -111,7 +111,7 @@ public class EmailActionsBlam extends AbstractBlam {
 
    private void sendEmailTo(EmailActionsData data, final AbstractWorkflowArtifact awa) throws OseeCoreException {
       Set<User> assignees = new HashSet<User>();
-      assignees.addAll(AtsUsers.getOseeUsers(awa.getStateMgr().getAssignees()));
+      assignees.addAll(AtsUsersClient.getOseeUsers(awa.getStateMgr().getAssignees()));
       Collection<User> activeEmailUsers = EmailUtil.getActiveEmailUsers(assignees);
       if (assignees.isEmpty()) {
          logf("No active assignees for workflow [%s].", awa.toStringWithId());
@@ -131,13 +131,13 @@ public class EmailActionsBlam extends AbstractBlam {
          return;
       }
 
-      if (!EmailUtil.isEmailValid(AtsUsers.getOseeUser())) {
-         logf("Can't email from user account [%s] cause email not valid.", AtsUsers.getUser());
+      if (!EmailUtil.isEmailValid(AtsUsersClient.getOseeUser())) {
+         logf("Can't email from user account [%s] cause email not valid.", AtsUsersClient.getUser());
          return;
       }
 
       final OseeEmail emailMessage =
-         new OseeEmail(emailAddresses, AtsUsers.getUser().getEmail(), AtsUsers.getUser().getEmail(), data.getSubject(),
+         new OseeEmail(emailAddresses, AtsUsersClient.getUser().getEmail(), AtsUsersClient.getUser().getEmail(), data.getSubject(),
             "", BodyType.Html);
       emailMessage.setHTMLBody("<p>" + AHTML.textToHtml(data.getBody()) + "</p><p>--------------------------------------------------------</p>");
       emailMessage.addHTMLBody(getHtmlMessage(data, awa));

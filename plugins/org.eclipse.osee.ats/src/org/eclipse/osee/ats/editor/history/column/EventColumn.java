@@ -18,8 +18,10 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.workflow.SMAState;
+import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.workflow.AtsWorkStateFactory;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workflow.WorkPageType;
@@ -105,15 +107,15 @@ public class EventColumn extends XViewerValueColumn {
       try {
          StateDefinition stateDef = new StateDefinition("");
          stateDef.setWorkPageType(WorkPageType.Working);
-         SMAState was = new SMAState(stateDef, change.getWasValue());
-         SMAState is = new SMAState(stateDef, change.getIsValue());
+         WorkStateImpl was = AtsWorkStateFactory.getFromXml(change.getWasValue());
+         WorkStateImpl is = AtsWorkStateFactory.getFromXml(change.getIsValue());
          if (change.getWasValue().equals("")) {
             return "Created in [" + is.getName() + "] state";
          } else if (!was.getName().equals(is.getName())) {
             return "Transition from [" + was.getName() + "] to [" + is.getName() + "]";
          }
-         if (was.getName().equals(is.getName()) && (was.getPercentComplete() != is.getPercentComplete() || !was.getHoursSpentStr().equals(
-            is.getHoursSpentStr()))) {
+         if (was.getName().equals(is.getName()) && (was.getPercentComplete() != is.getPercentComplete() || !getHoursSpentStr(
+            was).equals(getHoursSpentStr(is)))) {
             return "Statused [" + is.getName() + "] to: " + is.getPercentComplete() + "% and " + getHoursSpent(is) + " hrs";
          }
          Collection<? extends IAtsUser> wasAssignees = was.getAssignees();
@@ -142,7 +144,12 @@ public class EventColumn extends XViewerValueColumn {
       return "";
    }
 
-   private String getHoursSpent(SMAState state) {
-      return Strings.isValid(state.getHoursSpentStr()) ? state.getHoursSpentStr() : "0";
+   private String getHoursSpent(WorkStateImpl state) {
+      return Strings.isValid(getHoursSpentStr(state)) ? getHoursSpentStr(state) : "0";
    }
+
+   public static String getHoursSpentStr(WorkStateImpl state) {
+      return AtsUtilCore.doubleToI18nString(state.getHoursSpent(), true);
+   }
+
 }

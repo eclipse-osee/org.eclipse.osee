@@ -16,7 +16,7 @@ import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
-import org.eclipse.osee.ats.column.AssigneeColumn;
+import org.eclipse.osee.ats.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.column.EstimatedHoursColumn;
 import org.eclipse.osee.ats.column.HoursSpentTotalColumn;
 import org.eclipse.osee.ats.column.NotesColumn;
@@ -42,7 +42,7 @@ public class TaskXViewerFactory extends SkynetXViewerFactory {
 
    @SuppressWarnings("unchecked")
    public static final List<? extends XViewerAtsColumn> TaskViewerVisibleColumns = Arrays.asList(
-      TitleColumn.getInstance(), StateColumn.getInstance(), AssigneeColumn.getInstance(),
+      TitleColumn.getInstance(), StateColumn.getInstance(), AssigneeColumnUI.getInstance(),
       PercentCompleteTotalColumn.getInstance(), HoursSpentTotalColumn.getInstance(), ResolutionColumn.getInstance(),
       EstimatedHoursColumn.getInstance(), RemainingHoursColumn.getInstance(), RelatedToStateColumn.getInstance(),
       NotesColumn.getInstance());

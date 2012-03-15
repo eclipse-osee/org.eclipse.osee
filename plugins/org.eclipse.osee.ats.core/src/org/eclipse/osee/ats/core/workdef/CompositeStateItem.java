@@ -13,6 +13,9 @@ package org.eclipse.osee.ats.core.workdef;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class CompositeStateItem extends StateItem {
 
    private int numColumns;

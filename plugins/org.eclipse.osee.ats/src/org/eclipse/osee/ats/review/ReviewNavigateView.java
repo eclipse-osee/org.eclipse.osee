@@ -28,7 +28,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.actions.OpenWorkflowByIdAction;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.Activator;
@@ -194,7 +194,7 @@ public class ReviewNavigateView extends ViewPart implements IXNavigateEventListe
 
    private String getWhoAmI() {
       try {
-         String userName = AtsUsers.getUser().getName();
+         String userName = AtsUsersClient.getUser().getName();
          return String.format("%s - %s:%s", userName, ClientSessionManager.getDataStoreName(),
             ClientSessionManager.getDataStoreLoginName());
       } catch (Exception ex) {

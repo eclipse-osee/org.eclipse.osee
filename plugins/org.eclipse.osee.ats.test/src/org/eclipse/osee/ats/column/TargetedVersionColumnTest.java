@@ -32,24 +32,24 @@ public class TargetedVersionColumnTest {
       TeamWorkFlowArtifact reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       Assert.assertEquals(DemoSawBuilds.SAW_Bld_2.getName(),
-         TargetedVersionColumn.getInstance().getColumnText(reqArt, AssigneeColumn.getInstance(), 0));
+         TargetedVersionColumn.getInstance().getColumnText(reqArt, TargetedVersionColumn.getInstance(), 0));
 
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
       Assert.assertEquals(DemoSawBuilds.SAW_Bld_2.getName(),
-         TargetedVersionColumn.getInstance().getColumnText(codeArt, AssigneeColumn.getInstance(), 0));
+         TargetedVersionColumn.getInstance().getColumnText(codeArt, TargetedVersionColumn.getInstance(), 0));
 
       Artifact actionArt = reqArt.getParentActionArtifact();
       Assert.assertEquals(DemoSawBuilds.SAW_Bld_2.getName(),
-         TargetedVersionColumn.getInstance().getColumnText(actionArt, AssigneeColumn.getInstance(), 0));
+         TargetedVersionColumn.getInstance().getColumnText(actionArt, TargetedVersionColumn.getInstance(), 0));
 
       TeamWorkFlowArtifact toolsArt = DemoTestUtil.getToolsTeamWorkflow();
       Assert.assertEquals("",
-         TargetedVersionColumn.getInstance().getColumnText(toolsArt, AssigneeColumn.getInstance(), 0));
+         TargetedVersionColumn.getInstance().getColumnText(toolsArt, TargetedVersionColumn.getInstance(), 0));
 
       actionArt = toolsArt.getParentActionArtifact();
       Assert.assertEquals("",
-         TargetedVersionColumn.getInstance().getColumnText(actionArt, AssigneeColumn.getInstance(), 0));
+         TargetedVersionColumn.getInstance().getColumnText(actionArt, TargetedVersionColumn.getInstance(), 0));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

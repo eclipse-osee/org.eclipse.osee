@@ -23,8 +23,9 @@ import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.config.TeamDefinitionManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -80,7 +81,7 @@ public class ActionableItemManager {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Edit Actionable Items");
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsUsers.getUser();
+      IAtsUser createdBy = AtsUsersClient.getUser();
 
       // Add new aias
       for (ActionableItemArtifact aia : diag.getChecked()) {
@@ -124,8 +125,8 @@ public class ActionableItemManager {
          }
          if (!teamExists) {
             TeamWorkFlowArtifact teamArt =
-               ActionManager.createTeamWorkflow(actionArt, tda, Arrays.asList(aia), tda.getLeads(), transaction,
-                  createdDate, createdBy, null);
+               ActionManager.createTeamWorkflow(actionArt, tda, Arrays.asList(aia),
+                  AtsUsers.toList(tda.getLeads()), transaction, createdDate, createdBy, null);
             teamArt.persist(transaction);
             sb.append(aia.getName() + " => added team workflow \"" + tda.getName() + "\"\n");
          }

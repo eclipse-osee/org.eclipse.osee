@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
-import org.eclipse.osee.ats.column.AssigneeColumn;
 import org.eclipse.osee.ats.column.DeadlineColumn;
 import org.eclipse.osee.ats.column.TeamColumn;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
@@ -31,6 +30,7 @@ import org.eclipse.osee.ats.core.client.workflow.HoursSpentUtil;
 import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.client.workflow.PriorityUtil;
 import org.eclipse.osee.ats.core.client.workflow.note.NoteItem;
+import org.eclipse.osee.ats.core.column.AssigneeColumn;
 import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -82,7 +82,7 @@ public class SMAPrint extends Action {
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Team: ", TeamColumn.getName(sma)),
          //
-         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Assignees: ", AssigneeColumn.getAssigneeStr(sma)),
+         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Assignees: ", AssigneeColumn.instance.getAssigneeStr(sma)),
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Originator: ", sma.getCreatedBy().getName()),
          //
@@ -144,7 +144,7 @@ public class SMAPrint extends Action {
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
                art.getName(),
                art.getStateMgr().getCurrentStateName().replaceAll("(Task|State)", ""),
-               AssigneeColumn.getAssigneeStr(art),
+               AssigneeColumn.instance.getAssigneeStr(art),
                PercentCompleteTotalUtil.getPercentCompleteTotal(art) + "",
                HoursSpentUtil.getHoursSpentTotal(art) + "",
                art.getSoleAttributeValue(AtsAttributeTypes.Resolution, ""),
@@ -194,7 +194,7 @@ public class SMAPrint extends Action {
 
    private String getStateHoursSpentHtml(StateXWidgetPage statePage) throws OseeCoreException {
       return AHTML.getLabelValueStr("State Hours Spent",
-         AtsUtilCore.doubleToI18nString(sma.getStateMgr().getHoursSpent(statePage)) + "<br>");
+         AtsUtilCore.doubleToI18nString(sma.getStateMgr().getHoursSpent(statePage.getPageName())) + "<br>");
    }
 
    public boolean isIncludeTaskList() {

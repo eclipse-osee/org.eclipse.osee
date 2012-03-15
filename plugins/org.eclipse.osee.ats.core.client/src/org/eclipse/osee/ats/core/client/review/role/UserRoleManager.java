@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.core.client.notify.AtsNotifyType;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.validator.ArtifactValueProvider;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.model.IAtsUser;
@@ -245,8 +245,8 @@ public class UserRoleManager {
                }
             }
          } else {
-            if (!assignees.contains(AtsUsers.getUser())) {
-               assignees.add(AtsUsers.getUser());
+            if (!assignees.contains(AtsUsersClient.getUser())) {
+               assignees.add(AtsUsersClient.getUser());
             }
          }
       }
@@ -292,7 +292,7 @@ public class UserRoleManager {
          hoursSpent += role.getHoursSpent() == null ? 0 : role.getHoursSpent();
       }
       AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
-      awa.getStateMgr().setMetrics(awa.getStateDefinition(), hoursSpent, awa.getStateMgr().getPercentComplete(), true,
-         AtsUsers.getUser(), new Date());
+      awa.getStateMgr().setMetrics(awa.getStateDefinition(), hoursSpent,
+         awa.getStateMgr().getPercentComplete(awa.getCurrentStateName()), true, AtsUsersClient.getUser(), new Date());
    }
 }

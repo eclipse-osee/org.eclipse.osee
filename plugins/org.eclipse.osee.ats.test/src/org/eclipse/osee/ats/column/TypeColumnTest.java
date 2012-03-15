@@ -31,15 +31,15 @@ public class TypeColumnTest {
       TeamWorkFlowArtifact reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       Assert.assertEquals("SAW Requirements Workflow",
-         TypeColumn.getInstance().getColumnText(reqArt, AssigneeColumn.getInstance(), 0));
+         TypeColumn.getInstance().getColumnText(reqArt, TypeColumn.getInstance(), 0));
 
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
       Assert.assertEquals("SAW Code Workflow",
-         TypeColumn.getInstance().getColumnText(codeArt, AssigneeColumn.getInstance(), 0));
+         TypeColumn.getInstance().getColumnText(codeArt, TypeColumn.getInstance(), 0));
 
       Artifact actionArt = reqArt.getParentActionArtifact();
-      Assert.assertEquals("Action", TypeColumn.getInstance().getColumnText(actionArt, AssigneeColumn.getInstance(), 0));
+      Assert.assertEquals("Action", TypeColumn.getInstance().getColumnText(actionArt, TypeColumn.getInstance(), 0));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

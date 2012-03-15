@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow;
 
-
+/**
+ * @author Donald G. Dunne
+ */
 public interface IWorkPage {
-
-   public WorkPageType getWorkPageType();
 
    public String getPageName();
 
@@ -26,5 +26,7 @@ public interface IWorkPage {
    public boolean isWorkingPage();
 
    public boolean isCompletedOrCancelledPage();
+
+   public WorkPageType getWorkPageType();
 
 }

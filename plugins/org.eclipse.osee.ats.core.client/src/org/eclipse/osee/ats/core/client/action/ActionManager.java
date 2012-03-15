@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.client.action;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
@@ -28,6 +29,7 @@ import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.client.workflow.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -69,8 +71,11 @@ public class ActionManager {
 
       // Create team workflow artifacts
       for (TeamDefinitionArtifact teamDef : teamDefs) {
-         createTeamWorkflow(actionArt, teamDef, actionableItems, teamDef.getLeads(actionableItems), transaction,
-            createdDate, createdBy, newActionListener);
+         TeamWorkFlowArtifact teamWf =
+            createTeamWorkflow(actionArt, teamDef, actionableItems,
+               AtsUsers.toList(teamDef.getLeads(actionableItems)), transaction, createdDate, createdBy,
+               newActionListener);
+         teamWf.getStateMgr().writeToArtifact();
       }
 
       // Notify listener of action creation
@@ -82,7 +87,7 @@ public class ActionManager {
       return actionArt;
    }
 
-   public static TeamWorkFlowArtifact createTeamWorkflow(Artifact actionArt, TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<IAtsUser> assignees, SkynetTransaction transaction, Date createdDate, IAtsUser createdBy, INewActionListener newActionListener, CreateTeamOption... createTeamOption) throws OseeCoreException {
+   public static TeamWorkFlowArtifact createTeamWorkflow(Artifact actionArt, TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, List<? extends IAtsUser> assignees, SkynetTransaction transaction, Date createdDate, IAtsUser createdBy, INewActionListener newActionListener, CreateTeamOption... createTeamOption) throws OseeCoreException {
       ITeamWorkflowProvider teamExt = TeamWorkFlowManager.getTeamWorkflowProvider(teamDef, actionableItems);
       IArtifactType teamWorkflowArtifactType =
          TeamWorkFlowManager.getTeamWorkflowArtifactType(teamDef, actionableItems);
@@ -98,7 +103,7 @@ public class ActionManager {
       return teamArt;
    }
 
-   public static TeamWorkFlowArtifact createTeamWorkflow(Artifact actionArt, TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String guid, String hrid, IArtifactType artifactType, INewActionListener newActionListener, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
+   public static TeamWorkFlowArtifact createTeamWorkflow(Artifact actionArt, TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String guid, String hrid, IArtifactType artifactType, INewActionListener newActionListener, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
 
       if (!Collections.getAggregate(createTeamOption).contains(CreateTeamOption.Duplicate_If_Exists)) {
          // Make sure team doesn't already exist

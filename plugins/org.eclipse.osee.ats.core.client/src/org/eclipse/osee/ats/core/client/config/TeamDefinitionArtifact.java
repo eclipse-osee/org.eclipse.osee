@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.version.VersionArtifact;
 import org.eclipse.osee.ats.core.client.version.VersionLockedType;
@@ -193,7 +193,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    public Collection<IAtsUser> getLeads() throws OseeCoreException {
       List<IAtsUser> users = new LinkedList<IAtsUser>();
       for (User user : getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead, User.class)) {
-         users.add(AtsUsers.getUser(user.getUserId()));
+         users.add(AtsUsersClient.getUser(user.getUserId()));
       }
       return users;
    }
@@ -201,7 +201,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    public Collection<IAtsUser> getPrivilegedMembers() throws OseeCoreException {
       List<IAtsUser> users = new LinkedList<IAtsUser>();
       for (User user : getRelatedArtifacts(AtsRelationTypes.PrivilegedMember_Member, User.class)) {
-         users.add(AtsUsers.getUser(user.getUserId()));
+         users.add(AtsUsersClient.getUser(user.getUserId()));
       }
       return users;
    }
@@ -240,7 +240,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    public Collection<IAtsUser> getMembers() throws OseeCoreException {
       List<IAtsUser> users = new LinkedList<IAtsUser>();
       for (User user : getRelatedArtifacts(AtsRelationTypes.TeamMember_Member, User.class)) {
-         users.add(AtsUsers.getUser(user.getUserId()));
+         users.add(AtsUsersClient.getUser(user.getUserId()));
       }
       return users;
    }

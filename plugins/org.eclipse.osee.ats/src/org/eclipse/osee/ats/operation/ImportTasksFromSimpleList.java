@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
@@ -94,7 +94,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                   SkynetTransaction transaction =
                      TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Import Tasks from Simple List");
                   Date createdDate = new Date();
-                  IAtsUser createdBy = AtsUsers.getUser();
+                  IAtsUser createdBy = AtsUsersClient.getUser();
                   teamArt.createTasks(titles, assignees, createdDate, createdBy, transaction);
                   teamArt.persist(transaction);
                   transaction.execute();

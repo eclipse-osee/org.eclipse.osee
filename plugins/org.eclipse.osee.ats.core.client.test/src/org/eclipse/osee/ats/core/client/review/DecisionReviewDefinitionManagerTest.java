@@ -15,7 +15,7 @@ import junit.framework.Assert;
 import org.eclipse.osee.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.transition.MockTransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
@@ -71,7 +71,7 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       MockTransitionHelper helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), implement.getPageName(),
-            Arrays.asList(AtsUsers.getUser()), null, TransitionOption.None);
+            Arrays.asList(AtsUsersClient.getUser()), null, TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper, transaction);
       TransitionResults results = transMgr.handleAll();
       transaction.execute();
@@ -117,7 +117,7 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       MockTransitionHelper helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), implement.getPageName(),
-            Arrays.asList(AtsUsers.getUser()), null, TransitionOption.None);
+            Arrays.asList(AtsUsersClient.getUser()), null, TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper, transaction);
       TransitionResults results = transMgr.handleAll();
       transaction.execute();

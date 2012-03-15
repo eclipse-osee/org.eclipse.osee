@@ -32,11 +32,11 @@ public class StateColumnTest {
       TeamWorkFlowArtifact reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       Assert.assertEquals(TeamState.Implement.getPageName(),
-         StateColumn.getInstance().getColumnText(reqArt, AssigneeColumn.getInstance(), 0));
+         StateColumn.getInstance().getColumnText(reqArt, StateColumn.getInstance(), 0));
 
       Artifact actionArt = reqArt.getParentActionArtifact();
       Assert.assertEquals(TeamState.Implement.getPageName(),
-         StateColumn.getInstance().getColumnText(actionArt, AssigneeColumn.getInstance(), 0));
+         StateColumn.getInstance().getColumnText(actionArt, StateColumn.getInstance(), 0));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

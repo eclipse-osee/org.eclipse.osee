@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.actions.NewGoal;
 import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.goal.GoalSearchWorkflowSearchItem;
@@ -135,7 +135,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
 
    public void addAtsSectionChildren(XNavigateItem item) {
       try {
-         IAtsUser user = AtsUsers.getUser();
+         IAtsUser user = AtsUsersClient.getUser();
 
          items.add(new SearchNavigateItem(item, new MyWorldSearchItem("My World", user)));
          items.add(new SearchNavigateItem(item, new MyFavoritesSearchItem("My Favorites", user)));
@@ -294,7 +294,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          new SearchNavigateItem(goalItem, new GoalSearchItem("InWork Goals", new ArrayList<TeamDefinitionArtifact>(),
             false, null));
          new SearchNavigateItem(goalItem, new GoalSearchWorkflowSearchItem());
-         new SearchNavigateItem(goalItem, new MyFavoritesGoalsSearchItem("Favorites", AtsUsers.getUser()));
+         new SearchNavigateItem(goalItem, new MyFavoritesGoalsSearchItem("Favorites", AtsUsersClient.getUser()));
          items.add(goalItem);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Can't create Goals section");

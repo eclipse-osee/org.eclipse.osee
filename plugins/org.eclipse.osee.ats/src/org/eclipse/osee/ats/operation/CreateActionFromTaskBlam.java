@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.editor.SMAEditor;
@@ -37,7 +38,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -127,7 +127,7 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
       for (TaskArtifact task : tasks) {
          ActionArtifact action =
             ActionManager.createAction(monitor, title, getDescription(task), changeType, priority, false, null, aias,
-               new Date(), UserManager.getUser(), null, transaction);
+               new Date(), AtsUsersClient.getUser(), null, transaction);
 
          for (TeamWorkFlowArtifact teamArt : action.getTeams()) {
             newTeamArts.add(teamArt);

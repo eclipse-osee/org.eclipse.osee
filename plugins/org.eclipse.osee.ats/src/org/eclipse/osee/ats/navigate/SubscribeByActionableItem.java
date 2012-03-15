@@ -14,7 +14,7 @@ package org.eclipse.osee.ats.navigate;
 import java.util.List;
 import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -43,15 +43,15 @@ public class SubscribeByActionableItem extends XNavigateItemAction {
             "Select Actionable Items\n\nEmail will be sent for every Action created against these AIs.", Active.Active);
       try {
          List<ActionableItemArtifact> objs =
-            Collections.castAll(AtsUsers.getOseeUser().getRelatedArtifactsOfType(
+            Collections.castAll(AtsUsersClient.getOseeUser().getRelatedArtifactsOfType(
                AtsRelationTypes.SubscribedUser_Artifact, ActionableItemArtifact.class));
          diag.setInitialAias(objs);
          if (diag.open() != 0) {
             return;
          }
-         AtsUsers.getOseeUser().setRelationsOfTypeUseCurrentOrder(AtsRelationTypes.SubscribedUser_Artifact,
+         AtsUsersClient.getOseeUser().setRelationsOfTypeUseCurrentOrder(AtsRelationTypes.SubscribedUser_Artifact,
             diag.getChecked(), ActionableItemArtifact.class);
-         AtsUsers.getOseeUser().persist(getClass().getSimpleName());
+         AtsUsersClient.getOseeUser().persist(getClass().getSimpleName());
          AWorkbench.popup(getName(), "Subscriptions updated.");
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

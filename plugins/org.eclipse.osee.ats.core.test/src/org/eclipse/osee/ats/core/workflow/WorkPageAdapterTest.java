@@ -14,7 +14,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * @link WorkPageAdapter
+ * Test case for {@link WorkPageAdapter}
+ *
  * @author Donald G. Dunne
  */
 public class WorkPageAdapterTest {
@@ -43,4 +44,44 @@ public class WorkPageAdapterTest {
       Assert.assertEquals(OrderedStates.Completed.getPageName(), OrderedStates.values().get(7).getPageName());
    }
 
+   @Test
+   public void testSetGetDescription() {
+      TestState state = new TestState("Endorse", WorkPageType.Working);
+      Assert.assertNull(state.getDescription());
+      state.setDescription("desc");
+      Assert.assertEquals("desc", state.getDescription());
+   }
+
+   @Test
+   public void testCompletedCancelledWorking() {
+      TestState state = new TestState("Endorse", WorkPageType.Working);
+      Assert.assertTrue(state.isWorkingPage());
+      Assert.assertFalse(state.isCancelledPage());
+      Assert.assertFalse(state.isCompletedPage());
+      Assert.assertFalse(state.isCompletedOrCancelledPage());
+
+      state = new TestState("Endorse", WorkPageType.Cancelled);
+      Assert.assertFalse(state.isWorkingPage());
+      Assert.assertTrue(state.isCancelledPage());
+      Assert.assertTrue(state.isCompletedOrCancelledPage());
+
+      state = new TestState("Endorse", WorkPageType.Completed);
+      Assert.assertFalse(state.isWorkingPage());
+      Assert.assertTrue(state.isCompletedPage());
+      Assert.assertTrue(state.isCompletedOrCancelledPage());
+   }
+
+   @Test
+   public void testToString() {
+      TestState state = new TestState("Endorse", WorkPageType.Working);
+      Assert.assertEquals("[Endorse][Working]", state.toString());
+   }
+
+   private class TestState extends WorkPageAdapter {
+
+      public TestState(String pageName, WorkPageType workPageType) {
+         super(TestState.class, pageName, workPageType);
+      }
+
+   }
 }

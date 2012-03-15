@@ -39,7 +39,7 @@ public class XStateSearchCombo extends XComboViewer {
    protected synchronized void ensurePopulated() {
       if (validStates.isEmpty()) {
          validStates.add("--select--");
-         validStates.addAll(StateManager.getStateNames());
+         validStates.addAll(StateManager.getAllValidStateNames());
          Collections.sort(validStates);
       }
    }

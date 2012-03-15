@@ -15,9 +15,8 @@ import junit.framework.Assert;
 import org.eclipse.osee.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -50,8 +49,7 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
 
       PeerToPeerReviewArtifact peerArt =
          PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt, reviewTitle,
-            AtsTestUtil.getAnalyzeStateDef().getPageName(), new Date(), AtsUsers.getUserFromToken(SystemUser.OseeSystem),
-            transaction);
+            AtsTestUtil.getAnalyzeStateDef().getPageName(), new Date(), AtsUsersClient.getUser(), transaction);
       transaction.execute();
 
       Assert.assertNotNull(peerArt);
@@ -60,7 +58,7 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
          peerArt.isDirty());
       Assert.assertEquals(PeerToPeerReviewState.Prepare.getPageName(), peerArt.getCurrentStateName());
       Assert.assertEquals("Joe Smith", peerArt.getStateMgr().getAssigneesStr());
-      Assert.assertEquals("OSEE System", peerArt.getCreatedBy().getName());
+      Assert.assertEquals("Joe Smith", peerArt.getCreatedBy().getName());
       Assert.assertEquals(AtsTestUtil.getAnalyzeStateDef().getPageName(),
          peerArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState));
 

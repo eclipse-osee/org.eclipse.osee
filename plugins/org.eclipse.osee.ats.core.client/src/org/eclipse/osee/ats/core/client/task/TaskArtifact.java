@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.EstimatedHoursUtil;
 import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
@@ -75,7 +75,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
             return new Result("Transition Error %s", results.toString());
          }
       } else if (fromState.getPageName().equals(TeamState.Cancelled.getPageName()) && isCancelled()) {
-         Result result = TaskManager.transitionToInWork(this, AtsUsers.getUser(), 99, 0, transaction);
+         Result result = TaskManager.transitionToInWork(this, AtsUsersClient.getUser(), 99, 0, transaction);
          return result;
       }
       return Result.TrueResult;

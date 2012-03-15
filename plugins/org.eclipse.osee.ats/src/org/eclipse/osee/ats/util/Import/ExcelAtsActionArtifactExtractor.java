@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -37,7 +38,7 @@ import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.util.AtsCacheManager;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
@@ -139,7 +140,7 @@ public class ExcelAtsActionArtifactExtractor {
                try {
                   assignee = assignee.replaceFirst("^ *", "");
                   assignee = assignee.replaceFirst(" *$", "");
-                  IAtsUser user = AtsUsers.getUserByName(assignee);
+                  IAtsUser user = AtsUsersClient.getUserByName(assignee);
                   if (user == null) {
                      rd.logError("Row " + rowNum + ": Couldn't retrieve user \"" + assignee + "\"");
                   } else {
@@ -159,7 +160,7 @@ public class ExcelAtsActionArtifactExtractor {
       Set<TeamWorkFlowArtifact> teamWfs = new HashSet<TeamWorkFlowArtifact>();
       Date createdDate = new Date();
       try {
-         IAtsUser createdBy = AtsUsers.getUser();
+         IAtsUser createdBy = AtsUsersClient.getUser();
          for (ActionData aData : actionDatas) {
             Artifact actionArt = actionNameToAction.get(aData.title);
             Collection<TeamWorkFlowArtifact> newTeamArts = new HashSet<TeamWorkFlowArtifact>();
@@ -291,7 +292,7 @@ public class ExcelAtsActionArtifactExtractor {
       protected Set<String> userComms = new HashSet<String>();
       protected String changeType = "";
       protected Set<String> assigneeStrs = new HashSet<String>();
-      protected Set<IAtsUser> assignees = new HashSet<IAtsUser>();
+      protected List<IAtsUser> assignees = new LinkedList<IAtsUser>();
       protected Set<String> actionableItems = new HashSet<String>();
       protected String version = "";
       protected Double estimatedHours = null;

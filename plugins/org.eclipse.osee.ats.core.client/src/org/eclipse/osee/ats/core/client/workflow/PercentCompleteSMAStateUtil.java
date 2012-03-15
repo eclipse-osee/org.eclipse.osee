@@ -57,7 +57,7 @@ public class PercentCompleteSMAStateUtil {
     */
    public static int getPercentCompleteSMAState(Artifact artifact, IWorkPage state) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-         return WorkflowManagerCore.getStateManager(artifact).getPercentComplete(state);
+         return WorkflowManagerCore.getStateManager(artifact).getPercentComplete(state.getPageName());
       }
       return 0;
    }

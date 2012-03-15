@@ -31,20 +31,21 @@ public class BranchStatusColumnTest {
       TeamWorkFlowArtifact reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       Assert.assertEquals("Working",
-         BranchStatusColumn.getInstance().getColumnText(reqArt, AssigneeColumn.getInstance(), 0));
+         BranchStatusColumn.getInstance().getColumnText(reqArt, BranchStatusColumn.getInstance(), 0));
 
       TeamWorkFlowArtifact testArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Test);
-      Assert.assertEquals("", BranchStatusColumn.getInstance().getColumnText(testArt, AssigneeColumn.getInstance(), 0));
+      Assert.assertEquals("",
+         BranchStatusColumn.getInstance().getColumnText(testArt, BranchStatusColumn.getInstance(), 0));
 
       Artifact actionArt = reqArt.getParentActionArtifact();
       Assert.assertEquals("Working",
-         BranchStatusColumn.getInstance().getColumnText(actionArt, AssigneeColumn.getInstance(), 0));
+         BranchStatusColumn.getInstance().getColumnText(actionArt, BranchStatusColumn.getInstance(), 0));
 
       TeamWorkFlowArtifact reqArt2 =
          (TeamWorkFlowArtifact) DemoTestUtil.getCommittedActionWorkflow(DemoWorkType.Requirements);
       Assert.assertEquals("Committed",
-         BranchStatusColumn.getInstance().getColumnText(reqArt2, AssigneeColumn.getInstance(), 0));
+         BranchStatusColumn.getInstance().getColumnText(reqArt2, BranchStatusColumn.getInstance(), 0));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

@@ -22,8 +22,9 @@ import java.util.logging.Level;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.ats.core.workdef.CompositeStateItem;
 import org.eclipse.osee.ats.core.workdef.DecisionReviewDefinition;
 import org.eclipse.osee.ats.core.workdef.DecisionReviewOption;
@@ -108,7 +109,7 @@ public class ConvertAtsDslToWorkDefinition {
             // do nothing
          }
          stateDef.setWorkPageType(workPageType);
-         stateDef.setPercentWeight(dslState.getPercentWeight());
+         stateDef.setStateWeight(dslState.getPercentWeight());
          stateDef.setRecommendedPercentComplete(dslState.getRecommendedPercentComplete());
          StateColor color = StateColor.BLACK;
          try {
@@ -322,7 +323,7 @@ public class ConvertAtsDslToWorkDefinition {
                continue;
             }
             try {
-               IAtsUser user = AtsUsers.getUserByName(name);
+               IAtsUser user = AtsUsersClient.getUserByName(name);
                userIds.add(user.getUserId());
             } catch (OseeCoreException ex) {
                OseeLog.logf(Activator.class, Level.WARNING, "No user by name [%s] [%s]", name, ex.getLocalizedMessage());
@@ -335,7 +336,7 @@ public class ConvertAtsDslToWorkDefinition {
                continue;
             }
             try {
-               IAtsUser user = AtsUsers.getUserByUserId(userId);
+               IAtsUser user = AtsUsers.getUser(userId);
                userIds.add(user.getUserId());
             } catch (OseeCoreException ex) {
                OseeLog.logf(Activator.class, Level.WARNING, "No user by id [%s] [%s]", userId, ex.getLocalizedMessage());

@@ -17,7 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -38,7 +38,7 @@ public class ActionableItemArtifact extends Artifact {
    public Collection<IAtsUser> getLeads() throws OseeCoreException {
       List<IAtsUser> leads = new LinkedList<IAtsUser>();
       for (User user : getRelatedArtifacts(AtsRelationTypes.ActionableItemLead_Lead, User.class)) {
-         leads.add(AtsUsers.getUser(user.getUserId()));
+         leads.add(AtsUsersClient.getUser(user.getUserId()));
       }
       return leads;
    }

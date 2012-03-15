@@ -17,7 +17,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskStates;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
@@ -132,7 +132,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
                         for (TaskArtifact taskArt : taskableArt.getTaskArtifacts(forState)) {
                            if (!taskArt.isCompletedOrCancelled()) {
                               if (taskArt.getStateMgr().isUnAssigned()) {
-                                 taskArt.getStateMgr().setAssignee(AtsUsers.getUser());
+                                 taskArt.getStateMgr().setAssignee(AtsUsersClient.getUser());
                               }
                               TransitionHelper helper =
                                  new TransitionHelper("Transition to Completed", Arrays.asList(taskArt),

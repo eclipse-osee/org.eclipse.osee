@@ -34,24 +34,25 @@ public class RelatedToStateColumnTest {
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
       Assert.assertEquals("",
-         RelatedToStateColumn.getInstance().getColumnText(codeArt, AssigneeColumn.getInstance(), 0));
+         RelatedToStateColumn.getInstance().getColumnText(codeArt, RelatedToStateColumn.getInstance(), 0));
 
       PeerToPeerReviewArtifact peerArt =
          (PeerToPeerReviewArtifact) codeArt.getRelatedArtifact(AtsRelationTypes.TeamWorkflowToReview_Review);
       Assert.assertEquals("Implement",
-         RelatedToStateColumn.getInstance().getColumnText(peerArt, AssigneeColumn.getInstance(), 0));
+         RelatedToStateColumn.getInstance().getColumnText(peerArt, RelatedToStateColumn.getInstance(), 0));
 
       TaskArtifact taskArt =
          (TaskArtifact) codeArt.getRelatedArtifacts(AtsRelationTypes.SmaToTask_Task).iterator().next();
       Assert.assertEquals("Implement",
-         RelatedToStateColumn.getInstance().getColumnText(taskArt, AssigneeColumn.getInstance(), 0));
+         RelatedToStateColumn.getInstance().getColumnText(taskArt, RelatedToStateColumn.getInstance(), 0));
 
       TeamWorkFlowArtifact reqArt = (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
-      Assert.assertEquals("", RelatedToStateColumn.getInstance().getColumnText(reqArt, AssigneeColumn.getInstance(), 0));
+      Assert.assertEquals("",
+         RelatedToStateColumn.getInstance().getColumnText(reqArt, RelatedToStateColumn.getInstance(), 0));
 
       Artifact actionArt = reqArt.getParentActionArtifact();
       Assert.assertEquals("",
-         RelatedToStateColumn.getInstance().getColumnText(actionArt, AssigneeColumn.getInstance(), 0));
+         RelatedToStateColumn.getInstance().getColumnText(actionArt, RelatedToStateColumn.getInstance(), 0));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

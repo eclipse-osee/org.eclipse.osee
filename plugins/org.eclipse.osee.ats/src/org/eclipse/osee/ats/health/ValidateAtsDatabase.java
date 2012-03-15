@@ -42,12 +42,12 @@ import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.version.VersionArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
 import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.log.AtsLog;
 import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workdef.WorkDefinition;
 import org.eclipse.osee.ats.core.workflow.IWorkPage;
@@ -878,14 +878,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void testStateMachineAssignees(Collection<Artifact> artifacts) {
       Date date = new Date();
       if (unAssignedUser == null) {
-         try {
-            unAssignedUser = AtsUsers.getUnAssigned();
-            oseeSystemUser = AtsUsers.getOseeSystemUser();
-         } catch (OseeCoreException ex) {
-            testNameToResultsMap.put("testStateMachineAssignees",
-               "Error: Exception retrieving users: " + ex.getLocalizedMessage());
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
+         unAssignedUser = AtsUsers.getUnAssigned();
+         oseeSystemUser = AtsUsers.getSystemUser();
       }
       for (Artifact art : artifacts) {
          if (art.isDeleted()) {

@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.review;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -37,12 +36,12 @@ public class NewDecisionReviewJob extends Job {
    private final String reviewTitle;
    private final String againstState;
    private final List<DecisionReviewOption> options;
-   private final Collection<IAtsUser> assignees;
+   private final List<? extends IAtsUser> assignees;
    private final String description;
    private final Date createdDate;
    private final IAtsUser createdBy;
 
-   public NewDecisionReviewJob(TeamWorkFlowArtifact teamParent, ReviewBlockType reviewBlockType, String reviewTitle, String againstState, String description, List<DecisionReviewOption> options, Collection<IAtsUser> assignees, Date createdDate, IAtsUser createdBy) {
+   public NewDecisionReviewJob(TeamWorkFlowArtifact teamParent, ReviewBlockType reviewBlockType, String reviewTitle, String againstState, String description, List<DecisionReviewOption> options, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy) {
       super("Creating New Decision Review");
       this.teamParent = teamParent;
       this.reviewTitle = reviewTitle;

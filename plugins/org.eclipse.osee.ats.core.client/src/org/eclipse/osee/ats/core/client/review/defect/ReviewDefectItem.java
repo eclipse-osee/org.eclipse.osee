@@ -15,8 +15,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -54,7 +55,7 @@ public class ReviewDefectItem {
    };
 
    public ReviewDefectItem() throws OseeCoreException {
-      userId = AtsUsers.getUser().getUserId();
+      userId = AtsUsersClient.getUser().getUserId();
    }
 
    public ReviewDefectItem(IAtsUser user, Severity severity, Disposition disposition, InjectionActivity injectionActivity, String description, String resolution, String location, Date date) throws OseeCoreException {
@@ -186,15 +187,15 @@ public class ReviewDefectItem {
       return severity + " - " + disposition + " - " + injectionActivity + " - " + userId + " on " + DateUtil.getMMDDYYHHMM(date) + "\n";
    }
 
-   public IAtsUser getUser() throws OseeCoreException {
-      return AtsUsers.getUserByUserId(userId);
+   public IAtsUser getUser() {
+      return AtsUsers.getUser(userId);
    }
 
    public String getUserId() {
       return userId;
    }
 
-   public String toHTML(String labelFont) throws OseeCoreException {
+   public String toHTML(String labelFont) {
       return "DEFECT (" + severity + "): " + description + " (" + getUser().getName() + ")";
    }
 

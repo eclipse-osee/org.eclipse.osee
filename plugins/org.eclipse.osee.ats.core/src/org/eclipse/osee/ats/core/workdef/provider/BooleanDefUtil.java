@@ -12,6 +12,9 @@ package org.eclipse.osee.ats.core.workdef.provider;
 
 import org.eclipse.osee.ats.dsl.atsDsl.BooleanDef;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class BooleanDefUtil {
 
    /**

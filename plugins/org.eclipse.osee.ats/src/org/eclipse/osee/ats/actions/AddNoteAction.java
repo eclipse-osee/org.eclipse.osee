@@ -18,7 +18,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.wizard.NewNoteWizard;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.note.NoteType;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
@@ -74,7 +74,7 @@ public class AddNoteAction extends AbstractAtsAction {
       if (!selectedState.startsWith(sma.getName() + " - ")) {
          state = selectedToStateName.get(selectedState);
       }
-      sma.getNotes().addNote(noteType, state, noteText, AtsUsers.getUser());
+      sma.getNotes().addNote(noteType, state, noteText, AtsUsersClient.getUser());
       dirtiable.onDirtied();
    }
 

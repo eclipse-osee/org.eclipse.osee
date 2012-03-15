@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.validator;
 
+import java.util.Arrays;
 import junit.framework.Assert;
-import org.eclipse.osee.ats.core.validator.AtsXComboBooleanValidator;
-import org.eclipse.osee.ats.core.validator.WidgetResult;
-import org.eclipse.osee.ats.core.validator.WidgetStatus;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
 import org.eclipse.osee.ats.core.workdef.WidgetOption;
@@ -54,5 +52,21 @@ public class AtsXComboBooleanValidatorTest {
       // Not valid if widgetDef required and no values set
       result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
+
+      // Check for "yes" value
+      MockValueProvider valueProvider = new MockValueProvider(Arrays.asList("yes"));
+      result = validator.validateTransition(valueProvider, widgetDef, fromStateDef, toStateDef);
+      Assert.assertEquals(WidgetStatus.Valid, result.getStatus());
+
+      // Check for "no" value
+      valueProvider = new MockValueProvider(Arrays.asList("no"));
+      result = validator.validateTransition(valueProvider, widgetDef, fromStateDef, toStateDef);
+      Assert.assertEquals(WidgetStatus.Valid, result.getStatus());
+
+      // Check for "junk" value
+      valueProvider = new MockValueProvider(Arrays.asList("junk"));
+      result = validator.validateTransition(valueProvider, widgetDef, fromStateDef, toStateDef);
+      Assert.assertEquals(WidgetStatus.Invalid_Range, result.getStatus());
+
    }
 }

@@ -12,9 +12,6 @@ package org.eclipse.osee.ats.core.validator;
 
 import java.util.Arrays;
 import junit.framework.Assert;
-import org.eclipse.osee.ats.core.validator.AtsXIntegerValidator;
-import org.eclipse.osee.ats.core.validator.WidgetResult;
-import org.eclipse.osee.ats.core.validator.WidgetStatus;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
 import org.eclipse.osee.ats.core.workdef.WidgetDefinitionIntMinMaxConstraint;
@@ -93,6 +90,12 @@ public class AtsXIntegerValidatorTest {
       provider = new MockValueProvider(Arrays.asList("2", "2"));
       result = validator.validateTransition(provider, widgetDef, fromStateDef, toStateDef);
       ValidatorTestUtil.assertValidResult(result);
+
+      // test nulls
+      constraint = new WidgetDefinitionIntMinMaxConstraint((String) null, null);
+      Assert.assertEquals(null, constraint.getMinValue());
+      Assert.assertEquals(null, constraint.getMaxValue());
+
    }
 
 }

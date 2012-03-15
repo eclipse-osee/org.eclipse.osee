@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -29,8 +29,8 @@ public class GoalViewerSorter extends ViewerSorter {
          try {
             GoalArtifact g1 = (GoalArtifact) o1;
             GoalArtifact g2 = (GoalArtifact) o2;
-            boolean g1Fav = FavoritesManager.isFavorite(g1, AtsUsers.getUser());
-            boolean g2Fav = FavoritesManager.isFavorite(g2, AtsUsers.getUser());
+            boolean g1Fav = FavoritesManager.isFavorite(g1, AtsUsersClient.getUser());
+            boolean g2Fav = FavoritesManager.isFavorite(g2, AtsUsersClient.getUser());
             if (g1Fav && g2Fav) {
                return compare(g1, g2);
             } else if (g1Fav && !g2Fav) {

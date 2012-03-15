@@ -22,13 +22,9 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
-import org.eclipse.osee.ats.core.client.task.TaskStates;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.workflow.SMAState;
-import org.eclipse.osee.ats.core.client.workflow.XCurrentStateDam;
-import org.eclipse.osee.ats.core.client.workflow.XStateDam;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
@@ -127,16 +123,9 @@ public class TaskMetrics extends AbstractBlam {
    }
 
    private void tallyState(TaskArtifact task) throws OseeCoreException {
-      XStateDam stateDam = new XStateDam(task);
 
-      SMAState state = stateDam.getState(TaskStates.InWork, false);
-      if (state == null) {
-         XCurrentStateDam currentStateDam = new XCurrentStateDam(task);
-         state = currentStateDam.getState(TaskStates.InWork, false);
-      }
-
-      for (IAtsUser user : state.getAssignees()) {
-         int percentComplete = state.getPercentComplete();
+      for (IAtsUser user : task.getStateMgr().getAssignees()) {
+         int percentComplete = task.getStateMgr().getPercentComplete(task.getCurrentStateName());
 
          if (percentComplete == 100) {
             task.getCompletedDate();

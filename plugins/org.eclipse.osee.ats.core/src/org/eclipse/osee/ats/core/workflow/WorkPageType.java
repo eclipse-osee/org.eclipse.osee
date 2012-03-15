@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow;
 
+/**
+ * @author Donald G. Dunne
+ */
 public enum WorkPageType {
    Working,
    Completed,

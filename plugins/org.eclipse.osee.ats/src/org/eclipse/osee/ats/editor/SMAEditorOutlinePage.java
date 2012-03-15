@@ -26,9 +26,10 @@ import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.ats.core.workdef.CompositeStateItem;
 import org.eclipse.osee.ats.core.workdef.DecisionReviewDefinition;
 import org.eclipse.osee.ats.core.workdef.DecisionReviewOption;
@@ -75,7 +76,11 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       tree.setLayout(new FillLayout(SWT.VERTICAL));
       getTreeViewer().setContentProvider(new InternalContentProvider(editor));
       getTreeViewer().setLabelProvider(new InternalLabelProvider());
-      setInput(editor != null ? editor : "No Input Available");
+      try {
+         setInput(editor != null ? editor : "No Input Available");
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
 
       getSite().getActionBars().getToolBarManager().add(
          new Action("Refresh", ImageManager.getImageDescriptor(PluginUiImage.REFRESH)) {
@@ -87,7 +92,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       getSite().getActionBars().getToolBarManager().update(true);
    }
 
-   public void setInput(Object input) {
+   public void setInput(Object input) throws OseeCoreException {
       if (input instanceof SMAEditor) {
          this.editor = (SMAEditor) input;
          if (getTreeViewer() != null) {
@@ -318,8 +323,8 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       }
 
       private void getChildrenFromPeerReviewDefinition(Object element, List<Object> items) {
-         if (Strings.isValid(((PeerReviewDefinition) element).getTitle())) {
-            items.add("Title: " + ((PeerReviewDefinition) element).getTitle());
+         if (Strings.isValid(((PeerReviewDefinition) element).getReviewTitle())) {
+            items.add("Title: " + ((PeerReviewDefinition) element).getReviewTitle());
          }
          if (Strings.isValid(((PeerReviewDefinition) element).getDescription())) {
             items.add("Description: " + ((PeerReviewDefinition) element).getDescription());
@@ -341,8 +346,8 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       }
 
       private void getChildrenFromDecisionReviewDefinition(Object element, List<Object> items) {
-         if (Strings.isValid(((DecisionReviewDefinition) element).getTitle())) {
-            items.add("Title: " + ((DecisionReviewDefinition) element).getTitle());
+         if (Strings.isValid(((DecisionReviewDefinition) element).getReviewTitle())) {
+            items.add("Title: " + ((DecisionReviewDefinition) element).getReviewTitle());
          }
          if (Strings.isValid(((DecisionReviewDefinition) element).getDescription())) {
             items.add("Description: " + ((DecisionReviewDefinition) element).getDescription());
@@ -395,17 +400,12 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
 
       private void getUsersFromDecisionReviewOpt(DecisionReviewOption revOpt, List<Object> items) {
          for (String userId : revOpt.getUserIds()) {
-            try {
-               IAtsUser user = AtsUsers.getUserByUserId(userId);
-               items.add(user);
-            } catch (OseeCoreException ex) {
-               items.add("Erroring getting user: " + ex.getLocalizedMessage());
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
+            IAtsUser user = AtsUsers.getUser(userId);
+            items.add(user);
          }
          for (String userName : revOpt.getUserNames()) {
             try {
-               IAtsUser user = AtsUsers.getUserByName(userName);
+               IAtsUser user = AtsUsersClient.getUserByName(userName);
                items.add(user);
             } catch (OseeCoreException ex) {
                items.add(String.format("Erroring getting user by name [%s] : [%s]", userName, ex.getLocalizedMessage()));

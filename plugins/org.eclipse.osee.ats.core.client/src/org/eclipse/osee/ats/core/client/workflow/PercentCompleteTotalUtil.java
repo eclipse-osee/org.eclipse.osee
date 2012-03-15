@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.util.WorkflowManagerCore;
+import org.eclipse.osee.ats.core.model.WorkStateProvider;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workflow.IWorkPage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -61,7 +62,7 @@ public class PercentCompleteTotalUtil {
          if (awa.isCompletedOrCancelled()) {
             return 100;
          }
-         if (awa.getStateMgr().isAnyStateHavePercentEntered()) {
+         if (isAnyStateHavePercentEntered(awa.getStateMgr())) {
             int numStates = 0;
             for (StateDefinition state : awa.getWorkDefinition().getStates()) {
                if (!state.isCompletedPage() && !state.isCancelledPage()) {
@@ -77,6 +78,15 @@ public class PercentCompleteTotalUtil {
 
       }
       return 0;
+   }
+
+   private static boolean isAnyStateHavePercentEntered(WorkStateProvider provider) throws OseeCoreException {
+      for (String stateName : provider.getVisitedStateNames()) {
+         if (provider.getPercentComplete(stateName) != 0) {
+            return true;
+         }
+      }
+      return false;
    }
 
    /**
@@ -200,7 +210,7 @@ public class PercentCompleteTotalUtil {
     */
    public static int getPercentCompleteSMAState(Artifact artifact, IWorkPage state) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-         return WorkflowManagerCore.getStateManager(artifact).getPercentComplete(state);
+         return WorkflowManagerCore.getStateManager(artifact).getPercentComplete(state.getPageName());
       }
       return 0;
    }

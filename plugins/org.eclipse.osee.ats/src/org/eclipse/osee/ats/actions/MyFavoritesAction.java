@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.actions;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorUISearchItemProvider;
 import org.eclipse.osee.ats.world.search.MyFavoritesSearchItem;
@@ -33,7 +33,7 @@ public class MyFavoritesAction extends AbstractAtsAction {
    @Override
    public void runWithException() throws OseeCoreException {
       WorldEditor.open(new WorldEditorUISearchItemProvider(new MyFavoritesSearchItem("My Favorites",
-         AtsUsers.getUser()), null, TableLoadOption.None));
+         AtsUsersClient.getUser()), null, TableLoadOption.None));
    }
 
    @Override

@@ -13,7 +13,7 @@ package org.eclipse.osee.ats;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.SubscribeManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.util.FavoritesManager;
@@ -72,11 +72,11 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
 
       if (artifact instanceof AbstractWorkflowArtifact) {
          AbstractWorkflowArtifact stateMachine = (AbstractWorkflowArtifact) artifact;
-         if (SubscribeManager.isSubscribed(stateMachine, AtsUsers.getUser())) {
+         if (SubscribeManager.isSubscribed(stateMachine, AtsUsersClient.getUser())) {
             // was 8,6
             return ArtifactImageManager.setupImage(aArtifact, AtsImage.SUBSCRIBED_OVERLAY, Location.BOT_RIGHT);
          }
-         if (FavoritesManager.isFavorite(stateMachine, AtsUsers.getUser())) {
+         if (FavoritesManager.isFavorite(stateMachine, AtsUsersClient.getUser())) {
             // was 7,0
             return ArtifactImageManager.setupImage(aArtifact, AtsImage.FAVORITE_OVERLAY, Location.TOP_RIGHT);
          }

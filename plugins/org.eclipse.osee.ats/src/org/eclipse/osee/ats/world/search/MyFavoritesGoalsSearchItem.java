@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsers;
+import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -43,7 +43,7 @@ public class MyFavoritesGoalsSearchItem extends UserSearchItem {
 
    @Override
    protected Collection<Artifact> searchIt(IAtsUser user) throws OseeCoreException {
-      return Collections.castAll(AtsUsers.getOseeUser(user).getRelatedArtifactsOfType(
+      return Collections.castAll(AtsUsersClient.getOseeUser(user).getRelatedArtifactsOfType(
          AtsRelationTypes.FavoriteUser_Artifact, GoalArtifact.class));
    }
 

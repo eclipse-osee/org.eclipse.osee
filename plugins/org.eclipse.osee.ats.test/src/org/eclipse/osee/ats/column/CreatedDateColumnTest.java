@@ -32,7 +32,7 @@ public class CreatedDateColumnTest {
 
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
-      Assert.assertNotNull(CreatedDateColumn.getInstance().getColumnText(codeArt, AssigneeColumn.getInstance(), 0));
+      Assert.assertNotNull(CreatedDateColumn.getInstance().getColumnText(codeArt, CreatedDateColumn.getInstance(), 0));
       Date date = CreatedDateColumn.getDate(codeArt);
       Assert.assertNotNull(date);
       Assert.assertEquals(DateUtil.getMMDDYYHHMM(date), CreatedDateColumn.getDateStr(codeArt));

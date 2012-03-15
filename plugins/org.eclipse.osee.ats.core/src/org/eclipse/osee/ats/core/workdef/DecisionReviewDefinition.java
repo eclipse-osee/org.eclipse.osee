@@ -13,6 +13,9 @@ package org.eclipse.osee.ats.core.workdef;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class DecisionReviewDefinition {
 
    public String name;
@@ -82,7 +85,7 @@ public class DecisionReviewDefinition {
       return name;
    }
 
-   public String getTitle() {
+   public String getReviewTitle() {
       return reviewTitle;
    }
 
