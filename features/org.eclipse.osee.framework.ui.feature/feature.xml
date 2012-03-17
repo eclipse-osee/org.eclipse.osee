@@ -21,12 +21,15 @@
    <requires>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.osee.framework.ui.ws"/>
+      <import plugin="org.eclipse.osee.framework.skynet.core" version="0.9.5" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osee.framework.core.client"/>
       <import plugin="org.eclipse.osee.framework.core"/>
       <import plugin="org.eclipse.osee.framework.database"/>
       <import plugin="org.eclipse.osee.framework.jdk.core"/>
       <import plugin="org.eclipse.osee.framework.logging"/>
       <import plugin="org.eclipse.osee.framework.plugin.core"/>
+      <import plugin="org.eclipse.osee.framework.access"/>
       <import plugin="org.eclipse.osee.framework.ui.plugin"/>
       <import plugin="org.eclipse.osee.framework.ui.swt"/>
       <import plugin="org.eclipse.ui.intro"/>
@@ -48,41 +51,38 @@
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.update.core"/>
       <import plugin="org.eclipse.zest.core"/>
-      <import plugin="com.lowagie.text" version="2.1.7" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.filesystem"/>
+      <import plugin="com.lowagie.text"/>
       <import plugin="org.apache.commons.lang"/>
       <import plugin="org.apache.xerces"/>
       <import plugin="org.eclipse.nebula.widgets.calendarcombo"/>
+      <import plugin="org.eclipse.osee.framework.core.message"/>
+      <import plugin="org.eclipse.osee.framework.core.model"/>
       <import plugin="org.eclipse.osee.framework.database.init"/>
       <import plugin="org.eclipse.zest.layouts"/>
       <import plugin="org.eclipse.osee.support.test.util"/>
-      <import plugin="org.junit"/>
       <import plugin="org.eclipse.gef"/>
-      <import plugin="org.eclipse.core.filesystem"/>
-      <import plugin="org.eclipse.osee.framework.core.dsl"/>
-      <import plugin="org.eclipse.osee.framework.core.dsl.integration"/>
-      <import plugin="org.eclipse.ui.editors" version="3.5.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.ide" version="3.5.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.osee.framework.skynet.core" version="0.4.0" match="greaterOrEqual"/>
-      <import plugin="org.antlr.runtime"/>
       <import plugin="org.eclipse.osee.ote.define"/>
       <import plugin="org.eclipse.osee.framework.svn"/>
-      <import feature="org.eclipse.osee.core.runtime.feature" version="0.9.9.qualifier" match="greaterOrEqual"/>
-      <import feature="org.eclipse.osee.core.ui.feature" version="0.9.9.qualifier" match="greaterOrEqual"/>
-      <import feature="org.eclipse.osee.core.feature" version="0.9.9.qualifier" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.osee.framework.skynet.core" version="0.9.5" match="greaterOrEqual"/>
-      <import plugin="org.apache.ant" version="1.7.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtend" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xpand" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtext.ui" version="2.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtext.ui.shared" version="2.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtext.builder" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osee.framework.core.dsl"/>
+      <import plugin="org.eclipse.xtext.ui"/>
+      <import plugin="org.eclipse.ui.editors" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.ui.shared"/>
+      <import plugin="org.eclipse.xtext.builder"/>
+      <import plugin="org.antlr.runtime"/>
       <import plugin="org.apache.log4j"/>
-      <import plugin="org.eclipse.emf.compare.ui" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.emf.compare.diff" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.emf.compare.match" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.osee.framework.ui.skynet" version="0.9.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.emf.ecore"/>
+      <import plugin="org.eclipse.emf.common"/>
+      <import plugin="org.eclipse.xtext"/>
+      <import plugin="org.eclipse.core.commands"/>
+      <import plugin="org.eclipse.core.jobs"/>
+      <import plugin="org.eclipse.emf.compare.diff"/>
+      <import plugin="org.eclipse.emf.compare.ui"/>
+      <import plugin="org.eclipse.osee.framework.core.dsl.integration"/>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="com.google.collect"/>
       <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="org.eclipse.jdt.ui"/>
    </requires>
 
    <plugin
@@ -146,16 +146,9 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
-   <plugin
-         id="org.eclipse.osee.framework.core.dsl.ui.integration"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.framework.ui.ws"
+         id="org.eclipse.osee.framework.core.dsl.ui.integration"
          download-size="0"
          install-size="0"
          version="0.0.0"

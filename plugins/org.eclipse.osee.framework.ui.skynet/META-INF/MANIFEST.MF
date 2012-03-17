@@ -32,7 +32,7 @@ Require-Bundle: javax.mail.glassfish,
  org.eclipse.zest.core,
  org.eclipse.osee.framework.jdk.core,
  org.eclipse.osee.framework.ui.ws,
- org.eclipse.osee.framework.help.ui;resolution:=optional,
+ org.eclipse.osee.framework.help.ui,
  org.eclipse.osee.framework.access,
  org.eclipse.core.filesystem
 Bundle-ActivationPolicy: lazy
