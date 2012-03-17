@@ -42,7 +42,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<tycho-version>0.14.1</tycho-version>
+		<tycho-version>0.13.0</tycho-version>
 		<maven-antrun-version>1.6</maven-antrun-version>
 		<ant-contrib-version>1.0b3</ant-contrib-version>
 		<jacoco-version>0.5.3.201107060350</jacoco-version>
