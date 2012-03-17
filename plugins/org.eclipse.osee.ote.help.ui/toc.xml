@@ -34,8 +34,17 @@
 				<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Advanced_Page" label="Advanced Page"></topic>
 				<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Source_Page" label="Source Page"></topic>
 			</topic>
-			<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Message_View" label="Message View"></topic>
-			<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Message_Watch" label="Message Watch"></topic>
+			<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Message_View" label="Message View">
+				<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Search" label="Search"></topic>
+				<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Watch" label="Watch"></topic>
+			</topic>
+			<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Message_Watch" label="Message Watch">
+				<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Adding_Elements" label="Adding Elements"></topic>
+				<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Removing_Elements" label="Removing Elements"></topic>
+				<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Setting_Elements" label="Setting Elements"></topic>
+				<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Read_vs_Write_Buffer" label="Read vs Write Buffer"></topic>
+				<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Sort" label="Sort"></topic>
+			</topic>
 			<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Mux_View" label="Mux View"></topic>
 		</topic>
 		<topic href="OSEE/OTE/Users_Guide/Features/Models.html" label="Models"></topic>

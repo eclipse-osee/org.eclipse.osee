@@ -17,10 +17,6 @@
       %license
    </license>
 
-   <includes
-         id="org.eclipse.osee.client.ote.feature.source"
-         version="0.0.0"/>
-
    <requires>
       <import plugin="org.eclipse.osee.framework.jdk.core"/>
       <import plugin="org.eclipse.core.runtime"/>
@@ -51,7 +47,7 @@
       <import plugin="net.jini"/>
       <import plugin="org.eclipse.osee.framework.ui.service.control"/>
       <import plugin="org.eclipse.ui" version="3.4.2" match="greaterOrEqual"/>
-      <import feature="org.eclipse.osee.core.runtime.feature" version="0.9.9.qualifier" match="greaterOrEqual"/>
+      <import feature="org.eclipse.osee.core.runtime.feature" version="0.9.9" match="greaterOrEqual"/>
       <import plugin="javax.xml"/>
       <import plugin="org.eclipse.osee.framework.ui.ws"/>
       <import plugin="jms.libraries"/>
@@ -182,5 +178,5 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-                  
+
 </feature>
