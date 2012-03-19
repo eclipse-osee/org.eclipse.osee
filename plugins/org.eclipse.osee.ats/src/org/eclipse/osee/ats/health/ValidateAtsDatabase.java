@@ -647,7 +647,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                // Test that targeted version belongs to teamDefHoldingVersion
                else {
                   VersionArtifact verArt = teamArt.getTargetedVersion();
-                  if (verArt != null) {
+                  if (verArt != null && teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions() != null) {
                      if (!teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions().getVersionsArtifacts().contains(
                         verArt)) {
                         testNameToResultsMap.put(
