@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.operation;
 
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -22,13 +23,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -43,16 +45,13 @@ import org.eclipse.osee.ats.core.version.VersionArtifact;
 import org.eclipse.osee.ats.core.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.XAtsProgramComboWidget;
-import org.eclipse.osee.define.traceability.BranchTraceabilityOperation;
-import org.eclipse.osee.define.traceability.RequirementTraceabilityData;
-import org.eclipse.osee.define.traceability.TraceabilityProviderOperation;
 import org.eclipse.osee.define.traceability.report.RequirementStatus;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -93,7 +92,6 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    private final CompositeKeyHashMap<String, String, RequirementStatus> reqTaskMap =
       new CompositeKeyHashMap<String, String, RequirementStatus>();
    private final StringBuilder sumFormula = new StringBuilder(500);
-   private HashCollection<Artifact, String> requirementToCodeUnitsMap;
    private final HashMap<String, String> testProcedureInfo = new HashMap<String, String>();
    private final HashCollection<String, IBasicUser> legacyIdToImplementers = new HashCollection<String, IBasicUser>();
    private final HashMap<String, Artifact> testRunArtifacts = new HashMap<String, Artifact>();
@@ -102,8 +100,8 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    private final HashSet<String> requirementPocs = new HashSet<String>();
    private final ArrayList<String[]> statusLines = new ArrayList<String[]>();
    private final ArrayList<RequirementStatus> statuses = new ArrayList<RequirementStatus>(100);
-   private HashCollection<String, Artifact> requirementNameToTestProcedures;
    private Collection<VersionArtifact> versions;
+   private HashCollection<String, Artifact> requirementNameToTestProcedures;
 
    private XBranchSelectWidget reportBranchWidget;
    private XArtifactList versionsListViewer;
@@ -184,15 +182,29 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    }
 
    private String getScriptName(String scriptPath) {
-      return scriptPath.substring(scriptPath.lastIndexOf(File.separatorChar) + 1,
-         scriptPath.length() - ".java".length());
+      String scriptName = scriptPath;
+      int endOfPackageName = scriptName.lastIndexOf(".");
+      if (endOfPackageName != -1) {
+         scriptName = scriptName.substring(endOfPackageName + 1) + ".java";
+      }
+      return scriptName.substring(scriptName.lastIndexOf(File.separatorChar) + 1,
+         scriptName.length() - ".java".length());
    }
 
-   private void loadTestRunArtifacts(IOseeBranch scriptsBranch) throws OseeCoreException {
+   private void loadTestRunArtifacts(IOseeBranch scriptsBranch, IProgressMonitor monitor) throws OseeCoreException {
+      monitor.subTask("Loading Test Run Artifacts");
       Collection<Artifact> testRuns =
          ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.TestRun, scriptsBranch, DeletionFlag.EXCLUDE_DELETED);
 
+      double increment = 100.0 / testRuns.size();
+      double progress = 0;
+
       for (Artifact testRun : testRuns) {
+         progress += increment;
+         monitor.worked((int) Math.min(1.0, progress));
+         if (progress > 1.0) {
+            progress = 0;
+         }
          String shortName = testRun.getName();
          shortName = shortName.substring(shortName.lastIndexOf('.') + 1);
          Artifact previousTestRun = testRunArtifacts.put(shortName, testRun);
@@ -219,37 +231,32 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       versions = variableMap.getCollection(VersionArtifact.class, "Versions");
       init();
 
-      loadTestRunArtifacts(resultsBranch);
+      //100
+      monitor.beginTask("Detailed Test Status", 500);
+      loadTestRunArtifacts(resultsBranch, monitor);
 
-      // Load Requirements Data
-      TraceabilityProviderOperation provider = null;
-      provider = new BranchTraceabilityOperation((Branch) reportBranch);
-      RequirementTraceabilityData traceabilityData =
-         new RequirementTraceabilityData(reportBranch, reportBranch, provider);
+      //100
+      requirementNameToTestProcedures = getTestProcedureTraceability(reportBranch, monitor);
 
-      IStatus status = traceabilityData.initialize(monitor);
-      switch (status.getSeverity()) {
-         case IStatus.OK:
-            requirementToCodeUnitsMap = traceabilityData.getRequirementsToCodeUnits();
-            requirementNameToTestProcedures = traceabilityData.getRequirementNameToTestProcedures();
+      //100
+      loadReqTaskMap(monitor);
 
-            loadReqTaskMap();
+      List<Artifact> allSwReqs =
+         ArtifactQuery.getArtifactListFromTypeWithInheritence(CoreArtifactTypes.AbstractSoftwareRequirement,
+            reportBranch, EXCLUDE_DELETED);
 
-            writeStatusSheet(traceabilityData.getAllSwRequirements());
+      //100
+      writeStatusSheet(allSwReqs, monitor);
 
-            writeTestScriptSheet(traceabilityData.getCodeUnits());
+      List<Artifact> testCases = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.TestCase, reportBranch);
 
-            excelWriter.endWorkbook();
-            IFile iFile = OseeData.getIFile("Detailed_Test_Status_" + Lib.getDateTimeString() + ".xml");
-            AIFile.writeToFile(iFile, charBak);
-            Program.launch(iFile.getLocation().toOSString());
-            break;
-         case IStatus.CANCEL:
-            monitor.setCanceled(true);
-            break;
-         default:
-            throw new OseeCoreException(status.getMessage(), status.getException());
-      }
+      //100
+      writeTestScriptSheet(testCases, monitor);
+
+      excelWriter.endWorkbook();
+      IFile iFile = OseeData.getIFile("Detailed_Test_Status_" + Lib.getDateTimeString() + ".xml");
+      AIFile.writeToFile(iFile, charBak);
+      Program.launch(iFile.getLocation().toOSString());
    }
 
    private boolean blamReadyToExecute() {
@@ -275,12 +282,22 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       return ready;
    }
 
-   private void writeTestScriptSheet(Set<String> scripts) throws IOException, OseeCoreException {
+   private void writeTestScriptSheet(List<Artifact> testCases, IProgressMonitor monitor) throws IOException, OseeCoreException {
+      monitor.subTask("Writing test script sheet");
       excelWriter.startSheet("Scripts", 8);
       excelWriter.writeRow("Category", CoreArtifactTypes.TestCase.getName(), "Run Date", "Total Test Points",
          "Failed Test Points", "Duration", "Aborted", "Last Author");
 
-      for (String scriptPath : scripts) {
+      double increment = 100.0 / testCases.size();
+      double progress = 0;
+
+      for (Artifact testCase : testCases) {
+         progress += increment;
+         monitor.worked((int) Math.min(1.0, progress));
+         if (progress > 1.0) {
+            progress = 0;
+         }
+         String scriptPath = testCase.getName();
          String scriptName = getScriptName(scriptPath);
          Artifact testRunArtifact = testRunArtifacts.get(scriptName);
          String totalTestPoints = null;
@@ -311,7 +328,8 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       excelWriter.endSheet();
    }
 
-   private void writeStatusSheet(Collection<Artifact> requirements) throws IOException, OseeCoreException {
+   private void writeStatusSheet(Collection<Artifact> requirements, IProgressMonitor monitor) throws IOException, OseeCoreException {
+      monitor.subTask("Writing status sheet");
       excelWriter.startSheet("SW Req Status", 256);
       excelWriter.writeRow(null, null, null, null, "Hours per UI per RPCR", "=4");
       excelWriter.writeRow(null, null, null, null, "Hours to integrate all scripts for a UI", "=11");
@@ -324,21 +342,29 @@ public class DetailedTestStatusBlam extends AbstractBlam {
          CoreArtifactTypes.TestCase.getName(), "Run Date", "Total Test Points", "Failed Test Points",
          "Hours Remaining", "RPCR", "Hours", "Resolution by Partition");
 
+      double increment = 100.0 / requirements.size();
+      double progress = 0;
+
       for (Artifact requirement : requirements) {
+         progress += increment;
+         monitor.worked((int) Math.min(1.0, progress));
+         if (progress > 1.0) {
+            progress = 0;
+         }
          writeRequirementStatusLines(requirement);
       }
 
       excelWriter.endSheet();
    }
 
-   private void setScriptCategories(Artifact requirement, Collection<String> scripts) {
+   private void setScriptCategories(Artifact requirement, Collection<Artifact> scripts) {
       try {
          String reqCategory = requirement.getSoleAttributeValue(CoreAttributeTypes.Category, "");
 
-         for (String scriptPath : scripts) {
-            String scriptCategory = scriptCategories.get(scriptPath);
+         for (Artifact scriptPath : scripts) {
+            String scriptCategory = scriptCategories.get(scriptPath.getName());
             if (scriptCategory == null || scriptCategory.compareTo(reqCategory) > 0) {
-               scriptCategories.put(scriptPath, reqCategory);
+               scriptCategories.put(scriptPath.getName(), reqCategory);
             }
          }
       } catch (Exception ex) {
@@ -383,8 +409,8 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    }
 
    private void processTestScriptsAndProcedures(Artifact requirement, String[] statusLine) throws OseeCoreException {
-      Collection<String> scripts = requirementToCodeUnitsMap.getValues(requirement);
-      if (scripts == null) {
+      Collection<Artifact> scripts = requirement.getRelatedArtifacts(CoreRelationTypes.Verification__Verifier);
+      if (scripts.isEmpty()) {
          if (requirement.isOfType(CoreArtifactTypes.IndirectSoftwareRequirement)) {
             statusLine[Index.TEST_SCRIPT.ordinal()] = requirement.getArtifactTypeName();
             sumFormula.insert(0, "=sum(0");
@@ -399,8 +425,8 @@ public class DetailedTestStatusBlam extends AbstractBlam {
          int testPointTotalForScripts = 0;
          int testPointFailsForScripts = 0;
 
-         for (String script : scripts) {
-            String scriptName = getScriptName(script);
+         for (Artifact script : scripts) {
+            String scriptName = getScriptName(script.getName());
             statusLine[Index.TEST_SCRIPT.ordinal()] = scriptName;
             Artifact testRunArtifact = testRunArtifacts.get(scriptName);
             if (testRunArtifact != null) {
@@ -470,9 +496,47 @@ public class DetailedTestStatusBlam extends AbstractBlam {
 
       processTestScriptsAndProcedures(requirement, statusLine);
 
-      for (String[] line : statusLines) {
+      for (Object[] line : statusLines) {
          excelWriter.writeRow(line);
       }
+   }
+
+   private HashCollection<String, Artifact> getTestProcedureTraceability(IOseeBranch testProcedureBranch, IProgressMonitor monitor) throws OseeCoreException {
+      monitor.subTask("Gathering test procedures");
+      HashCollection<String, Artifact> requirementNameToTestProcedures = new HashCollection<String, Artifact>();
+      // Map Software Requirements from TestProcedure IOseeBranch to Requirements IOseeBranch
+      Map<String, Artifact> testProcedureBranchReqsToReqsBranchMap = new HashMap<String, Artifact>();
+      for (Artifact tpRequirement : ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirement,
+         testProcedureBranch)) {
+         testProcedureBranchReqsToReqsBranchMap.put(tpRequirement.getName(), tpRequirement);
+      }
+
+      double increment = 100.0 / testProcedureBranchReqsToReqsBranchMap.entrySet().size();
+      double progress = 0;
+
+      //      Set<String> testProceduresFilter = getAllowedTestProcedures();
+      for (Entry<String, Artifact> entry : testProcedureBranchReqsToReqsBranchMap.entrySet()) {
+         progress += increment;
+         monitor.worked((int) Math.min(1.0, progress));
+         if (progress > 1.0) {
+            progress = 0;
+         }
+         Artifact requirement = entry.getValue();
+         Set<Artifact> foundProcedures =
+            new HashSet<Artifact>(requirement.getRelatedArtifacts(CoreRelationTypes.Validation__Validator));
+         Set<Artifact> toAdd = new HashSet<Artifact>();
+         //         if (testProceduresFilter.isEmpty() != true) {
+         //            for (Artifact artifact : foundProcedures) {
+         //               if (testProceduresFilter.contains(artifact.getName())) {
+         //                  toAdd.add(artifact);
+         //               }
+         //            }
+         //         } else {
+         toAdd = foundProcedures;
+         //         }
+         requirementNameToTestProcedures.put(entry.getKey(), toAdd);
+      }
+      return requirementNameToTestProcedures;
    }
 
    private void addTestProcedureNames(String requirementName) {
@@ -502,9 +566,19 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       System.arraycopy(oldStatusLine, 0, newStatusLine, 0, Index.RUN_DATE.ordinal());
    }
 
-   private void loadReqTaskMap() throws Exception {
+   private void loadReqTaskMap(IProgressMonitor monitor) throws Exception {
+      monitor.subTask("Loading tasks");
+
       for (VersionArtifact version : versions) {
-         for (TeamWorkFlowArtifact workflow : version.getTargetedForTeamArtifacts()) {
+         Collection<TeamWorkFlowArtifact> targetedForTeamArtifacts = version.getTargetedForTeamArtifacts();
+         double increment = 100.0 / targetedForTeamArtifacts.size();
+         double progress = 0;
+         for (TeamWorkFlowArtifact workflow : targetedForTeamArtifacts) {
+            progress += increment;
+            monitor.worked((int) Math.min(1.0, progress));
+            if (progress > 1.0) {
+               progress = 0;
+            }
             loadTasksFromWorkflow(workflow);
          }
       }
@@ -554,8 +628,6 @@ public class DetailedTestStatusBlam extends AbstractBlam {
             requirementStatus.addPartitionStatus(percentComplete, taskNameMatcher.group(1),
                AtsUtilCore.getStateName(task));
             requirementStatus.setTestPocs(task.getImplementers());
-         } else {
-            logf("odd task:  [%s]", task.getName());
          }
       }
    }
