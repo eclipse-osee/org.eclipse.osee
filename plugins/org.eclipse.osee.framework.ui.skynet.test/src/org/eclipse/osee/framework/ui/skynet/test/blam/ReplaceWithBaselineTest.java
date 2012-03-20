@@ -78,9 +78,9 @@ import org.junit.runners.Parameterized.Parameters;
  *                                  attribute was also deleted. (link.deleteEmptyRelationOrder()) After the B 
  *                                  link is added back from the revert of B. A will get a new relation order attribute.
  *                                  
- *    ** - creates a parent artifact on the baseline branch and than adds 5 children. On the working branch
- *                                  the same artifact gets additional 5 children. The revert is called on the
- *                                  parent artifact. Which will set the parent back to the baseline state but leaves
+ *    ** - creates a parent artifact A on the baseline branch and adds 5 children. On the working branch
+ *                                  the same artifact A gets additional 5 children. The revert is called A.
+ *                                  Which will set the parent (A) back to the baseline state but leaves
  *                                  the new artifacts orphaned on the working branch.
  * 
  *    Case 10 is a collection of 1-9, all cases.
