@@ -109,6 +109,10 @@ public class SkynetXViewerFactory extends XViewerFactory {
       try {
          for (Artifact art : artifacts) {
             attributeTypes.addAll(art.getAttributeTypes());
+            // include attribute types that are used even if invalid
+            for (IAttributeType attrType : art.getAttributeTypesUsed()) {
+               attributeTypes.add(attrType);
+            }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
