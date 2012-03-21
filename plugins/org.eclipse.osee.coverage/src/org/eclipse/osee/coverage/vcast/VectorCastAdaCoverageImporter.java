@@ -181,7 +181,8 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
    }
 
    private List<Object> workerHelper(ImportWorkerFactory workerFactory) throws OseeCoreException {
-      int numProcessors = Runtime.getRuntime().availableProcessors() * 2;
+      //int numProcessors = Runtime.getRuntime().availableProcessors() * 2;
+      int numProcessors = 1;
       int partitionSize = workerFactory.getListSize() / numProcessors;
       int remainder = workerFactory.getListSize() % numProcessors;
       AtomicInteger numberProcessed = new AtomicInteger(1);

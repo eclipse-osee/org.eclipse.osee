@@ -26,7 +26,7 @@ public class SimpleTestUnitProvider implements ITestUnitProvider {
    // to store single test script name shared by use of string.intern() rather than
    // create a new string for each coverage item.
    final HashCollection<CoverageItem, String> coverageItemToTestUnits = new HashCollection<CoverageItem, String>(true,
-      HashCollection.DEFAULT_COLLECTION_TYPE, 1000);
+      HashCollection.DEFAULT_COLLECTION_TYPE);
 
    @Override
    public void addTestUnit(CoverageItem coverageItem, String testUnitName) {
