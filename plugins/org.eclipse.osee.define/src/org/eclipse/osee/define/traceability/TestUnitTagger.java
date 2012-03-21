@@ -24,7 +24,7 @@ public class TestUnitTagger extends AbstractSourceTagger {
    private static final String IMPORT_STRING = "import org.eclipse.osee.framework.jdk.core.type.ObjectId;\n";
 
    private static final Pattern classPattern = Pattern.compile("public.*?\\s+class\\s+", Pattern.DOTALL);
-   private static final Pattern annotationPattern = Pattern.compile("@ObjectId\\s*\\(\"(.*?)\"\\s*\\)");
+   public static final Pattern ANNOTATION_PATTERN = Pattern.compile("@ObjectId\\s*\\(\"(.*?)\"\\s*\\)");
    private static final Pattern importPattern =
       Pattern.compile("import org\\.eclipse\\.osee\\.framework\\.jdk\\.core\\.type\\.ObjectId;");
    private static final Pattern importBlockPattern = Pattern.compile("(import\\s.*;\\n)+");
@@ -38,7 +38,7 @@ public class TestUnitTagger extends AbstractSourceTagger {
 
    private TestUnitTagger() {
       classMatcher = classPattern.matcher("");
-      annotationMatcher = annotationPattern.matcher("");
+      annotationMatcher = ANNOTATION_PATTERN.matcher("");
       importMatcher = importPattern.matcher("");
       importBlockMatcher = importBlockPattern.matcher("");
    }
