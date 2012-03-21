@@ -100,10 +100,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
    private final List<ISMAEditorListener> editorListeners = new ArrayList<ISMAEditorListener>();
    SMAEditorOutlinePage outlinePage;
 
-   public SMAEditor() {
-      super();
-   }
-
    @Override
    protected void addPages() {
       try {
@@ -648,9 +644,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
 
    @Override
    public List<Artifact> getSelectedAtsArtifacts() {
-      List<Artifact> arts = new ArrayList<Artifact>();
-      arts.add(awa);
-      return arts;
+      return Collections.<Artifact> singletonList(awa);
    }
 
    @Override

@@ -9,7 +9,6 @@ import junit.framework.Assert;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.core.AtsTestUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.rule.OseeHousekeepingRule;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -24,9 +23,7 @@ public abstract class AbstractAtsActionTest {
    @BeforeClass
    @AfterClass
    public static void cleanup() throws Throwable {
-      String name = AtsTestUtil.getName();
       AtsTestUtil.cleanup();
-      OseeHousekeepingRule.verify(name, name);
    }
 
    @Test

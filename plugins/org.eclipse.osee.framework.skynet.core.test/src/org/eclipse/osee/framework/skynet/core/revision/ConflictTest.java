@@ -206,9 +206,9 @@ public class ConflictTest {
 
    //@formatter:off
    private static final String NO_TX_CURRENT_SET =
-      "SELECT distinct t1.%s, txs1.branch_id FROM osee_txs txs1, %s t1 " +
+      "SELECT DISTINCT t1.%s, txs1.branch_id FROM osee_txs txs1, %s t1 " +
       "WHERE txs1.gamma_id = t1.gamma_id AND txs1.tx_current = 0 %s " +
-      "SELECT distinct t2.%s, txs2.branch_id FROM osee_txs txs2, %s t2 " +
+      "SELECT DISTINCT t2.%s, txs2.branch_id FROM osee_txs txs2, %s t2 " +
       "WHERE txs2.gamma_id = t2.gamma_id AND txs2.tx_current != 0";
 
    private static final String MULTIPLE_TX_CURRENT_SET =

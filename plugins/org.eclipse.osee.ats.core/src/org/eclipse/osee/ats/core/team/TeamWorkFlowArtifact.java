@@ -111,7 +111,7 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
    public String getEditorTitle() throws OseeCoreException {
       try {
          if (getTargetedVersion() != null) {
-            return getType() + ": " + "[" + getTargetedVersionStr() + "] - " + getName();
+            return String.format("%s: [%s] - %s", getType(), getTargetedVersionStr(), getName());
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

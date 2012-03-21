@@ -147,7 +147,6 @@ public class ComputeNetChangeTest {
       private final boolean isRemoved;
 
       public TestData(ChangeItem item, ChangeVersion expectedNet, boolean isRemoved) {
-         super();
          this.item = item;
          this.expectedNet = expectedNet;
          this.isRemoved = isRemoved;

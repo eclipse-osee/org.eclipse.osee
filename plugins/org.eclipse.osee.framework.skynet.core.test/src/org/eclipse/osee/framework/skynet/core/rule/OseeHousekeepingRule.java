@@ -20,16 +20,12 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
 /**
- * <p>
- * Not related to {@link Rule}.
- * </p>
- * <p>
+ * Not related to {@link org.eclipse.osee.framework.jdk.core.text.Rule}. <br/>
+ * <br/>
  * Checks Artifact Cache for dirty artifacts. Executes after a passing test. Fails tests that have passed but left dirty
- * artifacts in the cache.
- * </p>
- * <p>
- * In the future the behavior of this class could be modified to clean up after a test, regardless of test's context.
- * </p>
+ * artifacts in the cache. <br/>
+ * <br/>
+ * In the future the behavior of this class could be modified to clean up after a test, regardless of test context.
  */
 public final class OseeHousekeepingRule implements MethodRule {
 
@@ -48,15 +44,15 @@ public final class OseeHousekeepingRule implements MethodRule {
       };
    }
 
-   public static void verify(String methodName, String className) throws Throwable {
+   private void verify(String methodName, String className) throws Throwable {
       final Collection<Artifact> dirtyArtifacts = ArtifactCache.getDirtyArtifacts();
 
       if (!dirtyArtifacts.isEmpty()) {
          StringBuilder entireMessage = new StringBuilder(DIRTY_ARTIFACTS_IN_ARTIFACT_CACHE.length() + MSG.length() * 2);
          entireMessage.append(DIRTY_ARTIFACTS_IN_ARTIFACT_CACHE);
          for (Artifact artifact : dirtyArtifacts) {
-            entireMessage.append(String.format(MSG, artifact.getName(), artifact.getArtifactType(),
-               className, methodName, Artifacts.getDirtyReport(artifact)));
+            entireMessage.append(String.format(MSG, artifact.getName(), artifact.getArtifactType(), className,
+               methodName, Artifacts.getDirtyReport(artifact)));
          }
          Assert.fail(entireMessage.toString());
       }

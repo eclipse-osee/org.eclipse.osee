@@ -22,7 +22,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({//
+@Suite.SuiteClasses({
    MasterTestSuite_DemoDbInit.class,
    MasterTestSuite_DemoCoreTests.class,
    MasterTestSuite_DemoDbPopulate.class,
