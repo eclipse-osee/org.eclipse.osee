@@ -167,10 +167,10 @@
 		<Column id="PARENT_BRANCH_ID" 			description="self-explanatory" />
 		<Column id="PARENT_TRANSACTION_ID" 		description="self-explanatory" />
 		<Column id="ARCHIVED" 						description="Indicates whether transaction information (tx) related to this branch have been kept in the main OSEE_TXS transaction table or moved to the OSEE_TXS_ARCHIVED. " />
-		<Column id="BRANCH_STATE" 					description="????" />
-		<Column id="ASSOCIATED_ART_ID" 			description="-1 Unknown, 0 Created, 1 Modified, 2 Committed, 3 Rebaselined as referenced in enum BranchState.java" />
+		<Column id="BRANCH_STATE" 					description="-1 Unknown, 0 Created, 1 Modified, 2 Committed, 3 Rebaselined as referenced in enum BranchState.java" />
+		<Column id="ASSOCIATED_ART_ID" 			description="id reference to artifact, for example team workflow artifact owning the branch" />
 		<Column id="BRANCH_TYPE" 					description="0 Working, 2 Baseline, 3 Merge, 4 System Root as referenced in BranchType.java" />
-		<Column id="BASELINE_TRANSACTION_ID" 	description="??? what did this mean" />
+		<Column id="BASELINE_TRANSACTION_ID" 	description="id of transaction (as referenced in osee_tx_details) that created this branch" />
 	</TableDescription>
 
 	<Table name="OSEE_TXS" schema="OSEE" tablespace="osee_data">
