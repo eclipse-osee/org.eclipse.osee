@@ -77,6 +77,9 @@ public abstract class AbstractAuthenticationProvider implements IAuthenticationP
                   TokenFactory.createUserToken(GUID.create(), "-", "-", chStmt.getString("user_id"), true, false, false);
             }
          }
+         if (toReturn == null) {
+            getLogger().info("Unable to find userId:[%s] on [%s]", userId, branch);
+         }
       } catch (OseeCoreException ex) {
          getLogger().error(ex, "Unable to find userId [%s] in OSEE database.", userId);
       } finally {
