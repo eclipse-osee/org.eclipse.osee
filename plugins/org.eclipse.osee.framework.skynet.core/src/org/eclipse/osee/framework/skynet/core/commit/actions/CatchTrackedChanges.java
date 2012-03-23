@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
+import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 
@@ -48,8 +49,9 @@ public class CatchTrackedChanges implements CommitAction {
 
       for (Change change : changes) {
          if (!change.getModificationType().isDeleted()) {
-            if (change instanceof AttributeChange) {
+            if (change.getChangeType() == LoadChangeType.attribute) {
                Attribute<?> attribute = ((AttributeChange) change).getAttribute();
+
                if (attribute instanceof WordAttribute) {
                   if (((WordAttribute) attribute).containsWordAnnotations()) {
                      throw new OseeCoreException(

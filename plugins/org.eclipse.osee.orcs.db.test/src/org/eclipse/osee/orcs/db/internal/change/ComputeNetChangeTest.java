@@ -39,24 +39,24 @@ public class ComputeNetChangeTest {
       // New Or Introduced
       data.add(createTest(1, null, entry(4L, NEW), entry(5L, MODIFIED), null, entry(5L, NEW), false));
       data.add(createTest(2, null, entry(6L, INTRODUCED), entry(7L, MODIFIED), null, entry(7L, INTRODUCED), false));
+      data.add(createTest(3, null, null, entry(7693330L, INTRODUCED), entry(7693330L, NEW),
+         entry(7693330L, INTRODUCED), false));
 
       // Modified Once
-      data.add(createTest(3, entry(10L, MODIFIED), null, entry(11L, MODIFIED), entry(10L, MODIFIED),
+      data.add(createTest(4, entry(10L, MODIFIED), null, entry(11L, MODIFIED), entry(10L, MODIFIED),
          entry(11L, MODIFIED), false));
 
       // Modified Twice
-      data.add(createTest(4, entry(10L, NEW), entry(11L, MODIFIED), entry(12L, MODIFIED), entry(10L, NEW),
+      data.add(createTest(5, entry(10L, NEW), entry(11L, MODIFIED), entry(12L, MODIFIED), entry(10L, NEW),
          entry(12L, MODIFIED), false));
 
       // Removal - new/intro and deleted
-      data.add(createTest(5, null, entry(1L, NEW), entry(2L, DELETED), null, null, true));
-      data.add(createTest(6, null, entry(2L, INTRODUCED), entry(3L, DELETED), null, null, true));
-      data.add(createTest(7, null, entry(4L, NEW), entry(5L, ARTIFACT_DELETED), null, null, true));
-      data.add(createTest(8, null, entry(6L, INTRODUCED), entry(7L, ARTIFACT_DELETED), null, null, true));
-      data.add(createTest(9, null, null, entry(7693330L, INTRODUCED), entry(7693330L, NEW), null, true));
+      data.add(createTest(6, null, entry(1L, NEW), entry(2L, DELETED), null, null, true));
+      data.add(createTest(7, null, entry(2L, INTRODUCED), entry(3L, DELETED), null, null, true));
+      data.add(createTest(8, null, entry(4L, NEW), entry(5L, ARTIFACT_DELETED), null, null, true));
+      data.add(createTest(9, null, entry(6L, INTRODUCED), entry(7L, ARTIFACT_DELETED), null, null, true));
       data.add(createTest(10, null, null, entry(21345L, NEW), entry(21345L, NEW), null, true));
-
-      data.add(createTest(11, null, null, entry(1L, NEW), entry(2L, MODIFIED), null, null, true));
+      data.add(createTest(11, null, null, entry(1L, NEW), entry(2L, MODIFIED), null, entry(1L, NEW), false));
       data.add(createTest(12, null, null, entry(1L, INTRODUCED), entry(2L, DELETED), null, null, true));
 
       // Undelete then delete again

@@ -87,7 +87,21 @@ public final class ChangeItemUtil {
 
    public static boolean isAlreadyOnDestination(ChangeItem changeItem) {
       return areGammasEqual(changeItem.getCurrentVersion(), changeItem.getDestinationVersion()) && //
-      isDeleted(changeItem.getCurrentVersion()) == isDeleted(changeItem.getDestinationVersion());
+      areModTypesEqual(changeItem.getCurrentVersion(), changeItem.getDestinationVersion());
+   }
+
+   public static boolean areModTypesEqual(ChangeVersion object1, ChangeVersion object2) {
+      boolean result = false;
+      if (object1 == null && object2 == null) {
+         result = true;
+      } else if (object1 != null && object2 != null) {
+         if (object1.getModType() == object2.getModType()) {
+            result = true;
+         } else if (object1.getModType() != null) {
+            result = object1.getModType().equals(object2.getModType());
+         }
+      }
+      return result;
    }
 
    public static boolean areGammasEqual(ChangeVersion object1, ChangeVersion object2) {
@@ -110,7 +124,6 @@ public final class ChangeItemUtil {
       isAlreadyOnDestination(changeItem) || //
       isDeletedAndDoesNotExistInDestination(changeItem) || //
       hasBeenDeletedInDestination(changeItem) || //
-      isDestinationEqualOrNewerThanCurrent(changeItem) || //
       hasBeenReplacedWithVersion(changeItem);
    }
 
@@ -124,9 +137,5 @@ public final class ChangeItemUtil {
 
    public static boolean hasBeenDeletedInDestination(ChangeItem changeItem) {
       return changeItem.getDestinationVersion().isValid() && isDeleted(changeItem.getDestinationVersion());
-   }
-
-   public static boolean isDestinationEqualOrNewerThanCurrent(ChangeItem changeItem) {
-      return (isNew(changeItem.getCurrentVersion()) || isIntroduced(changeItem.getCurrentVersion())) && changeItem.getDestinationVersion().isValid();
    }
 }

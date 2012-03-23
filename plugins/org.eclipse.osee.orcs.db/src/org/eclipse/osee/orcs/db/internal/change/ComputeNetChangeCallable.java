@@ -26,13 +26,12 @@ public class ComputeNetChangeCallable extends CancellableCallable<List<ChangeIte
    private final List<ChangeItem> changes;
 
    public ComputeNetChangeCallable(List<ChangeItem> changes) {
-      super();
       this.changes = changes;
    }
 
    @Override
    public List<ChangeItem> call() throws Exception {
-      if (!changes.isEmpty()) {
+      if (changes != null) {
          Iterator<ChangeItem> iterator = changes.iterator();
          while (iterator.hasNext()) {
             checkForCancelled();
@@ -95,12 +94,6 @@ public class ComputeNetChangeCallable extends CancellableCallable<List<ChangeIte
 
       if (change.getDestinationVersion().isValid() && ChangeItemUtil.isDeleted(change.getDestinationVersion())) {
          throw new OseeStateException("Destination was deleted - source should not modify [%s] ", change);
-      }
-
-      if ((ChangeItemUtil.isIntroduced(change.getCurrentVersion()) || ChangeItemUtil.isNew(change.getCurrentVersion())) //
-         && change.getDestinationVersion().isValid()) {
-         throw new OseeStateException("Source item marked as new/introduced but destination already has item [%s]",
-            change);
       }
    }
 }

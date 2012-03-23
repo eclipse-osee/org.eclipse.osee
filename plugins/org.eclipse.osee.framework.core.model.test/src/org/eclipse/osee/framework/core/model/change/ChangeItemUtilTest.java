@@ -104,22 +104,6 @@ public class ChangeItemUtilTest {
    }
 
    @Test
-   public void testDestinationEqualOrNewerThanCurrent() {
-      ChangeVersion isNew = ChangeTestUtility.createChange(2222L, ModificationType.NEW);
-      ChangeVersion isIntroduced = ChangeTestUtility.createChange(2222L, ModificationType.NEW);
-      ChangeVersion destination = ChangeTestUtility.createChange(1111L, ModificationType.NEW);
-      ChangeItem item = ChangeTestUtility.createItem(200, null, null, isNew, destination, null);
-      assertTrue(ChangeItemUtil.isDestinationEqualOrNewerThanCurrent(item));
-
-      item = ChangeTestUtility.createItem(200, null, null, isIntroduced, destination, null);
-      assertTrue(ChangeItemUtil.isDestinationEqualOrNewerThanCurrent(item));
-
-      ChangeVersion isNotNew = ChangeTestUtility.createChange(2222L, ModificationType.MODIFIED);
-      item = ChangeTestUtility.createItem(200, null, null, isNotNew, destination, null);
-      assertFalse(ChangeItemUtil.isDestinationEqualOrNewerThanCurrent(item));
-   }
-
-   @Test
    public void testIgnoreCase() {
       ChangeVersion isNew = ChangeTestUtility.createChange(2222L, ModificationType.NEW);
 
@@ -148,7 +132,21 @@ public class ChangeItemUtilTest {
       isNew = ChangeTestUtility.createChange(2222L, ModificationType.NEW);
       destination = ChangeTestUtility.createChange(3333L, ModificationType.NEW);
       item = ChangeTestUtility.createItem(200, null, null, isNew, destination, null);
-      assertTrue(ChangeItemUtil.isIgnoreCase(item));
+      assertFalse(ChangeItemUtil.isIgnoreCase(item));
+
+      //destination Equal Or Newer Than Current
+      isNew = ChangeTestUtility.createChange(2222L, ModificationType.NEW);
+      ChangeVersion isIntroduced = ChangeTestUtility.createChange(2222L, ModificationType.NEW);
+      dest = ChangeTestUtility.createChange(1111L, ModificationType.NEW);
+      item = ChangeTestUtility.createItem(200, null, null, isNew, dest, null);
+      assertFalse(ChangeItemUtil.isIgnoreCase(item));
+
+      item = ChangeTestUtility.createItem(200, null, null, isIntroduced, dest, null);
+      assertFalse(ChangeItemUtil.isIgnoreCase(item));
+
+      ChangeVersion isNotNew = ChangeTestUtility.createChange(2222L, ModificationType.MODIFIED);
+      item = ChangeTestUtility.createItem(200, null, null, isNotNew, dest, null);
+      assertFalse(ChangeItemUtil.isIgnoreCase(item));
    }
 
    @Test
