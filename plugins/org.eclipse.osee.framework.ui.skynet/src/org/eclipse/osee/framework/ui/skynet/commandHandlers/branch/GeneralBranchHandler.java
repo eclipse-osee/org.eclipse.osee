@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -38,7 +41,7 @@ public abstract class GeneralBranchHandler extends CommandHandler {
 
       private OpTypeEnum(String type, String title) {
          dialogType = type;
-         dialogTitle = type;
+         dialogTitle = Strings.capitalize(type);
       }
    };
    private final OpTypeEnum type;
@@ -50,20 +53,46 @@ public abstract class GeneralBranchHandler extends CommandHandler {
    public abstract void performOperation(final List<Branch> branches);
 
    @Override
-   public Object executeWithException(ExecutionEvent arg0) {
+   public Object executeWithException(ExecutionEvent arg0) throws OseeCoreException {
       IStructuredSelection selections =
          (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 
       List<Branch> selectedBranches = Handlers.getBranchesFromStructuredSelection(selections);
 
-      MessageDialog dialog =
-         new MessageDialog(Displays.getActiveShell(), type.dialogTitle, null, buildDialogMessage(selectedBranches,
-            type.dialogType), MessageDialog.QUESTION, new String[] {
-            IDialogConstants.YES_LABEL,
-            IDialogConstants.NO_LABEL}, 1);
+      Iterator<Branch> iterator = selectedBranches.iterator();
+      List<Branch> hasChildren = new LinkedList<Branch>();
+      while (iterator.hasNext()) {
+         Branch branch = iterator.next();
+         Collection<Branch> childBranches = branch.getChildBranches();
+         if (!childBranches.isEmpty()) {
+            iterator.remove();
+            hasChildren.add(branch);
+         }
+      }
 
-      if (dialog.open() == 0) {
-         performOperation(selectedBranches);
+      if (!hasChildren.isEmpty()) {
+         StringBuilder children = new StringBuilder();
+         children.append(String.format("The following branches have children and cannot be %sd:\n", type.dialogType));
+         for (Branch b : hasChildren) {
+            List<Branch> branches = new LinkedList<Branch>(b.getChildBranches(true));
+            children.append(String.format("Branch %s has children: %s\n", b.getName(), Strings.buildStatment(branches)));
+         }
+         MessageDialog.openError(Displays.getActiveShell(), type.dialogTitle, children.toString());
+      }
+
+      if (!selectedBranches.isEmpty()) {
+         StringBuilder branchesStatement = new StringBuilder();
+         branchesStatement.append(String.format("Are you sure you want to %s branch(es): ", type.dialogType));
+         branchesStatement.append(Strings.buildStatment(selectedBranches));
+         branchesStatement.append(" \u003F");
+
+         MessageDialog dialog =
+            new MessageDialog(Displays.getActiveShell(), type.dialogTitle, null, branchesStatement.toString(),
+               MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
+
+         if (dialog.open() == 0) {
+            performOperation(selectedBranches);
+         }
       }
 
       return null;
@@ -75,11 +104,4 @@ public abstract class GeneralBranchHandler extends CommandHandler {
       return !branches.isEmpty() && AccessControlManager.isOseeAdmin();
    }
 
-   private String buildDialogMessage(List<? extends IOseeBranch> selectedBranches, String actionDesc) {
-      StringBuilder branchesStatement = new StringBuilder();
-      branchesStatement.append(String.format("Are you sure you want to %s branch(es): ", actionDesc));
-      branchesStatement.append(Strings.buildStatment(selectedBranches));
-      branchesStatement.append(" \u003F");
-      return branchesStatement.toString();
-   }
 }
