@@ -1,0 +1,156 @@
+<project name="Customizes OSEE IDE Product" default="run">
+
+	<!-- *************************************************************** -->
+	<!-- MAIN RUN -->
+	<!-- *************************************************************** -->
+	<target name="run">
+		<echo>Customize OSEE IDE Product</echo>
+		<echo>Product-Name: [${product-name}]</echo>
+		<echo>Archive-Name: [${zip-product-name}]</echo>
+		<echo>Products-Path: [${products-directory}]</echo>
+		<echo>Output-Path: [${output-directory}]</echo>
+		<echo>Resources-Path: [${resources-directory}]</echo>
+		<echo />
+
+		<property name="defaultWorkspaceName" value="workspace" />
+		<property name="additionalExecIniArgs" value=" " />
+
+		<updateProduct os="win32" ws="win32" arch="x86" jreVersion="1.6.0_31" />
+		<updateProduct os="win32" ws="win32" arch="x86_64" jreVersion="1.6.0_31" />
+		<updateProduct os="linux" ws="gtk" arch="x86" jreVersion="1.6.0_26" />
+		<updateProduct os="linux" ws="gtk" arch="x86_64" jreVersion="1.6.0_30" />
+		<!--<updateProduct os="solaris" ws="gtk" arch="sparc" jreVersion="1.6.0_24" /> -->
+	</target>
+
+	<!-- *************************************************************** -->
+	<!-- MAIN RUN -->
+	<!-- *************************************************************** -->
+	<macrodef name="updateProduct">
+		<attribute name="os" />
+		<attribute name="ws" />
+		<attribute name="arch" />
+		<attribute name="jreVersion" />
+		<sequential>
+			<var name="productPath" value="${products-directory}/${product-name}/@{os}/@{ws}/@{arch}" />
+			<var name="productConfigPath" value="${productPath}/configuration" />
+			<var name="productPluginPath" value="${productPath}/plugins" />
+
+			<!-- Add JRE 
+			<var name="jreResource" value="${resources-directory}/../jres/jre_@{jreVersion}_@{os}_@{arch}.zip" />
+			<unzip src="${jreResource}" dest="${productPath}" />
+			<chmod perm="ugo+x" dir="${productPath}/jre" includes="**/*" />
+			-->
+
+			<!-- Update Configuration Area -->
+			<delete dir="${productConfigPath}/.settings" failonerror="false" quiet="true" />
+			<delete dir="${productConfigPath}/org.eclipse.update" failonerror="false" quiet="true" />
+			<mkdir dir="${productConfigPath}/.settings" />
+			<copy file="${resources-directory}/org.eclipse.core.net.prefs" tofile="${productConfigPath}/.settings/org.eclipse.core.net.prefs" overwrite="true" />
+
+			<!-- Update Configuration INI -->
+			<customizeConfigIni configpath="${productConfigPath}" pluginspath="${productPluginPath}" />
+
+			<!-- Extra Launches -->
+			<generateExecutable os="@{os}" productDir="${productPath}" execName="oseeDebug" eclipseArgs="-console${line.separator}-consoleLog" extravmargs="-Xms256m${line.separator}-Xmx700m${line.separator}-Xdebug${line.separator}-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9009" additionalVmArgs="-Dosee.default.broker.uri=&lt;BROKER_ADDRESS&gt;${line.separator}-Dosee.application.server=http://localhost:8089${line.separator}-Dosee.authentication.protocol=demo${line.separator}${additionalExecIniArgs}" />
+
+			<!-- Copy Icon if Win32 -->
+			<if>
+				<equals arg1="@{os}" arg2="win32" />
+				<then>
+					<copy file="${resources-directory}/../icons/win32/osee.ico" tofile="${productPath}/OSEE.ico" />
+				</then>
+			</if>
+
+			<!-- Zip Product -->
+			<var name="productZipName" value="${products-directory}/${product-name}-@{os}.@{ws}.@{arch}.zip" />
+			<var name="productTarName" value="${products-directory}/${product-name}-@{os}.@{ws}.@{arch}.tar" />
+			<if>
+				<equals arg1="@{os}" arg2="win32" />
+				<then>
+					<zip destfile="${productZipName}" basedir="${productPath}" update="true" />
+				</then>
+				<elseif>
+					<equals arg1="@{os}" arg2="solaris" />
+					<then>
+						<zip destfile="${productZipName}" basedir="${productPath}" update="true" />
+					</then>
+				</elseif>
+				<else>
+					<tar destfile="${productTarName}" basedir="${productPath}" longfile="gnu" />
+					<gzip src="${productTarName}" destfile="${productTarName}.gz" />
+					<delete file="${productTarName}" quiet="true" />
+				</else>
+			</if>
+		</sequential>
+	</macrodef>
+
+
+	<!-- *************************************************************** -->
+	<!-- GENERATE CONFIG.INI -->
+	<!-- *************************************************************** -->
+	<!-- update config area osgi.configuration.area=@user.home/.eclipse/osee.platform_${VERSION} 
+		eclipse.p2.data.area=@config.dir/p2/ osgi.instance.area.default=@user.home/osee_shareRC_workspace -->
+	<macrodef name="customizeConfigIni">
+		<attribute name="configPath" />
+		<attribute name="pluginsPath" />
+		<sequential>
+			<pathconvert property="osee.framework.core.bundle.path" setonempty="false">
+				<path>
+					<fileset dir="@{pluginsPath}">
+						<include name="org.eclipse.osee.framework.core_*.jar" />
+					</fileset>
+				</path>
+			</pathconvert>
+			<propertyregex property="osee.core.version" override="true" input="${osee.framework.core.bundle.path}" regexp="org\.eclipse\.osee\.framework\.core_(.*)\.jar" select="\1" casesensitive="false" />
+			<echo message="Osee Core Version: ${osee.core.version}" />
+
+			<echo file="${products-directory}/build_label.txt" append="false">${osee.core.version}</echo>
+
+			<replaceregexp file="@{configPath}/config.ini" match="osgi.instance.area.default=(.*)" replace="osgi.instance.area.default=@user.home/${defaultWorkspaceName}" />
+			<replaceregexp file="@{configPath}/config.ini" match="eclipse.p2.data.area=(.*)" replace="" />
+			<echo file="@{configPath}/config.ini" append="true" message="osgi.configuration.area=@user.home/.eclipse/osee.platform_${osee.core.version}${line.separator}" />
+			<echo file="@{configPath}/config.ini" append="true" message="eclipse.p2.data.area=@config.dir/p2/${line.separator}" />
+		</sequential>
+	</macrodef>
+
+	<!-- *************************************************************** -->
+	<!-- GENERATE Executables -->
+	<!-- *************************************************************** -->
+	<macrodef name="generateExecutable">
+		<attribute name="os" />
+		<attribute name="productDir" />
+		<attribute name="execName" />
+
+		<attribute name="eclipseArgs" />
+		<attribute name="extraVmArgs" />
+		<attribute name="additionalVmArgs" />
+		<sequential>
+			<if>
+				<equals arg1="@{os}" arg2="win32" />
+				<then>
+					<var name="execExtension" value=".exe" />
+				</then>
+				<else>
+					<var name="execExtension" value="" />
+				</else>
+			</if>
+
+			<var name="outputIni" value="@{productDir}/@{execName}.ini" />
+
+			<copy file="@{productDir}/osee${execExtension}" tofile="@{productDir}/@{execName}${execExtension}" overwrite="true" />
+			<copy file="@{productDir}/osee.ini" tofile="${outputIni}" overwrite="true" />
+
+			<!-- <replaceregexp file="@{outputIni}" match="-showsplash.*" replace="" 
+				flags="s" /> -->
+
+			<echo file="${outputIni}" append="false">
+@{eclipseArgs}
+--launcher.XXMaxPermSize
+256m
+-vmargs
+@{extraVmArgs}
+@{additionalVmArgs}
+			</echo>
+		</sequential>
+	</macrodef>
+</project>

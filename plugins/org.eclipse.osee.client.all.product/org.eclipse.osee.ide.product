@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="OSEE IDE Client" uid="org.eclipse.osee.ide.id" id="org.eclipse.osee.framework.ui.product.osee" application="org.eclipse.ui.ide.workbench" version="0.9.9.qualifier" useFeatures="true" includeLaunchers="true">
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>--launcher.XXMaxPermSize
+256m</programArgs>
+      <vmArgs>-Xmx700m -Dosee.default.broker.uri=BROKER_ID -Dosee.application.server=http://localhost:8089 -Dosee.authentication.protocol=demo</vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <windowImages/>
+
+   <splash
+      location="org.eclipse.osee.framework.ui.product" />
+   <launcher name="osee">
+      <linux icon="icons/xpm_pm/osee_32x32.xpm"/>
+      <solaris
+            solarisLarge="icons/solaris/osee.l.pm"
+            solarisMedium="icons/solaris/osee.m.pm"
+            solarisSmall="icons/solaris/osee.s.pm"
+            solarisTiny="icons/solaris/osee.t.pm"/>
+      <win useIco="true">
+         <ico path="icons/win32/osee.ico"/>
+         <bmp/>
+      </win>
+   </launcher>
+
+   <intro introId="osee.product.intro"/>
+
+   <vm>
+   </vm>
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="org.eclipse.osee.client.all.feature"/>
+      <feature id="org.eclipse.sdk"/>
+   </features>
+
+   <configurations>
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.update.configurator" autoStart="true" startLevel="4" />
+      <property name="org.eclipse.update.reconcile" value="false" />
+   </configurations>
+
+</product>

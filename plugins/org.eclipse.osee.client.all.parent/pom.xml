@@ -12,7 +12,9 @@
 	<modules>
 		<module>../../features/org.eclipse.osee.client.all.feature</module>
 		<module>../../features/org.eclipse.osee.client.all.feature.source</module>
+
 		<module>../../plugins/org.eclipse.osee.client.all.p2</module>
+		<module>../../plugins/org.eclipse.osee.client.all.product</module>
 	</modules>
 
 	<properties>
@@ -141,6 +143,11 @@
 						<environment>
 							<os>win32</os>
 							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
 							<arch>x86</arch>
 						</environment>
 						<environment>
@@ -166,6 +173,11 @@
 						<!-- <environment> <os>macosx</os> <ws>cocoa</ws> <arch>x86</arch> 
 							</environment> <environment> <os>macosx</os> <ws>carbon</ws> <arch>x86</arch> 
 							</environment> -->
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
 						<environment>
 							<os>win32</os>
 							<ws>win32</ws>

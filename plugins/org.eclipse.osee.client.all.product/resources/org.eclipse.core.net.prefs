@@ -1,0 +1,11 @@
+#Wed May 12 16:07:23 MST 2010
+systemProxiesEnabled=false
+org.eclipse.core.net.hasMigrated=true
+proxyData/HTTPS/port=31060
+proxyData/HTTP/host=www-slb-proxy.boeing.com
+nonProxiedHosts=localhost|127.0.0.1
+proxyData/HTTP/hasAuth=false
+proxyData/HTTP/port=31060
+eclipse.preferences.version=1
+proxyData/HTTPS/hasAuth=false
+proxyData/HTTPS/host=www-slb-proxy.boeing.com
