@@ -45,6 +45,7 @@ public class OseeConnectionPoolImpl {
    }
 
    public OseeConnectionImpl getConnection() throws OseeCoreException {
+      //System.out.println("acquiring.  num available: " + connectionsSemaphore.availablePermits());
       connectionsSemaphore.acquireUninterruptibly();
 
       OseeConnectionImpl toReturn = null;
@@ -58,7 +59,13 @@ public class OseeConnectionPoolImpl {
          }
 
          if (toReturn == null) {
-            OseeConnectionImpl connection = getOseeConnection();
+            OseeConnectionImpl connection;
+            try {
+               connection = getOseeConnection();
+            } catch (OseeCoreException ex) {
+               connectionsSemaphore.release();
+               throw ex;
+            }
             connections.add(connection);
             OseeLog.logf(Activator.class, Level.INFO, "DbConnection: [%s] - [%d]", dbUrl, connections.size());
             toReturn = connection;
@@ -90,6 +97,7 @@ public class OseeConnectionPoolImpl {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          removeConnection(connection);
       }
+      //System.out.println("releasing.  num available: " + connectionsSemaphore.availablePermits());
       connectionsSemaphore.release();
    }
 

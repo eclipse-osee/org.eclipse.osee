@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -133,7 +134,9 @@ public class InternalClientSessionManager {
                @Override
                public OseeCredential getCredential() {
                   OseeCredential credential = super.getCredential();
-                  credential.setUserName(System.getProperty("user.name"));
+                  String userName =
+                     OseeClientProperties.isInDbInit() ? SystemUser.BootStrap.getName() : System.getProperty("user.name");
+                  credential.setUserName(userName);
                   credential.setDomain("");
                   credential.setPassword("");
                   credential.setAuthenticationProtocol(OseeClientProperties.getAuthenticationProtocol());
@@ -209,6 +212,7 @@ public class InternalClientSessionManager {
       parameters.put("operation", "create");
       String url =
          HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);
+
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       AcquireResult result =
          HttpProcessor.post(new URL(url), asInputStream(credential), "text/xml", "UTF-8", outputStream);

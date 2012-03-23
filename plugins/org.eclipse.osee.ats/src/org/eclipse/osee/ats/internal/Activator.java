@@ -28,7 +28,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
 /**
- * 
  * @author Donald G. Dunne
  */
 public class Activator implements BundleActivator {
@@ -38,17 +37,9 @@ public class Activator implements BundleActivator {
    private ServiceRegistration service2;
    private ServiceDependencyTracker tracker;
 
-   public Activator() {
-      super();
-      AtsCacheManager.start();
-      AtsBranchManager.start();
-      try {
-         AtsNotificationManager.start(OseeNotificationManager.getInstance(),
-            ClientSessionManager.isProductionDataStore());
-      } catch (OseeAuthenticationRequiredException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-   }
+   private volatile boolean needsInitialization = true;
+
+   private Thread thread;
 
    @Override
    public void start(BundleContext context) throws Exception {
@@ -58,10 +49,35 @@ public class Activator implements BundleActivator {
 
       tracker = new ServiceDependencyTracker(context, new AtsCmAccessControlRegHandler());
       tracker.open();
+
+      Runnable runnable = new Runnable() {
+         @Override
+         public void run() {
+            if (needsInitialization) {
+               needsInitialization = false;
+               AtsCacheManager.start();
+               AtsBranchManager.start();
+               try {
+                  AtsNotificationManager.start(OseeNotificationManager.getInstance(),
+                     ClientSessionManager.isProductionDataStore());
+               } catch (OseeAuthenticationRequiredException ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               }
+            }
+         }
+      };
+
+      thread = new Thread(runnable);
+      thread.start();
+
    }
 
    @Override
    public void stop(BundleContext context) throws Exception {
+      if (thread != null) {
+         thread.interrupt();
+         thread = null;
+      }
       AtsBranchManager.stop();
       OsgiUtil.close(tracker);
       OsgiUtil.close(service1);

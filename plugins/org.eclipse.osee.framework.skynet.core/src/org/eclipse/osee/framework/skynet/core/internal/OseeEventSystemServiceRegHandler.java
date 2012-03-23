@@ -49,6 +49,8 @@ public class OseeEventSystemServiceRegHandler extends AbstractTrackingHandler {
    private IOseeCoreModelEventService coreModelEventService;
    private final Collection<IEventListener> coreListeners = new ArrayList<IEventListener>();
 
+   private Thread thread;
+
    public OseeEventSystemServiceRegHandler(EventManagerData eventManagerData) {
       this.eventManagerData = eventManagerData;
    }
@@ -59,27 +61,39 @@ public class OseeEventSystemServiceRegHandler extends AbstractTrackingHandler {
 
       EventManagerFactory factory = new EventManagerFactory();
 
-      InternalEventManager eventManager = null;
       connectionStatusListener = new ResMessagingConnectionListener(eventManagerData.getPreferences());
-      eventManager =
+      final InternalEventManager eventManager =
          factory.createNewEventManager(coreModelEventService, eventManagerData.getPreferences(),
             eventManagerData.getListeners(), eventManagerData.getPriorityListeners(), connectionStatusListener);
 
       if (eventManager != null) {
-         eventManagerData.setMessageEventManager(eventManager);
-         coreModelEventService.addConnectionListener(connectionStatusListener);
-         eventManager.start();
-         try {
-            OseeEventManager.kickLocalRemEvent(eventManager, RemoteEventServiceEventType.Rem_Connected);
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.INFO, ex);
-         }
+         Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+               try {
+                  eventManagerData.setMessageEventManager(eventManager);
+                  coreModelEventService.addConnectionListener(connectionStatusListener);
+                  eventManager.start();
+                  try {
+                     OseeEventManager.kickLocalRemEvent(eventManager, RemoteEventServiceEventType.Rem_Connected);
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(Activator.class, Level.INFO, ex);
+                  }
+                  addCoreListeners();
+               } catch (Throwable th) {
+                  OseeLog.log(Activator.class, Level.SEVERE, th);
+               }
+            }
+         };
+
+         thread = new Thread(runnable);
+         thread.start();
+
          OseeLog.log(Activator.class, Level.INFO, "Remote Event Service - Enabled");
       } else {
          OseeLog.log(Activator.class, Level.INFO, "Remote Event Service - Disabled");
       }
 
-      addCoreListeners();
    }
 
    private void addCoreListeners() {
@@ -99,6 +113,10 @@ public class OseeEventSystemServiceRegHandler extends AbstractTrackingHandler {
 
    @Override
    public void onDeActivate() {
+      if (thread != null) {
+         thread.interrupt();
+         thread = null;
+      }
       removeCoreListeners();
 
       InternalEventManager eventManager = eventManagerData.getMessageEventManager();
