@@ -15,7 +15,7 @@
 		<module>../../plugins/org.eclipse.osee.framework.core.message</module>
 		<module>../../plugins/org.eclipse.osee.framework.core.message.test</module>
 		<module>../../plugins/org.eclipse.osee.framework.manager.servlet</module>
-			
+
 		<module>../../plugins/org.eclipse.osee.display.api</module>
 		<module>../../plugins/org.eclipse.osee.display.view.web</module>
 		<module>../../plugins/org.eclipse.osee.display.presenter</module>
@@ -29,10 +29,10 @@
 		<module>../../plugins/org.eclipse.osee.ats.presenter.test</module>
 
 		<module>../../features/org.eclipse.osee.x.server.legacy.feature</module>
-		
+
 		<module>../../features/org.eclipse.osee.x.server.feature</module>
 		<module>../../features/org.eclipse.osee.x.server.external.feature</module>
-		
+
 		<module>../../features/org.eclipse.osee.x.server.legacy.feature.source</module>
 		<module>../../features/org.eclipse.osee.x.server.feature.source</module>
 
@@ -55,9 +55,11 @@
 		<platform-version-name>indigo</platform-version-name>
 
 		<orbit-version>R20110523182458</orbit-version>
+		<xtext-version>2.0.0</xtext-version>
 
 		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
+		<itemis-site>http://download.itemis.com/updates/releases/${xtext-version}</itemis-site>
 
 		<eclipse-ip-site-path>file:../../../org.eclipse.ip</eclipse-ip-site-path>
 		<eclipse-ip-site>${eclipse-ip-site-path}/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
@@ -99,6 +101,11 @@
 			<id>orbit</id>
 			<layout>p2</layout>
 			<url>${orbit-site}</url>
+		</repository>
+		<repository>
+			<id>itemis</id>
+			<layout>p2</layout>
+			<url>${itemis-site}</url>
 		</repository>
 		<repository>
 			<id>eclipse-ip</id>
@@ -447,19 +454,10 @@
 									<append>true</append>
 								</configuration>
 							</execution>
-						<!-- <execution>
-								<id>create-coverage-reports</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>report</goal>
-								</goals>
-								<configuration>
-									<dataFile>${sonar.jacoco.reportPath}</dataFile>
-									<includes>*.osee.*</includes>
-									<outputDirectory>${coverage.reportPath}</outputDirectory>
-									<outputEncoding>UTF-8</outputEncoding>
-								</configuration>
-							</execution> -->
+							<!-- <execution> <id>create-coverage-reports</id> <phase>verify</phase> 
+								<goals> <goal>report</goal> </goals> <configuration> <dataFile>${sonar.jacoco.reportPath}</dataFile> 
+								<includes>*.osee.*</includes> <outputDirectory>${coverage.reportPath}</outputDirectory> 
+								<outputEncoding>UTF-8</outputEncoding> </configuration> </execution> -->
 						</executions>
 					</plugin>
 				</plugins>

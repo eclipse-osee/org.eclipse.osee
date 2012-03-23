@@ -57,6 +57,7 @@
 		<platform-version-name>indigo</platform-version-name>
 
 		<orbit-version>R20110523182458</orbit-version>
+		<xtext-version>2.0.0</xtext-version>
 
 		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>

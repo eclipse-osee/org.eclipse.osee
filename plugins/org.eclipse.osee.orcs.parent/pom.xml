@@ -58,9 +58,11 @@
 		<platform-version-name>indigo</platform-version-name>
 
 		<orbit-version>R20110523182458</orbit-version>
+		<xtext-version>2.0.0</xtext-version>
 
 		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
+		<itemis-site>http://download.itemis.com/updates/releases/${xtext-version}</itemis-site>
 
 		<osee-xcore-site-path>file:../../../org.eclipse.osee/plugins</osee-xcore-site-path>
 		<osee-xcore-site>${osee-xcore-site-path}/org.eclipse.osee.x.core.p2/target/repository</osee-xcore-site>
@@ -96,6 +98,11 @@
 			<id>orbit</id>
 			<layout>p2</layout>
 			<url>${orbit-site}</url>
+		</repository>
+		<repository>
+			<id>itemis</id>
+			<layout>p2</layout>
+			<url>${itemis-site}</url>
 		</repository>
 		<repository>
 			<id>osee-xcore</id>
