@@ -21,7 +21,6 @@ public abstract class CancellableCallable<T> implements Callable<T>, HasCancella
    private volatile boolean cancelled;
 
    protected CancellableCallable() {
-      super();
       cancelled = false;
    }
 

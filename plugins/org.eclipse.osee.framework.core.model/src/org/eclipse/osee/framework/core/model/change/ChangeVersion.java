@@ -29,7 +29,6 @@ public final class ChangeVersion {
    }
 
    public ChangeVersion(String value, Long gammaId, ModificationType modType) {
-      super();
       this.value = value;
       this.gammaId = gammaId;
       this.modType = modType;

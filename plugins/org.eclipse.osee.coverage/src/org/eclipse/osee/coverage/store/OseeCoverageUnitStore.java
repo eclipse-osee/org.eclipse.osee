@@ -165,11 +165,18 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
                Pair<String, String> nameGuid = CoverageItem.getNameGuidFromStore((String) attr.getValue());
                CoverageChange change =
                   new CoverageChange(nameGuid.getFirst(), nameGuid.getSecond(), CoverageEventType.Modified);
-               if (attr.getModificationType() == ModificationType.NEW || attr.getModificationType() == ModificationType.UNDELETED || attr.getModificationType() == ModificationType.INTRODUCED) {
-                  change.setEventType(CoverageEventType.Added);
-               } else if (attr.getModificationType() == ModificationType.DELETED) {
-                  change.setEventType(CoverageEventType.Deleted);
+
+               switch (attr.getModificationType()) {
+                  case NEW:
+                  case UNDELETED:
+                  case INTRODUCED:
+                     change.setEventType(CoverageEventType.Added);
+                     break;
+                  case DELETED:
+                     change.setEventType(CoverageEventType.Deleted);
+                     break;
                }
+
                coverageEvent.getCoverages().add(change);
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
