@@ -37,7 +37,7 @@ public class MessageToolExportCustomizer implements ServiceTrackerCustomizer {
          OseeLog.log(MessageToolExportCustomizer.class, Level.SEVERE, "failed to export message tool service", e);
          return null;
       } finally {
-    	  OseeLog.log(Activator.class, Level.WARNING, "!!!message tool service exported");
+    	  OseeLog.log(Activator.class, Level.INFO, "!!!message tool service exported");
       }
 
    }

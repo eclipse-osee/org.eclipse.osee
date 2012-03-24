@@ -39,17 +39,26 @@ public class MessageIoManagementStarter extends ServiceTracker {
 
    @Override
    public synchronized void removedService(ServiceReference reference, Object service) {
-      registration.unregister();
-      registration = null;
+	  unregister();
       super.removedService(reference, service);
    }
 
    @Override
    public synchronized void close() {
-      if (registration != null) {
-         registration.unregister();
-      }
+	  unregister();
       super.close();
+   }
+   
+   private void unregister(){
+	   if (registration != null) {
+		   try{
+			   registration.unregister();
+		   } catch (IllegalStateException ex){
+			   //do nothing, we're just making sure it got cleaned up
+		   } finally {
+			   registration = null;
+		   }
+	   }
    }
 
 }

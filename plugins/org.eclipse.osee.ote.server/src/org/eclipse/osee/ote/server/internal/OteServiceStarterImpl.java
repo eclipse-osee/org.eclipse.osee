@@ -99,7 +99,7 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 			strUri = String.format("tcp://%s:%d", addressAsString, port);
 			try {
 				brokerService.addConnector(strUri);
-				OseeLog.log(Activator.class, Level.WARNING, "Added TCP connector: " + strUri);			
+				OseeLog.log(Activator.class, Level.INFO, "Added TCP connector: " + strUri);			
 			} catch (Exception e) {
 				OseeLog.log(Activator.class, Level.SEVERE, "could not add connector for " + strUri, e);
 				strUri = "vm://localhost?broker.persistent=false";
@@ -116,7 +116,7 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 		brokerService.start();
 		URI uri = new URI(strUri);
 
-		OseeLog.log(Activator.class, Level.WARNING, "NODE URI IS " + uri.toASCIIString());
+		OseeLog.log(Activator.class, Level.INFO, "NODE URI IS " + uri.toASCIIString());
 		NodeInfo nodeInfo = new NodeInfo("OTEEmbeddedBroker", uri);
 
 		EnvironmentCreationParameter environmentCreationParameter =
