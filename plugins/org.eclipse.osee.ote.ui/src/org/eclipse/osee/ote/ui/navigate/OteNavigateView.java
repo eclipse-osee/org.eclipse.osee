@@ -19,7 +19,6 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite;
-import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -100,11 +99,6 @@ public class OteNavigateView extends ViewPart {
    }
 
    public void refresh() {
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            xNavComp.refresh();
-         }
-      });
+	  xNavComp.refresh();
    }
 }
