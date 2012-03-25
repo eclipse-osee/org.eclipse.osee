@@ -89,12 +89,13 @@ public class EmailGroupsData {
 
    public String getHtmlResult(User user) throws OseeCoreException {
       StringBuilder html = new StringBuilder();
+      String customizedBody = getCustomizedBody(body, user);
 
       if (bodyIsHtml) {
-         html.append(body);
+         html.append(customizedBody);
       } else {
          html.append("<pre>");
-         html.append(body);
+         html.append(customizedBody);
          html.append("</pre>");
       }
 
@@ -105,5 +106,11 @@ public class EmailGroupsData {
             group.getName()));
       }
       return html.toString();
+   }
+
+   private String getCustomizedBody(String bodyTemplate, User user) {
+      String fullName = user.getName();
+      String firstName = fullName.replaceAll("[^,]+, ([^ ]+).*", "$1");
+      return bodyTemplate.replace("<firstName/>", firstName);
    }
 }
