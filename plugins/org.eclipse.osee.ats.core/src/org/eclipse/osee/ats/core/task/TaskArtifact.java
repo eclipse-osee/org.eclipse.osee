@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.core.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.workflow.StateManager;
 import org.eclipse.osee.ats.core.workflow.log.AtsLog;
 import org.eclipse.osee.ats.core.workflow.log.LogItem;
+import org.eclipse.osee.ats.core.workflow.log.LogType;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
@@ -219,16 +220,18 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
       return est - ((est * percent) / 100.0);
    }
 
-   public LogItem getLogItemAsOfDate(Date date) throws OseeCoreException {
+   public LogItem getLogItemWithTypeAsOfDate(LogType logType, Date date) throws OseeCoreException {
       LogItem retLogItem = null;
       AtsLog atsLog = getLog();
       List<LogItem> logItems = atsLog.getLogItems();
       for (LogItem logItem : logItems) {
-         Date logItemDate = logItem.getDate();
-         if (logItemDate.after(date)) {
-            break;
-         } else {
-            retLogItem = logItem;
+         if (logItem.getType().equals(logType)) {
+            Date logItemDate = logItem.getDate();
+            if (logItemDate.after(date)) {
+               break;
+            } else {
+               retLogItem = logItem;
+            }
          }
       }
 
