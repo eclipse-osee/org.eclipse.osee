@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -89,9 +90,14 @@ public class AccessPolicyImpl implements AccessPolicy {
    public PermissionStatus hasBranchPermission(IOseeBranch branch, PermissionEnum permission, Level level) throws OseeCoreException {
       User currentUser = getCurrentUser();
       AccessDataQuery query = getAccessService().getAccessData(currentUser, java.util.Collections.singleton(branch));
-      PermissionStatus permissionStatus = new PermissionStatus();
-      query.branchMatches(permission, branch, permissionStatus);
-      printErrorMessage(currentUser, java.util.Collections.singleton(branch), permissionStatus, level);
+      PermissionStatus permissionStatus = null;
+      if (!OseeClientProperties.isInDbInit()) {
+         permissionStatus = new PermissionStatus();
+         query.branchMatches(permission, branch, permissionStatus);
+         printErrorMessage(currentUser, java.util.Collections.singleton(branch), permissionStatus, level);
+      } else {
+         permissionStatus = new PermissionStatus(true, "In DB Init; All permission enabled");
+      }
       return permissionStatus;
    }
 
@@ -103,17 +109,23 @@ public class AccessPolicyImpl implements AccessPolicy {
    public PermissionStatus hasAttributeTypePermission(Collection<? extends IBasicArtifact<?>> artifacts, IAttributeType attributeType, PermissionEnum permission, Level level) throws OseeCoreException {
       User currentUser = getCurrentUser();
       AccessDataQuery query = getAccessService().getAccessData(currentUser, artifacts);
-      PermissionStatus permissionStatus = new PermissionStatus();
 
-      if (artifacts != null) {
-         for (IBasicArtifact<?> artifact : artifacts) {
-            query.attributeTypeMatches(permission, artifact, attributeType, permissionStatus);
+      PermissionStatus permissionStatus = null;
+      if (!OseeClientProperties.isInDbInit()) {
+         permissionStatus = new PermissionStatus();
+         if (artifacts != null) {
+            for (IBasicArtifact<?> artifact : artifacts) {
+               query.attributeTypeMatches(permission, artifact, attributeType, permissionStatus);
 
-            if (printErrorMessage(currentUser, artifacts, permissionStatus, level)) {
-               break;
+               if (printErrorMessage(currentUser, artifacts, permissionStatus, level)) {
+                  break;
+               }
             }
          }
+      } else {
+         permissionStatus = new PermissionStatus(true, "In DB Init; All permission enabled");
       }
+
       return permissionStatus;
    }
 
@@ -121,20 +133,27 @@ public class AccessPolicyImpl implements AccessPolicy {
    public PermissionStatus hasArtifactPermission(Collection<? extends IBasicArtifact<?>> artifacts, PermissionEnum permission, Level level) throws OseeCoreException {
       User currentUser = getCurrentUser();
       AccessDataQuery query = getAccessService().getAccessData(currentUser, artifacts);
-      PermissionStatus permissionStatus = new PermissionStatus();
-      if (artifacts != null) {
-         for (IBasicArtifact<?> artifact : artifacts) {
-            if (artifact instanceof Artifact) {
-               Artifact fullArtifact = ((Artifact) artifact).getFullArtifact();
-               if (fullArtifact.isInDb()) {
-                  query.artifactMatches(permission, artifact, permissionStatus);
+
+      PermissionStatus permissionStatus = null;
+      if (!OseeClientProperties.isInDbInit()) {
+         permissionStatus = new PermissionStatus();
+         if (artifacts != null) {
+            for (IBasicArtifact<?> artifact : artifacts) {
+               if (artifact instanceof Artifact) {
+                  Artifact fullArtifact = ((Artifact) artifact).getFullArtifact();
+                  if (fullArtifact.isInDb()) {
+                     query.artifactMatches(permission, artifact, permissionStatus);
+                  }
+               }
+               if (printErrorMessage(currentUser, artifacts, permissionStatus, level)) {
+                  break;
                }
             }
-            if (printErrorMessage(currentUser, artifacts, permissionStatus, level)) {
-               break;
-            }
          }
+      } else {
+         permissionStatus = new PermissionStatus(true, "In DB Init; All permission enabled");
       }
+
       return permissionStatus;
    }
 
@@ -142,17 +161,23 @@ public class AccessPolicyImpl implements AccessPolicy {
    public PermissionStatus hasArtifactTypePermission(IOseeBranch branch, Collection<? extends IArtifactType> artifactTypes, PermissionEnum permission, Level level) throws OseeCoreException {
       User currentUser = getCurrentUser();
       AccessDataQuery query = getAccessService().getAccessData(currentUser, java.util.Collections.singleton(branch));
-      PermissionStatus permissionStatus = new PermissionStatus();
 
-      if (artifactTypes != null) {
-         for (IArtifactType artifactType : artifactTypes) {
-            query.branchArtifactTypeMatches(permission, branch, artifactType, permissionStatus);
+      PermissionStatus permissionStatus = null;
+      if (!OseeClientProperties.isInDbInit()) {
+         permissionStatus = new PermissionStatus();
+         if (artifactTypes != null) {
+            for (IArtifactType artifactType : artifactTypes) {
+               query.branchArtifactTypeMatches(permission, branch, artifactType, permissionStatus);
 
-            if (printErrorMessage(currentUser, artifactTypes, permissionStatus, level)) {
-               break;
+               if (printErrorMessage(currentUser, artifactTypes, permissionStatus, level)) {
+                  break;
+               }
             }
          }
+      } else {
+         permissionStatus = new PermissionStatus(true, "In DB Init; All permission enabled");
       }
+
       return permissionStatus;
    }
 
@@ -191,13 +216,23 @@ public class AccessPolicyImpl implements AccessPolicy {
    private PermissionStatus hasArtifactRelationPermission(Collection<? extends IBasicArtifact<?>> artifacts, Collection<? extends IRelationTypeSide> relationTypeSides, PermissionEnum permission, Level level) throws OseeCoreException {
       AccessDataQuery query = getAccessService().getAccessData(getCurrentUser(), artifacts);
 
-      PermissionStatus status = new PermissionStatus();
-      for (IBasicArtifact<?> artifact : artifacts) {
-         for (IRelationTypeSide relationTypeSide : relationTypeSides) {
-            query.relationTypeMatches(permission, artifact, relationTypeSide, status);
+      PermissionStatus permissionStatus = null;
+      if (!OseeClientProperties.isInDbInit()) {
+         permissionStatus = new PermissionStatus();
+         if (!OseeClientProperties.isInDbInit()) {
+            permissionStatus = new PermissionStatus();
+            for (IBasicArtifact<?> artifact : artifacts) {
+               for (IRelationTypeSide relationTypeSide : relationTypeSides) {
+                  query.relationTypeMatches(permission, artifact, relationTypeSide, permissionStatus);
+               }
+            }
+         } else {
+            permissionStatus = new PermissionStatus(true, "In DB Init; All permission enabled");
          }
+      } else {
+         permissionStatus = new PermissionStatus(true, "In DB Init; All permission enabled");
       }
 
-      return status;
+      return permissionStatus;
    }
 }
