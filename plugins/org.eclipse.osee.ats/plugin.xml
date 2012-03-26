@@ -230,14 +230,6 @@
       </XWidgetProvider>
    </extension>
    <extension
-         id="TranslateImportedValidateChangeReports"
-         name="TranslateImportedValidateChangeReports"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.ats.health.TxImportedValidateChangeReports">
-      </Operation>
-   </extension>
-   <extension
          point="org.eclipse.ui.commands">
       <command
             id="org.eclipse.osee.framework.ui.skynet.atseditor.command"

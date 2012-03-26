@@ -32,8 +32,6 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.goal.CreateGoalTestArtifacts;
 import org.eclipse.osee.ats.goal.GoalSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
-import org.eclipse.osee.ats.health.ValidateChangeReportByHrid;
-import org.eclipse.osee.ats.health.ValidateChangeReports;
 import org.eclipse.osee.ats.internal.ATSPerspective;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.navigate.EmailTeamsItem.MemberType;
@@ -216,8 +214,6 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
 
          XNavigateItem healthItems = new XNavigateItemFolder(adminItems, "Health");
          new ValidateAtsDatabase(healthItems);
-         new ValidateChangeReports(healthItems);
-         new ValidateChangeReportByHrid(healthItems);
          new ValidateWorkspaceToDatabaseWorkDefinitions(healthItems);
 
          // new ActionNavigateItem(adminItems, new XViewerViewAction());
