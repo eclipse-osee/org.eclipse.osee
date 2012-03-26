@@ -64,7 +64,7 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
    private final Set<Artifact> modifiedArtifacts = new HashSet<Artifact>();
    private final Set<Artifact> alreadyProcessedArtifacts = new HashSet<Artifact>();
 
-   private final String comment;
+   private String comment;
    private User user;
 
    private AccessPolicy access;
@@ -72,6 +72,10 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
 
    protected SkynetTransaction(TxMonitor<Branch> txMonitor, Branch branch, String uuid, String comment) {
       super(txMonitor, branch, uuid, comment);
+      this.comment = comment;
+   }
+
+   public void setComment(String comment) {
       this.comment = comment;
    }
 

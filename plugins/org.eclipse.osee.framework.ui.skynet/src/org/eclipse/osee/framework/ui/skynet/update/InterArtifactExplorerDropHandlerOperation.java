@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.update;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,6 +32,7 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -70,7 +72,12 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
       Branch destinationBranch = destinationParentArtifact.getFullBranch();
 
       if (isUpdateFromParent(sourceBranch, destinationBranch)) {
-         MessageDialog.openError(Displays.getActiveShell(), ACCESS_ERROR_MSG_TITLE, UPDATE_FROM_PARENT_ERROR_MSG);
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               MessageDialog.openError(Displays.getActiveShell(), ACCESS_ERROR_MSG_TITLE, UPDATE_FROM_PARENT_ERROR_MSG);
+            }
+         });
       } else if (isAccessAllowed(sourceBranch, destinationBranch)) {
          Set<Artifact> transferArtifacts = getArtifactSetToTransfer();
          monitor.beginTask("Processing Artifact(s)", 2 + (transferArtifacts.size() * 4));
@@ -80,7 +87,6 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
             final List<TransferObject> convertedArtifacts =
                convertToTransferObjects(transferArtifacts, destinationParentArtifact.getBranch());
             Displays.ensureInDisplayThread(new Runnable() {
-
                @Override
                public void run() {
                   userConfirmed.setValue(confirmUsersRequestAndProcess(convertedArtifacts));
@@ -92,8 +98,14 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
          }
          addArtifactsToNewTransaction(destinationParentArtifact, transferArtifacts, sourceBranch, monitor);
       } else {
-         MessageDialog.openError(Displays.getActiveShell(), ACCESS_ERROR_MSG_TITLE, ACCESS_ERROR_MSG);
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               MessageDialog.openError(Displays.getActiveShell(), ACCESS_ERROR_MSG_TITLE, ACCESS_ERROR_MSG);
+            }
+         });
       }
+      monitor.done();
    }
 
    private Set<Artifact> getArtifactSetToTransfer() throws OseeCoreException {
@@ -159,9 +171,10 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
    private void handleTransfers(Set<Artifact> transferArtifacts, Artifact destinationArtifact, IProgressMonitor monitor) throws OseeCoreException {
       IOseeBranch destinationBranch = destinationArtifact.getBranch();
 
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(destinationBranch, "Introduced " + transferArtifacts.size() + " artifact(s)");
-      Set<Artifact> reloadArtifacts = new LinkedHashSet<Artifact>();
+      SkynetTransaction transaction = TransactionManager.createTransaction(destinationBranch, Strings.EMPTY_STRING);
+
+      Set<Artifact> updated = new LinkedHashSet<Artifact>();
+      Set<Artifact> introduced = new LinkedHashSet<Artifact>();
 
       //make sure all transfer artifacts are on the destination branch
       for (Artifact sourceArtifact : transferArtifacts) {
@@ -169,7 +182,7 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
             ArtifactQuery.checkArtifactFromId(sourceArtifact.getArtId(), destinationBranch,
                DeletionFlag.EXCLUDE_DELETED);
          if (onDestinationBranch == null) {
-            handleIntroduceCase(sourceArtifact, destinationArtifact, reloadArtifacts, transaction);
+            handleIntroduceCase(sourceArtifact, destinationArtifact, introduced, transaction);
          }
          monitor.worked(1);
       }
@@ -179,7 +192,7 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
          Artifact onDestinationBranch =
             ArtifactQuery.checkArtifactFromId(sourceArtifact.getArtId(), destinationBranch,
                DeletionFlag.EXCLUDE_DELETED);
-         handleUpdateCase(sourceArtifact, onDestinationBranch, reloadArtifacts, transaction);
+         handleUpdateCase(sourceArtifact, onDestinationBranch, updated, transaction);
          monitor.worked(1);
       }
 
@@ -189,16 +202,21 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
             ArtifactQuery.checkArtifactFromId(sourceArtifact.getArtId(), destinationBranch,
                DeletionFlag.EXCLUDE_DELETED);
          Artifact parent = onDestinationBranch.getParent();
-         if ((parent == null || parent.equals(CoreArtifactTokens.DefaultHierarchyRoot)) && !destinationArtifact.equals(onDestinationBranch)) {
+         if (CoreArtifactTokens.DefaultHierarchyRoot.equals(parent) && !destinationArtifact.equals(onDestinationBranch)) {
             destinationArtifact.addChild(onDestinationBranch);
             destinationArtifact.persist(transaction);
          }
          monitor.worked(1);
       }
 
+      String resultComment =
+         Strings.buildStatment(Arrays.asList(String.format("Introduced %s", introduced.size()),
+            String.format("Updated %s", updated.size() - introduced.size())));
+
+      transaction.setComment(String.format("%s artifact(s)", resultComment));
       transaction.execute();
       monitor.worked(1);
-      reloadCachedArtifacts(reloadArtifacts);
+      reloadCachedArtifacts(updated);
       monitor.worked(1);
    }
 
@@ -218,9 +236,9 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
       reloadArtifacts.add(updatedArtifact);
    }
 
-   private void handleUpdateCase(Artifact sourceArtifact, Artifact destinationArtifact, Set<Artifact> reloadArtifacts, SkynetTransaction transaction) throws OseeCoreException {
+   private void handleUpdateCase(Artifact sourceArtifact, Artifact destinationArtifact, Set<Artifact> updated, SkynetTransaction transaction) throws OseeCoreException {
       destinationArtifact.updateArtifactFromBranch(sourceArtifact.getBranch());
-      reloadArtifacts.add(destinationArtifact);
+      updated.add(destinationArtifact);
       destinationArtifact.persist(transaction);
    }
 
