@@ -15,11 +15,14 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.config.demo.config.DemoDbUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.init.DatabaseInitializationOperation;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -48,6 +51,7 @@ public class DemoDbInitTest {
       //      }
    }
 
+   @SuppressWarnings("unchecked")
    @org.junit.Test
    public void testDemoDbInit() throws Exception {
       System.out.println("\nBegin database initialization...");
@@ -77,10 +81,15 @@ public class DemoDbInitTest {
          if (UserManager.getUser().getUserId().equals("bootstrap")) {
             throw new OseeStateException("Should not be bootstrap user here");
          }
+
+         //Clean up transactions author value changing from Bootstrap to the OSEE System user
+         final String BOOTSTRAP_ART_ID = "0";
+         User oseeUser = UserManager.getUser(SystemUser.OseeSystem);
+         ConnectionHandler.runPreparedUpdate("update osee.osee_tx_details txd set txd.author='" + oseeUser.getArtId() + "' where txd.author='" + BOOTSTRAP_ART_ID + "'");
+
       }
 
       System.out.println("End database initialization...");
 
    }
-
 }
