@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.core.workflow.log.LogType;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.core.util.WorkPageType;
@@ -559,6 +560,15 @@ public class StateManager {
          }
       }
       return assignees;
+   }
+
+   public void validateNoBootstrapUser() throws OseeCoreException {
+      for (IBasicUser user : getAssignees()) {
+         if (user.getUserId().equals(SystemUser.BootStrap.getUserId())) {
+            throw new OseeStateException("Assignee can't be bootstrap user");
+         }
+      }
+
    }
 
 }

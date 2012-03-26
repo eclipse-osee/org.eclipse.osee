@@ -132,6 +132,7 @@ public class TransitionManager {
                WorkflowManagerCore.isEditable(awa, awa.getStateDefinition(), helper.isPrivilegedEditEnabled());
             boolean currentlyUnAssigned =
                awa.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned));
+            awa.getStateMgr().validateNoBootstrapUser();
             boolean overrideAssigneeCheck = helper.isOverrideAssigneeCheck();
             // Allow anyone to transition any task to completed/cancelled/working if parent is working
             if (awa.isTask() && awa.getParentTeamWorkflow().isCompletedOrCancelled()) {
