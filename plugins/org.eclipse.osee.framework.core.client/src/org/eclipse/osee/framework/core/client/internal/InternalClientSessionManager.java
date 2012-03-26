@@ -169,8 +169,7 @@ public class InternalClientSessionManager {
             HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);
          String reponse = HttpProcessor.post(new URL(url));
          OseeLog.log(CoreClientActivator.class, Level.INFO, reponse);
-         oseeSession = null;
-         oseeSessionGrant = null;
+         clearData();
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
       }

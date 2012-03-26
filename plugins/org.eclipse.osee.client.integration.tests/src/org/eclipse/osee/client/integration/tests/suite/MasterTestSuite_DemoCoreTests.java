@@ -45,10 +45,8 @@ public class MasterTestSuite_DemoCoreTests {
       assertTrue("Client must authenticate using demo protocol",
          ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
       assertTrue("Should be run on demo database.", TestUtil.isDemoDb());
-      // Re-authenticate so we can continue
-      OseeClientSession session = ClientSessionManager.getSession();
-      UserManager.releaseUser();
 
+      OseeClientSession session = ClientSessionManager.getSession();
       Assert.assertEquals("Must run populate as Joe Smith", DemoUsers.Joe_Smith.getUserId(), session.getUserId());
       Assert.assertEquals("Must run populate as Joe Smith", DemoUsers.Joe_Smith.getUserId(),
          UserManager.getUser().getUserId());

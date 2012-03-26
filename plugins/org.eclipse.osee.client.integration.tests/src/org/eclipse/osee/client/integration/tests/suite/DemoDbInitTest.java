@@ -15,10 +15,12 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.config.demo.config.DemoDbUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.database.init.DatabaseInitializationOperation;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.BeforeClass;
@@ -67,9 +69,14 @@ public class DemoDbInitTest {
       if (wasDbInitSuccessful) {
          DemoDbUtil.setDbInitSuccessful(true);
 
+         // Re-authenticate so we can continue and NOT be bootstrap
          ClientSessionManager.releaseSession();
-         // Re-authenticate so we can continue
          ClientSessionManager.getSession();
+         UserManager.releaseUser();
+
+         if (UserManager.getUser().getUserId().equals("bootstrap")) {
+            throw new OseeStateException("Should not be bootstrap user here");
+         }
       }
 
       System.out.println("End database initialization...");
