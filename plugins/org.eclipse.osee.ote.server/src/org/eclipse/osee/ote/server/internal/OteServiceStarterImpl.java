@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
@@ -189,22 +190,18 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 
 	private String getAddress() throws UnknownHostException {
 		InetAddress[] all = InetAddress.getAllByName(InetAddress.getLocalHost().getHostName());
-		String addressAsString = all[0].getHostAddress();
-		int local = 0;
-		for (int i = 0; i < all.length; i++) {
-			if (all[i].getHostAddress().contains("192.168")) {
-				local = i;
-			}
+		String defaultAddress = all[0].getHostAddress();
+		for (InetAddress address : all ) {
+		   if(!address.isSiteLocalAddress())
+		   {
+		      String firstRealLocalAddress = address.getHostAddress();
+		      if (address instanceof Inet6Address) {
+		         firstRealLocalAddress = "[" + firstRealLocalAddress + "]";
+		      }
+		      return firstRealLocalAddress;
+		   }
 		}
-		if (all.length > 1) {
-			for (int i = 0; i < all.length; i++) {
-				if (i != local) {
-					addressAsString = all[i].getHostAddress();
-					break;
-				}
-			}
-		}
-		return addressAsString;
+		return defaultAddress;
 	}
 
 	private class ListenForHostRequest extends OseeMessagingListener {
