@@ -17,12 +17,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.core.util.XResultDataFile;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
@@ -89,7 +92,11 @@ public abstract class CoveragePackageBase extends NamedIdentity<String> implemen
    public List<CoverageItem> getCoverageItemsCovered() {
       List<CoverageItem> items = new ArrayList<CoverageItem>();
       for (CoverageItem coverageItem : getCoverageItems()) {
-         if (!coverageItem.getCoverageMethod().getName().equals(CoverageOptionManager.Not_Covered.name)) {
+         if (coverageItem.getCoverageMethod() == null) {
+            OseeLog.log(Activator.class, Level.SEVERE,
+               String.format("Coverage Item with null Coverage Method; Item [%s]", coverageItem.toString()));
+            System.out.println("here");
+         } else if (!coverageItem.getCoverageMethod().getName().equals(CoverageOptionManager.Not_Covered.name)) {
             items.add(coverageItem);
          }
       }
