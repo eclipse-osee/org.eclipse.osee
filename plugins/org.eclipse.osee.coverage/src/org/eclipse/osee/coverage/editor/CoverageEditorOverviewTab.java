@@ -23,6 +23,7 @@ import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.util.CoverageUtil;
+import org.eclipse.osee.coverage.validate.CoverageMethodValidator;
 import org.eclipse.osee.coverage.validate.CoveragePackageOrderValidator;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -128,6 +129,8 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
          rd.log(AHTML.newline() + AHTML.bold("Log:") + AHTML.newline());
          rd.addRaw(XResultDataUI.getReport(coveragePackageBase.getLog(), "").getManipulatedHtml());
       }
+
+      new CoverageMethodValidator(coveragePackageBase, rd).run();
 
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
