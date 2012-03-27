@@ -120,7 +120,9 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       scrolledForm.getBody().setLayout(new GridLayout(2, false));
       Composite mainComp = scrolledForm.getBody();
       coverageEditor.getToolkit().adapt(mainComp);
-      mainComp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+      GridData gd = new GridData(SWT.FILL, SWT.NONE, true, false);
+      gd.widthHint = 300;
+      mainComp.setLayoutData(gd);
 
       CoverageEditorCoverageTab.createBranchLabel(coverageEditor, mainComp);
 
