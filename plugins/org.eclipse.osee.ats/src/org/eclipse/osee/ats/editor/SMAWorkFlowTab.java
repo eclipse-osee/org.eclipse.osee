@@ -335,8 +335,8 @@ public class SMAWorkFlowTab extends FormPage {
    private void createGoalSection() {
       try {
          if (awa.isOfType(AtsArtifactTypes.Goal)) {
-            smaGoalMembersSection = new SMAGoalMembersSection(editor, atsBody, editor.getToolkit(), SWT.NONE);
-            managedForm.addPart(smaGoalMembersSection);
+            smaGoalMembersSection =
+               new SMAGoalMembersSection("sec", editor, atsBody, SWT.NONE, 400);
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

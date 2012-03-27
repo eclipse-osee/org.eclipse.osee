@@ -66,7 +66,7 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
       this(worldEditor, null, parent, style);
    }
 
-   public WorldComposite(IWorldEditor worldEditor, IXViewerFactory xViewerFactory, Composite parent, int style) {
+   public WorldComposite(final IWorldEditor worldEditor, IXViewerFactory xViewerFactory, Composite parent, int style) {
       super(parent, style);
       this.iWorldEditor = worldEditor;
 

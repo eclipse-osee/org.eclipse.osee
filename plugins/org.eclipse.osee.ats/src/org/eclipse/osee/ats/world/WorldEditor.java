@@ -268,4 +268,5 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
    public void onDirtied() {
       // do nothing
    }
+
 }

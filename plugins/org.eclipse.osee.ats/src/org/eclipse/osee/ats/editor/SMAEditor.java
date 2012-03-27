@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.actions.DirtyReportAction;
 import org.eclipse.osee.ats.actions.IDirtyReportable;
 import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.core.actions.ISelectedAtsArtifacts;
+import org.eclipse.osee.ats.core.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -92,6 +93,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.SMAEditor";
    private AbstractWorkflowArtifact awa;
    private SMAWorkFlowTab workFlowTab;
+   private SMAMembersTab membersTab;
    int attributesPageIndex;
    private AttributesComposite attributesComposite;
    private boolean privilegedEditModeEnabled = false;
@@ -134,6 +136,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
          setContentDescription(privilegedEditModeEnabled ? " PRIVILEGED EDIT MODE ENABLED" : "");
 
          createWorkflowTab();
+         createMembersTab();
          createTaskTab();
          createAttributesTab();
          createMetricsTab();
@@ -176,6 +179,13 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
       }
    }
 
+   private void createMembersTab() throws PartInitException {
+      if (awa instanceof GoalArtifact) {
+         membersTab = new SMAMembersTab(this, awa);
+         addPage(membersTab);
+      }
+   }
+
    private void createTaskTab() throws PartInitException {
       if (isTaskable()) {
          taskTabXWidgetActionPage = new TaskTabXWidgetActionPage(this);
@@ -202,7 +212,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
                "You do not have permissions to save " + awa.getArtifactTypeName() + ":" + awa);
          } else {
             try {
-               SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Workflow Editor - Save");
+               SkynetTransaction transaction =
+                  TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Workflow Editor - Save");
                // If change was made on Attribute tab, persist awa separately.  This is cause attribute
                // tab changes conflict with XWidget changes
                if (attributesComposite != null && getActivePage() == attributesPageIndex) {
@@ -259,6 +270,9 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
          awa.revertSMA();
       }
       workFlowTab.dispose();
+      if (membersTab != null) {
+         membersTab.dispose();
+      }
       super.dispose();
    }
 
@@ -383,6 +397,9 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
          }
          if (workFlowTab != null) {
             workFlowTab.refresh();
+         }
+         if (membersTab != null) {
+            membersTab.refresh();
          }
          if (attributesComposite != null) {
             attributesComposite.refreshArtifact(awa);
@@ -575,6 +592,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
       this.privilegedEditModeEnabled = enabled;
       doSave(null);
       workFlowTab.refresh();
+      membersTab.refresh();
    }
 
    public boolean isAccessControlWrite() throws OseeCoreException {
@@ -661,6 +679,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
             ISelectionProvider provider = getDefaultSelectionProvider();
             if (page.equals(workFlowTab)) {
                provider = getDefaultSelectionProvider();
+            } else if (page.equals(membersTab)) {
+               provider = membersTab.getSmaGoalMembersSection().getWorldComposite().getWorldXViewer();
             } else if (page.equals(taskTabXWidgetActionPage)) {
                provider = taskTabXWidgetActionPage.getTaskComposite().getTaskXViewer();
             } else {
