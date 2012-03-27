@@ -282,9 +282,25 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
    public String toString() {
       try {
          return String.format("ArtifactEvent: BG[%s] TrId[%d] ARTS[%s] RELS[%s] Sender[%s]", branchGuid, transactionId,
-            artifacts, relations, networkSender);
+            getArtifactsString(artifacts), getRelationsString(relations), networkSender);
       } catch (Exception ex) {
          return String.format("ArtifactEvent exception: " + ex.getLocalizedMessage());
+      }
+   }
+
+   public String getArtifactsString(List<EventBasicGuidArtifact> artifacts) {
+      if (artifacts.size() <= 10) {
+         return artifacts.toString();
+      } else {
+         return String.format(" %d Artifacts (data hidden)", artifacts.size());
+      }
+   }
+
+   public String getRelationsString(List<EventBasicGuidRelation> relations) {
+      if (relations.size() <= 10) {
+         return relations.toString();
+      } else {
+         return String.format(" %d Relations (data hidden)", relations.size());
       }
    }
 
