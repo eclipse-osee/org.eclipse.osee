@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.action;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.action.Action;
@@ -24,12 +25,14 @@ import org.eclipse.osee.coverage.store.CoverageOptionManagerStore.StoreLocation;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.dialog.CoveragePackageArtifactListDialog;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
@@ -53,6 +56,11 @@ public class ConfigureCoverageMethodsAction extends Action {
       return ImageManager.getImageDescriptor(OSEE_IMAGE);
    }
 
+   public static Set<Artifact> bulkLoadCoveragePackage(Artifact artifact) throws OseeCoreException {
+      return RelationManager.getRelatedArtifacts(Collections.singleton(artifact), 8,
+         CoreRelationTypes.Default_Hierarchical__Child);
+   }
+
    @Override
    public void run() {
       try {
@@ -64,6 +72,7 @@ public class ConfigureCoverageMethodsAction extends Action {
          dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts(CoverageUtil.getBranch()));
          if (dialog.open() == 0) {
             Artifact coveragePackageArtifact = (Artifact) dialog.getResult()[0];
+            bulkLoadCoveragePackage(coveragePackageArtifact);
             OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(coveragePackageArtifact);
             CoverageOptionManagerStore optionsStore = new CoverageOptionManagerStore(packageStore);
             Result isSaveable = optionsStore.isSaveable();

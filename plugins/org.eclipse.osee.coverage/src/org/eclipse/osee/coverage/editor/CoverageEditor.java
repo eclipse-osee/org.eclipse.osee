@@ -12,10 +12,10 @@ package org.eclipse.osee.coverage.editor;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.coverage.action.ConfigureCoverageMethodsAction;
 import org.eclipse.osee.coverage.event.CoverageEventManager;
 import org.eclipse.osee.coverage.help.ui.CoverageHelpContext;
 import org.eclipse.osee.coverage.internal.Activator;
@@ -26,7 +26,6 @@ import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -35,7 +34,6 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
@@ -109,9 +107,7 @@ public class CoverageEditor extends FormEditor {
          if (getCoverageEditorInput().getCoveragePackageArtifact() != null) {
             //               ElapsedTime elapsedTime = new ElapsedTime("Coverage - bulk load");
             artifactLoadCache =
-               RelationManager.getRelatedArtifacts(
-                  Collections.singleton(getCoverageEditorInput().getCoveragePackageArtifact()), 8,
-                  CoreRelationTypes.Default_Hierarchical__Child);
+               ConfigureCoverageMethodsAction.bulkLoadCoveragePackage(getCoverageEditorInput().getCoveragePackageArtifact());
             // TODO Need to bulk load binary attributes also; Some Coverage Items are binary attributes
             // that are not bulk loaded with attributes.  This was mitigated by moving test units to separate table
             // and only referencing their ids in Coverage Items.

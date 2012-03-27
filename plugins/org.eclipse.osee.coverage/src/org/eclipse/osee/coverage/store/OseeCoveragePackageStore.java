@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.logging.Level;
+import org.eclipse.osee.coverage.action.ConfigureCoverageMethodsAction;
 import org.eclipse.osee.coverage.event.CoverageEventManager;
 import org.eclipse.osee.coverage.event.CoverageEventType;
 import org.eclipse.osee.coverage.event.CoveragePackageEvent;
@@ -135,6 +136,14 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
       boolean newCoveragePackage = getArtifact(false) == null;
       getArtifact(true);
       //      ElapsedTime elapsedTime = new ElapsedTime(getClass().getSimpleName() + " - save");
+
+      /**
+       * Bulk load artifacts to speed up processing; ensure they are stored in data structure through this save so they
+       * don't get garbage collected
+       */
+      @SuppressWarnings("unused")
+      Collection<Artifact> artifactLoadCache = ConfigureCoverageMethodsAction.bulkLoadCoveragePackage(artifact);
+
       artifact.setName(coveragePackage.getName());
       coverageEvent.getPackage().setEventType(newCoveragePackage ? CoverageEventType.Added : CoverageEventType.Modified);
       artifact.setSoleAttributeValue(CoreAttributeTypes.Active, coveragePackage.isEditable().isTrue());
@@ -147,6 +156,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
          }
       }
       artifact.persist(transaction);
+
       //      elapsedTime.end();
       return Result.TrueResult;
    }
