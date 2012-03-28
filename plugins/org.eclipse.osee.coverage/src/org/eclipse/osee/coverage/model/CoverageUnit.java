@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
@@ -251,15 +250,19 @@ public class CoverageUnit extends NamedIdentity<String> implements IWorkProductR
       return items;
    }
 
-   public List<CoverageItem> getCoverageItemsCovered(boolean recurse, CoverageOption... CoverageOption) {
-      List<CoverageOption> coverageMethods = Collections.getAggregate(CoverageOption);
-      List<CoverageItem> items = new ArrayList<CoverageItem>();
-      for (CoverageItem coverageItem : getCoverageItems(recurse)) {
-         if (coverageMethods.contains(coverageItem.getCoverageMethod())) {
-            items.add(coverageItem);
+   public int getCoverageItemsCount(boolean recurse, CoverageOption coverageOption) {
+      int count = 0;
+      for (CoverageItem item : coverageItems) {
+         if (item.getCoverageMethod().equals(coverageOption)) {
+            count++;
          }
       }
-      return items;
+      if (recurse) {
+         for (CoverageUnit coverageUnit : coverageUnits) {
+            count += coverageUnit.getCoverageItemsCount(true, coverageOption);
+         }
+      }
+      return count;
    }
 
    @Override
@@ -333,10 +336,6 @@ public class CoverageUnit extends NamedIdentity<String> implements IWorkProductR
 
    public void setFolder(boolean folder) {
       this.folder = folder;
-   }
-
-   public List<CoverageItem> getCoverageItemsCovered(CoverageOption... CoverageOption) {
-      return CoverageUtil.getCoverageItemsCovered(getCoverageItems(), CoverageOption);
    }
 
    public void updateAssigneesAndNotes(CoverageUnit coverageUnit) {

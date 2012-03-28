@@ -123,7 +123,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
          if (Strings.isValid(usevectorcast53)) {
             int totalCoverageItems = methodCoverageUnit.getCoverageItems(false).size();
             int coveredCoverageItems =
-               methodCoverageUnit.getCoverageItemsCovered(false, CoverageOptionManager.Test_Unit).size();
+               methodCoverageUnit.getCoverageItemsCount(false, CoverageOptionManager.Test_Unit);
             if (totalCoverageItems != coverageDataSubProgram.getTotal() || coveredCoverageItems != coverageDataSubProgram.getCovered()) {
                coverageImport.getLog().logError(
                   String.format(

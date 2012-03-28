@@ -103,8 +103,12 @@ public abstract class CoveragePackageBase extends NamedIdentity<String> implemen
       return items;
    }
 
-   public List<CoverageItem> getCoverageItemsCovered(CoverageOption... CoverageOption) {
-      return CoverageUtil.getCoverageItemsCovered(getCoverageItems(), CoverageOption);
+   public int getCoverageItemsCount(CoverageOption coverageOption) {
+      int count = 0;
+      for (CoverageUnit coverageUnit : coverageUnits) {
+         count += coverageUnit.getCoverageItemsCount(true, coverageOption);
+      }
+      return count;
    }
 
    @Override

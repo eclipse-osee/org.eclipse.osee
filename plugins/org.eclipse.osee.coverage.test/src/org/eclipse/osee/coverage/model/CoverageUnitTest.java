@@ -204,9 +204,9 @@ public class CoverageUnitTest {
     */
    @Test
    public void testGetCoverageItemsCoveredBooleanCoverageOptionArray() {
-      Assert.assertEquals(1, cu.getCoverageItemsCovered(false, CoverageOptionManager.Test_Unit).size());
-      Assert.assertEquals(2, cu.getCoverageItemsCovered(true, CoverageOptionManager.Test_Unit).size());
-      Assert.assertEquals(1, cu.getCoverageItemsCovered(true, CoverageOptionManager.Not_Covered).size());
+      Assert.assertEquals(1, cu.getCoverageItemsCount(false, CoverageOptionManager.Test_Unit));
+      Assert.assertEquals(2, cu.getCoverageItemsCount(true, CoverageOptionManager.Test_Unit));
+      Assert.assertEquals(1, cu.getCoverageItemsCount(true, CoverageOptionManager.Not_Covered));
    }
 
    /**

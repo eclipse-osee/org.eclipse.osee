@@ -205,10 +205,10 @@ public class CoverageParametersTest {
       Assert.assertEquals(60, coverageImport.getCoverageItemsCovered().size());
       Assert.assertEquals(122, coverageImport.getCoverageItems().size());
       Assert.assertEquals(49, coverageImport.getCoveragePercent().intValue());
-      Assert.assertEquals(0, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
-      Assert.assertEquals(0, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
-      Assert.assertEquals(60, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
-      Assert.assertEquals(62, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+      Assert.assertEquals(0, coverageImport.getCoverageItemsCount(CoverageOptionManager.Deactivated_Code));
+      Assert.assertEquals(0, coverageImport.getCoverageItemsCount(CoverageOptionManager.Exception_Handling));
+      Assert.assertEquals(60, coverageImport.getCoverageItemsCount(CoverageOptionManager.Test_Unit));
+      Assert.assertEquals(62, coverageImport.getCoverageItemsCount(CoverageOptionManager.Not_Covered));
 
       CoverageParameters coverageParameters = new CoverageParameters(coverageImport);
       Result result = coverageParameters.isParameterSelectionValid();

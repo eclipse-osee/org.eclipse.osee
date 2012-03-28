@@ -134,7 +134,7 @@ public class VCastAggregateReportValidator {
          coverageNameToCoverageUnit.remove(result.getName());
 
          int importCuItems = coverageUnit.getCoverageItems(true).size();
-         int importCuCovered = coverageUnit.getCoverageItemsCovered(true, CoverageOptionManager.Test_Unit).size();
+         int importCuCovered = coverageUnit.getCoverageItemsCount(true, CoverageOptionManager.Test_Unit);
          if (result.getNumLines() == null || result.getNumLines() != importCuItems || result.getNumCovered() == null || result.getNumCovered() != importCuCovered) {
             // Don't display error if this is the known ignore case
             if (!importer.isVectorCastIgnoreCase(result.getNotes(), importCuCovered, result.getNumCovered())) {
