@@ -19,6 +19,7 @@ import org.eclipse.osee.coverage.merge.MatchItem;
 import org.eclipse.osee.coverage.merge.MergeItem;
 import org.eclipse.osee.coverage.merge.MergeItemGroup;
 import org.eclipse.osee.coverage.merge.MergeManager;
+import org.eclipse.osee.coverage.merge.MergeType;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.ICoverage;
@@ -38,6 +39,7 @@ public class ShowMergeDetailsAction extends Action {
    private CoveragePackage coveragePackage;
    private CoverageImport coverageImport;
    private XCoverageMergeViewer importXViewer;
+   private XCoverageMergeViewer packageXViewer;
 
    public ShowMergeDetailsAction() {
       super("Show Merge Details", IAction.AS_PUSH_BUTTON);
@@ -56,8 +58,16 @@ public class ShowMergeDetailsAction extends Action {
                ((ISelectedCoverageEditorItem) importXViewer.getXViewer()).getSelectedCoverageEditorItems().iterator().next();
             // If mergeitemgroup, want to link with parent of one of the children items
             if (importCoverageEditorItem instanceof MergeItemGroup) {
-               importCoverageEditorItem =
-                  ((MergeItemGroup) importCoverageEditorItem).getMergeItems().iterator().next().getParent();
+               MergeItemGroup mergeItemGroup = (MergeItemGroup) importCoverageEditorItem;
+               // if deleted, just show whole report cause nothing to start at
+               if (mergeItemGroup.getMergeType() == MergeType.Delete_And_Reorder || mergeItemGroup.getMergeType() == MergeType.Delete) {
+                  MergeManager mergeManager = new MergeManager(coveragePackage, coverageImport);
+                  XResultData resultData = mergeManager.getMergeDetails(coverageImport, new XResultData(false));
+                  XResultDataUI.report(resultData, "Merge Details - " + importCoverageEditorItem.getName());
+                  return;
+               } else {
+                  importCoverageEditorItem = mergeItemGroup.getMergeItems().iterator().next().getParent();
+               }
             } else if (importCoverageEditorItem instanceof MergeItem) {
                importCoverageEditorItem = ((MergeItem) importCoverageEditorItem).getImportItem().getParent();
             } else {
@@ -68,7 +78,7 @@ public class ShowMergeDetailsAction extends Action {
             if (matchItem != null && matchItem.getPackageItem() != null) {
                MergeManager mergeManager = new MergeManager(coveragePackage, coverageImport);
                XResultData resultData = mergeManager.getMergeDetails(importCoverageEditorItem, new XResultData(false));
-               XResultDataUI.report(resultData,"Merge Details - " + importCoverageEditorItem.getName());
+               XResultDataUI.report(resultData, "Merge Details - " + importCoverageEditorItem.getName());
             } else {
                AWorkbench.popup("Can't find match item");
                return;
@@ -80,6 +90,7 @@ public class ShowMergeDetailsAction extends Action {
    }
 
    public void setPackageXViewer(XCoverageMergeViewer packageXViewer, CoveragePackage coveragePackage) {
+      this.packageXViewer = packageXViewer;
       this.coveragePackage = coveragePackage;
    }
 
