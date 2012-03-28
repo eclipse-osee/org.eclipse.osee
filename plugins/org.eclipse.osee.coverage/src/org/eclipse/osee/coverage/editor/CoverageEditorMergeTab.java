@@ -36,6 +36,7 @@ import org.eclipse.osee.coverage.merge.MergeManager;
 import org.eclipse.osee.coverage.merge.MessageMergeItem;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageOption;
+import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
@@ -450,9 +451,9 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    }
 
    @Override
-   public Result save(String saveName) throws OseeCoreException {
+   public Result save(String saveName, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
       OseeCoveragePackageStore store = OseeCoveragePackageStore.get(coveragePackage, coverageEditor.getBranch());
-      Result result = store.save(saveName);
+      Result result = store.save(saveName, coverageOptionManager);
       if (result.isFalse()) {
          return result;
       }

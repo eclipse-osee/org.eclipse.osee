@@ -147,7 +147,7 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save(String saveName) {
+         public Result save(String saveName, CoverageOptionManager coverageOptionManager) {
             return Result.TrueResult;
          }
 
@@ -177,7 +177,7 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save(String saveName) {
+         public Result save(String saveName, CoverageOptionManager coverageOptionManager) {
             return Result.TrueResult;
          }
 
@@ -233,7 +233,7 @@ public class CoveragePackageImportTest {
          SkynetTransaction transaction =
             TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(),
                "Coverage Package Save " + testName.getMethodName());
-         store.save(transaction, getTestCoveragePackageEvent());
+         store.save(transaction, getTestCoveragePackageEvent(), coveragePackage.getCoverageOptionManager());
          Artifact artifactX = store.getArtifact(false);
          artifactX.persist(transaction);
 
@@ -311,7 +311,7 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save(String saveName) {
+         public Result save(String saveName, CoverageOptionManager coverageOptionManager) {
             return Result.TrueResult;
          }
 
@@ -349,7 +349,7 @@ public class CoveragePackageImportTest {
          SkynetTransaction transaction =
             TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(),
                "Coverage Package Save " + testName.getMethodName());
-         store.save(transaction, getTestCoveragePackageEvent());
+         store.save(transaction, getTestCoveragePackageEvent(), coveragePackage.getCoverageOptionManager());
          store.getArtifact(false).persist(transaction);
 
          // Test Load of Coverage Package
@@ -443,7 +443,7 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save(String saveName) {
+         public Result save(String saveName, CoverageOptionManager coverageOptionManager) {
             return Result.TrueResult;
          }
 
@@ -489,7 +489,7 @@ public class CoveragePackageImportTest {
          SkynetTransaction transaction =
             TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(),
                "Coverage Package Save " + testName.getMethodName());
-         store.save(transaction, getTestCoveragePackageEvent());
+         store.save(transaction, getTestCoveragePackageEvent(), coveragePackage.getCoverageOptionManager());
          store.getArtifact(false).persist(transaction);
 
          // Test Load of Coverage Package
@@ -586,7 +586,7 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save(String saveName) {
+         public Result save(String saveName, CoverageOptionManager coverageOptionManager) {
             return Result.TrueResult;
          }
 
@@ -632,7 +632,7 @@ public class CoveragePackageImportTest {
          SkynetTransaction transaction =
             TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(),
                "Coverage Package Save " + testName.getMethodName());
-         store.save(transaction, getTestCoveragePackageEvent());
+         store.save(transaction, getTestCoveragePackageEvent(), coveragePackage.getCoverageOptionManager());
          store.getArtifact(false).persist(transaction);
 
          // Test Load of Coverage Package
@@ -717,7 +717,7 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save(String saveName) {
+         public Result save(String saveName, CoverageOptionManager coverageOptionManager) {
             return Result.TrueResult;
          }
 
@@ -755,7 +755,7 @@ public class CoveragePackageImportTest {
          SkynetTransaction transaction =
             TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(),
                "Coverage Package Save " + testName.getMethodName());
-         store.save(transaction, getTestCoveragePackageEvent());
+         store.save(transaction, getTestCoveragePackageEvent(), coveragePackage.getCoverageOptionManager());
          store.getArtifact(false).persist(transaction);
 
          // Test Load of Coverage Package
@@ -840,7 +840,7 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save(String saveName) {
+         public Result save(String saveName, CoverageOptionManager coverageOptionManager) {
             return Result.TrueResult;
          }
 
@@ -891,7 +891,7 @@ public class CoveragePackageImportTest {
          SkynetTransaction transaction =
             TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(),
                "Coverage Package Save " + testName.getMethodName());
-         store.save(transaction, getTestCoveragePackageEvent());
+         store.save(transaction, getTestCoveragePackageEvent(), coveragePackage.getCoverageOptionManager());
          store.getArtifact(false).persist(transaction);
 
          // Test Load of Coverage Package
@@ -1020,7 +1020,7 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save(String saveName) {
+         public Result save(String saveName, CoverageOptionManager coverageOptionManager) {
             return Result.TrueResult;
          }
 
@@ -1058,7 +1058,7 @@ public class CoveragePackageImportTest {
          SkynetTransaction transaction =
             TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(),
                "Coverage Package Save " + testName.getMethodName());
-         store.save(transaction, getTestCoveragePackageEvent());
+         store.save(transaction, getTestCoveragePackageEvent(), coveragePackage.getCoverageOptionManager());
          store.getArtifact(false).persist(transaction);
 
          // Test Load of Coverage Package
@@ -1206,7 +1206,7 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save(String saveName) {
+         public Result save(String saveName, CoverageOptionManager coverageOptionManager) {
             return Result.TrueResult;
          }
 
@@ -1244,7 +1244,7 @@ public class CoveragePackageImportTest {
          SkynetTransaction transaction =
             TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(),
                "Coverage Package Save " + testName.getMethodName());
-         store.save(transaction, getTestCoveragePackageEvent());
+         store.save(transaction, getTestCoveragePackageEvent(), coveragePackage.getCoverageOptionManager());
          store.getArtifact(false).persist(transaction);
 
          // Test Load of Coverage Package
@@ -1350,7 +1350,7 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save(String saveName) {
+         public Result save(String saveName, CoverageOptionManager coverageOptionManager) {
             return Result.TrueResult;
          }
 
@@ -1388,7 +1388,7 @@ public class CoveragePackageImportTest {
          SkynetTransaction transaction =
             TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(),
                "Coverage Package Save " + testName.getMethodName());
-         store.save(transaction, getTestCoveragePackageEvent());
+         store.save(transaction, getTestCoveragePackageEvent(), coveragePackage.getCoverageOptionManager());
          store.getArtifact(false).persist(transaction);
 
          // Test Load of Coverage Package
@@ -1512,7 +1512,7 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save(String saveName) {
+         public Result save(String saveName, CoverageOptionManager coverageOptionManager) {
             return Result.TrueResult;
          }
 
@@ -1554,7 +1554,7 @@ public class CoveragePackageImportTest {
          SkynetTransaction transaction =
             TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(),
                "Coverage Package Save " + testName.getMethodName());
-         store.save(transaction, getTestCoveragePackageEvent());
+         store.save(transaction, getTestCoveragePackageEvent(), coveragePackage.getCoverageOptionManager());
          store.getArtifact(false).persist(transaction);
 
          // Test Load of Coverage Package
@@ -1643,7 +1643,7 @@ public class CoveragePackageImportTest {
       if (testWithDb) {
          OseeCoveragePackageStore packageStore =
             new OseeCoveragePackageStore(coveragePackage, CoverageTestUtil.getTestBranch());
-         packageStore.save(coveragePackage.getName());
+         packageStore.save(coveragePackage.getName(), coveragePackage.getCoverageOptionManager());
       }
 
       return Result.TrueResult;

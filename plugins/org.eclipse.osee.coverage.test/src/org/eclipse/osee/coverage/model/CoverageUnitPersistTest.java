@@ -112,10 +112,10 @@ public class CoverageUnitPersistTest {
       importer.importItems(new ISaveable() {
 
          @Override
-         public Result save(String saveName) throws OseeCoreException {
+         public Result save(String saveName, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
             OseeCoveragePackageStore store =
                OseeCoveragePackageStore.get(saveCoveragePackage, CoverageTestUtil.getTestBranch());
-            store.save(saveCoveragePackage.getName());
+            store.save(saveCoveragePackage.getName(), saveCoveragePackage.getCoverageOptionManager());
             Artifact artifact = store.getArtifact(false);
             CoverageTestUtil.registerAsTestArtifact(artifact, true);
             artifact.persist(getClass().getSimpleName());

@@ -12,6 +12,7 @@ package org.eclipse.osee.coverage.util;
 
 import java.util.Collection;
 import org.eclipse.osee.coverage.model.CoverageImport;
+import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -23,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public interface ISaveable {
 
-   public Result save(String saveName) throws OseeCoreException;
+   public Result save(String saveName, CoverageOptionManager coverageOptionManager) throws OseeCoreException;
 
    public Result save(Collection<ICoverage> coverages, String saveName) throws OseeCoreException;
 

@@ -23,6 +23,7 @@ import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
 import org.eclipse.osee.coverage.help.ui.CoverageHelpContext;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
+import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.ICoverage;
@@ -230,9 +231,9 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable, IR
    }
 
    @Override
-   public Result save(String saveName) throws OseeCoreException {
+   public Result save(String saveName, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
       return OseeCoveragePackageStore.get((CoveragePackage) coveragePackageBase, coverageEditor.getBranch()).save(
-         saveName);
+         saveName, coverageOptionManager);
    }
 
    @Override

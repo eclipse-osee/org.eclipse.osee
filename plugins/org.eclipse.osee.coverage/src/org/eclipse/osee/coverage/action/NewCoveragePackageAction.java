@@ -65,7 +65,8 @@ public class NewCoveragePackageAction extends Action {
             SkynetTransaction transaction =
                TransactionManager.createTransaction(branch, "Add Coverage Package - " + coveragePackage.getName());
             CoveragePackageEvent coverageEvent = new CoveragePackageEvent(coveragePackage, CoverageEventType.Added);
-            OseeCoveragePackageStore.get(coveragePackage, branch).save(transaction, coverageEvent);
+            OseeCoveragePackageStore.get(coveragePackage, branch).save(transaction, coverageEvent,
+               coveragePackage.getCoverageOptionManager());
             transaction.execute();
             CoverageEventManager.instance.sendRemoteEvent(coverageEvent);
             CoverageEditor.open(new CoverageEditorInput(dialog.getEntry(), OseeCoveragePackageStore.get(

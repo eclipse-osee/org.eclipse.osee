@@ -64,7 +64,7 @@ public class CoverageOptionManagerStoreTest {
          new CoveragePackage(CoverageOptionManagerStoreTest.class.getSimpleName(),
             CoverageOptionManagerDefault.instance(), new SimpleWorkProductTaskProvider());
       OseeCoveragePackageStore store = new OseeCoveragePackageStore(coveragePackage, CoverageTestUtil.getTestBranch());
-      store.save(coveragePackage.getName());
+      store.save(coveragePackage.getName(), coveragePackage.getCoverageOptionManager());
 
       CoverageOptionManagerStore optionStore = new CoverageOptionManagerStore(store);
       // Global option should not be created yet

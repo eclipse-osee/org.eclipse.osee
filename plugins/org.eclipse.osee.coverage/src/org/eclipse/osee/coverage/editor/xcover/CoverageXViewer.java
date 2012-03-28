@@ -309,8 +309,8 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
    }
 
    @Override
-   public Result save(String saveName) throws OseeCoreException {
-      return xCoverageViewer.getSaveable().save(saveName);
+   public Result save(String saveName, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
+      return xCoverageViewer.getSaveable().save(saveName, coverageOptionManager);
    }
 
    @Override

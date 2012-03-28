@@ -103,7 +103,7 @@ public class DeleteCoverUnitAction extends Action {
          }
       }
       try {
-         saveable.save(coveragePackage.getName());
+         saveable.save(coveragePackage.getName(), coveragePackage.getCoverageOptionManager());
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return;

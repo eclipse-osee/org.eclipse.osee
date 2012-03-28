@@ -32,6 +32,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 
 /**
+ * Import merge items into CoveragePackage and persist changes
+ *
  * @author Donald G. Dunne
  */
 public class MergeImportManager {
@@ -146,7 +148,7 @@ public class MergeImportManager {
          }
          rd.logError(rd.getNumErrors() + " Errors Found; Not Persisting");
       } else {
-         Result result = saveable.save(coveragePackage.getName());
+         Result result = saveable.save(coveragePackage.getName(), coveragePackage.getCoverageOptionManager());
          if (result.isTrue()) {
             rd.log("\nChanges Persisted");
          } else {

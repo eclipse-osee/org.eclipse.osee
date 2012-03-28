@@ -21,7 +21,6 @@ import org.eclipse.osee.coverage.event.CoveragePackageEvent;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
-import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.ITestUnitProvider;
@@ -143,7 +142,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
    }
 
    @Override
-   public Result save(SkynetTransaction transaction, CoveragePackageEvent coverageEvent) throws OseeCoreException {
+   public Result save(SkynetTransaction transaction, CoveragePackageEvent coverageEvent, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
       Artifact artifact = getArtifact(true);
       artifact.setName(coverageUnit.getName());
 
@@ -229,7 +228,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       }
       // Save current/new coverage items
       for (CoverageUnit childCoverageUnit : coverageUnit.getCoverageUnits()) {
-         new OseeCoverageUnitStore(childCoverageUnit, branch).save(transaction, coverageEvent);
+         new OseeCoverageUnitStore(childCoverageUnit, branch).save(transaction, coverageEvent, coverageOptionManager);
       }
       // Delete removed coverage units and folders
       for (Artifact childArt : artifact.getChildren()) {
@@ -242,8 +241,8 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
                }
             }
             if (!found) {
-               new OseeCoverageUnitStore(coverageUnit, childArt, CoverageOptionManagerDefault.instance()).delete(
-                  transaction, coverageEvent, false);
+               new OseeCoverageUnitStore(coverageUnit, childArt, coverageOptionManager).delete(transaction,
+                  coverageEvent, false);
             }
          }
       }

@@ -82,7 +82,7 @@ public class CreateTestCoverageUnits extends XNavigateItemAction {
             item = new CoverageItem(test2CU, CoverageOptionManager.Exception_Handling, "1");
             item.setName("   System.out.println(\"this is just a test\");");
 
-            store.save(coveragePackage.getName());
+            store.save(coveragePackage.getName(), coveragePackage.getCoverageOptionManager());
          }
       } catch (Throwable ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

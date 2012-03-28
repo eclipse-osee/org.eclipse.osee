@@ -37,6 +37,8 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
+ * Calculate differences between coveragePackage and coverageImport and return MergeItems
+ *
  * @author Donald G. Dunne
  */
 public class MergeManager {
@@ -64,6 +66,11 @@ public class MergeManager {
 
    public XResultData getMergeDetails(ICoverage importCoverageItem, XResultData resultData) throws OseeCoreException {
       List<IMergeItem> mergeItems = new ArrayList<IMergeItem>();
+      if (importCoverageItem instanceof CoverageImport) {
+         for (ICoverage coverage : ((CoverageImport) importCoverageItem).getChildren()) {
+            processImportCoverage(coverage, mergeItems, resultData);
+         }
+      }
       processImportCoverage(importCoverageItem, mergeItems, resultData);
       return resultData;
    }
@@ -197,6 +204,7 @@ public class MergeManager {
          else {
             mergeItems.add(new MergeItem(MergeType.Error__UnMergable, null, importCoverage, false));
          }
+
       }
       return;
    }

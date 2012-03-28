@@ -132,7 +132,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
    }
 
    @Override
-   public Result save(SkynetTransaction transaction, CoveragePackageEvent coverageEvent) throws OseeCoreException {
+   public Result save(SkynetTransaction transaction, CoveragePackageEvent coverageEvent, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
       boolean newCoveragePackage = getArtifact(false) == null;
       getArtifact(true);
       //      ElapsedTime elapsedTime = new ElapsedTime(getClass().getSimpleName() + " - save");
@@ -149,7 +149,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
       artifact.setSoleAttributeValue(CoreAttributeTypes.Active, coveragePackage.isEditable().isTrue());
       for (CoverageUnit coverageUnit : coveragePackage.getCoverageUnits()) {
          OseeCoverageUnitStore store = new OseeCoverageUnitStore(coverageUnit, artifact.getBranch());
-         store.save(transaction, coverageEvent);
+         store.save(transaction, coverageEvent, coveragePackage.getCoverageOptionManager());
          Artifact childArt = store.getArtifact(false);
          if (childArt.getParent() == null && !artifact.getChildren().contains(childArt)) {
             artifact.addChild(store.getArtifact(false));
@@ -173,7 +173,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
             throw new OseeArgumentException("Unhandled coverage type");
          }
          OseeCoverageUnitStore store = new OseeCoverageUnitStore(coverageUnit, transaction.getBranch());
-         store.save(transaction, coverageEvent);
+         store.save(transaction, coverageEvent, coveragePackage.getCoverageOptionManager());
       }
       //      elapsedTime.end();
       return Result.TrueResult;

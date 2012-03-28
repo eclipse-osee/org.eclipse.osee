@@ -21,6 +21,7 @@ import org.eclipse.osee.coverage.help.ui.CoverageHelpContext;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.internal.ServiceProvider;
 import org.eclipse.osee.coverage.model.CoverageImport;
+import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.WorkProductAction;
@@ -190,8 +191,9 @@ public class CoverageEditorWorkProductTab extends FormPage implements ISaveable 
    }
 
    @Override
-   public Result save(String saveName) throws OseeCoreException {
-      return OseeCoveragePackageStore.get(coveragePackage, coverageEditor.getBranch()).save(saveName);
+   public Result save(String saveName, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
+      return OseeCoveragePackageStore.get(coveragePackage, coverageEditor.getBranch()).save(saveName,
+         coverageOptionManager);
    }
 
    @Override

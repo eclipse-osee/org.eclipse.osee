@@ -41,7 +41,7 @@ public class CpCreateAndImportItem extends XNavigateItemAction {
          new CoveragePackage(getName() + " - #" + IncrementingNum.get(), CoverageOptionManagerDefault.instance(),
             new SimpleWorkProductTaskProvider());
       OseeCoveragePackageStore store = new OseeCoveragePackageStore(coveragePackage, CoverageTestUtil.getTestBranch());
-      store.save(coveragePackage.getName());
+      store.save(coveragePackage.getName(), coveragePackage.getCoverageOptionManager());
       CoverageEditor.open(new CoverageEditorInput(coveragePackage.getName(), store.getArtifact(false), coveragePackage,
          true));
       // Process Import 1

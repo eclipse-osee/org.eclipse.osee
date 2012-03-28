@@ -86,7 +86,8 @@ public class CoverageItemPersistTest {
    }
 
    /**
-    * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#save(SkynetTransaction, String)}
+    * Test method for
+    * {@link org.eclipse.osee.coverage.model.CoverageItem#save(SkynetTransaction, String, CoverageOptionManager)}
     */
    @Test
    public void testSave() throws OseeCoreException {
@@ -95,12 +96,14 @@ public class CoverageItemPersistTest {
 
       Artifact artifact = new OseeCoverageUnitStore(parentCu, CoverageTestUtil.getTestBranch()).getArtifact(true);
       Assert.assertNotNull(artifact);
-      SkynetTransaction transaction = TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), "Save CoverageItem");
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), "Save CoverageItem");
       String coverageGuid = GUID.create();
       String coverageName = "Test CP";
       CoveragePackageEvent coverageEvent =
          new CoveragePackageEvent(coverageName, coverageGuid, CoverageEventType.Modified, GUID.create());
-      new OseeCoverageUnitStore(parentCu, CoverageTestUtil.getTestBranch()).save(transaction, coverageEvent);
+      new OseeCoverageUnitStore(parentCu, CoverageTestUtil.getTestBranch()).save(transaction, coverageEvent,
+         CoverageOptionManagerDefault.instance());
       artifact.persist(transaction);
 
       transaction.execute();
@@ -143,7 +146,8 @@ public class CoverageItemPersistTest {
    public void testDelete() throws OseeCoreException {
       Artifact artifact = new OseeCoverageUnitStore(parentCu, CoverageTestUtil.getTestBranch()).getArtifact(false);
       Assert.assertNotNull(artifact);
-      SkynetTransaction transaction = TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), "Save CoverageItem");
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), "Save CoverageItem");
       CoveragePackageEvent coverageEvent =
          new CoveragePackageEvent("Test CP", GUID.create(), CoverageEventType.Deleted, GUID.create());
       new OseeCoverageUnitStore(parentCu, CoverageTestUtil.getTestBranch()).delete(transaction, coverageEvent, false);

@@ -12,6 +12,7 @@ package org.eclipse.osee.coverage.util;
 
 import java.util.Collection;
 import org.eclipse.osee.coverage.model.CoverageImport;
+import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
@@ -28,7 +29,7 @@ public class NotSaveable implements ISaveable {
    }
 
    @Override
-   public Result save(String saveName) {
+   public Result save(String saveName, CoverageOptionManager coverageOptionManager) {
       return new Result("Not Saveable");
    }
 

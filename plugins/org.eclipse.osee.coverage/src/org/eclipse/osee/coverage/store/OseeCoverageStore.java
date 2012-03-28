@@ -14,6 +14,7 @@ import org.eclipse.osee.coverage.event.CoverageEventManager;
 import org.eclipse.osee.coverage.event.CoverageEventType;
 import org.eclipse.osee.coverage.event.CoveragePackageEvent;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -62,11 +63,11 @@ public abstract class OseeCoverageStore extends CoverageStore {
    public abstract void delete(SkynetTransaction transaction, CoveragePackageEvent coverageEvent, boolean purge) throws OseeCoreException;
 
    @Override
-   public Result save(String saveName) {
+   public Result save(String saveName, CoverageOptionManager coverageOptionManager) {
       try {
          SkynetTransaction transaction = TransactionManager.createTransaction(branch, "Coverage Save - " + saveName);
          CoveragePackageEvent coverageEvent = getBaseCoveragePackageEvent(CoverageEventType.Modified);
-         save(transaction, coverageEvent);
+         save(transaction, coverageEvent, coverageOptionManager);
          transaction.execute();
          CoverageEventManager.instance.sendRemoteEvent(coverageEvent);
       } catch (OseeCoreException ex) {
@@ -87,7 +88,7 @@ public abstract class OseeCoverageStore extends CoverageStore {
 
    public abstract CoveragePackageEvent getBaseCoveragePackageEvent(CoverageEventType coverageEventType);
 
-   public abstract Result save(SkynetTransaction transaction, CoveragePackageEvent coverageEvent) throws OseeCoreException;
+   public abstract Result save(SkynetTransaction transaction, CoveragePackageEvent coverageEvent, CoverageOptionManager coverageOptionManager) throws OseeCoreException;
 
    public IOseeBranch getBranch() {
       return branch;

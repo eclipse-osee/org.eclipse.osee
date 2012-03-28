@@ -66,7 +66,7 @@ public class SaveImportRecordAction extends Action {
          }
       }
       try {
-         saveable.save(coverageImport.getName());
+         saveable.save(coverageImport.getName(), coverageImport.getCoverageOptionManager());
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return;

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.store;
 
+import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 
@@ -17,7 +18,7 @@ import org.eclipse.osee.framework.core.util.Result;
  * @author Donald G. Dunne
  */
 public interface ICoverageStore {
-   public abstract Result save(String saveName) throws OseeCoreException;
+   public abstract Result save(String saveName, CoverageOptionManager coverageOptionManager) throws OseeCoreException;
 
    public void delete(boolean purge, String saveName) throws OseeCoreException;
 }
