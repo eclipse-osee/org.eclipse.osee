@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.import11;
 
-import java.util.Arrays;
-import org.eclipse.osee.coverage.util.CoverageImportTestBlam;
+import org.eclipse.osee.coverage.util.CpSelectAndImportItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 
 /**
  * Delete NavigationButton3 coverage unit <br>
@@ -19,17 +19,10 @@ import org.eclipse.osee.coverage.util.CoverageImportTestBlam;
  *
  * @author Donald G. Dunne
  */
-public class CoverageImport11TestBlam extends CoverageImportTestBlam {
+public class CoveragePackage1Import11b extends CpSelectAndImportItem {
 
-   public static String NAME = "Test Import 11";
-
-   public CoverageImport11TestBlam() {
-      super(NAME, Arrays.asList(
-      //
-         "import11/cnd/DisplayButton1.java", "import11/cnd/DisplayButton2.java", "import11/cnd/DisplayButton3.java", //
-         "import11/cnd/disp1/Page1.java", "import11/cnd/disp1/Page2.java" //
-      //
-      ));
+   public CoveragePackage1Import11b(XNavigateItem parent) {
+      super(parent, "Open CP 1 - Import 11b - Delete cnd DisplayButton2, Page2", CoverageImport11bTestBlam.NAME);
    }
 
 }

@@ -14,16 +14,15 @@ import org.eclipse.osee.coverage.util.CpSelectAndImportItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 
 /**
- * Test that adding a top level coverage unit (not under a package) works; import12 will delete it. <br>
+ * Delete NavigationButton3 coverage unit <br>
  * <br>
- * See comments in NavigationButton2.java file for details
  *
  * @author Donald G. Dunne
  */
 public class CoveragePackage1Import11 extends CpSelectAndImportItem {
 
    public CoveragePackage1Import11(XNavigateItem parent) {
-      super(parent, "Open CP 1 - Import 11 - Add top level coverage unit (no package)", CoverageImport11TestBlam.NAME);
+      super(parent, "Open CP 1 - Import 11 - Create cnd package", CoverageImport11TestBlam.NAME);
    }
 
 }

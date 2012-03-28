@@ -19,17 +19,16 @@ import org.eclipse.osee.coverage.util.CoverageImportTestBlam;
  *
  * @author Donald G. Dunne
  */
-public class CoverageImport11TestBlam extends CoverageImportTestBlam {
+public class CoverageImport11bTestBlam extends CoverageImportTestBlam {
 
-   public static String NAME = "Test Import 11";
+   public static String NAME = "Test Import 11b";
 
-   public CoverageImport11TestBlam() {
+   public CoverageImport11bTestBlam() {
       super(NAME, Arrays.asList(
       //
-         "import11/cnd/DisplayButton1.java", "import11/cnd/DisplayButton2.java", "import11/cnd/DisplayButton3.java", //
-         "import11/cnd/disp1/Page1.java", "import11/cnd/disp1/Page2.java" //
+         "import11/cnd/DisplayButton1.java", "import11/cnd/DisplayButton3.java", //
+         "import11/cnd/disp1/Page2.java"//
       //
       ));
    }
-
 }
