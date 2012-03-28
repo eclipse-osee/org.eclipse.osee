@@ -12,7 +12,10 @@ package org.eclipse.osee.coverage.editor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
@@ -54,6 +57,7 @@ import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.core.util.XResultDataFile;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -168,34 +172,50 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    }
 
    private void handleImportSelected() {
-      Collection<IMergeItem> mergeItems = getSelectedMergeItems();
+      final Collection<IMergeItem> mergeItems = getSelectedMergeItems();
+      final ISaveable saveable = this;
       if (mergeItems.isEmpty()) {
          AWorkbench.popup("Select Items to Import via Import Column");
          return;
       }
-      try {
-         CheckBoxDialog dialog =
-            new CheckBoxDialog("Import Items", String.format("Importing [%d] items.", mergeItems.size()),
-               "Save Import Record?");
-         if (dialog.open() == 0) {
-            XResultData rd = new MergeImportManager(mergeManager).importItems(this, mergeItems);
-            XResultDataUI.report(rd, "Import");
-            if (dialog.isChecked()) {
-               IOseeBranch branch = coverageEditor.getBranch();
-               if (branch == null) {
-                  AWorkbench.popup("Can't determine branch");
-                  return;
+      final CheckBoxDialog dialog =
+         new CheckBoxDialog("Import Items", String.format("Importing [%d] items.", mergeItems.size()),
+            "Save Import Record?");
+      if (dialog.open() == 0) {
+
+         Job job = new Job("Coverage Merge") {
+
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+               try {
+                  final XResultData rd = new MergeImportManager(mergeManager).importItems(saveable, mergeItems);
+                  if (dialog.isChecked()) {
+                     IOseeBranch branch = coverageEditor.getBranch();
+                     if (branch == null) {
+                        return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Can't determine branch.");
+                     }
+                     SkynetTransaction transaction =
+                        TransactionManager.createTransaction(branch, "Save Import Record - " + coverageImport.getName());
+                     saveImportRecord(transaction, coverageImport);
+                     transaction.execute();
+                  }
+                  Displays.ensureInDisplayThread(new Runnable() {
+                     @Override
+                     public void run() {
+                        XResultDataUI.report(rd, "Import");
+                        handleSearchButtonPressed();
+                        updateTitles();
+                        loadImportViewer(true, false);
+                     }
+                  });
+                  return Status.OK_STATUS;
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+                  return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Coverage Save Failed", ex);
                }
-               SkynetTransaction transaction =
-                  TransactionManager.createTransaction(branch, "Save Import Record - " + coverageImport.getName());
-               saveImportRecord(transaction, coverageImport);
-               transaction.execute();
             }
-            handleSearchButtonPressed();
-            updateTitles();
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         };
+         Jobs.startJob(job, false);
       }
    }
 
@@ -400,7 +420,6 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
                }
             }
             handleImportSelected();
-            loadImportViewer(true, false);
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
