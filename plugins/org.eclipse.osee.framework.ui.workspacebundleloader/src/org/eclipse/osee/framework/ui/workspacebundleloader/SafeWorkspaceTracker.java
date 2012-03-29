@@ -10,26 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.workspacebundleloader;
 
+import java.io.File;
 import java.net.URL;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
 import java.util.logging.Level;
+
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
+import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.plugin.workspace.SafeWorkspaceAccess;
 import org.eclipse.osee.framework.ui.workspacebundleloader.internal.Activator;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -37,25 +32,13 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeListener<WorkspaceStarterNature>, WorkspaceLoader {
 
-   private final Map<String, Bundle> installedBundles;
-   private final Map<String, Bundle> runningBundles;
-   private final Collection<Bundle> stoppedBundles;
    private JarChangeResourceListener<WorkspaceStarterNature> workspaceListener;
    private SafeWorkspaceAccess service;
-   private final ServiceTracker packageAdminTracker;
-
-   private final FileChangeDetector detector = new FileChangeDetector();
-
+   private final WorkspaceBundleLoadCoordinator bundleCoordinator;
+   
    public SafeWorkspaceTracker(BundleContext context) {
       super(context, SafeWorkspaceAccess.class.getName(), null);
-
-      packageAdminTracker = new ServiceTracker(context, PackageAdmin.class.getName(), null);
-      packageAdminTracker.open(true);
-
-      this.installedBundles = new HashMap<String, Bundle>();
-      this.runningBundles = new HashMap<String, Bundle>();
-      this.stoppedBundles = new LinkedList<Bundle>();
-
+      bundleCoordinator = new WorkspaceBundleLoadCoordinator(new File(OseeData.getPath().toFile(), "loadedbundles"));
       context.registerService(WorkspaceLoader.class.getName(), this, null);
    }
 
@@ -78,11 +61,9 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
          IWorkspace workspace = service.getWorkspace();
-         workspaceListener =
-            new JarChangeResourceListener<WorkspaceStarterNature>(WorkspaceStarterNature.NATURE_ID,
-               SafeWorkspaceTracker.this);
+         workspaceListener = new JarChangeResourceListener<WorkspaceStarterNature>(WorkspaceStarterNature.NATURE_ID, SafeWorkspaceTracker.this);
          try {
-            installWorkspacePlugins();
+            loadBundles();
          } catch (CoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
@@ -93,154 +74,37 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
    @Override
    public synchronized void close() {
       IWorkspace workspace = service.getWorkspace();
-      cleanupHandledBundles();
       workspace.removeResourceChangeListener(workspaceListener);
       super.close();
    }
 
-   private void cleanupHandledBundles() {
-      for (Bundle bundle : installedBundles.values()) {
-         try {
-            if (bundle.getState() != Bundle.UNINSTALLED) {
-               bundle.uninstall();
-            }
-         } catch (BundleException ex) {
-            OseeLog.log(SafeWorkspaceTracker.class, Level.INFO, ex);
-         }
-      }
-      for (Bundle bundle : runningBundles.values()) {
-         try {
-            bundle.stop();
-            bundle.uninstall();
-         } catch (BundleException ex) {
-            OseeLog.log(SafeWorkspaceTracker.class, Level.INFO, ex);
-         }
-      }
-      for (Bundle bundle : stoppedBundles) {
-         try {
-            bundle.uninstall();
-         } catch (BundleException ex) {
-            OseeLog.log(SafeWorkspaceTracker.class, Level.INFO, ex);
-         }
-      }
-      refreshPackages();
-      detector.clear();
-      stoppedBundles.clear();
-      runningBundles.clear();
-      installedBundles.clear();
-   }
-
-   private void installWorkspacePlugins() throws CoreException {
-      loadBundles();
-   }
-
    @Override
    public void handleBundleAdded(URL url) {
-      try {
-         if (detector.isChanged(url)) {
-            String urlString = url.toString();
-            Bundle bundle = context.installBundle(urlString);
-            installedBundles.put(urlString, bundle);
-         }
-      } catch (BundleException ex) {
-         OseeLog.log(SafeWorkspaceTracker.class, Level.SEVERE, ex);
-      }
+	   String urlString = url.toString();
+	   bundleCoordinator.addBundleToCheck(urlString);
    }
 
    @Override
    public void handleBundleChanged(URL url) {
-      try {
-         if (detector.isChanged(url)) {
-            String urlString = url.toString();
-
-            // Check to see if this is the first we've seen this
-            if (runningBundles.containsKey(urlString)) {
-               Bundle bundle = runningBundles.get(urlString);
-               System.out.println("\tUpdating plugin " + bundle.getSymbolicName());
-
-               bundle.update();
-            } else {
-               handleBundleAdded(url);
-            }
-         }
-      } catch (BundleException ex) {
-      }
+	   String urlString = url.toString();
+	   bundleCoordinator.addBundleToCheck(urlString);
    }
 
    @Override
    public void handleBundleRemoved(URL url) {
-      try {
-         detector.remove(url);
-         String urlString = url.toString();
-         if (runningBundles.containsKey(urlString)) {
-            Bundle bundle = runningBundles.get(urlString);
-            System.out.println("\tStopping plugin " + bundle.getSymbolicName());
-
-            bundle.stop();
-            runningBundles.remove(urlString);
-            stoppedBundles.add(bundle);
-         }
-      } catch (BundleException ex) {
-      }
-   }
-
-   private void transitionInstalledPlugins() {
-      Iterator<String> iter = installedBundles.keySet().iterator();
-      while (iter.hasNext()) {
-         String urlString = iter.next();
-         Bundle bundle = installedBundles.get(urlString);
-         try {
-            bundle.start();
-            iter.remove();
-            runningBundles.put(urlString, bundle);
-         } catch (Throwable th) {
-            OseeLog.log(Activator.class, Level.SEVERE, th);
-         }
-      }
-      refreshPackages();
-   }
-
-   private void refreshPackages() {
-      PackageAdmin packageAdmin = (PackageAdmin) packageAdminTracker.getService();
-      packageAdmin.refreshPackages(null);
-      // try {
-      // Thread.sleep(10000);
-      // } catch (InterruptedException ex) {
-      // }
-   }
-
-   private void transitionStoppedBundles() {
-      Iterator<Bundle> iter = stoppedBundles.iterator();
-      while (iter.hasNext()) {
-         Bundle bundle = iter.next();
-         try {
-            bundle.uninstall();
-
-            iter.remove();
-         } catch (Throwable th) {
-            OseeLog.log(Activator.class, Level.SEVERE, th);
-         }
-      }
-      refreshPackages();
+	   String urlString = url.toString();
+	   bundleCoordinator.addBundleToCheck(urlString);
    }
 
    @Override
    public void handlePostChange() {
-      transitionInstalledPlugins();
-      transitionStoppedBundles();
    }
 
    @Override
    public void handleNatureClosed(WorkspaceStarterNature nature) {
-      closeAllPlugins(nature);
-   }
-
-   private void closeAllPlugins(WorkspaceStarterNature nature) {
       for (URL url : nature.getBundles()) {
-         handleBundleRemoved(url);
-      }
-
-      transitionStoppedBundles();
+          handleBundleRemoved(url);
+       }
    }
 
    @Override
@@ -255,11 +119,12 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
             }
          }
       }
-      transitionInstalledPlugins();
+      bundleCoordinator.updateBundles();
+      bundleCoordinator.installLatestBundles();
    }
 
    @Override
    public void unloadBundles() {
-      cleanupHandledBundles();
+	  bundleCoordinator.uninstallBundles();
    }
 }
