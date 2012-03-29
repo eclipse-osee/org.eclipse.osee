@@ -182,7 +182,9 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
          new CheckBoxDialog("Import Items", String.format("Importing [%d] items.", mergeItems.size()),
             "Save Import Record?");
       if (dialog.open() == 0) {
-
+         xImportViewer2.getXViewer().setInput(new MessageMergeItem("Merging..."));
+         xImportViewer2.getXViewer().refresh();
+         loading = true;
          Job job = new Job("Coverage Merge") {
 
             @Override
@@ -202,11 +204,13 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
                   Displays.ensureInDisplayThread(new Runnable() {
                      @Override
                      public void run() {
+                        setLoading(false);
                         XResultDataUI.report(rd, "Import");
                         handleSearchButtonPressed();
                         updateTitles();
                         loadImportViewer(true, false);
                      }
+
                   });
                   return Status.OK_STATUS;
                } catch (OseeCoreException ex) {
@@ -325,6 +329,10 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
          // do nothing
       }
 
+   }
+
+   private void setLoading(boolean loading) {
+      this.loading = loading;
    }
 
    private void loadImportViewer(boolean force, boolean debugReport) {
