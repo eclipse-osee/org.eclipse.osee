@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.ats.actions.AccessControlAction;
 import org.eclipse.osee.ats.actions.ConvertActionableItemsAction;
+import org.eclipse.osee.ats.actions.CreateActionFromTaskAction;
 import org.eclipse.osee.ats.actions.DeletePurgeAtsArtifactsAction;
 import org.eclipse.osee.ats.actions.DirtyReportAction;
 import org.eclipse.osee.ats.actions.DuplicateWorkflowAction;
@@ -31,6 +32,7 @@ import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.actions.ShowBranchChangeDataAction;
 import org.eclipse.osee.ats.actions.ShowWorkDefinitionAction;
 import org.eclipse.osee.ats.actions.SubscribedAction;
+import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
@@ -123,7 +125,7 @@ public class SMAOperationsSection extends SectionPart {
    }
 
    private void createImpactsSection(Composite parent, FormToolkit toolkit) {
-      if (!editor.getAwa().isTeamWorkflow()) {
+      if (!editor.getAwa().isTeamWorkflow() && !editor.getAwa().isTask()) {
          return;
       }
       Section section = toolkit.createSection(parent, ExpandableComposite.TITLE_BAR);
@@ -143,6 +145,10 @@ public class SMAOperationsSection extends SectionPart {
             new DuplicateWorkflowAction(Collections.singleton((TeamWorkFlowArtifact) editor.getAwa()))).createWidgets(
             sectionBody, 2);
          new XButtonViaAction(new AccessControlAction(editor.getAwa())).createWidgets(sectionBody, 2);
+      }
+      if (editor.getAwa().isTask()) {
+         new XButtonViaAction(new CreateActionFromTaskAction(Collections.singleton((TaskArtifact) editor.getAwa()))).createWidgets(
+            sectionBody, 2);
       }
       section.setClient(sectionBody);
    }

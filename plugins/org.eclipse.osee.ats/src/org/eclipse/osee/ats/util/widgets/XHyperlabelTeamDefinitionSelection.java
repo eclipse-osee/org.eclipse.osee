@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.util.widgets;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionTreeWithChildrenDialog;
@@ -19,6 +20,7 @@ import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelection;
 
@@ -38,6 +40,12 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelCmdValueS
 
    public Collection<TeamDefinitionArtifact> getSelectedTeamDefintions() {
       return selectedTeamDefs;
+   }
+
+   @Override
+   public Object getData() {
+      List<Artifact> arts = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(getSelectedTeamDefintions());
+      return arts;
    }
 
    @Override

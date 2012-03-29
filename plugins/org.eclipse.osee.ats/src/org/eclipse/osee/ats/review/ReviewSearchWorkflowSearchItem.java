@@ -314,7 +314,7 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
       if (aiCombo == null) {
          return java.util.Collections.emptyList();
       }
-      return aiCombo.getSelectedTeamDefintions();
+      return aiCombo.getSelectedActionableItems();
    }
 
    public void setSelectedTeamDefinitions(Collection<ActionableItemArtifact> selectedAis) {
