@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.ui.markers;
 
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -110,11 +111,6 @@ public class MarkerPlugin implements BundleActivator {
    }
 
    static synchronized void updateMarkerInfo(IFile file, List<IMarker> markers) {
-      List<IMarker> oldMarkers = filesToWatch.get(file);
-      if (oldMarkers != null) {
-         oldMarkers.addAll(markers);
-      } else {
-         filesToWatch.put(file, markers);
-      }
+      filesToWatch.put(file, markers);
    }
 }
