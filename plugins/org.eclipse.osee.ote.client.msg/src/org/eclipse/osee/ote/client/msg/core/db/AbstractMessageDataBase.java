@@ -15,7 +15,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.eclipse.osee.ote.client.msg.core.internal.MessageReference;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MessageData;
@@ -25,7 +27,6 @@ import org.eclipse.osee.ote.message.interfaces.IRemoteMessageService;
 import org.eclipse.osee.ote.message.tool.MessageMode;
 import org.eclipse.osee.ote.messaging.dds.entity.DataReader;
 import org.eclipse.osee.ote.messaging.dds.entity.EntityFactory;
-import org.eclipse.osee.ote.service.IMessageDictionary;
 
 /**
  * @author Ken J. Aguilar
@@ -37,7 +38,6 @@ public abstract class AbstractMessageDataBase {
    private final ConcurrentHashMap<Integer, MessageInstance> idToMsgMap =
       new ConcurrentHashMap<Integer, MessageInstance>();
 
-   private final IMessageDictionary dictionary;
    private IMsgToolServiceClient client;
    private IRemoteMessageService service;
    private final DataReader reader = new DataReader(null, null, true, null, new EntityFactory() {
@@ -49,8 +49,8 @@ public abstract class AbstractMessageDataBase {
 
    });
 
-   protected AbstractMessageDataBase(IMessageDictionary dictionary) {
-      this.dictionary = dictionary;
+   protected AbstractMessageDataBase() {
+      
    }
 
    public MessageInstance findInstance(String name, MessageMode mode, DataType type) {
@@ -64,7 +64,7 @@ public abstract class AbstractMessageDataBase {
 
    public MessageInstance acquireInstance(String name, MessageMode mode, DataType type) throws Exception {
       if (type == null) {
-         Class<? extends Message> msgClass = dictionary.lookupMessage(name);
+         Class<? extends Message> msgClass = ExportClassLoader.getInstance().loadClass(name).asSubclass(Message.class);
          Message msg = createMessage(msgClass);
          for (ArrayList<MessageData> dataList : (Collection<ArrayList<MessageData>>) msg.getAllData()) {
             for (MessageData data : dataList) {
@@ -76,7 +76,7 @@ public abstract class AbstractMessageDataBase {
       MessageReference reference = new MessageReference(type, mode, name);
       MessageInstance instance = referenceToMsgMap.get(reference);
       if (instance == null) {
-         Class<? extends Message> msgClass = dictionary.lookupMessage(name);
+         Class<? extends Message> msgClass = ExportClassLoader.getInstance().loadClass(name).asSubclass(Message.class);
          Message msg = createMessage(msgClass);
          for (ArrayList<MessageData> dataList : (Collection<ArrayList<MessageData>>) msg.getAllData()) {
             for (MessageData data : dataList) {
@@ -158,8 +158,5 @@ public abstract class AbstractMessageDataBase {
          e.printStackTrace();
       }
    }
-
-   protected IMessageDictionary getDictionary() {
-      return dictionary;
-   }
+  
 }

@@ -11,12 +11,11 @@
 package org.eclipse.osee.ote.client.msg.core;
 
 import org.eclipse.osee.ote.client.msg.core.db.AbstractMessageDataBase;
-import org.eclipse.osee.ote.service.IMessageDictionary;
 
 /**
  * @author Ken J. Aguilar
  */
 public interface IMessageDbFactory {
 
-   AbstractMessageDataBase createMessageDataBase(IMessageDictionary dictionary);
+   AbstractMessageDataBase createMessageDataBase();
 }

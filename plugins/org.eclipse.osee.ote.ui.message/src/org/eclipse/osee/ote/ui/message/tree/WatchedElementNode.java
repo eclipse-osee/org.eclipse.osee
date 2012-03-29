@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.ui.message.tree;
 
 import java.util.Collection;
 import java.util.HashMap;
+
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ote.client.msg.core.IMessageSubscription;
 import org.eclipse.osee.ote.message.Message;
@@ -92,7 +93,8 @@ public class WatchedElementNode extends ElementNode {
       if (isResolved) {
          Message<?, ?, ?> message = getSubscription().getMessage();
          element = message.getElement(getElementPath().getElementPath(), getSubscription().getMemType());
-
+         setEnabled(true);
+         setDisabledReason("");
          if (element == null) {
             columnValues.clear();
             value = "???";

@@ -10,12 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.client.msg.core.internal;
 
-import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.Plugin;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
-import org.eclipse.osee.ote.client.msg.core.IMessageDbFactory;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -31,7 +26,7 @@ public class Activator extends Plugin {
 
    private BundleContext context;
 
-   private OteClientServiceTracker tracker;
+//   private OteClientServiceTracker tracker;
 
    /**
     * The constructor
@@ -45,28 +40,28 @@ public class Activator extends Plugin {
       this.context = context;
       plugin = this;
 
-      ExtensionDefinedObjects<IMessageDbFactory> definedObjects =
-         new ExtensionDefinedObjects<IMessageDbFactory>("org.eclipse.osee.ote.client.msg.dBFactory", "DatabaseFactory",
-            "className");
-      try {
-         List<IMessageDbFactory> providers = definedObjects.getObjects();
-         if (!providers.isEmpty()) {
-            tracker = new OteClientServiceTracker(providers.get(0));
-            tracker.open(true);
-         } else {
-            OseeLog.log(Activator.class, Level.WARNING,
-               "No message database factory (IMessageDbFactory) found. Message Subscription Service not started");
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, "failed to process message database factory extensions", ex);
-      }
+//      ExtensionDefinedObjects<IMessageDbFactory> definedObjects =
+//         new ExtensionDefinedObjects<IMessageDbFactory>("org.eclipse.osee.ote.client.msg.dBFactory", "DatabaseFactory",
+//            "className");
+//      try {
+//         List<IMessageDbFactory> providers = definedObjects.getObjects();
+//         if (!providers.isEmpty()) {
+//            tracker = new OteClientServiceTracker(providers.get(0));
+//            tracker.open(true);
+//         } else {
+//            OseeLog.log(Activator.class, Level.WARNING,
+//               "No message database factory (IMessageDbFactory) found. Message Subscription Service not started");
+//         }
+//      } catch (Exception ex) {
+//         OseeLog.log(Activator.class, Level.SEVERE, "failed to process message database factory extensions", ex);
+//      }
 
    }
 
    @Override
    public void stop(BundleContext context) throws Exception {
       plugin = null;
-      tracker.close();
+//      tracker.close();
       super.stop(context);
       this.context = null;
    }

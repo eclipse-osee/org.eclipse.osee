@@ -130,7 +130,7 @@ public final class UpdateDispatcher {
       }
       channel.connect(remoteAddress);
       if (channelMap.put(type, channel) != null) {
-         OseeLog.log(MessageSubscriptionService.class, Level.WARNING, "A previous channel was replaced");
+         OseeLog.log(UpdateDispatcher.class, Level.WARNING, "A previous channel was replaced");
       }
       synchronized (gate) {
          channelSelector.wakeup();

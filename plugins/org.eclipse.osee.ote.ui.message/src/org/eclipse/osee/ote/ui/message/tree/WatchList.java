@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -90,8 +91,8 @@ public class WatchList implements ITreeContentProvider {
          service = (IOteMessageService) newInput;
          viewRefresher.start();
       } else {
-         deleteAll();
-         rootNode = null;
+//         deleteAll();
+//         rootNode = null;
          service = null;
          viewRefresher.stop();
       }

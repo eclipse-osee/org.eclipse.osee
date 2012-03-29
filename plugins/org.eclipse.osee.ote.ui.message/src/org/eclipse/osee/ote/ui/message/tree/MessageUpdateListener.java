@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.ui.message.tree;
 
 import java.util.LinkedList;
+
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.client.msg.core.AbstractMessageListener;
@@ -86,6 +87,8 @@ public class MessageUpdateListener extends AbstractMessageListener {
    public void subscriptionResolved(IMessageSubscription subscription) {
       super.subscriptionResolved(subscription);
       node.setResolved(true);
+      node.setEnabled(true);
+      node.setDisabledReason("");
       update(node);
    }
 
@@ -94,6 +97,7 @@ public class MessageUpdateListener extends AbstractMessageListener {
       super.subscriptionUnresolved(subscription);
       node.setResolved(false);
       update(node);
+      subscriptionInvalidated(subscription);
    }
 
    private void update(AbstractTreeNode[] nodes) {

@@ -28,11 +28,13 @@ import java.util.logging.Level;
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.eclipse.osee.ote.client.msg.IOteMessageService;
-import org.eclipse.osee.ote.client.msg.core.IMessageDbFactory;
 import org.eclipse.osee.ote.client.msg.core.IMessageSubscription;
 import org.eclipse.osee.ote.client.msg.core.db.AbstractMessageDataBase;
 import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
+import org.eclipse.osee.ote.message.Message;
+import org.eclipse.osee.ote.message.MessageDefinitionProvider;
 import org.eclipse.osee.ote.message.commands.RecordCommand;
 import org.eclipse.osee.ote.message.commands.RecordCommand.MessageRecordDetails;
 import org.eclipse.osee.ote.message.enums.DataType;
@@ -43,15 +45,15 @@ import org.eclipse.osee.ote.message.tool.IFileTransferHandle;
 import org.eclipse.osee.ote.message.tool.TransferConfig;
 import org.eclipse.osee.ote.message.tool.UdpFileTransferHandler;
 import org.eclipse.osee.ote.service.ConnectionEvent;
-import org.eclipse.osee.ote.service.IMessageDictionary;
-import org.eclipse.osee.ote.service.IMessageDictionaryListener;
 import org.eclipse.osee.ote.service.IOteClientService;
 import org.eclipse.osee.ote.service.ITestConnectionListener;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * @author Ken J. Aguilar
  */
-public class MessageSubscriptionService implements IOteMessageService, IMessageDictionaryListener, ITestConnectionListener, IMsgToolServiceClient {
+public class MessageSubscriptionService implements IOteMessageService, ITestConnectionListener, IMsgToolServiceClient {
 
    /** * Static Fields ** */
    private static final int MAX_CONCURRENT_WORKER_THREADS = Math.min(Runtime.getRuntime().availableProcessors() + 1, 4);
@@ -74,7 +76,6 @@ public class MessageSubscriptionService implements IOteMessageService, IMessageD
             thread.setDaemon(false);
             return thread;
          }
-
       });
 
    /**
@@ -83,17 +84,29 @@ public class MessageSubscriptionService implements IOteMessageService, IMessageD
    private UpdateDispatcher dispatcher = null;
    private IRemoteMessageService service;
 
-   private final IMessageDbFactory messageDbFactory;
-   private final IOteClientService clientService;
+   private IOteClientService clientService;
 
-   public MessageSubscriptionService(IOteClientService service, IMessageDbFactory messageDbFactory) throws IOException {
-      this.messageDbFactory = messageDbFactory;
+   public void start(){
+	   clientService.addConnectionListener(this);
+   }
+   
+   public void stop(){
+	   clientService.removeConnectionListener(this);
+   }
+   
+   public void bindOteClientService(IOteClientService clientService){
+	   this.clientService = clientService;
+   }
+   
+   public void unbindOteClientService(IOteClientService clientService){
+	   this.clientService = null;
+   }
+   
+   public MessageSubscriptionService() throws IOException {
       localAddress = InetAddress.getLocalHost();
+      msgDatabase = new MessageDatabase();
       OseeLog.log(Activator.class, Level.INFO,
          "OTE client message service started on: " + localAddress.getHostAddress());
-      clientService = service;
-      clientService.addDictionaryListener(this);
-      clientService.addConnectionListener(this);
    }
 
    @Override
@@ -115,7 +128,6 @@ public class MessageSubscriptionService implements IOteMessageService, IMessageD
     */
    public void shutdown() {
       OseeLog.log(MessageSubscriptionService.class, Level.INFO, "shutting down subscription service");
-      clientService.removeDictionaryListener(this);
       clientService.removeConnectionListener(this);
       shutdownDispatcher();
       threadPool.shutdown();
@@ -193,7 +205,6 @@ public class MessageSubscriptionService implements IOteMessageService, IMessageD
       for (DataType type : availableTypes) {
          final ChannelProcessor handler =
             new ChannelProcessor(1, type.getToolingBufferSize(), threadPool, msgDatabase, type);
-
          dispatcher.addChannel(localAddress, 0, type, handler);
       }
    }
@@ -254,22 +265,32 @@ public class MessageSubscriptionService implements IOteMessageService, IMessageD
       return clientService.getSessionKey();
    }
 
-   @Override
-   public synchronized void onDictionaryLoaded(IMessageDictionary dictionary) {
-      msgDatabase = messageDbFactory.createMessageDataBase(dictionary);
-      for (MessageSubscription subscription : subscriptions) {
-         subscription.attachMessageDb(msgDatabase);
-      }
+   public void addMessageDefinitionProvider(MessageDefinitionProvider provider){
+	   for (MessageSubscription subscription : subscriptions) {
+		   if(!subscription.isResolved()){
+			   subscription.attachMessageDb(msgDatabase);
+		   }
+	   }
    }
-
-   @Override
-   public synchronized void onDictionaryUnloaded(IMessageDictionary dictionary) {
-      for (MessageSubscription subscription : subscriptions) {
-         subscription.detachMessageDb(msgDatabase);
-      }
-      msgDatabase = null;
+   
+   public void removeMessageDefinitionProvider(MessageDefinitionProvider provider){
+	   for (MessageSubscription subscription : subscriptions) {
+		   if(subscription.isResolved()){
+			   Class<? extends Message> msg = null;
+			   Bundle hostBundle = null;
+			   try {
+				   msg = ExportClassLoader.getInstance().loadClass(subscription.getMessageClassName()).asSubclass(Message.class);
+				   hostBundle = FrameworkUtil.getBundle(msg.getClass());
+			   } catch (ClassNotFoundException e) {
+			   } finally{
+				   if(msg == null || hostBundle == null){
+					   subscription.detachMessageDb(msgDatabase);
+				   }
+			   }
+		   }
+	   }
    }
-
+   
    @Override
    public synchronized IFileTransferHandle startRecording(String fileName, List<MessageRecordDetails> list) throws FileNotFoundException, IOException {
       if (service == null) {

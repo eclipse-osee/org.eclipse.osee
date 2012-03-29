@@ -10,10 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.client.msg.core.internal;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.ote.client.msg.IOteMessageService;
 import org.eclipse.osee.ote.client.msg.core.IMessageDbFactory;
 import org.eclipse.osee.ote.service.IOteClientService;
 import org.osgi.framework.ServiceReference;
@@ -36,12 +32,12 @@ public class OteClientServiceTracker extends ServiceTracker {
    @Override
    public Object addingService(ServiceReference reference) {
       IOteClientService service = (IOteClientService) super.addingService(reference);
-      try {
-         messageSubscriptionService = new MessageSubscriptionService(service, factory);
-         registration = context.registerService(IOteMessageService.class.getName(), messageSubscriptionService, null);
-      } catch (IOException e) {
-         OseeLog.log(OteClientServiceTracker.class, Level.SEVERE, "could not start Message Service", e);
-      }
+//      try {
+//         messageSubscriptionService = new MessageSubscriptionService(service, factory);
+//         registration = context.registerService(IOteMessageService.class.getName(), messageSubscriptionService, null);
+//      } catch (IOException e) {
+//         OseeLog.log(OteClientServiceTracker.class, Level.SEVERE, "could not start Message Service", e);
+//      }
       return service;
    }
 
