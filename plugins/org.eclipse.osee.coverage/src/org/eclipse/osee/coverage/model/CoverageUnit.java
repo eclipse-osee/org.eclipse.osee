@@ -240,14 +240,19 @@ public class CoverageUnit extends NamedIdentity<String> implements IWorkProductR
       this.notes = notes;
    }
 
-   public List<CoverageItem> getCoverageItemsCovered(boolean recurse) {
-      List<CoverageItem> items = new ArrayList<CoverageItem>();
-      for (CoverageItem coverageItem : getCoverageItems(recurse)) {
-         if (coverageItem.isCovered()) {
-            items.add(coverageItem);
+   public int getCoverageItemsCoveredCount(boolean recurse) {
+      int count = 0;
+      for (CoverageItem item : coverageItems) {
+         if (item.isCovered()) {
+            count++;
          }
       }
-      return items;
+      if (recurse) {
+         for (CoverageUnit coverageUnit : coverageUnits) {
+            count += coverageUnit.getCoverageItemsCoveredCount(true);
+         }
+      }
+      return count;
    }
 
    public int getCoverageItemsCount(boolean recurse, CoverageOption coverageOption) {
@@ -321,12 +326,12 @@ public class CoverageUnit extends NamedIdentity<String> implements IWorkProductR
 
    @Override
    public String getCoveragePercentStr() {
-      return CoverageUtil.getPercent(getCoverageItemsCovered(true).size(), getCoverageItems(true).size(), true).getSecond();
+      return CoverageUtil.getPercent(getCoverageItemsCoveredCount(true), getCoverageItems(true).size(), true).getSecond();
    }
 
    @Override
    public Double getCoveragePercent() {
-      return CoverageUtil.getPercent(getCoverageItemsCovered(true).size(), getCoverageItems(true).size(), true).getFirst();
+      return CoverageUtil.getPercent(getCoverageItemsCoveredCount(true), getCoverageItems(true).size(), true).getFirst();
    }
 
    @Override

@@ -186,8 +186,8 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
                      values.add("0");
                   } else {
                      CoverageOption coverageOption = rowToCoverageOption.get(rowName);
-                     values.add(CoverageUtil.getPercent(
-                        coveragePackageBase.getCoverageItemsCount(coverageOption), totalCoverageItems, false).getSecond());
+                     values.add(CoverageUtil.getPercent(coveragePackageBase.getCoverageItemsCount(coverageOption),
+                        totalCoverageItems, false).getSecond());
                   }
                }
             }
@@ -199,7 +199,7 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
                   if (totalCoverageItems == 0) {
                      values.add("0");
                   } else {
-                     values.add(CoverageUtil.getPercent(coverageUnit.getCoverageItemsCovered(true).size(),
+                     values.add(CoverageUtil.getPercent(coverageUnit.getCoverageItemsCoveredCount(true),
                         totalCoverageItems, false).getSecond());
                   }
                } else if (!rowName.equals(CoverageOptionManager.Not_Covered.getName())) {
@@ -208,8 +208,8 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
                   if (totalCoverageItems == 0) {
                      values.add("0");
                   } else {
-                     values.add(CoverageUtil.getPercent(
-                        coverageUnit.getCoverageItemsCount(true, coverageOption), totalCoverageItems, false).getSecond());
+                     values.add(CoverageUtil.getPercent(coverageUnit.getCoverageItemsCount(true, coverageOption),
+                        totalCoverageItems, false).getSecond());
                   }
                }
             }
