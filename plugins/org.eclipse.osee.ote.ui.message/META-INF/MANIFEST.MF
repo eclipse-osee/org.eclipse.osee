@@ -31,3 +31,4 @@ Export-Package: org.eclipse.osee.ote.ui.message,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.operation
+Service-Component: OSGI-INF/*.xml

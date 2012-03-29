@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -60,16 +61,16 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.osee.ote.client.msg.IOteMessageService;
+import org.eclipse.osee.ote.message.MessageDefinitionProvider;
 import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystem;
 import org.eclipse.osee.ote.message.tool.IUdpTransferListener;
 import org.eclipse.osee.ote.message.tool.TransferConfig;
 import org.eclipse.osee.ote.service.ConnectionEvent;
-import org.eclipse.osee.ote.service.IMessageDictionary;
-import org.eclipse.osee.ote.service.IMessageDictionaryListener;
 import org.eclipse.osee.ote.service.IOteClientService;
 import org.eclipse.osee.ote.service.ITestConnectionListener;
 import org.eclipse.osee.ote.ui.message.OteMessageImage;
 import org.eclipse.osee.ote.ui.message.internal.Activator;
+import org.eclipse.osee.ote.ui.message.internal.MessageProviderComponent;
 import org.eclipse.osee.ote.ui.message.messageXViewer.MessageXViewer;
 import org.eclipse.osee.ote.ui.message.tree.AbstractTreeNode;
 import org.eclipse.osee.ote.ui.message.tree.ElementNode;
@@ -125,7 +126,7 @@ import org.osgi.framework.Bundle;
  * 
  * @author Ken J. Aguilar
  */
-public final class WatchView extends ViewPart implements IMessageDictionaryListener, ITestConnectionListener, IOteMessageClientView {
+public final class WatchView extends ViewPart implements ITestConnectionListener, IOteMessageClientView {
    private MessageXViewer treeViewer;
 
    private final ClientMessageServiceTracker msgServiceTracker;
@@ -135,6 +136,8 @@ public final class WatchView extends ViewPart implements IMessageDictionaryListe
    private Button recordButton;
    private final Benchmark benchMark = new Benchmark("Message Watch Update Time");
 
+   Set<String> versions = new ConcurrentSkipListSet<String>();
+   
    private static final Pattern elmPattern = Pattern.compile("^(osee\\.test\\.core\\.message\\.[^.]+\\..+)\\.(.+)$");
    private static final Pattern msgPattern = Pattern.compile("^(osee\\.test\\.core\\.message\\.[^.]+\\..+)$");
 
@@ -248,6 +251,7 @@ public final class WatchView extends ViewPart implements IMessageDictionaryListe
    public WatchView() {
       watchFile = OseeData.getFile("msgWatch.txt");
       msgServiceTracker = new ClientMessageServiceTracker(Activator.getDefault().getBundle().getBundleContext(), this);
+      MessageProviderComponent.getInstance().set(this);
    }
 
    @SuppressWarnings("unchecked")
@@ -405,7 +409,6 @@ public final class WatchView extends ViewPart implements IMessageDictionaryListe
          throw new IllegalStateException("cannot acquire ote client service");
       }
       msgServiceTracker.open(true);
-      clientService.addDictionaryListener(this);
       clientService.addConnectionListener(this);
       loadWatchFile();
 
@@ -438,12 +441,12 @@ public final class WatchView extends ViewPart implements IMessageDictionaryListe
 
    @Override
    public void dispose() {
+	  MessageProviderComponent.getInstance().unset(this);
       if (detailsBox != null) {
          detailsBox.dispose();
       }
       msgServiceTracker.close();
       Activator.getDefault().getOteClientService().removeConnectionListener(WatchView.this);
-      Activator.getDefault().getOteClientService().removeDictionaryListener(WatchView.this);
       super.dispose();
    }
 
@@ -993,34 +996,6 @@ public final class WatchView extends ViewPart implements IMessageDictionaryListe
       });
    }
 
-   @Override
-   public void onDictionaryLoaded(final IMessageDictionary dictionary) {
-
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            try {
-               String libraryProviders = String.format("Providers:\n%s", dictionary.getMessageLibraryVersion());
-               statusTxt.setText("libraries loaded");
-               statusTxt.setToolTipText(libraryProviders);
-            } catch (Exception ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, "exception while processing library", ex);
-            }
-         }
-      });
-   }
-
-   @Override
-   public void onDictionaryUnloaded(IMessageDictionary dictionary) {
-      // our node factory's dictionary is being unloaded
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            setNoLibraryStatus();
-         }
-      });
-   }
-
    private void setNoLibraryStatus() {
       treeViewer.getTree().setToolTipText("");
       statusTxt.setText("no library detected");
@@ -1056,5 +1031,52 @@ public final class WatchView extends ViewPart implements IMessageDictionaryListe
             messageService = null;
          }
       });
+   }
+
+   
+   
+   public void addMessageDefinitionProvider(MessageDefinitionProvider provider) {
+	  versions.add(generateVersion(provider));	  
+	  Displays.ensureInDisplayThread(new Runnable() {
+		  @Override
+		  public void run() {
+			  try {
+				  
+				  statusTxt.setText("libraries loaded");
+				  statusTxt.setToolTipText(computeTotalVersion());
+			  } catch (Exception ex) {
+				  OseeLog.log(Activator.class, Level.SEVERE, "exception while processing library", ex);
+			  }
+		  }
+	  });
+   }
+
+   public void removeMessageDefinitionProvider(MessageDefinitionProvider provider) {
+	  versions.remove(generateVersion(provider));
+	  Displays.ensureInDisplayThread(new Runnable() {
+		  @Override
+		  public void run() {
+			  if(versions.size() == 0){
+				  setNoLibraryStatus();
+			  } else {
+				  statusTxt.setText("libraries loaded");
+				  statusTxt.setToolTipText(computeTotalVersion());
+			  }
+		  }
+	  });
+   }
+   
+   public String computeTotalVersion(){
+	   StringBuilder sb = new StringBuilder();
+	   for(String ver:versions){
+		   sb.append(ver);
+		   sb.append("\n");
+	   }
+	   sb.deleteCharAt(sb.length()-1);
+	   return sb.toString();
+   }
+   
+   public String generateVersion(MessageDefinitionProvider provider){
+	   return String.format("%s[%s.%s]", provider.singletonId(), provider.majorVersion(), provider.minorVersion());
    }
 }

@@ -16,9 +16,9 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.channels.DatagramChannel;
 import java.rmi.RemoteException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -59,7 +59,7 @@ public class MessageSubscriptionService implements IOteMessageService, ITestConn
    private static final int MAX_CONCURRENT_WORKER_THREADS = Math.min(Runtime.getRuntime().availableProcessors() + 1, 4);
 
    private final InetAddress localAddress;
-   private final LinkedList<MessageSubscription> subscriptions = new LinkedList<MessageSubscription>();
+   private final List<MessageSubscription> subscriptions = new CopyOnWriteArrayList<MessageSubscription>();
    private IMsgToolServiceClient exportedThis = null;
    private AbstractMessageDataBase msgDatabase;
    private UdpFileTransferHandler fileTransferHandler;
