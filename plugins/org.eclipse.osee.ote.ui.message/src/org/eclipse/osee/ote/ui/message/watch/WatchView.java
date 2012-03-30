@@ -70,7 +70,6 @@ import org.eclipse.osee.ote.service.IOteClientService;
 import org.eclipse.osee.ote.service.ITestConnectionListener;
 import org.eclipse.osee.ote.ui.message.OteMessageImage;
 import org.eclipse.osee.ote.ui.message.internal.Activator;
-import org.eclipse.osee.ote.ui.message.internal.MessageProviderComponent;
 import org.eclipse.osee.ote.ui.message.messageXViewer.MessageXViewer;
 import org.eclipse.osee.ote.ui.message.tree.AbstractTreeNode;
 import org.eclipse.osee.ote.ui.message.tree.ElementNode;
@@ -120,6 +119,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * A view that allows the monitoring of messages and their associated elements
@@ -248,10 +248,11 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
    private Composite parentComposite;
    private WatchList watchList;
 
+private WatchViewMessageDefinitionProviderTracker watchViewMessageDefinitionProviderTracker;
+
    public WatchView() {
       watchFile = OseeData.getFile("msgWatch.txt");
       msgServiceTracker = new ClientMessageServiceTracker(Activator.getDefault().getBundle().getBundleContext(), this);
-      MessageProviderComponent.getInstance().set(this);
    }
 
    @SuppressWarnings("unchecked")
@@ -437,11 +438,14 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
       int ops = DND.DROP_COPY | DND.DROP_MOVE;
       Transfer[] transfers = new Transfer[] {FileTransfer.getInstance(), TextTransfer.getInstance()};
       treeViewer.addDropSupport(ops, transfers, new WatchViewDropAdapter(this));
+      
+      watchViewMessageDefinitionProviderTracker = new WatchViewMessageDefinitionProviderTracker(FrameworkUtil.getBundle(getClass()).getBundleContext(), this);
+      watchViewMessageDefinitionProviderTracker.open(true);
    }
 
    @Override
    public void dispose() {
-	  MessageProviderComponent.getInstance().unset(this);
+	  watchViewMessageDefinitionProviderTracker.close();
       if (detailsBox != null) {
          detailsBox.dispose();
       }
