@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -36,10 +37,10 @@ import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
-import org.eclipse.osee.ote.service.IMessageDictionary;
-import org.eclipse.osee.ote.service.IMessageDictionaryListener;
+import org.eclipse.osee.ote.message.MessageDefinitionProvider;
 import org.eclipse.osee.ote.ui.message.OteMessageImage;
 import org.eclipse.osee.ote.ui.message.internal.Activator;
+import org.eclipse.osee.ote.ui.message.internal.MessageProviderVersion;
 import org.eclipse.osee.ote.ui.message.tree.AbstractTreeNode;
 import org.eclipse.osee.ote.ui.message.tree.ElementNode;
 import org.eclipse.osee.ote.ui.message.tree.MessageContentProvider;
@@ -77,8 +78,9 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.osgi.framework.FrameworkUtil;
 
-public class MessageView extends ViewPart implements IMessageDictionaryListener {
+public class MessageView extends ViewPart {
    protected TreeViewer treeViewer;
    protected Text searchText;
    protected MessageViewLabelProvider labelProvider;
@@ -92,9 +94,14 @@ public class MessageView extends ViewPart implements IMessageDictionaryListener 
    private int numMessages = 0;
    private int numElements = 0;
    private MessageTreeBuilder treeBuilder;
+   
+   private MessageDefinitionProviderTracker tracker;
+   private MessageProviderVersion messageProviderVersion;
+
 
    public MessageView() {
       super();
+      messageProviderVersion = new MessageProviderVersion();
    }
 
    @Override
@@ -217,7 +224,8 @@ public class MessageView extends ViewPart implements IMessageDictionaryListener 
       treeViewer.setInput(root);
       setHelpContexts();
       setLibraryUnloadedState();
-      Activator.getDefault().getOteClientService().addDictionaryListener(this);
+      tracker = new MessageDefinitionProviderTracker(FrameworkUtil.getBundle(getClass()).getBundleContext(), this);
+      tracker.open(true);
    }
 
    private void setHelpContexts() {
@@ -517,42 +525,6 @@ public class MessageView extends ViewPart implements IMessageDictionaryListener 
       parentComposite.setFocus();
    }
 
-   @Override
-   public void onDictionaryLoaded(final IMessageDictionary dictionary) {
-      Displays.pendInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            try {
-               startLabel.setText("processing library...");
-               treeViewer.getTree().setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
-               treeBuilder.clear();
-               dictionary.generateMessageIndex(treeBuilder);
-               numMessages = treeBuilder.getNumMessages();
-               numElements = treeBuilder.getNumElements();
-               treeViewer.getTree().setToolTipText(
-                  String.format("#Messages: %d, #Elements: %d\n\nProviders:\n%s", numMessages, numElements,
-                     dictionary.getMessageLibraryVersion()));
-               searchText.setEnabled(true);
-               startLabel.setText("Ready for query");
-            } catch (Exception e) {
-               OseeLog.log(Activator.class, Level.SEVERE, "Problem during message jar processing", e);
-            }
-         }
-      });
-   }
-
-   @Override
-   public void onDictionaryUnloaded(IMessageDictionary dictionary) {
-      Displays.pendInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            setLibraryUnloadedState();
-         }
-
-      });
-
-   }
-
    private void setLibraryUnloadedState() {
       if (treeViewer.getTree().isDisposed() || startLabel.isDisposed() || searchText.isDisposed()) {
          return;
@@ -566,8 +538,49 @@ public class MessageView extends ViewPart implements IMessageDictionaryListener 
 
    @Override
    public void dispose() {
+	  tracker.close();
       super.dispose();
-      Activator.getDefault().getOteClientService().removeDictionaryListener(this);
    }
 
+   public void addMessageDefinitionProvider(final MessageDefinitionProvider provider) {
+	   messageProviderVersion.add(provider);	 
+	   Displays.pendInDisplayThread(new Runnable() {
+		   @Override
+		   public void run() {
+			   try {
+				   startLabel.setText("processing library...");
+				   treeViewer.getTree().setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
+				   treeBuilder.startProcessing(provider);
+				   provider.generateMessageIndex(treeBuilder);
+				   treeBuilder.stopProcessing(provider);
+				   treeViewer.getTree().setToolTipText(
+						   String.format("Providers:\n%s", messageProviderVersion.getVersion()));
+				   searchText.setEnabled(true);
+				   startLabel.setText("Ready for query");
+			   } catch (Exception e) {
+				   OseeLog.log(Activator.class, Level.SEVERE, "Problem during message jar processing", e);
+			   }
+		   }
+	      });
+   }
+
+   public void removeMessageDefinitionProvider(final MessageDefinitionProvider service) {
+	   messageProviderVersion.remove(service);	 
+	   Displays.pendInDisplayThread(new Runnable() {
+		   @Override
+		   public void run() {
+			   try {
+				   treeBuilder.removeProvider(service);
+				   if(treeBuilder.getNumProviders() == 0){
+					   setLibraryUnloadedState();
+				   } else {
+					   treeViewer.getTree().setToolTipText(String.format("Providers:\n%s", messageProviderVersion.getVersion()));
+				   }
+			   } catch (Exception e) {
+				   OseeLog.log(Activator.class, Level.SEVERE, "Problem during message jar processing", e);
+			   }
+		   }
+	      });
+   }
+   
 }

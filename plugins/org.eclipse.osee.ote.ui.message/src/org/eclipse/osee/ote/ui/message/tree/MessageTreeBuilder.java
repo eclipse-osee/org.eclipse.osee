@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.eclipse.osee.ote.message.MessageDefinitionProvider;
 import org.eclipse.osee.ote.message.MessageSink;
 
 /**
@@ -27,8 +29,10 @@ public class MessageTreeBuilder implements MessageSink {
    private ArrayList<String> lastAddedMsgNode;
    private int numElements = 0;
    private int numMessages = 0;
-   private final HashMap<String, ArrayList<String>> msgs = new HashMap<String, ArrayList<String>>(200000);
-
+   private HashMap<String, ArrayList<String>> currentMsgs;
+   private Collection<Map.Entry<String, ArrayList<String>>> allMessages = new ArrayList<Map.Entry<String, ArrayList<String>>>(200000);
+   private final HashMap<MessageDefinitionProvider, HashMap<String, ArrayList<String>>> msgs = new HashMap<MessageDefinitionProvider, HashMap<String, ArrayList<String>>>(); 
+   
    public void clear() {
       numMessages = numElements = 0;
       msgs.clear();
@@ -47,7 +51,7 @@ public class MessageTreeBuilder implements MessageSink {
    @Override
    public void absorbMessage(String messageName) {
       lastAddedMsgNode = new ArrayList<String>(64);
-      msgs.put(messageName, lastAddedMsgNode);
+      currentMsgs.put(messageName, lastAddedMsgNode);
       numMessages++;
    }
 
@@ -69,7 +73,35 @@ public class MessageTreeBuilder implements MessageSink {
    }
 
    public Collection<Map.Entry<String, ArrayList<String>>> getMessages() {
-      return msgs.entrySet();
+      return allMessages;
+   }
+
+   private void buildAllMsgs(){
+	   allMessages.clear();
+	   for(HashMap<String, ArrayList<String>> val:msgs.values()){
+		   allMessages.addAll(val.entrySet());
+	   }
+   }
+   
+   public void startProcessing(MessageDefinitionProvider provider) {
+	   currentMsgs = new HashMap<String, ArrayList<String>>(200000);
+	   msgs.put(provider, currentMsgs);
+   }
+
+   public void stopProcessing(MessageDefinitionProvider provider) {
+	   buildAllMsgs();
+	   currentMsgs = null;
+   }
+
+   public void removeProvider(MessageDefinitionProvider service) {
+	   if(msgs.remove(service) == null){
+		   System.out.println("didn't remove anything");
+	   }
+	   buildAllMsgs();
+   }
+
+   public int getNumProviders() {
+	   return msgs.size();
    }
 
 }
