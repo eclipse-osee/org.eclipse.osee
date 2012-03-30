@@ -571,10 +571,12 @@ public class MessageView extends ViewPart {
 		   public void run() {
 			   try {
 				   treeBuilder.removeProvider(service);
-				   if(treeBuilder.getNumProviders() == 0){
-					   setLibraryUnloadedState();
-				   } else {
-					   treeViewer.getTree().setToolTipText(String.format("Providers:\n%s", messageProviderVersion.getVersion()));
+				   if(!treeViewer.getTree().isDisposed()){
+					   if(treeBuilder.getNumProviders() == 0){
+						   setLibraryUnloadedState();
+					   } else {
+						   treeViewer.getTree().setToolTipText(String.format("Providers:\n%s", messageProviderVersion.getVersion()));
+					   }
 				   }
 			   } catch (Exception e) {
 				   OseeLog.log(Activator.class, Level.SEVERE, "Problem during message jar processing", e);
