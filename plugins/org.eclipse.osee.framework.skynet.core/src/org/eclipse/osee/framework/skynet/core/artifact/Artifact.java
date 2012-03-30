@@ -667,11 +667,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    public final void deleteSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
       Attribute<?> attribute = getSoleAttribute(attributeType);
       if (attribute != null) {
-         if (!attribute.isInDb()) {
-            attributes.removeValue(attributeType, attribute);
-         } else {
-            attribute.delete();
-         }
+         deleteAttribute(attribute);
       }
    }
 
@@ -681,7 +677,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    public final void deleteAttribute(IAttributeType attributeType, Object value) throws OseeCoreException {
       for (Attribute<Object> attribute : getAttributes(attributeType)) {
          if (attribute.getValue().equals(value)) {
-            attribute.delete();
+            deleteAttribute(attribute);
             break;
          }
       }
@@ -690,9 +686,17 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    public final void deleteAttribute(int attributeId) throws OseeCoreException {
       for (Attribute<?> attribute : getAttributes()) {
          if (attribute.getId() == attributeId) {
-            attribute.delete();
+            deleteAttribute(attribute);
             break;
          }
+      }
+   }
+
+   public final void deleteAttribute(Attribute<?> attribute) throws OseeCoreException {
+      if (attribute.isInDb()) {
+         attribute.delete();
+      } else {
+         attributes.removeValue(attribute.getAttributeType(), attribute);
       }
    }
 

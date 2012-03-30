@@ -252,8 +252,12 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
    /**
     * Deletes the attribute
     */
-   public final void delete() {
-      markAsChanged(ModificationType.DELETED);
+   public final void delete() throws OseeCoreException {
+      if (isInDb()) {
+         markAsChanged(ModificationType.DELETED);
+      } else {
+         getArtifact().deleteAttribute(this);
+      }
    }
 
    public ModificationType getModificationType() {

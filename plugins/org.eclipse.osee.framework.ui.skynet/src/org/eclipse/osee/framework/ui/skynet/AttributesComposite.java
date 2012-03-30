@@ -283,11 +283,15 @@ public class AttributesComposite extends Composite {
       deleteItem.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            Attribute<?> attribute = getSelectedAttribute();
-            attribute.delete();
-            editor.onDirtied();
-            notifyModifyAttribuesListeners();
-            tableViewer.refresh();
+            try {
+               Attribute<?> attribute = getSelectedAttribute();
+               attribute.delete();
+               editor.onDirtied();
+               notifyModifyAttribuesListeners();
+               tableViewer.refresh();
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            }
          }
       });
    }
