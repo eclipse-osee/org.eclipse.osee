@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FormattedText;
 import org.eclipse.swt.SWT;
@@ -117,18 +118,20 @@ public class StatusWindowWidget {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            statusTextArea.clearTextArea();
-            for (String key : keys) {
-               Map<EntryAttribute, Object> entry = labelValueMap.get(key);
-               if (entry != null) {
-                  String label = (String) entry.get(EntryAttribute.LABEL);
-                  String value = (String) entry.get(EntryAttribute.VALUE);
-                  Integer style = (Integer) entry.get(EntryAttribute.STYLE);
-                  Integer color = (Integer) entry.get(EntryAttribute.COLOR);
-                  statusTextArea.addText("\t" + label + ": ", SWT.BOLD, SWT.COLOR_DARK_BLUE);
-                  statusTextArea.addText(value + "\n", style, color);
-               }
-            }
+        	if(!statusTextArea.isDisposed()){
+        		statusTextArea.clearTextArea();
+        		for (String key : keys) {
+        			Map<EntryAttribute, Object> entry = labelValueMap.get(key);
+        			if (entry != null) {
+        				String label = (String) entry.get(EntryAttribute.LABEL);
+        				String value = (String) entry.get(EntryAttribute.VALUE);
+        				Integer style = (Integer) entry.get(EntryAttribute.STYLE);
+        				Integer color = (Integer) entry.get(EntryAttribute.COLOR);
+        				statusTextArea.addText("\t" + label + ": ", SWT.BOLD, SWT.COLOR_DARK_BLUE);
+        				statusTextArea.addText(value + "\n", style, color);
+        			}
+        		}
+        	}
          }
       });
    }

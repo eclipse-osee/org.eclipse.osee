@@ -14,12 +14,11 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.service.Activator;
 import org.eclipse.osee.ote.service.ConnectionEvent;
-import org.eclipse.osee.ote.service.IMessageDictionary;
-import org.eclipse.osee.ote.service.IMessageDictionaryListener;
 import org.eclipse.osee.ote.service.ITestConnectionListener;
 
 /**
@@ -30,23 +29,12 @@ class ListenerNotifier {
    private final CopyOnWriteArraySet<ITestConnectionListener> testConnectionListeners =
       new CopyOnWriteArraySet<ITestConnectionListener>();
 
-   private final CopyOnWriteArraySet<IMessageDictionaryListener> dictionaryListeners =
-      new CopyOnWriteArraySet<IMessageDictionaryListener>();
-
    boolean addTestConnectionListener(ITestConnectionListener listener) {
       return testConnectionListeners.add(listener);
    }
 
    boolean removeTestConnectionListener(ITestConnectionListener listener) {
       return testConnectionListeners.remove(listener);
-   }
-
-   public boolean addDictionaryListener(IMessageDictionaryListener listener) {
-      return dictionaryListeners.add(listener);
-   }
-
-   public void removeDictionaryListener(IMessageDictionaryListener listener) {
-      dictionaryListeners.remove(listener);
    }
 
    void notifyPostConnection(final ConnectionEvent event) {
@@ -94,31 +82,4 @@ class ListenerNotifier {
 
    }
 
-   void notifyDictionaryLoaded(final IMessageDictionary dictionary) {
-      executor.submit(new Runnable() {
-
-         @Override
-         public void run() {
-            for (IMessageDictionaryListener listener : dictionaryListeners) {
-               try {
-                  listener.onDictionaryLoaded(dictionary);
-               } catch (Exception e) {
-                  Activator.log(Level.SEVERE, "exception in listener during dictionary load event notification", e);
-               }
-            }
-         }
-
-      });
-
-   }
-
-   void notifyDictionaryUnloaded(final IMessageDictionary dictionary) {
-      for (IMessageDictionaryListener listener : dictionaryListeners) {
-         try {
-            listener.onDictionaryUnloaded(dictionary);
-         } catch (Exception e) {
-            Activator.log(Level.SEVERE, "exception in listener during dictionary unload event notification", e);
-         }
-      }
-   }
 }

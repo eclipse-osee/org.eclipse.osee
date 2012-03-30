@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.service;
 
 import java.net.InetAddress;
 import java.util.List;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.ote.core.OSEEPerson1_4;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentConfig;
@@ -45,18 +46,7 @@ public interface IOteClientService {
 
    void addConnectionFilters(ITestEnvironmentFilter filter);
 
-   /**
-    * adds a listener that will be notified of dictionary events. <B>NOTE: </B>if a dictionary was loaded prior to
-    * calling this method then the listener's {@link IMessageDictionaryListener#onDictionaryLoaded(IMessageDictionary)}
-    * will be called immediately
-    */
-   void addDictionaryListener(IMessageDictionaryListener listener);
-
-   //   void removeConnectionFilters(ITestEnvironmentFilter filter);
-
    void removeConnectionListener(ITestConnectionListener listener);
-
-   void removeDictionaryListener(IMessageDictionaryListener listener);
 
    /**
     * sets the user that will logged into the OTE client service. A user must be set prior to connecting to an OTE test

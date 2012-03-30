@@ -37,7 +37,6 @@ import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.service.IEnvironmentConfigurer;
 import org.eclipse.osee.ote.service.ILibraryLoader;
 import org.eclipse.osee.ote.service.IMessageDictionary;
-import org.eclipse.osee.ote.service.IMessageDictionaryListener;
 import org.eclipse.osee.ote.service.IOteClientService;
 import org.eclipse.osee.ote.service.IOteRuntimeLibraryProvider;
 import org.eclipse.osee.ote.service.ITestConnectionListener;
@@ -415,18 +414,6 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 	}
 
 	@Override
-	public synchronized void addDictionaryListener(IMessageDictionaryListener listener) {
-		if (listenerNotifier.addDictionaryListener(listener) && dictionary != null) {
-			listener.onDictionaryLoaded(dictionary);
-		}
-	}
-
-	@Override
-	public void removeDictionaryListener(IMessageDictionaryListener listener) {
-		listenerNotifier.removeDictionaryListener(listener);
-	}
-
-	@Override
 	public synchronized List<IServiceConnector> getAvailableTestHosts() {
 		List<IServiceConnector> envs = new ArrayList<IServiceConnector>();
 		for (IServiceConnector conn : testHosts.values()) {
@@ -464,17 +451,12 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 		if (newDictionary == null) {
 			throw new NullPointerException("dictionary cannot be null");
 		}
-		if (dictionary != null) {
-			listenerNotifier.notifyDictionaryUnloaded(dictionary);
-		}
 		dictionary = newDictionary;
-		listenerNotifier.notifyDictionaryLoaded(newDictionary);
 	}
 
 	@Override
 	public synchronized void unloadMessageDictionary() {
 		checkState();
-		listenerNotifier.notifyDictionaryUnloaded(dictionary);
 		dictionary = null;
 	}
 

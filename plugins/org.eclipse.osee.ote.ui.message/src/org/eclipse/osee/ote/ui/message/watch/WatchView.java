@@ -23,7 +23,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -62,6 +61,7 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.osee.ote.client.msg.IOteMessageService;
 import org.eclipse.osee.ote.message.MessageDefinitionProvider;
+import org.eclipse.osee.ote.message.MessageProviderVersion;
 import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystem;
 import org.eclipse.osee.ote.message.tool.IUdpTransferListener;
 import org.eclipse.osee.ote.message.tool.TransferConfig;
@@ -136,8 +136,6 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
    private Button recordButton;
    private final Benchmark benchMark = new Benchmark("Message Watch Update Time");
 
-   Set<String> versions = new ConcurrentSkipListSet<String>();
-   
    private static final Pattern elmPattern = Pattern.compile("^(osee\\.test\\.core\\.message\\.[^.]+\\..+)\\.(.+)$");
    private static final Pattern msgPattern = Pattern.compile("^(osee\\.test\\.core\\.message\\.[^.]+\\..+)$");
 
@@ -250,9 +248,12 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
 
 private WatchViewMessageDefinitionProviderTracker watchViewMessageDefinitionProviderTracker;
 
+private MessageProviderVersion messageProviderVersion;
+
    public WatchView() {
       watchFile = OseeData.getFile("msgWatch.txt");
       msgServiceTracker = new ClientMessageServiceTracker(Activator.getDefault().getBundle().getBundleContext(), this);
+      messageProviderVersion = new MessageProviderVersion();
    }
 
    @SuppressWarnings("unchecked")
@@ -1040,14 +1041,14 @@ private WatchViewMessageDefinitionProviderTracker watchViewMessageDefinitionProv
    
    
    public void addMessageDefinitionProvider(MessageDefinitionProvider provider) {
-	  versions.add(generateVersion(provider));	  
+	   messageProviderVersion.add(provider);	  
 	  Displays.ensureInDisplayThread(new Runnable() {
 		  @Override
 		  public void run() {
 			  try {
 				  
 				  statusTxt.setText("libraries loaded");
-				  statusTxt.setToolTipText(computeTotalVersion());
+				  statusTxt.setToolTipText(messageProviderVersion.getVersion());
 			  } catch (Exception ex) {
 				  OseeLog.log(Activator.class, Level.SEVERE, "exception while processing library", ex);
 			  }
@@ -1056,31 +1057,18 @@ private WatchViewMessageDefinitionProviderTracker watchViewMessageDefinitionProv
    }
 
    public void removeMessageDefinitionProvider(MessageDefinitionProvider provider) {
-	  versions.remove(generateVersion(provider));
+	  messageProviderVersion.remove(provider);
 	  Displays.ensureInDisplayThread(new Runnable() {
 		  @Override
 		  public void run() {
-			  if(versions.size() == 0){
-				  setNoLibraryStatus();
-			  } else {
+			  if(messageProviderVersion.isAnyAvailable()){
 				  statusTxt.setText("libraries loaded");
-				  statusTxt.setToolTipText(computeTotalVersion());
-			  }
+				  statusTxt.setToolTipText(messageProviderVersion.getVersion());
+			  } else { 
+				  setNoLibraryStatus();
+			  } 
 		  }
 	  });
    }
    
-   public String computeTotalVersion(){
-	   StringBuilder sb = new StringBuilder();
-	   for(String ver:versions){
-		   sb.append(ver);
-		   sb.append("\n");
-	   }
-	   sb.deleteCharAt(sb.length()-1);
-	   return sb.toString();
-   }
-   
-   public String generateVersion(MessageDefinitionProvider provider){
-	   return String.format("%s[%s.%s]", provider.singletonId(), provider.majorVersion(), provider.minorVersion());
-   }
 }

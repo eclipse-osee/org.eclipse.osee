@@ -1,22 +1,20 @@
-package org.eclipse.osee.ote.ui.message.internal;
+package org.eclipse.osee.ote.message;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import org.eclipse.osee.ote.message.MessageDefinitionProvider;
-
 public class MessageProviderVersion {
 	Set<String> versions = new ConcurrentSkipListSet<String>();
 	
-	public void add(MessageDefinitionProvider provider){
+	public synchronized void add(MessageDefinitionProvider provider){
 		versions.add(generateVersion(provider));
 	}
 	
-	public void remove(MessageDefinitionProvider provider){
+	public synchronized void remove(MessageDefinitionProvider provider){
 		versions.remove(generateVersion(provider));
 	}
 	
-	public String getVersion(){
+	public synchronized String getVersion(){
 		if(versions.size() == 0){
 			return "no library detected";
 		}
@@ -31,5 +29,9 @@ public class MessageProviderVersion {
 
 	private String generateVersion(MessageDefinitionProvider provider){
 		return String.format("%s[%s.%s]", provider.singletonId(), provider.majorVersion(), provider.minorVersion());
+	}
+	
+	public synchronized boolean isAnyAvailable(){
+		return versions.size() > 0;
 	}
 }
