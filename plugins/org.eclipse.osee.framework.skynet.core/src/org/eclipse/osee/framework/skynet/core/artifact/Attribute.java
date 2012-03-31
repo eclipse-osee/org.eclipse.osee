@@ -225,15 +225,6 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
     * 
     * @return whether this attribute's type or any of its super-types are the specified type
     */
-   public boolean isOfType(String otherAttributeTypeName) {
-      return attributeType.getName().equals(otherAttributeTypeName);
-   }
-
-   /**
-    * Currently this method provides support for quasi attribute type inheritance
-    * 
-    * @return whether this attribute's type or any of its super-types are the specified type
-    */
    public boolean isOfType(IAttributeType otherAttributeType) {
       return attributeType.equals(otherAttributeType);
    }

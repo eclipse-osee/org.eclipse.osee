@@ -62,7 +62,7 @@ public class BinaryContentUtils {
 
    private static String getExtension(Attribute<?> attribute) throws OseeCoreException {
       String fileTypeExtension = attribute.getAttributeType().getFileTypeExtension();
-      if (attribute.isOfType("Native Content")) {
+      if (attribute.isOfType(CoreAttributeTypes.NativeContent)) {
          fileTypeExtension = attribute.getArtifact().getSoleAttributeValue(CoreAttributeTypes.Extension, "");
       }
       return fileTypeExtension;
