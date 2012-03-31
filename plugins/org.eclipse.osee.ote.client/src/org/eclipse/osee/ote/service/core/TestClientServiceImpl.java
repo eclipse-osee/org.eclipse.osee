@@ -38,7 +38,6 @@ import org.eclipse.osee.ote.service.IEnvironmentConfigurer;
 import org.eclipse.osee.ote.service.ILibraryLoader;
 import org.eclipse.osee.ote.service.IMessageDictionary;
 import org.eclipse.osee.ote.service.IOteClientService;
-import org.eclipse.osee.ote.service.IOteRuntimeLibraryProvider;
 import org.eclipse.osee.ote.service.ITestConnectionListener;
 import org.eclipse.osee.ote.service.ITestEnvironmentAvailibilityListener;
 import org.eclipse.osee.ote.service.ITestEnvironmentFilter;
@@ -60,7 +59,6 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 	private final ArrayList<ITestEnvironmentFilter> environmentFilters = new ArrayList<ITestEnvironmentFilter>();
 	private IMessageDictionary dictionary;
 	private TestHostConnection testConnection;
-	private final HashSet<IOteRuntimeLibraryProvider> libraryProviders = new HashSet<IOteRuntimeLibraryProvider>();
 
 	private final OteClientEndpointSend endpointSend;
 	private final OteClientEndpointReceive endpointReceive;
@@ -73,9 +71,6 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 	}
 
 	public void init() {
-		for (IOteRuntimeLibraryProvider provider : libraryProviders) {
-			provider.initialize(this);
-		}
 		connectionService.addListener(this);
 	}
 
@@ -425,10 +420,6 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 	@Override
 	public synchronized boolean isConnected() {
 		return testConnection != null;
-	}
-
-	public void addLibraryProvider(Collection<IOteRuntimeLibraryProvider> provider) {
-		libraryProviders.addAll(provider);
 	}
 
 	@Override

@@ -10,13 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.service.core;
 
-import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.osee.connection.service.IConnectionService;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.ote.service.IOteClientService;
-import org.eclipse.osee.ote.service.IOteRuntimeLibraryProvider;
 import org.eclipse.osee.ote.service.MessagingGatewayBindTracker;
 import org.eclipse.osee.ote.service.TestSessionException;
 import org.osgi.framework.BundleContext;
@@ -43,16 +41,6 @@ public class ConnectionServiceTracker extends ServiceTracker {
    public Object addingService(ServiceReference reference) {
       IConnectionService connectionService = (IConnectionService) super.addingService(reference);
       testClientService = new TestClientServiceImpl(connectionService, endpointSend, endpointReceive);
-      ExtensionDefinedObjects<IOteRuntimeLibraryProvider> definedObjects =
-         new ExtensionDefinedObjects<IOteRuntimeLibraryProvider>("org.eclipse.osee.ote.client.libraryProvidier",
-            "LibraryProvider", "className");
-      try {
-         List<IOteRuntimeLibraryProvider> providers = definedObjects.getObjects();
-         testClientService.addLibraryProvider(providers);
-      } catch (Exception ex) {
-         OseeLog.log(ConnectionServiceTracker.class, Level.SEVERE,
-            "failed to process OTE runtime library provider extensions", ex);
-      }
       testClientService.init();
       // register the service
       registration = context.registerService(IOteClientService.class.getName(), testClientService, null);
