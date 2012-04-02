@@ -23,7 +23,6 @@ import java.net.UnknownHostException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -91,7 +90,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    private final HashMap<Serializable, Object> users;
    private volatile IUserSession activeUser = null;
    private boolean batchMode = false;
-   private OteLogFile oteLog;
    private final HashMap<String, Remote> controlInterfaces = new HashMap<String, Remote>();
    private final IEnvironmentFactory factory;
    private IServiceConnector connector;
@@ -136,7 +134,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
 
       messagingServiceTracker = setupOteMessagingSenderAndReceiver();
 
-      setupOteServerLogFile();
    }
 
    public void init(IServiceConnector connector) {
@@ -180,27 +177,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       props.setProperty("group", "OSEE Test Environment");
       props.setProperty("owner", System.getProperty("user.name"));
       connector = new LocalConnector(this, Integer.toString(this.getUniqueId()), props);
-   }
-
-   private void setupOteServerLogFile() {
-      try {
-         String saveFile = OteProperties.getOseeOteLogFilePath();
-         if (!Strings.isValid(saveFile)) {
-            saveFile = System.getProperty("user.home" + File.pathSeparator + "osee_log");
-         }
-         if (saveFile == null) {
-            saveFile = System.getProperty("user.home");
-         }
-
-         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH_mm_ss");
-         saveFile =
-            String.format("%s%s%s_%s_%s.xml", saveFile, System.getProperty("file.separator"),
-               InetAddress.getLocalHost().getHostName(), System.getProperty("user.name"), sdf.format(new Date()));
-         oteLog = new OteLogFile(new File(saveFile));
-         OseeLog.registerLoggerListener(oteLog);
-      } catch (Exception e1) {
-         e1.printStackTrace();
-      }
    }
 
    private ServiceTracker setupOteMessagingSenderAndReceiver() {
