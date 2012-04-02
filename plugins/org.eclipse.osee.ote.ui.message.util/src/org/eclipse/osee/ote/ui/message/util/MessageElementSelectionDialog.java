@@ -12,19 +12,20 @@ package org.eclipse.osee.ote.ui.message.util;
 
 import java.util.LinkedList;
 import java.util.List;
+
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.eclipse.osee.ote.message.ElementPath;
 import org.eclipse.osee.ote.message.Message;
+import org.eclipse.osee.ote.message.MessageDefinitionProvider;
 import org.eclipse.osee.ote.message.elements.Element;
 import org.eclipse.osee.ote.message.elements.RecordElement;
 import org.eclipse.osee.ote.message.elements.RecordMap;
-import org.eclipse.osee.ote.service.IMessageDictionary;
-import org.eclipse.osee.ote.service.IOteClientService;
-import org.eclipse.osee.ote.ui.message.util.internal.Activator;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -54,18 +55,15 @@ public class MessageElementSelectionDialog extends ElementListSelectionDialog {
 
    private static Message<?, ?, ?> getMessage(String msg) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
       ServiceTracker tracker =
-         new ServiceTracker(Activator.getDefault().getBundle().getBundleContext(), IOteClientService.class.getName(),
+         new ServiceTracker(FrameworkUtil.getBundle(MessageElementSelectionDialog.class).getBundleContext(), MessageDefinitionProvider.class.getName(),
             null);
       tracker.open(true);
       try {
-         IMessageDictionary dictionary = ((IOteClientService) tracker.waitForService(1000)).getLoadedDictionary();
-         if (dictionary == null) {
+         Object[] dictionary = tracker.getServices();
+         if (dictionary.length == 0) {
             throw new IllegalStateException("no dictionary loaded");
          }
-         return dictionary.lookupMessage(msg).newInstance();
-      } catch (InterruptedException e) {
-         Thread.currentThread().interrupt();
-         throw new IllegalStateException("interrupted", e);
+         return ExportClassLoader.getInstance().loadClass(msg).asSubclass(Message.class).newInstance();
       } finally {
          tracker.close();
       }

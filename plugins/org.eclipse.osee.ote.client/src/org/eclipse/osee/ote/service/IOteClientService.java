@@ -100,13 +100,6 @@ public interface IOteClientService {
    void setSessionDelegate(SessionDelegate sessionDelegate);
 
    /**
-    * gets the currently loaded {@link IMessageDictionary}
-    * 
-    * @return the {@link IMessageDictionary} or null if one is not loaded
-    */
-   IMessageDictionary getLoadedDictionary();
-
-   /**
     * returns a collection of all the {@link IHostTestEnvironment} that are currently available.
     */
    List<IServiceConnector> getAvailableTestHosts();

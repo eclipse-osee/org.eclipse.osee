@@ -12,8 +12,7 @@ package org.eclipse.osee.ote.client.msg.core.internal.state;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import org.eclipse.osee.framework.logging.OseeLog;
+
 import org.eclipse.osee.ote.client.msg.core.db.AbstractMessageDataBase;
 import org.eclipse.osee.ote.client.msg.core.db.MessageInstance;
 import org.eclipse.osee.ote.client.msg.core.internal.MessageSubscription;
@@ -60,7 +59,7 @@ public class UnresolvedState extends AbstractSubscriptionState {
          getSubscription().notifyResolved();
          return new InactiveState(instance, msgDB, this);
       } catch (Exception e) {
-         OseeLog.log(UnresolvedState.class, Level.SEVERE, "problems acquring instance for " + getMsgClassName(), e);
+//         OseeLog.log(UnresolvedState.class, Level.SEVERE, "problems acquring instance for " + getMsgClassName(), e); should we be logging this?
          getSubscription().notifyInvalidated();
          return this;
       }

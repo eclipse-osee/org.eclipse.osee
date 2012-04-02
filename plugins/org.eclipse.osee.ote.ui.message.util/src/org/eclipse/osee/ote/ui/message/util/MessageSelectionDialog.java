@@ -12,16 +12,16 @@ package org.eclipse.osee.ote.ui.message.util;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
+
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.ote.message.MessageDefinitionProvider;
 import org.eclipse.osee.ote.message.MessageSink;
-import org.eclipse.osee.ote.service.IMessageDictionary;
-import org.eclipse.osee.ote.service.IOteClientService;
-import org.eclipse.osee.ote.ui.message.util.internal.Activator;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -66,28 +66,25 @@ public class MessageSelectionDialog extends ElementListSelectionDialog {
       });
 
       ServiceTracker tracker =
-         new ServiceTracker(Activator.getDefault().getBundle().getBundleContext(), IOteClientService.class.getName(),
-            null);
+         new ServiceTracker(FrameworkUtil.getBundle(getClass()).getBundleContext(), MessageDefinitionProvider.class.getName(), null);
       tracker.open(true);
       try {
-         IMessageDictionary dictionary = ((IOteClientService) tracker.waitForService(1000)).getLoadedDictionary();
-         final ArrayList<String> messages = new ArrayList<String>(4096);
-         dictionary.generateMessageIndex(new MessageSink() {
-
-            @Override
-            public void absorbElement(String elementName) {
-            }
-
-            @Override
-            public void absorbMessage(String messageName) {
-               messages.add(messageName);
-            }
-
-            @Override
-            public void absorbProvider(String providerName) {
-            }
-
-         });
+    	 Object[] dictionaries = tracker.getServices();
+    	 final ArrayList<String> messages = new ArrayList<String>(4096);
+    	 for(Object dictionary:dictionaries){
+	         ((MessageDefinitionProvider)dictionary).generateMessageIndex(new MessageSink() {
+	            @Override
+	            public void absorbElement(String elementName) {
+	            }
+	            @Override
+	            public void absorbMessage(String messageName) {
+	               messages.add(messageName);
+	            }
+	            @Override
+	            public void absorbProvider(String providerName) {
+	            }
+	         });
+    	 }
          setElements(messages.toArray());
       } catch (Exception e) {
          OseeLog.log(MessageSelectionDialog.class, Level.SEVERE, "failed to generate message listing", e);

@@ -35,8 +35,6 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
 import org.eclipse.osee.ote.service.Activator;
 import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.service.IEnvironmentConfigurer;
-import org.eclipse.osee.ote.service.ILibraryLoader;
-import org.eclipse.osee.ote.service.IMessageDictionary;
 import org.eclipse.osee.ote.service.IOteClientService;
 import org.eclipse.osee.ote.service.ITestConnectionListener;
 import org.eclipse.osee.ote.service.ITestEnvironmentAvailibilityListener;
@@ -45,7 +43,7 @@ import org.eclipse.osee.ote.service.OteServiceProperties;
 import org.eclipse.osee.ote.service.SessionDelegate;
 import org.eclipse.osee.ote.service.TestSessionException;
 
-public class TestClientServiceImpl implements IOteClientService, IConnectorListener, ILibraryLoader {
+public class TestClientServiceImpl implements IOteClientService, IConnectorListener {
 
 	private static final String NO_USER_MSG = "a user has not been set";
 	private final IConnectionService connectionService;
@@ -57,7 +55,6 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 	private ClientSession session = null;
 	private volatile boolean stopped = false;
 	private final ArrayList<ITestEnvironmentFilter> environmentFilters = new ArrayList<ITestEnvironmentFilter>();
-	private IMessageDictionary dictionary;
 	private TestHostConnection testConnection;
 
 	private final OteClientEndpointSend endpointSend;
@@ -210,13 +207,6 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 				Activator.log(Level.SEVERE, "exception trying to disconnect during stop()", e);
 			} finally {
 				session.close();
-			}
-		}
-		if (dictionary != null) {
-			try {
-				unloadMessageDictionary();
-			} catch (Exception e) {
-				Activator.log(Level.SEVERE, "exception while trying to unload dictionary during stop()", e);
 			}
 		}
 		stopped = true;
@@ -434,26 +424,6 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 		} catch (RemoteException ex) {
 			return null;
 		}
-	}
-
-	@Override
-	public synchronized void loadMessageDictionary(IMessageDictionary newDictionary) {
-		checkState();
-		if (newDictionary == null) {
-			throw new NullPointerException("dictionary cannot be null");
-		}
-		dictionary = newDictionary;
-	}
-
-	@Override
-	public synchronized void unloadMessageDictionary() {
-		checkState();
-		dictionary = null;
-	}
-
-	@Override
-	public synchronized IMessageDictionary getLoadedDictionary() {
-		return dictionary;
 	}
 
 	@Override
