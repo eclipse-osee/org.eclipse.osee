@@ -11,11 +11,9 @@
 package org.eclipse.osee.framework.jdk.core.text;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import javax.xml.parsers.ParserConfigurationException;
-import org.apache.xml.serialize.OutputFormat;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -37,7 +35,6 @@ public class RulesLogHandler extends Handler {
     * @param outFile Reference to the file that will be used to output the log.
     */
    public RulesLogHandler(File outFile) throws ParserConfigurationException {
-      super();
       this.outFile = outFile;
       document = Jaxp.newDocumentNamespaceAware();
       rootElement = document.createElement("Rule");
@@ -51,12 +48,8 @@ public class RulesLogHandler extends Handler {
       // only write the XML file if there is something to write
       if (rootElement.hasChildNodes()) {
          try {
-            // create an XMLOutputter that indents using 3 spaces and uses new lines
-            OutputFormat format = new OutputFormat(document);
-            format.setIndenting(true);
-            format.setIndent(3);
-            Jaxp.writeXmlDocument(document, outFile, format);
-         } catch (IOException ex) {
+            Jaxp.writeXmlDocument(document, outFile, Jaxp.getPrettyFormat());
+         } catch (Exception ex) {
             ex.printStackTrace();
          }
       }

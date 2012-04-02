@@ -146,6 +146,6 @@ public class TestManagerInput implements IEditorInput {
          }
       }
 
-      Jaxp.writeXmlDocument(document, getFile(), Jaxp.getPrettyFormat(document));
+      Jaxp.writeXmlDocument(document, getFile(), Jaxp.getPrettyFormat());
    }
 }

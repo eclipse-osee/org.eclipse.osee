@@ -15,7 +15,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -79,9 +81,11 @@ public class WordArtifactElementExtractorTest {
             SIMPLE_2007_CHANGE)));
 
       Collection<WordExtractorData> artElements = extractor.extractElements();
-      Assert.assertTrue(extractor.extractElements().size() == 1);
-      Assert.assertTrue("Middle change".equals(WordUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
-         WordTemplateRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))))));
+      Assert.assertTrue(artElements.size() == 1);
+
+      String actual = WordUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
+	         WordTemplateRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))));
+      Assert.assertEquals("Middle change", actual);
    }
 
    @org.junit.Test
@@ -92,7 +96,7 @@ public class WordArtifactElementExtractorTest {
             START_2007_CHANGE)));
 
       Collection<WordExtractorData> artElements = extractor.extractElements();
-      Assert.assertTrue(extractor.extractElements().size() == 1);
+      Assert.assertTrue(artElements.size() == 1);
       String value =
          WordUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
             WordTemplateRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))));
@@ -107,7 +111,7 @@ public class WordArtifactElementExtractorTest {
             END_2007_CHANGE)));
 
       Collection<WordExtractorData> artElements = extractor.extractElements();
-      Assert.assertTrue(extractor.extractElements().size() == 1);
+      Assert.assertTrue(artElements.size() == 1);
       Assert.assertTrue("End change".equals(WordUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
          WordTemplateRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))))));
    }
@@ -118,7 +122,7 @@ public class WordArtifactElementExtractorTest {
          new WordImageArtifactElementExtractor(getDocumentWrapTags(MULIT_2007_EDIT));
 
       List<WordExtractorData> artElements = extractor.extractElements();
-      Assert.assertTrue("expected 2 got " + extractor.extractElements().size(), extractor.extractElements().size() == 2);
+      Assert.assertTrue("expected 2 got " + artElements.size(), artElements.size() == 2);
       List<String> testText = Arrays.asList("One", "Two");
       multiArtifactTest(artElements, testText);
    }
@@ -157,7 +161,7 @@ public class WordArtifactElementExtractorTest {
          new WordImageArtifactElementExtractor(getDocumentWrapTags(MULULTI_2003_EDIT_MULTI_SECTION));
 
       List<WordExtractorData> artElements = extractor.extractElements();
-      Assert.assertTrue("expected 2 got " + extractor.extractElements().size(), extractor.extractElements().size() == 2);
+      Assert.assertTrue("expected 2 got " + artElements.size(), artElements.size() == 2);
       List<String> testText = Arrays.asList("One", "Two");
       multiArtifactTest(artElements, testText);
    }
@@ -200,6 +204,6 @@ public class WordArtifactElementExtractorTest {
    }
 
    private Document getDocument(String xmlString) throws ParserConfigurationException, SAXException, IOException {
-      return Jaxp.nonDeferredreadXmlDocument(xmlString);
+      return Jaxp.readXmlDocumentNamespaceAware(xmlString);
    }
 }

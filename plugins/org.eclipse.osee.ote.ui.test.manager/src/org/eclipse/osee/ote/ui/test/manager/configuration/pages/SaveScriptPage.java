@@ -11,10 +11,12 @@
 package org.eclipse.osee.ote.ui.test.manager.configuration.pages;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Vector;
 import java.util.logging.Level;
+
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -45,7 +47,7 @@ public class SaveScriptPage implements ISaveConfig, ScriptPageConstants, Xmlizab
       OseeLog.log(TestManagerPlugin.class, Level.INFO, "Script Page Tree: ");
       try {
          OseeLog.log(TestManagerPlugin.class, Level.INFO, Jaxp.xmlToString(doc, true));
-      } catch (IOException ex) {
+      } catch (TransformerException ex) {
          OseeLog.log(TestManagerPlugin.class, Level.SEVERE, ex);
       }
    }

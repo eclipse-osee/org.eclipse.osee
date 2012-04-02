@@ -34,7 +34,7 @@ public class ConfigFileHandler {
          root.appendChild(doc.importNode(sourceDoc.getDocumentElement(), true));
          doc.appendChild(root);
       }
-      Jaxp.writeXmlDocument(doc, file, Jaxp.getPrettyFormat(doc));
+      Jaxp.writeXmlDocument(doc, file, Jaxp.getPrettyFormat());
    }
 
    private static Document writeSectionToFile(Document docToAdd, File file) throws Exception {

@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
 import org.w3c.dom.DOMException;
@@ -59,7 +60,6 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
    };
 
    public WordImageArtifactElementExtractor(Document document) {
-      super();
       this.document = document;
       this.numberOfEndTags = 0;
       this.numberOfStartTags = 0;

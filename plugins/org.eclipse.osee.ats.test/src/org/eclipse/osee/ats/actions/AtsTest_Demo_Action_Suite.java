@@ -61,7 +61,6 @@ import org.junit.runners.Suite;
    SubscribedActionTest.class,
    TaskAddActionTest.class,
    TaskDeleteActionTest.class,
-//
 })
 /**
  * @author Donald G. Dunne

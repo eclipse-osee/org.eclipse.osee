@@ -13,10 +13,12 @@ package org.eclipse.osee.framework.skynet.core.word;
 import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Stack;
+
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.xpath.XPath;
+
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;

@@ -109,7 +109,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
    private static final String INSERT_TXS =
       "INSERT INTO osee_txs (gamma_id, transaction_id, tx_current, mod_type, branch_id) VALUES (?, ?, " + TxChange.ARTIFACT_DELETED.getValue() + ", " + ModificationType.ARTIFACT_DELETED.getValue() + ", ?)";
 
-   private static final String[] COLUMN_HEADERS = new String[] {
+   private static final String[] COLUMN_HEADERS = {
       "Rel Link ID",
       "Gamma Id",
       "Transaction Id",

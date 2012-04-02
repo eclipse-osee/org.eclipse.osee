@@ -38,20 +38,21 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   AtsTest_Demo_Suite.class,
-   AtsTest_Demo_StateItem_Suite.class,
-   AtsTest_Demo_Config_Suite.class,
-   Review_Demo_Suite.class,
    AllAccessTestSuite.class,
    AllDslUiIntegrationTestSuite.class,
    CoreRuntimeFeatureTestsSuite.class,
    FrameworkCore_Demo_Suite.class,
    AllEventResTestSuite.class,
-   FrameworkUi_Demo_Suite.class,
+   AtsTest_Demo_Suite.class,
+   AtsTest_Demo_StateItem_Suite.class,
+   AtsTest_Demo_Config_Suite.class,
+   Review_Demo_Suite.class,
    AllDefineTestSuite.class,
    Coverage_Db_Suite.class,
+   FrameworkUi_Demo_Suite.class,
    // This should always be last test of master suite
-   DirtyArtifactCacheTest.class})
+   DirtyArtifactCacheTest.class
+   })
 /**
  * This suite should contain all cases and suites that can be run against a Demo Db Init and Demo Populated osee
  * database.

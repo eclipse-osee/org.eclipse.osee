@@ -13,15 +13,15 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 import javax.xml.namespace.QName;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.TransformerException;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -102,7 +102,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    private void displayNotMultiEditArtifacts(final Collection<Artifact> artifacts, final String warningString) {
       if (!artifacts.isEmpty()) {
          Displays.ensureInDisplayThread(new Runnable() {
-
             @Override
             public void run() {
                WordUiUtil.displayUnhandledArtifacts(artifacts, warningString);
@@ -117,16 +116,14 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
    public static byte[] getFormattedContent(Element formattedItemElement) {
       ByteArrayOutputStream data = new ByteArrayOutputStream((int) Math.pow(2, 10));
-      OutputFormat format = Jaxp.getCompactFormat(formattedItemElement.getOwnerDocument());
-      format.setOmitDocumentType(true);
-      format.setOmitXMLDeclaration(true);
-      XMLSerializer serializer = new XMLSerializer(data, format);
+      Properties format = Jaxp.getCompactFormat();
+      format.put(OutputKeys.OMIT_XML_DECLARATION, "yes");
 
       try {
          for (Element e : Jaxp.getChildDirects(formattedItemElement)) {
-            serializer.serialize(e);
+            Jaxp.outputXmlDocument(e, data, format);
          }
-      } catch (IOException ex) {
+      } catch (TransformerException ex) {
          throw new RuntimeException(ex);
       }
 

@@ -12,9 +12,11 @@ package org.eclipse.osee.framework.jdk.core.util.xml;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -22,11 +24,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -39,10 +43,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -50,7 +52,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.ProcessingInstruction;
-import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -132,11 +133,7 @@ public class Jaxp {
 
    public static Element createElement(Document d, String tag, String characterData) {
       Element e = d.createElement(tag);
-      Text t = d.createTextNode(characterData);
-      e.appendChild(t);
-      // e.setTextContent(characterData);
-      // the above two lines do the same thing as this, but I trust them more so we'll go that
-      // route.
+      e.setTextContent(characterData);
       return e;
    }
 
@@ -334,7 +331,6 @@ public class Jaxp {
     * element exists.
     */
    public static Element findElement(Element element, List<String> elementPath) {
-
       Element e = element;
       for (String tag : elementPath) {
          NodeList a = e.getChildNodes();
@@ -392,16 +388,15 @@ public class Jaxp {
       return findElement(e, Arrays.asList(elementPath.split("/")));
    }
 
-   @Deprecated
-   public static Document readXmlDocument(InputStream is) throws ParserConfigurationException, SAXException, IOException {
-      return readXmlDocument(is, "UTF-8");
-   }
-
    public static Document readXmlDocument(InputStream is, String encoding) throws ParserConfigurationException, SAXException, IOException {
       InputSource inputSource = new InputSource(is);
       inputSource.setEncoding(encoding);
       DocumentBuilder builder = namespceUnawareFactory.newDocumentBuilder();
       return builder.parse(inputSource);
+   }
+
+   public static Document nonDeferredreadXmlDocument(String xmlString) throws ParserConfigurationException, SAXException, IOException {
+      return Jaxp.nonDeferredReadXmlDocument(Lib.stringToInputStream(xmlString), "UTF-8");
    }
 
    public static Document nonDeferredReadXmlDocument(InputStream is, String encoding) throws ParserConfigurationException, SAXException, IOException {
@@ -412,59 +407,36 @@ public class Jaxp {
       return builder.parse(inputSource);
    }
 
-   public static Document nonDeferredreadXmlDocument(String xmlString) throws ParserConfigurationException, SAXException, IOException {
-      NonDeferredNamespceUnawareFactory.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false);
-      DocumentBuilder builder = NonDeferredNamespceUnawareFactory.newDocumentBuilder();
-      CharBackedInputStream charBak = new CharBackedInputStream();
-      charBak.addBackingSource(xmlString);
-      Document document = builder.parse(charBak);
-      return document;
-   }
-
    public static Document readXmlDocument(String xmlString) throws ParserConfigurationException, SAXException, IOException {
-      DocumentBuilder builder = namespceUnawareFactory.newDocumentBuilder();
-      CharBackedInputStream charBak = new CharBackedInputStream();
-      charBak.addBackingSource(xmlString);
-      Document document = builder.parse(charBak);
-      return document;
+      return readXmlDocument(Lib.stringToInputStream(xmlString));
    }
 
    public static Document readXmlDocument(File xmlFile) throws ParserConfigurationException, SAXException, IOException {
-      DocumentBuilder builder = namespceUnawareFactory.newDocumentBuilder();
-      Document document = builder.parse(xmlFile);
-      return document;
+      return readXmlDocument(new FileInputStream(xmlFile));
    }
 
    public static Document readXmlDocumentFromResource(Class<?> base, String name) throws ParserConfigurationException, SAXException, IOException {
-      DocumentBuilder builder = namespceUnawareFactory.newDocumentBuilder();
-      Document document = builder.parse(base.getResourceAsStream(name));
-      return document;
+      return readXmlDocument(base.getResourceAsStream(name));
    }
 
-   public static Document readXmlDocumentNamespaceAware(InputStream is) throws ParserConfigurationException, SAXException, IOException {
-      DocumentBuilder builder = namespceAwareFactory.newDocumentBuilder();
-      return builder.parse(is);
-   }
-
-   public static Document readXmlDocumentNamespaceAware(String xmlString) throws ParserConfigurationException, SAXException, IOException {
-      DocumentBuilder builder = namespceAwareFactory.newDocumentBuilder();
-      CharBackedInputStream charBak = new CharBackedInputStream();
-      charBak.addBackingSource(xmlString);
-      Document document = builder.parse(charBak);
-      return document;
-   }
-
-   public static Document readXmlDocumentNamespaceAware(File xmlFile) throws ParserConfigurationException, SAXException, IOException {
-      DocumentBuilder builder = namespceAwareFactory.newDocumentBuilder();
-
-      Document document = builder.parse(xmlFile);
-      return document;
+   public static Document readXmlDocument(InputStream input) throws ParserConfigurationException, SAXException, IOException {
+      return namespceUnawareFactory.newDocumentBuilder().parse(input);
    }
 
    public static Document readXmlDocumentFromResourceNamespaceAware(Class<?> base, String name) throws ParserConfigurationException, SAXException, IOException {
-      DocumentBuilder builder = namespceAwareFactory.newDocumentBuilder();
-      Document document = builder.parse(base.getResourceAsStream(name));
-      return document;
+      return readXmlDocumentNamespaceAware(base.getResourceAsStream(name));
+   }
+
+   public static Document readXmlDocumentNamespaceAware(String xmlString) throws ParserConfigurationException, SAXException, IOException {
+      return readXmlDocumentNamespaceAware(Lib.stringToInputStream(xmlString));
+   }
+
+   public static Document readXmlDocumentNamespaceAware(File xmlFile) throws ParserConfigurationException, SAXException, IOException {
+      return readXmlDocumentNamespaceAware(new FileInputStream(xmlFile));
+   }
+
+   public static Document readXmlDocumentNamespaceAware(InputStream is) throws ParserConfigurationException, SAXException, IOException {
+      return namespceAwareFactory.newDocumentBuilder().parse(is);
    }
 
    /**
@@ -496,9 +468,10 @@ public class Jaxp {
     * 
     * @param document The XML document to output
     * @param file Where to put the output
+    * @throws TransformerException
     */
-   public static void writeXmlDocument(Document document, File file) throws IOException {
-      writeXmlDocument(document, file, getCompactFormat(document));
+   public static void writeXmlDocument(Document document, File file) throws IOException, TransformerException {
+      writeXmlDocument(document, file, getCompactFormat());
    }
 
    /**
@@ -506,10 +479,11 @@ public class Jaxp {
     * 
     * @param document The XML document to output
     * @param file Where to put the output
-    * @param prettyOutput If true, turns on indention so the output is more easily readable, if False turns indention
+    * @param prettyOutput If true, turns on indentation so the output is more easily readable, if False turns indentation
     * off to save space.
+    * @throws TransformerException
     */
-   public static void writeXmlDocument(Document document, File file, OutputFormat format) throws IOException {
+   public static void writeXmlDocument(Document document, File file, Properties format) throws TransformerException, IOException {
       BufferedWriter out = new BufferedWriter(new FileWriter(file));
       outputXmlDocument(document, out, format);
       out.close();
@@ -519,12 +493,14 @@ public class Jaxp {
     * Gets the XML document 'document' as a string
     * 
     * @param document The XML document to output
-    * @param prettyOutput If true, turns on indentation so the output is more easily readable, if False turns
-    * indentation off and is assumed to provide the XML as compactly as possible.
+    * @param file Where to put the output
+    * @param prettyOutput If true, turns on indentation so the output is more easily readable, if False turns indentation
+    * off and is assumed to provide the XML as compactly as possible.
+    * @throws TransformerException
     */
-   public static String xmlToString(Document document, boolean prettyOutput) throws IOException {
+   public static String xmlToString(Document document, boolean prettyOutput) throws TransformerException {
       StringWriter stringWriter = new StringWriter();
-      OutputFormat format = prettyOutput ? getPrettyFormat(document) : getCompactFormat(document);
+      Properties format = prettyOutput ? getPrettyFormat() : getCompactFormat();
       outputXmlDocument(document, stringWriter, format);
       return stringWriter.toString();
    }
@@ -535,46 +511,43 @@ public class Jaxp {
     * @param document The source XML
     * @param output Where the XML is 'printed' to
     * @param format The format style to use
+    * @throws TransformerException
     */
-   private static void outputXmlDocument(Document document, Writer output, OutputFormat format) throws IOException {
-      XMLSerializer serializer = new XMLSerializer(output, format);
-      serializer.serialize(document);
+   public static void outputXmlDocument(Node document, Writer output, Properties outputProperties) throws TransformerException {
+      outputXmlDocument(document, new StreamResult(output), outputProperties);
+
+   }
+
+   public static void outputXmlDocument(Node element, OutputStream output, Properties outputProperties) throws TransformerException {
+      outputXmlDocument(element, new StreamResult(output), outputProperties);
+   }
+
+   public static void outputXmlDocument(Node node, StreamResult output, Properties outputProperties) throws TransformerException {
+      Transformer transformer = TransformerFactory.newInstance().newTransformer();
+      transformer.setOutputProperties(outputProperties);
+      transformer.transform(new DOMSource(node), output);
+
    }
 
    /**
-    * Generates an OutputFormat that is pleasing to look at (indention, newlines, etc)
-    * 
-    * @param document the document to be formatted
-    * @return the OutputFormat object to use for XML Formatting
-    * @see XMLSerializer
+    * @return Format that is pleasing to look at (indentation, newlines, etc)
     */
-   public static OutputFormat getPrettyFormat(Document document) {
-      OutputFormat format = new OutputFormat(document);
-      format.setIndenting(true);
-      format.setIndent(2);
+   public static Properties getPrettyFormat() {
+      Properties format = new Properties();
+      format.put(OutputKeys.METHOD, "xml");
+      format.put(OutputKeys.INDENT, "yes");
+      format.put("{http://xml.apache.org/xslt}indent-amount", "2");
       return format;
    }
 
    /**
-    * Generates an OutputFormat that is compact (no extra whitepsace)
-    * 
-    * @param document the document to be formatted
-    * @return the OutputFormat object to use for XML Formatting
-    * @see XMLSerializer
+    * @return format that is compact (no extra whitepsace)
     */
-   public static OutputFormat getCompactFormat(Document document) {
-      OutputFormat format = new OutputFormat(document);
-      format.setIndenting(false);
-      format.setLineSeparator("");
+   public static Properties getCompactFormat() {
+      Properties format = new Properties();
+      format.put(OutputKeys.METHOD, "xml");
+      format.put(OutputKeys.INDENT, "no"); //minimized
       return format;
-   }
-
-   /**
-    * @deprecated Use {@link #newDocumentNamespaceAware()} instead
-    */
-   @Deprecated
-   public static Document newDocument() throws ParserConfigurationException {
-      return newDocumentNamespaceAware();
    }
 
    public static Document newDocumentNamespaceAware() throws ParserConfigurationException {
@@ -693,8 +666,6 @@ public class Jaxp {
          if (Strings.isValid(name) && Strings.isValid(value)) {
             if (prefix != null && namespace != null) {
                writer.writeAttribute(prefix, namespace, name, value);
-               //            } else if (namespace != null) {
-               //               writer.writeAttribute(" ", namespace, name, value);
             } else {
                writer.writeAttribute(name, value);
             }

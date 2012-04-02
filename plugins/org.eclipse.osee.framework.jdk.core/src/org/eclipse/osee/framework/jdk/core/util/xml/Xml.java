@@ -16,11 +16,14 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -268,7 +271,7 @@ public class Xml {
       return newElement;
    }
 
-   public final static String restartNumberingWhenPreparingToEditWithWord(InputStream myInputStream) throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
+   public final static String restartNumberingWhenPreparingToEditWithWord(InputStream myInputStream) throws XPathExpressionException, ParserConfigurationException, SAXException, IOException, TransformerException {
       SimpleNamespaceContext mySimpleNamespaceContext = new SimpleNamespaceContext();
       addNamespacesForWordMarkupLanguage(myXPath, mySimpleNamespaceContext);
       Document myDocument = Jaxp.readXmlDocumentNamespaceAware(myInputStream);
@@ -453,7 +456,7 @@ public class Xml {
          for (int i = 0; i < notUTF8Nodes.length; i++) {
             notUTF8Nodes[i].setNodeValue(theFunnyQuoteMatcher.reset(notUTF8Nodes[i].getNodeValue()).replaceAll("'"));
          }
-         Jaxp.writeXmlDocument(aNode.getOwnerDocument(), resultXmlFile, Jaxp.getPrettyFormat(aNode.getOwnerDocument()));
+         Jaxp.writeXmlDocument(aNode.getOwnerDocument(), resultXmlFile, Jaxp.getPrettyFormat());
       } catch (Exception e) {
          e.printStackTrace();
       }

@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.core.log;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -19,13 +18,9 @@ import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-
-import org.apache.xml.serialize.OutputFormat;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.GCHelper;
@@ -51,7 +46,6 @@ public class ScriptLogHandler extends Handler {
    protected Element testCaseElement;
    protected Element parent;
    protected Element child;
-   private final OutputFormat format;
    protected Element testScriptElement;
    protected Element scriptInitElement;
    protected Document document;
@@ -65,7 +59,6 @@ public class ScriptLogHandler extends Handler {
     * @param outFile Reference to the outfile that will be used to output the log.
     */
    public ScriptLogHandler(File outFile, TestEnvironment testEnvironment) {
-      super();
       GCHelper.getGCHelper().addRefWatch(this);
       this.outFile = outFile;
       OseeLog.log(TestEnvironment.class, Level.FINE, outFile.getAbsolutePath());
@@ -77,14 +70,6 @@ public class ScriptLogHandler extends Handler {
       } catch (ParserConfigurationException ex) {
          OseeLog.log(TestEnvironment.class, Level.SEVERE, ex);
       }
-
-      // create an XMLOutputter that indents using 3 spaces and uses newlines
-      format = new OutputFormat(document);
-      format.setLineSeparator("\n");
-      format.setIndenting(true);
-      format.setIndent(3);
-
-      //      Jaxp.setXslProperty(document, getXSLTransformName());
 
       ProcessingInstruction processingInstruction =
          document.createProcessingInstruction("xml-stylesheet",
@@ -109,7 +94,7 @@ public class ScriptLogHandler extends Handler {
     */
    public void writeOutFile() {
       try {
-         Jaxp.writeXmlDocument(document, outFile, format);
+         Jaxp.writeXmlDocument(document, outFile, Jaxp.getPrettyFormat());
       } catch (Throwable th) {
          OseeLog.log(TestEnvironment.class, Level.SEVERE, th);
       }
@@ -187,8 +172,7 @@ public class ScriptLogHandler extends Handler {
                }
             }
          }
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
          ex.printStackTrace();
       } finally {
          records.clear();
