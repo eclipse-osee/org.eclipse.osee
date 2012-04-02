@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
  */
 public final class ArtifactChange extends Change {
    private static LoadChangeType changeType = LoadChangeType.artifact;
+   private static Class<ArtifactChangeWorker> worker = ArtifactChangeWorker.class;
 
    public ArtifactChange(IOseeBranch branch, long sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
       super(branch, sourceGamma, artId, txDelta, modType, isHistorical, changeArtifact, artifactDelta);
@@ -64,5 +65,10 @@ public final class ArtifactChange extends Change {
    @Override
    public LoadChangeType getChangeType() {
       return changeType;
+   }
+
+   @Override
+   public Class<? extends IChangeWorker> getWorker() {
+	   return worker;
    }
 }

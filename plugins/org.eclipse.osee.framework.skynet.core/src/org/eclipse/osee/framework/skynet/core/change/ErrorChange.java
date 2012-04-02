@@ -76,4 +76,9 @@ public final class ErrorChange extends Change {
       return null;
    }
 
+   @Override
+   public Class<? extends IChangeWorker> getWorker() {
+	   return null;
+   }
+
 }

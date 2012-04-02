@@ -35,5 +35,4 @@ public class AttributeChangeWorker implements IChangeWorker {
          artifact.getAttributeById(change.getItemId(), true).delete();
       }
    }
-
 }

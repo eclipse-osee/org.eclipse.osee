@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.change;
 
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
@@ -29,12 +30,14 @@ import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
  * @author Jeff C. Phillips
  */
 public final class AttributeChange extends Change {
+   private final static LoadChangeType changeType = LoadChangeType.attribute;
+   private final static Class<AttributeChangeWorker> worker = AttributeChangeWorker.class;
+
    private final String isValue;
    private final String wasValue;
    private final int attrId;
    private final AttributeType attributeType;
    private final ModificationType artModType;
-   public static LoadChangeType changeType = LoadChangeType.attribute;
 
    public AttributeChange(IOseeBranch branch, long sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, String isValue, String wasValue, int attrId, AttributeType attributeType, ModificationType artModType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
       super(branch, sourceGamma, artId, txDelta, modType, isHistorical, changeArtifact, artifactDelta);
@@ -144,5 +147,10 @@ public final class AttributeChange extends Change {
    @Override
    public LoadChangeType getChangeType() {
       return changeType;
+   }
+
+   @Override
+   public Class<? extends IChangeWorker> getWorker() {
+	   return worker;
    }
 }

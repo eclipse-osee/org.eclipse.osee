@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,7 +24,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.change.ChangeWorkerUtil;
 import org.eclipse.osee.framework.skynet.core.change.IChangeWorker;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -54,11 +55,12 @@ public class ReplaceAttributeWithBaselineOperation extends AbstractOperation {
 
          for (Change change : changes) {
             monitor.subTask("Reverting: " + changes.toString());
-            monitor.worked(1 / changes.size());
+            monitor.worked(1);
             Artifact artifact = ArtifactQuery.getArtifactFromId(change.getArtId(), change.getBranch());
             revertAttribute(artifact, change);
             artifactHistory.add(artifact);
             artifact.persist(transaction);
+            monitor.done();
          }
 
          transaction.execute();
@@ -73,14 +75,13 @@ public class ReplaceAttributeWithBaselineOperation extends AbstractOperation {
       }
    }
 
-   private void revertAttribute(Artifact artifact, Change change) throws OseeStateException, OseeCoreException {
+   private void revertAttribute(Artifact artifact, Change change) throws OseeStateException, OseeCoreException, SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
       Attribute<?> attribute = artifact.getAttributeById(change.getItemId(), true);
       if (attribute != null && change.getItemId() == attribute.getId()) {
-         IChangeWorker changeWorker = ChangeWorkerUtil.create(change, artifact);
-         if (changeWorker != null) {
-            changeWorker.revert();
-         }
+         Class<? extends IChangeWorker> workerClass = change.getWorker();
+         Constructor<?> ctor = workerClass.getConstructor(Change.class, Artifact.class);
+         IChangeWorker worker = (IChangeWorker) ctor.newInstance(change, artifact);
+         worker.revert();
       }
    }
-
 }

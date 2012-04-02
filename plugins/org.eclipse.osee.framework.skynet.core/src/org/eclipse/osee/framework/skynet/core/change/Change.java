@@ -161,6 +161,8 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
 
    public abstract LoadChangeType getChangeType();
 
+   public abstract Class<? extends IChangeWorker> getWorker();
+
    @Override
    @SuppressWarnings("rawtypes")
    public Object getAdapter(Class adapter) {

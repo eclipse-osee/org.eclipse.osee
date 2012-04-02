@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -19,7 +21,6 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.change.ChangeWorkerUtil;
 import org.eclipse.osee.framework.skynet.core.change.IChangeWorker;
 import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
@@ -47,7 +48,6 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
       if (!monitor.isCanceled() && Conditions.notNull(changeReportChanges, artifacts)) {
          monitor.beginTask("Reverting artifact(s)", artifacts.size());
          if (!artifacts.isEmpty()) {
-
             Artifact firstArtifact = artifacts.iterator().next();
             SkynetTransaction transaction =
                TransactionManager.createTransaction(firstArtifact.getBranch(),
@@ -55,18 +55,19 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
 
             for (Artifact artifact : artifacts) {
                monitor.subTask("Reverting: " + artifact.getName());
-               monitor.worked(1 / artifacts.size());
+               monitor.worked(1);
                Collection<Change> changes = getArtifactSpecificChanges(artifact.getArtId(), changeReportChanges);
                revertArtifact(artifact, changes);
                artifact.persist(transaction);
+               monitor.done();
             }
 
             monitor.subTask(String.format("Persisting %s artifact(s)", artifacts.size()));
             transaction.execute();
             persistAndReloadArtifacts();
 
-            monitor.done();
          }
+         monitor.done();
       }
    }
 
@@ -103,10 +104,12 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
       }
    }
 
-   private void revertArtifact(Artifact artifact, Collection<Change> changes) throws OseeStateException, OseeCoreException {
-      for (Change change : changes) {
-         IChangeWorker changeWorker = ChangeWorkerUtil.create(change, artifact);
-         changeWorker.revert();
+   private void revertArtifact(Artifact artifact, Collection<Change> changes) throws OseeStateException, OseeCoreException, SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
+	   for (Change change : changes) {
+		   Class<? extends IChangeWorker> workerClass = change.getWorker();
+		   Constructor<?> ctor = workerClass.getConstructor(Change.class, Artifact.class);
+		   IChangeWorker worker = (IChangeWorker) ctor.newInstance(change, artifact);
+		   worker.revert();
       }
    }
 }
