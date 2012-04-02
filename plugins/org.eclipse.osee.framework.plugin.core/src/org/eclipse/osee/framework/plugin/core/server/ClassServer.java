@@ -14,6 +14,7 @@ import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -25,6 +26,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.internal.PluginCoreActivator;
 
@@ -52,8 +54,11 @@ public class ClassServer extends Thread {
             return th;
          }
       });
-      hostName = new URL("http://" + address.getHostAddress() + ":" + port + "/");
-
+      if(address instanceof Inet6Address){
+    	 hostName = new URL("http://[" + address.getHostAddress() + "]:" + port + "/"); 
+      } else { 
+         hostName = new URL("http://" + address.getHostAddress() + ":" + port + "/");
+   	  }
       this.setName("OSEE ClassServer");
       this.resourceFinders = new ArrayList<ResourceFinder>();
    }

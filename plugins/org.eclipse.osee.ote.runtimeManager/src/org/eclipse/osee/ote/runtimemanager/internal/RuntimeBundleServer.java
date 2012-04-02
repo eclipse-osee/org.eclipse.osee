@@ -11,8 +11,10 @@
 package org.eclipse.osee.ote.runtimemanager.internal;
 
 import java.net.BindException;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.CorePreferences;
 import org.eclipse.osee.framework.plugin.core.server.ClassServer;
@@ -40,8 +42,11 @@ public class RuntimeBundleServer {
          resourceFinder = new RuntimeLibResourceFinder(safeWorkspaceTracker);
          classServer.addResourceFinder(resourceFinder);
          classServer.start();
-
-         classServerPath = "http://" + useHostAddress.getHostAddress() + ":" + classServer.getPort() + "/";
+         if(useHostAddress instanceof Inet6Address){
+        	 classServerPath = "http://[" + useHostAddress.getHostAddress() + "]:" + classServer.getPort() + "/";
+         } else {
+        	 classServerPath = "http://" + useHostAddress.getHostAddress() + ":" + classServer.getPort() + "/";
+         }
 
       } catch (BindException ex) {
          OseeLog.log(
