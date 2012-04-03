@@ -43,7 +43,7 @@ public class ScriptStreamOutLogHandler extends Handler {
    private OutputStream outputStream;
    private XMLStreamWriter writer;
 
-   public ScriptStreamOutLogHandler(File outFile) {
+   public ScriptStreamOutLogHandler(File outFile, String distributionStatement) {
       super();
       records = new ArrayList<LogRecord>();
       try {
@@ -51,7 +51,7 @@ public class ScriptStreamOutLogHandler extends Handler {
          XMLOutputFactory factory = XMLOutputFactory.newInstance();
          writer = new XMLStreamWriterPrettyPrint(factory.createXMLStreamWriter(outputStream));
          writer.writeStartDocument("1.0");
-         writer.writeComment("DISTRO_STATEMENT_HERE");
+         writer.writeComment(distributionStatement);
          writer.writeStartElement("TestScript");
          OseeLog.log(TestEnvironment.class, Level.FINE, outFile.getAbsolutePath());
       } catch (FileNotFoundException ex) {

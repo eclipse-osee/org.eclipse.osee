@@ -37,12 +37,14 @@ public class TestManagerModel {
    final static String CONFIGURATION = "configuration";
    final static String CONTACT = "contact";
    final static String DESCRIPTION = "description";
+   final static String DISTRIBUTION_STATEMENT = "distributionStatement";
    final static String OFP = "ofp";
    final static String ROOTNAME = "testManager";
    public boolean finished = false;
    private String configuration = "";
    private String contact = "";
    private String description = "";
+   private String distributionStatement = "";
    private String[] ofps = null;
    private final List<String> parseExceptions = new ArrayList<String>();
    private String rawXml = "";
@@ -71,6 +73,13 @@ public class TestManagerModel {
     */
    public String getDescription() {
       return description;
+   }
+
+   /**
+    * @return Returns the distribution statement.
+    */
+   public String getDistributionStatement() {
+      return distributionStatement;
    }
 
    /**
@@ -121,6 +130,13 @@ public class TestManagerModel {
     */
    public void setDescription(String description) {
       this.description = description;
+   }
+
+   /**
+    * @param distributionStatement The distribution statement to set.
+    */
+   public void setDistributionStatement(String distributionStatement) {
+      this.distributionStatement = distributionStatement;
    }
 
    /**
@@ -182,6 +198,8 @@ public class TestManagerModel {
          Node node = nodeList.item(i);
          if (node.getNodeName().equals(DESCRIPTION)) {
             description = node.getTextContent();
+         } else if (node.getNodeName().equals(DISTRIBUTION_STATEMENT)) {
+            distributionStatement = node.getTextContent();
          } else if (node.getNodeName().equals(CONTACT)) {
             contact = node.getTextContent();
          } else if (node.getNodeName().equals(OFP)) {
@@ -196,6 +214,7 @@ public class TestManagerModel {
 
       ofps = ofpList.toArray(new String[ofpList.size()]);// AXml.getTagDataArray(xmlString, OFP);
       OseeLog.log(TestManagerPlugin.class, Level.INFO, "description *" + description + "*");
+      OseeLog.log(TestManagerPlugin.class, Level.INFO, "distribution statement *" + distributionStatement + "*");
       OseeLog.log(TestManagerPlugin.class, Level.INFO, "contact *" + contact + "*");
       for (int i = 0; i < ofps.length; i++) {
          OseeLog.log(TestManagerPlugin.class, Level.INFO, "ofp *" + ofps[i] + "*");

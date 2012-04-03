@@ -57,7 +57,8 @@ public class TestManagerInput implements IEditorInput {
    }
 
    public String getDefaultXML() {
-      return "<testManager>" + "<contact></contact>" + "<description>Test Manager</description>" + "</testManager>";
+      return "<testManager>" + "<contact></contact>" + "<description>Test Manager</description>" + 
+   "<distributionStatement></distributionStatement>" + "</testManager>";
 
    }
 

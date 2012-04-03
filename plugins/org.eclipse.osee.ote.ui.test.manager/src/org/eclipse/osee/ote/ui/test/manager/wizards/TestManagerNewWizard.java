@@ -155,7 +155,8 @@ public class TestManagerNewWizard extends Wizard implements INewWizard {
 
    private InputStream openContentStream() {
       String contents =
-         "<testManager>\n" + "<contact></contact>\n" + "<description>Find those bugs</description>\n</testManager>\n";
+         "<testManager>\n" + "<contact></contact>\n" + "<description>Find those bugs</description>\n" +
+      "<distributionStatement></distributionStatement>\n</testManager>\n";
       return new ByteArrayInputStream(contents.getBytes());
    }
 

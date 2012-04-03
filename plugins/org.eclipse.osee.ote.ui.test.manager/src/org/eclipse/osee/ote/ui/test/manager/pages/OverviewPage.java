@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.ui.test.manager.pages;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
@@ -34,7 +35,8 @@ public class OverviewPage extends TestManagerPage {
       TM_Release("This Test Manager will only work with TM Server Release " + release),
       Configuration,
       Contact,
-      Description;
+      Description,
+      Distribution_Statement;
 
       private String toolTip;
 
@@ -97,6 +99,9 @@ public class OverviewPage extends TestManagerPage {
             case Description:
                toSet = getTestManager().getModel().getDescription();
                break;
+            case Distribution_Statement:
+               toSet = getTestManager().getModel().getDistributionStatement();
+               break;
             default:
                break;
          }
@@ -116,6 +121,7 @@ public class OverviewPage extends TestManagerPage {
       for (LabelEnum enumEntry : LabelEnum.values()) {
          Label label = new Label(composite, SWT.NONE);
          label.setText(enumEntry.toString() + ": ");
+         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.TOP).applyTo(label);
 
          Label updateableLabel = new Label(composite, SWT.NONE);
          updateableLabel.setToolTipText(enumEntry.getToolTipText());
