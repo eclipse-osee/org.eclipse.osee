@@ -29,8 +29,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.ChecksumUtil;
@@ -46,7 +48,6 @@ import org.eclipse.osee.ote.core.ReturnStatus;
 import org.eclipse.osee.ote.core.environment.BundleConfigurationReport;
 import org.eclipse.osee.ote.core.environment.BundleDescription;
 import org.eclipse.osee.ote.core.environment.BundleResolveException;
-import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -369,7 +370,7 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
    }
 
    private File getJarCache() {
-      String path = System.getProperty("user.home") + File.separator + TestEnvironment.class.getName();
+      String path = System.getProperty("user.home") + File.separator + "OTESERVER";
       File jarCache = new File(path, "runtimeCache");
       if (!jarCache.exists()) {
          if (!jarCache.mkdirs()) {
