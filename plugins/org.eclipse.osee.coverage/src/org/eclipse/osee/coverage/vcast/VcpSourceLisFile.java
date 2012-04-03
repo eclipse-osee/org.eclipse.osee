@@ -15,8 +15,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.coverage.model.ICoverageUnitFileContentsLoader;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
@@ -25,38 +27,48 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  * 
  * @author Donald G. Dunne
  */
-public class VcpSourceLisFile {
+public class VcpSourceLisFile implements ICoverageUnitFileContentsLoader {
 
-   File listFile = null;
    String[] lines = null;
    String text = null;
+   VCastVcp vCastVcp;
+   VcpSourceFile vcpSourceFile;
 
-   public VcpSourceLisFile(VCastVcp vCastVcp, VcpSourceFile vcpSourceFile) throws OseeCoreException, IOException {
-      String lisFilename =
-         vCastVcp.getVCastDirectory() + File.separator + "vcast" + File.separator + vcpSourceFile.getFilename().replaceFirst(
-            "(.*)\\..*", "$1") + ".LIS";
-      listFile = new File(lisFilename);
-      if (!listFile.exists()) {
-         throw new OseeArgumentException(
-            String.format("VectorCast <filename>.LIS file doesn't exist [%s]", lisFilename));
+   public VcpSourceLisFile(VCastVcp vCastVcp, VcpSourceFile vcpSourceFile) {
+      this.vCastVcp = vCastVcp;
+      this.vcpSourceFile = vcpSourceFile;
+   }
+
+   public void ensureLoaded() throws OseeCoreException {
+      try {
+         if (text == null) {
+            String lisFilename = getLisFilename();
+            File listFile = new File(lisFilename);
+            if (!listFile.exists()) {
+               throw new OseeArgumentException(String.format("VectorCast <filename>.LIS file doesn't exist [%s]",
+                  lisFilename));
+            }
+            text = Lib.fileToString(listFile);
+            lines = text.split("\n");
+         }
+      } catch (IOException ex) {
+         throw new OseeWrappedException(ex);
       }
-      text = Lib.fileToString(listFile);
-      lines = text.split("\n");
    }
 
-   public File getFile() {
-      return listFile;
+   private String getLisFilename() {
+      return vCastVcp.getVCastDirectory() + File.separator + "vcast" + File.separator + vcpSourceFile.getFilename().replaceFirst(
+         "(.*)\\..*", "$1") + ".LIS";
    }
 
-   public String[] getSection(String startLine, String endLine) {
+   public String[] getSection(String startLine, String endLine) throws OseeCoreException {
+      ensureLoaded();
       return Arrays.copyOfRange(lines, new Integer(startLine), new Integer(endLine));
    }
 
-   public String[] get() {
-      return lines;
-   }
-
-   public String getText() {
+   @Override
+   public String getText() throws OseeCoreException {
+      ensureLoaded();
       return text;
    }
 
@@ -67,7 +79,8 @@ public class VcpSourceLisFile {
    private static Pattern exceptionPattern = Pattern.compile("^\\s+EXCEPTION\\s*$");
    private static Pattern endMethodPattern = Pattern.compile("^\\s*END\\s+(.*);\\s*$");
 
-   public Pair<String, Boolean> getExecutionLine(String method, String executionLine) {
+   public Pair<String, Boolean> getExecutionLine(String method, String executionLine) throws OseeCoreException {
+      ensureLoaded();
       String startsWith = method + " " + executionLine + " ";
       boolean exceptionLine = false;
       for (String line : lines) {
@@ -87,10 +100,14 @@ public class VcpSourceLisFile {
       return null;
    }
 
+   public File getFile() {
+      return new File(getLisFilename());
+   }
+
    @Override
    public String toString() {
       try {
-         return listFile.getCanonicalPath();
+         return getLisFilename();
       } catch (Exception ex) {
          // do nothing
       }
@@ -98,8 +115,8 @@ public class VcpSourceLisFile {
    }
 
    public void cleanup() {
-      listFile = null;
       lines = null;
       text = null;
    }
+
 }

@@ -12,6 +12,8 @@ package org.eclipse.osee.coverage.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,6 +47,7 @@ public class CoverageUnit extends NamedIdentity<String> implements IWorkProductR
    final List<CoverageUnit> coverageUnits = new CopyOnWriteArrayList<CoverageUnit>();
    ICoverage parent;
    ICoverageUnitFileContentsProvider fileContentsProvider;
+   ICoverageUnitFileContentsLoader fileContentsLoader;
 
    public CoverageUnit(ICoverage parent, String name, String location, ICoverageUnitFileContentsProvider coverageUnitFileContentsProvider) {
       this(GUID.create(), parent, name, location, coverageUnitFileContentsProvider);
@@ -110,6 +113,55 @@ public class CoverageUnit extends NamedIdentity<String> implements IWorkProductR
       return items;
    }
 
+   public List<CoverageItem> getCoverageItemsOrdered() {
+      List<CoverageItem> items = new ArrayList<CoverageItem>();
+      items.addAll(coverageItems);
+      Collections.sort(items, new Comparator<CoverageItem>() {
+
+         @Override
+         public int compare(CoverageItem o1, CoverageItem o2) {
+            return getCompareForInteger(o1.getOrderNumber(), o2.getOrderNumber());
+         }
+
+      });
+
+      return items;
+   }
+
+   public List<CoverageUnit> getCoverageUnitsOrdered() {
+      List<CoverageUnit> items = new ArrayList<CoverageUnit>();
+      items.addAll(coverageUnits);
+      Collections.sort(items, new Comparator<CoverageUnit>() {
+
+         @Override
+         public int compare(CoverageUnit o1, CoverageUnit o2) {
+            return getCompareForInteger(o1.getOrderNumber(), o2.getOrderNumber());
+         }
+
+      });
+
+      return items;
+   }
+
+   private int getCompareForInteger(String int1Str, String int2Str) {
+      int int1 = 0, int2 = 0;
+      if (Strings.isValid(int1Str)) {
+         int1 = Integer.parseInt(int1Str);
+      }
+      if (Strings.isValid(int2Str)) {
+         int2 = Integer.parseInt(int2Str);
+      }
+      if (int1 == int2) {
+         return 0;
+      } else if (int1 < int2) {
+         return -1;
+      } else if (int2 < int1) {
+         return 1;
+      } else {
+         return 0;
+      }
+   }
+
    public CoverageItem getCoverageItem(String childUnitOrderNum, String itemOrderNumber) {
       for (CoverageUnit coverageUnit : coverageUnits) {
          if (coverageUnit.getOrderNumber().equals(childUnitOrderNum)) {
@@ -135,6 +187,9 @@ public class CoverageUnit extends NamedIdentity<String> implements IWorkProductR
    @Override
    public String getFileContents() throws OseeCoreException {
       if (fileContentsProvider == null) {
+         if (fileContentsLoader != null) {
+            return fileContentsLoader.getText();
+         }
          throw new OseeStateException("No File Contents Provider Specified");
       }
       return fileContentsProvider.getFileContents(this);
@@ -408,6 +463,10 @@ public class CoverageUnit extends NamedIdentity<String> implements IWorkProductR
    @Override
    public boolean equals(Object obj) {
       return super.equals(obj);
+   }
+
+   public void setFileContentsLoader(ICoverageUnitFileContentsLoader fileContentsLoader) {
+      this.fileContentsLoader = fileContentsLoader;
    }
 
 }

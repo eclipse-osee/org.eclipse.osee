@@ -122,8 +122,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
          String usevectorcast53 = System.getProperty("usevectorcast53", null);
          if (Strings.isValid(usevectorcast53)) {
             int totalCoverageItems = methodCoverageUnit.getCoverageItems(false).size();
-            int coveredCoverageItems =
-               methodCoverageUnit.getCoverageItemsCount(false, CoverageOptionManager.Test_Unit);
+            int coveredCoverageItems = methodCoverageUnit.getCoverageItemsCount(false, CoverageOptionManager.Test_Unit);
             if (totalCoverageItems != coverageDataSubProgram.getTotal() || coveredCoverageItems != coverageDataSubProgram.getCovered()) {
                coverageImport.getLog().logError(
                   String.format(
@@ -374,7 +373,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                      OseeLog.log(Activator.class, Level.SEVERE, ex);
                   }
 
-                  fileCoverageUnit.setFileContents(vcpSourceLisFile.getText());
+                  fileCoverageUnit.setFileContentsLoader(vcpSourceLisFile);
                   int methodNum = 0;
                   for (CoverageDataSubProgram coverageDataSubProgram : coverageDataUnit.getSubPrograms()) {
                      methodNum++;
