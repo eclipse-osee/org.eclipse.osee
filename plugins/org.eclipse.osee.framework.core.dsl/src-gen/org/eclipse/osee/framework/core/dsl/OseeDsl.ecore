@@ -28,6 +28,9 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="accessDeclarations" upperBound="-1"
         eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//AccessContext"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="roleDeclarations" upperBound="-1"
+        eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//Role"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Import">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="importURI" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -137,6 +140,23 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="operators" unique="false"
         upperBound="-1" eType="ecore:EEnum platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XLogicOperator"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Role">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="superRoles" unique="false"
+        upperBound="-1" eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//Role"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="usersAndGroups" upperBound="-1"
+        eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//UsersAndGroups"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="referencedContexts" upperBound="-1"
+        eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//ReferencedContext"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ReferencedContext">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="accessContextRef" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="UsersAndGroups">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="userOrGroupGuid" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AccessContext">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="superAccessContexts" unique="false"
@@ -186,7 +206,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="artifactMatcherRef" eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XArtifactMatcher"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="RelationTypeRestriction" eSuperTypes="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//ObjectRestriction">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="relationTypeMatch" eType="ecore:EEnum platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//RelationTypeMatch"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="relationTypeMatch" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="relationTypeRef" eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XRelationType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="restrictedToSide" eType="ecore:EEnum platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XRelationSideEnum"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="predicate" eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//RelationTypePredicate"

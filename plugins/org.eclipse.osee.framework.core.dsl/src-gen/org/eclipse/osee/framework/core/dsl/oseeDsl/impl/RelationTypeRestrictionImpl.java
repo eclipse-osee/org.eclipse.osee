@@ -15,7 +15,6 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeMatch;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypePredicate;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationSideEnum;
@@ -28,7 +27,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RelationTypeRestrictionImpl#getRelationTypeMatch <em>Relation Type Match</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RelationTypeRestrictionImpl#isRelationTypeMatch <em>Relation Type Match</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RelationTypeRestrictionImpl#getRelationTypeRef <em>Relation Type Ref</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RelationTypeRestrictionImpl#getRestrictedToSide <em>Restricted To Side</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RelationTypeRestrictionImpl#getPredicate <em>Predicate</em>}</li>
@@ -40,24 +39,24 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
 public class RelationTypeRestrictionImpl extends ObjectRestrictionImpl implements RelationTypeRestriction
 {
   /**
-   * The default value of the '{@link #getRelationTypeMatch() <em>Relation Type Match</em>}' attribute.
+   * The default value of the '{@link #isRelationTypeMatch() <em>Relation Type Match</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getRelationTypeMatch()
+   * @see #isRelationTypeMatch()
    * @generated
    * @ordered
    */
-  protected static final RelationTypeMatch RELATION_TYPE_MATCH_EDEFAULT = RelationTypeMatch.ALL;
+  protected static final boolean RELATION_TYPE_MATCH_EDEFAULT = false;
 
   /**
-   * The cached value of the '{@link #getRelationTypeMatch() <em>Relation Type Match</em>}' attribute.
+   * The cached value of the '{@link #isRelationTypeMatch() <em>Relation Type Match</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getRelationTypeMatch()
+   * @see #isRelationTypeMatch()
    * @generated
    * @ordered
    */
-  protected RelationTypeMatch relationTypeMatch = RELATION_TYPE_MATCH_EDEFAULT;
+  protected boolean relationTypeMatch = RELATION_TYPE_MATCH_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getRelationTypeRef() <em>Relation Type Ref</em>}' reference.
@@ -125,7 +124,7 @@ public class RelationTypeRestrictionImpl extends ObjectRestrictionImpl implement
    * <!-- end-user-doc -->
    * @generated
    */
-  public RelationTypeMatch getRelationTypeMatch()
+  public boolean isRelationTypeMatch()
   {
     return relationTypeMatch;
   }
@@ -135,10 +134,10 @@ public class RelationTypeRestrictionImpl extends ObjectRestrictionImpl implement
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setRelationTypeMatch(RelationTypeMatch newRelationTypeMatch)
+  public void setRelationTypeMatch(boolean newRelationTypeMatch)
   {
-    RelationTypeMatch oldRelationTypeMatch = relationTypeMatch;
-    relationTypeMatch = newRelationTypeMatch == null ? RELATION_TYPE_MATCH_EDEFAULT : newRelationTypeMatch;
+    boolean oldRelationTypeMatch = relationTypeMatch;
+    relationTypeMatch = newRelationTypeMatch;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.RELATION_TYPE_RESTRICTION__RELATION_TYPE_MATCH, oldRelationTypeMatch, relationTypeMatch));
   }
@@ -284,7 +283,7 @@ public class RelationTypeRestrictionImpl extends ObjectRestrictionImpl implement
     switch (featureID)
     {
       case OseeDslPackage.RELATION_TYPE_RESTRICTION__RELATION_TYPE_MATCH:
-        return getRelationTypeMatch();
+        return isRelationTypeMatch();
       case OseeDslPackage.RELATION_TYPE_RESTRICTION__RELATION_TYPE_REF:
         if (resolve) return getRelationTypeRef();
         return basicGetRelationTypeRef();
@@ -307,7 +306,7 @@ public class RelationTypeRestrictionImpl extends ObjectRestrictionImpl implement
     switch (featureID)
     {
       case OseeDslPackage.RELATION_TYPE_RESTRICTION__RELATION_TYPE_MATCH:
-        setRelationTypeMatch((RelationTypeMatch)newValue);
+        setRelationTypeMatch((Boolean)newValue);
         return;
       case OseeDslPackage.RELATION_TYPE_RESTRICTION__RELATION_TYPE_REF:
         setRelationTypeRef((XRelationType)newValue);

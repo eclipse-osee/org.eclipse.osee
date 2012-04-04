@@ -89,6 +89,7 @@ public class OseeDslItemProvider
          childrenFeatures.add(OseeDslPackage.Literals.OSEE_DSL__ENUM_OVERRIDES);
          childrenFeatures.add(OseeDslPackage.Literals.OSEE_DSL__ARTIFACT_MATCH_REFS);
          childrenFeatures.add(OseeDslPackage.Literals.OSEE_DSL__ACCESS_DECLARATIONS);
+         childrenFeatures.add(OseeDslPackage.Literals.OSEE_DSL__ROLE_DECLARATIONS);
       }
       return childrenFeatures;
    }
@@ -148,6 +149,7 @@ public class OseeDslItemProvider
          case OseeDslPackage.OSEE_DSL__ENUM_OVERRIDES:
          case OseeDslPackage.OSEE_DSL__ARTIFACT_MATCH_REFS:
          case OseeDslPackage.OSEE_DSL__ACCESS_DECLARATIONS:
+         case OseeDslPackage.OSEE_DSL__ROLE_DECLARATIONS:
             fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
             return;
       }
@@ -204,6 +206,11 @@ public class OseeDslItemProvider
          (createChildParameter
             (OseeDslPackage.Literals.OSEE_DSL__ACCESS_DECLARATIONS,
              OseeDslFactory.eINSTANCE.createAccessContext()));
+
+      newChildDescriptors.add
+         (createChildParameter
+            (OseeDslPackage.Literals.OSEE_DSL__ROLE_DECLARATIONS,
+             OseeDslFactory.eINSTANCE.createRole()));
    }
 
    /**

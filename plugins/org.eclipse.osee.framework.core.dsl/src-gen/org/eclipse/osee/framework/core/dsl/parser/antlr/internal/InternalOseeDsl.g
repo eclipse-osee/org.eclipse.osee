@@ -190,10 +190,10 @@ ruleOseeDsl returns [EObject current=null]
 	    }
 
 )
-))*(
+))*((
 (
 		{ 
-	        newCompositeNode(grammarAccess.getOseeDslAccess().getArtifactMatchRefsXArtifactMatcherParserRuleCall_2_0()); 
+	        newCompositeNode(grammarAccess.getOseeDslAccess().getArtifactMatchRefsXArtifactMatcherParserRuleCall_2_0_0()); 
 	    }
 		lv_artifactMatchRefs_6_0=ruleXArtifactMatcher		{
 	        if ($current==null) {
@@ -208,10 +208,11 @@ ruleOseeDsl returns [EObject current=null]
 	    }
 
 )
-)*(
+)
+    |(
 (
 		{ 
-	        newCompositeNode(grammarAccess.getOseeDslAccess().getAccessDeclarationsAccessContextParserRuleCall_3_0()); 
+	        newCompositeNode(grammarAccess.getOseeDslAccess().getAccessDeclarationsAccessContextParserRuleCall_2_1_0()); 
 	    }
 		lv_accessDeclarations_7_0=ruleAccessContext		{
 	        if ($current==null) {
@@ -226,7 +227,26 @@ ruleOseeDsl returns [EObject current=null]
 	    }
 
 )
-)*)
+)
+    |(
+(
+		{ 
+	        newCompositeNode(grammarAccess.getOseeDslAccess().getRoleDeclarationsRoleParserRuleCall_2_2_0()); 
+	    }
+		lv_roleDeclarations_8_0=ruleRole		{
+	        if ($current==null) {
+	            $current = createModelElementForParent(grammarAccess.getOseeDslRule());
+	        }
+       		add(
+       			$current, 
+       			"roleDeclarations",
+        		lv_roleDeclarations_8_0, 
+        		"Role");
+	        afterParserOrEnumRuleCall();
+	    }
+
+)
+))*)
 ;
 
 
@@ -2072,6 +2092,205 @@ ruleXArtifactMatcher returns [EObject current=null]
 
 
 
+// Entry rule entryRuleRole
+entryRuleRole returns [EObject current=null] 
+	:
+	{ newCompositeNode(grammarAccess.getRoleRule()); }
+	 iv_ruleRole=ruleRole 
+	 { $current=$iv_ruleRole.current; } 
+	 EOF 
+;
+
+// Rule Role
+ruleRole returns [EObject current=null] 
+    @init { enterRule(); 
+    }
+    @after { leaveRule(); }:
+(	otherlv_0='role' 
+    {
+    	newLeafNode(otherlv_0, grammarAccess.getRoleAccess().getRoleKeyword_0());
+    }
+(
+(
+		lv_name_1_0=RULE_STRING
+		{
+			newLeafNode(lv_name_1_0, grammarAccess.getRoleAccess().getNameSTRINGTerminalRuleCall_1_0()); 
+		}
+		{
+	        if ($current==null) {
+	            $current = createModelElement(grammarAccess.getRoleRule());
+	        }
+       		setWithLastConsumed(
+       			$current, 
+       			"name",
+        		lv_name_1_0, 
+        		"STRING");
+	    }
+
+)
+)(	otherlv_2='extends' 
+    {
+    	newLeafNode(otherlv_2, grammarAccess.getRoleAccess().getExtendsKeyword_2_0());
+    }
+(
+(
+		{
+			if ($current==null) {
+	            $current = createModelElement(grammarAccess.getRoleRule());
+	        }
+        }
+	otherlv_3=RULE_STRING
+	{
+		newLeafNode(otherlv_3, grammarAccess.getRoleAccess().getSuperRolesRoleCrossReference_2_1_0()); 
+	}
+
+)
+))?	otherlv_4='{' 
+    {
+    	newLeafNode(otherlv_4, grammarAccess.getRoleAccess().getLeftCurlyBracketKeyword_3());
+    }
+((
+(
+		{ 
+	        newCompositeNode(grammarAccess.getRoleAccess().getUsersAndGroupsUsersAndGroupsParserRuleCall_4_0_0()); 
+	    }
+		lv_usersAndGroups_5_0=ruleUsersAndGroups		{
+	        if ($current==null) {
+	            $current = createModelElementForParent(grammarAccess.getRoleRule());
+	        }
+       		add(
+       			$current, 
+       			"usersAndGroups",
+        		lv_usersAndGroups_5_0, 
+        		"UsersAndGroups");
+	        afterParserOrEnumRuleCall();
+	    }
+
+)
+)
+    |(
+(
+		{ 
+	        newCompositeNode(grammarAccess.getRoleAccess().getReferencedContextsReferencedContextParserRuleCall_4_1_0()); 
+	    }
+		lv_referencedContexts_6_0=ruleReferencedContext		{
+	        if ($current==null) {
+	            $current = createModelElementForParent(grammarAccess.getRoleRule());
+	        }
+       		add(
+       			$current, 
+       			"referencedContexts",
+        		lv_referencedContexts_6_0, 
+        		"ReferencedContext");
+	        afterParserOrEnumRuleCall();
+	    }
+
+)
+))+	otherlv_7='}' 
+    {
+    	newLeafNode(otherlv_7, grammarAccess.getRoleAccess().getRightCurlyBracketKeyword_5());
+    }
+)
+;
+
+
+
+
+
+// Entry rule entryRuleReferencedContext
+entryRuleReferencedContext returns [EObject current=null] 
+	:
+	{ newCompositeNode(grammarAccess.getReferencedContextRule()); }
+	 iv_ruleReferencedContext=ruleReferencedContext 
+	 { $current=$iv_ruleReferencedContext.current; } 
+	 EOF 
+;
+
+// Rule ReferencedContext
+ruleReferencedContext returns [EObject current=null] 
+    @init { enterRule(); 
+    }
+    @after { leaveRule(); }:
+(	otherlv_0='accessContext' 
+    {
+    	newLeafNode(otherlv_0, grammarAccess.getReferencedContextAccess().getAccessContextKeyword_0());
+    }
+(
+(
+		lv_accessContextRef_1_0=RULE_STRING
+		{
+			newLeafNode(lv_accessContextRef_1_0, grammarAccess.getReferencedContextAccess().getAccessContextRefSTRINGTerminalRuleCall_1_0()); 
+		}
+		{
+	        if ($current==null) {
+	            $current = createModelElement(grammarAccess.getReferencedContextRule());
+	        }
+       		setWithLastConsumed(
+       			$current, 
+       			"accessContextRef",
+        		lv_accessContextRef_1_0, 
+        		"STRING");
+	    }
+
+)
+)	otherlv_2=';' 
+    {
+    	newLeafNode(otherlv_2, grammarAccess.getReferencedContextAccess().getSemicolonKeyword_2());
+    }
+)
+;
+
+
+
+
+
+// Entry rule entryRuleUsersAndGroups
+entryRuleUsersAndGroups returns [EObject current=null] 
+	:
+	{ newCompositeNode(grammarAccess.getUsersAndGroupsRule()); }
+	 iv_ruleUsersAndGroups=ruleUsersAndGroups 
+	 { $current=$iv_ruleUsersAndGroups.current; } 
+	 EOF 
+;
+
+// Rule UsersAndGroups
+ruleUsersAndGroups returns [EObject current=null] 
+    @init { enterRule(); 
+    }
+    @after { leaveRule(); }:
+(	otherlv_0='guid' 
+    {
+    	newLeafNode(otherlv_0, grammarAccess.getUsersAndGroupsAccess().getGuidKeyword_0());
+    }
+(
+(
+		lv_userOrGroupGuid_1_0=RULE_STRING
+		{
+			newLeafNode(lv_userOrGroupGuid_1_0, grammarAccess.getUsersAndGroupsAccess().getUserOrGroupGuidSTRINGTerminalRuleCall_1_0()); 
+		}
+		{
+	        if ($current==null) {
+	            $current = createModelElement(grammarAccess.getUsersAndGroupsRule());
+	        }
+       		setWithLastConsumed(
+       			$current, 
+       			"userOrGroupGuid",
+        		lv_userOrGroupGuid_1_0, 
+        		"STRING");
+	    }
+
+)
+)	otherlv_2=';' 
+    {
+    	newLeafNode(otherlv_2, grammarAccess.getUsersAndGroupsAccess().getSemicolonKeyword_2());
+    }
+)
+;
+
+
+
+
+
 // Entry rule entryRuleAccessContext
 entryRuleAccessContext returns [EObject current=null] 
 	:
@@ -2710,7 +2929,7 @@ ruleRelationTypeRestriction returns [EObject current=null]
        		set(
        			$current, 
        			"relationTypeMatch",
-        		lv_relationTypeMatch_3_0, 
+        		true, 
         		"RelationTypeMatch");
 	        afterParserOrEnumRuleCall();
 	    }

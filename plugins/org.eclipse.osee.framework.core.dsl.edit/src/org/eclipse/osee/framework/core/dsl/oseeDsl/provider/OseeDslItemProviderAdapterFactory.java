@@ -490,6 +490,75 @@ public class OseeDslItemProviderAdapterFactory extends OseeDslAdapterFactory imp
    }
 
    /**
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.core.dsl.oseeDsl.Role} instances.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected RoleItemProvider roleItemProvider;
+
+   /**
+    * This creates an adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.Role}.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   @Override
+   public Adapter createRoleAdapter() {
+      if (roleItemProvider == null) {
+         roleItemProvider = new RoleItemProvider(this);
+      }
+
+      return roleItemProvider;
+   }
+
+   /**
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.core.dsl.oseeDsl.ReferencedContext} instances.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected ReferencedContextItemProvider referencedContextItemProvider;
+
+   /**
+    * This creates an adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.ReferencedContext}.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   @Override
+   public Adapter createReferencedContextAdapter() {
+      if (referencedContextItemProvider == null) {
+         referencedContextItemProvider = new ReferencedContextItemProvider(this);
+      }
+
+      return referencedContextItemProvider;
+   }
+
+   /**
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.core.dsl.oseeDsl.UsersAndGroups} instances.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected UsersAndGroupsItemProvider usersAndGroupsItemProvider;
+
+   /**
+    * This creates an adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.UsersAndGroups}.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   @Override
+   public Adapter createUsersAndGroupsAdapter() {
+      if (usersAndGroupsItemProvider == null) {
+         usersAndGroupsItemProvider = new UsersAndGroupsItemProvider(this);
+      }
+
+      return usersAndGroupsItemProvider;
+   }
+
+   /**
     * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext} instances.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
@@ -859,6 +928,9 @@ public class OseeDslItemProviderAdapterFactory extends OseeDslAdapterFactory imp
       if (simpleConditionItemProvider != null) simpleConditionItemProvider.dispose();
       if (compoundConditionItemProvider != null) compoundConditionItemProvider.dispose();
       if (xArtifactMatcherItemProvider != null) xArtifactMatcherItemProvider.dispose();
+      if (roleItemProvider != null) roleItemProvider.dispose();
+      if (referencedContextItemProvider != null) referencedContextItemProvider.dispose();
+      if (usersAndGroupsItemProvider != null) usersAndGroupsItemProvider.dispose();
       if (accessContextItemProvider != null) accessContextItemProvider.dispose();
       if (hierarchyRestrictionItemProvider != null) hierarchyRestrictionItemProvider.dispose();
       if (relationTypeArtifactTypePredicateItemProvider != null) relationTypeArtifactTypePredicateItemProvider.dispose();

@@ -26,6 +26,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getEnumOverrides <em>Enum Overrides</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getArtifactMatchRefs <em>Artifact Match Refs</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getAccessDeclarations <em>Access Declarations</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getRoleDeclarations <em>Role Declarations</em>}</li>
  * </ul>
  * </p>
  *
@@ -162,5 +163,21 @@ public interface OseeDsl extends EObject
    * @generated
    */
   EList<AccessContext> getAccessDeclarations();
+
+  /**
+   * Returns the value of the '<em><b>Role Declarations</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.osee.framework.core.dsl.oseeDsl.Role}.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Role Declarations</em>' containment reference list isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Role Declarations</em>' containment reference list.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getOseeDsl_RoleDeclarations()
+   * @model containment="true"
+   * @generated
+   */
+  EList<Role> getRoleDeclarations();
 
 } // OseeDsl

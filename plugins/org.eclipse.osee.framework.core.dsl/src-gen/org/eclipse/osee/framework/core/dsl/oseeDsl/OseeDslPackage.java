@@ -144,13 +144,22 @@ public interface OseeDslPackage extends EPackage
   int OSEE_DSL__ACCESS_DECLARATIONS = 7;
 
   /**
+   * The feature id for the '<em><b>Role Declarations</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OSEE_DSL__ROLE_DECLARATIONS = 8;
+
+  /**
    * The number of structural features of the '<em>Osee Dsl</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int OSEE_DSL_FEATURE_COUNT = 8;
+  int OSEE_DSL_FEATURE_COUNT = 9;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.ImportImpl <em>Import</em>}' class.
@@ -980,6 +989,117 @@ public interface OseeDslPackage extends EPackage
   int XARTIFACT_MATCHER_FEATURE_COUNT = 3;
 
   /**
+   * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RoleImpl <em>Role</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RoleImpl
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRole()
+   * @generated
+   */
+  int ROLE = 18;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ROLE__NAME = 0;
+
+  /**
+   * The feature id for the '<em><b>Super Roles</b></em>' reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ROLE__SUPER_ROLES = 1;
+
+  /**
+   * The feature id for the '<em><b>Users And Groups</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ROLE__USERS_AND_GROUPS = 2;
+
+  /**
+   * The feature id for the '<em><b>Referenced Contexts</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ROLE__REFERENCED_CONTEXTS = 3;
+
+  /**
+   * The number of structural features of the '<em>Role</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ROLE_FEATURE_COUNT = 4;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.ReferencedContextImpl <em>Referenced Context</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.ReferencedContextImpl
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getReferencedContext()
+   * @generated
+   */
+  int REFERENCED_CONTEXT = 19;
+
+  /**
+   * The feature id for the '<em><b>Access Context Ref</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REFERENCED_CONTEXT__ACCESS_CONTEXT_REF = 0;
+
+  /**
+   * The number of structural features of the '<em>Referenced Context</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REFERENCED_CONTEXT_FEATURE_COUNT = 1;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.UsersAndGroupsImpl <em>Users And Groups</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.UsersAndGroupsImpl
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getUsersAndGroups()
+   * @generated
+   */
+  int USERS_AND_GROUPS = 20;
+
+  /**
+   * The feature id for the '<em><b>User Or Group Guid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int USERS_AND_GROUPS__USER_OR_GROUP_GUID = 0;
+
+  /**
+   * The number of structural features of the '<em>Users And Groups</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int USERS_AND_GROUPS_FEATURE_COUNT = 1;
+
+  /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AccessContextImpl <em>Access Context</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -987,7 +1107,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getAccessContext()
    * @generated
    */
-  int ACCESS_CONTEXT = 18;
+  int ACCESS_CONTEXT = 21;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1051,7 +1171,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getHierarchyRestriction()
    * @generated
    */
-  int HIERARCHY_RESTRICTION = 19;
+  int HIERARCHY_RESTRICTION = 22;
 
   /**
    * The feature id for the '<em><b>Artifact Matcher Ref</b></em>' reference.
@@ -1088,7 +1208,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRelationTypePredicate()
    * @generated
    */
-  int RELATION_TYPE_PREDICATE = 22;
+  int RELATION_TYPE_PREDICATE = 25;
 
   /**
    * The number of structural features of the '<em>Relation Type Predicate</em>' class.
@@ -1107,7 +1227,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRelationTypeArtifactTypePredicate()
    * @generated
    */
-  int RELATION_TYPE_ARTIFACT_TYPE_PREDICATE = 20;
+  int RELATION_TYPE_ARTIFACT_TYPE_PREDICATE = 23;
 
   /**
    * The feature id for the '<em><b>Artifact Type Ref</b></em>' reference.
@@ -1135,7 +1255,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRelationTypeArtifactPredicate()
    * @generated
    */
-  int RELATION_TYPE_ARTIFACT_PREDICATE = 21;
+  int RELATION_TYPE_ARTIFACT_PREDICATE = 24;
 
   /**
    * The feature id for the '<em><b>Artifact Matcher Ref</b></em>' reference.
@@ -1163,7 +1283,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getObjectRestriction()
    * @generated
    */
-  int OBJECT_RESTRICTION = 23;
+  int OBJECT_RESTRICTION = 26;
 
   /**
    * The feature id for the '<em><b>Permission</b></em>' attribute.
@@ -1191,7 +1311,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getArtifactMatchRestriction()
    * @generated
    */
-  int ARTIFACT_MATCH_RESTRICTION = 24;
+  int ARTIFACT_MATCH_RESTRICTION = 27;
 
   /**
    * The feature id for the '<em><b>Permission</b></em>' attribute.
@@ -1228,7 +1348,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getArtifactTypeRestriction()
    * @generated
    */
-  int ARTIFACT_TYPE_RESTRICTION = 25;
+  int ARTIFACT_TYPE_RESTRICTION = 28;
 
   /**
    * The feature id for the '<em><b>Permission</b></em>' attribute.
@@ -1265,7 +1385,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getAttributeTypeRestriction()
    * @generated
    */
-  int ATTRIBUTE_TYPE_RESTRICTION = 26;
+  int ATTRIBUTE_TYPE_RESTRICTION = 29;
 
   /**
    * The feature id for the '<em><b>Permission</b></em>' attribute.
@@ -1311,7 +1431,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getLegacyRelationTypeRestriction()
    * @generated
    */
-  int LEGACY_RELATION_TYPE_RESTRICTION = 27;
+  int LEGACY_RELATION_TYPE_RESTRICTION = 30;
 
   /**
    * The feature id for the '<em><b>Permission</b></em>' attribute.
@@ -1366,7 +1486,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRelationTypeRestriction()
    * @generated
    */
-  int RELATION_TYPE_RESTRICTION = 28;
+  int RELATION_TYPE_RESTRICTION = 31;
 
   /**
    * The feature id for the '<em><b>Permission</b></em>' attribute.
@@ -1430,7 +1550,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRelationMultiplicityEnum()
    * @generated
    */
-  int RELATION_MULTIPLICITY_ENUM = 29;
+  int RELATION_MULTIPLICITY_ENUM = 32;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.CompareOp <em>Compare Op</em>}' enum.
@@ -1440,7 +1560,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getCompareOp()
    * @generated
    */
-  int COMPARE_OP = 30;
+  int COMPARE_OP = 33;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XLogicOperator <em>XLogic Operator</em>}' enum.
@@ -1450,7 +1570,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getXLogicOperator()
    * @generated
    */
-  int XLOGIC_OPERATOR = 31;
+  int XLOGIC_OPERATOR = 34;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.MatchField <em>Match Field</em>}' enum.
@@ -1460,7 +1580,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getMatchField()
    * @generated
    */
-  int MATCH_FIELD = 32;
+  int MATCH_FIELD = 35;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum <em>Access Permission Enum</em>}' enum.
@@ -1470,7 +1590,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getAccessPermissionEnum()
    * @generated
    */
-  int ACCESS_PERMISSION_ENUM = 33;
+  int ACCESS_PERMISSION_ENUM = 36;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeMatch <em>Relation Type Match</em>}' enum.
@@ -1480,7 +1600,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRelationTypeMatch()
    * @generated
    */
-  int RELATION_TYPE_MATCH = 34;
+  int RELATION_TYPE_MATCH = 37;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationSideEnum <em>XRelation Side Enum</em>}' enum.
@@ -1490,7 +1610,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getXRelationSideEnum()
    * @generated
    */
-  int XRELATION_SIDE_ENUM = 35;
+  int XRELATION_SIDE_ENUM = 38;
 
 
   /**
@@ -1590,6 +1710,17 @@ public interface OseeDslPackage extends EPackage
    * @generated
    */
   EReference getOseeDsl_AccessDeclarations();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getRoleDeclarations <em>Role Declarations</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Role Declarations</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getRoleDeclarations()
+   * @see #getOseeDsl()
+   * @generated
+   */
+  EReference getOseeDsl_RoleDeclarations();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.Import <em>Import</em>}'.
@@ -2246,6 +2377,102 @@ public interface OseeDslPackage extends EPackage
   EAttribute getXArtifactMatcher_Operators();
 
   /**
+   * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.Role <em>Role</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Role</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.Role
+   * @generated
+   */
+  EClass getRole();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.Role#getName <em>Name</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Name</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.Role#getName()
+   * @see #getRole()
+   * @generated
+   */
+  EAttribute getRole_Name();
+
+  /**
+   * Returns the meta object for the reference list '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.Role#getSuperRoles <em>Super Roles</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the reference list '<em>Super Roles</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.Role#getSuperRoles()
+   * @see #getRole()
+   * @generated
+   */
+  EReference getRole_SuperRoles();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.Role#getUsersAndGroups <em>Users And Groups</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Users And Groups</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.Role#getUsersAndGroups()
+   * @see #getRole()
+   * @generated
+   */
+  EReference getRole_UsersAndGroups();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.Role#getReferencedContexts <em>Referenced Contexts</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Referenced Contexts</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.Role#getReferencedContexts()
+   * @see #getRole()
+   * @generated
+   */
+  EReference getRole_ReferencedContexts();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.ReferencedContext <em>Referenced Context</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Referenced Context</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.ReferencedContext
+   * @generated
+   */
+  EClass getReferencedContext();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.ReferencedContext#getAccessContextRef <em>Access Context Ref</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Access Context Ref</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.ReferencedContext#getAccessContextRef()
+   * @see #getReferencedContext()
+   * @generated
+   */
+  EAttribute getReferencedContext_AccessContextRef();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.UsersAndGroups <em>Users And Groups</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Users And Groups</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.UsersAndGroups
+   * @generated
+   */
+  EClass getUsersAndGroups();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.UsersAndGroups#getUserOrGroupGuid <em>User Or Group Guid</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>User Or Group Guid</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.UsersAndGroups#getUserOrGroupGuid()
+   * @see #getUsersAndGroups()
+   * @generated
+   */
+  EAttribute getUsersAndGroups_UserOrGroupGuid();
+
+  /**
    * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext <em>Access Context</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2554,11 +2781,11 @@ public interface OseeDslPackage extends EPackage
   EClass getRelationTypeRestriction();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#getRelationTypeMatch <em>Relation Type Match</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#isRelationTypeMatch <em>Relation Type Match</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Relation Type Match</em>'.
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#getRelationTypeMatch()
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#isRelationTypeMatch()
    * @see #getRelationTypeRestriction()
    * @generated
    */
@@ -2763,6 +2990,14 @@ public interface OseeDslPackage extends EPackage
      * @generated
      */
     EReference OSEE_DSL__ACCESS_DECLARATIONS = eINSTANCE.getOseeDsl_AccessDeclarations();
+
+    /**
+     * The meta object literal for the '<em><b>Role Declarations</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference OSEE_DSL__ROLE_DECLARATIONS = eINSTANCE.getOseeDsl_RoleDeclarations();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.ImportImpl <em>Import</em>}' class.
@@ -3285,6 +3520,84 @@ public interface OseeDslPackage extends EPackage
      * @generated
      */
     EAttribute XARTIFACT_MATCHER__OPERATORS = eINSTANCE.getXArtifactMatcher_Operators();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RoleImpl <em>Role</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RoleImpl
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRole()
+     * @generated
+     */
+    EClass ROLE = eINSTANCE.getRole();
+
+    /**
+     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute ROLE__NAME = eINSTANCE.getRole_Name();
+
+    /**
+     * The meta object literal for the '<em><b>Super Roles</b></em>' reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference ROLE__SUPER_ROLES = eINSTANCE.getRole_SuperRoles();
+
+    /**
+     * The meta object literal for the '<em><b>Users And Groups</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference ROLE__USERS_AND_GROUPS = eINSTANCE.getRole_UsersAndGroups();
+
+    /**
+     * The meta object literal for the '<em><b>Referenced Contexts</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference ROLE__REFERENCED_CONTEXTS = eINSTANCE.getRole_ReferencedContexts();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.ReferencedContextImpl <em>Referenced Context</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.ReferencedContextImpl
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getReferencedContext()
+     * @generated
+     */
+    EClass REFERENCED_CONTEXT = eINSTANCE.getReferencedContext();
+
+    /**
+     * The meta object literal for the '<em><b>Access Context Ref</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REFERENCED_CONTEXT__ACCESS_CONTEXT_REF = eINSTANCE.getReferencedContext_AccessContextRef();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.UsersAndGroupsImpl <em>Users And Groups</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.UsersAndGroupsImpl
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getUsersAndGroups()
+     * @generated
+     */
+    EClass USERS_AND_GROUPS = eINSTANCE.getUsersAndGroups();
+
+    /**
+     * The meta object literal for the '<em><b>User Or Group Guid</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute USERS_AND_GROUPS__USER_OR_GROUP_GUID = eINSTANCE.getUsersAndGroups_UserOrGroupGuid();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AccessContextImpl <em>Access Context</em>}' class.

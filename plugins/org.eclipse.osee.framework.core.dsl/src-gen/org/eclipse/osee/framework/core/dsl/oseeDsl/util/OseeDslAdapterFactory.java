@@ -169,6 +169,21 @@ public class OseeDslAdapterFactory extends AdapterFactoryImpl
         return createXArtifactMatcherAdapter();
       }
       @Override
+      public Adapter caseRole(Role object)
+      {
+        return createRoleAdapter();
+      }
+      @Override
+      public Adapter caseReferencedContext(ReferencedContext object)
+      {
+        return createReferencedContextAdapter();
+      }
+      @Override
+      public Adapter caseUsersAndGroups(UsersAndGroups object)
+      {
+        return createUsersAndGroupsAdapter();
+      }
+      @Override
       public Adapter caseAccessContext(AccessContext object)
       {
         return createAccessContextAdapter();
@@ -511,6 +526,51 @@ public class OseeDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createXArtifactMatcherAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.Role <em>Role</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.Role
+   * @generated
+   */
+  public Adapter createRoleAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.ReferencedContext <em>Referenced Context</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.ReferencedContext
+   * @generated
+   */
+  public Adapter createReferencedContextAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.UsersAndGroups <em>Users And Groups</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.UsersAndGroups
+   * @generated
+   */
+  public Adapter createUsersAndGroupsAdapter()
   {
     return null;
   }

@@ -189,6 +189,33 @@ public interface OseeDslFactory extends EFactory
   XArtifactMatcher createXArtifactMatcher();
 
   /**
+   * Returns a new object of class '<em>Role</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Role</em>'.
+   * @generated
+   */
+  Role createRole();
+
+  /**
+   * Returns a new object of class '<em>Referenced Context</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Referenced Context</em>'.
+   * @generated
+   */
+  ReferencedContext createReferencedContext();
+
+  /**
+   * Returns a new object of class '<em>Users And Groups</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Users And Groups</em>'.
+   * @generated
+   */
+  UsersAndGroups createUsersAndGroups();
+
+  /**
    * Returns a new object of class '<em>Access Context</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

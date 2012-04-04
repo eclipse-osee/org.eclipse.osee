@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.core.dsl.oseeDsl;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#getRelationTypeMatch <em>Relation Type Match</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#isRelationTypeMatch <em>Relation Type Match</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#getRelationTypeRef <em>Relation Type Ref</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#getRestrictedToSide <em>Restricted To Side</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#getPredicate <em>Predicate</em>}</li>
@@ -30,7 +30,6 @@ public interface RelationTypeRestriction extends ObjectRestriction
 {
   /**
    * Returns the value of the '<em><b>Relation Type Match</b></em>' attribute.
-   * The literals are from the enumeration {@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeMatch}.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Relation Type Match</em>' attribute isn't clear,
@@ -38,24 +37,22 @@ public interface RelationTypeRestriction extends ObjectRestriction
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Relation Type Match</em>' attribute.
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeMatch
-   * @see #setRelationTypeMatch(RelationTypeMatch)
+   * @see #setRelationTypeMatch(boolean)
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getRelationTypeRestriction_RelationTypeMatch()
    * @model
    * @generated
    */
-  RelationTypeMatch getRelationTypeMatch();
+  boolean isRelationTypeMatch();
 
   /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#getRelationTypeMatch <em>Relation Type Match</em>}' attribute.
+   * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#isRelationTypeMatch <em>Relation Type Match</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Relation Type Match</em>' attribute.
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeMatch
-   * @see #getRelationTypeMatch()
+   * @see #isRelationTypeMatch()
    * @generated
    */
-  void setRelationTypeMatch(RelationTypeMatch value);
+  void setRelationTypeMatch(boolean value);
 
   /**
    * Returns the value of the '<em><b>Relation Type Ref</b></em>' reference.

@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.Import;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.Role;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
@@ -46,6 +47,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslImpl#getEnumOverrides <em>Enum Overrides</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslImpl#getArtifactMatchRefs <em>Artifact Match Refs</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslImpl#getAccessDeclarations <em>Access Declarations</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslImpl#getRoleDeclarations <em>Role Declarations</em>}</li>
  * </ul>
  * </p>
  *
@@ -132,6 +134,16 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
    * @ordered
    */
   protected EList<AccessContext> accessDeclarations;
+
+  /**
+   * The cached value of the '{@link #getRoleDeclarations() <em>Role Declarations</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getRoleDeclarations()
+   * @generated
+   * @ordered
+   */
+  protected EList<Role> roleDeclarations;
 
   /**
    * <!-- begin-user-doc -->
@@ -271,6 +283,20 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
    * <!-- end-user-doc -->
    * @generated
    */
+  public EList<Role> getRoleDeclarations()
+  {
+    if (roleDeclarations == null)
+    {
+      roleDeclarations = new EObjectContainmentEList<Role>(Role.class, this, OseeDslPackage.OSEE_DSL__ROLE_DECLARATIONS);
+    }
+    return roleDeclarations;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
@@ -292,6 +318,8 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
         return ((InternalEList<?>)getArtifactMatchRefs()).basicRemove(otherEnd, msgs);
       case OseeDslPackage.OSEE_DSL__ACCESS_DECLARATIONS:
         return ((InternalEList<?>)getAccessDeclarations()).basicRemove(otherEnd, msgs);
+      case OseeDslPackage.OSEE_DSL__ROLE_DECLARATIONS:
+        return ((InternalEList<?>)getRoleDeclarations()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -322,6 +350,8 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
         return getArtifactMatchRefs();
       case OseeDslPackage.OSEE_DSL__ACCESS_DECLARATIONS:
         return getAccessDeclarations();
+      case OseeDslPackage.OSEE_DSL__ROLE_DECLARATIONS:
+        return getRoleDeclarations();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -369,6 +399,10 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
         getAccessDeclarations().clear();
         getAccessDeclarations().addAll((Collection<? extends AccessContext>)newValue);
         return;
+      case OseeDslPackage.OSEE_DSL__ROLE_DECLARATIONS:
+        getRoleDeclarations().clear();
+        getRoleDeclarations().addAll((Collection<? extends Role>)newValue);
+        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -407,6 +441,9 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
       case OseeDslPackage.OSEE_DSL__ACCESS_DECLARATIONS:
         getAccessDeclarations().clear();
         return;
+      case OseeDslPackage.OSEE_DSL__ROLE_DECLARATIONS:
+        getRoleDeclarations().clear();
+        return;
     }
     super.eUnset(featureID);
   }
@@ -437,6 +474,8 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
         return artifactMatchRefs != null && !artifactMatchRefs.isEmpty();
       case OseeDslPackage.OSEE_DSL__ACCESS_DECLARATIONS:
         return accessDeclarations != null && !accessDeclarations.isEmpty();
+      case OseeDslPackage.OSEE_DSL__ROLE_DECLARATIONS:
+        return roleDeclarations != null && !roleDeclarations.isEmpty();
     }
     return super.eIsSet(featureID);
   }

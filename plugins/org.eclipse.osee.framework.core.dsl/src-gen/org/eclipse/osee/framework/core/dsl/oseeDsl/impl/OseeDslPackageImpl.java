@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeElement;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OverrideOption;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.ReferencedContext;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationMultiplicityEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactPredicate;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactTypePredicate;
@@ -41,7 +42,9 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeMatch;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypePredicate;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RemoveEnum;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.Role;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.SimpleCondition;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.UsersAndGroups;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
@@ -186,6 +189,27 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * @generated
    */
   private EClass xArtifactMatcherEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass roleEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass referencedContextEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass usersAndGroupsEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -464,6 +488,16 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
   public EReference getOseeDsl_AccessDeclarations()
   {
     return (EReference)oseeDslEClass.getEStructuralFeatures().get(7);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getOseeDsl_RoleDeclarations()
+  {
+    return (EReference)oseeDslEClass.getEStructuralFeatures().get(8);
   }
 
   /**
@@ -1081,6 +1115,96 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getRole()
+  {
+    return roleEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRole_Name()
+  {
+    return (EAttribute)roleEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getRole_SuperRoles()
+  {
+    return (EReference)roleEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getRole_UsersAndGroups()
+  {
+    return (EReference)roleEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getRole_ReferencedContexts()
+  {
+    return (EReference)roleEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getReferencedContext()
+  {
+    return referencedContextEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getReferencedContext_AccessContextRef()
+  {
+    return (EAttribute)referencedContextEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getUsersAndGroups()
+  {
+    return usersAndGroupsEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getUsersAndGroups_UserOrGroupGuid()
+  {
+    return (EAttribute)usersAndGroupsEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getAccessContext()
   {
     return accessContextEClass;
@@ -1515,6 +1639,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     createEReference(oseeDslEClass, OSEE_DSL__ENUM_OVERRIDES);
     createEReference(oseeDslEClass, OSEE_DSL__ARTIFACT_MATCH_REFS);
     createEReference(oseeDslEClass, OSEE_DSL__ACCESS_DECLARATIONS);
+    createEReference(oseeDslEClass, OSEE_DSL__ROLE_DECLARATIONS);
 
     importEClass = createEClass(IMPORT);
     createEAttribute(importEClass, IMPORT__IMPORT_URI);
@@ -1593,6 +1718,18 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     createEAttribute(xArtifactMatcherEClass, XARTIFACT_MATCHER__NAME);
     createEReference(xArtifactMatcherEClass, XARTIFACT_MATCHER__CONDITIONS);
     createEAttribute(xArtifactMatcherEClass, XARTIFACT_MATCHER__OPERATORS);
+
+    roleEClass = createEClass(ROLE);
+    createEAttribute(roleEClass, ROLE__NAME);
+    createEReference(roleEClass, ROLE__SUPER_ROLES);
+    createEReference(roleEClass, ROLE__USERS_AND_GROUPS);
+    createEReference(roleEClass, ROLE__REFERENCED_CONTEXTS);
+
+    referencedContextEClass = createEClass(REFERENCED_CONTEXT);
+    createEAttribute(referencedContextEClass, REFERENCED_CONTEXT__ACCESS_CONTEXT_REF);
+
+    usersAndGroupsEClass = createEClass(USERS_AND_GROUPS);
+    createEAttribute(usersAndGroupsEClass, USERS_AND_GROUPS__USER_OR_GROUP_GUID);
 
     accessContextEClass = createEClass(ACCESS_CONTEXT);
     createEAttribute(accessContextEClass, ACCESS_CONTEXT__NAME);
@@ -1704,6 +1841,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     initEReference(getOseeDsl_EnumOverrides(), this.getXOseeEnumOverride(), null, "enumOverrides", null, 0, -1, OseeDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getOseeDsl_ArtifactMatchRefs(), this.getXArtifactMatcher(), null, "artifactMatchRefs", null, 0, -1, OseeDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getOseeDsl_AccessDeclarations(), this.getAccessContext(), null, "accessDeclarations", null, 0, -1, OseeDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getOseeDsl_RoleDeclarations(), this.getRole(), null, "roleDeclarations", null, 0, -1, OseeDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(importEClass, Import.class, "Import", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getImport_ImportURI(), ecorePackage.getEString(), "importURI", null, 0, 1, Import.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1783,6 +1921,18 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     initEReference(getXArtifactMatcher_Conditions(), this.getCondition(), null, "conditions", null, 0, -1, XArtifactMatcher.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getXArtifactMatcher_Operators(), this.getXLogicOperator(), "operators", null, 0, -1, XArtifactMatcher.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    initEClass(roleEClass, Role.class, "Role", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getRole_Name(), ecorePackage.getEString(), "name", null, 0, 1, Role.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getRole_SuperRoles(), this.getRole(), null, "superRoles", null, 0, -1, Role.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getRole_UsersAndGroups(), this.getUsersAndGroups(), null, "usersAndGroups", null, 0, -1, Role.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getRole_ReferencedContexts(), this.getReferencedContext(), null, "referencedContexts", null, 0, -1, Role.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(referencedContextEClass, ReferencedContext.class, "ReferencedContext", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getReferencedContext_AccessContextRef(), ecorePackage.getEString(), "accessContextRef", null, 0, 1, ReferencedContext.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(usersAndGroupsEClass, UsersAndGroups.class, "UsersAndGroups", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getUsersAndGroups_UserOrGroupGuid(), ecorePackage.getEString(), "userOrGroupGuid", null, 0, 1, UsersAndGroups.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     initEClass(accessContextEClass, AccessContext.class, "AccessContext", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getAccessContext_Name(), ecorePackage.getEString(), "name", null, 0, 1, AccessContext.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAccessContext_SuperAccessContexts(), this.getAccessContext(), null, "superAccessContexts", null, 0, -1, AccessContext.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1822,7 +1972,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     initEReference(getLegacyRelationTypeRestriction_ArtifactMatcherRef(), this.getXArtifactMatcher(), null, "artifactMatcherRef", null, 0, 1, LegacyRelationTypeRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(relationTypeRestrictionEClass, RelationTypeRestriction.class, "RelationTypeRestriction", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getRelationTypeRestriction_RelationTypeMatch(), this.getRelationTypeMatch(), "relationTypeMatch", null, 0, 1, RelationTypeRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRelationTypeRestriction_RelationTypeMatch(), ecorePackage.getEBoolean(), "relationTypeMatch", null, 0, 1, RelationTypeRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getRelationTypeRestriction_RelationTypeRef(), this.getXRelationType(), null, "relationTypeRef", null, 0, 1, RelationTypeRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getRelationTypeRestriction_RestrictedToSide(), this.getXRelationSideEnum(), "restrictedToSide", null, 0, 1, RelationTypeRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getRelationTypeRestriction_Predicate(), this.getRelationTypePredicate(), null, "predicate", null, 0, 1, RelationTypeRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

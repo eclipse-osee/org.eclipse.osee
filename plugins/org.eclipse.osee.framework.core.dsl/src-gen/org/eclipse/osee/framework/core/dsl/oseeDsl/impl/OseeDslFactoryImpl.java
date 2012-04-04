@@ -87,6 +87,9 @@ public class OseeDslFactoryImpl extends EFactoryImpl implements OseeDslFactory
       case OseeDslPackage.SIMPLE_CONDITION: return createSimpleCondition();
       case OseeDslPackage.COMPOUND_CONDITION: return createCompoundCondition();
       case OseeDslPackage.XARTIFACT_MATCHER: return createXArtifactMatcher();
+      case OseeDslPackage.ROLE: return createRole();
+      case OseeDslPackage.REFERENCED_CONTEXT: return createReferencedContext();
+      case OseeDslPackage.USERS_AND_GROUPS: return createUsersAndGroups();
       case OseeDslPackage.ACCESS_CONTEXT: return createAccessContext();
       case OseeDslPackage.HIERARCHY_RESTRICTION: return createHierarchyRestriction();
       case OseeDslPackage.RELATION_TYPE_ARTIFACT_TYPE_PREDICATE: return createRelationTypeArtifactTypePredicate();
@@ -357,6 +360,39 @@ public class OseeDslFactoryImpl extends EFactoryImpl implements OseeDslFactory
   {
     XArtifactMatcherImpl xArtifactMatcher = new XArtifactMatcherImpl();
     return xArtifactMatcher;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Role createRole()
+  {
+    RoleImpl role = new RoleImpl();
+    return role;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ReferencedContext createReferencedContext()
+  {
+    ReferencedContextImpl referencedContext = new ReferencedContextImpl();
+    return referencedContext;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public UsersAndGroups createUsersAndGroups()
+  {
+    UsersAndGroupsImpl usersAndGroups = new UsersAndGroupsImpl();
+    return usersAndGroups;
   }
 
   /**

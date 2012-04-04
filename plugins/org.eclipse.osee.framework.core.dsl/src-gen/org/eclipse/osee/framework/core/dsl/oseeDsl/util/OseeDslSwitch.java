@@ -216,6 +216,27 @@ public class OseeDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case OseeDslPackage.ROLE:
+      {
+        Role role = (Role)theEObject;
+        T result = caseRole(role);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case OseeDslPackage.REFERENCED_CONTEXT:
+      {
+        ReferencedContext referencedContext = (ReferencedContext)theEObject;
+        T result = caseReferencedContext(referencedContext);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case OseeDslPackage.USERS_AND_GROUPS:
+      {
+        UsersAndGroups usersAndGroups = (UsersAndGroups)theEObject;
+        T result = caseUsersAndGroups(usersAndGroups);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case OseeDslPackage.ACCESS_CONTEXT:
       {
         AccessContext accessContext = (AccessContext)theEObject;
@@ -587,6 +608,54 @@ public class OseeDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseXArtifactMatcher(XArtifactMatcher object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Role</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Role</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRole(Role object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Referenced Context</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Referenced Context</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseReferencedContext(ReferencedContext object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Users And Groups</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Users And Groups</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseUsersAndGroups(UsersAndGroups object)
   {
     return null;
   }

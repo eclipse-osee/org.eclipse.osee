@@ -28,9 +28,6 @@ artifactType "Software Requirement" extends "Artifact" {
 	uuid 0x0000000000000002
 }
 
-artifactMatcher "Software Items" where artifactGuid EQ "AAMFEcWy0xc4e3tcem99";
-artifactMatcher "Systems" where branchName LIKE "\\w+";
-artifactMatcher "SubSystems" where artifactName EQ "xx";
 accessContext "System Context" {
 	guid "AAMFEcWy0xc4e3tcem11";
 	childrenOf "Software Items" {
@@ -55,3 +52,7 @@ accessContext "subsystem.requirement.writer" extends "System Context" {
 	ALLOW edit attributeType "Qualification Method" of artifactType "Software Requirement";
 	DENY edit relationType "Requirement Relation" SIDE_A;
 }
+
+artifactMatcher "Software Items" where artifactGuid EQ "AAMFEcWy0xc4e3tcem99";
+artifactMatcher "Systems" where branchName LIKE "\\w+";
+artifactMatcher "SubSystems" where artifactName EQ "xx";

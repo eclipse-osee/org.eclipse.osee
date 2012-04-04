@@ -38,6 +38,7 @@ public class OseeDslParser extends AbstractContentAssistParser {
 				private static final long serialVersionUID = 1L;
 				{
 					put(grammarAccess.getOseeDslAccess().getAlternatives_1(), "rule__OseeDsl__Alternatives_1");
+					put(grammarAccess.getOseeDslAccess().getAlternatives_2(), "rule__OseeDsl__Alternatives_2");
 					put(grammarAccess.getOseeElementAccess().getAlternatives(), "rule__OseeElement__Alternatives");
 					put(grammarAccess.getOseeTypeAccess().getAlternatives(), "rule__OseeType__Alternatives");
 					put(grammarAccess.getXAttributeTypeAccess().getDataProviderAlternatives_9_0(), "rule__XAttributeType__DataProviderAlternatives_9_0");
@@ -48,6 +49,7 @@ public class OseeDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getRelationOrderTypeAccess().getAlternatives(), "rule__RelationOrderType__Alternatives");
 					put(grammarAccess.getCONDITION_VALUEAccess().getAlternatives(), "rule__CONDITION_VALUE__Alternatives");
 					put(grammarAccess.getConditionAccess().getAlternatives(), "rule__Condition__Alternatives");
+					put(grammarAccess.getRoleAccess().getAlternatives_4(), "rule__Role__Alternatives_4");
 					put(grammarAccess.getAccessContextAccess().getAlternatives_7(), "rule__AccessContext__Alternatives_7");
 					put(grammarAccess.getRelationTypePredicateAccess().getAlternatives(), "rule__RelationTypePredicate__Alternatives");
 					put(grammarAccess.getObjectRestrictionAccess().getAlternatives(), "rule__ObjectRestriction__Alternatives");
@@ -92,6 +94,10 @@ public class OseeDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getCompoundConditionAccess().getGroup_2(), "rule__CompoundCondition__Group_2__0");
 					put(grammarAccess.getXArtifactMatcherAccess().getGroup(), "rule__XArtifactMatcher__Group__0");
 					put(grammarAccess.getXArtifactMatcherAccess().getGroup_4(), "rule__XArtifactMatcher__Group_4__0");
+					put(grammarAccess.getRoleAccess().getGroup(), "rule__Role__Group__0");
+					put(grammarAccess.getRoleAccess().getGroup_2(), "rule__Role__Group_2__0");
+					put(grammarAccess.getReferencedContextAccess().getGroup(), "rule__ReferencedContext__Group__0");
+					put(grammarAccess.getUsersAndGroupsAccess().getGroup(), "rule__UsersAndGroups__Group__0");
 					put(grammarAccess.getAccessContextAccess().getGroup(), "rule__AccessContext__Group__0");
 					put(grammarAccess.getAccessContextAccess().getGroup_2(), "rule__AccessContext__Group_2__0");
 					put(grammarAccess.getHierarchyRestrictionAccess().getGroup(), "rule__HierarchyRestriction__Group__0");
@@ -110,8 +116,9 @@ public class OseeDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getOseeDslAccess().getAttributeTypesAssignment_1_2(), "rule__OseeDsl__AttributeTypesAssignment_1_2");
 					put(grammarAccess.getOseeDslAccess().getEnumTypesAssignment_1_3(), "rule__OseeDsl__EnumTypesAssignment_1_3");
 					put(grammarAccess.getOseeDslAccess().getEnumOverridesAssignment_1_4(), "rule__OseeDsl__EnumOverridesAssignment_1_4");
-					put(grammarAccess.getOseeDslAccess().getArtifactMatchRefsAssignment_2(), "rule__OseeDsl__ArtifactMatchRefsAssignment_2");
-					put(grammarAccess.getOseeDslAccess().getAccessDeclarationsAssignment_3(), "rule__OseeDsl__AccessDeclarationsAssignment_3");
+					put(grammarAccess.getOseeDslAccess().getArtifactMatchRefsAssignment_2_0(), "rule__OseeDsl__ArtifactMatchRefsAssignment_2_0");
+					put(grammarAccess.getOseeDslAccess().getAccessDeclarationsAssignment_2_1(), "rule__OseeDsl__AccessDeclarationsAssignment_2_1");
+					put(grammarAccess.getOseeDslAccess().getRoleDeclarationsAssignment_2_2(), "rule__OseeDsl__RoleDeclarationsAssignment_2_2");
 					put(grammarAccess.getImportAccess().getImportURIAssignment_1(), "rule__Import__ImportURIAssignment_1");
 					put(grammarAccess.getXArtifactTypeAccess().getAbstractAssignment_0(), "rule__XArtifactType__AbstractAssignment_0");
 					put(grammarAccess.getXArtifactTypeAccess().getNameAssignment_2(), "rule__XArtifactType__NameAssignment_2");
@@ -168,6 +175,12 @@ public class OseeDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getXArtifactMatcherAccess().getConditionsAssignment_3(), "rule__XArtifactMatcher__ConditionsAssignment_3");
 					put(grammarAccess.getXArtifactMatcherAccess().getOperatorsAssignment_4_0(), "rule__XArtifactMatcher__OperatorsAssignment_4_0");
 					put(grammarAccess.getXArtifactMatcherAccess().getConditionsAssignment_4_1(), "rule__XArtifactMatcher__ConditionsAssignment_4_1");
+					put(grammarAccess.getRoleAccess().getNameAssignment_1(), "rule__Role__NameAssignment_1");
+					put(grammarAccess.getRoleAccess().getSuperRolesAssignment_2_1(), "rule__Role__SuperRolesAssignment_2_1");
+					put(grammarAccess.getRoleAccess().getUsersAndGroupsAssignment_4_0(), "rule__Role__UsersAndGroupsAssignment_4_0");
+					put(grammarAccess.getRoleAccess().getReferencedContextsAssignment_4_1(), "rule__Role__ReferencedContextsAssignment_4_1");
+					put(grammarAccess.getReferencedContextAccess().getAccessContextRefAssignment_1(), "rule__ReferencedContext__AccessContextRefAssignment_1");
+					put(grammarAccess.getUsersAndGroupsAccess().getUserOrGroupGuidAssignment_1(), "rule__UsersAndGroups__UserOrGroupGuidAssignment_1");
 					put(grammarAccess.getAccessContextAccess().getNameAssignment_1(), "rule__AccessContext__NameAssignment_1");
 					put(grammarAccess.getAccessContextAccess().getSuperAccessContextsAssignment_2_1(), "rule__AccessContext__SuperAccessContextsAssignment_2_1");
 					put(grammarAccess.getAccessContextAccess().getGuidAssignment_5(), "rule__AccessContext__GuidAssignment_5");

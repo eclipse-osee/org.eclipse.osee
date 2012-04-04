@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslFactory;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactPredicate;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactTypePredicate;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeMatch;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
@@ -229,7 +228,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    public void testProcessRelationWithRelationTypeAll() throws OseeCoreException {
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
-      restriction.setRelationTypeMatch(RelationTypeMatch.ALL);
+      restriction.setRelationTypeMatch(true);
       restriction.setRestrictedToSide(XRelationSideEnum.BOTH);
 
       IRelationType relationType = CoreRelationTypes.Default_Hierarchical__Child;
@@ -279,7 +278,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
-      restriction.setRelationTypeMatch(RelationTypeMatch.ALL);
+      restriction.setRelationTypeMatch(true);
 
       RelationTypeArtifactTypePredicate predicate = OseeDslFactory.eINSTANCE.createRelationTypeArtifactTypePredicate();
       predicate.setArtifactTypeRef(artifactTypeRef);
