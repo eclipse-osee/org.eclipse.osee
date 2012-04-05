@@ -280,6 +280,20 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
       return toReturn;
    }
 
+   /**
+    * @return Returns a list of parents starting with this Artifact and ending with the same Artifact that is returned
+    * from getArtifactRoot().
+    * @throws OseeCoreException
+    */
+   public final List<Artifact> getAncestors() throws OseeCoreException {
+      List<Artifact> ancestors = new ArrayList<Artifact>();
+
+      for (Artifact parent = getParent(); parent != null; parent = parent.getParent()) {
+         ancestors.add(parent);
+      }
+      return ancestors;
+   }
+
    public final Attribute<?> getAttributeById(int attrId, boolean includeDeleted) throws OseeCoreException {
       for (Attribute<?> attribute : getAttributes(includeDeleted)) {
          if (attribute.getId() == attrId) {
