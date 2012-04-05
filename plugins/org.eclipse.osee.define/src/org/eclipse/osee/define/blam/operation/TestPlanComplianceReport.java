@@ -50,7 +50,7 @@ public final class TestPlanComplianceReport extends AbstractBlam {
    private int previousArtifactId = initCase;
    private String[] testPlanStorageArray = null;
    private Map<Integer, StringBuilder> testResultStorage = null;
-   private final String[] columnHeaders = {
+   private final Object[] columnHeaders = {
       "Test Plan & Paragraph",
       "Perf Spec Requirement(s)",
       "Test Procedure",
@@ -285,7 +285,7 @@ public final class TestPlanComplianceReport extends AbstractBlam {
       if (testPlanStorageArray != null) {
          for (int testIndex = 0; testIndex < testProcedureOrderList.size(); testIndex++) {
             int testProcId = testProcedureOrderList.get(testIndex);
-            String[] testProcedureArr = testProcedureStorage.remove(testProcedureOrderList.get(testIndex));
+            Object[] testProcedureArr = testProcedureStorage.remove(testProcedureOrderList.get(testIndex));
             if (testIndex == 0) {
                testProcedureArr[0] = testPlanStorageArray[0];
                testProcedureArr[1] = testPlanStorageArray[1];
@@ -307,7 +307,7 @@ public final class TestPlanComplianceReport extends AbstractBlam {
 
    private void writeSimpleRows() throws IOException {
       if (simpleDataStorageList != null) {
-         for (String[] rowToWrite : simpleDataStorageList) {
+         for (Object[] rowToWrite : simpleDataStorageList) {
             excelWriter.writeRow(rowToWrite);
          }
          simpleDataStorageList.clear();
@@ -334,10 +334,10 @@ public final class TestPlanComplianceReport extends AbstractBlam {
    }
 
    private void initReport() throws IOException {
-      excelWriter = new ExcelXmlWriter(defaultWriter, ExcelXmlWriter.DEFAULT_STYLE);
+      excelWriter = new ExcelXmlWriter(defaultWriter);
       excelWriter.startSheet(getName(), 200);
       excelWriter.setRowHeight(80.0);
-      excelWriter.setColumnWidth(150.0);
+      excelWriter.setAllColumnWidth(150.0);
       excelWriter.writeRow(columnHeaders);
    }
 
