@@ -24,8 +24,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
@@ -523,7 +525,11 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    }
 
    public Element getElement(List<Object> elementPath, DataType type) {
-      return getElement(elementPath).switchMessages(this.getMessageTypeAssociation(type));
+	  Element element = getElement(elementPath);
+	  if (element == null) {
+		  return null;
+	  }
+      return element.switchMessages(this.getMessageTypeAssociation(type));
    }
 
    /**
