@@ -61,6 +61,10 @@ public class ScriptStreamOutLogHandler extends Handler {
       }
    }
 
+   public ScriptStreamOutLogHandler(File outFile) {
+      this(outFile, "DISTRO_STATEMENT_HERE");
+   }
+
    public String getXSLTransformName() {
       return "outputNormal.xsl";
    }
