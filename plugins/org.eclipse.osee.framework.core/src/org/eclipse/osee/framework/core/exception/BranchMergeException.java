@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
+import org.eclipse.core.runtime.IStatus;
+
 /**
  * @author Donald G. Dunne
  */
@@ -19,5 +21,21 @@ public class BranchMergeException extends OseeCoreException {
 
    public BranchMergeException(String message, Object... args) {
       super(message, args);
+   }
+
+   public BranchMergeException(IStatus status) {
+      super(status);
+   }
+
+   public BranchMergeException(String message, Throwable cause) {
+      super(message, cause);
+   }
+
+   public BranchMergeException(Throwable cause, String message, Object... args) {
+      super(cause, message, args);
+   }
+
+   public BranchMergeException(Throwable cause) {
+      super(cause);
    }
 }

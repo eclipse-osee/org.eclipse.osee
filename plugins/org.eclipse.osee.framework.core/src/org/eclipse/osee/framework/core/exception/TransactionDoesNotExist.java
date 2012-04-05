@@ -10,10 +10,28 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
+import org.eclipse.core.runtime.IStatus;
+
 /**
  * @author Ryan D. Brooks
  */
 public class TransactionDoesNotExist extends OseeCoreException {
+   public TransactionDoesNotExist(IStatus status) {
+      super(status);
+   }
+
+   public TransactionDoesNotExist(String message, Throwable cause) {
+      super(message, cause);
+   }
+
+   public TransactionDoesNotExist(Throwable cause, String message, Object... args) {
+      super(cause, message, args);
+   }
+
+   public TransactionDoesNotExist(Throwable cause) {
+      super(cause);
+   }
+
    private static final long serialVersionUID = -6197324585250025613L;
 
    public TransactionDoesNotExist(String message, Object... args) {

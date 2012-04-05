@@ -11,8 +11,9 @@
 
 package org.eclipse.osee.framework.core.data;
 
-import org.eclipse.osee.framework.core.internal.Activator;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.Version;
 
 /**
@@ -26,25 +27,30 @@ public final class OseeCodeVersion {
    }
 
    /**
-    * Gets version
-    * 
-    * @return the version
+    * @return version <b>V</b> from <code>-Dosee.version <b>V</b></code> or pull one from
+    * <code>OseeCodeVersion.getBundleVersion()</code>
     */
    public static String getVersion() {
-      if (!System.getProperty("osee.version", "").equals("")) {
-         return System.getProperty("osee.version", "");
+      String version = System.getProperty("osee.version", "");
+      if (!Strings.isValid(version)) {
+         version = getBundleVersion();
+         if (isDevelopment(version)) {
+            version = "Development";
+         }
       }
-      String bundleVersion = getBundleVersion();
-      if (isDevelopment(bundleVersion)) {
-         return "Development";
-      }
-      return bundleVersion;
+      return version;
    }
 
+   /**
+    * @return bundle version or ""
+    */
    public static String getBundleVersion() {
-      Bundle bundle = Activator.getBundleContext().getBundle();
-      Version version = bundle.getVersion();
-      return version.toString();
+      Bundle bundle = FrameworkUtil.getBundle(OseeCodeVersion.class);
+      Version version = null;
+      if (bundle != null) {
+         version = bundle.getVersion();
+      }
+      return version != null ? version.toString() : "";
    }
 
    public static boolean isDevelopment() {
@@ -53,6 +59,6 @@ public final class OseeCodeVersion {
 
    private static boolean isDevelopment(String version) {
       // The version of this bundle ends with .qualifier until it is replaced by PDE build with a time stamp
-      return version.endsWith("qualifier");
+      return !Strings.isValid(version) || version.endsWith("qualifier");
    }
 }

@@ -11,10 +11,28 @@
 
 package org.eclipse.osee.framework.core.exception;
 
+import org.eclipse.core.runtime.IStatus;
+
 /**
  * @author Donald G. Dunne
  */
 public class MultipleAttributesExist extends OseeCoreException {
+
+   public MultipleAttributesExist(IStatus status) {
+      super(status);
+   }
+
+   public MultipleAttributesExist(String message, Throwable cause) {
+      super(message, cause);
+   }
+
+   public MultipleAttributesExist(Throwable cause, String message, Object... args) {
+      super(cause, message, args);
+   }
+
+   public MultipleAttributesExist(Throwable cause) {
+      super(cause);
+   }
 
    private static final long serialVersionUID = 1L;
 

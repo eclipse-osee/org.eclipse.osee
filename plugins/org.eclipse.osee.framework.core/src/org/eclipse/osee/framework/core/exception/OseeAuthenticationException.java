@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
+import org.eclipse.core.runtime.IStatus;
+
 /**
  * @author Roberto E. Escobar
  */
@@ -29,6 +31,26 @@ public class OseeAuthenticationException extends OseeCoreException {
 
    public OseeAuthenticationException(String message, Object... args) {
       super(message, args);
+      this.errorCode = null;
+   }
+
+   public OseeAuthenticationException(IStatus status) {
+      super(status);
+      this.errorCode = null;
+   }
+
+   public OseeAuthenticationException(String message, Throwable cause) {
+      super(message, cause);
+      this.errorCode = null;
+   }
+
+   public OseeAuthenticationException(Throwable cause, String message, Object... args) {
+      super(cause, message, args);
+      this.errorCode = null;
+   }
+
+   public OseeAuthenticationException(Throwable cause) {
+      super(cause);
       this.errorCode = null;
    }
 

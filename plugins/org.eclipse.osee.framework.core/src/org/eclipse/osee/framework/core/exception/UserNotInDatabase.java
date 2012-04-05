@@ -11,11 +11,29 @@
 
 package org.eclipse.osee.framework.core.exception;
 
+import org.eclipse.core.runtime.IStatus;
+
 /**
  * @author Ryan D. Brooks
  * @author Donald G. Dunne
  */
 public class UserNotInDatabase extends OseeCoreException {
+   public UserNotInDatabase(IStatus status) {
+      super(status);
+   }
+
+   public UserNotInDatabase(String message, Throwable cause) {
+      super(message, cause);
+   }
+
+   public UserNotInDatabase(Throwable cause, String message, Object... args) {
+      super(cause, message, args);
+   }
+
+   public UserNotInDatabase(Throwable cause) {
+      super(cause);
+   }
+
    private static final long serialVersionUID = 1L;
 
    public UserNotInDatabase(String message, Object... args) {

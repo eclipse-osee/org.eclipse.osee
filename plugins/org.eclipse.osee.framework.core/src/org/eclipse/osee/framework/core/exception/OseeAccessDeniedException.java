@@ -10,10 +10,28 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
+import org.eclipse.core.runtime.IStatus;
+
 /**
  * @author Roberto E. Escobar
  */
 public class OseeAccessDeniedException extends OseeCoreException {
+
+   public OseeAccessDeniedException(IStatus status) {
+      super(status);
+   }
+
+   public OseeAccessDeniedException(String message, Throwable cause) {
+      super(message, cause);
+   }
+
+   public OseeAccessDeniedException(Throwable cause, String message, Object... args) {
+      super(cause, message, args);
+   }
+
+   public OseeAccessDeniedException(Throwable cause) {
+      super(cause);
+   }
 
    private static final long serialVersionUID = 1L;
 

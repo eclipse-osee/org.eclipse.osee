@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
+import org.eclipse.core.runtime.IStatus;
+
 /**
  * @author Donald G. Dunne
  */
@@ -20,4 +22,21 @@ public class OseeArgumentException extends OseeCoreException {
    public OseeArgumentException(String message, Object... args) {
       super(message, args);
    }
+
+   public OseeArgumentException(IStatus status) {
+      super(status);
+   }
+
+   public OseeArgumentException(String message, Throwable cause) {
+      super(message, cause);
+   }
+
+   public OseeArgumentException(Throwable cause, String message, Object... args) {
+      super(cause, message, args);
+   }
+
+   public OseeArgumentException(Throwable cause) {
+      super(cause);
+   }
+
 }

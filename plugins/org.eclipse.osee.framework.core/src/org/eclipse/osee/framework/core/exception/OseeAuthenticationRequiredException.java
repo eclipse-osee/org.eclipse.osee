@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
+import org.eclipse.core.runtime.IStatus;
+
 /**
  * @author Roberto E. Escobar
  */
@@ -19,5 +21,21 @@ public class OseeAuthenticationRequiredException extends OseeDataStoreException 
 
    public OseeAuthenticationRequiredException(String message, Object... args) {
       super(message, args);
+   }
+
+   public OseeAuthenticationRequiredException(IStatus status) {
+      super(status);
+   }
+
+   public OseeAuthenticationRequiredException(String message, Throwable cause) {
+      super(message, cause);
+   }
+
+   public OseeAuthenticationRequiredException(Throwable cause, String message, Object... args) {
+      super(cause, message, args);
+   }
+
+   public OseeAuthenticationRequiredException(Throwable cause) {
+      super(cause);
    }
 }

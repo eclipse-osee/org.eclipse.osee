@@ -10,7 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
+import org.eclipse.core.runtime.IStatus;
+
 public class OseeInvalidInheritanceException extends OseeCoreException {
+
+   public OseeInvalidInheritanceException(IStatus status) {
+      super(status);
+   }
+
+   public OseeInvalidInheritanceException(String message, Throwable cause) {
+      super(message, cause);
+   }
+
+   public OseeInvalidInheritanceException(Throwable cause, String message, Object... args) {
+      super(cause, message, args);
+   }
+
+   public OseeInvalidInheritanceException(Throwable cause) {
+      super(cause);
+   }
 
    private static final long serialVersionUID = -4553986819597790648L;
 

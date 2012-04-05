@@ -10,10 +10,28 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
+import org.eclipse.core.runtime.IStatus;
+
 /**
  * @author Ryan D. Brooks
  */
 public class OseeTypeDoesNotExist extends OseeCoreException {
+
+   public OseeTypeDoesNotExist(IStatus status) {
+      super(status);
+   }
+
+   public OseeTypeDoesNotExist(String message, Throwable cause) {
+      super(message, cause);
+   }
+
+   public OseeTypeDoesNotExist(Throwable cause, String message, Object... args) {
+      super(cause, message, args);
+   }
+
+   public OseeTypeDoesNotExist(Throwable cause) {
+      super(cause);
+   }
 
    private static final long serialVersionUID = 1L;
 

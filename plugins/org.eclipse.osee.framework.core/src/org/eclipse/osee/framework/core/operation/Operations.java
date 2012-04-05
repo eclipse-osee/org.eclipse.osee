@@ -54,8 +54,9 @@ public final class Operations {
     */
    public static void checkForErrorStatus(IStatus status) throws OseeCoreException {
       if (status.getSeverity() == IStatus.ERROR) {
-         if (status.getException() != null) {
-            OseeExceptions.wrapAndThrow(status.getException());
+         Throwable th = status.getException();
+         if (th != null) {
+            OseeExceptions.wrapAndThrow(th);
          } else {
             throw new OseeStateException(status.getMessage());
          }

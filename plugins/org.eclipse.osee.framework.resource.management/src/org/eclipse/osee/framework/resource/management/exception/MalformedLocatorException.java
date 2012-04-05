@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.resource.management.exception;
 
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -29,6 +30,14 @@ public class MalformedLocatorException extends OseeCoreException {
 
    public MalformedLocatorException(Throwable cause) {
       super(cause);
+   }
+
+   public MalformedLocatorException(IStatus status) {
+      super(status);
+   }
+
+   public MalformedLocatorException(Throwable cause, String message, Object... args) {
+      super(cause, message, args);
    }
 
 }
