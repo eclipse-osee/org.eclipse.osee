@@ -24,13 +24,11 @@ import org.junit.Test;
 public final class ExcelXmlWriterTest {
 
    private static final String SAMPLE_STYLE = //
-      "<Styles>\n" + //
       "<Style ss:ID=\"Default\" ss:Name=\"Normal\">\n" + //
       "<Alignment ss:Vertical=\"Top\" ss:WrapText=\"1\"/>\n" + //
-      "</Style>\n" + //
-      "</Styles>\n";
+      "</Style>\n";
    private static final String BROKEN_TAGS_STYLE = //
-      "<Styl" + "</Styles>\n";
+      "<Styl" + "</Style>\n";
    private ISheetWriter excelWriter = null;
 
    private static final Pattern INDIVIDUAL_STYLE_REGEX = Pattern.compile("<Style .*</Style>", Pattern.DOTALL);
