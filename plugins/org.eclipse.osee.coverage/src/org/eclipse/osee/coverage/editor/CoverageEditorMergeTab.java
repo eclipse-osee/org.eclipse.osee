@@ -24,6 +24,7 @@ import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.coverage.action.LinkWithImportItemAction;
 import org.eclipse.osee.coverage.action.ShowMergeDetailsAction;
+import org.eclipse.osee.coverage.action.ShowMergeReportAction;
 import org.eclipse.osee.coverage.editor.params.CoverageParameters;
 import org.eclipse.osee.coverage.editor.params.CoverageParametersComposite;
 import org.eclipse.osee.coverage.editor.params.CoverageParametersTextFilter;
@@ -101,7 +102,6 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    private CoverageParametersComposite coverageParametersComposite;
    private CoverageParameters coverageParameters;
    LinkWithImportItemAction linkWithImportItemAction;
-   ShowMergeDetailsAction showMergeDetailsAction;
    private MergeManager mergeManager;
    private boolean loading = false;
    private CoverageParametersTextFilter parametersFilter;
@@ -127,6 +127,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       coverageEditor.getToolkit().adapt(mainComp);
       GridData gd = new GridData(SWT.FILL, SWT.NONE, true, false);
       gd.widthHint = 300;
+      gd.heightHint = 300;
       mainComp.setLayoutData(gd);
 
       CoverageEditorCoverageTab.createBranchLabel(coverageEditor, mainComp);
@@ -280,10 +281,16 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
 
       linkWithImportItemAction.setImportXViewer(xImportViewer2);
 
-      showMergeDetailsAction = new ShowMergeDetailsAction();
+      ShowMergeReportAction showMergeReportAction = new ShowMergeReportAction();
+      showMergeReportAction.setPackageXViewer(xPackageViewer1, coveragePackage);
+      showMergeReportAction.setImportXViewer(xImportViewer2, coverageImport);
+      new ActionContributionItem(showMergeReportAction).fill(rightToolBar, 0);
+
+      ShowMergeDetailsAction showMergeDetailsAction = new ShowMergeDetailsAction();
       showMergeDetailsAction.setPackageXViewer(xPackageViewer1, coveragePackage);
       showMergeDetailsAction.setImportXViewer(xImportViewer2, coverageImport);
       new ActionContributionItem(showMergeDetailsAction).fill(rightToolBar, 0);
+
       new ActionContributionItem(reloadAndDebugAction).fill(rightToolBar, 0);
       new ActionContributionItem(reloadAction).fill(rightToolBar, 0);
       new ActionContributionItem(new RefreshAction(xPackageViewer1)).fill(rightToolBar, 0);
