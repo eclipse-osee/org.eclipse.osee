@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -118,7 +119,10 @@ public final class ViewWordChangeAndDiffTest {
       TestUtil.severeLoggingEnd(severeLoggingMonitor);
    }
 
-   private IOseeBranch getTestBranch() {
+   private IOseeBranch getTestBranch() throws OseeCoreException {
+      if (BranchManager.branchExists(DemoSawBuilds.SAW_Bld_2)) {
+         return DemoSawBuilds.SAW_Bld_2;
+      }
       return DemoSawBuilds.SAW_Bld_1;
    }
 
