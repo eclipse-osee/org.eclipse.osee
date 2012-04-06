@@ -144,7 +144,8 @@ public abstract class CoveragePackageBase extends NamedIdentity<String> implemen
             nameStr = nameStr + "." + name;
          }
          if (coverageUnits.isEmpty()) {
-            CoverageUnit newCoverageUnit = new CoverageUnit(this, nameStr, "", coverageUnitFileContentsProvider);
+            CoverageUnit newCoverageUnit =
+               CoverageUnitFactory.createCoverageUnit(this, nameStr, "", coverageUnitFileContentsProvider);
             newCoverageUnit.setFolder(true);
             newCoverageUnit.setNamespace(nameStr);
             addCoverageUnit(newCoverageUnit);
@@ -180,7 +181,8 @@ public abstract class CoveragePackageBase extends NamedIdentity<String> implemen
             parent = getOrCreateParent(parentNamespace);
          }
          // Create new coverage unit
-         CoverageUnit newCoverageUnit = new CoverageUnit(parent, nameStr, "", coverageUnitFileContentsProvider);
+         CoverageUnit newCoverageUnit =
+            CoverageUnitFactory.createCoverageUnit(parent, nameStr, "", coverageUnitFileContentsProvider);
          newCoverageUnit.setNamespace(nameStr);
          newCoverageUnit.setFolder(true);
          // Add to parent
@@ -301,7 +303,7 @@ public abstract class CoveragePackageBase extends NamedIdentity<String> implemen
    }
 
    public CoverageUnit createCoverageUnit(ICoverage parent, String name, String location) {
-      return new CoverageUnit(parent, name, location, coverageUnitFileContentsProvider);
+      return CoverageUnitFactory.createCoverageUnit(parent, name, location, coverageUnitFileContentsProvider);
    }
 
    public String getEditableReason() {

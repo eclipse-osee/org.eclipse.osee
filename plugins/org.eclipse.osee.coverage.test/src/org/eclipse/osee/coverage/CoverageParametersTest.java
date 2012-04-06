@@ -19,6 +19,7 @@ import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.model.CoverageUnitFactory;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
@@ -44,7 +45,7 @@ public class CoverageParametersTest {
    @Test
    public void testIsAssigneeMatch() throws Exception {
       CoverageParameters coverageParameters = new CoverageParameters(new CoverageImport("test"));
-      CoverageUnit unit = new CoverageUnit(null, "Quark", "C:/UserData", null);
+      CoverageUnit unit = CoverageUnitFactory.createCoverageUnit(null, "Quark", "C:/UserData", null);
       CoverageItem item = new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
 
       // Will match both unit and item cause assignee search not specified
@@ -65,7 +66,7 @@ public class CoverageParametersTest {
    @Test
    public void testIsRationaleMatch() throws Exception {
       CoverageParameters coverageParameters = new CoverageParameters(new CoverageImport("test"));
-      CoverageUnit unit = new CoverageUnit(null, "Quark", "C:/UserData", null);
+      CoverageUnit unit = CoverageUnitFactory.createCoverageUnit(null, "Quark", "C:/UserData", null);
       CoverageItem item = new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
 
       // Will match both unit and item cause Rationale search not specified
@@ -86,7 +87,7 @@ public class CoverageParametersTest {
    @Test
    public void testIsNotesMatch() throws Exception {
       CoverageParameters coverageParameters = new CoverageParameters(new CoverageImport("test"));
-      CoverageUnit unit = new CoverageUnit(null, "Quark", "C:/UserData", null);
+      CoverageUnit unit = CoverageUnitFactory.createCoverageUnit(null, "Quark", "C:/UserData", null);
       CoverageItem item = new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
 
       // Will match both unit and item cause notes search not specified
@@ -111,7 +112,7 @@ public class CoverageParametersTest {
    @Test
    public void testIsCoverageMethodMatch() throws Exception {
       CoverageParameters coverageParameters = new CoverageParameters(new CoverageImport("test"));
-      CoverageUnit unit = new CoverageUnit(null, "Quark", "C:/UserData", null);
+      CoverageUnit unit = CoverageUnitFactory.createCoverageUnit(null, "Quark", "C:/UserData", null);
       CoverageItem item = new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
 
       // Will match both unit and item cause coverageMethod search not specified
@@ -136,7 +137,7 @@ public class CoverageParametersTest {
    @Test
    public void testIsNameMatch() throws Exception {
       CoverageParameters coverageParameters = new CoverageParameters(new CoverageImport("test"));
-      CoverageUnit unit = new CoverageUnit(null, "Quark", "C:/UserData", null);
+      CoverageUnit unit = CoverageUnitFactory.createCoverageUnit(null, "Quark", "C:/UserData", null);
       CoverageItem item = new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
 
       // Will match both unit and item cause name search not specified
@@ -167,7 +168,7 @@ public class CoverageParametersTest {
    @Test
    public void testIsNamespaceMatch() throws Exception {
       CoverageParameters coverageParameters = new CoverageParameters(new CoverageImport("test"));
-      CoverageUnit unit = new CoverageUnit(null, "Quark", "C:/UserData", null);
+      CoverageUnit unit = CoverageUnitFactory.createCoverageUnit(null, "Quark", "C:/UserData", null);
       CoverageItem item = new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
 
       // Will match both unit and item cause Namespace search not specified

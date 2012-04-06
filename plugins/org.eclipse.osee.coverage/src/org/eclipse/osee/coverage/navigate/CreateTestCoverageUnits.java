@@ -16,6 +16,7 @@ import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.model.CoverageUnitFactory;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
@@ -62,11 +63,13 @@ public class CreateTestCoverageUnits extends XNavigateItemAction {
                   throw new OseeStateException("test Coverage Folder already exists; can't create");
                }
             }
-            CoverageUnit topCoverageUnit = new CoverageUnit(coveragePackage, "test", "C:/This is a test", null);
+            CoverageUnit topCoverageUnit =
+               CoverageUnitFactory.createCoverageUnit(coveragePackage, "test", "C:/This is a test", null);
             topCoverageUnit.setNamespace("test");
             topCoverageUnit.setFolder(true);
 
-            CoverageUnit test1CU = new CoverageUnit(topCoverageUnit, "test1.ada", "C:\\UserData\\", null);
+            CoverageUnit test1CU =
+               CoverageUnitFactory.createCoverageUnit(topCoverageUnit, "test1.ada", "C:\\UserData\\", null);
             test1CU.setOrderNumber("1");
             test1CU.setNamespace("test");
             CoverageItem item = new CoverageItem(test1CU, CoverageOptionManager.Exception_Handling, "1");
@@ -76,7 +79,8 @@ public class CreateTestCoverageUnits extends XNavigateItemAction {
             item = new CoverageItem(test1CU, CoverageOptionManager.Not_Covered, "3");
             item.setName("   System.out.println(\"this is a third test\");");
 
-            CoverageUnit test2CU = new CoverageUnit(topCoverageUnit, "test2.ada", "C:\\UserData\\", null);
+            CoverageUnit test2CU =
+               CoverageUnitFactory.createCoverageUnit(topCoverageUnit, "test2.ada", "C:\\UserData\\", null);
             test2CU.setOrderNumber("2");
             test2CU.setNamespace("test");
             item = new CoverageItem(test2CU, CoverageOptionManager.Exception_Handling, "1");

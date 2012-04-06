@@ -27,7 +27,7 @@ public class CoverageItemTest {
 
    @BeforeClass
    public static void testSetup() throws OseeCoreException {
-      parent = new CoverageUnit(null, "Top", "C:/UserData/", null);
+      parent = CoverageUnitFactory.createCoverageUnit(null, "Top", "C:/UserData/", null);
       ci1 = new CoverageItem(parent, CoverageOptionManager.Deactivated_Code, "1");
       ci1.setName("this is text");
    }

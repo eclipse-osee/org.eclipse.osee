@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.model.CoverageUnitFactory;
 import org.eclipse.osee.coverage.model.ICoverageUnitFileContentsProvider;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -46,7 +47,7 @@ public class SampleJavaFileParser {
          // Store file as CoverageUnit
          File file = new File(url.getFile());
          String filename = file.getCanonicalFile().getName();
-         fileCoverageUnit = new CoverageUnit(null, filename, url.getFile(), fileContentsProvider);
+         fileCoverageUnit = CoverageUnitFactory.createCoverageUnit(null, filename, url.getFile(), fileContentsProvider);
          String fileStr = Lib.inputStreamToString(inputStream);
          Matcher m = packagePattern.matcher(fileStr);
          if (m.find()) {
@@ -63,13 +64,16 @@ public class SampleJavaFileParser {
             m = methodPattern.matcher(line);
             if (m.find()) {
                String name = m.group(3);
-               coverageUnit = new CoverageUnit(fileCoverageUnit, name, "Line " + lineNum, fileContentsProvider);
+               coverageUnit =
+                  CoverageUnitFactory.createCoverageUnit(fileCoverageUnit, name, "Line " + lineNum,
+                     fileContentsProvider);
                // Note: CoverageUnit's orderNumber is set by executeLine match below
                fileCoverageUnit.addCoverageUnit(coverageUnit);
                // Duplicate this method as error case for importing
                if (filename.contains("AuxPowerUnit2") && name.equals("clear")) {
                   CoverageUnit duplicateCoverageUnit =
-                     new CoverageUnit(fileCoverageUnit, name, "Line " + lineNum, fileContentsProvider);
+                     CoverageUnitFactory.createCoverageUnit(fileCoverageUnit, name, "Line " + lineNum,
+                        fileContentsProvider);
                   duplicateCoverageUnit.setOrderNumber("2");
                   fileCoverageUnit.addCoverageUnit(duplicateCoverageUnit);
                   CoverageItem item = new CoverageItem(duplicateCoverageUnit, CoverageOptionManager.Not_Covered, "1");

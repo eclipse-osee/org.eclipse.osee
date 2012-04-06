@@ -22,6 +22,7 @@ import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.model.CoverageUnitFactory;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.ITestUnitProvider;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -50,8 +51,8 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       super(null, artifact.getArtifactType(), artifact.getBranch());
       this.artifact = artifact;
       this.coverageUnit =
-         new CoverageUnit(artifact.getGuid(), parent, artifact.getName(), "",
-            OseeCoverageUnitFileContentsProvider.getInstance(branch));
+         CoverageUnitFactory.createCoverageUnit(artifact.getGuid(), parent, artifact.getName(), "",
+            OseeCoverageUnitFileContentsProvider.getInstance(branch), false);
       load(coverageOptionManager);
    }
 

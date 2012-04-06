@@ -15,6 +15,7 @@ import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.model.CoverageUnitFactory;
 import org.eclipse.osee.coverage.store.ArtifactTestUnitStore;
 import org.eclipse.osee.coverage.store.TestUnitCache;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -41,7 +42,7 @@ public class ArtifactTestUnitStoreTest {
    private Branch testBranch;
 
    private CoverageItem createCoverageItem(TestUnitCache tc) throws OseeCoreException {
-      CoverageUnit parent = new CoverageUnit(null, "Top", "C:/UserData/", null);
+      CoverageUnit parent = CoverageUnitFactory.createCoverageUnit(null, "Top", "C:/UserData/", null);
       CoverageItem ci1 = new CoverageItem(parent, CoverageOptionManager.Deactivated_Code, "1");
       ci1.setName("this is text");
       return CoverageItem.createCoverageItem(parent, ci1.toXml(), CoverageOptionManagerDefault.instance(), tc);

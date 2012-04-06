@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
@@ -49,18 +48,11 @@ public class CoverageUnit extends NamedIdentity<String> implements IWorkProductR
    ICoverageUnitFileContentsProvider fileContentsProvider;
    ICoverageUnitFileContentsLoader fileContentsLoader;
 
-   public CoverageUnit(ICoverage parent, String name, String location, ICoverageUnitFileContentsProvider coverageUnitFileContentsProvider) {
-      this(GUID.create(), parent, name, location, coverageUnitFileContentsProvider);
-   }
-
-   public CoverageUnit(String guid, ICoverage parent, String name, String location, ICoverageUnitFileContentsProvider coverageUnitFileContentsProvider) {
+   protected CoverageUnit(String guid, ICoverage parent, String name, String location, ICoverageUnitFileContentsProvider coverageUnitFileContentsProvider) {
       super(guid, Strings.intern(name));
       this.parent = parent;
       this.location = location;
       this.fileContentsProvider = coverageUnitFileContentsProvider;
-      if (parent != null && parent instanceof ICoverageUnitProvider) {
-         ((ICoverageUnitProvider) parent).addCoverageUnit(this);
-      }
    }
 
    public void clearCoverageUnits() {

@@ -52,7 +52,7 @@ public class CoverageItemPersistTest {
       // If this fails, cleanup didn't happen.  Must DbInit
       Assert.assertEquals(0, CoverageTestUtil.getAllCoverageArtifacts().size());
 
-      parentCu = new CoverageUnit(null, "Top", "C:/UserData/", null);
+      parentCu = CoverageUnitFactory.createCoverageUnit(null, "Top", "C:/UserData/", null);
       parentGuid = parentCu.getGuid();
       testUnitCache = new TestUnitCache(new MockTestUnitStore());
       ci = new CoverageItem(parentCu, CoverageOptionManager.Deactivated_Code, "1");

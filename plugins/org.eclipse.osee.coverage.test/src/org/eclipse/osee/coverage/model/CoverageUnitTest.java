@@ -29,11 +29,12 @@ public class CoverageUnitTest {
 
    @Before
    public void testSetup() throws OseeCoreException {
-      cu = new CoverageUnit(null, "Top CU", "C:/UserData/", fileContentsProvider);
+      cu = CoverageUnitFactory.createCoverageUnit(null, "Top CU", "C:/UserData/", fileContentsProvider);
       cu.setOrderNumber("33");
       ci1 = new CoverageItem(cu, CoverageOptionManager.Test_Unit, "1");
       ci1.setName("this is text");
-      childCu = new CoverageUnit(cu, "Child Coverage Unit", "C:\\UserData\\", fileContentsProvider);
+      childCu =
+         CoverageUnitFactory.createCoverageUnit(cu, "Child Coverage Unit", "C:\\UserData\\", fileContentsProvider);
       childCu.setOrderNumber("1");
       CoverageItem item = new CoverageItem(childCu, CoverageOptionManager.Exception_Handling, "1");
       childCu.addCoverageItem(item);
@@ -323,7 +324,7 @@ public class CoverageUnitTest {
     */
    @Test
    public void testUpdateAssigneesAndNotes() {
-      CoverageUnit cu2 = new CoverageUnit(null, "New Coverage Unit", "location", null);
+      CoverageUnit cu2 = CoverageUnitFactory.createCoverageUnit(null, "New Coverage Unit", "location", null);
       cu2.setAssignees("assignees");
       cu2.setNotes("notes");
       Assert.assertNull(cu.getAssignees());
@@ -338,7 +339,7 @@ public class CoverageUnitTest {
     */
    @Test
    public void testCopy() throws OseeCoreException {
-      CoverageUnit oldCu = new CoverageUnit(null, "This CU", "location", fileContentsProvider);
+      CoverageUnit oldCu = CoverageUnitFactory.createCoverageUnit(null, "This CU", "location", fileContentsProvider);
       oldCu.setAssignees("assignees");
       oldCu.setNotes("notes");
       oldCu.setNamespace("namespace");
