@@ -386,6 +386,18 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
       }
    }
 
+   public final List<Artifact> getDescendantsWithArtTypes(Collection<ArtifactType> descendantTypes) throws OseeCoreException {
+      List<Artifact> descendants = new LinkedList<Artifact>();
+      for (Artifact child : getChildren()) {
+         ArtifactType childArtType = child.getArtifactType();
+         if (descendantTypes.contains(childArtType)) {
+            descendants.add(child);
+         }
+         child.getDescendants(descendants);
+      }
+      return descendants;
+   }
+
    public final void addChild(Artifact artifact) throws OseeCoreException {
       addChild(RelationOrderBaseTypes.PREEXISTING, artifact);
    }
