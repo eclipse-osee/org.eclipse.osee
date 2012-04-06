@@ -157,7 +157,6 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
       editor.doSaveAs();
       setPageText(sourcePage, "Source");
       setInput(editor.getEditorInput());
-      readXmlData();
       doSave();
    }
 
@@ -456,6 +455,7 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
             }
          }
       }
+      pageManager.refreshPages();
    }
 
    public void restoreSettings() {

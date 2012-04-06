@@ -166,4 +166,8 @@ public class OverviewPage extends TestManagerPage {
       return false;
    }
 
+   public void refresh() {
+      updateLabelText();
+   }
+
 }

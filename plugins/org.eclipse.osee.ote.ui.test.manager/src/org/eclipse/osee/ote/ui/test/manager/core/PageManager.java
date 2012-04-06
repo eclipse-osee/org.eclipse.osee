@@ -179,4 +179,8 @@ public class PageManager {
       }
       return problemEncountered;
    }
+
+   public void refreshPages() {
+      overviewPage.refresh();
+   }
 }
