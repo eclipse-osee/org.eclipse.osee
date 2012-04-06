@@ -56,9 +56,10 @@ public enum MatchType {
       if (!packageItem.getNamespace().equals(importItem.getNamespace())) {
          return MatchType.No_Match__Namespace;
       }
+      boolean namesEqual = packageItem.getName().equals(importItem.getName());
+      boolean orderNumsEqual = packageItem.getOrderNumber().equals(importItem.getOrderNumber());
       if (packageItem instanceof CoverageUnit && importItem instanceof CoverageUnit) {
-         if (((CoverageUnit) packageItem).isFolder() && ((CoverageUnit) importItem).isFolder() && packageItem.getName().equals(
-            importItem.getName())) {
+         if (((CoverageUnit) packageItem).isFolder() && ((CoverageUnit) importItem).isFolder() && namesEqual) {
             return MatchType.Match__Folder;
          }
          if (((CoverageUnit) packageItem).isFolder() && !((CoverageUnit) importItem).isFolder()) {
@@ -68,8 +69,7 @@ public enum MatchType {
             return MatchType.No_Match__Class;
          }
          // If names equal and method numbers equal
-         if (packageItem.getName().equals(importItem.getName()) && packageItem.getOrderNumber().equals(
-            importItem.getOrderNumber())) {
+         if (namesEqual && orderNumsEqual) {
             // parent's have to match also to be considered equal
             MatchType matchType = getMatchType(packageItem.getParent(), importItem.getParent());
             // if parents match, then this is a full match
@@ -82,19 +82,16 @@ public enum MatchType {
             }
          }
          // If neither names or methods match
-         else if (!packageItem.getName().equals(importItem.getName()) && !packageItem.getOrderNumber().equals(
-            importItem.getOrderNumber())) {
+         else if (!namesEqual && !orderNumsEqual) {
             return MatchType.No_Match__Name_Or_Order_Num;
          }
       } else if (packageItem instanceof CoverageItem && importItem instanceof CoverageItem) {
          // If neither names or order match
-         if (!packageItem.getName().equals(importItem.getName()) && !packageItem.getOrderNumber().equals(
-            importItem.getOrderNumber())) {
+         if (!namesEqual && !orderNumsEqual) {
             return MatchType.No_Match__Name_Or_Order_Num;
          }
          // If names equal and order numbers equal
-         else if (packageItem.getName().equals(importItem.getName()) && packageItem.getOrderNumber().equals(
-            importItem.getOrderNumber())) {
+         else if (namesEqual && orderNumsEqual) {
             // parent's have to match also to be considered equal
             MatchType matchType = getMatchType(packageItem.getParent(), importItem.getParent());
             // if parents match, then this is a full match
@@ -102,7 +99,7 @@ public enum MatchType {
                return MatchType.Match__Name_And_Order_Num;
             }
          }
-      } else if (packageItem.getName().equals(importItem.getName())) {
+      } else if (namesEqual) {
          if (packageItem.getParent() instanceof CoveragePackage && importItem.getParent() instanceof CoverageImport) {
             return MatchType.Match__Name_And_Order_Num;
          } else {
