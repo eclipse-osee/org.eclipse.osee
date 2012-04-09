@@ -133,7 +133,7 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
          }
       } else {
          for (Integer colWidth : columnWidths) {
-            out.write("<Column ss:Width=\"" + colWidth + "\"/>");
+            out.write("   <Column ss:Width=\"" + colWidth + "\"/>\n");
          }
       }
 
