@@ -12,6 +12,7 @@ package org.eclipse.osee.display.presenter;
 
 import java.util.Arrays;
 import java.util.List;
+
 import org.eclipse.osee.display.api.search.ArtifactProvider;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -24,13 +25,14 @@ import org.eclipse.osee.orcs.data.ReadableArtifact;
  */
 public class ArtifactFilter implements Filter<ReadableArtifact> {
 
-   private static final IArtifactType[] notAllowedTypes = {CoreArtifactTypes.TestCase, CoreArtifactTypes.TestRun};
+   private static final IArtifactType[] notAllowedTypes = {CoreArtifactTypes.TestRun};
 
    private static final IArtifactType[] allowedTypes = {
       CoreArtifactTypes.SoftwareRequirement,
       CoreArtifactTypes.SubsystemRequirement,
       CoreArtifactTypes.SystemRequirement,
-      CoreArtifactTypes.IndirectSoftwareRequirement};
+      CoreArtifactTypes.IndirectSoftwareRequirement,
+      CoreArtifactTypes.TestUnit};
 
    private static final List<String> allowed = Arrays.asList("System Requirements", "Subsystem Requirements",
       "Software Requirements");
