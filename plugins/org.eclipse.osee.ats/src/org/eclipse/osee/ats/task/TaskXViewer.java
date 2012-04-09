@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.task;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
@@ -26,10 +25,8 @@ import org.eclipse.osee.ats.column.HoursSpentSMAStateColumn;
 import org.eclipse.osee.ats.column.HoursSpentStateTotalColumn;
 import org.eclipse.osee.ats.column.PercentCompleteSMAStateColumn;
 import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
-import org.eclipse.osee.ats.column.ResolutionColumn;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.workflow.TransitionToMenu;
@@ -74,21 +71,6 @@ public class TaskXViewer extends WorldXViewer {
       } catch (Exception ex) {
          return "TaskXViewer - id:" + viewerId;
       }
-   }
-
-   public boolean isUsingTaskResolutionOptions() {
-      try {
-         if (!AtsUtilCore.isAtsUsingResolutionOptions()) {
-            return false;
-         }
-         if (getSelectedTaskArtifact() == null) {
-            return false;
-         }
-         return getSelectedTaskArtifact().isUsingTaskResolutionOptions();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      return false;
    }
 
    @Override
@@ -197,9 +179,7 @@ public class TaskXViewer extends WorldXViewer {
          TaskArtifact taskArt = (TaskArtifact) treeItem.getData();
          boolean modified = false;
 
-         if (isUsingTaskResolutionOptions() && (xCol.equals(HoursSpentSMAStateColumn.getInstance()) || xCol.equals(HoursSpentStateTotalColumn.getInstance()) || xCol.equals(PercentCompleteSMAStateColumn.getInstance()) || xCol.equals(PercentCompleteTotalColumn.getInstance()))) {
-            modified = ResolutionColumn.promptChangeResolutionOfTasks(this, getSelectedTaskArtifacts(), false);
-         } else if (xCol.equals(HoursSpentSMAStateColumn.getInstance()) || xCol.equals(HoursSpentStateTotalColumn.getInstance()) || xCol.equals(PercentCompleteSMAStateColumn.getInstance()) || xCol.equals(PercentCompleteTotalColumn.getInstance())) {
+         if (xCol.equals(HoursSpentSMAStateColumn.getInstance()) || xCol.equals(HoursSpentStateTotalColumn.getInstance()) || xCol.equals(PercentCompleteSMAStateColumn.getInstance()) || xCol.equals(PercentCompleteTotalColumn.getInstance())) {
             modified = SMAPromptChangeStatus.promptChangeStatus(Arrays.asList(taskArt), false);
          } else {
             modified = super.handleAltLeftClick(treeColumn, treeItem);

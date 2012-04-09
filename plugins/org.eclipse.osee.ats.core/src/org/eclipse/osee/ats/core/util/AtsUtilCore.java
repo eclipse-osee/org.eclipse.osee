@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.internal.Activator;
-import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
@@ -24,7 +23,6 @@ import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -49,19 +47,6 @@ public class AtsUtilCore {
       AtsArtifactTypes.TeamWorkflow);
    private static List<IEventFilter> atsObjectEventFilter = new ArrayList<IEventFilter>(2);
    private static boolean emailEnabled = true;
-
-   /**
-    * TODO Is ATS using Resolution Options. After resolution conversion (around 0.9.9_SR5ish), this flag can be removed
-    * and all the code dealing with resolution options. Also, search for "AtsUsingResolutionOptions" string in java code
-    * to remove any un-necessary methods and code.
-    */
-   public static boolean isAtsUsingResolutionOptions() throws OseeCoreException {
-      return OseeInfo.isBoolean("AtsUsingResolutionOptions");
-   }
-
-   public static void setAtsUsingResolutionOptions(boolean set) throws OseeCoreException {
-      OseeInfo.setBoolean("AtsUsingResolutionOptions", set);
-   }
 
    public static boolean isEmailEnabled() {
       return emailEnabled;
@@ -173,14 +158,6 @@ public class AtsUtilCore {
 
    public static ArtifactTypeEventFilter getReviewArtifactTypeEventFilter() {
       return reviewArtifactTypesFilter;
-   }
-
-   public static String getStateName(TaskArtifact taskArt) throws OseeCoreException {
-      if (AtsUtilCore.isAtsUsingResolutionOptions()) {
-         return taskArt.getSoleAttributeValue(AtsAttributeTypes.Resolution, "");
-      } else {
-         return taskArt.getCurrentStateName();
-      }
    }
 
 }

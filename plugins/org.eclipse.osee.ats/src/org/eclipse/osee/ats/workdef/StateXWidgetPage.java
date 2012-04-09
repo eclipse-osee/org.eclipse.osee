@@ -26,7 +26,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.ats.core.task.TaskResolutionOptionRule;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.workdef.CompositeStateItem;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
@@ -75,7 +74,6 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
    protected DynamicXWidgetLayout dynamicXWidgetLayout;
    protected final StateDefinition stateDefinition;
    protected final WorkDefinition workDefinition;
-   protected TaskResolutionOptionRule taskResolutionOptions;
    private AbstractWorkflowArtifact sma;
 
    private StateXWidgetPage(WorkDefinition workDefinition, StateDefinition stateDefinition, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
@@ -315,18 +313,6 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
 
    public void setsma(AbstractWorkflowArtifact sma) {
       this.sma = sma;
-   }
-
-   public TaskResolutionOptionRule getTaskResDef() {
-      return taskResolutionOptions;
-   }
-
-   public void setTaskResDef(TaskResolutionOptionRule taskResolutionOptions) {
-      this.taskResolutionOptions = taskResolutionOptions;
-   }
-
-   public boolean isUsingTaskResolutionOptions() {
-      return this.taskResolutionOptions != null;
    }
 
    public boolean isCurrentState(AbstractWorkflowArtifact sma) {

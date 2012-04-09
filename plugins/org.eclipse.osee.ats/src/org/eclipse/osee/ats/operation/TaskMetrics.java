@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.core.task.TaskStates;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.SMAState;
 import org.eclipse.osee.ats.core.workflow.XCurrentStateDam;
 import org.eclipse.osee.ats.core.workflow.XStateDam;
@@ -141,9 +140,9 @@ public class TaskMetrics extends AbstractBlam {
 
          if (percentComplete == 100) {
             task.getCompletedDate();
-            String resolution = AtsUtilCore.getStateName(task);
+            String stateStr = task.getCurrentStateName();
 
-            if (resolution.equals("Complete")) {
+            if (stateStr.equals("Complete")) {
                metrics.put(user, 100);
             } else {
                metrics.put(user, 5);

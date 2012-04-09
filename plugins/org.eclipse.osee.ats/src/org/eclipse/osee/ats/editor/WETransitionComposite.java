@@ -37,7 +37,6 @@ import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.TransitionStatusDialog;
 import org.eclipse.osee.ats.workdef.StateDefinitionLabelProvider;
 import org.eclipse.osee.ats.workdef.StateDefinitionViewSorter;
@@ -313,25 +312,14 @@ public class WETransitionComposite extends Composite {
          String msg =
             awa.getStateMgr().getCurrentStateName() + " State\n\n" + AtsUtilCore.doubleToI18nString(awa.getStateMgr().getHoursSpent()) + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
          // Remove after ATS Resolution options is removed 0.9.9_SR5ish
-         if (AtsUtilCore.isAtsUsingResolutionOptions()) {
-            SMAStatusDialog tsd = new SMAStatusDialog("Enter Hours Spent", msg, false, Arrays.asList(awa));
-            int result = tsd.open();
-            if (result == 0) {
-               awa.getStateMgr().updateMetrics(tsd.getHours().getFloat(), 100, true);
-               return true;
-            } else {
-               return false;
-            }
+         TransitionStatusData data = new TransitionStatusData(Arrays.asList(awa), false);
+         TransitionStatusDialog dialog = new TransitionStatusDialog("Enter Hours Spent", msg, data);
+         int result = dialog.open();
+         if (result == 0) {
+            awa.getStateMgr().updateMetrics(data.getAdditionalHours(), 100, true);
+            return true;
          } else {
-            TransitionStatusData data = new TransitionStatusData(Arrays.asList(awa), false);
-            TransitionStatusDialog dialog = new TransitionStatusDialog("Enter Hours Spent", msg, data);
-            int result = dialog.open();
-            if (result == 0) {
-               awa.getStateMgr().updateMetrics(data.getAdditionalHours(), 100, true);
-               return true;
-            } else {
-               return false;
-            }
+            return false;
          }
       } else {
          return true;

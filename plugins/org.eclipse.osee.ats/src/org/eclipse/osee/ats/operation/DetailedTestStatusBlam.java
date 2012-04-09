@@ -40,7 +40,6 @@ import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.team.TeamState;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.version.VersionArtifact;
 import org.eclipse.osee.ats.core.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.internal.Activator;
@@ -625,8 +624,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
             }
 
             int percentComplete = PercentCompleteTotalUtil.getPercentCompleteTotal(task);
-            requirementStatus.addPartitionStatus(percentComplete, taskNameMatcher.group(1),
-               AtsUtilCore.getStateName(task));
+            requirementStatus.addPartitionStatus(percentComplete, taskNameMatcher.group(1), task.getCurrentStateName());
             requirementStatus.setTestPocs(task.getImplementers());
          }
       }

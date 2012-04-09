@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.core.team.TeamState;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.EstimatedHoursUtil;
@@ -57,56 +56,6 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
    public boolean isRelatedToParentWorkflowCurrentState() throws OseeCoreException {
       return getSoleAttributeValueAsString(AtsAttributeTypes.RelatedToState, "").equals(
          getParentAWA().getStateMgr().getCurrentStateName());
-   }
-
-   public boolean isUsingTaskResolutionOptions() throws OseeCoreException {
-      return AtsUtilCore.isAtsUsingResolutionOptions() && getTaskResolutionOptionDefintions().size() > 0;
-   }
-
-   public List<TaskResOptionDefinition> getTaskResolutionOptionDefintions() throws OseeCoreException {
-      if (!AtsUtilCore.isAtsUsingResolutionOptions()) {
-         return TaskResolutionOptionRule.EMPTY_TASK_RESOLUTION_OPTIONS;
-      }
-      TeamWorkFlowArtifact team = getParentTeamWorkflow();
-      if (team == null) {
-         return TaskResolutionOptionRule.EMPTY_TASK_RESOLUTION_OPTIONS;
-      }
-      return TaskResolutionOptionRule.getTaskResolutionOptions(team.getStateDefinition());
-   }
-
-   public TaskResOptionDefinition getTaskResolutionOptionDefinition(String optionName) throws OseeCoreException {
-      if (!AtsUtilCore.isAtsUsingResolutionOptions()) {
-         return null;
-      }
-      for (TaskResOptionDefinition def : getTaskResolutionOptionDefintions()) {
-         if (def.getName().equals(optionName)) {
-            return def;
-         }
-      }
-      return null;
-   }
-
-   public List<TaskResOptionDefinition> getTaskResolutionOptionDefintions(String stateName) throws OseeCoreException {
-      if (!AtsUtilCore.isAtsUsingResolutionOptions()) {
-         return TaskResolutionOptionRule.EMPTY_TASK_RESOLUTION_OPTIONS;
-      }
-      TeamWorkFlowArtifact team = getParentTeamWorkflow();
-      if (team == null) {
-         return TaskResolutionOptionRule.EMPTY_TASK_RESOLUTION_OPTIONS;
-      }
-      return TaskResolutionOptionRule.getTaskResolutionOptions(team.getStateDefinitionByName(stateName));
-   }
-
-   public TaskResOptionDefinition getTaskResolutionOptionDefinition(String stateName, String optionName) throws OseeCoreException {
-      if (!AtsUtilCore.isAtsUsingResolutionOptions()) {
-         return null;
-      }
-      for (TaskResOptionDefinition def : getTaskResolutionOptionDefintions(stateName)) {
-         if (def.getName().equals(optionName)) {
-            return def;
-         }
-      }
-      return null;
    }
 
    @Override

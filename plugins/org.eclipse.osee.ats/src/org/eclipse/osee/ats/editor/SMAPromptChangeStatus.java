@@ -12,17 +12,12 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
-import org.eclipse.osee.ats.core.task.TaskManager;
-import org.eclipse.osee.ats.core.task.TaskResOptionDefinition;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.widgets.dialog.TaskOptionStatusDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.TransitionStatusDialog;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -89,34 +84,19 @@ public class SMAPromptChangeStatus {
          return result;
       }
 
-      // Access resolution options if object is task
-      List<TaskResOptionDefinition> options = null;
-      if (awas.iterator().next().isOfType(AtsArtifactTypes.Task) && ((TaskArtifact) awas.iterator().next()).isUsingTaskResolutionOptions()) {
-         options = ((TaskArtifact) awas.iterator().next()).getTaskResolutionOptionDefintions();
-      }
-      if (AtsUtilCore.isAtsUsingResolutionOptions()) {
-         TaskOptionStatusDialog tsd = new TaskOptionStatusDialog("Enter State Status", true, options, awas);
-         if (tsd.open() == 0) {
-            performChangeStatus(awas, options,
-               tsd.getSelectedOptionDef() != null ? tsd.getSelectedOptionDef().getName() : null,
-               tsd.getHours().getFloat(), tsd.getPercent().getInt(), tsd.isSplitHours(), persist);
-            return Result.TrueResult;
-         }
-      } else {
-         TransitionStatusData data = new TransitionStatusData(awas, true);
-         TransitionStatusDialog dialog =
-            new TransitionStatusDialog("Enter Hours Spent",
-               "Enter percent complete and number of hours you spent since last status.", data);
-         if (dialog.open() == 0) {
-            performChangeStatus(awas, options, null, data.getAdditionalHours(), data.getPercent(),
-               data.isSplitHoursBetweenItems(), persist);
-            return Result.TrueResult;
-         }
+      TransitionStatusData data = new TransitionStatusData(awas, true);
+      TransitionStatusDialog dialog =
+         new TransitionStatusDialog("Enter Hours Spent",
+            "Enter percent complete and number of hours you spent since last status.", data);
+      if (dialog.open() == 0) {
+         performChangeStatus(awas, data.getAdditionalHours(), data.getPercent(), data.isSplitHoursBetweenItems(),
+            persist);
+         return Result.TrueResult;
       }
       return Result.FalseResult;
    }
 
-   public static void performChangeStatus(Collection<? extends AbstractWorkflowArtifact> awas, List<TaskResOptionDefinition> options, String selectedOption, double hours, int percent, boolean splitHours, boolean persist) throws OseeCoreException {
+   public static void performChangeStatus(Collection<? extends AbstractWorkflowArtifact> awas, double hours, int percent, boolean splitHours, boolean persist) throws OseeCoreException {
       if (splitHours) {
          hours = hours / awas.size();
       }
@@ -129,22 +109,11 @@ public class SMAPromptChangeStatus {
             awa.getStateMgr().removeAssignee(UserManager.getUser(SystemUser.UnAssigned));
             awa.getStateMgr().addAssignee(UserManager.getUser());
          }
-         if (options != null && AtsUtilCore.isAtsUsingResolutionOptions()) {
-            awa.setSoleAttributeValue(AtsAttributeTypes.Resolution, selectedOption);
-         }
-         if (AtsUtilCore.isAtsUsingResolutionOptions() && awa.isOfType(AtsArtifactTypes.Task)) {
-            Result result = TaskManager.statusPercentChanged(((TaskArtifact) awa), hours, percent, transaction);
-            if (result.isFalse()) {
-               AWorkbench.popup(result);
-               return;
-            }
+         if (awa.getWorkDefinition().isStateWeightingEnabled()) {
+            awa.getStateMgr().updateMetrics(hours, percent, true);
          } else {
-            if (awa.getWorkDefinition().isStateWeightingEnabled()) {
-               awa.getStateMgr().updateMetrics(hours, percent, true);
-            } else {
-               awa.getStateMgr().updateMetrics(hours, percent, true);
-               awa.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, percent);
-            }
+            awa.getStateMgr().updateMetrics(hours, percent, true);
+            awa.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, percent);
          }
          if (persist) {
             awa.persist(transaction);
