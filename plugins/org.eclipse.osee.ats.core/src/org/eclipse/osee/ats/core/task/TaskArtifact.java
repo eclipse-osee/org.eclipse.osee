@@ -21,8 +21,6 @@ import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.workflow.EstimatedHoursUtil;
-import org.eclipse.osee.ats.core.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.workflow.StateManager;
 import org.eclipse.osee.ats.core.workflow.log.AtsLog;
 import org.eclipse.osee.ats.core.workflow.log.LogItem;
@@ -151,22 +149,6 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
          return awa.getWorldViewSWEnhancement();
       }
       return "";
-   }
-
-   @Override
-   public double getRemainHoursFromArtifact() throws OseeCoreException {
-      if (isCompleted() || isCancelled()) {
-         return 0;
-      }
-      double est = EstimatedHoursUtil.getEstimatedHours(this);
-      if (PercentCompleteTotalUtil.getPercentCompleteTotal(this) == 0) {
-         return est;
-      }
-      double percent = getStateMgr().getPercentComplete(TaskStates.InWork);
-      if (percent == 0) {
-         return est;
-      }
-      return est - ((est * percent) / 100.0);
    }
 
    public LogItem getLogItemWithTypeAsOfDate(LogType logType, Date date) throws OseeCoreException {
