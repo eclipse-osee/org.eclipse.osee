@@ -12,8 +12,11 @@ package org.eclipse.osee.framework.manager.servlet;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
+import java.util.Collections;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.message.SearchOptions;
@@ -64,7 +67,12 @@ public class SearchEngineServlet extends SecureOseeHttpServlet {
          QueryFactory factory = orcsApi.getQueryFactory(null);
          QueryBuilder builder = factory.fromBranch(searchRequest.getBranch());
          builder.includeDeleted(options.getDeletionFlag().areDeletedAllowed());
-         builder.and(options.getAttributeTypeFilter(), operator, caseType, searchRequest.getRawSearch());
+
+         Collection<IAttributeType> attributeTypes = options.getAttributeTypeFilter();
+         if (attributeTypes.isEmpty()) {
+            attributeTypes = Collections.singleton(QueryBuilder.ANY_ATTRIBUTE_TYPE);
+         }
+         builder.and(attributeTypes, operator, caseType, searchRequest.getRawSearch());
 
          BranchCache branchCache = orcsApi.getBranchCache();
 
@@ -102,5 +110,4 @@ public class SearchEngineServlet extends SecureOseeHttpServlet {
          response.getWriter().close();
       }
    }
-
 }
