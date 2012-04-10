@@ -178,13 +178,20 @@ public class CoverageUnit extends NamedIdentity<String> implements IWorkProductR
 
    @Override
    public String getFileContents() throws OseeCoreException {
-      if (fileContentsProvider == null) {
-         if (fileContentsLoader != null) {
-            return fileContentsLoader.getText();
-         }
-         throw new OseeStateException("No File Contents Provider Specified");
+      if (fileContentsProvider == null && fileContentsLoader == null) {
+         throw new OseeStateException("fileContentsProvider and fileContentsLoader are both null");
       }
-      return fileContentsProvider.getFileContents(this);
+      String fileContents = null;
+      if (fileContentsProvider != null) {
+         fileContents = fileContentsProvider.getFileContents(this);
+      }
+      if (!Strings.isValid(fileContents)) {
+         if (fileContentsLoader != null) {
+            fileContents = fileContentsLoader.getText();
+         }
+      }
+
+      return fileContents;
    }
 
    public void setFileContents(String fileContents) throws OseeStateException {

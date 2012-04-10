@@ -11,7 +11,6 @@
 package org.eclipse.osee.coverage.vcast;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,7 +50,7 @@ public class VcpSourceFile {
       }
    }
 
-   public synchronized VcpSourceLisFile getVcpSourceLisFile() throws OseeCoreException, IOException {
+   public synchronized VcpSourceLisFile getVcpSourceLisFile() {
       if (vcpSourceLisFile == null) {
          vcpSourceLisFile = new VcpSourceLisFile(vCastVcp, this);
       }

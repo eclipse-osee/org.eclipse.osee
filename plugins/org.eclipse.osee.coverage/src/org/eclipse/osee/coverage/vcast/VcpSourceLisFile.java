@@ -43,13 +43,15 @@ public class VcpSourceLisFile implements ICoverageUnitFileContentsLoader {
       try {
          if (text == null) {
             String lisFilename = getLisFilename();
-            File listFile = new File(lisFilename);
-            if (!listFile.exists()) {
-               throw new OseeArgumentException(String.format("VectorCast <filename>.LIS file doesn't exist [%s]",
-                  lisFilename));
+            if (lisFilename != null) {
+               File listFile = new File(lisFilename);
+               if (!listFile.exists()) {
+                  throw new OseeArgumentException(String.format("VectorCast <filename>.LIS file doesn't exist [%s]",
+                     lisFilename));
+               }
+               text = Lib.fileToString(listFile);
+               lines = text.split("\n");
             }
-            text = Lib.fileToString(listFile);
-            lines = text.split("\n");
          }
       } catch (IOException ex) {
          throw new OseeWrappedException(ex);
@@ -57,8 +59,12 @@ public class VcpSourceLisFile implements ICoverageUnitFileContentsLoader {
    }
 
    private String getLisFilename() {
-      return vCastVcp.getVCastDirectory() + File.separator + "vcast" + File.separator + vcpSourceFile.getFilename().replaceFirst(
-         "(.*)\\..*", "$1") + ".LIS";
+      String filename = vcpSourceFile.getFilename();
+      if (filename != null) {
+         return vCastVcp.getVCastDirectory() + File.separator + "vcast" + File.separator + filename.replaceFirst(
+            "(.*)\\..*", "$1") + ".LIS";
+      }
+      return null;
    }
 
    public String[] getSection(String startLine, String endLine) throws OseeCoreException {

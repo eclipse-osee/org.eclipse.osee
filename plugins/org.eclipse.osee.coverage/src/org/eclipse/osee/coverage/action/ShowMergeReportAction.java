@@ -179,8 +179,8 @@ public class ShowMergeReportAction extends Action {
    }
 
    private boolean isFile(ICoverage coverage) {
-      return coverage.getName().endsWith(".ada") || coverage.getName().endsWith(".c") || coverage.getName().endsWith(
-         ".java");
+      return coverage.getName().endsWith(".ada") || coverage.getName().endsWith(".adb") || coverage.getName().endsWith(
+         ".c") || coverage.getName().endsWith(".java");
    }
 
    private String getOrCreateFolder(String baseDir, CoverageUnit unit) {
