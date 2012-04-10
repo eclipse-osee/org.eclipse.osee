@@ -16,19 +16,13 @@ import org.osgi.framework.BundleException;
 
 public class BundleInfoLite {
 
-//   enum OPERATION {
-//	   NOOP,NEW,UPDATE,REMOVE 
-//   }
-	
-	
    private final String symbolicName;
    private final String version;
    private final URL systemLocation;
    private final File file;
    private final Manifest manifest;
    private byte[] md5Digest;
-//   private OPERATION operation;
-private Bundle bundle;
+   private Bundle bundle;
    
    public BundleInfoLite(URL systemLocation) throws IOException {
       File tmpFile;
@@ -113,22 +107,16 @@ private Bundle bundle;
       return md5Digest;
    }
    
-//   void setOperation(OPERATION operation){
-//	   this.operation = operation;
-//   }
-//   
-//   OPERATION getOperation(){
-//	   return this.operation;
-//   }
-   
    public void install(BundleContext context) throws BundleException, IOException{
 	   bundle = context.installBundle(this.systemLocation.getFile(), this.getSystemLocation().openStream());
    }
    
    public Bundle uninstall() throws BundleException{
-	   bundle.uninstall();
-	   System.out.println("uninstall" + toString());
+	   if(isInstalled()){
+		   bundle.uninstall();
+	   }
 	   return bundle;
+	   
    }
    
    public boolean isInstalled() {
@@ -150,7 +138,7 @@ private Bundle bundle;
    }
    
    public void start() throws BundleException{
-	   if(bundle.getState() == Bundle.INSTALLED || bundle.getState() == Bundle.RESOLVED){
+	   if(bundle != null && bundle.getState() == Bundle.INSTALLED || bundle.getState() == Bundle.RESOLVED){
 		   bundle.start();
 	   }
    }
