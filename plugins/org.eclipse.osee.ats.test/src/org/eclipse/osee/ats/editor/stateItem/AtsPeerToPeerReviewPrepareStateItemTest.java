@@ -22,10 +22,11 @@ import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
-import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.support.test.util.DemoActionableItems;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -72,7 +73,8 @@ public class AtsPeerToPeerReviewPrepareStateItemTest {
       // setup fake combo that will hold values
       XComboDam decisionComboDam = new XComboDam(AtsAttributeTypes.ReviewBlocks.getUnqualifiedName());
       decisionComboDam.setDataStrings(new String[] {"None", "Transition", "Commit"});
-      Composite comp = new Composite(Displays.getActiveShell(), SWT.None);
+      Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+      Composite comp = new Composite(shell, SWT.None);
       decisionComboDam.createWidgets(comp, SWT.NONE);
       decisionComboDam.setEnabled(true);
       decisionComboDam.setRequiredEntry(true);
