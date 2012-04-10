@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.workflow.HoursSpentUtil;
-import org.eclipse.osee.ats.core.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -164,66 +163,4 @@ public class TaskManagerTest extends TaskManager {
       Assert.assertEquals("Joe Smith", taskArt.getStateMgr().getAssigneesStr());
    }
 
-   @org.junit.Test
-   public void testStatusPercentChanged() throws OseeCoreException {
-
-      System.out.println("\n\n...testStatusPercentChanged Start...");
-
-      AtsTestUtil.cleanupAndReset("TaskManagerTest - StatusPercentChanged");
-
-      TaskArtifact taskArt = AtsTestUtil.getOrCreateTaskOffTeamWf1();
-
-      // ensure nothing dirty
-      AtsTestUtil.validateArtifactCache();
-
-      // status 34% completed
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
-            getClass().getSimpleName() + " testStatusPercentChanged() 1");
-      Result result = TaskManager.statusPercentChanged(taskArt, 3, 34, transaction);
-      Assert.assertEquals(Result.TrueResult, result);
-      transaction.execute();
-
-      Assert.assertEquals(TaskStates.InWork.getPageName(), taskArt.getCurrentStateName());
-      Assert.assertEquals(3.0, HoursSpentUtil.getHoursSpentTotal(taskArt));
-      Assert.assertEquals(34, PercentCompleteTotalUtil.getPercentCompleteTotal(taskArt));
-      Assert.assertEquals("Joe Smith", taskArt.getStateMgr().getAssigneesStr());
-
-      // ensure nothing dirty
-      AtsTestUtil.validateArtifactCache();
-
-      // status 100% completed
-      transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
-            getClass().getSimpleName() + " testStatusPercentChanged() 2");
-      result = TaskManager.statusPercentChanged(taskArt, 3, 100, transaction);
-      Assert.assertEquals(Result.TrueResult, result);
-      transaction.execute();
-
-      Assert.assertEquals(TaskStates.Completed.getPageName(), taskArt.getCurrentStateName());
-      Assert.assertEquals(6.0, HoursSpentUtil.getHoursSpentTotal(taskArt));
-      Assert.assertEquals(100, PercentCompleteTotalUtil.getPercentCompleteTotal(taskArt));
-      Assert.assertEquals("", taskArt.getStateMgr().getAssigneesStr());
-
-      // ensure nothing dirty
-      AtsTestUtil.validateArtifactCache();
-
-      // status back to 25%
-      transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
-            getClass().getSimpleName() + " testStatusPercentChanged() 3");
-      result = TaskManager.statusPercentChanged(taskArt, 1, 25, transaction);
-      Assert.assertEquals(Result.TrueResult, result);
-      transaction.execute();
-
-      Assert.assertEquals(TaskStates.InWork.getPageName(), taskArt.getCurrentStateName());
-      Assert.assertEquals(7.0, HoursSpentUtil.getHoursSpentTotal(taskArt));
-      Assert.assertEquals(25, PercentCompleteTotalUtil.getPercentCompleteTotal(taskArt));
-      Assert.assertEquals("Joe Smith", taskArt.getStateMgr().getAssigneesStr());
-
-      // ensure nothing dirty
-      AtsTestUtil.validateArtifactCache();
-
-      System.out.println("...testStatusPercentChanged End...");
-   }
 }

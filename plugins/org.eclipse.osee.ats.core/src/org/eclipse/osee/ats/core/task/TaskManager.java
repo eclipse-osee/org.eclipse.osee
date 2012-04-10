@@ -53,7 +53,7 @@ public class TaskManager {
          if (taskArt.getStateMgr().isUnAssigned()) {
             taskArt.getStateMgr().setAssignee(UserManager.getUser());
          }
-         taskArt.getStateMgr().updateMetrics(additionalHours, 100, true);
+         taskArt.getStateMgr().updateMetrics(taskArt.getStateDefinition(), additionalHours, 100, true);
          taskArt.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, 100);
          if (estimatedHours > 0.0) {
             taskArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, estimatedHours);
@@ -87,43 +87,11 @@ public class TaskManager {
          return new Result("Transition Error %s", results.toString());
       }
       if (taskArt.getStateMgr().getPercentComplete() != percentComplete || additionalHours > 0) {
-         taskArt.getStateMgr().updateMetrics(additionalHours, percentComplete, true);
+         taskArt.getStateMgr().updateMetrics(taskArt.getStateDefinition(), additionalHours, percentComplete, true);
          taskArt.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, percentComplete);
       }
       if (transaction != null) {
          taskArt.saveSMA(transaction);
-      }
-      return Result.TrueResult;
-   }
-
-   /**
-    * Tasks must transition in/out of completed when percent changes between 100 and <100. This method will handle these
-    * cases.<br/>
-    * <br/>
-    * TODO This can be removed after ATSUtilCore.AtsUsingResolutionOptions flag is false and Resolution Option code is
-    * removed. ATS will no longer auto-transition tasks to completed/inWork.
-    */
-   public static Result statusPercentChanged(TaskArtifact taskArt, double additionalHours, int percentComplete, SkynetTransaction transaction) throws OseeCoreException {
-      if (percentComplete == 100 && !taskArt.isCompleted()) {
-         Result result = transitionToCompleted(taskArt, 0.0, additionalHours, transaction);
-         return result;
-      } else if (percentComplete != 100 && taskArt.isCompleted()) {
-         Result result =
-            transitionToInWork(taskArt, UserManager.getUser(), percentComplete, additionalHours, transaction);
-         return result;
-      }
-      // Case where already completed and statusing, just add additional hours to InWork state
-      else if (percentComplete == 100 && taskArt.isCompleted()) {
-         if (additionalHours > 0) {
-            taskArt.getStateMgr().updateMetrics(TaskStates.InWork, additionalHours, percentComplete, true);
-            taskArt.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, percentComplete);
-         }
-      } else {
-         taskArt.getStateMgr().updateMetrics(additionalHours, percentComplete, true);
-         taskArt.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, percentComplete);
-      }
-      if (transaction != null) {
-         taskArt.persist(transaction);
       }
       return Result.TrueResult;
    }

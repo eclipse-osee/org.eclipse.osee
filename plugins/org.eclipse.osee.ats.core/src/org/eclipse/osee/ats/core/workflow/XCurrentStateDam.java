@@ -53,10 +53,37 @@ public class XCurrentStateDam extends XStateAssigneesDam {
       }
    }
 
+   /**
+    * Update metrics hours and clear percent if set
+    */
+   public void updateMetrics(double additionalHours, boolean logMetrics) throws OseeCoreException {
+      SMAState currState = getState();
+      currState.setHoursSpent(currState.getHoursSpent() + additionalHours);
+      // clear percent complete, cause not valid
+      currState.setPercentComplete(0);
+      setState(currState);
+      if (logMetrics) {
+         logMetrics(awa.getStateMgr().getCurrentState(), UserManager.getUser(), new Date());
+      }
+   }
+
    public void setMetrics(double hours, int percentComplete, boolean logMetrics, User user, Date date) throws OseeCoreException {
       SMAState currState = getState();
       currState.setHoursSpent(hours);
       currState.setPercentComplete(percentComplete);
+      setState(currState);
+      if (logMetrics) {
+         logMetrics(awa.getStateMgr().getCurrentState(), user, date);
+      }
+   }
+
+   /**
+    * Set metrics hours and clear percent if set
+    */
+   public void setMetrics(double hours, boolean logMetrics, User user, Date date) throws OseeCoreException {
+      SMAState currState = getState();
+      currState.setHoursSpent(hours);
+      currState.setPercentComplete(0);
       setState(currState);
       if (logMetrics) {
          logMetrics(awa.getStateMgr().getCurrentState(), user, date);
@@ -69,4 +96,5 @@ public class XCurrentStateDam extends XStateAssigneesDam {
             hours), sma.getHumanReadableId());
       sma.getLog().addLogItem(logItem);
    }
+
 }

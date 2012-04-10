@@ -98,7 +98,7 @@ public class DecisionReviewManager {
          }
       }
       reviewArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, estimateHours);
-      reviewArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
+      reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 
@@ -124,7 +124,7 @@ public class DecisionReviewManager {
          }
       }
       reviewArt.setSoleAttributeValue(AtsAttributeTypes.Decision, decision ? "Yes" : "No");
-      reviewArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
+      reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 

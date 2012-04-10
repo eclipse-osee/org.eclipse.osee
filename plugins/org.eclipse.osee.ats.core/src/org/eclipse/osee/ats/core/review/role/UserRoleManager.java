@@ -293,7 +293,7 @@ public class UserRoleManager {
          hoursSpent += role.getHoursSpent() == null ? 0 : role.getHoursSpent();
       }
       AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
-      awa.getStateMgr().setMetrics(hoursSpent, awa.getStateMgr().getPercentComplete(), true, UserManager.getUser(),
-         new Date());
+      awa.getStateMgr().setMetrics(awa.getStateDefinition(), hoursSpent, awa.getStateMgr().getPercentComplete(), true,
+         UserManager.getUser(), new Date());
    }
 }

@@ -109,12 +109,7 @@ public class SMAPromptChangeStatus {
             awa.getStateMgr().removeAssignee(UserManager.getUser(SystemUser.UnAssigned));
             awa.getStateMgr().addAssignee(UserManager.getUser());
          }
-         if (awa.getWorkDefinition().isStateWeightingEnabled()) {
-            awa.getStateMgr().updateMetrics(hours, percent, true);
-         } else {
-            awa.getStateMgr().updateMetrics(hours, percent, true);
-            awa.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, percent);
-         }
+         awa.getStateMgr().updateMetrics(awa.getStateDefinition(), hours, percent, true);
          if (persist) {
             awa.persist(transaction);
          }

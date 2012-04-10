@@ -119,7 +119,7 @@ public class PeerToPeerReviewManager {
          roleMgr.saveToArtifact(transaction);
       }
       reviewArt.setSoleAttributeValue(AtsAttributeTypes.Location, reviewMaterials);
-      reviewArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
+      reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 
@@ -138,7 +138,7 @@ public class PeerToPeerReviewManager {
          }
          defectManager.saveToArtifact(reviewArt);
       }
-      reviewArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
+      reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 

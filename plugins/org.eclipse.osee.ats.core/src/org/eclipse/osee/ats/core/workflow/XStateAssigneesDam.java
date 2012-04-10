@@ -64,10 +64,36 @@ public abstract class XStateAssigneesDam {
       }
    }
 
+   /**
+    * Update state hours and clear percent if set
+    */
+   public void updateMetrics(IWorkPage state, double additionalHours, boolean logMetrics) throws OseeCoreException {
+      SMAState smaState = getState(state, false);
+      smaState.setHoursSpent(smaState.getHoursSpent() + additionalHours);
+      smaState.setPercentComplete(0);
+      setState(smaState);
+      if (logMetrics) {
+         logMetrics(state, UserManager.getUser(), new Date());
+      }
+   }
+
    public void setMetrics(IWorkPage state, double hours, int percentComplete, boolean logMetrics, User user, Date date) throws OseeCoreException {
       SMAState currState = getState(state, false);
       currState.setHoursSpent(hours);
       currState.setPercentComplete(percentComplete);
+      setState(currState);
+      if (logMetrics) {
+         logMetrics(state, user, date);
+      }
+   }
+
+   /**
+    * Set state metics and clear percent if set
+    */
+   public void setMetrics(IWorkPage state, double hours, boolean logMetrics, User user, Date date) throws OseeCoreException {
+      SMAState currState = getState(state, false);
+      currState.setHoursSpent(hours);
+      currState.setPercentComplete(0);
       setState(currState);
       if (logMetrics) {
          logMetrics(state, user, date);

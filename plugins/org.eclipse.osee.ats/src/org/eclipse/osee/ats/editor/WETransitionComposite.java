@@ -302,7 +302,7 @@ public class WETransitionComposite extends Composite {
          }
          // System.out.println("hoursSinceCreation *" + hoursSinceCreation + "*");
          if (minSinceCreation < 5) {
-            awa.getStateMgr().updateMetrics(hoursSinceCreation, 100, true);
+            awa.getStateMgr().updateMetrics(awa.getStateDefinition(), hoursSinceCreation, 100, true);
             return true;
          }
       }
@@ -316,7 +316,7 @@ public class WETransitionComposite extends Composite {
          TransitionStatusDialog dialog = new TransitionStatusDialog("Enter Hours Spent", msg, data);
          int result = dialog.open();
          if (result == 0) {
-            awa.getStateMgr().updateMetrics(data.getAdditionalHours(), 100, true);
+            awa.getStateMgr().updateMetrics(awa.getStateDefinition(), data.getAdditionalHours(), 100, true);
             return true;
          } else {
             return false;

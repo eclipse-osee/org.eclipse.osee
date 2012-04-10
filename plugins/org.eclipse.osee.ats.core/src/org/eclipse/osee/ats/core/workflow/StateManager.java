@@ -237,27 +237,37 @@ public class StateManager {
       }
    }
 
-   public void updateMetrics(double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException {
-      updateMetrics(getCurrentState(), additionalHours, percentComplete, logMetrics);
-   }
-
    public void updateMetrics(IWorkPage state, double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException {
       if (sma.isInState(state)) {
-         currentStateDam.updateMetrics(additionalHours, percentComplete, logMetrics);
+         if (sma.getWorkDefinition().isStateWeightingEnabled()) {
+            currentStateDam.updateMetrics(additionalHours, percentComplete, logMetrics);
+         } else {
+            currentStateDam.updateMetrics(additionalHours, logMetrics);
+            sma.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, percentComplete);
+         }
       } else {
-         stateDam.updateMetrics(state, additionalHours, percentComplete, logMetrics);
+         if (sma.getWorkDefinition().isStateWeightingEnabled()) {
+            stateDam.updateMetrics(state, additionalHours, percentComplete, logMetrics);
+         } else {
+            stateDam.updateMetrics(state, additionalHours, logMetrics);
+         }
       }
-   }
-
-   public void setMetrics(double hours, int percentComplete, boolean logMetrics, User user, Date date) throws OseeCoreException {
-      setMetrics(getCurrentState(), hours, percentComplete, logMetrics, user, date);
    }
 
    public void setMetrics(IWorkPage state, double hours, int percentComplete, boolean logMetrics, User user, Date date) throws OseeCoreException {
       if (state.getPageName().equals(getCurrentStateName())) {
-         currentStateDam.setMetrics(hours, percentComplete, logMetrics, user, date);
+         if (sma.getWorkDefinition().isStateWeightingEnabled()) {
+            currentStateDam.setMetrics(hours, percentComplete, logMetrics, user, date);
+         } else {
+            currentStateDam.setMetrics(hours, logMetrics, user, date);
+            sma.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, percentComplete);
+         }
       } else {
-         stateDam.setMetrics(state, hours, percentComplete, logMetrics, user, date);
+         if (sma.getWorkDefinition().isStateWeightingEnabled()) {
+            stateDam.setMetrics(state, hours, percentComplete, logMetrics, user, date);
+         } else {
+            stateDam.setMetrics(state, hours, logMetrics, user, date);
+         }
       }
    }
 

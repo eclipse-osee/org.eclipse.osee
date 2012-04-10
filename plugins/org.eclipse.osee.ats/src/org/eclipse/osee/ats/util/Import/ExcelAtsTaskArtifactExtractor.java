@@ -273,7 +273,8 @@ public class ExcelAtsTaskArtifactExtractor {
             } catch (Exception ex) {
                throw new OseeArgumentException("Invalid Hours Spent \"%s\" for row %d", str, rowNum);
             }
-            sma.getStateMgr().updateMetrics(hours, sma.getStateMgr().getPercentComplete(), true);
+            sma.getStateMgr().updateMetrics(sma.getStateDefinition(), hours, sma.getStateMgr().getPercentComplete(),
+               true);
          }
       }
 
@@ -290,7 +291,7 @@ public class ExcelAtsTaskArtifactExtractor {
                throw new OseeArgumentException("Invalid Percent Complete \"%s\" for row %d", str, rowNum);
             }
             int percentInt = percent.intValue();
-            sma.getStateMgr().updateMetrics(0, percentInt, true);
+            sma.getStateMgr().updateMetrics(sma.getStateDefinition(), 0, percentInt, true);
          }
       }
 
@@ -310,8 +311,8 @@ public class ExcelAtsTaskArtifactExtractor {
                }
             }
             if (user == null) {
-               OseeLog.logf(Activator.class, Level.SEVERE,
-                  "Invalid Assignee \"%s\" for row %d.  Using current user.", userName, rowNum);
+               OseeLog.logf(Activator.class, Level.SEVERE, "Invalid Assignee \"%s\" for row %d.  Using current user.",
+                  userName, rowNum);
                user = UserManager.getUser();
             }
             assignees.add(user);
