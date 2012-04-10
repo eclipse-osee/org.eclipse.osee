@@ -55,9 +55,9 @@ public class ClassServer extends Thread {
          }
       });
       if(address instanceof Inet6Address){
-    	 hostName = new URL("http://[" + address.getHostAddress() + "]:" + port + "/"); 
+    	 hostName = new URL("http://[" + address.getHostAddress() + "]:" + server.getLocalPort() + "/"); 
       } else { 
-         hostName = new URL("http://" + address.getHostAddress() + ":" + port + "/");
+         hostName = new URL("http://" + address.getHostAddress() + ":" + server.getLocalPort() + "/");
    	  }
       this.setName("OSEE ClassServer");
       this.resourceFinders = new ArrayList<ResourceFinder>();
