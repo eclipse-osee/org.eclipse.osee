@@ -11,11 +11,13 @@
 package org.eclipse.osee.ote.connection.jini;
 
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.osee.connection.service.IConnectionService;
 import org.eclipse.osee.framework.jini.JiniClassServer;
 import org.eclipse.osee.framework.jini.discovery.RelaxedSecurity;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.server.FrameworkResourceFinder;
 import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -57,7 +59,7 @@ public class Activator extends Plugin {
 
    void startJini() throws Exception {
       try {
-         JiniClassServer.getInstance();
+         JiniClassServer.getInstance().addResourceFinder(new FrameworkResourceFinder());
       } catch (Exception e) {
          e.printStackTrace();
       }

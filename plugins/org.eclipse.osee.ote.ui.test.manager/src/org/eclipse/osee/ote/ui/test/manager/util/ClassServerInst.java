@@ -16,6 +16,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
@@ -64,7 +65,7 @@ public class ClassServerInst {
          classServer.addResourceFinder(pathResourceFinder);
          classServer.start();
 
-         classServerPath = "http://" + useHostAddress.getHostAddress() + ":" + classServer.getPort() + "/";
+         classServerPath = classServer.getHostName().toString();// "http://" + useHostAddress.getHostAddress() + ":" + classServer.getPort() + "/";
 
          Job job = new Job("Populating TM classserver with projects.") {
 
