@@ -296,7 +296,7 @@ public class WorkspaceBundleLoadCoordinator {
 		for(BundleInfoLite info:bundles){
 			if(!info.isStarted()){
 				try {
-					info.start();					
+					info.start(context);					
 				} catch (BundleException e) {
 				} 
 			}

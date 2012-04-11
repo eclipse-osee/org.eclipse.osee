@@ -8,8 +8,10 @@ import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.logging.Level;
 
 import org.eclipse.osee.framework.jdk.core.util.ChecksumUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -137,10 +139,18 @@ public class BundleInfoLite {
 	   }
    }
    
-   public void start() throws BundleException{
-	   if(bundle != null && bundle.getState() == Bundle.INSTALLED || bundle.getState() == Bundle.RESOLVED){
+   public void start(BundleContext context) throws BundleException{
+	   if(bundle == null){
+		  for(Bundle findit:context.getBundles()){
+			  if(findit.getSymbolicName().equals(getSymbolicName())){
+				  findit.start();
+				  return;
+			  }
+		  }
+	      OseeLog.log(BundleInfoLite.class, Level.WARNING, String.format("Tried to start bundle [%s] that is not installed.", getSymbolicName()));  
+	   } else if (bundle.getState() == Bundle.INSTALLED || bundle.getState() == Bundle.RESOLVED){
 		   bundle.start();
-	   }
+	   } 
    }
    
 }
