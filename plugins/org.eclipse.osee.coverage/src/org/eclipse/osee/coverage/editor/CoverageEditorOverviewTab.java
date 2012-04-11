@@ -25,6 +25,7 @@ import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.validate.CoverageMethodValidator;
 import org.eclipse.osee.coverage.validate.CoveragePackageOrderValidator;
+import org.eclipse.osee.coverage.validate.CoverageUnitChildNameValidator;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
@@ -131,6 +132,7 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
       }
 
       new CoverageMethodValidator(coveragePackageBase, rd).run();
+      new CoverageUnitChildNameValidator(coveragePackageBase, rd).run();
 
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
