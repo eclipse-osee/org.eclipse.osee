@@ -98,8 +98,12 @@ public class XResultDataUI {
    }
 
    public static XResultPage getReport(XResultData resultData, final String title, Manipulations... manipulations) {
-      return new XResultPage(title + " - " + DateUtil.getMMDDYYHHMM(),
-         (resultData.toString().equals("") ? "Nothing Logged" : resultData.toString()), manipulations);
+      XResultPage page =
+         new XResultPage(title + " - " + DateUtil.getMMDDYYHHMM(),
+            (resultData.toString().equals("") ? "Nothing Logged" : resultData.toString()), manipulations);
+      page.setNumErrors(resultData.getNumErrors());
+      page.setNumWarnings(resultData.getNumWarnings());
+      return page;
    }
 
    public static void runExample() {

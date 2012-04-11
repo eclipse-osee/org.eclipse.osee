@@ -32,8 +32,6 @@ import org.eclipse.swt.program.Program;
  */
 public class XResultPage {
 
-   private final int EQUAL = 0;
-
    public static enum Manipulations {
       NONE, // 
       HRID_CMD_HYPER,
@@ -143,7 +141,27 @@ public class XResultPage {
    }
 
    public String getErrorWarningHtml() {
-      return String.format("<b>Errors</b>: %d  <b>Warnings</b>: %d<br><br>", getNumErrors(), getNumWarnings());
+      int numErrors = getNumErrors();
+      int numWarnings = getNumWarnings();
+      return String.format("%s <b>Errors</b>: %d  <b>Warnings</b>: %d%s<br/><br/>",
+         getErrorWarningColorPre(numErrors, numWarnings), numErrors, numWarnings,
+         getErrorWarningColorPost(numErrors, numWarnings));
+   }
+
+   private String getErrorWarningColorPre(int numErrors, int numWarnings) {
+      if (numErrors > 0) {
+         return "<font color=\"red\">";
+      } else if (numWarnings > 0) {
+         return "<font color=\"yellow\">";
+      }
+      return "";
+   }
+
+   private String getErrorWarningColorPost(int numErrors, int numWarnings) {
+      if (numErrors > 0 || numWarnings > 0) {
+         return "</font>";
+      }
+      return "";
    }
 
    public String getManipulatedHtml() {
@@ -267,6 +285,14 @@ public class XResultPage {
          }
          Program.launch(filename);
       }
+   }
+
+   public void setNumErrors(int numErrors) {
+      this.numErrors = numErrors;
+   }
+
+   public void setNumWarnings(int numWarnings) {
+      this.numWarnings = numWarnings;
    }
 
 }

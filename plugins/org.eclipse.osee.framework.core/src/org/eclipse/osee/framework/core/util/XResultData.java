@@ -117,8 +117,12 @@ public class XResultData {
       return toString().equals("");
    }
 
+   public void bumpCount(Type type, int byAmt) {
+      count.put(type, byAmt);
+   }
+
    public void logStr(Type type, final String str) {
-      count.put(type);
+      bumpCount(type, 1);
       String resultStr = "";
       if (type == Type.Warning) {
          resultStr = "Warning: " + str;
