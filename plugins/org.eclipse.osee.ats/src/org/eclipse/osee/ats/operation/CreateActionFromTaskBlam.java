@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -187,7 +188,7 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
             }
          }
       }
-      return title;
+      return AXml.textToXml(title);
    }
 
    @Override

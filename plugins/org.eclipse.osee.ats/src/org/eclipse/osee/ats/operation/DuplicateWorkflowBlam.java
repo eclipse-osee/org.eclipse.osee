@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
+import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -124,7 +125,8 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
 
    private void handleCreateNewWorkflow(Collection<TeamWorkFlowArtifact> teamArts, String title) throws OseeCoreException {
       Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<TeamWorkFlowArtifact>();
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Duplicate Workflow");
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Duplicate Workflow");
       Date createdDate = new Date();
       User createdBy = UserManager.getUser();
       for (TeamWorkFlowArtifact teamArt : teamArts) {
@@ -151,7 +153,8 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
 
    private void handleCreateDuplicate(Collection<TeamWorkFlowArtifact> teamArts, boolean duplicateTasks, String title) throws OseeCoreException {
       Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<TeamWorkFlowArtifact>();
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Duplicate Workflow");
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Duplicate Workflow");
       for (TeamWorkFlowArtifact teamArt : teamArts) {
          TeamWorkFlowArtifact dupArt = (TeamWorkFlowArtifact) teamArt.duplicate(AtsUtil.getAtsBranch());
          if (Strings.isValid(title)) {
@@ -217,7 +220,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
             }
          }
       }
-      return "Copy of " + title;
+      return AXml.textToXml("Copy of " + title);
    }
 
    @Override
