@@ -11,16 +11,17 @@
 package org.eclipse.osee.framework.messaging.event.res.internal;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.ConnectionListener;
 import org.eclipse.osee.framework.messaging.ConnectionNode;
+import org.eclipse.osee.framework.messaging.MessageService;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 import org.eclipse.osee.framework.messaging.event.res.IFrameworkEventListener;
@@ -33,13 +34,28 @@ import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 public class OseeCoreModelEventServiceImpl implements OseeMessagingStatusCallback, IOseeCoreModelEventService {
 
    private final Map<IFrameworkEventListener, HashCollection<ResMessages, OseeMessagingListener>> subscriptions =
-      new HashMap<IFrameworkEventListener, HashCollection<ResMessages, OseeMessagingListener>>();
-   private final Map<ResMessages, Boolean> messages;
-   private final ConnectionNode connectionNode;
+      new ConcurrentHashMap<IFrameworkEventListener, HashCollection<ResMessages, OseeMessagingListener>>();
 
-   public OseeCoreModelEventServiceImpl(ConnectionNode connectionNode, Map<ResMessages, Boolean> messages) {
-      this.connectionNode = connectionNode;
+   private final Map<ResMessages, Boolean> messages;
+   private final MessageService messageService;
+
+   private ConnectionNode connectionNode;
+
+   public OseeCoreModelEventServiceImpl(MessageService messageService, Map<ResMessages, Boolean> messages) {
+      this.messageService = messageService;
       this.messages = messages;
+   }
+
+   private synchronized ConnectionNode getConnectionNode() {
+      if (connectionNode == null) {
+         try {
+            connectionNode = messageService.getDefault();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(OseeCoreModelEventServiceProxy.class, Level.SEVERE,
+               "Error initializing OseeCoreModelEventServiceProxy");
+         }
+      }
+      return connectionNode;
    }
 
    @Override
@@ -49,20 +65,20 @@ public class OseeCoreModelEventServiceImpl implements OseeMessagingStatusCallbac
 
    @Override
    public void fail(Throwable th) {
-      OseeLog.log(Activator.class, Level.SEVERE, th);
-
+      OseeLog.log(OseeCoreModelEventServiceImpl.class, Level.SEVERE, th);
    }
 
    @Override
    public void sendRemoteEvent(RemoteEvent remoteEvent) throws OseeCoreException {
       ResMessages resMessage = getResMessageType(remoteEvent);
       if (resMessage == null) {
-         OseeLog.logf(Activator.class, Level.INFO, "ResEventManager: Unhandled remote event [%s]", resMessage);
-      } else if (connectionNode == null) {
-         OseeLog.logf(Activator.class, Level.INFO,
+         OseeLog.logf(OseeCoreModelEventServiceImpl.class, Level.INFO, "ResEventManager: Unhandled remote event [%s]",
+            resMessage);
+      } else if (getConnectionNode() == null) {
+         OseeLog.logf(OseeCoreModelEventServiceImpl.class, Level.INFO,
             "ResEventManager: Connection node was null - unable to send remote event [%s]", resMessage);
       } else {
-         connectionNode.send(resMessage, remoteEvent, this);
+         getConnectionNode().send(resMessage, remoteEvent, this);
       }
    }
 
@@ -82,17 +98,17 @@ public class OseeCoreModelEventServiceImpl implements OseeMessagingStatusCallbac
 
    @Override
    public void addConnectionListener(ConnectionListener connectionListener) {
-      connectionNode.addConnectionListener(connectionListener);
+      getConnectionNode().addConnectionListener(connectionListener);
    }
 
    @Override
    public void removeConnectionListener(ConnectionListener connectionListener) {
-      connectionNode.removeConnectionListener(connectionListener);
+      getConnectionNode().removeConnectionListener(connectionListener);
    }
 
    @Override
    public void addFrameworkListener(IFrameworkEventListener frameworkEventListener) {
-      OseeLog.log(Activator.class, Level.INFO, "Registering Client for Remote Events");
+      OseeLog.log(OseeCoreModelEventServiceImpl.class, Level.INFO, "Registering Client for Remote Events");
 
       for (Entry<ResMessages, Boolean> messageEntries : messages.entrySet()) {
          ResMessages resMessageID = messageEntries.getKey();
@@ -103,7 +119,7 @@ public class OseeCoreModelEventServiceImpl implements OseeMessagingStatusCallbac
 
    @Override
    public void removeFrameworkListener(IFrameworkEventListener frameworkEventListener) {
-      OseeLog.log(Activator.class, Level.INFO, "De-Registering Client for Remote Events");
+      OseeLog.log(OseeCoreModelEventServiceImpl.class, Level.INFO, "De-Registering Client for Remote Events");
 
       HashCollection<ResMessages, OseeMessagingListener> listeners = subscriptions.get(frameworkEventListener);
       if (listeners != null) {
@@ -111,7 +127,7 @@ public class OseeCoreModelEventServiceImpl implements OseeMessagingStatusCallbac
             Collection<OseeMessagingListener> listernerList = listeners.getValues(messageID);
             if (listernerList != null) {
                for (OseeMessagingListener listener : listernerList) {
-                  connectionNode.unsubscribe(messageID, listener, this);
+                  getConnectionNode().unsubscribe(messageID, listener, this);
                }
             }
          }
@@ -121,7 +137,7 @@ public class OseeCoreModelEventServiceImpl implements OseeMessagingStatusCallbac
 
    private <T extends RemoteEvent> void subscribe(ResMessages messageId, Class<T> clazz, boolean isVerbose, IFrameworkEventListener frameworkEventListener) {
       OseeMessagingListener listener = new FrameworkRelayMessagingListener<T>(clazz, frameworkEventListener, isVerbose);
-      connectionNode.subscribe(messageId, listener, this);
+      getConnectionNode().subscribe(messageId, listener, this);
       HashCollection<ResMessages, OseeMessagingListener> listeners = subscriptions.get(frameworkEventListener);
       if (listeners == null) {
          listeners = new HashCollection<ResMessages, OseeMessagingListener>(true, HashSet.class);

@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.IFrameworkEventListener;
@@ -73,11 +74,11 @@ public class InternalEventManager {
       this.connectionStatus = connectionStatus;
    }
 
-   public void start() {
+   public void start() throws OseeCoreException {
       coreModelEventService.addFrameworkListener(frameworkListener);
    }
 
-   public void stop() {
+   public void stop() throws OseeCoreException {
       coreModelEventService.removeFrameworkListener(frameworkListener);
    }
 

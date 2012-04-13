@@ -121,8 +121,12 @@ public class OseeEventSystemServiceRegHandler extends AbstractTrackingHandler {
 
       InternalEventManager eventManager = eventManagerData.getMessageEventManager();
       if (eventManager != null) {
-         coreModelEventService.removeConnectionListener(connectionStatusListener);
-         eventManager.stop();
+         try {
+            coreModelEventService.removeConnectionListener(connectionStatusListener);
+            eventManager.stop();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
          //         OseeEventManager.kickLocalRemEvent(eventManager, RemoteEventServiceEventType.Rem_DisConnected);
          eventManagerData.setMessageEventManager(null);
       }
