@@ -13,12 +13,18 @@ package org.eclipse.osee.framework.ui.skynet;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
+import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactSaveNotificationHandler;
+import org.eclipse.osee.framework.ui.skynet.blam.operation.SetWorkbenchOverrideIconBlam;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IPerspectiveListener;
 import org.eclipse.ui.IStartup;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
@@ -33,6 +39,39 @@ public class OseeUiEarlyStartup implements IStartup {
    @Override
    public void earlyStartup() {
       if (PlatformUI.isWorkbenchRunning()) {
+
+         OseeLog.registerLoggerListener(new DialogPopupLoggerListener());
+
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               SetWorkbenchOverrideIconBlam.reloadOverrideImage();
+            }
+         });
+
+         IWorkbench workbench = PlatformUI.getWorkbench();
+         workbench.addWorkbenchListener(new IWorkbenchListener() {
+
+            @Override
+            public void postShutdown(IWorkbench workbench) {
+               // do nothing
+            }
+
+            @Override
+            public boolean preShutdown(IWorkbench workbench, boolean forced) {
+               if (!DbUtil.isDbInit()) {
+                  try {
+                     UserManager.getUser().saveSettings();
+                  } catch (Throwable th) {
+                     th.printStackTrace();
+                  }
+               }
+               return true;
+            }
+         });
+
+         workbench.addWorkbenchListener(new ArtifactSaveNotificationHandler());
+
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
@@ -77,6 +116,7 @@ public class OseeUiEarlyStartup implements IStartup {
                      }
 
                   });
+
                PlatformUI.getWorkbench().getActiveWorkbenchWindow().addPerspectiveListener(new IPerspectiveListener() {
 
                   @Override

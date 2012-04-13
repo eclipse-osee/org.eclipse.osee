@@ -32,14 +32,8 @@ import org.eclipse.osee.framework.skynet.core.event.listener.IBroadcastEventList
 import org.eclipse.osee.framework.skynet.core.event.model.BroadcastEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BroadcastEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
-import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
-import org.eclipse.osee.framework.ui.skynet.DialogPopupLoggerListener;
-import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactSaveNotificationHandler;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.SetWorkbenchOverrideIconBlam;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin;
@@ -108,42 +102,8 @@ public class Activator extends OseeUiActivator implements IBroadcastEventListene
          tracker.open();
       }
 
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            SetWorkbenchOverrideIconBlam.reloadOverrideImage();
-         }
-      });
-
       OseeEventManager.addListener(this);
 
-      if (PlatformUI.isWorkbenchRunning()) {
-
-         OseeLog.registerLoggerListener(new DialogPopupLoggerListener());
-
-         IWorkbench workbench = PlatformUI.getWorkbench();
-         workbench.addWorkbenchListener(new IWorkbenchListener() {
-
-            @Override
-            public void postShutdown(IWorkbench workbench) {
-               // do nothing
-            }
-
-            @Override
-            public boolean preShutdown(IWorkbench workbench, boolean forced) {
-               if (!DbUtil.isDbInit()) {
-                  try {
-                     UserManager.getUser().saveSettings();
-                  } catch (Throwable th) {
-                     th.printStackTrace();
-                  }
-               }
-               return true;
-            }
-         });
-
-         PlatformUI.getWorkbench().addWorkbenchListener(new ArtifactSaveNotificationHandler());
-      }
    }
 
    public static Activator getInstance() {
