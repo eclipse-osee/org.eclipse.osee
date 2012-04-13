@@ -10,15 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.internal;
 
-import org.eclipse.osee.framework.messaging.MessageService;
-import org.eclipse.osee.framework.messaging.MessagingGateway;
-import org.eclipse.osee.framework.messaging.internal.old.MessagingGatewayImpl;
-import org.eclipse.osee.framework.messaging.services.internal.ServiceLookupAndRegistrarLifeCycle;
-import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
-import org.eclipse.osgi.framework.console.CommandProvider;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -27,53 +20,16 @@ public class Activator implements BundleActivator {
    private static Activator me;
    private BundleContext context;
 
-   private ServiceRegistration msgServiceRegistration;
-   private MessageServiceProviderImpl messageServiceProviderImpl;
-   private ServiceLookupAndRegistrarLifeCycle serviceLookupAndRegistrarLifeCycle;
-   // old
-   private ServiceRegistration registration;
-   private MessagingGatewayImpl messaging;
-   private ServiceRegistration msgCommandProvider;
-
    @Override
    public void start(BundleContext context) throws Exception {
       this.context = context;
       me = this;
-      serviceLookupAndRegistrarLifeCycle =
-         new ServiceLookupAndRegistrarLifeCycle(context, ExportClassLoader.getInstance());
-      serviceLookupAndRegistrarLifeCycle.open(true);
-
-      messageServiceProviderImpl = new MessageServiceProviderImpl(ExportClassLoader.getInstance());
-      messageServiceProviderImpl.start();
-      msgServiceRegistration =
-         context.registerService(MessageService.class.getName(), messageServiceProviderImpl.getMessageService(), null);
-
-      msgCommandProvider =
-         context.registerService(CommandProvider.class.getName(),
-            new MessageServiceConsole(messageServiceProviderImpl.getMessageService()), null);
-      //old
-      messaging = new MessagingGatewayImpl();
-      registration = context.registerService(MessagingGateway.class.getName(), messaging, null);
    }
 
    @Override
    public void stop(BundleContext context) throws Exception {
       me = null;
       this.context = null;
-
-      if (msgServiceRegistration != null) {
-         msgServiceRegistration.unregister();
-      }
-      messageServiceProviderImpl.stop();
-      msgCommandProvider.unregister();
-      //old
-      if (registration != null) {
-         registration.unregister();
-      }
-
-      if (messaging != null) {
-         messaging.dispose();
-      }
    }
 
    public static Activator getInstance() {

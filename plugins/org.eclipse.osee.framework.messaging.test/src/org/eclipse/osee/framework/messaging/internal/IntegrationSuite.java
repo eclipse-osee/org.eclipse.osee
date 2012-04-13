@@ -17,4 +17,5 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({TestSendingAndRecieving.class, TestBrokerServiceInterruptions.class, TestMessageServices.class})
 public class IntegrationSuite {
+   //
 }

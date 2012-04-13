@@ -14,9 +14,6 @@ package org.eclipse.osee.framework.messaging.services;
  * @author Andrew M. Finkbeiner
  */
 public interface RemoteServiceLookup {
-   void start();
-
-   void stop();
 
    void sendOutRequestsForServiceHealth();
 

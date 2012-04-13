@@ -47,14 +47,12 @@ public class RemoteServiceLookupImpl implements RemoteServiceLookup {
       executor.scheduleAtFixedRate(new MonitorTimedOutServices(map, callbacks), 30, 30, TimeUnit.SECONDS);
    }
 
-   @Override
    public void start() {
       connectionNode.subscribe(BaseMessages.ServiceHealth, healthServiceListener, new OseeMessagingStatusImpl(
          "Failed to subscribe to " + BaseMessages.ServiceHealth.getName(), RemoteServiceLookupImpl.class));
 
    }
 
-   @Override
    public void stop() {
       connectionNode.unsubscribe(BaseMessages.ServiceHealth, healthServiceListener, new OseeMessagingStatusImpl(
          "Failed to subscribe to " + BaseMessages.ServiceHealth.getName(), RemoteServiceLookupImpl.class));

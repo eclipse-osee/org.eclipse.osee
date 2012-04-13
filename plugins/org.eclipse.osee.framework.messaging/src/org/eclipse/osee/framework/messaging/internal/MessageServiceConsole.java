@@ -21,9 +21,9 @@ import org.eclipse.osgi.framework.console.CommandProvider;
  */
 public class MessageServiceConsole implements CommandProvider {
 
-   private final MessageService messageService;
+   private MessageService messageService;
 
-   MessageServiceConsole(MessageService messageService) {
+   public void setMessageService(MessageService messageService) {
       this.messageService = messageService;
    }
 

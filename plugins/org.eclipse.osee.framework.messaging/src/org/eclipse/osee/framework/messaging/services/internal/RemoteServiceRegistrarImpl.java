@@ -45,13 +45,11 @@ public class RemoteServiceRegistrarImpl implements RemoteServiceRegistrar {
       healthRequestListener = new HealthRequestListener(mapForReplys);
    }
 
-   @Override
    public void start() {
       connectionNode.subscribe(BaseMessages.ServiceHealthRequest, healthRequestListener, new OseeMessagingStatusImpl(
          "Failed to subscribe to " + BaseMessages.ServiceHealthRequest.getName(), RemoteServiceRegistrarImpl.class));
    }
 
-   @Override
    public void stop() {
       connectionNode.unsubscribe(BaseMessages.ServiceHealthRequest, healthRequestListener, new OseeMessagingStatusImpl(
          "Failed to subscribe to " + BaseMessages.ServiceHealthRequest.getName(), RemoteServiceRegistrarImpl.class));

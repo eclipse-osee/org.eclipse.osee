@@ -37,13 +37,13 @@ import org.eclipse.osee.framework.messaging.test.msg.TestMessage;
  */
 public class BaseBrokerTesting {
 
-   private MessageServiceProviderImpl messageServiceProviderImpl = null;
+   private MessageServiceProxy messageServiceProviderImpl = null;
    private ConcurrentHashMap<String, BrokerService> brokers;
    private Thread[] threads;
 
    @org.junit.Before
    public void beforeTest() {
-      messageServiceProviderImpl = new MessageServiceProviderImpl(Thread.currentThread().getContextClassLoader());
+      messageServiceProviderImpl = new MessageServiceProxy();
       brokers = new ConcurrentHashMap<String, BrokerService>();
       try {
          messageServiceProviderImpl.start();
@@ -169,7 +169,7 @@ public class BaseBrokerTesting {
 
    protected final MessageService getMessaging() {
       MessageService messaging = null;
-      messaging = messageServiceProviderImpl.getMessageService();
+      messaging = messageServiceProviderImpl.getProxiedService();
       assertTrue(messaging != null);
       return messaging;
    }

@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.ConnectionNode;
@@ -26,12 +25,11 @@ import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 import org.eclipse.osee.framework.messaging.ReplyConnection;
 import org.eclipse.osee.framework.messaging.internal.BaseBrokerTesting;
 import org.eclipse.osee.framework.messaging.internal.TestMessages;
-import org.eclipse.osee.framework.messaging.services.RemoteServiceLookup;
-import org.eclipse.osee.framework.messaging.services.RemoteServiceRegistrar;
 import org.eclipse.osee.framework.messaging.services.ServiceInfoPopulator;
 import org.eclipse.osee.framework.messaging.services.ServiceNotification;
 import org.eclipse.osee.framework.messaging.services.messages.ServiceDescriptionPair;
 import org.eclipse.osee.framework.messaging.services.messages.ServiceHealth;
+import org.junit.Assert;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -68,8 +66,8 @@ public class TestMessageServices extends BaseBrokerTesting {
       Assert.assertNotNull(connection);
       ScheduledExecutorService executor = Executors.newScheduledThreadPool(3);
 
-      RemoteServiceRegistrar registrar = new RemoteServiceRegistrarImpl(connection, executor);
-      RemoteServiceLookup lookup = new RemoteServiceLookupImpl(connection, executor);
+      RemoteServiceRegistrarImpl registrar = new RemoteServiceRegistrarImpl(connection, executor);
+      RemoteServiceLookupImpl lookup = new RemoteServiceLookupImpl(connection, executor);
       registrar.start();
       lookup.start();
 
@@ -108,10 +106,10 @@ public class TestMessageServices extends BaseBrokerTesting {
       ConnectionNode connection = getMessaging().get(new NodeInfo("osee-jms", new URI(BROKER_URI)));
       Assert.assertNotNull(connection);
       ScheduledExecutorService executor = Executors.newScheduledThreadPool(3);
-      RemoteServiceRegistrar registrar = new RemoteServiceRegistrarImpl(connection, executor);
+      RemoteServiceRegistrarImpl registrar = new RemoteServiceRegistrarImpl(connection, executor);
       registrar.start();
 
-      RemoteServiceLookup lookup = new RemoteServiceLookupImpl(connection, executor);
+      RemoteServiceLookupImpl lookup = new RemoteServiceLookupImpl(connection, executor);
       lookup.start();
 
       TestNotification testNotification = new TestNotification();
@@ -152,13 +150,13 @@ public class TestMessageServices extends BaseBrokerTesting {
       Assert.assertNotNull(connection);
       ScheduledExecutorService executor = Executors.newScheduledThreadPool(3);
 
-      RemoteServiceRegistrar registrar = new RemoteServiceRegistrarImpl(connection, executor);
+      RemoteServiceRegistrarImpl registrar = new RemoteServiceRegistrarImpl(connection, executor);
       registrar.start();
       registrar.registerService("testService", "1002", "some.service.id", new URI("tcp://localhost:666"),
          new TestPopulator(), 50000);
 
       testWait(2000);
-      RemoteServiceLookup lookup = new RemoteServiceLookupImpl(connection, executor);
+      RemoteServiceLookupImpl lookup = new RemoteServiceLookupImpl(connection, executor);
       lookup.start();
       TestNotification testNotification = new TestNotification();
       lookup.register("testService", "1002", testNotification);
