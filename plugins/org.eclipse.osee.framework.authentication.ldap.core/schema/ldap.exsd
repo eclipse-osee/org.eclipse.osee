@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.osee.framework.authentication.ldap.core" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.osee.framework.authentication.ldap.core" id="service" name="Service"/>
+      </appinfo>
+      <documentation>
+         &lt;p&gt;
+This extension point is used to configure LDAP authentication mechanism for OSEE framework. The clients implementing this framework will supply the LDAP user name , LDAP password and LDAP URL to configure the LDAP. A check will be performed to see the OSEE clent user name is present in the LDAP distribution list. If so the OSEE client will be authenticated.
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="ldapservice" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="ldapservice">
+      <annotation>
+         <documentation>
+            This extension point is used to configure LDAP authentication mechanism for OSEE framework. The clients implementing this framework will supply the LDAP user name , LDAP password and LDAP URL to configure the LDAP. A check will be performed to see the OSEE clent user name is present in the LDAP distribution list. If so the OSEE client will be authenticated.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  This class  provides the user name, security credentianls, LDAP Server name and Port number to connect to the LDAP Server.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.osee.framework.authentication.ldap.core.service.ILDAPService"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         [Enter the first release in which this extension point appears.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         &lt;p&gt;
+&lt;extension
+         point=&quot;org.eclipse.osee.framework.authentication.ldap.core.service&quot;&gt;
+&lt;LDAPservice
+        Class=&quot;com.xyz.LdapServiceprovider&quot;&gt;
+&lt;/LDAPservice&gt;
+&lt;/extension&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiinfo"/>
+      </appinfo>
+      <documentation>
+         &lt;p&gt;
+The clients implementing this extension point must supply a class implementing ILdapService. It should provide valid LDAP user name, LDAP password and LDAP URL to configure the LDAP.
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         &lt;p&gt;
+supplies the LDAP authentication mechanism for OSEE framework.
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) Robert Bosch Engineering and Business Solutions Ltd India.All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html.
+      </documentation>
+   </annotation>
+
+</schema>
