@@ -20,7 +20,6 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.junit.Assert;
-import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -36,7 +35,7 @@ import org.xml.sax.SAXParseException;
  */
 public class JAXPTest {
    private static final String NAMESPACE_DEFINITIONS_PREFIX =
-      "<root xmlns=\"http://default.com\" xmlns:t=\"http://t.org/t\" xmlns:w=\"http://w.org/w\" xmlns:x=\"http://x.org/x\">";
+      "<root xmlns:t=\"http://t.org/t\" xmlns:w=\"http://w.org/w\" xmlns:x=\"http://x.org/x\">";
 
    private static final String NAMESPACE_DEFINITIONS_POSTFIX = "</root>";
 

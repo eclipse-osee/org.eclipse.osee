@@ -55,6 +55,9 @@ import org.w3c.dom.ProcessingInstruction;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+/**
+ * {@link JAXPTest}
+ */
 public class Jaxp {
    private static final DocumentBuilderFactory namespceUnawareFactory = DocumentBuilderFactory.newInstance();
    private static final DocumentBuilderFactory NonDeferredNamespceUnawareFactory = DocumentBuilderFactory.newInstance();
@@ -593,7 +596,7 @@ public class Jaxp {
    }
 
    public static void writeNode(XMLStreamWriter writer, Node node, boolean trimTextNodeWhitespace) throws XMLStreamException {
-      if (node instanceof Element) {
+      if (node.getNodeType() == Node.ELEMENT_NODE) {
          Element element = (Element) node;
 
          String namespace = element.getNamespaceURI();
@@ -605,8 +608,6 @@ public class Jaxp {
          if (Strings.isValid(name)) {
             if (prefix != null && namespace != null) {
                writer.writeStartElement(prefix, name, namespace);
-               //            } else if (namespace != null) {
-               //               writer.writeStartElement("", namespace, name);
             } else {
                writer.writeStartElement(name);
             }
@@ -650,26 +651,77 @@ public class Jaxp {
       }
    }
 
+   /**
+    * @param writer
+    * @param node
+    * @param useAttrLocalName calls <code>getLocalName()</code> vs <code>getName()</code> on node.
+    * @throws XMLStreamException
+    */
    public static void writeAttrNode(XMLStreamWriter writer, Node node) throws XMLStreamException {
-      if (node instanceof Attr) {
+      if (node.getNodeType() == Node.ATTRIBUTE_NODE) {
          Attr attrNode = (Attr) node;
 
          String namespace = attrNode.getNamespaceURI();
          String prefix = attrNode.getPrefix();
-         String value = attrNode.getValue();
 
          String name = attrNode.getLocalName();
          if (!Strings.isValid(name)) {
             name = attrNode.getNodeName();
          }
+         String value = attrNode.getValue();
 
-         if (Strings.isValid(name) && Strings.isValid(value)) {
+         if (Strings.isValid(name, value)) {
             if (prefix != null && namespace != null) {
                writer.writeAttribute(prefix, namespace, name, value);
+            } else if (namespace != null) {
+               writer.writeAttribute(namespace, name, value);
             } else {
                writer.writeAttribute(name, value);
             }
          }
       }
    }
+
+   public static void writeNode(XMLStreamWriter writer, Node node) throws XMLStreamException {
+      if (node.getNodeType() == Node.ELEMENT_NODE) {
+         Element element = (Element) node;
+
+         String namespace = element.getNamespaceURI();
+         String prefix = element.getPrefix();
+         String name = element.getNodeName();
+         if (Strings.isValid(name)) {
+            if (prefix != null && namespace != null) {
+               writer.writeStartElement(prefix, name, namespace);
+            } else if (namespace != null) {
+               writer.writeStartElement(namespace, name);
+            } else {
+               writer.writeStartElement(name);
+            }
+
+            if (node.hasAttributes()) {
+               NamedNodeMap nodeMap = node.getAttributes();
+               for (int index = 0; index < nodeMap.getLength(); index++) {
+                  writeAttrNode(writer, nodeMap.item(index));
+               }
+            }
+
+            if (node.hasChildNodes()) {
+               serialize(writer, element.getChildNodes());
+            }
+
+            String text = getElementCharacterData(element, true);
+            if (Strings.isValid(text)) {
+               writer.writeCharacters(text);
+            }
+            writer.writeEndElement();
+         }
+      }
+   }
+
+   public static void serialize(XMLStreamWriter writer, NodeList nodes) throws XMLStreamException {
+      for (int index = 0; index < nodes.getLength(); index++) {
+         writeNode(writer, nodes.item(index));
+      }
+   }
+
 }
