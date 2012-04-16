@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.access.internal.Activator;
+import org.eclipse.osee.framework.access.internal.AccessControlHelper;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.lifecycle.IAccessCheckProvider;
 import org.eclipse.osee.framework.lifecycle.LifecycleHandler;
@@ -42,7 +42,7 @@ public class AccessManagerHandler implements LifecycleHandler {
 
       for (IBasicArtifact<?> artifactToChk : artsToCheck) {
          if (!accessCheckProvider.canEdit(userArtifact, artifactToChk)) {
-            statusToReturn = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error");
+            statusToReturn = new Status(IStatus.ERROR, AccessControlHelper.PLUGIN_ID, "Error");
             break;
          }
       }

@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Osee Access
 Bundle-SymbolicName: org.eclipse.osee.framework.access;singleton:=true
 Bundle-Version: 0.9.9.qualifier
-Bundle-Activator: org.eclipse.osee.framework.access.internal.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.google.common.collect,
@@ -33,3 +32,4 @@ Export-Package: org.eclipse.osee.framework.access,
  org.eclipse.osee.framework.access.internal.data
 Require-Bundle: org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.core.model
+Service-Component: OSGI-INF/*.xml

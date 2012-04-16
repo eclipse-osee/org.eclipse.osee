@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" name="org.eclipse.osee.framework.access.internal.ObjectAccessProviderProxy">
+   <implementation class="org.eclipse.osee.framework.access.internal.ObjectAccessProviderProxy"/>
+   <service>
+      <provide interface="org.eclipse.osee.framework.access.IAccessProvider"/>
+   </service>
+   <reference bind="setAccessControlService" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IAccessControlService" name="IAccessControlService" policy="static"/>
+</scr:component>

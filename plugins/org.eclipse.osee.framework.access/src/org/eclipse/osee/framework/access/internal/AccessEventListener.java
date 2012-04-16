@@ -51,7 +51,7 @@ public final class AccessEventListener implements IBranchEventListener, IAccessC
             try {
                accessControlCacheHandler.reloadCache(service);
             } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
+               OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);
             }
          }
          if (guidArt.is(EventModType.Purged)) {
@@ -62,7 +62,7 @@ public final class AccessEventListener implements IBranchEventListener, IAccessC
                   accessControlCacheHandler.updateAccessList(service, artifactAccessObject);
                }
             } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
+               OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);
             }
 
          }
@@ -81,7 +81,7 @@ public final class AccessEventListener implements IBranchEventListener, IAccessC
             accessControlCacheHandler.updateAccessListForBranchObject(service, branchEvent.getBranchGuid());
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);
       }
    }
 
@@ -93,7 +93,7 @@ public final class AccessEventListener implements IBranchEventListener, IAccessC
             accessControlCacheHandler.reloadCache(service);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);
       }
    }
 }

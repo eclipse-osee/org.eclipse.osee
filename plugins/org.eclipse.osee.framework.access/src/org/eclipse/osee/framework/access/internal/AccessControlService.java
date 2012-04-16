@@ -25,7 +25,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessObject;
 import org.eclipse.osee.framework.access.internal.data.ArtifactAccessObject;
@@ -37,19 +36,18 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessData;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.services.IAccessControlService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
@@ -74,7 +72,9 @@ import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.osgi.framework.Bundle;
-import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 import com.google.common.collect.MapMaker;
 
 /**
@@ -139,10 +139,6 @@ public class AccessControlService implements IAccessControlService {
 
    private ArtifactTypeCache getArtifactTypeCache() {
       return cachingService.getArtifactTypeCache();
-   }
-
-   private RelationTypeCache getRelationTypeCache() {
-      return cachingService.getRelationTypeCache();
    }
 
    private BranchCache getBranchCache() {
@@ -318,16 +314,14 @@ public class AccessControlService implements IAccessControlService {
    }
 
    private ILifecycleService getLifecycleService() throws OseeCoreException {
-      Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
-      ServiceTracker tracker = new ServiceTracker(bundle.getBundleContext(), ILifecycleService.class.getName(), null);
-      tracker.open(true);
-      Object serviceObject = tracker.getService();
-      tracker.close();
-      if (serviceObject instanceof ILifecycleService) {
-         return (ILifecycleService) serviceObject;
-      } else {
-         throw new OseeStateException("Lifecycle service is unavailable");
-      }
+      Bundle bundle = FrameworkUtil.getBundle(getClass());
+      Conditions.checkNotNull(bundle, "bundle");
+      BundleContext bundleContext = bundle.getBundleContext();
+      Conditions.checkNotNull(bundleContext, "bundleContext");
+      ServiceReference<ILifecycleService> reference = bundleContext.getServiceReference(ILifecycleService.class);
+      ILifecycleService service = bundleContext.getService(reference);
+      Conditions.checkNotNull(service, "ILifecycleService");
+      return service;
    }
 
    public PermissionEnum getBranchPermission(IBasicArtifact<?> subject, IOseeBranch branch) throws OseeCoreException {
@@ -475,7 +469,7 @@ public class AccessControlService implements IAccessControlService {
             }
             cacheAccessControlData(data);
          } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);
          }
       }
    }
@@ -507,7 +501,7 @@ public class AccessControlService implements IAccessControlService {
          datas = generateAccessControlList(accessObject);
 
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);
       }
       return datas;
    }
@@ -611,7 +605,7 @@ public class AccessControlService implements IAccessControlService {
       try {
          OseeEventManager.kickAccessControlArtifactsEvent(this, event);
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);
       }
    }
 
@@ -640,7 +634,7 @@ public class AccessControlService implements IAccessControlService {
       try {
          OseeEventManager.kickAccessControlArtifactsEvent(this, event);
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);
       }
    }
 
@@ -719,7 +713,7 @@ public class AccessControlService implements IAccessControlService {
          try {
             reloadCache();
          } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);
          }
       }
    }

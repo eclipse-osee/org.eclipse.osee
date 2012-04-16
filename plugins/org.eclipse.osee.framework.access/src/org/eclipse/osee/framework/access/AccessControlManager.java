@@ -14,7 +14,7 @@ package org.eclipse.osee.framework.access;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.access.internal.AccessControlService;
-import org.eclipse.osee.framework.access.internal.Activator;
+import org.eclipse.osee.framework.access.internal.AccessControlHelper;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -34,9 +34,9 @@ public final class AccessControlManager {
    }
 
    public static AccessControlService getService() {
-      AccessControlService accessService = Activator.getAccessControlService();
+      AccessControlService accessService = AccessControlHelper.getAccessControlService();
       if (accessService == null) {
-         OseeLog.log(Activator.class, Level.SEVERE, "Access Service was null");
+         OseeLog.log(AccessControlHelper.class, Level.SEVERE, "Access Service was null");
       }
       return accessService;
    }
