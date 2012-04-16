@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.dsl.integration.internal.Activator;
+import org.eclipse.osee.framework.core.dsl.integration.internal.DslIntegrationConstants;
 import org.eclipse.osee.framework.core.dsl.integration.util.OseeUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslFactory;
@@ -48,7 +48,7 @@ public class OseeToXtextOperation extends AbstractOperation {
    private final OseeTypeCache cache;
 
    public OseeToXtextOperation(OseeTypeCache cache, OseeDslFactory factory, OseeDsl oseeModel) {
-      super("OSEE to Text Model", Activator.PLUGIN_ID);
+      super("OSEE to Text Model", DslIntegrationConstants.PLUGIN_ID);
       this.oseeModel = oseeModel;
       this.factory = factory;
       this.cache = cache;

@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Osee DSL Ui Integration
 Bundle-SymbolicName: org.eclipse.osee.framework.core.dsl.ui.integration;singleton:=true
 Bundle-Version: 0.9.9.qualifier
-Bundle-Activator: org.eclipse.osee.framework.core.dsl.ui.integration.internal.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.compare,
@@ -74,3 +73,4 @@ Require-Bundle: org.eclipse.osee.framework.core.dsl,
  org.eclipse.xtext,
  org.eclipse.ui.editors
 Export-Package: org.eclipse.osee.framework.core.dsl.ui.integration.operations
+Service-Component: OSGI-INF/*.xml

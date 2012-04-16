@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
-import org.eclipse.osee.framework.core.dsl.ui.integration.internal.Activator;
+import org.eclipse.osee.framework.core.dsl.ui.integration.internal.DslUiIntegrationConstants;
 import org.eclipse.osee.framework.core.model.TableData;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -40,7 +40,7 @@ public class CreateEditorReportOperation extends AbstractOperation {
    private final String reportName;
 
    public CreateEditorReportOperation(String reportName, Collection<TableData> tableData) {
-      super("Generate Report", Activator.PLUGIN_ID);
+      super("Generate Report", DslUiIntegrationConstants.PLUGIN_ID);
       this.tableData = tableData;
       this.reportName = reportName;
    }
@@ -73,7 +73,7 @@ public class CreateEditorReportOperation extends AbstractOperation {
                status = Status.OK_STATUS;
             } catch (Exception ex) {
                status =
-                  new Status(IStatus.ERROR, Activator.PLUGIN_ID, String.format("Error creating %s Report", reportName),
+                  new Status(IStatus.ERROR, DslUiIntegrationConstants.PLUGIN_ID, String.format("Error creating %s Report", reportName),
                      ex);
             }
             return status;

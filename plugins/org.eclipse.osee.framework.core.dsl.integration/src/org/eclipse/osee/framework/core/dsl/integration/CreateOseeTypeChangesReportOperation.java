@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.dsl.integration.internal.Activator;
+import org.eclipse.osee.framework.core.dsl.integration.internal.DslIntegrationConstants;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
@@ -35,7 +35,7 @@ public class CreateOseeTypeChangesReportOperation extends AbstractOperation {
    private final List<TableData> tabs;
 
    public CreateOseeTypeChangesReportOperation(OseeTypeCache cache, List<TableData> tabs) {
-      super("Report Osee Type Changes", Activator.PLUGIN_ID);
+      super("Report Osee Type Changes", DslIntegrationConstants.PLUGIN_ID);
       this.cache = cache;
       this.tabs = tabs;
    }

@@ -39,7 +39,7 @@ public class OseeDslArtifactUpdateOperation extends AbstractOperation {
    private final OseeDslSegmentParser parser;
 
    public OseeDslArtifactUpdateOperation(OseeDslSegmentParser parser, File file) {
-      super("OseeDsl Artifact Update", Activator.PLUGIN_ID);
+      super("OseeDsl Artifact Update", DslUiIntegrationConstants.PLUGIN_ID);
       this.file = file;
       this.parser = parser;
    }

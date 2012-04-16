@@ -10,14 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
-import java.util.logging.Level;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactSaveNotificationHandler;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.SetWorkbenchOverrideIconBlam;
-import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IPerspectiveDescriptor;
@@ -29,7 +26,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.osgi.framework.Bundle;
 
 /**
  * @author Ryan Schmitt
@@ -140,19 +136,7 @@ public class OseeUiEarlyStartup implements IStartup {
                });
             }
          });
-         startOseeDsl();
       }
       WorkspaceContributionItem.addToAllViews();
-   }
-
-   private void startOseeDsl() {
-      try {
-         Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.core.dsl.ui.integration");
-         if (bundle.getState() != Bundle.ACTIVE) {
-            bundle.start();
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
    }
 }

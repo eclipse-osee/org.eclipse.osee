@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.osee.framework.core.dsl.ui.integration.internal.Activator;
+import org.eclipse.osee.framework.core.dsl.ui.integration.internal.DslUiIntegrationConstants;
 import org.eclipse.osee.framework.core.dsl.ui.integration.operations.OseeTypesExportOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -61,7 +61,7 @@ public class OseeTypesExportWizard extends Wizard implements IImportWizard {
             }
          });
       } catch (FileNotFoundException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(DslUiIntegrationConstants.class, OseeLevel.SEVERE_POPUP, ex);
       } finally {
          Lib.close(fos);
       }

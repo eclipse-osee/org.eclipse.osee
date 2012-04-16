@@ -10,25 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.integration.internal;
 
-import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
+public final class DslIntegrationConstants {
 
-public class Activator implements BundleActivator {
+   private DslIntegrationConstants() {
+      // Constants
+   }
 
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.core.dsl.integration";
 
-   private ServiceDependencyTracker dependencyTracker2;
-
-   @Override
-   public void start(BundleContext context) throws Exception {
-      dependencyTracker2 = new ServiceDependencyTracker(context, new AccessModelInterpreterServiceRegHandler());
-      dependencyTracker2.open();
-   }
-
-   @Override
-   public void stop(BundleContext context) throws Exception {
-      Lib.close(dependencyTracker2);
-   }
 }

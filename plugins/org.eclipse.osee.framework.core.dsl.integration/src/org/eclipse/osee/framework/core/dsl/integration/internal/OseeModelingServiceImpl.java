@@ -130,7 +130,7 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
          ops.add(new OseeToXtextOperation(tempCache, modelFactory, baseModel));
          ops.add(new EMFCompareOperation(baseModel, modifiedModel, comparisonSnapshot));
       }
-      IOperation operation = new CompositeOperation("Import Osee Types", Activator.PLUGIN_ID, ops);
+      IOperation operation = new CompositeOperation("Import Osee Types", DslIntegrationConstants.PLUGIN_ID, ops);
       Operations.executeWorkAndCheckStatus(operation, monitor);
 
       if (request.isPersistAllowed()) {

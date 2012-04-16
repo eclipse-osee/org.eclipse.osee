@@ -27,7 +27,7 @@ import org.eclipse.emf.compare.diff.metamodel.ComparisonSnapshot;
 import org.eclipse.emf.compare.ui.editor.ModelCompareEditorInput;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.dsl.integration.util.ModelUtil;
-import org.eclipse.osee.framework.core.dsl.ui.integration.internal.Activator;
+import org.eclipse.osee.framework.core.dsl.ui.integration.internal.DslUiIntegrationConstants;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.model.OseeImportModelRequest;
 import org.eclipse.osee.framework.core.model.OseeImportModelResponse;
@@ -54,7 +54,7 @@ public class OseeTypesImportOperation extends AbstractOperation {
    private final boolean createCompareReport;
 
    public OseeTypesImportOperation(IOseeCachingService cacheService, URI model, boolean createTypeChangeReport, boolean createCompareReport, boolean isPersistAllowed) {
-      super("Import Osee Types Model", Activator.PLUGIN_ID);
+      super("Import Osee Types Model", DslUiIntegrationConstants.PLUGIN_ID);
       this.cacheService = cacheService;
       this.model = model;
       this.isPersistAllowed = isPersistAllowed;
@@ -126,7 +126,7 @@ public class OseeTypesImportOperation extends AbstractOperation {
                page.openEditor(input, "org.eclipse.compare.CompareEditor", true);
                status = Status.OK_STATUS;
             } catch (Exception ex) {
-               status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error opening compare editor", ex);
+               status = new Status(IStatus.ERROR, DslUiIntegrationConstants.PLUGIN_ID, "Error opening compare editor", ex);
             }
             return status;
          }

@@ -104,7 +104,7 @@ public final class OseeDslRenderer extends FileSystemRenderer {
                      IDE.openEditor(page, file);
                   }
                } catch (CoreException ex) {
-                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(DslUiIntegrationConstants.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          }

@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
-public final class ArtifactDataAccessor implements ArtifactDataProvider {
+public final class ArtifactDataProviderImpl implements ArtifactDataProvider {
 
    @Override
    public boolean isApplicable(Object object) {
@@ -35,7 +35,7 @@ public final class ArtifactDataAccessor implements ArtifactDataProvider {
       try {
          result = asCastedObject(object) != null;
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(DslUiIntegrationConstants.class, Level.SEVERE, ex);
       }
       return result;
    }
@@ -96,13 +96,13 @@ public final class ArtifactDataAccessor implements ArtifactDataProvider {
                artifactPtr = artifactPtr.getParent();
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            OseeLog.log(DslUiIntegrationConstants.class, Level.SEVERE, ex);
          }
          return hierarchy;
       }
 
       @Override
-      public boolean matches(Identity... identities) {
+      public boolean matches(Identity<?>... identities) {
          return self.matches(identities);
       }
 

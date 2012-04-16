@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
-import org.eclipse.osee.framework.core.dsl.ui.integration.internal.Activator;
+import org.eclipse.osee.framework.core.dsl.ui.integration.internal.DslUiIntegrationConstants;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.Conditions;
@@ -32,7 +32,7 @@ public class OseeTypesExportOperation extends AbstractOperation {
    private final OutputStream outputStream;
 
    public OseeTypesExportOperation(OutputStream outputStream) {
-      super("Export Osee Types Model", Activator.PLUGIN_ID);
+      super("Export Osee Types Model", DslUiIntegrationConstants.PLUGIN_ID);
       this.outputStream = outputStream;
    }
 
