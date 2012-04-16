@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.ops;
 import java.io.File;
 import java.util.List;
 import java.util.regex.Pattern;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.internal.Activator;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -54,7 +55,7 @@ public class RenameFilesOperation extends AbstractOperation {
    protected void doWork(IProgressMonitor monitor) throws Exception {
       Rule rule = new ReplaceAll(Pattern.compile(pathPattern.toString()), replacement.toString());
       File parentFolder = new File(parentFolderPath.toString()).getCanonicalFile();
-      List<File> files = Lib.recursivelyListFiles(parentFolder, null);
+      List<File> files = Lib.recursivelyListFiles(parentFolder);
       int size = files.size();
       int renamedFileCount = 0;
 

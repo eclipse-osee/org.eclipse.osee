@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.regex.Pattern;
+
 import org.eclipse.osee.framework.jdk.core.text.Rule;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.text.rules.ReplaceAll;
@@ -31,7 +32,7 @@ public class RenameFiles {
       }
 
       Rule rule = new ReplaceAll(Pattern.compile(args[1]), args[2]);
-      List<File> files = Lib.recursivelyListFiles(new File(args[0]).getCanonicalFile(), null);
+      List<File> files = Lib.recursivelyListFiles(new File(args[0]).getCanonicalFile());
       int size = files.size();
       int renamedFileCount = 0;
 
