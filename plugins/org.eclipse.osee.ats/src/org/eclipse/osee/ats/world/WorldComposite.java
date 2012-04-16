@@ -25,6 +25,8 @@ import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorAction.IOpenNewAtsWorldEditorHandler;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorSelectedAction.IOpenNewAtsWorldEditorSelectedHandler;
 import org.eclipse.osee.ats.core.action.ActionManager;
+import org.eclipse.osee.ats.core.actions.ISelectedAtsArtifacts;
+import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
@@ -55,19 +57,21 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Donald G. Dunne
  */
-public class WorldComposite extends ScrolledComposite implements IWorldViewerEventHandler, IOpenNewAtsWorldEditorHandler, IOpenNewAtsWorldEditorSelectedHandler, IRefreshActionHandler {
+public class WorldComposite extends ScrolledComposite implements ISelectedAtsArtifacts, IWorldViewerEventHandler, IOpenNewAtsWorldEditorHandler, IOpenNewAtsWorldEditorSelectedHandler, IRefreshActionHandler {
 
    private final WorldXViewer worldXViewer;
    private final Set<Artifact> worldArts = new HashSet<Artifact>(200);
    private final Set<Artifact> otherArts = new HashSet<Artifact>(200);
-   private final IWorldEditor iWorldEditor;
+   protected IWorldEditor iWorldEditor;
+   private final String id;
 
-   public WorldComposite(IWorldEditor worldEditor, Composite parent, int style) {
-      this(worldEditor, null, parent, style);
+   public WorldComposite(String id, IWorldEditor worldEditor, Composite parent, int style) {
+      this(id, worldEditor, null, parent, style);
    }
 
-   public WorldComposite(final IWorldEditor worldEditor, IXViewerFactory xViewerFactory, Composite parent, int style) {
+   public WorldComposite(String id, final IWorldEditor worldEditor, IXViewerFactory xViewerFactory, Composite parent, int style) {
       super(parent, style);
+      this.id = id;
       this.iWorldEditor = worldEditor;
 
       setLayout(new GridLayout(1, true));
@@ -276,6 +280,44 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
    @Override
    public void relationsModifed(Collection<Artifact> relModifiedArts) {
       // provided for subclass implementation
+   }
+
+   @Override
+   public String toString() {
+      return String.format("WorldComposite [%s][%s]", id, iWorldEditor.getCurrentTitleLabel());
+   }
+
+   @Override
+   public Set<Artifact> getSelectedSMAArtifacts() {
+      Set<Artifact> artifacts = new HashSet<Artifact>();
+      for (Artifact art : getSelectedArtifacts()) {
+         if (art instanceof AbstractWorkflowArtifact) {
+            artifacts.add(art);
+         }
+      }
+      return artifacts;
+   }
+
+   @Override
+   public List<Artifact> getSelectedAtsArtifacts() {
+      List<Artifact> artifacts = new ArrayList<Artifact>();
+      for (Artifact art : getSelectedArtifacts()) {
+         if (art.isOfType(AtsArtifactTypes.AtsArtifact)) {
+            artifacts.add(art);
+         }
+      }
+      return artifacts;
+   }
+
+   @Override
+   public List<TaskArtifact> getSelectedTaskArtifacts() {
+      List<TaskArtifact> tasks = new ArrayList<TaskArtifact>();
+      for (Artifact art : getSelectedArtifacts()) {
+         if (art instanceof TaskArtifact) {
+            tasks.add((TaskArtifact) art);
+         }
+      }
+      return tasks;
    }
 
 }

@@ -142,7 +142,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       showReleaseMetricsLabel = toolkit.createLabel(resultsContainer, "");
       showReleaseMetricsLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      worldComposite = new WorldComposite(worldEditor, resultsContainer, SWT.BORDER);
+      worldComposite = new WorldComposite("world.editor.main", worldEditor, resultsContainer, SWT.BORDER);
       toolkit.adapt(worldComposite);
       return resultsSection;
    }

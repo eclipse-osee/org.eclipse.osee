@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.editor;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -23,10 +24,16 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.osee.ats.core.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.world.IWorldViewerEventHandler;
+import org.eclipse.osee.ats.world.WorldXViewer;
+import org.eclipse.osee.ats.world.WorldXViewerEventManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
@@ -52,7 +59,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Donald G. Dunne
  */
-public class SMAMembersTab extends FormPage {
+public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler {
    private final AbstractWorkflowArtifact awa;
    private IManagedForm managedForm;
    private Composite bodyComp;
@@ -90,7 +97,7 @@ public class SMAMembersTab extends FormPage {
 
          setLoading(true);
          refreshData();
-
+         WorldXViewerEventManager.add(this);
       } catch (Exception ex) {
          handleException(ex);
       }
@@ -108,16 +115,18 @@ public class SMAMembersTab extends FormPage {
    @Override
    public void showBusy(boolean busy) {
       super.showBusy(busy);
-      if (Widgets.isAccessible(getManagedForm().getForm())) {
+      if (getManagedForm() != null && Widgets.isAccessible(getManagedForm().getForm())) {
          getManagedForm().getForm().getForm().setBusy(busy);
       }
    }
 
    public void refreshData() {
-      Operations.executeAsJob(AtsBulkLoad.getConfigLoadingOperation(), true, Job.LONG, new ReloadJobChangeAdapter(
-         editor));
-      // Don't put in operation cause doesn't have to be loaded before editor displays
-      OseeDictionary.load();
+      if (Widgets.isAccessible(bodyComp)) {
+         Operations.executeAsJob(AtsBulkLoad.getConfigLoadingOperation(), true, Job.LONG, new ReloadJobChangeAdapter(
+            editor));
+         // Don't put in operation cause doesn't have to be loaded before editor displays
+         OseeDictionary.load();
+      }
    }
    private final class ReloadJobChangeAdapter extends JobChangeAdapter {
 
@@ -139,6 +148,8 @@ public class SMAMembersTab extends FormPage {
                   updateTitleBar();
                   setLoading(false);
                   createMembersBody();
+                  smaGoalMembersSection.reload();
+                  jumptoScrollLocation();
                   FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
                   editor.onDirtied();
                } catch (OseeCoreException ex) {
@@ -176,29 +187,34 @@ public class SMAMembersTab extends FormPage {
    }
 
    private void createMembersBody() {
+      if (!Widgets.isAccessible(smaGoalMembersSection)) {
 
-      smaGoalMembersSection = new SMAGoalMembersSection("tab", editor, bodyComp, SWT.NONE, null);
-      smaGoalMembersSection.layout();
-      smaGoalMembersSection.setFocus();
+         smaGoalMembersSection =
+            new SMAGoalMembersSection("workflow.edtor.members.tab", editor, bodyComp, SWT.NONE, null);
+         smaGoalMembersSection.layout();
+         smaGoalMembersSection.setFocus();
 
-      smaGoalMembersSection.getWorldComposite().getWorldXViewer().getTree().addListener(SWT.MouseWheel, new Listener() {
+         smaGoalMembersSection.getWorldComposite().getWorldXViewer().getTree().addListener(SWT.MouseWheel,
+            new Listener() {
 
-         @Override
-         public void handleEvent(Event event) {
-            ScrolledComposite sc = managedForm.getForm();
-            Point origin = sc.getOrigin();
-            origin.y -= event.count * 16;
-            sc.setOrigin(origin);
-         }
-      });
+               @Override
+               public void handleEvent(Event event) {
+                  ScrolledComposite sc = managedForm.getForm();
+                  Point origin = sc.getOrigin();
+                  origin.y -= event.count * 16;
+                  sc.setOrigin(origin);
+               }
+            });
+      }
+   }
 
+   private void jumptoScrollLocation() {
       // Jump to scroll location if set
       Integer selection = guidToScrollLocation.get(awa.getGuid());
       if (selection != null) {
          JumpScrollbarJob job = new JumpScrollbarJob("");
          job.schedule(500);
       }
-
    }
 
    @Override
@@ -267,6 +283,36 @@ public class SMAMembersTab extends FormPage {
 
    public SMAGoalMembersSection getSmaGoalMembersSection() {
       return smaGoalMembersSection;
+   }
+
+   @Override
+   public WorldXViewer getWorldXViewer() {
+      return smaGoalMembersSection.getWorldComposite().getWorldXViewer();
+   }
+
+   @Override
+   public void removeItems(Collection<? extends Object> objects) {
+      for (Object obj : objects) {
+         if (obj instanceof EventBasicGuidArtifact) {
+            EventBasicGuidArtifact guidArt = (EventBasicGuidArtifact) obj;
+            if (guidArt.getModType() == EventModType.Purged) {
+               refresh();
+               return;
+            }
+         }
+      }
+   }
+
+   @Override
+   public void relationsModifed(Collection<Artifact> relModifiedArts) {
+      if (relModifiedArts.contains(awa)) {
+         refresh();
+      }
+   }
+
+   @Override
+   public boolean isDisposed() {
+      return editor.isDisposed();
    }
 
 }

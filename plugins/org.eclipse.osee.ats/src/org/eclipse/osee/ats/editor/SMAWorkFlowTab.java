@@ -12,6 +12,7 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,9 @@ import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.walker.action.OpenActionViewAction;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
+import org.eclipse.osee.ats.world.IWorldViewerEventHandler;
+import org.eclipse.osee.ats.world.WorldXViewer;
+import org.eclipse.osee.ats.world.WorldXViewerEventManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
@@ -59,6 +63,9 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
@@ -99,7 +106,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Donald G. Dunne
  */
-public class SMAWorkFlowTab extends FormPage {
+public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler {
    private final AbstractWorkflowArtifact awa;
    private final List<SMAWorkFlowSection> sections = new ArrayList<SMAWorkFlowSection>();
    private final List<StateXWidgetPage> statePages = new ArrayList<StateXWidgetPage>();
@@ -158,7 +165,7 @@ public class SMAWorkFlowTab extends FormPage {
          }
 
          refreshData();
-
+         WorldXViewerEventManager.add(this);
       } catch (Exception ex) {
          handleException(ex);
       }
@@ -336,7 +343,7 @@ public class SMAWorkFlowTab extends FormPage {
       try {
          if (awa.isOfType(AtsArtifactTypes.Goal)) {
             smaGoalMembersSection =
-               new SMAGoalMembersSection("sec", editor, atsBody, SWT.NONE, 400);
+               new SMAGoalMembersSection("workflow.editor.workflow.tab", editor, atsBody, SWT.NONE, 400);
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -720,4 +727,38 @@ public class SMAWorkFlowTab extends FormPage {
       }
       return null;
    }
+
+   @Override
+   public WorldXViewer getWorldXViewer() {
+      if (smaGoalMembersSection != null && Widgets.isAccessible(smaGoalMembersSection.getWorldComposite())) {
+         return smaGoalMembersSection.getWorldComposite().getWorldXViewer();
+      }
+      return null;
+   }
+
+   @Override
+   public void removeItems(Collection<? extends Object> objects) {
+      for (Object obj : objects) {
+         if (obj instanceof EventBasicGuidArtifact) {
+            EventBasicGuidArtifact guidArt = (EventBasicGuidArtifact) obj;
+            if (guidArt.getModType() == EventModType.Purged) {
+               refresh();
+               return;
+            }
+         }
+      }
+   }
+
+   @Override
+   public void relationsModifed(Collection<Artifact> relModifiedArts) {
+      if (relModifiedArts.contains(awa)) {
+         refresh();
+      }
+   }
+
+   @Override
+   public boolean isDisposed() {
+      return editor.isDisposed();
+   }
+
 }

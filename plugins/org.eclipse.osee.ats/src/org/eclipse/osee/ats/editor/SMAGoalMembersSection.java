@@ -44,6 +44,8 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
+import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactDragAndDrop;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -65,19 +67,17 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Roberto E. Escobar
  * @author Donald G. Dunne
  */
-public class SMAGoalMembersSection extends Composite implements ISelectedAtsArtifacts, IWorldEditor, IMenuActionProvider {
+public class SMAGoalMembersSection extends Composite implements ISelectedAtsArtifacts, IWorldEditor, IMenuActionProvider, IRefreshActionHandler {
 
    private final SMAEditor editor;
    private WorldComposite worldComposite;
    private static final Map<String, CustomizeData> editorToCustDataMap = new HashMap<String, CustomizeData>(20);
    private final String id;
-   private final Integer defaultTableWidth;
 
    public SMAGoalMembersSection(String id, SMAEditor editor, Composite parent, int style, Integer defaultTableWidth) {
       super(parent, style);
       this.id = id;
       this.editor = editor;
-      this.defaultTableWidth = defaultTableWidth;
 
       setLayout(new GridLayout(2, true));
       setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -86,7 +86,7 @@ public class SMAGoalMembersSection extends Composite implements ISelectedAtsArti
       addDropToAddLabel(editor.getToolkit());
       addDropToRemoveLabel(editor.getToolkit());
 
-      createWorldComposite();
+      createWorldComposite(defaultTableWidth);
       createActions();
       setupListenersForCustomizeDataCaching();
       fillActionBar(toolBar);
@@ -109,30 +109,15 @@ public class SMAGoalMembersSection extends Composite implements ISelectedAtsArti
       return toolBar;
    }
 
-   private void refreshTableSize() {
-      GridData gd = null;
-      if (defaultTableWidth != null) {
-         gd = new GridData(SWT.FILL, SWT.NONE, true, false);
-         gd.heightHint = defaultTableWidth;
-      } else {
-         gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-      }
-      gd.widthHint = 200;
-      gd.horizontalSpan = 2;
-      worldComposite.setLayoutData(gd);
-      worldComposite.layout(true);
-      layout();
-      getParent().layout();
-   }
-
    private void fillActionBar(ToolBar toolBar) {
 
       new ActionContributionItem(worldComposite.getXViewer().getCustomizeAction()).fill(toolBar, -1);
+      new ActionContributionItem(new RefreshAction(this)).fill(toolBar, -1);
    }
 
-   private void createWorldComposite() {
+   private void createWorldComposite(Integer defaultTableWidth) {
       worldComposite =
-         new WorldComposite(this, new GoalXViewerFactory((GoalArtifact) editor.getAwa()), this, SWT.BORDER);
+         new WorldComposite(id, this, new GoalXViewerFactory((GoalArtifact) editor.getAwa()), this, SWT.BORDER);
 
       CustomizeData customizeData = editorToCustDataMap.get(getTableExpandKey());
       if (customizeData == null) {
@@ -143,19 +128,29 @@ public class SMAGoalMembersSection extends Composite implements ISelectedAtsArti
 
       worldComposite.getWorldXViewer().addMenuActionProvider(this);
 
-      GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+      GridData gd = null;
+      if (defaultTableWidth != null && defaultTableWidth > 0) {
+         gd = new GridData(SWT.FILL, SWT.NONE, true, false);
+         gd.heightHint = defaultTableWidth;
+      } else {
+         gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+      }
+      gd.widthHint = 200;
       gd.horizontalSpan = 2;
       worldComposite.setLayoutData(gd);
+      worldComposite.layout(true);
 
+      customizeData = null;
+      reload();
+   }
+
+   public void reload() {
       try {
-         customizeData = null;
          worldComposite.load("Members", editor.getAwa().getRelatedArtifacts(AtsRelationTypes.Goal_Member),
-            customizeData, TableLoadOption.None);
-
+            (CustomizeData) null, TableLoadOption.None);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      refreshTableSize();
 
    }
 
@@ -358,6 +353,11 @@ public class SMAGoalMembersSection extends Composite implements ISelectedAtsArti
 
    public WorldComposite getWorldComposite() {
       return worldComposite;
+   }
+
+   @Override
+   public void refreshActionHandler() {
+      refresh();
    }
 
 }

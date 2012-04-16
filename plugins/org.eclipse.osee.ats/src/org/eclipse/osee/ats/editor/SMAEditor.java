@@ -680,7 +680,9 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
             if (page.equals(workFlowTab)) {
                provider = getDefaultSelectionProvider();
             } else if (page.equals(membersTab)) {
-               provider = membersTab.getSmaGoalMembersSection().getWorldComposite().getWorldXViewer();
+               if (membersTab.getSmaGoalMembersSection() != null) {
+                  provider = membersTab.getSmaGoalMembersSection().getWorldComposite().getWorldXViewer();
+               }
             } else if (page.equals(taskTabXWidgetActionPage)) {
                provider = taskTabXWidgetActionPage.getTaskComposite().getTaskXViewer();
             } else {

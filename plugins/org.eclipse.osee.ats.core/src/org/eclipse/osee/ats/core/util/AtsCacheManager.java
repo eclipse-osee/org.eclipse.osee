@@ -67,15 +67,25 @@ public class AtsCacheManager implements IArtifactEventListener {
    }
 
    public static synchronized Collection<TaskArtifact> getTaskArtifacts(AbstractTaskableArtifact sma) throws OseeCoreException {
-      if (!teamTasksCache.containsKey(sma)) {
-         Collection<TaskArtifact> taskArtifacts =
-            sma.getRelatedArtifacts(AtsRelationTypes.SmaToTask_Task, TaskArtifact.class);
-         if (taskArtifacts.isEmpty()) {
-            return taskArtifacts;
+      Collection<TaskArtifact> tasks = teamTasksCache.get(sma);
+      if (tasks == null || containsDeleted(tasks)) {
+         // Get and cache tasks
+         tasks = sma.getRelatedArtifacts(AtsRelationTypes.SmaToTask_Task, TaskArtifact.class);
+         if (tasks.isEmpty()) {
+            return tasks;
          }
-         teamTasksCache.put(sma, taskArtifacts);
+         teamTasksCache.put(sma, tasks);
       }
-      return teamTasksCache.get(sma);
+      return tasks;
+   }
+
+   private static boolean containsDeleted(Collection<TaskArtifact> tasks) {
+      for (TaskArtifact task : tasks) {
+         if (task.isDeleted()) {
+            return true;
+         }
+      }
+      return false;
    }
 
    public static List<Artifact> getArtifactsByName(IArtifactType artifactType, String name) {

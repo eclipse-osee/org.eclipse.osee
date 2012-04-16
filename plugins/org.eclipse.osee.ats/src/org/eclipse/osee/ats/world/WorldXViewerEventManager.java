@@ -157,14 +157,16 @@ public class WorldXViewerEventManager {
             try {
                if (!handler.isDisposed()) {
                   WorldXViewer worldViewer = handler.getWorldXViewer();
-                  processPurged(worldViewer, handler);
-                  for (Artifact artifact : modifiedArts) {
-                     processArtifact(worldViewer, artifact);
+                  if (worldViewer != null) {
+                     processPurged(worldViewer, handler);
+                     for (Artifact artifact : modifiedArts) {
+                        processArtifact(worldViewer, artifact);
+                     }
+                     for (Artifact artifact : relModifiedArts) {
+                        processArtifact(worldViewer, artifact);
+                     }
+                     handler.relationsModifed(relModifiedArts);
                   }
-                  for (Artifact artifact : relModifiedArts) {
-                     processArtifact(worldViewer, artifact);
-                  }
-                  handler.relationsModifed(relModifiedArts);
                }
             } catch (Exception ex) {
                OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error processing event handler for - %s", handler);
