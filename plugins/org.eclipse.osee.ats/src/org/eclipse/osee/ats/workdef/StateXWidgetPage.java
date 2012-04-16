@@ -420,19 +420,19 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
       data.setObject(widgetDef);
       if (widgetDef.is(WidgetOption.REQUIRED_FOR_TRANSITION)) {
          data.getXOptionHandler().add(XOption.REQUIRED);
-      }
-      if (widgetDef.is(WidgetOption.REQUIRED_FOR_COMPLETION)) {
+      } else if (widgetDef.is(WidgetOption.REQUIRED_FOR_COMPLETION)) {
          data.getXOptionHandler().add(XOption.REQUIRED_FOR_COMPLETION);
-      }
-      for (WidgetOption widgetOpt : widgetDef.getOptions().getXOptions()) {
-         XOption option = null;
-         try {
-            option = XOption.valueOf(widgetOpt.name());
-         } catch (IllegalArgumentException ex) {
-            // do nothing
-         }
-         if (option != null) {
-            data.getXOptionHandler().add(option);
+      } else {
+         for (WidgetOption widgetOpt : widgetDef.getOptions().getXOptions()) {
+            XOption option = null;
+            try {
+               option = XOption.valueOf(widgetOpt.name());
+            } catch (IllegalArgumentException ex) {
+               // do nothing
+            }
+            if (option != null) {
+               data.getXOptionHandler().add(option);
+            }
          }
       }
       addLayoutData(data);
