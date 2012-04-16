@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
-import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionReportingService;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
@@ -35,7 +34,6 @@ public class Activator implements BundleActivator {
 
    private ServiceRegistration service1;
    private ServiceRegistration service2;
-   private ServiceDependencyTracker tracker;
 
    private volatile boolean needsInitialization = true;
 
@@ -46,9 +44,6 @@ public class Activator implements BundleActivator {
       service1 =
          context.registerService(IActionReportingService.class.getName(), new AtsActionReportingServiceImpl(), null);
       service2 = context.registerService(IOseeCmService.class.getName(), new OseeAtsServiceImpl(), null);
-
-      tracker = new ServiceDependencyTracker(context, new AtsCmAccessControlRegHandler());
-      tracker.open();
 
       Runnable runnable = new Runnable() {
          @Override
@@ -79,7 +74,6 @@ public class Activator implements BundleActivator {
          thread = null;
       }
       AtsBranchManager.stop();
-      OsgiUtil.close(tracker);
       OsgiUtil.close(service1);
       OsgiUtil.close(service2);
    }

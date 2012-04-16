@@ -1,0 +1,21 @@
+
+/*
+ * This defines the framework level access control.  Roles are created and
+ * can extend each one another.  Multiple guid's can be listed in each role
+ * definition representing either an individual user guid, or group guid.
+ * A role can specify 1 or more accessContexts that are applicable to the
+ * guid(s) listed.
+ * 
+ */
+
+
+role "Guest" {
+	guid "AAABDi35uzwAxJLISLBZdA";
+	accessContext "guest.context";
+}
+
+accessContext "guest.context" {
+	guid "AeA3J6AvwgEG4HGsypAA";
+	DENY edit artifactType "Artifact";
+	DENY edit relationType ALL BOTH;
+}

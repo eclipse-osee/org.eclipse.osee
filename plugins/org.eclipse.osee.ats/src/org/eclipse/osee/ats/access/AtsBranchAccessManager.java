@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.dsl.integration.RoleContextProvider;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -70,8 +71,15 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
    private static List<Long> atsConfigArtifactTypes = Arrays.asList(AtsArtifactTypes.ActionableItem.getGuid(),
       AtsArtifactTypes.TeamDefinition.getGuid());
 
+   private final RoleContextProvider roleContextProvider;
+
    public AtsBranchAccessManager() {
+      this(null);
+   }
+
+   public AtsBranchAccessManager(RoleContextProvider roleContextProvider) {
       OseeEventManager.addListener(this);
+      this.roleContextProvider = roleContextProvider;
    }
 
    public void dispose() {
@@ -126,6 +134,9 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
                contextIds.add(AtsBranchAccessContextId.DENY_CONTEXT);
             } else {
                contextIds.add(AtsBranchAccessContextId.DEFAULT_BRANCH_CONTEXT);
+            }
+            if (roleContextProvider != null) {
+               contextIds.addAll(roleContextProvider.getContextId(UserManager.getUser()));
             }
          }
       } catch (OseeCoreException ex) {

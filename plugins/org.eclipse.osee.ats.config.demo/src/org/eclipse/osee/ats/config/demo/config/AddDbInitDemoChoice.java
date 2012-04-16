@@ -26,6 +26,7 @@ public class AddDbInitDemoChoice implements IAddDbInitChoice {
    public void addDbInitChoice(GroupSelection groupSelection) {
       DbInitConfiguration config = new DbInitConfiguration(false);
       config.addTask("org.eclipse.osee.ats.config.demo.AddCommonBranchForAtsDemo");
+      config.addTask("org.eclipse.osee.framework.access.provider.FrameworkAccessConfig");
       config.addTask("org.eclipse.osee.ats.config.demo.AtsConfigAddDemoUsers");
       config.addTask("org.eclipse.osee.framework.database.init.SimpleTemplateProviderTask");
       config.addTask("org.eclipse.osee.ats.AtsDatabaseConfig");

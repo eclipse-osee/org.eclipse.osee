@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2012 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,31 +8,59 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.internal;
+package org.eclipse.osee.framework.access.provider.internal;
 
-import org.eclipse.osee.ats.access.AtsAccessUtil;
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.dsl.ui.integration.operations.AbstractOseeDslProvider;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 
 /**
- * @author Roberto E. Escobar
+ * @author John Misinco
  */
-public class AtsAccessOseeDslProvider extends AbstractOseeDslProvider {
+public class FrameworkDslProvider extends AbstractOseeDslProvider {
 
-   public AtsAccessOseeDslProvider(String locationUri) {
+   public FrameworkDslProvider(String locationUri) {
       super(locationUri);
+      OseeEventManager.addListener(new IArtifactEventListener() {
+
+         private final List<? extends IEventFilter> filter =
+            Arrays.asList(new ArtifactEventFilter(getStorageArtifact()));
+
+         @Override
+         public List<? extends IEventFilter> getEventFilters() {
+            return filter;
+         }
+
+         @Override
+         public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+            try {
+               loadDsl();
+            } catch (OseeCoreException ex) {
+               OseeLog.log(FrameworkDslProvider.class, Level.SEVERE, ex);
+            }
+         }
+      });
    }
 
    private Artifact getStorageArtifact() {
       try {
          return ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.AccessControlModel,
-            AtsAccessUtil.ATS_ACCESS_MODEL_NAME, BranchManager.getCommonBranch());
+            DefaultFrameworkAccessContstants.STORAGE_ARTIFACT_NAME, BranchManager.getCommonBranch());
       } catch (OseeCoreException ex) {
          return null;
       }
@@ -56,4 +84,5 @@ public class AtsAccessOseeDslProvider extends AbstractOseeDslProvider {
          artifact.persist(getClass().getSimpleName());
       }
    }
+
 }

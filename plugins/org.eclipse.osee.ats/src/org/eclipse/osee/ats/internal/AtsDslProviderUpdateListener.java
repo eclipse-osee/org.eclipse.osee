@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 /**
  * @author Roberto E. Escobar
  */
-public final class OseeDslProviderUpdateListener implements IArtifactEventListener {
+public final class AtsDslProviderUpdateListener implements IArtifactEventListener {
 
    //@formatter:off
    private static final List<? extends IEventFilter> eventFilters =
@@ -40,7 +40,7 @@ public final class OseeDslProviderUpdateListener implements IArtifactEventListen
 
    private final OseeDslProvider dslProvider;
 
-   public OseeDslProviderUpdateListener(OseeDslProvider dslProvider) {
+   public AtsDslProviderUpdateListener(OseeDslProvider dslProvider) {
       this.dslProvider = dslProvider;
    }
 

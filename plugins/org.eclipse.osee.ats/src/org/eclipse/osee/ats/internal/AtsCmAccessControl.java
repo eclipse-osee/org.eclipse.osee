@@ -18,8 +18,6 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
-import org.eclipse.osee.framework.core.model.access.AccessModel;
-import org.eclipse.osee.framework.core.model.access.HasAccessModel;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -29,13 +27,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  * @author Roberto E. Escobar
  * @author Donald G. Dunne
  */
-public class AtsCmAccessControl implements CmAccessControl, HasAccessModel {
+public class AtsCmAccessControl implements CmAccessControl {
 
-   private final AccessModel accessModel;
    private final AtsBranchAccessManager atsBranchAccessManager;
 
-   public AtsCmAccessControl(AccessModel accessModel, AtsBranchAccessManager atsBranchObjectManager) {
-      this.accessModel = accessModel;
+   public AtsCmAccessControl(AtsBranchAccessManager atsBranchObjectManager) {
       this.atsBranchAccessManager = atsBranchObjectManager;
    }
 
@@ -52,11 +48,6 @@ public class AtsCmAccessControl implements CmAccessControl, HasAccessModel {
          }
       }
       return result;
-   }
-
-   @Override
-   public AccessModel getAccessModel() {
-      return accessModel;
    }
 
    @Override

@@ -25,9 +25,19 @@ import org.eclipse.osee.framework.core.services.HasCmAccessControl;
 public class CmAccessControlProviderImpl implements CmAccessControlProvider {
 
    private final Collection<CmAccessControl> cmServices;
+   private CmAccessControl defaultAccessControl;
 
    public CmAccessControlProviderImpl(Collection<CmAccessControl> cmServices) {
       this.cmServices = cmServices;
+   }
+
+   public CmAccessControl getDefaultAccessControl() {
+      return defaultAccessControl;
+   }
+
+   @Override
+   public void setDefaultAccessControl(CmAccessControl defaultAccessControl) {
+      this.defaultAccessControl = defaultAccessControl;
    }
 
    @Override
@@ -44,7 +54,7 @@ public class CmAccessControlProviderImpl implements CmAccessControlProvider {
             }
          }
          if (applicableCms.isEmpty()) {
-            cmToReturn = null;
+            cmToReturn = getDefaultAccessControl();
          } else if (applicableCms.size() == 1) {
             cmToReturn = applicableCms.iterator().next();
          } else {

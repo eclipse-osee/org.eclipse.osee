@@ -42,4 +42,9 @@ public class MockConfigurationManagementProvider implements CmAccessControlProvi
    public boolean wasGetCMCalled() {
       return wasGetCMCalled;
    }
+
+   @Override
+   public void setDefaultAccessControl(CmAccessControl defaultAccessControl) {
+      //
+   }
 }

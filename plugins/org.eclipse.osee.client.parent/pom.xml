@@ -11,6 +11,7 @@
 
 	<modules>
 		<module>../../plugins/org.eclipse.osee.framework.access</module>
+		<module>../../plugins/org.eclipse.osee.framework.access.provider</module>
 		<module>../../plugins/org.eclipse.osee.framework.core.client</module>
 
 		<module>../../plugins/org.eclipse.osee.support.test.util</module>

@@ -52,7 +52,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.lifecycle.AbstractLifecycleVisitor;
 import org.eclipse.osee.framework.lifecycle.ILifecycleService;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -62,6 +62,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchGuidEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
@@ -114,12 +115,13 @@ public class AccessControlService implements IAccessControlService {
    private final Map<Integer, Integer> lockedObjectToSubject = new HashMap<Integer, Integer>(); // subject, permission
    private final HashCollection<Integer, PermissionEnum> subjectToPermissionCache =
       new HashCollection<Integer, PermissionEnum>(true);
-   private final Map<Pair<IBasicArtifact<?>, Collection<?>>, AccessDataQuery> accessDataCache =
+   private final Map<Collection<String>, AccessDataQuery> accessDataCache =
       new MapMaker().expiration(1, TimeUnit.HOURS).makeMap();;
 
    private final IOseeCachingService cachingService;
    private final IOseeDatabaseService databaseService;
    private final IdentityService identityService;
+   private AccessControlUpdateListener eventListener;
 
    public AccessControlService(IOseeDatabaseService databaseService, IOseeCachingService cachingService, IdentityService identityService) {
       super();
@@ -279,7 +281,6 @@ public class AccessControlService implements IAccessControlService {
    @Override
    public boolean hasPermission(Object object, PermissionEnum permission) throws OseeCoreException {
       boolean result = true;
-      // System.out.println(String.format("hasPermission: obj [%s] request [%s]", object, permission));
       Collection<?> objectsToCheck = null;
       if (object instanceof Collection<?>) {
          objectsToCheck = (Collection<?>) object;
@@ -290,16 +291,28 @@ public class AccessControlService implements IAccessControlService {
       }
       IBasicArtifact<?> subject = UserManager.getUser();
       AccessDataQuery accessQuery = getAccessData(subject, objectsToCheck);
-      // System.out.println(String.format("hasPermission: accessQuery [%s]", accessQuery));
       result = accessQuery.matchesAll(permission);
-      // System.out.println(String.format("hasPermission: result [%s]", result));
       return result;
    }
 
    @Override
    public AccessDataQuery getAccessData(IBasicArtifact<?> userArtifact, Collection<?> objectsToCheck) throws OseeCoreException {
-      Pair<IBasicArtifact<?>, Collection<?>> key =
-         new Pair<IBasicArtifact<?>, Collection<?>>(userArtifact, objectsToCheck);
+      List<String> key = new LinkedList<String>();
+      for (Object o : objectsToCheck) {
+         if (o instanceof Branch) {
+            key.add(((Branch) o).getGuid());
+         } else if (o instanceof Artifact) {
+            key.add(((Artifact) o).getGuid() + ((Artifact) o).getBranchGuid());
+         } else {
+            key.add(GUID.create());
+         }
+      }
+
+      if (eventListener == null) {
+         eventListener = new AccessControlUpdateListener((Artifact) userArtifact.getFullArtifact());
+         OseeEventManager.addListener(eventListener);
+      }
+
       if (!accessDataCache.containsKey(key)) {
          ILifecycleService service = getLifecycleService();
          AccessData accessData = new AccessData();
@@ -695,13 +708,18 @@ public class AccessControlService implements IAccessControlService {
 
    private final class AccessControlUpdateListener implements IArtifactEventListener {
 
-      //@formatter:off
-      private final List<? extends IEventFilter> eventFilters =
-         Arrays.asList(
-            new ArtifactTypeEventFilter(CoreArtifactTypes.AccessControlModel),
-            new BranchGuidEventFilter(CoreBranches.COMMON)
-            );
-      //@formatter:on
+      private final List<? extends IEventFilter> eventFilters;
+
+      public AccessControlUpdateListener() {
+         eventFilters =
+            Arrays.asList(new ArtifactTypeEventFilter(CoreArtifactTypes.AccessControlModel), new BranchGuidEventFilter(
+               CoreBranches.COMMON));
+      }
+
+      public AccessControlUpdateListener(Artifact artifact) {
+         eventFilters =
+            Arrays.asList(new ArtifactEventFilter(artifact), new BranchGuidEventFilter(artifact.getBranch()));
+      }
 
       @Override
       public List<? extends IEventFilter> getEventFilters() {

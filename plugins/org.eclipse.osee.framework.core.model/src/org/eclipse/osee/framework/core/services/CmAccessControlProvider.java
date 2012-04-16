@@ -19,4 +19,6 @@ import org.eclipse.osee.framework.core.model.IBasicArtifact;
 public interface CmAccessControlProvider {
 
    CmAccessControl getService(IBasicArtifact<?> user, Object object) throws OseeCoreException;
+
+   void setDefaultAccessControl(CmAccessControl defaultAccessControl);
 }

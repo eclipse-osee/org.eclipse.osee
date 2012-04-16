@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.access.internal.cm;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 import org.eclipse.osee.framework.access.IAccessProvider;
 import org.eclipse.osee.framework.access.internal.AccessControlServiceProxy;
@@ -31,27 +32,49 @@ public final class CmAccessProviderProxy implements IAccessProvider {
    private IAccessProvider accessProvider;
    private IAccessControlService accessControlService;
 
+   private final CmAccessControlProvider cmProvider;
+
+   public CmAccessProviderProxy() {
+      super();
+      cmProvider = new CmAccessControlProviderImpl(cmServices);
+   }
+
    public void setAccessControlService(IAccessControlService accessControlService) {
       this.accessControlService = accessControlService;
    }
 
-   public void addCmAccessControl(CmAccessControl cmAccessControl) {
-      cmServices.add(cmAccessControl);
+   public void addCmAccessControl(CmAccessControl cmAccessControl, Map<String, Object> properties) {
+      if (isDefault(properties)) {
+         cmProvider.setDefaultAccessControl(cmAccessControl);
+      } else {
+         cmServices.add(cmAccessControl);
+      }
       refreshCache();
    }
 
-   public void removeCmAccessControl(CmAccessControl cmAccessControl) {
-      cmServices.remove(cmAccessControl);
+   public void removeCmAccessControl(CmAccessControl cmAccessControl, Map<String, Object> properties) {
+      if (isDefault(properties)) {
+         cmProvider.setDefaultAccessControl(null);
+      } else {
+         cmServices.remove(cmAccessControl);
+      }
       refreshCache();
+   }
+
+   private boolean isDefault(Map<String, Object> properties) {
+      if (properties.containsKey("default")) {
+         return (Boolean) properties.get("default");
+      }
+      return false;
    }
 
    public void start() {
-      CmAccessControlProvider cmProvider = new CmAccessControlProviderImpl(cmServices);
       accessProvider = new CmAccessProvider(cmProvider);
    }
 
    public void stop() {
       accessProvider = null;
+      cmProvider.setDefaultAccessControl(null);
       cmServices.clear();
    }
 
