@@ -139,6 +139,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
 
       XNavigateItem healthItems = new XNavigateItem(adminItems, "Health", FrameworkImage.LASER);
       new ValidateAtsDatabase(healthItems);
+      new CreateGoalTestDemoArtifacts(healthItems);
 
       XNavigateItem demoItems = new XNavigateItem(adminItems, "Demo Data", PluginUiImage.ADMIN);
       new PopulateDemoActions(demoItems);

@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.actions.NewGoal;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.ats.goal.CreateGoalTestArtifacts;
 import org.eclipse.osee.ats.goal.GoalSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.internal.ATSPerspective;
@@ -207,7 +206,6 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          new SearchNavigateItem(adminItems, new ArtifactTypeWithInheritenceSearchItem("Show all Team Workflows",
             AtsArtifactTypes.TeamWorkflow));
          new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Tasks", AtsArtifactTypes.Task));
-         new CreateGoalTestArtifacts(adminItems);
          new CreateActionUsingAllActionableItems(adminItems);
 
          new DoesNotWorkItemAts(adminItems);
