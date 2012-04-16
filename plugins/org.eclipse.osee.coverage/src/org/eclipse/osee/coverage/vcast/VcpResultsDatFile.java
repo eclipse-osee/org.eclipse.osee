@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
@@ -82,8 +83,8 @@ public class VcpResultsDatFile {
                   if (coverageItem == null) {
                      coverageImport.getLog().logError(
                         String.format(
-                           "Method [%s] doesn't exist for Coverage Unit [%s] found in test unit vcast/results/.dat file [%s]",
-                           methodNum, coverageUnit, testUnitName));
+                           "Either Method [%s] or Line [%s] do not exist for Coverage Unit [%s] found in test unit vcast/results/.dat file [%s]",
+                           methodNum, executeNum, coverageUnit, testUnitName));
                   } else {
                      coverageItem.setCoverageMethod(CoverageOptionManager.Test_Unit);
                      try {
