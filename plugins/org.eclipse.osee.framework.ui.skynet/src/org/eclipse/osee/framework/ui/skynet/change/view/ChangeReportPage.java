@@ -194,17 +194,19 @@ public class ChangeReportPage extends FormPage {
 
    public void refresh() {
       final ScrolledForm sForm = getManagedForm().getForm();
-      for (IFormPart part : getManagedForm().getParts()) {
-         part.refresh();
+      if (Widgets.isAccessible(sForm)) {
+         for (IFormPart part : getManagedForm().getParts()) {
+            part.refresh();
+         }
+         changeReportTable.onUpdate();
+
+         updateTitle(sForm);
+         updateImage(sForm);
+
+         sForm.getBody().layout(true);
+         sForm.reflow(true);
+         getManagedForm().refresh();
       }
-      changeReportTable.onUpdate();
-
-      updateTitle(sForm);
-      updateImage(sForm);
-
-      sForm.getBody().layout(true);
-      sForm.reflow(true);
-      getManagedForm().refresh();
    }
 
    public void recomputeChangeReport(boolean isReloadAllowed) {
@@ -247,13 +249,15 @@ public class ChangeReportPage extends FormPage {
 
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
-               getEditor().refresh();
-               getEditor().getActionBarContributor().getReloadAction().setEnabled(true);
-               getEditor().getActionBarContributor().getOpenAssociatedArtifactAction().updateEnablement();
-               getManagedForm().getForm().getBody().layout(true);
-               getManagedForm().getForm().reflow(true);
-               getManagedForm().refresh();
-               showBusy(false);
+               if (Widgets.isAccessible(getManagedForm().getForm())) {
+                  getEditor().refresh();
+                  getEditor().getActionBarContributor().getReloadAction().setEnabled(true);
+                  getEditor().getActionBarContributor().getOpenAssociatedArtifactAction().updateEnablement();
+                  getManagedForm().getForm().getBody().layout(true);
+                  getManagedForm().getForm().reflow(true);
+                  getManagedForm().refresh();
+                  showBusy(false);
+               }
                return Status.OK_STATUS;
             }
          };

@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.util.IXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -106,7 +107,10 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            getManagedForm().reflow(true);
+            IManagedForm manager = getManagedForm();
+            if (manager != null && Widgets.isAccessible(manager.getForm())) {
+               getManagedForm().reflow(true);
+            }
          }
       });
    }
@@ -212,7 +216,9 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            scrolledForm.setText(title);
+            if (Widgets.isAccessible(scrolledForm)) {
+               scrolledForm.setText(title);
+            }
          };
       });
    }

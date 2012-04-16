@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -244,10 +245,17 @@ public class XHistoryWidget extends GenericXWidget {
                         if (!changes.isEmpty()) {
                            infoLabel = String.format("History: %s on branch: %s", artifact.getName(), shortName);
                         }
-                        extraInfoLabel.setText(infoLabel);
-                        xHistoryViewer.setInput(changes);
+
+                        if (Widgets.isAccessible(extraInfoLabel)) {
+                           extraInfoLabel.setText(infoLabel);
+                        }
+                        if (Widgets.isAccessible(xHistoryViewer.getControl())) {
+                           xHistoryViewer.setInput(changes);
+                        }
                      } else {
-                        extraInfoLabel.setText("Cleared on shut down - press refresh to reload");
+                        if (Widgets.isAccessible(extraInfoLabel)) {
+                           extraInfoLabel.setText("Cleared on shut down - press refresh to reload");
+                        }
                      }
                   }
                });
@@ -259,7 +267,6 @@ public class XHistoryWidget extends GenericXWidget {
       };
       Jobs.startJob(job);
    }
-
    public class HistoryDragAndDrop extends SkynetDragAndDrop {
 
       public HistoryDragAndDrop(Tree tree, String viewId) {

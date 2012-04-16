@@ -70,7 +70,9 @@ public class MergeXViewer extends XViewer {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            setInput(conflicts);
+            if (Widgets.isAccessible(getControl())) {
+               setInput(conflicts);
+            }
          }
       });
    }

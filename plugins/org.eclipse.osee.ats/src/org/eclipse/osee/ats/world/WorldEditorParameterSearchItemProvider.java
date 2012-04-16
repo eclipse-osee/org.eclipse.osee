@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayoutDat
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.swt.CursorManager;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 
 /**
@@ -199,10 +200,12 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            if (loading) {
-               worldEditor.getWorldComposite().setCursor(CursorManager.getCursor(SWT.CURSOR_WAIT));
-            } else {
-               worldEditor.getWorldComposite().setCursor(null);
+            if (Widgets.isAccessible(worldEditor.getWorldComposite())) {
+               if (loading) {
+                  worldEditor.getWorldComposite().setCursor(CursorManager.getCursor(SWT.CURSOR_WAIT));
+               } else {
+                  worldEditor.getWorldComposite().setCursor(null);
+               }
             }
          }
       });

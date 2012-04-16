@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 
 public class WorldContentProvider implements ITreeContentProvider {
 
@@ -60,8 +61,10 @@ public class WorldContentProvider implements ITreeContentProvider {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            xViewer.setInput(Collections.emptyList());
-            xViewer.refresh();
+            if (Widgets.isAccessible(xViewer.getControl())) {
+               xViewer.setInput(Collections.emptyList());
+               xViewer.refresh();
+            }
          };
       }, forcePend);
    }

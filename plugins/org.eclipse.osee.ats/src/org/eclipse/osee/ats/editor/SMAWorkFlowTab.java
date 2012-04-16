@@ -211,18 +211,21 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
                try {
-                  updateTitleBar();
-                  refreshToolbar();
-                  setLoading(false);
-                  createAtsBody();
-                  addMessageDecoration(managedForm.getForm());
-                  FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
-                  editor.onDirtied();
+                  if (managedForm != null && Widgets.isAccessible(managedForm.getForm())) {
+                     updateTitleBar();
+                     refreshToolbar();
+                     setLoading(false);
+                     createAtsBody();
+                     addMessageDecoration(managedForm.getForm());
+                     FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
+                     editor.onDirtied();
+                  }
                } catch (OseeCoreException ex) {
                   handleException(ex);
                } finally {
                   showBusy(false);
                }
+
                return Status.OK_STATUS;
             }
          };
@@ -342,8 +345,7 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    private void createGoalSection() {
       try {
          if (awa.isOfType(AtsArtifactTypes.Goal)) {
-            smaGoalMembersSection =
-               new SMAGoalMembersSection("workflow.editor.workflow.tab", editor, atsBody, SWT.NONE, 400);
+            smaGoalMembersSection = new SMAGoalMembersSection("sec", editor, atsBody, SWT.NONE, 400);
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

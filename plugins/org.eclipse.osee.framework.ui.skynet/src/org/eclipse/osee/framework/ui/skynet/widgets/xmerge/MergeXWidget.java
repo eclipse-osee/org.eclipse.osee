@@ -59,6 +59,7 @@ import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -395,16 +396,18 @@ public class MergeXWidget extends GenericXWidget {
             Displays.ensureInDisplayThread(new Runnable() {
                @Override
                public void run() {
-                  if (showConflicts) {
-                     Conflict[] conflicts = getConflicts();
-                     if (conflicts.length == 0) {
-                        extraInfoLabel.setText(NO_CONFLICTS);
+                  if (Widgets.isAccessible(extraInfoLabel)) {
+                     if (showConflicts) {
+                        Conflict[] conflicts = getConflicts();
+                        if (conflicts.length == 0) {
+                           extraInfoLabel.setText(NO_CONFLICTS);
+                        } else {
+                           setConflicts(conflicts);
+                           refresh();
+                        }
                      } else {
-                        setConflicts(conflicts);
-                        refresh();
+                        extraInfoLabel.setText(CONFLICTS_NOT_LOADED);
                      }
-                  } else {
-                     extraInfoLabel.setText(CONFLICTS_NOT_LOADED);
                   }
                   checkForCompleteCommit();
                }

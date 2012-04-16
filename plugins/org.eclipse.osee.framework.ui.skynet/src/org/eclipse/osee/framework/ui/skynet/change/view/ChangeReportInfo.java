@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.ui.skynet.change.presenter.ChangeReportInfoPre
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -57,23 +58,27 @@ public class ChangeReportInfo implements ChangeReportInfoPresenter.Display {
 
    @Override
    public void setImage(KeyedImage imageKey) {
-      label.setImage(ImageManager.getImage(imageKey));
+      if (Widgets.isAccessible(label)) {
+         label.setImage(ImageManager.getImage(imageKey));
+      }
    }
 
    @Override
    public void setText(String value) {
       String data = value;
-      try {
-         formText.setText(data, true, true);
-      } catch (Exception ex) {
-         data = ex.toString();
-         formText.setText(data, false, false);
+      if (Widgets.isAccessible(formText)) {
+         try {
+            formText.setText(data, true, true);
+         } catch (Exception ex) {
+            data = ex.toString();
+            formText.setText(data, false, false);
+         }
+         int size = Strings.isValid(data) ? data.split("<br/>").length : 0;
+         // FormText doesn't size correctly, so determine it's height
+         GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+         gridData.heightHint = 8 * (2 + size);
+         formText.setLayoutData(gridData);
       }
-      int size = Strings.isValid(data) ? data.split("<br/>").length : 0;
-      // FormText doesn't size correctly, so determine it's height
-      GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
-      gridData.heightHint = 8 * (2 + size);
-      formText.setLayoutData(gridData);
    }
 
 }

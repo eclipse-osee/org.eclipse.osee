@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEdit
 import org.eclipse.osee.framework.ui.swt.CursorManager;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
@@ -69,7 +70,8 @@ public class TaskEditor extends AbstractArtifactEditor implements IAtsMetricsPro
    @Override
    public void doSave(IProgressMonitor monitor) {
       try {
-         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Task Editor Save");
+         SkynetTransaction transaction =
+            TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Task Editor Save");
          for (TaskArtifact taskArt : tasks) {
             taskArt.saveSMA(transaction);
          }
@@ -398,10 +400,12 @@ public class TaskEditor extends AbstractArtifactEditor implements IAtsMetricsPro
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            if (loading) {
-               taskActionPage.getTaskComposite().setCursor(CursorManager.getCursor(SWT.CURSOR_WAIT));
-            } else {
-               taskActionPage.getTaskComposite().setCursor(null);
+            if (Widgets.isAccessible(taskActionPage.getTaskComposite())) {
+               if (loading) {
+                  taskActionPage.getTaskComposite().setCursor(CursorManager.getCursor(SWT.CURSOR_WAIT));
+               } else {
+                  taskActionPage.getTaskComposite().setCursor(null);
+               }
             }
          }
       });
