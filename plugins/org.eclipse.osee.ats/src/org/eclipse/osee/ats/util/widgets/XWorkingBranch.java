@@ -161,6 +161,8 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
                   Displays.getActiveShell(),
                   "Create Working Branch",
                   "Create a working branch from parent branch\n\n\"" + parentBranch.getName() + "\"?\n\n" + "NOTE: Working branches are necessary when OSEE Artifact changes " + "are made during implementation.")) {
+                  enablement.refresh();
+                  refreshEnablement();
                   return;
                }
                AtsBranchManagerCore.createWorkingBranch_Create(teamArt);
