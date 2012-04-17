@@ -19,6 +19,7 @@ import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.core.util.XResultData.Type;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -40,50 +41,53 @@ public class CoveragePackageOrderValidator {
    }
 
    public void run() {
-      List<String> orderErrors = new ArrayList<String>();
-      validateCoverageOrderNums(orderErrors, coveragePackageBase.getCoverageUnits());
-      if (orderErrors.isEmpty()) {
-         rd.log(AHTML.newline() + AHTML.bold("Validation: ") + "Ok");
+      XResultData tempRd = new XResultData(false);
+      for (CoverageUnit unit : coveragePackageBase.getCoverageUnits()) {
+         validate(tempRd, unit, true);
+      }
+      if (tempRd.isErrors()) {
+         rd.log(AHTML.newline() + AHTML.bold("Coverage Package Order Validation: ") + AHTML.newline());
+         rd.addRaw(tempRd.toString());
+         rd.bumpCount(Type.Severe, tempRd.getNumErrors());
+         rd.bumpCount(Type.Info, tempRd.getNumWarnings());
       } else {
-         rd.log(AHTML.newline() + AHTML.bold("Validation: ") + AHTML.newline());
-         for (String str : orderErrors) {
-            rd.logError(str);
-         }
+         rd.log(AHTML.newline() + AHTML.bold("Coverage Package Order Validation: ") + "Ok");
       }
    }
 
-   private void validateCoverageOrderNums(List<String> orderErrors, List<CoverageUnit> coverageUnits) {
-      for (CoverageUnit coverageUnit : coverageUnits) {
+   public static XResultData validate(XResultData rd, CoverageUnit coverageUnit, boolean recurse) {
 
-         // validate coverage units
-         List<String> orderNums = new ArrayList<String>();
-         for (CoverageUnit unit : coverageUnit.getCoverageUnits()) {
-            if (Strings.isValid(unit.getOrderNumber())) {
-               orderNums.add(unit.getOrderNumber());
-            }
+      // validate coverage units
+      List<String> orderNums = new ArrayList<String>();
+      for (CoverageUnit unit : coverageUnit.getCoverageUnits()) {
+         if (Strings.isValid(unit.getOrderNumber())) {
+            orderNums.add(unit.getOrderNumber());
          }
-         if (!orderNums.isEmpty()) {
-            validateNumbers("child units", orderErrors, orderNums, coverageUnit);
+      }
+      if (!orderNums.isEmpty()) {
+         validateNumbers("child units", rd, orderNums, coverageUnit);
+      }
+      // validate coverage items
+      orderNums.clear();
+      for (CoverageItem item : coverageUnit.getCoverageItems()) {
+         if (Strings.isValid(item.getOrderNumber())) {
+            orderNums.add(item.getOrderNumber());
          }
-         // validate coverage items
-         orderNums.clear();
-         for (CoverageItem item : coverageUnit.getCoverageItems()) {
-            if (Strings.isValid(item.getOrderNumber())) {
-               orderNums.add(item.getOrderNumber());
-            }
-         }
-         if (!orderNums.isEmpty()) {
-            validateNumbers("child items", orderErrors, orderNums, coverageUnit);
-         }
+      }
+      if (!orderNums.isEmpty()) {
+         validateNumbers("child items", rd, orderNums, coverageUnit);
+      }
 
+      if (recurse) {
          // process children coverage units
-         for (CoverageUnit unit : coverageUnit.getCoverageUnits()) {
-            validateCoverageOrderNums(orderErrors, unit.getCoverageUnits());
+         for (CoverageUnit childUnit : coverageUnit.getCoverageUnits()) {
+            validate(rd, childUnit, recurse);
          }
       }
+      return rd;
    }
 
-   private void validateNumbers(String name, List<String> orderErrors, List<String> orderNums, ICoverage coverage) {
+   private static void validateNumbers(String name, XResultData rd, List<String> orderNums, ICoverage coverage) {
       int maxNum = 0;
       Map<Integer, Boolean> maxNumToFound = new HashMap<Integer, Boolean>();
       for (String number : orderNums) {
@@ -92,14 +96,14 @@ public class CoveragePackageOrderValidator {
             maxNum = orderNum;
          }
          if (maxNumToFound.containsKey(orderNum)) {
-            orderErrors.add(String.format("Found duplicate [%s] order num [%s] for %s", name, orderNum,
-               coverage.toStringNoPackage()));
+            rd.logErrorWithFormat("Found duplicate [%s] order num [%s] for %s", name, orderNum,
+               coverage.toStringNoPackage());
          }
          maxNumToFound.put(orderNum, true);
       }
       for (int x = 1; x <= orderNums.size(); x++) {
          if (!maxNumToFound.containsKey(x)) {
-            orderErrors.add(String.format("[%s] order num [%s] not found for %s", name, x, coverage.toStringNoPackage()));
+            rd.logErrorWithFormat("[%s] order num [%s] not found for %s", name, x, coverage.toStringNoPackage());
          }
       }
    }

@@ -12,17 +12,16 @@ package org.eclipse.osee.coverage.editor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.coverage.action.ImportSelectedMergeItemsAction;
 import org.eclipse.osee.coverage.action.LinkWithImportItemAction;
+import org.eclipse.osee.coverage.action.OverwritePackageWithSelectedImportItems;
 import org.eclipse.osee.coverage.action.ShowMergeDetailsAction;
 import org.eclipse.osee.coverage.action.ShowMergeReportAction;
 import org.eclipse.osee.coverage.editor.params.CoverageParameters;
@@ -35,7 +34,6 @@ import org.eclipse.osee.coverage.editor.xmerge.XCoverageMergeViewer;
 import org.eclipse.osee.coverage.help.ui.CoverageHelpContext;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.merge.IMergeItem;
-import org.eclipse.osee.coverage.merge.MergeImportManager;
 import org.eclipse.osee.coverage.merge.MergeManager;
 import org.eclipse.osee.coverage.merge.MessageMergeItem;
 import org.eclipse.osee.coverage.model.CoverageImport;
@@ -45,7 +43,6 @@ import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageImage;
-import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.coverage.util.NotSaveable;
 import org.eclipse.osee.coverage.util.widget.XHyperlabelCoverageMethodSelection;
@@ -54,22 +51,15 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.core.util.XResultDataFile;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
-import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.CheckBoxDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -90,7 +80,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 /**
  * @author Donald G. Dunne
  */
-public class CoverageEditorMergeTab extends FormPage implements ISaveable {
+public class CoverageEditorMergeTab extends FormPage implements ISaveable, IMergeItemSelectionProvider {
 
    private XCoverageMergeViewer xPackageViewer1;
    private final CoveragePackage coveragePackage;
@@ -123,7 +113,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       scrolledForm.setImage(ImageManager.getImage(CoverageImage.COVERAGE_PACKAGE));
 
       scrolledForm.getBody().setLayout(new GridLayout(2, false));
-      Composite mainComp = scrolledForm.getBody();
+      mainComp = scrolledForm.getBody();
       coverageEditor.getToolkit().adapt(mainComp);
       GridData gd = new GridData(SWT.FILL, SWT.NONE, true, false);
       gd.widthHint = 300;
@@ -172,64 +162,13 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       updateTitles();
    }
 
-   private void handleImportSelected() {
-      final Collection<IMergeItem> mergeItems = getSelectedMergeItems();
-      final ISaveable saveable = this;
-      if (mergeItems.isEmpty()) {
-         AWorkbench.popup("Select Items to Import via Import Column");
-         return;
-      }
-      final CheckBoxDialog dialog =
-         new CheckBoxDialog("Import Items", String.format("Importing [%d] items.", mergeItems.size()),
-            "Save Import Record?");
-      if (dialog.open() == 0) {
-         xImportViewer2.getXViewer().setInput(new MessageMergeItem("Merging..."));
-         xImportViewer2.getXViewer().refresh();
-         loading = true;
-         Job job = new Job("Coverage Merge") {
-
-            @Override
-            protected IStatus run(IProgressMonitor monitor) {
-               try {
-                  final XResultData rd = new MergeImportManager(mergeManager).importItems(saveable, mergeItems);
-                  if (dialog.isChecked()) {
-                     IOseeBranch branch = coverageEditor.getBranch();
-                     if (branch == null) {
-                        return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Can't determine branch.");
-                     }
-                     SkynetTransaction transaction =
-                        TransactionManager.createTransaction(branch, "Save Import Record - " + coverageImport.getName());
-                     saveImportRecord(transaction, coverageImport);
-                     transaction.execute();
-                  }
-                  Displays.ensureInDisplayThread(new Runnable() {
-                     @Override
-                     public void run() {
-                        setLoading(false);
-                        XResultDataUI.report(rd, "Import");
-                        handleSearchButtonPressed();
-                        updateTitles();
-                        loadImportViewer(true, false);
-                     }
-
-                  });
-                  return Status.OK_STATUS;
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
-                  return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Coverage Save Failed", ex);
-               }
-            }
-         };
-         Jobs.startJob(job, false);
-      }
-   }
-
-   private void updateTitles() {
+   public void updateTitles() {
       titleLabel1.setText(coveragePackage.getName());
       titleLabel2.setText(coverageImport.getName());
    }
 
-   private Collection<IMergeItem> getSelectedMergeItems() {
+   @Override
+   public Collection<IMergeItem> getSelectedMergeItems() {
       Collection<IMergeItem> selected = new ArrayList<IMergeItem>();
       for (Object obj : (Collection<?>) xImportViewer2.getXViewer().getInput()) {
          if (obj instanceof IMergeItem && ((IMergeItem) obj).isChecked()) {
@@ -294,10 +233,13 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       new ActionContributionItem(reloadAndDebugAction).fill(rightToolBar, 0);
       new ActionContributionItem(reloadAction).fill(rightToolBar, 0);
       new ActionContributionItem(new RefreshAction(xPackageViewer1)).fill(rightToolBar, 0);
+      new ActionContributionItem(reflowAction).fill(rightToolBar, 0);
       new ActionContributionItem(xImportViewer2.getXViewer().getCustomizeAction()).fill(rightToolBar, 0);
       new ActionContributionItem(new CollapseAllAction(xImportViewer2.getXViewer())).fill(rightToolBar, 0);
       new ActionContributionItem(new ExpandAllAction(xImportViewer2.getXViewer())).fill(rightToolBar, 0);
-      new ActionContributionItem(importAction).fill(rightToolBar, 0);
+      new ActionContributionItem(new OverwritePackageWithSelectedImportItems(this, coveragePackage, xPackageViewer1,
+         coverageImport, xImportViewer2)).fill(rightToolBar, 0);
+      new ActionContributionItem(new ImportSelectedMergeItemsAction(this, this)).fill(rightToolBar, 0);
 
       loadImportViewer(false, false);
    }
@@ -338,11 +280,11 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
 
    }
 
-   private void setLoading(boolean loading) {
+   public void setLoading(boolean loading) {
       this.loading = loading;
    }
 
-   private void loadImportViewer(boolean force, boolean debugReport) {
+   public void loadImportViewer(boolean force, boolean debugReport) {
       if (loading) {
          AWorkbench.popup("Already Loading");
          return;
@@ -385,6 +327,24 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       }
    }
 
+   private final Action reflowAction = new Action() {
+      @Override
+      public void run() {
+         mainComp.layout();
+      }
+
+      @Override
+      public ImageDescriptor getImageDescriptor() {
+         return ImageManager.getImageDescriptor(FrameworkImage.REPORT);
+      }
+
+      @Override
+      public String getToolTipText() {
+         return "Re-size tables to fit screen";
+      }
+
+   };
+
    private final Action reloadAction = new Action() {
       @Override
       public void run() {
@@ -420,36 +380,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       }
 
    };
-
-   private final Action importAction = new Action() {
-
-      @Override
-      public void run() {
-         try {
-            Artifact artifact = ((CoverageEditorInput) coverageEditor.getEditorInput()).getCoveragePackageArtifact();
-            if (artifact != null) {
-               CoverageUtil.setNavigatorSelectedBranch(artifact.getBranch());
-            } else {
-               if (!CoverageUtil.getBranchFromUser(true)) {
-                  return;
-               }
-            }
-            handleImportSelected();
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         }
-      }
-
-      @Override
-      public org.eclipse.jface.resource.ImageDescriptor getImageDescriptor() {
-         return ImageManager.getImageDescriptor(FrameworkImage.ARROW_LEFT_YELLOW);
-      }
-
-      @Override
-      public String getToolTipText() {
-         return "Import Selected Items into Coverage Package";
-      };
-   };
+   private Composite mainComp;
 
    public void simulateSearchAll() throws OseeCoreException {
       XHyperlabelCoverageMethodSelection methodSelectionWidget =
@@ -471,7 +402,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       return super.getEditor();
    }
 
-   private void handleSearchButtonPressed() {
+   public void handleSearchButtonPressed() {
       if (parametersFilter == null) {
          parametersFilter = new CoverageParametersTextFilter(xPackageViewer1.getXViewer());
          xPackageViewer1.getXViewer().addFilter(parametersFilter);
@@ -524,4 +455,21 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    public String getId() {
       return PAGE_ID;
    }
+
+   public XCoverageMergeViewer getxPackageViewer1() {
+      return xPackageViewer1;
+   }
+
+   public XCoverageMergeViewer getxImportViewer2() {
+      return xImportViewer2;
+   }
+
+   public MergeManager getMergeManager() {
+      return mergeManager;
+   }
+
+   public CoverageImport getCoverageImport() {
+      return coverageImport;
+   }
+
 }

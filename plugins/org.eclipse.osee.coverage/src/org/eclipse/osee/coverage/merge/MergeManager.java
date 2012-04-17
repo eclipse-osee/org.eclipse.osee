@@ -27,8 +27,11 @@ import org.eclipse.osee.coverage.model.CoverageOption;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
+import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
+import org.eclipse.osee.coverage.validate.CoveragePackageOrderValidator;
+import org.eclipse.osee.coverage.validate.CoverageUnitChildNameValidator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -98,6 +101,36 @@ public class MergeManager {
       else {
          ICoverage packageICoverage = matchItem.getPackageItem();
          ICoverage importICoverage = matchItem.getImportItem();
+
+         if (importICoverage instanceof CoverageUnit) {
+            XResultData rd =
+               CoverageUnitChildNameValidator.validate(new XResultData(false), (CoverageUnit) importICoverage, false);
+            if (rd.isErrors()) {
+               String methodCountStr = getDispositionDetailsForOverwrite(packageICoverage, importICoverage);
+               if (resultData != null) {
+                  resultData.addRaw(methodCountStr + rd.toString());
+               }
+               MergeItem mergeItem = new MergeItem(MergeType.Error__UnMergable, null, importCoverage, false);
+               mergeItem.setMergeTypeDetails(methodCountStr + " - " + rd.toString());
+               mergeItems.add(mergeItem);
+               return;
+            }
+         }
+
+         if (importICoverage instanceof CoverageUnit) {
+            XResultData rd =
+               CoveragePackageOrderValidator.validate(new XResultData(false), (CoverageUnit) importICoverage, false);
+            if (rd.isErrors()) {
+               String methodCountStr = getDispositionDetailsForOverwrite(packageICoverage, importICoverage);
+               if (resultData != null) {
+                  resultData.addRaw(methodCountStr + rd.toString());
+               }
+               MergeItem mergeItem = new MergeItem(MergeType.Error__UnMergable, null, importCoverage, false);
+               mergeItem.setMergeTypeDetails(methodCountStr + " - " + rd.toString());
+               mergeItems.add(mergeItem);
+               return;
+            }
+         }
 
          Collection<? extends ICoverage> packageItemChildren = packageICoverage.getChildren();
          Collection<? extends ICoverage> importItemChildren = importICoverage.getChildren();
@@ -205,11 +238,22 @@ public class MergeManager {
          // Case: Unhandled
          // Action: Mark as UnMergeable
          else {
-            mergeItems.add(new MergeItem(MergeType.Error__UnMergable, null, importCoverage, false));
+            MergeItem item = new MergeItem(MergeType.Error__UnMergable, null, importCoverage, false);
+            mergeItems.add(item);
+            String details = getDispositionDetailsForOverwrite(packageICoverage, importICoverage);
+            if (Strings.isValid(details)) {
+               item.setMergeTypeDetails(details);
+            }
          }
 
       }
       return;
+   }
+
+   private String getDispositionDetailsForOverwrite(ICoverage packageICoverage, ICoverage importICoverage) {
+      StringBuilder str = new StringBuilder(CoverageUtil.getCoverageMethodCountStr("Package", packageICoverage));
+      str.append(CoverageUtil.getCoverageMethodCountStr("   Import", importICoverage));
+      return str.toString();
    }
 
    private Entry<List<ICoverage>, List<ICoverage>> getMatchedAndUnMatchedImportCoverageItems(Map<ICoverage, MatchItem> importItemToMatchItem) {
@@ -281,11 +325,12 @@ public class MergeManager {
          }
 
          // Check for test units change
-         else if (childMatchItem != null && isCoverageItemTestUnitsUpdate(childMatchItem)) {
-            groupMergeItems.add(new MergeItem(MergeType.CI_Test_Units_Update, childMatchItem.getPackageItem(),
-               childICoverage, false));
-            unMatchedImportCoverageItems.remove(childICoverage);
-         }
+         System.err.println("MergeManager: add test_units back in");
+         //         else if (childMatchItem != null && isCoverageItemTestUnitsUpdate(childMatchItem)) {
+         //            groupMergeItems.add(new MergeItem(MergeType.CI_Test_Units_Update, childMatchItem.getPackageItem(),
+         //               childICoverage, false));
+         //            unMatchedImportCoverageItems.remove(childICoverage);
+         //         }
       }
 
       // Check for moves in any items left unhandled by above renames and adds

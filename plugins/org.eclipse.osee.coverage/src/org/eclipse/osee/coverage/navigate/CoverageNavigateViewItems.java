@@ -72,7 +72,9 @@ public class CoverageNavigateViewItems implements XNavigateViewItems {
             }
 
             for (AbstractCoverageBlam blam : CoverageManager.getCoverageBlams()) {
-               items.add(new XNavigateItemBlam(null, blam));
+               if (!blam.getName().startsWith("Test Import")) {
+                  items.add(new XNavigateItemBlam(null, blam));
+               }
             }
          }
       } catch (OseeCoreException ex) {

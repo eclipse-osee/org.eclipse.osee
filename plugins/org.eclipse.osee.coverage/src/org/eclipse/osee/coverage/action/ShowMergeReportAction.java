@@ -73,6 +73,7 @@ public class ShowMergeReportAction extends Action {
          contents.append("      " + coverage.getName() + System.getProperty("line.separator"));
          contents.append("       > Method: " + item.getCoverageMethod().name + System.getProperty("line.separator"));
          //         contents.append("       > Units: " + item.getTestUnits() + System.getProperty("line.separator"));
+         //         contents.append("       > Notes: " + item.getNotes() + System.getProperty("line.separator"));
       }
    }
 
@@ -244,7 +245,10 @@ public class ShowMergeReportAction extends Action {
             UserManager.setSetting(COVERAGE_MERGE_BASEPATH, baseDir);
          }
          if (!compareExec.equals(UserManager.getSetting(COVERAGE_COMPARE_EXEC))) {
-            UserManager.setSetting(COVERAGE_MERGE_BASEPATH, baseDir);
+            UserManager.setSetting(COVERAGE_COMPARE_EXEC, compareExec);
+         }
+         if (UserManager.getUser().isDirty()) {
+            UserManager.getUser().persist("Store Coverage Compare Defaults");
          }
 
          if (((ISelectedCoverageEditorItem) importXViewer.getXViewer()).getSelectedCoverageEditorItems().size() == 1) {
@@ -261,7 +265,7 @@ public class ShowMergeReportAction extends Action {
                   importCoverageEditorItem = mergeItemGroup.getMergeItems().iterator().next().getParent();
                }
             } else if (importCoverageEditorItem instanceof MergeItem) {
-               importCoverageEditorItem = ((MergeItem) importCoverageEditorItem).getImportItem().getParent();
+               importCoverageEditorItem = ((MergeItem) importCoverageEditorItem).getImportItem();
             } else {
                AWorkbench.popup("Must select a Merge Item");
                return;
@@ -277,12 +281,6 @@ public class ShowMergeReportAction extends Action {
                return;
             }
             MatchItem matchItem = MergeManager.getPackageCoverageItem(coveragePackage, importCoverageEditorItem);
-            while (matchItem.isMatch() || importCoverageEditorItem == null) {
-               matchItem = MergeManager.getPackageCoverageItem(coveragePackage, importCoverageEditorItem);
-               if (!matchItem.isMatch()) {
-                  importCoverageEditorItem = importCoverageEditorItem.getParent();
-               }
-            }
             if (matchItem.getPackageItem() != null) {
                getReportDetails(matchItem.getPackageItem(), importCoverageEditorItem);
             } else {

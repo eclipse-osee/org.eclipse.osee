@@ -63,17 +63,17 @@ public class MergeImportManager {
             if (mergeItem instanceof MergeItemGroup) {
                MergeItemGroup group = (MergeItemGroup) mergeItem;
                for (IMergeItem childMergeItem : group.getMergeItems()) {
-                  if (childMergeItem instanceof MergeItem && ((MergeItem) childMergeItem).getMergeType() == MergeType.CI_Add) {
+                  if (childMergeItem instanceof MergeItem && ((IMergeItem) childMergeItem).getMergeType() == MergeType.CI_Add) {
                      addCoverageItem(childMergeItem, rd);
-                  } else if (childMergeItem instanceof MergeItem && ((MergeItem) childMergeItem).getMergeType() == MergeType.CI_Renamed) {
+                  } else if (childMergeItem instanceof MergeItem && ((IMergeItem) childMergeItem).getMergeType() == MergeType.CI_Renamed) {
                      renameCoverageItem(childMergeItem, rd);
-                  } else if (childMergeItem instanceof MergeItem && ((MergeItem) childMergeItem).getMergeType() == MergeType.CI_Moved) {
+                  } else if (childMergeItem instanceof MergeItem && ((IMergeItem) childMergeItem).getMergeType() == MergeType.CI_Moved) {
                      updateOrder(mergeItem, childMergeItem, rd);
-                  } else if (childMergeItem instanceof MergeItem && ((MergeItem) childMergeItem).getMergeType() == MergeType.CI_Delete) {
+                  } else if (childMergeItem instanceof MergeItem && ((IMergeItem) childMergeItem).getMergeType() == MergeType.CI_Delete) {
                      deleteCoverageItem(mergeItem, childMergeItem, rd);
-                  } else if (childMergeItem instanceof MergeItem && ((MergeItem) childMergeItem).getMergeType() == MergeType.CI_Method_Update) {
+                  } else if (childMergeItem instanceof MergeItem && ((IMergeItem) childMergeItem).getMergeType() == MergeType.CI_Method_Update) {
                      updateCoverageItemMethod(childMergeItem, rd);
-                  } else if (childMergeItem instanceof MergeItem && ((MergeItem) childMergeItem).getMergeType() == MergeType.CI_Test_Units_Update) {
+                  } else if (childMergeItem instanceof MergeItem && ((IMergeItem) childMergeItem).getMergeType() == MergeType.CI_Test_Units_Update) {
                      updateTestUnits(childMergeItem, rd);
                   } else {
                      rd.logError(String.format("Coverage_Item_Changes Group: Unsupported merge type [%s]",

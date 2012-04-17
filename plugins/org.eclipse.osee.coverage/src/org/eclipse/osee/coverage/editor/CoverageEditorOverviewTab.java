@@ -27,6 +27,7 @@ import org.eclipse.osee.coverage.validate.CoverageMethodValidator;
 import org.eclipse.osee.coverage.validate.CoveragePackageOrderValidator;
 import org.eclipse.osee.coverage.validate.CoverageUnitChildNameValidator;
 import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.core.util.XResultData.Type;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
@@ -34,6 +35,8 @@ import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionH
 import org.eclipse.osee.framework.ui.skynet.action.browser.BrowserPrintAction;
 import org.eclipse.osee.framework.ui.skynet.action.browser.IBrowserActionHandler;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
+import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
+import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultsComposite;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -95,11 +98,12 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
    public void refreshHtml() {
       final XResultData rd = new XResultData(false);
       coveragePackageBase.getOverviewHtmlHeader(rd);
-      rd.log("");
       rd.log(AHTML.getLabelValueStr(
          "Total Coverage ",
          CoverageUtil.getPercent(coveragePackageBase.getCoverageItemsCovered().size(),
             coveragePackageBase.getCoverageItems().size(), true).getSecond()));
+      String branchName = getHeaderBranchName(rd);
+      rd.addRaw(AHTML.getLabelValueStr("Editor Branch", branchName));
       rd.log("");
       rd.log(AHTML.getLabelValueStr("Coverage Breakdown", ""));
       rd.addRaw(AHTML.beginMultiColumnTable(100, 1));
@@ -107,40 +111,47 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
       // Create headers
       List<String> sortedHeaders = getSortedHeaders(coveragePackageBase);
       rd.addRaw(AHTML.addHeaderRowMultiColumnTable(sortedHeaders));
-
       for (String[] values : getRows(sortedHeaders, coveragePackageBase, true)) {
          rd.addRaw(AHTML.addRowMultiColumnTable(values));
       }
-
       rd.addRaw(AHTML.endMultiColumnTable());
+      rd.addRaw(AHTML.newline());
+
+      new CoveragePackageOrderValidator(coveragePackageBase, rd).run();
+      new CoverageUnitChildNameValidator(coveragePackageBase, rd).run();
+      new CoverageMethodValidator(coveragePackageBase, rd).run();
+
+      if (coveragePackageBase.getLog() != null) {
+         rd.log(AHTML.newline() + AHTML.bold("Import Log:") + AHTML.newline());
+         XResultPage temp = XResultDataUI.getReport(coveragePackageBase.getLog(), "");
+         rd.addRaw(temp.getManipulatedHtml());
+         rd.bumpCount(Type.Severe, temp.getNumErrors());
+         rd.bumpCount(Type.Info, temp.getNumWarnings());
+      }
+
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            String html =
+               XResultDataUI.getReport(rd, coveragePackageBase.getName()).getManipulatedHtml(
+                  Arrays.asList(Manipulations.ERROR_WARNING_HEADER, Manipulations.HRID_CMD_HYPER,
+                     Manipulations.ERROR_RED, Manipulations.CONVERT_NEWLINES, Manipulations.WARNING_YELLOW));
+            xResultsComp.setHtmlText(html, coveragePackageBase.getName());
+         }
+      });
+   }
+
+   private String getHeaderBranchName(final XResultData rd) {
       String branchName = null;
       try {
          if (coverageEditor.getBranch() != null) {
             branchName = coverageEditor.getBranch().getName();
          }
       } catch (Exception ex) {
-         branchName = "Exception: " + ex.getLocalizedMessage();
+         branchName = "Error: Exception - " + ex.getLocalizedMessage();
+         rd.bumpCount(Type.Severe, 1);
       }
-      rd.addRaw(AHTML.newline());
-      rd.addRaw(AHTML.getLabelValueStr("\nEditor Branch", branchName));
-
-      new CoveragePackageOrderValidator(coveragePackageBase, rd).run();
-
-      if (coveragePackageBase.getLog() != null) {
-         rd.log(AHTML.newline() + AHTML.bold("Log:") + AHTML.newline());
-         rd.addRaw(XResultDataUI.getReport(coveragePackageBase.getLog(), "").getManipulatedHtml());
-      }
-
-      new CoverageMethodValidator(coveragePackageBase, rd).run();
-      new CoverageUnitChildNameValidator(coveragePackageBase, rd).run();
-
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            String html = XResultDataUI.getReport(rd, coveragePackageBase.getName()).getManipulatedHtml();
-            xResultsComp.setHtmlText(html, coveragePackageBase.getName());
-         }
-      });
+      return branchName;
    }
 
    public static List<String[]> getRows(List<String> sortedHeaders, CoveragePackageBase coveragePackageBase, boolean html) {

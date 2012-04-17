@@ -10,12 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.validate;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 
@@ -36,31 +35,46 @@ public class CoverageUnitChildNameValidator {
    }
 
    public void run() {
-      List<String> orderErrors = new ArrayList<String>();
+      XResultData tempRd = new XResultData(false);
       for (CoverageUnit unit : coveragePackageBase.getCoverageUnits()) {
-         validateCoverageMethods(orderErrors, unit);
+         validate(tempRd, unit, true);
       }
-      if (orderErrors.isEmpty()) {
-         rd.log(AHTML.newline() + AHTML.bold("Coverage Unit Child Name Validation: ") + "Ok");
-      } else {
+      if (tempRd.isErrors()) {
          rd.log(AHTML.newline() + AHTML.bold("Coverage Unit Child Name Validation: ") + AHTML.newline());
-         for (String str : orderErrors) {
-            rd.logError(str);
-         }
+         rd.addRaw(tempRd.toString());
+         rd.bumpCount(XResultData.Type.Severe, tempRd.getNumErrors());
+         rd.bumpCount(XResultData.Type.Info, tempRd.getNumWarnings());
+      } else {
+         rd.log(AHTML.newline() + AHTML.bold("Coverage Unit Child Name Validation: ") + "Ok");
       }
    }
 
-   private void validateCoverageMethods(List<String> orderErrors, CoverageUnit coverageUnit) {
+   public static XResultData validate(XResultData rd, CoverageUnit coverageUnit, boolean recurse) {
+      return validate(new HashSet<String>(200), rd, coverageUnit, recurse);
+   }
+
+   public static XResultData validate(Set<String> uniqueResults, XResultData rd, CoverageUnit coverageUnit, boolean recurse) {
+
       Set<String> names = new HashSet<String>();
       for (CoverageUnit childCoverageUnit : coverageUnit.getCoverageUnits()) {
          if (names.contains(childCoverageUnit.getName())) {
-            orderErrors.add(String.format("Coverage Unit children with same name for parent [%s] children named [%s]",
-               coverageUnit.toString(), childCoverageUnit.getName()));
+            String methodCount = CoverageUtil.getCoverageMethodCountStr("Method Count", coverageUnit);
+            String errorStr =
+               String.format("Coverage Unit children have same name [%s] for parent [%s]; [%s]",
+                  childCoverageUnit.getName(), coverageUnit.toString(), methodCount);
+            // Only handle error once
+            if (!uniqueResults.contains(errorStr)) {
+               rd.logError(errorStr);
+               uniqueResults.add(errorStr);
+            }
          }
          names.add(childCoverageUnit.getName());
 
-         // process children coverage units
-         validateCoverageMethods(orderErrors, childCoverageUnit);
+         if (recurse) {
+            // process children coverage units
+            validate(rd, childCoverageUnit, recurse);
+         }
       }
+      return rd;
    }
 }

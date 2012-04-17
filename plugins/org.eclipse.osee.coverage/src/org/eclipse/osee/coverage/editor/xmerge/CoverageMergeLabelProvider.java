@@ -115,10 +115,11 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
    }
 
    public String getMergeItemImportColumnText(IMergeItem mergeItem) {
+      String result = "";
       if (!mergeItem.isImportAllowed()) {
          return "";
       }
-      if (mergeItem instanceof MergeItem && ((MergeItem) mergeItem).getMergeType() == MergeType.CI_Method_Update) {
+      if (mergeItem instanceof MergeItem && mergeItem.getMergeType() == MergeType.CI_Method_Update) {
          MergeItem fullMergeItem = (MergeItem) mergeItem;
          if (fullMergeItem.getPackageItem() instanceof CoverageItem) {
             return String.format("%s from [%s] to [%s]", fullMergeItem.getMergeType().toString(),
@@ -138,9 +139,14 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
                }
             }
          }
-         return group.getMergeType().name() + " - " + Collections.toString("; ", childrenStrs);
+         result += group.getMergeType().name() + " - " + Collections.toString("; ", childrenStrs);
+      } else {
+         result += mergeItem.getMergeType().toString();
       }
-      return mergeItem.getMergeType().toString();
+      if (Strings.isValid(mergeItem.getDetails())) {
+         result = String.format("%s  Details: [%s]", result, mergeItem.getDetails());
+      }
+      return result;
    }
 
    @Override

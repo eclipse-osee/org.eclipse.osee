@@ -26,6 +26,7 @@ public class MergeItem extends MergeItemBase {
 
    private final ICoverage packageItem;
    private final ICoverage importItem;
+   private String mergeTypeDetails;
 
    public MergeItem(MergeType mergeType, ICoverage packageItem, ICoverage importItem, boolean isCheckable) {
       super(importItem == null ? GUID.create() : importItem.getGuid(), importItem == null ? String.format(
@@ -204,6 +205,15 @@ public class MergeItem extends MergeItemBase {
    @Override
    public boolean equals(Object obj) {
       return super.equals(obj);
+   }
+
+   @Override
+   public String getDetails() {
+      return mergeTypeDetails;
+   }
+
+   public void setMergeTypeDetails(String mergeTypeDetails) {
+      this.mergeTypeDetails = mergeTypeDetails;
    }
 
 }

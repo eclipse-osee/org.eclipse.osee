@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.coverage.internal.Activator;
@@ -21,6 +22,7 @@ import org.eclipse.osee.coverage.merge.MatchItem;
 import org.eclipse.osee.coverage.merge.MergeManager;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
+import org.eclipse.osee.coverage.model.CoverageOption;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
@@ -34,6 +36,8 @@ import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.jdk.core.type.CountingMap;
+import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -50,6 +54,32 @@ public class CoverageUtil {
 
    private static IOseeBranch branch = null;
    private static List<Listener> branchChangeListeners = new ArrayList<Listener>();
+
+   public static String getCoverageMethodCountStr(String name, ICoverage coverage) {
+      CountingMap<String> countingMap = CoverageUtil.getCoverageMethodCount(coverage);
+      StringBuilder str = new StringBuilder(name + ": ");
+      for (Entry<String, MutableInteger> entry : countingMap.getCounts()) {
+         str.append(String.format("[%s=%s]", entry.getKey(), entry.getValue().toString()));
+      }
+      return str.toString();
+   }
+
+   public static CountingMap<String> getCoverageMethodCount(ICoverage coverage) {
+      CountingMap<String> packageCount = new CountingMap<String>(10);
+      getCoverageMethodsCounts(packageCount, coverage);
+      return packageCount;
+   }
+
+   private static void getCoverageMethodsCounts(CountingMap<String> countMap, ICoverage coverage) {
+      if (coverage instanceof CoverageItem) {
+         CoverageItem coverageItem = (CoverageItem) coverage;
+         CoverageOption coverageMethod = coverageItem.getCoverageMethod();
+         countMap.put(coverageMethod.name);
+      }
+      for (ICoverage child : coverage.getChildren()) {
+         getCoverageMethodsCounts(countMap, child);
+      }
+   }
 
    public static boolean getBranchFromUser(boolean force) throws OseeCoreException {
       if (force || CoverageUtil.getBranch() == null) {

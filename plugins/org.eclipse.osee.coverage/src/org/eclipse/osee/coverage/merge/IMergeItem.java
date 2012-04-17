@@ -28,4 +28,6 @@ public interface IMergeItem extends ICoverage {
 
    public boolean isImportAllowed();
 
+   public abstract String getDetails();
+
 }
