@@ -103,6 +103,18 @@ public abstract class CoveragePackageBase extends NamedIdentity<String> implemen
       return items;
    }
 
+   public int getCoverageUnitCount(boolean recurse) {
+      int count = 0;
+      if (!recurse) {
+         count = coverageUnits.size();
+      } else {
+         for (CoverageUnit coverageUnit : coverageUnits) {
+            count += coverageUnit.getCoverageUnitCount(true);
+         }
+      }
+      return count;
+   }
+
    public int getCoverageItemsCount(CoverageOption coverageOption) {
       int count = 0;
       for (CoverageUnit coverageUnit : coverageUnits) {

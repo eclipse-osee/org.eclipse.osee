@@ -22,6 +22,8 @@ import org.eclipse.osee.coverage.action.DeleteCoveragePackageAction;
 import org.eclipse.osee.coverage.action.NewCoveragePackageAction;
 import org.eclipse.osee.coverage.action.OpenCoveragePackageAction;
 import org.eclipse.osee.coverage.blam.AbstractCoverageBlam;
+import org.eclipse.osee.coverage.dispo.ImportCoverageMethodsBlam;
+import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -60,6 +62,7 @@ public class CoverageNavigateViewItems implements XNavigateViewItems {
       items.add(new XNavigateItemAction(null, new ConfigureCoverageMethodsAction(),
          ConfigureCoverageMethodsAction.OSEE_IMAGE));
       items.add(new XNavigateItemAction(null, new CompareTwoStringsAction(), FrameworkImage.EDIT));
+      items.add(new XNavigateItemBlam(null, new ImportCoverageMethodsBlam(), CoverageImage.COVERAGE_IMPORT));
 
       try {
          if (SystemGroup.OseeAdmin.isCurrentUserMember()) {

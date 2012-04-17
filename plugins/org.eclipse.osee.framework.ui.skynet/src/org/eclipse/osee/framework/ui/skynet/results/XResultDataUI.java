@@ -84,13 +84,14 @@ public class XResultDataUI {
       return getHyperlink(name, art.getHumanReadableId(), art.getFullBranch().getId());
    }
 
-   public static void report(XResultData resultData, final String title) {
-      report(resultData, title, Manipulations.ALL);
+   public static String report(XResultData resultData, final String title) {
+      return report(resultData, title, Manipulations.ALL);
    }
 
-   public static void report(XResultData resultData, final String title, final Manipulations... manipulations) {
+   public static String report(XResultData resultData, final String title, final Manipulations... manipulations) {
       final String html = getReport(resultData, title, manipulations).getManipulatedHtml();
       ResultsEditor.open("Results", title, html);
+      return html;
    }
 
    public static XResultPage getReport(XResultData resultData, final String title) {

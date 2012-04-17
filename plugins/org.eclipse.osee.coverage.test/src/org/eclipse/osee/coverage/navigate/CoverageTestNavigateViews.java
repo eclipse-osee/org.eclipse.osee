@@ -49,7 +49,6 @@ public class CoverageTestNavigateViews implements ICoverageNavigateItem {
       if (OseeUiActivator.areOSEEServicesAvailable().isFalse()) {
          return items;
       }
-
       items.add(new CoveragePackage1(null));
       items.add(new CoveragePackage1Import1(null));
       items.add(new CoveragePackage1Import1B(null));

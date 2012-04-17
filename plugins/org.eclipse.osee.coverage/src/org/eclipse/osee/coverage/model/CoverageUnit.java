@@ -87,6 +87,18 @@ public class CoverageUnit extends NamedIdentity<String> implements IWorkProductR
       return units;
    }
 
+   public int getCoverageUnitCount(boolean recurse) {
+      int count = 1;
+      if (!recurse) {
+         count = coverageUnits.size();
+      } else {
+         for (CoverageUnit coverageUnit : coverageUnits) {
+            count += coverageUnit.getCoverageUnitCount(true);
+         }
+      }
+      return count;
+   }
+
    @Override
    public void addCoverageItem(CoverageItem coverageItem) {
       if (!coverageItems.contains(coverageItem)) {

@@ -619,10 +619,15 @@ public class MergeManager {
       }
       // Only check children if importItem should be child of packageItem by namespace
       if (importItem.getNamespace().startsWith(packageItem.getNamespace())) {
-         for (ICoverage childPackageItem : packageItem.getChildren(false)) {
-            MatchItem childMatchItem = getPackageCoverageItemRecurse(childPackageItem, importItem);
-            if (childMatchItem != null && MatchType.isMatch(childMatchItem.getMatchType())) {
-               return childMatchItem;
+         // only go forward if full path in package matches beginning path in import item (minus package name)
+         String packagePath = CoverageUtil.getFullPath(packageItem, false);
+         String importItemPath = CoverageUtil.getFullPath(importItem, false);
+         if (importItemPath.startsWith(packagePath)) {
+            for (ICoverage childPackageItem : packageItem.getChildren(false)) {
+               MatchItem childMatchItem = getPackageCoverageItemRecurse(childPackageItem, importItem);
+               if (childMatchItem != null && MatchType.isMatch(childMatchItem.getMatchType())) {
+                  return childMatchItem;
+               }
             }
          }
       }

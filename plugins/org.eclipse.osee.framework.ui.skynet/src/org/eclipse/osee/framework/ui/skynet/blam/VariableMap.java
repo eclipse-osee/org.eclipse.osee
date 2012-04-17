@@ -71,6 +71,10 @@ public class VariableMap {
    }
 
    public Artifact getArtifact(String parameterName) throws OseeArgumentException {
+      Object object = variableMap.get(parameterName);
+      if (object instanceof Artifact) {
+         return (Artifact) object;
+      }
       return getSingleCollectionValue(Artifact.class, parameterName);
    }
 
