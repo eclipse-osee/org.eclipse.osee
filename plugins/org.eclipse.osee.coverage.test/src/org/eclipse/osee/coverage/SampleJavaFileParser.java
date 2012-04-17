@@ -59,6 +59,9 @@ public class SampleJavaFileParser {
          CoverageUnit coverageUnit = null;
          int lineNum = 0;
          for (String line : fileStr.split("(\r\n|\n)")) {
+            if (line.contains("IGNORE")) {
+               continue;
+            }
             lineNum++;
             // Determine if method; store as CoverageUnit
             m = methodPattern.matcher(line);

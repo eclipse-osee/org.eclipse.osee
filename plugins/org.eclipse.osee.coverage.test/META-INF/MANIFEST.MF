@@ -20,5 +20,7 @@ Export-Package: org.eclipse.osee.coverage,
  org.eclipse.osee.coverage.import09,
  org.eclipse.osee.coverage.import10,
  org.eclipse.osee.coverage.import11,
+ org.eclipse.osee.coverage.import12,
+ org.eclipse.osee.coverage.import13,
  org.eclipse.osee.coverage.model,
  org.eclipse.osee.coverage.navigate
