@@ -20,6 +20,7 @@ import org.eclipse.osee.orcs.search.IndexerCollectorAdapter;
  * @author Roberto E. Escobar
  */
 public final class IndexStatusDisplayCollector extends IndexerCollectorAdapter {
+   private final int DEFAULT_STATS_PRINT_FREQUENCY = 1000;
 
    private final List<Integer> taskIds = new CopyOnWriteArrayList<Integer>();
    private int attributesProcessed;
@@ -27,14 +28,22 @@ public final class IndexStatusDisplayCollector extends IndexerCollectorAdapter {
    private final long startTime;
    private long totalAttributes;
    private int totalQueries;
+   private final boolean printTags;
+   private final int statsPrintFrequency;
 
    private final Console console;
 
-   public IndexStatusDisplayCollector(Console console, long startTime) {
+   public IndexStatusDisplayCollector(Console console, long startTime, boolean printTags) {
+      this(console, startTime, -1, printTags);
+   }
+
+   public IndexStatusDisplayCollector(Console console, long startTime, int statsPrintFrequency, boolean printTags) {
       this.console = console;
       this.startTime = startTime;
       this.attributesProcessed = 0;
       this.queriesProcessed = 0;
+      this.statsPrintFrequency = statsPrintFrequency <= 0 ? DEFAULT_STATS_PRINT_FREQUENCY : statsPrintFrequency;
+      this.printTags = printTags;
    }
 
    public boolean isProcessingDone() {
@@ -44,8 +53,8 @@ public final class IndexStatusDisplayCollector extends IndexerCollectorAdapter {
    private int totalQueries() {
       int toReturn = totalQueries;
       if (toReturn == 0) {
-         int remainder = (int) totalAttributes % 1000;
-         toReturn = (int) totalAttributes / 1000 + (remainder > 0 ? 1 : 0);
+         int remainder = (int) totalAttributes % statsPrintFrequency;
+         toReturn = (int) totalAttributes / statsPrintFrequency + (remainder > 0 ? 1 : 0);
       }
       return toReturn;
    }
@@ -74,7 +83,7 @@ public final class IndexStatusDisplayCollector extends IndexerCollectorAdapter {
    public void onIndexItemComplete(int queryId, long gammaId, int totalTags, long processingTime) {
       if (taskIds.contains(queryId)) {
          attributesProcessed++;
-         if (attributesProcessed % 1000 == 0) {
+         if (attributesProcessed % statsPrintFrequency == 0) {
             printStats();
          }
       }
@@ -90,6 +99,13 @@ public final class IndexStatusDisplayCollector extends IndexerCollectorAdapter {
       }
       if (isProcessingDone()) {
          this.notify();
+      }
+   }
+
+   @Override
+   public void onIndexItemAdded(int indexerId, long itemId, String word, long codedTag) {
+      if (printTags) {
+         console.writeln("indexerId:[%s] itemId:[%s] word:[%s] tag:[%s]", indexerId, itemId, word, codedTag);
       }
    }
 }

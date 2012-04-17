@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.console;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -19,7 +22,6 @@ import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.model.ReadableBranch;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.search.QueryIndexer;
@@ -35,6 +37,7 @@ public class IndexerCommand implements ConsoleCommand {
       DROP,
       ALL,
       MISSING_ITEMS_ONLY,
+      ITEM_IDS,
       CANCEL
    }
 
@@ -50,7 +53,7 @@ public class IndexerCommand implements ConsoleCommand {
 
    @Override
    public String getName() {
-      return "index";
+      return "indexer";
    }
 
    @Override
@@ -62,10 +65,19 @@ public class IndexerCommand implements ConsoleCommand {
    public String getUsage() {
       StringBuilder builder = new StringBuilder();
       builder.append("op=<");
-      builder.append(Collections.toString("|", (Object[]) OpType.values()));
-      builder.append(">]");
-      builder.append("\n");
-      builder.append("[branchGuids=<BRANCH_GUID,..>]");
+      OpType[] types = OpType.values();
+      int cnt = 0;
+      for (OpType type : types) {
+         if (OpType.ITEM_IDS != type) {
+            builder.append(type);
+            if (cnt + 1 < types.length) {
+               builder.append("|");
+            }
+         }
+         cnt++;
+      }
+      builder.append("> [branchGuids=<BRANCH_GUID,..>]\n");
+      builder.append("op=ITEM_IDS ids=<GAMMA_IDS,..> debug=<TRUE|FALSE>");
       return builder.toString();
    }
 
@@ -122,9 +134,16 @@ public class IndexerCommand implements ConsoleCommand {
             case MISSING_ITEMS_ONLY:
                indexOnlyMissingitems = true;
             case ALL:
-               IndexStatusDisplayCollector collector = new IndexStatusDisplayCollector(console, startTime);
+               IndexStatusDisplayCollector collector = new IndexStatusDisplayCollector(console, startTime, false);
                Callable<?> callable = indexer.indexBranches(collector, branches, indexOnlyMissingitems);
                callable.call();
+               break;
+            case ITEM_IDS:
+               boolean printTags = params.getBoolean("debug");
+               InputStream inputStream = asXmlStream(params.getArray("ids"));
+               IndexStatusDisplayCollector collector2 = new IndexStatusDisplayCollector(console, startTime, printTags);
+               Callable<?> callable2 = indexer.indexXmlStream(collector2, inputStream);
+               callable2.call();
                break;
             case STATS:
             default:
@@ -134,6 +153,17 @@ public class IndexerCommand implements ConsoleCommand {
          }
          return Boolean.TRUE;
       }
+
+      private InputStream asXmlStream(String[] ids) throws UnsupportedEncodingException {
+         StringBuilder builder = new StringBuilder();
+         builder.append("<AttributeTag>\n");
+         for (String id : ids) {
+            builder.append("<entry gammaId=\"");
+            builder.append(id);
+            builder.append("\" />\n");
+         }
+         builder.append("</AttributeTag>");
+         return new ByteArrayInputStream(builder.toString().getBytes("UTF-8"));
+      }
    }
-   //      sb.append("        tag [<gammaId> <gammaId> ...]- tag individual item\n");
 }
