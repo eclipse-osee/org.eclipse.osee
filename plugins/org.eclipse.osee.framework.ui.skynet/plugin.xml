@@ -1182,31 +1182,42 @@
  <extension
        id="Osee Core commands"
        point="org.eclipse.ui.commands">
+    <category
+       name="OSEE Artifact"
+       id="org.eclipse.osee.artifact">
+    </category>
     <command
+          categoryId="org.eclipse.osee.artifact"
           id="org.eclipse.osee.framework.ui.skynet.OpenMassEditcommand"
           name="Mass Editor">
     </command>
     <command
+          categoryId="org.eclipse.osee.artifact"
           id="org.eclipse.osee.framework.ui.skynet.skywalker.command"
           name="Sky Walker">
     </command>
     <command
+          categoryId="org.eclipse.osee.artifact"
           id="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command"
           name="Artifact Explorer">
     </command>
     <command
+          categoryId="org.eclipse.osee.artifact"
           id="org.eclipse.osee.framework.ui.skynet.resource.command"
           name="Resource History">
     </command>
     <command
+          categoryId="org.eclipse.osee.artifact"
           id="org.eclipse.osee.framework.ui.skynet.publishArtifact.command"
           name="Artifact">
     </command>
     <command
+          categoryId="org.eclipse.osee.artifact"
           id="org.eclipse.osee.framework.ui.skynet.viewerReport"
           name="View Viewer Report">
     </command>
     <command
+          categoryId="org.eclipse.osee.artifact"
           id="org.eclipse.osee.framework.ui.skynet.purge.command"
           name="Purge">
     </command>
@@ -1215,10 +1226,12 @@
           name="ATS Editor">
     </command>
     <command
+          categoryId="org.eclipse.osee.artifact"
           id="org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeReport"
           name="Change Report">
     </command>
     <command
+          categoryId="org.eclipse.osee.artifact"
           id="org.eclipse.osee.framework.ui.skynet.accessControl"
           name="Access Control">
     </command>
@@ -1610,11 +1623,12 @@
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
+
       <key
             commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command"
             contextId="org.eclipse.ui.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="CTRL+E">
+            sequence="CTRL+R">
       </key>
       <key
             commandId="org.eclipse.osee.framework.ui.skynet.resource.command"
