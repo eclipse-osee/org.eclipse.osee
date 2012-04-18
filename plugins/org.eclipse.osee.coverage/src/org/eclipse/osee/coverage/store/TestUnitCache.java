@@ -36,18 +36,14 @@ public class TestUnitCache implements ITestUnitProvider {
    private final static int HASHMAP_SIZE = 3000;
    private final HashCollection<CoverageItem, Integer> itemsToTestUnit = new HashCollection<CoverageItem, Integer>(
       HASHMAP_SIZE);
-
    private int lastId;
-   private final HashBiMap<Integer, String> idToNameCache;
-
+   private final HashBiMap<Integer, String> idToNameCache = HashBiMap.create(HASHMAP_SIZE);
    private final ITestUnitStore testUnitStore;
-
    private volatile boolean ensurePopulatedRanOnce;
    private volatile boolean cacheIsDirty;
 
    public TestUnitCache(ITestUnitStore testUnitStore) {
       super();
-      this.idToNameCache = HashBiMap.create(HASHMAP_SIZE);
       this.lastId = 0;
       this.ensurePopulatedRanOnce = false;
       this.cacheIsDirty = false;

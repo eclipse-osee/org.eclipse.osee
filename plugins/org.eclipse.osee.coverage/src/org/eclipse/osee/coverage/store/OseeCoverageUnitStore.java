@@ -13,7 +13,9 @@ package org.eclipse.osee.coverage.store;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.coverage.event.CoverageChange;
 import org.eclipse.osee.coverage.event.CoverageEventType;
@@ -45,7 +47,8 @@ import org.eclipse.osee.framework.skynet.core.utility.UsersByIds;
 public class OseeCoverageUnitStore extends OseeCoverageStore {
 
    private final CoverageUnit coverageUnit;
-   private static ITestUnitProvider testUnitProvider;
+   private final static Map<IOseeBranch, ITestUnitProvider> testUnitProviderMap =
+      new HashMap<IOseeBranch, ITestUnitProvider>();
 
    public OseeCoverageUnitStore(ICoverage parent, Artifact artifact, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
       super(null, artifact.getArtifactType(), artifact.getBranch());
@@ -115,10 +118,10 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
    }
 
    private ITestUnitProvider getTestUnitProvider() {
-      if (testUnitProvider == null) {
-         testUnitProvider = new TestUnitCache(new ArtifactTestUnitStore());
+      if (!testUnitProviderMap.containsKey(branch)) {
+         testUnitProviderMap.put(branch, new TestUnitCache(new ArtifactTestUnitStore()));
       }
-      return testUnitProvider;
+      return testUnitProviderMap.get(branch);
    }
 
    public void reloadItem(CoverageEventType eventType, CoverageItem currentCoverageItem, CoverageChange change, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
