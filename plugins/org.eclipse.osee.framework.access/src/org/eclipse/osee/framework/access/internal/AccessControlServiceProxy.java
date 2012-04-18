@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.access.internal;
 
 import java.util.Collection;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -21,6 +22,7 @@ import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 
 public final class AccessControlServiceProxy implements IAccessControlService {
@@ -48,8 +50,12 @@ public final class AccessControlServiceProxy implements IAccessControlService {
       return accessService;
    }
 
-   public void clearCache() {
-      getProxiedObject().clearCache();
+   public void reloadCache() {
+      try {
+         getProxiedObject().reloadCache();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AccessControlServiceProxy.class, Level.WARNING, ex);
+      }
    }
 
    public void start() {

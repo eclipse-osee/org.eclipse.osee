@@ -49,7 +49,7 @@ public final class CmAccessProviderProxy implements IAccessProvider {
       } else {
          cmServices.add(cmAccessControl);
       }
-      refreshCache();
+      reloadCache();
    }
 
    public void removeCmAccessControl(CmAccessControl cmAccessControl, Map<String, Object> properties) {
@@ -58,7 +58,7 @@ public final class CmAccessProviderProxy implements IAccessProvider {
       } else {
          cmServices.remove(cmAccessControl);
       }
-      refreshCache();
+      reloadCache();
    }
 
    private boolean isDefault(Map<String, Object> properties) {
@@ -78,9 +78,9 @@ public final class CmAccessProviderProxy implements IAccessProvider {
       cmServices.clear();
    }
 
-   public void refreshCache() {
+   public void reloadCache() {
       if (accessControlService instanceof AccessControlServiceProxy) {
-         ((AccessControlServiceProxy) accessControlService).clearCache();
+         ((AccessControlServiceProxy) accessControlService).reloadCache();
       }
    }
 
