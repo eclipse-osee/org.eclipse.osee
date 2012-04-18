@@ -16,6 +16,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.swt.events.MenuDetectEvent;
 import org.eclipse.swt.events.MenuDetectListener;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
@@ -38,13 +39,16 @@ public abstract class AbstractSelectionChangedHandler extends AbstractHandler {
    }
 
    private void addlistener() {
-      if (!PlatformUI.getWorkbench().isClosing()) {
-         viewerMenuDetectListener = new ViewerMenuDetectListener();
-         IWorkbenchPart workbenchPart = AWorkbench.getActivePage().getActivePart();
-         Object object = workbenchPart.getSite().getSelectionProvider();
+      if (PlatformUI.isWorkbenchRunning()) {
+         IWorkbench workbench = PlatformUI.getWorkbench();
+         if (workbench != null && !workbench.isStarting() && !workbench.isClosing()) {
+            viewerMenuDetectListener = new ViewerMenuDetectListener();
+            IWorkbenchPart workbenchPart = AWorkbench.getActivePage().getActivePart();
+            Object object = workbenchPart.getSite().getSelectionProvider();
 
-         if (object instanceof Viewer) {
-            ((Viewer) object).getControl().addMenuDetectListener(viewerMenuDetectListener);
+            if (object instanceof Viewer) {
+               ((Viewer) object).getControl().addMenuDetectListener(viewerMenuDetectListener);
+            }
          }
       }
    }
