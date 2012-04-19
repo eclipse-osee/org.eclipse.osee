@@ -31,7 +31,10 @@ import org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditorInput;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
 import org.eclipse.osee.framework.ui.skynet.change.IChangeReportView;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.forms.editor.FormEditor;
 
 public class ChangeReportEditor extends FormEditor implements IChangeReportView {
@@ -168,5 +171,13 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
       public List<? extends IEventFilter> getEventFilters() {
          return null;
       }
+   }
+
+   @Override
+   public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+      super.init(site, input);
+      // set the context (org.eclipse.ui.contexts) to osee to make the osee hotkeys available
+      IContextService contextService = (IContextService) getSite().getService(IContextService.class);
+      contextService.activateContext("org.eclipse.osee.contexts.window");
    }
 }

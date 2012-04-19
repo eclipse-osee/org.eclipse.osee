@@ -18,16 +18,16 @@ import org.eclipse.osee.framework.ui.service.control.actions.OpenLaunchWizard;
 import org.eclipse.osee.framework.ui.service.control.actions.RefreshDataStore;
 import org.eclipse.osee.framework.ui.service.control.menu.MenuBuilder;
 import org.eclipse.osee.framework.ui.service.control.widgets.ManagerMain;
+import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.part.ViewPart;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ServiceManagerView extends ViewPart {
+public class ServiceManagerView extends GenericViewPart {
 
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.service.control.view.ServiceManagerView";
    private ManagerMain managerMain;
@@ -45,6 +45,8 @@ public class ServiceManagerView extends ViewPart {
 
       this.setContentDescription("Jini Groups { " + StringUtils.join(JiniLookupGroupConfig.getOseeJiniServiceGroups(),
          ",") + " }");
+
+      setFocusWidget(managerMain);
 
    }
 
@@ -73,8 +75,4 @@ public class ServiceManagerView extends ViewPart {
 
    }
 
-   @Override
-   public void setFocus() {
-      managerMain.setFocus();
-   }
 }

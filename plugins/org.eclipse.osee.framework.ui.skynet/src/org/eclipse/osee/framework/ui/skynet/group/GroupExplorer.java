@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
+import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -67,12 +68,11 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.part.ViewPart;
 
 /**
  * @author Donald G. Dunne
  */
-public class GroupExplorer extends ViewPart implements IArtifactEventListener, IRebuildMenuListener {
+public class GroupExplorer extends GenericViewPart implements IArtifactEventListener, IRebuildMenuListener {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.group.GroupExplorer";
    private GroupTreeViewer treeViewer;
    private Artifact rootArt;
@@ -146,6 +146,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
       getViewSite().getActionBars().updateActionBars();
       rebuildMenu();
       refresh();
+      setFocusWidget(parentComp);
    }
 
    @Override
@@ -267,7 +268,8 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
       if (MessageDialog.openConfirm(Displays.getActiveShell(), "Remove From Group",
          "Remove From Group - (Artifacts will not be deleted)\n\nAre you sure?")) {
          try {
-            SkynetTransaction transaction = TransactionManager.createTransaction(branch, "Artifacts removed from group");
+            SkynetTransaction transaction =
+               TransactionManager.createTransaction(branch, "Artifacts removed from group");
             for (GroupExplorerItem item : items) {
                item.getArtifact().deleteRelation(CoreRelationTypes.Universal_Grouping__Group,
                   item.getParentItem().getArtifact());
@@ -357,13 +359,6 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
       Iterator<?> iter = selection.iterator();
       while (iter.hasNext()) {
          treeViewer.expandToLevel(iter.next(), AbstractTreeViewer.ALL_LEVELS);
-      }
-   }
-
-   @Override
-   public void setFocus() {
-      if (parentComp != null) {
-         parentComp.setFocus();
       }
    }
 

@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
+import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -36,25 +37,17 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.ui.part.ViewPart;
 
 /**
  * @author Donald G. Dunne
  */
-public class CoverageNavigateView extends ViewPart {
+public class CoverageNavigateView extends GenericViewPart {
 
    public static final String VIEW_ID = "org.eclipse.osee.coverage.navigate.CoverageNavigateView";
    private XNavigateComposite xNavComp;
    private XBranchSelectWidget xBranchSelectWidget;
 
    private Composite comp;
-
-   @Override
-   public void setFocus() {
-      if (comp != null) {
-         comp.setFocus();
-      }
-   }
 
    @Override
    public void createPartControl(Composite parent) {
@@ -128,6 +121,7 @@ public class CoverageNavigateView extends ViewPart {
       parent.layout(true);
 
       OseeStatusContributionItemFactory.addTo(this, false);
+      setFocusWidget(comp);
    }
 
    private String getWhoAmI() {

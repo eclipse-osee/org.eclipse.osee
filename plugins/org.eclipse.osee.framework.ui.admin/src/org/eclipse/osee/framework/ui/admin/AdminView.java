@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.ui.admin.dbtabletab.SiteGssflRpcr;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -38,7 +39,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.ui.part.ViewPart;
 
 /**
  * Allows administration of access for OSEE environment <li>Database tables <li>OSEE user permissions
@@ -46,7 +46,7 @@ import org.eclipse.ui.part.ViewPart;
  * @author Jeff C. Phillips
  */
 
-public class AdminView extends ViewPart {
+public class AdminView extends GenericViewPart {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.admin.AdminView";
    private static Action saveAction;
    private TabFolder tabFolder;
@@ -64,13 +64,6 @@ public class AdminView extends ViewPart {
    public void dispose() {
       super.dispose();
       handCursor.dispose();
-   }
-
-   @Override
-   public void setFocus() {
-      if (parentComp != null) {
-         parentComp.setFocus();
-      }
    }
 
    protected void createActions() throws OseeCoreException {
@@ -128,6 +121,7 @@ public class AdminView extends ViewPart {
       if (AccessControlManager.isOseeAdmin()) {
          toolbarManager.add(pingAction);
       }
+      setFocusWidget(parentComp);
    }
 
    public void handleBroadcastMessage() {

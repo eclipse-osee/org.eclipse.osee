@@ -1626,25 +1626,25 @@
 
       <key
             commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command"
-            contextId="org.eclipse.ui.contexts.window"
+            contextId="org.eclipse.osee.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="CTRL+R">
+            sequence="M1+R">
       </key>
       <key
             commandId="org.eclipse.osee.framework.ui.skynet.resource.command"
-            contextId="org.eclipse.ui.contexts.window"
+            contextId="org.eclipse.osee.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="CTRL+H">
+            sequence="M1+T">
       </key>
       <key
             commandId="org.eclipse.osee.framework.ui.skynet.skywalker.command"
-            contextId="org.eclipse.ui.contexts.window"
+            contextId="org.eclipse.osee.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="CTRL+W">
+            sequence="M1+O">
       </key>
       <key
             commandId="org.eclipse.osee.framework.ui.skynet.expandTree.command"
-            contextId="org.eclipse.ui.contexts.window"
+            contextId="org.eclipse.osee.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1++">
       </key>
@@ -1705,5 +1705,14 @@
                tooltip="Open OSEE Configuration Details">
          </action>
       </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.contexts">
+      <context
+            description="A context supporting key bindings for osee"
+            id="org.eclipse.osee.contexts.window"
+            name="OSEE Context"
+            parentId="org.eclipse.ui.contexts.window">
+      </context>
    </extension>
 </plugin>

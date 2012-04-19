@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateEventManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
+import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -35,17 +36,10 @@ import org.eclipse.ui.part.ViewPart;
  * 
  * @see ViewPart
  */
-public class DefineNavigateView extends ViewPart implements IXNavigateEventListener {
+public class DefineNavigateView extends GenericViewPart implements IXNavigateEventListener {
 
    public static final String VIEW_ID = "org.eclipse.osee.define.DefineNavigateView";
    private XNavigateComposite xNavComp;
-
-   @Override
-   public void setFocus() {
-      if (xNavComp != null) {
-         xNavComp.setFocus();
-      }
-   }
 
    @Override
    public void refresh(XNavigateItem item) {
@@ -69,6 +63,7 @@ public class DefineNavigateView extends ViewPart implements IXNavigateEventListe
       createActions();
       xNavComp.refresh();
       addExtensionPointListenerBecauseOfWorkspaceLoading();
+      setFocusWidget(xNavComp);
    }
 
    private void addExtensionPointListenerBecauseOfWorkspaceLoading() {

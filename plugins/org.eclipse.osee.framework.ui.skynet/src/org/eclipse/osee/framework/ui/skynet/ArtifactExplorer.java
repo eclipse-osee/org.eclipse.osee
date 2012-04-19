@@ -101,6 +101,7 @@ import org.eclipse.osee.framework.ui.skynet.util.ArtifactClipboard;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactPasteConfiguration;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
+import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactTypeFilteredTreeEntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -144,13 +145,12 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ExportResourcesAction;
 import org.eclipse.ui.actions.ImportResourcesAction;
-import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.UIJob;
 
 /**
  * @author Ryan D. Brooks
  */
-public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEventHandler, IRebuildMenuListener, IAccessControlEventListener, IBranchEventListener, ISelectionProvider, IBranchProvider {
+public class ArtifactExplorer extends GenericViewPart implements IArtifactExplorerEventHandler, IRebuildMenuListener, IAccessControlEventListener, IBranchEventListener, ISelectionProvider, IBranchProvider {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.ArtifactExplorer";
    private static final String ROOT_GUID = "artifact.explorer.last.root_guid";
    private static final String ROOT_BRANCH = "artifact.explorer.last.root_branch";
@@ -366,6 +366,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
          refreshBranchWarning();
          getViewSite().getActionBars().updateActionBars();
+         setFocusWidget(treeViewer.getControl());
 
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -1012,13 +1013,6 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       Iterator<?> iter = selection.iterator();
       while (iter.hasNext()) {
          treeViewer.expandToLevel(iter.next(), AbstractTreeViewer.ALL_LEVELS);
-      }
-   }
-
-   @Override
-   public void setFocus() {
-      if (treeViewer != null) {
-         treeViewer.getControl().setFocus();
       }
    }
 
