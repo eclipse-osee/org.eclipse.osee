@@ -59,16 +59,12 @@
          version="0.0.0"
          unpack="false"/>
 
-  
-
    <plugin
          id="org.eclipse.osee.framework.core.dsl.edit.source"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
- 
 
    <plugin
          id="org.eclipse.osee.ote.define.source"
@@ -83,8 +79,6 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
- 
 
    <plugin
          id="org.eclipse.osee.framework.messaging.event.res.source"
@@ -102,4 +96,32 @@
 
 
 
+   <plugin
+         id="org.eclipse.osee.framework.database.source"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.h2.source"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.core.dsl.integration.source"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.core.dsl.source"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
 </feature>
