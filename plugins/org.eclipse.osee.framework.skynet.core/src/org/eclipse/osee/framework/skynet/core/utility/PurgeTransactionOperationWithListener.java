@@ -38,7 +38,8 @@ public class PurgeTransactionOperationWithListener {
    public static IOperation getPurgeTransactionOperationById(List<Integer> txIdsToDelete) {
 
       final PurgeTransactionOperation op =
-         new PurgeTransactionOperation(Activator.getInstance().getOseeDatabaseService(), txIdsToDelete);
+         new PurgeTransactionOperation(Activator.getInstance().getOseeDatabaseService(),
+            Activator.getInstance().getOseeCacheService().getTransactionCache(), txIdsToDelete);
 
       PurgeTransactionListener listener = new PurgeTransactionListener() {
 

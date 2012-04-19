@@ -16,8 +16,10 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
+import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.operation.PurgeTransactionOperation;
 import org.eclipse.osee.orcs.db.internal.util.OperationCallableAdapter;
@@ -29,6 +31,7 @@ import org.eclipse.osee.orcs.db.internal.util.OperationLoggerAdapter;
 public class PurgeTransactionCommand implements ConsoleCommand {
 
    private IOseeDatabaseService dbService;
+   private IOseeCachingService cachingService;
 
    public IOseeDatabaseService getDatabaseService() {
       return dbService;
@@ -36,6 +39,14 @@ public class PurgeTransactionCommand implements ConsoleCommand {
 
    public void setDatabaseService(IOseeDatabaseService dbService) {
       this.dbService = dbService;
+   }
+
+   public TransactionCache getTransactionCache() {
+      return cachingService.getTransactionCache();
+   }
+
+   public void setCachingService(IOseeCachingService cachingService) {
+      this.cachingService = cachingService;
    }
 
    @Override
@@ -63,7 +74,8 @@ public class PurgeTransactionCommand implements ConsoleCommand {
       }
 
       OperationLogger logger = new OperationLoggerAdapter(console);
-      IOperation operation = new PurgeTransactionOperation(getDatabaseService(), logger, transactions);
+      IOperation operation =
+         new PurgeTransactionOperation(getDatabaseService(), getTransactionCache(), logger, transactions);
       return new OperationCallableAdapter(operation);
    }
 

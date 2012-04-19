@@ -10,9 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database;
 
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.database.core.IOseeSequence;
+
 /**
  * @author Roberto E. Escobar
  */
-public interface IOseeDatabaseService extends HasSequence, DatabaseService {
-   //
+public interface HasSequence {
+
+   IOseeSequence getSequence() throws OseeDataStoreException;
+
 }

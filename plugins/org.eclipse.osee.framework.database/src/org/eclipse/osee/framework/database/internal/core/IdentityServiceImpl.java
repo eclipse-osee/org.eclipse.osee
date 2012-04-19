@@ -37,6 +37,10 @@ public class IdentityServiceImpl implements IdentityService {
       //nothing to do 
    }
 
+   public void stop() {
+      //nothing to do 
+   }
+
    public void setOseeDatabaseService(IOseeDatabaseService service) {
       this.service = service;
    }

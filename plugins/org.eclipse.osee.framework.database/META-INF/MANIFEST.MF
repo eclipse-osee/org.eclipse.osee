@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Database Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.database;singleton:=true
 Bundle-Version: 0.9.9.qualifier
-Bundle-Activator: org.eclipse.osee.framework.database.internal.Activator
 Export-Package: org.eclipse.osee.framework.database,
  org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.database.operation
@@ -22,9 +21,7 @@ Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.time,
  org.eclipse.osee.framework.jdk.core.util.xml,
- org.eclipse.osee.framework.logging,
- org.osgi.framework,
- org.osgi.util.tracker
+ org.eclipse.osee.framework.logging
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/*.xml
 Require-Bundle: org.eclipse.equinox.ds,

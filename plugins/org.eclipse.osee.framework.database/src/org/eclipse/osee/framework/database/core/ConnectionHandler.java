@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.internal.Activator;
+import org.eclipse.osee.framework.database.internal.DatabaseHelper;
 
 /**
  * Handles connection recovery in the event of database connection being lost
@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.database.internal.Activator;
 public final class ConnectionHandler {
 
    protected static IOseeDatabaseService getDatabase() throws OseeDataStoreException {
-      return Activator.getInstance().getOseeDatabaseService();
+      return DatabaseHelper.getOseeDatabaseService();
    }
 
    public static IOseeSequence getSequence() throws OseeDataStoreException {

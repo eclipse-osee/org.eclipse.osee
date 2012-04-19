@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.database.internal.Activator;
+import org.eclipse.osee.framework.database.internal.DatabaseHelper;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -107,7 +107,7 @@ public enum OseeSql {
             return "/*+ ordered FIRST_ROWS */";
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(DatabaseHelper.class, Level.SEVERE, ex);
       }
       // better for performance when using branch_id indexes
       return "/*+ ordered */";

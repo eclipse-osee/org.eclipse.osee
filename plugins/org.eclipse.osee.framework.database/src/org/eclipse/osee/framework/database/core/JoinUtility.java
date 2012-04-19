@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.database.core;
 import java.util.Random;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.internal.Activator;
+import org.eclipse.osee.framework.database.internal.DatabaseHelper;
 
 /**
  * @author Roberto E. Escobar
@@ -68,7 +68,7 @@ public class JoinUtility {
 
    ////////////////// Static Legacy Calls /////////////////////////
    private static IOseeDatabaseService getDatabase() throws OseeDataStoreException {
-      return Activator.getInstance().getOseeDatabaseService();
+      return DatabaseHelper.getOseeDatabaseService();
    }
 
    public static TransactionJoinQuery createTransactionJoinQuery() throws OseeDataStoreException {

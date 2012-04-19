@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.database.core.IConnectionFactory;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.internal.Activator;
+import org.eclipse.osee.framework.database.internal.DatabaseHelper;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -67,7 +67,7 @@ public class OseeConnectionPoolImpl {
                throw ex;
             }
             connections.add(connection);
-            OseeLog.logf(Activator.class, Level.INFO, "DbConnection: [%s] - [%d]", dbUrl, connections.size());
+            OseeLog.logf(DatabaseHelper.class, Level.INFO, "DbConnection: [%s] - [%d]", dbUrl, connections.size());
             toReturn = connection;
          }
       }
@@ -94,7 +94,7 @@ public class OseeConnectionPoolImpl {
             connection.expireLease();
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(DatabaseHelper.class, Level.SEVERE, ex);
          removeConnection(connection);
       }
       //System.out.println("releasing.  num available: " + connectionsSemaphore.availablePermits());

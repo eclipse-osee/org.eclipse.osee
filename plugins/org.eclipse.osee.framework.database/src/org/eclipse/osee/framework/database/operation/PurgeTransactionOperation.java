@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.internal.Activator;
+import org.eclipse.osee.framework.database.internal.DatabaseHelper;
 
 /**
  * @author Ryan D. Brooks
@@ -70,15 +70,15 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
    private final Set<PurgeTransactionListener> listeners = new CopyOnWriteArraySet<PurgeTransactionListener>();
    private Collection<TransactionRecord> changedTransactions = new ArrayList<TransactionRecord>();
 
-   public PurgeTransactionOperation(IOseeDatabaseService databaseService, OperationLogger logger, List<Integer> txIdsToDelete) {
-      super(databaseService, "Purge transactions " + txIdsToDelete, Activator.PLUGIN_ID, logger);
+   public PurgeTransactionOperation(IOseeDatabaseService databaseService, TransactionCache transactionCache, OperationLogger logger, List<Integer> txIdsToDelete) {
+      super(databaseService, "Purge transactions " + txIdsToDelete, DatabaseHelper.PLUGIN_ID, logger);
       this.success = false;
-      transactionCache = Activator.getOseeCachingService().getTransactionCache();
+      this.transactionCache = transactionCache;
       this.txIdsToDelete = txIdsToDelete;
    }
 
-   public PurgeTransactionOperation(IOseeDatabaseService databaseService, List<Integer> txIdsToDelete) {
-      this(databaseService, NullOperationLogger.getSingleton(), txIdsToDelete);
+   public PurgeTransactionOperation(IOseeDatabaseService databaseService, TransactionCache transactionCache, List<Integer> txIdsToDelete) {
+      this(databaseService, transactionCache, NullOperationLogger.getSingleton(), txIdsToDelete);
    }
 
    public void addListener(PurgeTransactionListener listener) {
