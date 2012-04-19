@@ -22,7 +22,6 @@ import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
-import org.osgi.framework.ServiceReference;
 
 /**
  * @author Roberto E. Escobar
@@ -33,16 +32,16 @@ public final class ConsoleAdminUtils {
       // Utility class
    }
 
-   public static String getContextName(ServiceReference<?> reference) {
-      String contextName = (String) reference.getProperty("context.name");
+   public static String getContextName(Map<String, String> props) {
+      String contextName = props.get("context.name");
       if (!isValid(contextName)) {
-         contextName = getComponentName(reference);
+         contextName = getComponentName(props);
       }
       return normalize(contextName);
    }
 
-   public static String getComponentName(ServiceReference<?> reference) {
-      return (String) reference.getProperty("component.name");
+   public static String getComponentName(Map<String, String> props) {
+      return props.get("component.name");
    }
 
    private static String normalize(String contextName) {

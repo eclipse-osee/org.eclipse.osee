@@ -10,18 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.console.admin.internal;
 
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.console.admin.ConsoleAdminConstants;
 import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osgi.framework.console.CommandProvider;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
 /**
@@ -29,8 +27,8 @@ import org.osgi.framework.ServiceRegistration;
  */
 public class ConsoleAdmin {
 
-   private final List<ServiceReference<ConsoleCommand>> pending =
-      new CopyOnWriteArrayList<ServiceReference<ConsoleCommand>>();
+   private final Map<ConsoleCommand, Map<String, String>> pending =
+      new ConcurrentHashMap<ConsoleCommand, Map<String, String>>();
 
    private Log logger;
    private EventService eventService;
@@ -69,8 +67,8 @@ public class ConsoleAdmin {
       thread = new Thread("Register Pending Osee Console Commands") {
          @Override
          public void run() {
-            for (ServiceReference<ConsoleCommand> reference : pending) {
-               register(reference);
+            for (Entry<ConsoleCommand, Map<String, String>> entry : pending.entrySet()) {
+               register(entry.getKey(), entry.getValue());
             }
             pending.clear();
          }
@@ -95,25 +93,25 @@ public class ConsoleAdmin {
       return getDispatcher() != null && getLogger() != null;
    }
 
-   public void addCommand(ServiceReference<ConsoleCommand> reference) {
+   public void addCommand(ConsoleCommand reference, Map<String, String> props) {
       if (isReady()) {
-         register(reference);
+         register(reference, props);
       } else {
-         pending.add(reference);
+         pending.put(reference, props);
       }
    }
 
-   public void removeCommand(ServiceReference<ConsoleCommand> reference) {
+   public void removeCommand(ConsoleCommand reference, Map<String, String> props) {
       if (isReady()) {
-         unregister(reference);
+         unregister(reference, props);
       } else {
          pending.remove(reference);
       }
    }
 
-   private void unregister(ServiceReference<ConsoleCommand> reference) {
-      String componentName = ConsoleAdminUtils.getComponentName(reference);
-      String contextName = ConsoleAdminUtils.getContextName(reference);
+   private void unregister(ConsoleCommand reference, Map<String, String> props) {
+      String componentName = ConsoleAdminUtils.getComponentName(props);
+      String contextName = ConsoleAdminUtils.getContextName(props);
 
       getDispatcher().unregister(componentName);
       getLogger().debug("De-registering command for '%s' with alias '%s'\n", componentName, contextName);
@@ -121,13 +119,10 @@ public class ConsoleAdmin {
       notifyDeRegistration(componentName, contextName);
    }
 
-   private void register(ServiceReference<ConsoleCommand> reference) {
-      String componentName = ConsoleAdminUtils.getComponentName(reference);
-      String contextName = ConsoleAdminUtils.getContextName(reference);
+   private void register(ConsoleCommand consoleCommand, Map<String, String> props) {
+      String componentName = ConsoleAdminUtils.getComponentName(props);
+      String contextName = ConsoleAdminUtils.getContextName(props);
       try {
-         Bundle bundle = reference.getBundle();
-         ConsoleCommand consoleCommand = bundle.getBundleContext().getService(reference);
-
          getDispatcher().register(componentName, consoleCommand);
          notifyRegistration(componentName, contextName);
          getLogger().debug("Registered command for '%s' with alias '%s'\n", componentName, contextName);
