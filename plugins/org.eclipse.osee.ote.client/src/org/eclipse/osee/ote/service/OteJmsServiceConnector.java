@@ -100,10 +100,19 @@ class OteJmsServiceConnector implements ServiceNotification, OseeMessagingStatus
    }
 
    @Override
-   public synchronized void onServiceUpdate(ServiceHealth serviceHealth) {
+   public synchronized void onServiceUpdate(final ServiceHealth serviceHealth) {
       serviceHealthMap.put(serviceHealth.getServiceUniqueId(), serviceHealth);
       if (isNewService(serviceHealth)) {
-         requestJmsJiniBridgeConnector(serviceHealth);
+    	  new Thread(new Runnable(){
+    		  @Override
+    		  public void run() {
+    			  try {
+    				  Thread.sleep(1000);
+    			  } catch (InterruptedException e) {
+    				  e.printStackTrace();
+    			  }
+    			  requestJmsJiniBridgeConnector(serviceHealth);		
+    		  }}).start();
       } else {
          updateServiceProperties(serviceHealth);
       }
@@ -120,7 +129,6 @@ class OteJmsServiceConnector implements ServiceNotification, OseeMessagingStatus
 
    private void requestJmsJiniBridgeConnector(ServiceHealth serviceHealth) {
       try {
-//         			ConnectionNode connectionNode = messageService.get(new NodeInfo(serviceHealth.getServiceUniqueId(), new URI(serviceHealth.getBrokerURI())));
          ConnectionNode connectionNode = messageService.getDefault();
          connectionNode.subscribeToReply(OteBaseMessages.RequestOteHost, myOteServiceRequestHandler);
          connectionNode.send(OteBaseMessages.RequestOteHost, serviceHealth.getServiceUniqueId(), this);
