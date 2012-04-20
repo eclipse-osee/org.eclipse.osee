@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.core.environment.status;
 
 import java.util.List;
+
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.environment.command.CommandDescription;
@@ -45,5 +46,5 @@ public interface OTEStatusBoard {
 
    public void onTestComplete(String className, String serverOutfilePath, String clientOutfilePath, CommandEndedStatusEnum status, List<IHealthStatus> healthStatus);
 
-   public void onTestStart(String className);
+   public void onTestStart(String className, String serverOutfilePath, String clientOutfilePath);
 }

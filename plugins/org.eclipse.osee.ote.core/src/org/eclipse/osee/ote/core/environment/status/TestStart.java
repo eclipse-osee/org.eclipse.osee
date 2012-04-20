@@ -17,19 +17,33 @@ import java.io.Serializable;
  */
 public class TestStart implements IServiceStatusData, Serializable {
 
-   private static final long serialVersionUID = -3458459132672153638L;
-   private final String testClassName;
+	private static final long serialVersionUID = -3458459132672153638L;
+	private final String testClassName;
+	private final String serverOutfilePath;
+	private final String clientOutfilePath;
 
-   public TestStart(String testClassName) {
-      this.testClassName = testClassName;
-   }
+	public TestStart(String testClassName, String serverOutfilePath, String clientOutfilePath) {
+		this.testClassName = testClassName;
+		this.serverOutfilePath = serverOutfilePath;
+		this.clientOutfilePath = clientOutfilePath;
+	}
 
-   @Override
-   public void accept(IServiceStatusDataVisitor visitor) {
-      visitor.asTestStart(this);
-   }
+	@Override
+	public void accept(IServiceStatusDataVisitor visitor) {
+		visitor.asTestStart(this);
+	}
 
-   public String getTestClassName() {
-      return testClassName;
-   }
+	public String getTestClassName() {
+		return testClassName;
+	}
+
+	public String getServerOutfilePath() {
+		return serverOutfilePath;
+	}
+
+	public String getClientOutfilePath() {
+		return clientOutfilePath;
+	}
+
+
 }

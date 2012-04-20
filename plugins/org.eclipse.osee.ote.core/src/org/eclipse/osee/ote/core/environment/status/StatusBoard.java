@@ -19,6 +19,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.GCHelper;
@@ -205,8 +206,8 @@ public class StatusBoard implements ITestEnvironmentListener, OTEStatusBoard {
    }
 
    @Override
-   public void onTestStart(String className) {
-      notifyListeners(new TestStart(className));
+   public void onTestStart(String className, String serverOutfilePath, String clientOutfilePath ) {
+      notifyListeners(new TestStart(className, serverOutfilePath, clientOutfilePath));
    }
 
 }
