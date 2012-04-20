@@ -19,7 +19,6 @@ import org.eclipse.osee.coverage.test.store.ArtifactTestUnitStoreTest;
 import org.eclipse.osee.coverage.test.store.TestUnitCacheTest;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
@@ -58,18 +57,10 @@ public class Coverage_Db_Suite {
             "demo"));
       RenderingUtil.setPopupsAllowed(false);
       System.out.println("\n\nBegin " + Coverage_Db_Suite.class.getSimpleName());
-      if (!OseeData.isProjectOpen()) {
-         System.err.println("osee.data project should be open");
-         OseeData.ensureProjectOpen();
-      }
    }
 
    @AfterClass
    public static void tearDown() throws Exception {
-      if (!OseeData.isProjectOpen()) {
-         System.err.println("osee.data project should be open");
-         OseeData.ensureProjectOpen();
-      }
       System.out.println("End " + Coverage_Db_Suite.class.getSimpleName());
    }
 

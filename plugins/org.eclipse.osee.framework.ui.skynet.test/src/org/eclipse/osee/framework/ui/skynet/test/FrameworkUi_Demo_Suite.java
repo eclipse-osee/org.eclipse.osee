@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.test;
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.test.artifact.ArtifactPromptChangeTest;
 import org.eclipse.osee.framework.ui.skynet.test.blam.BlamXWidgetTest;
 import org.eclipse.osee.framework.ui.skynet.test.blam.ReplaceWithBaselineTest;
@@ -81,18 +80,10 @@ public class FrameworkUi_Demo_Suite {
          ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
       OseeProperties.setIsInTest(true);
       System.out.println("\n\nBegin " + FrameworkUi_Demo_Suite.class.getSimpleName());
-      if (!OseeData.isProjectOpen()) {
-         System.err.println("osee.data project should be open");
-         OseeData.ensureProjectOpen();
-      }
    }
 
    @AfterClass
    public static void tearDown() throws Exception {
-      if (!OseeData.isProjectOpen()) {
-         System.err.println("osee.data project should be open");
-         OseeData.ensureProjectOpen();
-      }
       System.out.println("End " + FrameworkUi_Demo_Suite.class.getSimpleName());
    }
 }

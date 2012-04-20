@@ -16,7 +16,6 @@ import org.eclipse.osee.ats.editor.stateItem.AtsForceAssigneesToTeamLeadsStateIt
 import org.eclipse.osee.ats.editor.stateItem.AtsPeerToPeerReviewPrepareStateItemTest;
 import org.eclipse.osee.ats.editor.stateItem.AtsPeerToPeerReviewReviewStateItemTest;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -39,18 +38,10 @@ public class AtsTest_Demo_StateItem_Suite {
    public static void setUp() throws Exception {
       OseeProperties.setIsInTest(true);
       System.out.println("\n\nBegin " + AtsTest_Demo_StateItem_Suite.class.getSimpleName());
-      if (!OseeData.isProjectOpen()) {
-         System.err.println("osee.data project should be open");
-         OseeData.ensureProjectOpen();
-      }
    }
 
    @AfterClass
    public static void tearDown() throws Exception {
-      if (!OseeData.isProjectOpen()) {
-         System.err.println("osee.data project should be open");
-         OseeData.ensureProjectOpen();
-      }
       System.out.println("End " + AtsTest_Demo_StateItem_Suite.class.getSimpleName());
    }
 }

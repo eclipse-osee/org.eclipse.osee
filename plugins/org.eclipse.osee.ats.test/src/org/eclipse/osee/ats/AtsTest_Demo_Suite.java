@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.util.ImportActionsViaSpreadsheetTest;
 import org.eclipse.osee.ats.workflow.SMAPromptChangeStatusTest;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -72,18 +71,10 @@ public class AtsTest_Demo_Suite {
       assertTrue("Client must authenticate using demo protocol",
          ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
       System.out.println("\n\nBegin " + AtsTest_Demo_Suite.class.getSimpleName());
-      if (!OseeData.isProjectOpen()) {
-         System.err.println("osee.data project should be open");
-         OseeData.ensureProjectOpen();
-      }
    }
 
    @AfterClass
    public static void tearDown() throws Exception {
-      if (!OseeData.isProjectOpen()) {
-         System.err.println("osee.data project should be open");
-         OseeData.ensureProjectOpen();
-      }
       System.out.println("End " + AtsTest_Demo_Suite.class.getSimpleName());
    }
 }
