@@ -34,49 +34,54 @@ import org.eclipse.osee.framework.plugin.core.internal.PluginCoreActivator;
  * 
  * @author Donald G. Dunne
  */
-public class OseeData {
-   private static final IPath workspacePath = ResourcesPlugin.getWorkspace().getRoot().getLocation();
-   private static final String oseeDataPathName = "osee.data";
-   private static final IPath oseeDataPath = workspacePath.append(oseeDataPathName);
-   private static final File oseeDir = oseeDataPath.toFile();
+public final class OseeData {
+   private static final String OSEE_DATA_FOLDER_NAME = "osee.data";
    private static IProject project;
 
-   static {
-      if (!oseeDir.exists()) {
-         if (!oseeDir.mkdir()) {
-            OseeLog.log(PluginCoreActivator.class, Level.SEVERE, "Can't create " + oseeDataPathName + " dir.");
-         }
-      }
-      createProject();
+   private OseeData() {
+      // Utility class
    }
 
-   public static void ensureProjectOpen() {
-      if (project != null) {
-         if (!project.isOpen()) {
-            OseeLog.log(PluginCoreActivator.class, Level.SEVERE, oseeDataPathName + " project is closed; re-opening");
-            openProject();
+   public static synchronized void ensureProjectReady() {
+      if (project == null) {
+         IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+         project = workspaceRoot.getProject(OSEE_DATA_FOLDER_NAME);
+      }
+      if (!project.exists()) {
+         try {
+            project.create(null);
+            project.open(null);
+         } catch (CoreException ex) {
+            OseeLog.log(PluginCoreActivator.class, Level.SEVERE, ex);
+         }
+      }
+      if (!project.isOpen()) {
+         OseeLog.logf(PluginCoreActivator.class, Level.SEVERE, "[%s] project is closed; re-opening",
+            OSEE_DATA_FOLDER_NAME);
+         try {
+            project.open(null);
+         } catch (CoreException e) {
+            OseeLog.log(PluginCoreActivator.class, Level.SEVERE, e);
          }
       }
    }
 
-   public static boolean isProjectOpen() {
-      if (project != null) {
-         return project.isOpen();
-      }
-      return true;
+   public static IProject getProject() {
+      ensureProjectReady();
+      return project;
    }
 
    public static IPath getPath() {
-      return oseeDataPath;
+      IPath workspacePath = ResourcesPlugin.getWorkspace().getRoot().getLocation();
+      return workspacePath.append(OSEE_DATA_FOLDER_NAME);
    }
 
    public static File getFile(String filename) {
-      return new File(oseeDir, filename);
+      return new File(getPath().toFile(), filename);
    }
 
    public static IFile getIFile(String fileName) {
-      ensureProjectOpen();
-      return project.getFile(fileName);
+      return getProject().getFile(fileName);
    }
 
    public static IFile getIFile(String fileName, InputStream in) throws OseeCoreException {
@@ -84,8 +89,7 @@ public class OseeData {
    }
 
    public static IFile getIFile(String fileName, InputStream in, boolean overwrite) throws OseeCoreException {
-      ensureProjectOpen();
-      IFile iFile = project.getFile(fileName);
+      IFile iFile = getProject().getFile(fileName);
       if (!iFile.exists() || overwrite) {
          AIFile.writeToFile(iFile, in);
       }
@@ -97,44 +101,9 @@ public class OseeData {
       return new File(workspaceRoot.getFile(new Path(path)).getLocation().toString());
    }
 
-   private static boolean createProject() {
-      IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-      project = workspaceRoot.getProject(oseeDataPathName);
-      if (!project.exists()) {
-         try {
-            project.create(null);
-         } catch (CoreException ex) {
-            OseeLog.log(PluginCoreActivator.class, Level.SEVERE, ex);
-            return false;
-         }
-      }
-      openProject();
-      ensureProjectOpen();
-      return true;
-   }
-
-   private static void openProject() {
-      try {
-         project.open(null);
-      } catch (CoreException e) {
-         OseeLog.log(PluginCoreActivator.class, Level.SEVERE, e);
-      }
-   }
-
-   /**
-    * @return Returns the project.
-    */
-   public static IProject getProject() {
-      ensureProjectOpen();
-      return project;
-   }
-
    public static IFolder getFolder(String name) throws OseeCoreException {
       try {
-         ensureProjectOpen();
-         IFolder folder = project.getFolder(name);
-         ensureProjectOpen();
-
+         IFolder folder = getProject().getFolder(name);
          if (!folder.exists()) {
             folder.create(true, true, null);
          }
