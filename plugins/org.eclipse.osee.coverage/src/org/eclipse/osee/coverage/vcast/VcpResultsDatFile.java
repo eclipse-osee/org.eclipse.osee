@@ -27,6 +27,7 @@ import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -66,33 +67,40 @@ public class VcpResultsDatFile {
          // Loop through results file and log coverageItem as Test_Unit for each entry
          while ((resultsLine = br.readLine()) != null) {
             if (Strings.isValid(resultsLine)) {
-               Matcher m = valuePattern.matcher(resultsLine);
-               if (m.find()) {
-                  String fileNum = m.group(1);
-                  String methodNum = m.group(2);
-                  String executeNum = m.group(3);
+               Result datFileSyntaxResult = VCastValidateDatFileSyntax.validateDatFileSyntax(resultsLine);
+               if (!datFileSyntaxResult.isTrue()) {
+                  coverageImport.getLog().logError(
+                     String.format("Invalid VCast DAT file syntax - %s -  [%s] ", datFileSyntaxResult.getText(),
+                        testUnitName));
+               } else {
+                  Matcher m = valuePattern.matcher(resultsLine);
+                  if (m.find()) {
+                     String fileNum = m.group(1);
+                     String methodNum = m.group(2);
+                     String executeNum = m.group(3);
 
-                  CoverageUnit coverageUnit = fileNumToCoverageUnit.get(fileNum);
-                  if (coverageUnit == null) {
-                     coverageImport.getLog().logError(
-                        String.format("coverageUnit doesn't exist for unit_number [%s]", fileNum));
-                     continue;
-                  }
-                  // Find or create new coverage item for method num /execution line
-                  CoverageItem coverageItem = coverageUnit.getCoverageItem(methodNum, executeNum);
-                  if (coverageItem == null) {
-                     coverageImport.getLog().logError(
-                        String.format(
+                     CoverageUnit coverageUnit = fileNumToCoverageUnit.get(fileNum);
+                     if (coverageUnit == null) {
+                        coverageImport.getLog().logError(
+                           String.format("coverageUnit doesn't exist for unit_number [%s]", fileNum));
+                        continue;
+                     }
+                     // Find or create new coverage item for method num /execution line
+                     CoverageItem coverageItem = coverageUnit.getCoverageItem(methodNum, executeNum);
+                     if (coverageItem == null) {
+                        coverageImport.getLog().logError(
+                           String.format(
                            "Either Method [%s] or Line [%s] do not exist for Coverage Unit [%s] found in test unit vcast/results/.dat file [%s]",
                            methodNum, executeNum, coverageUnit, testUnitName));
-                  } else {
-                     coverageItem.setCoverageMethod(CoverageOptionManager.Test_Unit);
-                     try {
-                        coverageItem.addTestUnitName(testUnitName);
-                     } catch (OseeCoreException ex) {
-                        coverageImport.getLog().logError(
-                           String.format("Can't store test unit [%s] for coverageUnit [%s]; exception [%s]",
-                              testUnitName, coverageUnit, ex.getLocalizedMessage()));
+                     } else {
+                        coverageItem.setCoverageMethod(CoverageOptionManager.Test_Unit);
+                        try {
+                           coverageItem.addTestUnitName(testUnitName);
+                        } catch (OseeCoreException ex) {
+                           coverageImport.getLog().logError(
+                              String.format("Can't store test unit [%s] for coverageUnit [%s]; exception [%s]",
+                                 testUnitName, coverageUnit, ex.getLocalizedMessage()));
+                        }
                      }
                   }
                }
