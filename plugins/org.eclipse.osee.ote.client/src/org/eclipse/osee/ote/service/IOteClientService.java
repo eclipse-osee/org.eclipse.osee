@@ -44,8 +44,6 @@ public interface IOteClientService {
     */
    void addConnectionListener(ITestConnectionListener listener);
 
-   void addConnectionFilters(ITestEnvironmentFilter filter);
-
    void removeConnectionListener(ITestConnectionListener listener);
 
    /**

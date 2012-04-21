@@ -134,10 +134,8 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 			connectionService.addConnector(serviceSideConnector);
 		}
 		if (!propertyParameter.isLocalConnector()) {
-			messageService.getDefault().subscribe(OteBaseMessages.RequestOteHost, listenForHostRequest, this);
-			RegisteredServiceReference ref =
-					remoteServiceRegistrar.registerService("osee.ote.server", "1.0", service.getServiceID().toString(), uri,
-							this, 60 * 3);
+			messageService.get(nodeInfo).subscribe(OteBaseMessages.RequestOteHost, listenForHostRequest, this);
+			RegisteredServiceReference ref = remoteServiceRegistrar.registerService("osee.ote.server", "1.0", service.getServiceID().toString(), uri, this, 60 * 3);
 			service.set(ref);
 		} else {
 			serviceSideConnector.setProperty("OTEEmbeddedBroker", nodeInfo);

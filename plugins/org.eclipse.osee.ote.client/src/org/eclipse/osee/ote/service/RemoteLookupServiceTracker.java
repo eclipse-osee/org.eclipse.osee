@@ -38,7 +38,7 @@ class RemoteLookupServiceTracker extends ServiceTracker {
    public Object addingService(ServiceReference reference) {
       RemoteServiceLookup remoteServiceLookup = (RemoteServiceLookup) context.getService(reference);
       oteJmsServiceConnector =
-         new OteJmsServiceConnector(remoteServiceLookup, messageService, connectionService, exportClassLoader);
+         new OteJmsServiceConnector(remoteServiceLookup, messageService, connectionService);
       oteJmsServiceConnector.start();
       return super.addingService(reference);
    }
