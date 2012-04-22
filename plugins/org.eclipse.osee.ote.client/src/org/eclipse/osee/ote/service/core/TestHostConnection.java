@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.service.core;
 
 import java.rmi.RemoteException;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
@@ -28,6 +29,7 @@ class TestHostConnection {
    private final ITestEnvironment connectEnvironment;
    private final UserTestSessionKey sessionKey;
    private final IHostTestEnvironment host;
+   private String serverId;
 
    TestHostConnection(IServiceConnector connector, IHostTestEnvironment host, ITestEnvironment connectEnvironment, UserTestSessionKey sessionKey) {
       // intentionally package-private
@@ -44,6 +46,11 @@ class TestHostConnection {
       this.host = host;
       this.connectEnvironment = connectEnvironment;
       this.sessionKey = sessionKey;
+      try {
+		this.serverId = (String) host.getProperties().getProperty("id");
+      } catch (RemoteException e) {
+    	  this.serverId = "";
+      }
    }
 
    /**
@@ -74,6 +81,10 @@ class TestHostConnection {
       return serviceConnector;
    }
 
+   public String getId(){
+	   return serverId;
+   }
+   
    void endConnection() throws RemoteException {
       // intentionally package-private
 

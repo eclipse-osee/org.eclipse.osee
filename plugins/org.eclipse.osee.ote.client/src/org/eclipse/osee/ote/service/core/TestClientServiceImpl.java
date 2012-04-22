@@ -362,10 +362,11 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 
 	@Override
 	public synchronized void onConnectorRemoved(IServiceConnector connector) {
-		testHosts.remove(connector.getUniqueServerId());
+		String id = connector.getUniqueServerId();
+		testHosts.remove(id);
 		notifyHostUnavailable(connector, new OteServiceProperties(connector));
 		IHostTestEnvironment connectedHost = getConnectedHost();
-		if (connectedHost != null) {
+		if (testConnection != null && testConnection.getId().equals(id)) {
 			testConnection = null;
 			listenerNotifier.notifyConnectionLost(connector);
 		}
