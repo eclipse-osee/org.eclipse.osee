@@ -184,7 +184,7 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
                   if (textContent.contains(traceExtractor.getCanonicalRequirementName(structuredRequirement.getSecond()))) {
                      foundStr = "req body match";
                   } else {
-                     foundStr = "paritial match";
+                     foundStr = "req name match/element missing in body";
                   }
                }
             } else {
