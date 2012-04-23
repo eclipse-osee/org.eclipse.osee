@@ -19,6 +19,7 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
+
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
 import javax.jms.ExceptionListener;
@@ -30,6 +31,7 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TemporaryTopic;
 import javax.jms.Topic;
+
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -50,10 +52,7 @@ import org.eclipse.osee.framework.messaging.services.internal.OseeMessagingStatu
  */
 class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageListener {
 
-   //   private String version;
-   //   private String sourceId;
    private final NodeInfo nodeInfo;
-   //   private ExecutorService executor;
    private Connection connection;
    private Session session;
    private TemporaryTopic temporaryTopic;
@@ -78,7 +77,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
       regularListeners = new CompositeKeyHashMap<String, MessageConsumer, OseeMessagingListener>(64, true);
       replyListeners = new ConcurrentHashMap<String, OseeMessagingListener>();
    }
-
+   
    @Override
    public synchronized void start() throws OseeCoreException {
       if (started) {
@@ -312,6 +311,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
       topicCache.clear();
       messageProducerCache.clear();
       regularListeners.clear();
+      started = false;
       try {
          if (session != null) {
             session.close();
