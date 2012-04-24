@@ -14,7 +14,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Vector;
 import java.util.logging.Level;
+
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -133,25 +135,29 @@ public class LoadScriptPage implements ILoadConfig, ScriptPageConstants {
       NodeList nl = element.getElementsByTagName(ScriptPageConstants.SCRIPT_ENTRY);
       String alternatePath = scriptPage.getTestManager().getAlternateOutputDir();
       for (int i = 0; i < nl.getLength(); i++) {
-         Element child = (Element) nl.item(i);
-         final String path = Jaxp.getChildText(child, ScriptPageConstants.RAW_FILENAME_FIELD);
-         String runnable = Jaxp.getChildText(child, ScriptPageConstants.RUNNABLE_FIELD);
-         IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(path));
-         if (file.exists()) {
-            try {
-               ScriptTask task = new ScriptTask(file.getLocation().toString(), alternatePath);
-               task.setRun(Boolean.parseBoolean(runnable));
-               scriptTasks.add(task);
-            } catch (NullPointerException e) {
-               e.printStackTrace();
-            }
-         } else {
-            LoadScriptHelper helper = new LoadScriptHelper(path);
-            Displays.pendInDisplayThread(helper);
-            if (helper.stop()) {
-               break;
-            }
-         }
+    	  try{
+    		  Element child = (Element) nl.item(i);
+    		  final String path = Jaxp.getChildText(child, ScriptPageConstants.RAW_FILENAME_FIELD);
+    		  String runnable = Jaxp.getChildText(child, ScriptPageConstants.RUNNABLE_FIELD);
+    		  IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(path));
+    		  if (file.exists()) {
+    			  try {
+    				  ScriptTask task = new ScriptTask(file.getLocation().toString(), alternatePath);
+    				  task.setRun(Boolean.parseBoolean(runnable));
+    				  scriptTasks.add(task);
+    			  } catch (NullPointerException e) {
+    				  e.printStackTrace();
+    			  }
+    		  } else {
+    			  LoadScriptHelper helper = new LoadScriptHelper(path);
+    			  Displays.pendInDisplayThread(helper);
+    			  if (helper.stop()) {
+    				  break;
+    			  }
+    		  }
+    	  } catch (Throwable th){
+    		  OseeLog.log(TestManagerPlugin.class, Level.SEVERE, th);
+    	  }
       }
    }
 
