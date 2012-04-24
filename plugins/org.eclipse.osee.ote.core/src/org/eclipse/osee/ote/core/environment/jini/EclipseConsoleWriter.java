@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.core.environment.jini;
 
 import java.io.IOException;
 import java.io.Writer;
+
 import org.eclipse.osee.ote.core.IUserSession;
 
 /**
@@ -21,22 +22,29 @@ public class EclipseConsoleWriter extends Writer {
 
    private final IUserSession callback;
    private final StringBuffer buffer;
-   private final StringBuffer masterBuffer;
+   private StringBuffer masterBuffer;
 
-   public EclipseConsoleWriter(IUserSession callback) {
+   public EclipseConsoleWriter(IUserSession callback, boolean createMasterBuffer) {
       this.callback = callback;
       buffer = new StringBuffer(256);
       masterBuffer = new StringBuffer(256);
    }
-
-   @Override
-   public void write(char[] cbuf, int off, int len) {
-      buffer.append(cbuf, off, len);
-      masterBuffer.append(cbuf, off, len);
+   
+   public EclipseConsoleWriter(IUserSession callback) {
+	   this.callback = callback;
+	   buffer = new StringBuffer(256);
    }
 
    @Override
-   public void flush() throws IOException {
+   public synchronized void write(char[] cbuf, int off, int len) {
+      buffer.append(cbuf, off, len);
+      if(masterBuffer != null){
+    	  masterBuffer.append(cbuf, off, len);
+      }
+   }
+
+   @Override
+   public synchronized void flush() throws IOException {
       if (buffer.length() > 0 && buffer.charAt(buffer.length() - 1) == '\n') {
          buffer.deleteCharAt(buffer.length() - 1);
       }
@@ -49,12 +57,16 @@ public class EclipseConsoleWriter extends Writer {
    }
 
    @Override
-   public void close() throws IOException {
+   public synchronized void close() throws IOException {
       flush();
    }
 
-   public String getAllOutput() {
-      return masterBuffer.toString();
+   public synchronized String getAllOutput() {
+      if(masterBuffer != null){
+    	  return masterBuffer.toString();
+      } else {
+    	  return "MASTER BUFFER NOT ENABLED";
+      }
    }
 
 }
