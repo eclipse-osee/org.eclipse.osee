@@ -10,19 +10,34 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.access.provider.internal;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.dsl.integration.AccessModelInterpreter;
 import org.eclipse.osee.framework.core.dsl.integration.OseeDslAccessModel;
-import org.eclipse.osee.framework.core.dsl.integration.OseeDslProvider;
 import org.eclipse.osee.framework.core.dsl.integration.RoleContextProvider;
 import org.eclipse.osee.framework.core.dsl.ui.integration.operations.OseeDslRoleContextProvider;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
 import org.eclipse.osee.framework.core.model.access.HasAccessModel;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.BranchGuidEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 
 /**
  * @author John Misinco
@@ -32,20 +47,28 @@ public class FrameworkAccessControlProxy implements CmAccessControl, HasAccessMo
    private AccessModelInterpreter interpreter;
    private CmAccessControl frameworkAccessControl;
    private AccessModel accessModel;
+   private IEventListener listener;
 
    public void setAccessModelInterpreter(AccessModelInterpreter interpreter) {
       this.interpreter = interpreter;
    }
 
    public void start() {
-      OseeDslProvider frameworkDslProvider = new FrameworkDslProvider("osee:/xtext/framework.access.osee");
+      FrameworkDslProvider frameworkDslProvider = new FrameworkDslProvider("osee:/xtext/framework.access.osee");
       RoleContextProvider roleProvider = new OseeDslRoleContextProvider(frameworkDslProvider);
 
       accessModel = new OseeDslAccessModel(interpreter, frameworkDslProvider);
       frameworkAccessControl = new FrameworkAccessControl(roleProvider);
+
+      listener = new DslUpdateListener(frameworkDslProvider);
+      OseeEventManager.addListener(listener);
    }
 
    public void stop() {
+      if (listener != null) {
+         OseeEventManager.removeListener(listener);
+         listener = null;
+      }
       frameworkAccessControl = null;
       accessModel = null;
    }
@@ -71,4 +94,37 @@ public class FrameworkAccessControlProxy implements CmAccessControl, HasAccessMo
       return frameworkAccessControl.getContextId(user, object);
    }
 
+   private final class DslUpdateListener implements IArtifactEventListener {
+
+      private List<? extends IEventFilter> eventFilters;
+      private final FrameworkDslProvider dslProvider;
+
+      public DslUpdateListener(FrameworkDslProvider dslProvider) {
+         this.dslProvider = dslProvider;
+      }
+
+      @Override
+      public synchronized List<? extends IEventFilter> getEventFilters() {
+         if (eventFilters == null) {
+            Artifact artifact = dslProvider.getStorageArtifact();
+            if (artifact != null) {
+               eventFilters = Arrays.asList(new ArtifactEventFilter(artifact));
+            } else {
+               eventFilters =
+                  Arrays.asList(new ArtifactTypeEventFilter(CoreArtifactTypes.AccessControlModel),
+                     new BranchGuidEventFilter(CoreBranches.COMMON));
+            }
+         }
+         return eventFilters;
+      }
+
+      @Override
+      public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+         try {
+            dslProvider.loadDsl();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(DefaultFrameworkAccessConstants.class, Level.SEVERE, ex);
+         }
+      }
+   }
 }

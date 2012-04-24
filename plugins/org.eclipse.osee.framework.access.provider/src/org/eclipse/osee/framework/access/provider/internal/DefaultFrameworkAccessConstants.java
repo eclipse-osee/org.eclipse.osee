@@ -16,9 +16,9 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 /**
  * @author John Misinco
  */
-public final class DefaultFrameworkAccessContstants {
+public final class DefaultFrameworkAccessConstants {
 
-   private DefaultFrameworkAccessContstants() {
+   private DefaultFrameworkAccessConstants() {
       //do nothing
    }
 
