@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IdentityService;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
  * @author Ryan D. Brooks
@@ -61,7 +61,7 @@ public class RelationCriteria extends AbstractArtifactSearchCriteria {
          builder.addParameter(artifactId);
       }
       if (relationType != null) {
-         IdentityService identityService = Activator.getInstance().getIdentityService();
+         IdentityService identityService = ServiceUtil.getIdentityService();
          builder.append(relAlias);
          builder.append(".rel_link_type_id=? AND ");
          builder.addParameter(identityService.getLocalId(relationType));

@@ -1,0 +1,66 @@
+!SESSION 2012-04-25 15:14:57.656 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.6.0_25
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Framework arguments:  -eclipse.keyring C:\Users\sk602c\AppData\Local\Temp\tycho4178995945087560302secure_storage
+Command-line arguments:  -eclipse.keyring C:\Users\sk602c\AppData\Local\Temp\tycho4178995945087560302secure_storage
+
+!ENTRY org.eclipse.core.net 1 0 2012-04-25 15:14:57.656
+!MESSAGE System property http.proxyHost is not set but should be www-slb-proxy.boeing.com.
+
+!ENTRY org.eclipse.core.net 1 0 2012-04-25 15:14:57.656
+!MESSAGE System property http.proxyPort is not set but should be 31060.
+
+!ENTRY org.eclipse.core.net 1 0 2012-04-25 15:14:57.782
+!MESSAGE System property http.proxyHost is set to www-slb-proxy.boeing.com but should not be set.
+
+!ENTRY org.eclipse.core.net 1 0 2012-04-25 15:14:57.796
+!MESSAGE System property http.proxyHost is not set but should be www-slb-proxy.boeing.com.
+
+!ENTRY org.eclipse.core.net 1 0 2012-04-25 15:14:57.796
+!MESSAGE System property http.proxyPort is not set but should be 31060.
+!SESSION 2012-04-25 15:19:19.777 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.6.0_25
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Framework arguments:  -eclipse.keyring C:\Users\sk602c\AppData\Local\Temp\tycho8568397976087452282secure_storage
+Command-line arguments:  -eclipse.keyring C:\Users\sk602c\AppData\Local\Temp\tycho8568397976087452282secure_storage
+
+!ENTRY org.eclipse.core.net 1 0 2012-04-25 15:19:19.777
+!MESSAGE System property http.proxyHost is not set but should be www-slb-proxy.boeing.com.
+
+!ENTRY org.eclipse.core.net 1 0 2012-04-25 15:19:19.778
+!MESSAGE System property http.proxyPort is not set but should be 31060.
+
+!ENTRY org.eclipse.core.net 1 0 2012-04-25 15:19:19.904
+!MESSAGE System property http.proxyHost is set to www-slb-proxy.boeing.com but should not be set.
+
+!ENTRY org.eclipse.core.net 1 0 2012-04-25 15:19:19.918
+!MESSAGE System property http.proxyHost is not set but should be www-slb-proxy.boeing.com.
+
+!ENTRY org.eclipse.core.net 1 0 2012-04-25 15:19:19.918
+!MESSAGE System property http.proxyPort is not set but should be 31060.
+!SESSION 2012-04-26 09:35:06.841 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.6.0_25
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Framework arguments:  -eclipse.keyring C:\Users\sk602c\AppData\Local\Temp\tycho1887151385974562995secure_storage
+Command-line arguments:  -eclipse.keyring C:\Users\sk602c\AppData\Local\Temp\tycho1887151385974562995secure_storage
+
+!ENTRY org.eclipse.core.net 1 0 2012-04-26 09:35:06.841
+!MESSAGE System property http.proxyHost is not set but should be www-slb-proxy.boeing.com.
+
+!ENTRY org.eclipse.core.net 1 0 2012-04-26 09:35:06.842
+!MESSAGE System property http.proxyPort is not set but should be 31060.
+
+!ENTRY org.eclipse.core.net 1 0 2012-04-26 09:35:06.970
+!MESSAGE System property http.proxyHost is set to www-slb-proxy.boeing.com but should not be set.
+
+!ENTRY org.eclipse.core.net 1 0 2012-04-26 09:35:07.013
+!MESSAGE System property http.proxyHost is not set but should be www-slb-proxy.boeing.com.
+
+!ENTRY org.eclipse.core.net 1 0 2012-04-26 09:35:07.013
+!MESSAGE System property http.proxyPort is not set but should be 31060.

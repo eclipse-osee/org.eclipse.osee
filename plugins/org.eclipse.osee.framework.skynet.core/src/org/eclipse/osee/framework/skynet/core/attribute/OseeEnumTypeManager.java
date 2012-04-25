@@ -17,15 +17,15 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
  * @author Roberto E. Escobar
  */
 public class OseeEnumTypeManager {
 
-   public static AbstractOseeCache<Long, OseeEnumType> getCache() {
-      return Activator.getInstance().getOseeCacheService().getEnumTypeCache();
+   public static AbstractOseeCache<Long, OseeEnumType> getCache() throws OseeCoreException {
+      return ServiceUtil.getOseeCacheService().getEnumTypeCache();
    }
 
    public static OseeEnumType getType(int enumTypeId) throws OseeCoreException {

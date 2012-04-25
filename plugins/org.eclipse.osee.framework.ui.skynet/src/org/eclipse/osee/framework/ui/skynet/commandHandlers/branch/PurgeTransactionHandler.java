@@ -41,7 +41,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class PurgeTransactionHandler extends CommandHandler {
 
    @Override
-   public Object executeWithException(ExecutionEvent event) {
+   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
       IStructuredSelection selection =
          (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 

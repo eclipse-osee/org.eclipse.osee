@@ -63,6 +63,7 @@ import org.eclipse.osee.framework.skynet.core.httpRequests.UpdateBranchArchivedS
 import org.eclipse.osee.framework.skynet.core.httpRequests.UpdateBranchStateHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.httpRequests.UpdateBranchTypeHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -90,8 +91,8 @@ public class BranchManager {
       return instance;
    }
 
-   public static BranchCache getCache() {
-      return Activator.getInstance().getOseeCacheService().getBranchCache();
+   public static BranchCache getCache() throws OseeCoreException {
+      return ServiceUtil.getOseeCacheService().getBranchCache();
    }
 
    private static Branch commonBranch = null;

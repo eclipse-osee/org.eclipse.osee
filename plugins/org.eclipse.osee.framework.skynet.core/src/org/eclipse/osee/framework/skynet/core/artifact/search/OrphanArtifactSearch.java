@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
  * @author Jeff C. Phillips
@@ -35,13 +35,12 @@ public class OrphanArtifactSearch implements ISearchPrimitive {
 
    public OrphanArtifactSearch(IArtifactType aritfactType) throws OseeCoreException {
       this.aritfactType = aritfactType;
-      this.relationTypeId =
-         Activator.getInstance().getIdentityService().getLocalId(CoreRelationTypes.Default_Hierarchical__Child);
+      this.relationTypeId = ServiceUtil.getIdentityService().getLocalId(CoreRelationTypes.Default_Hierarchical__Child);
    }
 
    @Override
    public String getCriteriaSql(List<Object> dataList, IOseeBranch branch) throws OseeCoreException {
-      IdentityService identityService = Activator.getInstance().getIdentityService();
+      IdentityService identityService = ServiceUtil.getIdentityService();
       dataList.add(identityService.getLocalId(aritfactType));
       dataList.add(BranchManager.getBranchId(branch));
       dataList.add(relationTypeId);

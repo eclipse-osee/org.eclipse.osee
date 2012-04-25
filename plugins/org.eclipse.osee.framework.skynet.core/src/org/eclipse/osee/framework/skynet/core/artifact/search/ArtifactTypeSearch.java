@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IdentityService;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
  * @author Robert A. Fisher
@@ -41,7 +41,7 @@ public class ArtifactTypeSearch implements ISearchPrimitive {
    @Override
    public String getCriteriaSql(List<Object> dataList, IOseeBranch branch) throws OseeCoreException {
       String sql = "osee_artifact.art_type_id = ?";
-      IdentityService remoteIdManager = Activator.getInstance().getIdentityService();
+      IdentityService remoteIdManager = ServiceUtil.getIdentityService();
       dataList.add(remoteIdManager.getLocalId(artifactType));
       return sql;
    }

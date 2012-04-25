@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTransactionData;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTransactionData;
@@ -167,9 +167,9 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
       }
    }
 
-   private AccessPolicy getAccess() {
+   private AccessPolicy getAccess() throws OseeCoreException {
       if (access == null) {
-         access = Activator.getInstance().getAccessPolicy();
+         access = ServiceUtil.getAccessPolicy();
       }
       return access;
    }

@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.translation.ITranslatorId;
 import org.eclipse.osee.framework.core.util.HttpMessage;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
  * @author Roberto E. Escobar
@@ -28,7 +28,7 @@ public class HttpClientMessage {
       if (!parameters.containsKey("sessionId")) {
          parameters.put("sessionId", ClientSessionManager.getSessionId());
       }
-      IDataTranslationService service = Activator.getInstance().getTranslationService();
+      IDataTranslationService service = ServiceUtil.getTranslationService();
       String urlString = HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(context, parameters);
       return HttpMessage.send(urlString, service, requestId, requestData, responseId);
    }

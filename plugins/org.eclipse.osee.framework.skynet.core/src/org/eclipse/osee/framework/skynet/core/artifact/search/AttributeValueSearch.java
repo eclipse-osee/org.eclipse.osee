@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
  * @author Robert A. Fisher
@@ -61,7 +61,7 @@ public class AttributeValueSearch implements ISearchPrimitive {
 
       sql.append(" attr_1.attr_type_id = ? AND attr_1.gamma_id = txs.gamma_id AND txs.tx_current = 1 and txs.branch_id = ?");
 
-      IdentityService remoteIdManager = Activator.getInstance().getIdentityService();
+      IdentityService remoteIdManager = ServiceUtil.getIdentityService();
       dataList.add(remoteIdManager.getLocalId(attributeType));
       dataList.add(BranchManager.getBranchId(branch));
 

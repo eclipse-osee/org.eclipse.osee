@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -34,6 +33,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 
 /**
@@ -54,12 +54,12 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
    private boolean success;
    private final boolean recurseChildrenBranches;
 
-   public PurgeArtifacts(Collection<? extends Artifact> artifactsToPurge) {
+   public PurgeArtifacts(Collection<? extends Artifact> artifactsToPurge) throws OseeCoreException {
       this(artifactsToPurge, false);
    }
 
-   public PurgeArtifacts(Collection<? extends Artifact> artifactsToPurge, boolean recurseChildrenBranches) {
-      super(Activator.getInstance().getOseeDatabaseService(), "Purge Artifact", Activator.PLUGIN_ID);
+   public PurgeArtifacts(Collection<? extends Artifact> artifactsToPurge, boolean recurseChildrenBranches) throws OseeCoreException {
+      super(ServiceUtil.getOseeDatabaseService(), "Purge Artifact", Activator.PLUGIN_ID);
       this.artifactsToPurge = new LinkedList<Artifact>(artifactsToPurge);
       this.success = false;
       this.recurseChildrenBranches = recurseChildrenBranches;
@@ -188,9 +188,8 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
 
    @SuppressWarnings("unchecked")
    public void insertSelectItems(OseeConnection connection, String tableName, String artifactJoinSql, int transactionJoinId, Timestamp insertTime, int queryId) throws OseeCoreException {
-      IOseeDatabaseService databaseService = Activator.getInstance().getOseeDatabaseService();
       String sql = String.format(INSERT_SELECT_ITEM, tableName, artifactJoinSql);
-      databaseService.runPreparedUpdate(connection, sql, transactionJoinId, insertTime, queryId);
+      getDatabaseService().runPreparedUpdate(connection, sql, transactionJoinId, insertTime, queryId);
    }
 
 }

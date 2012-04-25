@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
  * Contains methods specific to artifact types. All artifact methods will eventually be moved from the
@@ -47,12 +47,12 @@ public class ArtifactTypeManager {
 
    private final static ArtifactFactoryManager factoryManager = new ArtifactFactoryManager();
 
-   private static ArtifactTypeCache getCache() {
+   private static ArtifactTypeCache getCache() throws OseeCoreException {
       return getCacheService().getArtifactTypeCache();
    }
 
-   private static IOseeCachingService getCacheService() {
-      return Activator.getInstance().getOseeCacheService();
+   private static IOseeCachingService getCacheService() throws OseeCoreException {
+      return ServiceUtil.getOseeCacheService();
    }
 
    public static Collection<ArtifactType> getArtifactTypesFromAttributeType(IAttributeType attributeType, IOseeBranch branchToken) throws OseeCoreException {
@@ -179,7 +179,7 @@ public class ArtifactTypeManager {
       "select count(1) from (select DISTINCT(art_id) FROM osee_artifact where art_type_id = ?) t1";
 
    public static void purgeArtifactType(IArtifactType artifactType) throws OseeCoreException {
-      final int artifactTypeId = Activator.getInstance().getIdentityService().getLocalId(artifactType);
+      final int artifactTypeId = ServiceUtil.getIdentityService().getLocalId(artifactType);
       int artifactCount = ConnectionHandler.runPreparedQueryFetchInt(0, COUNT_ARTIFACT_OCCURRENCE, artifactTypeId);
 
       if (artifactCount != 0) {

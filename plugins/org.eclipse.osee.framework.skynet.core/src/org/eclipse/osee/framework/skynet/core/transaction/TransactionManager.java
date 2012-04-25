@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -36,7 +37,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
@@ -95,8 +96,16 @@ public final class TransactionManager {
       ConnectionHandler.runPreparedUpdate(UPDATE_TRANSACTION_COMMENTS, comment, transaction.getId());
    }
 
-   private static TransactionCache getTransactionCache() {
-      return Activator.getInstance().getOseeCacheService().getTransactionCache();
+   private static IOseeCachingService getCacheService() throws OseeCoreException {
+      return ServiceUtil.getOseeCacheService();
+   }
+
+   private static TransactionCache getTransactionCache() throws OseeCoreException {
+      return getCacheService().getTransactionCache();
+   }
+
+   private static BranchCache getBranchCache() throws OseeCoreException {
+      return getCacheService().getBranchCache();
    }
 
    public static List<TransactionRecord> getTransactionsForBranch(Branch branch) throws OseeCoreException {
@@ -150,7 +159,7 @@ public final class TransactionManager {
    public synchronized static void cacheCommittedArtifactTransaction(IArtifact artifact, TransactionRecord transactionId) throws OseeCoreException {
       Collection<TransactionRecord> transactionIds = getCommittedArtifactTransactionIds(artifact);
       if (!transactionIds.contains(transactionId)) {
-         BranchCache branchCache = Activator.getInstance().getOseeCacheService().getBranchCache();
+         BranchCache branchCache = getBranchCache();
          transactionId.setBranchCache(branchCache);
          transactionIds.add(transactionId);
          getTransactionCache().cache(transactionId);
@@ -185,11 +194,11 @@ public final class TransactionManager {
       int authorArtId = userToBlame.getArtId();
       TransactionDetailsType txType = TransactionDetailsType.NonBaselined;
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();
-      TransactionRecordFactory factory = Activator.getInstance().getTransactionFactory();
+      TransactionRecordFactory factory = ServiceUtil.getTransactionFactory();
       TransactionRecord transactionId =
          factory.createOrUpdate(getTransactionCache(), transactionNumber, BranchManager.getBranchId(branch), comment,
             transactionTime, authorArtId, -1, txType);
-      transactionId.setBranchCache(Activator.getInstance().getOseeCacheService().getBranchCache());
+      transactionId.setBranchCache(getBranchCache());
       return transactionId;
    }
 
@@ -257,8 +266,8 @@ public final class TransactionManager {
             }
             TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
 
-            TransactionRecordFactory factory = Activator.getInstance().getTransactionFactory();
-            BranchCache branchCache = Activator.getInstance().getOseeCacheService().getBranchCache();
+            TransactionRecordFactory factory = ServiceUtil.getTransactionFactory();
+            BranchCache branchCache = getBranchCache();
 
             transactionRecord =
                factory.createOrUpdate(txCache, txId, chStmt.getInt("branch_id"), chStmt.getString("osee_comment"),

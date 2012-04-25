@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database;
 
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface IOseeDatabaseServiceProvider {
 
-   IOseeDatabaseService getOseeDatabaseService() throws OseeDataStoreException;
+   IOseeDatabaseService getOseeDatabaseService() throws OseeCoreException;
 }

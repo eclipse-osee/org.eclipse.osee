@@ -53,14 +53,14 @@ public class OseeEventManager {
    private static List<IEventFilter> commonBranchEventFilter;
    private static BranchGuidEventFilter commonBranchGuidEvenFilter;
    private static IBranchEventListener testBranchEventListener;
-   private static EventManagerData eventManagerData;
+   private static final EventManagerData eventManagerData = new EventManagerData();
 
    private OseeEventManager() {
       // Static methods only;
    }
 
-   public static void setEventManagerData(EventManagerData eventManagerData) {
-      OseeEventManager.eventManagerData = eventManagerData;
+   public static EventManagerData getEventManagerData() {
+      return eventManagerData;
    }
 
    /**

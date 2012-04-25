@@ -22,7 +22,8 @@ import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
  * @author Ryan D. Brooks
@@ -30,12 +31,16 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public class RelationTypeManager {
 
-   public static AbstractOseeCache<Long, RelationType> getCache() {
-      return Activator.getInstance().getOseeCacheService().getRelationTypeCache();
+   private static IOseeCachingService getCacheService() throws OseeCoreException {
+      return ServiceUtil.getOseeCacheService();
    }
 
-   public static AbstractOseeCache<Long, ArtifactType> getArtifactTypeCache() {
-      return Activator.getInstance().getOseeCacheService().getArtifactTypeCache();
+   public static AbstractOseeCache<Long, RelationType> getCache() throws OseeCoreException {
+      return getCacheService().getRelationTypeCache();
+   }
+
+   public static AbstractOseeCache<Long, ArtifactType> getArtifactTypeCache() throws OseeCoreException {
+      return getCacheService().getArtifactTypeCache();
    }
 
    public static List<RelationType> getValidTypes(IArtifactType artifactType, IOseeBranch branch) throws OseeCoreException {

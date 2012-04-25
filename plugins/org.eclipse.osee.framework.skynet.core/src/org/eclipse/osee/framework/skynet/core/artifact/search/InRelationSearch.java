@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
  * @author Robert A. Fisher
@@ -41,7 +41,7 @@ public class InRelationSearch implements ISearchPrimitive {
 
    @Override
    public String getCriteriaSql(List<Object> dataList, IOseeBranch branch) throws OseeCoreException {
-      IdentityService remoteIdManager = Activator.getInstance().getIdentityService();
+      IdentityService remoteIdManager = ServiceUtil.getIdentityService();
       dataList.add(remoteIdManager.getLocalId(relationType));
       dataList.add(BranchManager.getBranchId(branch));
       dataList.add(ModificationType.DELETED.getValue());

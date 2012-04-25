@@ -47,7 +47,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ISearchConfirmer;
 import org.eclipse.osee.framework.skynet.core.artifact.LoadType;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
  * @author Ryan D. Brooks
@@ -293,7 +293,7 @@ public class ArtifactQueryBuilder {
 
       if (hasValues(artifactTypes)) {
          Set<Integer> artTypeIds = new HashSet<Integer>();
-         IdentityService identityService = Activator.getInstance().getIdentityService();
+         IdentityService identityService = ServiceUtil.getIdentityService();
          for (IArtifactType artifactType : artifactTypes) {
             artTypeIds.add(identityService.getLocalId(artifactType));
          }

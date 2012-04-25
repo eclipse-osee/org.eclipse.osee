@@ -78,6 +78,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.model.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -985,7 +986,12 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
 
    public final boolean isReadOnly() {
       boolean result = true;
-      AccessPolicy service = Activator.getInstance().getAccessPolicy();
+      AccessPolicy service = null;
+      try {
+         service = ServiceUtil.getAccessPolicy();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
       if (service != null) {
          result = service.isReadOnly(this);
       }
@@ -1031,7 +1037,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
     * silently you are provided a transaction.
     * <p>
     * Example:
-    *
+    * 
     * <pre>
     * ...
     * Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, ARTIFACT_BRANCH);
@@ -1043,9 +1049,9 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
     * <b>transaction.execute();</b>
     * ...
     * </pre>
-    *
+    * 
     * </p>
-    *
+    * 
     * @param managedTransaction
     * @throws OseeCoreException
     */

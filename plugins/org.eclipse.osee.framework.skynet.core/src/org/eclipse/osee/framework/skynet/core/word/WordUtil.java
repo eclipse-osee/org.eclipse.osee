@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
  * Provides utility methods for parsing wordML.
@@ -128,7 +128,7 @@ public class WordUtil {
 
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
-         int localId = Activator.getInstance().getIdentityService().getLocalId(CoreAttributeTypes.WordTemplateContent);
+         int localId = ServiceUtil.getIdentityService().getLocalId(CoreAttributeTypes.WordTemplateContent);
          chStmt.runPreparedQuery(SELECT_WORD_VALUES, artId, localId, branch.getId());
 
          List<Pair<String, Integer>> values = new LinkedList<Pair<String, Integer>>();

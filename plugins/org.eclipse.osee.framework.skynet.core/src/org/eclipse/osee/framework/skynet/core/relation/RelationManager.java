@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink.ArtifactLinker;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderFactory;
@@ -235,7 +236,7 @@ public class RelationManager {
          try {
             String sql = String.format(GET_DELETED_ARTIFACT, formatArgs);
             chStmt.runPreparedQuery(sql, artifact.getFullBranch().getId(),
-               Activator.getInstance().getIdentityService().getLocalId(relationType), artifact.getArtId());
+               ServiceUtil.getIdentityService().getLocalId(relationType), artifact.getArtId());
             while (chStmt.next()) {
                int artId = chStmt.getInt(formatArgs[0] + "_art_id");
                artIds.add(artId);

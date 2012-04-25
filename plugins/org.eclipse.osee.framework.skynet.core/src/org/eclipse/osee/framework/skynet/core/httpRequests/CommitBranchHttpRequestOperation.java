@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -37,6 +38,7 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -93,7 +95,8 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
 
    private void handleResponse(BranchCommitResponse response, Branch sourceBranch) throws OseeCoreException {
       TransactionRecord newTransaction = response.getTransaction();
-      Activator.getInstance().getAccessPolicy().removePermissions(sourceBranch);
+      AccessPolicy accessPolicy = ServiceUtil.getAccessPolicy();
+      accessPolicy.removePermissions(sourceBranch);
       // Update commit artifact cache with new information
       if (sourceBranch.getAssociatedArtifactId() > 0) {
          TransactionManager.cacheCommittedArtifactTransaction(BranchManager.getAssociatedArtifact(sourceBranch),

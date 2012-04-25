@@ -24,22 +24,27 @@ import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
  * @author Ryan D. Brooks
  */
 public class AttributeTypeManager {
 
-   public static AbstractOseeCache<Long, AttributeType> getCache() {
-      return Activator.getInstance().getOseeCacheService().getAttributeTypeCache();
+   private static IOseeCachingService getCacheService() throws OseeCoreException {
+      return ServiceUtil.getOseeCacheService();
    }
 
-   public static BranchCache getBranchCache() {
-      return Activator.getInstance().getOseeCacheService().getBranchCache();
+   public static AbstractOseeCache<Long, AttributeType> getCache() throws OseeCoreException {
+      return getCacheService().getAttributeTypeCache();
+   }
+
+   public static BranchCache getBranchCache() throws OseeCoreException {
+      return getCacheService().getBranchCache();
    }
 
    public static Collection<IAttributeType> getValidAttributeTypes(IOseeBranch branchToken) throws OseeCoreException {
