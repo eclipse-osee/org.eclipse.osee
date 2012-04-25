@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.ui.test.manager.operations;
 
 import java.util.List;
+
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
 import org.eclipse.osee.ote.ui.test.manager.util.PluginUtil;
@@ -58,7 +59,7 @@ public class AddIFileToTestManager {
       }
    }
 
-   public void addIFileToScriptsPage(String fullPath) {
+   public void addIFileToScriptsPage(String[] fullPath) {
       if (PluginUtil.areTestManagersAvailable() != true) {
          AWorkbench.popup("ERROR", "Test Manager Not Opened");
          return;
@@ -67,10 +68,14 @@ public class AddIFileToTestManager {
       if (itemsToOpen.length > 1) {
          TestManagerEditor[] selected = TestManagerSelectDialog.getTestManagerFromUser();
          if (selected.length > 0) {
-            handleItemsSelected(itemsToOpen, fullPath);
+        	for(int i = 0; i < fullPath.length; i++){
+        		handleItemsSelected(itemsToOpen, fullPath[i]);
+        	}
          }
       } else {
-         handleItemsSelected(itemsToOpen, fullPath);
+    	  for(int i = 0; i < fullPath.length; i++){
+    		  handleItemsSelected(itemsToOpen, fullPath[i]);
+    	  }
       }
    }
 

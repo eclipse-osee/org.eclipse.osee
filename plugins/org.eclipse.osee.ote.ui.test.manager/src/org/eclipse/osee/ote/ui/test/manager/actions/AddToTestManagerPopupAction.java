@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.ui.test.manager.actions;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.ws.AWorkspace;
 import org.eclipse.osee.ote.ui.test.manager.operations.AddIFileToTestManager;
@@ -25,25 +27,26 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 public class AddToTestManagerPopupAction implements IWorkbenchWindowActionDelegate {
 
-   public static String getSelection() {
+   public static String[] getSelection() {
       StructuredSelection sel = AWorkspace.getSelection();
       Iterator<?> i = sel.iterator();
-      String selection = "";
+      List<String> selection = new ArrayList<String>();
+      
       while (i.hasNext()) {
          Object obj = i.next();
          if (obj instanceof IResource) {
             IResource resource = (IResource) obj;
             if (resource != null) {
-               selection = resource.getLocation().toOSString();
+               selection.add(resource.getLocation().toOSString());
             }
          } else if (obj instanceof ICompilationUnit) {
             ICompilationUnit resource = (ICompilationUnit) obj;
             if (resource != null) {
-               selection = resource.getResource().getLocation().toOSString();
+            	selection.add(resource.getResource().getLocation().toOSString());
             }
          }
       }
-      return selection;
+      return selection.toArray(new String[0]);
    }
 
    IWorkbenchWindow activeWindow = null;
@@ -62,12 +65,12 @@ public class AddToTestManagerPopupAction implements IWorkbenchWindowActionDelega
 
    @Override
    public void run(IAction proxyAction) {
-      String file = getSelection();
-      if (!Strings.isValid(file)) {
+      String[] files = getSelection();
+      if (files.length == 0) {
          AWorkbench.popup("ERROR", "Can't retrieve file");
          return;
       }
-      AddIFileToTestManager.getOperation().addIFileToScriptsPage(file);
+      AddIFileToTestManager.getOperation().addIFileToScriptsPage(files);
    }
 
    // IActionDelegate method

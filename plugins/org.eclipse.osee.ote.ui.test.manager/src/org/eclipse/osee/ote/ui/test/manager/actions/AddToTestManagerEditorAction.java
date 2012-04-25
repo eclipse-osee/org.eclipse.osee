@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.ui.test.manager.actions;
 
 import java.util.logging.Level;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -42,7 +43,7 @@ public class AddToTestManagerEditorAction implements IEditorActionDelegate {
          AWorkbench.popup("ERROR", "Can't retrieve IFile");
          return;
       }
-      AddIFileToTestManager.getOperation().addIFileToScriptsPage(iFile.getLocation().toOSString());
+      AddIFileToTestManager.getOperation().addIFileToScriptsPage(new String[]{iFile.getLocation().toOSString()});
    }
 
    @Override

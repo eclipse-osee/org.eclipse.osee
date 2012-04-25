@@ -46,7 +46,7 @@
             </separator>
          </menu>
          <action
-               enablesFor="1"
+               enablesFor="+"
                label="Add to Test Manager"
                icon="images/tm.gif"
                class="org.eclipse.osee.ote.ui.test.manager.actions.AddToTestManagerPopupAction"
