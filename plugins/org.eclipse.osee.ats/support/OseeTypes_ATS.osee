@@ -123,6 +123,8 @@ abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
    attribute "ats.SMA Note"
    attribute "ats.State Notes"
    attribute "ats.State"
+   attribute "ats.Start Date"
+   attribute "ats.End Date"
    attribute "ats.Current State Type"
    attribute "ats.Created By"
    attribute "ats.Created Date"
@@ -432,6 +434,22 @@ attributeType "ats.Created By" extends StringAttribute {
 attributeType "ats.Release Date" extends DateAttribute {
    guid "AAMFEc3+cGcMDOCdmdAA"
    uuid 0x10000000000000C7
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Start Date" extends DateAttribute {
+   guid "AJ_AAAAKiHnsKh2C3jQA"
+   uuid 0x1000000000000196
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.End Date" extends DateAttribute {
+   guid "AJ_AAAnHFFhJhbKqFWgA"
+   uuid 0x1000000000000197
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1

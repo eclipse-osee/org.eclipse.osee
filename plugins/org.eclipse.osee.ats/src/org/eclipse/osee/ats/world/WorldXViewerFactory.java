@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.column.DaysInCurrentStateColumn;
 import org.eclipse.osee.ats.column.DeadlineColumn;
 import org.eclipse.osee.ats.column.DecisionColumn;
 import org.eclipse.osee.ats.column.DescriptionColumn;
+import org.eclipse.osee.ats.column.EndDateColumn;
 import org.eclipse.osee.ats.column.EstimatedCompletionDateColumn;
 import org.eclipse.osee.ats.column.EstimatedHoursColumn;
 import org.eclipse.osee.ats.column.EstimatedReleaseDateColumn;
@@ -85,6 +86,7 @@ import org.eclipse.osee.ats.column.ReviewNumIssuesColumn;
 import org.eclipse.osee.ats.column.ReviewNumMajorDefectsColumn;
 import org.eclipse.osee.ats.column.ReviewNumMinorDefectsColumn;
 import org.eclipse.osee.ats.column.ReviewReviewerColumn;
+import org.eclipse.osee.ats.column.StartDateColumn;
 import org.eclipse.osee.ats.column.StateAssigneesColumn;
 import org.eclipse.osee.ats.column.StateColumn;
 import org.eclipse.osee.ats.column.StateCompletedColumn;
@@ -175,6 +177,8 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       ReviewModeratorColumn.getInstance(),
       ReviewReviewerColumn.getInstance(),
       ReviewDeciderColumn.getInstance(),
+      StartDateColumn.getInstance(),
+      EndDateColumn.getInstance(),
       CompletedDateColumn.getInstance(),
       CompletedByColumn.getInstance(),
       CancelledDateColumn.getInstance(),

@@ -98,6 +98,9 @@ public final class AtsAttributeTypes {
    public static final IAttributeType ReviewDefect = createType(0x10000000000000F6L, "Review Defect");
    public static final IAttributeType ReviewFormalType = createType(0x10000000000000C9L, "Review Formal Type");
    public static final IAttributeType Role = createType(0x10000000000000FAL, "Role");
+   public static final IAttributeType StartDate = createType(0x1000000000000196L, "Start Date");
+   public static final IAttributeType EndDate = createType(0x1000000000000197L, "End Date");
+
    public static final IAttributeType RuleDefinition = createType(0x10000000000000AEL, "Rule Definition");
    public static final IAttributeType SmaNote = createType(0x10000000000000E5L, "SMA Note", "Notes applicable to ATS object");
    public static final IAttributeType State = createType(0x10000000000000D7L, "State", "States of workflow state machine.");
