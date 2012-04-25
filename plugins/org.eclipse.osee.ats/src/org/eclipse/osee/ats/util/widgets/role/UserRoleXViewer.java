@@ -203,7 +203,7 @@ public class UserRoleXViewer extends XViewer {
    private boolean setUser(Collection<UserRole> userRoles, User user) throws OseeCoreException {
       boolean modified = false;
       for (UserRole userRole : userRoles) {
-         if (user != null && userRole.getUser().equals(user)) {
+         if (user != null && !userRole.getUser().equals(user)) {
             userRole.setUser(user);
             if (!modified) {
                modified = true;
