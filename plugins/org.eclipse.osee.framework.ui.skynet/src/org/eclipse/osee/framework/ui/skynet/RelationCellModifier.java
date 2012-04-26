@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.widgets.Item;
 
@@ -43,13 +44,20 @@ public class RelationCellModifier implements ICellModifier {
          WrapperForRelationLink relLink = (WrapperForRelationLink) element;
          RelationTypeSide rts = new RelationTypeSide(relLink.getRelationType(), relLink.getRelationSide());
          boolean canModify = false;
-         AccessPolicy policyHandlerService = Activator.getInstance().getAccessPolicy();
+         AccessPolicy policyHandlerService = null;
          try {
-            canModify =
-               policyHandlerService.canRelationBeModified(relLink.getArtifactA(),
-                  Arrays.asList(relLink.getArtifactB()), rts, Level.INFO).matched();
-         } catch (OseeCoreException ex) {
-            canModify = false;
+            policyHandlerService = ServiceUtil.getAccessPolicy();
+         } catch (OseeCoreException ex1) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex1);
+         }
+         if (policyHandlerService != null) {
+            try {
+               canModify =
+                  policyHandlerService.canRelationBeModified(relLink.getArtifactA(),
+                     Arrays.asList(relLink.getArtifactB()), rts, Level.INFO).matched();
+            } catch (OseeCoreException ex) {
+               canModify = false;
+            }
          }
          return canModify;
       }

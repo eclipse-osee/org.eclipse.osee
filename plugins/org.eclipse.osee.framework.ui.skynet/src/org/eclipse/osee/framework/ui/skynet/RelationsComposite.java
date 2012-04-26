@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.ui.skynet.RelationOrderContributionItem.Select
 import org.eclipse.osee.framework.ui.skynet.action.RevealInExplorerAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -476,7 +477,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
             WrapperForRelationLink data = (WrapperForRelationLink) selection.getFirstElement();
             AccessPolicy policyHandlerService;
             try {
-               policyHandlerService = Activator.getInstance().getAccessPolicy();
+               policyHandlerService = ServiceUtil.getAccessPolicy();
 
                RelationTypeSide rts = new RelationTypeSide(data.getRelationType(), data.getRelationSide());
                valid =
@@ -632,7 +633,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
             artifacts.add(group.getArtifact());
          }
 
-         AccessPolicy policyHandlerService = Activator.getInstance().getAccessPolicy();
+         AccessPolicy policyHandlerService = ServiceUtil.getAccessPolicy();
 
          hasPermission =
             policyHandlerService.canRelationBeModified(toCheck, artifacts, relationTypeSide, Level.INFO).matched();

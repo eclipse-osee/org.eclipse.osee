@@ -36,13 +36,13 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 
 /**
  * @author Roberto E. Escobar
@@ -154,9 +154,9 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
 
       private List<AttrData> loadAttributeData(IProgressMonitor monitor, IAttributeType attributeType) throws OseeCoreException {
          List<AttrData> attrData = new ArrayList<AttrData>();
-         IOseeStatement chStmt = ConnectionHandler.getStatement();
+         IOseeStatement chStmt = ServiceUtil.getOseeDatabaseService().getStatement();
          try {
-            chStmt.runPreparedQuery(GET_ATTRS, Activator.getInstance().getIdentityService().getLocalId(attributeType));
+            chStmt.runPreparedQuery(GET_ATTRS, ServiceUtil.getIdentityService().getLocalId(attributeType));
             while (chStmt.next()) {
                checkForCancelledStatus(monitor);
                String uri = chStmt.getString("uri");

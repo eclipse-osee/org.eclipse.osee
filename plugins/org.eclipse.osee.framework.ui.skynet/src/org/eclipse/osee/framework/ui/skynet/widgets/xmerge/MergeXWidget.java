@@ -51,7 +51,7 @@ import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceProvider;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
@@ -546,7 +546,7 @@ public class MergeXWidget extends GenericXWidget {
          try {
             Branch sourceBranch = storedConflicts[0].getSourceBranch();
             Artifact branchAssociatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);
-            IOseeCmService cmService = ServiceProvider.getOseeCmService();
+            IOseeCmService cmService = ServiceUtil.getOseeCmService();
             if (cmService.isPcrArtifact(branchAssociatedArtifact)) {
                cmService.openArtifact(branchAssociatedArtifact, OseeCmEditor.CmPcrEditor);
             } else if (!branchAssociatedArtifact.equals(UserManager.getUser(SystemUser.OseeSystem))) {

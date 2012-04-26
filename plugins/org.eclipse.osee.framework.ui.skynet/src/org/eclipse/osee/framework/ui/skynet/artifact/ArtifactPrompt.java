@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.ui.skynet.internal;
+package org.eclipse.osee.framework.ui.skynet.artifact;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -25,12 +25,12 @@ import org.eclipse.osee.framework.ui.skynet.artifact.prompt.IPromptFactory;
  * @author Jeff C. Phillips
  * @author Donald G. Dunne
  */
-public final class ArtifactPromptService {
+public final class ArtifactPrompt {
 
    private final IPromptFactory promptFactory;
    private final AccessPolicy policyHandler;
 
-   public ArtifactPromptService(IPromptFactory promptFactory, AccessPolicy policyHandler) {
+   public ArtifactPrompt(IPromptFactory promptFactory, AccessPolicy policyHandler) {
       this.promptFactory = promptFactory;
       this.policyHandler = policyHandler;
    }

@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.core.util.XResultData;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -49,6 +48,7 @@ import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
@@ -170,10 +170,10 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
    private ArrayList<AttrData> loadAttrData() throws OseeCoreException {
       ArrayList<AttrData> attrData = new ArrayList<AttrData>();
 
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ServiceUtil.getOseeDatabaseService().getStatement();
       try {
          chStmt.runPreparedQuery(GET_ATTRS,
-            Activator.getInstance().getIdentityService().getLocalId(CoreAttributeTypes.WordTemplateContent));
+            ServiceUtil.getIdentityService().getLocalId(CoreAttributeTypes.WordTemplateContent));
          while (chStmt.next()) {
             attrData.add(new AttrData(chStmt.getString("gamma_Id"), chStmt.getString("human_readable_id"),
                chStmt.getString("uri")));

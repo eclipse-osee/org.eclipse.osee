@@ -13,12 +13,12 @@ package org.eclipse.osee.framework.ui.skynet.artifact;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.artifact.prompt.PromptFactory;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.internal.ArtifactPromptService;
 
 /**
  * @author Jeff C. Phillips
@@ -26,12 +26,24 @@ import org.eclipse.osee.framework.ui.skynet.internal.ArtifactPromptService;
  */
 public final class ArtifactPromptChange {
 
-   private ArtifactPromptChange() {
-      // Utility Class
+   private static ArtifactPrompt prompt;
+
+   private AccessPolicy accessPolicy;
+
+   public void setAccessPolicy(AccessPolicy accessPolicy) {
+      this.accessPolicy = accessPolicy;
    }
 
-   private static ArtifactPromptService getService() throws OseeCoreException {
-      return Activator.getInstance().getArtifactPromptService();
+   public void start() {
+      prompt = new ArtifactPrompt(new PromptFactory(), accessPolicy);
+   }
+
+   public void stop() {
+      prompt = null;
+   }
+
+   private static ArtifactPrompt getArtifactPrompt() {
+      return ArtifactPromptChange.prompt;
    }
 
    public static boolean promptChangeAttribute(IAttributeType attributeType, final Collection<? extends Artifact> artifacts, boolean persist) {
@@ -40,10 +52,15 @@ public final class ArtifactPromptChange {
 
    public static boolean promptChangeAttribute(IAttributeType attributeType, final Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) {
       boolean result = false;
-      try {
-         result = getService().promptChangeAttribute(attributeType, artifacts, persist, multiLine);
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      ArtifactPrompt prompt = getArtifactPrompt();
+      if (prompt != null) {
+         try {
+            result = prompt.promptChangeAttribute(attributeType, artifacts, persist, multiLine);
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         }
+      } else {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Artifact prompt was null");
       }
       return result;
    }

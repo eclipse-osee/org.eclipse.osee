@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
@@ -80,7 +81,7 @@ public class AttributeFormPart extends AbstractFormPart {
    public AttributeFormPart(ArtifactEditor editor) {
       this.editor = editor;
       try {
-         AccessPolicy policy = Activator.getInstance().getAccessPolicy();
+         AccessPolicy policy = ServiceUtil.getAccessPolicy();
          decorator.addProvider(new XWidgetAccessDecorationProvider(policy));
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);

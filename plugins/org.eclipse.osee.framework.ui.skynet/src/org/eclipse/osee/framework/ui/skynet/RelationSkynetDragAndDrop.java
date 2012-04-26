@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.relation.explorer.RelationExplorerWindow;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -132,7 +133,7 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
                   }
                }
 
-               AccessPolicy policyHandlerService = Activator.getInstance().getAccessPolicy();
+               AccessPolicy policyHandlerService = ServiceUtil.getAccessPolicy();
 
                boolean matched =
                   policyHandlerService.canRelationBeModified(artifact, Arrays.asList(selectedArtifacts), data,
@@ -161,12 +162,19 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
          } else if (fileTransfer.isSupportedType(event.currentDataType)) {
             IRelationType relationType = data.getRelationType();
             if (relationType.equals(CoreRelationTypes.Verification__Verifier) || relationType.equals(CoreRelationTypes.Uses__TestUnit)) {
-               AccessPolicy policyHandlerService = Activator.getInstance().getAccessPolicy();
-               boolean matched = false;
+               AccessPolicy policyHandlerService = null;
                try {
-                  matched = policyHandlerService.canRelationBeModified(artifact, null, data, Level.INFO).matched();
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+                  policyHandlerService = ServiceUtil.getAccessPolicy();
+               } catch (OseeCoreException ex1) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex1);
+               }
+               boolean matched = false;
+               if (policyHandlerService != null) {
+                  try {
+                     matched = policyHandlerService.canRelationBeModified(artifact, null, data, Level.INFO).matched();
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
+                  }
                }
 
                if (matched) {
@@ -184,7 +192,7 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
             WrapperForRelationLink dropTarget = (WrapperForRelationLink) obj;
             boolean matched = false;
             try {
-               AccessPolicy policyHandlerService = Activator.getInstance().getAccessPolicy();
+               AccessPolicy policyHandlerService = ServiceUtil.getAccessPolicy();
                RelationTypeSide rts = new RelationTypeSide(dropTarget.getRelationType(), dropTarget.getRelationSide());
 
                matched =

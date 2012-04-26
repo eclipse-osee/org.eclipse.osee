@@ -27,9 +27,9 @@ import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
+import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPrompt;
 import org.eclipse.osee.framework.ui.skynet.artifact.prompt.IHandlePromptChange;
 import org.eclipse.osee.framework.ui.skynet.artifact.prompt.IPromptFactory;
-import org.eclipse.osee.framework.ui.skynet.internal.ArtifactPromptService;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -50,7 +50,7 @@ public class ArtifactPromptChangeTest {
       AccessPolicy policyHandler = new MockAccessPolicyHandler();
       MockPromptFactory.createPrompt(CoreAttributeTypes.Annotation, "", artifacts, persist, false);
 
-      ArtifactPromptService artifactPromptChange = new ArtifactPromptService(MockPromptFactory, policyHandler);
+      ArtifactPrompt artifactPromptChange = new ArtifactPrompt(MockPromptFactory, policyHandler);
 
       Assert.assertFalse(artifactPromptChange.promptChangeAttribute(CoreAttributeTypes.Annotation, artifacts, persist,
          false));

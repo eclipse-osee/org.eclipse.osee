@@ -28,8 +28,8 @@ import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceProvider;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
@@ -50,7 +50,7 @@ public class OpenAssociatedArtifactHandler extends CommandHandler {
          return null;
       }
       if (AccessControlManager.hasPermission(associatedArtifact, PermissionEnum.READ)) {
-         IOseeCmService cmService = ServiceProvider.getOseeCmService();
+         IOseeCmService cmService = ServiceUtil.getOseeCmService();
          if (cmService.isPcrArtifact(associatedArtifact)) {
             cmService.openArtifact(associatedArtifact, OseeCmEditor.CmPcrEditor);
          } else {

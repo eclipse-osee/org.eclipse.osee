@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Wizards;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.update.InterArtifactExplorerDropHandlerOperation;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.swt.dnd.DND;
@@ -102,7 +103,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
          ArtifactData toBeDropped = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
          if (dropTarget != null) {
             try {
-               AccessPolicy policy = Activator.getInstance().getAccessPolicy();
+               AccessPolicy policy = ServiceUtil.getAccessPolicy();
                Artifact[] artifactsBeingDropped = toBeDropped.getArtifacts();
                List<Artifact> artsOnSameBranchAsDestination = new LinkedList<Artifact>();
                IOseeBranch destinationBranch = dropTarget.getBranch();

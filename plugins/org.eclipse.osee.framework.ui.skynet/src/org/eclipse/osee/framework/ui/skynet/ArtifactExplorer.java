@@ -89,6 +89,7 @@ import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.dialogs.ArtifactPasteSpecialDialog;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.menu.ArtifactTreeViewerGlobalMenuHelper;
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenu;
@@ -609,7 +610,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
             try {
                Artifact parent = getParent();
 
-               AccessPolicy policy = Activator.getInstance().getAccessPolicy();
+               AccessPolicy policy = ServiceUtil.getAccessPolicy();
 
                PermissionStatus status =
                   policy.canRelationBeModified(parent, null, CoreRelationTypes.Default_Hierarchical__Child, Level.FINE);
@@ -935,7 +936,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
                artifactTransferData.add(artifact);
             }
          }
-         artifactClipboard.setArtifactsToClipboard(Activator.getInstance().getAccessPolicy(), artifactTransferData);
+         artifactClipboard.setArtifactsToClipboard(ServiceUtil.getAccessPolicy(), artifactTransferData);
       }
    }
 
@@ -1168,7 +1169,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
             boolean canModifyDH = false;
             if (obj instanceof Artifact) {
                Artifact art = (Artifact) obj;
-               AccessPolicy service = Activator.getInstance().getAccessPolicy();
+               AccessPolicy service = ServiceUtil.getAccessPolicy();
                canModifyDH =
                   service.canRelationBeModified(art, null, CoreRelationTypes.Default_Hierarchical__Child, Level.FINE).matched();
             }

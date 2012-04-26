@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -64,7 +65,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
       boolean isLocked = true;
       AccessPolicy policyHandlerService;
       try {
-         policyHandlerService = Activator.getInstance().getAccessPolicy();
+         policyHandlerService = ServiceUtil.getAccessPolicy();
          PermissionStatus permissionStatus =
             policyHandlerService.canRelationBeModified(artifact, null, relationTypeSide, Level.FINE);
          isLocked = !permissionStatus.matched();

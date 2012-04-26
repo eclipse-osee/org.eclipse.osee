@@ -12,16 +12,19 @@
 package org.eclipse.osee.framework.ui.skynet.results.html;
 
 import java.net.URL;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceProvider;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
@@ -105,7 +108,12 @@ public class XResultBrowserListener implements LocationListener {
    }
 
    private void openArtifact(String guid, OseeCmEditor view) {
-      ServiceProvider.getOseeCmService().openArtifact(guid, view);
+      try {
+         IOseeCmService cmService = ServiceUtil.getOseeCmService();
+         cmService.openArtifact(guid, view);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
    }
 
    @Override
