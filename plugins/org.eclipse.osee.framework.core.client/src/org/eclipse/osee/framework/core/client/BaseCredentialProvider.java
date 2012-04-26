@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.client;
 
 import java.net.InetAddress;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.client.internal.CoreClientActivator;
 import org.eclipse.osee.framework.core.client.server.HttpServer;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.OseeCredential;

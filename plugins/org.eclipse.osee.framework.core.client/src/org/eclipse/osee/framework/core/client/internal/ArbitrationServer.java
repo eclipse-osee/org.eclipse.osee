@@ -17,7 +17,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.client.CoreClientActivator;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.OseeServerContext;

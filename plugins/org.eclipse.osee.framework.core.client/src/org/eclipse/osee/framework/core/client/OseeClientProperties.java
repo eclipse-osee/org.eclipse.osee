@@ -15,11 +15,13 @@ import java.util.Dictionary;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.client.internal.CoreClientActivator;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * @author Roberto E. Escobar
@@ -253,8 +255,14 @@ public class OseeClientProperties extends OseeProperties {
       return instance.toString();
    }
 
+   private BundleContext getBundleContext() {
+      Bundle bundle = FrameworkUtil.getBundle(getClass());
+      BundleContext context = bundle.getBundleContext();
+      return context;
+   }
+
    public void initialize() {
-      BundleContext context = CoreClientActivator.getBundleContext();
+      BundleContext context = getBundleContext();
       for (Bundle bundle : context.getBundles()) {
          Dictionary<?, ?> header = bundle.getHeaders();
          if (header != null) {

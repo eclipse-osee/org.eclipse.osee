@@ -24,7 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.client.CoreClientActivator;
+import org.eclipse.osee.framework.core.client.internal.CoreClientActivator;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;

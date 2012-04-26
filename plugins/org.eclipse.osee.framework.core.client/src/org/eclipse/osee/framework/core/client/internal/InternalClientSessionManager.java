@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.BaseCredentialProvider;
-import org.eclipse.osee.framework.core.client.CoreClientActivator;
 import org.eclipse.osee.framework.core.client.GuestCredentialProvider;
 import org.eclipse.osee.framework.core.client.ICredentialProvider;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;

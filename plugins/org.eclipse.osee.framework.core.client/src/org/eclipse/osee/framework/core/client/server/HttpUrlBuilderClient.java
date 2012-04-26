@@ -14,8 +14,9 @@ package org.eclipse.osee.framework.core.client.server;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.client.CoreClientActivator;
+import org.eclipse.osee.framework.core.client.CoreClientConstants;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.framework.core.client.internal.CoreClientActivator;
 import org.eclipse.osee.framework.core.client.internal.OseeApplicationServer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -31,7 +32,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public final class HttpUrlBuilderClient {
 
    public static final String USE_CONNECTED_SERVER_URL_FOR_PERM_LINKS =
-      CoreClientActivator.PLUGIN_ID + "osee.use.connected.server.url.for.perm.links";
+      CoreClientConstants.getBundleId() + "osee.use.connected.server.url.for.perm.links";
 
    private static final String urlPrefixFormat = "http://%s:%s/";
    private static final HttpUrlBuilderClient instance = new HttpUrlBuilderClient();

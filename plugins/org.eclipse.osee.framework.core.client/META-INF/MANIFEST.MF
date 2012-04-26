@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Core Client Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.core.client;singleton:=true
 Bundle-Version: 0.9.9.qualifier
-Bundle-Activator: org.eclipse.osee.framework.core.client.CoreClientActivator
+Bundle-Activator: org.eclipse.osee.framework.core.client.internal.CoreClientActivator
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
@@ -23,3 +23,4 @@ Import-Package: org.eclipse.core.runtime,
 Export-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.client.server,
  org.eclipse.osee.framework.core.client.task
+Service-Component: OSGI-INF/client.database.provider.xml

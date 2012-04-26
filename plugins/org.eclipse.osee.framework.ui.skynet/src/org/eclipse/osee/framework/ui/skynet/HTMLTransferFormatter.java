@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.osee.framework.core.client.CoreClientActivator;
+import org.eclipse.osee.framework.core.client.CoreClientConstants;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -35,9 +35,7 @@ public class HTMLTransferFormatter {
 
    private synchronized static IPreferenceStore getPreferenceStore() {
       if (preferenceStore == null) {
-         preferenceStore =
-            new ScopedPreferenceStore(new InstanceScope(),
-               CoreClientActivator.getBundleContext().getBundle().getSymbolicName());
+         preferenceStore = new ScopedPreferenceStore(new InstanceScope(), CoreClientConstants.getBundleId());
       }
       return preferenceStore;
    }

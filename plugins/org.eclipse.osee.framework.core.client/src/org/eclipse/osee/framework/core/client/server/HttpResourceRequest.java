@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.core.client.CoreClientActivator;
+import org.eclipse.osee.framework.core.client.internal.CoreClientActivator;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;

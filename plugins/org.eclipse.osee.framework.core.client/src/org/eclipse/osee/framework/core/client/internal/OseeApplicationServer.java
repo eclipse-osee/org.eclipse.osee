@@ -16,7 +16,6 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.client.CoreClientActivator;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

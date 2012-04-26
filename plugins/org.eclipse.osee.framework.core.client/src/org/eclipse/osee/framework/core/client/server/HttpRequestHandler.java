@@ -16,7 +16,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.client.CoreClientActivator;
+import org.eclipse.osee.framework.core.client.internal.CoreClientActivator;
 import org.eclipse.osee.framework.core.client.server.HttpRequest.HttpMethod;
 import org.eclipse.osee.framework.logging.OseeLog;
 

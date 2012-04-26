@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.osee.framework.core.client.CoreClientActivator;
+import org.eclipse.osee.framework.core.client.CoreClientConstants;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Network;
@@ -168,8 +168,7 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
    public void init(IWorkbench workbench) {
       // Initialize the preference store we wish to use
       IPreferenceStore preferenceStore =
-         new ScopedPreferenceStore(new InstanceScope(),
-            CoreClientActivator.getBundleContext().getBundle().getSymbolicName());
+         new ScopedPreferenceStore(new InstanceScope(), CoreClientConstants.getBundleId());
       setPreferenceStore(preferenceStore);
    }
 
