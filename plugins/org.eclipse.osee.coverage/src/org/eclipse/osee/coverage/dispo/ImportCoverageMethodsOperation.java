@@ -44,13 +44,15 @@ public class ImportCoverageMethodsOperation extends org.eclipse.osee.framework.c
    private final Artifact toPackageArt;
    private final boolean isPersistTransaction;
    private final String resultsDir;
+   private final boolean isRetainTaskTracking;
 
-   public ImportCoverageMethodsOperation(Artifact fromPackageArt, Artifact toPackageArt, String resultsDir, boolean isPersistTransaction) {
+   public ImportCoverageMethodsOperation(Artifact fromPackageArt, Artifact toPackageArt, String resultsDir, boolean isPersistTransaction, boolean isRetainTaskTracking) {
       super("Import Coverage Methods for " + fromPackageArt, Activator.PLUGIN_ID);
       this.fromPackageArt = fromPackageArt;
       this.toPackageArt = toPackageArt;
       this.resultsDir = resultsDir;
       this.isPersistTransaction = isPersistTransaction;
+      this.isRetainTaskTracking = isRetainTaskTracking;
    }
 
    @Override
@@ -85,6 +87,7 @@ public class ImportCoverageMethodsOperation extends org.eclipse.osee.framework.c
 
          // Merge Dispositions
          processDispositionsRecurse(monitor, counter, data, fromPackage, toPackage);
+
          data.log("\n\nTotals: " + counter.toString());
          data.log(title);
 
@@ -97,6 +100,12 @@ public class ImportCoverageMethodsOperation extends org.eclipse.osee.framework.c
             if (results.isFalse()) {
                data.logErrorWithFormat("Error persisting [%s]", results.toString());
             }
+         }
+
+         // Set WorkProductPcrGuid if retain tracking
+         if (isRetainTaskTracking) {
+            toPackage.getWorkProductTaskProvider().addWorkProductAction(
+               fromPackage.getWorkProductTaskProvider().getWorkProductRelatedActions());
          }
 
          // Display results in OSEE and results dir
@@ -196,15 +205,17 @@ public class ImportCoverageMethodsOperation extends org.eclipse.osee.framework.c
                   fromItem.getRationale());
                toItem.setRationale(fromItem.getRationale());
             }
-            String toTaskGuid = toItem.getWorkProductTaskGuid();
-            if (toTaskGuid == null) {
-               toTaskGuid = "";
-            }
-            String fromTaskGuid = fromItem.getWorkProductTaskGuid();
-            if (!toTaskGuid.equals(fromTaskGuid)) {
-               data.logWithFormat("   --> Updated task from [%s][%s] to [%s][%s]\n", toTaskGuid,
-                  toItem.getWorkProductTaskStr(), fromTaskGuid, fromItem.getWorkProductTaskStr());
-               toItem.setWorkProductTaskGuid(fromTaskGuid);
+            if (isRetainTaskTracking) {
+               String toTaskGuid = toItem.getWorkProductTaskGuid();
+               if (toTaskGuid == null) {
+                  toTaskGuid = "";
+               }
+               String fromTaskGuid = fromItem.getWorkProductTaskGuid();
+               if (!toTaskGuid.equals(fromTaskGuid)) {
+                  data.logWithFormat("   --> Updated task from [%s][%s] to [%s][%s]\n", toTaskGuid,
+                     toItem.getWorkProductTaskStr(), fromTaskGuid, fromItem.getWorkProductTaskStr());
+                  toItem.setWorkProductTaskGuid(fromTaskGuid);
+               }
             }
          }
 
