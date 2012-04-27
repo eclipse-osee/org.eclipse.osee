@@ -123,6 +123,7 @@ public class DecisionReviewManager {
          }
       }
       reviewArt.setSoleAttributeValue(AtsAttributeTypes.Decision, decision ? "Yes" : "No");
+
       reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }

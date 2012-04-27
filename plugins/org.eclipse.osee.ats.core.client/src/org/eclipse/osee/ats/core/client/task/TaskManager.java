@@ -54,7 +54,6 @@ public class TaskManager {
             taskArt.getStateMgr().setAssignee(AtsUsersClient.getUser());
          }
          taskArt.getStateMgr().updateMetrics(taskArt.getStateDefinition(), additionalHours, 100, true);
-         taskArt.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, 100);
          if (estimatedHours > 0.0) {
             taskArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, estimatedHours);
          }
@@ -88,7 +87,6 @@ public class TaskManager {
       }
       if (taskArt.getStateMgr().getPercentComplete(taskArt.getCurrentStateName()) != percentComplete || additionalHours > 0) {
          taskArt.getStateMgr().updateMetrics(taskArt.getStateDefinition(), additionalHours, percentComplete, true);
-         taskArt.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, percentComplete);
       }
       if (transaction != null) {
          taskArt.saveSMA(transaction);

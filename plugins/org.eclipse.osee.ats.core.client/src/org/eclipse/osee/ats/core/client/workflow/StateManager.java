@@ -135,14 +135,14 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
       return null;
    }
 
-   public void updateMetrics(double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException {
-      updateMetrics(getCurrentState(), additionalHours, percentComplete, logMetrics);
-   }
-
    public void updateMetrics(IWorkPage state, double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException {
       getStateProvider().setHoursSpent(state.getPageName(),
          getStateProvider().getHoursSpent(state.getPageName()) + additionalHours);
-      getStateProvider().setPercentComplete(state.getPageName(), percentComplete);
+      if (awa.getWorkDefinition().isStateWeightingEnabled()) {
+         getStateProvider().setPercentComplete(state.getPageName(), percentComplete);
+      } else {
+         awa.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, percentComplete);
+      }
       if (logMetrics) {
          logMetrics(awa.getStateMgr().getCurrentState(), AtsUsersClient.getUser(), new Date());
       }
