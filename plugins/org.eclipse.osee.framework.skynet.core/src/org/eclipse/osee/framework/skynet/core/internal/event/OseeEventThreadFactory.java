@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.event;
+package org.eclipse.osee.framework.skynet.core.internal.event;
 
 import java.lang.ref.WeakReference;
 import java.util.List;

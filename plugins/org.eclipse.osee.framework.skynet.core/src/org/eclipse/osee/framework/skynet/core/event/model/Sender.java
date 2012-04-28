@@ -25,25 +25,33 @@ public class Sender {
    private final String sourceObject;
    private final OseeClientSession oseeSession;
 
-   public Sender(Object sourceObject, OseeClientSession oseeSession) {
-      this.sourceObject = EventUtil.getObjectSafeName(sourceObject);
+   private Sender(String sourceObjectId, OseeClientSession oseeSession) {
+      this.sourceObject = sourceObjectId;
       this.oseeSession = oseeSession;
    }
 
-   public Sender(NetworkSender networkSender) {
-      this(networkSender.sourceObject, new OseeClientSession(networkSender.sessionId, networkSender.machineName,
-         networkSender.userId, networkSender.machineIp, networkSender.port, networkSender.clientVersion, "n/a"));
+   public static Sender createSender(Object sourceObject, OseeClientSession oseeSession) {
+      String sourceId = EventUtil.getObjectSafeName(sourceObject);
+      return new Sender(sourceId, oseeSession);
    }
 
-   public Sender(RemoteNetworkSender1 networkSender) {
-      this(networkSender.getSourceObject(), new OseeClientSession(networkSender.getSessionId(),
-         networkSender.getMachineName(), networkSender.getUserId(), networkSender.getMachineIp(),
-         networkSender.getPort(), networkSender.getClientVersion(), "n/a"));
+   public static Sender createSender(NetworkSender networkSender) {
+      OseeClientSession oseeSession =
+         new OseeClientSession(networkSender.sessionId, networkSender.machineName, networkSender.userId,
+            networkSender.machineIp, networkSender.port, networkSender.clientVersion, "n/a");
+      return createSender(networkSender.sourceObject, oseeSession);
    }
 
-   public Sender(Object sourceObject) throws OseeAuthenticationRequiredException {
-      this.sourceObject = EventUtil.getObjectSafeName(sourceObject);
-      this.oseeSession = ClientSessionManager.getSession();
+   public static Sender createSender(RemoteNetworkSender1 networkSender) {
+      OseeClientSession oseeSession =
+         new OseeClientSession(networkSender.getSessionId(), networkSender.getMachineName(), networkSender.getUserId(),
+            networkSender.getMachineIp(), networkSender.getPort(), networkSender.getClientVersion(), "n/a");
+      return createSender(networkSender.getSourceObject(), oseeSession);
+   }
+
+   public static Sender createSender(Object sourceObject) throws OseeAuthenticationRequiredException {
+      OseeClientSession oseeSession = ClientSessionManager.getSession();
+      return createSender(sourceObject, oseeSession);
    }
 
    public boolean isRemote() {

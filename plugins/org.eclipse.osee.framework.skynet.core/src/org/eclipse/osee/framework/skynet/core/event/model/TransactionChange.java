@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 
-public class TransactionChange extends FrameworkEvent {
+public class TransactionChange implements FrameworkEvent {
 
    private String branchGuid;
    private int transactionId;

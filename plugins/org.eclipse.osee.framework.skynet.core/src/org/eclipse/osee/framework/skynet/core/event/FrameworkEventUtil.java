@@ -58,7 +58,11 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 /**
  * @author Donald G. Dunne
  */
-public class FrameworkEventUtil {
+public final class FrameworkEventUtil {
+
+   private FrameworkEventUtil() {
+      // Utility Class   
+   }
 
    public static RemoteAccessControlEvent1 getRemoteAccessControlEvent(AccessControlEvent accessControlEvent) {
       RemoteAccessControlEvent1 event = new RemoteAccessControlEvent1();

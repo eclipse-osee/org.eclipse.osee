@@ -19,7 +19,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelationReorder;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
@@ -33,7 +32,12 @@ import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 
-public class ArtifactEvent extends FrameworkEvent {
+public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
+
+   public static enum ArtifactEventType {
+      RELOAD_ARTIFACTS,
+      UPDATE_ARTIFACTS;
+   }
 
    private final String branchGuid;
    private int transactionId;
@@ -42,13 +46,19 @@ public class ArtifactEvent extends FrameworkEvent {
    private final List<EventBasicGuidRelation> relations = new ArrayList<EventBasicGuidRelation>();
    private final Set<DefaultBasicGuidRelationReorder> relationReorderRecords =
       new HashSet<DefaultBasicGuidRelationReorder>();
+   private final ArtifactEventType reloadEvent;
 
-   public ArtifactEvent(Branch branch) {
+   public ArtifactEvent(IOseeBranch branch) {
+      this(branch, ArtifactEventType.UPDATE_ARTIFACTS);
+   }
+
+   public ArtifactEvent(IOseeBranch branch, ArtifactEventType reloadEvent) {
+      this.reloadEvent = reloadEvent;
       branchGuid = branch.getGuid();
    }
 
-   public ArtifactEvent(IOseeBranch branch) {
-      branchGuid = branch.getGuid();
+   public boolean isReloadEvent() {
+      return ArtifactEventType.RELOAD_ARTIFACTS == reloadEvent;
    }
 
    public String getBranchGuid() {
@@ -79,10 +89,12 @@ public class ArtifactEvent extends FrameworkEvent {
       return this.relations;
    }
 
+   @Override
    public NetworkSender getNetworkSender() {
       return networkSender;
    }
 
+   @Override
    public void setNetworkSender(NetworkSender value) {
       this.networkSender = value;
    }

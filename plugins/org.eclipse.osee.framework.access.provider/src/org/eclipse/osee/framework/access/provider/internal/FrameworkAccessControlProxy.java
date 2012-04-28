@@ -29,11 +29,12 @@ import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventService;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchGuidEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
@@ -48,9 +49,14 @@ public class FrameworkAccessControlProxy implements CmAccessControl, HasAccessMo
    private CmAccessControl frameworkAccessControl;
    private AccessModel accessModel;
    private IEventListener listener;
+   private OseeEventService eventService;
 
    public void setAccessModelInterpreter(AccessModelInterpreter interpreter) {
       this.interpreter = interpreter;
+   }
+
+   public void setEventService(OseeEventService eventService) {
+      this.eventService = eventService;
    }
 
    public void start() {
@@ -61,12 +67,12 @@ public class FrameworkAccessControlProxy implements CmAccessControl, HasAccessMo
       frameworkAccessControl = new FrameworkAccessControl(roleProvider);
 
       listener = new DslUpdateListener(frameworkDslProvider);
-      OseeEventManager.addListener(listener);
+      eventService.addListener(EventQosType.NORMAL, listener);
    }
 
    public void stop() {
       if (listener != null) {
-         OseeEventManager.removeListener(listener);
+         eventService.removeListener(EventQosType.NORMAL, listener);
          listener = null;
       }
       frameworkAccessControl = null;

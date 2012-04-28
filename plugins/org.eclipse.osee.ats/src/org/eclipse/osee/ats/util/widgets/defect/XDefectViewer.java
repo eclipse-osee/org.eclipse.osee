@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
@@ -328,7 +329,8 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
                MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
          ed.setFillVertically(true);
          if (ed.open() == 0) {
-            SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Import Review Defects");
+            SkynetTransaction transaction =
+               TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Import Review Defects");
             for (String str : ed.getEntry().split("\n")) {
                str = str.replaceAll("\r", "");
                if (!str.equals("")) {
@@ -360,7 +362,8 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
             "Are You Sure You Wish to Delete the Defects(s):\n\n" + builder.toString());
       if (delete) {
          try {
-            SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Delete Review Defects");
+            SkynetTransaction transaction =
+               TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Delete Review Defects");
             deleteDefectHelper(items, persist, transaction);
             transaction.execute();
          } catch (Exception ex) {
@@ -387,7 +390,8 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
       ed.setFillVertically(true);
       if (ed.open() == 0) {
          try {
-            SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Add Review Defect");
+            SkynetTransaction transaction =
+               TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Add Review Defect");
             ReviewDefectItem item = new ReviewDefectItem();
             item.setDescription(ed.getEntry());
             if (ed.getSeverity() != null) {
@@ -566,7 +570,7 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
-      return Arrays.asList(OseeEventManager.getCommonBranchFilter(), AtsUtilCore.getReviewArtifactTypeEventFilter());
+      return Arrays.asList(EventUtil.getCommonBranchFilter(), AtsUtilCore.getReviewArtifactTypeEventFilter());
    }
 
    @Override

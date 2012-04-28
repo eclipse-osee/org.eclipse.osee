@@ -17,6 +17,7 @@ import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
@@ -99,7 +100,8 @@ public class ArtifactEventFiltersTest {
       resultSender = null;
 
       // Send dummy event
-      Sender sender = new Sender(new NetworkSender(this, GUID.create(), "PC", "12345", "123.234.345.456", 34, "1.0.0"));
+      Sender sender =
+         Sender.createSender(new NetworkSender(this, GUID.create(), "PC", "12345", "123.234.345.456", 34, "1.0.0"));
       processEventArtifactsAndRelations(sender, testArtifactEvent);
 
       // Test that event DID come through
@@ -155,7 +157,8 @@ public class ArtifactEventFiltersTest {
       resultSender = null;
 
       // Send dummy event
-      Sender sender = new Sender(new NetworkSender(this, GUID.create(), "PC", "12345", "123.234.345.456", 34, "1.0.0"));
+      Sender sender =
+         Sender.createSender(new NetworkSender(this, GUID.create(), "PC", "12345", "123.234.345.456", 34, "1.0.0"));
       processEventArtifactsAndRelations(sender, testArtifactEvent);
 
       // Test that event DID come through
@@ -190,7 +193,7 @@ public class ArtifactEventFiltersTest {
 
    }
 
-   private static void processEventArtifactsAndRelations(Sender sender, ArtifactEvent artifactEvent) {
+   private static void processEventArtifactsAndRelations(Sender sender, ArtifactEvent artifactEvent) throws OseeCoreException {
       OseeEventManager.internalTestProcessEventArtifactsAndRelations(sender, artifactEvent);
    }
 

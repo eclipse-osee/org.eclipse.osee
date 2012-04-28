@@ -10,24 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
+import org.eclipse.osee.framework.skynet.core.event.filter.BranchGuidEventFilter;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
  */
 public final class EventUtil {
+   private static BranchGuidEventFilter commonBranchGuidEvenFilter = new BranchGuidEventFilter(CoreBranches.COMMON);
 
    private EventUtil() {
       // Utility Class
+   }
+
+   public static BranchGuidEventFilter getCommonBranchFilter() {
+      return EventUtil.commonBranchGuidEvenFilter;
    }
 
    public static String getObjectSafeName(Object object) {
@@ -38,51 +40,54 @@ public final class EventUtil {
       }
    }
 
-   public static String getListenerReport(Collection<IEventListener> listeners, Collection<IEventListener> priorityListeners) {
-      List<String> listenerStrs = new ArrayList<String>();
-      for (IEventListener listener : priorityListeners) {
-         listenerStrs.add("Priority: " + EventUtil.getObjectSafeName(listener));
-      }
-      for (IEventListener listener : listeners) {
-         listenerStrs.add(EventUtil.getObjectSafeName(listener));
-      }
-      String[] listArr = listenerStrs.toArray(new String[listenerStrs.size()]);
-      Arrays.sort(listArr);
-      return org.eclipse.osee.framework.jdk.core.util.Collections.toString("\n", (Object[]) listArr);
+   public static void eventLog(String message, Throwable ex) {
+      eventLog(ex, message);
    }
 
-   public static void eventLog(String output) {
-      eventLog(output, null);
-   }
-
-   public static void eventLog(String output, Exception ex) {
+   public static void eventLog(Throwable ex, String message, Object... args) {
       try {
          if (isEventDebugConsole()) {
-            System.err.println(output + (ex != null ? " <<ERROR>> " + ex.toString() : ""));
+            StringBuilder builder = new StringBuilder();
+            builder.append(formatMessage(message, args));
+            if (ex != null) {
+               builder.append(" <<ERROR>> ");
+               builder.append(ex.toString());
+            }
+            System.err.println(builder.toString());
          } else if (isEventDebugErrorLog()) {
             if (ex != null) {
-               OseeLog.log(Activator.class, Level.SEVERE, output, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, formatMessage(message, args), ex);
             } else {
-               OseeLog.log(Activator.class, Level.FINE, output);
+               OseeLog.log(Activator.class, Level.FINE, formatMessage(message, args));
             }
          }
-      } catch (Exception ex1) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex1);
+      } catch (Throwable th) {
+         OseeLog.log(Activator.class, Level.SEVERE, th);
+      }
+   }
+
+   public static void eventLog(String output, Object... args) {
+      eventLog(null, output, args);
+   }
+
+   private static String formatMessage(String message, Object... args) {
+      try {
+         return String.format(message, args);
+      } catch (RuntimeException ex) {
+         return String.format(
+            "Exception message could not be formatted: [%s] with the following arguments [%s].  Cause [%s]", message,
+            Collections.toString(",", args), ex.toString());
       }
    }
 
    private static boolean isEventDebugConsole() {
-      if (!Strings.isValid(System.getProperty("eventDebug"))) {
-         return false;
-      }
-      return System.getProperty("eventDebug").equals("console");
+      String debugConsole = System.getProperty("eventDebug", "");
+      return "console".equals(debugConsole);
    }
 
    private static boolean isEventDebugErrorLog() {
-      if (!Strings.isValid(System.getProperty("eventDebug"))) {
-         return false;
-      }
-      return System.getProperty("eventDebug").equals("log") || "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Events"));
+      String debugConsole = System.getProperty("eventDebug", "");
+      return "log".equals(debugConsole) || "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Events"));
    }
 
 }

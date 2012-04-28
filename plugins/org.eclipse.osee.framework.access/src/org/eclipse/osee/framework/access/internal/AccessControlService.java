@@ -61,11 +61,12 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventService;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchGuidEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
@@ -121,14 +122,22 @@ public class AccessControlService implements IAccessControlService {
    private final IOseeCachingService cachingService;
    private final IOseeDatabaseService databaseService;
    private final IdentityService identityService;
-   private AccessControlUpdateListener eventListener;
+   private final OseeEventService eventService;
 
-   public AccessControlService(IOseeDatabaseService databaseService, IOseeCachingService cachingService, IdentityService identityService) {
+   private IArtifactEventListener listener1;
+   private IArtifactEventListener listener2;
+
+   public AccessControlService(IOseeDatabaseService databaseService, IOseeCachingService cachingService, IdentityService identityService, OseeEventService eventService) {
       super();
       this.databaseService = databaseService;
       this.cachingService = cachingService;
       this.identityService = identityService;
-      OseeEventManager.addListener(new AccessControlUpdateListener());
+      this.eventService = eventService;
+   }
+
+   public void start() {
+      listener1 = new AccessControlUpdateListener();
+      eventService.addListener(EventQosType.NORMAL, listener1);
 
       if (!DbUtil.isDbInit()) {
          try {
@@ -136,6 +145,17 @@ public class AccessControlService implements IAccessControlService {
          } catch (OseeCoreException ex) {
             OseeLog.log(AccessControlService.class, Level.SEVERE, ex);
          }
+      }
+   }
+
+   public void stop() {
+      if (listener1 != null) {
+         eventService.removeListener(EventQosType.NORMAL, listener1);
+         listener1 = null;
+      }
+      if (listener2 != null) {
+         eventService.removeListener(EventQosType.NORMAL, listener2);
+         listener2 = null;
       }
    }
 
@@ -308,9 +328,9 @@ public class AccessControlService implements IAccessControlService {
          }
       }
 
-      if (eventListener == null) {
-         eventListener = new AccessControlUpdateListener((Artifact) userArtifact.getFullArtifact());
-         OseeEventManager.addListener(eventListener);
+      if (listener2 == null) {
+         listener2 = new AccessControlUpdateListener((Artifact) userArtifact.getFullArtifact());
+         eventService.addListener(EventQosType.NORMAL, listener2);
       }
 
       if (!accessDataCache.containsKey(key)) {
@@ -616,7 +636,7 @@ public class AccessControlService implements IAccessControlService {
          }
       }
       try {
-         OseeEventManager.kickAccessControlArtifactsEvent(this, event);
+         eventService.send(this, event);
       } catch (Exception ex) {
          OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);
       }
@@ -645,7 +665,7 @@ public class AccessControlService implements IAccessControlService {
          }
       }
       try {
-         OseeEventManager.kickAccessControlArtifactsEvent(this, event);
+         eventService.send(this, event);
       } catch (Exception ex) {
          OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);
       }

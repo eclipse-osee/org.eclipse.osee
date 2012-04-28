@@ -10,26 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchGuidEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
-import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent.ArtifactEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BroadcastEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
@@ -37,10 +33,9 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.RemoteEventServiceEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.systems.EventManagerData;
-import org.eclipse.osee.framework.skynet.core.event.systems.InternalEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
+import org.eclipse.osee.framework.skynet.core.internal.event.EventListenerRegistry;
 
 /**
  * Front end to OSEE events. Provides ability to add and remove different event listeners as well as the ability to kick
@@ -48,19 +43,18 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
  * 
  * @author Donald G. Dunne
  */
-public class OseeEventManager {
-
-   private static List<IEventFilter> commonBranchEventFilter;
-   private static BranchGuidEventFilter commonBranchGuidEvenFilter;
-   private static IBranchEventListener testBranchEventListener;
-   private static final EventManagerData eventManagerData = new EventManagerData();
+public final class OseeEventManager {
 
    private OseeEventManager() {
-      // Static methods only;
+      // Utility Class
    }
 
-   public static EventManagerData getEventManagerData() {
-      return eventManagerData;
+   private static OseeEventService getEventService() throws OseeCoreException {
+      return ServiceUtil.getEventService();
+   }
+
+   private static EventListenerRegistry getEventListeners() {
+      return Activator.getEventListeners();
    }
 
    /**
@@ -68,41 +62,34 @@ public class OseeEventManager {
     * listeners are called.
     */
    public static void addPriorityListener(IEventListener listener) {
-      if (listener == null) {
-         throw new IllegalArgumentException("listener can not be null");
-      }
-      Collection<IEventListener> priorityListeners = eventManagerData.getPriorityListeners();
-      priorityListeners.add(listener);
+      getEventListeners().addListener(EventQosType.PRIORITY, listener);
    }
 
    public static void addListener(IEventListener listener) {
-      if (listener == null) {
-         throw new IllegalArgumentException("listener can not be null");
-      }
-      Collection<IEventListener> listeners = eventManagerData.getListeners();
-      listeners.add(listener);
+      getEventListeners().addListener(EventQosType.NORMAL, listener);
    }
 
    public static void removeAllListeners() {
-      eventManagerData.getListeners().clear();
-      eventManagerData.getPriorityListeners().clear();
+      getEventListeners().clearAll();
    }
 
    public static void removeListener(IEventListener listener) {
-      eventManagerData.getListeners().remove(listener);
-      eventManagerData.getPriorityListeners().remove(listener);
-   }
-
-   private static InternalEventManager getEventManager() {
-      return eventManagerData.getMessageEventManager();
+      getEventListeners().removeListener(listener);
    }
 
    public static EventSystemPreferences getPreferences() {
-      return eventManagerData.getPreferences();
+      return Activator.getEventPreferences();
    }
 
    public static boolean isEventManagerConnected() {
-      return getEventManager() != null ? getEventManager().isConnected() : false;
+      boolean result = false;
+      try {
+         OseeEventService eventService = getEventService();
+         result = eventService.isConnected();
+      } catch (Exception ex) {
+         // Do Nothing;
+      }
+      return result;
    }
 
    public static String getConnectionDetails() {
@@ -114,97 +101,37 @@ public class OseeEventManager {
    }
 
    public static int getNumberOfListeners() {
-      return eventManagerData.getListeners().size();
-   }
-
-   private static Sender createSender(Object sourceObject) throws OseeAuthenticationRequiredException {
-      Sender sender = null;
-      // Sender came from Remote Event Manager if source == sender
-      if (sourceObject instanceof Sender && ((Sender) sourceObject).isRemote()) {
-         sender = (Sender) sourceObject;
-      } else {
-         // create new sender based on sourceObject
-         sender = new Sender(sourceObject, ClientSessionManager.getSession());
-      }
-      return sender;
-   }
-
-   // Only Used for Testing purposes
-   public static void internalTestSendRemoteEvent(final RemoteEvent remoteEvent) throws RemoteException {
-      getEventManager().testSendRemoteEventThroughFrameworkListener(remoteEvent);
-   }
-
-   // Only Used for Testing purposes
-   public static void internalTestProcessBranchEvent(Sender sender, BranchEvent branchEvent) {
-      getEventManager().processBranchEvent(sender, branchEvent);
-   }
-
-   // Only Used for Testing purposes
-   public static void internalTestProcessEventArtifactsAndRelations(Sender sender, ArtifactEvent artifactEvent) {
-      getEventManager().processEventArtifactsAndRelations(sender, artifactEvent);
+      return getEventListeners().size();
    }
 
    // Kick LOCAL remote-event event
    public static void kickLocalRemEvent(Object source, RemoteEventServiceEventType remoteEventServiceEventType) throws OseeCoreException {
-      if (isDisableEvents()) {
-         return;
-      }
-      if (!DbUtil.isDbInit()) {
-         getEventManager().kickLocalRemEvent(createSender(source), remoteEventServiceEventType);
-      }
+      getEventService().send(source, remoteEventServiceEventType);
    }
 
    // Kick LOCAL and REMOTE broadcast event
    public static void kickBroadcastEvent(Object source, BroadcastEvent broadcastEvent) throws OseeCoreException {
-      if (isDisableEvents()) {
-         return;
-      }
-      getEventManager().kickBroadcastEvent(createSender(source), broadcastEvent);
+      getEventService().send(source, broadcastEvent);
    }
 
    //Kick LOCAL and REMOTE branch events
    public static void kickBranchEvent(Object source, BranchEvent branchEvent, int branchId) throws OseeCoreException {
-      EventUtil.eventLog("OEM: kickBranchEvent: type: " + branchEvent.getEventType() + " guid: " + branchEvent.getBranchGuid() + " - " + source);
-      if (isDisableEvents()) {
-         return;
-      }
-
-      Sender sender = createSender(source);
-      if (testBranchEventListener != null) {
-         testBranchEventListener.handleBranchEvent(sender, branchEvent);
-      }
-      branchEvent.setNetworkSender(sender.getNetworkSender());
-      getEventManager().kickBranchEvent(sender, branchEvent);
+      getEventService().send(source, branchEvent);
    }
 
    // Kick LOCAL and REMOTE access control events
-   public static void kickAccessControlArtifactsEvent(Object source, AccessControlEvent accessControlEvent) throws OseeAuthenticationRequiredException {
-      if (isDisableEvents()) {
-         return;
-      }
-      Sender sender = createSender(source);
-      accessControlEvent.setNetworkSender(sender.getNetworkSender());
-      getEventManager().kickAccessControlArtifactsEvent(sender, accessControlEvent);
+   public static void kickAccessControlArtifactsEvent(Object source, AccessControlEvent accessControlEvent) throws OseeCoreException {
+      getEventService().send(source, accessControlEvent);
    }
 
    // Kick LOCAL and REMOTE transaction deleted event
    public static void kickTransactionEvent(Object source, final TransactionEvent transactionEvent) throws OseeCoreException {
-      if (isDisableEvents()) {
-         return;
-      }
-      Sender sender = createSender(source);
-      transactionEvent.setNetworkSender(sender.getNetworkSender());
-      getEventManager().kickTransactionEvent(sender, transactionEvent);
+      getEventService().send(source, transactionEvent);
    }
 
    // Kick LOCAL and REMOTE transaction event
-   public static void kickPersistEvent(Object source, ArtifactEvent artifactEvent) throws OseeAuthenticationRequiredException {
-      if (isDisableEvents()) {
-         return;
-      }
-      Sender sender = createSender(source);
-      artifactEvent.setNetworkSender(sender.getNetworkSender());
-      getEventManager().kickArtifactEvent(sender, artifactEvent);
+   public static void kickPersistEvent(Object source, ArtifactEvent artifactEvent) throws OseeCoreException {
+      getEventService().send(source, artifactEvent);
    }
 
    // Kick LOCAL transaction event
@@ -212,9 +139,10 @@ public class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
-      ArtifactEvent artifactEvent = new ArtifactEvent(artifacts.iterator().next().getBranch());
+      ArtifactEvent artifactEvent =
+         new ArtifactEvent(artifacts.iterator().next().getBranch(), ArtifactEventType.RELOAD_ARTIFACTS);
       artifactEvent.getArtifacts().addAll(EventBasicGuidArtifact.get(EventModType.Reloaded, artifacts));
-      getEventManager().kickLocalArtifactReloadEvent(createSender(source), artifactEvent);
+      getEventService().send(source, artifactEvent);
    }
 
    public static boolean isDisableEvents() {
@@ -228,10 +156,9 @@ public class OseeEventManager {
 
    // Return report showing all listeners registered
    public static String getListenerReport() {
-      String toReturn;
+      String toReturn = null;
       if (OseeEventManager.isEventManagerConnected()) {
-         toReturn =
-            EventUtil.getListenerReport(eventManagerData.getListeners(), eventManagerData.getPriorityListeners());
+         toReturn = getEventListeners().toString();
       } else {
          toReturn = "Event system is NOT active";
       }
@@ -249,38 +176,20 @@ public class OseeEventManager {
       return null;
    }
 
-   public static List<IEventFilter> getCommonBranchEventFilters() {
-      try {
-         if (commonBranchEventFilter == null) {
-            commonBranchEventFilter = new ArrayList<IEventFilter>(2);
-            commonBranchEventFilter.add(getCommonBranchFilter());
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      return commonBranchEventFilter;
+   /////////////////////////////////// LEGACY TEST API ////////////////////////////////////////////
+   // Only Used for Testing purposes
+   public static void internalTestSendRemoteEvent(final RemoteEvent remoteEvent) throws OseeCoreException {
+      getEventService().receive(remoteEvent);
    }
 
-   public static BranchGuidEventFilter getCommonBranchFilter() {
-      if (commonBranchGuidEvenFilter == null) {
-         commonBranchGuidEvenFilter = new BranchGuidEventFilter(CoreBranches.COMMON);
-      }
-      return commonBranchGuidEvenFilter;
+   // Only Used for Testing purposes
+   public static void internalTestProcessBranchEvent(Sender sender, BranchEvent branchEvent) throws OseeCoreException {
+      getEventService().receive(sender, branchEvent);
    }
 
-   // Registration for branch events; for test only
-   public static void registerBranchEventListenerForTest(IBranchEventListener branchEventListener) {
-      if (!OseeProperties.isInTest()) {
-         throw new IllegalStateException("Invalid registration for production");
-      }
-      testBranchEventListener = branchEventListener;
-   }
-
-   public static void removeBranchEventListenerForTest() {
-      if (!OseeProperties.isInTest()) {
-         throw new IllegalStateException("Invalid registration for production");
-      }
-      testBranchEventListener = null;
+   // Only Used for Testing purposes
+   public static void internalTestProcessEventArtifactsAndRelations(Sender sender, ArtifactEvent artifactEvent) throws OseeCoreException {
+      getEventService().receive(sender, artifactEvent);
    }
 
 }

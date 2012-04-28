@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventService;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.DemoActionableItems;
@@ -36,11 +37,31 @@ import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsBranchAccessManagerTest {
+
+   private static <T> T getService(Class<T> clazz) {
+      Bundle bundle = FrameworkUtil.getBundle(AtsBranchAccessManager.class);
+      Assert.assertNotNull(bundle);
+      BundleContext context = bundle.getBundleContext();
+      Assert.assertNotNull(context);
+      ServiceReference<T> reference = context.getServiceReference(clazz);
+      Assert.assertNotNull(reference);
+      T service = context.getService(reference);
+      Assert.assertNotNull(service);
+      return service;
+   }
+
+   public static OseeEventService getEventService() {
+      return getService(OseeEventService.class);
+   }
 
    /**
     * Test method for {@link org.eclipse.osee.ats.access.AtsBranchAccessManager#AtsBranchAccessManager()}.
@@ -48,7 +69,7 @@ public class AtsBranchAccessManagerTest {
    @Test
    public void testAtsBranchAccessManager() {
       int numListeners = OseeEventManager.getNumberOfListeners();
-      new AtsBranchAccessManager();
+      new AtsBranchAccessManager(getEventService());
       Assert.assertEquals(numListeners + 1, OseeEventManager.getNumberOfListeners());
    }
 
@@ -57,7 +78,7 @@ public class AtsBranchAccessManagerTest {
     */
    @Test
    public void testDispose() {
-      AtsBranchAccessManager mgr = new AtsBranchAccessManager();
+      AtsBranchAccessManager mgr = new AtsBranchAccessManager(getEventService());
       int numListeners = OseeEventManager.getNumberOfListeners();
       mgr.dispose();
       Assert.assertEquals(numListeners - 1, OseeEventManager.getNumberOfListeners());
@@ -71,7 +92,7 @@ public class AtsBranchAccessManagerTest {
     */
    @Test
    public void testIsApplicable() throws OseeCoreException {
-      AtsBranchAccessManager mgr = new AtsBranchAccessManager();
+      AtsBranchAccessManager mgr = new AtsBranchAccessManager(getEventService());
       Assert.assertFalse(mgr.isApplicable(AtsUtil.getAtsBranch()));
       Assert.assertFalse(mgr.isApplicable(DemoSawBuilds.SAW_Bld_1));
 
@@ -90,7 +111,8 @@ public class AtsBranchAccessManagerTest {
    public void cleanup() throws OseeCoreException {
       TeamWorkFlowArtifact teamArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "testGetContextIdArtifact cleanup");
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "testGetContextIdArtifact cleanup");
       teamArt.getTeamDefinition().deleteAttributes(CoreAttributeTypes.AccessContextId);
       teamArt.getTeamDefinition().persist(transaction);
       for (Artifact art : teamArt.getTeamDefinition().getRelatedArtifacts(
@@ -113,7 +135,7 @@ public class AtsBranchAccessManagerTest {
     */
    @Test
    public void testGetContextIdBranch() throws OseeCoreException {
-      AtsBranchAccessManager mgr = new AtsBranchAccessManager();
+      AtsBranchAccessManager mgr = new AtsBranchAccessManager(getEventService());
       TeamWorkFlowArtifact teamArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
 
@@ -171,7 +193,7 @@ public class AtsBranchAccessManagerTest {
     */
    @Test
    public void testConvertAccessAttributeToGuid() throws OseeCoreException {
-      AtsBranchAccessManager mgr = new AtsBranchAccessManager();
+      AtsBranchAccessManager mgr = new AtsBranchAccessManager(getEventService());
       TeamWorkFlowArtifact teamArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
 

@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
@@ -64,7 +65,8 @@ public class BranchEventFiltersTest {
       resultSender = null;
 
       // Send dummy event
-      Sender sender = new Sender(new NetworkSender(this, GUID.create(), "PC", "12345", "123.234.345.456", 34, "1.0.0"));
+      Sender sender =
+         Sender.createSender(new NetworkSender(this, GUID.create(), "PC", "12345", "123.234.345.456", 34, "1.0.0"));
       processBranchEvent(sender, testBranchEvent);
 
       // Test that event did come through
@@ -104,7 +106,7 @@ public class BranchEventFiltersTest {
       TestUtil.severeLoggingEnd(monitorLog);
    }
 
-   private static void processBranchEvent(Sender sender, BranchEvent branchEvent) {
+   private static void processBranchEvent(Sender sender, BranchEvent branchEvent) throws OseeCoreException {
       OseeEventManager.internalTestProcessBranchEvent(sender, branchEvent);
    }
 

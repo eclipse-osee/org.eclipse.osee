@@ -41,9 +41,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.EventUtil;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventService;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 import org.eclipse.osee.framework.skynet.core.event.listener.IAccessControlEventListener;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
@@ -67,23 +69,28 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
    // Cache to store artifact guid to context id list so don't have to re-compute
    private final Map<String, Collection<IAccessContextId>> branchGuidToContextIdCache =
       new HashMap<String, Collection<IAccessContextId>>(50);
-   long cacheUpdated = 0;
-   private static List<Long> atsConfigArtifactTypes = Arrays.asList(AtsArtifactTypes.ActionableItem.getGuid(),
+
+   private static final List<Long> atsConfigArtifactTypes = Arrays.asList(AtsArtifactTypes.ActionableItem.getGuid(),
       AtsArtifactTypes.TeamDefinition.getGuid());
 
    private final RoleContextProvider roleContextProvider;
+   private volatile long cacheUpdated = 0;
 
-   public AtsBranchAccessManager() {
-      this(null);
+   private final OseeEventService eventService;
+
+   public AtsBranchAccessManager(OseeEventService eventService) {
+      this(eventService, null);
+
    }
 
-   public AtsBranchAccessManager(RoleContextProvider roleContextProvider) {
-      OseeEventManager.addListener(this);
+   public AtsBranchAccessManager(OseeEventService eventService, RoleContextProvider roleContextProvider) {
+      this.eventService = eventService;
       this.roleContextProvider = roleContextProvider;
+      eventService.addListener(EventQosType.NORMAL, this);
    }
 
    public void dispose() {
-      OseeEventManager.removeListener(this);
+      eventService.removeListener(EventQosType.NORMAL, this);
    }
 
    private Artifact getAssociatedArtifact(IOseeBranch branch) throws OseeCoreException {
@@ -152,7 +159,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
     * TODO Convert to protected once .test package is removed from ats.test bundle and tests have visibility of this
     * method without making public.
     */
-   public Collection<IAccessContextId> internalGetFromWorkflow(TeamWorkFlowArtifact teamArt) {
+   public static Collection<IAccessContextId> internalGetFromWorkflow(TeamWorkFlowArtifact teamArt) {
       Set<IAccessContextId> contextIds = new HashSet<IAccessContextId>();
       try {
          contextIds.addAll(getFromArtifact(teamArt));
@@ -177,7 +184,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
    /**
     * Recursively check artifact and all default hierarchy parents
     */
-   private Collection<IAccessContextId> getFromArtifact(Artifact artifact) {
+   private static Collection<IAccessContextId> getFromArtifact(Artifact artifact) {
       Set<IAccessContextId> contextIds = new HashSet<IAccessContextId>();
       try {
          for (String guid : artifact.getAttributesToStringList(CoreAttributeTypes.AccessContextId)) {
@@ -199,7 +206,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
     * ATS "Access Context Id" attribute value can be stored as "guid" or "guid,name" for easy reading. This method
     * strips ,name out so only guid is returned.
     */
-   private String convertAccessAttributeToGuid(String value) {
+   private static String convertAccessAttributeToGuid(String value) {
       return value.split(",")[0];
    }
 
@@ -212,14 +219,14 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
       return getAtsObjectEventFilters();
    }
 
-   private static List<IEventFilter> atsObjectEventFilter = new ArrayList<IEventFilter>(2);
-   private static ArtifactTypeEventFilter atsArtifactTypesFilter = new ArtifactTypeEventFilter(
+   private static final List<IEventFilter> atsObjectEventFilter = new ArrayList<IEventFilter>(2);
+   private static final ArtifactTypeEventFilter atsArtifactTypesFilter = new ArtifactTypeEventFilter(
       AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.TeamDefinition, AtsArtifactTypes.ActionableItem);
 
    private synchronized static List<IEventFilter> getAtsObjectEventFilters() {
       try {
          if (atsObjectEventFilter.isEmpty()) {
-            atsObjectEventFilter.add(OseeEventManager.getCommonBranchFilter());
+            atsObjectEventFilter.add(EventUtil.getCommonBranchFilter());
             atsObjectEventFilter.add(atsArtifactTypesFilter);
          }
       } catch (Exception ex) {
@@ -264,4 +271,5 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
          }
       }
    }
+
 }

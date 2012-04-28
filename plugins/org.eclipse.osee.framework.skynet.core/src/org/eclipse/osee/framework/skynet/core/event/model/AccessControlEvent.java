@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
 
-public class AccessControlEvent extends FrameworkEvent {
+public class AccessControlEvent implements FrameworkEvent, HasNetworkSender, HasEventType<AccessControlEventType> {
 
    private AccessControlEventType eventType;
    private List<DefaultBasicGuidArtifact> artifacts;
@@ -49,6 +49,7 @@ public class AccessControlEvent extends FrameworkEvent {
     * 
     * @return possible object is {@link NetworkSender }
     */
+   @Override
    public NetworkSender getNetworkSender() {
       return networkSender;
    }
@@ -58,10 +59,12 @@ public class AccessControlEvent extends FrameworkEvent {
     * 
     * @param value allowed object is {@link NetworkSender }
     */
+   @Override
    public void setNetworkSender(NetworkSender value) {
       this.networkSender = value;
    }
 
+   @Override
    public AccessControlEventType getEventType() {
       return eventType;
    }

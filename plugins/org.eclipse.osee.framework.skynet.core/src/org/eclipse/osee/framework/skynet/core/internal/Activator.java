@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.internal;
 
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.skynet.core.event.EventSystemPreferences;
+import org.eclipse.osee.framework.skynet.core.internal.event.EventListenerRegistry;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -20,21 +22,25 @@ import org.osgi.framework.BundleContext;
 public class Activator implements BundleActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.skynet.core";
 
-   private static Activator instance;
+   // To Resolve Initialization issues causes by static OseeEventManager
+   private static final EventSystemPreferences preferences = new EventSystemPreferences();
+   private static final EventListenerRegistry eventListeners = new EventListenerRegistry();
 
    @Override
    public void start(BundleContext context) throws Exception {
-      instance = this;
       ClientSessionManager.class.getCanonicalName();
    }
 
    @Override
    public void stop(BundleContext context) throws Exception {
-      instance = null;
+      //
    }
 
-   public static Activator getInstance() {
-      return instance;
+   public static EventSystemPreferences getEventPreferences() {
+      return preferences;
    }
 
+   public static EventListenerRegistry getEventListeners() {
+      return eventListeners;
+   }
 }

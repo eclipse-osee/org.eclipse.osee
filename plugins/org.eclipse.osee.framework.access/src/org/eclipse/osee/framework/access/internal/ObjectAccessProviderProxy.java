@@ -13,47 +13,89 @@ package org.eclipse.osee.framework.access.internal;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.access.IAccessProvider;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessData;
+import org.eclipse.osee.framework.core.model.access.AccessDetail;
+import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.core.services.IAccessControlService;
-import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 public final class ObjectAccessProviderProxy implements IAccessProvider {
 
-   private IAccessProvider accessProvider;
-   private IAccessControlService accessControlService;
+   private BundleContext bundleContext;
 
-   public void setAccessControlService(IAccessControlService accessControlService) {
-      this.accessControlService = accessControlService;
-   }
-
-   public void start() {
-      if (accessControlService instanceof AccessControlServiceProxy) {
-         AccessControlServiceProxy proxy = (AccessControlServiceProxy) accessControlService;
-         accessProvider = new ObjectAccessProvider(proxy.getProxiedObject());
-      } else {
-         OseeLog.log(AccessControlHelper.class, Level.SEVERE, "Error initializing ObjectAccessProvider");
-      }
+   public void start(BundleContext bundleContext) {
+      this.bundleContext = bundleContext;
    }
 
    public void stop() {
-      accessProvider = null;
+      bundleContext = null;
    }
 
-   public IAccessProvider getAccessProvider() {
-      return accessProvider;
-   }
+   private AccessControlService getAccessService() {
+      AccessControlService toReturn = null;
 
-   private void checkInitialized() throws OseeCoreException {
-      Conditions.checkNotNull(getAccessProvider(), "object access provider",
-         "Object Access Provider not properly initialized");
+      ServiceReference<IAccessControlService> reference =
+         bundleContext.getServiceReference(IAccessControlService.class);
+      IAccessControlService service = bundleContext.getService(reference);
+      if (service instanceof AccessControlServiceProxy) {
+         AccessControlServiceProxy proxy = (AccessControlServiceProxy) service;
+         toReturn = proxy.getProxiedObject();
+      } else {
+         OseeLog.log(AccessControlHelper.class, Level.SEVERE, "Error initializing ObjectAccessProvider");
+      }
+      return toReturn;
    }
 
    @Override
    public void computeAccess(IBasicArtifact<?> userArtifact, Collection<?> objToCheck, AccessData accessData) throws OseeCoreException {
-      checkInitialized();
-      getAccessProvider().computeAccess(userArtifact, objToCheck, accessData);
+      for (Object object : objToCheck) {
+         if (object instanceof Artifact) {
+            setArtifactAccessData(userArtifact, (Artifact) object, accessData);
+         } else if (object instanceof Branch) {
+            setBranchAccessData(userArtifact, (Branch) object, accessData);
+         } else if (object instanceof RelationLink) {
+            RelationLink relation = (RelationLink) object;
+            Artifact artifactA = relation.getArtifactA();
+            Artifact artifactB = relation.getArtifactB();
+            setArtifactAccessData(userArtifact, artifactA, accessData);
+            setArtifactAccessData(userArtifact, artifactB, accessData);
+         }
+      }
    }
+
+   private void setArtifactAccessData(IBasicArtifact<?> userArtifact, Artifact artifact, AccessData accessData) throws OseeCoreException {
+      setBranchAccessData(userArtifact, artifact.getBranch(), accessData);
+      String reason = "Legacy Artifact Permission";
+      PermissionEnum userPermission = getAccessService().getArtifactPermission(userArtifact, artifact);
+
+      if (userPermission == null) {
+         reason = "User Permission was null in setArtifactAccessData  - artifact is read only";
+         userPermission = PermissionEnum.READ;
+      } else if (artifact.isHistorical()) {
+         userPermission = PermissionEnum.READ;
+         reason = "User Permission set to Read - artifact is historical  - artifact is read only";
+      } else if (!artifact.getFullBranch().isEditable()) {
+         userPermission = PermissionEnum.READ;
+         reason = "User Permission set to Read - artifact's branch is not editable - artifact is read only";
+      }
+      //artifact.isDeleted()
+      accessData.add(artifact,
+         new AccessDetail<IBasicArtifact<Artifact>>(artifact, userPermission, Scope.createLegacyScope(), reason));
+   }
+
+   private void setBranchAccessData(IBasicArtifact<?> userArtifact, IOseeBranch branch, AccessData accessData) throws OseeCoreException {
+      String reason = "Legacy Branch Permission";
+      PermissionEnum userPermission = getAccessService().getBranchPermission(userArtifact, branch);
+      accessData.add(branch, new AccessDetail<IOseeBranch>(branch, userPermission, Scope.createLegacyScope(), reason));
+   }
+
 }

@@ -23,16 +23,19 @@ import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventService;
+import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 
 public final class AccessControlServiceProxy implements IAccessControlService {
 
    private IOseeDatabaseService dbService;
    private IOseeCachingService cachingService;
    private IdentityService identityService;
+   private OseeEventService eventService;
 
    private AccessControlService accessService;
    private AccessEventListener accessEventListener;
+   private Thread thread;
 
    public void setDbService(IOseeDatabaseService dbService) {
       this.dbService = dbService;
@@ -44,6 +47,10 @@ public final class AccessControlServiceProxy implements IAccessControlService {
 
    public void setIdentityService(IdentityService identityService) {
       this.identityService = identityService;
+   }
+
+   public void setEventService(OseeEventService eventService) {
+      this.eventService = eventService;
    }
 
    public AccessControlService getProxiedObject() {
@@ -59,23 +66,41 @@ public final class AccessControlServiceProxy implements IAccessControlService {
    }
 
    public void start() {
-      accessService = new AccessControlService(dbService, cachingService, identityService);
+      accessService = new AccessControlService(dbService, cachingService, identityService, eventService);
 
       accessEventListener = new AccessEventListener(accessService, new AccessControlCacheHandler());
-      OseeEventManager.addPriorityListener(accessEventListener);
+      eventService.addListener(EventQosType.PRIORITY, accessEventListener);
+
+      Runnable runnable = new Runnable() {
+         @Override
+         public void run() {
+            accessService.start();
+         }
+      };
+
+      thread = new Thread(runnable);
+      thread.start();
    }
 
    public void stop() {
+      if (thread != null) {
+         thread.interrupt();
+         thread = null;
+      }
+
       if (accessEventListener != null) {
-         OseeEventManager.removeListener(accessEventListener);
+         eventService.removeListener(EventQosType.PRIORITY, accessEventListener);
          accessEventListener = null;
       }
-      accessService = null;
+
+      if (accessService != null) {
+         accessService.stop();
+         accessService = null;
+      }
    }
 
    private void checkInitialized() throws OseeCoreException {
       Conditions.checkNotNull(accessService, "accessService", "Access Service not properly initialized");
-      Conditions.checkNotNull(accessEventListener, "accessEventListener", "Access Service not properly initialized");
    }
 
    @Override

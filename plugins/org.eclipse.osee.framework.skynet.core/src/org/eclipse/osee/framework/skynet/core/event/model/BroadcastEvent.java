@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 /**
  * @author Donald G. Dunne
  */
-public class BroadcastEvent extends FrameworkEvent {
+public class BroadcastEvent implements FrameworkEvent, HasNetworkSender {
 
    BroadcastEventType broadcastEventType;
    Collection<User> users;
@@ -59,10 +59,12 @@ public class BroadcastEvent extends FrameworkEvent {
       this.users.add(user);
    }
 
+   @Override
    public NetworkSender getNetworkSender() {
       return networkSender;
    }
 
+   @Override
    public void setNetworkSender(NetworkSender networkSender) {
       this.networkSender = networkSender;
    }

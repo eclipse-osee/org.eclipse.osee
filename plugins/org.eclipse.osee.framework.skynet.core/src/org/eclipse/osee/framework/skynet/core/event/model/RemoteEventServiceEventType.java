@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.event.model;
 /**
  * @author Donald G. Dunne
  */
-public enum RemoteEventServiceEventType {
+public enum RemoteEventServiceEventType implements FrameworkEvent {
    Rem_Connected(EventType.LocalOnly),
    Rem_DisConnected(EventType.LocalOnly);
 

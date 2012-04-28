@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.event.systems;
+package org.eclipse.osee.framework.skynet.core.internal.event;
 
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -17,28 +17,27 @@ import org.eclipse.osee.framework.messaging.ConnectionListener;
 import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.skynet.core.event.EventSystemPreferences;
 import org.eclipse.osee.framework.skynet.core.event.EventUtil;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.RemoteEventServiceEventType;
-import org.eclipse.osee.framework.skynet.core.event.systems.InternalEventManager.ConnectionStatus;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Donald G. Dunne
  */
-public final class ResMessagingConnectionListener implements ConnectionListener, ConnectionStatus {
+public final class ConnectionListenerImpl implements ConnectionListener {
 
    private final EventSystemPreferences preferences;
-   private boolean connectionStatus;
+   private final Transport transport;
 
-   public ResMessagingConnectionListener(EventSystemPreferences preferences) {
+   public ConnectionListenerImpl(EventSystemPreferences preferences, Transport transport) {
       this.preferences = preferences;
+      this.transport = transport;
    }
 
    @Override
    public void connected(ConnectionNode node) {
-      connectionStatus = preferences.isOseeEventBrokerValid();
+      transport.setConnected(preferences.isOseeEventBrokerValid());
       try {
-         OseeEventManager.kickLocalRemEvent(this, RemoteEventServiceEventType.Rem_Connected);
+         transport.send(this, RemoteEventServiceEventType.Rem_Connected);
          OseeLog.log(Activator.class, Level.INFO, "Remote Event Service - Connected");
       } catch (OseeCoreException ex) {
          EventUtil.eventLog("REM: ResConnectionListener", ex);
@@ -47,17 +46,13 @@ public final class ResMessagingConnectionListener implements ConnectionListener,
 
    @Override
    public void notConnected(ConnectionNode node) {
-      connectionStatus = false;
+      transport.setConnected(false);
       try {
-         OseeEventManager.kickLocalRemEvent(this, RemoteEventServiceEventType.Rem_DisConnected);
+         transport.send(this, RemoteEventServiceEventType.Rem_DisConnected);
          OseeLog.log(Activator.class, Level.INFO, "Remote Event Service - Dis-Connected");
       } catch (OseeCoreException ex) {
          EventUtil.eventLog("REM: ResConnectionListener", ex);
       }
    }
 
-   @Override
-   public boolean isConnected() {
-      return connectionStatus;
-   }
 }

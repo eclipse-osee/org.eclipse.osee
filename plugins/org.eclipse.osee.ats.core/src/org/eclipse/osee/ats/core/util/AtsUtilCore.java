@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
@@ -139,7 +139,7 @@ public class AtsUtilCore {
    public synchronized static List<IEventFilter> getAtsObjectEventFilters() {
       try {
          if (atsObjectEventFilter.isEmpty()) {
-            atsObjectEventFilter.add(OseeEventManager.getCommonBranchFilter());
+            atsObjectEventFilter.add(EventUtil.getCommonBranchFilter());
             atsObjectEventFilter.add(getAtsObjectArtifactTypeEventFilter());
          }
       } catch (Exception ex) {

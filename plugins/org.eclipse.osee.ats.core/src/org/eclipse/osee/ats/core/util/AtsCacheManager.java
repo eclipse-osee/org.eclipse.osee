@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
@@ -181,6 +182,6 @@ public class AtsCacheManager implements IArtifactEventListener {
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
-      return Arrays.asList(OseeEventManager.getCommonBranchFilter());
+      return Arrays.asList(EventUtil.getCommonBranchFilter());
    }
 }

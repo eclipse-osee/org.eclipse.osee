@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.event.model;
 
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
 
-public class BranchEvent extends FrameworkEvent {
+public class BranchEvent implements FrameworkEvent, HasNetworkSender {
 
    private String branchGuid;
    private BranchEventType eventType;
@@ -46,6 +46,7 @@ public class BranchEvent extends FrameworkEvent {
     * 
     * @return possible object is {@link NetworkSender }
     */
+   @Override
    public NetworkSender getNetworkSender() {
       return networkSender;
    }
@@ -55,6 +56,7 @@ public class BranchEvent extends FrameworkEvent {
     * 
     * @param value allowed object is {@link NetworkSender }
     */
+   @Override
    public void setNetworkSender(NetworkSender value) {
       this.networkSender = value;
    }

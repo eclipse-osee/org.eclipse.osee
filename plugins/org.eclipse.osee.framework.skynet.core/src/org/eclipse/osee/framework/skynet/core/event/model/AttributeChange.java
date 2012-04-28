@@ -41,7 +41,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "AttributeChange", propOrder = {"attrTypeGuid", "modTypeGuid", "attributeId", "gammaId", "data"})
-public class AttributeChange extends FrameworkEvent {
+public class AttributeChange implements FrameworkEvent {
 
    @XmlElement(required = true)
    protected Long attrTypeGuid;

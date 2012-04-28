@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
@@ -295,7 +296,8 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
             "Are You Sure You Wish to Delete the Roles(s):\n\n" + builder.toString());
       if (delete) {
          try {
-            SkynetTransaction transaction = TransactionManager.createTransaction(reviewArt.getBranch(), "Delete Review Roles");
+            SkynetTransaction transaction =
+               TransactionManager.createTransaction(reviewArt.getBranch(), "Delete Review Roles");
             removeUserRoleHelper(items, transaction);
             transaction.execute();
          } catch (Exception ex) {
@@ -316,7 +318,8 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
 
    public void handleNewUserRole() {
       try {
-         SkynetTransaction transaction = TransactionManager.createTransaction(reviewArt.getArtifact().getBranch(), "Add Review Roles");
+         SkynetTransaction transaction =
+            TransactionManager.createTransaction(reviewArt.getArtifact().getBranch(), "Add Review Roles");
          roleMgr.addOrUpdateUserRole(new UserRole());
          roleMgr.saveToArtifact(transaction);
          transaction.execute();
@@ -486,7 +489,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
-      return Arrays.asList(OseeEventManager.getCommonBranchFilter(), AtsUtilCore.getReviewArtifactTypeEventFilter());
+      return Arrays.asList(EventUtil.getCommonBranchFilter(), AtsUtilCore.getReviewArtifactTypeEventFilter());
    }
 
    @Override

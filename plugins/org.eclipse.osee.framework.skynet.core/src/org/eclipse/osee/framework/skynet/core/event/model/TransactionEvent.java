@@ -15,7 +15,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
 
-public class TransactionEvent extends FrameworkEvent {
+public class TransactionEvent implements FrameworkEvent, HasNetworkSender {
 
    private TransactionEventType eventType;
    private NetworkSender networkSender;
@@ -49,6 +49,7 @@ public class TransactionEvent extends FrameworkEvent {
     * 
     * @return possible object is {@link NetworkSender }
     */
+   @Override
    public NetworkSender getNetworkSender() {
       return networkSender;
    }
@@ -58,6 +59,7 @@ public class TransactionEvent extends FrameworkEvent {
     * 
     * @param value allowed object is {@link NetworkSender }
     */
+   @Override
    public void setNetworkSender(NetworkSender value) {
       this.networkSender = value;
    }

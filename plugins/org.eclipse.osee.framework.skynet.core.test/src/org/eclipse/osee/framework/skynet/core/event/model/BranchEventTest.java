@@ -39,7 +39,9 @@ import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.httpRequests.PurgeBranchHttpRequestOperation;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 
 /**
  * @author Donald G. Dunne
@@ -51,7 +53,17 @@ public class BranchEventTest {
    private static String TOP_LEVEL_BRANCH_NAME = String.format("%s - top level branch", BRANCH_NAME_PREFIX);
    private static Branch topLevel;
 
-   private final BranchEventListener branchEventListener = new BranchEventListener();
+   private BranchEventListener branchEventListener;
+
+   @Before
+   public void setup() {
+      branchEventListener = new BranchEventListener();
+   }
+
+   @After
+   public void tearDown() {
+      branchEventListener = new BranchEventListener();
+   }
 
    @AfterClass
    public static void cleanUp() throws OseeCoreException {

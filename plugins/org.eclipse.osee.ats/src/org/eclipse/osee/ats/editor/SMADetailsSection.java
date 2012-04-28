@@ -138,7 +138,7 @@ public class SMADetailsSection extends SectionPart {
          if (workingBranch == null) {
             try {
                // get what would be if branch created
-               ids = new AtsBranchAccessManager().internalGetFromWorkflow(workflow);
+               ids = AtsBranchAccessManager.internalGetFromWorkflow(workflow);
                message = ids.toString();
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

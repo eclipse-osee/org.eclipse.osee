@@ -23,7 +23,8 @@ import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
 import org.eclipse.osee.framework.core.model.access.HasAccessModel;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventService;
+import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
 
 /**
@@ -36,9 +37,14 @@ public class AtsCmAccessControlProxy implements CmAccessControl, HasAccessModel 
    private AccessModelInterpreter accessModelInterpreter;
    private CmAccessControl cmService;
    private AccessModel accessModel;
+   private OseeEventService eventService;
 
    public void setAccessModelInterpreter(AccessModelInterpreter accessModelInterpreter) {
       this.accessModelInterpreter = accessModelInterpreter;
+   }
+
+   public void setEventService(OseeEventService eventService) {
+      this.eventService = eventService;
    }
 
    public void start() {
@@ -46,16 +52,16 @@ public class AtsCmAccessControlProxy implements CmAccessControl, HasAccessModel 
       accessModel = new OseeDslAccessModel(accessModelInterpreter, dslProvider);
       RoleContextProvider roleAccessProvider = new OseeDslRoleContextProvider(dslProvider);
 
-      atsBranchObjectManager = new AtsBranchAccessManager(roleAccessProvider);
+      atsBranchObjectManager = new AtsBranchAccessManager(eventService, roleAccessProvider);
       cmService = new AtsCmAccessControl(atsBranchObjectManager);
 
       listener = new AtsDslProviderUpdateListener(dslProvider);
-      OseeEventManager.addListener(listener);
+      eventService.addListener(EventQosType.NORMAL, listener);
    }
 
    public void stop() {
       if (listener != null) {
-         OseeEventManager.removeListener(listener);
+         eventService.removeListener(EventQosType.NORMAL, listener);
          listener = null;
       }
 

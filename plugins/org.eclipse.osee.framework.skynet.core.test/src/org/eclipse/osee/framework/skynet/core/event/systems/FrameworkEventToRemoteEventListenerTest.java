@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event.systems;
 
-import java.rmi.RemoteException;
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -66,13 +64,9 @@ public class FrameworkEventToRemoteEventListenerTest {
     * which already has a convenience method for passing in a sample RemoteEvent to the
     * FrameworkEventToRemoteEventListener. The test needed here is to verify that the Artifact.transactionId field is
     * updated by the recipient of a remote event.
-    * 
-    * @throws CoreException
-    * @throws InterruptedException
-    * @throws RemoteException
     */
    @Test
-   public void testUpdateModifiedArtifact() throws CoreException, InterruptedException, RemoteException {
+   public void testUpdateModifiedArtifact() throws Exception {
       Artifact artifact = createArtifact(branch, ARTIFACT_NAME_1);
       artifact.persist(getClass().getSimpleName());
 

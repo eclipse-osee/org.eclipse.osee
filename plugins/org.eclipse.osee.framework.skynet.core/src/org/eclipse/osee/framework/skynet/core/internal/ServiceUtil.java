@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.lifecycle.ILifecycleService;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -44,6 +45,10 @@ public final class ServiceUtil {
       T service = context.getService(reference);
       Conditions.checkNotNull(service, "service");
       return service;
+   }
+
+   public static OseeEventService getEventService() throws OseeCoreException {
+      return getService(OseeEventService.class);
    }
 
    public static IdentityService getIdentityService() throws OseeCoreException {
