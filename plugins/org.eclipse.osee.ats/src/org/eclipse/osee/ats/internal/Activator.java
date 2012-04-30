@@ -8,22 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-
 package org.eclipse.osee.ats.internal;
 
-import java.util.logging.Level;
-import org.eclipse.osee.ats.core.notify.AtsNotificationManager;
-import org.eclipse.osee.ats.core.util.AtsCacheManager;
-import org.eclipse.osee.ats.util.AtsBranchManager;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
-import org.eclipse.osee.framework.core.util.OsgiUtil;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Donald G. Dunne
@@ -31,46 +19,14 @@ import org.osgi.framework.ServiceRegistration;
 public class Activator implements BundleActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.ats";
 
-   private ServiceRegistration service2;
-
-   private volatile boolean needsInitialization = true;
-
-   private Thread thread;
-
    @Override
-   public void start(BundleContext context) throws Exception {
-      service2 = context.registerService(IOseeCmService.class.getName(), new OseeAtsServiceImpl(), null);
-
-      Runnable runnable = new Runnable() {
-         @Override
-         public void run() {
-            if (needsInitialization) {
-               needsInitialization = false;
-               AtsCacheManager.start();
-               AtsBranchManager.start();
-               try {
-                  AtsNotificationManager.start(OseeNotificationManager.getInstance(),
-                     ClientSessionManager.isProductionDataStore());
-               } catch (OseeAuthenticationRequiredException ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
-               }
-            }
-         }
-      };
-
-      thread = new Thread(runnable);
-      thread.start();
-
+   public void start(final BundleContext context) {
+      //
    }
 
    @Override
-   public void stop(BundleContext context) throws Exception {
-      if (thread != null) {
-         thread.interrupt();
-         thread = null;
-      }
-      AtsBranchManager.stop();
-      OsgiUtil.close(service2);
+   public void stop(BundleContext context) {
+      //
    }
 
 }

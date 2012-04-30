@@ -198,7 +198,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
             }
             transaction.execute();
 
-            AtsCacheManager.decacheTaskArtifacts((AbstractTaskableArtifact) iXTaskViewer.getAwa());
+            AtsCacheManager.decache((AbstractTaskableArtifact) iXTaskViewer.getAwa());
             taskXViewer.remove(items.toArray(new Object[items.size()]));
             taskArts.removeAll(items);
 
@@ -224,7 +224,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
                ((AbstractTaskableArtifact) iXTaskViewer.getAwa()).createNewTask(ed.getEntry(), new Date(),
                   UserManager.getUser());
             taskArt.persist("Create New Task");
-            AtsCacheManager.decacheTaskArtifacts((AbstractTaskableArtifact) iXTaskViewer.getAwa());
+            AtsCacheManager.decache((AbstractTaskableArtifact) iXTaskViewer.getAwa());
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }

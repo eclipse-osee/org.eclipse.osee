@@ -47,7 +47,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  * @author Roberto E. Escobar
  * @author Donald G. Dunne
  */
-public class OseeAtsServiceImpl implements IOseeCmService {
+public class AtsOseeCmService implements IOseeCmService {
 
    @Override
    public boolean isCmAdmin() {

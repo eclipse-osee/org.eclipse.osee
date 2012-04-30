@@ -56,7 +56,6 @@ public class ATSPerspective implements IPerspectiveFactory {
       final IFolderLayout right = layout.createFolder("right", IPageLayout.RIGHT, .75f, editorArea);
       final IFolderLayout bottom = layout.createFolder("bottom", IPageLayout.BOTTOM, 0.7f, editorArea);
       final IFolderLayout bottomLeft = layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.7f, "left");
-      final IFolderLayout bottomRight = layout.createFolder("bottomRight", IPageLayout.RIGHT, 0.6f, "bottom");
 
       left.addView(NavigateView.VIEW_ID);
       bottomLeft.addView(QuickSearchView.VIEW_ID);
@@ -69,7 +68,6 @@ public class ATSPerspective implements IPerspectiveFactory {
       bottom.addView(GroupExplorer.VIEW_ID);
       bottom.addView(NewSearchUI.SEARCH_VIEW_ID);
       bottom.addPlaceholder(MergeView.VIEW_ID);
-
-      bottomRight.addView(ActionWalkerView.VIEW_ID);
+      bottom.addView(ActionWalkerView.VIEW_ID);
    }
 }

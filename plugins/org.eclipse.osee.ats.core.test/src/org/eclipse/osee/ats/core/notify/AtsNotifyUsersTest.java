@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.core.AtsTestUtil;
 import org.eclipse.osee.ats.core.action.ActionManager;
+import org.eclipse.osee.ats.core.notify.AtsNotificationManager.ConfigurationProvider;
 import org.eclipse.osee.ats.core.team.TeamState;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -36,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.skynet.core.utility.INotificationManager;
 import org.eclipse.osee.framework.skynet.core.utility.OseeNotificationEvent;
 import org.eclipse.osee.support.test.util.DemoActionableItems;
 import org.eclipse.osee.support.test.util.DemoUsers;
@@ -88,11 +90,12 @@ public class AtsNotifyUsersTest {
       inactiveSteve.setEmail("inactiveSteves@boeing.com");
 
       MockNotificationManager notifyManager = new MockNotificationManager();
-      AtsNotificationManager.setNotificationManager(notifyManager);
+      MockConfigurationProvider configProvider = new MockConfigurationProvider(notifyManager, true);
+      AtsNotificationManager.setConfigurationProvider(configProvider);
       AtsNotificationManager.setInTest(false);
-      AtsNotificationManager.setIsProduction(true);
 
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       teamArt.setName(AtsNotifyUsersTest.class.getSimpleName());
       teamArt.internalSetCreatedBy(kay_ValidEmail);
@@ -152,7 +155,8 @@ public class AtsNotifyUsersTest {
 
       notifyManager.clear();
       SubscribeManager.toggleSubscribe(teamArt);
-      transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "AtsNotifyUsersTests.toggle.subscribed");
+      transaction =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "AtsNotifyUsersTests.toggle.subscribed");
       SubscribeManager.addSubscribed(teamArt, inactiveSteve, transaction);
       transaction.execute();
       AtsNotificationManager.notify(teamArt, AtsNotifyType.Subscribed);
@@ -214,11 +218,12 @@ public class AtsNotifyUsersTest {
       kay_ValidEmail.setEmail("kay@boeing.com");
 
       MockNotificationManager notifyManager = new MockNotificationManager();
-      AtsNotificationManager.setNotificationManager(notifyManager);
+      MockConfigurationProvider configProvider = new MockConfigurationProvider(notifyManager, true);
+      AtsNotificationManager.setConfigurationProvider(configProvider);
       AtsNotificationManager.setInTest(false);
-      AtsNotificationManager.setIsProduction(true);
 
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       ActionManager.createAction(null, getClass().getSimpleName() + "-OnNewAction", "Description",
          ChangeType.Improvement, "2", false, null,
          ActionableItemManagerCore.getActionableItems(Arrays.asList(DemoActionableItems.SAW_SW_Design.getName())),
@@ -232,6 +237,27 @@ public class AtsNotifyUsersTest {
       Assert.assertEquals(
          "You have been set as the assignee of [Team Workflow] in state [Endorse] titled [AtsNotifyUsersTest-OnNewAction]",
          event.getDescription());
+   }
 
+   private static final class MockConfigurationProvider implements ConfigurationProvider {
+
+      private final INotificationManager notificationManager;
+      private final boolean isProduction;
+
+      public MockConfigurationProvider(INotificationManager notificationManager, boolean isProduction) {
+         super();
+         this.notificationManager = notificationManager;
+         this.isProduction = isProduction;
+      }
+
+      @Override
+      public INotificationManager getNotificationManager() {
+         return notificationManager;
+      }
+
+      @Override
+      public boolean isProduction() {
+         return isProduction;
+      }
    }
 }

@@ -4,7 +4,6 @@ Bundle-Name: ATS Core
 Bundle-SymbolicName: org.eclipse.osee.ats.core;singleton:=true
 Bundle-Version: 0.9.9.qualifier
 Eclipse-ExtensibleAPI: true
-Bundle-Activator: org.eclipse.osee.ats.core.internal.Activator
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.google.inject,
@@ -19,6 +18,7 @@ Import-Package: com.google.inject,
  org.eclipse.osee.ats.dsl.atsDsl,
  org.eclipse.osee.ats.dsl.atsDsl.impl,
  org.eclipse.osee.framework.access,
+ org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
@@ -40,6 +40,7 @@ Import-Package: com.google.inject,
  org.eclipse.osee.framework.skynet.core.artifact.search,
  org.eclipse.osee.framework.skynet.core.attribute,
  org.eclipse.osee.framework.skynet.core.utility,
+ org.eclipse.osee.framework.ui.skynet.notify,
  org.eclipse.xtext.resource,
  org.osgi.framework
 Export-Package: org.eclipse.osee.ats.core.access,
@@ -68,3 +69,5 @@ Export-Package: org.eclipse.osee.ats.core.access,
  org.eclipse.osee.ats.core.workflow.transition
 Require-Bundle: org.eclipse.osee.framework.skynet.core
 Bundle-Vendor: Eclipse Open System Engineering Environment
+Service-Component: OSGI-INF/*.xml
+Bundle-Activator: org.eclipse.osee.ats.core.internal.Activator

@@ -14,6 +14,7 @@ import org.eclipse.osee.ats.core.AtsTestUtil;
 import org.eclipse.osee.ats.core.AtsTestUtil.AtsTestUtilState;
 import org.eclipse.osee.ats.core.action.ActionArtifact;
 import org.eclipse.osee.ats.core.action.ActionManager;
+import org.eclipse.osee.ats.core.notify.AtsNotificationManager.ConfigurationProvider;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewState;
@@ -35,6 +36,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.skynet.core.utility.INotificationManager;
 import org.eclipse.osee.support.test.util.DemoUsers;
 import org.junit.AfterClass;
 
@@ -53,7 +55,6 @@ public class AtsNotificationManagerTest {
       user.persist(AtsNotificationManagerTest.class.getSimpleName());
 
       AtsNotificationManager.setInTest(true);
-      AtsNotificationManager.setIsProduction(false);
       AtsTestUtil.cleanup();
    }
 
@@ -67,7 +68,8 @@ public class AtsNotificationManagerTest {
       // create a test notification manager
       MockNotificationManager mgr = new MockNotificationManager();
       // restart notification manager with this one and set to NotInTest (cause normally, testing has notification system OFF)
-      AtsNotificationManager.start(mgr, true);
+      MockConfigurationProvider configProvider = new MockConfigurationProvider(mgr, true);
+      AtsNotificationManager.setConfigurationProvider(configProvider);
       AtsNotificationManager.setInTest(false);
       // create new action which should reset originator cache in notification manager
       AtsTestUtil.cleanupAndReset(AtsNotificationManagerTest.class.getSimpleName());
@@ -150,10 +152,11 @@ public class AtsNotificationManagerTest {
 
       // create a test notification manager
       MockNotificationManager mgr = new MockNotificationManager();
+
       // restart notification manager with this one and set to NotInTest (cause normally, testing has notification system OFF)
-      AtsNotificationManager.setNotificationManager(mgr);
+      MockConfigurationProvider configProvider = new MockConfigurationProvider(mgr, true);
+      AtsNotificationManager.setConfigurationProvider(configProvider);
       AtsNotificationManager.setInTest(false);
-      AtsNotificationManager.setIsProduction(true);
 
       // create new action 
       AtsTestUtil.cleanupAndReset(AtsNotificationManagerTest.class.getSimpleName());
@@ -200,9 +203,9 @@ public class AtsNotificationManagerTest {
       // create a test notification manager
       MockNotificationManager mgr = new MockNotificationManager();
       // restart notification manager with this one and set to NotInTest (cause normally, testing has notification system OFF)
-      AtsNotificationManager.setNotificationManager(mgr);
+      MockConfigurationProvider configProvider = new MockConfigurationProvider(mgr, true);
+      AtsNotificationManager.setConfigurationProvider(configProvider);
       AtsNotificationManager.setInTest(false);
-      AtsNotificationManager.setIsProduction(true);
 
       // create new action 
       AtsTestUtil.cleanupAndReset(AtsNotificationManagerTest.class.getSimpleName());
@@ -258,9 +261,9 @@ public class AtsNotificationManagerTest {
       // create a test notification manager
       MockNotificationManager mgr = new MockNotificationManager();
       // restart notification manager with this one and set to NotInTest (cause normally, testing has notification system OFF)
-      AtsNotificationManager.setNotificationManager(mgr);
+      MockConfigurationProvider configProvider = new MockConfigurationProvider(mgr, true);
+      AtsNotificationManager.setConfigurationProvider(configProvider);
       AtsNotificationManager.setInTest(false);
-      AtsNotificationManager.setIsProduction(true);
 
       // create new action 
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
@@ -278,7 +281,8 @@ public class AtsNotificationManagerTest {
 
       // verify no notification events yet
       Assert.assertEquals(0, mgr.getNotificationEvents().size());
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       Result result =
          AtsTestUtil.transitionTo(AtsTestUtilState.Completed, UserManager.getUser(), transaction,
             TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
@@ -299,9 +303,9 @@ public class AtsNotificationManagerTest {
       // create a test notification manager
       MockNotificationManager mgr = new MockNotificationManager();
       // restart notification manager with this one and set to NotInTest (cause normally, testing has notification system OFF)
-      AtsNotificationManager.setNotificationManager(mgr);
+      MockConfigurationProvider configProvider = new MockConfigurationProvider(mgr, true);
+      AtsNotificationManager.setConfigurationProvider(configProvider);
       AtsNotificationManager.setInTest(false);
-      AtsNotificationManager.setIsProduction(true);
 
       // create new action 
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
@@ -319,7 +323,8 @@ public class AtsNotificationManagerTest {
 
       // verify no notification events yet
       Assert.assertEquals(0, mgr.getNotificationEvents().size());
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       Result result =
          AtsTestUtil.transitionTo(AtsTestUtilState.Cancelled, UserManager.getUser(), transaction,
             TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
@@ -341,9 +346,9 @@ public class AtsNotificationManagerTest {
       // create a test notification manager
       MockNotificationManager mgr = new MockNotificationManager();
       // restart notification manager with this one and set to NotInTest (cause normally, testing has notification system OFF)
-      AtsNotificationManager.setNotificationManager(mgr);
+      MockConfigurationProvider configProvider = new MockConfigurationProvider(mgr, true);
+      AtsNotificationManager.setConfigurationProvider(configProvider);
       AtsNotificationManager.setInTest(false);
-      AtsNotificationManager.setIsProduction(true);
 
       // create new action 
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
@@ -359,7 +364,8 @@ public class AtsNotificationManagerTest {
       mgr.clear();
 
       // create another action
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       ActionArtifact actionArt =
          ActionManager.createAction(null, getClass().getSimpleName() + " - testSubscribedTeam", "description",
             ChangeType.Improvement, "1", false, null, Arrays.asList(AtsTestUtil.getTestAi()), new Date(),
@@ -372,7 +378,8 @@ public class AtsNotificationManagerTest {
 
       transaction.execute();
 
-      SkynetTransaction transaction2 = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction2 =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
 
       actionArt.getTeams().iterator().next().deleteAndPersist(transaction2);
       actionArt.deleteAndPersist(transaction2);
@@ -393,9 +400,9 @@ public class AtsNotificationManagerTest {
       // create a test notification manager
       MockNotificationManager mgr = new MockNotificationManager();
       // restart notification manager with this one and set to NotInTest (cause normally, testing has notification system OFF)
-      AtsNotificationManager.setNotificationManager(mgr);
+      MockConfigurationProvider configProvider = new MockConfigurationProvider(mgr, true);
+      AtsNotificationManager.setConfigurationProvider(configProvider);
       AtsNotificationManager.setInTest(false);
-      AtsNotificationManager.setIsProduction(true);
 
       // create new action 
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
@@ -411,7 +418,8 @@ public class AtsNotificationManagerTest {
       mgr.clear();
 
       // create another action
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       ActionArtifact actionArt =
          ActionManager.createAction(null, getClass().getSimpleName() + " - testSubscribedAI", "description",
             ChangeType.Improvement, "1", false, null, Arrays.asList(AtsTestUtil.getTestAi()), new Date(),
@@ -424,7 +432,8 @@ public class AtsNotificationManagerTest {
 
       transaction.execute();
 
-      SkynetTransaction transaction2 = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction2 =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
 
       actionArt.getTeams().iterator().next().deleteAndPersist(transaction2);
       actionArt.deleteAndPersist(transaction2);
@@ -445,9 +454,9 @@ public class AtsNotificationManagerTest {
       // create a test notification manager
       MockNotificationManager mgr = new MockNotificationManager();
       // restart notification manager with this one and set to NotInTest (cause normally, testing has notification system OFF)
-      AtsNotificationManager.setNotificationManager(mgr);
+      MockConfigurationProvider configProvider = new MockConfigurationProvider(mgr, true);
+      AtsNotificationManager.setConfigurationProvider(configProvider);
       AtsNotificationManager.setInTest(false);
-      AtsNotificationManager.setIsProduction(true);
 
       // create new action 
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
@@ -464,7 +473,8 @@ public class AtsNotificationManagerTest {
 
       mgr.clear();
 
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       Result result =
          AtsTestUtil.transitionTo(AtsTestUtilState.Implement, UserManager.getUser(), transaction,
             TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
@@ -485,10 +495,11 @@ public class AtsNotificationManagerTest {
 
       // create a test notification manager
       MockNotificationManager mgr = new MockNotificationManager();
+
       // restart notification manager with this one and set to NotInTest (cause normally, testing has notification system OFF)
-      AtsNotificationManager.setNotificationManager(mgr);
+      MockConfigurationProvider configProvider = new MockConfigurationProvider(mgr, true);
+      AtsNotificationManager.setConfigurationProvider(configProvider);
       AtsNotificationManager.setInTest(false);
-      AtsNotificationManager.setIsProduction(true);
 
       // create new action 
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
@@ -502,7 +513,8 @@ public class AtsNotificationManagerTest {
       kay.setSoleAttributeValue(CoreAttributeTypes.Email, "kay.jones@boeing.com");
       kay.persist(getClass().getSimpleName() + "- set kay email address");
 
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       PeerToPeerReviewArtifact peerArt =
          AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.None, AtsTestUtilState.Analyze, transaction);
       List<UserRole> roles = new ArrayList<UserRole>();
@@ -525,7 +537,8 @@ public class AtsNotificationManagerTest {
 
       // complete reviewer1 role
       transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName() + " - update reviewer 1");
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
+            getClass().getSimpleName() + " - update reviewer 1");
       UserRoleManager roleMgr = new UserRoleManager(peerArt);
       reviewer1.setHoursSpent(1.0);
       reviewer1.setCompleted(true);
@@ -538,7 +551,8 @@ public class AtsNotificationManagerTest {
 
       // complete reviewer2 role
       transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName() + " - update reviewer 2");
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
+            getClass().getSimpleName() + " - update reviewer 2");
       reviewer2.setHoursSpent(1.0);
       reviewer2.setCompleted(true);
       roleMgr.addOrUpdateUserRole(reviewer2);
@@ -554,5 +568,27 @@ public class AtsNotificationManagerTest {
       Assert.assertEquals(2, mgr.getNotificationEvents().iterator().next().getUsers().size());
       peerArt.deleteAndPersist();
       AtsTestUtil.cleanup();
+   }
+
+   private static final class MockConfigurationProvider implements ConfigurationProvider {
+
+      private final INotificationManager notificationManager;
+      private final boolean isProduction;
+
+      public MockConfigurationProvider(INotificationManager notificationManager, boolean isProduction) {
+         super();
+         this.notificationManager = notificationManager;
+         this.isProduction = isProduction;
+      }
+
+      @Override
+      public INotificationManager getNotificationManager() {
+         return notificationManager;
+      }
+
+      @Override
+      public boolean isProduction() {
+         return isProduction;
+      }
    }
 }

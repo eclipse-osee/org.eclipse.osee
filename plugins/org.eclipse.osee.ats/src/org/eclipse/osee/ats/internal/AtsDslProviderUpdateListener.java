@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 public final class AtsDslProviderUpdateListener implements IArtifactEventListener {
 
    //@formatter:off
-   private static final List<? extends IEventFilter> eventFilters =
+   private final List<? extends IEventFilter> eventFilters =
       Arrays.asList(
          new ArtifactTypeEventFilter(CoreArtifactTypes.AccessControlModel),
          new BranchGuidEventFilter(CoreBranches.COMMON)

@@ -12,11 +12,8 @@
 package org.eclipse.osee.ats.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.Viewer;
@@ -25,7 +22,6 @@ import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -36,16 +32,8 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
-import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
-import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
-import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -62,9 +50,11 @@ import org.eclipse.ui.PlatformUI;
  * 
  * @author Donald G. Dunne
  */
-public class AtsBranchManager implements IBranchEventListener {
+public final class AtsBranchManager {
 
-   private static AtsBranchManager instance;
+   private AtsBranchManager() {
+      // Utility class
+   }
 
    public static void showMergeManager(TeamWorkFlowArtifact teamArt) {
       try {
@@ -322,56 +312,5 @@ public class AtsBranchManager implements IBranchEventListener {
          }
       }
       return new ChangeData(changes);
-   }
-
-   public static void start() {
-      instance = new AtsBranchManager();
-   }
-
-   public static void stop() {
-      OseeEventManager.removeListener(instance);
-   }
-
-   public AtsBranchManager() {
-      OseeEventManager.addListener(this);
-   }
-
-   @Override
-   public List<? extends IEventFilter> getEventFilters() {
-      return null;
-   }
-
-   public static List<BranchEventType> ApplicableEventTypes = Arrays.asList(BranchEventType.Added,
-      BranchEventType.CommitFailed, BranchEventType.Committed, BranchEventType.Committing);
-
-   @Override
-   public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
-      if (!ApplicableEventTypes.contains(branchEvent.getEventType())) {
-         return;
-      }
-      try {
-         Branch branch = null;
-         try {
-            branch = BranchManager.getBranchByGuid(branchEvent.getBranchGuid());
-         } catch (BranchDoesNotExist ex) {
-            return;
-         }
-         if (branch != null) {
-            Artifact assocArtInCache =
-               ArtifactCache.getActive(branch.getAssociatedArtifactId(), BranchManager.getCommonBranch());
-            if (assocArtInCache != null && assocArtInCache instanceof TeamWorkFlowArtifact) {
-               TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) assocArtInCache;
-               if (branchEvent.getEventType() == BranchEventType.Added) {
-                  teamArt.setWorkingBranchCreationInProgress(false);
-               } else if (branchEvent.getEventType() == BranchEventType.Committing) {
-                  teamArt.setWorkingBranchCommitInProgress(true);
-               } else if (branchEvent.getEventType() == BranchEventType.Committed || branchEvent.getEventType() == BranchEventType.CommitFailed) {
-                  teamArt.setWorkingBranchCommitInProgress(false);
-               }
-            }
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
    }
 }

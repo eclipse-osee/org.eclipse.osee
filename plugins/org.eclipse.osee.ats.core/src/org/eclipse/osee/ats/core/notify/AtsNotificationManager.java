@@ -36,35 +36,27 @@ import org.eclipse.osee.framework.skynet.core.utility.OseeNotificationEvent;
  */
 public class AtsNotificationManager {
 
-   private static List<IAtsNotification> atsNotificationItems;
-   private static AtsNotificationManager instance;
-   private static INotificationManager notificationManager;
+   private static ExtensionDefinedObjects<IAtsNotification> contributions;
+
    private static boolean inTest = false;
-   private static boolean isProduction;
 
-   private AtsNotificationManager(INotificationManager notificationManager, boolean isProduction) {
-      AtsNotificationManager.isProduction = isProduction;
-      AtsNotificationManager.notificationManager = notificationManager;
-      ExtensionDefinedObjects<IAtsNotification> objects =
-         new ExtensionDefinedObjects<IAtsNotification>("org.eclipse.osee.ats.AtsNotification", "AtsNotification",
-            "classname", true);
-      atsNotificationItems = objects.getObjects();
-      OseeLog.log(Activator.class, Level.INFO, "Starting ATS Notification Handler");
+   private static ConfigurationProvider provider;
+
+   public static interface ConfigurationProvider {
+      INotificationManager getNotificationManager();
+
+      boolean isProduction() throws OseeCoreException;
    }
 
-   public static void start(INotificationManager oseeNotificationManager, boolean isProduction) {
-      instance = new AtsNotificationManager(oseeNotificationManager, isProduction);
-   }
-
-   public static AtsNotificationManager getInstafnce() {
-      return instance;
+   private AtsNotificationManager() {
+      // 
    }
 
    /**
     * Handle notifications for subscription by TeamDefinition and ActionableItem
     */
    public static void notifySubscribedByTeamOrActionableItem(TeamWorkFlowArtifact teamArt) {
-      if (inTest || !AtsUtilCore.isEmailEnabled() || !isProduction) {
+      if (isInTest() || !AtsUtilCore.isEmailEnabled() || !isProduction()) {
          return;
       }
       boolean notificationAdded = false;
@@ -74,11 +66,12 @@ public class AtsNotificationManager {
             Collections.castAll(teamArt.getTeamDefinition().getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User));
          if (subscribedUsers.size() > 0) {
             notificationAdded = true;
-            notificationManager.addNotificationEvent(new OseeNotificationEvent(
-               subscribedUsers,
-               getIdString(teamArt),
-               "Workflow Creation",
-               "You have subscribed for email notification for Team \"" + teamArt.getTeamName() + "\"; New Team Workflow created with title \"" + teamArt.getName() + "\""));
+            getNotificationManager().addNotificationEvent(
+               new OseeNotificationEvent(
+                  subscribedUsers,
+                  getIdString(teamArt),
+                  "Workflow Creation",
+                  "You have subscribed for email notification for Team \"" + teamArt.getTeamName() + "\"; New Team Workflow created with title \"" + teamArt.getName() + "\""));
          }
 
          // Handle Actionable Items
@@ -86,11 +79,12 @@ public class AtsNotificationManager {
             subscribedUsers = Collections.castAll(aia.getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User));
             if (subscribedUsers.size() > 0) {
                notificationAdded = true;
-               notificationManager.addNotificationEvent(new OseeNotificationEvent(
-                  subscribedUsers,
-                  getIdString(teamArt),
-                  "Workflow Creation",
-                  "You have subscribed for email notification for Actionable Item \"" + teamArt.getTeamName() + "\"; New Team Workflow created with title \"" + teamArt.getName() + "\""));
+               getNotificationManager().addNotificationEvent(
+                  new OseeNotificationEvent(
+                     subscribedUsers,
+                     getIdString(teamArt),
+                     "Workflow Creation",
+                     "You have subscribed for email notification for Actionable Item \"" + teamArt.getTeamName() + "\"; New Team Workflow created with title \"" + teamArt.getName() + "\""));
             }
          }
       } catch (OseeCoreException ex) {
@@ -98,7 +92,7 @@ public class AtsNotificationManager {
       } finally {
          if (notificationAdded) {
             try {
-               notificationManager.sendNotifications();
+               getNotificationManager().sendNotifications();
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -106,8 +100,13 @@ public class AtsNotificationManager {
       }
    }
 
-   public static List<IAtsNotification> getAtsNotificationItems() {
-      return atsNotificationItems;
+   public static synchronized List<IAtsNotification> getAtsNotificationItems() {
+      if (contributions == null) {
+         contributions =
+            new ExtensionDefinedObjects<IAtsNotification>("org.eclipse.osee.ats.AtsNotification", "AtsNotification",
+               "classname", true);
+      }
+      return contributions.getObjects();
    }
 
    protected static String getIdString(AbstractWorkflowArtifact sma) {
@@ -122,31 +121,15 @@ public class AtsNotificationManager {
       return "HRID: " + sma.getHumanReadableId();
    }
 
-   protected static boolean isInTest() {
-      return inTest;
-   }
-
-   protected static void setInTest(boolean inTest) {
-      AtsNotificationManager.inTest = inTest;
-   }
-
-   protected static void setNotificationManager(INotificationManager notificationManager) {
-      AtsNotificationManager.notificationManager = notificationManager;
-   }
-
    public static void notify(AbstractWorkflowArtifact sma, AtsNotifyType... notifyTypes) throws OseeCoreException {
       notify(sma, null, notifyTypes);
    }
 
    public static void notify(AbstractWorkflowArtifact awa, Collection<IBasicUser> notifyUsers, AtsNotifyType... notifyTypes) throws OseeCoreException {
-      if (inTest || !AtsUtilCore.isEmailEnabled() || !isProduction || awa.getName().startsWith("tt ")) {
+      if (isInTest() || !AtsUtilCore.isEmailEnabled() || !isProduction() || awa.getName().startsWith("tt ")) {
          return;
       }
-      AtsNotifyUsers.notify(notificationManager, awa, notifyUsers, notifyTypes);
-   }
-
-   public static void setIsProduction(boolean isProduction) {
-      AtsNotificationManager.isProduction = isProduction;
+      AtsNotifyUsers.notify(getNotificationManager(), awa, notifyUsers, notifyTypes);
    }
 
    public static List<EmailGroup> getEmailableGroups(AbstractWorkflowArtifact workflow) throws OseeCoreException {
@@ -164,4 +147,34 @@ public class AtsNotificationManager {
       return groupNames;
    }
 
+   //////////////////////////////////// FOR TEST ////////////////////////////////////
+   private static INotificationManager getNotificationManager() {
+      return getConfigurationProvider().getNotificationManager();
+   }
+
+   public static void setConfigurationProvider(ConfigurationProvider provider) {
+      AtsNotificationManager.provider = provider;
+   }
+
+   protected static ConfigurationProvider getConfigurationProvider() {
+      return AtsNotificationManager.provider;
+   }
+
+   public static boolean isProduction() {
+      boolean result = false;
+      try {
+         result = getConfigurationProvider().isProduction();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return result;
+   }
+
+   protected static boolean isInTest() {
+      return AtsNotificationManager.inTest;
+   }
+
+   protected static void setInTest(boolean inTest) {
+      AtsNotificationManager.inTest = inTest;
+   }
 }
