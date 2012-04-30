@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.validator;
 
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.validator.IAtsXWidgetValidator;
 import org.eclipse.osee.ats.core.validator.IValueProvider;
 import org.eclipse.osee.ats.core.validator.WidgetResult;

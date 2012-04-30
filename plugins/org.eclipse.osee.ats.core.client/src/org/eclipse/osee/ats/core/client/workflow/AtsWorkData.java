@@ -6,7 +6,7 @@
 package org.eclipse.osee.ats.core.client.workflow;
 
 import java.util.Date;
-import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.model.IAtsWorkData;
 import org.eclipse.osee.ats.core.workflow.WorkPageType;

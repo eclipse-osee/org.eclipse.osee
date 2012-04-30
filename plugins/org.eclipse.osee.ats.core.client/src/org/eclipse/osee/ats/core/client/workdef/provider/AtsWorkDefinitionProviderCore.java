@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.workdef.provider;
 
-import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.workdef.ConvertAtsDslToWorkDefinition;
 import org.eclipse.osee.ats.core.workdef.ModelUtil;
 import org.eclipse.osee.ats.core.workdef.WorkDefinition;

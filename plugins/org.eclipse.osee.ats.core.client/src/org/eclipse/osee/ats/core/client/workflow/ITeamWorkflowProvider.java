@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.core.client.workflow;
 
 import java.util.Collection;
-
 import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;

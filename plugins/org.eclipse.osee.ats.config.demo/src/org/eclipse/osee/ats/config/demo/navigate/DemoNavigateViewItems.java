@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.config.demo.PopulateDemoActions;
 import org.eclipse.osee.ats.config.demo.internal.Activator;
 import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.navigate.IAtsNavigateItem;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;

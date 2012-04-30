@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.actions;
 
 import java.util.Collection;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;

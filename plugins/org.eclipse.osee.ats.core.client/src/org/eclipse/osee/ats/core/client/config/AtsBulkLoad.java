@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.core.client.config;
 
 import java.util.Collection;
 import java.util.Set;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.internal.Activator;
-import org.eclipse.osee.ats.core.client.type.AtsRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.EmptyOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;

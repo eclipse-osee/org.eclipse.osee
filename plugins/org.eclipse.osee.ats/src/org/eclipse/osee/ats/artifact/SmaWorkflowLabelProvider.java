@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
-import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**

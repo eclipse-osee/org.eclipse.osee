@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.review;
 
 import static org.junit.Assert.assertTrue;
 import java.util.Collection;
-import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;

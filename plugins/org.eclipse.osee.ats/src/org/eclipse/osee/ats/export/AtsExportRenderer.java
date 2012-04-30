@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.commands.Command;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.core.client.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.editor.renderer.AbstractAtsRenderer;
 import org.eclipse.osee.ats.export.AtsExportManager.ExportOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

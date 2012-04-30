@@ -9,5 +9,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.osee.ats.config.demo,
  org.eclipse.osee.ats.config.demo.config
 Require-Bundle: org.junit
-Import-Package: org.eclipse.osee.ats.core.client.action,
+Import-Package: org.eclipse.osee.ats.api.data,
+ org.eclipse.osee.ats.core.client.action,
  org.eclipse.osee.ats.core.util

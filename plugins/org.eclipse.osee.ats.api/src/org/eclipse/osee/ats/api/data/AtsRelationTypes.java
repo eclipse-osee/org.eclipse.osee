@@ -71,6 +71,14 @@ public final class AtsRelationTypes {
       RelationSide.SIDE_B, 0x2000000000000171L, "TeamWorkflowToReview");
    public static final IRelationTypeSide TeamWorkflowToReview_Team = TokenFactory.createRelationTypeSide(
       RelationSide.SIDE_A, 0x2000000000000171L, "TeamWorkflowToReview");
+   public static final IRelationTypeSide ActionableItemLead_AI = TokenFactory.createRelationTypeSide(
+      RelationSide.SIDE_A, 0x2000000000000179L, "ActionableItemLead");
+   public static final IRelationTypeSide ActionableItemLead_Lead = TokenFactory.createRelationTypeSide(
+      RelationSide.SIDE_B, 0x2000000000000179L, "ActionableItemLead");
+   public static final IRelationTypeSide ActionableItem_User = TokenFactory.createRelationTypeSide(RelationSide.SIDE_B,
+      0x2000000000000178L, "ActionableItem Owner");
+   public static final IRelationTypeSide ActionableItem_Artifact = TokenFactory.createRelationTypeSide(
+      RelationSide.SIDE_A, 0x2000000000000178L, "ActionableItem Owner");
 
    private AtsRelationTypes() {
       // Constants
