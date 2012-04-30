@@ -152,7 +152,7 @@ public class RelationLink {
          }
 
       } catch (OseeCoreException ex) {
-         OseeLog.log(this.getClass(), Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(this.getClass(), Level.INFO, ex.toString(), ex);
       }
    }
 
