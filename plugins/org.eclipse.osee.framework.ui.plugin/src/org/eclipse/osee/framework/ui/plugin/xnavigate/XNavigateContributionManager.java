@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.OseeActivator;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
-import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
+import org.eclipse.osee.framework.ui.plugin.internal.UiPluginConstants;
 import org.osgi.framework.Bundle;
 
 /**
@@ -39,7 +39,7 @@ public final class XNavigateContributionManager {
       Conditions.checkNotNull(viewIdToMatch, "viewIdToMatch");
       Set<XNavigateExtensionPointData> toReturn = new HashSet<XNavigateExtensionPointData>();
       List<IConfigurationElement> elements =
-         ExtensionPoints.getExtensionElements(OseePluginUiActivator.PLUGIN_ID + ".XNavigateItem", "XNavigateItem");
+         ExtensionPoints.getExtensionElements(UiPluginConstants.PLUGIN_ID + ".XNavigateItem", "XNavigateItem");
       for (IConfigurationElement element : elements) {
          String viewId = element.getAttribute("viewId");
          if (viewIdToMatch.equals(viewId)) {

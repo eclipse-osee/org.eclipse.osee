@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.plugin.workspace;
 
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
+import org.eclipse.osee.framework.ui.plugin.internal.UiPluginConstants;
 import org.eclipse.osee.framework.ui.plugin.workspace.internal.SafeWorkspaceAccessImpl;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.IStartup;
@@ -33,7 +33,7 @@ public class EarlyStartup implements IStartup {
    }
 
    private void registerWorkspaceAccessService() {
-      Bundle bundle = Platform.getBundle(OseePluginUiActivator.PLUGIN_ID);
+      Bundle bundle = Platform.getBundle(UiPluginConstants.PLUGIN_ID);
       bundle.getBundleContext().registerService(SafeWorkspaceAccess.class.getName(), new SafeWorkspaceAccessImpl(),
          null);
    }

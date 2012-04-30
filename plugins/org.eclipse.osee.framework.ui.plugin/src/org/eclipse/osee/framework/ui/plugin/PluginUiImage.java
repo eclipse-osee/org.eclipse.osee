@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.plugin;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
+import org.eclipse.osee.framework.ui.plugin.internal.UiPluginConstants;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
@@ -36,11 +36,11 @@ public enum PluginUiImage implements KeyedImage {
 
    @Override
    public ImageDescriptor createImageDescriptor() {
-      return ImageManager.createImageDescriptor(OseePluginUiActivator.PLUGIN_ID, "images", fileName);
+      return ImageManager.createImageDescriptor(UiPluginConstants.PLUGIN_ID, "images", fileName);
    }
 
    @Override
    public String getImageKey() {
-      return OseePluginUiActivator.PLUGIN_ID + "." + fileName;
+      return UiPluginConstants.PLUGIN_ID + "." + fileName;
    }
 }

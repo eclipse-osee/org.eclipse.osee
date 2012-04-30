@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
+import org.eclipse.osee.framework.ui.plugin.internal.UiPluginConstants;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 public class XNavigateEventManager {
@@ -33,7 +33,7 @@ public class XNavigateEventManager {
                try {
                   listener.refresh(item);
                } catch (Exception ex) {
-                  OseeLog.log(OseePluginUiActivator.class, OseeLevel.SEVERE, ex);
+                  OseeLog.log(UiPluginConstants.class, OseeLevel.SEVERE, ex);
                }
             }
          }

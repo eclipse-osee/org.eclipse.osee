@@ -14,7 +14,7 @@ import java.net.URL;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
-import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
+import org.eclipse.osee.framework.ui.plugin.internal.UiPluginConstants;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.swt.program.Program;
@@ -57,7 +57,7 @@ public class XNavigateUrlItem extends XNavigateItemAction {
             IWebBrowser browser = browserSupport.createBrowser("osee.ats.navigator.browser");
             browser.openURL(new URL(url));
          } catch (Exception ex) {
-            OseeLog.log(OseePluginUiActivator.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(UiPluginConstants.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }

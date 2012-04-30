@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
+import org.eclipse.osee.framework.ui.plugin.internal.UiPluginConstants;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.OSEEFilteredTree;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -91,7 +91,7 @@ public class XNavigateComposite extends Composite {
             try {
                handleDoubleClick();
             } catch (OseeCoreException ex) {
-               OseeLog.log(OseePluginUiActivator.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(UiPluginConstants.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });
@@ -103,7 +103,7 @@ public class XNavigateComposite extends Composite {
                try {
                   handleDoubleClick();
                } catch (OseeCoreException ex) {
-                  OseeLog.log(OseePluginUiActivator.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(UiPluginConstants.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          }
@@ -133,7 +133,7 @@ public class XNavigateComposite extends Composite {
          try {
             item.run(tableLoadOptions);
          } catch (Exception ex) {
-            OseeLog.log(OseePluginUiActivator.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(UiPluginConstants.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }

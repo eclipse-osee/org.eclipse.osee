@@ -21,7 +21,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.IConsoleInputListener;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
+import org.eclipse.osee.framework.ui.plugin.internal.UiPluginConstants;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.console.ConsolePlugin;
@@ -236,7 +236,7 @@ public class OseeConsole {
          } catch (IOException e) {
             e.printStackTrace();
          }
-         OseeLog.log(OseePluginUiActivator.class, Level.INFO, "done with the handling of input");
+         OseeLog.log(UiPluginConstants.class, Level.INFO, "done with the handling of input");
       }
 
    }

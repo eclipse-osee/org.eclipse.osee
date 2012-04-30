@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
+import org.eclipse.osee.framework.ui.plugin.internal.UiPluginConstants;
 
 /**
  * @author Donald G. Dunne
@@ -55,7 +55,7 @@ public class XNavigateContentProvider implements ITreeContentProvider {
          try {
             return ((XNavigateItem) element).hasChildren();
          } catch (Exception ex) {
-            OseeLog.log(OseePluginUiActivator.class, Level.SEVERE, ex);
+            OseeLog.log(UiPluginConstants.class, Level.SEVERE, ex);
          }
       }
       return getChildren(element).length > 0;

@@ -19,7 +19,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
+import org.eclipse.osee.framework.ui.plugin.internal.UiPluginConstants;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -40,7 +40,7 @@ public abstract class CommandHandler extends AbstractHandler {
             result = isEnabledWithException(selection);
          }
       } catch (Exception ex) {
-         OseeLog.log(OseePluginUiActivator.class, Level.SEVERE, ex);
+         OseeLog.log(UiPluginConstants.class, Level.SEVERE, ex);
       }
       return result;
    }

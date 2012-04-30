@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
-import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
+import org.eclipse.osee.framework.ui.plugin.internal.UiPluginConstants;
 import org.osgi.framework.Bundle;
 
 /**
@@ -34,7 +34,7 @@ public class PropertyStoreControlContributions {
    public static List<IPropertyStoreBasedControl> getContributions(String viewIdToMatch) {
       List<IPropertyStoreBasedControl> toReturn = new ArrayList<IPropertyStoreBasedControl>();
       List<IConfigurationElement> elements =
-         ExtensionPoints.getExtensionElements(OseePluginUiActivator.PLUGIN_ID + ".PropertyStoreControl",
+         ExtensionPoints.getExtensionElements(UiPluginConstants.PLUGIN_ID + ".PropertyStoreControl",
             "PropertyStoreControl");
       for (IConfigurationElement element : elements) {
          String className = element.getAttribute("classname");
@@ -55,7 +55,7 @@ public class PropertyStoreControlContributions {
                   }
                   toReturn.add((IPropertyStoreBasedControl) object);
                } catch (Exception ex) {
-                  OseeLog.logf(OseePluginUiActivator.class, Level.SEVERE,
+                  OseeLog.logf(UiPluginConstants.class, Level.SEVERE,
                      ex, "Unable to Load: [%s - %s]", bundleName, className);
                }
             }

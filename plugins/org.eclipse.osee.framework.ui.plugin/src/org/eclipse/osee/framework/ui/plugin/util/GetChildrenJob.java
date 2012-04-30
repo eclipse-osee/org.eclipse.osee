@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
+import org.eclipse.osee.framework.ui.plugin.internal.UiPluginConstants;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IContentProviderRunnable;
 
@@ -66,7 +66,7 @@ public class GetChildrenJob extends Job {
             parent.cancelled();
          }
       } catch (Exception ex) {
-         OseeLog.log(OseePluginUiActivator.class, Level.SEVERE, ex);
+         OseeLog.log(UiPluginConstants.class, Level.SEVERE, ex);
          parent.cancelled(ex);
       } finally {
          watcher.done();

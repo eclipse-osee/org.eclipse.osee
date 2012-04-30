@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
+import org.eclipse.osee.framework.ui.plugin.internal.UiPluginConstants;
 import org.osgi.framework.Bundle;
 
 public class XNavigateCommonItems {
@@ -35,7 +35,7 @@ public class XNavigateCommonItems {
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(OseePluginUiActivator.class, Level.SEVERE, ex);
+         OseeLog.log(UiPluginConstants.class, Level.SEVERE, ex);
       }
    }
 
@@ -48,7 +48,7 @@ public class XNavigateCommonItems {
       IExtensionPoint point =
          Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.ui.plugin.XCommonNavigateItem");
       if (point == null) {
-         OseeLog.log(OseePluginUiActivator.class, OseeLevel.SEVERE_POPUP,
+         OseeLog.log(UiPluginConstants.class, OseeLevel.SEVERE_POPUP,
             "Can't access XCommonNavigateItem extension point");
          return items;
       }
@@ -68,7 +68,7 @@ public class XNavigateCommonItems {
                      Object obj = taskClass.newInstance();
                      items.add((IXNavigateCommonItem) obj);
                   } catch (Exception ex) {
-                     OseeLog.log(OseePluginUiActivator.class, OseeLevel.SEVERE_POPUP,
+                     OseeLog.log(UiPluginConstants.class, OseeLevel.SEVERE_POPUP,
                         "Error loading XCommonNavigateItem extension", ex);
                   }
                }

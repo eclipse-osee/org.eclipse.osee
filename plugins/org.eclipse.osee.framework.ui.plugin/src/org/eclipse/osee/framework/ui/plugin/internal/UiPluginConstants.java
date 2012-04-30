@@ -8,18 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.internal;
-
-import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.plugin.core.IActionReportingService;
+package org.eclipse.osee.framework.ui.plugin.internal;
 
 /**
- * @author Roberto E. Escobar
+ * a The activator class controls the plug-in life cycle
  */
-public class AtsActionReportingServiceImpl implements IActionReportingService {
+public final class UiPluginConstants {
 
-   @Override
-   public void report(String actionableItem, String desc) throws Exception {
-      AtsUtil.createATSAction(desc, actionableItem);
+   public static final String PLUGIN_ID = "org.eclipse.osee.framework.ui.plugin";
+
+   private UiPluginConstants() {
+      // Constants
    }
 }
