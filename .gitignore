@@ -9,3 +9,5 @@ bin/
 plugins/*/utf8_input_copy.xml
 #Ignore maven build target
 target/
+#Ignore workspace folders
+workspace/
