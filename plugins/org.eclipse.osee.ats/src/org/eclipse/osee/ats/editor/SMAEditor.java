@@ -269,7 +269,9 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
       if (awa != null && !awa.isDeleted() && awa.isSMAEditorDirty().isTrue()) {
          awa.revertSMA();
       }
-      workFlowTab.dispose();
+      if (workFlowTab != null) {
+         workFlowTab.dispose();
+      }
       if (membersTab != null) {
          membersTab.dispose();
       }
@@ -591,8 +593,12 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
    public void setPrivilegedEditMode(boolean enabled) {
       this.privilegedEditModeEnabled = enabled;
       doSave(null);
-      workFlowTab.refresh();
-      membersTab.refresh();
+      if (workFlowTab != null) {
+         workFlowTab.refresh();
+      }
+      if (membersTab != null) {
+         membersTab.refresh();
+      }
    }
 
    public boolean isAccessControlWrite() throws OseeCoreException {
@@ -680,7 +686,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
             if (page.equals(workFlowTab)) {
                provider = getDefaultSelectionProvider();
             } else if (page.equals(membersTab)) {
-               if (membersTab.getSmaGoalMembersSection() != null) {
+               if (membersTab != null && membersTab.getSmaGoalMembersSection() != null) {
                   provider = membersTab.getSmaGoalMembersSection().getWorldComposite().getWorldXViewer();
                }
             } else if (page.equals(taskTabXWidgetActionPage)) {
