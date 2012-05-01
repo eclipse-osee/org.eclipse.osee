@@ -32,7 +32,7 @@ public class OseeCoverageUnitFileContentsProvider implements ICoverageUnitFileCo
    }
 
    public static OseeCoverageUnitFileContentsProvider getInstance(IOseeBranch branch) {
-      if (instance == null) {
+      if (instance == null || !instance.getBranch().equals(branch)) {
          instance = new OseeCoverageUnitFileContentsProvider(branch);
       }
       return instance;
@@ -63,5 +63,9 @@ public class OseeCoverageUnitFileContentsProvider implements ICoverageUnitFileCo
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
+   }
+
+   public IOseeBranch getBranch() {
+      return branch;
    }
 }
