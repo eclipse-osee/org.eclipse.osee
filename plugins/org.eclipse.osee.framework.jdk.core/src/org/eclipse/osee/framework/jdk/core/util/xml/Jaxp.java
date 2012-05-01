@@ -482,8 +482,8 @@ public class Jaxp {
     * 
     * @param document The XML document to output
     * @param file Where to put the output
-    * @param prettyOutput If true, turns on indentation so the output is more easily readable, if False turns indentation
-    * off to save space.
+    * @param prettyOutput If true, turns on indentation so the output is more easily readable, if False turns
+    * indentation off to save space.
     * @throws TransformerException
     */
    public static void writeXmlDocument(Document document, File file, Properties format) throws TransformerException, IOException {
@@ -497,8 +497,8 @@ public class Jaxp {
     * 
     * @param document The XML document to output
     * @param file Where to put the output
-    * @param prettyOutput If true, turns on indentation so the output is more easily readable, if False turns indentation
-    * off and is assumed to provide the XML as compactly as possible.
+    * @param prettyOutput If true, turns on indentation so the output is more easily readable, if False turns
+    * indentation off and is assumed to provide the XML as compactly as possible.
     * @throws TransformerException
     */
    public static String xmlToString(Document document, boolean prettyOutput) throws TransformerException {
@@ -517,19 +517,13 @@ public class Jaxp {
     * @throws TransformerException
     */
    public static void outputXmlDocument(Node document, Writer output, Properties outputProperties) throws TransformerException {
-      outputXmlDocument(document, new StreamResult(output), outputProperties);
-
+      outputXmlDocument(document, output, outputProperties);
    }
 
-   public static void outputXmlDocument(Node element, OutputStream output, Properties outputProperties) throws TransformerException {
-      outputXmlDocument(element, new StreamResult(output), outputProperties);
-   }
-
-   public static void outputXmlDocument(Node node, StreamResult output, Properties outputProperties) throws TransformerException {
+   public static void outputXmlDocument(Node node, OutputStream output, Properties outputProperties) throws TransformerException {
       Transformer transformer = TransformerFactory.newInstance().newTransformer();
       transformer.setOutputProperties(outputProperties);
-      transformer.transform(new DOMSource(node), output);
-
+      transformer.transform(new DOMSource(node), new StreamResult(output));
    }
 
    /**
@@ -544,7 +538,7 @@ public class Jaxp {
    }
 
    /**
-    * @return format that is compact (no extra whitepsace)
+    * @return format that is compact (no extra whitespace)
     */
    public static Properties getCompactFormat() {
       Properties format = new Properties();

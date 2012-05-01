@@ -74,6 +74,14 @@ public class WordEditTest {
       FrameworkTestUtil.cleanupSimpleTest(branch, ARTIFACT_NAME_1, ARTIFACT_NAME_2);
    }
 
+   /**
+    * <p>
+    * This test needs to be re-evaluated or discarded if OSEE decides to implement their <br/>
+    * own requirement storage and DSL.
+    * </p>
+    *
+    * @throws Exception
+    */
    @org.junit.Test
    public void testEditUsingWordTemplateRender() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();

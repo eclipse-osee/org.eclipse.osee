@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLStreamException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -91,7 +92,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
       return document;
    }
 
-   private void wordArtifactUpdate(IElementExtractor elementExtractor) throws OseeCoreException, DOMException, ParserConfigurationException, SAXException, IOException {
+   private void wordArtifactUpdate(IElementExtractor elementExtractor) throws OseeCoreException, XMLStreamException, DOMException, ParserConfigurationException, SAXException, IOException {
       List<Artifact> deletedArtifacts = new LinkedList<Artifact>();
       Collection<WordExtractorData> extractorDatas = elementExtractor.extractElements();
       Element oleDataElement = elementExtractor.getOleDataElement();

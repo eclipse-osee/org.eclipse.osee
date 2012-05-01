@@ -18,10 +18,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Properties;
 import javax.xml.namespace.QName;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.TransformerException;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -114,19 +114,20 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       return fo;
    }
 
-   public static byte[] getFormattedContent(Element formattedItemElement) {
+   public static byte[] getFormattedContent(Element formattedItemElement) throws XMLStreamException {
       ByteArrayOutputStream data = new ByteArrayOutputStream((int) Math.pow(2, 10));
-      Properties format = Jaxp.getCompactFormat();
-      format.put(OutputKeys.OMIT_XML_DECLARATION, "yes");
-
+      XMLStreamWriter xmlWriter = null;
       try {
+         xmlWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(data);
          for (Element e : Jaxp.getChildDirects(formattedItemElement)) {
-            Jaxp.outputXmlDocument(e, data, format);
+            Jaxp.writeNode(xmlWriter, e, false);
          }
-      } catch (TransformerException ex) {
-         throw new RuntimeException(ex);
+      } finally {
+         if (xmlWriter != null) {
+            xmlWriter.flush();
+            xmlWriter.close();
+         }
       }
-
       return data.toByteArray();
    }
 

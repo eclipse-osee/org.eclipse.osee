@@ -15,9 +15,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
 import javax.xml.parsers.ParserConfigurationException;
-
+import javax.xml.stream.XMLStreamException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -83,8 +82,9 @@ public class WordArtifactElementExtractorTest {
       Collection<WordExtractorData> artElements = extractor.extractElements();
       Assert.assertTrue(artElements.size() == 1);
 
-      String actual = WordUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
-	         WordTemplateRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))));
+      String actual =
+         WordUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
+            WordTemplateRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))));
       Assert.assertEquals("Middle change", actual);
    }
 
@@ -189,7 +189,7 @@ public class WordArtifactElementExtractorTest {
       return stringBuilder.toString();
    }
 
-   private void multiArtifactTest(List<WordExtractorData> actuals, List<String> expected) throws IOException {
+   private void multiArtifactTest(List<WordExtractorData> actuals, List<String> expected) throws IOException, XMLStreamException {
       for (int i = 0; i < actuals.size(); i++) {
          String artContent =
             WordUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
