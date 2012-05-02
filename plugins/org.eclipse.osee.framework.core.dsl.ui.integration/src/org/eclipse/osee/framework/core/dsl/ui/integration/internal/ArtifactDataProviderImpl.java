@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.dsl.ui.integration.internal;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -92,7 +93,11 @@ public final class ArtifactDataProviderImpl implements ArtifactDataProvider {
          try {
             Artifact artifactPtr = self.getParent();
             while (artifactPtr != null) {
-               hierarchy.add(new XArtifactProxy(artifactPtr));
+               if (!hierarchy.add(new XArtifactProxy(artifactPtr))) {
+                  OseeLog.log(DslUiIntegrationConstants.class, Level.SEVERE,
+                     String.format("Cycle detected with artifact: %s", artifactPtr));
+                  return Collections.emptyList();
+               }
                artifactPtr = artifactPtr.getParent();
             }
          } catch (OseeCoreException ex) {
