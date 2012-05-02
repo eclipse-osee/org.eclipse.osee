@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.internal;
 
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.skynet.core.event.EventSystemPreferences;
 import org.eclipse.osee.framework.skynet.core.internal.event.EventListenerRegistry;
 import org.osgi.framework.BundleActivator;
@@ -28,7 +27,7 @@ public class Activator implements BundleActivator {
 
    @Override
    public void start(BundleContext context) throws Exception {
-      ClientSessionManager.class.getCanonicalName();
+      //
    }
 
    @Override
