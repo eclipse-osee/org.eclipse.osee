@@ -37,11 +37,11 @@ public class AtsTest_Demo_Config_Suite {
    @BeforeClass
    public static void setUp() throws Exception {
       OseeProperties.setIsInTest(true);
-      System.out.println("\n\nBegin " + AtsTest_Demo_Access_Suite.class.getSimpleName());
+      System.out.println("\n\nBegin " + AtsTest_Demo_Config_Suite.class.getSimpleName());
    }
 
    @AfterClass
    public static void tearDown() throws Exception {
-      System.out.println("End " + AtsTest_Demo_Access_Suite.class.getSimpleName());
+      System.out.println("End " + AtsTest_Demo_Config_Suite.class.getSimpleName());
    }
 }
