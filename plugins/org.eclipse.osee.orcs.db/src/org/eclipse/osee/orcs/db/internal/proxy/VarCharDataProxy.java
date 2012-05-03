@@ -22,12 +22,12 @@ import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
 /**
  * @author Roberto E. Escobar
  */
-public class ClobDataProxy extends AbstractDataProxy implements CharacterDataProxy {
+public class VarCharDataProxy extends AbstractDataProxy implements CharacterDataProxy {
 
    public static final int MAX_VARCHAR_LENGTH = 4000;
    private String rawStringValue;
 
-   public ClobDataProxy() {
+   public VarCharDataProxy() {
       super();
       this.rawStringValue = "";
    }

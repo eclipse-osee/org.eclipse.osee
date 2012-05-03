@@ -18,7 +18,7 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   ClobDataProxyTest.class,
+   VarCharDataProxyTest.class,
    DataResourceTest.class,
    ResourceDataProxyFactoryTest.class,
    ResourceHandlerTest.class,
