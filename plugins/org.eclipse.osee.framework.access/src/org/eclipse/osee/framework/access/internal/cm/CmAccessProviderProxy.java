@@ -11,9 +11,12 @@
 package org.eclipse.osee.framework.access.internal.cm;
 
 import java.util.Collection;
-import java.util.Map;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.access.IAccessProvider;
+import org.eclipse.osee.framework.access.internal.AccessControlHelper;
 import org.eclipse.osee.framework.access.internal.AccessControlServiceProxy;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
@@ -22,29 +25,49 @@ import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.core.services.CmAccessControlProvider;
 import org.eclipse.osee.framework.core.services.IAccessControlService;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 /**
  * @author Roberto E. Escobar
  */
 public final class CmAccessProviderProxy implements IAccessProvider {
 
+   private final List<ServiceReference<CmAccessControl>> pending =
+      new CopyOnWriteArrayList<ServiceReference<CmAccessControl>>();
+
    private final Collection<CmAccessControl> cmServices = new CopyOnWriteArraySet<CmAccessControl>();
+
    private IAccessProvider accessProvider;
-   private IAccessControlService accessControlService;
+   private CmAccessControlProvider cmProvider;
+   private BundleContext bundleContext;
+   private Thread thread;
 
-   private final CmAccessControlProvider cmProvider;
-
-   public CmAccessProviderProxy() {
-      super();
-      cmProvider = new CmAccessControlProviderImpl(cmServices);
+   public void addCmAccessControl(ServiceReference<CmAccessControl> reference) {
+      if (isReady()) {
+         register(bundleContext, reference);
+      } else {
+         pending.add(reference);
+      }
    }
 
-   public void setAccessControlService(IAccessControlService accessControlService) {
-      this.accessControlService = accessControlService;
+   public void removeCmAccessControl(ServiceReference<CmAccessControl> reference) {
+      if (isReady()) {
+         unregister(bundleContext, reference);
+      } else {
+         pending.remove(reference);
+      }
    }
 
-   public void addCmAccessControl(CmAccessControl cmAccessControl, Map<String, Object> properties) {
-      if (isDefault(properties)) {
+   private boolean isReady() {
+      return bundleContext != null && cmProvider != null;
+   }
+
+   private void register(BundleContext bundleContext, ServiceReference<CmAccessControl> reference) {
+      CmAccessControl cmAccessControl = bundleContext.getService(reference);
+      if (isDefault(reference)) {
          cmProvider.setDefaultAccessControl(cmAccessControl);
       } else {
          cmServices.add(cmAccessControl);
@@ -52,8 +75,9 @@ public final class CmAccessProviderProxy implements IAccessProvider {
       reloadCache();
    }
 
-   public void removeCmAccessControl(CmAccessControl cmAccessControl, Map<String, Object> properties) {
-      if (isDefault(properties)) {
+   private void unregister(BundleContext bundleContext, ServiceReference<CmAccessControl> reference) {
+      CmAccessControl cmAccessControl = bundleContext.getService(reference);
+      if (isDefault(reference)) {
          cmProvider.setDefaultAccessControl(null);
       } else {
          cmServices.remove(cmAccessControl);
@@ -61,30 +85,59 @@ public final class CmAccessProviderProxy implements IAccessProvider {
       reloadCache();
    }
 
-   private boolean isDefault(Map<String, Object> properties) {
-      if (properties.containsKey("default")) {
-         return (Boolean) properties.get("default");
+   private boolean isDefault(ServiceReference<CmAccessControl> reference) {
+      boolean toReturn = false;
+      String value = String.valueOf(reference.getProperty("default"));
+      if (Strings.isValid(value)) {
+         toReturn = Boolean.parseBoolean(value);
       }
-      return false;
+      return toReturn;
    }
 
-   public void start() {
+   public void start(BundleContext context) {
+      this.bundleContext = context;
+
+      cmProvider = new CmAccessControlProviderImpl(cmServices);
       accessProvider = new CmAccessProvider(cmProvider);
+
+      for (ServiceReference<CmAccessControl> reference : pending) {
+         register(bundleContext, reference);
+      }
+      pending.clear();
    }
 
    public void stop() {
+      if (thread != null) {
+         thread.interrupt();
+         thread = null;
+      }
       accessProvider = null;
       cmProvider.setDefaultAccessControl(null);
       cmServices.clear();
+      bundleContext = null;
    }
 
-   public void reloadCache() {
-      if (accessControlService instanceof AccessControlServiceProxy) {
-         ((AccessControlServiceProxy) accessControlService).reloadCache();
+   private AccessControlServiceProxy getAccessService() {
+      AccessControlServiceProxy toReturn = null;
+      ServiceReference<IAccessControlService> reference =
+         bundleContext.getServiceReference(IAccessControlService.class);
+      IAccessControlService service = bundleContext.getService(reference);
+      if (service instanceof AccessControlServiceProxy) {
+         toReturn = (AccessControlServiceProxy) service;
+      } else {
+         OseeLog.log(AccessControlHelper.class, Level.SEVERE, "Error initializing ObjectAccessProvider");
+      }
+      return toReturn;
+   }
+
+   private void reloadCache() {
+      AccessControlServiceProxy service = getAccessService();
+      if (service != null) {
+         service.reloadCache();
       }
    }
 
-   public IAccessProvider getAccessProvider() {
+   private IAccessProvider getAccessProvider() {
       return accessProvider;
    }
 

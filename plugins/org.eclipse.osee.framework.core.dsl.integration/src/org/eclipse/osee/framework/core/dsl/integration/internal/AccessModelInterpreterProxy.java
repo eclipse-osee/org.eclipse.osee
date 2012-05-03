@@ -33,23 +33,30 @@ public class AccessModelInterpreterProxy implements AccessModelInterpreter {
    }
 
    public void start() {
-      ArtifactMatchInterpreter matcher = new ArtifactMatchInterpreter();
-
-      RestrictionHandler<?>[] restrictionHandlers =
-         new RestrictionHandler<?>[] {
-            new ArtifactMatchRestrictionHandler(matcher),
-            new ArtifactTypeRestrictionHandler(),
-            new AttributeTypeRestrictionHandler(),
-            new RelationTypeRestrictionHandler(matcher)};
-
-      proxiedService = new AccessModelInterpreterImpl(artifactDataProvider, matcher, restrictionHandlers);
+      // Do Nothing
    }
 
    public void stop() {
       proxiedService = null;
    }
 
-   private AccessModelInterpreter getProxiedService() {
+   private boolean isReady() {
+      return artifactDataProvider != null;
+   }
+
+   private synchronized AccessModelInterpreter getProxiedService() {
+      if (isReady() && proxiedService == null) {
+         ArtifactMatchInterpreter matcher = new ArtifactMatchInterpreter();
+
+         RestrictionHandler<?>[] restrictionHandlers =
+            new RestrictionHandler<?>[] {
+               new ArtifactMatchRestrictionHandler(matcher),
+               new ArtifactTypeRestrictionHandler(),
+               new AttributeTypeRestrictionHandler(),
+               new RelationTypeRestrictionHandler(matcher)};
+
+         proxiedService = new AccessModelInterpreterImpl(artifactDataProvider, matcher, restrictionHandlers);
+      }
       return proxiedService;
    }
 

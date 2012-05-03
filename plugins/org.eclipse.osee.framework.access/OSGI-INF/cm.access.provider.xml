@@ -4,7 +4,6 @@
    <service>
       <provide interface="org.eclipse.osee.framework.access.IAccessProvider"/>
    </service>
-   <reference bind="setAccessControlService" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IAccessControlService" name="IAccessControlService" policy="static"/>
    <reference bind="addCmAccessControl" cardinality="1..n" interface="org.eclipse.osee.framework.core.services.CmAccessControl" 
    name="CmAccessControl" policy="dynamic" unbind="removeCmAccessControl"/>
 </scr:component>

@@ -26,6 +26,8 @@ import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventService;
 import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 /**
  * @author Roberto E. Escobar
@@ -34,29 +36,24 @@ public class AtsCmAccessControlProxy implements CmAccessControl, HasAccessModel 
 
    private IEventListener listener;
    private AtsBranchAccessManager atsBranchObjectManager;
-   private AccessModelInterpreter accessModelInterpreter;
+   private ServiceReference<AccessModelInterpreter> reference;
    private CmAccessControl cmService;
    private AccessModel accessModel;
    private OseeEventService eventService;
+   private BundleContext bundleContext;
 
-   public void setAccessModelInterpreter(AccessModelInterpreter accessModelInterpreter) {
-      this.accessModelInterpreter = accessModelInterpreter;
+   private volatile boolean isInitialized = false;
+
+   public void setAccessModelInterpreter(ServiceReference<AccessModelInterpreter> reference) {
+      this.reference = reference;
    }
 
    public void setEventService(OseeEventService eventService) {
       this.eventService = eventService;
    }
 
-   public void start() {
-      OseeDslProvider dslProvider = new AtsAccessOseeDslProvider("ats:/xtext/cm.access.osee");
-      accessModel = new OseeDslAccessModel(accessModelInterpreter, dslProvider);
-      RoleContextProvider roleAccessProvider = new OseeDslRoleContextProvider(dslProvider);
-
-      atsBranchObjectManager = new AtsBranchAccessManager(eventService, roleAccessProvider);
-      cmService = new AtsCmAccessControl(atsBranchObjectManager);
-
-      listener = new AtsDslProviderUpdateListener(dslProvider);
-      eventService.addListener(EventQosType.NORMAL, listener);
+   public void start(BundleContext bundleContext) {
+      this.bundleContext = bundleContext;
    }
 
    public void stop() {
@@ -71,9 +68,32 @@ public class AtsCmAccessControlProxy implements CmAccessControl, HasAccessModel 
       }
       cmService = null;
       accessModel = null;
+      bundleContext = null;
+      isInitialized = false;
+   }
+
+   private boolean isReady() {
+      return reference != null && eventService != null && bundleContext != null;
+   }
+
+   private synchronized void ensureInitialized() {
+      if (isReady() && !isInitialized) {
+         AccessModelInterpreter interpreter = bundleContext.getService(reference);
+         OseeDslProvider dslProvider = new AtsAccessOseeDslProvider("ats:/xtext/cm.access.osee");
+         accessModel = new OseeDslAccessModel(interpreter, dslProvider);
+         RoleContextProvider roleAccessProvider = new OseeDslRoleContextProvider(dslProvider);
+
+         atsBranchObjectManager = new AtsBranchAccessManager(eventService, roleAccessProvider);
+         cmService = new AtsCmAccessControl(atsBranchObjectManager);
+
+         listener = new AtsDslProviderUpdateListener(dslProvider);
+         eventService.addListener(EventQosType.NORMAL, listener);
+         isInitialized = true;
+      }
    }
 
    private CmAccessControl getProxiedService() {
+      ensureInitialized();
       return cmService;
    }
 
@@ -89,6 +109,7 @@ public class AtsCmAccessControlProxy implements CmAccessControl, HasAccessModel 
 
    @Override
    public AccessModel getAccessModel() {
+      ensureInitialized();
       return accessModel;
    }
 

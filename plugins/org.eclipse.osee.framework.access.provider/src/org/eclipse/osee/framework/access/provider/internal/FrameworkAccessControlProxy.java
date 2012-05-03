@@ -39,35 +39,33 @@ import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListe
 import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 /**
  * @author John Misinco
  */
 public class FrameworkAccessControlProxy implements CmAccessControl, HasAccessModel {
 
-   private AccessModelInterpreter interpreter;
+   private ServiceReference<AccessModelInterpreter> reference;
    private CmAccessControl frameworkAccessControl;
    private AccessModel accessModel;
    private IEventListener listener;
    private OseeEventService eventService;
+   private BundleContext bundleContext;
 
-   public void setAccessModelInterpreter(AccessModelInterpreter interpreter) {
-      this.interpreter = interpreter;
+   private volatile boolean isInitialized = false;
+
+   public void setAccessModelInterpreter(ServiceReference<AccessModelInterpreter> reference) {
+      this.reference = reference;
    }
 
    public void setEventService(OseeEventService eventService) {
       this.eventService = eventService;
    }
 
-   public void start() {
-      FrameworkDslProvider frameworkDslProvider = new FrameworkDslProvider("osee:/xtext/framework.access.osee");
-      RoleContextProvider roleProvider = new OseeDslRoleContextProvider(frameworkDslProvider);
-
-      accessModel = new OseeDslAccessModel(interpreter, frameworkDslProvider);
-      frameworkAccessControl = new FrameworkAccessControl(roleProvider);
-
-      listener = new DslUpdateListener(frameworkDslProvider);
-      eventService.addListener(EventQosType.NORMAL, listener);
+   public void start(BundleContext bundleContext) {
+      this.bundleContext = bundleContext;
    }
 
    public void stop() {
@@ -79,25 +77,51 @@ public class FrameworkAccessControlProxy implements CmAccessControl, HasAccessMo
       accessModel = null;
    }
 
+   private boolean isReady() {
+      return reference != null && eventService != null && bundleContext != null;
+   }
+
+   private synchronized void ensureInitialized() {
+      if (isReady() && !isInitialized) {
+         AccessModelInterpreter interpreter = bundleContext.getService(reference);
+
+         FrameworkDslProvider frameworkDslProvider = new FrameworkDslProvider("osee:/xtext/framework.access.osee");
+         RoleContextProvider roleProvider = new OseeDslRoleContextProvider(frameworkDslProvider);
+
+         accessModel = new OseeDslAccessModel(interpreter, frameworkDslProvider);
+         frameworkAccessControl = new FrameworkAccessControl(roleProvider);
+
+         listener = new DslUpdateListener(frameworkDslProvider);
+         eventService.addListener(EventQosType.NORMAL, listener);
+         isInitialized = true;
+      }
+   }
+
    private void checkInitialized() throws OseeCoreException {
-      Conditions.checkNotNull(frameworkAccessControl, "frameworkAccess",
+      Conditions.checkNotNull(getAccessControl(), "frameworkAccess",
          "FrameworkAccessControlService not properly initialized");
+   }
+
+   private CmAccessControl getAccessControl() {
+      ensureInitialized();
+      return frameworkAccessControl;
    }
 
    @Override
    public AccessModel getAccessModel() {
+      ensureInitialized();
       return accessModel;
    }
 
    @Override
    public boolean isApplicable(IBasicArtifact<?> user, Object object) {
-      return frameworkAccessControl.isApplicable(user, object);
+      return getAccessControl().isApplicable(user, object);
    }
 
    @Override
    public Collection<? extends IAccessContextId> getContextId(IBasicArtifact<?> user, Object object) throws OseeCoreException {
       checkInitialized();
-      return frameworkAccessControl.getContextId(user, object);
+      return getAccessControl().getContextId(user, object);
    }
 
    private final class DslUpdateListener implements IArtifactEventListener {
