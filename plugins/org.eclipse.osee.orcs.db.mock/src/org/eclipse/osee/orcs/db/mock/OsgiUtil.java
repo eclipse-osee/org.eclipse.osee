@@ -18,8 +18,8 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * @author Roberto E. Escobar
@@ -42,15 +42,16 @@ public final class OsgiUtil {
             OseeExceptions.wrapAndThrow(ex);
          }
       }
+
       BundleContext context = bundle.getBundleContext();
       Assert.assertNotNull(context);
 
-      ServiceTracker<T, T> tracker = new ServiceTracker<T, T>(context, clazz, null);
-      tracker.open(true);
-      T service = tracker.getService();
-      tracker.close();
+      ServiceReference<T> reference = context.getServiceReference(clazz);
+      Assert.assertNotNull(reference);
 
+      T service = context.getService(reference);
       Assert.assertNotNull(service);
+
       return service;
    }
 
