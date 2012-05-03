@@ -8,4 +8,5 @@
    <property name="default" type="Boolean" value="true"/>
    <reference bind="setAccessModelInterpreter" cardinality="1..1" interface="org.eclipse.osee.framework.core.dsl.integration.AccessModelInterpreter" name="AccessModelInterpreter" policy="static"/>
    <reference bind="setEventService" cardinality="1..1" interface="org.eclipse.osee.framework.skynet.core.event.OseeEventService" name="OseeEventService" policy="static"/>
+   <reference cardinality="1..1" interface="org.eclipse.core.resources.IWorkspace" name="IWorkspace" policy="static"/>
 </scr:component>
