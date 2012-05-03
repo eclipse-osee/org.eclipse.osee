@@ -49,7 +49,7 @@ public class CreateBranchDatabaseTxCallable extends DatabaseTxCallable<Branch> {
 
    // descending order is used so that the most recent entry will be used if there are multiple rows with the same gamma (an error case)
    private static final String SELECT_ADDRESSING =
-      "SELECT gamma_id, mod_type FROM osee_txs txs WHERE txs.tx_current <> ? AND txs.branch_id = ? ORDER BY txs.transaction_id DESC";
+      "SELECT gamma_id, mod_type FROM osee_txs txs WHERE txs.tx_current <> ? AND txs.branch_id = ? AND txs.transaction_id <= ? ORDER BY txs.transaction_id DESC";
    private static final String INSERT_ADDRESSING =
       "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) VALUES (?,?,?,?,?)";
    private static final String USER_ID_QUERY = "SELECT art_id FROM osee_artifact WHERE guid = ?";
@@ -223,14 +223,14 @@ public class CreateBranchDatabaseTxCallable extends DatabaseTxCallable<Branch> {
             parentBranchId = branch.getParentBranch().getId();
          }
          int baseTxId = branch.getBaseTransaction().getId();
-         if (populateBaseTxFromAddressingQueryId > 0) {
+         if (branch.getBranchType().isMergeBranch()) {
             populateAddressingToCopy(connection, data, baseTxId, gammas, SELECT_ATTRIBUTE_ADDRESSING_FROM_JOIN,
                parentBranchId, TxChange.NOT_CURRENT.getValue(), populateBaseTxFromAddressingQueryId);
             populateAddressingToCopy(connection, data, baseTxId, gammas, SELECT_ARTIFACT_ADDRESSING_FROM_JOIN,
                parentBranchId, TxChange.NOT_CURRENT.getValue(), populateBaseTxFromAddressingQueryId);
          } else {
             populateAddressingToCopy(connection, data, baseTxId, gammas, SELECT_ADDRESSING,
-               TxChange.NOT_CURRENT.getValue(), parentBranchId);
+               TxChange.NOT_CURRENT.getValue(), parentBranchId, branch.getSourceTransaction().getId());
          }
          if (!data.isEmpty()) {
             getDatabaseService().runBatchUpdate(connection, INSERT_ADDRESSING, data);
