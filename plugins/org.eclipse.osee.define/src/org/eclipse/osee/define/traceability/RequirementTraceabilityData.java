@@ -23,6 +23,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -42,7 +43,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  * @author Roberto E. Escobar
  */
 public class RequirementTraceabilityData {
-   private final IOseeBranch requirementsBranch;
    private final IOseeBranch testProcedureBranch;
    private final TraceabilityProviderOperation traceabilityProvider;
    private RequirementData requirementData;
@@ -54,8 +54,7 @@ public class RequirementTraceabilityData {
    private final Map<String, Artifact> testScripts = new HashMap<String, Artifact>();
    private File testProcedureFilter;
 
-   public RequirementTraceabilityData(IOseeBranch requirementsBranch, IOseeBranch testProcedureBranch, TraceabilityProviderOperation traceabilityProvider) {
-      this.requirementsBranch = requirementsBranch;
+   public RequirementTraceabilityData(IOseeBranch testProcedureBranch, TraceabilityProviderOperation traceabilityProvider) {
       this.testProcedureBranch = testProcedureBranch;
       this.traceabilityProvider = traceabilityProvider;
       this.testProcedureFilter = null;
@@ -200,7 +199,11 @@ public class RequirementTraceabilityData {
    }
 
    public Artifact getTestScriptByName(String name) {
-      return testScripts.get(name);
+	   Artifact toReturn = testScripts.get(name);
+	   if(toReturn == null) {
+		   toReturn = testScripts.get(name + ".java");
+	   }
+      return toReturn;
    }
 
    private String getScriptName(String name) {

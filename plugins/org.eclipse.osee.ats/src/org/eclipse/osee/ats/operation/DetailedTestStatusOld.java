@@ -240,8 +240,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
       } else {
          provider = new ScriptTraceabilityOperation(scriptDir, requirementsBranch, false);
       }
-      RequirementTraceabilityData traceabilityData =
-         new RequirementTraceabilityData(requirementsBranch, procedureBranch, provider);
+      RequirementTraceabilityData traceabilityData = new RequirementTraceabilityData(procedureBranch, provider);
 
       IStatus status = traceabilityData.initialize(monitor);
       switch (status.getSeverity()) {
