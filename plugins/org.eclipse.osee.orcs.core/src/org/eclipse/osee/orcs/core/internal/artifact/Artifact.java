@@ -19,6 +19,9 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
+import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
@@ -152,7 +155,34 @@ public class Artifact extends NamedIdentity<String> implements ReadableArtifact 
 
    @Override
    public String getSoleAttributeAsString(IAttributeType attributeType) throws OseeCoreException {
-      return String.valueOf(attributeContainer.getAttributes(attributeType).iterator().next().getValue());
+      return String.valueOf(getSoleAttributeValue(attributeType));
    }
 
+   /**
+    * Return sole attribute value for given attribute type name. Will throw exceptions if "Sole" nature of attribute is
+    * invalid.<br>
+    * <br>
+    * Used for quick access to attribute value that should only have 0 or 1 instances of the attribute.
+    */
+   @Override
+   public final <T> T getSoleAttributeValue(IAttributeType attributeType) throws OseeCoreException {
+      List<ReadableAttribute<T>> soleAttributes = attributeContainer.getAttributes(attributeType);
+      if (soleAttributes.isEmpty()) {
+         if (!isAttributeTypeValid(attributeType)) {
+            throw new OseeArgumentException("The attribute type %s is not valid for artifacts of type [%s]",
+               attributeType, artifactType.getName());
+         }
+         throw new AttributeDoesNotExist("Attribute of type [%s] could not be found on artifact [%s] on branch [%s]",
+            attributeType.getName(), getGuid(), getBranch().getGuid());
+      } else if (soleAttributes.size() > 1) {
+         throw new MultipleAttributesExist(
+            "Attribute [%s] must have exactly one instance.  It currently has %d for artifact [%s]", attributeType,
+            soleAttributes.size(), getGuid());
+      }
+      return soleAttributes.iterator().next().getValue();
+   }
+
+   public final boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException {
+      return artifactType.isValidAttributeType(attributeType, branch);
+   }
 }
