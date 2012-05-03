@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchOptionsEnum;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.commands.IElementUpdater;
@@ -64,11 +65,14 @@ public final class ShowMergeBranchPresentationHandler extends AbstractHandler im
       boolean isValid = false;
       service.refreshElements(COMMAND_ID, null);
 
-      if (!DbUtil.isDbInit()) {
-         try {
-            isValid = AccessControlManager.isOseeAdmin();
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+      if (!DbUtil.isDbInit() && PlatformUI.isWorkbenchRunning()) {
+         IWorkbench workbench = PlatformUI.getWorkbench();
+         if (!workbench.isStarting() && !workbench.isClosing()) {
+            try {
+               isValid = AccessControlManager.isOseeAdmin();
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
          }
       }
       return isValid;

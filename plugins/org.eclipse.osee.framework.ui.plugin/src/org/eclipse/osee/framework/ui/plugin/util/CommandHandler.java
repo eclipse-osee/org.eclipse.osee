@@ -34,13 +34,16 @@ public abstract class CommandHandler extends AbstractHandler {
    @Override
    public boolean isEnabled() {
       boolean result = false;
-      try {
-         IStructuredSelection selection = getCurrentSelection();
-         if (selection != null) {
-            result = isEnabledWithException(selection);
+      IWorkbench workbench = PlatformUI.getWorkbench();
+      if (PlatformUI.isWorkbenchRunning() && (!workbench.isStarting() && !workbench.isClosing())) {
+         try {
+            IStructuredSelection selection = getCurrentSelection();
+            if (selection != null) {
+               result = isEnabledWithException(selection);
+            }
+         } catch (Exception ex) {
+            OseeLog.log(UiPluginConstants.class, Level.SEVERE, ex);
          }
-      } catch (Exception ex) {
-         OseeLog.log(UiPluginConstants.class, Level.SEVERE, ex);
       }
       return result;
    }
@@ -61,7 +64,7 @@ public abstract class CommandHandler extends AbstractHandler {
    public static IStructuredSelection getCurrentSelection() throws Exception {
       IStructuredSelection structuredSelection = null;
       IWorkbench workbench = PlatformUI.getWorkbench();
-      if (!workbench.isClosing() || !workbench.isStarting()) {
+      if (!workbench.isStarting() && !workbench.isClosing()) {
          IWorkbenchPage page = AWorkbench.getActivePage();
          if (page != null) {
             IWorkbenchPart part = page.getActivePart();
