@@ -142,12 +142,15 @@ public class RelationLink {
       try {
          Artifact aArtifact = ArtifactQuery.getArtifactFromId(aArtifactId, branch);
 
-         if (aArtifact.getAttributeCount(CoreAttributeTypes.RelationOrder) == 1 && aArtifact.getChildren().isEmpty()) {
-            aArtifact.getSoleAttribute(CoreAttributeTypes.RelationOrder).delete();
-            if (transaction == null) {
-               aArtifact.persist("Delete empty relation order attribute for artifact: " + aArtifact.getGuid());
-            } else {
-               aArtifact.persist(transaction);
+         if (aArtifact.getAttributeCount(CoreAttributeTypes.RelationOrder) == 1) {
+            RelationOrderData relationOrderData = new RelationOrderFactory().createRelationOrderData(aArtifact);
+            if (!relationOrderData.hasEntries()) {
+               aArtifact.getSoleAttribute(CoreAttributeTypes.RelationOrder).delete();
+               if (transaction == null) {
+                  aArtifact.persist("Delete empty relation order attribute for artifact: " + aArtifact.getGuid());
+               } else {
+                  aArtifact.persist(transaction);
+               }
             }
          }
 
