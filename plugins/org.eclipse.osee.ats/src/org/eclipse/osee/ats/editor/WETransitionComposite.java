@@ -286,44 +286,52 @@ public class WETransitionComposite extends Composite {
    }
 
    private boolean handlePopulateStateMetrics(StateDefinition fromStateDefinition, StateDefinition toStateDefinition) throws OseeCoreException {
-      // Don't log metrics for transition to cancelled states
-      if (toStateDefinition.isCancelledPage()) {
-         return true;
+      int percent = 0;
+      // If state weighting, always 100 cause state is completed
+      if (awa.getWorkDefinition().isStateWeightingEnabled()) {
+         percent = 100;
+      } else {
+         if (toStateDefinition.isCompletedOrCancelledPage()) {
+            percent = 100;
+         } else {
+            percent = awa.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0);
+         }
       }
 
-      // Page has the ability to override the autofill of the metrics
-      if (!isRequireStateHoursSpentPrompt(fromStateDefinition) && awa.getStateMgr().getHoursSpent() == 0) {
+      double hoursSpent = awa.getStateMgr().getHoursSpent();
+      double additionalHours = 0.0;
+      boolean autoFilled = false;
+      if (hoursSpent == 0) {
          // First, try to autofill if it's only been < 5 min since creation
          double minSinceCreation = getCreationToNowDateDeltaMinutes();
-         // System.out.println("minSinceCreation *" + minSinceCreation + "*");
-         double hoursSinceCreation = minSinceCreation / 60.0;
-         if (hoursSinceCreation < 0.02) {
-            hoursSinceCreation = 0.02;
-         }
-         // System.out.println("hoursSinceCreation *" + hoursSinceCreation + "*");
          if (minSinceCreation < 5) {
-            awa.getStateMgr().updateMetrics(awa.getStateDefinition(), hoursSinceCreation, 100, true);
-            return true;
+            // System.out.println("minSinceCreation *" + minSinceCreation + "*");
+            double hoursSinceCreation = minSinceCreation / 60.0;
+            if (hoursSinceCreation < 0.02) {
+               hoursSinceCreation = 0.02;
+            }
+            additionalHours = hoursSinceCreation;
+            autoFilled = true;
          }
       }
 
-      if (isRequireStateHoursSpentPrompt(fromStateDefinition)) {
+      if (isRequireStateHoursSpentPrompt(fromStateDefinition) && !autoFilled && !toStateDefinition.isCancelledPage()) {
          // Otherwise, open dialog to ask for hours complete
          String msg =
-            awa.getStateMgr().getCurrentStateName() + " State\n\n" + AtsUtilCore.doubleToI18nString(awa.getStateMgr().getHoursSpent()) + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
+            awa.getStateMgr().getCurrentStateName() + " State\n\n" + AtsUtilCore.doubleToI18nString(hoursSpent) + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
          // Remove after ATS Resolution options is removed 0.9.9_SR5ish
          TransitionStatusData data = new TransitionStatusData(Arrays.asList(awa), false);
          TransitionStatusDialog dialog = new TransitionStatusDialog("Enter Hours Spent", msg, data);
          int result = dialog.open();
          if (result == 0) {
-            awa.getStateMgr().updateMetrics(awa.getStateDefinition(), data.getAdditionalHours(), 100, true);
-            return true;
+            additionalHours = dialog.getData().getAdditionalHours();
          } else {
             return false;
          }
-      } else {
-         return true;
       }
+      awa.getStateMgr().updateMetrics(awa.getStateDefinition(), additionalHours, percent, true);
+
+      return true;
    }
 
    private boolean isRequireStateHoursSpentPrompt(StateDefinition stateDefinition) {
