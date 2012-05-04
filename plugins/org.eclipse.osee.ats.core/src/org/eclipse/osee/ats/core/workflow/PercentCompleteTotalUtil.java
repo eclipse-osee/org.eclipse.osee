@@ -40,9 +40,6 @@ public class PercentCompleteTotalUtil {
          return 0;
       }
       AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
-      if (awa.isCompletedOrCancelled()) {
-         return 100;
-      }
       if (awa.getWorkDefinition().isStateWeightingEnabled()) {
          // Calculate total percent using configured weighting
          int percent = 0;
