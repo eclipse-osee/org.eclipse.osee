@@ -299,7 +299,7 @@ public class WETransitionComposite extends Composite {
          }
       }
 
-      double hoursSpent = awa.getStateMgr().getHoursSpent();
+      double hoursSpent = awa.getStateMgr().getHoursSpent(awa.getCurrentStateName());
       double additionalHours = 0.0;
       boolean autoFilled = false;
       if (hoursSpent == 0) {
