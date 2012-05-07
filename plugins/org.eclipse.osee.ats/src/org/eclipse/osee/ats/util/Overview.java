@@ -104,31 +104,19 @@ public class Overview {
       return AHTML.getLabelStr(labelFont, label + ": ");
    }
 
-   public void addTable(String str) {
-      addTable(new String[] {str});
-   }
-
-   public void addTable(String str, String str2) {
-      addTable(new String[] {str, str2});
-   }
-
-   public void addTable(String str, String str2, String str3) {
-      addTable(new String[] {str, str2, str3});
-   }
-
-   public void addTable(String[] strs) {
-      addTable(strs, 100);
-   }
-
    public void addHtml(String html) {
       this.html.append(html);
+   }
+
+   public void addTable(String... strs) {
+      addTable(strs, 100);
    }
 
    public void addTable(String[] strs, int width) {
       if (strs.length == 1) {
          this.html.append(AHTML.simpleTable(strs[0]));
       } else {
-         this.html.append(AHTML.multiColumnTable(strs, width));
+         this.html.append(AHTML.multiColumnTable(width, strs));
       }
    }
 

@@ -311,8 +311,8 @@ public class AHTML {
     * @param str = array of strings for columns
     * @return Return multi-column table string
     */
-   public static String multiColumnTable(String[] str) {
-      return multiColumnTable(str, 85);
+   public static String multiColumnTable(String... str) {
+      return multiColumnTable(85, str);
    }
 
    /**
@@ -322,7 +322,7 @@ public class AHTML {
     * @param width - percent (1..100) of screen for table
     * @return Return multi-column table string
     */
-   public static String multiColumnTable(String[] str, int width) {
+   public static String multiColumnTable(int width, String... str) {
       StringBuilder s = new StringBuilder();
       s.append("<table border=\"0\" cellpadding=\"3\" cellspacing=\"0\" width=\"" + width + "%\"><tr>");
       for (int i = 0; i < str.length; i++) {
