@@ -16,7 +16,6 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -511,16 +510,12 @@ public class Jaxp {
    /**
     * Sends the XML to the output
     * 
-    * @param document The source XML
+    * @param node The source XML
     * @param output Where the XML is 'printed' to
     * @param format The format style to use
     * @throws TransformerException
     */
-   public static void outputXmlDocument(Node document, Writer output, Properties outputProperties) throws TransformerException {
-      outputXmlDocument(document, output, outputProperties);
-   }
-
-   public static void outputXmlDocument(Node node, OutputStream output, Properties outputProperties) throws TransformerException {
+   public static void outputXmlDocument(Node node, Writer output, Properties outputProperties) throws TransformerException {
       Transformer transformer = TransformerFactory.newInstance().newTransformer();
       transformer.setOutputProperties(outputProperties);
       transformer.transform(new DOMSource(node), new StreamResult(output));
