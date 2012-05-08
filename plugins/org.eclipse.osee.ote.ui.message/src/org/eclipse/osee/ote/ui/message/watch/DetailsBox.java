@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -26,6 +27,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MessageData;
+import org.eclipse.osee.ote.message.elements.ArrayElement;
 import org.eclipse.osee.ote.message.elements.Element;
 import org.eclipse.osee.ote.ui.message.OteMessageImage;
 import org.eclipse.osee.ote.ui.message.tree.AbstractTreeNode;
@@ -157,42 +159,55 @@ public class DetailsBox implements IRegistryEventListener {
 
             Element e = msg.getElement(node.getElementPath().getElementPath());
             if (e != null) {
-               if (!e.isNonMappingElement()) {
-                  MessageData data = msg.getActiveDataSource();
-                  int headerSize = data.getMsgHeader() == null ? 0 : data.getMsgHeader().getHeaderSize();
-                  if (e.getByteOffset() >= data.getCurrentLength() - headerSize) {
-                     hexDumpTxt.setText("element outside of current message size");
-                     hexDumpTxt.setRedraw(true);
-                     return null;
-                  }
-                  StyleRange range = new StyleRange();
-                  range.background = Displays.getSystemColor(SWT.COLOR_GRAY);
-                  range.foreground = Displays.getSystemColor(SWT.COLOR_BLACK);
-                  int offset = e.getByteOffset() + e.getMsb() / 8;
-                  range.length = (e.getLsb() - e.getMsb() + 8) / 8 * HEX_DUMP_CHARS_PER_BYTE - 1;
-                  int line = offset / HEX_DUMP_BYTES_PER_ROW * HEX_DUMP_LINE_WIDTH;
-                  int lineIndent = offset % HEX_DUMP_BYTES_PER_ROW * HEX_DUMP_CHARS_PER_BYTE;
-                  range.start = line + lineIndent + payloadStart;
-                  if (HEX_DUMP_PREFIX_CHARS + lineIndent + range.length >= HEX_DUMP_LINE_WIDTH) {
-                     int remaing = range.length - (HEX_DUMP_LINE_WIDTH - lineIndent - 9);
-                     StyleRange[] ranges = new StyleRange[remaing / HEX_DUMP_NON_PREFIX_CHAR + 2];
-                     ranges[0] = range;
-                     range.length -= remaing;
-                     int c = 1;
-                     while (remaing > 0) {
-                        StyleRange newRange = new StyleRange();
-                        ranges[c] = newRange;
-                        newRange.background = range.background;
-                        newRange.foreground = range.foreground;
-                        newRange.start = line + c * HEX_DUMP_LINE_WIDTH + payloadStart;
-                        newRange.length = remaing < HEX_DUMP_NON_PREFIX_CHAR ? remaing : HEX_DUMP_NON_PREFIX_CHAR;
-                        remaing -= newRange.length;
-                        c++;
-                     }
-                     hexDumpTxt.setStyleRanges(ranges);
-                  } else {
-                     hexDumpTxt.setStyleRange(range);
-                  }
+            	if (!e.isNonMappingElement()) {
+            		MessageData data = msg.getActiveDataSource();
+            		int headerSize = data.getMsgHeader() == null ? 0 : data.getMsgHeader().getHeaderSize();
+            		if (e.getByteOffset() >= data.getCurrentLength() - headerSize) {
+            			hexDumpTxt.setText("element outside of current message size");
+            			hexDumpTxt.setRedraw(true);
+            			return null;
+            		}
+            		StyleRange range = new StyleRange();
+            		range.background = Displays.getSystemColor(SWT.COLOR_GRAY);
+            		range.foreground = Displays.getSystemColor(SWT.COLOR_BLACK);
+            		int offset = e.getByteOffset() + e.getMsb() / 8;
+            		range.length = (e.getLsb() - e.getMsb() + 8) / 8 * HEX_DUMP_CHARS_PER_BYTE - 1;
+
+            		int line = offset / HEX_DUMP_BYTES_PER_ROW * HEX_DUMP_LINE_WIDTH;
+            		int lineIndent = offset % HEX_DUMP_BYTES_PER_ROW * HEX_DUMP_CHARS_PER_BYTE;
+            		range.start = line + lineIndent + payloadStart;
+
+            		if(!(e instanceof ArrayElement)){
+
+            			if (HEX_DUMP_PREFIX_CHARS + lineIndent + range.length >= HEX_DUMP_LINE_WIDTH) {
+            				int remaing = range.length - (HEX_DUMP_LINE_WIDTH - lineIndent - 9);
+            				StyleRange[] ranges = new StyleRange[remaing / HEX_DUMP_NON_PREFIX_CHAR + 2];
+            				ranges[0] = range;
+            				range.length -= remaing;
+            				int c = 1;
+            				while (remaing > 0) {
+            					StyleRange newRange = new StyleRange();
+            					ranges[c] = newRange;
+            					newRange.background = range.background;
+            					newRange.foreground = range.foreground;
+            					newRange.start = line + c * HEX_DUMP_LINE_WIDTH + payloadStart;
+            					newRange.length = remaing < HEX_DUMP_NON_PREFIX_CHAR ? remaing : HEX_DUMP_NON_PREFIX_CHAR;
+            					remaing -= newRange.length;
+            					c++;
+            				}
+            				try{
+            					hexDumpTxt.setStyleRanges(ranges);
+            				} catch (Throwable th){
+            					th.printStackTrace();
+            				}
+            			} else {
+            				try{
+            					hexDumpTxt.setStyleRange(range);
+            				} catch (Throwable th){
+            					th.printStackTrace();
+            				}
+            			}
+            		}
                   hexDumpTxt.setTopIndex(msg.getHeaderSize() / HEX_DUMP_BYTES_PER_ROW + offset / HEX_DUMP_BYTES_PER_ROW + 2);
                   hexDumpTxt.setRedraw(true);
                }
