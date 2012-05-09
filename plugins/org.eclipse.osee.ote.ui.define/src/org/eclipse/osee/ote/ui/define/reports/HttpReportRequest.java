@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
+import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.osee.ote.ui.define.reports.output.IReportWriter;
 import org.eclipse.osee.ote.ui.define.reports.output.OutputFactory;
@@ -102,20 +102,20 @@ public class HttpReportRequest implements IHttpServerRequest {
       }
    }
 
-   private TestRunOperator[] getSourceData(HttpRequest httpRequest) {
+   private ArtifactTestRunOperator[] getSourceData(HttpRequest httpRequest) {
       String source = httpRequest.getParameter(REPORT_SOURCE);
 
-      List<TestRunOperator> toReturn = new ArrayList<TestRunOperator>();
+      List<ArtifactTestRunOperator> toReturn = new ArrayList<ArtifactTestRunOperator>();
       if (source.equals("local")) {
          LocalSourceSelection selection = new LocalSourceSelection();
          Displays.ensureInDisplayThread(selection);
-         TestRunOperator[] data = selection.getArtifacts();
+         ArtifactTestRunOperator[] data = selection.getArtifacts();
          addData(httpRequest, data, toReturn);
       }
-      return toReturn.toArray(new TestRunOperator[toReturn.size()]);
+      return toReturn.toArray(new ArtifactTestRunOperator[toReturn.size()]);
    }
 
-   private void addData(HttpRequest httpRequest, TestRunOperator[] source, List<TestRunOperator> destination) {
+   private void addData(HttpRequest httpRequest, ArtifactTestRunOperator[] source, List<ArtifactTestRunOperator> destination) {
       String previewSize = httpRequest.getParameter(PREVIEW_SIZE);
       if (Strings.isValid(previewSize)) {
          int size = 5;
@@ -141,10 +141,10 @@ public class HttpReportRequest implements IHttpServerRequest {
 
    private final class LocalSourceSelection implements Runnable {
 
-      private TestRunOperator[] artifacts;
+      private ArtifactTestRunOperator[] artifacts;
       private boolean done = false;
 
-      public TestRunOperator[] getArtifacts() {
+      public ArtifactTestRunOperator[] getArtifacts() {
          while (this.isDone() != true) {
             ;
          }
@@ -154,12 +154,12 @@ public class HttpReportRequest implements IHttpServerRequest {
       @Override
       public void run() {
          done = false;
-         List<TestRunOperator> toReturn = new ArrayList<TestRunOperator>();
+         List<ArtifactTestRunOperator> toReturn = new ArrayList<ArtifactTestRunOperator>();
          StructuredViewer viewer = TestRunView.getViewer();
          if (viewer != null) {
             toReturn.addAll(SelectionHelper.getInstance().getSelections(viewer));
          }
-         artifacts = toReturn.toArray(new TestRunOperator[toReturn.size()]);
+         artifacts = toReturn.toArray(new ArtifactTestRunOperator[toReturn.size()]);
          done = true;
       }
 

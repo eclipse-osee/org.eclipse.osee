@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.svn.VersionControl;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.osee.ote.ui.define.utilities.SelectionHelper;
@@ -48,7 +49,7 @@ public class OpenAssociatedScript extends AbstractActionHandler {
    @Override
    public void run() {
       try {
-         TestRunOperator operator = selectionHelper.getSelection(getViewer());
+         ArtifactTestRunOperator operator = selectionHelper.getSelection(getViewer());
          if (operator.isScriptRevisionValid()) {
             openRemoteScript(operator.getScriptUrl(), operator.getScriptRevision());
          } else {

@@ -11,7 +11,7 @@
 package org.eclipse.osee.define.traceability;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.osee.define.traceability.data.RequirementData;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -26,7 +26,9 @@ public interface ITraceabilityProvider {
 
    public HashCollection<Artifact, String> getRequirementToCodeUnitsMap() throws OseeCoreException;
 
-   public HashSet<String> getCodeUnits();
+   public Set<String> getCodeUnits();
 
    public Collection<Artifact> getTestUnitArtifacts(Artifact requirement) throws OseeCoreException;
+
+   public Artifact getTestUnitByName(String name);
 }

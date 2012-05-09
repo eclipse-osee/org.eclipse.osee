@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
+import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.osee.ote.ui.define.dialogs.CommitDialog;
@@ -155,7 +155,7 @@ class CommitJobDialog extends UIJob {
                         break;
                      case Id:
                         try {
-                           toReturn = new TestRunOperator(artifact).getChecksum();
+                           toReturn = new ArtifactTestRunOperator(artifact).getChecksum();
                         } catch (Exception ex) {
                            OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, "Error getting Checksum", ex);
                         }
@@ -165,7 +165,7 @@ class CommitJobDialog extends UIJob {
                         break;
                      case Outfile:
                         try {
-                           toReturn = new TestRunOperator(artifact).getOutfileAttribute().getDisplayableString();
+                           toReturn = new ArtifactTestRunOperator(artifact).getOutfileAttribute().getDisplayableString();
                         } catch (Exception ex) {
                            OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, "Error getting Outfile", ex);
                         }

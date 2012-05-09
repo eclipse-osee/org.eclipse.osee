@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
+import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 import org.eclipse.osee.ote.ui.define.panels.IOverrideHandler;
 
 /**
@@ -37,7 +37,7 @@ public class OverrideInvalidScriptRevisions implements IOverrideHandler {
       Set<Object> toReturn = new HashSet<Object>();
       for (Object object : unselectable) {
          if (object instanceof Artifact) {
-            TestRunOperator operator = new TestRunOperator(((Artifact) object));
+            ArtifactTestRunOperator operator = new ArtifactTestRunOperator(((Artifact) object));
             if (operator.hasNotBeenCommitted() != false) {
                toReturn.add(object);
             }

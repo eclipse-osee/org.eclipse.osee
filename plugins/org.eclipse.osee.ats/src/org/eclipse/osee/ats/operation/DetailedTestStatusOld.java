@@ -76,7 +76,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
+import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -206,8 +206,8 @@ public class DetailedTestStatusOld extends AbstractBlam {
          Artifact previousTestRun = testRunArtifacts.put(shortName, testRun);
 
          if (previousTestRun != null) {
-            Date date = new TestRunOperator(testRun).getEndDate();
-            Date previousDate = new TestRunOperator(previousTestRun).getEndDate();
+            Date date = new ArtifactTestRunOperator(testRun).getEndDate();
+            Date previousDate = new ArtifactTestRunOperator(previousTestRun).getEndDate();
             if (previousDate.after(date)) {
                testRunArtifacts.put(shortName, previousTestRun);
             }
@@ -306,7 +306,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
          String aborated = null;
          String lastAuthor = null;
          if (testRunArtifact != null) {
-            TestRunOperator runOperator = new TestRunOperator(testRunArtifact);
+            ArtifactTestRunOperator runOperator = new ArtifactTestRunOperator(testRunArtifact);
             try {
                runDate = dateFormatter.format(runOperator.getEndDate());
             } catch (Exception ex) {
@@ -420,7 +420,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
             statusLine[Index.TEST_SCRIPT.ordinal()] = scriptName;
             Artifact testRunArtifact = testRunArtifacts.get(scriptName);
             if (testRunArtifact != null) {
-               TestRunOperator runOperator = new TestRunOperator(testRunArtifact);
+               ArtifactTestRunOperator runOperator = new ArtifactTestRunOperator(testRunArtifact);
 
                try {
                   statusLine[Index.RUN_DATE.ordinal()] = dateFormatter.format(runOperator.getEndDate());

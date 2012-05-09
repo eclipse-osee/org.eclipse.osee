@@ -15,7 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
-import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
+import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 import org.eclipse.osee.ote.ui.define.viewers.data.ArtifactItem;
 
 /**
@@ -35,13 +35,13 @@ public class SelectionHelper {
       return instance;
    }
 
-   public TestRunOperator getSelection(StructuredViewer viewer) {
-      TestRunOperator toReturn = null;
+   public ArtifactTestRunOperator getSelection(StructuredViewer viewer) {
+      ArtifactTestRunOperator toReturn = null;
       if (viewer != null) {
          IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
          if (selection != null && selection.size() == 1) {
             Object object = selection.getFirstElement();
-            TestRunOperator operator = asTestRunOperator(object);
+            ArtifactTestRunOperator operator = asTestRunOperator(object);
             if (operator != null && operator.hasValidArtifact() != false) {
                toReturn = operator;
             }
@@ -50,8 +50,8 @@ public class SelectionHelper {
       return toReturn;
    }
 
-   public TestRunOperator asTestRunOperator(Object object) {
-      TestRunOperator operator = null;
+   public ArtifactTestRunOperator asTestRunOperator(Object object) {
+      ArtifactTestRunOperator operator = null;
       if (object instanceof ArtifactItem) {
          ArtifactItem artItem = (ArtifactItem) object;
          operator = artItem.getOperator();
@@ -59,15 +59,15 @@ public class SelectionHelper {
       return operator;
    }
 
-   public List<TestRunOperator> getSelections(StructuredViewer viewer) {
-      List<TestRunOperator> toReturn = new ArrayList<TestRunOperator>();
+   public List<ArtifactTestRunOperator> getSelections(StructuredViewer viewer) {
+      List<ArtifactTestRunOperator> toReturn = new ArrayList<ArtifactTestRunOperator>();
       if (viewer != null) {
          IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
          if (selection != null && selection.isEmpty() != true) {
             Iterator<?> iterator = selection.iterator();
             while (iterator.hasNext()) {
                Object object = iterator.next();
-               TestRunOperator operator = asTestRunOperator(object);
+               ArtifactTestRunOperator operator = asTestRunOperator(object);
                if (operator != null && operator.hasValidArtifact() != false) {
                   toReturn.add(operator);
                }

@@ -28,9 +28,9 @@ import org.eclipse.osee.ote.define.parser.IDataListener;
  * @author Roberto E. Escobar
  */
 public class OutfileDataCollector implements IDataListener {
-   private static final OteToAttributeMap oteToAttributeMap = OteToAttributeMap.getInstance();
+   protected static final OteToAttributeMap oteToAttributeMap = OteToAttributeMap.getInstance();
 
-   private final Map<String, String> collectedData;
+   protected final Map<String, String> collectedData;
 
    public OutfileDataCollector() {
       this.collectedData = new HashMap<String, String>();

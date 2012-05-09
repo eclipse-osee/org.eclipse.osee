@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.core.threading.ThreadedWorkerFactory;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.ote.define.OteDefinePlugin;
-import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
+import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 
 /**
  * @author Roberto E. Escobar
@@ -115,7 +115,7 @@ public class FindCommitableJob extends Job {
       public Object call() throws Exception {
          for (Artifact artifact : artifactsToSort) {
             try {
-               TestRunOperator operator = new TestRunOperator(artifact);
+               ArtifactTestRunOperator operator = new ArtifactTestRunOperator(artifact);
                if (operator.isCommitAllowed() == true) {
                   synchronized (commitable) {
                      commitable.add(artifact);

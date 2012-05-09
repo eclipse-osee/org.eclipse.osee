@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
-import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
+import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -237,7 +237,7 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
          for (String script : scriptNames) {
             Artifact testScript;
             try {
-               testScript = TestRunOperator.getTestScriptFetcher().getNewArtifact(requirement.getBranch());
+               testScript = ArtifactTestRunOperator.getTestScriptFetcher().getNewArtifact(requirement.getBranch());
                testScript.setName(script);
                toReturn.add(testScript);
             } catch (OseeCoreException ex) {
@@ -246,5 +246,10 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
          }
       }
       return toReturn;
+   }
+
+   @Override
+   public Artifact getTestUnitByName(String name) {
+      return null;
    }
 }

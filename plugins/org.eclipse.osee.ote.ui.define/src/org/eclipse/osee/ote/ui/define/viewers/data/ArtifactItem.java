@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.OverlayImage;
 import org.eclipse.osee.framework.ui.swt.OverlayImage.Location;
 import org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes;
-import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
+import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.swt.graphics.Image;
@@ -56,7 +56,7 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
 
    private final XViewer xViewer;
    private Artifact artifact;
-   private TestRunOperator operator;
+   private ArtifactTestRunOperator operator;
    private String key;
 
    public ArtifactItem(XViewer xViewer, Artifact artifact, DataItem parent) throws OseeArgumentException {
@@ -79,7 +79,7 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
 
    private void setArtifact(Artifact artifact) throws OseeArgumentException {
       this.artifact = artifact;
-      this.operator = new TestRunOperator(artifact);
+      this.operator = new ArtifactTestRunOperator(artifact);
       try {
          this.key =
             String.format("%s:%s:%s", getOperator().getChecksum(), getOperator().isFromLocalWorkspace(),
@@ -93,7 +93,7 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
       return xViewer;
    }
 
-   public TestRunOperator getOperator() {
+   public ArtifactTestRunOperator getOperator() {
       return operator;
    }
 
@@ -191,7 +191,7 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
             if (areImagesInitialized() != true) {
                initializeImages();
             }
-            TestRunOperator operator = getOperator();
+            ArtifactTestRunOperator operator = getOperator();
             if (operator.isFromLocalWorkspace() == true) {
                if (operator.isCommitAllowed() == true) {
                   toReturn = FROM_LOCAL_WS_COMMIT_ALLOWED_IMAGE;

@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
+import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 import org.eclipse.osee.ote.define.jobs.FindCommitableJob;
 import org.eclipse.osee.ote.define.jobs.OutfileToArtifactJob;
 
@@ -137,7 +137,7 @@ public class ImportOutfileOperation {
       for (Artifact artifact : artifacts) {
          monitor.subTask(String.format("Persisting: [%s] ", artifact.getName()));
 
-         TestRunOperator operator = new TestRunOperator(artifact);
+         ArtifactTestRunOperator operator = new ArtifactTestRunOperator(artifact);
          operator.setLastDateUploaded(uploadDate);
          if (monitor.isCanceled() != false) {
             break;

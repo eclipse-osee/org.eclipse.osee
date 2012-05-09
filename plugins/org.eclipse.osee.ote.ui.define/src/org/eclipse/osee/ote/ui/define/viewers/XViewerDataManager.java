@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassXViewerFactory;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
+import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 import org.eclipse.osee.ote.ui.define.viewers.data.ArtifactItem;
 import org.eclipse.osee.ote.ui.define.viewers.data.BranchItem;
 import org.eclipse.osee.ote.ui.define.viewers.data.DataItem;
@@ -89,7 +89,7 @@ public class XViewerDataManager {
          if (itemFound == null) {
             scriptItem.addChild(tempItem.getKey(), tempItem);
             tempItem.setParent(scriptItem);
-            TestRunOperator operator = tempItem.getOperator();
+            ArtifactTestRunOperator operator = tempItem.getOperator();
             if (operator.isFromLocalWorkspace()) {
                if (operator.isCommitAllowed()) {
                   commitableItems.add(tempItem);
@@ -117,7 +117,7 @@ public class XViewerDataManager {
    }
 
    private DataItem getScriptItem(DataItem branchItem, Artifact artifact) throws OseeCoreException {
-      TestRunOperator testRunArtifact = new TestRunOperator(artifact);
+      ArtifactTestRunOperator testRunArtifact = new ArtifactTestRunOperator(artifact);
       DataItem tempItem = new ScriptItem(testRunArtifact.getScriptUrl(), testRunArtifact.getScriptRevision(), null);
       DataItem scriptItem = branchItem.getChild(tempItem.getKey());
       if (scriptItem == null) {

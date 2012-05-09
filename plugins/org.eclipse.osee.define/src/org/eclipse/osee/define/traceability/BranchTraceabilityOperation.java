@@ -13,8 +13,11 @@ package org.eclipse.osee.define.traceability;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.data.RequirementData;
@@ -36,8 +39,8 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
 
    private final IOseeBranch branch;
    private final RequirementData requirementData;
-   private HashCollection<Artifact, String> requirementToCodeUnitsMap;
-   private HashSet<String> codeUnits;
+   private HashCollection<Artifact, String> requirementToTestUnitsMap;
+   private Map<String, Artifact> testUnits;
    private final Collection<? extends IArtifactType> types;
    private final boolean withInheritance;
 
@@ -65,12 +68,12 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
 
    @Override
    public HashCollection<Artifact, String> getRequirementToCodeUnitsMap() {
-      return requirementToCodeUnitsMap;
+      return requirementToTestUnitsMap;
    }
 
    @Override
-   public HashSet<String> getCodeUnits() {
-      return codeUnits;
+   public Set<String> getCodeUnits() {
+      return testUnits.keySet();
    }
 
    private String convertToJavaFileName(String name) {
@@ -84,7 +87,7 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       requirementData.initialize(monitor);
-      requirementToCodeUnitsMap = new HashCollection<Artifact, String>();
+      requirementToTestUnitsMap = new HashCollection<Artifact, String>();
 
       List<Artifact> reqs = new ArrayList<Artifact>();
       for (IArtifactType type : types) {
@@ -100,19 +103,28 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
          for (Artifact verifier : verifiers) {
             verifierNames.add(convertToJavaFileName(verifier.getName()));
          }
-         requirementToCodeUnitsMap.put(req, verifierNames);
+         requirementToTestUnitsMap.put(req, verifierNames);
       }
 
-      codeUnits = new HashSet<String>();
+      testUnits = new HashMap<String, Artifact>();
       List<Artifact> unitsOnBranch = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.TestCase, branch);
       for (Artifact unit : unitsOnBranch) {
-         codeUnits.add(convertToJavaFileName(unit.getName()));
+         testUnits.put(convertToJavaFileName(unit.getName()), unit);
       }
    }
 
    @Override
    public Collection<Artifact> getTestUnitArtifacts(Artifact requirement) throws OseeCoreException {
       return requirement.getRelatedArtifacts(CoreRelationTypes.Verification__Verifier);
+   }
+
+   @Override
+   public Artifact getTestUnitByName(String name) {
+      Artifact toReturn = testUnits.get(name);
+      if (toReturn == null) {
+         toReturn = testUnits.get(name + ".java");
+      }
+      return toReturn;
    }
 
 }

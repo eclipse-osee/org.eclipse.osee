@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.threading.ThreadedWorkerExecutor;
 import org.eclipse.osee.framework.core.threading.ThreadedWorkerFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
+import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 
 /**
  * @author Roberto E. Escobar
@@ -88,7 +88,7 @@ public class LinkTestRunToTestScriptOperation {
 
             monitor.subTask(String.format("Linking [%s] [%s of %s] ", testRun.getName(), count.incrementAndGet(),
                totalSize));
-            TestRunOperator operator = new TestRunOperator(testRun);
+            ArtifactTestRunOperator operator = new ArtifactTestRunOperator(testRun);
             try {
                operator.createTestScriptSoftLink();
                synchronized (linked) {

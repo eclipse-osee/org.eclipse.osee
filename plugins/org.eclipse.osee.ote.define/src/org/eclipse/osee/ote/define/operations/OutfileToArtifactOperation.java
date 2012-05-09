@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.jdk.core.util.ChecksumUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
+import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 import org.eclipse.osee.ote.define.parser.BaseOutfileParser;
 import org.eclipse.osee.ote.define.utilities.OutfileDataCollector;
 import org.eclipse.osee.ote.define.utilities.OutfileParserExtensionManager;
@@ -89,7 +89,7 @@ public class OutfileToArtifactOperation {
       return scriptFolder;
    }
 
-   private void addChecksum(TestRunOperator operator, URL targetURL) throws Exception {
+   private void addChecksum(ArtifactTestRunOperator operator, URL targetURL) throws Exception {
       InputStream inputStream = null;
       try {
          inputStream = targetURL.openStream();
@@ -136,9 +136,9 @@ public class OutfileToArtifactOperation {
       @Override
       public Object call() throws Exception {
          for (URI targetUri : filesToImport) {
-            TestRunOperator operator = null;
+            ArtifactTestRunOperator operator = null;
             try {
-               operator = TestRunOperator.getNewArtifactWithOperator(branch);
+               operator = ArtifactTestRunOperator.getNewArtifactWithOperator(branch);
 
                OutfileDataCollector collector = getOutfileData(monitor, targetUri.toURL());
                collector.populate(operator.getTestRunArtifact(), parent);

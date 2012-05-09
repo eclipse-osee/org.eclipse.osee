@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
+import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.osee.ote.ui.define.utilities.SelectionHelper;
 
@@ -42,7 +42,7 @@ public class EditDispositionAction extends AbstractActionHandler {
    @Override
    public void run() {
       try {
-         TestRunOperator operator = SelectionHelper.getInstance().getSelection(getViewer());
+         ArtifactTestRunOperator operator = SelectionHelper.getInstance().getSelection(getViewer());
          if (isValidSelection(operator)) {
             Artifact artifact = operator.getTestRunArtifact();
             checkPermissions(artifact);
@@ -55,11 +55,11 @@ public class EditDispositionAction extends AbstractActionHandler {
 
    @Override
    public void updateState() throws OseeCoreException {
-      TestRunOperator operator = SelectionHelper.getInstance().getSelection(getViewer());
+      ArtifactTestRunOperator operator = SelectionHelper.getInstance().getSelection(getViewer());
       setEnabled(isValidSelection(operator));
    }
 
-   private boolean isValidSelection(TestRunOperator operator) throws OseeCoreException {
+   private boolean isValidSelection(ArtifactTestRunOperator operator) throws OseeCoreException {
       return operator != null && operator.hasValidArtifact() && operator.isFromLocalWorkspace() != true;
    }
 

@@ -23,7 +23,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -51,7 +50,6 @@ public class RequirementTraceabilityData {
       new HashCollection<String, Artifact>();
    private final Set<String> codeUnits = new TreeSet<String>();
    private final Map<String, Artifact> testProcedures = new HashMap<String, Artifact>();
-   private final Map<String, Artifact> testScripts = new HashMap<String, Artifact>();
    private File testProcedureFilter;
 
    public RequirementTraceabilityData(IOseeBranch testProcedureBranch, TraceabilityProviderOperation traceabilityProvider) {
@@ -64,7 +62,6 @@ public class RequirementTraceabilityData {
    private void reset() {
       this.codeUnits.clear();
       this.testProcedures.clear();
-      this.testScripts.clear();
       this.requirementsToCodeUnits = null;
       this.requirementData = null;
       this.requirementsToCodeUnits = null;
@@ -187,11 +184,7 @@ public class RequirementTraceabilityData {
     * @throws OseeCoreException
     */
    public Collection<Artifact> getTestScriptsForRequirement(Artifact artifact) throws OseeCoreException {
-      Collection<Artifact> testUnitArtifacts = traceabilityProvider.getTestUnitArtifacts(artifact);
-      for (Artifact art : testUnitArtifacts) {
-         testScripts.put(getScriptName(art.getName()), art);
-      }
-      return testUnitArtifacts;
+      return traceabilityProvider.getTestUnitArtifacts(artifact);
    }
 
    public Artifact getTestProcedureByName(String name) {
@@ -199,19 +192,7 @@ public class RequirementTraceabilityData {
    }
 
    public Artifact getTestScriptByName(String name) {
-	   Artifact toReturn = testScripts.get(name);
-	   if(toReturn == null) {
-		   toReturn = testScripts.get(name + ".java");
-	   }
-      return toReturn;
-   }
-
-   private String getScriptName(String name) {
-      int endOfPackageName = name.lastIndexOf(".");
-      if (endOfPackageName != -1) {
-         name = name.substring(endOfPackageName + 1) + ".java";
-      }
-      return name;
+      return traceabilityProvider.getTestUnitByName(name);
    }
 
    public void setTestProcedureFilterFile(File filter) {
