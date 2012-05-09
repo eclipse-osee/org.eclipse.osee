@@ -29,8 +29,8 @@ public class CreateBranchData implements Identifiable {
    private ReadableArtifact userArtifact;
 
    // Merge Branch Legacy Support
-   private int populateBaseTxFromAddressingQueryId;
-   private int destinationBranchId;
+   private int mergeAddressingQueryId;
+   private int mergeDestinationBranchId;
 
    @Override
    public String getGuid() {
@@ -90,21 +90,22 @@ public class CreateBranchData implements Identifiable {
       this.associatedArtifact = associatedArtifact;
    }
 
-   public int getPopulateBaseTxFromAddressingQueryId() {
-      return populateBaseTxFromAddressingQueryId;
+   public int getMergeAddressingQueryId() {
+      return mergeAddressingQueryId;
    }
 
-   public void setPopulateBaseTxFromAddressingQueryId(int populateBaseTxFromAddressingQueryId) {
-      this.populateBaseTxFromAddressingQueryId = populateBaseTxFromAddressingQueryId;
+   public void setMergeAddressingQueryId(int mergeAddressingQueryId) {
+      this.mergeAddressingQueryId = mergeAddressingQueryId;
    }
 
-   public int getDestinationBranchId() {
-      return destinationBranchId;
+   public int getMergeDestinationBranchId() {
+      return mergeDestinationBranchId;
    }
 
-   public void setDestinationBranchId(int destinationBranchId) {
-      this.destinationBranchId = destinationBranchId;
+   public void setMergeDestinationBranchId(int destinationBranchId) {
+      this.mergeDestinationBranchId = destinationBranchId;
    }
+
 
    @Override
    public int hashCode() {
@@ -131,7 +132,7 @@ public class CreateBranchData implements Identifiable {
 
    @Override
    public String toString() {
-      return "CreateBranchData [branchUuid=" + branchUuid + ", branchName=" + branchName + ", branchType=" + branchType + ", creationComment=" + creationComment + ", fromTransaction=" + fromTransaction + ", associatedArtifact=" + associatedArtifact + ", userArtifact=" + userArtifact + ", populateBaseTxFromAddressingQueryId=" + populateBaseTxFromAddressingQueryId + ", destinationBranchId=" + destinationBranchId + "]";
+      return "CreateBranchData [branchUuid=" + branchUuid + ", branchName=" + branchName + ", branchType=" + branchType + ", creationComment=" + creationComment + ", fromTransaction=" + fromTransaction + ", associatedArtifact=" + associatedArtifact + ", userArtifact=" + userArtifact + ", mergeAddressingQueryId=" + mergeAddressingQueryId + ", destinationBranchId=" + mergeDestinationBranchId + "]";
    }
 
 }

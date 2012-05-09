@@ -45,11 +45,11 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
    private final String branchGuid;
    private final Artifact associatedArtifact;
    private final String creationComment;
-   private final int populateBaseTxFromAddressingQueryId;
+   private final int mergeAddressingQueryId;
    private final int destinationBranchId;
    private Branch newBranch;
 
-   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionRecord parentTransaction, String branchName, String branchGuid, Artifact associatedArtifact, String creationComment, int populateBaseTxFromAddressingQueryId, int destinationBranchId) {
+   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionRecord parentTransaction, String branchName, String branchGuid, Artifact associatedArtifact, String creationComment, int mergeAddressingQueryId, int destinationBranchId) {
       super("Create branch " + branchName, Activator.PLUGIN_ID);
       this.branchType = branchType;
       this.parentTransaction = parentTransaction;
@@ -57,7 +57,7 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
       this.branchGuid = branchGuid;
       this.associatedArtifact = associatedArtifact;
       this.creationComment = creationComment;
-      this.populateBaseTxFromAddressingQueryId = populateBaseTxFromAddressingQueryId;
+      this.mergeAddressingQueryId = mergeAddressingQueryId;
       this.destinationBranchId = destinationBranchId;
    }
 
@@ -69,7 +69,7 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
       BranchCreationRequest request =
          new BranchCreationRequest(branchType, parentTransaction.getId(), parentTransaction.getBranchId(), branchGuid,
             branchName, getAssociatedArtifactId(associatedArtifact), getAuthorId(), creationComment,
-            populateBaseTxFromAddressingQueryId, destinationBranchId);
+            mergeAddressingQueryId, destinationBranchId);
 
       BranchCreationResponse response =
          HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslatorId.BRANCH_CREATION_REQUEST,

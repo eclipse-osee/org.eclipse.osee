@@ -27,10 +27,10 @@ public class BranchCreationRequest {
    private final int authorId;
 
    private final String creationComment;
-   private final int populateBaseTxFromAddressingQueryId;
-   private final int destinationBranchId;
+   private final int mergeAddressingQueryId;
+   private final int mergeDestinationBranchId;
 
-   public BranchCreationRequest(BranchType branchType, int sourceTransactionId, int parentBranchId, String branchGuid, String branchName, int associatedArtifactId, int authorId, String creationComment, int populateBaseTxFromAddressingQueryId, int destinationBranchId) {
+   public BranchCreationRequest(BranchType branchType, int sourceTransactionId, int parentBranchId, String branchGuid, String branchName, int associatedArtifactId, int authorId, String creationComment, int mergeAddressingQueryId, int destinationBranchId) {
       this.parentBranchId = parentBranchId;
       this.branchName = branchName;
       this.associatedArtifactId = associatedArtifactId;
@@ -39,8 +39,8 @@ public class BranchCreationRequest {
       this.branchGuid = branchGuid;
       this.authorId = authorId;
       this.creationComment = creationComment;
-      this.populateBaseTxFromAddressingQueryId = populateBaseTxFromAddressingQueryId;
-      this.destinationBranchId = destinationBranchId;
+      this.mergeAddressingQueryId = mergeAddressingQueryId;
+      this.mergeDestinationBranchId = destinationBranchId;
    }
 
    public String getBranchName() {
@@ -75,12 +75,12 @@ public class BranchCreationRequest {
       return creationComment;
    }
 
-   public int getPopulateBaseTxFromAddressingQueryId() {
-      return populateBaseTxFromAddressingQueryId;
+   public int getMergeAddressingQueryId() {
+      return mergeAddressingQueryId;
    }
 
-   public int getDestinationBranchId() {
-      return destinationBranchId;
+   public int getMergeDestinationBranchId() {
+      return mergeDestinationBranchId;
    }
 
    @Override

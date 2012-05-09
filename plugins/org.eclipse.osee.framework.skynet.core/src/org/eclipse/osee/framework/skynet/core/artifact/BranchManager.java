@@ -320,15 +320,10 @@ public class BranchManager {
 
    private static MergeBranch createMergeBranch(final Branch sourceBranch, final Branch destBranch, final ArrayList<Integer> expectedArtIds) throws OseeCoreException {
       Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-      int populateBaseTxFromAddressingQueryId = ArtifactLoader.getNewQueryId();
+      int mergeAddressingQueryId = ArtifactLoader.getNewQueryId();
       List<Object[]> datas = new LinkedList<Object[]>();
       for (int artId : expectedArtIds) {
-         datas.add(new Object[] {
-            populateBaseTxFromAddressingQueryId,
-            insertTime,
-            artId,
-            sourceBranch.getId(),
-            SQL3DataType.INTEGER});
+         datas.add(new Object[] {mergeAddressingQueryId, insertTime, artId, sourceBranch.getId(), SQL3DataType.INTEGER});
       }
       MergeBranch mergeBranch = null;
       try {
@@ -341,11 +336,11 @@ public class BranchManager {
          String branchName = "Merge " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName();
          mergeBranch =
             (MergeBranch) createBranch(BranchType.MERGE, sourceBranch.getBaseTransaction(), branchName, null,
-               UserManager.getUser(), creationComment, populateBaseTxFromAddressingQueryId, destBranch.getId());
+               UserManager.getUser(), creationComment, mergeAddressingQueryId, destBranch.getId());
          mergeBranch.setSourceBranch(sourceBranch);
          mergeBranch.setDestinationBranch(destBranch);
       } finally {
-         ArtifactLoader.clearQuery(populateBaseTxFromAddressingQueryId);
+         ArtifactLoader.clearQuery(mergeAddressingQueryId);
       }
       return mergeBranch;
    }
@@ -403,10 +398,10 @@ public class BranchManager {
          associatedArtifact, creationComment, -1, -1);
    }
 
-   private static Branch createBranch(BranchType branchType, TransactionRecord parentTransaction, String branchName, String branchGuid, Artifact associatedArtifact, String creationComment, int populateBaseTxFromAddressingQueryId, int destinationBranchId) throws OseeCoreException {
+   private static Branch createBranch(BranchType branchType, TransactionRecord parentTransaction, String branchName, String branchGuid, Artifact associatedArtifact, String creationComment, int mergeAddressingQueryId, int destinationBranchId) throws OseeCoreException {
       CreateBranchHttpRequestOperation operation =
          new CreateBranchHttpRequestOperation(branchType, parentTransaction, branchName, branchGuid,
-            associatedArtifact, creationComment, populateBaseTxFromAddressingQueryId, destinationBranchId);
+            associatedArtifact, creationComment, mergeAddressingQueryId, destinationBranchId);
       Operations.executeWorkAndCheckStatus(operation);
       return operation.getNewBranch();
    }

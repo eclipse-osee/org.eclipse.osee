@@ -91,11 +91,11 @@ public final class MockRequestFactory {
 
       String creationComment = "creation_comment_" + index;
 
-      int populateBaseTxFromAddressingQueryId = -1;
+      int mergeFromAddressingQueryId = -1;
       int destinationBranchId = -1;
 
       return new BranchCreationRequest(branchType, sourceTransactionId, parentBranchId, branchGuid, branchName,
-         associatedArtifactId, authorId, creationComment, populateBaseTxFromAddressingQueryId, destinationBranchId);
+         associatedArtifactId, authorId, creationComment, mergeFromAddressingQueryId, destinationBranchId);
    }
 
    public static Object createBranchCreateResponse(int index) {

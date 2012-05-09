@@ -127,7 +127,7 @@ public class CreateBranchDatabaseTxCallable extends DatabaseTxCallable<Branch> {
    @Override
    protected Branch handleTxWork(OseeConnection connection) throws OseeCoreException {
       Branch parentBranch = branchCache.getById(newBranchData.getParentBranchId());
-      Branch destinationBranch = branchCache.getById(newBranchData.getDestinationBranchId());
+      Branch destinationBranch = branchCache.getById(newBranchData.getMergeDestinationBranchId());
 
       passedPreConditions = false;
       checkPreconditions(parentBranch, destinationBranch);
@@ -178,9 +178,9 @@ public class CreateBranchDatabaseTxCallable extends DatabaseTxCallable<Branch> {
       }
       branch.setBaseTransaction(record);
       txCache.cache(record);
-      populateBaseTransaction(0.30, connection, branch, newBranchData.getPopulateBaseTxFromAddressingQueryId());
+      populateBaseTransaction(0.30, connection, branch, newBranchData.getMergeAddressingQueryId());
 
-      addMergeBranchEntry(0.20, connection, branch, newBranchData.getDestinationBranchId());
+      addMergeBranchEntry(0.20, connection, branch, newBranchData.getMergeDestinationBranchId());
       wasSuccessful = true;
       return branch;
    }
@@ -209,12 +209,12 @@ public class CreateBranchDatabaseTxCallable extends DatabaseTxCallable<Branch> {
       if (branch.getBranchType().isMergeBranch()) {
          int parentBranchId = branch.hasParentBranch() ? branch.getParentBranch().getId() : -1;
          getDatabaseService().runPreparedUpdate(connection, MERGE_BRANCH_INSERT, parentBranchId,
-            newBranchData.getDestinationBranchId(), branch.getId(), 0);
+            newBranchData.getMergeDestinationBranchId(), branch.getId(), 0);
       }
       checkForCancelled();
    }
 
-   private void populateBaseTransaction(double workAmount, OseeConnection connection, Branch branch, int populateBaseTxFromAddressingQueryId) throws OseeCoreException {
+   private void populateBaseTransaction(double workAmount, OseeConnection connection, Branch branch, int mergeAddressingQueryId) throws OseeCoreException {
       if (branch.getBranchType() != BranchType.SYSTEM_ROOT) {
          List<Object[]> data = new ArrayList<Object[]>();
          HashSet<Integer> gammas = new HashSet<Integer>(100000);
@@ -225,9 +225,9 @@ public class CreateBranchDatabaseTxCallable extends DatabaseTxCallable<Branch> {
          int baseTxId = branch.getBaseTransaction().getId();
          if (branch.getBranchType().isMergeBranch()) {
             populateAddressingToCopy(connection, data, baseTxId, gammas, SELECT_ATTRIBUTE_ADDRESSING_FROM_JOIN,
-               parentBranchId, TxChange.NOT_CURRENT.getValue(), populateBaseTxFromAddressingQueryId);
+               parentBranchId, TxChange.NOT_CURRENT.getValue(), mergeAddressingQueryId);
             populateAddressingToCopy(connection, data, baseTxId, gammas, SELECT_ARTIFACT_ADDRESSING_FROM_JOIN,
-               parentBranchId, TxChange.NOT_CURRENT.getValue(), populateBaseTxFromAddressingQueryId);
+               parentBranchId, TxChange.NOT_CURRENT.getValue(), mergeAddressingQueryId);
          } else {
             populateAddressingToCopy(connection, data, baseTxId, gammas, SELECT_ADDRESSING,
                TxChange.NOT_CURRENT.getValue(), parentBranchId, branch.getSourceTransaction().getId());

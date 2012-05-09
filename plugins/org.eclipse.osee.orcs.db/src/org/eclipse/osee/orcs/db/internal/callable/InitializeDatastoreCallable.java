@@ -109,8 +109,8 @@ public class InitializeDatastoreCallable extends DatabaseCallable<DataStoreInfo>
 
       data.setFromTransaction(null);
 
-      data.setPopulateBaseTxFromAddressingQueryId(-1);
-      data.setDestinationBranchId(-1);
+      data.setMergeAddressingQueryId(-1);
+      data.setMergeDestinationBranchId(-1);
       return data;
    }
 

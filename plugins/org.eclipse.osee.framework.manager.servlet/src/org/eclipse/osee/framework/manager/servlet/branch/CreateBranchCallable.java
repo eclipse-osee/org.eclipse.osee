@@ -51,8 +51,8 @@ public class CreateBranchCallable extends AbstractBranchCallable<BranchCreationR
       createData.setUserArtifact(createdBy);
       createData.setAssociatedArtifact(associatedWith);
 
-      createData.setDestinationBranchId(request.getDestinationBranchId());
-      createData.setPopulateBaseTxFromAddressingQueryId(request.getPopulateBaseTxFromAddressingQueryId());
+      createData.setMergeDestinationBranchId(request.getMergeDestinationBranchId());
+      createData.setMergeAddressingQueryId(request.getMergeAddressingQueryId());
 
       Callable<ReadableBranch> callable = getBranchOps().createBranch(createData);
       ReadableBranch newBranch = callAndCheckForCancel(callable);

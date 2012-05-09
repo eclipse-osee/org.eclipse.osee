@@ -88,12 +88,12 @@ public class CreateBranchDatabaseCallable extends DatabaseCallable<Branch> {
          parentBranchId = sourceTx.getBranchId();
       }
 
-      int populateBaseTxFromAddressingQueryId = branchData.getPopulateBaseTxFromAddressingQueryId();
-      int destinationBranchId = branchData.getDestinationBranchId();
+      int mergeAddressingQueryId = branchData.getMergeAddressingQueryId();
+      int destinationBranchId = branchData.getMergeDestinationBranchId();
 
       CreateDatabaseBranch createBranchData =
          new CreateDatabaseBranch(branchType, sourceTransactionId, parentBranchId, branchGuid, branchName,
-            associatedArtifactId, authorId, creationComment, populateBaseTxFromAddressingQueryId, destinationBranchId);
+            associatedArtifactId, authorId, creationComment, mergeAddressingQueryId, destinationBranchId);
 
       Callable<Branch> callable =
          new CreateBranchDatabaseTxCallable(getLogger(), getDatabaseService(), getBranchCache(), getTxCache(),

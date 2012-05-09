@@ -52,10 +52,10 @@ public class OrcsBranchTest {
 
    @Test
    public void testCreateBranch() throws Exception {
-      Integer SOURCE_TX_ID = 13; // Chosen starting transaction on Common Branch
-      Integer CHANGED_TX_ID = 14; // Transaction containing tested change
-      Integer MERGE_DESTINATION_ID = -1; // only used on merge branches
-      Integer MERGE_POPULATE_BASE_TX_ID = -1; // only used on merge branches
+      int SOURCE_TX_ID = 13; // Chosen starting transaction on Common Branch
+      int CHANGED_TX_ID = 14; // Transaction containing tested change
+      int MERGE_DESTINATION_BRANCH_ID = -1; // only used on merge branches
+      int MERGE_ADDRESSING_QUERY_ID = -1; // only used on merge branches
 
       // set up the query factory for the test
       QueryFactory qf = orcsApi.getQueryFactory(context);
@@ -72,9 +72,9 @@ public class OrcsBranchTest {
       createData.setUserArtifact(createdBy);
 
       createData.setAssociatedArtifact(createdBy);
-      createData.setDestinationBranchId(MERGE_DESTINATION_ID);
+      createData.setMergeDestinationBranchId(MERGE_DESTINATION_BRANCH_ID);
 
-      createData.setPopulateBaseTxFromAddressingQueryId(MERGE_POPULATE_BASE_TX_ID);
+      createData.setMergeAddressingQueryId(MERGE_ADDRESSING_QUERY_ID);
       Callable<ReadableBranch> callable = branchInterface.createBranch(createData);
       Assert.assertNotNull(callable);
       ReadableBranch priorBranch = callable.call();
@@ -107,9 +107,9 @@ public class OrcsBranchTest {
       createData.setUserArtifact(createdByNew);
 
       createData.setAssociatedArtifact(createdByNew);
-      createData.setDestinationBranchId(MERGE_DESTINATION_ID);
+      createData.setMergeDestinationBranchId(MERGE_DESTINATION_BRANCH_ID);
 
-      createData.setPopulateBaseTxFromAddressingQueryId(MERGE_POPULATE_BASE_TX_ID);
+      createData.setMergeAddressingQueryId(MERGE_ADDRESSING_QUERY_ID);
       Callable<ReadableBranch> postCallable = branchInterface.createBranch(createDataNew);
       Assert.assertNotNull(postCallable);
       ReadableBranch postBranch = postCallable.call();
