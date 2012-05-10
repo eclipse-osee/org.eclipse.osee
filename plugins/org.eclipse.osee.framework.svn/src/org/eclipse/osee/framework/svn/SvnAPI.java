@@ -16,18 +16,20 @@ import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Level;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.svn.entry.IRepositoryEntry;
 import org.eclipse.osee.framework.svn.entry.NullRepositoryEntry;
@@ -81,7 +83,11 @@ public class SvnAPI {
       IRepositoryEntry toReturn = new NullRepositoryEntry();
       SVNEntryInfo info = SVNUtility.getSVNInfo(file);
       if (info != null) {
-         toReturn = toRepositoryEntry(file, info);
+    	 try{ 
+    		 toReturn = toRepositoryEntry(file, info);
+    	 } catch (NullPointerException ex){
+    		 OseeLog.log(SvnAPI.class, Level.WARNING, String.format("Unable to get svn info for [%s]", file.getAbsolutePath()));
+    	 }
       }
       return toReturn;
    }
