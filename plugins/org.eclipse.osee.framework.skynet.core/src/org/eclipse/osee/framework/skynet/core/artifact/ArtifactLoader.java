@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -62,7 +63,7 @@ public final class ArtifactLoader {
       List<Artifact> artifacts = new ArrayList<Artifact>(artifactCountEstimate);
       int queryId = getNewQueryId();
       CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters =
-         new CompositeKeyHashMap<Integer, Integer, Object[]>(artifactCountEstimate, false);
+         new CompositeKeyHashMap<Integer, Integer, Object[]>(artifactCountEstimate, true);
       selectArtifacts(artifacts, queryId, insertParameters, sql, queryParameters, artifactCountEstimate, transactionId,
          reload);
 
@@ -259,31 +260,42 @@ public final class ArtifactLoader {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       long time = System.currentTimeMillis();
 
+      List<Pair<Integer, Integer>> toLoad = new LinkedList<Pair<Integer, Integer>>();
+
       try {
          chStmt.runPreparedQuery(artifactCountEstimate, sql, queryParameters);
-         Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-
          while (chStmt.next()) {
             int artId = chStmt.getInt("art_id");
             int branchId = chStmt.getInt("branch_id");
-            Artifact artifact = getArtifactFromCache(artId, transactionId, BranchManager.getBranch(branchId));
-            if (artifact != null && reload == LoadType.INCLUDE_CACHE) {
-               artifacts.add(artifact);
-            } else {
-               Object transactionParameter = transactionId == null ? SQL3DataType.INTEGER : transactionId.getId();
-               insertParameters.put(artId, branchId, new Object[] {
-                  queryId,
-                  insertTime,
-                  artId,
-                  branchId,
-                  transactionParameter});
-            }
+            toLoad.add(new Pair<Integer, Integer>(branchId, artId));
          }
       } finally {
          chStmt.close();
       }
+      processList(queryId, toLoad, artifacts, insertParameters, transactionId, reload);
       OseeLog.logf(Activator.class, Level.FINE, new Exception("Artifact Selection Time"),
          "Artifact Selection Time [%s], [%d] artifacts selected", Lib.getElapseString(time), insertParameters.size());
+   }
+
+   private synchronized static void processList(int queryId, List<Pair<Integer, Integer>> toLoad, List<Artifact> artifacts, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters, TransactionRecord transactionId, LoadType reload) throws OseeCoreException {
+      Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
+      for (Pair<Integer, Integer> pair : toLoad) {
+         int branchId = pair.getFirst();
+         int artId = pair.getSecond();
+
+         Artifact artifact = getArtifactFromCache(artId, transactionId, BranchManager.getBranch(branchId));
+         if (artifact != null && reload == LoadType.INCLUDE_CACHE) {
+            artifacts.add(artifact);
+         } else {
+            Object transactionParameter = transactionId == null ? SQL3DataType.INTEGER : transactionId.getId();
+            insertParameters.put(artId, branchId, new Object[] {
+               queryId,
+               insertTime,
+               artId,
+               branchId,
+               transactionParameter});
+         }
+      }
    }
 
    /**
@@ -344,26 +356,24 @@ public final class ArtifactLoader {
          loadingMap = loadingActiveMap;
       }
 
-      synchronized (loadingMap) {
-         if (loadingMap.containsKey(artId, key2)) {
-            ReentrantLock lock = loadingMap.get(artId, key2);
-            lock.lock();
-            lock.unlock();
-         }
-
-         if (historical) {
-            cached = ArtifactCache.getHistorical(artId, key2);
-         } else {
-            cached = ArtifactCache.getActive(artId, key2);
-         }
-
-         if (cached == null) {
-            ReentrantLock lock = new ReentrantLock();
-            lock.lock();
-            loadingMap.put(artId, key2, lock);
-         }
+      ReentrantLock lock = loadingMap.get(artId, key2);
+      if (lock != null) {
+         lock.lock();
       }
 
+      if (historical) {
+         cached = ArtifactCache.getHistorical(artId, key2);
+      } else {
+         cached = ArtifactCache.getActive(artId, key2);
+      }
+
+      if (cached == null) {
+         if (lock == null) {
+            lock = new ReentrantLock();
+            loadingMap.put(artId, key2, lock);
+         }
+         lock.lock();
+      }
       return cached;
    }
 
@@ -394,8 +404,11 @@ public final class ArtifactLoader {
       for (Artifact artifact : artifacts) {
          key2 = historical ? transactionId.getId() : BranchManager.getBranchId(artifact.getBranch());
 
-         if (loadingMap.containsKey(artifact.getArtId(), key2)) {
-            ReentrantLock lock = loadingMap.remove(artifact.getArtId(), key2);
+         ReentrantLock lock = null;
+         synchronized (loadingMap) {
+            lock = loadingMap.remove(artifact.getArtId(), key2);
+         }
+         if (lock != null) {
             if (lock.isLocked()) {
                lock.unlock();
             }
