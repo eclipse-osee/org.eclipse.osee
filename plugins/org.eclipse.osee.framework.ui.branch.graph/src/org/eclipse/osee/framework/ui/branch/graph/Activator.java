@@ -21,7 +21,7 @@ public class Activator extends OseeUiActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.ui.branch.graph";
    private static Activator plugin;
 
-   protected Activator() {
+   public Activator() {
       super(PLUGIN_ID);
    }
 
