@@ -14,11 +14,18 @@ import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.data.Identifiable;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 
 /**
  * @author Roberto E. Escobar
  */
 public class CreateBranchData implements Identifiable {
+
+   private static final int NULL_PARENT_BRANCH_ID = -1;
+   private static final int NULL_SOURCE_TRANSACTION_ID = -1;
+   private static final int NULL_ARTIFACT_ID = -1;
 
    private String branchUuid;
    private String branchName;
@@ -35,6 +42,23 @@ public class CreateBranchData implements Identifiable {
    @Override
    public String getGuid() {
       return branchUuid;
+   }
+
+   public int getAssociatedArtifactId() {
+
+      int result = NULL_ARTIFACT_ID;
+      if (associatedArtifact != null) {
+         result = associatedArtifact.getId();
+      }
+      return result;
+   }
+
+   public int getUserArtifactId() {
+      int result = NULL_ARTIFACT_ID;
+      if (userArtifact != null) {
+         result = userArtifact.getId();
+      }
+      return result;
    }
 
    public void setGuid(String branchUuid) {
@@ -106,6 +130,26 @@ public class CreateBranchData implements Identifiable {
       this.mergeDestinationBranchId = destinationBranchId;
    }
 
+   public int getParentBranchId(TransactionCache txCache) throws OseeCoreException {
+
+      int parentBranchId = NULL_PARENT_BRANCH_ID;
+
+      if (BranchType.SYSTEM_ROOT != branchType) {
+         TransactionRecord sourceTx = txCache.getOrLoad(fromTransaction.getGuid());
+         parentBranchId = sourceTx.getBranchId();
+      }
+      return parentBranchId;
+   }
+
+   public int getSourceTransactionId(TransactionCache txCache) throws OseeCoreException {
+      int sourceTransactionId = NULL_SOURCE_TRANSACTION_ID;
+
+      if (BranchType.SYSTEM_ROOT != branchType) {
+         TransactionRecord sourceTx = txCache.getOrLoad(fromTransaction.getGuid());
+         sourceTransactionId = sourceTx.getId();
+      }
+      return sourceTransactionId;
+   }
 
    @Override
    public int hashCode() {

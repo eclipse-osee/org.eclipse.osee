@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.db.internal.branch.CreateDatabaseBranch;
+import org.eclipse.osee.orcs.data.CreateBranchData;
 
 /**
  * @author Roberto E. Escobar
@@ -73,17 +73,16 @@ public class CreateBranchDatabaseTxCallable extends DatabaseTxCallable<Branch> {
    private final TransactionCache txCache;
    private final BranchFactory branchFactory;
    private final TransactionRecordFactory txFactory;
-   private final CreateDatabaseBranch newBranchData;
+   private final CreateBranchData newBranchData;
    private Branch branch;
 
-   public CreateBranchDatabaseTxCallable(Log logger, IOseeDatabaseService databaseService, BranchCache branchCache, TransactionCache txCache, BranchFactory branchFactory, TransactionRecordFactory txFactory, CreateDatabaseBranch newBranchData) {
-      super(logger, databaseService, String.format("Create Branch: [%s from %s]", newBranchData.getBranchName(),
-         newBranchData.getParentBranchId()));
+   public CreateBranchDatabaseTxCallable(Log logger, IOseeDatabaseService databaseService, BranchCache branchCache, TransactionCache txCache, BranchFactory branchFactory, TransactionRecordFactory txFactory, CreateBranchData branchData) {
+      super(logger, databaseService, String.format("Create Branch %s", branchData.getName()));
       this.branchCache = branchCache;
       this.txCache = txCache;
       this.branchFactory = branchFactory;
       this.txFactory = txFactory;
-      this.newBranchData = newBranchData;
+      this.newBranchData = branchData;
       this.wasSuccessful = false;
       this.systemUserId = -1;
    }
@@ -117,7 +116,7 @@ public class CreateBranchDatabaseTxCallable extends DatabaseTxCallable<Branch> {
                   newBranchData.getAssociatedArtifactId(), BranchState.DELETED.getValue(),
                   BranchState.REBASELINED.getValue());
             if (count > 0) {
-               throw new OseeStateException("Existing branch creation detected for [%s]", newBranchData.getBranchName());
+               throw new OseeStateException("Existing branch creation detected for [%s]", newBranchData.getName());
             }
          }
       }
@@ -126,20 +125,20 @@ public class CreateBranchDatabaseTxCallable extends DatabaseTxCallable<Branch> {
    @SuppressWarnings("unchecked")
    @Override
    protected Branch handleTxWork(OseeConnection connection) throws OseeCoreException {
-      Branch parentBranch = branchCache.getById(newBranchData.getParentBranchId());
+      Branch parentBranch = branchCache.getById(newBranchData.getParentBranchId(txCache));
       Branch destinationBranch = branchCache.getById(newBranchData.getMergeDestinationBranchId());
 
       passedPreConditions = false;
       checkPreconditions(parentBranch, destinationBranch);
       passedPreConditions = true;
 
-      String guid = newBranchData.getBranchGuid();
+      String guid = newBranchData.getGuid();
       if (!GUID.isValid(guid)) {
          guid = GUID.create();
       }
 
       branch =
-         branchFactory.create(guid, newBranchData.getBranchName(), newBranchData.getBranchType(),
+         branchFactory.create(guid, newBranchData.getName(), newBranchData.getBranchType(),
             BranchState.CREATION_IN_PROGRESS, false);
 
       branch.setParentBranch(parentBranch);
@@ -151,10 +150,12 @@ public class CreateBranchDatabaseTxCallable extends DatabaseTxCallable<Branch> {
       if (branch.getBranchType().isSystemRootBranch()) {
          TransactionRecord systemTx =
             txFactory.create(nextTransactionId, branch.getId(), newBranchData.getCreationComment(), timestamp,
-               newBranchData.getAuthorId(), -1, TransactionDetailsType.Baselined, branchCache);
+               newBranchData.getUserArtifactId(), -1, TransactionDetailsType.Baselined, branchCache);
          branch.setSourceTransaction(systemTx);
       } else {
-         branch.setSourceTransaction(txCache.getOrLoad(newBranchData.getSourceTransactionId()));
+         int srcTx = newBranchData.getSourceTransactionId(txCache);
+
+         branch.setSourceTransaction(txCache.getOrLoad(srcTx));
       }
 
       if (branch.getBranchType().isMergeBranch()) {
@@ -166,12 +167,12 @@ public class CreateBranchDatabaseTxCallable extends DatabaseTxCallable<Branch> {
       branchCache.storeItems(branch);
 
       getDatabaseService().runPreparedUpdate(connection, INSERT_TX_DETAILS, branch.getId(), nextTransactionId,
-         newBranchData.getCreationComment(), timestamp, newBranchData.getAuthorId(),
+         newBranchData.getCreationComment(), timestamp, newBranchData.getUserArtifactId(),
          TransactionDetailsType.Baselined.getId());
 
       TransactionRecord record =
          txFactory.create(nextTransactionId, branch.getId(), newBranchData.getCreationComment(), timestamp,
-            newBranchData.getAuthorId(), -1, TransactionDetailsType.Baselined, branchCache);
+            newBranchData.getUserArtifactId(), -1, TransactionDetailsType.Baselined, branchCache);
 
       if (branch.getBranchType().isSystemRootBranch()) {
          branch.setSourceTransaction(record);

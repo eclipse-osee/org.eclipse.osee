@@ -97,7 +97,7 @@ public class CreateBranchDatabaseCallable extends DatabaseCallable<Branch> {
 
       Callable<Branch> callable =
          new CreateBranchDatabaseTxCallable(getLogger(), getDatabaseService(), getBranchCache(), getTxCache(),
-            branchFactory, txFactory, createBranchData);
+            branchFactory, txFactory, branchData);
       return callAndCheckForCancel(callable);
    }
 }

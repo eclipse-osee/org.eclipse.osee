@@ -31,10 +31,11 @@ import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.db.internal.callable.BranchCopyTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CheckBranchExchangeIntegrityCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CommitBranchDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CompareDatabaseCallable;
-import org.eclipse.osee.orcs.db.internal.callable.CreateBranchDatabaseCallable;
+import org.eclipse.osee.orcs.db.internal.callable.CreateBranchDatabaseTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.DeleteRelationDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.callable.ExportBranchDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.callable.ImportBranchDatabaseCallable;
@@ -95,7 +96,14 @@ public class BranchDataStoreImpl implements BranchDataStore {
 
    @Override
    public Callable<Branch> createBranch(String sessionId, CreateBranchData branchData) {
-      return new CreateBranchDatabaseCallable(logger, dbService, cachingService.getBranchCache(),
+      return new CreateBranchDatabaseTxCallable(logger, dbService, cachingService.getBranchCache(),
+         cachingService.getTransactionCache(), modelFactory.getBranchFactory(), modelFactory.getTransactionFactory(),
+         branchData);
+   }
+
+   @Override
+   public Callable<Branch> createBranchCopyTx(String sessionId, CreateBranchData branchData) {
+      return new BranchCopyTxCallable(logger, dbService, cachingService.getBranchCache(),
          cachingService.getTransactionCache(), modelFactory.getBranchFactory(), modelFactory.getTransactionFactory(),
          branchData);
    }
@@ -142,4 +150,5 @@ public class BranchDataStoreImpl implements BranchDataStore {
       return new DeleteRelationDatabaseCallable(logger, dbService, identityService, cachingService.getBranchCache(),
          branch, relationType, aArtId, bArtId, artUserId, comment);
    }
+
 }

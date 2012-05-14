@@ -65,6 +65,11 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
+   public Callable<ReadableBranch> createBranchFromTx(CreateBranchData newBranchData) {
+      return new CreateBranchCallable(logger, sessionContext, branchStore, newBranchData);
+   }
+
+   @Override
    public Callable<ReadableBranch> archiveUnarchiveBranch(IOseeBranch branch, ArchiveOperation archiveOp) {
       return new ArchiveUnarchiveBranchCallable(logger, sessionContext, branchStore, branchCache, branch, archiveOp);
    }

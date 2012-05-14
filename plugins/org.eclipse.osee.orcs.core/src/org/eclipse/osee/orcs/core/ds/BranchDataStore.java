@@ -29,6 +29,8 @@ public interface BranchDataStore {
 
    Callable<Branch> createBranch(String sessionId, CreateBranchData branchData);
 
+   Callable<Branch> createBranchCopyTx(String sessionId, CreateBranchData branchData);
+
    Callable<Branch> purgeBranch(String sessionId, Branch branch);
 
    Callable<TransactionRecord> commitBranch(String sessionId, ReadableArtifact committer, Branch source, Branch destination);

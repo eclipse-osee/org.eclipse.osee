@@ -201,4 +201,9 @@ public class MockArtifact implements ReadableArtifact {
       return false;
    }
 
+   @Override
+   public <T> T getSoleAttributeValue(IAttributeType attributeType) {
+      return null;
+   }
+
 }
