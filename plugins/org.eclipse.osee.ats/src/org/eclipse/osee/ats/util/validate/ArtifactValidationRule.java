@@ -24,7 +24,6 @@ public class ArtifactValidationRule extends AbstractValidationRule {
       return String.format("%s: %s", link, status.getMessage());
    }
 
-   @SuppressWarnings("unused")
    @Override
    protected ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor) throws OseeCoreException {
       Collection<String> errorMessages = new ArrayList<String>();

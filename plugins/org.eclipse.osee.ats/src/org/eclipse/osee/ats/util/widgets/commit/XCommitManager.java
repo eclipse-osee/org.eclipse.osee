@@ -253,7 +253,6 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
 
    }
 
-   @SuppressWarnings("unused")
    public void loadTable() {
       try {
          if (xCommitManager != null && teamArt != null && xCommitManager.getContentProvider() != null) {
