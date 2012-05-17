@@ -48,6 +48,7 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
    private final int mergeAddressingQueryId;
    private final int destinationBranchId;
    private Branch newBranch;
+   private boolean txCopyBranchType;
 
    public CreateBranchHttpRequestOperation(BranchType branchType, TransactionRecord parentTransaction, String branchName, String branchGuid, Artifact associatedArtifact, String creationComment, int mergeAddressingQueryId, int destinationBranchId) {
       super("Create branch " + branchName, Activator.PLUGIN_ID);
@@ -59,6 +60,7 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
       this.creationComment = creationComment;
       this.mergeAddressingQueryId = mergeAddressingQueryId;
       this.destinationBranchId = destinationBranchId;
+      this.txCopyBranchType = false;
    }
 
    @Override
@@ -70,6 +72,8 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
          new BranchCreationRequest(branchType, parentTransaction.getId(), parentTransaction.getBranchId(), branchGuid,
             branchName, getAssociatedArtifactId(associatedArtifact), getAuthorId(), creationComment,
             mergeAddressingQueryId, destinationBranchId);
+
+      request.setTxIsCopied(isTxCopyBranchType());
 
       BranchCreationResponse response =
          HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslatorId.BRANCH_CREATION_REQUEST,
@@ -97,5 +101,13 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
 
    public Branch getNewBranch() {
       return newBranch;
+   }
+
+   public boolean isTxCopyBranchType() {
+      return txCopyBranchType;
+   }
+
+   public void setTxCopyBranchType(boolean value) {
+      txCopyBranchType = value;
    }
 }

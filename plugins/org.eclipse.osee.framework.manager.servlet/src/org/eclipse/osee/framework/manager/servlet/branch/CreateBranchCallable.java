@@ -53,8 +53,11 @@ public class CreateBranchCallable extends AbstractBranchCallable<BranchCreationR
 
       createData.setMergeDestinationBranchId(request.getMergeDestinationBranchId());
       createData.setMergeAddressingQueryId(request.getMergeAddressingQueryId());
+      createData.setTxCopyBranchType(request.txIsCopied());
+      Callable<ReadableBranch> callable;
 
-      Callable<ReadableBranch> callable = getBranchOps().createBranch(createData);
+      callable = getBranchOps().createBranch(createData);
+
       ReadableBranch newBranch = callAndCheckForCancel(callable);
 
       BranchCreationResponse creationResponse = new BranchCreationResponse(-1);

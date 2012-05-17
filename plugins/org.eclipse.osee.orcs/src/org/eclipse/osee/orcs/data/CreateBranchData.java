@@ -39,6 +39,8 @@ public class CreateBranchData implements Identifiable {
    private int mergeAddressingQueryId;
    private int mergeDestinationBranchId;
 
+   private boolean txCopyBranchType;
+
    @Override
    public String getGuid() {
       return branchUuid;
@@ -172,6 +174,14 @@ public class CreateBranchData implements Identifiable {
          }
       }
       return false;
+   }
+
+   public boolean isTxCopyBranchType() {
+      return txCopyBranchType;
+   }
+
+   public void setTxCopyBranchType(boolean value) {
+      txCopyBranchType = value;
    }
 
    @Override

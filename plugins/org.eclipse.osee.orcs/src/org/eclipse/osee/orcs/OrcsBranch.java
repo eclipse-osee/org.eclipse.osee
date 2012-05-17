@@ -33,8 +33,6 @@ public interface OrcsBranch {
 
    Callable<ReadableBranch> createBranch(CreateBranchData branchData);
 
-   Callable<ReadableBranch> createBranchFromTx(CreateBranchData branchData);
-
    Callable<ReadableBranch> archiveUnarchiveBranch(IOseeBranch branch, ArchiveOperation archiveOp);
 
    Callable<ReadableBranch> deleteBranch(IOseeBranch branch);

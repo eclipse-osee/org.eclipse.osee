@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCheckDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -56,9 +56,11 @@ public class BranchCreationHandler extends CommandHandler {
       } else {
          throw new OseeStateException("Backing data for the jobbed node in the branchview was not of the expected type");
       }
-      final EntryDialog dialog =
-         new EntryDialog(Displays.getActiveShell(), "Branch", null, "Enter the name of the new Branch:",
-            MessageDialog.INFORMATION, new String[] {"OK", "Cancel"}, 0);
+      final EntryCheckDialog dialog =
+         new EntryCheckDialog(Displays.getActiveShell(), "Branch", null, "Enter the name of the new branch:",
+            "Include a copy of the chosen transaction on the new branch", MessageDialog.INFORMATION, new String[] {
+               "OK",
+               "Cancel"}, 0);
       int result = dialog.open();
 
       if (result == 0 && dialog.getEntry() != null) {
@@ -70,7 +72,12 @@ public class BranchCreationHandler extends CommandHandler {
                if (branch.equals(CoreBranches.SYSTEM_ROOT)) {
                   BranchManager.createTopLevelBranch(dialog.getEntry());
                } else {
-                  BranchManager.createWorkingBranch(parentTransactionId, dialog.getEntry(), null, null);
+                  if (dialog.isChecked()) {
+                     BranchManager.createWorkingBranchFromTx(parentTransactionId, dialog.getEntry());
+                  } else {
+                     BranchManager.createWorkingBranch(parentTransactionId, dialog.getEntry(), null, null);
+                  }
+
                }
                return Status.OK_STATUS;
             }

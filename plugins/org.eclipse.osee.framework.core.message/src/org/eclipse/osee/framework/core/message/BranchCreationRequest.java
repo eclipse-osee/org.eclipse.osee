@@ -29,6 +29,7 @@ public class BranchCreationRequest {
    private final String creationComment;
    private final int mergeAddressingQueryId;
    private final int mergeDestinationBranchId;
+   private boolean isTxCopyBranchType;
 
    public BranchCreationRequest(BranchType branchType, int sourceTransactionId, int parentBranchId, String branchGuid, String branchName, int associatedArtifactId, int authorId, String creationComment, int mergeAddressingQueryId, int destinationBranchId) {
       this.parentBranchId = parentBranchId;
@@ -41,6 +42,7 @@ public class BranchCreationRequest {
       this.creationComment = creationComment;
       this.mergeAddressingQueryId = mergeAddressingQueryId;
       this.mergeDestinationBranchId = destinationBranchId;
+      this.isTxCopyBranchType = false;
    }
 
    public String getBranchName() {
@@ -81,6 +83,14 @@ public class BranchCreationRequest {
 
    public int getMergeDestinationBranchId() {
       return mergeDestinationBranchId;
+   }
+
+   public boolean txIsCopied() {
+      return isTxCopyBranchType;
+   }
+
+   public void setTxIsCopied(boolean value) {
+      isTxCopyBranchType = value;
    }
 
    @Override

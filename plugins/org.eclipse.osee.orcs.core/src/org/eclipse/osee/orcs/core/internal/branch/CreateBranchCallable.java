@@ -40,7 +40,13 @@ public class CreateBranchCallable extends AbstractBranchCallable<ReadableBranch>
       ITransaction txData = branchData.getFromTransaction();
       Conditions.checkNotNull(txData, "sourceTransaction");
 
-      Callable<Branch> callable = getBranchStore().createBranch(getSessionContext().getSessionId(), branchData);
+      Callable<Branch> callable;
+      if (branchData.isTxCopyBranchType()) {
+         callable = getBranchStore().createBranchCopyTx(getSessionContext().getSessionId(), branchData);
+      } else {
+         callable = getBranchStore().createBranch(getSessionContext().getSessionId(), branchData);
+      }
+
       return callAndCheckForCancel(callable);
    }
 }

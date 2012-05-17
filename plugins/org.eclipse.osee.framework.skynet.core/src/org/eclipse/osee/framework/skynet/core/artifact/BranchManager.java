@@ -366,6 +366,21 @@ public class BranchManager {
    /**
     * Creates a new Branch based on the most recent transaction on the parent branch.
     */
+   public static Branch createWorkingBranchFromTx(TransactionRecord parentTransactionId, String childBranchName) throws OseeCoreException {
+      String creationComment =
+         String.format("New Branch created by copying prior tx and %s (%s)", parentTransactionId.getBranch().getName(),
+            parentTransactionId.getId());
+
+      final String truncatedName = Strings.truncate(childBranchName, 195, true);
+
+      CreateBranchHttpRequestOperation operation =
+         new CreateBranchHttpRequestOperation(BranchType.WORKING, parentTransactionId, truncatedName, null, null,
+            creationComment, -1, -1);
+      operation.setTxCopyBranchType(true);
+      Operations.executeWorkAndCheckStatus(operation);
+      return operation.getNewBranch();
+   }
+
    public static Branch createWorkingBranch(IOseeBranch parentBranch, String childBranchName) throws OseeCoreException {
       return createWorkingBranch(parentBranch, childBranchName, UserManager.getUser(SystemUser.OseeSystem));
    }
