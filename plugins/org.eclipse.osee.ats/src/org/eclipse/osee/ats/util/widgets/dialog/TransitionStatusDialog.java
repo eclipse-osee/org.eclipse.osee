@@ -38,9 +38,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 
 /**
- * Replacement dialog for SMAStatusDialog. Remove SMAStatusDialog when AtsUtilCore.isAtsUsingResolutionOptions is no
- * longer needed. Should be around 0.9.9_SR4/5
- * 
  * @author Donald G Dunne
  */
 public class TransitionStatusDialog extends MessageDialog {
