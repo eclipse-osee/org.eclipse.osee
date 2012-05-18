@@ -38,7 +38,9 @@ import org.eclipse.osee.framework.core.message.internal.translation.TableDataTra
 import org.eclipse.osee.framework.core.message.internal.translation.TransactionCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.TransactionRecordTranslator;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 
 /**
@@ -51,8 +53,10 @@ public class DataTranslationServiceFactory {
       //
    }
 
-   public void configureService(IDataTranslationService service, TransactionRecordFactory txRecordFactory, AttributeTypeFactory attributeTypeFactory) throws OseeCoreException {
-      service.addTranslator(new TransactionRecordTranslator(txRecordFactory), CoreTranslatorId.TRANSACTION_RECORD);
+   public void configureService(IDataTranslationService service, TransactionRecordFactory txRecordFactory, AttributeTypeFactory attributeTypeFactory, IOseeCachingService cachingService) throws OseeCoreException {
+      BranchCache branchCache = cachingService.getBranchCache();
+      service.addTranslator(new TransactionRecordTranslator(txRecordFactory, branchCache),
+         CoreTranslatorId.TRANSACTION_RECORD);
 
       service.addTranslator(new BranchCreationRequestTranslator(), CoreTranslatorId.BRANCH_CREATION_REQUEST);
       service.addTranslator(new BranchCreationResponseTranslator(), CoreTranslatorId.BRANCH_CREATION_RESPONSE);
@@ -73,7 +77,7 @@ public class DataTranslationServiceFactory {
 
       service.addTranslator(new BranchCacheUpdateResponseTranslator(), CoreTranslatorId.BRANCH_CACHE_UPDATE_RESPONSE);
       service.addTranslator(new BranchCacheStoreRequestTranslator(), CoreTranslatorId.BRANCH_CACHE_STORE_REQUEST);
-      service.addTranslator(new TransactionCacheUpdateResponseTranslator(txRecordFactory),
+      service.addTranslator(new TransactionCacheUpdateResponseTranslator(txRecordFactory, branchCache),
          CoreTranslatorId.TX_CACHE_UPDATE_RESPONSE);
 
       service.addTranslator(new ArtifactTypeCacheUpdateResponseTranslator(),

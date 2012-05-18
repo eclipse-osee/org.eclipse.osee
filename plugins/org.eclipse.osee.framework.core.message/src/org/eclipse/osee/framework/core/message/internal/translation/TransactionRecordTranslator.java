@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
@@ -35,9 +36,11 @@ public final class TransactionRecordTranslator implements ITranslator<Transactio
    }
 
    private final TransactionRecordFactory txRecordFactory;
+   private final BranchCache branchCache;
 
-   public TransactionRecordTranslator(TransactionRecordFactory txRecordFactory) {
+   public TransactionRecordTranslator(TransactionRecordFactory txRecordFactory, BranchCache branchCache) {
       this.txRecordFactory = txRecordFactory;
+      this.branchCache = branchCache;
    }
 
    @Override
@@ -49,7 +52,8 @@ public final class TransactionRecordTranslator implements ITranslator<Transactio
       int authorArtId = store.getInt(Entry.TRANSACTION_AUTHOR_ART_ID.name());
       int commitArtId = store.getInt(Entry.TRANSACTION_COMMIT_ART_ID.name());
       int branchId = store.getInt(Entry.TRANSACTION_BRANCH.name());
-      return txRecordFactory.create(transactionNumber, branchId, comment, time, authorArtId, commitArtId, txType);
+      return txRecordFactory.create(transactionNumber, branchId, comment, time, authorArtId, commitArtId, txType,
+         branchCache);
    }
 
    @Override

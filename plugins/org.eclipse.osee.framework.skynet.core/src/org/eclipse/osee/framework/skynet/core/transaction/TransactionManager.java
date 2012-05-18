@@ -159,8 +159,6 @@ public final class TransactionManager {
    public synchronized static void cacheCommittedArtifactTransaction(IArtifact artifact, TransactionRecord transactionId) throws OseeCoreException {
       Collection<TransactionRecord> transactionIds = getCommittedArtifactTransactionIds(artifact);
       if (!transactionIds.contains(transactionId)) {
-         BranchCache branchCache = getBranchCache();
-         transactionId.setBranchCache(branchCache);
          transactionIds.add(transactionId);
          getTransactionCache().cache(transactionId);
       }
@@ -197,8 +195,7 @@ public final class TransactionManager {
       TransactionRecordFactory factory = ServiceUtil.getTransactionFactory();
       TransactionRecord transactionId =
          factory.createOrUpdate(getTransactionCache(), transactionNumber, BranchManager.getBranchId(branch), comment,
-            transactionTime, authorArtId, -1, txType);
-      transactionId.setBranchCache(getBranchCache());
+            transactionTime, authorArtId, -1, txType, getBranchCache());
       return transactionId;
    }
 
@@ -271,8 +268,8 @@ public final class TransactionManager {
 
             transactionRecord =
                factory.createOrUpdate(txCache, txId, chStmt.getInt("branch_id"), chStmt.getString("osee_comment"),
-                  chStmt.getTimestamp("time"), chStmt.getInt("author"), chStmt.getInt("commit_art_id"), txType);
-            transactionRecord.setBranchCache(branchCache);
+                  chStmt.getTimestamp("time"), chStmt.getInt("author"), chStmt.getInt("commit_art_id"), txType,
+                  branchCache);
 
          } finally {
             if (useLocalConnection) {

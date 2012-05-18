@@ -102,7 +102,10 @@ public final class MockDataFactory {
       if (value == 0) {
          value++;
       }
-      return new TransactionRecord(value * 47, branchId, "comment_" + value, new Date(), value * 37, value * 42, type);
+      MockOseeDataAccessor<String, Branch> accessor = new MockOseeDataAccessor<String, Branch>();
+      BranchCache cache = new BranchCache(accessor);
+      return new TransactionRecord(value * 47, branchId, "comment_" + value, new Date(), value * 37, value * 42, type,
+         cache);
    }
 
    public static OseeEnumEntry createEnumEntry(int index) {

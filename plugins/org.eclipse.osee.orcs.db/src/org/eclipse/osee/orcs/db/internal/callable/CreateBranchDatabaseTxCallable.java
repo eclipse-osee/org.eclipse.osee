@@ -151,8 +151,7 @@ public class CreateBranchDatabaseTxCallable extends DatabaseTxCallable<Branch> {
       if (branch.getBranchType().isSystemRootBranch()) {
          TransactionRecord systemTx =
             txFactory.create(nextTransactionId, branch.getId(), newBranchData.getCreationComment(), timestamp,
-               newBranchData.getAuthorId(), -1, TransactionDetailsType.Baselined);
-         systemTx.setBranchCache(branchCache);
+               newBranchData.getAuthorId(), -1, TransactionDetailsType.Baselined, branchCache);
          branch.setSourceTransaction(systemTx);
       } else {
          branch.setSourceTransaction(txCache.getOrLoad(newBranchData.getSourceTransactionId()));
@@ -172,9 +171,8 @@ public class CreateBranchDatabaseTxCallable extends DatabaseTxCallable<Branch> {
 
       TransactionRecord record =
          txFactory.create(nextTransactionId, branch.getId(), newBranchData.getCreationComment(), timestamp,
-            newBranchData.getAuthorId(), -1, TransactionDetailsType.Baselined);
+            newBranchData.getAuthorId(), -1, TransactionDetailsType.Baselined, branchCache);
 
-      record.setBranchCache(branchCache);
       if (branch.getBranchType().isSystemRootBranch()) {
          branch.setSourceTransaction(record);
       }

@@ -39,7 +39,7 @@ import org.junit.Test;
 
 /**
  * Test unit for {@AtsBranchManagerCore}
- *
+ * 
  * @author Shawn F. Cook
  */
 public class AtsBranchManagerCoreTest {
@@ -85,11 +85,10 @@ public class AtsBranchManagerCoreTest {
 
       //Test TxRecords
       Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
+      BranchCache branchCache = BranchManager.getCache();
       TransactionRecord txRecord =
          new TransactionRecord(1234, branch.getId(), "comment", new Date(), UserManager.getUser().getArtId(),
-            UserManager.getUser().getArtId(), TransactionDetailsType.Baselined);
-      BranchCache branchCache = BranchManager.getCache();
-      txRecord.setBranchCache(branchCache);
+            UserManager.getUser().getArtId(), TransactionDetailsType.Baselined, branchCache);
       Collection<TransactionRecord> commitTxs = new ArrayList<TransactionRecord>();
       Collection<ICommitConfigArtifact> configArtSet = new HashSet<ICommitConfigArtifact>();
       commitTxs.add(txRecord);

@@ -163,7 +163,7 @@ public class CommitBranchDatabaseTxCallable extends DatabaseTxCallable<Transacti
          timestamp, userArtId, sourceBranch.getAssociatedArtifactId());
       TransactionRecord record =
          txFactory.create(newTransactionNumber, destinationBranch.getId(), comment, timestamp, userArtId,
-            sourceBranch.getAssociatedArtifactId(), TransactionDetailsType.NonBaselined);
+            sourceBranch.getAssociatedArtifactId(), TransactionDetailsType.NonBaselined, branchCache);
 
       return record;
    }

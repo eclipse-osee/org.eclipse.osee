@@ -44,8 +44,6 @@ public class TransactionRecordTest {
    private final int commitArtId;
 
    public TransactionRecordTest(int transactionNumber, int branchId, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
-      this.transaction =
-         new TransactionRecord(transactionNumber, branchId, comment, time, authorArtId, commitArtId, txType);
       this.transactionNumber = transactionNumber;
       this.branchId = branchId;
       this.comment = comment;
@@ -53,6 +51,9 @@ public class TransactionRecordTest {
       this.authorArtId = authorArtId;
       this.commitArtId = commitArtId;
       this.txType = txType;
+
+      this.transaction =
+         new TransactionRecord(transactionNumber, branchId, comment, time, authorArtId, commitArtId, txType, null);
    }
 
    @Test

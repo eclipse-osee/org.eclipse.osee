@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.model;
 import java.util.Date;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeTypeFactory;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 
@@ -21,18 +22,20 @@ import org.eclipse.osee.framework.core.model.cache.TransactionCache;
  */
 public class TransactionRecordFactory implements IOseeTypeFactory {
 
-   public TransactionRecord create(int transactionNumber, int branchId, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
-      return new TransactionRecord(transactionNumber, branchId, comment, timestamp, authorArtId, commitArtId, txType);
+   public TransactionRecord create(int transactionNumber, int branchId, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType, BranchCache branchCache) {
+      return new TransactionRecord(transactionNumber, branchId, comment, timestamp, authorArtId, commitArtId, txType,
+         branchCache);
    }
 
-   public TransactionRecord create(int transactionNumber) {
-      return new TransactionRecord(transactionNumber);
+   public TransactionRecord create(int transactionNumber, BranchCache branchCache) {
+      return new TransactionRecord(transactionNumber, branchCache);
    }
 
-   public TransactionRecord createOrUpdate(TransactionCache cache, int transactionNumber, int branchId, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
+   public TransactionRecord createOrUpdate(TransactionCache cache, int transactionNumber, int branchId, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType, BranchCache branchCache) throws OseeCoreException {
       TransactionRecord record = cache.getById(transactionNumber);
       if (record == null) {
-         record = create(transactionNumber, branchId, comment, timestamp, authorArtId, commitArtId, txType);
+         record =
+            create(transactionNumber, branchId, comment, timestamp, authorArtId, commitArtId, txType, branchCache);
       } else {
          cache.decache(record);
          record.setAuthor(authorArtId);
@@ -44,10 +47,10 @@ public class TransactionRecordFactory implements IOseeTypeFactory {
       return record;
    }
 
-   public TransactionRecord getOrCreate(TransactionCache cache, int transactionNumber) throws OseeCoreException {
+   public TransactionRecord getOrCreate(TransactionCache cache, int transactionNumber, BranchCache branchCache) throws OseeCoreException {
       TransactionRecord record = cache.getById(transactionNumber);
       if (record == null) {
-         record = new TransactionRecord(transactionNumber);
+         record = new TransactionRecord(transactionNumber, branchCache);
          cache.cache(record);
       }
       return record;

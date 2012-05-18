@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.TransactionCacheUpdateResponse;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
@@ -34,9 +35,11 @@ public class TransactionCacheUpdateResponseTranslator implements ITranslator<Tra
    }
 
    private final TransactionRecordFactory txRecordFactory;
+   private final BranchCache branchCache;
 
-   public TransactionCacheUpdateResponseTranslator(TransactionRecordFactory txRecordFactory) {
+   public TransactionCacheUpdateResponseTranslator(TransactionRecordFactory txRecordFactory, BranchCache branchCache) {
       this.txRecordFactory = txRecordFactory;
+      this.branchCache = branchCache;
    }
 
    private TransactionRecordFactory getFactory() {
@@ -82,7 +85,7 @@ public class TransactionCacheUpdateResponseTranslator implements ITranslator<Tra
          String.valueOf(row.getBranchId())};
    }
 
-   private static TransactionRecord fromArray(TransactionRecordFactory factory, String[] data) throws OseeCoreException {
+   private TransactionRecord fromArray(TransactionRecordFactory factory, String[] data) {
       int index = 0;
       int txId = Integer.valueOf(data[index++]);
       TransactionDetailsType txType = TransactionDetailsType.valueOf(data[index++]);
@@ -91,6 +94,6 @@ public class TransactionCacheUpdateResponseTranslator implements ITranslator<Tra
       int authorArtId = Integer.valueOf(data[index++]);
       int commitArtId = Integer.valueOf(data[index++]);
       int branchId = Integer.valueOf(data[index++]);
-      return factory.create(txId, branchId, comment, timeStamp, authorArtId, commitArtId, txType);
+      return factory.create(txId, branchId, comment, timeStamp, authorArtId, commitArtId, txType, branchCache);
    }
 }

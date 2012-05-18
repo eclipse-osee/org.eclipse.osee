@@ -73,8 +73,7 @@ public class ClientTransactionAccessor implements ITransactionDataAccessor {
       for (TransactionRecord row : response.getTxRows()) {
          TransactionRecord record =
             txFactory.createOrUpdate(cache, row.getId(), row.getBranchId(), row.getComment(), row.getTimeStamp(),
-               row.getAuthor(), row.getCommit(), row.getTxType());
-         record.setBranchCache(branchCache);
+               row.getAuthor(), row.getCommit(), row.getTxType(), branchCache);
          record.clearDirty();
       }
    }

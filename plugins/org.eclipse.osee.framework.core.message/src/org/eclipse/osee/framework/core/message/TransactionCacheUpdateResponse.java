@@ -13,9 +13,9 @@ package org.eclipse.osee.framework.core.message;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
 
 /**
  * @author Roberto E. Escobar
@@ -32,11 +32,11 @@ public class TransactionCacheUpdateResponse {
       return rows;
    }
 
-   public static TransactionCacheUpdateResponse fromCache(TransactionRecordFactory factory, Collection<TransactionRecord> types) throws OseeCoreException {
+   public static TransactionCacheUpdateResponse fromCache(TransactionRecordFactory factory, Collection<TransactionRecord> types, BranchCache branchCache) {
       List<TransactionRecord> rows = new ArrayList<TransactionRecord>();
       for (TransactionRecord tx : types) {
          rows.add(factory.create(tx.getId(), tx.getBranchId(), tx.getComment(), tx.getTimeStamp(), tx.getAuthor(),
-            tx.getCommit(), tx.getTxType()));
+            tx.getCommit(), tx.getTxType(), branchCache));
       }
       return new TransactionCacheUpdateResponse(rows);
    }

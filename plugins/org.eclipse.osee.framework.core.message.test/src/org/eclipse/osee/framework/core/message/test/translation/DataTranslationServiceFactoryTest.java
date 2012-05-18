@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.message.test.translation;
 
+import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
+import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.internal.DataTranslationService;
 import org.eclipse.osee.framework.core.message.internal.DataTranslationServiceFactory;
@@ -37,11 +39,20 @@ import org.eclipse.osee.framework.core.message.internal.translation.TransactionC
 import org.eclipse.osee.framework.core.message.internal.translation.TransactionRecordTranslator;
 import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
+import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
+import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.core.model.cache.IOseeCache;
+import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
+import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
+import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactTypeFactory;
 import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
 import org.eclipse.osee.framework.core.model.type.OseeEnumTypeFactory;
 import org.eclipse.osee.framework.core.model.type.RelationTypeFactory;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.core.translation.ITranslatorId;
@@ -59,6 +70,7 @@ public class DataTranslationServiceFactoryTest {
    public void testServiceCreation() throws OseeCoreException {
       DataTranslationService srvc = new DataTranslationService();
       srvc.setModelFactory(new MockModelFactoryService());
+      srvc.setOseeCachingService(new MockOseeCachingService());
       srvc.start();
 
       checkExists(srvc, TransactionRecordTranslator.class, CoreTranslatorId.TRANSACTION_RECORD);
@@ -134,5 +146,62 @@ public class DataTranslationServiceFactoryTest {
       public ArtifactTypeFactory getArtifactTypeFactory() {
          return null;
       }
+   }
+
+   private final class MockOseeCachingService implements IOseeCachingService {
+
+      @Override
+      public BranchCache getBranchCache() {
+         return new BranchCache(null);
+      }
+
+      @Override
+      public TransactionCache getTransactionCache() {
+         return null;
+      }
+
+      @Override
+      public ArtifactTypeCache getArtifactTypeCache() {
+         return null;
+      }
+
+      @Override
+      public AttributeTypeCache getAttributeTypeCache() {
+         return null;
+      }
+
+      @Override
+      public RelationTypeCache getRelationTypeCache() {
+         return null;
+      }
+
+      @Override
+      public OseeEnumTypeCache getEnumTypeCache() {
+         return null;
+      }
+
+      @Override
+      public IdentityService getIdentityService() {
+         return null;
+      }
+
+      @Override
+      public Collection<?> getCaches() {
+         return null;
+      }
+
+      @Override
+      public IOseeCache<?, ?> getCache(OseeCacheEnum cacheId) throws OseeCoreException {
+         return null;
+      }
+
+      @Override
+      public void reloadAll() throws OseeCoreException {
+      }
+
+      @Override
+      public void clearAll() {
+      }
+
    }
 }

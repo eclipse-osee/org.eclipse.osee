@@ -32,21 +32,26 @@ public final class TransactionRecord extends BaseIdentity<Integer> implements IT
    private Date time;
    private int authorArtId;
    private int commitArtId;
-   private BranchCache branchCache;
+   private final BranchCache branchCache;
 
-   public TransactionRecord(int transactionNumber, int branchId, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
+   public TransactionRecord(int transactionNumber, int branchId, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType, BranchCache branchCache) {
       super(transactionNumber);
+      if (branchCache == null) {
+         System.out.print("BranchCache cannot be null");
+         Thread.dumpStack();
+      }
       this.branchId = branchId;
       this.comment = Strings.intern(comment);
       this.time = time;
       this.authorArtId = authorArtId;
       this.commitArtId = commitArtId;
       this.txType = txType;
-      this.branchCache = null;
+      this.branchCache = branchCache;
    }
 
-   public TransactionRecord(int transactionNumber) {
-      this(transactionNumber, NON_EXISTING_BRANCH, "INVALID", new Date(0), -1, -1, TransactionDetailsType.INVALID);
+   public TransactionRecord(int transactionNumber, BranchCache branchCache) {
+      this(transactionNumber, NON_EXISTING_BRANCH, "INVALID", new Date(0), -1, -1, TransactionDetailsType.INVALID,
+         branchCache);
    }
 
    public boolean exists() {
@@ -140,10 +145,6 @@ public final class TransactionRecord extends BaseIdentity<Integer> implements IT
 
    public void clearDirty() {
       //
-   }
-
-   public void setBranchCache(BranchCache branchCache) {
-      this.branchCache = branchCache;
    }
 
    public boolean isIdValid() {

@@ -13,14 +13,15 @@ package org.eclipse.osee.framework.core.message.test.translation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.message.TransactionCacheUpdateResponse;
 import org.eclipse.osee.framework.core.message.internal.translation.TransactionCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.translation.ITranslator;
+import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -50,8 +51,9 @@ public class TransactionCacheUpdateResponseTranslatorTest extends BaseTranslator
 
    @Parameters
    public static Collection<Object[]> data() {
+      BranchCache branchCache = new BranchCache(null);
       ITranslator<TransactionCacheUpdateResponse> translator =
-         new TransactionCacheUpdateResponseTranslator(new TransactionRecordFactory());
+         new TransactionCacheUpdateResponseTranslator(new TransactionRecordFactory(), branchCache);
 
       List<Object[]> data = new ArrayList<Object[]>();
       for (int index = 1; index <= 2; index++) {

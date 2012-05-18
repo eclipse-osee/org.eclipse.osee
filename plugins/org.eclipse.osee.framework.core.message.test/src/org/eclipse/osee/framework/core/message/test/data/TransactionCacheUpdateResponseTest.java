@@ -12,14 +12,14 @@ package org.eclipse.osee.framework.core.message.test.data;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Assert;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.TransactionCacheUpdateResponse;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -42,7 +42,7 @@ public class TransactionCacheUpdateResponseTest {
    }
 
    @Test
-   public void testFromCache() throws OseeCoreException {
+   public void testFromCache() {
 
       List<TransactionRecord> data = new ArrayList<TransactionRecord>();
       for (int j = 1; j <= 2; j++) {
@@ -50,7 +50,8 @@ public class TransactionCacheUpdateResponseTest {
       }
 
       TransactionRecordFactory factory = new TransactionRecordFactory();
-      TransactionCacheUpdateResponse response = TransactionCacheUpdateResponse.fromCache(factory, data);
+      BranchCache branchCache = new BranchCache(null);
+      TransactionCacheUpdateResponse response = TransactionCacheUpdateResponse.fromCache(factory, data, branchCache);
       List<TransactionRecord> actual = response.getTxRows();
       Assert.assertEquals(data.size(), actual.size());
       for (int index = 0; index < data.size(); index++) {

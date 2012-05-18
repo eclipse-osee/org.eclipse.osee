@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.message.internal.translation.TransactionR
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.junit.Assert;
@@ -44,7 +45,9 @@ public class TransactionRecordTranslatorTest extends BaseTranslatorTest<Transact
 
    @Parameters
    public static Collection<Object[]> data() {
-      ITranslator<TransactionRecord> translator = new TransactionRecordTranslator(new TransactionRecordFactory());
+      BranchCache branchCache = new BranchCache(null);
+      ITranslator<TransactionRecord> translator =
+         new TransactionRecordTranslator(new TransactionRecordFactory(), branchCache);
       List<Object[]> data = new ArrayList<Object[]>();
       for (int index = 1; index <= 2; index++) {
          data.add(new Object[] {MockDataFactory.createTransaction(index * 10, index * 3), translator});
