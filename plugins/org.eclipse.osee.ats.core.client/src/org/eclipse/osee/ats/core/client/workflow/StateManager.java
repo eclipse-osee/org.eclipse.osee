@@ -89,7 +89,9 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
          for (String stateXml : awa.getAttributesToStringList(AtsAttributeTypes.State)) {
             WorkStateImpl state = AtsWorkStateFactory.getFromXml(stateXml);
             if (!state.getName().equals(currentState.getName())) {
-               stateProvider.addState(state);
+               if (!state.getName().equals(currentState.getName())) {
+                  stateProvider.addState(state);
+               }
             }
          }
       } else {

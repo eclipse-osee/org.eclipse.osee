@@ -200,6 +200,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             }
             count += artifacts.size();
 
+            testStateAttributeDuplications(artifacts);
             testArtifactIds(artifacts);
             testAtsAttributevaluesWithPersist(artifacts);
             testStateInWorkDefinition(artifacts);
@@ -237,6 +238,81 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       if (monitor != null) {
          xResultData.log(monitor, "Completed processing " + count + " artifacts.");
       }
+   }
+
+   private void testStateAttributeDuplications(Collection<Artifact> artifacts) throws OseeCoreException {
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Validate ATS Database");
+      Date date = new Date();
+      for (Artifact artifact : artifacts) {
+         try {
+            if (artifact instanceof AbstractWorkflowArtifact) {
+               AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
+               Map<String, Attribute<String>> stateNamesToStateStr = new HashMap<String, Attribute<String>>();
+               Attribute<String> currentStateAttr = awa.getSoleAttribute(AtsAttributeTypes.CurrentState);
+               String currentStateStr = currentStateAttr.getValue();
+               String currentStateName = currentStateStr.replaceAll(";.*$", "");
+               stateNamesToStateStr.put(currentStateName, currentStateAttr);
+
+               List<Attribute<String>> attributes = awa.getAttributes(AtsAttributeTypes.State);
+               for (Attribute<String> stateAttr : attributes) {
+                  String stateStr = stateAttr.getValue();
+                  String stateName = stateStr.replaceAll(";.*$", "");
+                  Attribute<String> storedStateAttr = stateNamesToStateStr.get(stateName);
+                  String storedStateStr = "";
+                  if (storedStateAttr != null) {
+                     storedStateStr = stateNamesToStateStr.get(stateName).getValue();
+                  }
+                  // If != null, this stateName has already been found
+                  if (Strings.isValid(storedStateStr)) {
+                     String errorStr =
+                        "Error: " + artifact.getArtifactTypeName() + " - " + artifact.getHumanReadableId() + " duplicate state: " + stateName;
+                     // delete if state attr is same as current state
+                     if (currentStateName.equals(stateName)) {
+                        errorStr +=
+                           String.format(" - state [%s] matches currentState [%s] lastModified [%s] - FIXED", stateStr,
+                              currentStateStr, awa.getLastModified());
+                        stateAttr.delete();
+                     }
+                     // delete if strings are same (name; assignee; hours; percent)
+                     else if (stateStr.equals(storedStateStr)) {
+                        errorStr +=
+                           String.format(" - stateStr [%s] matches storedStateStr [%s] lastModified [%s] - FIXED",
+                              stateStr, storedStateStr, awa.getLastModified());
+                        stateAttr.delete();
+                     }
+                     // else attempt to delete the oldest
+                     else if (stateAttr.getGammaId() < storedStateAttr.getGammaId()) {
+                        errorStr +=
+                           String.format(
+                              " - stateStr [%s] earlier than storedStateStr [%s] - deleted stateAttr - FIXED",
+                              stateStr, storedStateStr, awa.getLastModified());
+                        stateAttr.delete();
+                     } else if (storedStateAttr.getGammaId() < stateAttr.getGammaId()) {
+                        errorStr +=
+                           String.format(
+                              " - stateStr [%s] later than storedStateStr [%s] - deleted storeStateAttr - FIXED",
+                              stateStr, storedStateStr, awa.getLastModified());
+                        storedStateAttr.delete();
+                     } else {
+                        errorStr += " - NO FIX AVAIL";
+                     }
+                     testNameToResultsMap.put("testStateAttributeDuplications", errorStr);
+                  } else {
+                     stateNamesToStateStr.put(stateName, stateAttr);
+                  }
+               }
+               if (awa.isDirty()) {
+                  awa.persist(transaction);
+               }
+            }
+         } catch (Exception ex) {
+            testNameToResultsMap.put("testStateAttributeDuplications",
+               "Error: " + artifact.getArtifactTypeName() + " exception: " + ex.getLocalizedMessage());
+         }
+      }
+      transaction.execute();
+      logTestTimeSpent(date, "testStateAttributeDuplications", testNameToTimeSpentMap);
    }
 
    public void testAtsAttributevaluesWithPersist(Collection<Artifact> artifacts) {
