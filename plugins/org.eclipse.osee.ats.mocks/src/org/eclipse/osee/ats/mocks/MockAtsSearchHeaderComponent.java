@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.mocks;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
-import org.eclipse.osee.ats.api.data.AtsSearchParameters;
+import org.eclipse.osee.ats.ui.api.data.AtsSearchParameters;
+import org.eclipse.osee.ats.ui.api.view.AtsSearchHeaderComponent;
 import org.eclipse.osee.display.api.data.ViewId;
 
 /**

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.search;
+package org.eclipse.osee.ats.ui.api.search;
 
 import java.util.Collection;
 import org.eclipse.osee.display.api.search.ArtifactProvider;

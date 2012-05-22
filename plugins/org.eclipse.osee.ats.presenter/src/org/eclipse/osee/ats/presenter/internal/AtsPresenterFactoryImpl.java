@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.presenter.internal;
 
-import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
-import org.eclipse.osee.ats.api.data.AtsSearchParameters;
-import org.eclipse.osee.ats.api.search.AtsArtifactProvider;
-import org.eclipse.osee.ats.api.search.AtsPresenterFactory;
-import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
+import org.eclipse.osee.ats.ui.api.data.AtsSearchParameters;
+import org.eclipse.osee.ats.ui.api.search.AtsArtifactProvider;
+import org.eclipse.osee.ats.ui.api.search.AtsPresenterFactory;
+import org.eclipse.osee.ats.ui.api.search.AtsSearchPresenter;
+import org.eclipse.osee.ats.ui.api.view.AtsSearchHeaderComponent;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ApplicationContext;

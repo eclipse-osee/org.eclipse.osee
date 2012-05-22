@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.mocks;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.search.AtsArtifactProvider;
+import org.eclipse.osee.ats.ui.api.search.AtsArtifactProvider;
 import org.eclipse.osee.display.presenter.mocks.MockArtifact;
 import org.eclipse.osee.display.presenter.mocks.MockArtifactProvider;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;

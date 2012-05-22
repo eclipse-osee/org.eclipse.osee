@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Ats Presenter Test
+Bundle-Name: Ats Presenter Test (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ats.presenter.test
 Bundle-Version: 0.10.0.qualifier
 Fragment-Host: org.eclipse.osee.ats.presenter
@@ -12,3 +12,4 @@ Import-Package: org.eclipse.osee.display.presenter.mocks,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.ats.mocks
+Bundle-Vendor: Eclipse Open System Engineering Environment

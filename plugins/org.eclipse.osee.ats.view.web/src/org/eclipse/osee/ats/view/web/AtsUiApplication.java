@@ -11,9 +11,9 @@
 package org.eclipse.osee.ats.view.web;
 
 import java.util.Locale;
-import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
-import org.eclipse.osee.ats.api.data.AtsSearchParameters;
-import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
+import org.eclipse.osee.ats.ui.api.data.AtsSearchParameters;
+import org.eclipse.osee.ats.ui.api.search.AtsSearchPresenter;
+import org.eclipse.osee.ats.ui.api.view.AtsSearchHeaderComponent;
 import org.eclipse.osee.display.view.web.HasLogger;
 import org.eclipse.osee.display.view.web.HasNavigator;
 import org.eclipse.osee.display.view.web.HasPresenter;

@@ -1,12 +1,13 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Ats Presenter Mocks
+Bundle-Name: Ats Presenter Mocks (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ats.mocks
 Bundle-Version: 0.10.0.qualifier
-Bundle-Vendor: Eclipse Foundation
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.osee.ats.api.components,
- org.eclipse.osee.ats.api.search,
+Import-Package: org.eclipse.osee.ats.ui.api.data,
+ org.eclipse.osee.ats.ui.api.search,
+ org.eclipse.osee.ats.ui.api.view,
  org.eclipse.osee.display.api.components,
  org.eclipse.osee.display.api.data,
  org.eclipse.osee.display.api.search,

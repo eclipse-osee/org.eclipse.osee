@@ -12,10 +12,10 @@ package org.eclipse.osee.ats.presenter.internal;
 
 import java.util.Iterator;
 import java.util.List;
-import org.eclipse.osee.ats.api.search.AtsArtifactProvider;
-import org.eclipse.osee.ats.api.tokens.AtsArtifactToken;
-import org.eclipse.osee.ats.api.tokens.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.tokens.AtsRelationTypes;
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.ui.api.search.AtsArtifactProvider;
 import org.eclipse.osee.display.presenter.ArtifactProviderImpl;
 import org.eclipse.osee.display.presenter.Utility;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;

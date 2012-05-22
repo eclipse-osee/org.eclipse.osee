@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.view.web.components;
 
-import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
-import org.eclipse.osee.ats.api.data.AtsSearchParameters;
-import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
+import org.eclipse.osee.ats.ui.api.data.AtsSearchParameters;
+import org.eclipse.osee.ats.ui.api.search.AtsSearchPresenter;
+import org.eclipse.osee.ats.ui.api.view.AtsSearchHeaderComponent;
 import org.eclipse.osee.ats.view.web.AtsUiApplication;
 import org.eclipse.osee.ats.view.web.search.AtsSearchResultsView;
 import org.eclipse.osee.display.api.data.ViewId;

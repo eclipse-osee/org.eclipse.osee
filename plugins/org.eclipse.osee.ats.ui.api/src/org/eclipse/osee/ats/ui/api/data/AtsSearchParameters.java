@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.data;
+package org.eclipse.osee.ats.ui.api.data;
 
 import org.eclipse.osee.display.api.data.ViewId;
 import org.eclipse.osee.display.api.data.ViewSearchParameters;

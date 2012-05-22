@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.tokens;
+package org.eclipse.osee.ats.api.data;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,18 +31,18 @@ public final class AtsAttributeTypes {
    public static final IAttributeType AllowCommitBranch = createType(0x10000000000000BAL, "Allow Commit Branch");
    public static final IAttributeType AllowCreateBranch = createType(0x10000000000000B9L, "Allow Create Branch");
    public static final IAttributeType BaselineBranchGuid = createType(0x10000000000000A9L, "Baseline Branch Guid", "Basline branch associated with ATS object.");
-   
+
    public static final IAttributeType Category1 = createType(0x10000000000000ECL, "Category", "Open field for user to be able to enter text to use for categorizing/sorting.");
    public static final IAttributeType Category2 = createType(0x10000000000000F1L, "Category2", Category1.getDescription());
    public static final IAttributeType Category3 = createType(0x10000000000000F2L, "Category3", Category1.getDescription());
 
    public static final IAttributeType ChangeType = createType(0x10000000000000CCL, "Change Type", "Type of change.");
-   
+
    public static final IAttributeType CancelledDate = createType(0x10000000000000C1L, "Cancelled Date", "Date the workflow was cancelled.");
    public static final IAttributeType CancelledBy = createType(0x10000000000000C2L, "Cancelled By", "UserId of the user who cancelled workflow.");
    public static final IAttributeType CancelledReason = createType(0x10000000000000C3L, "Cancelled Reason", "Explanation of why worklfow was cancelled.");
    public static final IAttributeType CancelledFromState = createType(0x10000000000000C4L, "Cancelled From State", "State workflow was in when cancelled.");
-   
+
    public static final IAttributeType CreatedDate = createType(0x10000000000000C5L, "Created Date", "Date the workflow was created.");
    public static final IAttributeType CreatedBy = createType(0x10000000000000C6L, "Created By", "UserId of the user who created the workflow.");
 
@@ -68,7 +68,7 @@ public final class AtsAttributeTypes {
    public static final IAttributeType LocChanged= createType(0x10000000000000E7L, "LOC Changed", "Total Lines of Code Changed");
    public static final IAttributeType LocReviewed = createType(0x10000000000000E8L, "LOC Reviewed", "Total Lines of Code Reviewed");
    public static final IAttributeType Log = createType(0x10000000000000E2L, "Log");
-   
+
    public static final IAttributeType MeetingLocation = createType(0x10000000000000F8L, "Meeting Location", "Location meeting is held.");
    public static final IAttributeType MeetingAttendee = createType(0x10000000000000F9L, "Meeting Attendee", "Attendee of meeting.");
    public static final IAttributeType MeetingLength = createType(0x10000000000000D4L, "Meeting Length", "Length of meeting.");
@@ -85,7 +85,7 @@ public final class AtsAttributeTypes {
    public static final IAttributeType PagesReviewed = createType(0x10000000000000EAL, "Pages Reviewed", "Total Pages Reviewed");
    public static final IAttributeType PercentRework = createType(0x10000000000000D5L, "Percent Rework");
    public static final IAttributeType PercentComplete = createType(0x10000000000000CFL, "Percent Complete");
-   
+
    public static final IAttributeType Points = createType(0x10000000000000CAL, "Points", "Abstract value that describes risk, complexity, and size of Actions.");
    public static final IAttributeType PriorityType = createType(0x10000000000000CBL, "Priority", "1 = High; 5 = Low");
    public static final IAttributeType Problem = createType(0x10000000000000D9L, "Problem", "Problem found during analysis.");
@@ -115,8 +115,8 @@ public final class AtsAttributeTypes {
    public static final IAttributeType WorkflowDefinition = createType(0x10000000000000ADL, "Workflow Definition", "Specific work flow definition id used by this Workflow artifact");
    public static final IAttributeType RelatedTaskWorkDefinition = createType(0x10000000000000B0L, "Related Task Workflow Definition", "Specific work flow definition id used by Tasks related to this Workflow");
    public static final IAttributeType WorkPackage = createType(0x10000000000000E6L, "Work Package", "Designated accounting work package for completing workflow.");
-   
-   
+
+
    // @formatter:on
 
    private static IAttributeType createType(Long guid, String name) {
