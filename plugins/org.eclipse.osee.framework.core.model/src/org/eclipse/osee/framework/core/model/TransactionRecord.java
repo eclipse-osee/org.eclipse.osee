@@ -36,10 +36,6 @@ public final class TransactionRecord extends BaseIdentity<Integer> implements IT
 
    public TransactionRecord(int transactionNumber, int branchId, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType, BranchCache branchCache) {
       super(transactionNumber);
-      if (branchCache == null) {
-         System.out.print("BranchCache cannot be null");
-         Thread.dumpStack();
-      }
       this.branchId = branchId;
       this.comment = Strings.intern(comment);
       this.time = time;

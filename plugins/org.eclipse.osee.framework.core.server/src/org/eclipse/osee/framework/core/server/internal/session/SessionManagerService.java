@@ -69,7 +69,7 @@ public final class SessionManagerService implements ISessionManager {
       String serverId = getServerManager().getId();
       BuildTypeIdentifier identifier = new BuildTypeIdentifier(new BuildTypeDataProvider());
 
-      SessionFactory sessionFactory = new SessionFactory(logger, identifier);
+      SessionFactory sessionFactory = new SessionFactory(logger, dbService, identifier);
 
       ISessionQuery sessionQuery = new DatabaseSessionQuery(serverId, getDbService());
       IOseeDataAccessor<String, Session> accessor =

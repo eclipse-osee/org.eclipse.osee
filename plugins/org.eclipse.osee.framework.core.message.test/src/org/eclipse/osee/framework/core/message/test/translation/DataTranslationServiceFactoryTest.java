@@ -119,7 +119,7 @@ public class DataTranslationServiceFactoryTest {
 
       @Override
       public TransactionRecordFactory getTransactionFactory() {
-         return new TransactionRecordFactory();
+         return null;
       }
 
       @Override
@@ -139,7 +139,7 @@ public class DataTranslationServiceFactoryTest {
 
       @Override
       public AttributeTypeFactory getAttributeTypeFactory() {
-         return new AttributeTypeFactory();
+         return null;
       }
 
       @Override
@@ -152,7 +152,7 @@ public class DataTranslationServiceFactoryTest {
 
       @Override
       public BranchCache getBranchCache() {
-         return new BranchCache(null);
+         return null;
       }
 
       @Override
@@ -191,16 +191,18 @@ public class DataTranslationServiceFactoryTest {
       }
 
       @Override
-      public IOseeCache<?, ?> getCache(OseeCacheEnum cacheId) throws OseeCoreException {
+      public IOseeCache<?, ?> getCache(OseeCacheEnum cacheId) {
          return null;
       }
 
       @Override
-      public void reloadAll() throws OseeCoreException {
+      public void reloadAll() {
+         //
       }
 
       @Override
       public void clearAll() {
+         //
       }
 
    }

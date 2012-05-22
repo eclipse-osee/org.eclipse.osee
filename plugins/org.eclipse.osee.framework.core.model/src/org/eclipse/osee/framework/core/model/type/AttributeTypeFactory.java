@@ -42,6 +42,7 @@ public class AttributeTypeFactory implements IOseeTypeFactory {
    }
 
    public AttributeType createOrUpdate(AttributeTypeCache cache, long guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) throws OseeCoreException {
+      Conditions.checkNotNull(cache, "AttributeTypeCache");
       AttributeType attributeType = cache.getByGuid(guid);
 
       if (attributeType == null) {
@@ -59,6 +60,7 @@ public class AttributeTypeFactory implements IOseeTypeFactory {
    }
 
    public AttributeType createOrUpdate(IOseeCache<Long, AttributeType> cache, int uniqueId, StorageState storageState, Long guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) throws OseeCoreException {
+      Conditions.checkNotNull(cache, "AttributeTypeCache");
       AttributeType attributeType = cache.getById(uniqueId);
       if (attributeType == null) {
          attributeType =

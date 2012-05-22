@@ -85,7 +85,7 @@ public class TransactionCacheUpdateResponseTranslator implements ITranslator<Tra
          String.valueOf(row.getBranchId())};
    }
 
-   private TransactionRecord fromArray(TransactionRecordFactory factory, String[] data) {
+   private TransactionRecord fromArray(TransactionRecordFactory factory, String[] data) throws OseeCoreException {
       int index = 0;
       int txId = Integer.valueOf(data[index++]);
       TransactionDetailsType txType = TransactionDetailsType.valueOf(data[index++]);

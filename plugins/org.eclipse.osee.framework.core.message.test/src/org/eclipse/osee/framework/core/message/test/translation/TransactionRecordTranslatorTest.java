@@ -15,6 +15,8 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.message.internal.translation.TransactionRecordTranslator;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
+import org.eclipse.osee.framework.core.message.test.mocks.MockOseeDataAccessor;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
@@ -45,7 +47,7 @@ public class TransactionRecordTranslatorTest extends BaseTranslatorTest<Transact
 
    @Parameters
    public static Collection<Object[]> data() {
-      BranchCache branchCache = new BranchCache(null);
+      BranchCache branchCache = new BranchCache(new MockOseeDataAccessor<String, Branch>());
       ITranslator<TransactionRecord> translator =
          new TransactionRecordTranslator(new TransactionRecordFactory(), branchCache);
       List<Object[]> data = new ArrayList<Object[]>();

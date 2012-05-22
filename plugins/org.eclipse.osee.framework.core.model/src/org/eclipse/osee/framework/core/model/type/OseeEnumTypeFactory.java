@@ -37,6 +37,7 @@ public class OseeEnumTypeFactory implements IOseeTypeFactory {
    }
 
    public OseeEnumType createOrUpdate(IOseeCache<Long, OseeEnumType> cache, int enumTypeId, StorageState storageState, Long guid, String enumTypeName) throws OseeCoreException {
+      Conditions.checkNotNull(cache, "OseeEnumTypeCache");
       OseeEnumType oseeEnumType = cache.getById(enumTypeId);
       if (oseeEnumType == null) {
          oseeEnumType = createEnumType(guid, enumTypeName);
@@ -51,6 +52,7 @@ public class OseeEnumTypeFactory implements IOseeTypeFactory {
    }
 
    public OseeEnumType createOrUpdate(OseeEnumTypeCache cache, Long guid, String enumTypeName) throws OseeCoreException {
+      Conditions.checkNotNull(cache, "OseeEnumTypeCache");
       OseeEnumType oseeEnumType = cache.getByGuid(guid);
       if (oseeEnumType == null) {
          oseeEnumType = createEnumType(guid, enumTypeName);
@@ -63,6 +65,7 @@ public class OseeEnumTypeFactory implements IOseeTypeFactory {
    }
 
    public OseeEnumEntry createOrUpdate(IOseeCache<Long, OseeEnumType> cache, Long enumTypeGuid, String enumEntryGuid, String enumEntryName, int ordinal) throws OseeCoreException {
+      Conditions.checkNotNull(cache, "OseeEnumTypeCache");
       OseeEnumType oseeEnumType = ((AbstractOseeCache<Long, OseeEnumType>) cache).getByGuid(enumTypeGuid);
       OseeEnumEntry enumEntry = oseeEnumType.getEntryByGuid(enumEntryGuid);
       if (enumEntry == null) {

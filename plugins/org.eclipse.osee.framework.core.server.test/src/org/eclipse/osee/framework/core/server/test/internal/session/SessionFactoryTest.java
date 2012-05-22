@@ -48,7 +48,7 @@ public class SessionFactoryTest {
    private final Date lastInteractionDate;
    private final String lastInteractionDetails;
    private final MockBuildTypeIdentifier typeIdentifier = new MockBuildTypeIdentifier();
-   private final SessionFactory factory = new SessionFactory(new MockLog(), typeIdentifier);
+   private final SessionFactory factory = new SessionFactory(new MockLog(), null, typeIdentifier);
 
    public SessionFactoryTest(String guid, String userId, Date creationDate, String managedByServerId, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) {
       super();

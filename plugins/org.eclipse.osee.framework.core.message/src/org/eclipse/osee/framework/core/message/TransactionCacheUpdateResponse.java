@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.message;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
@@ -32,7 +33,7 @@ public class TransactionCacheUpdateResponse {
       return rows;
    }
 
-   public static TransactionCacheUpdateResponse fromCache(TransactionRecordFactory factory, Collection<TransactionRecord> types, BranchCache branchCache) {
+   public static TransactionCacheUpdateResponse fromCache(TransactionRecordFactory factory, Collection<TransactionRecord> types, BranchCache branchCache) throws OseeCoreException {
       List<TransactionRecord> rows = new ArrayList<TransactionRecord>();
       for (TransactionRecord tx : types) {
          rows.add(factory.create(tx.getId(), tx.getBranchId(), tx.getComment(), tx.getTimeStamp(), tx.getAuthor(),

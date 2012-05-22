@@ -40,6 +40,7 @@ public class BranchFactory implements IOseeTypeFactory {
    }
 
    public Branch createOrUpdate(AbstractOseeCache<String, Branch> cache, String guid, String name, BranchType branchType, BranchState branchState, boolean isArchived) throws OseeCoreException {
+      Conditions.checkNotNull(cache, "BranchCache");
       Branch branch = cache.getByGuid(guid);
       if (branch == null) {
          branch = create(guid, name, branchType, branchState, isArchived);
@@ -55,6 +56,7 @@ public class BranchFactory implements IOseeTypeFactory {
    }
 
    public Branch createOrUpdate(IOseeCache<String, Branch> cache, int uniqueId, StorageState storageState, String guid, String name, BranchType branchType, BranchState branchState, boolean isArchived) throws OseeCoreException {
+      Conditions.checkNotNull(cache, "BranchCache");
       Branch branch = cache.getById(uniqueId);
       if (branch == null) {
          branch = create(guid, name, branchType, branchState, isArchived);

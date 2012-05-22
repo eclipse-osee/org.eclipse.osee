@@ -16,6 +16,8 @@ import java.util.List;
 import org.eclipse.osee.framework.core.message.TransactionCacheUpdateResponse;
 import org.eclipse.osee.framework.core.message.internal.translation.TransactionCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
+import org.eclipse.osee.framework.core.message.test.mocks.MockOseeDataAccessor;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
@@ -51,7 +53,7 @@ public class TransactionCacheUpdateResponseTranslatorTest extends BaseTranslator
 
    @Parameters
    public static Collection<Object[]> data() {
-      BranchCache branchCache = new BranchCache(null);
+      BranchCache branchCache = new BranchCache(new MockOseeDataAccessor<String, Branch>());
       ITranslator<TransactionCacheUpdateResponse> translator =
          new TransactionCacheUpdateResponseTranslator(new TransactionRecordFactory(), branchCache);
 

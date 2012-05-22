@@ -16,42 +16,47 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeTypeFactory;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
+import org.eclipse.osee.framework.core.util.Conditions;
 
 /**
  * @author Roberto E. Escobar
  */
 public class TransactionRecordFactory implements IOseeTypeFactory {
 
-   public TransactionRecord create(int transactionNumber, int branchId, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType, BranchCache branchCache) {
+   public TransactionRecord create(int transactionNumber, int branchId, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType, BranchCache branchCache) throws OseeCoreException {
+      Conditions.checkNotNull(branchCache, "branchCache");
       return new TransactionRecord(transactionNumber, branchId, comment, timestamp, authorArtId, commitArtId, txType,
          branchCache);
    }
 
-   public TransactionRecord create(int transactionNumber, BranchCache branchCache) {
+   private TransactionRecord create(int transactionNumber, BranchCache branchCache) throws OseeCoreException {
+      Conditions.checkNotNull(branchCache, "branchCache");
       return new TransactionRecord(transactionNumber, branchCache);
    }
 
-   public TransactionRecord createOrUpdate(TransactionCache cache, int transactionNumber, int branchId, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType, BranchCache branchCache) throws OseeCoreException {
-      TransactionRecord record = cache.getById(transactionNumber);
+   public TransactionRecord createOrUpdate(TransactionCache txCache, int transactionNumber, int branchId, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType, BranchCache branchCache) throws OseeCoreException {
+      Conditions.checkNotNull(txCache, "txCache");
+      TransactionRecord record = txCache.getById(transactionNumber);
       if (record == null) {
          record =
             create(transactionNumber, branchId, comment, timestamp, authorArtId, commitArtId, txType, branchCache);
       } else {
-         cache.decache(record);
+         txCache.decache(record);
          record.setAuthor(authorArtId);
          record.setComment(comment);
          record.setCommit(commitArtId);
          record.setTimeStamp(timestamp);
       }
-      cache.cache(record);
+      txCache.cache(record);
       return record;
    }
 
-   public TransactionRecord getOrCreate(TransactionCache cache, int transactionNumber, BranchCache branchCache) throws OseeCoreException {
-      TransactionRecord record = cache.getById(transactionNumber);
+   public TransactionRecord getOrCreate(TransactionCache txCache, int transactionNumber, BranchCache branchCache) throws OseeCoreException {
+      Conditions.checkNotNull(txCache, "txCache");
+      TransactionRecord record = txCache.getById(transactionNumber);
       if (record == null) {
-         record = new TransactionRecord(transactionNumber, branchCache);
-         cache.cache(record);
+         record = create(transactionNumber, branchCache);
+         txCache.cache(record);
       }
       return record;
    }

@@ -22,8 +22,10 @@ import org.eclipse.osee.framework.core.model.cache.IOseeTypeFactory;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.core.server.internal.BuildTypeIdentifier;
 import org.eclipse.osee.framework.core.server.internal.compatibility.OseeSql_0_9_1;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.DatabaseInfoManager;
+import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
@@ -34,13 +36,16 @@ import org.eclipse.osee.logger.Log;
 public final class SessionFactory implements IOseeTypeFactory {
    private final BuildTypeIdentifier typeIdentifier;
    private final Log logger;
+   private final IOseeDatabaseService dbService;
 
-   public SessionFactory(Log logger, BuildTypeIdentifier typeIdentifier) {
+   public SessionFactory(Log logger, IOseeDatabaseService dbService, BuildTypeIdentifier typeIdentifier) {
       this.typeIdentifier = typeIdentifier;
       this.logger = logger;
+      this.dbService = dbService;
    }
 
    public Session createOrUpdate(IOseeCache<String, Session> cache, int uniqueId, StorageState storageState, String guid, String userId, Date creationDate, String managedByServerId, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) throws OseeCoreException {
+      Conditions.checkNotNull(cache, "SessionCache");
       Session session = cache.getById(uniqueId);
       if (session == null) {
          session =
@@ -66,12 +71,15 @@ public final class SessionFactory implements IOseeTypeFactory {
    }
 
    public OseeSessionGrant createSessionGrant(Session session, IUserToken userToken) throws OseeCoreException {
+      Conditions.checkNotNull(session, "Session");
+      Conditions.checkNotNull(userToken, "IUserToken");
+
       OseeSessionGrant sessionGrant = new OseeSessionGrant(session.getGuid());
       sessionGrant.setCreationRequired(userToken.isCreationRequired());
       sessionGrant.setUserToken(userToken);
       sessionGrant.setDatabaseInfo(DatabaseInfoManager.getDefault());
 
-      Properties properties = getSQLProperties(session.getClientVersion());
+      Properties properties = getSQLProperties(dbService, session.getClientVersion());
       sessionGrant.setSqlProperties(properties);
 
       sessionGrant.setDataStorePath(OseeServerProperties.getOseeApplicationServerData(logger));
@@ -79,13 +87,20 @@ public final class SessionFactory implements IOseeTypeFactory {
       return sessionGrant;
    }
 
-   private static Properties getSQLProperties(String clientVersion) throws OseeCoreException {
+   private static Properties getSQLProperties(IOseeDatabaseService dbService, String clientVersion) throws OseeCoreException {
       Properties properties = null;
-      DatabaseMetaData metaData = ConnectionHandler.getMetaData();
-      if (is_0_9_2_Compatible(clientVersion)) {
-         properties = OseeSql.getSqlProperties(metaData);
-      } else {
-         properties = OseeSql_0_9_1.getSqlProperties(metaData);
+      OseeConnection connection = dbService.getConnection();
+      try {
+         DatabaseMetaData metaData = connection.getMetaData();
+         if (is_0_9_2_Compatible(clientVersion)) {
+            properties = OseeSql.getSqlProperties(metaData);
+         } else {
+            properties = OseeSql_0_9_1.getSqlProperties(metaData);
+         }
+      } finally {
+         if (connection != null) {
+            connection.close();
+         }
       }
       return properties;
    }
