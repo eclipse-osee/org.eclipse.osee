@@ -90,6 +90,11 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
+   public Callable<List<ChangeItem>> compareBranch(IOseeBranch branch) throws OseeCoreException {
+      return branchStore.compareBranch(sessionContext.toString(), branchCache.get(branch));
+   }
+
+   @Override
    public Callable<ReadableBranch> changeBranchState(IOseeBranch branch, BranchState newState) {
       return new ChangeBranchStateCallable(logger, sessionContext, branchStore, branchCache, branch, newState);
    }

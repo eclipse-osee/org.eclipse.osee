@@ -43,6 +43,8 @@ public interface OrcsBranch {
 
    Callable<List<ChangeItem>> compareBranch(ITransaction sourceTx, ITransaction destinationTx);
 
+   Callable<List<ChangeItem>> compareBranch(IOseeBranch branch) throws OseeCoreException;
+
    Callable<ReadableBranch> changeBranchState(IOseeBranch branch, BranchState newState);
 
    Callable<ReadableBranch> changeBranchType(IOseeBranch branch, BranchType branchType);

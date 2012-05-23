@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -36,6 +37,8 @@ public interface BranchDataStore {
    Callable<TransactionRecord> commitBranch(String sessionId, ReadableArtifact committer, Branch source, Branch destination);
 
    Callable<List<ChangeItem>> compareBranch(String sessionId, TransactionRecord sourceTx, TransactionRecord destinationTx);
+
+   Callable<List<ChangeItem>> compareBranch(String sessionId, Branch branch) throws OseeCoreException;
 
    Callable<URI> exportBranch(List<IOseeBranch> branches, PropertyStore options, String exportName);
 

@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
+import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
 
 /**
  * @author Roberto E. Escobar
@@ -174,5 +175,11 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
       int priorTransactionId =
          oseeDatabaseService.runPreparedQueryFetchObject(-1, GET_PRIOR_TRANSACTION, branchId, transactionNumber);
       return cache.getOrLoad(priorTransactionId);
+   }
+
+   @Override
+   public TransactionRecord getHeadTransaction(TransactionCache cache, Branch branch) throws OseeCoreException {
+      return cache.getOrLoad(oseeDatabaseService.runPreparedQueryFetchObject(-1,
+         OseeSql.TX_GET_MAX_AS_LARGEST_TX.getSql(), branch.getId()));
    }
 }

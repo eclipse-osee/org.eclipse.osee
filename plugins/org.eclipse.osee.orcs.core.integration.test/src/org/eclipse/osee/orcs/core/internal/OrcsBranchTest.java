@@ -5,11 +5,14 @@
  */
 package org.eclipse.osee.orcs.core.internal;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.ReadableBranch;
+import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -54,27 +57,16 @@ public class OrcsBranchTest {
    public void testCreateBranch() throws Exception {
       int SOURCE_TX_ID = 13; // Chosen starting transaction on Common Branch
       int CHANGED_TX_ID = 14; // Transaction containing tested change
-      int MERGE_DESTINATION_BRANCH_ID = -1; // only used on merge branches
-      int MERGE_ADDRESSING_QUERY_ID = -1; // only used on merge branches
 
       // set up the query factory for the test
       QueryFactory qf = orcsApi.getQueryFactory(context);
-
-      CreateBranchData createData = new CreateBranchData();
-      createData.setGuid(GUID.create());
-      createData.setName("Prior Branch");
-      createData.setBranchType(BranchType.WORKING);
-      createData.setCreationComment("Creation of initial working branch for test");
-      createData.setFromTransaction(TokenFactory.createTransaction(SOURCE_TX_ID));
-
+      //      ReadableArtifact createdBy =
+      //         qf.fromBranch(CoreBranches.COMMON).andNameEquals(ARTIFACT_NAME).getResults().getExactlyOne();
       ReadableArtifact createdBy =
-         qf.fromBranch(CoreBranches.COMMON).andNameEquals(ARTIFACT_NAME).getResults().getExactlyOne();
-      createData.setUserArtifact(createdBy);
+         qf.fromBranch(CoreBranches.COMMON).andNameEquals("OSEE System").getResults().getExactlyOne();
 
-      createData.setAssociatedArtifact(createdBy);
-      createData.setMergeDestinationBranchId(MERGE_DESTINATION_BRANCH_ID);
-
-      createData.setMergeAddressingQueryId(MERGE_ADDRESSING_QUERY_ID);
+      CreateBranchData createData =
+         makeBranchData(qf, "PriorBranch", "Creation of initial working branch for test", SOURCE_TX_ID, createdBy, true);
       Callable<ReadableBranch> callable = branchInterface.createBranch(createData);
       Assert.assertNotNull(callable);
       ReadableBranch priorBranch = callable.call();
@@ -95,21 +87,9 @@ public class OrcsBranchTest {
       // user Joe Smith, so if the code is correct, and the copy includes the final 
       // transaction, then this will produce the same result as the query of the common branch
 
-      CreateBranchData createDataNew = new CreateBranchData();
-      createDataNew.setGuid(GUID.create());
-      createDataNew.setName("PostBranch");
-      createDataNew.setBranchType(BranchType.WORKING);
-      createDataNew.setCreationComment("Creation of branch with transaction ID equal to the change test");
-      createDataNew.setFromTransaction(TokenFactory.createTransaction(CHANGED_TX_ID));
-
-      ReadableArtifact createdByNew =
-         qf.fromBranch(CoreBranches.COMMON).andNameEquals(ARTIFACT_NAME).getResults().getExactlyOne();
-      createData.setUserArtifact(createdByNew);
-
-      createData.setAssociatedArtifact(createdByNew);
-      createData.setMergeDestinationBranchId(MERGE_DESTINATION_BRANCH_ID);
-
-      createData.setMergeAddressingQueryId(MERGE_ADDRESSING_QUERY_ID);
+      CreateBranchData createDataNew =
+         makeBranchData(qf, "PostBranch", "Creation of branch with transaction ID equal to the change test",
+            CHANGED_TX_ID, createdBy, true);
       Callable<ReadableBranch> postCallable = branchInterface.createBranch(createDataNew);
       Assert.assertNotNull(postCallable);
       ReadableBranch postBranch = postCallable.call();
@@ -119,4 +99,56 @@ public class OrcsBranchTest {
 
    }
 
+   @Test
+   public void testCreateBranchCopyFromTx() throws Exception {
+      // this test shows that the change report for a transaction for the newly copied branch is 
+      // the same as the change report on the branch the transaction is copied from
+      int PRIOR_TX_ID = 15;
+      int SOURCE_TX_ID = 16;
+
+      // get the list of changes from the original branch
+      Callable<List<ChangeItem>> callable =
+         branchInterface.compareBranch(TokenFactory.createTransaction(PRIOR_TX_ID),
+            TokenFactory.createTransaction(SOURCE_TX_ID));
+      List<ChangeItem> priorItems = callable.call();
+
+      // create the branch with the copied transaction
+      QueryFactory qf = orcsApi.getQueryFactory(context);
+      ReadableArtifact createdBy =
+         qf.fromBranch(CoreBranches.COMMON).andNameEquals("OSEE System").getResults().getExactlyOne();
+
+      CreateBranchData createData =
+         makeBranchData(qf, "CopiedBranch", "Creation of branch with copied tx for test", SOURCE_TX_ID, createdBy, true);
+      Callable<ReadableBranch> callableBranch = branchInterface.createBranch(createData);
+
+      // the new branch will contain two transactions - these should have the same change report as the original branch
+      ReadableBranch postBranch = callableBranch.call();
+
+      callable = branchInterface.compareBranch(postBranch);
+      List<ChangeItem> newItems = callable.call();
+      compareBranchChanges(priorItems, newItems);
+   }
+
+   private CreateBranchData makeBranchData(QueryFactory qf, String name, String creationComment, int fromTransaction, ReadableArtifact userArtifact, boolean copyTx) {
+      int MERGE_DESTINATION_BRANCH_ID = -1; // only used on merge branches
+      int MERGE_ADDRESSING_QUERY_ID = -1; // only used on merge branches
+      CreateBranchData createData = new CreateBranchData();
+      createData.setGuid(GUID.create());
+      createData.setName(name);
+      createData.setBranchType(BranchType.WORKING);
+      createData.setCreationComment(creationComment);
+      createData.setFromTransaction(TokenFactory.createTransaction(fromTransaction));
+      createData.setUserArtifact(userArtifact);
+      createData.setAssociatedArtifact(userArtifact);
+      createData.setMergeDestinationBranchId(MERGE_DESTINATION_BRANCH_ID);
+      createData.setMergeAddressingQueryId(MERGE_ADDRESSING_QUERY_ID);
+      createData.setTxCopyBranchType(copyTx);
+      return createData;
+   }
+
+   private void compareBranchChanges(List<ChangeItem> priorItems, List<ChangeItem> newItems) {
+      Collections.sort(priorItems);
+      Collections.sort(newItems);
+      Assert.assertEquals(priorItems, newItems);
+   }
 }

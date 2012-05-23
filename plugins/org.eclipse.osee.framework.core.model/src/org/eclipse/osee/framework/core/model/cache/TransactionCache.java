@@ -163,6 +163,10 @@ public class TransactionCache implements IOseeCache<String, TransactionRecord> {
       return toReturn;
    }
 
+   public TransactionRecord getHeadTransaction(Branch branch) throws OseeCoreException {
+      return accessor.getHeadTransaction(this, branch);
+   }
+
    public Collection<TransactionRecord> getTransactions(Branch branch) {
       return Collections.emptyList();
    }

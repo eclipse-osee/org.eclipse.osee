@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class ChangeItem {
+public abstract class ChangeItem implements Comparable<ChangeItem> {
    private final int artId;
    private final int itemId;
    private final int itemTypeId;
@@ -89,5 +89,46 @@ public abstract class ChangeItem {
          "ChangeItem - itemId:[%s] artId:%s typeId:%s base:%s first:%s current:%s destination:%s net:%s synthetic:%s",
          itemId, getArtId(), getItemTypeId(), getBaselineVersion(), getFirstNonCurrentChange(), getCurrentVersion(),
          getDestinationVersion(), getNetChange(), isSynthetic());
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (this == obj) {
+         return true;
+      }
+      if (!(obj instanceof ChangeItem)) {
+         return false;
+      }
+
+      ChangeItem other = (ChangeItem) obj;
+
+      if (itemId != other.itemId) {
+         return false;
+      }
+      if (artId != other.artId) {
+         return false;
+      }
+      if (currentEntry == null) {
+         if (other.currentEntry != null) {
+            return false;
+         }
+      }
+      if (!currentEntry.equals(other.currentEntry)) {
+         return false;
+      }
+      if (itemTypeId != other.itemTypeId) {
+         return false;
+      }
+      return true;
+   }
+
+   @Override
+   public int compareTo(ChangeItem obj) {
+      return itemId - obj.itemId;
+   }
+
+   @Override
+   public int hashCode() {
+      return itemId;
    }
 }

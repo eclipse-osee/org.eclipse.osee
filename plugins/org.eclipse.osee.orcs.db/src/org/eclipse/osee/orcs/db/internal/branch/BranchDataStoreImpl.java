@@ -16,8 +16,10 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
@@ -123,6 +125,13 @@ public class BranchDataStoreImpl implements BranchDataStore {
    public Callable<List<ChangeItem>> compareBranch(String sessionId, TransactionRecord sourceTx, TransactionRecord destinationTx) {
       return new CompareDatabaseCallable(logger, dbService, cachingService.getBranchCache(),
          cachingService.getTransactionCache(), sourceTx, destinationTx);
+   }
+
+   @Override
+   public Callable<List<ChangeItem>> compareBranch(String sessionId, Branch branch) throws OseeCoreException {
+      TransactionCache txCache = cachingService.getTransactionCache();
+      return new CompareDatabaseCallable(logger, dbService, cachingService.getBranchCache(), txCache,
+         branch.getBaseTransaction(), txCache.getHeadTransaction(branch));
    }
 
    @Override

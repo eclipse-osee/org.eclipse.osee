@@ -85,7 +85,7 @@ public enum OseeSql {
       this.isDynamicHint = isDynamicHint;
    }
 
-   protected String getSql() {
+   public String getSql() {
       return sql;
    }
 

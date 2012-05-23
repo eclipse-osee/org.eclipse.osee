@@ -36,7 +36,8 @@ public class ClientTransactionAccessor implements ITransactionDataAccessor {
 
    private static final String GET_PRIOR_TRANSACTION =
       "select transaction_id FROM osee_tx_details where branch_id = ? and transaction_id < ? order by transaction_id desc";
-
+   private static final String TX_GET_MAX_AS_LARGEST_TX =
+      "SELECT max(transaction_id) as largest_transaction_id FROM osee_tx_details WHERE branch_id = ?";
    private final TransactionRecordFactory txFactory;
    private final BranchCache branchCache;
 
@@ -84,5 +85,10 @@ public class ClientTransactionAccessor implements ITransactionDataAccessor {
          ConnectionHandler.runPreparedQueryFetchInt(transactionNumber, GET_PRIOR_TRANSACTION, branchId,
             transactionNumber);
       return cache.getOrLoad(priorTransactionId);
+   }
+
+   @Override
+   public TransactionRecord getHeadTransaction(TransactionCache cache, Branch branch) throws OseeCoreException {
+      return cache.getOrLoad(ConnectionHandler.runPreparedQueryFetchInt(-1, TX_GET_MAX_AS_LARGEST_TX, branch.getId()));
    }
 }
