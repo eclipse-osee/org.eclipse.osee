@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
@@ -114,7 +115,7 @@ public class WorkspaceBundleLoadCoordinator {
 			try {
 				info.uninstall();
 			} catch (BundleException e) {
-				e.printStackTrace();
+				OseeLog.log(WorkspaceBundleLoadCoordinator.class, Level.WARNING, e);
 			}
 		}
 		if(wiring != null){
@@ -162,7 +163,8 @@ public class WorkspaceBundleLoadCoordinator {
 			FileChannel in = null;
 			try {
 				out = new FileOutputStream(newFile).getChannel();
-				in = new FileInputStream(new File(info.getSystemLocation().getFile())).getChannel();
+				String path = info.getSystemLocation().toURI().getPath();
+				in = new FileInputStream(new File(path)).getChannel();
 
 				long position = 0;
 				long size = in.size();
@@ -172,7 +174,9 @@ public class WorkspaceBundleLoadCoordinator {
 				BundleInfoLite newBundle = new BundleInfoLite(newFile.toURI().toURL());
 				managedArea.add(newBundle);
 			} catch (IOException e) {
-				e.printStackTrace();
+				OseeLog.log(WorkspaceBundleLoadCoordinator.class, Level.WARNING, e);
+			} catch (URISyntaxException e) {
+				OseeLog.log(WorkspaceBundleLoadCoordinator.class, Level.WARNING, e);
 			} finally {
 				try {
 					if(in != null){
@@ -223,9 +227,9 @@ public class WorkspaceBundleLoadCoordinator {
 					}
 				}
 			} catch (MalformedURLException e) {
-				e.printStackTrace();
+				OseeLog.log(WorkspaceBundleLoadCoordinator.class, Level.WARNING, e);
 			} catch (IOException e) {
-				e.printStackTrace();
+				OseeLog.log(WorkspaceBundleLoadCoordinator.class, Level.WARNING, e);
 			}
 		}
 		bundlesToCheck.clear();
@@ -263,7 +267,7 @@ public class WorkspaceBundleLoadCoordinator {
 					}
 
 				} catch (BundleException e) {
-					e.printStackTrace();
+					OseeLog.log(WorkspaceBundleLoadCoordinator.class, Level.WARNING, e);
 				} 
 			}
 		}
