@@ -10,15 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.server.internal;
 
-import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 
@@ -164,22 +160,6 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       }
    }
 
-   @Override
-   public boolean disconnect(UserTestSessionKey user) throws RemoteException {
-      env.disconnect(user);
-      if (!keepEnvAliveWithNoUsers && env.getSessionKeys().isEmpty()) {
-         try {
-            messageToolServiceTracker.close();
-            closeAllConsoles();
-         } catch (Exception ex) {
-            throw new RemoteException("failed to unexport test environment", ex);
-         }
-         env.shutdown();
-         return true;
-      }
-      return false;
-   }
-
    private void closeAllConsoles() throws RemoteException {
       lock.lock();
       LinkedList<IRemoteCommandConsole> consoles;
@@ -190,18 +170,6 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       }
       for (IRemoteCommandConsole console : consoles) {
          closeCommandConsole(console);
-      }
-   }
-
-   @Override
-   public void disconnectAll() throws RemoteException {
-      for (Serializable session : env.getSessionKeys()) {
-         env.disconnect((UserTestSessionKey) session);
-      }
-      if (!keepEnvAliveWithNoUsers) {
-         messageToolServiceTracker.close();
-         closeAllConsoles();
-         env.shutdown();
       }
    }
 
@@ -228,39 +196,9 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
    }
 
    @Override
-   public Collection<OSEEPerson1_4> getUserList() throws RemoteException {
-      Collection<OSEEPerson1_4> users = new ArrayList<OSEEPerson1_4>(env.getSessionKeys().size());
-      try {
-         Set<Serializable> sessionKeys = env.getSessionKeys();
-         for (Serializable serializable : sessionKeys) {
-            if (serializable instanceof UserTestSessionKey) {
-               try {
-                  users.add(((UserTestSessionKey) serializable).getUser());
-               } catch (Exception ex) {
-                  OseeLog.log(RemoteTestEnvironment.class, Level.SEVERE, "exception while getting user list", ex);
-               }
-            }
-         }
-         return users;
-      } catch (Exception ex) {
-         OseeLog.log(RemoteTestEnvironment.class, Level.SEVERE, "exception while generating user list", ex);
-         throw new RemoteException("exception while generating user list", ex);
-      }
-   }
-
-   @Override
    public void removeStatusListener(IServiceStatusListener listener) throws RemoteException {
       if (Activator.getDefault().getOteStatusBoard() != null) {
          Activator.getDefault().getOteStatusBoard().removeStatusListener(listener);
-      }
-   }
-
-   @Override
-   public void startup(String outfileDir) throws RemoteException {
-      try {
-         env.startup(outfileDir);
-      } catch (Exception ex) {
-         throw new RemoteException("unable to set outfile location " + ex.getMessage());
       }
    }
 

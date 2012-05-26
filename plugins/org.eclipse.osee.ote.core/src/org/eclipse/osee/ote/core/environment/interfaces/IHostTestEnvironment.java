@@ -26,20 +26,13 @@ import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
  * @author Andrew M. Finkbeiner
  */
 public interface IHostTestEnvironment extends Remote {
-   ITestEnvironment[] getRemoteEnvironments() throws RemoteException;
-
-   ConnectionRequestResult requestEnvironment(IRemoteUserSession session, TestEnvironmentConfig config) throws RemoteException;
-
-   void disconnect(UserTestSessionKey key) throws RemoteException;
-
    EnhancedProperties getProperties() throws RemoteException;
-   void sendRuntimeBundle(Collection<BundleDescription> bundles) throws RemoteException;
-
-   void updateRuntimeBundle(Collection<BundleDescription> bundles) throws RemoteException;
-
+   
+   ConnectionRequestResult requestEnvironment(IRemoteUserSession session, TestEnvironmentConfig config) throws RemoteException;
+   void disconnect(UserTestSessionKey key) throws RemoteException;
+   
    BundleConfigurationReport checkBundleConfiguration(Collection<BundleDescription> bundles) throws RemoteException;
-
+   void sendRuntimeBundle(Collection<BundleDescription> bundles) throws RemoteException;
+   void updateRuntimeBundle(Collection<BundleDescription> bundles) throws RemoteException;
    void cleanupRuntimeBundles() throws RemoteException;
-
-
 }

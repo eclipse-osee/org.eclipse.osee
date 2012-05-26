@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.server.internal;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Date;
@@ -75,15 +76,6 @@ public class OteService implements IHostTestEnvironment, IService {
    }
 
    @Override
-   public ITestEnvironment[] getRemoteEnvironments() throws RemoteException {
-      if (isEnvironmentAvailable()) {
-         return new ITestEnvironment[] {remoteEnvironment};
-      } else {
-         return new ITestEnvironment[0];
-      }
-   }
-
-   @Override
    public ConnectionRequestResult requestEnvironment(IRemoteUserSession session, TestEnvironmentConfig config) throws RemoteException {
       try {
          OseeLog.log(OteService.class, Level.INFO,
@@ -105,7 +97,7 @@ public class OteService implements IHostTestEnvironment, IService {
    private void createEnvironment() throws Throwable {
       currentEnvironment = environmentCreation.createEnvironment();
       remoteEnvironment = environmentCreation.createRemoteTestEnvironment(currentEnvironment);
-      remoteEnvironment.startup(environmentCreation.getOutfileLocation());
+      currentEnvironment.startup(environmentCreation.getOutfileLocation());
    }
 
    private boolean isEnvironmentAvailable() {
@@ -116,7 +108,15 @@ public class OteService implements IHostTestEnvironment, IService {
       Collection<OSEEPerson1_4> userList = new LinkedList<OSEEPerson1_4>();
       StringBuilder sb = new StringBuilder();
       if (isEnvironmentAvailable()) {
-         userList.addAll(remoteEnvironment.getUserList());
+    	  for (Serializable serializable : currentEnvironment.getUserList()) {
+              if (serializable instanceof UserTestSessionKey) {
+                 try {
+                	 userList.add(((UserTestSessionKey) serializable).getUser());
+                 } catch (Exception ex) {
+                    OseeLog.log(RemoteTestEnvironment.class, Level.SEVERE, "exception while getting user list", ex);
+                 }
+              }
+           }
       }
       for (OSEEPerson1_4 person : userList) {
          sb.append(person.getName());
@@ -126,7 +126,7 @@ public class OteService implements IHostTestEnvironment, IService {
          String list = sb.toString().substring(0, sb.length() - 2);
          environmentCreation.getServiceConnector().setProperty("user_list", list);
       } else {
-         environmentCreation.getServiceConnector().setProperty("user_list", "");
+         environmentCreation.getServiceConnector().setProperty("user_list", "N/A");
       }
       if (registeredServiceReference != null) {
          registeredServiceReference.update();
@@ -173,10 +173,10 @@ public class OteService implements IHostTestEnvironment, IService {
 
    @Override
    public void disconnect(UserTestSessionKey key) throws RemoteException {
-      if (remoteEnvironment != null) {
-         remoteEnvironment.disconnect(key);
+      if (currentEnvironment != null) {
+    	  currentEnvironment.disconnect(key);
          updateDynamicInfo();
-         if (remoteEnvironment.getUserList().isEmpty() && !environmentCreation.isKeepAliveWithNoUsers()) {
+         if (currentEnvironment.getUserList().isEmpty() && !environmentCreation.isKeepAliveWithNoUsers()) {
             remoteEnvironment = null;
          }
       }
