@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.server.internal;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.net.URL;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -25,7 +23,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 
 import org.eclipse.osee.connection.service.IServiceConnector;
-import org.eclipse.osee.framework.jdk.core.reportdata.ReportDataListener;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.Message;
 import org.eclipse.osee.ote.core.IUserSession;
@@ -34,8 +31,6 @@ import org.eclipse.osee.ote.core.ReturnStatus;
 import org.eclipse.osee.ote.core.cmd.Command;
 import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
 import org.eclipse.osee.ote.core.environment.interfaces.IRemoteCommandConsole;
-import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
-import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentListener;
 import org.eclipse.osee.ote.core.environment.status.IServiceStatusListener;
 import org.eclipse.osee.ote.core.framework.command.ICommandHandle;
 import org.eclipse.osee.ote.core.framework.command.ITestServerCommand;
@@ -46,7 +41,6 @@ import org.eclipse.osee.ote.core.model.ModelKey;
 import org.eclipse.osee.ote.core.model.ModelState;
 import org.eclipse.osee.ote.message.IInstrumentationRegistrationListener;
 import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
-import org.eclipse.osee.ote.message.instrumentation.IOInstrumentation;
 import org.eclipse.osee.ote.message.interfaces.IRemoteMessageService;
 import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystem;
 import org.eclipse.osee.ote.server.RemoteShell;
@@ -90,24 +84,6 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
    }
 
    @Override
-   public IOInstrumentation getIOInstrumentation(String name) throws RemoteException {
-      IOInstrumentation io = env.getIOInstrumentation(name);
-      if (io != null) {
-         try {
-            Object exported = serviceConnector.findExport(io);
-            if (exported == null) {
-               exported = serviceConnector.export(io);
-            }
-            return (IOInstrumentation) exported;
-         } catch (Exception ex) {
-            OseeLog.log(RemoteTestEnvironment.class, Level.SEVERE, ex.toString(), ex);
-            throw new RemoteException("Unable to export the remote IOInstrumentation for " + name, ex);
-         }
-      }
-      throw new RemoteException("No IOInstrumentation registered for type " + name);
-   }
-
-   @Override
    public void addInstrumentationRegistrationListener(IInstrumentationRegistrationListener listener) throws RemoteException {
       env.addInstrumentationRegistrationListener(listener);
    }
@@ -137,30 +113,6 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
    @Override
    public ICommandHandle addCommand(ITestServerCommand cmd) throws RemoteException {
       return env.addCommand(cmd);
-   }
-
-   @Override
-   @Deprecated
-   public boolean isMessageJarAvailable(String version) throws RemoteException {
-      return env.isMessageJarAvailable(version);
-   }
-
-   @Override
-   @Deprecated
-   public void sendRuntimeJar(byte[] messageJar) throws RemoteException {
-   }
-
-   @Override
-   public void addEnvironmentListener(ITestEnvironmentListener listener) throws RemoteException {
-      env.addEnvironmentListener(listener);
-   }
-
-   @Override
-   public void setupClassLoaderAndJar(String[] jarVersions, String classPath) throws RemoteException {
-   }
-
-   @Override
-   public void setupClassLoaderAndJar(String[] jarVersion, String[] classPaths) throws RemoteException {
    }
 
    @Override
@@ -213,15 +165,6 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
    }
 
    @Override
-   public UserTestSessionKey addUser(IUserSession user) throws RemoteException {
-      try {
-         return env.addUser(user);
-      } catch (Exception ex) {
-         throw new RemoteException("could not add user sessoion", ex);
-      }
-   }
-
-   @Override
    public boolean disconnect(UserTestSessionKey user) throws RemoteException {
       env.disconnect(user);
       if (!keepEnvAliveWithNoUsers && env.getSessionKeys().isEmpty()) {
@@ -260,21 +203,6 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
          closeAllConsoles();
          env.shutdown();
       }
-   }
-
-   @Override
-   public boolean equals(ITestEnvironment testEnvironment) throws RemoteException {
-      return env.getUniqueId() == testEnvironment.getUniqueId();
-   }
-
-   @Override
-   public List<String> getQueueLabels() throws RemoteException {
-      return env.getQueueLabels();
-   }
-
-   @Override
-   public Remote getRemoteModel(String modelClassName) throws RemoteException {
-      return getRemoteModel(modelClassName, new Class[0], new Object[0]);
    }
 
    @Override
@@ -320,35 +248,11 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       }
    }
 
-   //TODO
-   @Override
-   public void onHostKilled() throws RemoteException {
-   }
-
-   @Override
-   public void removeQueueListener(ReportDataListener listener) throws RemoteException {
-      env.removeQueueListener(listener);
-   }
-
    @Override
    public void removeStatusListener(IServiceStatusListener listener) throws RemoteException {
       if (Activator.getDefault().getOteStatusBoard() != null) {
          Activator.getDefault().getOteStatusBoard().removeStatusListener(listener);
       }
-   }
-
-   @Override
-   public URL setBatchLibJar(byte[] messageJar) throws RemoteException {
-      try {
-         return env.setBatchLibJar(messageJar);
-      } catch (IOException ex) {
-         throw new RemoteException("unable to set batch jar", ex);
-      }
-   }
-
-   @Override
-   public void setClientClasses(URL[] urls) throws RemoteException {
-      env.setClientClasses(urls);
    }
 
    @Override
@@ -455,8 +359,4 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       env.sendMessageToServer(message);
    }
 
-   @Override
-   public Remote getRemoteModel(String modelClassName, Class<?>[] methodParameterTypes, Object[] methodParameters) throws RemoteException {
-      return null;
-   }
 }

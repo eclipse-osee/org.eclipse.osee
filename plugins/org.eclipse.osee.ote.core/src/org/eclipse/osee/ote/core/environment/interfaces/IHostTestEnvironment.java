@@ -13,6 +13,7 @@ package org.eclipse.osee.ote.core.environment.interfaces;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Collection;
+
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 import org.eclipse.osee.ote.core.ConnectionRequestResult;
 import org.eclipse.osee.ote.core.IRemoteUserSession;
@@ -27,14 +28,11 @@ import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
 public interface IHostTestEnvironment extends Remote {
    ITestEnvironment[] getRemoteEnvironments() throws RemoteException;
 
-   byte[] getOutfileResultSummary() throws RemoteException;
-
    ConnectionRequestResult requestEnvironment(IRemoteUserSession session, TestEnvironmentConfig config) throws RemoteException;
 
+   void disconnect(UserTestSessionKey key) throws RemoteException;
+
    EnhancedProperties getProperties() throws RemoteException;
-
-   boolean isBundleAvailable(String symbolicName, String version, byte[] md5Digest) throws RemoteException;
-
    void sendRuntimeBundle(Collection<BundleDescription> bundles) throws RemoteException;
 
    void updateRuntimeBundle(Collection<BundleDescription> bundles) throws RemoteException;
@@ -43,8 +41,5 @@ public interface IHostTestEnvironment extends Remote {
 
    void cleanupRuntimeBundles() throws RemoteException;
 
-   void disconnect(UserTestSessionKey key) throws RemoteException;
-
-   void disconnectAll() throws RemoteException;
 
 }

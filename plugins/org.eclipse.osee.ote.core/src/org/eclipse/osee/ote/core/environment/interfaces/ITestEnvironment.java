@@ -10,15 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.environment.interfaces;
 
-import java.io.IOException;
-import java.net.URL;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Collection;
-import java.util.List;
-import org.eclipse.osee.framework.jdk.core.reportdata.ReportDataListener;
+
 import org.eclipse.osee.framework.messaging.Message;
-import org.eclipse.osee.ote.core.IUserSession;
 import org.eclipse.osee.ote.core.OSEEPerson1_4;
 import org.eclipse.osee.ote.core.cmd.Command;
 import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
@@ -38,41 +34,21 @@ public interface ITestEnvironment extends Remote {
 
    ICommandHandle addCommand(ITestServerCommand cmd) throws RemoteException;
 
-   void addEnvironmentListener(ITestEnvironmentListener listener) throws RemoteException;
-
    void addStatusListener(IServiceStatusListener listener) throws RemoteException;
-
-   UserTestSessionKey addUser(IUserSession user) throws RemoteException, Exception;
 
    boolean disconnect(UserTestSessionKey user) throws RemoteException;
 
    void disconnectAll() throws RemoteException;
 
-   boolean equals(ITestEnvironment testEnvironment) throws RemoteException;
-
-   List<String> getQueueLabels() throws RemoteException;
-
    public IModelManagerRemote getModelManager() throws RemoteException;
-
-   public Remote getRemoteModel(String modelClassName, Class<?>[] methodParameterTypes, Object[] methodParameters) throws RemoteException;
-
-   public Remote getRemoteModel(String modelClassName) throws RemoteException;
 
    byte[] getScriptOutfile(String outfilePath) throws RemoteException;
 
    int getUniqueId() throws RemoteException;
 
-   void removeQueueListener(ReportDataListener listener) throws RemoteException;
-
    void removeStatusListener(IServiceStatusListener listener) throws RemoteException;
 
-   URL setBatchLibJar(byte[] messageJar) throws RemoteException, IOException;
-
-   void onHostKilled() throws RemoteException;
-
    void startup(String outfileDir) throws RemoteException;
-
-   void setClientClasses(URL[] urls) throws RemoteException;
 
    IRemoteCommandConsole getCommandConsole() throws RemoteException;
 

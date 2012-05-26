@@ -15,9 +15,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.logging.Level;
+
 import net.jini.core.lookup.ServiceID;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
+
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 import org.eclipse.osee.framework.jini.service.interfaces.IService;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -65,11 +67,6 @@ public class OteService implements IHostTestEnvironment, IService {
       enhancedProperties.setProperty("group", "OSEE Test Environment");
       enhancedProperties.setProperty("owner", System.getProperty("user.name"));
       enhancedProperties.setProperty("id", serviceID.toString());
-   }
-
-   @Override
-   public byte[] getOutfileResultSummary() throws RemoteException {
-      return null;
    }
 
    @Override
@@ -151,11 +148,6 @@ public class OteService implements IHostTestEnvironment, IService {
    }
 
    @Override
-   public boolean isBundleAvailable(String symbolicName, String version, byte[] md5Digest) throws RemoteException {
-      return runtimeLibraryManager.isBundleAvailable(symbolicName, version, md5Digest);
-   }
-
-   @Override
    public void sendRuntimeBundle(Collection<BundleDescription> bundles) throws RemoteException {
       try {
          runtimeLibraryManager.loadBundles(bundles);
@@ -185,17 +177,6 @@ public class OteService implements IHostTestEnvironment, IService {
          remoteEnvironment.disconnect(key);
          updateDynamicInfo();
          if (remoteEnvironment.getUserList().isEmpty() && !environmentCreation.isKeepAliveWithNoUsers()) {
-            remoteEnvironment = null;
-         }
-      }
-   }
-
-   @Override
-   public void disconnectAll() throws RemoteException {
-      if (remoteEnvironment != null) {
-         remoteEnvironment.disconnectAll();
-         updateDynamicInfo();
-         if (!environmentCreation.isKeepAliveWithNoUsers()) {
             remoteEnvironment = null;
          }
       }
