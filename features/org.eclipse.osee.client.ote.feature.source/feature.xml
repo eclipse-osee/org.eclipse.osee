@@ -67,13 +67,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.ote.ui.host.cmd.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.osee.ote.client.source"
          download-size="0"
          install-size="0"

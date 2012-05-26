@@ -28,7 +28,7 @@
 
 		<module>../../plugins/org.eclipse.osee.ote.help.ui</module>
 		<module>../../plugins/org.eclipse.osee.ote.ui</module>
-		<module>../../plugins/org.eclipse.osee.ote.ui.host.cmd</module>
+		<!-- <module>../../plugins/org.eclipse.osee.ote.ui.host.cmd</module> -->
 		<module>../../plugins/org.eclipse.osee.ote.ui.markers</module>
 		<module>../../plugins/org.eclipse.osee.ote.ui.message</module>
 		<module>../../plugins/org.eclipse.osee.ote.ui.message.util</module>
