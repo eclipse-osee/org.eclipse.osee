@@ -14,7 +14,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -46,5 +46,5 @@ public interface BranchDataStore {
 
    Callable<URI> checkBranchExchangeIntegrity(URI fileToCheck);
 
-   Callable<Branch> deleteRelationTypeFromBranch(IOseeBranch branch, IRelationTypeSide relationType, int aArtId, int bArtId, int artUserId, String comment);
+   Callable<ITransaction> commitTransaction(TransactionData transaction);
 }

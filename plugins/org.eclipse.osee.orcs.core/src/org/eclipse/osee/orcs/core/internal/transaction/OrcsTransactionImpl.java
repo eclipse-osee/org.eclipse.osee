@@ -11,130 +11,161 @@
 package org.eclipse.osee.orcs.core.internal.transaction;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.executor.admin.CancellableCallable;
+import java.util.concurrent.ConcurrentHashMap;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
+import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
+import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.WritableArtifact;
 import org.eclipse.osee.orcs.transaction.OrcsTransaction;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OrcsTransactionImpl implements OrcsTransaction {
+public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
 
    private final Log logger;
    private final IOseeBranch branch;
-   private String txnComment;
-   private ReadableArtifact authorArtifact;
    private final BranchDataStore dataStore;
+   private final ArtifactFactory artifactFactory;
 
-   private final List<Callable<?>> callables = new ArrayList<Callable<?>>();
+   private String comment;
+   private ReadableArtifact authorArtifact;
+   private final Map<String, WritableArtifact> writeableArtifacts = new ConcurrentHashMap<String, WritableArtifact>();
 
-   public OrcsTransactionImpl(Log logger, SessionContext sessionContext, BranchDataStore dataStore, IOseeBranch branch) {
+   public OrcsTransactionImpl(Log logger, SessionContext sessionContext, BranchDataStore dataStore, ArtifactFactory artifactFactory, IOseeBranch branch) {
       super();
-      this.dataStore = dataStore;
       this.logger = logger;
+      this.dataStore = dataStore;
+      this.artifactFactory = artifactFactory;
       this.branch = branch;
    }
 
-   public void setComment(String txnComment) {
-      this.txnComment = txnComment;
+   @Override
+   public void setComment(String comment) {
+      this.comment = comment;
    }
 
    public void setAuthor(ReadableArtifact authorArtifact) {
       this.authorArtifact = authorArtifact;
    }
 
+   @Override
    public ReadableArtifact getAuthor() {
       return authorArtifact;
    }
 
+   @Override
    public String getComment() {
-      return txnComment;
-   }
-
-   private int getAuthorId() {
-      ReadableArtifact author = getAuthor();
-      int authorId = author != null ? author.getId() : -1;
-      return authorId;
+      return comment;
    }
 
    @Override
-   public void deleteRelation(IRelationTypeSide relationType, int aArtId, int bArtId) {
-      callables.add(dataStore.deleteRelationTypeFromBranch(branch, relationType, aArtId, bArtId, getAuthorId(),
-         getComment()));
+   public Collection<WritableArtifact> getWriteables() {
+      return writeableArtifacts.values();
    }
 
    @Override
-   public Callable<?> build() {
-      return new CompositeCallable(logger, callables);
+   public void rollback() {
+      // TODO
+      // ? 
    }
 
-   private static final class CompositeCallable extends CancellableCallable<Boolean> {
+   private void startCommit() {
 
-      private final List<Callable<?>> callables;
-      private final Log logger;
-      private Callable<?> innerWorker;
+   }
 
-      public CompositeCallable(Log logger, List<Callable<?>> callables) {
-         super();
-         this.logger = logger;
-         this.callables = callables;
+   private void closeCommit() {
+
+   }
+
+   @Override
+   public ITransaction commit() throws OseeCoreException {
+      ITransaction transaction = null;
+      try {
+         startCommit();
+         Callable<ITransaction> callable = dataStore.commitTransaction(this);
+         transaction = callable.call();
+      } catch (Exception ex) {
+         rollback();
+         OseeExceptions.wrapAndThrow(ex);
+      } finally {
+         closeCommit();
       }
+      return transaction;
+   }
 
-      protected Log getLogger() {
-         return logger;
-      }
+   @Override
+   public IOseeBranch getBranch() {
+      return branch;
+   }
 
-      @Override
-      public final Boolean call() throws Exception {
-         long startTime = 0;
-         if (getLogger().isTraceEnabled()) {
-            startTime = System.currentTimeMillis();
-         }
-         try {
-            for (Callable<?> callable : callables) {
-               callAndCheckForCancel(callable);
-            }
-         } finally {
-            if (getLogger().isTraceEnabled()) {
-               getLogger().trace("Admin [%s] completed in [%s]", getClass().getSimpleName(),
-                  Lib.getElapseString(startTime));
-            }
-         }
-         return Boolean.TRUE;
+   @Override
+   public synchronized WritableArtifact asWritable(ReadableArtifact readable) throws OseeCoreException {
+      String guid = readable.getGuid();
+      WritableArtifact toReturn = writeableArtifacts.get(guid);
+      if (toReturn == null) {
+         toReturn = artifactFactory.createWriteableArtifact(readable);
+         writeableArtifacts.put(guid, toReturn);
       }
+      return toReturn;
+   }
 
-      protected <K> K callAndCheckForCancel(Callable<K> callable) throws Exception {
-         checkForCancelled();
-         setInnerWorker(callable);
-         K result = callable.call();
-         setInnerWorker(null);
-         return result;
+   @Override
+   public List<WritableArtifact> asWritable(Collection<? extends ReadableArtifact> artifacts) throws OseeCoreException {
+      List<WritableArtifact> toReturn = new ArrayList<WritableArtifact>();
+      for (ReadableArtifact readable : artifacts) {
+         toReturn.add(asWritable(readable));
       }
+      return toReturn;
+   }
 
-      private synchronized void setInnerWorker(Callable<?> callable) {
-         innerWorker = callable;
-      }
+   @Override
+   public WritableArtifact createArtifact(IArtifactType artifactType, String name) throws OseeCoreException {
+      return null;
+   }
 
-      @Override
-      public void setCancel(boolean isCancelled) {
-         super.setCancel(isCancelled);
-         final Callable<?> inner = innerWorker;
-         if (inner != null) {
-            synchronized (inner) {
-               if (inner instanceof CancellableCallable) {
-                  ((CancellableCallable<?>) inner).setCancel(isCancelled);
-               }
-            }
-         }
-      }
+   @Override
+   public WritableArtifact createArtifact(IArtifactType artifactType, String name, GUID guid) throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public WritableArtifact createArtifact(IArtifactToken artifactToken) throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public WritableArtifact duplicate(ReadableArtifact sourceArtifact) throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public WritableArtifact duplicate(ReadableArtifact sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public WritableArtifact reflect(ReadableArtifact sourceArtifact) throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public void delete(WritableArtifact artifact) throws OseeCoreException {
    }
 
 }

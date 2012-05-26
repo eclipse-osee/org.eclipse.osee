@@ -28,8 +28,19 @@ public final class GUID {
       }
    };
 
-   private GUID() {
-      // Utility Class
+   private final String guid;
+
+   private GUID(String guid) {
+      this.guid = guid;
+   }
+
+   public static GUID createGUID() {
+      String theGuid = create();
+      return new GUID(theGuid);
+   }
+
+   public static boolean isValid(GUID guid) {
+      return isValid(guid.guid);
    }
 
    public static String create() {

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.artifact;
 
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -31,10 +32,10 @@ import org.eclipse.osee.orcs.core.ds.AttributeContainer;
 import org.eclipse.osee.orcs.core.ds.RelationContainer;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeContainerImpl;
 import org.eclipse.osee.orcs.core.internal.relation.RelationContainerImpl;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.WritableArtifact;
 
-public class Artifact extends NamedIdentity<String> implements ReadableArtifact {
+public class Artifact extends NamedIdentity<String> implements WritableArtifact {
 
    private final AttributeContainer attributeContainer;
    private final RelationContainer relationContainer;
@@ -57,9 +58,8 @@ public class Artifact extends NamedIdentity<String> implements ReadableArtifact 
       this.transactionId = transactionId;
       this.modType = modType;
       this.historical = historical;
-      attributeContainer = new AttributeContainerImpl(this);
-      relationContainer = new RelationContainerImpl(artId, relationTypeCache);
-
+      this.attributeContainer = new AttributeContainerImpl(this);
+      this.relationContainer = new RelationContainerImpl(artId, relationTypeCache);
    }
 
    @Override
@@ -180,6 +180,35 @@ public class Artifact extends NamedIdentity<String> implements ReadableArtifact 
             soleAttributes.size(), getGuid());
       }
       return soleAttributes.iterator().next().getValue();
+   }
+
+   @Override
+   public void setSoleAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException {
+   }
+
+   @Override
+   public void setAttributes(IAttributeType attributeType, Collection<String> values) throws OseeCoreException {
+   }
+
+   @Override
+   public void deleteSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
+   }
+
+   @Override
+   public void deleteAttributes(IAttributeType attributeType) throws OseeCoreException {
+   }
+
+   @Override
+   public void deleteAttributesWithValue(IAttributeType attributeType, Object value) throws OseeCoreException {
+   }
+
+   @Override
+   public List<WritableArtifact> getChildren() throws OseeCoreException {
+      return null;
+   }
+
+   public Artifact copy() {
+      return null;
    }
 
    public final boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException {

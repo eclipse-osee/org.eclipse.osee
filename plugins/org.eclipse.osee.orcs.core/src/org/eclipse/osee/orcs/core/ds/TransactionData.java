@@ -8,17 +8,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.transaction;
+package org.eclipse.osee.orcs.core.ds;
 
+import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.WritableArtifact;
 
-/**
- * @author Roberto E. Escobar
- */
-public interface TransactionFactory {
+public interface TransactionData {
 
-   OrcsTransaction createTransaction(IOseeBranch branch, ReadableArtifact userArtifact, String comment) throws OseeCoreException;
+   IOseeBranch getBranch();
 
+   ReadableArtifact getAuthor();
+
+   String getComment();
+
+   Collection<WritableArtifact> getWriteables();
 }

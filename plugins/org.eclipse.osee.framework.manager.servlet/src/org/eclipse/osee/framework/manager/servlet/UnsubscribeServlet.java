@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.net.URL;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -23,6 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.WritableArtifact;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.OrcsTransaction;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
@@ -88,18 +90,28 @@ public class UnsubscribeServlet extends UnsecuredOseeHttpServlet {
    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
       try {
          UnsubscribeRequest data = UnsubscribeRequest.createFromXML(request);
-
          int groupId = data.getGroupId();
          int userId = data.getUserId();
-         String comment = String.format("User %s requested unsubscribe from group %s", userId, groupId);
+
+         QueryFactory queryFactory = getOrcsApi().getQueryFactory(null);
+
+         ReadableArtifact authorArtifact = getArtifactById(queryFactory, data.getUserId());
+         ReadableArtifact groupArtifact = getArtifactById(queryFactory, data.getGroupId());
+
+         String comment =
+            String.format("UserId [%s] requested unsubscribe from group [%s]",
+               authorArtifact.getSoleAttributeAsString(CoreAttributeTypes.UserId), groupArtifact.getName());
 
          TransactionFactory factory = orcsApi.getTransactionFactory(null);
+         OrcsTransaction txn = factory.createTransaction(CoreBranches.COMMON, authorArtifact, comment);
 
-         ReadableArtifact authorArtifact = getArtifactById(data.getUserId());
+         WritableArtifact group = txn.asWritable(groupArtifact);
 
-         OrcsTransaction txn = factory.createTransaction(CoreBranches.COMMON, comment, authorArtifact);
-         txn.deleteRelation(CoreRelationTypes.Users_Artifact, groupId, userId);
-         txn.build().call();
+         // TODO
+         group.deleteRelation(CoreRelationTypes.Users_Artifact, authorArtifact);
+         //         txn.deleteRelation(CoreRelationTypes.Users_Artifact, groupId, userId);
+
+         txn.commit();
 
          String message = String.format("<br/>You have been successfully unsubscribed.");
 
@@ -112,11 +124,10 @@ public class UnsubscribeServlet extends UnsecuredOseeHttpServlet {
       }
    }
 
-   protected ReadableArtifact getArtifactById(int id) throws OseeCoreException {
+   protected ReadableArtifact getArtifactById(QueryFactory queryFactory, int id) throws OseeCoreException {
       ReadableArtifact artifact = null;
       if (id > 0) {
-         QueryFactory factory = getOrcsApi().getQueryFactory(null);
-         artifact = factory.fromBranch(CoreBranches.COMMON).andLocalId(id).getResults().getExactlyOne();
+         artifact = queryFactory.fromBranch(CoreBranches.COMMON).andLocalId(id).getResults().getExactlyOne();
       }
       return artifact;
    }

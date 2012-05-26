@@ -10,16 +10,57 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.transaction;
 
-import java.util.concurrent.Callable;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import java.util.Collection;
+import java.util.List;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.WritableArtifact;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface OrcsTransaction {
 
-   // TODO define better API
-   void deleteRelation(IRelationTypeSide relationType, int aArtId, int bArtId);
+   IOseeBranch getBranch();
 
-   Callable<?> build();
+   ReadableArtifact getAuthor();
+
+   String getComment();
+
+   void setComment(String comment);
+
+   ////////////////////////
+
+   WritableArtifact asWritable(ReadableArtifact artifact) throws OseeCoreException;
+
+   List<WritableArtifact> asWritable(Collection<? extends ReadableArtifact> artifact) throws OseeCoreException;
+
+   ////////////////////////
+
+   WritableArtifact createArtifact(IArtifactType artifactType, String name) throws OseeCoreException;
+
+   WritableArtifact createArtifact(IArtifactType artifactType, String name, GUID guid) throws OseeCoreException;
+
+   WritableArtifact createArtifact(IArtifactToken artifactToken) throws OseeCoreException;
+
+   WritableArtifact duplicate(ReadableArtifact sourceArtifact) throws OseeCoreException;
+
+   WritableArtifact duplicate(ReadableArtifact sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException;
+
+   WritableArtifact reflect(ReadableArtifact sourceArtifact) throws OseeCoreException;
+
+   void delete(WritableArtifact artifact) throws OseeCoreException;
+
+   ////////////////////////
+
+   void rollback();
+
+   ITransaction commit() throws OseeCoreException;
+
 }

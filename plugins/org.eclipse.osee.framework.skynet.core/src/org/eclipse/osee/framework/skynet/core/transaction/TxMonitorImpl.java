@@ -44,7 +44,7 @@ public final class TxMonitorImpl<K> implements TxMonitor<K> {
 
    private final TxMonitorCache<K> cache;
 
-   protected TxMonitorImpl(TxMonitorCache<K> cache) {
+   public TxMonitorImpl(TxMonitorCache<K> cache) {
       this.cache = cache;
    }
 

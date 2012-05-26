@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
+import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.db.internal.callable.BranchCopyTxCallable;
@@ -38,7 +39,6 @@ import org.eclipse.osee.orcs.db.internal.callable.CheckBranchExchangeIntegrityCa
 import org.eclipse.osee.orcs.db.internal.callable.CommitBranchDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CompareDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CreateBranchDatabaseTxCallable;
-import org.eclipse.osee.orcs.db.internal.callable.DeleteRelationDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.callable.ExportBranchDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.callable.ImportBranchDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeBranchDatabaseCallable;
@@ -155,9 +155,16 @@ public class BranchDataStoreImpl implements BranchDataStore {
    }
 
    @Override
-   public Callable<Branch> deleteRelationTypeFromBranch(IOseeBranch branch, IRelationTypeSide relationType, int aArtId, int bArtId, int artUserId, String comment) {
-      return new DeleteRelationDatabaseCallable(logger, dbService, identityService, cachingService.getBranchCache(),
-         branch, relationType, aArtId, bArtId, artUserId, comment);
+   public Callable<ITransaction> commitTransaction(TransactionData transaction) {
+      ///// 
+      // TODO:
+      // 1. Make this whole method a critical region on a per branch basis - can only write to a branch on one thread at time
+      // 2. This is where we will eventually check that the gammaIds have not changed from under us for: attributes, artifacts and relations
+      // 3. Don't burn transaction ID until now
+      // 4.
+      // delete  new DeleteRelationDatabaseCallable(logger, dbService, identityService, cachingService.getBranchCache(),    branch, relationType, aArtId, bArtId, artUserId, comment);
+      ////
+      return null;
    }
 
 }

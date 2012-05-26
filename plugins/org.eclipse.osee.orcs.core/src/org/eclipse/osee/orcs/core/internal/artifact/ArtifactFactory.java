@@ -14,6 +14,8 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.orcs.core.internal.transaction.ReadableArtifactProxy;
+import org.eclipse.osee.orcs.core.internal.transaction.WritableArtifactProxy;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 
 /**
@@ -29,8 +31,17 @@ public class ArtifactFactory {
 
    public ReadableArtifact loadExisitingArtifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, Branch branch, int transactionId, ModificationType modType, boolean historical) {
       //TODO implement an artifact class resolver for specific artifact types
-      return new Artifact(artId, guid, humandReadableId, artifactType, gammaId, branch, transactionId, modType,
-         historical, relationTypeCache);
+      Artifact artifact =
+         new Artifact(artId, guid, humandReadableId, artifactType, gammaId, branch, transactionId, modType, historical,
+            relationTypeCache);
+      ReadableArtifactProxy proxy = new ReadableArtifactProxy(artifact);
+      return proxy;
+   }
 
+   public WritableArtifactProxy createWriteableArtifact(ReadableArtifact readable) {
+      ReadableArtifactProxy proxy = (ReadableArtifactProxy) readable;
+      Artifact artifact = proxy.getProxiedOject();
+      WritableArtifactProxy writeable = new WritableArtifactProxy(artifact);
+      return writeable;
    }
 }

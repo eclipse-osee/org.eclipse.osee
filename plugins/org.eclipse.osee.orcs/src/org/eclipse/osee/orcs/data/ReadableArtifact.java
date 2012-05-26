@@ -41,13 +41,13 @@ public interface ReadableArtifact extends Readable, HasVersion, Identifiable {
 
    Collection<IAttributeType> getAttributeTypes() throws OseeCoreException;
 
-   <T> List<ReadableAttribute<T>> getAttributes() throws OseeCoreException;
-
-   <T> List<ReadableAttribute<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException;
-
    String getSoleAttributeAsString(IAttributeType attributeType) throws OseeCoreException;
 
    String getSoleAttributeAsString(IAttributeType attributeType, String defaultValue) throws OseeCoreException;
+
+   <T> List<ReadableAttribute<T>> getAttributes() throws OseeCoreException;
+
+   <T> List<ReadableAttribute<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException;
 
    <T> T getSoleAttributeValue(IAttributeType attributeType) throws OseeCoreException;
 

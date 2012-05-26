@@ -921,7 +921,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
     * we do not what duplicated enumerated values so this method silently returns if the specified attribute type is
     * enumerated and value is already present
     */
-   public final <T> void setOrAddAttribute(IAttributeType attributeType, T value) throws OseeCoreException {
+   private final <T> void setOrAddAttribute(IAttributeType attributeType, T value) throws OseeCoreException {
       List<Attribute<String>> attributes = getAttributes(attributeType);
       for (Attribute<String> canidateAttribute : attributes) {
          if (canidateAttribute.getValue().equals(value)) {
