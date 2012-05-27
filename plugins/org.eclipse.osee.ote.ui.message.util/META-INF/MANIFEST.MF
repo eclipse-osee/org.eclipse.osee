@@ -9,7 +9,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.ote.client.msg,
  org.eclipse.osee.ote.message,
- org.eclipse.osee.ote.client
+ org.eclipse.osee.ote.client,
+ org.eclipse.osee.ote.core
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.osee.ote.ui.message.util

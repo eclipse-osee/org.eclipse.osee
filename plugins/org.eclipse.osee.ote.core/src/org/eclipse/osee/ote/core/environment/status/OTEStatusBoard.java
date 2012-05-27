@@ -22,15 +22,11 @@ import org.eclipse.osee.ote.core.framework.command.ICommandHandle;
  * @author Andrew M. Finkbeiner
  */
 public interface OTEStatusBoard {
-   public void addStatusListener(IServiceStatusListener listener);
-
    public void onCommandAdded(TestEnvironment env, TestEnvironmentCommand cmd);
 
    public void onCommandRemoved(TestEnvironment env, CommandDescription cmdDesc, CommandEndedStatusEnum status);
 
    public void onException(String message, Throwable t);
-
-   public void removeStatusListener(IServiceStatusListener listener);
 
    public void onCommandBegan(TestEnvironment env, CommandDescription cmdDesc);
 

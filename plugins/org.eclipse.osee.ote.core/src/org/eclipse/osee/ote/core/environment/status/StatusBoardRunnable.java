@@ -10,15 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.environment.status;
 
+import org.eclipse.osee.ote.message.event.SerializedClassMessage;
+
 public abstract class StatusBoardRunnable implements Runnable {
 
-   private final IServiceStatusData data;
+   private final SerializedClassMessage data;
 
-   public StatusBoardRunnable(IServiceStatusData data) {
-      this.data = data;
+   public StatusBoardRunnable(SerializedClassMessage msg) {
+      this.data = msg;
    }
 
-   protected IServiceStatusData getData() {
+   protected SerializedClassMessage getData() {
       return data;
    }
 }

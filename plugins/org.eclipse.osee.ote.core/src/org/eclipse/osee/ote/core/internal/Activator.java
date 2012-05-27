@@ -11,8 +11,11 @@
 package org.eclipse.osee.ote.core.internal;
 
 import java.util.Hashtable;
+import java.util.logging.Level;
+
 import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.OteProperties;
 import org.eclipse.osee.ote.core.StandardShell;
 import org.eclipse.osee.ote.core.cmd.CommandDistributer;
@@ -21,8 +24,8 @@ import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentInterface;
 import org.eclipse.osee.ote.core.environment.console.ConsoleCommandManager;
 import org.eclipse.osee.ote.core.environment.console.ICommandManager;
-import org.eclipse.osee.ote.core.environment.status.OTEStatusBoard;
-import org.eclipse.osee.ote.core.environment.status.StatusBoard;
+import org.eclipse.osee.ote.message.internal.MessageIoManagementStarter;
+import org.eclipse.osee.ote.message.internal.MessageWatchActivator;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -35,9 +38,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  */
 public class Activator implements BundleActivator {
 
-   private ServiceRegistration statusBoardRegistration;
    private ServiceRegistration testEnvironmentRegistration;
-   private OTEStatusBoard statusBoard;
    CommandDistributer commandDistributer;
    private static Activator activator;
    private BundleContext bundleContext;
@@ -48,13 +49,14 @@ public class Activator implements BundleActivator {
    private ServiceRegistration consoleCommandRegistration;
    private ServiceRegistration commandDistributerRegistration;
    private ServiceDependencyTracker serviceDependencyTracker;
+   private MessageWatchActivator messageWatchActivator;
+   private MessageIoManagementStarter messageIoManagementStarter;
+   private ServiceTracker testEnvTracker;
 
    @Override
    public void start(BundleContext context) throws Exception {
       activator = this;
-      statusBoard = new StatusBoard();
       bundleContext = context;
-      statusBoardRegistration = context.registerService(OTEStatusBoard.class.getName(), statusBoard, new Hashtable());
       consoleCommandManager = new ConsoleCommandManager();
       if (OteProperties.isOteCmdConsoleEnabled()) {
          stdShell = new StandardShell(consoleCommandManager);
@@ -71,6 +73,15 @@ public class Activator implements BundleActivator {
 
       serviceDependencyTracker = new ServiceDependencyTracker(bundleContext, new StatusBoardRegistrationHandler());
       serviceDependencyTracker.open();
+      
+      testEnvTracker = new ServiceTracker(context, TestEnvironmentInterface.class.getName(), null);
+      testEnvTracker.open(true);
+      
+      messageWatchActivator = new MessageWatchActivator(context);
+      messageWatchActivator.open(true);
+
+      messageIoManagementStarter = new MessageIoManagementStarter(context);
+      messageIoManagementStarter.open(true);
    }
 
    @Override
@@ -78,7 +89,6 @@ public class Activator implements BundleActivator {
       serviceDependencyTracker.close();
       commandDistributer.shutdown();
       closeAllValidServiceTrackers();
-      statusBoardRegistration.unregister();
       unregisterTestEnvironment();
       if (stdShell != null) {
          stdShell.shutdown();
@@ -86,15 +96,14 @@ public class Activator implements BundleActivator {
       consoleCommandManager.shutdown();
       consoleCommandRegistration.unregister();
       commandDistributerRegistration.unregister();
-
+      
+      messageWatchActivator.close();
+      messageIoManagementStarter.close();
+      testEnvTracker.close();
    }
 
    public static Activator getInstance() {
       return activator;
-   }
-
-   public OTEStatusBoard getOteStatusBoard() {
-      return statusBoard;
    }
 
    public CommandDistributer getCommandDistributer() {
@@ -141,5 +150,14 @@ public class Activator implements BundleActivator {
             tracker.close();
          }
       }
+   }
+   
+   public static TestEnvironmentInterface getTestEnvironment() {
+	   try {
+		   return (TestEnvironmentInterface) getInstance().testEnvTracker.waitForService(20000);
+	   } catch (InterruptedException e) {
+		   OseeLog.log(Activator.class, Level.SEVERE, e);
+	   }
+	   return null;
    }
 }

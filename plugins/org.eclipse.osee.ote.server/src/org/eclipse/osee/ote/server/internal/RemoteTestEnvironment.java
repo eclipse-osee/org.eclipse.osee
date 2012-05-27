@@ -27,7 +27,6 @@ import org.eclipse.osee.ote.core.ReturnStatus;
 import org.eclipse.osee.ote.core.cmd.Command;
 import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
 import org.eclipse.osee.ote.core.environment.interfaces.IRemoteCommandConsole;
-import org.eclipse.osee.ote.core.environment.status.IServiceStatusListener;
 import org.eclipse.osee.ote.core.framework.command.ICommandHandle;
 import org.eclipse.osee.ote.core.framework.command.ITestServerCommand;
 import org.eclipse.osee.ote.core.model.IModel;
@@ -153,13 +152,6 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       }
    }
 
-   @Override
-   public void addStatusListener(IServiceStatusListener listener) throws RemoteException {
-      if (Activator.getDefault().getOteStatusBoard() != null) {
-         Activator.getDefault().getOteStatusBoard().addStatusListener(listener);
-      }
-   }
-
    private void closeAllConsoles() throws RemoteException {
       lock.lock();
       LinkedList<IRemoteCommandConsole> consoles;
@@ -193,13 +185,6 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
    @Override
    public int getUniqueId() throws RemoteException {
       return env.getUniqueId();
-   }
-
-   @Override
-   public void removeStatusListener(IServiceStatusListener listener) throws RemoteException {
-      if (Activator.getDefault().getOteStatusBoard() != null) {
-         Activator.getDefault().getOteStatusBoard().removeStatusListener(listener);
-      }
    }
 
    public IUserSession getUserSession(UserTestSessionKey key) {

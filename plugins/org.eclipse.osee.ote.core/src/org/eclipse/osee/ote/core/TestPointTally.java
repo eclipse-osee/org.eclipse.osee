@@ -11,8 +11,9 @@
 package org.eclipse.osee.ote.core;
 
 import org.eclipse.osee.ote.core.environment.status.OTEStatusBoard;
-import org.eclipse.osee.ote.core.internal.Activator;
 import org.eclipse.osee.ote.core.log.ITestPointTally;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -25,7 +26,9 @@ public class TestPointTally implements ITestPointTally {
 
    public TestPointTally(String testName) {
       this.testName = testName;
-      statusBoard = Activator.getInstance().getOteStatusBoard();
+      ServiceTracker<OTEStatusBoard, OTEStatusBoard> tracker = new ServiceTracker<OTEStatusBoard, OTEStatusBoard>(FrameworkUtil.getBundle(getClass()).getBundleContext(), OTEStatusBoard.class, null);
+      tracker.open(true);
+      statusBoard = tracker.getService();
    }
 
    @Override

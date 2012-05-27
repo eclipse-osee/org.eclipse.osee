@@ -21,6 +21,7 @@
 		<!-- <module>../../org.eclipse.osee.ote.core.test</module> -->
 
 		<module>../../plugins/org.eclipse.osee.ote.message</module>
+		<module>../../plugins/org.eclipse.osee.ote.jms</module>
 		<!-- <module>../../plugins/org.eclipse.osee.ote.message.test</module> -->
 		<module>../../plugins/org.eclipse.osee.ote.messaging.dds</module>
 		<module>../../plugins/org.eclipse.osee.ote.runtimeManager</module>

@@ -25,7 +25,7 @@ public class MessageWatchActivator extends ServiceTracker {
 
    private ServiceRegistration registration;
 
-   MessageWatchActivator(BundleContext context) {
+   public MessageWatchActivator(BundleContext context) {
       super(context, IMessageManager.class.getName(), null);
    }
 

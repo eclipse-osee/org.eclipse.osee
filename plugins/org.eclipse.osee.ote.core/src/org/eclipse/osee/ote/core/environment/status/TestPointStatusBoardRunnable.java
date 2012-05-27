@@ -10,39 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.environment.status;
 
-import java.rmi.ConnectException;
-import java.util.logging.Level;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.ote.core.environment.TestEnvironment;
+import org.eclipse.osee.ote.core.environment.status.msg.TestPointUpdateMessage;
+import org.eclipse.osee.ote.message.event.OteEventMessageUtil;
+import org.osgi.service.event.EventAdmin;
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public class TestPointStatusBoardRunnable extends StatusBoardRunnable {
 
-   private final StatusBoard statusBoard;
+   private final EventAdmin eventAdmin;
 
-   public TestPointStatusBoardRunnable(IServiceStatusData data, StatusBoard statusBoard) {
-      super(data);
-      this.statusBoard = statusBoard;
+   public TestPointStatusBoardRunnable(TestPointUpdateMessage testPointUpdateMessage, EventAdmin eventAdmin) {
+      super(testPointUpdateMessage);
+      this.eventAdmin = eventAdmin;
    }
 
    @Override
    public void run() {
-      int size = statusBoard.getListeners().size();
-      for (int i = 0; i < size; i++) {
-         try {
-            statusBoard.getListeners().get(i).statusBoardUpdated(getData());
-         } catch (ConnectException e) {
-            OseeLog.log(TestEnvironment.class, Level.SEVERE, e.getMessage(), e);
-            statusBoard.getListeners().remove(i);
-            statusBoard.notifyListeners(getData());
-            return;
-         } catch (Throwable e) {
-            e.printStackTrace();
-            OseeLog.log(TestEnvironment.class, Level.SEVERE, e.getMessage(), e);
-         }
-      }
+	   OteEventMessageUtil.sendEvent(getData(), eventAdmin);
    }
 
 }

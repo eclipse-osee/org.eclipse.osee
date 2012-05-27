@@ -15,7 +15,6 @@ import java.rmi.RemoteException;
 
 import org.eclipse.osee.framework.messaging.Message;
 import org.eclipse.osee.ote.core.cmd.Command;
-import org.eclipse.osee.ote.core.environment.status.IServiceStatusListener;
 import org.eclipse.osee.ote.core.framework.command.ICommandHandle;
 import org.eclipse.osee.ote.core.framework.command.ITestServerCommand;
 import org.eclipse.osee.ote.core.model.IModelManagerRemote;
@@ -28,9 +27,6 @@ public interface ITestEnvironment extends Remote {
    Remote getControlInterface(String controlInterfaceID) throws RemoteException;
 
    ICommandHandle addCommand(ITestServerCommand cmd) throws RemoteException;
-
-   void addStatusListener(IServiceStatusListener listener) throws RemoteException;
-   void removeStatusListener(IServiceStatusListener listener) throws RemoteException;
 
    IRemoteCommandConsole getCommandConsole() throws RemoteException;
    public void closeCommandConsole(IRemoteCommandConsole console) throws RemoteException;

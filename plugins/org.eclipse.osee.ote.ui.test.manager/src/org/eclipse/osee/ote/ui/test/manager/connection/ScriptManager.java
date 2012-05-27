@@ -21,13 +21,13 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
-import org.eclipse.osee.ote.core.environment.status.IServiceStatusListener;
 import org.eclipse.osee.ote.core.environment.status.TestComplete;
 import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
@@ -95,7 +95,7 @@ public abstract class ScriptManager implements Runnable {
           */
          statusListenerImpl = new TestManagerStatusListener(testManager, this);
 
-         connectedEnv.addStatusListener((IServiceStatusListener) event.getConnector().export(statusListenerImpl));
+//         connectedEnv.addStatusListener((IServiceStatusListener) event.getConnector().export(statusListenerImpl));
          return false;
       } catch (Exception e) {
          TestManagerPlugin.log(Level.SEVERE, "failed to connect script manager", e);
@@ -110,15 +110,15 @@ public abstract class ScriptManager implements Runnable {
       connectedEnv = null;
       sessionKey = null;
       guidToScriptTask.clear();
-      try {
+//      try {
 
-         event.getEnvironment().removeStatusListener(
-            (IServiceStatusListener) event.getConnector().findExport(statusListenerImpl));
+//         event.getEnvironment().removeStatusListener(
+//            (IServiceStatusListener) event.getConnector().findExport(statusListenerImpl));
          return false;
-      } catch (RemoteException e) {
-         TestManagerPlugin.log(Level.INFO, "problems removing listener", e);
-         return true;
-      }
+//      } catch (RemoteException e) {
+//         TestManagerPlugin.log(Level.INFO, "problems removing listener", e);
+//         return true;
+//      }
    }
 
    public boolean onConnectionLost() {

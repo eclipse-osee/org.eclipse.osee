@@ -22,11 +22,12 @@ import java.util.concurrent.Future;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentInterface;
+import org.eclipse.osee.ote.core.internal.Activator;
 import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
-import org.eclipse.osee.ote.message.internal.Activator;
 import org.eclipse.osee.ote.message.tool.rec.entry.IMessageEntry;
 
 public class MessageRecorder {

@@ -8,19 +8,28 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ote.service.core;
+package org.eclipse.osee.ote.message.event;
 
-import java.rmi.RemoteException;
-import org.eclipse.osee.ote.core.environment.status.IServiceStatusData;
-import org.eclipse.osee.ote.core.environment.status.IServiceStatusListener;
+import org.eclipse.osee.ote.message.enums.DataType;
 
-/**
- * @author Ken J. Aguilar
- */
-public class OteServiceStatusListener implements IServiceStatusListener {
+public enum OteEventMessageType implements DataType {
+   OTE_EVENT_MESSAGE(2, 2048);
 
-   @Override
-   public void statusBoardUpdated(IServiceStatusData statusData) throws RemoteException {
+   private final int depth;
+   private final int bufferSize;
+
+   private OteEventMessageType(int depth, int bufferSize) {
+      this.depth = depth;
+      this.bufferSize = bufferSize;
    }
 
+   @Override
+   public int getToolingBufferSize() {
+      return bufferSize;
+   }
+
+   @Override
+   public int getToolingDepth() {
+      return depth;
+   }
 }
