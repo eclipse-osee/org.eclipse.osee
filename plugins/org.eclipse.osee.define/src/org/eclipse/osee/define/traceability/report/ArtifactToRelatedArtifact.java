@@ -12,9 +12,12 @@ package org.eclipse.osee.define.traceability.report;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -61,15 +64,19 @@ public class ArtifactToRelatedArtifact extends AbstractArtifactRelationReport {
    }
 
    @Override
-   public void process(IProgressMonitor monitor) throws OseeCoreException {
+   public void process(IProgressMonitor monitor) {
       notifyOnTableHeader(getHeader());
       IRelationTypeSide[] relations = getRelationsToCheck();
       for (Artifact artifact : getArtifactsToCheck()) {
          String name = artifact.getName();
          for (IRelationTypeSide relationEnum : relations) {
             String typeName = relationEnum.getName();
-            for (Artifact relArtifact : artifact.getRelatedArtifacts(relationEnum)) {
-               notifyOnRowData(artifact, name, typeName, relArtifact.getName());
+            try {
+               for (Artifact relArtifact : artifact.getRelatedArtifacts(relationEnum)) {
+                  notifyOnRowData(artifact, name, typeName, relArtifact.getName());
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.WARNING, ex);
             }
          }
       }
