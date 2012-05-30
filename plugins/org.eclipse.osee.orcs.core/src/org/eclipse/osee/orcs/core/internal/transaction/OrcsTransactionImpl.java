@@ -150,22 +150,22 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
    }
 
    @Override
-   public WritableArtifact duplicate(ReadableArtifact sourceArtifact) throws OseeCoreException {
+   public WritableArtifact duplicateArtifact(ReadableArtifact sourceArtifact) throws OseeCoreException {
       return null;
    }
 
    @Override
-   public WritableArtifact duplicate(ReadableArtifact sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException {
+   public WritableArtifact duplicateArtifact(ReadableArtifact sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException {
       return null;
    }
 
    @Override
-   public WritableArtifact reflect(ReadableArtifact sourceArtifact) throws OseeCoreException {
+   public WritableArtifact reflectArtifact(ReadableArtifact sourceArtifact) throws OseeCoreException {
       return null;
    }
 
    @Override
-   public void delete(WritableArtifact artifact) throws OseeCoreException {
+   public void deleteArtifact(WritableArtifact artifact) throws OseeCoreException {
    }
 
 }

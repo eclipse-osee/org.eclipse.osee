@@ -13,18 +13,6 @@ import org.eclipse.osee.orcs.data.ReadableArtifact;
 
 public interface WriteableGraph {
 
-   //////////////////// Relations Portion ? ////////////
-
-   void addChild(ReadableArtifact parent, ReadableArtifact child) throws OseeCoreException;
-
-   void addChild(IRelationSorterId sorterId, ReadableArtifact parent, ReadableArtifact child) throws OseeCoreException;
-
-   void removeChild(ReadableArtifact parent, ReadableArtifact child) throws OseeCoreException;
-
-   ///////////
-   //   addRelation(IRelationTypeSide, Artifact)
-   //   addRelation(IRelationSorterId, IRelationTypeSide, Artifact)
-
    void createRelation(ReadableArtifact aArt, IRelationTypeSide relationTypeSide, ReadableArtifact bArt) throws OseeCoreException;
 
    void createRelation(IRelationSorterId sorterId, ReadableArtifact aArt, IRelationTypeSide relationTypeSide, ReadableArtifact bArt) throws OseeCoreException;

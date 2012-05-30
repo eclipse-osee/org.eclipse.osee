@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.DataStoreTypeCache;
-import org.eclipse.osee.orcs.Graph;
+import org.eclipse.osee.orcs.RelationGraph;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
@@ -140,7 +140,7 @@ public class OrcsApiImpl implements OrcsApi {
    }
 
    @Override
-   public Graph getGraph(ApplicationContext context) {
+   public RelationGraph getGraph(ApplicationContext context) {
       SessionContext sessionContext = getSessionContext(context);
       return new GraphImpl(sessionContext, objectLoader, dataStoreTypeCache);
    }

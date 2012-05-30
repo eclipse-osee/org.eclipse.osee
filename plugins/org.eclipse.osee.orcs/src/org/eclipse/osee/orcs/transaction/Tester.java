@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.transaction;
 
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.Graph;
+import org.eclipse.osee.orcs.RelationGraph;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.WritableArtifact;
 
@@ -27,7 +27,7 @@ public class Tester {
 
       ReadableArtifact artifact1 = null;
       ReadableArtifact artifact2 = null;
-      Graph graph = x.getGrpah();
+      RelationGraph graph = x.getGrpah();
 
       OrcsTransaction tx = x.getTransaction(); // branch and user and comment
 
@@ -51,7 +51,7 @@ public class Tester {
 
    }
 
-   private Graph getGrpah() {
+   private RelationGraph getGrpah() {
       return null;
    }
 

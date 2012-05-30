@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.orcs.Graph;
+import org.eclipse.osee.orcs.RelationGraph;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
 
@@ -30,13 +30,13 @@ import org.eclipse.osee.orcs.data.ReadableAttribute;
 public class HtmlWriter {
 
    private final UriInfo uriInfo;
-   private final Graph graph;
+   private final RelationGraph graph;
 
    public HtmlWriter(UriInfo uriInfo) {
       this(uriInfo, null);
    }
 
-   public HtmlWriter(UriInfo uriInfo, Graph graph) {
+   public HtmlWriter(UriInfo uriInfo, RelationGraph graph) {
       this.uriInfo = uriInfo;
       this.graph = graph;
    }

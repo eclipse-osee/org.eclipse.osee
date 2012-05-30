@@ -28,7 +28,7 @@ public interface OrcsApi {
 
    QueryFacade getQueryFacade(ApplicationContext context);
 
-   Graph getGraph(ApplicationContext context);
+   RelationGraph getGraph(ApplicationContext context);
 
    OrcsBranch getBranchOps(ApplicationContext context);
 

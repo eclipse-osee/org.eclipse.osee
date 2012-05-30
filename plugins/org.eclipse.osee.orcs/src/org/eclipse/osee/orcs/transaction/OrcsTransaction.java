@@ -49,13 +49,13 @@ public interface OrcsTransaction {
 
    WritableArtifact createArtifact(IArtifactToken artifactToken) throws OseeCoreException;
 
-   WritableArtifact duplicate(ReadableArtifact sourceArtifact) throws OseeCoreException;
+   WritableArtifact duplicateArtifact(ReadableArtifact sourceArtifact) throws OseeCoreException;
 
-   WritableArtifact duplicate(ReadableArtifact sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException;
+   WritableArtifact duplicateArtifact(ReadableArtifact sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException;
 
-   WritableArtifact reflect(ReadableArtifact sourceArtifact) throws OseeCoreException;
+   WritableArtifact reflectArtifact(ReadableArtifact sourceArtifact) throws OseeCoreException;
 
-   void delete(WritableArtifact artifact) throws OseeCoreException;
+   void deleteArtifact(WritableArtifact artifact) throws OseeCoreException;
 
    ////////////////////////
 

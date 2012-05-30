@@ -51,4 +51,14 @@ public interface WritableArtifact extends ReadableArtifact {
 
    List<WritableArtifact> getChildren() throws OseeCoreException;
 
+   //Relation methods
+   //
+   //   void createRelation(ReadableArtifact aArt, IRelationTypeSide relationTypeSide, ReadableArtifact bArt) throws OseeCoreException;
+   //
+   //   void createRelation(IRelationSorterId sorterId, ReadableArtifact aArt, IRelationTypeSide relationTypeSide, ReadableArtifact bArt) throws OseeCoreException;
+   //
+   //   void deleteRelation(ReadableArtifact aArt, IRelationType relationTypeSide, ReadableArtifact bArt) throws OseeCoreException;
+   //
+   //   void deleteRelations(IRelationTypeSide relationTypeSide) throws OseeCoreException;
+
 }

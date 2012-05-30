@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.ApplicationContext;
-import org.eclipse.osee.orcs.Graph;
+import org.eclipse.osee.orcs.RelationGraph;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.core.mock.Utility;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
@@ -71,7 +71,7 @@ public class OrcsRelationLoadingTest {
       ReadableArtifact art9 = lookup.get(9);
 
       //art 7 has no relations
-      Graph graph = oseeApi.getGraph(context);
+      RelationGraph graph = oseeApi.getGraph(context);
       Assert.assertEquals(0, graph.getExistingRelationTypes(art7).size());
       //art 8 has 4 
       //      REL_LINK_ID    REL_LINK_TYPE_ID     A_ART_ID    B_ART_ID    RATIONALE   GAMMA_ID    TX_CURRENT     MOD_TYPE    BRANCH_ID   TRANSACTION_ID    GAMMA_ID  
@@ -123,7 +123,7 @@ public class OrcsRelationLoadingTest {
       ReadableArtifact artifact = moreArts.iterator().next();
 
       //art 7 has no relations
-      Graph graph = oseeApi.getGraph(context);
+      RelationGraph graph = oseeApi.getGraph(context);
 
       //artifact has 3 children and 1 parent
       Assert.assertEquals(2, graph.getExistingRelationTypes(artifact).size());

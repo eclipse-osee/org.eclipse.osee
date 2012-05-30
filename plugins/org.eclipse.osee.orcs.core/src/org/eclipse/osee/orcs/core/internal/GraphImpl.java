@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.orcs.DataStoreTypeCache;
-import org.eclipse.osee.orcs.Graph;
+import org.eclipse.osee.orcs.RelationGraph;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
@@ -33,7 +33,7 @@ import org.eclipse.osee.orcs.data.ReadableArtifact;
 /**
  * @author Andrew M. Finkbeiner
  */
-public class GraphImpl implements Graph {
+public class GraphImpl implements RelationGraph {
 
    private final SessionContext sessionContext;
    private final OrcsObjectLoader objectLoader;

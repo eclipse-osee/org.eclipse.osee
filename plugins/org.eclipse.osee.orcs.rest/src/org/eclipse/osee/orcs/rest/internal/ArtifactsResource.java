@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.Graph;
+import org.eclipse.osee.orcs.RelationGraph;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
@@ -67,7 +67,7 @@ public class ArtifactsResource {
          factory.fromBranch(branch).andNameEquals(DEFAULT_HIERARCHY_ROOT_NAME).getResults();
       ReadableArtifact rootArtifact = results.getExactlyOne();
 
-      Graph graph = OrcsApplication.getOrcsApi().getGraph(null);
+      RelationGraph graph = OrcsApplication.getOrcsApi().getGraph(null);
       List<ReadableArtifact> arts =
          graph.getRelatedArtifacts(rootArtifact, CoreRelationTypes.Default_Hierarchical__Child);
       HtmlWriter writer = new HtmlWriter(uriInfo, graph);

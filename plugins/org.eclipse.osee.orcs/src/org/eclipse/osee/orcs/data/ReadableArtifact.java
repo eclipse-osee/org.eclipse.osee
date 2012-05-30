@@ -51,7 +51,6 @@ public interface ReadableArtifact extends Readable, HasVersion, Identifiable {
 
    <T> T getSoleAttributeValue(IAttributeType attributeType) throws OseeCoreException;
 
-   @Override
-   String toString();
-
+   //
+   //   ReadableArtifact getRelatedArtifact(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException;
 }

@@ -22,7 +22,7 @@ import org.eclipse.osee.orcs.data.ReadableArtifact;
 /**
  * @author Andrew M. Finkbeiner
  */
-public interface Graph {
+public interface RelationGraph {
 
    Collection<IRelationTypeSide> getExistingRelationTypes(ReadableArtifact art);
 

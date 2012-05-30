@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.Graph;
+import org.eclipse.osee.orcs.RelationGraph;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.search.CaseType;
@@ -55,12 +55,12 @@ public class ArtifactProviderImpl implements ArtifactProvider {
    private final Log logger;
    private final ExecutorAdmin executorAdmin;
    private final QueryFactory queryFactory;
-   private final Graph graph;
+   private final RelationGraph graph;
 
    private final ArtifactProviderCache cache = new ArtifactProviderCache();
    private final ArtifactFilter filter = new ArtifactFilter(this);
 
-   public ArtifactProviderImpl(Log logger, ExecutorAdmin executorAdmin, QueryFactory queryFactory, Graph graph) {
+   public ArtifactProviderImpl(Log logger, ExecutorAdmin executorAdmin, QueryFactory queryFactory, RelationGraph graph) {
       this.logger = logger;
       this.executorAdmin = executorAdmin;
       this.queryFactory = queryFactory;
@@ -71,7 +71,7 @@ public class ArtifactProviderImpl implements ArtifactProvider {
       return queryFactory;
    }
 
-   protected Graph getGraph() {
+   protected RelationGraph getGraph() {
       return graph;
    }
 

@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.Graph;
+import org.eclipse.osee.orcs.RelationGraph;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
@@ -32,7 +32,7 @@ import org.eclipse.osee.orcs.search.QueryFactory;
  */
 public class AtsArtifactProviderImpl extends ArtifactProviderImpl implements AtsArtifactProvider {
 
-   public AtsArtifactProviderImpl(Log logger, ExecutorAdmin executorAdmin, QueryFactory queryFactory, Graph graph) {
+   public AtsArtifactProviderImpl(Log logger, ExecutorAdmin executorAdmin, QueryFactory queryFactory, RelationGraph graph) {
       super(logger, executorAdmin, queryFactory, graph);
    }
 
