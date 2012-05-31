@@ -15,10 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -40,19 +36,11 @@ import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionProvider;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.util.XResultData;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
-import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.ui.progress.UIJob;
 
 /**
  * This class creates a simple configuration of ATS given team definition name, version names (if desired), actionable
@@ -202,8 +190,7 @@ public class AtsConfigManager extends AbstractOperation {
       return workDef;
    }
 
-   public static WorkDefinition generateDefaultWorkflow(String name, XResultData resultData, SkynetTransaction transaction, TeamDefinitionArtifact teamDef) throws OseeCoreException {
-
+   private WorkDefinition generateDefaultWorkflow(String name, XResultData resultData, SkynetTransaction transaction, TeamDefinitionArtifact teamDef) throws OseeCoreException {
       WorkDefinition defaultWorkDef =
          WorkDefinitionFactory.getWorkDefinition(AtsWorkDefinitionSheetProviders.WORK_DEF_TEAM_DEFAULT).getWorkDefinition();
 
@@ -218,34 +205,6 @@ public class AtsConfigManager extends AbstractOperation {
       newWorkDef.getIds().add(name);
       newWorkDef.setName(name);
       return newWorkDef;
-
    }
 
-   public static final class OpenAtsConfigEditors implements Display {
-
-      @Override
-      public void openAtsConfigurationEditors(final TeamDefinitionArtifact teamDef, final Collection<ActionableItemArtifact> aias, final WorkDefinition workDefinition) {
-         Job job = new UIJob("Open Ats Configuration Editors") {
-            @Override
-            public IStatus runInUIThread(IProgressMonitor monitor) {
-               AtsUtil.openATSAction(teamDef, AtsOpenOption.OpenAll);
-               for (ActionableItemArtifact aia : aias) {
-                  AtsUtil.openATSAction(aia, AtsOpenOption.OpenAll);
-               }
-               try {
-                  RendererManager.open(ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition,
-                     workDefinition.getName(), AtsUtil.getAtsBranch()), PresentationType.SPECIALIZED_EDIT, monitor);
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-               }
-               return Status.OK_STATUS;
-            }
-         };
-         Jobs.startJob(job, true);
-      }
-   }
-
-   public static IOperation createAtsConfigOperation(String name, String teamDefName, Collection<String> versionNames, Collection<String> actionableItems) {
-      return new AtsConfigManager(new OpenAtsConfigEditors(), name, teamDefName, versionNames, actionableItems);
-   }
 }
