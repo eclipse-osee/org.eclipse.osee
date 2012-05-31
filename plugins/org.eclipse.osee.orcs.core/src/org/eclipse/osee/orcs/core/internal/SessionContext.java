@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -19,8 +19,8 @@ public interface SessionContext {
 
    String getSessionId();
 
-   <T extends ReadableArtifact> T getHistorical(int artId, int stripeId);
+   <T extends ArtifactReadable> T getHistorical(int artId, int stripeId);
 
-   <T extends ReadableArtifact> T getActive(int artId, int branchId);
+   <T extends ArtifactReadable> T getActive(int artId, int branchId);
 
 }

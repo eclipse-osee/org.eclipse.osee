@@ -19,16 +19,16 @@ import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 public class CommitBranchCallable extends AbstractBranchCallable<TransactionRecord> {
 
    private final BranchCache branchCache;
-   private final ReadableArtifact committer;
+   private final ArtifactReadable committer;
    private final IOseeBranch source;
    private final IOseeBranch destination;
 
-   public CommitBranchCallable(Log logger, SessionContext sessionContext, BranchDataStore branchStore, BranchCache branchCache, ReadableArtifact committer, IOseeBranch source, IOseeBranch destination) {
+   public CommitBranchCallable(Log logger, SessionContext sessionContext, BranchDataStore branchStore, BranchCache branchCache, ArtifactReadable committer, IOseeBranch source, IOseeBranch destination) {
       super(logger, sessionContext, branchStore);
       this.branchCache = branchCache;
       this.committer = committer;

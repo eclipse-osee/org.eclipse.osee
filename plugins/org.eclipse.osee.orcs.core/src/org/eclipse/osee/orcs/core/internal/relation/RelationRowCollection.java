@@ -23,51 +23,61 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.util.Conditions;
-import org.eclipse.osee.orcs.core.ds.RelationRow;
+import org.eclipse.osee.orcs.core.ds.RelationData;
+import org.eclipse.osee.orcs.data.HasLocalId;
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public class RelationRowCollection {
 
-   private final Map<IRelationTypeSide, List<RelationRow>> relations =
-      new ConcurrentHashMap<IRelationTypeSide, List<RelationRow>>();
+   private final Map<IRelationTypeSide, List<RelationData>> relations =
+      new ConcurrentHashMap<IRelationTypeSide, List<RelationData>>();
 
-   private final int parentId;
+   private final HasLocalId parentId;
    private final RelationTypeCache relationTypeCache;
 
-   RelationRowCollection(int parentId, RelationTypeCache relationTypeCache) {
+   RelationRowCollection(HasLocalId parentId, RelationTypeCache relationTypeCache) {
       this.parentId = parentId;
       this.relationTypeCache = relationTypeCache;
    }
 
-   public void add(RelationRow nextRelation) throws OseeCoreException {
-      IRelationType type = relationTypeCache.getByGuid(nextRelation.getRelationTypeUUId());
-      Conditions.checkNotNull(type, "RelationType", "Unknown relation type.  UUID[%d]",
-         nextRelation.getRelationTypeUUId());
-      IRelationTypeSide relationTypeSide =
-         TokenFactory.createRelationTypeSide(getRelationSide(nextRelation), type.getGuid(), type.getName());
-
-      List<RelationRow> rows = relations.get(relationTypeSide);
-      if (rows == null) {
-         rows = new CopyOnWriteArrayList<RelationRow>();
-         relations.put(relationTypeSide, rows);
-      }
-      rows.add(nextRelation);
+   private IRelationType getRelationType(RelationData relationRow) throws OseeCoreException {
+      long uuid = relationRow.getRelationTypeUUId();
+      IRelationType type = relationTypeCache.getByGuid(uuid);
+      Conditions.checkNotNull(type, "RelationType", "Unknown relation type.  UUID[%d]", uuid);
+      return type;
    }
 
-   private RelationSide getRelationSide(RelationRow row) {
-      if (row.getArtIdA() == parentId) {
+   private RelationSide getRelationSide(RelationData row) {
+      if (row.getArtIdA() == parentId.getLocalId()) {
          return RelationSide.SIDE_B;
       } else { //row.getArtIdB() == parentId
          return RelationSide.SIDE_A;
       }
    }
 
+   private IRelationTypeSide getRelationTypeSide(RelationData relationRow) throws OseeCoreException {
+      IRelationType type = getRelationType(relationRow);
+      RelationSide side = getRelationSide(relationRow);
+      IRelationTypeSide relationTypeSide = TokenFactory.createRelationTypeSide(side, type.getGuid(), type.getName());
+      return relationTypeSide;
+   }
+
+   public void add(RelationData nextRelation) throws OseeCoreException {
+      IRelationTypeSide relationTypeSide = getRelationTypeSide(nextRelation);
+      List<RelationData> rows = relations.get(relationTypeSide);
+      if (rows == null) {
+         rows = new CopyOnWriteArrayList<RelationData>();
+         relations.put(relationTypeSide, rows);
+      }
+      rows.add(nextRelation);
+   }
+
    public void getArtifactIds(Collection<Integer> results, IRelationTypeSide relationTypeSide) {
-      List<RelationRow> rows = relations.get(relationTypeSide);
+      List<RelationData> rows = relations.get(relationTypeSide);
       if (rows != null) {
-         for (RelationRow row : rows) {
+         for (RelationData row : rows) {
             Integer artId = row.getArtIdOn(relationTypeSide.getSide());
             results.add(artId);
          }
@@ -75,7 +85,7 @@ public class RelationRowCollection {
    }
 
    public int getArtifactCount(IRelationTypeSide relationTypeSide) {
-      List<RelationRow> rows = relations.get(relationTypeSide);
+      List<RelationData> rows = relations.get(relationTypeSide);
       return rows != null ? rows.size() : 0;
    }
 

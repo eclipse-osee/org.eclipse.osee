@@ -15,10 +15,13 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.orcs.core.ds.ArtifactRow;
+import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactRowHandler;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.core.internal.VersionImpl;
+import org.eclipse.osee.orcs.core.internal.artifact.ArtifactCollector.LoadSourceType;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.Version;
 
 /**
  * @author Roberto E. Escobar
@@ -40,22 +43,27 @@ public class ArtifactRowMapper implements ArtifactRowHandler {
    }
 
    @Override
-   public void onRow(ArtifactRow row) throws OseeCoreException {
-      boolean isArtifactAlreadyLoaded = true;
-      ReadableArtifact artifact = getLoadedArtifact(row);
+   public void onRow(ArtifactData row) throws OseeCoreException {
+      LoadSourceType loadSourceType = LoadSourceType.FOUND_IN_CACHE;
+      ArtifactReadable artifact = getLoadedArtifact(row);
       if (artifact == null) {
-         isArtifactAlreadyLoaded = false;
+         loadSourceType = LoadSourceType.WAS_CREATED;
          ArtifactType artifactType = typeCache.getByGuid(row.getArtTypeUuid());
          Branch branch = branchCache.getById(row.getBranchId());
+
+         Version version =
+            new VersionImpl(row.getGammaId(), row.getArtifactId(), row.getModType(), row.getTransactionId(),
+               row.isHistorical());
+
          artifact =
-            artifactFactory.loadExisitingArtifact(row.getArtifactId(), row.getGuid(), row.getHumanReadableId(),
-               artifactType, row.getGammaId(), branch, row.getTransactionId(), row.getModType(), row.isHistorical());
+            artifactFactory.createReadableArtifact(row.getGuid(), row.getHumanReadableId(), artifactType, branch,
+               version);
       }
-      artifactReceiver.onArtifact(artifact, isArtifactAlreadyLoaded);
+      artifactReceiver.onArtifact(artifact, loadSourceType);
    }
 
-   private ReadableArtifact getLoadedArtifact(ArtifactRow current) {
-      ReadableArtifact container = null;
+   private ArtifactReadable getLoadedArtifact(ArtifactData current) {
+      ArtifactReadable container = null;
       if (current.isHistorical()) {
          container = context.getHistorical(current.getArtifactId(), current.getStripeId());
       } else {

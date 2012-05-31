@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.ui.api.search.AtsArtifactProvider;
 import org.eclipse.osee.display.presenter.mocks.MockArtifact;
 import org.eclipse.osee.display.presenter.mocks.MockArtifactProvider;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author John R. Misinco
@@ -48,16 +48,16 @@ public class MockAtsArtifactProvider extends MockArtifactProvider implements Ats
    }
 
    @Override
-   public Collection<ReadableArtifact> getPrograms() {
-      return new LinkedList<ReadableArtifact>(programsAndBuilds.keySet());
+   public Collection<ArtifactReadable> getPrograms() {
+      return new LinkedList<ArtifactReadable>(programsAndBuilds.keySet());
    }
 
    @Override
-   public Collection<ReadableArtifact> getBuilds(String programGuid) {
-      List<ReadableArtifact> toReturn = null;
+   public Collection<ArtifactReadable> getBuilds(String programGuid) {
+      List<ArtifactReadable> toReturn = null;
       for (MockArtifact program : programsAndBuilds.keySet()) {
          if (program.getGuid().equals(programGuid)) {
-            toReturn = new LinkedList<ReadableArtifact>(programsAndBuilds.getValues(program));
+            toReturn = new LinkedList<ArtifactReadable>(programsAndBuilds.getValues(program));
             break;
          }
       }

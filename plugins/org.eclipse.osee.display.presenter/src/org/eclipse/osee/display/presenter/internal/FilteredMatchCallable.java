@@ -15,31 +15,31 @@ import org.eclipse.osee.display.presenter.ArtifactFilter;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Collections.Filter;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
 
 /**
  * @author Roberto E. Escobar
  */
-public class FilteredMatchCallable extends CancellableCallable<Collection<Match<ReadableArtifact, ReadableAttribute<?>>>> implements Filter<Match<ReadableArtifact, ReadableAttribute<?>>> {
+public class FilteredMatchCallable extends CancellableCallable<Collection<Match<ArtifactReadable, AttributeReadable<?>>>> implements Filter<Match<ArtifactReadable, AttributeReadable<?>>> {
 
-   private final Collection<Match<ReadableArtifact, ReadableAttribute<?>>> toSanitize;
+   private final Collection<Match<ArtifactReadable, AttributeReadable<?>>> toSanitize;
    private final ArtifactFilter sanitizer;
 
-   public FilteredMatchCallable(ArtifactFilter sanitizer, Collection<Match<ReadableArtifact, ReadableAttribute<?>>> toSanitize) {
+   public FilteredMatchCallable(ArtifactFilter sanitizer, Collection<Match<ArtifactReadable, AttributeReadable<?>>> toSanitize) {
       this.sanitizer = sanitizer;
       this.toSanitize = toSanitize;
    }
 
    @Override
-   public Collection<Match<ReadableArtifact, ReadableAttribute<?>>> call() throws Exception {
+   public Collection<Match<ArtifactReadable, AttributeReadable<?>>> call() throws Exception {
       Collections.filter(toSanitize, this);
       return toSanitize;
    }
 
    @Override
-   public boolean accept(Match<ReadableArtifact, ReadableAttribute<?>> item) throws Exception {
+   public boolean accept(Match<ArtifactReadable, AttributeReadable<?>> item) throws Exception {
       checkForCancelled();
       return sanitizer.accept(item.getItem());
    }

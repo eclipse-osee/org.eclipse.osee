@@ -13,9 +13,9 @@ package org.eclipse.osee.orcs.core.internal.relation;
 import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
-import org.eclipse.osee.orcs.core.ds.RelationContainer;
-import org.eclipse.osee.orcs.core.ds.RelationRow;
+import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.RelationRowHandler;
+import org.eclipse.osee.orcs.core.internal.artifact.RelationContainer;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -29,7 +29,7 @@ public class RelationRowMapper implements RelationRowHandler {
    }
 
    @Override
-   public void onRow(RelationRow nextRelation) throws OseeCoreException {
+   public void onRow(RelationData nextRelation) throws OseeCoreException {
       int parentId = nextRelation.getParentId();
       RelationContainer parent = providersThatWillBeLoaded.get(parentId);
       Conditions.checkNotNull(parent, "RelationContainer",

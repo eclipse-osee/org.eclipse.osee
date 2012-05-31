@@ -24,14 +24,14 @@ import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
 import org.eclipse.osee.orcs.core.internal.OrcsObjectLoader;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.search.QueryCollector;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
 
 /**
  * @author Roberto E. Escobar
  */
-public class SearchCallable extends AbstractSearchCallable<ResultSet<ReadableArtifact>> {
+public class SearchCallable extends AbstractSearchCallable<ResultSet<ArtifactReadable>> {
 
    private QueryContext queryContext;
 
@@ -40,21 +40,21 @@ public class SearchCallable extends AbstractSearchCallable<ResultSet<ReadableArt
    }
 
    @Override
-   protected ResultSet<ReadableArtifact> innerCall() throws Exception {
+   protected ResultSet<ArtifactReadable> innerCall() throws Exception {
       QueryContext queryContext = queryEngine.create(sessionContext.getSessionId(), queryData);
       LoadOptions loadOptions =
          new LoadOptions(queryData.getOptions().isHistorical(), queryData.getOptions().areDeletedIncluded(), loadLevel);
       checkForCancelled();
-      List<ReadableArtifact> artifacts = objectLoader.load(this, queryContext, loadOptions, sessionContext);
+      List<ArtifactReadable> artifacts = objectLoader.load(this, queryContext, loadOptions, sessionContext);
 
-      List<ReadableArtifact> results;
+      List<ArtifactReadable> results;
       if (!queryContext.getPostProcessors().isEmpty()) {
-         results = new ArrayList<ReadableArtifact>();
+         results = new ArrayList<ArtifactReadable>();
          for (QueryPostProcessor processor : queryContext.getPostProcessors()) {
             processor.setItemsToProcess(artifacts);
             checkForCancelled();
-            List<Match<ReadableArtifact, ReadableAttribute<?>>> matches = processor.call();
-            for (Match<ReadableArtifact, ReadableAttribute<?>> match : matches) {
+            List<Match<ArtifactReadable, AttributeReadable<?>>> matches = processor.call();
+            for (Match<ArtifactReadable, AttributeReadable<?>> match : matches) {
                checkForCancelled();
                results.add(match.getItem());
             }
@@ -62,7 +62,7 @@ public class SearchCallable extends AbstractSearchCallable<ResultSet<ReadableArt
       } else {
          results = artifacts;
       }
-      return new ResultSetList<ReadableArtifact>(results);
+      return new ResultSetList<ArtifactReadable>(results);
    }
 
    @Override
@@ -76,7 +76,7 @@ public class SearchCallable extends AbstractSearchCallable<ResultSet<ReadableArt
    }
 
    @Override
-   protected int getCount(ResultSet<ReadableArtifact> results) throws Exception {
+   protected int getCount(ResultSet<ArtifactReadable> results) throws Exception {
       return results.getList().size();
    }
 }

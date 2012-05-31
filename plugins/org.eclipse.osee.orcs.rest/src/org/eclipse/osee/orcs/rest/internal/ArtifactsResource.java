@@ -22,10 +22,9 @@ import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.RelationGraph;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.GraphReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
@@ -63,14 +62,13 @@ public class ArtifactsResource {
    public String getAsHtml() throws OseeCoreException {
       IOseeBranch branch = TokenFactory.createBranch(branchUuid, "");
       QueryFactory factory = OrcsApplication.getOrcsApi().getQueryFactory(null);
-      ResultSet<ReadableArtifact> results =
+      ResultSet<ArtifactReadable> results =
          factory.fromBranch(branch).andNameEquals(DEFAULT_HIERARCHY_ROOT_NAME).getResults();
-      ReadableArtifact rootArtifact = results.getExactlyOne();
+      ArtifactReadable rootArtifact = results.getExactlyOne();
 
-      RelationGraph graph = OrcsApplication.getOrcsApi().getGraph(null);
-      List<ReadableArtifact> arts =
-         graph.getRelatedArtifacts(rootArtifact, CoreRelationTypes.Default_Hierarchical__Child);
-      HtmlWriter writer = new HtmlWriter(uriInfo, graph);
+      GraphReadable graph = OrcsApplication.getOrcsApi().getGraph(null);
+      List<ArtifactReadable> arts = graph.getChildren(rootArtifact).getList();
+      HtmlWriter writer = new HtmlWriter(uriInfo);
       return writer.toHtml(arts);
    }
    private static final String DEFAULT_HIERARCHY_ROOT_NAME = "Default Hierarchy Root";

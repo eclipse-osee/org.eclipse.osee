@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
-import org.eclipse.osee.orcs.core.ds.RelationRow;
+import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.RelationRowHandler;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
@@ -63,7 +63,7 @@ public class RelationLoader {
          }
          while (statement.next()) {
             rowCount++;
-            RelationRow nextRelation = new RelationRow();
+            RelationData nextRelation = new RelationData();
             nextRelation.setParentId(statement.getInt("art_id"));
             nextRelation.setRelationId(statement.getInt("rel_link_id"));
             nextRelation.setArtIdA(statement.getInt("a_art_id"));

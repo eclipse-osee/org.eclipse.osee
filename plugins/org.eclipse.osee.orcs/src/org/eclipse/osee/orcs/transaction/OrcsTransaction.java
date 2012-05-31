@@ -18,9 +18,10 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.WritableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.ArtifactWriteable;
+import org.eclipse.osee.orcs.data.GraphReadable;
+import org.eclipse.osee.orcs.data.GraphWriteable;
 
 /**
  * @author Roberto E. Escobar
@@ -29,7 +30,7 @@ public interface OrcsTransaction {
 
    IOseeBranch getBranch();
 
-   ReadableArtifact getAuthor();
+   ArtifactReadable getAuthor();
 
    String getComment();
 
@@ -37,25 +38,29 @@ public interface OrcsTransaction {
 
    ////////////////////////
 
-   WritableArtifact asWritable(ReadableArtifact artifact) throws OseeCoreException;
+   ArtifactWriteable asWritable(ArtifactReadable artifact) throws OseeCoreException;
 
-   List<WritableArtifact> asWritable(Collection<? extends ReadableArtifact> artifact) throws OseeCoreException;
+   List<ArtifactWriteable> asWritable(Collection<? extends ArtifactReadable> artifact) throws OseeCoreException;
 
    ////////////////////////
 
-   WritableArtifact createArtifact(IArtifactType artifactType, String name) throws OseeCoreException;
+   ArtifactWriteable createArtifact(IArtifactType artifactType, String name) throws OseeCoreException;
 
-   WritableArtifact createArtifact(IArtifactType artifactType, String name, GUID guid) throws OseeCoreException;
+   ArtifactWriteable createArtifact(IArtifactType artifactType, String name, String guid) throws OseeCoreException;
 
-   WritableArtifact createArtifact(IArtifactToken artifactToken) throws OseeCoreException;
+   ArtifactWriteable createArtifact(IArtifactToken artifactToken) throws OseeCoreException;
 
-   WritableArtifact duplicateArtifact(ReadableArtifact sourceArtifact) throws OseeCoreException;
+   ArtifactWriteable duplicateArtifact(ArtifactReadable sourceArtifact) throws OseeCoreException;
 
-   WritableArtifact duplicateArtifact(ReadableArtifact sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException;
+   ArtifactWriteable duplicateArtifact(ArtifactReadable sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException;
 
-   WritableArtifact reflectArtifact(ReadableArtifact sourceArtifact) throws OseeCoreException;
+   ArtifactWriteable reflectArtifact(ArtifactReadable sourceArtifact) throws OseeCoreException;
 
-   void deleteArtifact(WritableArtifact artifact) throws OseeCoreException;
+   void deleteArtifact(ArtifactWriteable artifact) throws OseeCoreException;
+
+   ////////////////////////
+
+   GraphWriteable asWriteableGraph(GraphReadable readableGraph) throws OseeCoreException;
 
    ////////////////////////
 

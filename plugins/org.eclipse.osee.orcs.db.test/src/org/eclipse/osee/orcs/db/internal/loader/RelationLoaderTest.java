@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
-import org.eclipse.osee.orcs.core.ds.RelationRow;
+import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.RelationRowHandler;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
@@ -72,18 +72,18 @@ public class RelationLoaderTest {
       artJoinQuery.store(connection);
       int queryId = artJoinQuery.getQueryId();
 
-      final List<RelationRow> expected = new ArrayList<RelationRow>();
+      final List<RelationData> expected = new ArrayList<RelationData>();
       expected.add(getRelationRow(1, 8, 2, 36, 1, 1, "", 2, identityService.getUniversalId(397)));
       expected.add(getRelationRow(1, 17, 2, 60, 1, 1, "", 4, identityService.getUniversalId(397)));
       expected.add(getRelationRow(1, 22, 2, 94, 1, 1, "", 9, identityService.getUniversalId(397)));
 
-      RelationRow notExpected = getRelationRow(1, 22, 2, 94, 1, 1, "Idon'tExist", 9, 397);
+      RelationData notExpected = getRelationRow(1, 22, 2, 94, 1, 1, "Idon'tExist", 9, 397);
 
-      final List<RelationRow> actuals = new ArrayList<RelationRow>();
+      final List<RelationData> actuals = new ArrayList<RelationData>();
 
       relationLoader.loadFromQueryId(new RelationRowHandler() {
          @Override
-         public void onRow(RelationRow nextRelation) {
+         public void onRow(RelationData nextRelation) {
             actuals.add(nextRelation);
          }
       }, new LoadOptions(false, DeletionFlag.EXCLUDE_DELETED, LoadLevel.ALL_CURRENT), 100, queryId);
@@ -92,7 +92,7 @@ public class RelationLoaderTest {
       connection.close();
 
       Assert.assertEquals(expected.size(), actuals.size());
-      for (RelationRow row : expected) {
+      for (RelationData row : expected) {
          Assert.assertTrue(String.format("Row [%s] could not be found.", row.toString()), actuals.contains(row));
       }
       Assert.assertTrue(String.format("Row [%s] should not be found.", notExpected.toString()),
@@ -112,11 +112,11 @@ public class RelationLoaderTest {
       artJoinQuery.store(connection);
       int queryId = artJoinQuery.getQueryId();
 
-      final List<RelationRow> actuals = new ArrayList<RelationRow>();
+      final List<RelationData> actuals = new ArrayList<RelationData>();
 
       relationLoader.loadFromQueryId(new RelationRowHandler() {
          @Override
-         public void onRow(RelationRow nextRelation) {
+         public void onRow(RelationData nextRelation) {
             actuals.add(nextRelation);
          }
       }, new LoadOptions(false, DeletionFlag.EXCLUDE_DELETED, LoadLevel.ALL_CURRENT), 100, queryId);
@@ -140,10 +140,10 @@ public class RelationLoaderTest {
       artJoinQuery.store(connection);
       int queryId = artJoinQuery.getQueryId();
 
-      final List<RelationRow> actuals = new ArrayList<RelationRow>();
+      final List<RelationData> actuals = new ArrayList<RelationData>();
       relationLoader.loadFromQueryId(new RelationRowHandler() {
          @Override
-         public void onRow(RelationRow nextRelation) {
+         public void onRow(RelationData nextRelation) {
             actuals.add(nextRelation);
          }
       }, new LoadOptions(true, DeletionFlag.EXCLUDE_DELETED, LoadLevel.ALL_CURRENT), 100, queryId);
@@ -155,8 +155,8 @@ public class RelationLoaderTest {
 
    }
 
-   private RelationRow getRelationRow(int artIdA, int artIdB, int branchId, int gammaId, int modType, int parentId, String rationale, int relationId, long relationTypeId) throws OseeArgumentException {
-      RelationRow row = new RelationRow();
+   private RelationData getRelationRow(int artIdA, int artIdB, int branchId, int gammaId, int modType, int parentId, String rationale, int relationId, long relationTypeId) throws OseeArgumentException {
+      RelationData row = new RelationData();
       row.setArtIdA(artIdA);
       row.setArtIdB(artIdB);
       row.setBranchId(branchId);

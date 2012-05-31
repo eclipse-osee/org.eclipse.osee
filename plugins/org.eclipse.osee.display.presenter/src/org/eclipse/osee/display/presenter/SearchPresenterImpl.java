@@ -50,8 +50,8 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.UrlQuery;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
 
 /**
@@ -100,19 +100,19 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       sendSearchInProgress();
    }
 
-   private void processSearchResults(List<Match<ReadableArtifact, ReadableAttribute<?>>> searchResults, SearchResultsListComponent searchResultsComp, boolean isVerbose) throws OseeCoreException {
+   private void processSearchResults(List<Match<ArtifactReadable, AttributeReadable<?>>> searchResults, SearchResultsListComponent searchResultsComp, boolean isVerbose) throws OseeCoreException {
       searchResultsComp.clearAll();
       if (searchResults != null && searchResults.isEmpty()) {
          searchResultsComp.noSearchResultsFound();
       } else {
-         for (Match<ReadableArtifact, ReadableAttribute<?>> match : searchResults) {
-            ReadableArtifact matchedArtifact = match.getItem();
+         for (Match<ArtifactReadable, AttributeReadable<?>> match : searchResults) {
+            ArtifactReadable matchedArtifact = match.getItem();
             ViewArtifact viewArtifact = convertToViewArtifact(matchedArtifact, isVerbose);
 
             SearchResultComponent searchResult = searchResultsComp.createSearchResult();
             searchResult.setArtifact(viewArtifact);
             if (isVerbose) {
-               for (ReadableAttribute<?> element : match.getElements()) {
+               for (AttributeReadable<?> element : match.getElements()) {
                   List<MatchLocation> matches = match.getLocation(element);
                   String data = String.valueOf(element.getDisplayableString());
                   List<StyledText> text = Utility.getMatchedText(data, matches);
@@ -160,7 +160,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
 
       String branch = params.getBranchId();
       String art = params.getArtifactId();
-      ReadableArtifact displayArt = null;
+      ArtifactReadable displayArt = null;
       try {
          displayArt = artifactProvider.getArtifactByGuid(TokenFactory.createBranch(branch, ""), art);
       } catch (Exception ex) {
@@ -207,10 +207,10 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
          return;
       }
       for (IAttributeType attrType : attributeTypes) {
-         List<ReadableAttribute<Object>> attributesValues = null;
+         List<AttributeReadable<Object>> attributesValues = null;
          try {
             attributesValues = displayArt.getAttributes(attrType);
-            for (ReadableAttribute<Object> value : attributesValues) {
+            for (AttributeReadable<Object> value : attributesValues) {
                attrComp.addAttribute(attrType.getName(), value.getDisplayableString());
             }
          } catch (Exception ex) {
@@ -231,9 +231,9 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
 
       IRelationType type = TokenFactory.createRelationType(Long.parseLong(relGuid), relation.getName());
       IOseeBranch branch = TokenFactory.createBranch(artifact.getBranch().getGuid(), "");
-      ReadableArtifact sourceArt;
-      Collection<ReadableArtifact> relatedSideA = Collections.emptyList();
-      Collection<ReadableArtifact> relatedSideB = Collections.emptyList();
+      ArtifactReadable sourceArt;
+      Collection<ArtifactReadable> relatedSideA = Collections.emptyList();
+      Collection<ArtifactReadable> relatedSideB = Collections.emptyList();
       try {
          sourceArt = artifactProvider.getArtifactByGuid(branch, artifact.getGuid());
          relatedSideA =
@@ -260,11 +260,11 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       }
 
       try {
-         for (ReadableArtifact rel : relatedSideA) {
+         for (ArtifactReadable rel : relatedSideA) {
             ViewArtifact id = convertToViewArtifact(rel, false);
             relationComponent.addLeftRelated(id);
          }
-         for (ReadableArtifact rel : relatedSideB) {
+         for (ArtifactReadable rel : relatedSideB) {
             ViewArtifact id = convertToViewArtifact(rel, false);
             relationComponent.addRightRelated(id);
          }
@@ -274,7 +274,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       }
    }
 
-   protected ViewArtifact convertToViewArtifact(ReadableArtifact artifact, boolean addAncestry) throws OseeCoreException {
+   protected ViewArtifact convertToViewArtifact(ArtifactReadable artifact, boolean addAncestry) throws OseeCoreException {
       ViewId branch = new ViewId(artifact.getBranch().getGuid(), artifact.getBranch().getName());
       List<ViewArtifact> ancestry = addAncestry ? getAncestry(artifact) : null;
       ViewArtifact toReturn =
@@ -283,8 +283,8 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       return toReturn;
    }
 
-   protected List<ViewArtifact> getAncestry(ReadableArtifact art) throws OseeCoreException {
-      ReadableArtifact cur = artifactProvider.getParent(art);
+   protected List<ViewArtifact> getAncestry(ArtifactReadable art) throws OseeCoreException {
+      ArtifactReadable cur = artifactProvider.getParent(art);
       List<ViewArtifact> ancestry = new ArrayList<ViewArtifact>();
       while (cur != null) {
          ancestry.add(convertToViewArtifact(cur, false));
@@ -392,7 +392,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       }
 
       @Override
-      public void onSearchComplete(List<Match<ReadableArtifact, ReadableAttribute<?>>> results) {
+      public void onSearchComplete(List<Match<ArtifactReadable, AttributeReadable<?>>> results) {
          try {
             processSearchResults(results, resultsComp, isVerbose);
          } catch (OseeCoreException ex) {

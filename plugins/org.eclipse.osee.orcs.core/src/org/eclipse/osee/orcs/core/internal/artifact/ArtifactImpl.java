@@ -16,60 +16,45 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.EditState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.orcs.core.ds.AttributeContainer;
-import org.eclipse.osee.orcs.core.ds.RelationContainer;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeContainerImpl;
-import org.eclipse.osee.orcs.core.internal.relation.RelationContainerImpl;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
-import org.eclipse.osee.orcs.data.WritableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactWriteable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
+import org.eclipse.osee.orcs.data.AttributeWriteable;
+import org.eclipse.osee.orcs.data.Version;
 
-public class Artifact extends NamedIdentity<String> implements WritableArtifact {
+public class ArtifactImpl extends NamedIdentity<String> implements ArtifactWriteable, Cloneable {
 
    private final AttributeContainer attributeContainer;
    private final RelationContainer relationContainer;
-   private final int artId;
    private final String humandReadableId;
    private final ArtifactType artifactType;
-   private final int gammaId;
-   private final Branch branch;
-   private final int transactionId;
-   private final ModificationType modType;
-   private final boolean historical;
+   private final IOseeBranch branch;
+   private EditState objectEditState;
+   private final Version version;
 
-   public Artifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, Branch branch, int transactionId, ModificationType modType, boolean historical, RelationTypeCache relationTypeCache) {
+   public ArtifactImpl(String guid, String humandReadableId, ArtifactType artifactType, IOseeBranch branch, RelationContainer relationContainer, Version version) {
       super(guid, "");
-      this.artId = artId;
       this.humandReadableId = humandReadableId;
       this.artifactType = artifactType;
-      this.gammaId = gammaId;
       this.branch = branch;
-      this.transactionId = transactionId;
-      this.modType = modType;
-      this.historical = historical;
       this.attributeContainer = new AttributeContainerImpl(this);
-      this.relationContainer = new RelationContainerImpl(artId, relationTypeCache);
+      this.relationContainer = relationContainer;
+      this.version = version;
+      objectEditState = EditState.NO_CHANGE;
    }
 
-   @Override
-   public long getGammaId() {
-      return gammaId;
-   }
-
-   @Override
    public ModificationType getModificationType() {
-      return modType;
+      return version.getModificationType();
    }
 
    @Override
@@ -84,8 +69,8 @@ public class Artifact extends NamedIdentity<String> implements WritableArtifact 
    }
 
    @Override
-   public int getId() {
-      return artId;
+   public int getLocalId() {
+      return version.getLocalId();
    }
 
    @Override
@@ -100,7 +85,7 @@ public class Artifact extends NamedIdentity<String> implements WritableArtifact 
 
    @Override
    public int getTransactionId() {
-      return transactionId;
+      return version.getTransactionId();
    }
 
    @Override
@@ -116,11 +101,6 @@ public class Artifact extends NamedIdentity<String> implements WritableArtifact 
    @Override
    public Collection<IAttributeType> getAttributeTypes() throws OseeCoreException {
       return attributeContainer.getAttributeTypes();
-   }
-
-   @Override
-   public <T> List<ReadableAttribute<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException {
-      return attributeContainer.getAttributes(attributeType);
    }
 
    @Override
@@ -140,30 +120,62 @@ public class Artifact extends NamedIdentity<String> implements WritableArtifact 
       return relationContainer;
    }
 
-   public Collection<IRelationTypeSide> getExistingRelationTypes() {
-      return relationContainer.getAvailableRelationTypes();
-   }
-
-   @Override
-   public <T> List<ReadableAttribute<T>> getAttributes() throws OseeCoreException {
-      return getAttributeContainer().getAttributes();
-   }
-
-   public void getRelatedArtifacts(IRelationTypeSide relationTypeSide, Collection<Integer> results) {
-      relationContainer.getArtifactIds(results, relationTypeSide);
-   }
-
    @Override
    public String getSoleAttributeAsString(IAttributeType attributeType) throws OseeCoreException {
       return String.valueOf(getSoleAttributeValue(attributeType));
    }
 
-   /**
-    * Return sole attribute value for given attribute type name. Will throw exceptions if "Sole" nature of attribute is
-    * invalid.<br>
-    * <br>
-    * Used for quick access to attribute value that should only have 0 or 1 instances of the attribute.
-    */
+   @Override
+   public ArtifactImpl clone() throws CloneNotSupportedException {
+      //      ArtifactImpl otherObject = (ArtifactImpl) super.clone();
+      //      otherObject.humandReadableId = this.humandReadableId;
+      //      otherObject.historical = this.historical;
+      //      otherObject.branch = this.branch;
+      //      otherObject.artifactType = this.artifactType;
+
+      // TODO finish copying
+      //      otherObject.relationProxy = this.relationProxy;
+      //      otherObject.attributeContainer = new AttributeContainerImpl(otherObject);
+
+      //      for (AttributeReadable<?> attribute : this.attributeContainer.getAttributes()) {
+      //         attributeContainer.add(attribute.getAttributeType(), attribute.);
+      //      }
+      throw new CloneNotSupportedException("Implementation not finished");
+   }
+
+   @Override
+   public <T> List<AttributeReadable<T>> getAttributes() throws OseeCoreException {
+      return attributeContainer.getAttributes();
+   }
+
+   @Override
+   public <T> List<AttributeReadable<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException {
+      return attributeContainer.getAttributes(attributeType);
+   }
+
+   @Override
+   public void setArtifactType(IArtifactType artifactType) {
+      if (!this.artifactType.equals(artifactType)) {
+         objectEditState = EditState.ARTIFACT_TYPE_MODIFIED;
+         //TX_TODO
+         //         if (version.isInStorage()) {
+         //            lastValidModType = modType;
+         //            modType = ModificationType.MODIFIED;
+         //         }
+      }
+   }
+
+   @Override
+   public <T> List<AttributeWriteable<T>> getWriteableAttributes() throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public <T> List<AttributeWriteable<T>> getWriteableAttributes(IAttributeType attributeType) throws OseeCoreException {
+      return null;
+   }
+
+   @Override
    @Override
    public final <T> T getSoleAttributeValue(IAttributeType attributeType) throws OseeCoreException {
       List<ReadableAttribute<T>> soleAttributes = attributeContainer.getAttributes(attributeType);
@@ -202,13 +214,36 @@ public class Artifact extends NamedIdentity<String> implements WritableArtifact 
    public void deleteAttributesWithValue(IAttributeType attributeType, Object value) throws OseeCoreException {
    }
 
-   @Override
-   public List<WritableArtifact> getChildren() throws OseeCoreException {
-      return null;
+   /**
+    * @return whether this artifact has unsaved attribute changes
+    */
+   public final boolean hasDirtyAttributes() {
+      //TX_TODO: Implement this
+      //      for (AttributeReadable<?> attribute : attributeContainer.getAttributes()) {
+      //         if (attribute.isDirty()) {
+      //            return true;
+      //         }
+      //      }
+      return false;
    }
 
-   public Artifact copy() {
-      return null;
+   /**
+    * @return whether this artifact has unsaved relation changes
+    */
+   public final boolean hasDirtyRelations() {
+      //TX_TODO: Implement this
+      return false;
+   }
+
+   /**
+    * @return whether this artifact has unsaved relation changes
+    */
+   public final boolean isDirty() {
+      return hasDirtyAttributes() || hasDirtyRelations() || hasDirtyArtifactType();
+   }
+
+   private final boolean hasDirtyArtifactType() {
+      return objectEditState.isArtifactTypeChange();
    }
 
    public final boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException {

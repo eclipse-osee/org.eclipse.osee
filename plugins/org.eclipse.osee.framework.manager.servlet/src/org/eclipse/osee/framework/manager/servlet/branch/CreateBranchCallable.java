@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.CreateBranchData;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -45,8 +45,8 @@ public class CreateBranchCallable extends AbstractBranchCallable<BranchCreationR
 
       createData.setFromTransaction(TokenFactory.createTransaction(request.getSourceTransactionId()));
 
-      ReadableArtifact createdBy = getArtifactById(request.getAuthorId());
-      ReadableArtifact associatedWith = getArtifactById(request.getAssociatedArtifactId());
+      ArtifactReadable createdBy = getArtifactById(request.getAuthorId());
+      ArtifactReadable associatedWith = getArtifactById(request.getAssociatedArtifactId());
 
       createData.setUserArtifact(createdBy);
       createData.setAssociatedArtifact(associatedWith);

@@ -8,127 +8,49 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.internal.transaction;
+package org.eclipse.osee.orcs.core.internal.artifact;
 
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.Identity;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
-import org.eclipse.osee.orcs.data.WritableArtifact;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.orcs.data.ArtifactWriteable;
+import org.eclipse.osee.orcs.data.AttributeWriteable;
 
-public class WritableArtifactProxy implements WritableArtifact {
+public class WritableArtifactProxy extends ReadableArtifactProxy implements ArtifactWriteable {
 
-   private volatile boolean isCopyRequired;
-   private Artifact proxied;
-   private Artifact originalArtifact;
+   private boolean isCopyRequired;
+   private ArtifactImpl original;
 
-   public WritableArtifactProxy(Artifact originalArtifact) {
-      setProxiedObject(originalArtifact);
+   public WritableArtifactProxy(ArtifactImpl originalArtifact) {
+      super(originalArtifact);
    }
 
-   public Artifact getOriginal() {
-      return originalArtifact;
+   public ArtifactImpl getOriginal() {
+      return original;
    }
 
-   void setProxiedObject(Artifact artifact) {
+   @Override
+   public void setProxiedObject(ArtifactImpl artifact) {
       isCopyRequired = true;
-      this.originalArtifact = artifact;
-      this.proxied = originalArtifact;
+      this.original = artifact;
+      super.setProxiedObject(artifact);
    }
 
-   private synchronized Artifact getObjectForWrite() {
+   private synchronized ArtifactImpl getObjectForWrite() throws OseeCoreException {
       if (isCopyRequired) {
-         proxied = originalArtifact.copy();
-         isCopyRequired = false;
+         try {
+            ArtifactImpl copy = getOriginal().clone();
+            super.setProxiedObject(copy);
+            isCopyRequired = false;
+         } catch (CloneNotSupportedException ex) {
+            OseeExceptions.wrapAndThrow(ex);
+         }
       }
-      return proxied;
-   }
-
-   @Override
-   public int getId() {
-      return proxied.getId();
-   }
-
-   @Override
-   public IOseeBranch getBranch() {
-      return proxied.getBranch();
-   }
-
-   @Override
-   public String getHumanReadableId() {
-      return proxied.getHumanReadableId();
-   }
-
-   @Override
-   public int getTransactionId() {
-      return proxied.getTransactionId();
-   }
-
-   @Override
-   public IArtifactType getArtifactType() {
-      return proxied.getArtifactType();
-   }
-
-   @Override
-   public boolean isOfType(IArtifactType... otherTypes) {
-      return proxied.isOfType(otherTypes);
-   }
-
-   @Override
-   public Collection<IAttributeType> getAttributeTypes() throws OseeCoreException {
-      return proxied.getAttributeTypes();
-   }
-
-   @Override
-   public <T> List<ReadableAttribute<T>> getAttributes() throws OseeCoreException {
-      return proxied.getAttributes();
-   }
-
-   @Override
-   public <T> List<ReadableAttribute<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException {
-      return proxied.getAttributes(attributeType);
-   }
-
-   @Override
-   public String getSoleAttributeAsString(IAttributeType attributeType) throws OseeCoreException {
-      return proxied.getSoleAttributeAsString(attributeType);
-   }
-
-   @Override
-   public String getSoleAttributeAsString(IAttributeType attributeType, String defaultValue) throws OseeCoreException {
-      return proxied.getSoleAttributeAsString(attributeType, defaultValue);
-   }
-
-   @Override
-   public long getGammaId() {
-      return proxied.getGammaId();
-   }
-
-   @Override
-   public ModificationType getModificationType() {
-      return proxied.getModificationType();
-   }
-
-   @Override
-   public String getGuid() {
-      return proxied.getGuid();
-   }
-
-   @Override
-   public boolean matches(Identity<?>... identities) {
-      return proxied.matches(identities);
-   }
-
-   @Override
-   public String getName() {
-      return proxied.getName();
+      return getProxiedObject();
    }
 
    @Override
@@ -191,10 +113,14 @@ public class WritableArtifactProxy implements WritableArtifact {
       getObjectForWrite().deleteAttributesWithValue(attributeType, value);
    }
 
-   //// GRAPH Stuff
    @Override
-   public List<WritableArtifact> getChildren() throws OseeCoreException {
-      return null;
+   public <T> List<AttributeWriteable<T>> getWriteableAttributes() throws OseeCoreException {
+      return getObjectForWrite().getWriteableAttributes();
+   }
+
+   @Override
+   public <T> List<AttributeWriteable<T>> getWriteableAttributes(IAttributeType attributeType) throws OseeCoreException {
+      return getObjectForWrite().getWriteableAttributes();
    }
 
 }

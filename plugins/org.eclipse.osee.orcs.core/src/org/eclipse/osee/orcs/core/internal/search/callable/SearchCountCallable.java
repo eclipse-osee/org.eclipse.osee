@@ -23,8 +23,8 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeyword;
 import org.eclipse.osee.orcs.core.internal.OrcsObjectLoader;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.search.QueryCollector;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
 
 /**
@@ -48,16 +48,16 @@ public class SearchCountCallable extends AbstractSearchCallable<Integer> {
                loadLevel);
 
          checkForCancelled();
-         List<ReadableArtifact> artifacts = objectLoader.load(this, queryContext, loadOptions, sessionContext);
+         List<ArtifactReadable> artifacts = objectLoader.load(this, queryContext, loadOptions, sessionContext);
 
-         List<ReadableArtifact> results;
+         List<ArtifactReadable> results;
          if (!queryContext.getPostProcessors().isEmpty()) {
-            results = new ArrayList<ReadableArtifact>();
+            results = new ArrayList<ArtifactReadable>();
             for (QueryPostProcessor processor : queryContext.getPostProcessors()) {
                processor.setItemsToProcess(artifacts);
                checkForCancelled();
-               List<Match<ReadableArtifact, ReadableAttribute<?>>> matches = processor.call();
-               for (Match<ReadableArtifact, ReadableAttribute<?>> match : matches) {
+               List<Match<ArtifactReadable, AttributeReadable<?>>> matches = processor.call();
+               for (Match<ArtifactReadable, AttributeReadable<?>> match : matches) {
                   results.add(match.getItem());
                   checkForCancelled();
                }

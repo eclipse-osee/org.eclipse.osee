@@ -20,9 +20,9 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.orcs.RelationGraph;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
+import org.eclipse.osee.orcs.data.GraphReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -30,15 +30,9 @@ import org.eclipse.osee.orcs.data.ReadableAttribute;
 public class HtmlWriter {
 
    private final UriInfo uriInfo;
-   private final RelationGraph graph;
 
    public HtmlWriter(UriInfo uriInfo) {
-      this(uriInfo, null);
-   }
-
-   public HtmlWriter(UriInfo uriInfo, RelationGraph graph) {
       this.uriInfo = uriInfo;
-      this.graph = graph;
    }
 
    public String toHtml(Collection<? extends Object> objects) throws OseeCoreException {
@@ -48,8 +42,8 @@ public class HtmlWriter {
          if (object instanceof Branch) {
             Branch branch = (Branch) object;
             addTable(builder, toData(branch));
-         } else if (object instanceof ReadableArtifact) {
-            ReadableArtifact artifact = (ReadableArtifact) object;
+         } else if (object instanceof ArtifactReadable) {
+            ArtifactReadable artifact = (ArtifactReadable) object;
             addTable(builder, toData(artifact));
          } else {
             Map<String, Object> unhandled = new LinkedHashMap<String, Object>();
@@ -63,11 +57,10 @@ public class HtmlWriter {
       return builder.toString();
    }
 
-   private Map<String, Object> toData(ReadableArtifact artifact) throws OseeCoreException {
+   private Map<String, Object> toData(ArtifactReadable artifact) throws OseeCoreException {
       Map<String, Object> data = new LinkedHashMap<String, Object>();
       data.put("Name", artifact.getName());
       data.put("Uuid", artifact.getGuid());
-      data.put("Local Id", artifact.getId());
       data.put("Tx Id", artifact.getTransactionId());
       IOseeBranch branch = artifact.getBranch();
 
@@ -81,14 +74,15 @@ public class HtmlWriter {
 
       Collection<IAttributeType> types = artifact.getAttributeTypes();
       for (IAttributeType type : types) {
-         for (ReadableAttribute<?> attr : artifact.getAttributes(type)) {
+         for (AttributeReadable<?> attr : artifact.getAttributes(type)) {
             String value = attr.getDisplayableString();
             data.put(type.getName(), value == null ? "<NULL>" : value);
          }
       }
 
       int count = 0;
-      for (ReadableArtifact art : graph.getChildren(artifact)) {
+      GraphReadable graph = OrcsApplication.getOrcsApi().getGraph(null);
+      for (ArtifactReadable art : graph.getChildren(artifact)) {
          URI uri1;
          if (isAtEndOfPath(uriInfo.getPath(), "artifact")) {
             uri1 = uriInfo.getAbsolutePathBuilder().path("{uuid}").build(art.getGuid());

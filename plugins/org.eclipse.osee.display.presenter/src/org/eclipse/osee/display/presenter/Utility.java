@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.display.api.data.StyledText;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.utility.NameComparator;
 import org.eclipse.osee.orcs.utility.SortOrder;
 
@@ -28,7 +28,7 @@ public final class Utility {
       //
    }
 
-   public static void sort(List<ReadableArtifact> toSort) {
+   public static void sort(List<ArtifactReadable> toSort) {
       Collections.sort(toSort, new NameComparator(SortOrder.ASCENDING));
    }
 

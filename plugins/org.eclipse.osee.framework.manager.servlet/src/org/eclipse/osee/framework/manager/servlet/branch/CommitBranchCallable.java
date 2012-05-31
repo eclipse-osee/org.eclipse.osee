@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -40,7 +40,7 @@ public class CommitBranchCallable extends AbstractBranchCallable<BranchCommitReq
       IOseeBranch source = getBranchOps().getBranchFromId(request.getSourceBranchId());
       IOseeBranch destination = getBranchOps().getBranchFromId(request.getDestinationBranchId());
 
-      ReadableArtifact committer = getArtifactById(request.getUserArtId());
+      ArtifactReadable committer = getArtifactById(request.getUserArtId());
 
       Callable<TransactionRecord> callable = getBranchOps().commitBranch(committer, source, destination);
       TransactionRecord transactionRecord = callAndCheckForCancel(callable);

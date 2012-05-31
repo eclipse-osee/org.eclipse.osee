@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.model.mocks.MockOseeDataAccessor;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
-import org.eclipse.osee.orcs.core.ds.AttributeRow;
+import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.PrimitiveAttributeClassProvider;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -46,7 +46,7 @@ public class AttributeFactoryTest {
       //      cache.cache(type);
       //      NamedIdentity<String> namedIdentity = new NamedIdentity<String>("something", "name");
       //      AttributeContainer container = new AttributeContainerImpl(namedIdentity);
-      AttributeRow row = new AttributeRow();
+      AttributeData row = new AttributeData();
       row.setAttrTypeUuid(CoreAttributeTypes.Name.getGuid());
       row.getArtifactId();
       //      factory.loadAttribute(container, row);

@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 public class ApiTester {
 
@@ -32,13 +32,13 @@ public class ApiTester {
       ApplicationContext context = getContext();
       QueryFactory query = api.getQueryFactory(context);
 
-      ReadableArtifact art1 = query.fromBranch(CoreBranches.COMMON).andNameEquals("WPN_PAGE")//
+      ArtifactReadable art1 = query.fromBranch(CoreBranches.COMMON).andNameEquals("WPN_PAGE")//
       .includeCache()//
       .includeDeleted()//
       .getResults()//
       .getExactlyOne();
 
-      List<ReadableArtifact> arts = query//
+      List<ArtifactReadable> arts = query//
       .fromBranch(CoreBranches.COMMON).andNameEquals("WPN_PAGE")//
       .includeCache()//
       .includeDeleted()//
@@ -46,7 +46,7 @@ public class ApiTester {
       .getList();
 
       /// Chained
-      ReadableArtifact art2 = query//
+      ArtifactReadable art2 = query//
       .fromBranch(CoreBranches.COMMON)//
       .and(CoreAttributeTypes.Active, Operator.EQUAL, "true")//
       .includeDeleted()//
@@ -62,9 +62,9 @@ public class ApiTester {
       builder1.and(CoreAttributeTypes.ParagraphNumber, Operator.LESS_THAN, "1.2.3");
       builder1.and(CoreAttributeTypes.Company, Operator.NOT_EQUAL, "company");
 
-      ResultSet<ReadableArtifact> result = builder1.getResults();
-      ReadableArtifact art3 = result.getExactlyOne();
-      List<ReadableArtifact> items = result.getList();
+      ResultSet<ArtifactReadable> result = builder1.getResults();
+      ArtifactReadable art3 = result.getExactlyOne();
+      List<ArtifactReadable> items = result.getList();
 
       // One liner
       int count1 = query.fromBranch(CoreBranches.COMMON).andNameEquals("WPN_PAGE").includeDeleted(true).getCount();

@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.DatabaseJoinAccessor.JoinItem;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.QueueToAttributeLoader;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagCollector;
 import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger;
@@ -73,7 +73,7 @@ public final class IndexingTaskDatabaseTxCallable extends DatabaseTxCallable<Lon
       getLogger().debug("Tagging: [%s]\n", getTagQueueQueryId());
       long totalTags = -1;
       try {
-         Collection<ReadableAttribute<?>> attributes = new HashSet<ReadableAttribute<?>>();
+         Collection<AttributeReadable<?>> attributes = new HashSet<AttributeReadable<?>>();
          loader.loadAttributes(connection, getTagQueueQueryId(), attributes);
 
          if (!attributes.isEmpty()) {
@@ -93,13 +93,13 @@ public final class IndexingTaskDatabaseTxCallable extends DatabaseTxCallable<Lon
       return totalTags;
    }
 
-   private long createTags(OseeConnection connection, Collection<ReadableAttribute<?>> attributes) throws OseeCoreException {
+   private long createTags(OseeConnection connection, Collection<AttributeReadable<?>> attributes) throws OseeCoreException {
       SearchTagCollector tagCollector = new SearchTagCollector();
 
       Set<Long> processed = new HashSet<Long>();
 
       Map<Long, Collection<Long>> toStore = new HashMap<Long, Collection<Long>>();
-      for (ReadableAttribute<?> attributeData : attributes) {
+      for (AttributeReadable<?> attributeData : attributes) {
          long startItemTime = System.currentTimeMillis();
          Long gamma = attributeData.getGammaId();
          if (processed.add(gamma)) {
@@ -174,11 +174,11 @@ public final class IndexingTaskDatabaseTxCallable extends DatabaseTxCallable<Lon
       return needsStorage;
    }
 
-   public int deleteTags(OseeConnection connection, Collection<ReadableAttribute<?>> attributes) throws OseeCoreException {
+   public int deleteTags(OseeConnection connection, Collection<AttributeReadable<?>> attributes) throws OseeCoreException {
       int numberDeleted = 0;
       if (!attributes.isEmpty()) {
          List<Object[]> datas = new ArrayList<Object[]>();
-         for (ReadableAttribute<?> attribute : attributes) {
+         for (AttributeReadable<?> attribute : attributes) {
             datas.add(new Object[] {attribute.getGammaId()});
          }
          numberDeleted = getDatabaseService().runBatchUpdate(connection, DELETE_SEARCH_TAGS, datas);

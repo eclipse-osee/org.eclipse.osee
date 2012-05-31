@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.data;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.ItemDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleItemsExist;
@@ -58,5 +59,10 @@ public class ResultSetList<T> implements ResultSet<T> {
    @Override
    public Iterable<T> getIterable(int fetchSize) {
       return getList();
+   }
+
+   @Override
+   public Iterator<T> iterator() {
+      return getList().iterator();
    }
 }

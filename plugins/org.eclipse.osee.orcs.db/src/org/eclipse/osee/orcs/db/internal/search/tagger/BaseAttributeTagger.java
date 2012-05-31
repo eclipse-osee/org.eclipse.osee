@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.db.internal.search.util.WordOrderMatcher;
 
 /**
@@ -40,7 +40,7 @@ public abstract class BaseAttributeTagger implements Tagger {
       return matcher;
    }
 
-   protected InputStream getValueAsStream(ReadableAttribute<?> attribute) throws OseeCoreException {
+   protected InputStream getValueAsStream(AttributeReadable<?> attribute) throws OseeCoreException {
       String content = String.valueOf(attribute.getValue());
       InputStream inputStream = null;
       try {

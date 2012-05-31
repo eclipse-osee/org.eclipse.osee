@@ -13,9 +13,9 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.AttributeContainer;
-import org.eclipse.osee.orcs.core.ds.AttributeRow;
+import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.AttributeRowHandler;
+import org.eclipse.osee.orcs.core.internal.artifact.AttributeContainer;
 
 /**
  * @author Roberto E. Escobar
@@ -32,7 +32,7 @@ public class AttributeRowMapper implements AttributeRowHandler {
       this.factory = attributeFactory;
    }
 
-   private AttributeContainer getContainer(AttributeRow current) {
+   private AttributeContainer getContainer(AttributeData current) {
       AttributeContainer container = attributeContainers.get(current.getArtifactId());
       if (container == null) {
          logger.warn("Orphaned attribute detected - [%s]", current);
@@ -41,13 +41,13 @@ public class AttributeRowMapper implements AttributeRowHandler {
    }
 
    @Override
-   public void onRow(AttributeRow row) throws OseeCoreException {
+   public void onRow(AttributeData row) throws OseeCoreException {
       AttributeContainer container = getContainer(row);
       if (container == null) {
          return; // If the artifact is null, it means the attributes are orphaned.
       }
       synchronized (container) {
-         factory.loadAttribute(container, row);
+         factory.createAttribute(container, row);
       }
    }
 

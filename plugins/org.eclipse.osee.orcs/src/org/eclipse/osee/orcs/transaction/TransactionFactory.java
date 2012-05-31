@@ -12,13 +12,13 @@ package org.eclipse.osee.orcs.transaction;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface TransactionFactory {
 
-   OrcsTransaction createTransaction(IOseeBranch branch, ReadableArtifact userArtifact, String comment) throws OseeCoreException;
+   OrcsTransaction createTransaction(IOseeBranch branch, ArtifactReadable userArtifact, String comment) throws OseeCoreException;
 
 }

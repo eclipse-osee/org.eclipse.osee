@@ -1,0 +1,175 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.orcs.core.internal.relation;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import org.eclipse.osee.executor.admin.HasCancellation;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.LoadLevel;
+import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
+import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.orcs.core.ds.LoadOptions;
+import org.eclipse.osee.orcs.core.internal.AbstractProxy;
+import org.eclipse.osee.orcs.core.internal.OrcsObjectLoader;
+import org.eclipse.osee.orcs.core.internal.SessionContext;
+import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.ArtifactWriteable;
+import org.eclipse.osee.orcs.data.GraphWriteable;
+import org.eclipse.osee.orcs.data.RelationsReadable;
+import org.eclipse.osee.orcs.data.RelationsWriteable;
+
+/**
+ * @author Andrew M. Finkbeiner
+ */
+public class RelationGraphImpl implements GraphWriteable, Cloneable {
+
+   private final SessionContext sessionContext;
+   private final OrcsObjectLoader objectLoader;
+   private final ArtifactTypeCache artifactTypeCache;
+   private final RelationTypeCache relationTypeCache;
+
+   public RelationGraphImpl(SessionContext sessionContext, OrcsObjectLoader objectLoader, ArtifactTypeCache artifactTypeCache, RelationTypeCache relationTypeCache) {
+      super();
+      this.sessionContext = sessionContext;
+      this.objectLoader = objectLoader;
+      this.artifactTypeCache = artifactTypeCache;
+      this.relationTypeCache = relationTypeCache;
+   }
+
+   @SuppressWarnings("unchecked")
+   private ArtifactImpl asArtifact(ArtifactReadable readable) {
+      ArtifactImpl toReturn = null;
+      if (readable instanceof AbstractProxy) {
+         AbstractProxy<? extends ArtifactImpl> proxy = (AbstractProxy<? extends ArtifactImpl>) readable;
+         toReturn = proxy.getProxiedObject();
+      }
+      return toReturn;
+   }
+
+   private List<ArtifactReadable> loadRelated(IOseeBranch branch, Collection<Integer> artIds) throws OseeCoreException {
+      LoadOptions loadOptions = new LoadOptions(false, false, LoadLevel.FULL);
+      HasCancellation cancellation = null;
+      return objectLoader.load(cancellation, branch, artIds, loadOptions, sessionContext);
+   }
+
+   private void loadRelatedArtifactIds(ArtifactReadable art, IRelationTypeSide relationTypeSide, Collection<Integer> results) {
+      asArtifact(art).getRelationContainer().getArtifactIds(results, relationTypeSide);
+   }
+
+   @Override
+   public ArtifactReadable getParent(ArtifactReadable art) throws OseeCoreException {
+      return getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent, art).getExactlyOne();
+   }
+
+   @Override
+   public RelationsReadable getChildren(ArtifactReadable art) throws OseeCoreException {
+      return getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child, art);
+   }
+
+   @Override
+   public Collection<IRelationTypeSide> getExistingRelationTypes(ArtifactReadable art) {
+      return asArtifact(art).getRelationContainer().getAvailableRelationTypes();
+   }
+
+   @Override
+   public RelationsReadable getRelatedArtifacts(IRelationTypeSide relationTypeSide, ArtifactReadable art) throws OseeCoreException {
+      List<Integer> artIds = new ArrayList<Integer>();
+      loadRelatedArtifactIds(art, relationTypeSide, artIds);
+      List<ArtifactReadable> toReturn;
+      if (artIds.isEmpty()) {
+         toReturn = Collections.emptyList();
+      } else {
+         toReturn = loadRelated(art.getBranch(), artIds);
+      }
+      return new RelationsReadableImpl(toReturn);
+   }
+
+   @Override
+   public List<RelationType> getValidRelationTypes(ArtifactReadable art) throws OseeCoreException {
+      IArtifactType artifactType = art.getArtifactType();
+      Collection<RelationType> relationTypes = relationTypeCache.getAll();
+      List<RelationType> validRelationTypes = new ArrayList<RelationType>();
+      for (RelationType relationType : relationTypes) {
+         int sideAMax = getRelationSideMax(relationType, artifactType, RelationSide.SIDE_A);
+         int sideBMax = getRelationSideMax(relationType, artifactType, RelationSide.SIDE_B);
+         boolean onSideA = sideBMax > 0;
+         boolean onSideB = sideAMax > 0;
+         if (onSideA || onSideB) {
+            validRelationTypes.add(relationType);
+         }
+      }
+      return validRelationTypes;
+   }
+
+   @Override
+   public int getRelationSideMax(RelationType relationType, IArtifactType artifactType, RelationSide relationSide) throws OseeCoreException {
+      int toReturn = 0;
+      ArtifactType type = artifactTypeCache.get(artifactType);
+      if (relationType.isArtifactTypeAllowed(relationSide, type)) {
+         toReturn = relationType.getMultiplicity().getLimit(relationSide);
+      }
+      return toReturn;
+   }
+
+   @Override
+   public RelationType getFullRelationType(IRelationTypeSide relationTypeSide) throws OseeCoreException {
+      return relationTypeCache.get(relationTypeSide);
+   }
+
+   @Override
+   public ArtifactWriteable getWriteableParent(ArtifactReadable otherArtifact) throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public RelationsWriteable getWriteableChildren(ArtifactReadable otherArtifact) throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public RelationsWriteable getWriteableRelatedArtifacts(IRelationTypeSide relationTypeSide) throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public void createRelation(ArtifactReadable aArtifact, IRelationTypeSide relationTypeSide, ArtifactReadable otherArtifact) throws OseeCoreException {
+   }
+
+   @Override
+   public void createRelation(ArtifactReadable aArtifact, IRelationSorterId sorterId, IRelationTypeSide relationTypeSide, ArtifactReadable otherArtifact) throws OseeCoreException {
+   }
+
+   @Override
+   public void deleteRelation(ArtifactReadable aArtifact, IRelationType relationTypeSide, ArtifactReadable otherArtifact) throws OseeCoreException {
+   }
+
+   @Override
+   public void deleteRelations(ArtifactReadable aArtifact, IRelationTypeSide relationTypeSide) throws OseeCoreException {
+   }
+
+   @Override
+   public RelationGraphImpl clone() throws CloneNotSupportedException {
+      return null;
+   }
+}

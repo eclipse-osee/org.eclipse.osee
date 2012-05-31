@@ -29,8 +29,8 @@ import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.CaseType;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -78,19 +78,20 @@ public class SearchEngineServlet extends SecureOseeHttpServlet {
 
          SearchResponse searchResponse = new SearchResponse();
          if (options.isFindAllLocationsEnabled()) {
-            ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> results = builder.getMatches();
-            for (Match<ReadableArtifact, ReadableAttribute<?>> match : results.getList()) {
-               ReadableArtifact artifact = match.getItem();
+            ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> results = builder.getMatches();
+            for (Match<ArtifactReadable, AttributeReadable<?>> match : results.getList()) {
+               ArtifactReadable artifact = match.getItem();
                int branchId = branchCache.getLocalId(artifact.getBranch());
-               for (ReadableAttribute<?> attribute : match.getElements()) {
-                  searchResponse.add(branchId, artifact.getId(), attribute.getGammaId(), match.getLocation(attribute));
+               for (AttributeReadable<?> attribute : match.getElements()) {
+                  searchResponse.add(branchId, artifact.getLocalId(), attribute.getGammaId(),
+                     match.getLocation(attribute));
                }
             }
          } else {
-            ResultSet<ReadableArtifact> results = builder.getResults();
-            for (ReadableArtifact artifact : results.getList()) {
+            ResultSet<ArtifactReadable> results = builder.getResults();
+            for (ArtifactReadable artifact : results.getList()) {
                int branchId = branchCache.getLocalId(artifact.getBranch());
-               searchResponse.add(branchId, artifact.getId(), -1);
+               searchResponse.add(branchId, artifact.getLocalId(), -1);
             }
          }
 

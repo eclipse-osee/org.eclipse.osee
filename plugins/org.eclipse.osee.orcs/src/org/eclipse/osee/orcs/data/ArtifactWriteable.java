@@ -15,15 +15,22 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.Writeable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  * @author Andrew M. Finkbeiner
  */
-public interface WritableArtifact extends ReadableArtifact {
+public interface ArtifactWriteable extends Writeable, ArtifactReadable {
 
    void setArtifactType(IArtifactType artifactType) throws OseeCoreException;
+
+   // Attributes
+
+   <T> List<AttributeWriteable<T>> getWriteableAttributes() throws OseeCoreException;
+
+   <T> List<AttributeWriteable<T>> getWriteableAttributes(IAttributeType attributeType) throws OseeCoreException;
 
    void setName(String name) throws OseeCoreException;
 
@@ -46,19 +53,5 @@ public interface WritableArtifact extends ReadableArtifact {
    void deleteAttributes(IAttributeType attributeType) throws OseeCoreException;
 
    void deleteAttributesWithValue(IAttributeType attributeType, Object value) throws OseeCoreException;
-
-   //   SUBCLASS getGraph();
-
-   List<WritableArtifact> getChildren() throws OseeCoreException;
-
-   //Relation methods
-   //
-   //   void createRelation(ReadableArtifact aArt, IRelationTypeSide relationTypeSide, ReadableArtifact bArt) throws OseeCoreException;
-   //
-   //   void createRelation(IRelationSorterId sorterId, ReadableArtifact aArt, IRelationTypeSide relationTypeSide, ReadableArtifact bArt) throws OseeCoreException;
-   //
-   //   void deleteRelation(ReadableArtifact aArt, IRelationType relationTypeSide, ReadableArtifact bArt) throws OseeCoreException;
-   //
-   //   void deleteRelations(IRelationTypeSide relationTypeSide) throws OseeCoreException;
 
 }

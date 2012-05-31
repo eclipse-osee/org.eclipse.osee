@@ -15,8 +15,8 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.core.ds.AttributeContainer;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.core.internal.artifact.AttributeContainer;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -66,7 +66,7 @@ public class AttributeContainerImpl implements AttributeContainer {
    }
 
    @Override
-   public <T> List<ReadableAttribute<T>> getAttributes(IAttributeType type) throws OseeCoreException {
+   public <T> List<AttributeReadable<T>> getAttributes(IAttributeType type) throws OseeCoreException {
       ensureAttributesLoaded();
       return collection.getCurrentAttributesFor(type);
    }
@@ -78,7 +78,7 @@ public class AttributeContainerImpl implements AttributeContainer {
    }
 
    @Override
-   public <T> ReadableAttribute<T> getSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
+   public <T> AttributeReadable<T> getSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
       return null;
    }
 
@@ -88,7 +88,8 @@ public class AttributeContainerImpl implements AttributeContainer {
    }
 
    @Override
-   public <T> List<ReadableAttribute<T>> getAttributes() throws OseeCoreException {
+   public <T> List<AttributeReadable<T>> getAttributes() throws OseeCoreException {
       return collection.getAll();
    }
+
 }

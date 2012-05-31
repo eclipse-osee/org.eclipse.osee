@@ -17,8 +17,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.data.ResultSetList;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
 import com.google.common.collect.MapMaker;
 
@@ -26,12 +26,12 @@ import com.google.common.collect.MapMaker;
  * @author Roberto E. Escobar
  */
 public class ArtifactProviderCache {
-   private static final ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> EMPTY_SET =
-      new ResultSetList<Match<ReadableArtifact, ReadableAttribute<?>>>();
-   private final ConcurrentMap<ReadableArtifact, ReadableArtifact> parentCache;
-   private final Set<ReadableArtifact> artifactsWithNoParent = new HashSet<ReadableArtifact>();
+   private static final ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> EMPTY_SET =
+      new ResultSetList<Match<ArtifactReadable, AttributeReadable<?>>>();
+   private final ConcurrentMap<ArtifactReadable, ArtifactReadable> parentCache;
+   private final Set<ArtifactReadable> artifactsWithNoParent = new HashSet<ArtifactReadable>();
 
-   private ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> searchResults;
+   private ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> searchResults;
    private SearchParameters searchParameters;
    private Future<?> future;
 
@@ -43,7 +43,7 @@ public class ArtifactProviderCache {
       clearSearchCache();
    }
 
-   public void cacheParent(ReadableArtifact art, ReadableArtifact parent) {
+   public void cacheParent(ArtifactReadable art, ArtifactReadable parent) {
       if (parent != null) {
          parentCache.put(art, parent);
       } else {
@@ -51,15 +51,15 @@ public class ArtifactProviderCache {
       }
    }
 
-   public boolean isParentCached(ReadableArtifact artifact) {
+   public boolean isParentCached(ArtifactReadable artifact) {
       return parentCache.containsKey(artifact) || artifactsWithNoParent.contains(artifact);
    }
 
-   public ReadableArtifact getParent(ReadableArtifact artifact) {
+   public ArtifactReadable getParent(ArtifactReadable artifact) {
       return parentCache.get(artifact);
    }
 
-   public void cacheResults(ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> searchResults) {
+   public void cacheResults(ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> searchResults) {
       this.searchResults = searchResults;
    }
 
@@ -67,7 +67,7 @@ public class ArtifactProviderCache {
       this.searchParameters = searchParameters;
    }
 
-   public ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> getSearchResults() {
+   public ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> getSearchResults() {
       return searchResults;
    }
 

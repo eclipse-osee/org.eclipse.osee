@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.AttributeRow;
+import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.AttributeRowHandler;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
@@ -83,7 +83,7 @@ public class AttributeLoader {
          }
          while (chStmt.next()) {
             rowCount++;
-            AttributeRow nextAttr = new AttributeRow();
+            AttributeData nextAttr = new AttributeData();
             nextAttr.setArtifactId(chStmt.getInt("art_id"));
             nextAttr.setBranchId(chStmt.getInt("branch_id"));
             nextAttr.setAttrId(chStmt.getInt("attr_id"));

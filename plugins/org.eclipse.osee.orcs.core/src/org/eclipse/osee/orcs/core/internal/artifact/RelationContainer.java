@@ -8,18 +8,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.ds;
+package org.eclipse.osee.orcs.core.internal.artifact;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.core.ds.RelationData;
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public interface RelationContainer {
 
-   void add(RelationRow nextRelation) throws OseeCoreException;
+   void add(RelationData nextRelation) throws OseeCoreException;
 
    Collection<IRelationTypeSide> getAvailableRelationTypes();
 

@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -58,11 +58,11 @@ public class AttributeCollection {
       return filteredList;
    }
 
-   public <T> List<ReadableAttribute<T>> getCurrentAttributesFor(IAttributeType type) throws OseeCoreException {
+   public <T> List<AttributeReadable<T>> getCurrentAttributesFor(IAttributeType type) throws OseeCoreException {
       return Collections.castAll(getAttributesByModificationType(type, ModificationType.getCurrentModTypes()));
    }
 
-   public <T> List<ReadableAttribute<T>> getAll() {
+   public <T> List<AttributeReadable<T>> getAll() {
       return Collections.castAll(attributes.getValues());
    }
 

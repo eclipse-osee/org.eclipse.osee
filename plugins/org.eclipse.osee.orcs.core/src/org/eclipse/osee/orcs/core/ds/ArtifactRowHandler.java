@@ -17,5 +17,5 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface ArtifactRowHandler {
 
-   void onRow(ArtifactRow row) throws OseeCoreException;
+   void onRow(ArtifactData row) throws OseeCoreException;
 }

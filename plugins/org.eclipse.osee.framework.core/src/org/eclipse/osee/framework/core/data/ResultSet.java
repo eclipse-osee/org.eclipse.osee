@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  * @author Ryan D. Brooks
  * @author Roberto E. Escobar
  */
-public interface ResultSet<T> {
+public interface ResultSet<T> extends Iterable<T> {
 
    T getOneOrNull() throws OseeCoreException;
 

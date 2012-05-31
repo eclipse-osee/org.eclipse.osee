@@ -22,14 +22,14 @@ import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.AttributeContainer;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
-import org.eclipse.osee.orcs.data.WritableAttribute;
+import org.eclipse.osee.orcs.core.internal.artifact.AttributeContainer;
+import org.eclipse.osee.orcs.data.AttributeWriteable;
 
 /**
  * @author Ryan D. Brooks
  */
-public abstract class Attribute<T> implements Comparable<Attribute<T>>, WritableAttribute<T> {
+public abstract class Attribute<T> implements Comparable<Attribute<T>>, AttributeWriteable<T> {
    private AttributeType attributeType;
    private Reference<AttributeContainer> containerReference;
    private DataProxy dataProxy;
@@ -78,6 +78,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Writable
       }
    }
 
+   @Override
    public void setValue(T value) throws OseeCoreException {
       // TODO Artifact Checks      
       //      if (attributeType.getName().equals("Name") && !value.equals(getValue())) {
@@ -95,6 +96,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Writable
       }
    }
 
+   @Override
    public boolean setFromString(String value) throws OseeCoreException {
       // TODO Artifact Checks 
       //      if (attributeType.equals(CoreAttributeTypes.Name) && !value.equals(getValue())) {
@@ -116,6 +118,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Writable
 
    protected abstract T convertStringToValue(String value) throws OseeCoreException;
 
+   @Override
    public final void resetToDefaultValue() throws OseeCoreException {
       modificationType = ModificationType.MODIFIED;
       setToDefaultValue();
@@ -127,6 +130,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Writable
       }
    }
 
+   @Override
    public boolean setValueFromInputStream(InputStream value) throws OseeCoreException {
       try {
          boolean response = setFromString(Lib.inputStreamToString(value));
@@ -170,6 +174,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Writable
    /**
     * @return <b>true</b> if this attribute is dirty
     */
+   @Override
    public boolean isDirty() {
       return dirty;
    }
@@ -179,7 +184,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Writable
       this.modificationType = modificationType;
    }
 
-   public void setNotDirty() {
+   public void clearDirty() {
       setDirtyFlag(false);
    }
 
@@ -241,6 +246,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Writable
    /**
     * Deletes the attribute
     */
+   @Override
    public final void delete() {
       markAsChanged(ModificationType.DELETED);
    }
@@ -250,6 +256,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Writable
       return modificationType;
    }
 
+   @Override
    public boolean canDelete() {
       try {
          return getContainer().getCount(getAttributeType()) > getAttributeType().getMinOccurrences();
@@ -298,9 +305,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Writable
       this.attrId = attrId;
    }
 
-   /**
-    * @return the deleted
-    */
+   @Override
    public boolean isDeleted() {
       return modificationType.isDeleted();
    }

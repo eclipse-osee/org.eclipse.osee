@@ -11,8 +11,8 @@
 package org.eclipse.osee.display.api.search;
 
 import java.util.List;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
 
 /**
@@ -20,7 +20,7 @@ import org.eclipse.osee.orcs.search.Match;
  */
 public interface AsyncSearchListener {
 
-   public void onSearchComplete(List<Match<ReadableArtifact, ReadableAttribute<?>>> results);
+   public void onSearchComplete(List<Match<ArtifactReadable, AttributeReadable<?>>> results);
 
    public void onSearchCancelled();
 

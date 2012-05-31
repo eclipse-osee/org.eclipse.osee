@@ -16,5 +16,5 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  * @author Roberto E. Escobar
  */
 public interface AttributeRowHandler {
-   void onRow(AttributeRow row) throws OseeCoreException;
+   void onRow(AttributeData row) throws OseeCoreException;
 }

@@ -24,23 +24,23 @@ import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.ArtifactRowHandler;
-import org.eclipse.osee.orcs.core.ds.AttributeContainer;
 import org.eclipse.osee.orcs.core.ds.AttributeRowHandler;
 import org.eclipse.osee.orcs.core.ds.AttributeRowHandlerFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
-import org.eclipse.osee.orcs.core.ds.RelationContainer;
 import org.eclipse.osee.orcs.core.ds.RelationRowHandler;
 import org.eclipse.osee.orcs.core.ds.RelationRowHandlerFactory;
-import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactCollector;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
+import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactRowMapper;
+import org.eclipse.osee.orcs.core.internal.artifact.AttributeContainer;
+import org.eclipse.osee.orcs.core.internal.artifact.RelationContainer;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeRowMapper;
 import org.eclipse.osee.orcs.core.internal.relation.RelationRowMapper;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -80,15 +80,16 @@ public class OrcsObjectLoader {
       return count;
    }
 
-   public List<ReadableArtifact> load(HasCancellation cancellation, IOseeBranch branch, Collection<Integer> ids, LoadOptions loadOptions, SessionContext sessionContext) throws OseeCoreException {
+   public List<ArtifactReadable> load(HasCancellation cancellation, IOseeBranch branch, Collection<Integer> ids, LoadOptions loadOptions, SessionContext sessionContext) throws OseeCoreException {
       long startTime = 0;
       if (logger.isTraceEnabled()) {
          startTime = System.currentTimeMillis();
       }
 
-      List<ReadableArtifact> artifacts = new ArrayList<ReadableArtifact>();
+      List<ArtifactReadable> artifacts = new ArrayList<ArtifactReadable>();
 
-      ArtifactCollectorImpl artifactHandler = new ArtifactCollectorImpl(logger, attributeFactory, artifacts);
+      ArtifactCollectorImpl artifactHandler =
+         new ArtifactCollectorImpl(logger, artifactFactory, attributeFactory, artifacts);
 
       ArtifactRowHandler artifactRowHandler =
          new ArtifactRowMapper(sessionContext, branchCache, artifactTypeCache, artifactFactory, artifactHandler);
@@ -103,15 +104,16 @@ public class OrcsObjectLoader {
       return artifacts;
    }
 
-   public List<ReadableArtifact> load(HasCancellation cancellation, QueryContext queryContext, LoadOptions loadOptions, SessionContext sessionContext) throws OseeCoreException {
+   public List<ArtifactReadable> load(HasCancellation cancellation, QueryContext queryContext, LoadOptions loadOptions, SessionContext sessionContext) throws OseeCoreException {
       long startTime = 0;
       if (logger.isTraceEnabled()) {
          startTime = System.currentTimeMillis();
       }
 
-      List<ReadableArtifact> artifacts = new ArrayList<ReadableArtifact>();
+      List<ArtifactReadable> artifacts = new ArrayList<ArtifactReadable>();
 
-      ArtifactCollectorImpl artifactHandler = new ArtifactCollectorImpl(logger, attributeFactory, artifacts);
+      ArtifactCollectorImpl artifactHandler =
+         new ArtifactCollectorImpl(logger, artifactFactory, attributeFactory, artifacts);
 
       ArtifactRowHandler artifactRowHandler =
          new ArtifactRowMapper(sessionContext, branchCache, artifactTypeCache, artifactFactory, artifactHandler);
@@ -130,13 +132,15 @@ public class OrcsObjectLoader {
       private final Map<Integer, RelationContainer> relationContainers = new HashMap<Integer, RelationContainer>();;
       private final Map<Integer, AttributeContainer> attributeContainers = new HashMap<Integer, AttributeContainer>();
 
-      private final List<ReadableArtifact> artifacts;
+      private final List<ArtifactReadable> artifacts;
 
       private final Log logger;
       private final AttributeFactory attributeFactory;
+      private final ArtifactFactory artifactFactory;
 
-      public ArtifactCollectorImpl(Log logger, AttributeFactory attributeFactory, List<ReadableArtifact> artifacts) {
+      public ArtifactCollectorImpl(Log logger, ArtifactFactory artifactFactory, AttributeFactory attributeFactory, List<ArtifactReadable> artifacts) {
          this.logger = logger;
+         this.artifactFactory = artifactFactory;
          this.attributeFactory = attributeFactory;
          this.artifacts = artifacts;
       }
@@ -152,12 +156,16 @@ public class OrcsObjectLoader {
       }
 
       @Override
-      public void onArtifact(ReadableArtifact artifact, boolean isArtifactAlreadyLoaded) {
+      public void onArtifact(ArtifactReadable artifact, LoadSourceType loadSourceType) {
          artifacts.add(artifact);
-         relationContainers.put(artifact.getId(), ((Artifact) artifact).getRelationContainer());
-         attributeContainers.put(artifact.getId(), ((Artifact) artifact).getAttributeContainer());
-      }
 
+         ArtifactImpl artifactImpl = artifactFactory.asArtifactImpl(artifact);
+         AttributeContainer attrContainer = artifactImpl.getAttributeContainer();
+         RelationContainer relContainer = artifactImpl.getRelationContainer();
+
+         attributeContainers.put(artifact.getLocalId(), attrContainer);
+         relationContainers.put(artifact.getLocalId(), relContainer);
+      }
    }
 
 }

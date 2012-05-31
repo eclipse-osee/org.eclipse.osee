@@ -1,0 +1,38 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.orcs.data;
+
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.Readable;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+
+/**
+ * @author Roberto E. Escobar
+ * @author Andrew M. Finkbeiner
+ */
+public interface AttributeReadable<T> extends Readable, HasVersion {
+
+   int getId();
+
+   IAttributeType getAttributeType();
+
+   boolean isOfType(IAttributeType otherAttributeType);
+
+   T getValue() throws OseeCoreException;
+
+   String getDisplayableString() throws OseeCoreException;
+
+   boolean isDeleted();
+
+   @Override
+   String toString();
+
+}

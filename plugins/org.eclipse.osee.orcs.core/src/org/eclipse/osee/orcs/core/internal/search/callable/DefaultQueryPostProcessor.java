@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
 
 public class DefaultQueryPostProcessor extends QueryPostProcessor {
@@ -29,15 +29,15 @@ public class DefaultQueryPostProcessor extends QueryPostProcessor {
    }
 
    @Override
-   public List<Match<ReadableArtifact, ReadableAttribute<?>>> innerCall() throws Exception {
+   public List<Match<ArtifactReadable, AttributeReadable<?>>> innerCall() throws Exception {
       Conditions.checkNotNull(getItemsToProcess(), "Query first pass results");
 
-      List<Match<ReadableArtifact, ReadableAttribute<?>>> results =
-         new ArrayList<Match<ReadableArtifact, ReadableAttribute<?>>>();
+      List<Match<ArtifactReadable, AttributeReadable<?>>> results =
+         new ArrayList<Match<ArtifactReadable, AttributeReadable<?>>>();
 
-      for (final ReadableArtifact art : getItemsToProcess()) {
+      for (final ArtifactReadable art : getItemsToProcess()) {
          checkForCancelled();
-         results.add(new Match<ReadableArtifact, ReadableAttribute<?>>() {
+         results.add(new Match<ArtifactReadable, AttributeReadable<?>>() {
 
             @Override
             public boolean hasLocationData() {
@@ -45,17 +45,17 @@ public class DefaultQueryPostProcessor extends QueryPostProcessor {
             }
 
             @Override
-            public ReadableArtifact getItem() {
+            public ArtifactReadable getItem() {
                return art;
             }
 
             @Override
-            public Collection<ReadableAttribute<?>> getElements() {
+            public Collection<AttributeReadable<?>> getElements() {
                return Collections.emptyList();
             }
 
             @Override
-            public List<MatchLocation> getLocation(ReadableAttribute<?> element) {
+            public List<MatchLocation> getLocation(AttributeReadable<?> element) {
                return Collections.emptyList();
             }
          });

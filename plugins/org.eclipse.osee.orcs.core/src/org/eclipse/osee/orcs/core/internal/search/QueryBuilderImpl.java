@@ -31,8 +31,8 @@ import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.CaseType;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.Operator;
@@ -290,8 +290,8 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public ResultSet<ReadableArtifact> getResults() throws OseeCoreException {
-      ResultSet<ReadableArtifact> result = null;
+   public ResultSet<ArtifactReadable> getResults() throws OseeCoreException {
+      ResultSet<ArtifactReadable> result = null;
       try {
          result = createSearch().call();
       } catch (Exception ex) {
@@ -301,8 +301,8 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> getMatches() throws OseeCoreException {
-      ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> result = null;
+   public ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> getMatches() throws OseeCoreException {
+      ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> result = null;
       try {
          result = createSearchWithMatches().call();
       } catch (Exception ex) {
@@ -328,12 +328,12 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public CancellableCallable<ResultSet<ReadableArtifact>> createSearch() {
+   public CancellableCallable<ResultSet<ArtifactReadable>> createSearch() {
       return queryFactory.createSearch(sessionContext, getQueryData().clone());
    }
 
    @Override
-   public CancellableCallable<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> createSearchWithMatches() {
+   public CancellableCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> createSearchWithMatches() {
       return queryFactory.createSearchWithMatches(sessionContext, getQueryData().clone());
    }
 }

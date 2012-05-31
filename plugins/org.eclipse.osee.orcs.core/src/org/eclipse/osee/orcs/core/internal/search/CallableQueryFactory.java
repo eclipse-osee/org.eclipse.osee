@@ -21,8 +21,8 @@ import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.search.callable.SearchCallable;
 import org.eclipse.osee.orcs.core.internal.search.callable.SearchCountCallable;
 import org.eclipse.osee.orcs.core.internal.search.callable.SearchMatchesCallable;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
 
 /**
@@ -48,11 +48,11 @@ public class CallableQueryFactory {
          queryData);
    }
 
-   public CancellableCallable<ResultSet<ReadableArtifact>> createSearch(SessionContext sessionContext, QueryData queryData) {
+   public CancellableCallable<ResultSet<ArtifactReadable>> createSearch(SessionContext sessionContext, QueryData queryData) {
       return new SearchCallable(logger, queryEngine, collector, objectLoader, sessionContext, LoadLevel.FULL, queryData);
    }
 
-   public CancellableCallable<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> createSearchWithMatches(SessionContext sessionContext, QueryData queryData) {
+   public CancellableCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> createSearchWithMatches(SessionContext sessionContext, QueryData queryData) {
       return new SearchMatchesCallable(logger, queryEngine, collector, objectLoader, sessionContext, LoadLevel.FULL,
          queryData);
    }

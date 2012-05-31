@@ -19,8 +19,8 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
  * @author Ryan D. Brooks
@@ -161,14 +161,14 @@ public interface QueryBuilder {
     * 
     * @return artifact search results
     */
-   public ResultSet<ReadableArtifact> getResults() throws OseeCoreException;
+   public ResultSet<ArtifactReadable> getResults() throws OseeCoreException;
 
    /**
     * Executes query
     * 
     * @return artifact search results with match locations
     */
-   public ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> getMatches() throws OseeCoreException;
+   public ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> getMatches() throws OseeCoreException;
 
    /**
     * Count search results
@@ -185,13 +185,13 @@ public interface QueryBuilder {
     * 
     * @return artifact search results
     */
-   public CancellableCallable<ResultSet<ReadableArtifact>> createSearch() throws OseeCoreException;
+   public CancellableCallable<ResultSet<ArtifactReadable>> createSearch() throws OseeCoreException;
 
    /**
     * Schedule query and find matching locations
     * 
     * @return artifact search results with match locations
     */
-   public CancellableCallable<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> createSearchWithMatches() throws OseeCoreException;
+   public CancellableCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> createSearchWithMatches() throws OseeCoreException;
 
 }

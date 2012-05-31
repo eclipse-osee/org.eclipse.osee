@@ -12,14 +12,14 @@ package org.eclipse.osee.orcs.utility;
 
 import java.util.Comparator;
 import org.eclipse.osee.framework.core.data.Named;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
 
 /**
  * @author Roberto E. Escobar
  */
-public class MatchComparator implements Comparator<Match<ReadableArtifact, ReadableAttribute<?>>> {
+public class MatchComparator implements Comparator<Match<ArtifactReadable, AttributeReadable<?>>> {
 
    private final NameComparator comparator;
 
@@ -27,12 +27,12 @@ public class MatchComparator implements Comparator<Match<ReadableArtifact, Reada
       comparator = new NameComparator(orderType);
    }
 
-   private Named getNamed(Match<ReadableArtifact, ReadableAttribute<?>> match) {
+   private Named getNamed(Match<ArtifactReadable, AttributeReadable<?>> match) {
       return match != null ? match.getItem() : null;
    }
 
    @Override
-   public int compare(Match<ReadableArtifact, ReadableAttribute<?>> o1, Match<ReadableArtifact, ReadableAttribute<?>> o2) {
+   public int compare(Match<ArtifactReadable, AttributeReadable<?>> o1, Match<ArtifactReadable, AttributeReadable<?>> o2) {
       return comparator.compare(getNamed(o1), getNamed(o2));
    }
 }

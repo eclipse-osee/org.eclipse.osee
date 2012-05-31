@@ -30,16 +30,17 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
+import org.eclipse.osee.orcs.data.RelationsReadable;
 
 /**
  * @author John R. Misinco
  */
-public class MockArtifact implements ReadableArtifact {
+public class MockArtifact implements ArtifactReadable {
 
-   private final Map<IRelationTypeSide, List<ReadableArtifact>> relationMap =
-      new HashMap<IRelationTypeSide, List<ReadableArtifact>>();
+   private final Map<IRelationTypeSide, List<ArtifactReadable>> relationMap =
+      new HashMap<IRelationTypeSide, List<ArtifactReadable>>();
    private final List<RelationType> validRelationTypes = new LinkedList<RelationType>();
 
    private final HashCollection<IAttributeType, String> attributes = new HashCollection<IAttributeType, String>();
@@ -47,7 +48,7 @@ public class MockArtifact implements ReadableArtifact {
    private final String name, guid;
    private final IArtifactType type;
    private final IOseeBranch branch;
-   private ReadableArtifact parent;
+   private ArtifactReadable parent;
 
    public MockArtifact(String guid, String name) {
       this(guid, name, CoreArtifactTypes.Artifact, CoreBranches.COMMON);
@@ -61,7 +62,7 @@ public class MockArtifact implements ReadableArtifact {
       addAttribute(CoreAttributeTypes.Name, name);
    }
 
-   public void setParent(ReadableArtifact parent) {
+   public void setParent(ArtifactReadable parent) {
       this.parent = parent;
    }
 
@@ -79,15 +80,19 @@ public class MockArtifact implements ReadableArtifact {
       }
    }
 
-   @SuppressWarnings("unchecked")
-   public Collection<ReadableArtifact> getRelatedArtifacts(IRelationTypeSide side) {
-      return (Collection<ReadableArtifact>) (relationMap.containsKey(side) ? relationMap.get(side) : Collections.emptyList());
+   public RelationsReadable getRelatedArtifacts(IRelationTypeSide side) {
+      List<ArtifactReadable> data = relationMap.get(side);
+      if (data == null) {
+         data = Collections.emptyList();
+      }
+      MockRelationsReadable toReturn = new MockRelationsReadable(data);
+      return toReturn;
    }
 
-   public void addRelation(IRelationTypeSide relation, ReadableArtifact artifact) {
-      List<ReadableArtifact> artList = relationMap.get(relation);
+   public void addRelation(IRelationTypeSide relation, ArtifactReadable artifact) {
+      List<ArtifactReadable> artList = relationMap.get(relation);
       if (artList == null) {
-         artList = new LinkedList<ReadableArtifact>();
+         artList = new LinkedList<ArtifactReadable>();
          relationMap.put(relation, artList);
       }
       artList.add(artifact);
@@ -98,17 +103,7 @@ public class MockArtifact implements ReadableArtifact {
    }
 
    @Override
-   public long getGammaId() {
-      return 0;
-   }
-
-   @Override
-   public ModificationType getModificationType() {
-      return null;
-   }
-
-   @Override
-   public int getId() {
+   public int getLocalId() {
       return 0;
    }
 
@@ -139,13 +134,13 @@ public class MockArtifact implements ReadableArtifact {
 
    @SuppressWarnings("unchecked")
    @Override
-   public <T> List<ReadableAttribute<T>> getAttributes(IAttributeType attributeType) {
+   public <T> List<AttributeReadable<T>> getAttributes(IAttributeType attributeType) {
       Collection<String> values = attributes.getValues(attributeType);
-      List<ReadableAttribute<T>> toReturn = null;
+      List<AttributeReadable<T>> toReturn = null;
       if (values != null && !values.isEmpty()) {
-         toReturn = new LinkedList<ReadableAttribute<T>>();
+         toReturn = new LinkedList<AttributeReadable<T>>();
          for (String value : values) {
-            ReadableAttribute<T> attr = (ReadableAttribute<T>) new MockAttribute(attributeType, value);
+            AttributeReadable<T> attr = (AttributeReadable<T>) new MockAttribute(attributeType, value);
             toReturn.add(attr);
          }
       } else {
@@ -176,11 +171,11 @@ public class MockArtifact implements ReadableArtifact {
 
    @SuppressWarnings("unchecked")
    @Override
-   public <T> List<ReadableAttribute<T>> getAttributes() {
-      List<ReadableAttribute<T>> toReturn = new ArrayList<ReadableAttribute<T>>();
+   public <T> List<AttributeReadable<T>> getAttributes() {
+      List<AttributeReadable<T>> toReturn = new ArrayList<AttributeReadable<T>>();
       for (Entry<IAttributeType, Collection<String>> entry : attributes.entrySet()) {
          for (String value : entry.getValue()) {
-            toReturn.add((ReadableAttribute<T>) new MockAttribute(entry.getKey(), value));
+            toReturn.add((AttributeReadable<T>) new MockAttribute(entry.getKey(), value));
          }
       }
       return toReturn;

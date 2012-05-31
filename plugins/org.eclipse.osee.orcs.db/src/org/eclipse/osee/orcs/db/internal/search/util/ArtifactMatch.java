@@ -15,19 +15,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactMatch implements Match<ReadableArtifact, ReadableAttribute<?>> {
+public class ArtifactMatch implements Match<ArtifactReadable, AttributeReadable<?>> {
 
-   private final Map<ReadableAttribute<?>, List<MatchLocation>> matchedAttributes;
-   private final ReadableArtifact item;
+   private final Map<AttributeReadable<?>, List<MatchLocation>> matchedAttributes;
+   private final ArtifactReadable item;
 
-   public ArtifactMatch(ReadableArtifact item, Map<ReadableAttribute<?>, List<MatchLocation>> matchedAttributes) {
+   public ArtifactMatch(ArtifactReadable item, Map<AttributeReadable<?>, List<MatchLocation>> matchedAttributes) {
       super();
       this.item = item;
       this.matchedAttributes = matchedAttributes;
@@ -39,17 +39,17 @@ public class ArtifactMatch implements Match<ReadableArtifact, ReadableAttribute<
    }
 
    @Override
-   public ReadableArtifact getItem() {
+   public ArtifactReadable getItem() {
       return item;
    }
 
    @Override
-   public Collection<ReadableAttribute<?>> getElements() {
+   public Collection<AttributeReadable<?>> getElements() {
       return matchedAttributes.keySet();
    }
 
    @Override
-   public List<MatchLocation> getLocation(ReadableAttribute<?> element) {
+   public List<MatchLocation> getLocation(AttributeReadable<?> element) {
       List<MatchLocation> toReturn = matchedAttributes.get(element);
       return toReturn != null ? toReturn : Collections.<MatchLocation> emptyList();
    }

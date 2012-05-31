@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.RelationGraph;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.GraphReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
@@ -32,14 +32,14 @@ import org.eclipse.osee.orcs.search.QueryFactory;
  */
 public class AtsArtifactProviderImpl extends ArtifactProviderImpl implements AtsArtifactProvider {
 
-   public AtsArtifactProviderImpl(Log logger, ExecutorAdmin executorAdmin, QueryFactory queryFactory, RelationGraph graph) {
+   public AtsArtifactProviderImpl(Log logger, ExecutorAdmin executorAdmin, QueryFactory queryFactory, GraphReadable graph) {
       super(logger, executorAdmin, queryFactory, graph);
    }
 
    @Override
-   public List<ReadableArtifact> getPrograms() throws OseeCoreException {
-      List<ReadableArtifact> programs = null;
-      ReadableArtifact webProgramsArtifact =
+   public List<ArtifactReadable> getPrograms() throws OseeCoreException {
+      List<ArtifactReadable> programs = null;
+      ArtifactReadable webProgramsArtifact =
          getArtifactByArtifactToken(CoreBranches.COMMON, AtsArtifactToken.WebPrograms);
       if (webProgramsArtifact != null) {
          programs = getRelatedArtifacts(webProgramsArtifact, CoreRelationTypes.Universal_Grouping__Members);
@@ -49,19 +49,19 @@ public class AtsArtifactProviderImpl extends ArtifactProviderImpl implements Ats
    }
 
    @Override
-   public List<ReadableArtifact> getBuilds(String programGuid) throws OseeCoreException {
-      List<ReadableArtifact> relatedArtifacts = null;
-      ReadableArtifact teamDef = null;
-      ReadableArtifact programArtifact = getArtifactByGuid(CoreBranches.COMMON, programGuid);
+   public List<ArtifactReadable> getBuilds(String programGuid) throws OseeCoreException {
+      List<ArtifactReadable> relatedArtifacts = null;
+      ArtifactReadable teamDef = null;
+      ArtifactReadable programArtifact = getArtifactByGuid(CoreBranches.COMMON, programGuid);
       if (programArtifact != null) {
          teamDef = getRelatedArtifact(programArtifact, CoreRelationTypes.SupportingInfo_SupportingInfo);
       }
       if (teamDef != null) {
          relatedArtifacts = getRelatedArtifacts(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version);
       }
-      Iterator<ReadableArtifact> iterator = relatedArtifacts.iterator();
+      Iterator<ArtifactReadable> iterator = relatedArtifacts.iterator();
       while (iterator.hasNext()) {
-         ReadableArtifact art = iterator.next();
+         ArtifactReadable art = iterator.next();
          String baselineBranchGuid = art.getSoleAttributeAsString(AtsAttributeTypes.BaselineBranchGuid, null);
          if (baselineBranchGuid == null) {
             iterator.remove();
@@ -74,7 +74,7 @@ public class AtsArtifactProviderImpl extends ArtifactProviderImpl implements Ats
    @Override
    public String getBaselineBranchGuid(String buildArtGuid) throws OseeCoreException {
       String guid = null;
-      ReadableArtifact buildArtifact = getArtifactByGuid(CoreBranches.COMMON, buildArtGuid);
+      ArtifactReadable buildArtifact = getArtifactByGuid(CoreBranches.COMMON, buildArtGuid);
       if (buildArtifact != null) {
          guid = buildArtifact.getSoleAttributeAsString(AtsAttributeTypes.BaselineBranchGuid, null);
       }

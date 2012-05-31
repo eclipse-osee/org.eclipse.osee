@@ -26,14 +26,14 @@ import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
 import org.eclipse.osee.orcs.core.internal.OrcsObjectLoader;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.search.QueryCollector;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
 
 /**
  * @author Roberto E. Escobar
  */
-public class SearchMatchesCallable extends AbstractSearchCallable<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> {
+public class SearchMatchesCallable extends AbstractSearchCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> {
 
    private Collection<QueryPostProcessor> processors;
 
@@ -42,15 +42,15 @@ public class SearchMatchesCallable extends AbstractSearchCallable<ResultSet<Matc
    }
 
    @Override
-   protected ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> innerCall() throws Exception {
+   protected ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> innerCall() throws Exception {
       QueryContext queryContext = queryEngine.create(sessionContext.getSessionId(), queryData);
       LoadOptions loadOptions =
          new LoadOptions(queryData.getOptions().isHistorical(), queryData.getOptions().areDeletedIncluded(), loadLevel);
       checkForCancelled();
-      List<ReadableArtifact> artifacts = objectLoader.load(this, queryContext, loadOptions, sessionContext);
+      List<ArtifactReadable> artifacts = objectLoader.load(this, queryContext, loadOptions, sessionContext);
 
-      List<Match<ReadableArtifact, ReadableAttribute<?>>> results =
-         new ArrayList<Match<ReadableArtifact, ReadableAttribute<?>>>();
+      List<Match<ArtifactReadable, AttributeReadable<?>>> results =
+         new ArrayList<Match<ArtifactReadable, AttributeReadable<?>>>();
 
       Collection<QueryPostProcessor> processors = queryContext.getPostProcessors();
       if (processors.isEmpty()) {
@@ -61,7 +61,7 @@ public class SearchMatchesCallable extends AbstractSearchCallable<ResultSet<Matc
          checkForCancelled();
          results.addAll(processor.call());
       }
-      return new ResultSetList<Match<ReadableArtifact, ReadableAttribute<?>>>(results);
+      return new ResultSetList<Match<ArtifactReadable, AttributeReadable<?>>>(results);
    }
 
    @Override
@@ -75,7 +75,7 @@ public class SearchMatchesCallable extends AbstractSearchCallable<ResultSet<Matc
    }
 
    @Override
-   protected int getCount(ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> results) throws Exception {
+   protected int getCount(ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> results) throws Exception {
       return results.getList().size();
    }
 }

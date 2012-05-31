@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.orcs.core.ds.AttributeRow;
+import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.AttributeRowHandler;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
@@ -66,7 +66,7 @@ public class AttributeLoaderTest {
       IOseeDatabaseService oseeDbService = OsgiUtil.getService(IOseeDatabaseService.class);
       IdentityService identityService = OsgiUtil.getService(IdentityService.class);
 
-      final List<AttributeRow> actuals = new ArrayList<AttributeRow>();
+      final List<AttributeData> actuals = new ArrayList<AttributeData>();
 
       ProxyDataFactory factory = new ProxyDataFactory() {
 
@@ -88,7 +88,7 @@ public class AttributeLoaderTest {
 
          loader.loadFromQueryId(new AttributeRowHandler() {
             @Override
-            public void onRow(AttributeRow row) {
+            public void onRow(AttributeData row) {
                actuals.add(row);
             }
          }, new LoadOptions(false, DeletionFlag.EXCLUDE_DELETED, LoadLevel.ALL_CURRENT), 10, queryId);
@@ -97,7 +97,7 @@ public class AttributeLoaderTest {
          connection.close();
       }
 
-      final List<AttributeRow> expected = new ArrayList<AttributeRow>();
+      final List<AttributeData> expected = new ArrayList<AttributeData>();
       //@formatter:off
       expected.add(getAttributeRow(null, 6, 2, 12, 21, ModificationType.NEW, identityService.getUniversalId(130), false, -1, 5));
       expected.add(getAttributeRow(null, 6, 2, 13, 24, ModificationType.NEW, identityService.getUniversalId(114), false, -1, 5));
@@ -118,8 +118,8 @@ public class AttributeLoaderTest {
       //         !actuals.contains(notExpected));
    }
 
-   private AttributeRow getAttributeRow(DataProxy proxy, int artId, int branchId, int attrId, int gammaId, ModificationType modType, long attrType, boolean historical, int stripeId, int transactionId) {
-      AttributeRow row = new AttributeRow();
+   private AttributeData getAttributeRow(DataProxy proxy, int artId, int branchId, int attrId, int gammaId, ModificationType modType, long attrType, boolean historical, int stripeId, int transactionId) {
+      AttributeData row = new AttributeData();
       row.setArtifactId(artId);
       row.setBranchId(branchId);
       row.setAttrId(attrId);

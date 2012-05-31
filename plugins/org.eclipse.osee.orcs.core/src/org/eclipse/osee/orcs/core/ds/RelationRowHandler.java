@@ -17,6 +17,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface RelationRowHandler {
 
-   void onRow(RelationRow nextRelation) throws OseeCoreException;
+   void onRow(RelationData nextRelation) throws OseeCoreException;
 
 }

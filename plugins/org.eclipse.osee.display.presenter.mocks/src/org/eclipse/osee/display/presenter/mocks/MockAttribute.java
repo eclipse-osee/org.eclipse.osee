@@ -12,12 +12,12 @@ package org.eclipse.osee.display.presenter.mocks;
 
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
  * @author John R. Misinco
  */
-public class MockAttribute implements ReadableAttribute<String> {
+public class MockAttribute implements AttributeReadable<String> {
 
    private final IAttributeType attrType;
    private final String value;
@@ -60,5 +60,10 @@ public class MockAttribute implements ReadableAttribute<String> {
    @Override
    public String getDisplayableString() {
       return value;
+   }
+
+   @Override
+   public boolean isDeleted() {
+      return false;
    }
 }

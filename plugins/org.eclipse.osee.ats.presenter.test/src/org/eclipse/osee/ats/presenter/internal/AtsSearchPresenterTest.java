@@ -29,8 +29,8 @@ import org.eclipse.osee.display.presenter.mocks.MockSearchResultsListComponent;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.UrlQuery;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
 import org.junit.Test;
 
@@ -74,8 +74,8 @@ public class AtsSearchPresenterTest {
    public void testInitSearchResults() throws UnsupportedEncodingException {
       MockAtsArtifactProvider provider = new MockAtsArtifactProvider();
       MockDisplayOptionsComponent optionsComp = new MockDisplayOptionsComponent();
-      List<Match<ReadableArtifact, ReadableAttribute<?>>> resultList =
-         new ArrayList<Match<ReadableArtifact, ReadableAttribute<?>>>();
+      List<Match<ArtifactReadable, AttributeReadable<?>>> resultList =
+         new ArrayList<Match<ArtifactReadable, AttributeReadable<?>>>();
       MockArtifact art = new MockArtifact("guid1", "matchArt");
       MockAttribute attr = new MockAttribute(CoreAttributeTypes.Name, "matchArt");
       Match match = new MockMatch(art, attr);

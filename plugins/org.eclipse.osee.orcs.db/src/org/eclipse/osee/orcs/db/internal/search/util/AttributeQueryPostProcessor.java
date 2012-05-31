@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.db.internal.search.util;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
 
@@ -30,7 +30,7 @@ public class AttributeQueryPostProcessor extends AbstractQueryPostProcessor {
    }
 
    @Override
-   protected Tagger getTagger(ReadableAttribute<?> attribute) throws OseeCoreException {
+   protected Tagger getTagger(AttributeReadable<?> attribute) throws OseeCoreException {
       return engine.getDefaultTagger();
    }
 }

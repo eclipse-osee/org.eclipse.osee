@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.core.mocks;
 
 import org.eclipse.osee.orcs.core.internal.SessionContext;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -19,12 +19,12 @@ import org.eclipse.osee.orcs.data.ReadableArtifact;
 public class MockSessionContext implements SessionContext {
 
    @Override
-   public <T extends ReadableArtifact> T getHistorical(int artId, int stripeId) {
+   public <T extends ArtifactReadable> T getHistorical(int artId, int stripeId) {
       return null;
    }
 
    @Override
-   public <T extends ReadableArtifact> T getActive(int artId, int branchId) {
+   public <T extends ArtifactReadable> T getActive(int artId, int branchId) {
       return null;
    }
 

@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs;
 
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.orcs.data.GraphReadable;
 import org.eclipse.osee.orcs.search.QueryFacade;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
@@ -28,7 +29,7 @@ public interface OrcsApi {
 
    QueryFacade getQueryFacade(ApplicationContext context);
 
-   RelationGraph getGraph(ApplicationContext context);
+   GraphReadable getGraph(ApplicationContext context);
 
    OrcsBranch getBranchOps(ApplicationContext context);
 

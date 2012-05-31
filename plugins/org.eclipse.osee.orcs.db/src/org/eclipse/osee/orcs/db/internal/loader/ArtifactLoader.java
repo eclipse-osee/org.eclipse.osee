@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.ArtifactRow;
+import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactRowHandler;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
@@ -87,7 +87,7 @@ public class ArtifactLoader {
                // assumption: SQL is returning unwanted deleted artifacts only in the historical case
                if (!options.isHistorical() || options.areDeletedIncluded() || modType != ModificationType.DELETED) {
 
-                  ArtifactRow row = new ArtifactRow();
+                  ArtifactData row = new ArtifactData();
 
                   row.setArtifactId(artifactId);
                   row.setBranchId(branchId);

@@ -10,11 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.transaction;
 
+import java.util.List;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.RelationGraph;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.WritableArtifact;
+import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.ArtifactWriteable;
+import org.eclipse.osee.orcs.data.AttributeWriteable;
+import org.eclipse.osee.orcs.data.GraphReadable;
+import org.eclipse.osee.orcs.data.GraphWriteable;
 
 public class Tester {
 
@@ -22,20 +26,34 @@ public class Tester {
       return null;
    }
 
+   OrcsApi getApi() {
+      return null;
+   }
+
    public static void main(String[] args) throws Exception {
       Tester x = new Tester();
 
-      ReadableArtifact artifact1 = null;
-      ReadableArtifact artifact2 = null;
-      RelationGraph graph = x.getGrpah();
+      ArtifactReadable artifact1 = null;
+      ArtifactReadable artifact2 = null;
+
+      x.modifyOneArtifact(artifact1);
+
+      GraphReadable readableGraph = x.getApi().getGraph(null);
 
       OrcsTransaction tx = x.getTransaction(); // branch and user and comment
 
-      WritableArtifact wArt1 = tx.asWritable(artifact1);
-      WritableArtifact wArt2 = tx.asWritable(artifact2);
+      GraphWriteable wGraph = tx.asWriteableGraph(readableGraph);
 
-      for (WritableArtifact child : wArt1.getChildren()) {
+      ArtifactWriteable wArt1 = tx.asWritable(artifact1);
+      ArtifactWriteable wArt2 = tx.asWritable(artifact2);
+
+      for (ArtifactWriteable child : wGraph.getWriteableChildren(wArt1)) {
          child.setName("George");
+      }
+
+      List<AttributeWriteable<String>> attributes = wArt1.getWriteableAttributes();
+      for (AttributeWriteable<String> attribute : attributes) {
+         attribute.setValue("Hello");
       }
 
       wArt1.setName("Name");
@@ -44,21 +62,11 @@ public class Tester {
       wArt2.setName("Shawn");
 
       tx.commit();
-
-      //      tx.relate(relationType, aArt, bArt);
-
-      //      tx.createCommit().call();
-
    }
 
-   private RelationGraph getGrpah() {
-      return null;
-   }
-
-   private void modifyOneArtifact(ReadableArtifact artifact1) throws OseeCoreException {
+   private void modifyOneArtifact(ArtifactReadable artifact1) throws OseeCoreException {
       OrcsTransaction tx = getTransaction(); // branch and user and comment
       tx.asWritable(artifact1).setName("new Name");
       tx.commit();
-
    }
 }

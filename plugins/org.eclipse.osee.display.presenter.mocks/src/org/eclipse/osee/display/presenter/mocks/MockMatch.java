@@ -13,28 +13,28 @@ package org.eclipse.osee.display.presenter.mocks;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
 
 /**
  * @author John R. Misinco
  */
-public class MockMatch implements Match<ReadableArtifact, ReadableAttribute<String>> {
+public class MockMatch implements Match<ArtifactReadable, AttributeReadable<String>> {
 
-   private final ReadableArtifact artifact;
-   private final List<ReadableAttribute<String>> attributes = new LinkedList<ReadableAttribute<String>>();
+   private final ArtifactReadable artifact;
+   private final List<AttributeReadable<String>> attributes = new LinkedList<AttributeReadable<String>>();
 
-   public MockMatch(ReadableArtifact artifact) {
+   public MockMatch(ArtifactReadable artifact) {
       this.artifact = artifact;
    }
 
-   public MockMatch(ReadableArtifact artifact, ReadableAttribute<String> attribute) {
+   public MockMatch(ArtifactReadable artifact, AttributeReadable<String> attribute) {
       this(artifact);
       attributes.add(attribute);
    }
 
-   public MockMatch(ReadableArtifact artifact, List<ReadableAttribute<String>> attributes) {
+   public MockMatch(ArtifactReadable artifact, List<AttributeReadable<String>> attributes) {
       this(artifact);
       attributes.addAll(attributes);
    }
@@ -45,17 +45,17 @@ public class MockMatch implements Match<ReadableArtifact, ReadableAttribute<Stri
    }
 
    @Override
-   public ReadableArtifact getItem() {
+   public ArtifactReadable getItem() {
       return artifact;
    }
 
    @Override
-   public List<ReadableAttribute<String>> getElements() {
+   public List<AttributeReadable<String>> getElements() {
       return attributes;
    }
 
    @Override
-   public List<MatchLocation> getLocation(ReadableAttribute<String> element) {
+   public List<MatchLocation> getLocation(AttributeReadable<String> element) {
       List<MatchLocation> toReturn = new LinkedList<MatchLocation>();
       toReturn.add(new MatchLocation());
       return toReturn;

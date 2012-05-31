@@ -25,7 +25,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.mocks.MockOseeDataAccessor;
 import org.eclipse.osee.framework.core.model.type.RelationType;
-import org.eclipse.osee.orcs.core.ds.RelationRow;
+import org.eclipse.osee.orcs.core.ds.RelationData;
+import org.eclipse.osee.orcs.core.internal.artifact.RelationContainer;
+import org.eclipse.osee.orcs.data.HasLocalId;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -37,7 +39,7 @@ public class RelationLoadingTest {
    @Test
    public void testRelationCountMatches() throws OseeCoreException, IOException {
       RelationTypeCache cache = createAndPopulate();
-      Map<Integer, RelationContainerImpl> providersThatWillBeLoaded = getRelationProviderList(cache, 22);
+      Map<Integer, RelationContainer> providersThatWillBeLoaded = getRelationProviderList(cache, 22);
       RelationRowMapper relationRowMapper = new RelationRowMapper(providersThatWillBeLoaded);
 
       loadRowData("data.csv", relationRowMapper);
@@ -54,7 +56,7 @@ public class RelationLoadingTest {
    @Test
    public void testRelatedArtifactsMatch() throws OseeCoreException, IOException {
       RelationTypeCache cache = createAndPopulate();
-      Map<Integer, RelationContainerImpl> providersThatWillBeLoaded = getRelationProviderList(cache, 22);
+      Map<Integer, RelationContainer> providersThatWillBeLoaded = getRelationProviderList(cache, 22);
       RelationRowMapper relationRowMapper = new RelationRowMapper(providersThatWillBeLoaded);
 
       loadRowData("data.csv", relationRowMapper);
@@ -75,14 +77,14 @@ public class RelationLoadingTest {
       return cache;
    }
 
-   private void checkRelationCount(RelationContainerImpl relationContainer, RelationSide side, int size) {
+   private void checkRelationCount(RelationContainer relationContainer, RelationSide side, int size) {
       //      int count = relationContainer.getRelationCount(1, side);
       int count = relationContainer.getRelationCount(TokenFactory.createRelationTypeSide(side, 1, "blah"));
       Assert.assertEquals(
          String.format("We did not get the expected number of relations back [%d != %d]", size, count), size, count);
    }
 
-   private void checkRelatedArtifacts(List<Integer> relatedArtifacts, RelationContainerImpl relationContainer, RelationSide side, int[] expected) {
+   private void checkRelatedArtifacts(List<Integer> relatedArtifacts, RelationContainer relationContainer, RelationSide side, int[] expected) {
       relatedArtifacts.clear();
       relationContainer.getArtifactIds(relatedArtifacts, TokenFactory.createRelationTypeSide(side, 1, "blah"));
       Assert.assertTrue(String.format("Expected %d matches found %d", expected.length, relatedArtifacts.size()),
@@ -92,33 +94,44 @@ public class RelationLoadingTest {
       }
    }
 
-   private Map<Integer, RelationContainerImpl> getRelationProviderList(RelationTypeCache relationTypeCache, int size) {
-      Map<Integer, RelationContainerImpl> providersThatWillBeLoaded = new HashMap<Integer, RelationContainerImpl>();
+   private Map<Integer, RelationContainer> getRelationProviderList(RelationTypeCache relationTypeCache, int size) {
+      Map<Integer, RelationContainer> providersThatWillBeLoaded = new HashMap<Integer, RelationContainer>();
       for (int i = 1; i <= size; i++) {
-         providersThatWillBeLoaded.put(i, new RelationContainerImpl(i, relationTypeCache));
+         providersThatWillBeLoaded.put(i, createRelationContainer(relationTypeCache, i));
       }
       return providersThatWillBeLoaded;
+   }
+
+   private RelationContainer createRelationContainer(RelationTypeCache relationTypeCache, final int parentId) {
+      return new RelationContainerImpl(new HasLocalId() {
+
+         @Override
+         public int getLocalId() {
+            return parentId;
+         }
+
+      }, relationTypeCache);
    }
 
    private void loadRowData(String csvFile, RelationRowMapper relationRowMapper) throws IOException, OseeCoreException {
       URL url = RelationLoadingTest.class.getResource(csvFile);
       Assert.assertNotNull(url);
 
-      List<RelationRow> data = new ArrayList<RelationRow>();
+      List<RelationData> data = new ArrayList<RelationData>();
       RelationCsvReader csvReader = new RelationCsvReader(data);
       CsvReader reader = new CsvReader(url.openStream(), csvReader);
       reader.readFile();
 
-      for (RelationRow row : data) {
+      for (RelationData row : data) {
          relationRowMapper.onRow(row);
       }
    }
 
    public static class RelationCsvReader implements CsvRowHandler {
 
-      private final List<RelationRow> data;
+      private final List<RelationData> data;
 
-      public RelationCsvReader(List<RelationRow> data) {
+      public RelationCsvReader(List<RelationData> data) {
          this.data = data;
       }
 
@@ -128,7 +141,7 @@ public class RelationLoadingTest {
          if (row.length != 9) {
             Assert.assertTrue("Data file is not formatted correctly", false);
          }
-         RelationRow relationRow = new RelationRow();
+         RelationData relationRow = new RelationData();
          relationRow.setParentId(Integer.parseInt(row[0]));
          relationRow.setArtIdA(Integer.parseInt(row[1]));
          relationRow.setArtIdB(Integer.parseInt(row[2]));

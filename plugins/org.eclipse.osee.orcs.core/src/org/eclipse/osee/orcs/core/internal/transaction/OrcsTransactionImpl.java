@@ -24,13 +24,17 @@ import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.WritableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.ArtifactWriteable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
+import org.eclipse.osee.orcs.data.GraphReadable;
+import org.eclipse.osee.orcs.data.GraphWriteable;
 import org.eclipse.osee.orcs.transaction.OrcsTransaction;
 
 /**
@@ -44,8 +48,8 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
    private final ArtifactFactory artifactFactory;
 
    private String comment;
-   private ReadableArtifact authorArtifact;
-   private final Map<String, WritableArtifact> writeableArtifacts = new ConcurrentHashMap<String, WritableArtifact>();
+   private ArtifactReadable authorArtifact;
+   private final Map<String, ArtifactWriteable> writeableArtifacts = new ConcurrentHashMap<String, ArtifactWriteable>();
 
    public OrcsTransactionImpl(Log logger, SessionContext sessionContext, BranchDataStore dataStore, ArtifactFactory artifactFactory, IOseeBranch branch) {
       super();
@@ -60,12 +64,12 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
       this.comment = comment;
    }
 
-   public void setAuthor(ReadableArtifact authorArtifact) {
+   public void setAuthor(ArtifactReadable authorArtifact) {
       this.authorArtifact = authorArtifact;
    }
 
    @Override
-   public ReadableArtifact getAuthor() {
+   public ArtifactReadable getAuthor() {
       return authorArtifact;
    }
 
@@ -75,7 +79,7 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
    }
 
    @Override
-   public Collection<WritableArtifact> getWriteables() {
+   public Collection<ArtifactWriteable> getWriteables() {
       return writeableArtifacts.values();
    }
 
@@ -115,9 +119,9 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
    }
 
    @Override
-   public synchronized WritableArtifact asWritable(ReadableArtifact readable) throws OseeCoreException {
+   public synchronized ArtifactWriteable asWritable(ArtifactReadable readable) throws OseeCoreException {
       String guid = readable.getGuid();
-      WritableArtifact toReturn = writeableArtifacts.get(guid);
+      ArtifactWriteable toReturn = writeableArtifacts.get(guid);
       if (toReturn == null) {
          toReturn = artifactFactory.createWriteableArtifact(readable);
          writeableArtifacts.put(guid, toReturn);
@@ -126,46 +130,57 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
    }
 
    @Override
-   public List<WritableArtifact> asWritable(Collection<? extends ReadableArtifact> artifacts) throws OseeCoreException {
-      List<WritableArtifact> toReturn = new ArrayList<WritableArtifact>();
-      for (ReadableArtifact readable : artifacts) {
+   public List<ArtifactWriteable> asWritable(Collection<? extends ArtifactReadable> artifacts) throws OseeCoreException {
+      List<ArtifactWriteable> toReturn = new ArrayList<ArtifactWriteable>();
+      for (ArtifactReadable readable : artifacts) {
          toReturn.add(asWritable(readable));
       }
       return toReturn;
    }
 
    @Override
-   public WritableArtifact createArtifact(IArtifactType artifactType, String name) throws OseeCoreException {
+   public GraphWriteable asWriteableGraph(GraphReadable readableGraph) throws OseeCoreException {
       return null;
    }
 
    @Override
-   public WritableArtifact createArtifact(IArtifactType artifactType, String name, GUID guid) throws OseeCoreException {
+   public ArtifactWriteable createArtifact(IArtifactType artifactType, String name) throws OseeCoreException {
+      return createArtifact(artifactType, name, GUID.create());
+   }
+
+   @Override
+   public ArtifactWriteable createArtifact(IArtifactType artifactType, String name, String guid) throws OseeCoreException {
+      ArtifactWriteable artifact =
+         artifactFactory.createWriteableArtifact(guid, HumanReadableId.generate(), artifactType, branch, null);
+      artifact.setName(name);
+      return artifact;
+   }
+
+   @Override
+   public ArtifactWriteable createArtifact(IArtifactToken artifactToken) throws OseeCoreException {
+      return createArtifact(artifactToken.getArtifactType(), artifactToken.getName(), artifactToken.getGuid());
+   }
+
+   @Override
+   public ArtifactWriteable duplicateArtifact(ArtifactReadable sourceArtifact) throws OseeCoreException {
+      ArtifactWriteable duplicate = createArtifact(sourceArtifact.getArtifactType(), sourceArtifact.getName());
+      for (AttributeReadable<?> attribute : duplicate.getAttributes()) {
+      }
       return null;
    }
 
    @Override
-   public WritableArtifact createArtifact(IArtifactToken artifactToken) throws OseeCoreException {
+   public ArtifactWriteable duplicateArtifact(ArtifactReadable sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException {
       return null;
    }
 
    @Override
-   public WritableArtifact duplicateArtifact(ReadableArtifact sourceArtifact) throws OseeCoreException {
+   public ArtifactWriteable reflectArtifact(ArtifactReadable sourceArtifact) throws OseeCoreException {
       return null;
    }
 
    @Override
-   public WritableArtifact duplicateArtifact(ReadableArtifact sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException {
-      return null;
-   }
-
-   @Override
-   public WritableArtifact reflectArtifact(ReadableArtifact sourceArtifact) throws OseeCoreException {
-      return null;
-   }
-
-   @Override
-   public void deleteArtifact(WritableArtifact artifact) throws OseeCoreException {
+   public void deleteArtifact(ArtifactWriteable artifact) throws OseeCoreException {
    }
 
 }

@@ -18,15 +18,15 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
  * @author Roberto E. Escobar
  */
 public class AttributeTypeUtil {
 
-   public static List<IAttributeType> getEmptyTypes(ReadableArtifact artifact) throws OseeCoreException {
+   public static List<IAttributeType> getEmptyTypes(ArtifactReadable artifact) throws OseeCoreException {
       List<IAttributeType> items = new ArrayList<IAttributeType>();
       for (IAttributeType type : artifact.getAttributeTypes()) {
          if (!CoreAttributeTypes.Name.equals(type) && artifact.getAttributes(type).isEmpty()) {
@@ -37,11 +37,11 @@ public class AttributeTypeUtil {
       return items;
    }
 
-   public static List<IAttributeType> getTypesWithData(ReadableArtifact artifact) throws OseeCoreException {
+   public static List<IAttributeType> getTypesWithData(ArtifactReadable artifact) throws OseeCoreException {
       List<IAttributeType> items = new ArrayList<IAttributeType>();
 
       Set<IAttributeType> typesInExistence = new HashSet<IAttributeType>();
-      for (ReadableAttribute<?> attribute : artifact.getAttributes()) {
+      for (AttributeReadable<?> attribute : artifact.getAttributes()) {
          typesInExistence.add(attribute.getAttributeType());
       }
 

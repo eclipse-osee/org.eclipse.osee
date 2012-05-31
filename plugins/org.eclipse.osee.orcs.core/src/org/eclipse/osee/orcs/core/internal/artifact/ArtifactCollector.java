@@ -11,13 +11,18 @@
 package org.eclipse.osee.orcs.core.internal.artifact;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public interface ArtifactCollector {
 
-   void onArtifact(ReadableArtifact artifact, boolean isArtifactAlreadyLoaded) throws OseeCoreException;
+   public static enum LoadSourceType {
+      WAS_CREATED,
+      FOUND_IN_CACHE;
+   }
+
+   void onArtifact(ArtifactReadable artifact, LoadSourceType loadSourceType) throws OseeCoreException;
 
 }

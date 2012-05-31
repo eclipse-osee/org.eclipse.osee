@@ -10,26 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 
 /**
  * @author Andrew M. Finkbeiner
  */
-public class RelationRow {
+public class RelationData extends OrcsObject {
 
    private int parentId = -1;
-   private int relationId = -1;
+
    private int artIdA = -1;
    private int artIdB = -1;
-   private int branchId = -1;
-   private int gammaId = -1;
-   private long relationTypeUUId = -1l;
    private String rationale = "";
-   private ModificationType modType = null;
 
    public void setRelationId(int relationId) {
-      this.relationId = relationId;
+      setLocalId(relationId);
    }
 
    public void setArtIdA(int artIdA) {
@@ -40,28 +35,16 @@ public class RelationRow {
       this.artIdB = artIdB;
    }
 
-   public void setBranchId(int branchId) {
-      this.branchId = branchId;
-   }
-
-   public void setGammaId(int gammaId) {
-      this.gammaId = gammaId;
-   }
-
    public void setRelationTypeId(long relationTypeUUId) {
-      this.relationTypeUUId = relationTypeUUId;
+      setTypeUuid(relationTypeUUId);
    }
 
    public void setRationale(String rationale) {
       this.rationale = rationale;
    }
 
-   public void setModType(ModificationType modType) {
-      this.modType = modType;
-   }
-
    public int getRelationId() {
-      return relationId;
+      return getLocalId();
    }
 
    public int getArtIdA() {
@@ -72,24 +55,12 @@ public class RelationRow {
       return artIdB;
    }
 
-   public int getBranchId() {
-      return branchId;
-   }
-
-   public int getGammaId() {
-      return gammaId;
-   }
-
    public long getRelationTypeUUId() {
-      return relationTypeUUId;
+      return getTypeUuid();
    }
 
    public String getRationale() {
       return rationale;
-   }
-
-   public ModificationType getModType() {
-      return modType;
    }
 
    public void setParentId(int parentId) {
@@ -110,13 +81,13 @@ public class RelationRow {
       int result = 1;
       result = prime * result + artIdA;
       result = prime * result + artIdB;
-      result = prime * result + branchId;
-      result = prime * result + gammaId;
-      result = prime * result + ((modType == null) ? 0 : modType.hashCode());
+      result = prime * result + getBranchId();
+      result = prime * result + getGammaId();
+      result = prime * result + ((getModType() == null) ? 0 : getModType().hashCode());
       result = prime * result + parentId;
       result = prime * result + ((rationale == null) ? 0 : rationale.hashCode());
-      result = prime * result + relationId;
-      result = (int) (prime * result + relationTypeUUId);
+      result = prime * result + getLocalId();
+      result = (int) (prime * result + getTypeUuid());
       return result;
    }
 
@@ -131,20 +102,11 @@ public class RelationRow {
       if (getClass() != obj.getClass()) {
          return false;
       }
-      RelationRow other = (RelationRow) obj;
+      RelationData other = (RelationData) obj;
       if (artIdA != other.artIdA) {
          return false;
       }
       if (artIdB != other.artIdB) {
-         return false;
-      }
-      if (branchId != other.branchId) {
-         return false;
-      }
-      if (gammaId != other.gammaId) {
-         return false;
-      }
-      if (modType != other.modType) {
          return false;
       }
       if (parentId != other.parentId) {
@@ -157,20 +119,15 @@ public class RelationRow {
       } else if (!rationale.equals(other.rationale)) {
          return false;
       }
-      if (relationId != other.relationId) {
-         return false;
-      }
-      if (relationTypeUUId != other.relationTypeUUId) {
-         return false;
-      }
-      return true;
+      return super.equals(obj);
    }
 
    @Override
    public String toString() {
       return String.format(
          "RelationRow: parent[%d] relation[%d] artA[%d] artB[%d] branch[%d] gamma[%d], relationType[%d] rationale[%s]",
-         parentId, relationId, artIdA, artIdB, branchId, gammaId, relationTypeUUId, rationale, modType.name());
+         parentId, getLocalId(), artIdA, artIdB, getBranchId(), getGammaId(), getTypeUuid(), rationale,
+         getModType().name());
    }
 
 }

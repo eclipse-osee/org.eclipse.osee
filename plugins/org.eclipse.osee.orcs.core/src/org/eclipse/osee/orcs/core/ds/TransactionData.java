@@ -12,16 +12,16 @@ package org.eclipse.osee.orcs.core.ds;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.WritableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.ArtifactWriteable;
 
 public interface TransactionData {
 
    IOseeBranch getBranch();
 
-   ReadableArtifact getAuthor();
+   ArtifactReadable getAuthor();
 
    String getComment();
 
-   Collection<WritableArtifact> getWriteables();
+   Collection<ArtifactWriteable> getWriteables();
 }

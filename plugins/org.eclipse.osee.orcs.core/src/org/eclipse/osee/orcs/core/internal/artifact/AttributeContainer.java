@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.ds;
+package org.eclipse.osee.orcs.core.internal.artifact;
 
 import java.util.Collection;
 import java.util.List;
@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -31,14 +31,17 @@ public interface AttributeContainer {
 
    Collection<IAttributeType> getAttributeTypes() throws OseeCoreException;
 
-   <T> List<ReadableAttribute<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException;
+   <T> List<AttributeReadable<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException;
 
-   <T> ReadableAttribute<T> getSoleAttribute(IAttributeType attributeType) throws OseeCoreException;
+   <T> AttributeReadable<T> getSoleAttribute(IAttributeType attributeType) throws OseeCoreException;
+
+   //   <T> List<AttributeWriteable<T>> getWriteableAttributes(IAttributeType attributeType) throws OseeCoreException;
+   //   <T> AttributeWriteable<T> getSoleWriteableAttribute(IAttributeType attributeType) throws OseeCoreException;
 
    //TODO is this needed
    boolean isLoaded();
 
    void setLoaded(boolean value);
 
-   <T> List<ReadableAttribute<T>> getAttributes() throws OseeCoreException;
+   <T> List<AttributeReadable<T>> getAttributes() throws OseeCoreException;
 }

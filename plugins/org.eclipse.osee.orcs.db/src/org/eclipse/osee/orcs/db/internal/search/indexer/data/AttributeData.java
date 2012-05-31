@@ -25,13 +25,13 @@ import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeData implements ReadableAttribute<String> {
+public class AttributeData implements AttributeReadable<String> {
 
    private final IResourceManager resourceManager;
 
@@ -121,8 +121,8 @@ public class AttributeData implements ReadableAttribute<String> {
       if (obj == null) {
          return false;
       }
-      if (obj instanceof ReadableAttribute<?>) {
-         ReadableAttribute<?> other = (ReadableAttribute<?>) obj;
+      if (obj instanceof AttributeReadable<?>) {
+         AttributeReadable<?> other = (AttributeReadable<?>) obj;
          if (getGammaId() != other.getGammaId()) {
             return false;
          } else {
@@ -178,5 +178,10 @@ public class AttributeData implements ReadableAttribute<String> {
    public String toString() {
       return String.format("attrId:[%s] gammaId:[%s] uri:[%s] attrType:[%s] isValidUri:[%s]", getId(), getGammaId(),
          getUri(), getAttributeType(), isUriValid());
+   }
+
+   @Override
+   public boolean isDeleted() {
+      return false;
    }
 }

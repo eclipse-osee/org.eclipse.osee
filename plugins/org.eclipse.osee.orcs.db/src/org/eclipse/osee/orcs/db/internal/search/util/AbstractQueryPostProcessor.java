@@ -28,8 +28,8 @@ import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeyword;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger;
 import org.eclipse.osee.orcs.search.CaseType;
 import org.eclipse.osee.orcs.search.Match;
@@ -37,11 +37,11 @@ import org.eclipse.osee.orcs.search.Match;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractQueryPostProcessor extends QueryPostProcessor implements PartitionFactory<ReadableArtifact, Match<ReadableArtifact, ReadableAttribute<?>>> {
+public abstract class AbstractQueryPostProcessor extends QueryPostProcessor implements PartitionFactory<ArtifactReadable, Match<ArtifactReadable, AttributeReadable<?>>> {
 
    private CriteriaAttributeKeyword criteria;
    private final ExecutorAdmin executorAdmin;
-   private List<Future<Collection<Match<ReadableArtifact, ReadableAttribute<?>>>>> futures;
+   private List<Future<Collection<Match<ArtifactReadable, AttributeReadable<?>>>>> futures;
 
    protected AbstractQueryPostProcessor(Log logger, ExecutorAdmin executorAdmin) {
       super(logger);
@@ -65,16 +65,16 @@ public abstract class AbstractQueryPostProcessor extends QueryPostProcessor impl
    }
 
    @Override
-   public List<Match<ReadableArtifact, ReadableAttribute<?>>> innerCall() throws Exception {
+   public List<Match<ArtifactReadable, AttributeReadable<?>>> innerCall() throws Exception {
       Conditions.checkNotNull(getItemsToProcess(), "Query first pass results");
 
       futures = WorkUtility.partitionAndScheduleWork(executorAdmin, this, getItemsToProcess());
 
       checkForCancelled();
 
-      List<Match<ReadableArtifact, ReadableAttribute<?>>> results =
-         new ArrayList<Match<ReadableArtifact, ReadableAttribute<?>>>();
-      for (Future<Collection<Match<ReadableArtifact, ReadableAttribute<?>>>> future : futures) {
+      List<Match<ArtifactReadable, AttributeReadable<?>>> results =
+         new ArrayList<Match<ArtifactReadable, AttributeReadable<?>>>();
+      for (Future<Collection<Match<ArtifactReadable, AttributeReadable<?>>>> future : futures) {
          results.addAll(future.get());
          checkForCancelled();
       }
@@ -91,30 +91,30 @@ public abstract class AbstractQueryPostProcessor extends QueryPostProcessor impl
       }
    }
 
-   protected abstract Tagger getTagger(ReadableAttribute<?> attribute) throws OseeCoreException;
+   protected abstract Tagger getTagger(AttributeReadable<?> attribute) throws OseeCoreException;
 
    @Override
-   public Callable<Collection<Match<ReadableArtifact, ReadableAttribute<?>>>> createWorker(Collection<ReadableArtifact> toProcess) {
+   public Callable<Collection<Match<ArtifactReadable, AttributeReadable<?>>>> createWorker(Collection<ArtifactReadable> toProcess) {
       return new PostProcessorWorker(toProcess);
    }
 
-   private class PostProcessorWorker extends CancellableCallable<Collection<Match<ReadableArtifact, ReadableAttribute<?>>>> {
+   private class PostProcessorWorker extends CancellableCallable<Collection<Match<ArtifactReadable, AttributeReadable<?>>>> {
 
-      private final Collection<ReadableArtifact> artifacts;
+      private final Collection<ArtifactReadable> artifacts;
 
-      public PostProcessorWorker(Collection<ReadableArtifact> artifacts) {
+      public PostProcessorWorker(Collection<ArtifactReadable> artifacts) {
          this.artifacts = artifacts;
       }
 
       @Override
-      public Collection<Match<ReadableArtifact, ReadableAttribute<?>>> call() throws Exception {
-         List<Match<ReadableArtifact, ReadableAttribute<?>>> results =
-            new ArrayList<Match<ReadableArtifact, ReadableAttribute<?>>>();
+      public Collection<Match<ArtifactReadable, AttributeReadable<?>>> call() throws Exception {
+         List<Match<ArtifactReadable, AttributeReadable<?>>> results =
+            new ArrayList<Match<ArtifactReadable, AttributeReadable<?>>>();
 
-         Map<ReadableAttribute<?>, List<MatchLocation>> matchedAttributes = null;
-         for (ReadableArtifact artifact : artifacts) {
+         Map<AttributeReadable<?>, List<MatchLocation>> matchedAttributes = null;
+         for (ArtifactReadable artifact : artifacts) {
             checkForCancelled();
-            for (ReadableAttribute<?> attribute : getAttributes(artifact)) {
+            for (AttributeReadable<?> attribute : getAttributes(artifact)) {
                checkForCancelled();
                try {
                   if (getTypes().contains(attribute.getAttributeType())) {
@@ -125,7 +125,7 @@ public abstract class AbstractQueryPostProcessor extends QueryPostProcessor impl
                         List<MatchLocation> locations = tagger.find(attribute, getQuery(), getCaseType(), true);
                         if (!locations.isEmpty()) {
                            if (matchedAttributes == null) {
-                              matchedAttributes = new HashMap<ReadableAttribute<?>, List<MatchLocation>>();
+                              matchedAttributes = new HashMap<AttributeReadable<?>, List<MatchLocation>>();
                            }
                            matchedAttributes.put(attribute, locations);
                         }
@@ -144,15 +144,15 @@ public abstract class AbstractQueryPostProcessor extends QueryPostProcessor impl
       }
 
       @SuppressWarnings("unchecked")
-      private <T> List<ReadableAttribute<T>> getAttributes(ReadableArtifact artifact) throws OseeCoreException {
-         List<ReadableAttribute<T>> toReturn;
+      private <T> List<AttributeReadable<T>> getAttributes(ArtifactReadable artifact) throws OseeCoreException {
+         List<AttributeReadable<T>> toReturn;
 
          Collection<? extends IAttributeType> toCheck = getTypes();
          if (toCheck != null && !toCheck.isEmpty()) {
-            toReturn = new ArrayList<ReadableAttribute<T>>();
+            toReturn = new ArrayList<AttributeReadable<T>>();
             for (IAttributeType attributeType : toCheck) {
-               for (ReadableAttribute<?> attr : artifact.getAttributes(attributeType)) {
-                  toReturn.add((ReadableAttribute<T>) attr);
+               for (AttributeReadable<?> attr : artifact.getAttributes(attributeType)) {
+                  toReturn.add((AttributeReadable<T>) attr);
                   checkForCancelled();
                }
             }

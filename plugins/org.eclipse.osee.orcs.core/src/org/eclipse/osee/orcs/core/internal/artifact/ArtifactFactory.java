@@ -10,38 +10,75 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.artifact;
 
-import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.orcs.core.internal.transaction.ReadableArtifactProxy;
-import org.eclipse.osee.orcs.core.internal.transaction.WritableArtifactProxy;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.orcs.core.internal.AbstractProxy;
+import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.ArtifactWriteable;
+import org.eclipse.osee.orcs.data.Version;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ArtifactFactory {
 
-   private final RelationTypeCache relationTypeCache;
+   private final RelationFactory relationFactory;
+   private final ArtifactTypeCache artifactTypeCache;
 
-   public ArtifactFactory(RelationTypeCache relationTypeCache) {
-      this.relationTypeCache = relationTypeCache;
+   public ArtifactFactory(RelationFactory relationFactory, ArtifactTypeCache artifactTypeCache) {
+      super();
+      this.relationFactory = relationFactory;
+      this.artifactTypeCache = artifactTypeCache;
    }
 
-   public ReadableArtifact loadExisitingArtifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, Branch branch, int transactionId, ModificationType modType, boolean historical) {
+   public ArtifactWriteable createWriteableArtifact(String guid, String humandReadableId, IArtifactType artifactType, IOseeBranch branch, Version version) throws OseeCoreException {
       //TODO implement an artifact class resolver for specific artifact types
-      Artifact artifact =
-         new Artifact(artId, guid, humandReadableId, artifactType, gammaId, branch, transactionId, modType, historical,
-            relationTypeCache);
+
+      ArtifactImpl artifact = createArtifactImpl(guid, humandReadableId, artifactType, branch, version);
+
+      WritableArtifactProxy proxy = new WritableArtifactProxy(artifact);
+      return proxy;
+   }
+
+   public ArtifactReadable createReadableArtifact(String guid, String humandReadableId, IArtifactType artifactType, IOseeBranch branch, Version version) throws OseeCoreException {
+      //TODO implement an artifact class resolver for specific artifact types
+
+      ArtifactImpl artifact = createArtifactImpl(guid, humandReadableId, artifactType, branch, version);
+
       ReadableArtifactProxy proxy = new ReadableArtifactProxy(artifact);
       return proxy;
    }
 
-   public WritableArtifactProxy createWriteableArtifact(ReadableArtifact readable) {
-      ReadableArtifactProxy proxy = (ReadableArtifactProxy) readable;
-      Artifact artifact = proxy.getProxiedOject();
+   public WritableArtifactProxy createWriteableArtifact(ArtifactReadable readable) throws OseeCoreException {
+      Conditions.checkExpressionFailOnTrue(!(readable instanceof ReadableArtifactProxy),
+         "Expected [ArtifactReadable] of type [ReadableArtifactProxy] but was [%s]",
+         readable != null ? readable.getClass().getName() : "null");
+
+      ArtifactImpl artifact = asArtifactImpl(readable);
       WritableArtifactProxy writeable = new WritableArtifactProxy(artifact);
       return writeable;
+   }
+
+   @SuppressWarnings("unchecked")
+   public ArtifactImpl asArtifactImpl(ArtifactReadable readable) {
+      ArtifactImpl toReturn = null;
+      if (readable instanceof AbstractProxy) {
+         AbstractProxy<? extends ArtifactImpl> proxy = (AbstractProxy<? extends ArtifactImpl>) readable;
+         toReturn = proxy.getProxiedObject();
+      }
+      return toReturn;
+   }
+
+   private ArtifactImpl createArtifactImpl(String guid, String humandReadableId, IArtifactType artifactType, IOseeBranch branch, Version version) throws OseeCoreException {
+      RelationContainer relationContainer = relationFactory.createRelationContainer(version);
+
+      ArtifactType type = artifactTypeCache.get(artifactType);
+      ArtifactImpl artifact = new ArtifactImpl(guid, humandReadableId, type, branch, relationContainer, version);
+      return artifact;
    }
 }

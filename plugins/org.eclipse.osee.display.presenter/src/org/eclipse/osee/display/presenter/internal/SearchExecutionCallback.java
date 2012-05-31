@@ -16,14 +16,14 @@ import org.eclipse.osee.executor.admin.ExecutionCallback;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
 
 /**
  * @author Roberto E. Escobar
  */
-public class SearchExecutionCallback implements ExecutionCallback<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> {
+public class SearchExecutionCallback implements ExecutionCallback<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> {
 
    private final AsyncSearchListener callback;
    private final ArtifactProviderCache cache;
@@ -36,7 +36,7 @@ public class SearchExecutionCallback implements ExecutionCallback<ResultSet<Matc
    }
 
    @Override
-   public void onSuccess(ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> result) {
+   public void onSuccess(ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> result) {
       cache.cacheResults(result);
       try {
          callback.onSearchComplete(result.getList());

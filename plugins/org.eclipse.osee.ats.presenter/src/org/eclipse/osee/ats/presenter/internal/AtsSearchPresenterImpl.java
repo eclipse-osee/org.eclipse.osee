@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.UrlQuery;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author John R. Misinco
@@ -115,9 +115,9 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
 
    protected Collection<ViewId> getPrograms() throws OseeCoreException {
       Collection<ViewId> toReturn = new LinkedList<ViewId>();
-      Collection<ReadableArtifact> programs = atsArtifactProvider.getPrograms();
+      Collection<ArtifactReadable> programs = atsArtifactProvider.getPrograms();
       if (programs != null) {
-         for (ReadableArtifact program : programs) {
+         for (ArtifactReadable program : programs) {
             toReturn.add(new ViewId(program.getGuid(), program.getName()));
          }
       }
@@ -125,10 +125,10 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
    }
 
    protected Collection<ViewId> getBuilds(ViewId program) throws OseeCoreException {
-      Collection<ReadableArtifact> relatedBuilds = atsArtifactProvider.getBuilds(program.getGuid());
+      Collection<ArtifactReadable> relatedBuilds = atsArtifactProvider.getBuilds(program.getGuid());
       Collection<ViewId> builds = new ArrayList<ViewId>();
       if (relatedBuilds != null) {
-         for (ReadableArtifact build : relatedBuilds) {
+         for (ArtifactReadable build : relatedBuilds) {
             builds.add(new ViewId(build.getGuid(), build.getName()));
          }
       }

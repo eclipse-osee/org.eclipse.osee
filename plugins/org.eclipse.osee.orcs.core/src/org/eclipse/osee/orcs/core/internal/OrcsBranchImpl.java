@@ -37,7 +37,7 @@ import org.eclipse.osee.orcs.core.internal.branch.DeleteBranchCallable;
 import org.eclipse.osee.orcs.core.internal.branch.PurgeBranchCallable;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.CreateBranchData;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -80,7 +80,7 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<TransactionRecord> commitBranch(ReadableArtifact committer, IOseeBranch source, IOseeBranch destination) {
+   public Callable<TransactionRecord> commitBranch(ArtifactReadable committer, IOseeBranch source, IOseeBranch destination) {
       return new CommitBranchCallable(logger, sessionContext, branchStore, branchCache, committer, source, destination);
    }
 

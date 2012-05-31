@@ -13,13 +13,13 @@ package org.eclipse.osee.orcs.db.internal.search.indexer;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface QueueToAttributeLoader {
 
-   void loadAttributes(OseeConnection connection, int tagQueueQueryId, Collection<ReadableAttribute<?>> attributeDatas) throws OseeCoreException;
+   void loadAttributes(OseeConnection connection, int tagQueueQueryId, Collection<AttributeReadable<?>> attributeDatas) throws OseeCoreException;
 
 }

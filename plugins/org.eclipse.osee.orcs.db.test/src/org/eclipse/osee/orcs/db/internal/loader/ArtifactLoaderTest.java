@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.ArtifactRow;
+import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactRowHandler;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
@@ -77,15 +77,15 @@ public class ArtifactLoaderTest {
          artJoinQuery.store(connection);
          int queryId = artJoinQuery.getQueryId();
 
-         final List<ArtifactRow> actuals = new ArrayList<ArtifactRow>();
+         final List<ArtifactData> actuals = new ArrayList<ArtifactData>();
          loader.loadFromQueryId(new ArtifactRowHandler() {
             @Override
-            public void onRow(ArtifactRow row) {
+            public void onRow(ArtifactData row) {
                actuals.add(row);
             }
          }, new LoadOptions(false, DeletionFlag.EXCLUDE_DELETED, LoadLevel.ALL_CURRENT), 10, queryId);
 
-         final List<ArtifactRow> expected = new ArrayList<ArtifactRow>();
+         final List<ArtifactData> expected = new ArrayList<ArtifactData>();
          expected.add(getArtifactRow(6, identityService.getUniversalId(346), 2, 7, "AEmKsTkcwh02JspUtYQA", false,
             "NYN46", ModificationType.getMod(1), -1, -1));
          expected.add(getArtifactRow(7, identityService.getUniversalId(346), 2, 9, "AEmKsWXLBwVrvjcQvPwA", false,
@@ -93,14 +93,14 @@ public class ArtifactLoaderTest {
          expected.add(getArtifactRow(8, identityService.getUniversalId(295), 2, 33, "AEmK_YNYKmA66ynLWVgA", false,
             "QHXXC", ModificationType.getMod(1), -1, -1));
 
-         ArtifactRow notExpected =
+         ArtifactData notExpected =
             getArtifactRow(7, identityService.getUniversalId(295), 2, 9, "AEmKsWXLBwVrvjcQvPwA", false, "7NPJR",
                ModificationType.getMod(1), -1, -1);
 
          artJoinQuery.delete(connection);
 
          Assert.assertEquals(expected.size(), actuals.size());
-         for (ArtifactRow row : expected) {
+         for (ArtifactData row : expected) {
             Assert.assertTrue(String.format("Row [%s] could not be found.", row.toString()), actuals.contains(row));
          }
          Assert.assertTrue(String.format("Row [%s] should not be found.", notExpected.toString()),
@@ -127,15 +127,15 @@ public class ArtifactLoaderTest {
          artJoinQuery.store(connection);
          int queryId = artJoinQuery.getQueryId();
 
-         final List<ArtifactRow> actuals = new ArrayList<ArtifactRow>();
+         final List<ArtifactData> actuals = new ArrayList<ArtifactData>();
          loader.loadFromQueryId(new ArtifactRowHandler() {
             @Override
-            public void onRow(ArtifactRow row) {
+            public void onRow(ArtifactData row) {
                actuals.add(row);
             }
          }, new LoadOptions(false, DeletionFlag.INCLUDE_DELETED, LoadLevel.ALL_CURRENT), 10, queryId);
 
-         final List<ArtifactRow> expected = new ArrayList<ArtifactRow>();
+         final List<ArtifactData> expected = new ArrayList<ArtifactData>();
          expected.add(getArtifactRow(169, identityService.getUniversalId(309), 7, 1101, "AEmPlVKm+mTccO2TMlAA", false,
             "DD0WL", ModificationType.getMod(3), -1, -1));
          expected.add(getArtifactRow(170, identityService.getUniversalId(309), 7, 1103, "AEmPmMM0Ahco9TfgjTwA", false,
@@ -143,14 +143,14 @@ public class ArtifactLoaderTest {
          expected.add(getArtifactRow(171, identityService.getUniversalId(309), 7, 1097, "AEmPvkGYwn0XgAIig0QA", false,
             "LF8CM", ModificationType.getMod(3), -1, -1));
 
-         ArtifactRow notExpected =
+         ArtifactData notExpected =
             getArtifactRow(7, identityService.getUniversalId(295), 2, 9, "AEmKsWXLBwVrvjcQvPwA", false, "7NPJR",
                ModificationType.getMod(1), -1, -1);
 
          artJoinQuery.delete(connection);
 
          Assert.assertEquals(expected.size(), actuals.size());
-         for (ArtifactRow row : expected) {
+         for (ArtifactData row : expected) {
             Assert.assertTrue(String.format("Row [%s] could not be found.", row.toString()), actuals.contains(row));
          }
          Assert.assertTrue(String.format("Row [%s] should not be found.", notExpected.toString()),
@@ -160,8 +160,8 @@ public class ArtifactLoaderTest {
       }
    }
 
-   private ArtifactRow getArtifactRow(int artId, long artTypeUUID, int branchId, int gammaId, String guid, boolean historical, String humanReadableId, ModificationType modType, int stripeId, int transactionId) {
-      ArtifactRow row = new ArtifactRow();
+   private ArtifactData getArtifactRow(int artId, long artTypeUUID, int branchId, int gammaId, String guid, boolean historical, String humanReadableId, ModificationType modType, int stripeId, int transactionId) {
+      ArtifactData row = new ArtifactData();
       row.setArtifactId(artId);
       row.setArtTypeUuid(artTypeUUID);
       row.setBranchId(branchId);

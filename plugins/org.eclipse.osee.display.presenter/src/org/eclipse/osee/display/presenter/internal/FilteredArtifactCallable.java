@@ -21,20 +21,20 @@ import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.executor.admin.WorkUtility;
 import org.eclipse.osee.executor.admin.WorkUtility.PartitionFactory;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Roberto E. Escobar
  */
-public class FilteredArtifactCallable extends CancellableCallable<List<ReadableArtifact>> implements PartitionFactory<ReadableArtifact, ReadableArtifact> {
+public class FilteredArtifactCallable extends CancellableCallable<List<ArtifactReadable>> implements PartitionFactory<ArtifactReadable, ArtifactReadable> {
 
    private static final String FILTER_WORKER_ID = "artifact.filter.workers";
 
    private final ExecutorAdmin executorAdmin;
    private final ArtifactFilter filter;
-   private final Collection<ReadableArtifact> artifacts;
+   private final Collection<ArtifactReadable> artifacts;
 
-   public FilteredArtifactCallable(ExecutorAdmin executorAdmin, ArtifactFilter filter, Collection<ReadableArtifact> artifacts) {
+   public FilteredArtifactCallable(ExecutorAdmin executorAdmin, ArtifactFilter filter, Collection<ArtifactReadable> artifacts) {
       super();
       this.executorAdmin = executorAdmin;
       this.filter = filter;
@@ -42,11 +42,11 @@ public class FilteredArtifactCallable extends CancellableCallable<List<ReadableA
    }
 
    @Override
-   public List<ReadableArtifact> call() throws Exception {
-      List<Future<Collection<ReadableArtifact>>> futures =
+   public List<ArtifactReadable> call() throws Exception {
+      List<Future<Collection<ArtifactReadable>>> futures =
          WorkUtility.partitionAndScheduleWork(executorAdmin, FILTER_WORKER_ID, this, artifacts);
-      final List<ReadableArtifact> results = new LinkedList<ReadableArtifact>();
-      for (Future<Collection<ReadableArtifact>> future : futures) {
+      final List<ArtifactReadable> results = new LinkedList<ArtifactReadable>();
+      for (Future<Collection<ArtifactReadable>> future : futures) {
          checkForCancelled();
          results.addAll(future.get());
       }
@@ -54,11 +54,11 @@ public class FilteredArtifactCallable extends CancellableCallable<List<ReadableA
    }
 
    @Override
-   public Callable<Collection<ReadableArtifact>> createWorker(final Collection<ReadableArtifact> toProcess) {
-      return new CancellableCallable<Collection<ReadableArtifact>>() {
+   public Callable<Collection<ArtifactReadable>> createWorker(final Collection<ArtifactReadable> toProcess) {
+      return new CancellableCallable<Collection<ArtifactReadable>>() {
 
          @Override
-         public Collection<ReadableArtifact> call() throws Exception {
+         public Collection<ArtifactReadable> call() throws Exception {
             checkForCancelled();
             Collections.filter(toProcess, filter);
             return toProcess;

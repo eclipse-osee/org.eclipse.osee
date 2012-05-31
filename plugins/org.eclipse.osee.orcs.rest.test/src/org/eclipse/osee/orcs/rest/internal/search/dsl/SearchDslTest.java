@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.rest.internal.search.Predicate;
 import org.eclipse.osee.orcs.rest.internal.search.PredicateHandler;
 import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchDsl.DslTranslator;
@@ -74,7 +74,7 @@ public class SearchDslTest {
       }
 
       @Override
-      public QueryBuilder fromArtifacts(Collection<? extends ReadableArtifact> artifacts) {
+      public QueryBuilder fromArtifacts(Collection<? extends ArtifactReadable> artifacts) {
          return null;
       }
    };

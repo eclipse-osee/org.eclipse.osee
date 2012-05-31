@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
@@ -112,8 +112,8 @@ public abstract class AbstractBranchCallable<REQ_TYPE, RESP_TYPE> extends Cancel
       return context;
    }
 
-   protected ReadableArtifact getArtifactById(int id) throws OseeCoreException {
-      ReadableArtifact artifact = null;
+   protected ArtifactReadable getArtifactById(int id) throws OseeCoreException {
+      ArtifactReadable artifact = null;
       if (id > 0) {
          QueryFactory factory = getOrcsApi().getQueryFactory(null);
          artifact = factory.fromBranch(CoreBranches.COMMON).andLocalId(id).getResults().getExactlyOne();

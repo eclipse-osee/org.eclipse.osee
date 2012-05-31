@@ -37,9 +37,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.RelationGraph;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
+import org.eclipse.osee.orcs.data.GraphReadable;
 import org.eclipse.osee.orcs.search.CaseType;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -55,12 +55,12 @@ public class ArtifactProviderImpl implements ArtifactProvider {
    private final Log logger;
    private final ExecutorAdmin executorAdmin;
    private final QueryFactory queryFactory;
-   private final RelationGraph graph;
 
    private final ArtifactProviderCache cache = new ArtifactProviderCache();
    private final ArtifactFilter filter = new ArtifactFilter(this);
+   private final GraphReadable graph;
 
-   public ArtifactProviderImpl(Log logger, ExecutorAdmin executorAdmin, QueryFactory queryFactory, RelationGraph graph) {
+   public ArtifactProviderImpl(Log logger, ExecutorAdmin executorAdmin, QueryFactory queryFactory, GraphReadable graph) {
       this.logger = logger;
       this.executorAdmin = executorAdmin;
       this.queryFactory = queryFactory;
@@ -71,18 +71,14 @@ public class ArtifactProviderImpl implements ArtifactProvider {
       return queryFactory;
    }
 
-   protected RelationGraph getGraph() {
-      return graph;
-   }
-
    @Override
-   public ReadableArtifact getArtifactByArtifactToken(IOseeBranch branch, IArtifactToken token) throws OseeCoreException {
+   public ArtifactReadable getArtifactByArtifactToken(IOseeBranch branch, IArtifactToken token) throws OseeCoreException {
       return getArtifactByGuid(branch, token.getGuid());
    }
 
    @Override
-   public ReadableArtifact getArtifactByGuid(IOseeBranch branch, String guid) throws OseeCoreException {
-      ReadableArtifact item = getFactory().fromBranch(branch).andGuidsOrHrids(guid).getResults().getOneOrNull();
+   public ArtifactReadable getArtifactByGuid(IOseeBranch branch, String guid) throws OseeCoreException {
+      ArtifactReadable item = getFactory().fromBranch(branch).andGuidsOrHrids(guid).getResults().getOneOrNull();
       try {
          if (!filter.accept(item)) {
             item = null;
@@ -98,7 +94,7 @@ public class ArtifactProviderImpl implements ArtifactProvider {
    public void getSearchResults(IOseeBranch branch, boolean nameOnly, String searchPhrase, AsyncSearchListener callback) throws OseeCoreException {
       SearchParameters params = new SearchParameters(branch, nameOnly, searchPhrase);
 
-      Callable<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> callable =
+      Callable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> callable =
          createSearchCallable(params, callback);
 
       SearchExecutionCallback providerCallback = new SearchExecutionCallback(logger, cache, callback);
@@ -114,11 +110,11 @@ public class ArtifactProviderImpl implements ArtifactProvider {
       cache.cacheSearchFuture(searchFuture);
    }
 
-   private Callable<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> createSearchCallable(SearchParameters params, AsyncSearchListener callback) throws OseeCoreException {
-      Callable<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> callable;
+   private Callable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> createSearchCallable(SearchParameters params, AsyncSearchListener callback) throws OseeCoreException {
+      Callable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> callable;
       if (cache.isSearchCached(params)) {
          callable =
-            new PassThroughCallable<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>>(cache.getSearchResults());
+            new PassThroughCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>>(cache.getSearchResults());
       } else {
          IAttributeType type = params.isNameOnly() ? CoreAttributeTypes.Name : QueryBuilder.ANY_ATTRIBUTE_TYPE;
          QueryBuilder builder = getFactory().fromBranch(params.getBranch());
@@ -129,12 +125,12 @@ public class ArtifactProviderImpl implements ArtifactProvider {
    }
 
    @Override
-   public List<ReadableArtifact> getRelatedArtifacts(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
-      final List<ReadableArtifact> artifacts = graph.getRelatedArtifacts(art, relationTypeSide);
-      List<ReadableArtifact> results = Collections.emptyList();
+   public List<ArtifactReadable> getRelatedArtifacts(ArtifactReadable art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
+      final List<ArtifactReadable> artifacts = graph.getRelatedArtifacts(relationTypeSide, art).getList();
+      List<ArtifactReadable> results = Collections.emptyList();
       try {
          FilteredArtifactCallable callable = new FilteredArtifactCallable(executorAdmin, filter, artifacts);
-         Future<List<ReadableArtifact>> future = executorAdmin.schedule(callable);
+         Future<List<ArtifactReadable>> future = executorAdmin.schedule(callable);
          results = future.get();
          Utility.sort(results);
       } catch (Exception ex) {
@@ -145,8 +141,8 @@ public class ArtifactProviderImpl implements ArtifactProvider {
    }
 
    @Override
-   public ReadableArtifact getRelatedArtifact(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
-      ReadableArtifact item = graph.getRelatedArtifact(art, relationTypeSide);
+   public ArtifactReadable getRelatedArtifact(ArtifactReadable art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
+      ArtifactReadable item = graph.getRelatedArtifacts(relationTypeSide, art).getOneOrNull();
       try {
          if (!filter.accept(item)) {
             item = null;
@@ -159,8 +155,8 @@ public class ArtifactProviderImpl implements ArtifactProvider {
    }
 
    @Override
-   public ReadableArtifact getParent(ReadableArtifact art) throws OseeCoreException {
-      ReadableArtifact parent = null;
+   public ArtifactReadable getParent(ArtifactReadable art) throws OseeCoreException {
+      ArtifactReadable parent = null;
       if (cache.isParentCached(art)) {
          parent = cache.getParent(art);
       } else {
@@ -171,7 +167,7 @@ public class ArtifactProviderImpl implements ArtifactProvider {
    }
 
    @Override
-   public List<RelationType> getValidRelationTypes(ReadableArtifact art) throws OseeCoreException {
+   public List<RelationType> getValidRelationTypes(ArtifactReadable art) throws OseeCoreException {
       Collection<IRelationTypeSide> existingRelationTypes = graph.getExistingRelationTypes(art);
       Set<RelationType> toReturn = new HashSet<RelationType>();
       for (IRelationTypeSide side : existingRelationTypes) {

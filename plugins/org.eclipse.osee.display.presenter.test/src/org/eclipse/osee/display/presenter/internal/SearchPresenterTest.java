@@ -45,8 +45,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.UrlQuery;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
 import org.junit.Assert;
 import org.junit.Test;
@@ -57,9 +57,9 @@ import org.junit.Test;
 public class SearchPresenterTest {
 
    @SuppressWarnings({"rawtypes", "unchecked"})
-   private List<Match<ReadableArtifact, ReadableAttribute<?>>> getSearchResults() {
-      List<Match<ReadableArtifact, ReadableAttribute<?>>> toReturn =
-         new ArrayList<Match<ReadableArtifact, ReadableAttribute<?>>>();
+   private List<Match<ArtifactReadable, AttributeReadable<?>>> getSearchResults() {
+      List<Match<ArtifactReadable, AttributeReadable<?>>> toReturn =
+         new ArrayList<Match<ArtifactReadable, AttributeReadable<?>>>();
       MockArtifact art = new MockArtifact("guid1", "matchArt");
       MockAttribute attr = new MockAttribute(CoreAttributeTypes.Name, "matchArt");
       Match match = new MockMatch(art, attr);
@@ -263,32 +263,32 @@ public class SearchPresenterTest {
    private class ExceptionArtifactProvider implements ArtifactProvider {
 
       @Override
-      public ReadableArtifact getArtifactByArtifactToken(IOseeBranch branch, IArtifactToken token) throws OseeCoreException {
+      public ArtifactReadable getArtifactByArtifactToken(IOseeBranch branch, IArtifactToken token) throws OseeCoreException {
          throw new OseeCoreException("test");
       }
 
       @Override
-      public ReadableArtifact getArtifactByGuid(IOseeBranch branch, String guid) throws OseeCoreException {
+      public ArtifactReadable getArtifactByGuid(IOseeBranch branch, String guid) throws OseeCoreException {
          throw new OseeCoreException("test");
       }
 
       @Override
-      public List<ReadableArtifact> getRelatedArtifacts(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
+      public List<ArtifactReadable> getRelatedArtifacts(ArtifactReadable art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
          throw new OseeCoreException("test");
       }
 
       @Override
-      public ReadableArtifact getRelatedArtifact(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
+      public ArtifactReadable getRelatedArtifact(ArtifactReadable art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
          throw new OseeCoreException("test");
       }
 
       @Override
-      public ReadableArtifact getParent(ReadableArtifact art) throws OseeCoreException {
+      public ArtifactReadable getParent(ArtifactReadable art) throws OseeCoreException {
          throw new OseeCoreException("test");
       }
 
       @Override
-      public Collection<RelationType> getValidRelationTypes(ReadableArtifact art) throws OseeCoreException {
+      public Collection<RelationType> getValidRelationTypes(ArtifactReadable art) throws OseeCoreException {
          throw new OseeCoreException("test");
       }
 

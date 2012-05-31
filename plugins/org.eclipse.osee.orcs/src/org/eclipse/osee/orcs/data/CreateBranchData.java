@@ -32,8 +32,8 @@ public class CreateBranchData implements Identifiable {
    private BranchType branchType;
    private String creationComment;
    private ITransaction fromTransaction;
-   private ReadableArtifact associatedArtifact;
-   private ReadableArtifact userArtifact;
+   private ArtifactReadable associatedArtifact;
+   private ArtifactReadable userArtifact;
 
    // Merge Branch Legacy Support
    private int mergeAddressingQueryId;
@@ -100,19 +100,19 @@ public class CreateBranchData implements Identifiable {
       this.fromTransaction = fromTransaction;
    }
 
-   public ReadableArtifact getUserArtifact() {
+   public ArtifactReadable getUserArtifact() {
       return userArtifact;
    }
 
-   public void setUserArtifact(ReadableArtifact userArtifact) {
+   public void setUserArtifact(ArtifactReadable userArtifact) {
       this.userArtifact = userArtifact;
    }
 
-   public ReadableArtifact getAssociatedArtifact() {
+   public ArtifactReadable getAssociatedArtifact() {
       return associatedArtifact;
    }
 
-   public void setAssociatedArtifact(ReadableArtifact associatedArtifact) {
+   public void setAssociatedArtifact(ArtifactReadable associatedArtifact) {
       this.associatedArtifact = associatedArtifact;
    }
 

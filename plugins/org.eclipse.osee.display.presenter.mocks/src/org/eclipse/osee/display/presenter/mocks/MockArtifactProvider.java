@@ -21,8 +21,8 @@ import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.model.type.RelationType;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
 
 /**
@@ -30,24 +30,24 @@ import org.eclipse.osee.orcs.search.Match;
  */
 public class MockArtifactProvider implements ArtifactProvider {
 
-   private final Map<String, ReadableArtifact> artifacts = new HashMap<String, ReadableArtifact>();
-   private List<Match<ReadableArtifact, ReadableAttribute<?>>> resultList;
+   private final Map<String, ArtifactReadable> artifacts = new HashMap<String, ArtifactReadable>();
+   private List<Match<ArtifactReadable, AttributeReadable<?>>> resultList;
 
-   public void addArtifact(ReadableArtifact artifact) {
+   public void addArtifact(ArtifactReadable artifact) {
       artifacts.put(artifact.getGuid(), artifact);
    }
 
-   public void setResultList(List<Match<ReadableArtifact, ReadableAttribute<?>>> resultList) {
+   public void setResultList(List<Match<ArtifactReadable, AttributeReadable<?>>> resultList) {
       this.resultList = resultList;
    }
 
    @Override
-   public ReadableArtifact getArtifactByArtifactToken(IOseeBranch branch, IArtifactToken token) {
+   public ArtifactReadable getArtifactByArtifactToken(IOseeBranch branch, IArtifactToken token) {
       return artifacts.get(token.getGuid());
    }
 
    @Override
-   public ReadableArtifact getArtifactByGuid(IOseeBranch branch, String guid) {
+   public ArtifactReadable getArtifactByGuid(IOseeBranch branch, String guid) {
       return artifacts.get(guid);
    }
 
@@ -57,17 +57,17 @@ public class MockArtifactProvider implements ArtifactProvider {
    //   }
 
    @Override
-   public List<ReadableArtifact> getRelatedArtifacts(ReadableArtifact art, IRelationTypeSide relationTypeSide) {
+   public List<ArtifactReadable> getRelatedArtifacts(ArtifactReadable art, IRelationTypeSide relationTypeSide) {
       if (art instanceof MockArtifact) {
          MockArtifact mArt = (MockArtifact) art;
-         return (List<ReadableArtifact>) mArt.getRelatedArtifacts(relationTypeSide);
+         return (List<ArtifactReadable>) mArt.getRelatedArtifacts(relationTypeSide);
       } else {
          return Collections.emptyList();
       }
    }
 
    @Override
-   public ReadableArtifact getRelatedArtifact(ReadableArtifact art, IRelationTypeSide relationTypeSide) {
+   public ArtifactReadable getRelatedArtifact(ArtifactReadable art, IRelationTypeSide relationTypeSide) {
       if (art instanceof MockArtifact) {
          MockArtifact mArt = (MockArtifact) art;
          return mArt.getRelatedArtifacts(relationTypeSide).iterator().next();
@@ -77,7 +77,7 @@ public class MockArtifactProvider implements ArtifactProvider {
    }
 
    @Override
-   public ReadableArtifact getParent(ReadableArtifact art) {
+   public ArtifactReadable getParent(ArtifactReadable art) {
       if (art instanceof MockArtifact) {
          MockArtifact mArt = (MockArtifact) art;
          return null;
@@ -87,7 +87,7 @@ public class MockArtifactProvider implements ArtifactProvider {
    }
 
    @Override
-   public Collection<RelationType> getValidRelationTypes(ReadableArtifact art) {
+   public Collection<RelationType> getValidRelationTypes(ArtifactReadable art) {
       if (art instanceof MockArtifact) {
          return ((MockArtifact) art).getValidRelationTypes();
       } else {

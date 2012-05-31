@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.CreateBranchData;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -60,7 +60,7 @@ public interface OrcsBranch {
 
    Callable<List<ReadableBranch>> purgeBranch(IOseeBranch branch, boolean recurse);
 
-   Callable<TransactionRecord> commitBranch(ReadableArtifact committer, IOseeBranch source, IOseeBranch destination);
+   Callable<TransactionRecord> commitBranch(ArtifactReadable committer, IOseeBranch source, IOseeBranch destination);
 
    Callable<List<ChangeItem>> compareBranch(ITransaction sourceTx, ITransaction destinationTx);
 

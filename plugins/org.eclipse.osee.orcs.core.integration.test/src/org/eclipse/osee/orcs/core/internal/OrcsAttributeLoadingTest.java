@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiUtil;
 import org.eclipse.osee.orcs.search.Operator;
@@ -46,16 +46,16 @@ public class OrcsAttributeLoadingTest {
 
       QueryFactory queryFactory = orcsApi.getQueryFactory(context);
       QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON).andLocalIds(Arrays.asList(7, 8, 9));
-      ResultSet<ReadableArtifact> resultSet = builder.getResults();
-      List<ReadableArtifact> moreArts = resultSet.getList();
+      ResultSet<ArtifactReadable> resultSet = builder.getResults();
+      List<ArtifactReadable> moreArts = resultSet.getList();
 
       Assert.assertEquals(3, moreArts.size());
       Assert.assertEquals(3, builder.getCount());
 
-      Map<Integer, ReadableArtifact> lookup = creatLookup(moreArts);
-      ReadableArtifact art7 = lookup.get(7);
-      ReadableArtifact art8 = lookup.get(8);
-      ReadableArtifact art9 = lookup.get(9);
+      Map<Integer, ArtifactReadable> lookup = creatLookup(moreArts);
+      ArtifactReadable art7 = lookup.get(7);
+      ArtifactReadable art8 = lookup.get(8);
+      ArtifactReadable art9 = lookup.get(9);
 
       //Test loading name attributes
       Assert.assertEquals(art7.getSoleAttributeAsString(CoreAttributeTypes.Name),
@@ -75,20 +75,20 @@ public class OrcsAttributeLoadingTest {
          queryFactory.fromBranch(branchCache.getByName("SAW_Bld_1").iterator().next()).and(CoreAttributeTypes.Name,
             Operator.EQUAL, "Haptic Constraints");
 
-      ResultSet<ReadableArtifact> resultSet = builder.getResults();
-      List<ReadableArtifact> moreArts = resultSet.getList();
+      ResultSet<ArtifactReadable> resultSet = builder.getResults();
+      List<ArtifactReadable> moreArts = resultSet.getList();
 
       Assert.assertFalse(moreArts.isEmpty());
       Assert.assertTrue(builder.getCount() > 0);
 
-      ReadableArtifact artifact = moreArts.iterator().next();
+      ArtifactReadable artifact = moreArts.iterator().next();
       Assert.assertTrue(artifact.getSoleAttributeAsString(CoreAttributeTypes.WordTemplateContent).length() > 2);
    }
 
-   Map<Integer, ReadableArtifact> creatLookup(List<ReadableArtifact> arts) {
-      Map<Integer, ReadableArtifact> lookup = new HashMap<Integer, ReadableArtifact>();
-      for (ReadableArtifact artifact : arts) {
-         lookup.put(artifact.getId(), artifact);
+   Map<Integer, ArtifactReadable> creatLookup(List<ArtifactReadable> arts) {
+      Map<Integer, ArtifactReadable> lookup = new HashMap<Integer, ArtifactReadable>();
+      for (ArtifactReadable artifact : arts) {
+         lookup.put(artifact.getLocalId(), artifact);
       }
       return lookup;
    }

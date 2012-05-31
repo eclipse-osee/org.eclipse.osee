@@ -14,27 +14,27 @@ import java.util.List;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
 
 /**
  * @author Roberto E. Escobar
  */
-public abstract class QueryPostProcessor extends CancellableCallable<List<Match<ReadableArtifact, ReadableAttribute<?>>>> {
+public abstract class QueryPostProcessor extends CancellableCallable<List<Match<ArtifactReadable, AttributeReadable<?>>>> {
 
    private final Log logger;
-   private List<ReadableArtifact> artifacts;
+   private List<ArtifactReadable> artifacts;
 
    protected QueryPostProcessor(Log logger) {
       this.logger = logger;
    }
 
-   public void setItemsToProcess(List<ReadableArtifact> artifacts) {
+   public void setItemsToProcess(List<ArtifactReadable> artifacts) {
       this.artifacts = artifacts;
    }
 
-   protected List<ReadableArtifact> getItemsToProcess() {
+   protected List<ArtifactReadable> getItemsToProcess() {
       return artifacts;
    }
 
@@ -43,12 +43,12 @@ public abstract class QueryPostProcessor extends CancellableCallable<List<Match<
    }
 
    @Override
-   public final List<Match<ReadableArtifact, ReadableAttribute<?>>> call() throws Exception {
+   public final List<Match<ArtifactReadable, AttributeReadable<?>>> call() throws Exception {
       long startTime = 0;
       if (logger.isTraceEnabled()) {
          startTime = System.currentTimeMillis();
       }
-      List<Match<ReadableArtifact, ReadableAttribute<?>>> results = innerCall();
+      List<Match<ArtifactReadable, AttributeReadable<?>>> results = innerCall();
       checkForCancelled();
       if (logger.isTraceEnabled()) {
          logger.trace("Query post processor processed [%s] items in [%s]", getItemsToProcess().size(),
@@ -57,5 +57,5 @@ public abstract class QueryPostProcessor extends CancellableCallable<List<Match<
       return results;
    }
 
-   protected abstract List<Match<ReadableArtifact, ReadableAttribute<?>>> innerCall() throws Exception;
+   protected abstract List<Match<ArtifactReadable, AttributeReadable<?>>> innerCall() throws Exception;
 }

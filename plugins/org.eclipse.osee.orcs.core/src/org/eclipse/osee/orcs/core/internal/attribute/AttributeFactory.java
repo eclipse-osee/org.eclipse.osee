@@ -18,9 +18,9 @@ import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.AttributeContainer;
-import org.eclipse.osee.orcs.core.ds.AttributeRow;
+import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
+import org.eclipse.osee.orcs.core.internal.artifact.AttributeContainer;
 
 /**
  * @author Roberto E. Escobar
@@ -35,7 +35,7 @@ public class AttributeFactory {
       this.cache = cache;
    }
 
-   public <T> void loadAttribute(AttributeContainer container, AttributeRow row) throws OseeCoreException {
+   public <T> void createAttribute(AttributeContainer container, AttributeData row) throws OseeCoreException {
       AttributeType type = cache.getByGuid(row.getAttrTypeUuid());
       Conditions.checkNotNull(type, "attributeType", "Cannot find attribute type with uuid[%s]", row.getAttrTypeUuid());
 

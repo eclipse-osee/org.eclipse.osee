@@ -23,9 +23,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  * @author Roberto E. Escobar
  * @author Andrew M. Finkbeiner
  */
-public interface ReadableArtifact extends Readable, HasVersion, Identifiable {
-
-   int getId();
+public interface ArtifactReadable extends Readable, Identifiable, HasLocalId {
 
    IOseeBranch getBranch();
 
@@ -37,20 +35,14 @@ public interface ReadableArtifact extends Readable, HasVersion, Identifiable {
 
    boolean isOfType(IArtifactType... otherTypes);
 
-   // Attribute API
-
    Collection<IAttributeType> getAttributeTypes() throws OseeCoreException;
 
    String getSoleAttributeAsString(IAttributeType attributeType) throws OseeCoreException;
 
    String getSoleAttributeAsString(IAttributeType attributeType, String defaultValue) throws OseeCoreException;
 
-   <T> List<ReadableAttribute<T>> getAttributes() throws OseeCoreException;
+   <T> List<AttributeReadable<T>> getAttributes() throws OseeCoreException;
 
-   <T> List<ReadableAttribute<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException;
+   <T> List<AttributeReadable<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException;
 
-   <T> T getSoleAttributeValue(IAttributeType attributeType) throws OseeCoreException;
-
-   //
-   //   ReadableArtifact getRelatedArtifact(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException;
 }

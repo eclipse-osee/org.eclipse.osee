@@ -22,8 +22,8 @@ import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.db.internal.branch.CreateDatabaseBranch;
 
 /**
@@ -58,10 +58,10 @@ public class CreateBranchDatabaseCallable extends DatabaseCallable<Branch> {
       return branchCache;
    }
 
-   private int toArtId(ReadableArtifact artifact) {
+   private int toArtId(ArtifactReadable artifact) {
       int result = NULL_ARTIFACT_ID;
       if (artifact != null) {
-         result = artifact.getId();
+         result = artifact.getLocalId();
       }
       return result;
    }
@@ -74,10 +74,10 @@ public class CreateBranchDatabaseCallable extends DatabaseCallable<Branch> {
       String creationComment = branchData.getCreationComment();
       ITransaction txData = branchData.getFromTransaction();
 
-      ReadableArtifact authorArtifact = branchData.getUserArtifact();
+      ArtifactReadable authorArtifact = branchData.getUserArtifact();
       int authorId = toArtId(authorArtifact);
 
-      ReadableArtifact associatedArtifact = branchData.getAssociatedArtifact();
+      ArtifactReadable associatedArtifact = branchData.getAssociatedArtifact();
       int associatedArtifactId = toArtId(associatedArtifact);
 
       int sourceTransactionId = NULL_SOURCE_TRANSACTION_ID;

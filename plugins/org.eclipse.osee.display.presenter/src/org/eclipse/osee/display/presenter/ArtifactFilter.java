@@ -18,12 +18,12 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.util.Collections.Filter;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author John R. Misinco
  */
-public class ArtifactFilter implements Filter<ReadableArtifact> {
+public class ArtifactFilter implements Filter<ArtifactReadable> {
 
    private static final IArtifactType[] notAllowedTypes = {CoreArtifactTypes.TestRun};
 
@@ -48,13 +48,13 @@ public class ArtifactFilter implements Filter<ReadableArtifact> {
    }
 
    @Override
-   public boolean accept(ReadableArtifact item) throws Exception {
+   public boolean accept(ArtifactReadable item) throws Exception {
       boolean isAllowed = false;
       if (item != null) {
          if (item.isOfType(allowedTypes) || item.getBranch().equals(CoreBranches.COMMON)) {
             isAllowed = true;
          } else if (!item.isOfType(notAllowedTypes)) {
-            ReadableArtifact current = item;
+            ArtifactReadable current = item;
             while (current != null) {
                if (allowed.contains(current.getName())) {
                   isAllowed = true;

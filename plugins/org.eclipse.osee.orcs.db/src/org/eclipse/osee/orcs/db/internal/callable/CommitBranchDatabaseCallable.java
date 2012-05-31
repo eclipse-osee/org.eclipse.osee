@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.db.internal.change.ComputeNetChangeCallable;
 import org.eclipse.osee.orcs.db.internal.change.LoadDeltasBetweenBranches;
 
@@ -37,11 +37,11 @@ public class CommitBranchDatabaseCallable extends DatabaseCallable<TransactionRe
    private final TransactionRecordFactory txFactory;
    private final TransactionCache txCache;
    private final BranchCache branchCache;
-   private final ReadableArtifact committer;
+   private final ArtifactReadable committer;
    private final Branch source;
    private final Branch destination;
 
-   public CommitBranchDatabaseCallable(Log logger, IOseeDatabaseService service, BranchCache branchCache, TransactionCache txCache, TransactionRecordFactory txFactory, ReadableArtifact committer, Branch source, Branch destination) {
+   public CommitBranchDatabaseCallable(Log logger, IOseeDatabaseService service, BranchCache branchCache, TransactionCache txCache, TransactionRecordFactory txFactory, ArtifactReadable committer, Branch source, Branch destination) {
       super(logger, service);
       this.branchCache = branchCache;
       this.txCache = txCache;
@@ -76,7 +76,7 @@ public class CommitBranchDatabaseCallable extends DatabaseCallable<TransactionRe
    }
 
    private int getUserArtId() {
-      return committer != null ? committer.getId() : -1;
+      return committer != null ? committer.getLocalId() : -1;
    }
 
    private List<ChangeItem> callComputeChanges(TransactionDelta txDelta, TransactionRecord mergeTx) throws Exception {

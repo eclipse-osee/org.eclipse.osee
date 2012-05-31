@@ -21,7 +21,7 @@ import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
@@ -56,12 +56,12 @@ public class QueryFactoryImpl implements QueryFactory {
    }
 
    @Override
-   public QueryBuilder fromArtifacts(Collection<? extends ReadableArtifact> artifacts) throws OseeCoreException {
+   public QueryBuilder fromArtifacts(Collection<? extends ArtifactReadable> artifacts) throws OseeCoreException {
       Conditions.checkNotNullOrEmpty(artifacts, "artifacts");
-      ReadableArtifact artifact = artifacts.iterator().next();
+      ArtifactReadable artifact = artifacts.iterator().next();
       IOseeBranch branch = artifact.getBranch();
       Set<String> guids = new HashSet<String>();
-      for (ReadableArtifact art : artifacts) {
+      for (ArtifactReadable art : artifacts) {
          guids.add(art.getGuid());
       }
       return fromBranch(branch).andGuidsOrHrids(guids);

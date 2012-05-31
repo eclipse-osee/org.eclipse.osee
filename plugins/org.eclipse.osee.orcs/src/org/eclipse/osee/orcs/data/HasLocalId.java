@@ -10,25 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.data;
 
-import org.eclipse.osee.framework.core.data.Readable;
-import org.eclipse.osee.framework.core.model.type.RelationType;
-
 /**
  * @author Roberto E. Escobar
- * @author Andrew M. Finkbeiner
  */
-public interface ReadableRelation extends Readable, HasVersion {
+public interface HasLocalId {
 
-   public int getId();
+   int getLocalId();
 
-   public int getAArtifactId();
-
-   public int getBArtifactId();
-
-   public String getRationale();
-
-   public RelationType getRelationType();
-
-   @Override
-   String toString();
 }

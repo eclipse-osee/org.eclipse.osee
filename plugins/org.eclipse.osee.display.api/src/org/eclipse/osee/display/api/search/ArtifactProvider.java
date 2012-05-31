@@ -17,24 +17,24 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.RelationType;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author John R. Misinco
  */
 public interface ArtifactProvider {
 
-   ReadableArtifact getArtifactByArtifactToken(IOseeBranch branch, IArtifactToken token) throws OseeCoreException;
+   ArtifactReadable getArtifactByArtifactToken(IOseeBranch branch, IArtifactToken token) throws OseeCoreException;
 
-   ReadableArtifact getArtifactByGuid(IOseeBranch branch, String guid) throws OseeCoreException;
+   ArtifactReadable getArtifactByGuid(IOseeBranch branch, String guid) throws OseeCoreException;
 
-   List<ReadableArtifact> getRelatedArtifacts(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException;
+   List<ArtifactReadable> getRelatedArtifacts(ArtifactReadable art, IRelationTypeSide relationTypeSide) throws OseeCoreException;
 
-   ReadableArtifact getRelatedArtifact(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException;
+   ArtifactReadable getRelatedArtifact(ArtifactReadable art, IRelationTypeSide relationTypeSide) throws OseeCoreException;
 
-   ReadableArtifact getParent(ReadableArtifact art) throws OseeCoreException;
+   ArtifactReadable getParent(ArtifactReadable art) throws OseeCoreException;
 
-   Collection<RelationType> getValidRelationTypes(ReadableArtifact art) throws OseeCoreException;
+   Collection<RelationType> getValidRelationTypes(ArtifactReadable art) throws OseeCoreException;
 
    void getSearchResults(IOseeBranch branch, boolean nameOnly, String searchPhrase, final AsyncSearchListener callback) throws OseeCoreException;
 

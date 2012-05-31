@@ -17,8 +17,8 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.ResultSet;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.CaseType;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.Operator;
@@ -196,12 +196,12 @@ public class MockQueryBuilder implements QueryBuilder {
    }
 
    @Override
-   public ResultSet<ReadableArtifact> getResults() {
+   public ResultSet<ArtifactReadable> getResults() {
       return null;
    }
 
    @Override
-   public ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> getMatches() {
+   public ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> getMatches() {
       return null;
    }
 
@@ -216,12 +216,12 @@ public class MockQueryBuilder implements QueryBuilder {
    }
 
    @Override
-   public CancellableCallable<ResultSet<ReadableArtifact>> createSearch() {
+   public CancellableCallable<ResultSet<ArtifactReadable>> createSearch() {
       return null;
    }
 
    @Override
-   public CancellableCallable<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> createSearchWithMatches() {
+   public CancellableCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> createSearchWithMatches() {
       return null;
    }
 

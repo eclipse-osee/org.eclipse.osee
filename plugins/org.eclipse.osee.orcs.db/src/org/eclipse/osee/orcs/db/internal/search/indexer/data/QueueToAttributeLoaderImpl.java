@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexerConstants;
 import org.eclipse.osee.orcs.db.internal.search.indexer.QueueToAttributeLoader;
 
@@ -55,7 +55,7 @@ public class QueueToAttributeLoaderImpl implements QueueToAttributeLoader {
       return resourceManager;
    }
 
-   private void loadAttributeData(Collection<ReadableAttribute<?>> attributeDatas, OseeConnection connection, int tagQueueQueryId) throws OseeCoreException {
+   private void loadAttributeData(Collection<AttributeReadable<?>> attributeDatas, OseeConnection connection, int tagQueueQueryId) throws OseeCoreException {
       IOseeStatement chStmt = getDatabaseService().getStatement(connection);
       try {
          chStmt.runPreparedQuery(LOAD_ATTRIBUTE, tagQueueQueryId);
@@ -71,7 +71,7 @@ public class QueueToAttributeLoaderImpl implements QueueToAttributeLoader {
    }
 
    @Override
-   public void loadAttributes(OseeConnection connection, int tagQueueQueryId, Collection<ReadableAttribute<?>> attributeDatas) throws OseeCoreException {
+   public void loadAttributes(OseeConnection connection, int tagQueueQueryId, Collection<AttributeReadable<?>> attributeDatas) throws OseeCoreException {
       loadAttributeData(attributeDatas, connection, tagQueueQueryId);
 
       // Re-try in case query id hasn't been committed to the database

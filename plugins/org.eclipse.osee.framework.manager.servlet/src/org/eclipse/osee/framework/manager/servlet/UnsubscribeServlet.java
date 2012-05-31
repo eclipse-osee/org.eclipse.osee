@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.WritableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.GraphReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.OrcsTransaction;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
@@ -90,27 +90,23 @@ public class UnsubscribeServlet extends UnsecuredOseeHttpServlet {
    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
       try {
          UnsubscribeRequest data = UnsubscribeRequest.createFromXML(request);
-         int groupId = data.getGroupId();
-         int userId = data.getUserId();
 
          QueryFactory queryFactory = getOrcsApi().getQueryFactory(null);
 
-         ReadableArtifact authorArtifact = getArtifactById(queryFactory, data.getUserId());
-         ReadableArtifact groupArtifact = getArtifactById(queryFactory, data.getGroupId());
+         ArtifactReadable authorArtifact = getArtifactById(queryFactory, data.getUserId());
+         ArtifactReadable groupArtifact = getArtifactById(queryFactory, data.getGroupId());
 
          String comment =
             String.format("UserId [%s] requested unsubscribe from group [%s]",
                authorArtifact.getSoleAttributeAsString(CoreAttributeTypes.UserId), groupArtifact.getName());
 
+         GraphReadable readableGraph = orcsApi.getGraph(null);
+
          TransactionFactory factory = orcsApi.getTransactionFactory(null);
          OrcsTransaction txn = factory.createTransaction(CoreBranches.COMMON, authorArtifact, comment);
 
-         WritableArtifact group = txn.asWritable(groupArtifact);
-
-         // TODO
-         group.deleteRelation(CoreRelationTypes.Users_Artifact, authorArtifact);
-         //         txn.deleteRelation(CoreRelationTypes.Users_Artifact, groupId, userId);
-
+         txn.asWriteableGraph(readableGraph).deleteRelation(groupArtifact, CoreRelationTypes.Users_Artifact,
+            authorArtifact);
          txn.commit();
 
          String message = String.format("<br/>You have been successfully unsubscribed.");
@@ -124,8 +120,8 @@ public class UnsubscribeServlet extends UnsecuredOseeHttpServlet {
       }
    }
 
-   protected ReadableArtifact getArtifactById(QueryFactory queryFactory, int id) throws OseeCoreException {
-      ReadableArtifact artifact = null;
+   protected ArtifactReadable getArtifactById(QueryFactory queryFactory, int id) throws OseeCoreException {
+      ArtifactReadable artifact = null;
       if (id > 0) {
          artifact = queryFactory.fromBranch(CoreBranches.COMMON).andLocalId(id).getResults().getExactlyOne();
       }

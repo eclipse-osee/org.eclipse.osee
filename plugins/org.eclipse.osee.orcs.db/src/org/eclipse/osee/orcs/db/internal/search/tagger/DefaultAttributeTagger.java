@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.db.internal.search.util.WordOrderMatcher;
 import org.eclipse.osee.orcs.search.CaseType;
 
@@ -31,7 +31,7 @@ public class DefaultAttributeTagger extends BaseAttributeTagger {
    }
 
    @Override
-   public void tagIt(ReadableAttribute<?> attribute, TagCollector collector) throws OseeCoreException {
+   public void tagIt(AttributeReadable<?> attribute, TagCollector collector) throws OseeCoreException {
       InputStream inputStream = null;
       try {
          inputStream = getValueAsStream(attribute);
@@ -42,7 +42,7 @@ public class DefaultAttributeTagger extends BaseAttributeTagger {
    }
 
    @Override
-   public List<MatchLocation> find(ReadableAttribute<?> attribute, String toSearch, CaseType caseType, boolean matchAllLocations) throws OseeCoreException {
+   public List<MatchLocation> find(AttributeReadable<?> attribute, String toSearch, CaseType caseType, boolean matchAllLocations) throws OseeCoreException {
       List<MatchLocation> toReturn;
       if (Strings.isValid(toSearch)) {
          InputStream inputStream = null;

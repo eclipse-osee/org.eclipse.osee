@@ -10,26 +10,27 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.data;
 
-import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.Readable;
+import java.io.InputStream;
+import org.eclipse.osee.framework.core.data.Writeable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  * @author Andrew M. Finkbeiner
  */
-public interface ReadableAttribute<T> extends Readable, HasVersion {
+public interface AttributeWriteable<T> extends Writeable, AttributeReadable<T> {
 
-   int getId();
+   void setValue(T value) throws OseeCoreException;
 
-   IAttributeType getAttributeType();
+   boolean setFromString(String value) throws OseeCoreException;
 
-   boolean isOfType(IAttributeType otherAttributeType);
+   boolean setValueFromInputStream(InputStream value) throws OseeCoreException;
 
-   T getValue() throws OseeCoreException;
+   boolean isDirty();
 
-   String getDisplayableString() throws OseeCoreException;
+   void resetToDefaultValue() throws OseeCoreException;
 
-   @Override
-   String toString();
+   boolean canDelete();
+
+   void delete();
 }

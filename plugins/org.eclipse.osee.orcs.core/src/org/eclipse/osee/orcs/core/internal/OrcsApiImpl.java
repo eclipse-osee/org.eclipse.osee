@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.DataStoreTypeCache;
-import org.eclipse.osee.orcs.RelationGraph;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
@@ -31,9 +30,12 @@ import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeClassResolver;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.indexer.IndexerModule;
+import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
+import org.eclipse.osee.orcs.core.internal.relation.RelationGraphImpl;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.core.internal.session.SessionContextImpl;
 import org.eclipse.osee.orcs.core.internal.transaction.TransactionFactoryImpl;
+import org.eclipse.osee.orcs.data.GraphReadable;
 import org.eclipse.osee.orcs.search.QueryFacade;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
@@ -102,7 +104,8 @@ public class OrcsApiImpl implements OrcsApi {
    }
 
    public void start() {
-      artifactFactory = new ArtifactFactory(dataStoreTypeCache.getRelationTypeCache());
+      RelationFactory relationFactory = new RelationFactory(dataStoreTypeCache.getRelationTypeCache());
+      artifactFactory = new ArtifactFactory(relationFactory, cacheService.getArtifactTypeCache());
       AttributeFactory attributeFactory =
          new AttributeFactory(logger, resolver, dataStoreTypeCache.getAttributeTypeCache());
       objectLoader =
@@ -140,9 +143,10 @@ public class OrcsApiImpl implements OrcsApi {
    }
 
    @Override
-   public RelationGraph getGraph(ApplicationContext context) {
+   public GraphReadable getGraph(ApplicationContext context) {
       SessionContext sessionContext = getSessionContext(context);
-      return new GraphImpl(sessionContext, objectLoader, dataStoreTypeCache);
+      return new RelationGraphImpl(sessionContext, objectLoader, dataStoreTypeCache.getArtifactTypeCache(),
+         dataStoreTypeCache.getRelationTypeCache());
    }
 
    @Override

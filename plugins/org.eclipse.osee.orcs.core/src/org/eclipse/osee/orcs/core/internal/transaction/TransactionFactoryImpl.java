@@ -17,7 +17,7 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.OrcsTransaction;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 
@@ -39,7 +39,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
    }
 
    @Override
-   public OrcsTransaction createTransaction(IOseeBranch branch, ReadableArtifact userArtifact, String comment) throws OseeCoreException {
+   public OrcsTransaction createTransaction(IOseeBranch branch, ArtifactReadable userArtifact, String comment) throws OseeCoreException {
       Conditions.checkNotNull(branch, "branch");
       Conditions.checkNotNull(userArtifact, "author");
       Conditions.checkNotNullOrEmpty(comment, "comment");
