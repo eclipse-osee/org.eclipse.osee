@@ -39,10 +39,6 @@ import org.eclipse.osee.framework.skynet.core.utility.OseeNotificationEvent;
  */
 public class AtsNotifyUsers {
 
-   protected static void notify(INotificationManager oseeNotificationManager, AbstractWorkflowArtifact sma, AtsNotifyType... notifyTypes) throws OseeCoreException {
-      notify(oseeNotificationManager, sma, null, notifyTypes);
-   }
-
    /**
     * @param notifyUsers only valid for assignees notifyType. if null or any other type, the users will be computed
     */
