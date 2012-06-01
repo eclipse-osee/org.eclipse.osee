@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.server.internal;
 
+import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.HashMap;
@@ -282,4 +283,15 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       env.sendMessageToServer(message);
    }
 
+   @Override
+   public void disconnectAll() throws RemoteException {
+      for (Serializable session : env.getSessionKeys()) {
+         env.disconnect((UserTestSessionKey) session);
+      }
+      if (!keepEnvAliveWithNoUsers) {
+         messageToolServiceTracker.close();
+         closeAllConsoles();
+         env.shutdown();
+      }
+   }
 }

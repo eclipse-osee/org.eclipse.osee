@@ -181,6 +181,17 @@ public class OteService implements IHostTestEnvironment, IService {
          }
       }
    }
+   
+   @Override
+   public void disconnectAll() throws RemoteException {
+      if (remoteEnvironment != null) {
+         remoteEnvironment.disconnectAll();
+         updateDynamicInfo();
+         if (!environmentCreation.isKeepAliveWithNoUsers()) {
+            remoteEnvironment = null;
+         }
+      }
+   }
 
    @Override
    public BundleConfigurationReport checkBundleConfiguration(Collection<BundleDescription> bundles) throws RemoteException {

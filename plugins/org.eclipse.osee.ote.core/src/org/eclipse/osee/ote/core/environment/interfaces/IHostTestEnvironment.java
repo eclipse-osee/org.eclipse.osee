@@ -30,6 +30,7 @@ public interface IHostTestEnvironment extends Remote {
    
    ConnectionRequestResult requestEnvironment(IRemoteUserSession session, TestEnvironmentConfig config) throws RemoteException;
    void disconnect(UserTestSessionKey key) throws RemoteException;
+   void disconnectAll() throws RemoteException;
    
    BundleConfigurationReport checkBundleConfiguration(Collection<BundleDescription> bundles) throws RemoteException;
    void sendRuntimeBundle(Collection<BundleDescription> bundles) throws RemoteException;

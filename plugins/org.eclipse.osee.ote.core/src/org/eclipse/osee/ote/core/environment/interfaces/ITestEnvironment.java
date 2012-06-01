@@ -43,4 +43,5 @@ public interface ITestEnvironment extends Remote {
 
    public void sendMessage(Message message) throws RemoteException;
 
+   void disconnectAll() throws RemoteException;
 }
