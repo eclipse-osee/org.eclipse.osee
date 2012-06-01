@@ -23,6 +23,9 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.plugin.workspace.SafeWorkspaceAccess;
 import org.eclipse.osee.framework.ui.workspacebundleloader.internal.Activator;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchListener;
+import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -30,7 +33,7 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * @author Andrew M. Finkbeiner
  */
-public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeListener<WorkspaceStarterNature>, WorkspaceLoader {
+public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeListener<WorkspaceStarterNature>, WorkspaceLoader, IWorkbenchListener {
 
    private JarChangeResourceListener<WorkspaceStarterNature> workspaceListener;
    private SafeWorkspaceAccess service;
@@ -40,6 +43,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
       super(context, SafeWorkspaceAccess.class.getName(), null);
       bundleCoordinator = new WorkspaceBundleLoadCoordinator(new File(OseeData.getPath().toFile(), "loadedbundles"));
       context.registerService(WorkspaceLoader.class.getName(), this, null);
+      PlatformUI.getWorkbench().addWorkbenchListener(this);
    }
 
    @Override
@@ -68,6 +72,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
          workspace.addResourceChangeListener(workspaceListener);
+         
       }
    }
 
@@ -126,5 +131,15 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
    @Override
    public void unloadBundles() {
 	  bundleCoordinator.uninstallBundles();
+   }
+
+   @Override
+   public boolean preShutdown(IWorkbench workbench, boolean forced) {
+	   unloadBundles();
+	   return true;
+   }
+
+   @Override
+   public void postShutdown(IWorkbench workbench) {
    }
 }
