@@ -5,11 +5,8 @@
  */
 package org.eclipse.osee.ats.core.users;
 
-import java.util.logging.Level;
-import org.eclipse.osee.ats.core.internal.Activator;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
@@ -59,25 +56,20 @@ public abstract class AbstractAtsUser implements IAtsUser {
       if (this == obj) {
          return true;
       }
-      if (obj == null) {
-         return false;
-      }
       if (!(obj instanceof IAtsUser)) {
          return false;
       }
-      IAtsUser other = (IAtsUser) obj;
       try {
-         if (userId == null) {
-            if (other.getUserId() != null) {
-               return false;
-            } else {
+         String thisUserId = getUserId();
+         String objUserId = ((IAtsUser) obj).getUserId();
+         if (thisUserId == null) {
+            if (objUserId != null) {
                return false;
             }
-         } else if (!userId.equals(other.getUserId())) {
+         } else if (!thisUserId.equals(objUserId)) {
             return false;
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return false;
       }
       return true;
@@ -85,10 +77,19 @@ public abstract class AbstractAtsUser implements IAtsUser {
 
    @Override
    public int compareTo(Object other) {
-      if (other != null && other instanceof IAtsUser && ((IAtsUser) other).getName() != null && getName() != null) {
-         return getName().compareTo(((IAtsUser) other).getName());
+      int result = other != null ? -1 : 1;
+      if (other instanceof IAtsUser) {
+         String otherName = ((IAtsUser) other).getName();
+         String thisName = getName();
+         if (thisName == null && otherName == null) {
+            result = 0;
+         } else if (thisName != null && otherName == null) {
+            result = 1;
+         } else if (thisName != null && otherName != null) {
+            result = thisName.compareTo(otherName);
+         }
       }
-      return -1;
+      return result;
    }
 
    @Override

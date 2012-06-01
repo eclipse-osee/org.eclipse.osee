@@ -5,12 +5,8 @@
  */
 package org.eclipse.osee.ats.core.client.util;
 
-import java.util.logging.Level;
-import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 
 public class AtsUser implements IAtsUser {
@@ -43,31 +39,34 @@ public class AtsUser implements IAtsUser {
 
    @Override
    public int compareTo(Object other) {
-      try {
-         String otherName = null;
-         if (other instanceof IAtsUser) {
-            otherName = ((IAtsUser) other).getName();
-         } else if (other instanceof IAtsUser) {
-            otherName = ((IAtsUser) other).getName();
+      int result = other != null ? -1 : 1;
+      if (other instanceof IAtsUser) {
+         String otherName = ((IAtsUser) other).getName();
+         String thisName = user != null ? getName() : null;
+         if (thisName == null && otherName == null) {
+            result = 0;
+         } else if (thisName != null && otherName == null) {
+            result = 1;
+         } else if (thisName != null && otherName != null) {
+            result = thisName.compareTo(otherName);
          }
-         if (otherName != null && getUserId() != null) {
-            return getName().compareTo(otherName);
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      } else if (other instanceof User) {
+         result = user != null ? user.compareTo((User) other) : -1;
       }
-      return -1;
+      return result;
    }
 
    @Override
    public int hashCode() {
       final int prime = 31;
       int result = 0;
+      int userIdHashCode = 0;
       try {
-         result = prime * result + ((getUserId() == null) ? 0 : getUserId().hashCode());
+         userIdHashCode = (getUserId() == null) ? 0 : getUserId().hashCode();
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         // Do nothing;
       }
+      result = prime * result + userIdHashCode;
       return result;
    }
 
@@ -76,25 +75,28 @@ public class AtsUser implements IAtsUser {
       if (this == obj) {
          return true;
       }
+      if (obj == null) {
+         return false;
+      }
       try {
          String objUserId = null;
          if (obj instanceof IAtsUser) {
             objUserId = ((IAtsUser) obj).getUserId();
          } else if (obj instanceof User) {
             objUserId = ((User) obj).getUserId();
-         }
-         if (!Strings.isValid(objUserId)) {
+         } else {
             return false;
          }
-         if (getUserId() == null) {
+         String thisUserId = getUserId();
+         if (thisUserId == null) {
             if (objUserId != null) {
                return false;
             }
-         } else if (!getUserId().equals(objUserId)) {
+         } else if (!thisUserId.equals(objUserId)) {
             return false;
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         return false;
       }
       return true;
    }

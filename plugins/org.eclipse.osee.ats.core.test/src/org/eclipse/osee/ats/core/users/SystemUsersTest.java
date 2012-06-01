@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.ats.core.users;
 
+import java.util.HashMap;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -16,7 +17,7 @@ import org.junit.Test;
  * Test case for {@link Guest}<br/>
  * Test case for {@link UnAssigned}<br/>
  * Test case for {@link AbstractAtsUser}
- *
+ * 
  * @author Donald G Dunne
  */
 public class SystemUsersTest {
@@ -107,7 +108,38 @@ public class SystemUsersTest {
 
       TestUser user2 = new TestUser();
       user2.setUserId(null);
-      Assert.assertFalse(user.equals(user2));
+      Assert.assertTrue(user.equals(user2));
+   }
+
+   @org.junit.Test
+   public void testHashCorrectness() {
+      TestUser user = new TestUser();
+      user.setUserId("234");
+
+      TestUser user1 = new TestUser();
+      user1.setUserId("234");
+
+      TestUser user2 = new TestUser();
+      user2.setUserId(SystemUser.instance.getUserId());
+
+      IAtsUser mapToPi = SystemUser.instance;
+      IAtsUser alsoMapToPi = user2;
+
+      IAtsUser mapToE = user1;
+      IAtsUser alsoMapToE = user1;
+
+      HashMap<IAtsUser, Double> hash = new HashMap<IAtsUser, Double>();
+      hash.put(mapToPi, Math.PI);
+      hash.put(mapToE, Math.E);
+
+      Assert.assertTrue(hash.get(mapToPi).equals(Math.PI));
+      Assert.assertTrue(hash.get(mapToE).equals(Math.E));
+      Assert.assertTrue(hash.get(alsoMapToPi).equals(Math.PI));
+      Assert.assertTrue(hash.get(alsoMapToE).equals(Math.E));
+      Assert.assertFalse(hash.get(mapToPi).equals(Math.E));
+      Assert.assertFalse(hash.get(mapToE).equals(Math.PI));
+      Assert.assertFalse(mapToPi.equals(mapToE));
+      Assert.assertTrue(mapToPi.equals(mapToPi));
    }
 
    @Test
@@ -122,15 +154,16 @@ public class SystemUsersTest {
    @Test
    public void testCompareTo() {
       Assert.assertEquals(-8, Guest.instance.compareTo(SystemUser.instance));
-      Assert.assertEquals(-1, Guest.instance.compareTo(null));
+      Assert.assertEquals(1, Guest.instance.compareTo(null));
       Assert.assertEquals(-1, Guest.instance.compareTo("asdf"));
 
       TestUser user = new TestUser();
       user.setName(null);
-      Assert.assertEquals(-1, Guest.instance.compareTo(user));
+      Assert.assertEquals(1, Guest.instance.compareTo(user));
       Assert.assertEquals(-1, user.compareTo(Guest.instance));
-      Assert.assertEquals(-1, user.compareTo(user));
+      Assert.assertEquals(0, user.compareTo(user));
    }
+
    private class TestUser extends AbstractAtsUser {
 
       private String name = "Test User";
@@ -158,6 +191,7 @@ public class SystemUsersTest {
          return "ASE434dfgsdfgs";
       }
    };
+
    private class ExceptionUser implements IAtsUser {
 
       @Override
