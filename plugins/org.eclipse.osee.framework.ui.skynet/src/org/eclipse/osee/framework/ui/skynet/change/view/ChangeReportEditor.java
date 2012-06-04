@@ -113,7 +113,7 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
    }
 
    public void refresh() {
-      setPartName(getEditorInput().getName());
+      setPartName(getEditorInput().getTitle());
       setTitleImage(getEditorInput().getImage());
       if (changeReportPage != null) {
          changeReportPage.refresh();

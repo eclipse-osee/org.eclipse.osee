@@ -44,7 +44,7 @@ public final class SpecificTxsHandler implements IChangeReportUiHandler {
       }
       String toReturn;
       if (txDelta.getEndTx().getComment() != null) {
-         toReturn = String.format(" - %s", txDelta.getEndTx().getComment());
+         toReturn = String.format("%s", txDelta.getEndTx().getComment());
       } else {
          toReturn = String.format("%s - Transactions", branchName);
       }

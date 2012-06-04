@@ -44,9 +44,13 @@ public class ChangeReportEditorInput implements IEditorInput, IPersistableElemen
       return ImageManager.getImageDescriptor(changeData.getCompareType().getHandler().getActionImage());
    }
 
+   public String getTitle() {
+      return changeData.getCompareType().getHandler().getName(changeData.getTxDelta());
+   }
+
    @Override
    public String getName() {
-      return String.format("Change Report: " + changeData.getCompareType().getHandler().getName(changeData.getTxDelta()));
+      return String.format("Change Report: %s", getTitle());
    }
 
    @Override
@@ -65,7 +69,7 @@ public class ChangeReportEditorInput implements IEditorInput, IPersistableElemen
 
    @Override
    public String getToolTipText() {
-      return getName();
+      return getTitle();
    }
 
    @SuppressWarnings("rawtypes")
