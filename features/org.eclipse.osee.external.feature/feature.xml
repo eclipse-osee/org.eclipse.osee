@@ -32,6 +32,7 @@
       <import feature="org.polarion.eclipse.team.svn.connector.svnkit16" version="2.2.1" match="greaterOrEqual"/>
       <import feature="org.eclipse.nebula.widgets.calendarcombo.feature" version="0.0.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.nebula.widgets.xviewer.feature" version="0.0.0" match="greaterOrEqual"/>
+	   <import feature="org.eclipse.nebula.widgets.ganttchart.feature" version="0.0.0" match="greaterOrEqual"/>
       <import plugin="org.h2" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.slf4j.api" version="1.6.1" match="equivalent"/>
       <import plugin="com.jcraft.jsch" version="0.1.44" match="greaterOrEqual"/>
