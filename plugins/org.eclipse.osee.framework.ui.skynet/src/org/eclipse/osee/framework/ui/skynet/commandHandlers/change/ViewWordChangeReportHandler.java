@@ -15,76 +15,57 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Paul K. Waldfogel
  * @author Jeff C. Phillips
  */
-public class ViewWordChangeReportHandler extends AbstractHandler {
+public class ViewWordChangeReportHandler extends CommandHandler {
 
    @Override
-   public Object execute(ExecutionEvent event) {
+   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
       try {
-         ISelectionProvider selectionProvider =
-            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
-
-         if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
-            IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-
-            List<Change> localChanges = Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
-
-            Collection<Change> changes = new ArrayList<Change>(localChanges.size());
-            Set<Artifact> artifacts = new HashSet<Artifact>();
-            for (Change change : localChanges) {
-               Artifact artifact = change.getChangeArtifact();
-               if (!artifacts.contains(artifact)) {
-                  artifacts.add(artifact);
-                  changes.add(change);
+         IStructuredSelection selection = getCurrentSelection();
+         if (selection != null) {
+            List<Change> localChanges = Handlers.getArtifactChangesFromStructuredSelection(selection);
+            if (!localChanges.isEmpty()) {
+               Collection<Change> changes = new ArrayList<Change>(localChanges.size());
+               Set<Artifact> artifacts = new HashSet<Artifact>();
+               for (Change change : localChanges) {
+                  Artifact artifact = change.getChangeArtifact();
+                  if (!artifacts.contains(artifact)) {
+                     artifacts.add(artifact);
+                     changes.add(change);
+                  }
                }
-            }
-            Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
+               Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
 
-            String pathPrefix = RenderingUtil.getAssociatedArtifactName(localChanges);
-            RendererManager.diffInJob(artifactDeltas, pathPrefix);
+               String pathPrefix = RenderingUtil.getAssociatedArtifactName(localChanges);
+               RendererManager.diffInJob(artifactDeltas, pathPrefix);
+            }
          }
       } catch (Exception ex) {
-         OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
-
       return null;
    }
 
    @Override
-   public boolean isEnabled() {
-      if (PlatformUI.getWorkbench().isClosing()) {
-         return false;
-      }
-      boolean isEnabled = false;
-
-      try {
-         ISelectionProvider selectionProvider =
-            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
-         isEnabled = !selectionProvider.getSelection().isEmpty();
-
-      } catch (Exception ex) {
-         OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
-      }
-
-      return isEnabled;
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
+      List<Change> localChanges = Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
+      return !localChanges.isEmpty();
    }
+
 }

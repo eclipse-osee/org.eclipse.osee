@@ -11,12 +11,16 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
 import java.util.ArrayList;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.change.ViewWordChangeReportHandler;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.swt.SWT;
@@ -61,7 +65,11 @@ public class ChangeXViewer extends XViewer {
          if (e.keyCode == SWT.F5) {
             ViewWordChangeReportHandler handler = new ViewWordChangeReportHandler();
             if (handler.isEnabled()) {
-               handler.execute(null);
+               try {
+                  handler.execute(null);
+               } catch (ExecutionException ex) {
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+               }
             }
          }
       }
