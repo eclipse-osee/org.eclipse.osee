@@ -10,11 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.ui.internal;
 
+import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IWorkbenchUserService;
 import org.eclipse.osee.framework.ui.plugin.workspace.SafeWorkspaceAccess;
 import org.eclipse.osee.ote.ui.IOteConsoleService;
@@ -116,9 +119,13 @@ public class TestCoreGuiPlugin implements BundleActivator {
 
          @Override
          protected void doWork(IProgressMonitor monitor) throws Exception {
-            if (getWorkbenchUserService() != null) {
-               getWorkbenchUserService().getUser();
-            }
+        	 try{
+        		 if (getWorkbenchUserService() != null) {
+        			 getWorkbenchUserService().getUser();
+        		 }
+        	 } catch (Throwable th){
+        		 OseeLog.log(getClass(), Level.WARNING, "Unable to connect to OSEE Data Store, user information will default to system properties.", th); 
+        	 }
          }
       }, false);
    }
