@@ -38,13 +38,13 @@ public class TypeLoaderImpl implements TypeLoader {
    private static final String LOAD_OSEE_TYPE_DEF_URIS =
       "select attr.uri from osee_txs txs1, osee_artifact art, osee_attribute attr, osee_txs txs2 where txs1.branch_id = ? and txs1.tx_current = ? and txs1.gamma_id = art.gamma_id and txs2.branch_id = ? and txs2.tx_current = ? and txs2.gamma_id = attr.gamma_id and art.art_type_id = ? and art.art_id = attr.art_id and attr.attr_type_id = ?";
 
-   private volatile boolean needsPriming = true;
-
+   private final boolean needsPriming;
    private final IOseeModelingService modelingService;
    private final IdentityService identityService;
    private final IOseeDatabaseService dbService;
    private final IResourceManager resourceManager;
    private final BranchCache branchCache;
+   private volatile boolean loading = false;
 
    public TypeLoaderImpl(IOseeModelingService modelingService, IdentityService identityService, IOseeDatabaseService dbService, IResourceManager resourceManager, BranchCache branchCache, boolean needsPriming) {
       super();
@@ -57,18 +57,26 @@ public class TypeLoaderImpl implements TypeLoader {
    }
 
    @Override
-   public synchronized void load() throws OseeCoreException {
-      if (needsPriming) {
-         needsPriming = false;
-         Collection<String> uriPaths = findOseeTypeData();
-         if (!uriPaths.isEmpty()) {
-            List<IResource> resources = getTypeData(uriPaths);
-            String modelData = createCombinedFile(resources);
-            String modelName = String.format("osee.types.%s.osee", Lib.getDateTimeString());
-            OseeImportModelRequest request = new OseeImportModelRequest(modelName, modelData, false, false, true);
-            OseeImportModelResponse response = new OseeImportModelResponse();
-            modelingService.importOseeTypes(new NullProgressMonitor(), true, request, response);
+   public void load() throws OseeCoreException {
+      if (needsPriming && !loading) {
+         loading = true;
+         try {
+            loadTypes();
+         } finally {
+            loading = false;
          }
+      }
+   }
+
+   private void loadTypes() throws OseeCoreException {
+      Collection<String> uriPaths = findOseeTypeData();
+      if (!uriPaths.isEmpty()) {
+         List<IResource> resources = getTypeData(uriPaths);
+         String modelData = createCombinedFile(resources);
+         String modelName = String.format("osee.types.%s.osee", Lib.getDateTimeString());
+         OseeImportModelRequest request = new OseeImportModelRequest(modelName, modelData, false, false, true);
+         OseeImportModelResponse response = new OseeImportModelResponse();
+         modelingService.importOseeTypes(new NullProgressMonitor(), true, request, response);
       }
    }
 
@@ -132,4 +140,5 @@ public class TypeLoaderImpl implements TypeLoader {
       }
       return writer.toString();
    }
+
 }
