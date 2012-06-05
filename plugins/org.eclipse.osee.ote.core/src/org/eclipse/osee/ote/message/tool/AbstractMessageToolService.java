@@ -366,6 +366,7 @@ public class AbstractMessageToolService implements IRemoteMessageService {
       }
       
       try {
+    	 channel.socket().setReuseAddress(true);
          channel.socket().bind(xmitAddress);
       } catch (BindException ex) {
          // seems someone stole our address try to get a new one
