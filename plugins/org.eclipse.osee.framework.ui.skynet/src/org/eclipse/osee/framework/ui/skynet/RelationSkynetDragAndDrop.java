@@ -105,6 +105,8 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
       event.feedback = DND.FEEDBACK_EXPAND;
       event.detail = DND.DROP_NONE;
 
+      errorToolTip.setVisible(false);
+
       if (selected != null && selected.getData() instanceof RelationTypeSideSorter) {
          ArtifactTransfer artTransfer = ArtifactTransfer.getInstance();
          FileTransfer fileTransfer = FileTransfer.getInstance();
@@ -127,7 +129,7 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
                   canRelate = ensureRelationCanBeAdded(data.getRelationType(), sideA, sideB);
                   if (!canRelate) {
                      toolTipText +=
-                        String.format("Relation: [%s] cannot be added to [%s] of [%s]\n", i.getName(),
+                        String.format("Relation: [%s] \n\tcannot be added to [%s]\n\tof [%s]\n", i.getName(),
                            data.getSide().name(), data.getRelationType().getName());
 
                   }
@@ -151,10 +153,7 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
                   errorToolTip.setText("RELATION ERROR");
                   errorToolTip.setMessage(toolTipText);
                   errorToolTip.setVisible(true);
-               } else {
-                  errorToolTip.setVisible(false);
                }
-
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -205,10 +204,9 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
             }
             if (!matched) {
                event.detail = DND.DROP_NONE;
-               ToolTip tt = new ToolTip(Displays.getActiveShell(), SWT.ICON_ERROR);
-               tt.setText("MOVE ERROR");
-               tt.setMessage("Access Control has restricted this action.");
-               tt.setVisible(true);
+               errorToolTip.setText("MOVE ERROR");
+               errorToolTip.setMessage("Access Control has restricted this action.");
+               errorToolTip.setVisible(true);
                return;
             }
             // the links must be in the same group
