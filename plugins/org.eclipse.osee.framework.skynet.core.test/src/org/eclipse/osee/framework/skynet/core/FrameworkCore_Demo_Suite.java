@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifactsTest;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeTransactionTest;
 import org.eclipse.osee.framework.skynet.core.artifact.RelationDeletionTest;
 import org.eclipse.osee.framework.skynet.core.artifact.RelationOrderingTest;
-import org.eclipse.osee.framework.skynet.core.artifact.ReplaceAttributeWithTest;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactLoaderTest;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryTestDemo;
 import org.eclipse.osee.framework.skynet.core.branch.BranchSuite;
@@ -64,7 +63,6 @@ import org.junit.runners.Suite;
    FrameworkEventToRemoteEventListenerTest.class,
    BranchSuite.class,
    UserManagerTest.class,
-   ReplaceAttributeWithTest.class,
    AttributePurgeTest.class,
    CrossBranchLinkTest.class,
    UpdateBookmarkIdTest.class,
