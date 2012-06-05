@@ -973,6 +973,8 @@ attributeType "ats.SW Enhancement" extends StringAttribute {
    taggerId DefaultAttributeTaggerProvider
 }
 
+
+
 relationType "TeamLead" {
    guid "AAMFE90HyTZPyHuQWOQA"
    uuid 0x2000000000000169
@@ -1034,6 +1036,28 @@ relationType "ActionToWorkflow" {
    sideAName "Action"
    sideAArtifactType "Action"
    sideBName "Team Workflow"
+   sideBArtifactType "Team Workflow"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "Port" {
+   guid "AF4HCZd7j0hjE2yVsTwA"
+   uuid 0x200000000000017A
+   sideAName "To"
+   sideAArtifactType "Team Workflow"
+   sideBName "From"
+   sideBArtifactType "Team Workflow"
+   defaultOrderType Unordered
+   multiplicity MANY_TO_MANY
+}
+
+relationType "Derive" {
+   guid "AF4bxUKu2H7HYNu2zhQA"
+   uuid 0x200000000000017B
+   sideAName "To"
+   sideAArtifactType "Team Workflow"
+   sideBName "From"
    sideBArtifactType "Team Workflow"
    defaultOrderType Unordered
    multiplicity ONE_TO_MANY
