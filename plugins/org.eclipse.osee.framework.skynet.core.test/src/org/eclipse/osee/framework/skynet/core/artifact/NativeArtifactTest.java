@@ -24,16 +24,20 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.utility.CsvArtifact;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * @author Ryan D. Brooks
  */
 public class NativeArtifactTest {
+
+   @Rule
+   public final TemporaryFolder folder = new TemporaryFolder();
 
    private final static String ARTIFACT_NAME = NativeArtifactTest.class.getSimpleName();
    private final static Set<Artifact> testArtifacts = new HashSet<Artifact>();
@@ -70,11 +74,13 @@ public class NativeArtifactTest {
 
    @org.junit.Test
    public void testSetAndGetNativeContent() throws Exception {
-      File file = OseeData.getFile(GUID.create() + ".txt");
+      File file = folder.newFile(GUID.create() + ".txt");
       Lib.writeStringToFile("hello world", file);
+
       Artifact nativeArtifact = getNativeArtifact();
       nativeArtifact.setSoleAttributeFromStream(CoreAttributeTypes.NativeContent, new FileInputStream(file));
       nativeArtifact.persist(getClass().getSimpleName());
+
       InputStream inputStream = null;
       try {
          inputStream = nativeArtifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent, null);
