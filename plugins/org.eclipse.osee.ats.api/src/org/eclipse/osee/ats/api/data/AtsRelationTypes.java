@@ -23,6 +23,14 @@ public final class AtsRelationTypes {
       RelationSide.SIDE_A, 0x200000000000016DL, "ActionToWorkflow");
    public static final IRelationTypeSide ActionToWorkflow_WorkFlow = TokenFactory.createRelationTypeSide(
       RelationSide.SIDE_B, 0x200000000000016DL, "ActionToWorkflow");
+   public static final IRelationTypeSide Port_To = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A,
+      0x200000000000017AL, "Port");
+   public static final IRelationTypeSide Port_From = TokenFactory.createRelationTypeSide(RelationSide.SIDE_B,
+      0x200000000000017AL, "Port");
+   public static final IRelationTypeSide Derive_To = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A,
+      0x200000000000017BL, "Derive");
+   public static final IRelationTypeSide Derive_From = TokenFactory.createRelationTypeSide(RelationSide.SIDE_B,
+      0x200000000000017BL, "Derive");
    public static final IRelationTypeSide FavoriteUser_Artifact = TokenFactory.createRelationTypeSide(
       RelationSide.SIDE_A, 0x2000000000000173L, "FavoriteUser");
    public static final IRelationTypeSide FavoriteUser_User = TokenFactory.createRelationTypeSide(RelationSide.SIDE_B,
