@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.util;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -47,12 +48,13 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
@@ -125,11 +127,26 @@ public final class AtsUtil {
     * The development of ATS requires quite a few Actions to be created. To facilitate this, this method will retrieve a
     * persistent number from the file-system so each action has a different name. By entering "tt" in the title, new
     * action wizard will be pre-populated with selections and the action name will be created as "tt <number in
-    * atsNumFilename>".
+    * atsNumFilename>". Get an incrementing number. This number only resets on new workspace creation. Should not be
+    * used for anything but developmental purposes.
     */
+   private static int atsDevNum = 0;
+
    public static int getAtsDeveloperIncrementingNum() {
       try {
-         return IncrementingNum.get();
+         File numFile = OseeData.getFile("atsDevNum.txt");
+         if (numFile.exists() && atsDevNum == 0) {
+            try {
+               atsDevNum = new Integer(Lib.fileToString(numFile).replaceAll("\\s", ""));
+            } catch (NumberFormatException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            } catch (NullPointerException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
+         atsDevNum++;
+         Lib.writeStringToFile(String.valueOf(atsDevNum), numFile);
+         return atsDevNum;
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

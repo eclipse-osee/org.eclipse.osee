@@ -10,8 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.workdef.ConvertWorkDefinitionToAtsDsl;
@@ -27,7 +30,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
-import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -44,6 +46,18 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       super(parent, "Does Not Work - ATS - ConvertSaveAndOpenWorkDefToAtsDsl", PluginUiImage.ADMIN);
    }
 
+   private void writeModel(AtsDsl atsDsl, String filename) throws IOException {
+      OutputStream outputStream = null;
+      try {
+         File file = OseeData.getFile(filename);
+         outputStream = new BufferedOutputStream(new FileOutputStream(file));
+         String modelName = String.format("ats:/%s", filename);
+         ModelUtil.saveModel(atsDsl, modelName, outputStream);
+      } finally {
+         Lib.close(outputStream);
+      }
+   }
+
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       //      if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName())) {
@@ -57,17 +71,9 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
          XResultData resultData = new XResultData();
          ConvertWorkDefinitionToAtsDsl converter = new ConvertWorkDefinitionToAtsDsl(resultData);
          AtsDsl atsDsl = converter.convert(workDef.getName(), workDef);
-
-         String filename = workDef.getName() + IncrementingNum.get() + ".ats";
-         File file = OseeData.getFile(filename);
+         String filename = String.format("%s.%s.ats", workDef.getName(), Lib.getDateTimeString());
          try {
-            FileOutputStream outputStream = new FileOutputStream(file);
-            ModelUtil.saveModel(atsDsl, "ats:/ats_fileanme" + Lib.getDateTimeString() + ".ats", outputStream);
-            String contents = Lib.fileToString(file);
-
-            //            contents = cleanupContents(atsDsl, workDef, contents);
-
-            Lib.writeStringToFile(contents, file);
+            writeModel(atsDsl, filename);
             IFile iFile = OseeData.getIFile(filename);
             AWorkspace.openEditor(iFile);
          } catch (Exception ex) {

@@ -20,8 +20,10 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelationReorder;
 import org.eclipse.osee.framework.core.model.event.RelationOrderModType;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
@@ -46,7 +48,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.rule.OseeHousekeepingRule;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
 import org.junit.Assert;
@@ -896,8 +897,11 @@ public class ArtifactEventTest {
 
    /**
     * Need to always get a new relationId that hasn't been used in this DB yet
+    * 
+    * @throws OseeCoreException
+    * @throws OseeDataStoreException
     */
-   private int getIncrementingRelationId() {
-      return 9999 + IncrementingNum.get();
+   private int getIncrementingRelationId() throws OseeCoreException {
+      return ConnectionHandler.getSequence().getNextRelationId();
    }
 }

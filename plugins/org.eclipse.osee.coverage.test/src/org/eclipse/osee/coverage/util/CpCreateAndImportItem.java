@@ -16,7 +16,7 @@ import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.SimpleWorkProductTaskProvider;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
-import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -37,8 +37,9 @@ public class CpCreateAndImportItem extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
+      String coveragePkgName = String.format("%s.%s", getName(), Lib.getDateTimeString());
       coveragePackage =
-         new CoveragePackage(getName() + " - #" + IncrementingNum.get(), CoverageOptionManagerDefault.instance(),
+         new CoveragePackage(coveragePkgName, CoverageOptionManagerDefault.instance(),
             new SimpleWorkProductTaskProvider());
       OseeCoveragePackageStore store = new OseeCoveragePackageStore(coveragePackage, CoverageTestUtil.getTestBranch());
       store.save(coveragePackage.getName(), coveragePackage.getCoverageOptionManager());
