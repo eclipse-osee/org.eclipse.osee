@@ -304,20 +304,24 @@ public final class ArtifactLoader {
    private static Artifact retrieveShallowArtifact(IOseeStatement chStmt, LoadType reload, boolean historical) throws OseeCoreException {
       int artifactId = chStmt.getInt("art_id");
       Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));
-      Artifact artifact = null;
       int transactionId = Artifact.TRANSACTION_SENTINEL;
       if (historical) {
          int stripeTransactionNumber = chStmt.getInt("stripe_transaction_id");
          transactionId = stripeTransactionNumber;
       }
 
-      IArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getInt("art_type_id"));
-      ArtifactFactory factory = ArtifactTypeManager.getFactory(artifactType);
+      Artifact artifact =
+         historical ? ArtifactCache.getHistorical(artifactId, transactionId) : ArtifactCache.getActive(artifactId,
+            branch);
+      if (artifact == null) {
+         IArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getInt("art_type_id"));
+         ArtifactFactory factory = ArtifactTypeManager.getFactory(artifactType);
 
-      artifact =
-         factory.loadExisitingArtifact(artifactId, chStmt.getString("guid"), chStmt.getString("human_readable_id"),
-            artifactType, chStmt.getInt("gamma_id"), branch, transactionId,
-            ModificationType.getMod(chStmt.getInt("mod_type")), historical);
+         artifact =
+            factory.loadExisitingArtifact(artifactId, chStmt.getString("guid"), chStmt.getString("human_readable_id"),
+               artifactType, chStmt.getInt("gamma_id"), branch, transactionId,
+               ModificationType.getMod(chStmt.getInt("mod_type")), historical);
+      }
 
       if (reload == LoadType.RELOAD_CACHE) {
          artifact.internalSetPersistenceData(chStmt.getInt("gamma_id"), transactionId,
