@@ -59,6 +59,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -264,6 +265,7 @@ public class CoveragePackageImportTest {
    }
 
    @Test
+   @Ignore("Old import merge capabilities replaced.  These should be removed when that code is removed.")
    // Re-import with no changes, make sure no merge items exist
    public void testImport1B() throws Exception {
       CoverageImport1TestBlam coverageImport1TestBlam = new CoverageImport1TestBlam();
@@ -288,6 +290,7 @@ public class CoveragePackageImportTest {
    }
 
    @Test
+   @Ignore("Old import merge capabilities replaced.  These should be removed when that code is removed.")
    // Re-import two new Coverage Unit files
    // com.screenA.ComScrnButton3 and epu.PowerUnit3
    public void testImport2() throws Exception {
@@ -378,6 +381,7 @@ public class CoveragePackageImportTest {
    }
 
    @Test
+   @Ignore("Old import merge capabilities replaced.  These should be removed when that code is removed.")
    // Add PowerUnit1.initAdded to end; Change getColumnCount.line1 from TestUnit2 to TestUnit3
    public void testImport3() throws Exception {
       CoverageImport3TestBlam coverageImport3TestBlam = new CoverageImport3TestBlam();
@@ -541,6 +545,7 @@ public class CoveragePackageImportTest {
    }
 
    @Test
+   @Ignore("Old import merge capabilities replaced.  These should be removed when that code is removed.")
    // Re-import with deselectAdded method added to middle of epu.PowerUnit1
    public void testImport4() throws Exception {
       CoverageImport4TestBlam coverageImport4TestBlam = new CoverageImport4TestBlam();
@@ -668,6 +673,7 @@ public class CoveragePackageImportTest {
    }
 
    @Test
+   @Ignore("Old import merge capabilities replaced.  These should be removed when that code is removed.")
    // Re-import; Add NavigationButton.setImage coverageItems 2,3 to end
    public void testImport5() throws Exception {
       CoverageImport5TestBlam coverageImport5TestBlam = new CoverageImport5TestBlam();
@@ -783,6 +789,7 @@ public class CoveragePackageImportTest {
    }
 
    @Test
+   @Ignore("Old import merge capabilities replaced.  These should be removed when that code is removed.")
    // Re-import; Delete PowerUnit2.clear
    public void testImport6() throws Exception {
       CoverageImport6TestBlam coverageImport6TestBlam = new CoverageImport6TestBlam();
@@ -945,6 +952,7 @@ public class CoveragePackageImportTest {
    }
 
    @Test
+   @Ignore("Old import merge capabilities replaced.  These should be removed when that code is removed.")
    // Re-import; Change items AuxPowerUnit1.clear line 2 and 3
    public void testImport7() throws Exception {
       CoverageImport7TestBlam coverageImport7TestBlam = new CoverageImport7TestBlam();
@@ -1137,6 +1145,7 @@ public class CoveragePackageImportTest {
    }
 
    @Test
+   @Ignore("Old import merge capabilities replaced.  These should be removed when that code is removed.")
    // Re-import; Deletes NavigationButton2.getText.line2
    public void testImport8() throws Exception {
       CoverageImport8TestBlam coverageImport8TestBlam = new CoverageImport8TestBlam();
@@ -1291,6 +1300,7 @@ public class CoveragePackageImportTest {
    }
 
    @Test
+   @Ignore("Old import merge capabilities replaced.  These should be removed when that code is removed.")
    // Re-import; Method update for NavigationButton2.getImage.line2 and line5
    public void testImport9() throws Exception {
       CoverageImport9TestBlam coverageImport9TestBlam = new CoverageImport9TestBlam();
@@ -1438,6 +1448,7 @@ public class CoveragePackageImportTest {
    }
 
    @Test
+   @Ignore("Old import merge capabilities replaced.  These should be removed when that code is removed.")
    // Re-import; Test Improvement to resolving coverage method differences
    public void testImport10() throws Exception {
       CoverageImport10TestBlam coverageImport10TestBlam = new CoverageImport10TestBlam();
