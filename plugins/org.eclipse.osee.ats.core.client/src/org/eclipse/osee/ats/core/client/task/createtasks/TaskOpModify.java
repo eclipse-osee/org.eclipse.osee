@@ -11,20 +11,20 @@
 package org.eclipse.osee.ats.core.client.task.createtasks;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Shawn F. Cook
  */
-public class TaskOpModify implements ITaskOperation {
-   private static final String NO_MATCHING_CHANGE_REPORT_ARTIFACT = "No Match to Change Report Artifact; ";
+public class TaskOpModify extends AbstractTaskOp {
+   public static final String NO_MATCHING_CHANGE_REPORT_ARTIFACT = "No Match to Change Report Artifact; ";
 
    @Override
-   public IStatus execute(TaskMetadata metadata) throws OseeCoreException {
+   public IStatus execute(TaskMetadata metadata, SkynetTransaction transaction) throws OseeCoreException {
       TaskArtifact taskArt = metadata.getTaskArtifact();
       String currentNoteValue = taskArt.getSoleAttributeValueAsString(AtsAttributeTypes.SmaNote, "");
       if (!currentNoteValue.contains(NO_MATCHING_CHANGE_REPORT_ARTIFACT)) {
@@ -36,6 +36,10 @@ public class TaskOpModify implements ITaskOperation {
             taskArt.deleteSingletonAttributeValue(CoreAttributeTypes.StaticId, AUTO_GENERATED_STATIC_ID);
          }
       }
-      return Status.OK_STATUS;
+
+      taskArt.persist(transaction);
+
+      return generateGenericOkStatus(metadata.getTaskEnum(), taskArt.toStringWithId(),
+         metadata.getParentTeamWf().toStringWithId(), "[no changed artifact]");
    }
 }

@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.task.createtasks;
 
-import java.util.Arrays;
 import java.util.Date;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamState;
@@ -21,11 +19,13 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Shawn F. Cook
  */
-public class TaskOpCreate implements ITaskOperation {
+public class TaskOpCreate extends AbstractTaskOp {
    private final ITaskTitleProvider taskTitleProvider;
 
    public TaskOpCreate(ITaskTitleProvider taskTitleProvider) {
@@ -34,18 +34,24 @@ public class TaskOpCreate implements ITaskOperation {
    }
 
    @Override
-   public IStatus execute(TaskMetadata metadata) throws OseeCoreException {
+   public IStatus execute(TaskMetadata metadata, SkynetTransaction transaction) throws OseeCoreException {
       TeamWorkFlowArtifact parentTeamWf = metadata.getParentTeamWf();
+      Artifact changedArtifact = metadata.getChangedArtifact();
       String taskTitle = taskTitleProvider.getTaskTitle(metadata);
       Date creationDate = new Date();
-      TaskArtifact taskArt =
-         parentTeamWf.createNewTask(Arrays.asList(AtsUsers.getUnAssigned()), taskTitle, creationDate,
-            AtsUsers.getSystemUser());
+
+      TaskArtifact taskArt = parentTeamWf.createNewTask(taskTitle, creationDate, AtsUsers.getSystemUser());
 
       // create for Implement state regardless of which state workflow is in
       taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, TeamState.Implement.getPageName());
       taskArt.setSingletonAttributeValue(CoreAttributeTypes.StaticId, AUTO_GENERATED_STATIC_ID);
-      return Status.OK_STATUS;
-   }
+      //TODO: Update attribute to use new Task->Artifact association
+      taskArt.setSoleAttributeFromString(AtsAttributeTypes.Category1, changedArtifact.getGuid());
 
+      taskArt.persist(transaction);
+      parentTeamWf.persist(transaction);
+
+      return generateGenericOkStatus(metadata.getTaskEnum(), taskArt.toStringWithId(),
+         metadata.getParentTeamWf().toStringWithId(), changedArtifact.toStringWithId());
+   }
 }

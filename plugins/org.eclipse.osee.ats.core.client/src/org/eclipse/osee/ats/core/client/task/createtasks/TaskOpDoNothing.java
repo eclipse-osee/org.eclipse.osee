@@ -10,27 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.task.createtasks;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Shawn F. Cook
  */
-public class ExecuteTaskOpList {
-   public Map<TaskMetadata, IStatus> execute(List<TaskMetadata> metadatas, Map<TaskEnum, ITaskOperation> ops, SkynetTransaction transaction) throws OseeCoreException {
-      Map<TaskMetadata, IStatus> statusMap = new HashMap<TaskMetadata, IStatus>();
+public class TaskOpDoNothing extends AbstractTaskOp {
+   private final ITaskTitleProvider taskTitleProvider;
 
-      for (TaskMetadata metadata : metadatas) {
-         ITaskOperation operation = ops.get(metadata.getTaskEnum());
-         IStatus status = operation.execute(metadata, transaction);
-         statusMap.put(metadata, status);
-      }
+   public TaskOpDoNothing(ITaskTitleProvider taskTitleProvider) {
+      super();
+      this.taskTitleProvider = taskTitleProvider;
+   }
 
-      return statusMap;
+   @Override
+   public IStatus execute(TaskMetadata metadata, SkynetTransaction transaction) {
+      String taskTitle = taskTitleProvider.getTaskTitle(metadata);
+      String changedArt = "[no changed artifact]";
+      return generateGenericOkStatus(metadata.getTaskEnum(), taskTitle, metadata.getParentTeamWf().toStringWithId(),
+         changedArt);
    }
 
 }

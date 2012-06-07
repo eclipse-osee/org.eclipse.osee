@@ -66,7 +66,7 @@ public class AtsNavigateItemsToTaskEditorTest {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Task Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof TaskSearchWorldSearchItem);
       handleGeneralDoubleClickAndTestResults(item, CoreArtifactTypes.Artifact, 0, TableLoadOption.DontCopySearchItem);
-      runGeneralTaskSearchOnCompletedCancelledTest(item, true, 14);
+      runGeneralTaskSearchOnCompletedCancelledTest(item, true, 19);
       runGeneralTaskSearchOnCompletedCancelledTest(item, false, 0);
       runGeneralTaskSearchOnTeamTest(item, selectedUsers, 0);
       selectedUsers.clear();

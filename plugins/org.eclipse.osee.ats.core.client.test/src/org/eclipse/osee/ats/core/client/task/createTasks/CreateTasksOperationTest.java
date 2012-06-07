@@ -10,26 +10,47 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.task.createTasks;
 
+import java.rmi.activation.Activator;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.AtsTestUtil;
+import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.createtasks.CreateTasksOperation;
 import org.eclipse.osee.ats.core.client.task.createtasks.GenerateTaskOpList;
+import org.eclipse.osee.ats.core.client.task.createtasks.ITaskTitleProvider;
 import org.eclipse.osee.ats.core.client.task.createtasks.TaskEnum;
 import org.eclipse.osee.ats.core.client.task.createtasks.TaskMetadata;
+import org.eclipse.osee.ats.core.client.task.createtasks.TaskOpModify;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.version.VersionArtifact;
+import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.NullOperationLogger;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.XResultDataFile;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.IChangeWorker;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 
 /**
  * Test unit for {@link CreateTasksOperation}
@@ -38,71 +59,350 @@ import org.junit.Assert;
  */
 public class CreateTasksOperationTest {
 
+   private final static String mockTaskTitlePrefix = "Task for ChangedArt:";
+   private final static String artifactNamePrefix = CreateTasksOperationTest.class.getSimpleName();
+   private boolean isPopulated = false;
+   private GenerateTaskOpList genTaskOpList;
+   private TeamWorkFlowArtifact destTeamWf1_Proper;
+   private TeamWorkFlowArtifact destTeamWf2_ChangesWithoutTasks;
+   private TeamWorkFlowArtifact destTeamWf3_TasksWithoutChanges;
+   private TeamWorkFlowArtifact reqTeamWf;
+   private ActionableItemArtifact aia1_Proper;
+   private ActionableItemArtifact aia2_ChangesWithoutTasks;
+   private ActionableItemArtifact aia3_TasksWithoutChanges;
+   private VersionArtifact ver1_Proper;
+   private VersionArtifact ver2_ChangesWithoutTasks;
+   private VersionArtifact ver3_TasksWithoutChanges;
+   private ChangeData changeData_Proper;
+   private ChangeData changeData_ChangesWithoutTasks;
+   private ChangeData changeData_TasksWithoutChanges;
+
+   @BeforeClass
+   @AfterClass
+   public static void cleanup() throws Exception {
+      AtsTestUtil.cleanup();
+   }
+
+   private void assert_Tasks_OriginalData(TeamWorkFlowArtifact teamWf) throws MultipleAttributesExist, OseeCoreException {
+      Collection<TaskArtifact> taskArts = teamWf.getTaskArtifacts();
+      for (TaskArtifact taskArt : taskArts) {
+         //Verify that none of the tasks are the generated tasks.
+         Assert.assertTrue(taskArt.getName().contains(artifactNamePrefix));
+         Assert.assertTrue(!taskArt.getName().contains(mockTaskTitlePrefix));
+
+         //Verify that non of the tasks had their notes modified.
+         String currentNoteValue = taskArt.getSoleAttributeValueAsString(AtsAttributeTypes.SmaNote, "");
+         Assert.assertTrue(!currentNoteValue.contains(TaskOpModify.NO_MATCHING_CHANGE_REPORT_ARTIFACT));
+      }
+   }
+
+   private void assert_Tasks_NotesModified(TeamWorkFlowArtifact teamWf) throws MultipleAttributesExist, OseeCoreException {
+      Collection<TaskArtifact> taskArts = teamWf.getTaskArtifacts();
+      for (TaskArtifact taskArt : taskArts) {
+         String currentNoteValue = taskArt.getSoleAttributeValueAsString(AtsAttributeTypes.SmaNote, "");
+         Assert.assertTrue(currentNoteValue.contains(TaskOpModify.NO_MATCHING_CHANGE_REPORT_ARTIFACT));
+      }
+   }
+
+   private void assert_Tasks_Generated(TeamWorkFlowArtifact teamWf) throws MultipleAttributesExist, OseeCoreException {
+      Collection<TaskArtifact> taskArts = teamWf.getTaskArtifacts();
+      for (TaskArtifact taskArt : taskArts) {
+         Assert.assertTrue(taskArt.getName().contains(mockTaskTitlePrefix));
+      }
+   }
+
+   private void runCreateTasksOperation(VersionArtifact destinationVersion, ActionableItemArtifact actionableItemArt, ChangeData changeData) throws OseeCoreException {
+      OperationLogger stringLogger = NullOperationLogger.getSingleton();
+      MockTaskTitleProvider taskTitleProvider = new MockTaskTitleProvider();
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
+            artifactNamePrefix + " - testCreateTasksOperation");
+      XResultDataFile resultData = new XResultDataFile();
+      resultData.clear();
+
+      //Notice that the Actionable Item used is what will determine which TeamWF the CreateTasksOperation will chose
+      // Kind of more complicated testing environment than I would prefer, but that's how it goes.
+      CreateTasksOperation createTasksOp_Proper =
+         new CreateTasksOperation(destinationVersion, actionableItemArt, changeData, reqTeamWf, false, resultData,
+            transaction, stringLogger, taskTitleProvider);
+      Operations.executeWorkAndCheckStatus(createTasksOp_Proper);
+
+      transaction.execute();
+
+      System.out.println(resultData.toString());
+   }
+
+   @org.junit.Test
+   public void test_Case_Proper() throws OseeCoreException {
+      ensurePopulated();
+
+      assert_Tasks_OriginalData(destTeamWf1_Proper);
+      assert_Tasks_OriginalData(destTeamWf2_ChangesWithoutTasks);
+      assert_Tasks_OriginalData(destTeamWf3_TasksWithoutChanges);
+
+      //There should be NO changes to any of the data before or after this test.
+      runCreateTasksOperation(ver1_Proper, aia1_Proper, changeData_Proper);
+
+      assert_Tasks_OriginalData(destTeamWf1_Proper);
+      assert_Tasks_OriginalData(destTeamWf2_ChangesWithoutTasks);
+      assert_Tasks_OriginalData(destTeamWf3_TasksWithoutChanges);
+
+      cleanupAndReset();
+   }
+
+   @org.junit.Test
+   public void test_Case_ChangesWithoutTasks() throws OseeCoreException {
+      ensurePopulated();
+
+      assert_Tasks_OriginalData(destTeamWf1_Proper);
+      assert_Tasks_OriginalData(destTeamWf2_ChangesWithoutTasks);
+      assert_Tasks_OriginalData(destTeamWf3_TasksWithoutChanges);
+
+      //There should be NO changes to any of the data before or after this test.
+      runCreateTasksOperation(ver2_ChangesWithoutTasks, aia2_ChangesWithoutTasks, changeData_ChangesWithoutTasks);
+
+      assert_Tasks_OriginalData(destTeamWf1_Proper);
+      assert_Tasks_Generated(destTeamWf2_ChangesWithoutTasks);
+      assert_Tasks_OriginalData(destTeamWf3_TasksWithoutChanges);
+
+      cleanupAndReset();
+   }
+
+   @org.junit.Test
+   public void test_Case_TasksWithoutChanges() throws OseeCoreException {
+      ensurePopulated();
+
+      assert_Tasks_OriginalData(destTeamWf1_Proper);
+      assert_Tasks_OriginalData(destTeamWf2_ChangesWithoutTasks);
+      assert_Tasks_OriginalData(destTeamWf3_TasksWithoutChanges);
+
+      //There should be NO changes to any of the data before or after this test.
+      runCreateTasksOperation(ver3_TasksWithoutChanges, aia3_TasksWithoutChanges, changeData_TasksWithoutChanges);
+
+      assert_Tasks_OriginalData(destTeamWf1_Proper);
+      assert_Tasks_OriginalData(destTeamWf2_ChangesWithoutTasks);
+      assert_Tasks_NotesModified(destTeamWf3_TasksWithoutChanges);
+
+      cleanupAndReset();
+   }
+
    @org.junit.Test
    public void testGenerateTaskOpList() throws OseeCoreException {
-      AtsTestUtil.cleanupAndReset("CreateTasksOperationTest - testGenerateTaskOpList");
-      TeamWorkFlowArtifact destTeamWf = AtsTestUtil.getTeamWf();
-      ChangeData changeData = getMockChangeData(destTeamWf);
+      ensurePopulated();
 
-      GenerateTaskOpList genTaskOpList = new GenerateTaskOpList();
-      List<TaskMetadata> metadatas = genTaskOpList.generate(changeData, destTeamWf);
+      //All changes and tasks should be accounted for - so no changes should be needed.
+      List<TaskMetadata> metadatasProper = genTaskOpList.generate(changeData_Proper, destTeamWf1_Proper);
+      Assert.assertEquals(0, metadatasProper.size());
 
-      Assert.assertEquals(changeData.getChanges().size(), metadatas.size());
-
-      for (TaskMetadata metadata : metadatas) {
+      //Changes without tasks should result in task creation - one for each change
+      List<TaskMetadata> metadatasChangesWithoutTasks =
+         genTaskOpList.generate(changeData_ChangesWithoutTasks, destTeamWf2_ChangesWithoutTasks);
+      Assert.assertEquals(changeData_ChangesWithoutTasks.getChanges().size(), metadatasChangesWithoutTasks.size());
+      for (TaskMetadata metadata : metadatasChangesWithoutTasks) {
          Assert.assertEquals(metadata.getTaskEnum(), TaskEnum.CREATE);
       }
 
-      //      TaskArtifact taskToMove = AtsTestUtil.getOrCreateTaskOffTeamWf1();
-      //      TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
-      //
-      //      WorkDefinition taskWorkDef = WorkDefinitionFactory.getWorkDefinitionForTask(taskToMove).getWorkDefinition();
-      //      WorkDefinition newTaskWorkDef =
-      //         WorkDefinitionFactory.getWorkDefinitionForTaskNotYetCreated(teamWf2).getWorkDefinition();
-      //      Assert.assertNotNull(taskWorkDef);
-      //
-      //      Assert.assertEquals(taskWorkDef, newTaskWorkDef);
-      //      Result result = TaskManager.moveTasks(teamWf2, Arrays.asList(taskToMove));
-      //
-      //      Assert.assertTrue("This failed: " + result.getText(), result.isTrue());
+      //Tasks without changes should result in task modification - one for each task
+      List<TaskMetadata> metadatasTasksWithoutChanges =
+         genTaskOpList.generate(changeData_TasksWithoutChanges, destTeamWf3_TasksWithoutChanges);
+      Assert.assertEquals(destTeamWf3_TasksWithoutChanges.getTaskArtifacts().size(),
+         metadatasTasksWithoutChanges.size());
+      for (TaskMetadata metadata : metadatasProper) {
+         Assert.assertEquals(metadata.getTaskEnum(), TaskEnum.MODIFY);
+      }
+
+      cleanupAndReset();
    }
 
-   private ChangeData getMockChangeData(TeamWorkFlowArtifact destTeamWf) throws OseeCoreException {
+   private void cleanupAndReset() throws OseeCoreException {
+      AtsTestUtil.cleanupAndReset(artifactNamePrefix);
+      isPopulated = false;
+   }
+
+   private void ensurePopulated() throws OseeCoreException {
+      if (!isPopulated) {
+         AtsTestUtil.cleanupAndReset(artifactNamePrefix);
+         genTaskOpList = new GenerateTaskOpList();
+         destTeamWf1_Proper = AtsTestUtil.getTeamWf();
+         destTeamWf2_ChangesWithoutTasks = AtsTestUtil.getTeamWf2();
+         destTeamWf3_TasksWithoutChanges = AtsTestUtil.getTeamWf3();
+         destTeamWf1_Proper.setName(destTeamWf1_Proper.getName() + " Proper");
+         destTeamWf2_ChangesWithoutTasks.setName(destTeamWf2_ChangesWithoutTasks.getName() + " ChangesWithoutTasks");
+         destTeamWf3_TasksWithoutChanges.setName(destTeamWf3_TasksWithoutChanges.getName() + " TasksWithoutChanges");
+
+         ver1_Proper = AtsTestUtil.getVerArt1();
+         ver2_ChangesWithoutTasks = AtsTestUtil.getVerArt2();
+         ver3_TasksWithoutChanges = AtsTestUtil.getVerArt3();
+         ver1_Proper.setName(ver1_Proper.getName() + " Proper");
+         ver2_ChangesWithoutTasks.setName(ver2_ChangesWithoutTasks.getName() + " ChangesWithoutTasks");
+         ver3_TasksWithoutChanges.setName(ver3_TasksWithoutChanges.getName() + " TasksWithoutChanges");
+
+         destTeamWf1_Proper.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, ver1_Proper);
+         destTeamWf2_ChangesWithoutTasks.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
+            ver2_ChangesWithoutTasks);
+         destTeamWf3_TasksWithoutChanges.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
+            ver3_TasksWithoutChanges);
+
+         changeData_Proper = createProperChangesAndTasks(destTeamWf1_Proper);
+         changeData_ChangesWithoutTasks = createChangesWithoutTasks();
+         changeData_TasksWithoutChanges = createTasksWithoutChanges(destTeamWf3_TasksWithoutChanges);
+
+         reqTeamWf = AtsTestUtil.getTeamWf4();
+         reqTeamWf.setRelations(AtsRelationTypes.Derive_To, Collections.getAggregate(destTeamWf1_Proper,
+            destTeamWf2_ChangesWithoutTasks, destTeamWf3_TasksWithoutChanges));
+
+         aia1_Proper = AtsTestUtil.getTestAi();
+         aia2_ChangesWithoutTasks = AtsTestUtil.getTestAi2();
+         aia3_TasksWithoutChanges = AtsTestUtil.getTestAi3();
+         aia1_Proper.setName(aia1_Proper.getName() + " Proper");
+         aia2_ChangesWithoutTasks.setName(aia2_ChangesWithoutTasks.getName() + " ChangesWithoutTasks");
+         aia3_TasksWithoutChanges.setName(aia1_Proper.getName() + " TasksWithoutChanges");
+
+         isPopulated = true;
+      }
+   }
+
+   private ChangeData createProperChangesAndTasks(TeamWorkFlowArtifact destTeamWf) throws OseeCoreException {
+
       //Create MockChange objects
       Artifact changeArt01 =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(), "changeArt01");
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(),
+            artifactNamePrefix + " Change Art 01 - Proper");
       Artifact changeArt02 =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(), "changeArt02");
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(),
+            artifactNamePrefix + " Change Art 02 - Proper");
       Artifact changeArt03 =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(), "changeArt03");
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(),
+            artifactNamePrefix + " Change Art 03 - Proper");
       Artifact changeArt04 =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(), "changeArt04");
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(),
+            artifactNamePrefix + " Change Art 04 - Proper");
       Artifact changeArt05 =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(), "changeArt05");
-      Artifact changeArt06 =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(), "changeArt06");
-      Artifact changeArt07 =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(), "changeArt07");
-      Artifact changeArt08 =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(), "changeArt08");
-      Artifact changeArt09 =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(), "changeArt09");
-      Artifact changeArt10 =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(), "changeArt10");
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(),
+            artifactNamePrefix + " Change Art 05 - Proper");
+
       Change mockChange01 = new MockChange(changeArt01);
       Change mockChange02 = new MockChange(changeArt02);
       Change mockChange03 = new MockChange(changeArt03);
       Change mockChange04 = new MockChange(changeArt04);
       Change mockChange05 = new MockChange(changeArt05);
-      Change mockChange06 = new MockChange(changeArt06);
-      Change mockChange07 = new MockChange(changeArt07);
-      Change mockChange08 = new MockChange(changeArt08);
-      Change mockChange09 = new MockChange(changeArt09);
-      Change mockChange10 = new MockChange(changeArt10);
 
-      destTeamWf.createNewTask("", null, null);
+      Date createdDate = new Date();
 
-      Collection<Change> changes = new ArrayList<Change>(Collections.getAggregate(mockChange01));
+      TaskArtifact task01 =
+         destTeamWf.createNewTask(artifactNamePrefix + " Task 01", createdDate, AtsUsers.getSystemUser());
+      TaskArtifact task02 =
+         destTeamWf.createNewTask(artifactNamePrefix + " Task 02", createdDate, AtsUsers.getSystemUser());
+      TaskArtifact task03 =
+         destTeamWf.createNewTask(artifactNamePrefix + " Task 03", createdDate, AtsUsers.getSystemUser());
+      TaskArtifact task04 =
+         destTeamWf.createNewTask(artifactNamePrefix + " Task 04", createdDate, AtsUsers.getSystemUser());
+      TaskArtifact task05 =
+         destTeamWf.createNewTask(artifactNamePrefix + " Task 05", createdDate, AtsUsers.getSystemUser());
+
+      //TODO: Utilize new attribute to relate change arts to tasks
+      task01.setSoleAttributeFromString(AtsAttributeTypes.Category1, changeArt01.getGuid());
+      task02.setSoleAttributeFromString(AtsAttributeTypes.Category1, changeArt02.getGuid());
+      task03.setSoleAttributeFromString(AtsAttributeTypes.Category1, changeArt03.getGuid());
+      task04.setSoleAttributeFromString(AtsAttributeTypes.Category1, changeArt04.getGuid());
+      task05.setSoleAttributeFromString(AtsAttributeTypes.Category1, changeArt05.getGuid());
+
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
+            artifactNamePrefix + " - createProperChangesAndTasks");
+      changeArt01.persist(transaction);
+      changeArt02.persist(transaction);
+      changeArt03.persist(transaction);
+      changeArt04.persist(transaction);
+      changeArt05.persist(transaction);
+      task01.persist(transaction);
+      task02.persist(transaction);
+      task03.persist(transaction);
+      task04.persist(transaction);
+      task05.persist(transaction);
+      transaction.execute();
+
+      Collection<Change> changes =
+         new ArrayList<Change>(Collections.getAggregate(mockChange01, mockChange02, mockChange03, mockChange04,
+            mockChange05));
+
+      ChangeData changeData = new ChangeData(changes);
+
+      return changeData;
+   }
+
+   private ChangeData createChangesWithoutTasks() throws OseeCoreException {
+      //Create MockChange objects
+      Artifact changeArt01 =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(),
+            artifactNamePrefix + " Change Art 01 - No task");
+      Artifact changeArt02 =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(),
+            artifactNamePrefix + " Change Art 02 - No task");
+      Artifact changeArt03 =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(),
+            artifactNamePrefix + " Change Art 03 - No task");
+      Artifact changeArt04 =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(),
+            artifactNamePrefix + " Change Art 04 - No task");
+      Artifact changeArt05 =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(),
+            artifactNamePrefix + " Change Art 05 - No task");
+
+      Change mockChange01 = new MockChange(changeArt01);
+      Change mockChange02 = new MockChange(changeArt02);
+      Change mockChange03 = new MockChange(changeArt03);
+      Change mockChange04 = new MockChange(changeArt04);
+      Change mockChange05 = new MockChange(changeArt05);
+
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
+            artifactNamePrefix + " - createChangesWithoutTasks");
+      changeArt01.persist(transaction);
+      changeArt02.persist(transaction);
+      changeArt03.persist(transaction);
+      changeArt04.persist(transaction);
+      changeArt05.persist(transaction);
+      transaction.execute();
+
+      Collection<Change> changes =
+         new ArrayList<Change>(Collections.getAggregate(mockChange01, mockChange02, mockChange03, mockChange04,
+            mockChange05));
+
+      ChangeData changeData = new ChangeData(changes);
+
+      return changeData;
+   }
+
+   private ChangeData createTasksWithoutChanges(TeamWorkFlowArtifact destTeamWf) throws OseeCoreException {
+      Date createdDate = new Date();
+      TaskArtifact task01 =
+         destTeamWf.createNewTask(artifactNamePrefix + " Task 01 - No changed artifact", createdDate,
+            AtsUsers.getSystemUser());
+      TaskArtifact task02 =
+         destTeamWf.createNewTask(artifactNamePrefix + " Task 02 - No changed artifact", createdDate,
+            AtsUsers.getSystemUser());
+      TaskArtifact task03 =
+         destTeamWf.createNewTask(artifactNamePrefix + " Task 03 - No changed artifact", createdDate,
+            AtsUsers.getSystemUser());
+      TaskArtifact task04 =
+         destTeamWf.createNewTask(artifactNamePrefix + " Task 04 - No changed artifact", createdDate,
+            AtsUsers.getSystemUser());
+      TaskArtifact task05 =
+         destTeamWf.createNewTask(artifactNamePrefix + " Task 05 - No changed artifact", createdDate,
+            AtsUsers.getSystemUser());
+
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
+            artifactNamePrefix + " - createTasksWithoutChanges");
+      task01.persist(transaction);
+      task02.persist(transaction);
+      task03.persist(transaction);
+      task04.persist(transaction);
+      task05.persist(transaction);
+      transaction.execute();
+
+      Collection<Change> changes = new ArrayList<Change>();
 
       ChangeData changeData = new ChangeData(changes);
 
@@ -116,47 +416,73 @@ public class CreateTasksOperationTest {
 
       @Override
       public int getItemTypeId() {
+         OseeLog.log(Activator.class, Level.WARNING,
+            "CreateTasksOperationTest.MockChange.getItemTypeId() - Unimplemented method called");
          return 0;
       }
 
       @Override
       public String getIsValue() {
+         OseeLog.log(Activator.class, Level.WARNING,
+            "CreateTasksOperationTest.MockChange.getIsValue() - Unimplemented method called");
          return null;
       }
 
       @Override
       public String getWasValue() {
+         OseeLog.log(Activator.class, Level.WARNING,
+            "CreateTasksOperationTest.MockChange.getWasValue() - Unimplemented method called");
          return null;
       }
 
       @Override
-      public String getItemTypeName() throws OseeCoreException {
+      public String getItemTypeName() {
+         OseeLog.log(Activator.class, Level.WARNING,
+            "CreateTasksOperationTest.MockChange.getItemTypeName() - Unimplemented method called");
          return null;
       }
 
       @Override
       public String getName() {
-         return null;
+         return this.getChangeArtifact().getName();
       }
 
       @Override
       public String getItemKind() {
+         OseeLog.log(Activator.class, Level.WARNING,
+            "CreateTasksOperationTest.MockChange.getItemKind() - Unimplemented method called");
          return null;
       }
 
       @Override
       public int getItemId() {
+         OseeLog.log(Activator.class, Level.WARNING,
+            "CreateTasksOperationTest.MockChange.getItemId() - Unimplemented method called");
          return 0;
       }
 
       @Override
       public LoadChangeType getChangeType() {
+         OseeLog.log(Activator.class, Level.WARNING,
+            "CreateTasksOperationTest.MockChange.getChangeType() - Unimplemented method called");
          return null;
       }
 
       @Override
       public Class<? extends IChangeWorker> getWorker() {
+         OseeLog.log(Activator.class, Level.WARNING,
+            "CreateTasksOperationTest.MockChange.getWorker() - Unimplemented method called");
          return null;
       }
+   }
+
+   private class MockTaskTitleProvider implements ITaskTitleProvider {
+      @Override
+      public String getTaskTitle(TaskMetadata metadata) {
+         Artifact changedArt = metadata.getChangedArtifact();
+         String changedArtGuid = changedArt.getGuid();
+         return mockTaskTitlePrefix + changedArtGuid;
+      }
+
    }
 }

@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.client.task.createtasks;
 
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Shawn F. Cook
@@ -21,12 +22,14 @@ public class TaskMetadata {
    private final TeamWorkFlowArtifact parentTeamWf;
    private final TaskArtifact taskArtifact;
    private final TaskEnum taskEnum;
+   private final Artifact changedArtifact;
 
-   public TaskMetadata(TeamWorkFlowArtifact parentWorkflow, TaskArtifact taskArtifact, TaskEnum taskEnum) {
+   public TaskMetadata(TeamWorkFlowArtifact parentWorkflow, TaskArtifact taskArtifact, Artifact changedArtifact, TaskEnum taskEnum) {
       super();
       this.parentTeamWf = parentWorkflow;
       this.taskArtifact = taskArtifact;
       this.taskEnum = taskEnum;
+      this.changedArtifact = changedArtifact;
    }
 
    public TeamWorkFlowArtifact getParentTeamWf() {
@@ -39,6 +42,10 @@ public class TaskMetadata {
 
    public TaskEnum getTaskEnum() {
       return taskEnum;
+   }
+
+   public Artifact getChangedArtifact() {
+      return changedArtifact;
    }
 
 }

@@ -14,9 +14,11 @@ import java.rmi.activation.Activator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -43,7 +45,7 @@ public class GenerateTaskOpList {
       for (Change change : changeData.getChanges()) {
          TaskArtifact taskArt = findTaskArtifactFor(change, destTeamWf);
          if (taskArt == null) {
-            metadatas.add(new TaskMetadata(destTeamWf, taskArt, TaskEnum.CREATE));
+            metadatas.add(new TaskMetadata(destTeamWf, null, change.getChangeArtifact(), TaskEnum.CREATE));
          }
       }
 
@@ -52,7 +54,7 @@ public class GenerateTaskOpList {
          for (TaskArtifact taskArt : destTeamWf.getTaskArtifacts()) {
             Change change = findChangeFor(taskArt, changeData);
             if (change == null) {
-               metadatas.add(new TaskMetadata(destTeamWf, taskArt, TaskEnum.MODIFY));
+               metadatas.add(new TaskMetadata(destTeamWf, taskArt, null, TaskEnum.MODIFY));
             }
          }
       }
@@ -61,35 +63,51 @@ public class GenerateTaskOpList {
    }
 
    private TaskArtifact findTaskArtifactFor(Change change, TeamWorkFlowArtifact destTeamWf) throws OseeCoreException {
-      if (destTeamWf == null) {
-         return null;
+      TaskArtifact retTaskArt = null;
+      if (destTeamWf == null || change == null) {
+         //Do nothing - return retTaskArt = null
+      } else {
+         Artifact changeArtifactFromChange = change.getChangeArtifact();
+         if (changeArtifactFromChange == null) {
+            OseeLog.log(
+               Activator.class,
+               Level.WARNING,
+               "GenerateTaskOpList.findTaskArtifactFor() - WARNING #1: Change's ChangedArtifact is NULL.  Change:" + change.getName());
+         } else {
+            String changeArtGuidFromChange = changeArtifactFromChange.getGuid();
+            for (TaskArtifact taskArt : destTeamWf.getTaskArtifacts()) {
+               //TODO: Utilize the new TaskArt->Artifact unidirectional relationship to find a task artifact for the changed artifact
+               String changedArtGuidFromTask = taskArt.getSoleAttributeValueAsString(AtsAttributeTypes.Category1, "");
+               if (changeArtGuidFromChange.equalsIgnoreCase(changedArtGuidFromTask)) {
+                  retTaskArt = taskArt;
+                  break;
+               }
+            }
+         }
       }
-      for (TaskArtifact taskArt : destTeamWf.getTaskArtifacts()) {
-         //TODO: Utilize the new TaskArt->Artifact unidirectional relationship to find a task artifact for the changed artifact
-      }
-      return null;
+      return retTaskArt;
    }
 
    private Change findChangeFor(TaskArtifact taskArt, ChangeData changeData) throws OseeCoreException {
       Change retChange = null;
 
       if (taskArt == null) {
-         return null;
-      }
-      //TODO: Utilize the new TaskArt->Artifact unidirectional relationship to find a task artifact for the changed artifact
-      Artifact associatedArt = null;
-
-      if (associatedArt == null) {
-         OseeLog.log(
-            Activator.class,
-            Level.WARNING,
-            "GenerateTaskOpList.findChangeFor() - WARNING: Task's associated Artifact is NULL.  Task:" + taskArt.getGuid());
+         //Do nothing - return retChange = null
       } else {
-         for (Change change : changeData.getChanges()) {
-            Artifact changeArt = change.getChangeArtifact();
-            if (changeArt.equals(associatedArt)) {
-               retChange = change;
-               break;
+         //TODO: Utilize the new TaskArt->Artifact unidirectional relationship to find a task artifact for the changed artifact
+         String changedArtGuidFromTask = taskArt.getSoleAttributeValueAsString(AtsAttributeTypes.Category1, "");
+         if (!Strings.isValid(changedArtGuidFromTask)) {
+            OseeLog.log(
+               Activator.class,
+               Level.WARNING,
+               "GenerateTaskOpList.findChangeFor() - WARNING: Task's associated Artifact is NULL.  Task:" + taskArt.getGuid());
+         } else {
+            for (Change change : changeData.getChanges()) {
+               Artifact changeArtFromChange = change.getChangeArtifact();
+               if (changeArtFromChange.getGuid().compareToIgnoreCase(changedArtGuidFromTask) == 0) {
+                  retChange = change;
+                  break;
+               }
             }
          }
       }

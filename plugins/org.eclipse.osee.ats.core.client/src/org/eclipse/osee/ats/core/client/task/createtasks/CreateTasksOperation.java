@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -25,49 +26,49 @@ import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.config.TeamDefinitionManagerCore;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.CreateTeamOption;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.version.VersionArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Shawn F. Cook
  */
 public class CreateTasksOperation extends AbstractOperation {
-   //QUESTION: Do we need either of theses commit* objects?
-   //   private final IAtsProgram commitProgram;
-   //   private final VersionArtifact commitVersion;
    private final VersionArtifact destVersion;
    private final ActionableItemArtifact actionableItemArt;
    private final ChangeData changeData;
    private final TeamWorkFlowArtifact reqTeamWf;
    private final boolean reportOnly;
-   private SkynetTransaction transaction;
+   private final XResultData resultData;
+   private final SkynetTransaction transaction;
    private final ITaskTitleProvider taskTitleProvider;
 
-   public CreateTasksOperation(VersionArtifact destinationVersion, ActionableItemArtifact actionableItemArt, ChangeData changeData, TeamWorkFlowArtifact reqTeamWf, boolean reportOnly, SkynetTransaction transaction, OperationLogger logger, ITaskTitleProvider taskTitleProvider) {
+   public CreateTasksOperation(VersionArtifact destinationVersion, ActionableItemArtifact actionableItemArt, ChangeData changeData, TeamWorkFlowArtifact reqTeamWf, boolean reportOnly, XResultData resultData, SkynetTransaction transaction, OperationLogger logger, ITaskTitleProvider taskTitleProvider) {
       super("Create Tasks Operation for [" + reqTeamWf.getName() + "]", Activator.PLUGIN_ID, logger);
       this.destVersion = destinationVersion;
       this.actionableItemArt = actionableItemArt;
       this.changeData = changeData;
       this.reqTeamWf = reqTeamWf;
       this.reportOnly = reportOnly;
+      this.resultData = resultData;
       this.transaction = transaction;
       this.taskTitleProvider = taskTitleProvider;
    }
 
-   private Map<TaskEnum, ITaskOperation> createReportOnlyTaskOperationMap() {
+   private Map<TaskEnum, ITaskOperation> createTaskOperationMap() {
       Map<TaskEnum, ITaskOperation> toReturn = new HashMap<TaskEnum, ITaskOperation>();
 
       toReturn.put(TaskEnum.CREATE, new TaskOpCreate(taskTitleProvider));
@@ -76,11 +77,11 @@ public class CreateTasksOperation extends AbstractOperation {
       return toReturn;
    }
 
-   private Map<TaskEnum, ITaskOperation> createTaskOperationMap() {
+   private Map<TaskEnum, ITaskOperation> createReportOnlyTaskOperationMap() {
       Map<TaskEnum, ITaskOperation> toReturn = new HashMap<TaskEnum, ITaskOperation>();
 
-      toReturn.put(TaskEnum.CREATE, new TaskOpCreate(taskTitleProvider));
-      toReturn.put(TaskEnum.MODIFY, new TaskOpModify());
+      toReturn.put(TaskEnum.CREATE, new TaskOpDoNothing(taskTitleProvider));
+      toReturn.put(TaskEnum.MODIFY, new TaskOpDoNothing(taskTitleProvider));
 
       return toReturn;
    }
@@ -93,13 +94,12 @@ public class CreateTasksOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-
       //Initialize the TaskEnum->TaskOperation map
       Map<TaskEnum, ITaskOperation> ops = null;
-      if (reportOnly) {
-         ops = createReportOnlyTaskOperationMap();
-      } else {
+      if (!reportOnly) {
          ops = createTaskOperationMap();
+      } else {
+         ops = createReportOnlyTaskOperationMap();
       }
 
       // Ensure the destination workflow exists. - destTeamWf is only necessary if NOT reportOnly
@@ -116,34 +116,48 @@ public class CreateTasksOperation extends AbstractOperation {
 
       // Execute taskOps
       ExecuteTaskOpList executeTaskOpList = new ExecuteTaskOpList();
-      Map<TaskMetadata, IStatus> statusMap = executeTaskOpList.execute(metadatas, ops);
+      Map<TaskMetadata, IStatus> statusMap = executeTaskOpList.execute(metadatas, ops, transaction);
 
-      if (!reportOnly) {
-         if (transaction == null) {
-            transaction =
-               TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Auto-create tasks for " + reqTeamWf);
-         }
-         transaction.execute();
+      // Populate status report
+      resultData.addRaw("Status report for creating tasks for workflow:" + reqTeamWf.toStringWithId());
+      resultData.addRaw(AHTML.beginMultiColumnTable(100, 1));
+      resultData.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {
+         "Success?",
+         "Create/Modify",
+         "Dest TeamWF",
+         "Task"}));
+      Set<TaskMetadata> statusKeySet = statusMap.keySet();
+      for (TaskMetadata metadata : statusKeySet) {
+         IStatus status = statusMap.get(metadata);
+         TaskEnum taskEnum = metadata.getTaskEnum();
+         TeamWorkFlowArtifact parentTeamWf = metadata.getParentTeamWf();
+         TaskArtifact taskArtifact = metadata.getTaskArtifact();
+
+         String statusStr = status.isOK() ? "Success" : "Failed";
+         String taskEnumStr = (taskEnum != null) ? taskEnum.name() : "[taskEnum null]";
+         String parentTeamWfStr = (parentTeamWf != null) ? parentTeamWf.toStringWithId() : "[parentTeamWf null]";
+         String taskArtifactStr = (taskArtifact != null) ? taskArtifact.toStringWithId() : "[taskEnum null]";
+
+         resultData.addRaw(AHTML.addRowMultiColumnTable(statusStr, taskEnumStr, parentTeamWfStr, taskArtifactStr));
       }
-
-      //TODO: Need to provide a status report (somehow) back to calling code
+      resultData.addRaw(AHTML.endMultiColumnTable());
    }
 
    private TeamWorkFlowArtifact findDestTeamWf(TeamWorkFlowArtifact reqTeamWf, ActionableItemArtifact actionableItemArt, VersionArtifact destVersion) throws OseeCoreException {
       TeamWorkFlowArtifact destTeamWf = null;
-      TeamDefinitionArtifact teamDef =
-         TeamDefinitionManagerCore.getImpactedTeamDefs(Collections.singleton(actionableItemArt)).iterator().next();
       List<Artifact> deriveToArts = reqTeamWf.getRelatedArtifacts(AtsRelationTypes.Derive_To);
       for (Artifact derivedArt : deriveToArts) {
          TeamWorkFlowArtifact derivedTeamWfArt = null;
          if (derivedArt instanceof TeamWorkFlowArtifact) {
-            //TODO: WRONG! - Need to make use of destVersion
             derivedTeamWfArt = (TeamWorkFlowArtifact) derivedArt;
-            TeamDefinitionArtifact teamDefFromArt = derivedTeamWfArt.getTeamDefinition();
+
+            VersionArtifact derivedArtVersion = derivedTeamWfArt.getTargetedVersion();
+            boolean isDestVersion = destVersion.equals(derivedArtVersion);
+
             ActionableItemManagerCore actionableItemsDamFromArt = derivedTeamWfArt.getActionableItemsDam();
-            boolean isTeamDef = teamDefFromArt.equals(teamDef);
             boolean isAia = actionableItemsDamFromArt.getActionableItems().contains(actionableItemArt);
-            if (isTeamDef && isAia) {
+
+            if (isDestVersion && isAia) {
                destTeamWf = derivedTeamWfArt;
                break;
             }
