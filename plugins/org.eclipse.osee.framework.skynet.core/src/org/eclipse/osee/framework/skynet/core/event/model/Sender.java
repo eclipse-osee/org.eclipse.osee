@@ -14,7 +14,6 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClientSession;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteNetworkSender1;
-import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
 import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 
 /**

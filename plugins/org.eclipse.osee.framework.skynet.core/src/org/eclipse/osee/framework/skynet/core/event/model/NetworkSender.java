@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.messaging.event.skynet.event;
+package org.eclipse.osee.framework.skynet.core.event.model;
 
 import java.io.Serializable;
 

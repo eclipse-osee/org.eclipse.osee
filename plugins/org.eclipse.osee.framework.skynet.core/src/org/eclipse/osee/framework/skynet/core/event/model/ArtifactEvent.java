@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelationReord
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchGuidEventFilter;

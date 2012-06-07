@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.event.model;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
-import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
 
 public class TransactionEvent implements FrameworkEvent, HasNetworkSender {
 

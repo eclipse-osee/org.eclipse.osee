@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.event.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
 import org.eclipse.osee.framework.skynet.core.User;
 
 /**

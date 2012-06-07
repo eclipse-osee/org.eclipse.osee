@@ -69,7 +69,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
-import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -1472,22 +1471,6 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
     */
    public final int getGammaId() {
       return gammaId;
-   }
-
-   /**
-    * @return Returns dirty attributes.
-    */
-   public final Collection<SkynetAttributeChange> getDirtySkynetAttributeChanges() throws OseeDataStoreException {
-      List<SkynetAttributeChange> dirtyAttributes = new LinkedList<SkynetAttributeChange>();
-
-      for (Attribute<?> attribute : internalGetAttributes()) {
-         if (attribute.isDirty()) {
-            dirtyAttributes.add(new SkynetAttributeChange(attribute.getAttributeType().getId(),
-               attribute.getAttributeDataProvider().getData(), attribute.getModificationType(), attribute.getId(),
-               attribute.getGammaId()));
-         }
-      }
-      return dirtyAttributes;
    }
 
    public final Collection<AttributeChange> getDirtyFrameworkAttributeChanges() throws OseeDataStoreException {

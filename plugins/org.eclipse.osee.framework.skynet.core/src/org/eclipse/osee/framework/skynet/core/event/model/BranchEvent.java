@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event.model;
 
-import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
 
 public class BranchEvent implements FrameworkEvent, HasNetworkSender {
 

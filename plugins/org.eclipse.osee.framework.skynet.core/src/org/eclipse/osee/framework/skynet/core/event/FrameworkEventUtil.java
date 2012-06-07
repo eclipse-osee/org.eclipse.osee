@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteNetworkSender1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionChange1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
-import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -49,6 +48,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation
 import org.eclipse.osee.framework.skynet.core.event.model.EventChangeTypeBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.model.NetworkSender;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionChange;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEventType;

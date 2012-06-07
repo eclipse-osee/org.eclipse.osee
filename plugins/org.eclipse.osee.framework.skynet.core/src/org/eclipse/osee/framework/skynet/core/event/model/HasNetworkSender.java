@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.framework.skynet.core.event.model;
 
-import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
 
 public interface HasNetworkSender {
 

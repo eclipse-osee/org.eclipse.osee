@@ -43,7 +43,6 @@
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.nebula.widgets.xviewer"/>
-      <import plugin="org.eclipse.osee.framework.messaging.event.skynet"/>
       <import plugin="org.eclipse.search"/>
       <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.eclipse.ui.ide"/>
