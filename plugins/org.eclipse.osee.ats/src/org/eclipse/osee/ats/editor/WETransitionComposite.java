@@ -301,22 +301,8 @@ public class WETransitionComposite extends Composite {
 
       double hoursSpent = awa.getStateMgr().getHoursSpent(awa.getCurrentStateName());
       double additionalHours = 0.0;
-      boolean autoFilled = false;
-      if (hoursSpent == 0) {
-         // First, try to autofill if it's only been < 5 min since creation
-         double minSinceCreation = getCreationToNowDateDeltaMinutes();
-         if (minSinceCreation < 5) {
-            // System.out.println("minSinceCreation *" + minSinceCreation + "*");
-            double hoursSinceCreation = minSinceCreation / 60.0;
-            if (hoursSinceCreation < 0.02) {
-               hoursSinceCreation = 0.02;
-            }
-            additionalHours = hoursSinceCreation;
-            autoFilled = true;
-         }
-      }
 
-      if (isRequireStateHoursSpentPrompt(fromStateDefinition) && !autoFilled && !toStateDefinition.isCancelledPage()) {
+      if (isRequireStateHoursSpentPrompt(fromStateDefinition) && !toStateDefinition.isCancelledPage()) {
          // Otherwise, open dialog to ask for hours complete
          String msg =
             awa.getStateMgr().getCurrentStateName() + " State\n\n" + AtsUtilCore.doubleToI18nString(hoursSpent) + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
