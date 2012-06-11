@@ -1055,9 +1055,9 @@ relationType "Port" {
 relationType "Derive" {
    guid "AF4bxUKu2H7HYNu2zhQA"
    uuid 0x200000000000017B
-   sideAName "To"
+   sideAName "From"
    sideAArtifactType "Team Workflow"
-   sideBName "From"
+   sideBName "To"
    sideBArtifactType "Team Workflow"
    defaultOrderType Unordered
    multiplicity ONE_TO_MANY
