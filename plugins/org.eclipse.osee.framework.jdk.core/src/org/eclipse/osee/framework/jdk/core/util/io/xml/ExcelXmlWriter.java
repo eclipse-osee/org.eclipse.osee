@@ -194,7 +194,8 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
          if (cellData instanceof String) {
             String cellDataStr = (String) cellData;
             if (!cellDataStr.equals("") && cellDataStr.charAt(0) == '=') {
-               out.write(" ss:Formula=\"" + cellDataStr + "\">");
+               String value = cellDataStr.replaceAll("\"", "&quot;");
+               out.write(" ss:Formula=\"" + value + "\">");
             } else {
                out.write("><Data ss:Type=\"String\">");
                if (cellDataStr.equals("")) {
