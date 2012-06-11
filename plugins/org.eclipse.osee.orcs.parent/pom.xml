@@ -105,11 +105,7 @@
 			<layout>p2</layout>
 			<url>${itemis-site}</url>
 		</repository>
-		<repository>
-			<id>osee-xcore</id>
-			<layout>p2</layout>
-			<url>${osee-xcore-site}</url>
-		</repository>
+		
 	</repositories>
 
 	<build>
@@ -465,6 +461,13 @@
 				<osee-xcore-site-path>file:../../../org.eclipse.osee/plugins</osee-xcore-site-path>
 				<osee-xcore-site>${osee-xcore-site-path}/org.eclipse.osee.x.core.p2/target/repository</osee-xcore-site>
 			</properties>
+			<repositories>
+				<repository>
+					<id>osee-xcore</id>
+					<layout>p2</layout>
+					<url>${osee-xcore-site}</url>
+				</repository>
+			</repositories>
 		</profile>
 
 		<profile>
@@ -477,6 +480,13 @@
 				<osee-xcore-site-version>DEV/org.eclipse.osee</osee-xcore-site-version>
 				<osee-xcore-site>${osee-xcore-site-path}/org.eclipse.osee.x.core.p2</osee-xcore-site>
 			</properties>
+			<repositories>
+				<repository>
+					<id>osee-xcore</id>
+					<layout>p2</layout>
+					<url>${osee-xcore-site}</url>
+				</repository>
+			</repositories>
 		</profile>
 
 	</profiles>

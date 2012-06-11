@@ -114,16 +114,6 @@
 			<layout>p2</layout>
 			<url>${eclipse-ip-site}</url>
 		</repository>
-		<repository>
-			<id>osee-xcore</id>
-			<layout>p2</layout>
-			<url>${osee-xcore-site}</url>
-		</repository>
-		<repository>
-			<id>osee-orcs</id>
-			<layout>p2</layout>
-			<url>${osee-orcs-site}</url>
-		</repository>
 	</repositories>
 
 	<build>
@@ -491,7 +481,7 @@
 		<profile>
 			<id>osee-local-sites</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
 				<eclipse-ip-site-path>file:../../../org.eclipse.ip</eclipse-ip-site-path>
@@ -503,6 +493,18 @@
 				<osee-orcs-site-path>file:../../../org.eclipse.osee/plugins</osee-orcs-site-path>
 				<osee-orcs-site>${osee-orcs-site-path}/org.eclipse.osee.orcs.p2/target/repository</osee-orcs-site>
 			</properties>
+			<repositories>
+				<repository>
+					<id>osee-xcore</id>
+					<layout>p2</layout>
+					<url>${osee-xcore-site}</url>
+				</repository>
+				<repository>
+					<id>osee-orcs</id>
+					<layout>p2</layout>
+					<url>${osee-orcs-site}</url>
+				</repository>
+			</repositories>
 		</profile>
 
 		<profile>
@@ -523,6 +525,18 @@
 				<osee-orcs-site-version>DEV</osee-orcs-site-version>
 				<osee-orcs-site>${osee-orcs-site-path}/${osee-orcs-site-version}/org.eclipse.osee/org.eclipse.osee.orcs.p2</osee-orcs-site>
 			</properties>
+			<repositories>
+				<repository>
+					<id>osee-xcore</id>
+					<layout>p2</layout>
+					<url>${osee-xcore-site}</url>
+				</repository>
+				<repository>
+					<id>osee-orcs</id>
+					<layout>p2</layout>
+					<url>${osee-orcs-site}</url>
+				</repository>
+			</repositories>
 		</profile>
 
 	</profiles>

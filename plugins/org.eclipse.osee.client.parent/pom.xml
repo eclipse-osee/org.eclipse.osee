@@ -164,16 +164,6 @@
 			<layout>p2</layout>
 			<url>${nebula-site}</url>
 		</repository>
-		<repository>
-			<id>osee-runtime</id>
-			<layout>p2</layout>
-			<url>${osee-runtime-site}</url>
-		</repository>
-		<repository>
-			<id>osee-xserver</id>
-			<layout>p2</layout>
-			<url>${osee-xserver-site}</url>
-		</repository>
 	</repositories>
 
 	<build>
@@ -561,6 +551,18 @@
 				<osee-xserver-site>${osee-xserver-site-path}/org.eclipse.osee.x.server.p2/target/repository</osee-xserver-site>
 
 			</properties>
+			<repositories>
+				<repository>
+					<id>osee-runtime</id>
+					<layout>p2</layout>
+					<url>${osee-runtime-site}</url>
+				</repository>
+				<repository>
+					<id>osee-xserver</id>
+					<layout>p2</layout>
+					<url>${osee-xserver-site}</url>
+				</repository>
+			</repositories>
 		</profile>
 
 		<profile>
@@ -577,6 +579,18 @@
 				<osee-xserver-site-version>DEV</osee-xserver-site-version>
 				<osee-xserver-site>${osee-xserver-site-path}/${osee-xserver-site-version}/org.eclipse.osee/org.eclipse.osee.x.server.p2</osee-xserver-site>
 			</properties>
+			<repositories>
+				<repository>
+					<id>osee-runtime</id>
+					<layout>p2</layout>
+					<url>${osee-runtime-site}</url>
+				</repository>
+				<repository>
+					<id>osee-xserver</id>
+					<layout>p2</layout>
+					<url>${osee-xserver-site}</url>
+				</repository>
+			</repositories>
 		</profile>
 
 	</profiles>

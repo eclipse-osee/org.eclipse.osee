@@ -130,11 +130,6 @@
 			<layout>p2</layout>
 			<url>${nebula-site}</url>
 		</repository>
-		<repository>
-			<id>osee-runtime</id>
-			<layout>p2</layout>
-			<url>${osee-runtime-site}</url>
-		</repository>
 	</repositories>
 
 	<build>
@@ -518,6 +513,13 @@
 				<osee-runtime-site-path>file:../../../org.eclipse.osee/plugins</osee-runtime-site-path>
 				<osee-runtime-site>${osee-runtime-site-path}/org.eclipse.osee.runtime.p2/target/repository</osee-runtime-site>
 			</properties>
+			<repositories>
+				<repository>
+					<id>osee-runtime</id>
+					<layout>p2</layout>
+					<url>${osee-runtime-site}</url>
+				</repository>
+			</repositories>
 		</profile>
 
 		<profile>
@@ -530,6 +532,14 @@
 				<osee-runtime-site-version>DEV</osee-runtime-site-version>
 				<osee-runtime-site>${osee-runtime-site-path}/${osee-runtime-site-version}/org.eclipse.osee/org.eclipse.osee.runtime.p2</osee-runtime-site>
 			</properties>
+			<repositories>
+				<repository>
+					<id>osee-runtime</id>
+					<layout>p2</layout>
+					<url>${osee-runtime-site}</url>
+				</repository>
+			</repositories>
+			
 		</profile>
 
 	</profiles>
