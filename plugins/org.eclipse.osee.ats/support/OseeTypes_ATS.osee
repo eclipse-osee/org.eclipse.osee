@@ -1044,9 +1044,9 @@ relationType "ActionToWorkflow" {
 relationType "Port" {
    guid "AF4HCZd7j0hjE2yVsTwA"
    uuid 0x200000000000017A
-   sideAName "To"
+   sideAName "From"
    sideAArtifactType "Team Workflow"
-   sideBName "From"
+   sideBName "To"
    sideBArtifactType "Team Workflow"
    defaultOrderType Unordered
    multiplicity MANY_TO_MANY
