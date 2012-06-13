@@ -52,8 +52,6 @@ public final class ArtifactLoader {
 
    private static final CompositeKeyHashMap<Integer, Integer, ReentrantLock> loadingActiveMap =
       new CompositeKeyHashMap<Integer, Integer, ReentrantLock>(1000, true);
-   private static final CompositeKeyHashMap<Integer, Integer, ReentrantLock> loadingHistoricalMap =
-      new CompositeKeyHashMap<Integer, Integer, ReentrantLock>(1000, true);
    private static final Random queryRandom = new Random();
 
    /**
@@ -130,7 +128,7 @@ public final class ArtifactLoader {
       return loadArtifacts(artIds, branch, loadLevel, null, reload, allowDeleted);
    }
 
-   private static void checkArtifactCache(ArrayList<Artifact> artifacts, Collection<Integer> artIds, TransactionRecord transactionId, IOseeBranch branch, DeletionFlag allowDeleted) throws OseeCoreException {
+   private synchronized static void checkArtifactCache(ArrayList<Artifact> artifacts, Collection<Integer> artIds, TransactionRecord transactionId, IOseeBranch branch, DeletionFlag allowDeleted) throws OseeCoreException {
       Iterator<Integer> iterator = artIds.iterator();
       while (iterator.hasNext()) {
          Integer artId = iterator.next();
@@ -310,9 +308,7 @@ public final class ArtifactLoader {
          transactionId = stripeTransactionNumber;
       }
 
-      Artifact artifact =
-         historical ? ArtifactCache.getHistorical(artifactId, transactionId) : ArtifactCache.getActive(artifactId,
-            branch);
+      Artifact artifact = historical ? null : ArtifactCache.getActive(artifactId, branch);
       if (artifact == null) {
          IArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getInt("art_type_id"));
          ArtifactFactory factory = ArtifactTypeManager.getFactory(artifactType);
@@ -350,33 +346,25 @@ public final class ArtifactLoader {
 
    private static Artifact getArtifactFromCache(Integer artId, TransactionRecord transactionId, IOseeBranch branch) throws OseeCoreException {
       boolean historical = transactionId != null;
-      CompositeKeyHashMap<Integer, Integer, ReentrantLock> loadingMap;
       int key2 = historical ? transactionId.getId() : BranchManager.getBranchId(branch);
-      Artifact cached;
 
-      if (historical) {
-         loadingMap = loadingHistoricalMap;
-      } else {
-         loadingMap = loadingActiveMap;
-      }
+      Artifact cached = null;
 
-      ReentrantLock lock = loadingMap.get(artId, key2);
-      if (lock != null) {
-         lock.lock();
-      }
-
-      if (historical) {
-         cached = ArtifactCache.getHistorical(artId, key2);
-      } else {
-         cached = ArtifactCache.getActive(artId, key2);
-      }
-
-      if (cached == null) {
-         if (lock == null) {
-            lock = new ReentrantLock();
-            loadingMap.put(artId, key2, lock);
+      if (!historical) {
+         ReentrantLock lock = loadingActiveMap.get(artId, key2);
+         if (lock != null) {
+            lock.lock();
          }
-         lock.lock();
+
+         cached = ArtifactCache.getActive(artId, key2);
+
+         if (cached == null) {
+            if (lock == null) {
+               lock = new ReentrantLock();
+               loadingActiveMap.put(artId, key2, lock);
+            }
+            lock.lock();
+         }
       }
       return cached;
    }
@@ -402,19 +390,18 @@ public final class ArtifactLoader {
       AttributeLoader.loadAttributeData(queryId, tempCache, historical, allowDeleted, loadLevel);
       RelationLoader.loadRelationData(queryId, artifacts, historical, loadLevel);
 
-      CompositeKeyHashMap<Integer, Integer, ReentrantLock> loadingMap;
-      loadingMap = historical ? loadingHistoricalMap : loadingActiveMap;
+      if (!historical) {
+         for (Artifact artifact : artifacts) {
+            key2 = BranchManager.getBranchId(artifact.getBranch());
 
-      for (Artifact artifact : artifacts) {
-         key2 = historical ? transactionId.getId() : BranchManager.getBranchId(artifact.getBranch());
-
-         ReentrantLock lock = null;
-         synchronized (loadingMap) {
-            lock = loadingMap.remove(artifact.getArtId(), key2);
-         }
-         if (lock != null) {
-            if (lock.isLocked()) {
-               lock.unlock();
+            ReentrantLock lock = null;
+            synchronized (loadingActiveMap) {
+               lock = loadingActiveMap.remove(artifact.getArtId(), key2);
+            }
+            if (lock != null) {
+               if (lock.isLocked()) {
+                  lock.unlock();
+               }
             }
          }
       }

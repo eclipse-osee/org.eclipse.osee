@@ -24,39 +24,32 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
-import org.eclipse.osee.framework.core.util.Conditions;
-import org.eclipse.osee.framework.skynet.core.artifact.cache.AbstractArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.cache.ActiveArtifactCache;
-import org.eclipse.osee.framework.skynet.core.artifact.cache.HistoricalArtifactCache;
 
 /**
  * @author Ryan D. Brooks
  */
 public final class ArtifactCache {
 
-   private static final HistoricalArtifactCache HISTORICAL_CACHE = new HistoricalArtifactCache(50);
    private static final ActiveArtifactCache ACTIVE_CACHE = new ActiveArtifactCache(2000);
 
    private ArtifactCache() {
       super();
    }
 
-   private static AbstractArtifactCache getCache(Artifact artifact) throws OseeCoreException {
-      Conditions.checkNotNull(artifact, "Artifact");
-      return artifact.isHistorical() ? HISTORICAL_CACHE : ACTIVE_CACHE;
-   }
-
    /**
     * Cache the artifact so that we can avoid creating duplicate instances of an artifact
     */
-   static void cache(Artifact artifact) throws OseeCoreException {
-      AbstractArtifactCache cache = getCache(artifact);
-      cache.cache(artifact);
+   static void cache(Artifact artifact) {
+      if (!artifact.isHistorical()) {
+         ACTIVE_CACHE.cache(artifact);
+      }
    }
 
-   public static void deCache(Artifact artifact) throws OseeCoreException {
-      AbstractArtifactCache cache = getCache(artifact);
-      cache.deCache(artifact);
+   public static void deCache(Artifact artifact) {
+      if (!artifact.isHistorical()) {
+         ACTIVE_CACHE.deCache(artifact);
+      }
    }
 
    /**
@@ -64,15 +57,13 @@ public final class ArtifactCache {
     * De-caches all artifacts from <code>HISTORICAL_CACHE</code> and <code>ACTIVE_CACHE</code> for a specific branch.
     * This method is usually called by a purge operation or at the end of a unit test/suite.
     * </p>
-    *
+    * 
     * @param branch of which artifacts (all) will be de-cache'ed.
     */
    public static void deCache(IOseeBranch branch) {
-      for (AbstractArtifactCache cache : new AbstractArtifactCache[] {HISTORICAL_CACHE, ACTIVE_CACHE}) {
-         for (Artifact artifact : cache.getAll()) {
-            if (artifact.getBranch().equals(branch)) {
-               cache.deCache(artifact);
-            }
+      for (Artifact artifact : ACTIVE_CACHE.getAll()) {
+         if (artifact.getBranch().equals(branch)) {
+            ACTIVE_CACHE.deCache(artifact);
          }
       }
    }
@@ -91,9 +82,6 @@ public final class ArtifactCache {
       StringBuilder sb = new StringBuilder();
       sb.append("Active:");
       sb.append(ACTIVE_CACHE.toString());
-      sb.append("\n");
-      sb.append("Historical:");
-      sb.append(HISTORICAL_CACHE.toString());
       return sb.toString();
    }
 
@@ -122,14 +110,6 @@ public final class ArtifactCache {
 
    public static List<Artifact> getArtifactsByType(IArtifactType artifactType) {
       return ACTIVE_CACHE.getByType(artifactType);
-   }
-
-   public static Artifact getHistorical(Integer artId, Integer transactionNumber) {
-      return HISTORICAL_CACHE.getById(artId, transactionNumber);
-   }
-
-   public static Artifact getHistorical(String guid, Integer transactionNumber) {
-      return HISTORICAL_CACHE.getByGuid(guid, transactionNumber);
    }
 
    public static Artifact getActive(IBasicGuidArtifact basicGuidArtifact) throws OseeCoreException {
