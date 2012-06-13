@@ -122,9 +122,14 @@
 					<format>'v'yyyyMMddHHmm'${build-alias}'</format>
 					<archiveSite>true</archiveSite>
 					<environments>
-						<!-- <environment> <os>macosx</os> <ws>cocoa</ws> <arch>x86</arch> 
-							</environment> <environment> <os>macosx</os> <ws>carbon</ws> <arch>x86</arch> 
+						<!-- <environment> <os>macosx</os> <ws>carbon</ws> <arch>x86</arch> 
+							</environment> <environment> <os>macosx</os> <ws>cocoa</ws> <arch>x86</arch> 
 							</environment> -->
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86_64</arch>
+						</environment>
 						<environment>
 							<os>win32</os>
 							<ws>win32</ws>
@@ -155,9 +160,14 @@
 				<configuration>
 					<resolver>p2</resolver>
 					<environments>
-						<!-- <environment> <os>macosx</os> <ws>cocoa</ws> <arch>x86</arch> 
-							</environment> <environment> <os>macosx</os> <ws>carbon</ws> <arch>x86</arch> 
+						<!-- <environment> <os>macosx</os> <ws>carbon</ws> <arch>x86</arch> 
+							</environment> <environment> <os>macosx</os> <ws>cocoa</ws> <arch>x86</arch> 
 							</environment> -->
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86_64</arch>
+						</environment>
 						<environment>
 							<os>win32</os>
 							<ws>win32</ws>

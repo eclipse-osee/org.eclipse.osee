@@ -20,6 +20,7 @@
 		<updateProduct os="linux" ws="gtk" arch="x86" jreVersion="1.6.0_26" />
 		<updateProduct os="linux" ws="gtk" arch="x86_64" jreVersion="1.6.0_30" />
 		<!--<updateProduct os="solaris" ws="gtk" arch="sparc" jreVersion="1.6.0_24" /> -->
+		<updateProduct os="macosx" ws="cocoa" arch="x86_64" jreVersion="_" />
 	</target>
 
 	<!-- *************************************************************** -->
@@ -36,9 +37,16 @@
 			<var name="productPluginPath" value="${productPath}/plugins" />
 
 			<!-- Add JRE 
+			<if>
+				<equals arg1="@{os}" arg2="macosx" />
+				<then>
+				</then>
+			<else>
 			<var name="jreResource" value="${resources-directory}/../jres/jre_@{jreVersion}_@{os}_@{arch}.zip" />
 			<unzip src="${jreResource}" dest="${productPath}" />
 			<chmod perm="ugo+x" dir="${productPath}/jre" includes="**/*" />
+			</else>
+			</if>
 			-->
 
 			<!-- Update Configuration Area -->
@@ -51,7 +59,15 @@
 			<customizeConfigIni configpath="${productConfigPath}" pluginspath="${productPluginPath}" configarch="@{arch}" />
 
 			<!-- Extra Launches -->
-			<generateExecutable os="@{os}" productDir="${productPath}" execName="oseeDebug" eclipseArgs="-console${line.separator}-consoleLog" extravmargs="-Xms256m${line.separator}-Xmx700m${line.separator}-Xdebug${line.separator}-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9009" additionalVmArgs="-Dosee.default.broker.uri=&lt;BROKER_ADDRESS&gt;${line.separator}-Dosee.application.server=http://localhost:8089${line.separator}-Dosee.authentication.protocol=demo${line.separator}${additionalExecIniArgs}" />
+			<if>
+				<equals arg1="@{os}" arg2="macosx" />
+				<then>
+					<!-- NO DEBUG EXEC for MACOSX -->
+				</then>
+				<else>
+					<generateExecutable os="@{os}" productDir="${productPath}" execName="oseeDebug" eclipseArgs="-console${line.separator}-consoleLog" extravmargs="-Xms256m${line.separator}-Xmx700m${line.separator}-Xdebug${line.separator}-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9009" additionalVmArgs="-Dosee.default.broker.uri=&lt;BROKER_ADDRESS&gt;${line.separator}-Dosee.application.server=http://localhost:8089${line.separator}-Dosee.authentication.protocol=demo${line.separator}${additionalExecIniArgs}" />
+				</else>
+			</if>
 
 			<!-- Copy Icon if Win32 -->
 			<if>
@@ -109,7 +125,7 @@
 
 			<replaceregexp file="@{configPath}/config.ini" match="osgi.instance.area.default=(.*)" replace="" />
 			<replaceregexp file="@{configPath}/config.ini" match="eclipse.p2.data.area=(.*)" replace="" />
-			
+
 			<echo file="@{configPath}/config.ini" append="true" message="osgi.instance.area.default=@user.home/${defaultWorkspaceName}/${line.separator}" />
 			<echo file="@{configPath}/config.ini" append="true" message="osgi.configuration.area=@user.home/.eclipse/osee_@{configarch}_${osee.core.version}${line.separator}" />
 			<echo file="@{configPath}/config.ini" append="true" message="eclipse.p2.data.area=@config.dir/p2/${line.separator}" />
