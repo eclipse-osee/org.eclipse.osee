@@ -80,12 +80,12 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
    private double rowHeight;
    private double allColumnWidths = 0.0;
 
-   public ExcelXmlWriter(Writer writer) throws IOException {
-      this(writer, null);
-   }
-
    public ExcelXmlWriter(File file) throws IOException {
       this(new FileWriter(file));
+   }
+
+   public ExcelXmlWriter(Writer writer) throws IOException {
+      this(writer, null);
    }
 
    /**
@@ -95,9 +95,13 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
     * @param style Excel Style XML of form <Styles><Style/><Style/></Styles>
     */
    public ExcelXmlWriter(Writer writer, String style) throws IOException {
+      this(writer, style, defaultEmptyStringXmlRep);
+   }
+
+   public ExcelXmlWriter(Writer writer, String style, String emptyStringRepresentation) throws IOException {
       out = new BufferedWriter(writer);
       mStyleMap = new HashMap<Integer, String>();
-      emptyStringRepresentation = defaultEmptyStringXmlRep;
+      this.emptyStringRepresentation = emptyStringRepresentation;
       out.write(XML_HEADER);
 
       out.write("<Styles>\n");

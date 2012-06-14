@@ -21,13 +21,13 @@ import org.eclipse.osee.framework.core.model.tabledataframework.TableFormatter;
 public class ExampleTableFormatter implements TableFormatter {
 
    @Override
-   public void writeReport(IProgressMonitor monitor, TableData... tableDataArray) throws Exception {
+   public void writeReport(IProgressMonitor monitor, Collection<TableData> tableDatas) throws Exception {
       int totalReportSize = 0;
-      for (TableData tableData : tableDataArray) {
+      for (TableData tableData : tableDatas) {
          totalReportSize += tableData.getRowCount();
       }
 
-      for (TableData tableData : tableDataArray) {
+      for (TableData tableData : tableDatas) {
          System.out.println(tableData.getName());
          System.out.println("Many Columns:" + tableData.getColumnCount());
          System.out.println(tableData.getHeaderStrings());

@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.tabledataframework;
 
+import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * @author Shawn F. Cook
  */
 public interface TableFormatter {
-   public void writeReport(IProgressMonitor monitor, TableData... tableDataArray) throws Exception;
+   public void writeReport(IProgressMonitor monitor, Collection<TableData> tableDatas) throws Exception;
 }
