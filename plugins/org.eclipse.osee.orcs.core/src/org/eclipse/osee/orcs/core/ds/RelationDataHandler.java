@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
- * @author Roberto E. Escobar
+ * @author Andrew M. Finkbeiner
  */
-public interface ArtifactRowHandler {
-
-   void onRow(ArtifactData row) throws OseeCoreException;
+public interface RelationDataHandler extends OrcsObjectHandler<RelationData> {
+   //
 }

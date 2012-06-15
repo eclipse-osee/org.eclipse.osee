@@ -25,14 +25,14 @@ import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.DataStoreTypeCache;
 import org.eclipse.osee.orcs.core.SystemPreferences;
-import org.eclipse.osee.orcs.core.ds.ArtifactRowHandler;
-import org.eclipse.osee.orcs.core.ds.AttributeRowHandler;
-import org.eclipse.osee.orcs.core.ds.AttributeRowHandlerFactory;
+import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
+import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
+import org.eclipse.osee.orcs.core.ds.AttributeDataHandlerFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
-import org.eclipse.osee.orcs.core.ds.RelationRowHandler;
-import org.eclipse.osee.orcs.core.ds.RelationRowHandlerFactory;
+import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
+import org.eclipse.osee.orcs.core.ds.RelationDataHandlerFactory;
 import org.eclipse.osee.orcs.db.internal.search.SqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
 
@@ -137,7 +137,7 @@ public class DataLoaderImpl implements DataLoader {
    }
 
    @Override
-   public void loadArtifacts(HasCancellation cancellation, ArtifactRowHandler handler, int branchId, Collection<Integer> artIds, LoadOptions loadOptions, RelationRowHandlerFactory relationRowHandlerFactory, AttributeRowHandlerFactory attributeRowHandlerFactory) throws OseeCoreException {
+   public void loadArtifacts(HasCancellation cancellation, ArtifactDataHandler handler, int branchId, Collection<Integer> artIds, LoadOptions loadOptions, RelationDataHandlerFactory relationRowHandlerFactory, AttributeDataHandlerFactory attributeRowHandlerFactory) throws OseeCoreException {
       if (!artIds.isEmpty()) {
          int fetchSize = computeFetchSize(artIds.size());
 
@@ -158,7 +158,7 @@ public class DataLoaderImpl implements DataLoader {
    }
 
    @Override
-   public void loadArtifacts(HasCancellation cancellation, ArtifactRowHandler handler, QueryContext queryContext, LoadOptions loadOptions, RelationRowHandlerFactory relationRowHandlerFactory, AttributeRowHandlerFactory attributeRowHandlerFactory) throws OseeCoreException {
+   public void loadArtifacts(HasCancellation cancellation, ArtifactDataHandler handler, QueryContext queryContext, LoadOptions loadOptions, RelationDataHandlerFactory relationRowHandlerFactory, AttributeDataHandlerFactory attributeRowHandlerFactory) throws OseeCoreException {
       SqlContext sqlContext = toSqlContext(queryContext);
       int fetchSize = computeFetchSize(sqlContext);
 
@@ -173,7 +173,7 @@ public class DataLoaderImpl implements DataLoader {
       }
    }
 
-   private void loadArtifacts(HasCancellation cancellation, AbstractJoinQuery join, int fetchSize, ArtifactRowHandler handler, LoadOptions loadOptions, RelationRowHandlerFactory relationRowHandlerFactory, AttributeRowHandlerFactory attributeRowHandlerFactory) throws OseeCoreException {
+   private void loadArtifacts(HasCancellation cancellation, AbstractJoinQuery join, int fetchSize, ArtifactDataHandler handler, LoadOptions loadOptions, RelationDataHandlerFactory relationRowHandlerFactory, AttributeDataHandlerFactory attributeRowHandlerFactory) throws OseeCoreException {
       int queryId = join.getQueryId();
 
       checkCancelled(cancellation);
@@ -183,14 +183,14 @@ public class DataLoaderImpl implements DataLoader {
       checkCancelled(cancellation);
 
       if (isAttributeLoadingAllowed(loadOptions.getLoadLevel())) {
-         AttributeRowHandler attrHandler = attributeRowHandlerFactory.createAttributeRowHandler();
+         AttributeDataHandler attrHandler = attributeRowHandlerFactory.createAttributeDataHandler();
          attributeLoader.loadFromQueryId(attrHandler, loadOptions, fetchSize, queryId);
       }
 
       checkCancelled(cancellation);
 
       if (isRelationLoadingAllowed(loadOptions.getLoadLevel())) {
-         RelationRowHandler relHandler = relationRowHandlerFactory.createRelationRowHandler();
+         RelationDataHandler relHandler = relationRowHandlerFactory.createRelationDataHandler();
          relationLoader.loadFromQueryId(relHandler, loadOptions, fetchSize, queryId);
       }
    }

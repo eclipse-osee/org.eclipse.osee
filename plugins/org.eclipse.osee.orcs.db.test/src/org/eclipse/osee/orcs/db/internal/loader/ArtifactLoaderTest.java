@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
-import org.eclipse.osee.orcs.core.ds.ArtifactRowHandler;
+import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
@@ -78,10 +78,10 @@ public class ArtifactLoaderTest {
          int queryId = artJoinQuery.getQueryId();
 
          final List<ArtifactData> actuals = new ArrayList<ArtifactData>();
-         loader.loadFromQueryId(new ArtifactRowHandler() {
+         loader.loadFromQueryId(new ArtifactDataHandler() {
             @Override
-            public void onRow(ArtifactData row) {
-               actuals.add(row);
+            public void onData(ArtifactData data) {
+               actuals.add(data);
             }
          }, new LoadOptions(false, DeletionFlag.EXCLUDE_DELETED, LoadLevel.ALL_CURRENT), 10, queryId);
 
@@ -128,10 +128,10 @@ public class ArtifactLoaderTest {
          int queryId = artJoinQuery.getQueryId();
 
          final List<ArtifactData> actuals = new ArrayList<ArtifactData>();
-         loader.loadFromQueryId(new ArtifactRowHandler() {
+         loader.loadFromQueryId(new ArtifactDataHandler() {
             @Override
-            public void onRow(ArtifactData row) {
-               actuals.add(row);
+            public void onData(ArtifactData data) {
+               actuals.add(data);
             }
          }, new LoadOptions(false, DeletionFlag.INCLUDE_DELETED, LoadLevel.ALL_CURRENT), 10, queryId);
 

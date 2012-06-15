@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.RelationData;
-import org.eclipse.osee.orcs.core.ds.RelationRowHandler;
+import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
 
@@ -43,7 +43,7 @@ public class RelationLoader {
       return identityService.getUniversalId(localId);
    }
 
-   public void loadFromQueryId(RelationRowHandler handler, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException {
+   public void loadFromQueryId(RelationDataHandler handler, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException {
       if (options.isHistorical()) {//should this be done by the MasterLoader
          return; // TODO: someday we might have a use for historical relations, but not now
       }
@@ -73,7 +73,7 @@ public class RelationLoader {
             nextRelation.setGammaId(statement.getInt("gamma_id"));
             nextRelation.setRationale(statement.getString("rationale"));
             nextRelation.setModType(ModificationType.getMod(statement.getInt("mod_type")));
-            handler.onRow(nextRelation);
+            handler.onData(nextRelation);
          }
          if (logger.isTraceEnabled()) {
             long elapsedTime = System.currentTimeMillis() - startTime;

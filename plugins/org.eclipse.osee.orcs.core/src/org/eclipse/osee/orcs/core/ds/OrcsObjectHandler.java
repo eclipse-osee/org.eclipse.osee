@@ -13,10 +13,10 @@ package org.eclipse.osee.orcs.core.ds;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
- * @author Andrew M. Finkbeiner
+ * @author Roberto E. Escobar
  */
-public interface RelationRowHandler {
+public interface OrcsObjectHandler<T extends OrcsObject> {
 
-   void onRow(RelationData nextRelation) throws OseeCoreException;
+   void onData(T data) throws OseeCoreException;
 
 }

@@ -35,6 +35,6 @@ public class AttributeRowMapperTest {
       AttributeData row = new AttributeData();
       Map<Integer, ? extends AttributeContainer> attributeContainers = new HashMap<Integer, AttributeContainer>();
       AttributeRowMapper mapper = new AttributeRowMapper(logger, factory, attributeContainers);
-      mapper.onRow(row);
+      mapper.onData(row);
    }
 }

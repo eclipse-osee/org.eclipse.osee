@@ -13,6 +13,6 @@ package org.eclipse.osee.orcs.core.ds;
 /**
  * @author Roberto E. Escobar
  */
-public interface AttributeRowHandlerFactory {
-   AttributeRowHandler createAttributeRowHandler();
+public interface AttributeDataHandler extends OrcsObjectHandler<AttributeData> {
+   //
 }

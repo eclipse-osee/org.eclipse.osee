@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
-import org.eclipse.osee.orcs.core.ds.AttributeRowHandler;
+import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
@@ -65,7 +65,7 @@ public class AttributeLoader {
       return identityService.getUniversalId(localId);
    }
 
-   public void loadFromQueryId(AttributeRowHandler handler, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException {
+   public void loadFromQueryId(AttributeDataHandler handler, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException {
       String sql = getSql(options);
 
       IOseeStatement chStmt = dbService.getStatement();
@@ -103,7 +103,7 @@ public class AttributeLoader {
             if (options.isHistorical()) {
                nextAttr.setStripeId(chStmt.getInt("stripe_transaction_id"));
             }
-            handler.onRow(nextAttr);
+            handler.onData(nextAttr);
          }
          if (logger.isTraceEnabled()) {
             long elapsedTime = System.currentTimeMillis() - startTime;

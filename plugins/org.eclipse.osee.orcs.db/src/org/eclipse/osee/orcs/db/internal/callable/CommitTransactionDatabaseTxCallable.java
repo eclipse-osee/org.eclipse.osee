@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.db.internal.callable;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +19,6 @@ import java.util.Map;
 import org.eclipse.osee.database.schema.DatabaseTxCallable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -31,7 +29,6 @@ import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
@@ -98,33 +95,33 @@ public final class CommitTransactionDatabaseTxCallable extends DatabaseTxCallabl
 
    private void executeTransactionDataItems(OseeConnection connection) throws OseeCoreException {
       List<Object[]> txNotCurrentData = new ArrayList<Object[]>();
-      for (BaseTransactionData transactionData : txDatas) {
-         // Collect inserts for attribute, relation, artifact, and artifact version tables
-         transactionData.addInsertToBatch(this);
-
-         // Collect stale tx currents for batch update
-         fetchTxNotCurrent(connection, branch, transactionData, txNotCurrentData);
-      }
-
-      // Insert into data tables - i.e. attribute, relation and artifact version tables
-      List<Integer> keys = new ArrayList<Integer>(dataInsertOrder.keySet());
-      Collections.sort(keys);
-      for (int priority : keys) {
-         String sqlKey = dataInsertOrder.get(priority);
-         getDatabaseService().runBatchUpdate(connection, sqlKey, (List<Object[]>) dataItemInserts.getValues(sqlKey));
-      }
-
-      // Set stale tx currents in txs table
-      getDatabaseService().runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, txNotCurrentData);
+      //      for (BaseTransactionData transactionData : txDatas) {
+      //         // Collect inserts for attribute, relation, artifact, and artifact version tables
+      //         transactionData.addInsertToBatch(this);
+      //
+      //         // Collect stale tx currents for batch update
+      //         fetchTxNotCurrent(connection, branch, transactionData, txNotCurrentData);
+      //      }
+      //
+      //      // Insert into data tables - i.e. attribute, relation and artifact version tables
+      //      List<Integer> keys = new ArrayList<Integer>(dataInsertOrder.keySet());
+      //      Collections.sort(keys);
+      //      for (int priority : keys) {
+      //         String sqlKey = dataInsertOrder.get(priority);
+      //         getDatabaseService().runBatchUpdate(connection, sqlKey, (List<Object[]>) dataItemInserts.getValues(sqlKey));
+      //      }
+      //
+      //      // Set stale tx currents in txs table
+      //      getDatabaseService().runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, txNotCurrentData);
    }
 
    private void x(int transactionNumber, int branchId) {
-      long gammaId = getGammaId();
-      ModificationType modTypeToStore = getAdjustedModificationType();
-      TxChange txChange = TxChange.getCurrent(modTypeToStore);
-
-      internalAddInsertToBatch(collector, Integer.MAX_VALUE, INSERT_INTO_TRANSACTION_TABLE, transactionNumber, gammaId,
-         modTypeToStore.getValue(), txChange.getValue(), branchId);
+      //      long gammaId = getGammaId();
+      //      ModificationType modTypeToStore = getAdjustedModificationType();
+      //      TxChange txChange = TxChange.getCurrent(modTypeToStore);
+      //
+      //      internalAddInsertToBatch(collector, Integer.MAX_VALUE, INSERT_INTO_TRANSACTION_TABLE, transactionNumber, gammaId,
+      //         modTypeToStore.getValue(), txChange.getValue(), branchId);
    }
 
    @SuppressWarnings("unchecked")
@@ -148,19 +145,19 @@ public final class CommitTransactionDatabaseTxCallable extends DatabaseTxCallabl
          authorArtId, -1, txType, branchCache);
    }
 
-   private void fetchTxNotCurrent(OseeConnection connection, Branch branch, BaseTransactionData transactionData, List<Object[]> results) throws OseeCoreException {
-      IOseeStatement chStmt = getDatabaseService().getStatement(connection);
-      try {
-         String query = ClientSessionManager.getSql(transactionData.getSelectTxNotCurrentSql());
-
-         chStmt.runPreparedQuery(query, transactionData.getItemId(), branch.getId());
-         while (chStmt.next()) {
-            results.add(new Object[] {branch.getId(), chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
-         }
-      } finally {
-         chStmt.close();
-      }
-   }
+   //   private void fetchTxNotCurrent(OseeConnection connection, Branch branch, BaseTransactionData transactionData, List<Object[]> results) throws OseeCoreException {
+   //      IOseeStatement chStmt = getDatabaseService().getStatement(connection);
+   //      try {
+   //         String query = ClientSessionManager.getSql(transactionData.getSelectTxNotCurrentSql());
+   //
+   //         chStmt.runPreparedQuery(query, transactionData.getItemId(), branch.getId());
+   //         while (chStmt.next()) {
+   //            results.add(new Object[] {branch.getId(), chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
+   //         }
+   //      } finally {
+   //         chStmt.close();
+   //      }
+   //   }
 
    //   private void updateModifiedCachedObject() throws OseeCoreException {
    //      ArtifactEvent artifactEvent = new ArtifactEvent(transactionRecord.getBranch());

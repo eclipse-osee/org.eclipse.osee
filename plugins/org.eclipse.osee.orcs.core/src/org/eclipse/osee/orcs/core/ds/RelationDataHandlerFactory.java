@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-
 /**
- * @author Roberto E. Escobar
+ * @author Andrew M. Finkbeiner
  */
-public interface AttributeRowHandler {
-   void onRow(AttributeData row) throws OseeCoreException;
+public interface RelationDataHandlerFactory {
+
+   RelationDataHandler createRelationDataHandler();
+
 }

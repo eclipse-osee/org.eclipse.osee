@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
-import org.eclipse.osee.orcs.core.ds.AttributeRowHandler;
+import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.db.internal.loader.AttributeLoader.ProxyDataFactory;
@@ -86,10 +86,10 @@ public class AttributeLoaderTest {
          artJoinQuery.store(connection);
          int queryId = artJoinQuery.getQueryId();
 
-         loader.loadFromQueryId(new AttributeRowHandler() {
+         loader.loadFromQueryId(new AttributeDataHandler() {
             @Override
-            public void onRow(AttributeData row) {
-               actuals.add(row);
+            public void onData(AttributeData data) {
+               actuals.add(data);
             }
          }, new LoadOptions(false, DeletionFlag.EXCLUDE_DELETED, LoadLevel.ALL_CURRENT), 10, queryId);
          artJoinQuery.delete(connection);

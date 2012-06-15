@@ -117,13 +117,13 @@ public class RelationLoadingTest {
       URL url = RelationLoadingTest.class.getResource(csvFile);
       Assert.assertNotNull(url);
 
-      List<RelationData> data = new ArrayList<RelationData>();
-      RelationCsvReader csvReader = new RelationCsvReader(data);
+      List<RelationData> datas = new ArrayList<RelationData>();
+      RelationCsvReader csvReader = new RelationCsvReader(datas);
       CsvReader reader = new CsvReader(url.openStream(), csvReader);
       reader.readFile();
 
-      for (RelationData row : data) {
-         relationRowMapper.onRow(row);
+      for (RelationData data : datas) {
+         relationRowMapper.onData(data);
       }
    }
 

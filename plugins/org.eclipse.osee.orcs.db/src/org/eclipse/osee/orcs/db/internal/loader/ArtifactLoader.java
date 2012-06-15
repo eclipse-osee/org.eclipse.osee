@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
-import org.eclipse.osee.orcs.core.ds.ArtifactRowHandler;
+import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
@@ -58,7 +58,7 @@ public class ArtifactLoader {
       return identityService.getUniversalId(localId);
    }
 
-   public void loadFromQueryId(ArtifactRowHandler handler, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException {
+   public void loadFromQueryId(ArtifactDataHandler handler, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException {
       String sql = getSql(options);
       IOseeStatement chStmt = dbService.getStatement();
       try {
@@ -105,7 +105,7 @@ public class ArtifactLoader {
                      row.setStripeId(chStmt.getInt("stripe_transaction_id"));
                      row.setTransactionId(row.getTransactionId());
                   }
-                  handler.onRow(row);
+                  handler.onData(row);
                }
                previousArtId = artifactId;
                previousBranchId = branchId;

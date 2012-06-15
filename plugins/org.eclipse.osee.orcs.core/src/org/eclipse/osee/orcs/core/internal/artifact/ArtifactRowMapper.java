@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
-import org.eclipse.osee.orcs.core.ds.ArtifactRowHandler;
+import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.VersionImpl;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactCollector.LoadSourceType;
@@ -26,7 +26,7 @@ import org.eclipse.osee.orcs.data.Version;
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactRowMapper implements ArtifactRowHandler {
+public class ArtifactRowMapper implements ArtifactDataHandler {
 
    private final SessionContext context;
    private final BranchCache branchCache;
@@ -43,20 +43,20 @@ public class ArtifactRowMapper implements ArtifactRowHandler {
    }
 
    @Override
-   public void onRow(ArtifactData row) throws OseeCoreException {
+   public void onData(ArtifactData data) throws OseeCoreException {
       LoadSourceType loadSourceType = LoadSourceType.FOUND_IN_CACHE;
-      ArtifactReadable artifact = getLoadedArtifact(row);
+      ArtifactReadable artifact = getLoadedArtifact(data);
       if (artifact == null) {
          loadSourceType = LoadSourceType.WAS_CREATED;
-         ArtifactType artifactType = typeCache.getByGuid(row.getArtTypeUuid());
-         Branch branch = branchCache.getById(row.getBranchId());
+         ArtifactType artifactType = typeCache.getByGuid(data.getArtTypeUuid());
+         Branch branch = branchCache.getById(data.getBranchId());
 
          Version version =
-            new VersionImpl(row.getGammaId(), row.getArtifactId(), row.getModType(), row.getTransactionId(),
-               row.isHistorical());
+            new VersionImpl(data.getGammaId(), data.getArtifactId(), data.getModType(), data.getTransactionId(),
+               data.isHistorical());
 
          artifact =
-            artifactFactory.createReadableArtifact(row.getGuid(), row.getHumanReadableId(), artifactType, branch,
+            artifactFactory.createReadableArtifact(data.getGuid(), data.getHumanReadableId(), artifactType, branch,
                version);
       }
       artifactReceiver.onArtifact(artifact, loadSourceType);

@@ -11,10 +11,10 @@
 package org.eclipse.osee.orcs.core.ds;
 
 /**
- * @author Andrew M. Finkbeiner
+ * @author Roberto E. Escobar
  */
-public interface RelationRowHandlerFactory {
+public interface AttributeDataHandlerFactory {
 
-   RelationRowHandler createRelationRowHandler();
+   AttributeDataHandler createAttributeDataHandler();
 
 }

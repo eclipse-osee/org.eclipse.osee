@@ -14,13 +14,13 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
-import org.eclipse.osee.orcs.core.ds.AttributeRowHandler;
+import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
 import org.eclipse.osee.orcs.core.internal.artifact.AttributeContainer;
 
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeRowMapper implements AttributeRowHandler {
+public class AttributeRowMapper implements AttributeDataHandler {
 
    private final AttributeFactory factory;
    private final Map<Integer, ? extends AttributeContainer> attributeContainers;
@@ -41,13 +41,13 @@ public class AttributeRowMapper implements AttributeRowHandler {
    }
 
    @Override
-   public void onRow(AttributeData row) throws OseeCoreException {
-      AttributeContainer container = getContainer(row);
+   public void onData(AttributeData data) throws OseeCoreException {
+      AttributeContainer container = getContainer(data);
       if (container == null) {
          return; // If the artifact is null, it means the attributes are orphaned.
       }
       synchronized (container) {
-         factory.createAttribute(container, row);
+         factory.createAttribute(container, data);
       }
    }
 

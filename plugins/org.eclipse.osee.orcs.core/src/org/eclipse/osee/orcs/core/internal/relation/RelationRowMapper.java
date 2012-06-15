@@ -14,13 +14,13 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.RelationData;
-import org.eclipse.osee.orcs.core.ds.RelationRowHandler;
+import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
 import org.eclipse.osee.orcs.core.internal.artifact.RelationContainer;
 
 /**
  * @author Andrew M. Finkbeiner
  */
-public class RelationRowMapper implements RelationRowHandler {
+public class RelationRowMapper implements RelationDataHandler {
 
    private final Map<Integer, ? extends RelationContainer> providersThatWillBeLoaded;
 
@@ -29,11 +29,11 @@ public class RelationRowMapper implements RelationRowHandler {
    }
 
    @Override
-   public void onRow(RelationData nextRelation) throws OseeCoreException {
-      int parentId = nextRelation.getParentId();
+   public void onData(RelationData data) throws OseeCoreException {
+      int parentId = data.getParentId();
       RelationContainer parent = providersThatWillBeLoaded.get(parentId);
       Conditions.checkNotNull(parent, "RelationContainer",
          "We recieved a RelationRow that should be added to a parent that wasn't found [%d]", parentId);
-      parent.add(nextRelation);
+      parent.add(data);
    }
 }

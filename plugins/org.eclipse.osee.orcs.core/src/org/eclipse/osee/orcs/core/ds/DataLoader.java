@@ -19,9 +19,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface DataLoader {
 
-   void loadArtifacts(HasCancellation cancellation, ArtifactRowHandler handler, int branchId, Collection<Integer> ids, LoadOptions loadOptions, RelationRowHandlerFactory relationRowHandlerFactory, AttributeRowHandlerFactory attributeRowHandlerFactory) throws OseeCoreException;
+   void loadArtifacts(HasCancellation cancellation, ArtifactDataHandler handler, int branchId, Collection<Integer> ids, LoadOptions loadOptions, RelationDataHandlerFactory relationRowHandlerFactory, AttributeDataHandlerFactory attributeRowHandlerFactory) throws OseeCoreException;
 
-   void loadArtifacts(HasCancellation cancellation, ArtifactRowHandler handler, QueryContext queryContext, LoadOptions loadOptions, RelationRowHandlerFactory relationRowHandlerFactory, AttributeRowHandlerFactory attributeRowHandlerFactory) throws OseeCoreException;
+   void loadArtifacts(HasCancellation cancellation, ArtifactDataHandler handler, QueryContext queryContext, LoadOptions loadOptions, RelationDataHandlerFactory relationRowHandlerFactory, AttributeDataHandlerFactory attributeRowHandlerFactory) throws OseeCoreException;
 
    int countArtifacts(HasCancellation cancellation, QueryContext queryContext) throws OseeCoreException;
 

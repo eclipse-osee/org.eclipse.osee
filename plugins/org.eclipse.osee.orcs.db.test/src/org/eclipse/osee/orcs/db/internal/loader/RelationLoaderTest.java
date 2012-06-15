@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.RelationData;
-import org.eclipse.osee.orcs.core.ds.RelationRowHandler;
+import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiUtil;
@@ -81,10 +81,10 @@ public class RelationLoaderTest {
 
       final List<RelationData> actuals = new ArrayList<RelationData>();
 
-      relationLoader.loadFromQueryId(new RelationRowHandler() {
+      relationLoader.loadFromQueryId(new RelationDataHandler() {
          @Override
-         public void onRow(RelationData nextRelation) {
-            actuals.add(nextRelation);
+         public void onData(RelationData data) {
+            actuals.add(data);
          }
       }, new LoadOptions(false, DeletionFlag.EXCLUDE_DELETED, LoadLevel.ALL_CURRENT), 100, queryId);
 
@@ -114,10 +114,10 @@ public class RelationLoaderTest {
 
       final List<RelationData> actuals = new ArrayList<RelationData>();
 
-      relationLoader.loadFromQueryId(new RelationRowHandler() {
+      relationLoader.loadFromQueryId(new RelationDataHandler() {
          @Override
-         public void onRow(RelationData nextRelation) {
-            actuals.add(nextRelation);
+         public void onData(RelationData data) {
+            actuals.add(data);
          }
       }, new LoadOptions(false, DeletionFlag.EXCLUDE_DELETED, LoadLevel.ALL_CURRENT), 100, queryId);
 
@@ -141,10 +141,10 @@ public class RelationLoaderTest {
       int queryId = artJoinQuery.getQueryId();
 
       final List<RelationData> actuals = new ArrayList<RelationData>();
-      relationLoader.loadFromQueryId(new RelationRowHandler() {
+      relationLoader.loadFromQueryId(new RelationDataHandler() {
          @Override
-         public void onRow(RelationData nextRelation) {
-            actuals.add(nextRelation);
+         public void onData(RelationData data) {
+            actuals.add(data);
          }
       }, new LoadOptions(true, DeletionFlag.EXCLUDE_DELETED, LoadLevel.ALL_CURRENT), 100, queryId);
 

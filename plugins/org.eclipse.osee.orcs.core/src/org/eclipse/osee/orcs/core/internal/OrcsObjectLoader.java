@@ -23,14 +23,14 @@ import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.ArtifactRowHandler;
-import org.eclipse.osee.orcs.core.ds.AttributeRowHandler;
-import org.eclipse.osee.orcs.core.ds.AttributeRowHandlerFactory;
+import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
+import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
+import org.eclipse.osee.orcs.core.ds.AttributeDataHandlerFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
-import org.eclipse.osee.orcs.core.ds.RelationRowHandler;
-import org.eclipse.osee.orcs.core.ds.RelationRowHandlerFactory;
+import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
+import org.eclipse.osee.orcs.core.ds.RelationDataHandlerFactory;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactCollector;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
@@ -91,7 +91,7 @@ public class OrcsObjectLoader {
       ArtifactCollectorImpl artifactHandler =
          new ArtifactCollectorImpl(logger, artifactFactory, attributeFactory, artifacts);
 
-      ArtifactRowHandler artifactRowHandler =
+      ArtifactDataHandler artifactRowHandler =
          new ArtifactRowMapper(sessionContext, branchCache, artifactTypeCache, artifactFactory, artifactHandler);
 
       Branch fullBranch = branchCache.get(branch);
@@ -115,7 +115,7 @@ public class OrcsObjectLoader {
       ArtifactCollectorImpl artifactHandler =
          new ArtifactCollectorImpl(logger, artifactFactory, attributeFactory, artifacts);
 
-      ArtifactRowHandler artifactRowHandler =
+      ArtifactDataHandler artifactRowHandler =
          new ArtifactRowMapper(sessionContext, branchCache, artifactTypeCache, artifactFactory, artifactHandler);
 
       dataLoader.loadArtifacts(cancellation, artifactRowHandler, queryContext, loadOptions, artifactHandler,
@@ -127,7 +127,7 @@ public class OrcsObjectLoader {
       return artifacts;
    }
 
-   private static class ArtifactCollectorImpl implements ArtifactCollector, RelationRowHandlerFactory, AttributeRowHandlerFactory {
+   private static class ArtifactCollectorImpl implements ArtifactCollector, RelationDataHandlerFactory, AttributeDataHandlerFactory {
 
       private final Map<Integer, RelationContainer> relationContainers = new HashMap<Integer, RelationContainer>();;
       private final Map<Integer, AttributeContainer> attributeContainers = new HashMap<Integer, AttributeContainer>();
@@ -146,12 +146,12 @@ public class OrcsObjectLoader {
       }
 
       @Override
-      public AttributeRowHandler createAttributeRowHandler() {
+      public AttributeDataHandler createAttributeDataHandler() {
          return new AttributeRowMapper(logger, attributeFactory, attributeContainers);
       }
 
       @Override
-      public RelationRowHandler createRelationRowHandler() {
+      public RelationDataHandler createRelationDataHandler() {
          return new RelationRowMapper(relationContainers);
       }
 
