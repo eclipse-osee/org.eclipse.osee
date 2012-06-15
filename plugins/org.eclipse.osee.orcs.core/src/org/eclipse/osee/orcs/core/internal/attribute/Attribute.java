@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.internal.artifact.AttributeContainer;
 import org.eclipse.osee.orcs.data.AttributeWriteable;
@@ -33,17 +34,14 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
    private AttributeType attributeType;
    private Reference<AttributeContainer> containerReference;
    private DataProxy dataProxy;
-   private int attrId;
-   private int gammaId;
    private boolean dirty;
-   private ModificationType modificationType;
    private String defaultValue;
    private Log logger;
+   private AttributeData attributeData;
 
-   void internalInitialize(AttributeType attributeType, DataProxy dataProxy, Reference<AttributeContainer> containerReference, ModificationType modificationType, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
+   void internalInitialize(AttributeType attributeType, DataProxy dataProxy, Reference<AttributeContainer> containerReference, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
       this.attributeType = attributeType;
       this.containerReference = containerReference;
-      this.modificationType = modificationType;
       this.dataProxy = dataProxy;
       if (setDefaultValue) {
          setToDefaultValue();
@@ -52,14 +50,17 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
       uponInitialize();
    }
 
-   public void internalInitialize(AttributeType attributeType, DataProxy dataProxy, Reference<AttributeContainer> containerReference, ModificationType modificationType, int attributeId, int gammaId, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
-      internalInitialize(attributeType, dataProxy, containerReference, modificationType, markDirty, setDefaultValue);
-      this.attrId = attributeId;
-      this.gammaId = gammaId;
+   public void internalInitialize(AttributeType attributeType, DataProxy dataProxy, Reference<AttributeContainer> containerReference, boolean markDirty, boolean setDefaultValue, AttributeData attributeData) throws OseeCoreException {
+      internalInitialize(attributeType, dataProxy, containerReference, markDirty, setDefaultValue);
+      this.attributeData = attributeData;
    }
 
    protected Log getLogger() {
       return logger;
+   }
+
+   public AttributeData getAttributeData() {
+      return attributeData;
    }
 
    /**
@@ -120,7 +121,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
 
    @Override
    public final void resetToDefaultValue() throws OseeCoreException {
-      modificationType = ModificationType.MODIFIED;
+      attributeData.setModType(ModificationType.MODIFIED);
       setToDefaultValue();
    }
 
@@ -181,7 +182,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
 
    protected void markAsChanged(ModificationType modificationType) {
       setDirtyFlag(true);
-      this.modificationType = modificationType;
+      attributeData.setModType(modificationType);
    }
 
    public void clearDirty() {
@@ -233,7 +234,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
    }
 
    public void resetModType() {
-      this.modificationType = ModificationType.MODIFIED;
+      attributeData.setModType(ModificationType.MODIFIED);
    }
 
    /**
@@ -253,7 +254,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
 
    @Override
    public ModificationType getModificationType() {
-      return modificationType;
+      return attributeData.getModType();
    }
 
    @Override
@@ -273,7 +274,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
    }
 
    public void markAsPurged() {
-      modificationType = ModificationType.DELETED;
+      attributeData.setModType(ModificationType.DELETED);
       setDirtyFlag(false);
    }
 
@@ -289,25 +290,25 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
     */
    @Override
    public int getId() {
-      return attrId;
+      return attributeData.getAttrId();
    }
 
    @Override
    public long getGammaId() {
-      return gammaId;
+      return attributeData.getGammaId();
    }
 
    public void internalSetGammaId(int gammaId) {
-      this.gammaId = gammaId;
+      attributeData.setGammaId(gammaId);
    }
 
    public void internalSetAttributeId(int attrId) {
-      this.attrId = attrId;
+      attributeData.setAttrId(attrId);
    }
 
    @Override
    public boolean isDeleted() {
-      return modificationType.isDeleted();
+      return attributeData.getModType().isDeleted();
    }
 
    /**
@@ -318,7 +319,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
     */
    public void replaceWithVersion(int gammaId) throws OseeCoreException {
       internalSetModificationType(ModificationType.REPLACED_WITH_VERSION);
-      this.gammaId = gammaId;
+      attributeData.setGammaId(gammaId);
       setDirtyFlag(true);
    }
 
@@ -328,7 +329,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
     */
    public void internalSetModificationType(ModificationType modificationType) throws OseeCoreException {
       Conditions.checkNotNull(modificationType, "modification type");
-      this.modificationType = modificationType;
+      attributeData.setModType(modificationType);
    }
 
    public void internalSetDeletedFromRemoteEvent() throws OseeCoreException {

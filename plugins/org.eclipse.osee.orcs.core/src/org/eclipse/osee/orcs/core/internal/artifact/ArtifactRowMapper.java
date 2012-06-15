@@ -11,17 +11,11 @@
 package org.eclipse.osee.orcs.core.internal.artifact;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
-import org.eclipse.osee.orcs.core.internal.VersionImpl;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactCollector.LoadSourceType;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.Version;
 
 /**
  * @author Roberto E. Escobar
@@ -29,15 +23,11 @@ import org.eclipse.osee.orcs.data.Version;
 public class ArtifactRowMapper implements ArtifactDataHandler {
 
    private final SessionContext context;
-   private final BranchCache branchCache;
-   private final ArtifactTypeCache typeCache;
    private final ArtifactFactory artifactFactory;
    private final ArtifactCollector artifactReceiver;
 
-   public ArtifactRowMapper(SessionContext context, BranchCache branchCache, ArtifactTypeCache typeCache, ArtifactFactory artifactFactory, ArtifactCollector artifactReciever) {
+   public ArtifactRowMapper(SessionContext context, ArtifactFactory artifactFactory, ArtifactCollector artifactReciever) {
       this.context = context;
-      this.branchCache = branchCache;
-      this.typeCache = typeCache;
       this.artifactFactory = artifactFactory;
       this.artifactReceiver = artifactReciever;
    }
@@ -48,16 +38,8 @@ public class ArtifactRowMapper implements ArtifactDataHandler {
       ArtifactReadable artifact = getLoadedArtifact(data);
       if (artifact == null) {
          loadSourceType = LoadSourceType.WAS_CREATED;
-         ArtifactType artifactType = typeCache.getByGuid(data.getArtTypeUuid());
-         Branch branch = branchCache.getById(data.getBranchId());
 
-         Version version =
-            new VersionImpl(data.getGammaId(), data.getArtifactId(), data.getModType(), data.getTransactionId(),
-               data.isHistorical());
-
-         artifact =
-            artifactFactory.createReadableArtifact(data.getGuid(), data.getHumanReadableId(), artifactType, branch,
-               version);
+         artifact = artifactFactory.createReadableArtifact(data);
       }
       artifactReceiver.onArtifact(artifact, loadSourceType);
    }

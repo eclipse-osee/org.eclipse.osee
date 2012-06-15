@@ -54,7 +54,7 @@ public interface OrcsTransaction {
 
    ArtifactWriteable duplicateArtifact(ArtifactReadable sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException;
 
-   ArtifactWriteable reflectArtifact(ArtifactReadable sourceArtifact) throws OseeCoreException;
+   ArtifactWriteable introduceArtifact(ArtifactReadable sourceArtifact) throws OseeCoreException;
 
    void deleteArtifact(ArtifactWriteable artifact) throws OseeCoreException;
 

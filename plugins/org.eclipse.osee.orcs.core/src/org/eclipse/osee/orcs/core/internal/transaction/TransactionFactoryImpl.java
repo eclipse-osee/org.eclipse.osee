@@ -15,8 +15,10 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
+import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
+import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.OrcsTransaction;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
@@ -30,12 +32,16 @@ public class TransactionFactoryImpl implements TransactionFactory {
    private final SessionContext sessionContext;
    private final BranchDataStore branchDataStore;
    private final ArtifactFactory artifactFactory;
+   private final AttributeFactory attributeFactory;
+   private final DataLoader dataLoader;
 
-   public TransactionFactoryImpl(Log logger, SessionContext sessionContext, BranchDataStore branchDataStore, ArtifactFactory artifactFactory) {
+   public TransactionFactoryImpl(Log logger, SessionContext sessionContext, BranchDataStore branchDataStore, ArtifactFactory artifactFactory, AttributeFactory attributeFactory, DataLoader dataLoader) {
       this.logger = logger;
       this.sessionContext = sessionContext;
       this.branchDataStore = branchDataStore;
       this.artifactFactory = artifactFactory;
+      this.attributeFactory = attributeFactory;
+      this.dataLoader = dataLoader;
    }
 
    @Override
@@ -45,7 +51,8 @@ public class TransactionFactoryImpl implements TransactionFactory {
       Conditions.checkNotNullOrEmpty(comment, "comment");
 
       OrcsTransactionImpl orcsTxn =
-         new OrcsTransactionImpl(logger, sessionContext, branchDataStore, artifactFactory, branch);
+         new OrcsTransactionImpl(logger, sessionContext, branchDataStore, artifactFactory, attributeFactory,
+            dataLoader, branch);
       orcsTxn.setComment(comment);
       orcsTxn.setAuthor(userArtifact);
       return orcsTxn;

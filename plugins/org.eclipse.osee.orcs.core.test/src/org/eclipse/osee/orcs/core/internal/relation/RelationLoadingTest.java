@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.model.mocks.MockOseeDataAccessor;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.internal.artifact.RelationContainer;
-import org.eclipse.osee.orcs.data.HasLocalId;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -103,14 +102,7 @@ public class RelationLoadingTest {
    }
 
    private RelationContainer createRelationContainer(RelationTypeCache relationTypeCache, final int parentId) {
-      return new RelationContainerImpl(new HasLocalId() {
-
-         @Override
-         public int getLocalId() {
-            return parentId;
-         }
-
-      }, relationTypeCache);
+      return new RelationContainerImpl(parentId, relationTypeCache);
    }
 
    private void loadRowData(String csvFile, RelationRowMapper relationRowMapper) throws IOException, OseeCoreException {

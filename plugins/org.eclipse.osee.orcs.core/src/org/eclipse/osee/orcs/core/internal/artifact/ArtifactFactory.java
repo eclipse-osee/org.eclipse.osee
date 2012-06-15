@@ -10,17 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.artifact;
 
-import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.internal.AbstractProxy;
 import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
-import org.eclipse.osee.orcs.data.Version;
 
 /**
  * @author Roberto E. Escobar
@@ -29,26 +29,28 @@ public class ArtifactFactory {
 
    private final RelationFactory relationFactory;
    private final ArtifactTypeCache artifactTypeCache;
+   private final BranchCache branchCache;
 
-   public ArtifactFactory(RelationFactory relationFactory, ArtifactTypeCache artifactTypeCache) {
+   public ArtifactFactory(RelationFactory relationFactory, ArtifactTypeCache artifactTypeCache, BranchCache branchCache) {
       super();
       this.relationFactory = relationFactory;
       this.artifactTypeCache = artifactTypeCache;
+      this.branchCache = branchCache;
    }
 
-   public ArtifactWriteable createWriteableArtifact(String guid, String humandReadableId, IArtifactType artifactType, IOseeBranch branch, Version version) throws OseeCoreException {
+   public ArtifactWriteable createWriteableArtifact(ArtifactData artifactData) throws OseeCoreException {
       //TODO implement an artifact class resolver for specific artifact types
 
-      ArtifactImpl artifact = createArtifactImpl(guid, humandReadableId, artifactType, branch, version);
+      ArtifactImpl artifact = createArtifactImpl(artifactData);
 
       WritableArtifactProxy proxy = new WritableArtifactProxy(artifact);
       return proxy;
    }
 
-   public ArtifactReadable createReadableArtifact(String guid, String humandReadableId, IArtifactType artifactType, IOseeBranch branch, Version version) throws OseeCoreException {
+   public ArtifactReadable createReadableArtifact(ArtifactData artifactData) throws OseeCoreException {
       //TODO implement an artifact class resolver for specific artifact types
 
-      ArtifactImpl artifact = createArtifactImpl(guid, humandReadableId, artifactType, branch, version);
+      ArtifactImpl artifact = createArtifactImpl(artifactData);
 
       ReadableArtifactProxy proxy = new ReadableArtifactProxy(artifact);
       return proxy;
@@ -74,11 +76,12 @@ public class ArtifactFactory {
       return toReturn;
    }
 
-   private ArtifactImpl createArtifactImpl(String guid, String humandReadableId, IArtifactType artifactType, IOseeBranch branch, Version version) throws OseeCoreException {
-      RelationContainer relationContainer = relationFactory.createRelationContainer(version);
+   private ArtifactImpl createArtifactImpl(ArtifactData artifactData) throws OseeCoreException {
+      RelationContainer relationContainer = relationFactory.createRelationContainer(artifactData.getLocalId());
 
-      ArtifactType type = artifactTypeCache.get(artifactType);
-      ArtifactImpl artifact = new ArtifactImpl(guid, humandReadableId, type, branch, relationContainer, version);
+      ArtifactType type = artifactTypeCache.getByGuid(artifactData.getTypeUuid());
+      Branch branch = branchCache.getById(artifactData.getBranchId());
+      ArtifactImpl artifact = new ArtifactImpl(type, branch, relationContainer, artifactData);
       return artifact;
    }
 }

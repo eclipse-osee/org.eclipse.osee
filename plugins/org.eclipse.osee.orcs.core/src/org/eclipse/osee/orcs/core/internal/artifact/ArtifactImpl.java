@@ -26,35 +26,33 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeContainerImpl;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.AttributeWriteable;
-import org.eclipse.osee.orcs.data.Version;
 
 public class ArtifactImpl extends NamedIdentity<String> implements ArtifactWriteable, Cloneable {
 
    private final AttributeContainer attributeContainer;
    private final RelationContainer relationContainer;
-   private final String humandReadableId;
    private final ArtifactType artifactType;
    private final IOseeBranch branch;
    private EditState objectEditState;
-   private final Version version;
+   private final ArtifactData artifactData;
 
-   public ArtifactImpl(String guid, String humandReadableId, ArtifactType artifactType, IOseeBranch branch, RelationContainer relationContainer, Version version) {
-      super(guid, "");
-      this.humandReadableId = humandReadableId;
+   public ArtifactImpl(ArtifactType artifactType, IOseeBranch branch, RelationContainer relationContainer, ArtifactData artifactData) {
+      super(artifactData.getGuid(), "");
       this.artifactType = artifactType;
       this.branch = branch;
       this.attributeContainer = new AttributeContainerImpl(this);
       this.relationContainer = relationContainer;
-      this.version = version;
       objectEditState = EditState.NO_CHANGE;
+      this.artifactData = artifactData;
    }
 
    public ModificationType getModificationType() {
-      return version.getModificationType();
+      return artifactData.getModType();
    }
 
    @Override
@@ -70,7 +68,7 @@ public class ArtifactImpl extends NamedIdentity<String> implements ArtifactWrite
 
    @Override
    public int getLocalId() {
-      return version.getLocalId();
+      return artifactData.getLocalId();
    }
 
    @Override
@@ -80,12 +78,12 @@ public class ArtifactImpl extends NamedIdentity<String> implements ArtifactWrite
 
    @Override
    public String getHumanReadableId() {
-      return humandReadableId;
+      return artifactData.getHumanReadableId();
    }
 
    @Override
    public int getTransactionId() {
-      return version.getTransactionId();
+      return artifactData.getTransactionId();
    }
 
    @Override

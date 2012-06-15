@@ -53,8 +53,7 @@ public class AttributeFactory {
       proxy.setResolver(new AttributeResourceNameResolver(attribute));
 
       Reference<AttributeContainer> artifactRef = new WeakReference<AttributeContainer>(container);
-      attribute.internalInitialize(type, proxy, artifactRef, row.getModType(), row.getAttrId(), row.getGammaId(),
-         markDirty, false);
+      attribute.internalInitialize(type, proxy, artifactRef, markDirty, false, row);
       container.add(type, attribute);
    }
 

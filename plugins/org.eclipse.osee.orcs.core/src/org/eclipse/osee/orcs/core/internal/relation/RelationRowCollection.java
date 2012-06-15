@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.RelationData;
-import org.eclipse.osee.orcs.data.HasLocalId;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -34,10 +33,10 @@ public class RelationRowCollection {
    private final Map<IRelationTypeSide, List<RelationData>> relations =
       new ConcurrentHashMap<IRelationTypeSide, List<RelationData>>();
 
-   private final HasLocalId parentId;
+   private final int parentId;
    private final RelationTypeCache relationTypeCache;
 
-   RelationRowCollection(HasLocalId parentId, RelationTypeCache relationTypeCache) {
+   RelationRowCollection(int parentId, RelationTypeCache relationTypeCache) {
       this.parentId = parentId;
       this.relationTypeCache = relationTypeCache;
    }
@@ -50,7 +49,7 @@ public class RelationRowCollection {
    }
 
    private RelationSide getRelationSide(RelationData row) {
-      if (row.getArtIdA() == parentId.getLocalId()) {
+      if (row.getArtIdA() == parentId) {
          return RelationSide.SIDE_B;
       } else { //row.getArtIdB() == parentId
          return RelationSide.SIDE_A;

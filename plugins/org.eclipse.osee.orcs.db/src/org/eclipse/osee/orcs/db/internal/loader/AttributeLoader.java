@@ -97,6 +97,8 @@ public class AttributeLoader {
 
             String value = chStmt.getString("value");
             String uri = chStmt.getString("uri");
+            nextAttr.setValue(value);
+            nextAttr.setUri(uri);
             DataProxy proxy = proxyFactory.createProxy(nextAttr.getAttrTypeUuid(), value, uri);
             nextAttr.setDataProxy(proxy);
 

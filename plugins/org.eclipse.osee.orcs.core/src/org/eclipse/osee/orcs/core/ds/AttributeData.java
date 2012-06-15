@@ -17,11 +17,29 @@ public class AttributeData extends OrcsObject {
 
    private int stripeId = -1;
    private int artifactId = -1;
+   private String uri;
+   private String value;
 
    private DataProxy proxy;
 
    public AttributeData() {
       // do nothing
+   }
+
+   public String getUri() {
+      return uri;
+   }
+
+   public void setUri(String uri) {
+      this.uri = uri;
+   }
+
+   public void setValue(String value) {
+      this.value = value;
+   }
+
+   public String getValue() {
+      return value;
    }
 
    public int getArtifactId() {

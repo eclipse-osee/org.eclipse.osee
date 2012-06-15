@@ -18,8 +18,6 @@ import java.util.Map;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
@@ -49,19 +47,17 @@ public class OrcsObjectLoader {
 
    private final DataLoader dataLoader;
    private final Log logger;
-   private final ArtifactTypeCache artifactTypeCache;
    private final BranchCache branchCache;
    private final ArtifactFactory artifactFactory;
    private final AttributeFactory attributeFactory;
 
-   public OrcsObjectLoader(Log logger, DataLoader dataLoader, ArtifactFactory artifactFactory, AttributeFactory attributeFactory, ArtifactTypeCache artifactTypeCache, BranchCache branchCache) {
+   public OrcsObjectLoader(Log logger, DataLoader dataLoader, ArtifactFactory artifactFactory, AttributeFactory attributeFactory, BranchCache branchCache) {
       super();
       this.logger = logger;
       this.dataLoader = dataLoader;
       this.artifactFactory = artifactFactory;
       this.attributeFactory = attributeFactory;
 
-      this.artifactTypeCache = artifactTypeCache;
       this.branchCache = branchCache;
    }
 
@@ -91,13 +87,10 @@ public class OrcsObjectLoader {
       ArtifactCollectorImpl artifactHandler =
          new ArtifactCollectorImpl(logger, artifactFactory, attributeFactory, artifacts);
 
-      ArtifactDataHandler artifactRowHandler =
-         new ArtifactRowMapper(sessionContext, branchCache, artifactTypeCache, artifactFactory, artifactHandler);
+      ArtifactDataHandler artifactRowHandler = new ArtifactRowMapper(sessionContext, artifactFactory, artifactHandler);
 
-      Branch fullBranch = branchCache.get(branch);
-
-      dataLoader.loadArtifacts(cancellation, artifactRowHandler, fullBranch.getId(), ids, loadOptions, artifactHandler,
-         artifactHandler);
+      dataLoader.loadArtifacts(cancellation, artifactRowHandler, branchCache.getLocalId(branch), ids, loadOptions,
+         artifactHandler, artifactHandler);
       if (logger.isTraceEnabled()) {
          logger.trace("Objects from ids loaded in [%s]", Lib.getElapseString(startTime));
       }
@@ -115,8 +108,7 @@ public class OrcsObjectLoader {
       ArtifactCollectorImpl artifactHandler =
          new ArtifactCollectorImpl(logger, artifactFactory, attributeFactory, artifacts);
 
-      ArtifactDataHandler artifactRowHandler =
-         new ArtifactRowMapper(sessionContext, branchCache, artifactTypeCache, artifactFactory, artifactHandler);
+      ArtifactDataHandler artifactRowHandler = new ArtifactRowMapper(sessionContext, artifactFactory, artifactHandler);
 
       dataLoader.loadArtifacts(cancellation, artifactRowHandler, queryContext, loadOptions, artifactHandler,
          artifactHandler);

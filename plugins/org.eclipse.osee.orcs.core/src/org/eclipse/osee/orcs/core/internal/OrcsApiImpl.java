@@ -59,6 +59,7 @@ public class OrcsApiImpl implements OrcsApi {
    private SystemPreferences preferences;
 
    private ArtifactFactory artifactFactory;
+   AttributeFactory attributeFactory;
    private OrcsObjectLoader objectLoader;
    private QueryModule queryModule;
    private IndexerModule indexerModule;
@@ -105,12 +106,11 @@ public class OrcsApiImpl implements OrcsApi {
 
    public void start() {
       RelationFactory relationFactory = new RelationFactory(dataStoreTypeCache.getRelationTypeCache());
-      artifactFactory = new ArtifactFactory(relationFactory, cacheService.getArtifactTypeCache());
-      AttributeFactory attributeFactory =
-         new AttributeFactory(logger, resolver, dataStoreTypeCache.getAttributeTypeCache());
+      artifactFactory =
+         new ArtifactFactory(relationFactory, cacheService.getArtifactTypeCache(), cacheService.getBranchCache());
+      attributeFactory = new AttributeFactory(logger, resolver, dataStoreTypeCache.getAttributeTypeCache());
       objectLoader =
-         new OrcsObjectLoader(logger, dataLoader, artifactFactory, attributeFactory,
-            dataStoreTypeCache.getArtifactTypeCache(), cacheService.getBranchCache());
+         new OrcsObjectLoader(logger, dataLoader, artifactFactory, attributeFactory, cacheService.getBranchCache());
 
       queryModule = new QueryModule(logger, queryEngine, objectLoader, dataStoreTypeCache.getAttributeTypeCache());
 
@@ -159,7 +159,8 @@ public class OrcsApiImpl implements OrcsApi {
    @Override
    public TransactionFactory getTransactionFactory(ApplicationContext context) {
       SessionContext sessionContext = getSessionContext(context);
-      return new TransactionFactoryImpl(logger, sessionContext, branchStore, artifactFactory);
+      return new TransactionFactoryImpl(logger, sessionContext, branchStore, artifactFactory, attributeFactory,
+         dataLoader);
    }
 
    @Override

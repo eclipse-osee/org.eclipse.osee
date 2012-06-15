@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.internal.artifact.RelationContainer;
-import org.eclipse.osee.orcs.data.HasLocalId;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -25,7 +24,7 @@ public class RelationContainerImpl implements RelationContainer {
 
    private final RelationRowCollection rows;
 
-   public RelationContainerImpl(HasLocalId parentId, RelationTypeCache relationTypeCache) {
+   public RelationContainerImpl(int parentId, RelationTypeCache relationTypeCache) {
       this.rows = new RelationRowCollection(parentId, relationTypeCache);
    }
 

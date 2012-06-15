@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.core.internal.relation;
 
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.orcs.core.internal.artifact.RelationContainer;
-import org.eclipse.osee.orcs.data.HasLocalId;
 
 public class RelationFactory {
 
@@ -22,7 +21,7 @@ public class RelationFactory {
       this.relationTypeCache = relationTypeCache;
    }
 
-   public RelationContainer createRelationContainer(HasLocalId artId) {
+   public RelationContainer createRelationContainer(int artId) {
       return new RelationContainerImpl(artId, relationTypeCache);
    }
 

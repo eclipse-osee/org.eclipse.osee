@@ -21,15 +21,22 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.core.ds.ArtifactData;
+import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
+import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
+import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
+import org.eclipse.osee.orcs.core.internal.artifact.WritableArtifactProxy;
+import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
+import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -46,16 +53,20 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
    private final IOseeBranch branch;
    private final BranchDataStore dataStore;
    private final ArtifactFactory artifactFactory;
+   private final AttributeFactory attributeFactory;
 
    private String comment;
    private ArtifactReadable authorArtifact;
    private final Map<String, ArtifactWriteable> writeableArtifacts = new ConcurrentHashMap<String, ArtifactWriteable>();
+   private final DataLoader dataLoader;
 
-   public OrcsTransactionImpl(Log logger, SessionContext sessionContext, BranchDataStore dataStore, ArtifactFactory artifactFactory, IOseeBranch branch) {
+   public OrcsTransactionImpl(Log logger, SessionContext sessionContext, BranchDataStore dataStore, ArtifactFactory artifactFactory, AttributeFactory attributeFactory, DataLoader dataLoader, IOseeBranch branch) {
       super();
       this.logger = logger;
       this.dataStore = dataStore;
       this.artifactFactory = artifactFactory;
+      this.attributeFactory = attributeFactory;
+      this.dataLoader = dataLoader;
       this.branch = branch;
    }
 
@@ -150,8 +161,10 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
 
    @Override
    public ArtifactWriteable createArtifact(IArtifactType artifactType, String name, String guid) throws OseeCoreException {
-      ArtifactWriteable artifact =
-         artifactFactory.createWriteableArtifact(guid, HumanReadableId.generate(), artifactType, branch, null);
+      ArtifactData newArtifact = dataLoader.createNewArtifactData();
+      newArtifact.setArtTypeUuid(artifactType.getGuid());
+      newArtifact.setGuid(guid);
+      ArtifactWriteable artifact = artifactFactory.createWriteableArtifact(newArtifact);
       artifact.setName(name);
       return artifact;
    }
@@ -163,19 +176,26 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
 
    @Override
    public ArtifactWriteable duplicateArtifact(ArtifactReadable sourceArtifact) throws OseeCoreException {
-      ArtifactWriteable duplicate = createArtifact(sourceArtifact.getArtifactType(), sourceArtifact.getName());
-      for (AttributeReadable<?> attribute : duplicate.getAttributes()) {
-      }
-      return null;
+      return duplicateArtifact(sourceArtifact, sourceArtifact.getAttributeTypes());
    }
 
    @Override
    public ArtifactWriteable duplicateArtifact(ArtifactReadable sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException {
-      return null;
+      ArtifactImpl duplicate =
+         ((WritableArtifactProxy) createArtifact(sourceArtifact.getArtifactType(), sourceArtifact.getName())).getOriginal();
+      for (AttributeReadable<?> attribute : duplicate.getAttributes()) {
+         AttributeData attrData = ((Attribute<?>) attribute).getAttributeData();
+         AttributeData attr = dataLoader.duplicateAttributeData(attrData);
+         attributeFactory.createAttribute(duplicate.getAttributeContainer(), attr);
+      }
+      return duplicate;
    }
 
    @Override
-   public ArtifactWriteable reflectArtifact(ArtifactReadable sourceArtifact) throws OseeCoreException {
+   public ArtifactWriteable introduceArtifact(ArtifactReadable sourceArtifact) throws OseeCoreException {
+      if (sourceArtifact.getBranch().equals(branch)) {
+         throw new OseeArgumentException("Source artifact is on same branch as transaction");
+      }
       return null;
    }
 

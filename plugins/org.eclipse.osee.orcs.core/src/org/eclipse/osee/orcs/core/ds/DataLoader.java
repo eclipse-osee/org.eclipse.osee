@@ -25,4 +25,10 @@ public interface DataLoader {
 
    int countArtifacts(HasCancellation cancellation, QueryContext queryContext) throws OseeCoreException;
 
+   AttributeData createNewAttributeData(long typeUuid, String value) throws OseeCoreException;
+
+   AttributeData duplicateAttributeData(AttributeData data) throws OseeCoreException;
+
+   ArtifactData createNewArtifactData();
+
 }

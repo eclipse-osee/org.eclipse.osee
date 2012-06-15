@@ -22,13 +22,17 @@ import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.DataStoreTypeCache;
 import org.eclipse.osee.orcs.core.SystemPreferences;
+import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
+import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
 import org.eclipse.osee.orcs.core.ds.AttributeDataHandlerFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
+import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
 import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
@@ -50,6 +54,7 @@ public class DataLoaderImpl implements DataLoader {
    private SystemPreferences preferences;
    private DataStoreTypeCache dataStoreTypeCache;
    private DataProxyFactoryProvider dataProxyFactoryProvider;
+   AttributeDataProxyFactory attributeDataProxyFactory;
 
    private ArtifactLoader artifactLoader;
    private AttributeLoader attributeLoader;
@@ -62,7 +67,7 @@ public class DataLoaderImpl implements DataLoader {
 
       artifactLoader = new ArtifactLoader(logger, sqlProvider, oseeDatabaseService, identityService);
 
-      AttributeDataProxyFactory attributeDataProxyFactory =
+      attributeDataProxyFactory =
          new AttributeDataProxyFactory(dataProxyFactoryProvider, dataStoreTypeCache.getAttributeTypeCache());
       attributeLoader =
          new AttributeLoader(logger, sqlProvider, oseeDatabaseService, identityService, attributeDataProxyFactory);
@@ -171,6 +176,28 @@ public class DataLoaderImpl implements DataLoader {
       } finally {
          join.delete();
       }
+   }
+
+   @Override
+   public ArtifactData createNewArtifactData() {
+      //TX_TODO set HRID, modType to new?
+      return new ArtifactData();
+   }
+
+   @Override
+   public AttributeData createNewAttributeData(long typeUuid, String value) throws OseeCoreException {
+      DataProxy proxy = attributeDataProxyFactory.createProxy(typeUuid, value, Strings.EMPTY_STRING);
+      AttributeData data = new AttributeData();
+      data.setDataProxy(proxy);
+      return data;
+   }
+
+   @Override
+   public AttributeData duplicateAttributeData(AttributeData data) throws OseeCoreException {
+      AttributeData clone = new AttributeData();
+      DataProxy proxy = attributeDataProxyFactory.createProxy(data.getAttrTypeUuid(), data.getValue(), data.getUri());
+      clone.setDataProxy(proxy);
+      return clone;
    }
 
    private void loadArtifacts(HasCancellation cancellation, AbstractJoinQuery join, int fetchSize, ArtifactDataHandler handler, LoadOptions loadOptions, RelationDataHandlerFactory relationRowHandlerFactory, AttributeDataHandlerFactory attributeRowHandlerFactory) throws OseeCoreException {
