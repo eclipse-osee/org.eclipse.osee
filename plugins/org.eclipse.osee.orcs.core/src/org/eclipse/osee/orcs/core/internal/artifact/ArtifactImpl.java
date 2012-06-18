@@ -24,35 +24,50 @@ import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
+import org.eclipse.osee.orcs.core.ds.HasOrcsData;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeContainerImpl;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.AttributeWriteable;
 
-public class ArtifactImpl extends NamedIdentity<String> implements ArtifactWriteable, Cloneable {
+public class ArtifactImpl extends NamedIdentity<String> implements HasOrcsData<ArtifactData>, ArtifactWriteable, Cloneable {
 
    private final AttributeContainer attributeContainer;
    private final RelationContainer relationContainer;
    private final ArtifactType artifactType;
-   private final IOseeBranch branch;
+   private final Branch branch;
    private EditState objectEditState;
    private final ArtifactData artifactData;
 
-   public ArtifactImpl(ArtifactType artifactType, IOseeBranch branch, RelationContainer relationContainer, ArtifactData artifactData) {
+   public ArtifactImpl(ArtifactType artifactType, Branch branch, RelationContainer relationContainer, ArtifactData artifactData) {
       super(artifactData.getGuid(), "");
+      this.artifactData = artifactData;
       this.artifactType = artifactType;
       this.branch = branch;
       this.attributeContainer = new AttributeContainerImpl(this);
       this.relationContainer = relationContainer;
       objectEditState = EditState.NO_CHANGE;
-      this.artifactData = artifactData;
+   }
+
+   public AttributeContainer getAttributeContainer() {
+      return attributeContainer;
+   }
+
+   public RelationContainer getRelationContainer() {
+      return relationContainer;
+   }
+
+   @Override
+   public ArtifactData getOrcsData() {
+      return artifactData;
    }
 
    public ModificationType getModificationType() {
-      return artifactData.getModType();
+      return getOrcsData().getModType();
    }
 
    @Override
@@ -68,7 +83,7 @@ public class ArtifactImpl extends NamedIdentity<String> implements ArtifactWrite
 
    @Override
    public int getLocalId() {
-      return artifactData.getLocalId();
+      return getOrcsData().getLocalId();
    }
 
    @Override
@@ -78,12 +93,12 @@ public class ArtifactImpl extends NamedIdentity<String> implements ArtifactWrite
 
    @Override
    public String getHumanReadableId() {
-      return artifactData.getHumanReadableId();
+      return getOrcsData().getHumanReadableId();
    }
 
    @Override
    public int getTransactionId() {
-      return artifactData.getTransactionId();
+      return getOrcsData().getVersion().getTransactionId();
    }
 
    @Override
@@ -97,8 +112,8 @@ public class ArtifactImpl extends NamedIdentity<String> implements ArtifactWrite
    }
 
    @Override
-   public Collection<IAttributeType> getAttributeTypes() throws OseeCoreException {
-      return attributeContainer.getAttributeTypes();
+   public Collection<IAttributeType> getExistingAttributeTypes() throws OseeCoreException {
+      return attributeContainer.getExistingAttributeTypes();
    }
 
    @Override
@@ -108,14 +123,6 @@ public class ArtifactImpl extends NamedIdentity<String> implements ArtifactWrite
       } else {
          return String.valueOf(attributeContainer.getAttributes(attributeType).iterator().next().getValue());
       }
-   }
-
-   public AttributeContainer getAttributeContainer() {
-      return attributeContainer;
-   }
-
-   public RelationContainer getRelationContainer() {
-      return relationContainer;
    }
 
    @Override
@@ -165,18 +172,19 @@ public class ArtifactImpl extends NamedIdentity<String> implements ArtifactWrite
 
    @Override
    public <T> List<AttributeWriteable<T>> getWriteableAttributes() throws OseeCoreException {
+      //TX_TODO
       return null;
    }
 
    @Override
    public <T> List<AttributeWriteable<T>> getWriteableAttributes(IAttributeType attributeType) throws OseeCoreException {
+      //TX_TODO
       return null;
    }
 
    @Override
-   @Override
    public final <T> T getSoleAttributeValue(IAttributeType attributeType) throws OseeCoreException {
-      List<ReadableAttribute<T>> soleAttributes = attributeContainer.getAttributes(attributeType);
+      List<AttributeReadable<T>> soleAttributes = attributeContainer.getAttributes(attributeType);
       if (soleAttributes.isEmpty()) {
          if (!isAttributeTypeValid(attributeType)) {
             throw new OseeArgumentException("The attribute type %s is not valid for artifacts of type [%s]",
@@ -194,22 +202,27 @@ public class ArtifactImpl extends NamedIdentity<String> implements ArtifactWrite
 
    @Override
    public void setSoleAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException {
+      //TX_TODO
    }
 
    @Override
    public void setAttributes(IAttributeType attributeType, Collection<String> values) throws OseeCoreException {
+      //TX_TODO
    }
 
    @Override
    public void deleteSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
+      //TX_TODO
    }
 
    @Override
    public void deleteAttributes(IAttributeType attributeType) throws OseeCoreException {
+      //TX_TODO
    }
 
    @Override
    public void deleteAttributesWithValue(IAttributeType attributeType, Object value) throws OseeCoreException {
+      //TX_TODO
    }
 
    /**
@@ -244,7 +257,33 @@ public class ArtifactImpl extends NamedIdentity<String> implements ArtifactWrite
       return objectEditState.isArtifactTypeChange();
    }
 
+   @Override
    public final boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException {
       return artifactType.isValidAttributeType(attributeType, branch);
+   }
+
+   @Override
+   public void createAttribute(IAttributeType attributeType) throws OseeCoreException {
+      //TX_TODO
+   }
+
+   @Override
+   public <T> void createAttribute(IAttributeType attributeType, T value) throws OseeCoreException {
+      //TX_TODO
+   }
+
+   @Override
+   public void createAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException {
+      //TX_TODO
+   }
+
+   @Override
+   public <T> void setSoleAttribute(IAttributeType attributeType, T value) throws OseeCoreException {
+      //TX_TODO
+   }
+
+   @Override
+   public void setSoleAttributeFromStream(IAttributeType attributeType, InputStream inputStream) throws OseeCoreException {
+      //TX_TODO
    }
 }

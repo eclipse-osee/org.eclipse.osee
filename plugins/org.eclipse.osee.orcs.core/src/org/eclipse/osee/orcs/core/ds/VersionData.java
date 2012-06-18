@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2012 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,16 +8,33 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.data;
-
-import org.eclipse.osee.framework.core.enums.ModificationType;
+package org.eclipse.osee.orcs.core.ds;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface HasVersion {
+public interface VersionData {
 
    long getGammaId();
 
-   ModificationType getModificationType();
+   void setGammaId(long gamma);
+
+   int getTransactionId();
+
+   void setTransactionId(int txId);
+
+   int getStripeId();
+
+   void setStripeId(int stripeId);
+
+   int getBranchId();
+
+   void setBranchId(int branchId);
+
+   boolean isInStorage();
+
+   boolean isHistorical();
+
+   void setHistorical(boolean historical);
+
 }

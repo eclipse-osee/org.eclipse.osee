@@ -25,6 +25,10 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
+import org.eclipse.osee.orcs.core.ds.VersionData;
+import org.eclipse.osee.orcs.db.internal.loader.data.ArtifactDataImpl;
+import org.eclipse.osee.orcs.db.internal.loader.data.OrcsObjectFactoryImpl;
+import org.eclipse.osee.orcs.db.internal.loader.data.VersionDataImpl;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiUtil;
@@ -66,7 +70,8 @@ public class ArtifactLoaderTest {
       IOseeDatabaseService oseeDbService = OsgiUtil.getService(IOseeDatabaseService.class);
       IdentityService identityService = OsgiUtil.getService(IdentityService.class);
 
-      ArtifactLoader loader = new ArtifactLoader(log, sqlProvider, oseeDbService, identityService);
+      OrcsObjectFactoryImpl factory = new OrcsObjectFactoryImpl(null, identityService);
+      ArtifactLoader loader = new ArtifactLoader(log, sqlProvider, oseeDbService, factory);
 
       ArtifactJoinQuery artJoinQuery = JoinUtility.createArtifactJoinQuery();
       OseeConnection connection = oseeDbService.getConnection();
@@ -116,7 +121,8 @@ public class ArtifactLoaderTest {
       IOseeDatabaseService oseeDbService = OsgiUtil.getService(IOseeDatabaseService.class);
       IdentityService identityService = OsgiUtil.getService(IdentityService.class);
 
-      ArtifactLoader loader = new ArtifactLoader(log, sqlProvider, oseeDbService, identityService);
+      OrcsObjectFactoryImpl factory = new OrcsObjectFactoryImpl(null, identityService);
+      ArtifactLoader loader = new ArtifactLoader(log, sqlProvider, oseeDbService, factory);
 
       ArtifactJoinQuery artJoinQuery = JoinUtility.createArtifactJoinQuery();
       OseeConnection connection = oseeDbService.getConnection();
@@ -161,17 +167,19 @@ public class ArtifactLoaderTest {
    }
 
    private ArtifactData getArtifactRow(int artId, long artTypeUUID, int branchId, int gammaId, String guid, boolean historical, String humanReadableId, ModificationType modType, int stripeId, int transactionId) {
-      ArtifactData row = new ArtifactData();
-      row.setArtifactId(artId);
-      row.setArtTypeUuid(artTypeUUID);
-      row.setBranchId(branchId);
-      row.setGammaId(gammaId);
+      VersionData version = new VersionDataImpl();
+      version.setHistorical(historical);
+      version.setBranchId(branchId);
+      version.setGammaId(gammaId);
+      version.setStripeId(stripeId);
+      version.setTransactionId(transactionId);
+
+      ArtifactData row = new ArtifactDataImpl(version);
+      row.setLocalId(artId);
+      row.setTypeUuid(artTypeUUID);
       row.setGuid(guid);
-      row.setHistorical(historical);
       row.setHumanReadableId(humanReadableId);
       row.setModType(modType);
-      row.setStripeId(stripeId);
-      row.setTransactionId(transactionId);
       return row;
    }
 }

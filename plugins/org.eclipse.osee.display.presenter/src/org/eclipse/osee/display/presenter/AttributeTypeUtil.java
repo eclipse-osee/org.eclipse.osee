@@ -28,7 +28,7 @@ public class AttributeTypeUtil {
 
    public static List<IAttributeType> getEmptyTypes(ArtifactReadable artifact) throws OseeCoreException {
       List<IAttributeType> items = new ArrayList<IAttributeType>();
-      for (IAttributeType type : artifact.getAttributeTypes()) {
+      for (IAttributeType type : artifact.getExistingAttributeTypes()) {
          if (!CoreAttributeTypes.Name.equals(type) && artifact.getAttributes(type).isEmpty()) {
             items.add(type);
          }

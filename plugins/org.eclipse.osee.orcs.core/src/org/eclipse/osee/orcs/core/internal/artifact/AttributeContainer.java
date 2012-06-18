@@ -29,7 +29,7 @@ public interface AttributeContainer {
 
    int getCount(IAttributeType type) throws OseeCoreException;
 
-   Collection<IAttributeType> getAttributeTypes() throws OseeCoreException;
+   Collection<IAttributeType> getExistingAttributeTypes() throws OseeCoreException;
 
    <T> List<AttributeReadable<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException;
 

@@ -22,13 +22,11 @@ import org.eclipse.osee.orcs.statistics.QueryStatistics;
  */
 public class OrcsPerformanceImpl implements OrcsPerformance {
 
-   private final Log logger;
    private final QueryModule queryModule;
    private final IndexerModule indexerModule;
    private final SessionContext sessionContext;
 
    public OrcsPerformanceImpl(Log logger, SessionContext sessionContext, QueryModule queryModule, IndexerModule indexerModule) {
-      this.logger = logger;
       this.sessionContext = sessionContext;
       this.queryModule = queryModule;
       this.indexerModule = indexerModule;

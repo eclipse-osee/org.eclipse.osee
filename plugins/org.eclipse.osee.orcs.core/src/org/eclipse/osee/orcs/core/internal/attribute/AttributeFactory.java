@@ -12,15 +12,18 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
+import org.eclipse.osee.orcs.core.ds.AttributeDataFactory;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
+import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
 import org.eclipse.osee.orcs.core.internal.artifact.AttributeContainer;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -29,48 +32,67 @@ public class AttributeFactory {
 
    private final AttributeClassResolver classResolver;
    private final IOseeCache<Long, AttributeType> cache;
+   private final AttributeDataFactory dataFactory;
 
-   public AttributeFactory(Log logger, AttributeClassResolver classResolver, IOseeCache<Long, AttributeType> cache) {
+   public AttributeFactory(Log logger, AttributeClassResolver classResolver, IOseeCache<Long, AttributeType> cache, AttributeDataFactory dataFactory) {
       this.classResolver = classResolver;
       this.cache = cache;
+      this.dataFactory = dataFactory;
    }
 
-   public <T> void createAttribute(AttributeContainer container, AttributeData row) throws OseeCoreException {
-      AttributeType type = cache.getByGuid(row.getAttrTypeUuid());
-      Conditions.checkNotNull(type, "attributeType", "Cannot find attribute type with uuid[%s]", row.getAttrTypeUuid());
-
-      boolean markDirty = false;
-
-      Class<? extends Attribute<?>> attributeClass = classResolver.getBaseClazz(type);
-      if (attributeClass == null) {
-         // TODO Word Attributes etc -  Default to StringAttribute if Null
-         attributeClass = classResolver.getBaseClazz("StringAttribute");
+   public <T> Attribute<T> asAttributeImpl(AttributeReadable<T> readable) {
+      Attribute<T> toReturn = null;
+      if (readable instanceof Attribute) {
+         toReturn = (Attribute<T>) readable;
       }
-      Attribute<T> attribute = createAttribute(attributeClass);
-
-      DataProxy proxy = row.getDataProxy();
-
-      proxy.setResolver(new AttributeResourceNameResolver(attribute));
-
-      Reference<AttributeContainer> artifactRef = new WeakReference<AttributeContainer>(container);
-      attribute.internalInitialize(type, proxy, artifactRef, markDirty, false, row);
-      container.add(type, attribute);
+      return toReturn;
    }
 
-   /**
-    * Creates an instance of <code>Attribute</code> of the given attribute type. This method should not be called by
-    * applications. Use addAttribute() instead
-    */
-   @SuppressWarnings("unchecked")
-   private <T> Attribute<T> createAttribute(Class<? extends Attribute<?>> attributeClass) throws OseeCoreException {
-      Attribute<T> attribute = null;
-      try {
-         attribute = (Attribute<T>) attributeClass.newInstance();
-      } catch (InstantiationException ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      } catch (IllegalAccessException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+   public <T> Attribute<T> createAttribute(AttributeContainer container, AttributeData data) throws OseeCoreException {
+      boolean isDirty = false;
+
+      AttributeType type = cache.getByGuid(data.getTypeUuid());
+      Conditions.checkNotNull(type, "attributeType", "Cannot find attribute type with uuid[%s]", data.getTypeUuid());
+
+      Attribute<T> attribute = classResolver.createAttribute(type);
+
+      DataProxy proxy = data.getDataProxy();
+      ResourceNameResolver resolver = createResolver(attribute);
+      proxy.setResolver(resolver);
+
+      synchronized (container) {
+         Reference<AttributeContainer> artifactRef = new WeakReference<AttributeContainer>(container);
+         attribute.internalInitialize(artifactRef, data, type, isDirty, false);
+         container.add(type, attribute);
       }
       return attribute;
    }
+
+   public Attribute<?> copyAttribute(AttributeReadable<?> source, IOseeBranch ontoBranch, AttributeContainer destinationContainer) throws OseeCoreException {
+      AttributeData attributeData = dataFactory.copy(ontoBranch, getOrcsData(source));
+      Attribute<?> destinationAttribute = createAttribute(destinationContainer, attributeData);
+      return destinationAttribute;
+   }
+
+   public boolean introduceAttribute(AttributeReadable<?> source, IOseeBranch ontoBranch, AttributeContainer destination) throws OseeCoreException {
+      boolean result = false;
+      AttributeData sourceAttrData = getOrcsData(source);
+      // In order to reflect attributes they must exist in the data store
+      if (sourceAttrData.getVersion().isInStorage()) {
+         AttributeData attributeData = dataFactory.introduce(ontoBranch, sourceAttrData);
+
+         Attribute<?> introducedAttribute = createAttribute(destination, attributeData);
+         result = introducedAttribute != null;
+      }
+      return result;
+   }
+
+   private ResourceNameResolver createResolver(Attribute<?> attribute) {
+      return new AttributeResourceNameResolver(attribute);
+   }
+
+   private AttributeData getOrcsData(AttributeReadable<?> item) {
+      return asAttributeImpl(item).getOrcsData();
+   }
+
 }

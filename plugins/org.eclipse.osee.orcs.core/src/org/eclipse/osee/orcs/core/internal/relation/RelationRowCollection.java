@@ -42,7 +42,7 @@ public class RelationRowCollection {
    }
 
    private IRelationType getRelationType(RelationData relationRow) throws OseeCoreException {
-      long uuid = relationRow.getRelationTypeUUId();
+      long uuid = relationRow.getTypeUuid();
       IRelationType type = relationTypeCache.getByGuid(uuid);
       Conditions.checkNotNull(type, "RelationType", "Unknown relation type.  UUID[%d]", uuid);
       return type;

@@ -44,7 +44,7 @@ public class RelationContainerImpl implements RelationContainer {
    }
 
    @Override
-   public Collection<IRelationTypeSide> getAvailableRelationTypes() {
+   public Collection<IRelationTypeSide> getExistingRelationTypes() {
       return rows.getRelationTypes();
    }
 }

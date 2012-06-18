@@ -16,29 +16,20 @@ import java.util.concurrent.CancellationException;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.DataStoreTypeCache;
-import org.eclipse.osee.orcs.core.SystemPreferences;
-import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
-import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
 import org.eclipse.osee.orcs.core.ds.AttributeDataHandlerFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
-import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
 import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
 import org.eclipse.osee.orcs.core.ds.RelationDataHandlerFactory;
 import org.eclipse.osee.orcs.db.internal.search.SqlContext;
-import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -47,62 +38,17 @@ public class DataLoaderImpl implements DataLoader {
 
    private static final int MAX_FETCH_SIZE = 10000;
 
-   private Log logger;
-   private StaticSqlProvider sqlProvider;
-   private IOseeDatabaseService oseeDatabaseService;
-   private IdentityService identityService;
-   private SystemPreferences preferences;
-   private DataStoreTypeCache dataStoreTypeCache;
-   private DataProxyFactoryProvider dataProxyFactoryProvider;
-   AttributeDataProxyFactory attributeDataProxyFactory;
+   private final IOseeDatabaseService oseeDatabaseService;
+   private final ArtifactLoader artifactLoader;
+   private final AttributeLoader attributeLoader;
+   private final RelationLoader relationLoader;
 
-   private ArtifactLoader artifactLoader;
-   private AttributeLoader attributeLoader;
-   private RelationLoader relationLoader;
-
-   public void start() {
-      sqlProvider = new StaticSqlProvider();
-      sqlProvider.setLogger(logger);
-      sqlProvider.setPreferences(preferences);
-
-      artifactLoader = new ArtifactLoader(logger, sqlProvider, oseeDatabaseService, identityService);
-
-      attributeDataProxyFactory =
-         new AttributeDataProxyFactory(dataProxyFactoryProvider, dataStoreTypeCache.getAttributeTypeCache());
-      attributeLoader =
-         new AttributeLoader(logger, sqlProvider, oseeDatabaseService, identityService, attributeDataProxyFactory);
-      relationLoader = new RelationLoader(logger, sqlProvider, oseeDatabaseService, identityService);
-   }
-
-   public void stop() {
-      sqlProvider = null;
-      artifactLoader = null;
-      attributeLoader = null;
-      relationLoader = null;
-   }
-
-   public void setLogger(Log logger) {
-      this.logger = logger;
-   }
-
-   public void setSystemPreferences(SystemPreferences preferences) {
-      this.preferences = preferences;
-   }
-
-   public void setOseeDatabaseService(IOseeDatabaseService oseeDatabaseService) {
+   public DataLoaderImpl(IOseeDatabaseService oseeDatabaseService, ArtifactLoader artifactLoader, AttributeLoader attributeLoader, RelationLoader relationLoader) {
+      super();
       this.oseeDatabaseService = oseeDatabaseService;
-   }
-
-   public void setIdentityService(IdentityService identityService) {
-      this.identityService = identityService;
-   }
-
-   public void setDataProxyFactoryProvider(DataProxyFactoryProvider dataProxyFactoryProvider) {
-      this.dataProxyFactoryProvider = dataProxyFactoryProvider;
-   }
-
-   public void setDataStoreTypeCache(DataStoreTypeCache dataStoreTypeCache) {
-      this.dataStoreTypeCache = dataStoreTypeCache;
+      this.artifactLoader = artifactLoader;
+      this.attributeLoader = attributeLoader;
+      this.relationLoader = relationLoader;
    }
 
    private SqlContext toSqlContext(QueryContext queryContext) throws OseeCoreException {
@@ -176,28 +122,6 @@ public class DataLoaderImpl implements DataLoader {
       } finally {
          join.delete();
       }
-   }
-
-   @Override
-   public ArtifactData createNewArtifactData() {
-      //TX_TODO set HRID, modType to new?
-      return new ArtifactData();
-   }
-
-   @Override
-   public AttributeData createNewAttributeData(long typeUuid, String value) throws OseeCoreException {
-      DataProxy proxy = attributeDataProxyFactory.createProxy(typeUuid, value, Strings.EMPTY_STRING);
-      AttributeData data = new AttributeData();
-      data.setDataProxy(proxy);
-      return data;
-   }
-
-   @Override
-   public AttributeData duplicateAttributeData(AttributeData data) throws OseeCoreException {
-      AttributeData clone = new AttributeData();
-      DataProxy proxy = attributeDataProxyFactory.createProxy(data.getAttrTypeUuid(), data.getValue(), data.getUri());
-      clone.setDataProxy(proxy);
-      return clone;
    }
 
    private void loadArtifacts(HasCancellation cancellation, AbstractJoinQuery join, int fetchSize, ArtifactDataHandler handler, LoadOptions loadOptions, RelationDataHandlerFactory relationRowHandlerFactory, AttributeDataHandlerFactory attributeRowHandlerFactory) throws OseeCoreException {

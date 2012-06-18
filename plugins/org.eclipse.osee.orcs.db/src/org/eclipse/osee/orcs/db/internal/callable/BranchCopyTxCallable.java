@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.CreateBranchData;
+import org.eclipse.osee.orcs.db.internal.loader.RelationalConstants;
 
 /**
  * the behavior of this class - it needs to: have a branch
@@ -116,7 +117,8 @@ public final class BranchCopyTxCallable extends DatabaseTxCallable<Branch> {
 
          TransactionRecord record =
             txFactory.create(nextTransactionId, internalBranch.getId(), creationComment, timestamp,
-               branchData.getUserArtifactId(), -1, TransactionDetailsType.Baselined, branchCache);
+               branchData.getUserArtifactId(), RelationalConstants.ART_ID_SENTINEL, TransactionDetailsType.Baselined,
+               branchCache);
 
          txCache.cache(record);
 
@@ -133,7 +135,7 @@ public final class BranchCopyTxCallable extends DatabaseTxCallable<Branch> {
    private void populateTransaction(double workAmount, OseeConnection connection, int intoTx, Branch branch, TransactionRecord copyTx) throws OseeCoreException {
       List<Object[]> data = new ArrayList<Object[]>();
       HashSet<Integer> gammas = new HashSet<Integer>(100000);
-      int parentBranchId = -1;
+      int parentBranchId = RelationalConstants.BRANCH_SENTINEL;
       if (branch.hasParentBranch()) {
          parentBranchId = branch.getParentBranch().getId();
       }

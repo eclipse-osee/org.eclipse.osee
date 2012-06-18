@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -133,17 +132,18 @@ public class RelationLoadingTest {
          if (row.length != 9) {
             Assert.assertTrue("Data file is not formatted correctly", false);
          }
-         RelationData relationRow = new RelationData();
-         relationRow.setParentId(Integer.parseInt(row[0]));
-         relationRow.setArtIdA(Integer.parseInt(row[1]));
-         relationRow.setArtIdB(Integer.parseInt(row[2]));
-         relationRow.setBranchId(Integer.parseInt(row[3]));
-         relationRow.setGammaId(Integer.parseInt(row[4]));
-         relationRow.setModType(ModificationType.valueOf(row[5]));
-         relationRow.setRationale(row[6]);
-         relationRow.setRelationId(Integer.parseInt(row[7]));
-         relationRow.setRelationTypeId(Integer.parseInt(row[8]));
-         data.add(relationRow);
+         // TX_TODO         
+         //         RelationData relationRow = new RelationData();
+         //         relationRow.setParentId(Integer.parseInt(row[0]));
+         //         relationRow.setArtIdA(Integer.parseInt(row[1]));
+         //         relationRow.setArtIdB(Integer.parseInt(row[2]));
+         //         relationRow.setBranch(Integer.parseInt(row[3]));
+         //         relationRow.setGammaId(Integer.parseInt(row[4]));
+         //         relationRow.setModType(ModificationType.valueOf(row[5]));
+         //         relationRow.setRationale(row[6]);
+         //         relationRow.setRelationId(Integer.parseInt(row[7]));
+         //         relationRow.setRelationTypeId(Integer.parseInt(row[8]));
+         //         data.add(relationRow);
       }
    }
 }

@@ -11,107 +11,32 @@
 package org.eclipse.osee.orcs.db.internal.search;
 
 import java.util.List;
-import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
-import org.eclipse.osee.framework.core.services.IdentityService;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.DataStoreTypeCache;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
-import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
-import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.SqlBuilder.QueryType;
-import org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryImpl;
-import org.eclipse.osee.orcs.db.internal.search.indexer.IndexerCallableFactory;
-import org.eclipse.osee.orcs.db.internal.search.indexer.IndexerCallableFactoryImpl;
-import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumer;
-import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumerImpl;
-import org.eclipse.osee.orcs.db.internal.search.indexer.QueryEngineIndexerImpl;
-import org.eclipse.osee.orcs.db.internal.search.indexer.QueueToAttributeLoader;
-import org.eclipse.osee.orcs.db.internal.search.indexer.data.QueueToAttributeLoaderImpl;
-import org.eclipse.osee.orcs.db.internal.search.language.EnglishLanguage;
-import org.eclipse.osee.orcs.db.internal.search.tagger.TagEncoder;
-import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
-import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
 
 /**
  * @author Roberto E. Escobar
  */
 public class QueryEngineImpl implements QueryEngine {
 
-   private SqlHandlerFactory handlerFactory;
-   private SqlBuilder builder;
-   private QueryEngineIndexerImpl queryIndexer;
+   private final Log logger;
+   private final BranchCache branchCache;
+   private final SqlHandlerFactory handlerFactory;
+   private final SqlBuilder builder;
 
-   private SqlProvider sqlProvider;
-   private IOseeDatabaseService dbService;
-   private IdentityService identityService;
-   private IOseeCachingService cacheService;
-   private DataStoreTypeCache cache;
-   private ExecutorAdmin executorAdmin;
-   private Log logger;
-   private IResourceManager resourceManager;
-
-   public void setLogger(Log logger) {
+   public QueryEngineImpl(Log logger, BranchCache branchCache, SqlHandlerFactory handlerFactory, SqlBuilder builder) {
+      super();
       this.logger = logger;
-   }
-
-   public void setSqlProvider(SqlProvider sqlProvider) {
-      this.sqlProvider = sqlProvider;
-   }
-
-   public void setIdentityService(IdentityService identityService) {
-      this.identityService = identityService;
-   }
-
-   public void setDatabaseService(IOseeDatabaseService dbService) {
-      this.dbService = dbService;
-   }
-
-   //TODO fix these two services
-   public void setCachingService(IOseeCachingService cacheService) {
-      this.cacheService = cacheService;
-   }
-
-   //TODO other
-   public void setDataStoreTypeCache(DataStoreTypeCache cache) {
-      this.cache = cache;
-   }
-
-   public void setExecutorAdmin(ExecutorAdmin executorAdmin) {
-      this.executorAdmin = executorAdmin;
-   }
-
-   public void setResourceManager(IResourceManager resourceManager) {
-      this.resourceManager = resourceManager;
-   }
-
-   public void start() {
-      TagProcessor tagProcessor = new TagProcessor(new EnglishLanguage(logger), new TagEncoder());
-      TaggingEngine taggingEngine = new TaggingEngine(tagProcessor, cache.getAttributeTypeCache());
-
-      QueueToAttributeLoader attributeLoader =
-         new QueueToAttributeLoaderImpl(logger, dbService, cache.getAttributeTypeCache(), resourceManager);
-      IndexerCallableFactory callableFactory =
-         new IndexerCallableFactoryImpl(logger, dbService, taggingEngine, attributeLoader);
-
-      IndexingTaskConsumer indexConsumer = new IndexingTaskConsumerImpl(executorAdmin, callableFactory);
-
-      queryIndexer = new QueryEngineIndexerImpl(logger, dbService, cache.getAttributeTypeCache(), indexConsumer);
-      handlerFactory = new SqlHandlerFactoryImpl(logger, executorAdmin, identityService, taggingEngine, cache);
-      builder = new SqlBuilder(sqlProvider, dbService);
-   }
-
-   public void stop() {
-      queryIndexer = null;
-      handlerFactory = null;
-      builder = null;
+      this.branchCache = branchCache;
+      this.handlerFactory = handlerFactory;
+      this.builder = builder;
    }
 
    public SqlContext createContext(String sessionId, QueryOptions options) {
@@ -130,7 +55,7 @@ public class QueryEngineImpl implements QueryEngine {
 
    private SqlContext createQuery(String sessionId, QueryData queryData, QueryType queryType) throws OseeCoreException {
       IOseeBranch branch = queryData.getCriteriaSet().getBranch();
-      int branchId = cacheService.getBranchCache().getLocalId(branch);
+      int branchId = branchCache.getLocalId(branch);
 
       List<SqlHandler> handlers = handlerFactory.createHandlers(queryData.getCriteriaSet());
       SqlContext context = createContext(sessionId, queryData.getOptions());
@@ -141,11 +66,6 @@ public class QueryEngineImpl implements QueryEngine {
       }
 
       return context;
-   }
-
-   @Override
-   public QueryEngineIndexer getQueryIndexer() {
-      return queryIndexer;
    }
 
 }

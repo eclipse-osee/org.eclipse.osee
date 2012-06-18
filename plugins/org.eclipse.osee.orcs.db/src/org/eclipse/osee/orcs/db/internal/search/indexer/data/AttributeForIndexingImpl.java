@@ -31,7 +31,7 @@ import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeData implements AttributeReadable<String> {
+public class AttributeForIndexingImpl implements AttributeReadable<String> {
 
    private final IResourceManager resourceManager;
 
@@ -43,7 +43,7 @@ public class AttributeData implements AttributeReadable<String> {
    private final String value;
    private final String uri;
 
-   public AttributeData(IResourceManager resourceManager, int attrId, long gammaId, AttributeType attributeType, String value, String uri) {
+   public AttributeForIndexingImpl(IResourceManager resourceManager, int attrId, long gammaId, AttributeType attributeType, String value, String uri) {
       super();
       this.resourceManager = resourceManager;
       this.attrId = attrId;

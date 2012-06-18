@@ -25,7 +25,10 @@ import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
-import org.eclipse.osee.orcs.db.internal.loader.AttributeLoader.ProxyDataFactory;
+import org.eclipse.osee.orcs.core.ds.VersionData;
+import org.eclipse.osee.orcs.db.internal.loader.data.AttributeDataImpl;
+import org.eclipse.osee.orcs.db.internal.loader.data.OrcsObjectFactoryImpl;
+import org.eclipse.osee.orcs.db.internal.loader.data.VersionDataImpl;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiUtil;
@@ -68,15 +71,23 @@ public class AttributeLoaderTest {
 
       final List<AttributeData> actuals = new ArrayList<AttributeData>();
 
-      ProxyDataFactory factory = new ProxyDataFactory() {
+      ProxyDataFactory proxyFactory = new ProxyDataFactory() {
 
          @Override
          public DataProxy createProxy(long typeUuid, String value, String uri) {
             return new AttributeDataProxy(typeUuid, value, uri);
          }
 
+         @Override
+         public DataProxy createProxy(long typeUuid, Object... data) {
+            String value = String.valueOf(data[0]);
+            String uri = String.valueOf(data[1]);
+            return new AttributeDataProxy(typeUuid, value, uri);
+         }
+
       };
-      AttributeLoader loader = new AttributeLoader(new MockLog(), sqlProvider, oseeDbService, identityService, factory);
+      OrcsObjectFactoryImpl factory = new OrcsObjectFactoryImpl(proxyFactory, identityService);
+      AttributeLoader loader = new AttributeLoader(new MockLog(), sqlProvider, oseeDbService, factory);
       ArtifactJoinQuery artJoinQuery = JoinUtility.createArtifactJoinQuery();
       OseeConnection connection = oseeDbService.getConnection();
       try {
@@ -119,21 +130,20 @@ public class AttributeLoaderTest {
    }
 
    private AttributeData getAttributeRow(DataProxy proxy, int artId, int branchId, int attrId, int gammaId, ModificationType modType, long attrType, boolean historical, int stripeId, int transactionId) {
-      AttributeData row = new AttributeData();
-      row.setArtifactId(artId);
-      row.setBranchId(branchId);
-      row.setAttrId(attrId);
-      row.setGammaId(gammaId);
+      VersionData version = new VersionDataImpl();
+      version.setHistorical(historical);
+      version.setBranchId(branchId);
+      version.setGammaId(gammaId);
+      version.setStripeId(stripeId);
+      version.setTransactionId(transactionId);
 
-      row.setHistorical(historical);
+      AttributeData row = new AttributeDataImpl(version);
+      row.setLocalId(attrId);
+      row.setTypeUuid(attrType);
       row.setModType(modType);
-      row.setStripeId(stripeId);
-      row.setTransactionId(transactionId);
 
-      row.setAttrTypeUuid(attrType);
+      row.setArtifactId(artId);
       row.setDataProxy(proxy);
-
-      row.setStripeId(stripeId);
       return row;
    }
 

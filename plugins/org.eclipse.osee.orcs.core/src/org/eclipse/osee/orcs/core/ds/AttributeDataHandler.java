@@ -13,6 +13,6 @@ package org.eclipse.osee.orcs.core.ds;
 /**
  * @author Roberto E. Escobar
  */
-public interface AttributeDataHandler extends OrcsObjectHandler<AttributeData> {
+public interface AttributeDataHandler extends OrcsDataHandler<AttributeData> {
    //
 }

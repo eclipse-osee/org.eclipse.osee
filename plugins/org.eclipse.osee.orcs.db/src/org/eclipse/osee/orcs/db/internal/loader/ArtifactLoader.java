@@ -12,13 +12,13 @@ package org.eclipse.osee.orcs.db.internal.loader;
 
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
+import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
 
@@ -27,19 +27,18 @@ import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
  */
 public class ArtifactLoader {
 
-   private static int TRANSACTION_SENTINEL = -1;
-
    private final Log logger;
    private final SqlProvider sqlProvider;
    private final IOseeDatabaseService dbService;
-   private final IdentityService identityService;
 
-   public ArtifactLoader(Log logger, SqlProvider sqlProvider, IOseeDatabaseService dbService, IdentityService identityService) {
+   private final ArtifactObjectFactory factory;
+
+   public ArtifactLoader(Log logger, SqlProvider sqlProvider, IOseeDatabaseService dbService, ArtifactObjectFactory factory) {
       super();
       this.logger = logger;
       this.sqlProvider = sqlProvider;
       this.dbService = dbService;
-      this.identityService = identityService;
+      this.factory = factory;
    }
 
    private String getSql(LoadOptions options) throws OseeCoreException {
@@ -52,10 +51,6 @@ public class ArtifactLoader {
          sqlKey = OseeSql.LOAD_CURRENT_ARTIFACTS;
       }
       return sqlProvider.getSql(sqlKey);
-   }
-
-   private long toUuid(int localId) throws OseeCoreException {
-      return identityService.getUniversalId(localId);
    }
 
    public void loadFromQueryId(ArtifactDataHandler handler, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException {
@@ -87,25 +82,22 @@ public class ArtifactLoader {
                // assumption: SQL is returning unwanted deleted artifacts only in the historical case
                if (!options.isHistorical() || options.areDeletedIncluded() || modType != ModificationType.DELETED) {
 
-                  ArtifactData row = new ArtifactData();
+                  long gamma = chStmt.getInt("gamma_id");
 
-                  row.setArtifactId(artifactId);
-                  row.setBranchId(branchId);
-                  row.setArtTypeUuid(toUuid(chStmt.getInt("art_type_id")));
-
-                  row.setTransactionId(TRANSACTION_SENTINEL);
-                  row.setGammaId(chStmt.getInt("gamma_id"));
-                  row.setModType(modType);
-
-                  row.setGuid(chStmt.getString("guid"));
-                  row.setHumanReadableId(chStmt.getString("human_readable_id"));
-                  row.setHistorical(options.isHistorical());
+                  VersionData version =
+                     factory.createVersion(branchId, RelationalConstants.TRANSACTION_SENTINEL, gamma,
+                        options.isHistorical());
 
                   if (options.isHistorical()) {
-                     row.setStripeId(chStmt.getInt("stripe_transaction_id"));
-                     row.setTransactionId(row.getTransactionId());
+                     version.setStripeId(chStmt.getInt("stripe_transaction_id"));
                   }
-                  handler.onData(row);
+
+                  int typeId = chStmt.getInt("art_type_id");
+                  String guid = chStmt.getString("guid");
+                  String hrid = chStmt.getString("human_readable_id");
+
+                  ArtifactData data = factory.createArtifactData(version, artifactId, typeId, modType, guid, hrid);
+                  handler.onData(data);
                }
                previousArtId = artifactId;
                previousBranchId = branchId;

@@ -12,14 +12,13 @@ package org.eclipse.osee.orcs.db.internal.loader;
 
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
-import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
+import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
 
@@ -28,23 +27,16 @@ import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
  */
 public class AttributeLoader {
 
-   public static interface ProxyDataFactory {
-
-      DataProxy createProxy(long typeUuid, String value, String uri) throws OseeCoreException;
-   }
-
    private final SqlProvider sqlProvider;
    private final IOseeDatabaseService dbService;
-   private final IdentityService identityService;
-   private final ProxyDataFactory proxyFactory;
    private final Log logger;
+   private final AttributeObjectFactory factory;
 
-   public AttributeLoader(Log logger, SqlProvider sqlProvider, IOseeDatabaseService dbService, IdentityService identityService, ProxyDataFactory proxyFactory) {
+   public AttributeLoader(Log logger, SqlProvider sqlProvider, IOseeDatabaseService dbService, AttributeObjectFactory factory) {
       this.sqlProvider = sqlProvider;
       this.dbService = dbService;
-      this.identityService = identityService;
-      this.proxyFactory = proxyFactory;
       this.logger = logger;
+      this.factory = factory;
    }
 
    public String getSql(LoadOptions options) throws OseeCoreException {
@@ -59,10 +51,6 @@ public class AttributeLoader {
          sqlKey = OseeSql.LOAD_CURRENT_ATTRIBUTES;
       }
       return sqlProvider.getSql(sqlKey);
-   }
-
-   private long toUuid(int localId) throws OseeCoreException {
-      return identityService.getUniversalId(localId);
    }
 
    public void loadFromQueryId(AttributeDataHandler handler, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException {
@@ -83,29 +71,26 @@ public class AttributeLoader {
          }
          while (chStmt.next()) {
             rowCount++;
-            AttributeData nextAttr = new AttributeData();
-            nextAttr.setArtifactId(chStmt.getInt("art_id"));
-            nextAttr.setBranchId(chStmt.getInt("branch_id"));
-            nextAttr.setAttrId(chStmt.getInt("attr_id"));
-            nextAttr.setGammaId(chStmt.getInt("gamma_id"));
-            nextAttr.setTransactionId(chStmt.getInt("transaction_id"));
-            nextAttr.setAttrTypeUuid(toUuid(chStmt.getInt("attr_type_id")));
 
-            int modId = chStmt.getInt("mod_type");
-            nextAttr.setModType(ModificationType.getMod(modId));
-            nextAttr.setHistorical(options.isHistorical());
+            int branchId = chStmt.getInt("branch_id");
+            int txId = chStmt.getInt("transaction_id");
+            long gamma = chStmt.getInt("gamma_id");
+
+            VersionData version = factory.createVersion(branchId, txId, gamma, options.isHistorical());
+            if (options.isHistorical()) {
+               version.setStripeId(chStmt.getInt("stripe_transaction_id"));
+            }
+
+            int attrId = chStmt.getInt("attr_id");
+            int artId = chStmt.getInt("art_id");
+            int typeId = chStmt.getInt("attr_type_id");
+            ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
 
             String value = chStmt.getString("value");
             String uri = chStmt.getString("uri");
-            nextAttr.setValue(value);
-            nextAttr.setUri(uri);
-            DataProxy proxy = proxyFactory.createProxy(nextAttr.getAttrTypeUuid(), value, uri);
-            nextAttr.setDataProxy(proxy);
 
-            if (options.isHistorical()) {
-               nextAttr.setStripeId(chStmt.getInt("stripe_transaction_id"));
-            }
-            handler.onData(nextAttr);
+            AttributeData data = factory.createAttributeData(version, attrId, typeId, modType, artId, value, uri);
+            handler.onData(data);
          }
          if (logger.isTraceEnabled()) {
             long elapsedTime = System.currentTimeMillis() - startTime;

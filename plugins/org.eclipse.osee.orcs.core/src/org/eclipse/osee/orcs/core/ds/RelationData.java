@@ -15,119 +15,24 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 /**
  * @author Andrew M. Finkbeiner
  */
-public class RelationData extends OrcsObject {
+public interface RelationData extends OrcsData {
 
-   private int parentId = -1;
+   int getParentId();
 
-   private int artIdA = -1;
-   private int artIdB = -1;
-   private String rationale = "";
+   void setParentId(int parentId);
 
-   public void setRelationId(int relationId) {
-      setLocalId(relationId);
-   }
+   int getArtIdA();
 
-   public void setArtIdA(int artIdA) {
-      this.artIdA = artIdA;
-   }
+   void setArtIdA(int artIdA);
 
-   public void setArtIdB(int artIdB) {
-      this.artIdB = artIdB;
-   }
+   int getArtIdB();
 
-   public void setRelationTypeId(long relationTypeUUId) {
-      setTypeUuid(relationTypeUUId);
-   }
+   void setArtIdB(int artIdB);
 
-   public void setRationale(String rationale) {
-      this.rationale = rationale;
-   }
+   int getArtIdOn(RelationSide side);
 
-   public int getRelationId() {
-      return getLocalId();
-   }
+   String getRationale();
 
-   public int getArtIdA() {
-      return artIdA;
-   }
-
-   public int getArtIdB() {
-      return artIdB;
-   }
-
-   public long getRelationTypeUUId() {
-      return getTypeUuid();
-   }
-
-   public String getRationale() {
-      return rationale;
-   }
-
-   public void setParentId(int parentId) {
-      this.parentId = parentId;
-   }
-
-   public int getParentId() {
-      return parentId;
-   }
-
-   public int getArtIdOn(RelationSide side) {
-      return RelationSide.SIDE_A == side ? getArtIdA() : getArtIdB();
-   }
-
-   @Override
-   public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + artIdA;
-      result = prime * result + artIdB;
-      result = prime * result + getBranchId();
-      result = prime * result + getGammaId();
-      result = prime * result + ((getModType() == null) ? 0 : getModType().hashCode());
-      result = prime * result + parentId;
-      result = prime * result + ((rationale == null) ? 0 : rationale.hashCode());
-      result = prime * result + getLocalId();
-      result = (int) (prime * result + getTypeUuid());
-      return result;
-   }
-
-   @Override
-   public boolean equals(Object obj) {
-      if (this == obj) {
-         return true;
-      }
-      if (obj == null) {
-         return false;
-      }
-      if (getClass() != obj.getClass()) {
-         return false;
-      }
-      RelationData other = (RelationData) obj;
-      if (artIdA != other.artIdA) {
-         return false;
-      }
-      if (artIdB != other.artIdB) {
-         return false;
-      }
-      if (parentId != other.parentId) {
-         return false;
-      }
-      if (rationale == null) {
-         if (other.rationale != null) {
-            return false;
-         }
-      } else if (!rationale.equals(other.rationale)) {
-         return false;
-      }
-      return super.equals(obj);
-   }
-
-   @Override
-   public String toString() {
-      return String.format(
-         "RelationRow: parent[%d] relation[%d] artA[%d] artB[%d] branch[%d] gamma[%d], relationType[%d] rationale[%s]",
-         parentId, getLocalId(), artIdA, artIdB, getBranchId(), getGammaId(), getTypeUuid(), rationale,
-         getModType().name());
-   }
+   void setRationale(String rationale);
 
 }

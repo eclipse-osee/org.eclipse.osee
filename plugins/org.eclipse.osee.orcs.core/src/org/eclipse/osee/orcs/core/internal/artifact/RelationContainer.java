@@ -22,7 +22,7 @@ public interface RelationContainer {
 
    void add(RelationData nextRelation) throws OseeCoreException;
 
-   Collection<IRelationTypeSide> getAvailableRelationTypes();
+   Collection<IRelationTypeSide> getExistingRelationTypes();
 
    void getArtifactIds(Collection<Integer> results, IRelationTypeSide relationTypeSide);
 

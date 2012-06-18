@@ -23,8 +23,12 @@ import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
+import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
+import org.eclipse.osee.orcs.db.internal.loader.data.OrcsObjectFactoryImpl;
+import org.eclipse.osee.orcs.db.internal.loader.data.RelationDataImpl;
+import org.eclipse.osee.orcs.db.internal.loader.data.VersionDataImpl;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiUtil;
@@ -64,7 +68,9 @@ public class RelationLoaderTest {
 
       IOseeDatabaseService oseeDbService = OsgiUtil.getService(IOseeDatabaseService.class);
       IdentityService identityService = OsgiUtil.getService(IdentityService.class);
-      RelationLoader relationLoader = new RelationLoader(new MockLog(), sqlProvider, oseeDbService, identityService);
+
+      OrcsObjectFactoryImpl factory = new OrcsObjectFactoryImpl(null, identityService);
+      RelationLoader relationLoader = new RelationLoader(new MockLog(), sqlProvider, oseeDbService, factory);
 
       ArtifactJoinQuery artJoinQuery = JoinUtility.createArtifactJoinQuery();
       OseeConnection connection = oseeDbService.getConnection();
@@ -73,11 +79,11 @@ public class RelationLoaderTest {
       int queryId = artJoinQuery.getQueryId();
 
       final List<RelationData> expected = new ArrayList<RelationData>();
-      expected.add(getRelationRow(1, 8, 2, 36, 1, 1, "", 2, identityService.getUniversalId(397)));
-      expected.add(getRelationRow(1, 17, 2, 60, 1, 1, "", 4, identityService.getUniversalId(397)));
-      expected.add(getRelationRow(1, 22, 2, 94, 1, 1, "", 9, identityService.getUniversalId(397)));
+      expected.add(getRelationRow(1, 8, 2, -1, 36, 1, 1, "", 2, identityService.getUniversalId(397)));
+      expected.add(getRelationRow(1, 17, 2, -1, 60, 1, 1, "", 4, identityService.getUniversalId(397)));
+      expected.add(getRelationRow(1, 22, 2, -1, 94, 1, 1, "", 9, identityService.getUniversalId(397)));
 
-      RelationData notExpected = getRelationRow(1, 22, 2, 94, 1, 1, "Idon'tExist", 9, 397);
+      RelationData notExpected = getRelationRow(1, 22, 2, -1, 94, 1, 1, "Idon'tExist", 9, 397);
 
       final List<RelationData> actuals = new ArrayList<RelationData>();
 
@@ -104,7 +110,9 @@ public class RelationLoaderTest {
 
       IOseeDatabaseService oseeDbService = OsgiUtil.getService(IOseeDatabaseService.class);
       IdentityService identityService = OsgiUtil.getService(IdentityService.class);
-      RelationLoader relationLoader = new RelationLoader(new MockLog(), sqlProvider, oseeDbService, identityService);
+
+      OrcsObjectFactoryImpl factory = new OrcsObjectFactoryImpl(null, identityService);
+      RelationLoader relationLoader = new RelationLoader(new MockLog(), sqlProvider, oseeDbService, factory);
 
       ArtifactJoinQuery artJoinQuery = JoinUtility.createArtifactJoinQuery();
       OseeConnection connection = oseeDbService.getConnection();
@@ -132,7 +140,9 @@ public class RelationLoaderTest {
    public void testHistoricalLoad() throws OseeCoreException {
       IOseeDatabaseService oseeDbService = OsgiUtil.getService(IOseeDatabaseService.class);
       IdentityService identityService = OsgiUtil.getService(IdentityService.class);
-      RelationLoader relationLoader = new RelationLoader(new MockLog(), sqlProvider, oseeDbService, identityService);
+
+      OrcsObjectFactoryImpl factory = new OrcsObjectFactoryImpl(null, identityService);
+      RelationLoader relationLoader = new RelationLoader(new MockLog(), sqlProvider, oseeDbService, factory);
 
       ArtifactJoinQuery artJoinQuery = JoinUtility.createArtifactJoinQuery();
       OseeConnection connection = oseeDbService.getConnection();
@@ -155,17 +165,24 @@ public class RelationLoaderTest {
 
    }
 
-   private RelationData getRelationRow(int artIdA, int artIdB, int branchId, int gammaId, int modType, int parentId, String rationale, int relationId, long relationTypeId) throws OseeArgumentException {
-      RelationData row = new RelationData();
+   private RelationData getRelationRow(int artIdA, int artIdB, int branchId, int transactionId, int gammaId, int modType, int parentId, String rationale, int relationId, long relationTypeId) throws OseeArgumentException {
+      VersionData version = new VersionDataImpl();
+      version.setHistorical(false);
+      version.setBranchId(branchId);
+      version.setGammaId(gammaId);
+
+      version.setStripeId(transactionId);
+      version.setTransactionId(transactionId);
+
+      RelationData row = new RelationDataImpl(version);
+      row.setLocalId(relationId);
+      row.setTypeUuid(relationTypeId);
+      row.setModType(ModificationType.getMod(modType));
+
+      row.setParentId(parentId);
       row.setArtIdA(artIdA);
       row.setArtIdB(artIdB);
-      row.setBranchId(branchId);
-      row.setGammaId(gammaId);
-      row.setModType(ModificationType.getMod(modType));
-      row.setParentId(parentId);
       row.setRationale(rationale);
-      row.setRelationId(relationId);
-      row.setRelationTypeId(relationTypeId);
       return row;
    }
 }

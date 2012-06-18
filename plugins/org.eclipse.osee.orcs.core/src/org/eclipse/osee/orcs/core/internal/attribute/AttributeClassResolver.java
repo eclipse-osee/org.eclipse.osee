@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -32,18 +33,6 @@ public class AttributeClassResolver {
 
    public void setLogger(Log logger) {
       this.logger = logger;
-   }
-
-   public Log getLogger() {
-      return logger;
-   }
-
-   public void start() {
-      // Nothing yet;
-   }
-
-   public void stop() {
-      // Nothing yet;
    }
 
    public void addProvider(AttributeClassProvider provider) {
@@ -77,7 +66,7 @@ public class AttributeClassResolver {
       return map.get(alias);
    }
 
-   public Class<? extends Attribute<?>> getBaseClazz(AttributeType attributeType) {
+   Class<? extends Attribute<?>> getBaseClazz(AttributeType attributeType) {
       String alias = attributeType.getBaseAttributeTypeId();
       if (alias.contains(".")) {
          alias = Lib.getExtension(alias);
@@ -92,5 +81,38 @@ public class AttributeClassResolver {
       Conditions.checkNotNull(clazz, "base attribute type class", "Unable to find base attribute type class for [%s]",
          attributeType);
       return baseType.isAssignableFrom(clazz);
+   }
+
+   public <T> Attribute<T> createAttribute(AttributeType type) throws OseeCoreException {
+      Class<? extends Attribute<?>> attributeClass = getAttributeClass(type);
+      Conditions.checkNotNull(attributeClass, "attributeClass",
+         "Cannot find attribute class base type for attributeType[%s]", type);
+      return createAttribute(attributeClass);
+   }
+
+   private Class<? extends Attribute<?>> getAttributeClass(AttributeType type) {
+      Class<? extends Attribute<?>> attributeClass = getBaseClazz(type);
+      if (attributeClass == null) {
+         // TODO Word Attributes etc -  Default to StringAttribute if Null
+         attributeClass = getBaseClazz("StringAttribute");
+      }
+      return attributeClass;
+   }
+
+   /**
+    * Creates an instance of <code>Attribute</code> of the given attribute type. This method should not be called by
+    * applications. Use addAttribute() instead
+    */
+   @SuppressWarnings("unchecked")
+   private <T> Attribute<T> createAttribute(Class<? extends Attribute<?>> attributeClass) throws OseeCoreException {
+      Attribute<T> attribute = null;
+      try {
+         attribute = (Attribute<T>) attributeClass.newInstance();
+      } catch (InstantiationException ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      } catch (IllegalAccessException ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      }
+      return attribute;
    }
 }

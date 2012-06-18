@@ -21,25 +21,15 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.ArtifactData;
-import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
-import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
-import org.eclipse.osee.orcs.core.internal.artifact.WritableArtifactProxy;
-import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
-import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
-import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.GraphReadable;
 import org.eclipse.osee.orcs.data.GraphWriteable;
 import org.eclipse.osee.orcs.transaction.OrcsTransaction;
@@ -53,20 +43,16 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
    private final IOseeBranch branch;
    private final BranchDataStore dataStore;
    private final ArtifactFactory artifactFactory;
-   private final AttributeFactory attributeFactory;
 
    private String comment;
    private ArtifactReadable authorArtifact;
    private final Map<String, ArtifactWriteable> writeableArtifacts = new ConcurrentHashMap<String, ArtifactWriteable>();
-   private final DataLoader dataLoader;
 
-   public OrcsTransactionImpl(Log logger, SessionContext sessionContext, BranchDataStore dataStore, ArtifactFactory artifactFactory, AttributeFactory attributeFactory, DataLoader dataLoader, IOseeBranch branch) {
+   public OrcsTransactionImpl(Log logger, SessionContext sessionContext, BranchDataStore dataStore, ArtifactFactory artifactFactory, IOseeBranch branch) {
       super();
       this.logger = logger;
       this.dataStore = dataStore;
       this.artifactFactory = artifactFactory;
-      this.attributeFactory = attributeFactory;
-      this.dataLoader = dataLoader;
       this.branch = branch;
    }
 
@@ -101,11 +87,11 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
    }
 
    private void startCommit() {
-
+      // TODO
    }
 
    private void closeCommit() {
-
+      // TODO
    }
 
    @Override
@@ -129,13 +115,17 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
       return branch;
    }
 
+   private synchronized void addWriteable(ArtifactWriteable writeable) {
+      writeableArtifacts.put(writeable.getGuid(), writeable);
+   }
+
    @Override
    public synchronized ArtifactWriteable asWritable(ArtifactReadable readable) throws OseeCoreException {
       String guid = readable.getGuid();
       ArtifactWriteable toReturn = writeableArtifacts.get(guid);
       if (toReturn == null) {
-         toReturn = artifactFactory.createWriteableArtifact(readable);
-         writeableArtifacts.put(guid, toReturn);
+         toReturn = artifactFactory.asWriteableArtifact(readable);
+         addWriteable(toReturn);
       }
       return toReturn;
    }
@@ -150,23 +140,30 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
    }
 
    @Override
-   public GraphWriteable asWriteableGraph(GraphReadable readableGraph) throws OseeCoreException {
-      return null;
+   public ArtifactWriteable createArtifact(IArtifactType artifactType, String name, String guid) throws OseeCoreException {
+      ArtifactWriteable artifact = artifactFactory.createWriteableArtifact(getBranch(), artifactType, guid);
+      artifact.setName(name);
+      addWriteable(artifact);
+      return artifact;
+   }
+
+   @Override
+   public ArtifactWriteable duplicateArtifact(ArtifactReadable source, Collection<? extends IAttributeType> types) throws OseeCoreException {
+      ArtifactWriteable toReturn = artifactFactory.copyArtifact(source, types, getBranch());
+      addWriteable(toReturn);
+      return toReturn;
+   }
+
+   @Override
+   public ArtifactWriteable introduceArtifact(ArtifactReadable source) throws OseeCoreException {
+      ArtifactWriteable toReturn = artifactFactory.introduceArtifact(source, getBranch());
+      addWriteable(toReturn);
+      return toReturn;
    }
 
    @Override
    public ArtifactWriteable createArtifact(IArtifactType artifactType, String name) throws OseeCoreException {
-      return createArtifact(artifactType, name, GUID.create());
-   }
-
-   @Override
-   public ArtifactWriteable createArtifact(IArtifactType artifactType, String name, String guid) throws OseeCoreException {
-      ArtifactData newArtifact = dataLoader.createNewArtifactData();
-      newArtifact.setArtTypeUuid(artifactType.getGuid());
-      newArtifact.setGuid(guid);
-      ArtifactWriteable artifact = artifactFactory.createWriteableArtifact(newArtifact);
-      artifact.setName(name);
-      return artifact;
+      return createArtifact(artifactType, name, null);
    }
 
    @Override
@@ -176,31 +173,59 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
 
    @Override
    public ArtifactWriteable duplicateArtifact(ArtifactReadable sourceArtifact) throws OseeCoreException {
-      return duplicateArtifact(sourceArtifact, sourceArtifact.getAttributeTypes());
+      return duplicateArtifact(sourceArtifact, sourceArtifact.getExistingAttributeTypes());
    }
 
    @Override
-   public ArtifactWriteable duplicateArtifact(ArtifactReadable sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException {
-      ArtifactImpl duplicate =
-         ((WritableArtifactProxy) createArtifact(sourceArtifact.getArtifactType(), sourceArtifact.getName())).getOriginal();
-      for (AttributeReadable<?> attribute : duplicate.getAttributes()) {
-         AttributeData attrData = ((Attribute<?>) attribute).getAttributeData();
-         AttributeData attr = dataLoader.duplicateAttributeData(attrData);
-         attributeFactory.createAttribute(duplicate.getAttributeContainer(), attr);
-      }
-      return duplicate;
-   }
-
-   @Override
-   public ArtifactWriteable introduceArtifact(ArtifactReadable sourceArtifact) throws OseeCoreException {
-      if (sourceArtifact.getBranch().equals(branch)) {
-         throw new OseeArgumentException("Source artifact is on same branch as transaction");
-      }
+   public GraphWriteable asWriteableGraph(GraphReadable readableGraph) throws OseeCoreException {
+      //TX_TODO
       return null;
    }
 
    @Override
    public void deleteArtifact(ArtifactWriteable artifact) throws OseeCoreException {
+      //TX_TODO
+      //      public static void deleteArtifact(SkynetTransaction transaction, boolean overrideDeleteCheck, final Artifact... artifacts) throws OseeCoreException {
+      //         deleteArtifactCollection(transaction, overrideDeleteCheck, Arrays.asList(artifacts));
+      //      }
+      //
+      //      public static void deleteArtifactCollection(SkynetTransaction transaction, boolean overrideDeleteCheck, final Collection<Artifact> artifacts) throws OseeCoreException {
+      //         if (artifacts.isEmpty()) {
+      //            return;
+      //         }
+      //
+      //         if (!overrideDeleteCheck) {
+      //            performDeleteChecks(artifacts);
+      //         }
+      //
+      //         bulkLoadRelatives(artifacts);
+      //
+      //         boolean reorderRelations = true;
+      //         for (Artifact artifact : artifacts) {
+      //            deleteTrace(artifact, transaction, reorderRelations);
+      //         }
+      //      }
+      //      private static void deleteTrace(Artifact artifact, SkynetTransaction transaction, boolean reorderRelations) throws OseeCoreException {
+      //         if (!artifact.isDeleted()) {
+      //            // This must be done first since the the actual deletion of an
+      //            // artifact clears out the link manager
+      //            for (Artifact childArtifact : artifact.getChildren()) {
+      //               deleteTrace(childArtifact, transaction, false);
+      //            }
+      //            try {
+      //               // calling deCache here creates a race condition when the handleRelationModifiedEvent listeners fire - RS
+      //               //          ArtifactCache.deCache(artifact);
+      //               artifact.internalSetDeleted();
+      //               RelationManager.deleteRelationsAll(artifact, reorderRelations, transaction);
+      //               if (transaction != null) {
+      //                  artifact.persist(transaction);
+      //               }
+      //            } catch (OseeCoreException ex) {
+      //               artifact.resetToPreviousModType();
+      //               throw ex;
+      //            }
+      //         }
+      //      }
    }
 
 }

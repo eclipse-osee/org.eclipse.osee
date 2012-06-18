@@ -17,8 +17,8 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiUtil;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -62,7 +62,7 @@ public class OrcsBranchTest {
       QueryFactory qf = orcsApi.getQueryFactory(context);
       //      ReadableArtifact createdBy =
       //         qf.fromBranch(CoreBranches.COMMON).andNameEquals(ARTIFACT_NAME).getResults().getExactlyOne();
-      ReadableArtifact createdBy =
+      ArtifactReadable createdBy =
          qf.fromBranch(CoreBranches.COMMON).andNameEquals("OSEE System").getResults().getExactlyOne();
 
       CreateBranchData createData =
@@ -114,7 +114,7 @@ public class OrcsBranchTest {
 
       // create the branch with the copied transaction
       QueryFactory qf = orcsApi.getQueryFactory(context);
-      ReadableArtifact createdBy =
+      ArtifactReadable createdBy =
          qf.fromBranch(CoreBranches.COMMON).andNameEquals("OSEE System").getResults().getExactlyOne();
 
       CreateBranchData createData =
@@ -129,7 +129,7 @@ public class OrcsBranchTest {
       compareBranchChanges(priorItems, newItems);
    }
 
-   private CreateBranchData makeBranchData(QueryFactory qf, String name, String creationComment, int fromTransaction, ReadableArtifact userArtifact, boolean copyTx) {
+   private CreateBranchData makeBranchData(QueryFactory qf, String name, String creationComment, int fromTransaction, ArtifactReadable userArtifact, boolean copyTx) {
       int MERGE_DESTINATION_BRANCH_ID = -1; // only used on merge branches
       int MERGE_ADDRESSING_QUERY_ID = -1; // only used on merge branches
       CreateBranchData createData = new CreateBranchData();

@@ -28,7 +28,7 @@ public interface DataProxy {
 
    public void setData(Object... objects) throws OseeCoreException;
 
-   public Object[] getData() throws OseeDataStoreException;
+   public Object[] getData() throws OseeCoreException;
 
    public void persist(int storageId) throws OseeCoreException;
 

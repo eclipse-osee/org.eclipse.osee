@@ -14,6 +14,6 @@ package org.eclipse.osee.orcs.core.ds;
 /**
  * @author Roberto E. Escobar
  */
-public interface ArtifactDataHandler extends OrcsObjectHandler<ArtifactData> {
+public interface ArtifactDataHandler extends OrcsDataHandler<ArtifactData> {
    //
 }

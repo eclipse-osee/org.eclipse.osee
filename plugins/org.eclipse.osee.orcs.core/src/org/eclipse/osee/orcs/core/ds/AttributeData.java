@@ -13,86 +13,13 @@ package org.eclipse.osee.orcs.core.ds;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeData extends OrcsObject {
+public interface AttributeData extends OrcsData {
 
-   private int stripeId = -1;
-   private int artifactId = -1;
-   private String uri;
-   private String value;
+   int getArtifactId();
 
-   private DataProxy proxy;
+   void setArtifactId(int artifactId);
 
-   public AttributeData() {
-      // do nothing
-   }
+   DataProxy getDataProxy();
 
-   public String getUri() {
-      return uri;
-   }
-
-   public void setUri(String uri) {
-      this.uri = uri;
-   }
-
-   public void setValue(String value) {
-      this.value = value;
-   }
-
-   public String getValue() {
-      return value;
-   }
-
-   public int getArtifactId() {
-      return artifactId;
-   }
-
-   public int getAttrId() {
-      return getLocalId();
-   }
-
-   public void setAttrId(int attrId) {
-      setLocalId(attrId);
-   }
-
-   public long getAttrTypeUuid() {
-      return getTypeUuid();
-   }
-
-   public DataProxy getDataProxy() {
-      return proxy;
-   }
-
-   public int getStripeId() {
-      return stripeId;
-   }
-
-   public void setArtifactId(int artifactId) {
-      this.artifactId = artifactId;
-   }
-
-   public void setAttrTypeUuid(long attrTypeUuid) {
-      setTypeUuid(attrTypeUuid);
-   }
-
-   public void setStripeId(int stripeId) {
-      this.stripeId = stripeId;
-   }
-
-   public void setDataProxy(DataProxy proxy) {
-      this.proxy = proxy;
-   }
-
-   public boolean isSameArtifact(AttributeData other) {
-      return getBranchId() == other.getBranchId() && this.artifactId == other.artifactId;
-   }
-
-   public boolean isSameAttribute(AttributeData other) {
-      return getLocalId() == other.getLocalId() && isSameArtifact(other);
-   }
-
-   @Override
-   public String toString() {
-      return "AttributeRow [artifactId=" + artifactId + ", branchId=" + getBranchId() + ", attrId=" + getLocalId() + ", gammaId=" + getGammaId() + ", modType=" + getModType() + "]";
-   }
-
+   void setDataProxy(DataProxy proxy);
 }

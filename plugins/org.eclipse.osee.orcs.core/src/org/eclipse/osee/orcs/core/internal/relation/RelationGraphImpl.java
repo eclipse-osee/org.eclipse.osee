@@ -89,7 +89,7 @@ public class RelationGraphImpl implements GraphWriteable, Cloneable {
 
    @Override
    public Collection<IRelationTypeSide> getExistingRelationTypes(ArtifactReadable art) {
-      return asArtifact(art).getRelationContainer().getAvailableRelationTypes();
+      return asArtifact(art).getRelationContainer().getExistingRelationTypes();
    }
 
    @Override

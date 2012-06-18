@@ -62,8 +62,8 @@ public class ReadableArtifactProxy extends AbstractProxy<ArtifactImpl> implement
    }
 
    @Override
-   public Collection<IAttributeType> getAttributeTypes() throws OseeCoreException {
-      return getObjectForRead().getAttributeTypes();
+   public Collection<IAttributeType> getExistingAttributeTypes() throws OseeCoreException {
+      return getObjectForRead().getExistingAttributeTypes();
    }
 
    @Override
@@ -104,6 +104,16 @@ public class ReadableArtifactProxy extends AbstractProxy<ArtifactImpl> implement
    @Override
    public String toString() {
       return getName();
+   }
+
+   @Override
+   public boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException {
+      return getObjectForRead().isAttributeTypeValid(attributeType);
+   }
+
+   @Override
+   public <T> T getSoleAttributeValue(IAttributeType attributeType) throws OseeCoreException {
+      return getObjectForRead().getSoleAttributeValue(attributeType);
    }
 
 }

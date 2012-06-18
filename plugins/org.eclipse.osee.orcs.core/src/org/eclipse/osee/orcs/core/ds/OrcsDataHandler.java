@@ -8,29 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.mocks;
+package org.eclipse.osee.orcs.core.ds;
 
-import org.eclipse.osee.orcs.core.internal.SessionContext;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
-public class MockSessionContext implements SessionContext {
+public interface OrcsDataHandler<T extends OrcsData> {
 
-   @Override
-   public <T extends ArtifactReadable> T getHistorical(int artId, int stripeId) {
-      return null;
-   }
-
-   @Override
-   public <T extends ArtifactReadable> T getActive(int artId, int branchId) {
-      return null;
-   }
-
-   @Override
-   public String getSessionId() {
-      return null;
-   }
+   void onData(T data) throws OseeCoreException;
 
 }

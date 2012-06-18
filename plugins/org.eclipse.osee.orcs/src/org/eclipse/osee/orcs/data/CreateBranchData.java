@@ -50,7 +50,7 @@ public class CreateBranchData implements Identifiable {
 
       int result = NULL_ARTIFACT_ID;
       if (associatedArtifact != null) {
-         result = associatedArtifact.getId();
+         result = associatedArtifact.getLocalId();
       }
       return result;
    }
@@ -58,7 +58,7 @@ public class CreateBranchData implements Identifiable {
    public int getUserArtifactId() {
       int result = NULL_ARTIFACT_ID;
       if (userArtifact != null) {
-         result = userArtifact.getId();
+         result = userArtifact.getLocalId();
       }
       return result;
    }

@@ -32,8 +32,8 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
-import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.db.internal.callable.BranchCopyTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CheckBranchExchangeIntegrityCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CommitBranchDatabaseCallable;
@@ -49,51 +49,28 @@ import org.eclipse.osee.orcs.db.internal.exchange.ExportItemFactory;
  */
 public class BranchDataStoreImpl implements BranchDataStore {
 
-   private Log logger;
-   private IOseeDatabaseService dbService;
-   private IOseeCachingService cachingService;
-   private IOseeModelFactoryService modelFactory;
+   private final Log logger;
+   private final IOseeDatabaseService dbService;
+   private final IdentityService identityService;
+   private final IOseeCachingService cachingService;
+   private final SystemPreferences preferences;
+   private final ExecutorAdmin executorAdmin;
+   private final IResourceManager resourceManager;
 
-   private IdentityService identityService;
-   private SystemPreferences preferences;
-   private ExecutorAdmin executorAdmin;
-   private IOseeModelingService typeModelService;
-   private IResourceManager resourceManager;
+   private final IOseeModelFactoryService modelFactory;
+   private final IOseeModelingService typeModelService;
 
-   public void setLogger(Log logger) {
+   public BranchDataStoreImpl(Log logger, IOseeDatabaseService dbService, IdentityService identityService, IOseeCachingService cachingService, SystemPreferences preferences, ExecutorAdmin executorAdmin, IResourceManager resourceManager, IOseeModelFactoryService modelFactory, IOseeModelingService typeModelService) {
+      super();
       this.logger = logger;
-   }
-
-   public void setDbService(IOseeDatabaseService dbService) {
       this.dbService = dbService;
-   }
-
-   public void setCachingService(IOseeCachingService cachingService) {
-      this.cachingService = cachingService;
-   }
-
-   public void setModelService(IOseeModelFactoryService modelFactory) {
-      this.modelFactory = modelFactory;
-   }
-
-   public void setSystemPreferences(SystemPreferences preferences) {
-      this.preferences = preferences;
-   }
-
-   public void setExecutorAdmin(ExecutorAdmin executorAdmin) {
-      this.executorAdmin = executorAdmin;
-   }
-
-   public void setTypeModelService(IOseeModelingService typeModelService) {
-      this.typeModelService = typeModelService;
-   }
-
-   public void setResourceManager(IResourceManager resourceManager) {
-      this.resourceManager = resourceManager;
-   }
-
-   public void setIdentityService(IdentityService identityService) {
       this.identityService = identityService;
+      this.cachingService = cachingService;
+      this.preferences = preferences;
+      this.executorAdmin = executorAdmin;
+      this.resourceManager = resourceManager;
+      this.modelFactory = modelFactory;
+      this.typeModelService = typeModelService;
    }
 
    @Override

@@ -12,15 +12,20 @@ package org.eclipse.osee.orcs.data;
 
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.Readable;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  * @author Andrew M. Finkbeiner
  */
-public interface AttributeReadable<T> extends Readable, HasVersion {
+public interface AttributeReadable<T> extends Readable {
 
    int getId();
+
+   long getGammaId();
+
+   ModificationType getModificationType();
 
    IAttributeType getAttributeType();
 

@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.database.schema.SchemaOptions;
 import org.eclipse.osee.database.schema.SchemaResourceProvider;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
@@ -31,29 +31,18 @@ import org.eclipse.osee.orcs.db.internal.util.DynamicSchemaResourceProvider;
  */
 public class DataStoreAdminImpl implements DataStoreAdmin {
 
-   private Log logger;
-   private IOseeDatabaseService dbService;
-   private IOseeCachingService cacheService;
-   private BranchDataStore branchStore;
-   private SystemPreferences preferences;
+   private final Log logger;
+   private final IOseeDatabaseService dbService;
+   private final IdentityService identityService;
+   private final BranchDataStore branchStore;
+   private final SystemPreferences preferences;
 
-   public void setLogger(Log logger) {
+   public DataStoreAdminImpl(Log logger, IOseeDatabaseService dbService, IdentityService identityService, BranchDataStore branchStore, SystemPreferences preferences) {
+      super();
       this.logger = logger;
-   }
-
-   public void setDbService(IOseeDatabaseService dbService) {
       this.dbService = dbService;
-   }
-
-   public void setCacheService(IOseeCachingService cacheService) {
-      this.cacheService = cacheService;
-   }
-
-   public void setBranchStore(BranchDataStore branchStore) {
+      this.identityService = identityService;
       this.branchStore = branchStore;
-   }
-
-   public void setSystemPreferences(SystemPreferences preferences) {
       this.preferences = preferences;
    }
 
@@ -67,8 +56,8 @@ public class DataStoreAdminImpl implements DataStoreAdmin {
       SchemaResourceProvider schemaProvider = new DynamicSchemaResourceProvider(logger);
 
       SchemaOptions options = new SchemaOptions(tableDataSpace, indexDataSpace, useFileSpecifiedSchemas);
-      return new InitializeDatastoreCallable(logger, dbService, cacheService, branchStore, preferences, schemaProvider,
-         options);
+      return new InitializeDatastoreCallable(logger, dbService, identityService, branchStore, preferences,
+         schemaProvider, options);
    }
 
    @Override

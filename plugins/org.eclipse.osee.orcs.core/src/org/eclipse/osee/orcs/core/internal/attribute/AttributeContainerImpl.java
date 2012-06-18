@@ -61,7 +61,7 @@ public class AttributeContainerImpl implements AttributeContainer {
    }
 
    @Override
-   public Collection<IAttributeType> getAttributeTypes() {
+   public Collection<IAttributeType> getExistingAttributeTypes() {
       return collection.keySet();
    }
 

@@ -22,10 +22,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.OrcsPerformance;
 import org.eclipse.osee.orcs.core.SystemPreferences;
-import org.eclipse.osee.orcs.core.ds.BranchDataStore;
-import org.eclipse.osee.orcs.core.ds.DataLoader;
-import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
-import org.eclipse.osee.orcs.core.ds.QueryEngine;
+import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeClassResolver;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
@@ -47,19 +44,16 @@ import org.eclipse.osee.orcs.transaction.TransactionFactory;
 public class OrcsApiImpl implements OrcsApi {
 
    private Log logger;
-   private QueryEngine queryEngine;
-   private DataLoader dataLoader;
+   private OrcsDataStore dataStore;
    private AttributeClassResolver resolver;
    private IOseeCachingService cacheService;
    private DataStoreTypeCache dataStoreTypeCache;
 
-   private BranchDataStore branchStore;
-   private DataStoreAdmin dataStoreAdmin;
    private ExecutorAdmin executorAdmin;
    private SystemPreferences preferences;
 
    private ArtifactFactory artifactFactory;
-   AttributeFactory attributeFactory;
+   private AttributeFactory attributeFactory;
    private OrcsObjectLoader objectLoader;
    private QueryModule queryModule;
    private IndexerModule indexerModule;
@@ -68,16 +62,12 @@ public class OrcsApiImpl implements OrcsApi {
       this.logger = logger;
    }
 
-   public void setQueryEngine(QueryEngine queryEngine) {
-      this.queryEngine = queryEngine;
+   public void setOrcsDataStore(OrcsDataStore dataStore) {
+      this.dataStore = dataStore;
    }
 
    public void setAttributeClassResolver(AttributeClassResolver resolver) {
       this.resolver = resolver;
-   }
-
-   public void setDataLoader(DataLoader dataLoader) {
-      this.dataLoader = dataLoader;
    }
 
    public void setCacheService(IOseeCachingService cacheService) {
@@ -86,14 +76,6 @@ public class OrcsApiImpl implements OrcsApi {
 
    public void setDataStoreTypeCache(DataStoreTypeCache dataStoreTypeCache) {
       this.dataStoreTypeCache = dataStoreTypeCache;
-   }
-
-   public void setBranchDataStore(BranchDataStore branchStore) {
-      this.branchStore = branchStore;
-   }
-
-   public void setDataStoreAdmin(DataStoreAdmin dataStoreAdmin) {
-      this.dataStoreAdmin = dataStoreAdmin;
    }
 
    public void setExecutorAdmin(ExecutorAdmin executorAdmin) {
@@ -106,15 +88,22 @@ public class OrcsApiImpl implements OrcsApi {
 
    public void start() {
       RelationFactory relationFactory = new RelationFactory(dataStoreTypeCache.getRelationTypeCache());
+
+      attributeFactory =
+         new AttributeFactory(logger, resolver, dataStoreTypeCache.getAttributeTypeCache(), dataStore.getDataFactory());
+
       artifactFactory =
-         new ArtifactFactory(relationFactory, cacheService.getArtifactTypeCache(), cacheService.getBranchCache());
-      attributeFactory = new AttributeFactory(logger, resolver, dataStoreTypeCache.getAttributeTypeCache());
+         new ArtifactFactory(dataStore.getDataFactory(), attributeFactory, relationFactory,
+            cacheService.getArtifactTypeCache(), cacheService.getBranchCache());
+
       objectLoader =
-         new OrcsObjectLoader(logger, dataLoader, artifactFactory, attributeFactory, cacheService.getBranchCache());
+         new OrcsObjectLoader(logger, dataStore.getDataLoader(), artifactFactory, attributeFactory,
+            cacheService.getBranchCache());
 
-      queryModule = new QueryModule(logger, queryEngine, objectLoader, dataStoreTypeCache.getAttributeTypeCache());
+      queryModule =
+         new QueryModule(logger, dataStore.getQueryEngine(), objectLoader, dataStoreTypeCache.getAttributeTypeCache());
 
-      indexerModule = new IndexerModule(logger, preferences, executorAdmin, queryEngine.getQueryIndexer());
+      indexerModule = new IndexerModule(logger, preferences, executorAdmin, dataStore.getQueryEngineIndexer());
       indexerModule.start();
    }
 
@@ -152,21 +141,20 @@ public class OrcsApiImpl implements OrcsApi {
    @Override
    public OrcsBranch getBranchOps(ApplicationContext context) {
       SessionContext sessionContext = getSessionContext(context);
-      return new OrcsBranchImpl(logger, sessionContext, branchStore, cacheService.getBranchCache(),
+      return new OrcsBranchImpl(logger, sessionContext, dataStore.getBranchDataStore(), cacheService.getBranchCache(),
          cacheService.getTransactionCache());
    }
 
    @Override
    public TransactionFactory getTransactionFactory(ApplicationContext context) {
       SessionContext sessionContext = getSessionContext(context);
-      return new TransactionFactoryImpl(logger, sessionContext, branchStore, artifactFactory, attributeFactory,
-         dataLoader);
+      return new TransactionFactoryImpl(logger, sessionContext, dataStore.getBranchDataStore(), artifactFactory);
    }
 
    @Override
    public OrcsAdmin getAdminOps(ApplicationContext context) {
       SessionContext sessionContext = getSessionContext(context);
-      return new OrcsAdminImpl(logger, sessionContext, dataStoreAdmin);
+      return new OrcsAdminImpl(logger, sessionContext, dataStore.getDataStoreAdmin());
    }
 
    @Override

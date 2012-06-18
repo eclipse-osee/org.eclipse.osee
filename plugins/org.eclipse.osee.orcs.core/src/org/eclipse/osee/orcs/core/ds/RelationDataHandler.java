@@ -14,6 +14,6 @@ package org.eclipse.osee.orcs.core.ds;
 /**
  * @author Andrew M. Finkbeiner
  */
-public interface RelationDataHandler extends OrcsObjectHandler<RelationData> {
+public interface RelationDataHandler extends OrcsDataHandler<RelationData> {
    //
 }

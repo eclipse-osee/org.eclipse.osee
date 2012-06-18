@@ -22,7 +22,7 @@ import org.eclipse.osee.orcs.core.ds.DataProxyFactory;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeDataProxyFactory implements AttributeLoader.ProxyDataFactory {
+public class AttributeDataProxyFactory implements ProxyDataFactory {
 
    private final DataProxyFactoryProvider proxyProvider;
    private final AttributeTypeCache attributeTypeCache;
@@ -35,6 +35,20 @@ public class AttributeDataProxyFactory implements AttributeLoader.ProxyDataFacto
 
    @Override
    public DataProxy createProxy(long typeUuid, String value, String uri) throws OseeCoreException {
+      return createProxy(typeUuid, value, uri);
+   }
+
+   private boolean isEnumOrBoolean(AttributeType attributeType) {
+      boolean isEnumAttribute = attributeType.isEnumerated();
+
+      String baseType = attributeType.getBaseAttributeTypeId();
+      boolean isBooleanAttribute = baseType.toLowerCase().contains("boolean");
+
+      return isBooleanAttribute || isEnumAttribute;
+   }
+
+   @Override
+   public DataProxy createProxy(long typeUuid, Object... data) throws OseeCoreException {
       AttributeType attributeType = attributeTypeCache.getByGuid(typeUuid);
       Conditions.checkNotNull(attributeType, "AttributeType", "Unable to find attributeType for [%s]", typeUuid);
 
@@ -47,22 +61,15 @@ public class AttributeDataProxyFactory implements AttributeLoader.ProxyDataFacto
       Conditions.checkNotNull(factory, "DataProxyFactory", "Unable to find data proxy factory for [%s]",
          dataProxyFactoryId);
 
-      String shortValue = value;
+      String shortValue = String.valueOf(data[0]);
+      String uri = String.valueOf(data[1]);
+
       if (isEnumOrBoolean(attributeType)) {
-         shortValue = Strings.intern(value);
+         shortValue = Strings.intern(shortValue);
       }
 
       DataProxy proxy = factory.createInstance(dataProxyFactoryId);
       proxy.setData(shortValue, uri);
       return proxy;
-   }
-
-   private boolean isEnumOrBoolean(AttributeType attributeType) {
-      boolean isEnumAttribute = attributeType.isEnumerated();
-
-      String baseType = attributeType.getBaseAttributeTypeId();
-      boolean isBooleanAttribute = baseType.toLowerCase().contains("boolean");
-
-      return isBooleanAttribute || isEnumAttribute;
    }
 }

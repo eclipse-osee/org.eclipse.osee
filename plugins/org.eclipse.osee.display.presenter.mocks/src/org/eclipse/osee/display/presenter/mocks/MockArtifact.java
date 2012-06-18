@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -128,7 +127,7 @@ public class MockArtifact implements ArtifactReadable {
    }
 
    @Override
-   public Collection<IAttributeType> getAttributeTypes() {
+   public Collection<IAttributeType> getExistingAttributeTypes() {
       return attributes.keySet();
    }
 
@@ -199,6 +198,11 @@ public class MockArtifact implements ArtifactReadable {
    @Override
    public <T> T getSoleAttributeValue(IAttributeType attributeType) {
       return null;
+   }
+
+   @Override
+   public boolean isAttributeTypeValid(IAttributeType attributeType) {
+      return false;
    }
 
 }

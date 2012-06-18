@@ -46,10 +46,10 @@ public class ArtifactRowMapper implements ArtifactDataHandler {
 
    private ArtifactReadable getLoadedArtifact(ArtifactData current) {
       ArtifactReadable container = null;
-      if (current.isHistorical()) {
-         container = context.getHistorical(current.getArtifactId(), current.getStripeId());
+      if (current.getVersion().isHistorical()) {
+         container = context.getHistorical(current.getLocalId(), current.getVersion().getStripeId());
       } else {
-         container = context.getActive(current.getArtifactId(), current.getBranchId());
+         container = context.getActive(current.getLocalId(), current.getVersion().getBranchId());
       }
       return container;
    }

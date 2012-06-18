@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -35,6 +35,7 @@ import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.core.ds.DataStoreInfo;
 import org.eclipse.osee.orcs.data.CreateBranchData;
+import org.eclipse.osee.orcs.db.internal.loader.RelationalConstants;
 import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 
 /**
@@ -48,12 +49,12 @@ public class InitializeDatastoreCallable extends DatabaseCallable<DataStoreInfo>
    private final SystemPreferences preferences;
    private final SchemaResourceProvider schemaProvider;
    private final SchemaOptions options;
-   private final IOseeCachingService cacheService;
+   private final IdentityService identityService;
    private final BranchDataStore branchStore;
 
-   public InitializeDatastoreCallable(Log logger, IOseeDatabaseService dbService, IOseeCachingService cacheService, BranchDataStore branchStore, SystemPreferences preferences, SchemaResourceProvider schemaProvider, SchemaOptions options) {
+   public InitializeDatastoreCallable(Log logger, IOseeDatabaseService dbService, IdentityService identityService, BranchDataStore branchStore, SystemPreferences preferences, SchemaResourceProvider schemaProvider, SchemaOptions options) {
       super(logger, dbService);
-      this.cacheService = cacheService;
+      this.identityService = identityService;
       this.branchStore = branchStore;
       this.preferences = preferences;
       this.schemaProvider = schemaProvider;
@@ -109,15 +110,14 @@ public class InitializeDatastoreCallable extends DatabaseCallable<DataStoreInfo>
 
       data.setFromTransaction(null);
 
-      data.setMergeAddressingQueryId(-1);
-      data.setMergeDestinationBranchId(-1);
+      data.setMergeAddressingQueryId(RelationalConstants.JOIN_QUERY_ID_SENTINEL);
+      data.setMergeDestinationBranchId(RelationalConstants.BRANCH_SENTINEL);
       return data;
    }
 
    private void clearStateCaches() throws OseeDataStoreException {
       getDatabaseService().getSequence().clear();
-      cacheService.getIdentityService().clear();
-      //    cachingService.clearAll();
+      identityService.clear();
    }
 
    private void addDefaultPermissions() throws OseeCoreException {

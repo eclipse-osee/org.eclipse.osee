@@ -5,13 +5,10 @@
       <provide interface="org.eclipse.osee.orcs.OrcsApi"/>
    </service>
    <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
-   <reference bind="setQueryEngine" cardinality="1..1" interface="org.eclipse.osee.orcs.core.ds.QueryEngine" name="QueryEngine" policy="static"/>
    <reference bind="setAttributeClassResolver" cardinality="1..1" interface="org.eclipse.osee.orcs.core.internal.attribute.AttributeClassResolver" name="AttributeClassResolver" policy="static"/>
-   <reference bind="setDataLoader" cardinality="1..1" interface="org.eclipse.osee.orcs.core.ds.DataLoader" name="DataLoader" policy="static"/>
    <reference bind="setCacheService" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IOseeCachingService" name="IOseeCachingService" policy="static"/>
    <reference bind="setDataStoreTypeCache" cardinality="1..1" interface="org.eclipse.osee.orcs.DataStoreTypeCache" name="DataStoreTypeCache" policy="static"/>
-   <reference bind="setBranchDataStore" cardinality="1..1" interface="org.eclipse.osee.orcs.core.ds.BranchDataStore" name="BranchDataStore" policy="static"/>
-   <reference bind="setDataStoreAdmin" cardinality="1..1" interface="org.eclipse.osee.orcs.core.ds.DataStoreAdmin" name="DataStoreAdmin" policy="static"/>
    <reference bind="setExecutorAdmin" cardinality="1..1" interface="org.eclipse.osee.executor.admin.ExecutorAdmin" name="ExecutorAdmin" policy="static"/>
    <reference bind="setSystemPreferences" cardinality="1..1" interface="org.eclipse.osee.orcs.core.SystemPreferences" name="SystemPreferences" policy="static"/>
+   <reference bind="setOrcsDataStore" cardinality="1..1" interface="org.eclipse.osee.orcs.core.ds.OrcsDataStore" name="OrcsDataStore" policy="static"/>
 </scr:component>

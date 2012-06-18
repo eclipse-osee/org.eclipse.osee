@@ -24,42 +24,38 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
+import org.eclipse.osee.orcs.core.ds.HasOrcsData;
 import org.eclipse.osee.orcs.core.internal.artifact.AttributeContainer;
 import org.eclipse.osee.orcs.data.AttributeWriteable;
 
 /**
  * @author Ryan D. Brooks
  */
-public abstract class Attribute<T> implements Comparable<Attribute<T>>, AttributeWriteable<T> {
+public abstract class Attribute<T> implements HasOrcsData<AttributeData>, Comparable<Attribute<T>>, AttributeWriteable<T> {
    private AttributeType attributeType;
    private Reference<AttributeContainer> containerReference;
-   private DataProxy dataProxy;
    private boolean dirty;
    private String defaultValue;
    private Log logger;
    private AttributeData attributeData;
 
-   void internalInitialize(AttributeType attributeType, DataProxy dataProxy, Reference<AttributeContainer> containerReference, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
-      this.attributeType = attributeType;
+   public void internalInitialize(Reference<AttributeContainer> containerReference, AttributeData attributeData, AttributeType attributeType, boolean isDirty, boolean setDefaultValue) throws OseeCoreException {
       this.containerReference = containerReference;
-      this.dataProxy = dataProxy;
+      this.attributeData = attributeData;
+      this.attributeType = attributeType;
       if (setDefaultValue) {
          setToDefaultValue();
       }
-      dirty = markDirty;
+      dirty = isDirty;
       uponInitialize();
-   }
-
-   public void internalInitialize(AttributeType attributeType, DataProxy dataProxy, Reference<AttributeContainer> containerReference, boolean markDirty, boolean setDefaultValue, AttributeData attributeData) throws OseeCoreException {
-      internalInitialize(attributeType, dataProxy, containerReference, markDirty, setDefaultValue);
-      this.attributeData = attributeData;
    }
 
    protected Log getLogger() {
       return logger;
    }
 
-   public AttributeData getAttributeData() {
+   @Override
+   public AttributeData getOrcsData() {
       return attributeData;
    }
 
@@ -121,7 +117,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
 
    @Override
    public final void resetToDefaultValue() throws OseeCoreException {
-      attributeData.setModType(ModificationType.MODIFIED);
+      getOrcsData().setModType(ModificationType.MODIFIED);
       setToDefaultValue();
    }
 
@@ -169,7 +165,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
    }
 
    public DataProxy getDataProxy() {
-      return dataProxy;
+      return getOrcsData().getDataProxy();
    }
 
    /**
@@ -182,7 +178,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
 
    protected void markAsChanged(ModificationType modificationType) {
       setDirtyFlag(true);
-      attributeData.setModType(modificationType);
+      getOrcsData().setModType(modificationType);
    }
 
    public void clearDirty() {
@@ -234,7 +230,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
    }
 
    public void resetModType() {
-      attributeData.setModType(ModificationType.MODIFIED);
+      getOrcsData().setModType(ModificationType.MODIFIED);
    }
 
    /**
@@ -254,7 +250,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
 
    @Override
    public ModificationType getModificationType() {
-      return attributeData.getModType();
+      return getOrcsData().getModType();
    }
 
    @Override
@@ -274,7 +270,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
    }
 
    public void markAsPurged() {
-      attributeData.setModType(ModificationType.DELETED);
+      getOrcsData().setModType(ModificationType.DELETED);
       setDirtyFlag(false);
    }
 
@@ -290,20 +286,20 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
     */
    @Override
    public int getId() {
-      return attributeData.getAttrId();
+      return getOrcsData().getLocalId();
    }
 
    @Override
    public long getGammaId() {
-      return attributeData.getGammaId();
+      return getOrcsData().getVersion().getGammaId();
    }
 
    public void internalSetGammaId(int gammaId) {
-      attributeData.setGammaId(gammaId);
+      getOrcsData().getVersion().setGammaId(gammaId);
    }
 
    public void internalSetAttributeId(int attrId) {
-      attributeData.setAttrId(attrId);
+      getOrcsData().setLocalId(attrId);
    }
 
    @Override
@@ -319,7 +315,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
     */
    public void replaceWithVersion(int gammaId) throws OseeCoreException {
       internalSetModificationType(ModificationType.REPLACED_WITH_VERSION);
-      attributeData.setGammaId(gammaId);
+      getOrcsData().getVersion().setGammaId(gammaId);
       setDirtyFlag(true);
    }
 
@@ -329,7 +325,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
     */
    public void internalSetModificationType(ModificationType modificationType) throws OseeCoreException {
       Conditions.checkNotNull(modificationType, "modification type");
-      attributeData.setModType(modificationType);
+      getOrcsData().setModType(modificationType);
    }
 
    public void internalSetDeletedFromRemoteEvent() throws OseeCoreException {

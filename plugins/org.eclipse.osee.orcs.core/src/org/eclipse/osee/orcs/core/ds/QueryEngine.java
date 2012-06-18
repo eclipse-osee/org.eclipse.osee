@@ -21,5 +21,4 @@ public interface QueryEngine {
 
    QueryContext create(String sessionId, QueryData queryData) throws OseeCoreException;
 
-   QueryEngineIndexer getQueryIndexer();
 }

@@ -62,7 +62,7 @@ public class QueueToAttributeLoaderImpl implements QueueToAttributeLoader {
          AttributeTypeCache typeCache = getAttributeCache();
          while (chStmt.next()) {
             AttributeType attributeType = typeCache.getById(chStmt.getInt("attr_type_id"));
-            attributeDatas.add(new AttributeData(getResourceManager(), chStmt.getInt("attr_id"),
+            attributeDatas.add(new AttributeForIndexingImpl(getResourceManager(), chStmt.getInt("attr_id"),
                chStmt.getLong("gamma_id"), attributeType, chStmt.getString("value"), chStmt.getString("uri")));
          }
       } finally {

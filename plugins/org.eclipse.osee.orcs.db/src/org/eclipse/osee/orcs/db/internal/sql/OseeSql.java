@@ -41,7 +41,7 @@ public enum OseeSql {
    LOAD_ALL_CURRENT_ATTRIBUTES(Strings.SELECT_CURRENT_ATTRIBUTES_PREFIX + "IN (1, 2, 3) order by al1.branch_id, al1.art_id, att1.attr_id, txs.transaction_id desc", true),
 
    LOAD_RELATIONS("SELECT%s txs.mod_type, rel_link_id, a_art_id, b_art_id, rel_link_type_id, rel.gamma_id, rationale, txs.branch_id FROM osee_join_artifact aj, osee_relation_link rel, osee_txs txs WHERE aj.query_id = ? AND (aj.art_id = rel.a_art_id OR aj.art_id = rel.b_art_id) AND rel.gamma_id = txs.gamma_id AND txs.tx_current = " + TxChange.CURRENT.getValue() + " AND aj.branch_id = txs.branch_id", true),
-   LOAD_RELATIONS_NEWER("SELECT%s aj.art_id, txs.mod_type, rel_link_id, a_art_id, b_art_id, rel_link_type_id, rel.gamma_id, rationale, txs.branch_id FROM osee_join_artifact aj, osee_relation_link rel, osee_txs txs WHERE aj.query_id = ? AND (aj.art_id = rel.a_art_id OR aj.art_id = rel.b_art_id) AND rel.gamma_id = txs.gamma_id AND txs.tx_current = " + TxChange.CURRENT.getValue() + " AND aj.branch_id = txs.branch_id", true),
+   LOAD_RELATIONS_NEWER("SELECT%s aj.art_id, txs.mod_type, rel_link_id, a_art_id, b_art_id, rel_link_type_id, rel.gamma_id, rationale, txs.branch_id, txs.transaction_id FROM osee_join_artifact aj, osee_relation_link rel, osee_txs txs WHERE aj.query_id = ? AND (aj.art_id = rel.a_art_id OR aj.art_id = rel.b_art_id) AND rel.gamma_id = txs.gamma_id AND txs.tx_current = " + TxChange.CURRENT.getValue() + " AND aj.branch_id = txs.branch_id", true),
    LOAD_CURRENT_ARTIFACTS(Strings.SELECT_CURRENT_ARTIFACTS_PREFIX + "= 1", true),
    LOAD_CURRENT_ARTIFACTS_WITH_DELETED(Strings.SELECT_CURRENT_ARTIFACTS_PREFIX + "in (1, 2)", true),
 

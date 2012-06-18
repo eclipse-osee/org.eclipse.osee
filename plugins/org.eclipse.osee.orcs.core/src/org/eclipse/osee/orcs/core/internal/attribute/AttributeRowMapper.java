@@ -46,9 +46,7 @@ public class AttributeRowMapper implements AttributeDataHandler {
       if (container == null) {
          return; // If the artifact is null, it means the attributes are orphaned.
       }
-      synchronized (container) {
-         factory.createAttribute(container, data);
-      }
+      factory.createAttribute(container, data);
    }
 
    //   private void handleMultipleVersions(AttributeRow previous, AttributeRow current) {
