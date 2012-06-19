@@ -22,8 +22,8 @@ import org.eclipse.osee.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.createtasks.CreateTasksOperation;
+import org.eclipse.osee.ats.core.client.task.createtasks.CreateTasksOperationService;
 import org.eclipse.osee.ats.core.client.task.createtasks.GenerateTaskOpList;
-import org.eclipse.osee.ats.core.client.task.createtasks.ITaskTitleProvider;
 import org.eclipse.osee.ats.core.client.task.createtasks.TaskEnum;
 import org.eclipse.osee.ats.core.client.task.createtasks.TaskMetadata;
 import org.eclipse.osee.ats.core.client.task.createtasks.TaskOpModify;
@@ -59,7 +59,6 @@ import org.junit.BeforeClass;
  */
 public class CreateTasksOperationTest {
 
-   private final static String mockTaskTitlePrefix = "Task for ChangedArt:";
    private final static String artifactNamePrefix = CreateTasksOperationTest.class.getSimpleName();
    private boolean isPopulated = false;
    private GenerateTaskOpList genTaskOpList;
@@ -88,7 +87,7 @@ public class CreateTasksOperationTest {
       for (TaskArtifact taskArt : taskArts) {
          //Verify that none of the tasks are the generated tasks.
          Assert.assertTrue(taskArt.getName().contains(artifactNamePrefix));
-         Assert.assertTrue(!taskArt.getName().contains(mockTaskTitlePrefix));
+         Assert.assertTrue(!taskArt.getName().contains(MockTaskTitleProvider.mockTaskTitlePrefix));
 
          //Verify that non of the tasks had their notes modified.
          String currentNoteValue = taskArt.getSoleAttributeValueAsString(AtsAttributeTypes.SmaNote, "");
@@ -107,7 +106,7 @@ public class CreateTasksOperationTest {
    private void assert_Tasks_Generated(TeamWorkFlowArtifact teamWf) throws MultipleAttributesExist, OseeCoreException {
       Collection<TaskArtifact> taskArts = teamWf.getTaskArtifacts();
       for (TaskArtifact taskArt : taskArts) {
-         Assert.assertTrue(taskArt.getName().contains(mockTaskTitlePrefix));
+         Assert.assertTrue(taskArt.getName().contains(MockTaskTitleProvider.mockTaskTitlePrefix));
       }
    }
 
@@ -130,6 +129,34 @@ public class CreateTasksOperationTest {
       transaction.execute();
 
       System.out.println(resultData.toString());
+   }
+
+   @org.junit.Test
+   public void test_CreateTasksOperationService() throws OseeCoreException {
+      ensurePopulated();
+
+      OperationLogger stringLogger = NullOperationLogger.getSingleton();
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
+            artifactNamePrefix + " - testCreateTasksOperation");
+      XResultDataFile resultData = new XResultDataFile();
+      resultData.clear();
+
+      assert_Tasks_OriginalData(destTeamWf1_Proper);
+      assert_Tasks_OriginalData(destTeamWf2_ChangesWithoutTasks);
+      assert_Tasks_OriginalData(destTeamWf3_TasksWithoutChanges);
+
+      CreateTasksOperation createTasksOp_Proper =
+         CreateTasksOperationService.getCreateTasksOpForTaskTitleProvider(ver1_Proper, aia1_Proper, changeData_Proper,
+            reqTeamWf, false, resultData, transaction, stringLogger, MockTaskTitleProvider.mockTaskTitlePrefix);
+      Operations.executeWorkAndCheckStatus(createTasksOp_Proper);
+      transaction.execute();
+
+      assert_Tasks_OriginalData(destTeamWf1_Proper);
+      assert_Tasks_OriginalData(destTeamWf2_ChangesWithoutTasks);
+      assert_Tasks_OriginalData(destTeamWf3_TasksWithoutChanges);
+
+      cleanupAndReset();
    }
 
    @org.junit.Test
@@ -474,15 +501,5 @@ public class CreateTasksOperationTest {
             "CreateTasksOperationTest.MockChange.getWorker() - Unimplemented method called");
          return null;
       }
-   }
-
-   private class MockTaskTitleProvider implements ITaskTitleProvider {
-      @Override
-      public String getTaskTitle(TaskMetadata metadata) {
-         Artifact changedArt = metadata.getChangedArtifact();
-         String changedArtGuid = changedArt.getGuid();
-         return mockTaskTitlePrefix + changedArtGuid;
-      }
-
    }
 }
