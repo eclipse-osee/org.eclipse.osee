@@ -45,10 +45,10 @@ public class DemoDbGroupsTest {
       Assert.assertNotNull(groupArt);
 
       Collection<Artifact> members = groupArt.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members);
-      Assert.assertEquals(28, members.size());
+      Assert.assertEquals(53, members.size());
 
       Assert.assertEquals(2, Artifacts.getOfType(AtsArtifactTypes.Action, members).size());
-      Assert.assertEquals(19, Artifacts.getOfType(AtsArtifactTypes.Task, members).size());
+      Assert.assertEquals(44, Artifacts.getOfType(AtsArtifactTypes.Task, members).size());
       Assert.assertEquals(2, Artifacts.getOfType(DemoArtifactTypes.DemoCodeTeamWorkflow, members).size());
       Assert.assertEquals(2, Artifacts.getOfType(DemoArtifactTypes.DemoTestTeamWorkflow, members).size());
       Assert.assertEquals(2, Artifacts.getOfType(DemoArtifactTypes.DemoReqTeamWorkflow, members).size());
