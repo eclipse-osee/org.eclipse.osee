@@ -42,9 +42,9 @@ public class StoreBranchDatabaseCallable extends DatabaseTxCallable<IStatus> {
       "INSERT INTO osee_branch (branch_id, branch_guid, branch_name, parent_branch_id, parent_transaction_id, archived, associated_art_id, branch_type, branch_state, baseline_transaction_id) VALUES (?,?,?,?,?,?,?,?,?,?)";
 
    private static final String UPDATE_BRANCH =
-      "update osee_branch SET branch_name = ?, parent_branch_id = ?, parent_transaction_id = ?, archived = ?, associated_art_id = ?, branch_type = ?, branch_state = ?, baseline_transaction_id = ? where branch_id = ?";
+      "UPDATE osee_branch SET branch_name = ?, parent_branch_id = ?, parent_transaction_id = ?, archived = ?, associated_art_id = ?, branch_type = ?, branch_state = ?, baseline_transaction_id = ? WHERE branch_id = ?";
 
-   private static final String DELETE_BRANCH = "DELETE from osee_branch where branch_id = ?";
+   private static final String DELETE_BRANCH = "DELETE FROM osee_branch WHERE branch_id = ?";
 
    private final Collection<Branch> branches;
    private final ExecutorAdmin executorAdmin;
@@ -137,6 +137,13 @@ public class StoreBranchDatabaseCallable extends DatabaseTxCallable<IStatus> {
       TransactionRecord baseTxRecord = branch.getBaseTransaction();
       int parentBranchId = parentBranch != null ? parentBranch.getId() : NULL_PARENT_BRANCH_ID;
       int baselineTransaction = baseTxRecord != null ? baseTxRecord.getId() : NULL_PARENT_BRANCH_ID;
+
+      getLogger().debug(
+         "Branch Name: [%s], Parent Branch Id: [%s], src trans: [%s], arch state: [%s], assoc art: [%s], branch type: [%s], branch state: [%s], baseline trans: [%s], branch id: [%s]",
+         branch.getName(), parentBranchId, branch.getSourceTransaction().getId(), branch.getArchiveState().getValue(),
+         branch.getAssociatedArtifactId(), branch.getBranchType().getValue(), branch.getBranchState().getValue(),
+         baselineTransaction, branch.getId());
+
       return new Object[] {
          branch.getName(),
          parentBranchId,
