@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import junit.framework.Assert;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.AtsTestUtil.AtsTestUtilState;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
@@ -23,7 +24,6 @@ import org.eclipse.osee.ats.core.client.review.role.UserRole;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
@@ -42,7 +42,7 @@ import org.junit.AfterClass;
 
 /**
  * Test unit for (@link AtsNotificationManager}
- *
+ * 
  * @author Donald G. Dunne
  */
 public class AtsNotificationManagerTest {
@@ -358,8 +358,7 @@ public class AtsNotificationManagerTest {
       alex.setSoleAttributeValue(CoreAttributeTypes.Email, "alex.kay@boeing.com");
       alex.persist(getClass().getSimpleName() + "- set alex email address");
 
-      AtsTestUtil.getTestTeamDef().setRelations(AtsRelationTypes.SubscribedUser_User, Arrays.asList(alex));
-      AtsTestUtil.getTestTeamDef().persist(getClass().getSimpleName() + " - add teamDef subscription");
+      AtsTestUtil.getTestTeamDef().getSubscribed().add(AtsUsersClient.getUserFromOseeUser(alex));
 
       mgr.clear();
 
@@ -412,8 +411,7 @@ public class AtsNotificationManagerTest {
       alex.setSoleAttributeValue(CoreAttributeTypes.Email, "alex.kay@boeing.com");
       alex.persist(getClass().getSimpleName() + "- set alex email address");
 
-      AtsTestUtil.getTestAi().setRelations(AtsRelationTypes.SubscribedUser_User, Arrays.asList(alex));
-      AtsTestUtil.getTestAi().persist(getClass().getSimpleName() + " - add AI subscription");
+      AtsTestUtil.getTestAi().getSubscribed().add(AtsUsersClient.getUserFromOseeUser(alex));
 
       mgr.clear();
 

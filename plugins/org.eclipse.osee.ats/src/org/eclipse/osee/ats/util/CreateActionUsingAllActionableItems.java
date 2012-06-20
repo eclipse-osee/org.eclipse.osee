@@ -13,10 +13,10 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
+import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -61,14 +61,15 @@ public class CreateActionUsingAllActionableItems extends XNavigateItemAction {
    }
 
    public static ActionArtifact createActionWithAllAis() throws OseeCoreException {
-      Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
-      for (ActionableItemArtifact aia : ActionableItemManagerCore.getActionableItems(Active.Active)) {
+      Set<IAtsActionableItem> aias = new HashSet<IAtsActionableItem>();
+      for (IAtsActionableItem aia : ActionableItems.getActionableItems(Active.Active)) {
          if (aia.isActionable()) {
             aias.add(aia);
          }
       }
 
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Create Action using all AIs");
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Create Action using all AIs");
       ActionArtifact action =
          ActionManager.createAction(null, "Big Action Test - Delete Me", "Description", ChangeType.Improvement, "1",
             false, null, aias, new Date(), AtsUsersClient.getUser(), null, transaction);

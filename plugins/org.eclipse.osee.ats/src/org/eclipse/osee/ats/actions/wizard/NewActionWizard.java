@@ -17,8 +17,8 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.ats.core.client.action.INewActionListener;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
@@ -42,7 +42,7 @@ public class NewActionWizard extends Wizard implements INewWizard {
    protected NewActionPage1 page1;
    protected NewActionPage2 page2;
    protected NewActionPage3 page3;
-   private Collection<ActionableItemArtifact> initialAias;
+   private Collection<IAtsActionableItem> initialAias;
    private String initialDescription;
    private NewActionJob job = null;
    private INewActionListener newActionListener;
@@ -57,7 +57,7 @@ public class NewActionWizard extends Wizard implements INewWizard {
          }
          job =
             new NewActionJob(getTitle(), getDescription(), getChangeType(), getPriority(), getNeedBy(),
-               getValidation(), getSelectedActionableItemArtifacts(), this, newActionListener);
+               getValidation(), getSelectedIAtsActionableItems(), this, newActionListener);
          job.setUser(true);
          job.setPriority(Job.LONG);
          job.schedule();
@@ -87,7 +87,7 @@ public class NewActionWizard extends Wizard implements INewWizard {
    }
 
    public void createPage3IfNecessary() {
-      if (page3 == null && NewActionPage3.isPage3Necesary(getSelectedActionableItemArtifacts())) {
+      if (page3 == null && NewActionPage3.isPage3Necesary(getSelectedIAtsActionableItems())) {
          page3 = new NewActionPage3(this);
          addPage(page3);
       }
@@ -101,8 +101,8 @@ public class NewActionWizard extends Wizard implements INewWizard {
       return ((XText) page1.getXWidget("Title")).get();
    }
 
-   public Set<ActionableItemArtifact> getSelectedActionableItemArtifacts() {
-      return page1.getSelectedActionableItemArtifacts();
+   public Set<IAtsActionableItem> getSelectedIAtsActionableItems() {
+      return page1.getSelectedIAtsActionableItems();
    }
 
    public String getDescription() throws OseeCoreException {
@@ -155,11 +155,11 @@ public class NewActionWizard extends Wizard implements INewWizard {
       this.initialDescription = initialDescription;
    }
 
-   public Collection<ActionableItemArtifact> getInitialAias() {
+   public Collection<IAtsActionableItem> getInitialAias() {
       return initialAias;
    }
 
-   public void setInitialAias(Collection<ActionableItemArtifact> initialAias) {
+   public void setInitialAias(Collection<IAtsActionableItem> initialAias) {
       this.initialAias = initialAias;
    }
 

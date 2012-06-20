@@ -10,17 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workdef;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.ats.core.model.IAtsRules;
 
 /**
  * @author Donald G. Dunne
  */
-public class RuleManager {
+public class RuleManager implements IAtsRules {
 
-   static Map<String, RuleDefinition> ruleMap = new HashMap<String, RuleDefinition>(30);
+   public Map<String, RuleDefinition> ruleMap = new HashMap<String, RuleDefinition>(30);
 
-   public static RuleDefinition getOrCreateRule(String ruleId) {
+   public RuleDefinition getOrCreateRule(String ruleId) {
       if (!ruleMap.containsKey(ruleId)) {
          try {
             RuleDefinitionOption ruleOption = RuleDefinitionOption.valueOf(ruleId);
@@ -30,5 +32,30 @@ public class RuleManager {
          }
       }
       return ruleMap.get(ruleId);
+   }
+
+   @Override
+   public Collection<RuleDefinition> getRules() {
+      return ruleMap.values();
+   }
+
+   @Override
+   public RuleDefinition addRule(RuleDefinitionOption option) {
+      return getOrCreateRule(option.toString());
+   }
+
+   @Override
+   public RuleDefinition addRule(String ruleId) {
+      return getOrCreateRule(ruleId);
+   }
+
+   @Override
+   public boolean hasRule(RuleDefinitionOption option) {
+      return ruleMap.containsKey(option.toString());
+   }
+
+   @Override
+   public boolean hasRule(String ruleId) {
+      return ruleMap.containsKey(ruleId);
    }
 }

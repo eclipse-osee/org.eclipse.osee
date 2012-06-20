@@ -16,17 +16,17 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
+import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.util.AtsDeleteManager.DeleteOption;
@@ -78,8 +78,7 @@ public class AtsDeleteManagerTest {
       // Create Action
       TeamWorkFlowArtifact teamArt =
          createAction(TestNames.TeamArtDeleteOneWorkflow,
-            ActionableItemManagerCore.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
-            transaction);
+            ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())), transaction);
       transaction.execute();
 
       // Verify exists
@@ -103,9 +102,8 @@ public class AtsDeleteManagerTest {
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
-         createAction(TestNames.TeamArtDeleteWithTwoWorkflows,
-            ActionableItemManagerCore.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName(),
-               DemoActionableItems.SAW_Requirements.getName())), transaction);
+         createAction(TestNames.TeamArtDeleteWithTwoWorkflows, ActionableItems.getActionableItems(Arrays.asList(
+            DemoActionableItems.SAW_Code.getName(), DemoActionableItems.SAW_Requirements.getName())), transaction);
       transaction.execute();
 
       // Verify exists
@@ -125,8 +123,7 @@ public class AtsDeleteManagerTest {
       // Create Action
       TeamWorkFlowArtifact teamArt =
          createAction(TestNames.TeamArtPurge,
-            ActionableItemManagerCore.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
-            transaction);
+            ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())), transaction);
       transaction.execute();
 
       // Verify exists
@@ -146,8 +143,7 @@ public class AtsDeleteManagerTest {
       // Create Action
       TeamWorkFlowArtifact teamArt =
          createAction(TestNames.ActionDelete,
-            ActionableItemManagerCore.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
-            transaction);
+            ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())), transaction);
       transaction.execute();
 
       // Verify exists
@@ -167,8 +163,7 @@ public class AtsDeleteManagerTest {
       // Create Action
       TeamWorkFlowArtifact teamArt =
          createAction(TestNames.ActionPurge,
-            ActionableItemManagerCore.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
-            transaction);
+            ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())), transaction);
       transaction.execute();
 
       // Verify exists
@@ -201,7 +196,7 @@ public class AtsDeleteManagerTest {
       Assert.assertEquals(message, expectedCount, actualCount);
    }
 
-   private TeamWorkFlowArtifact createAction(TestNames testName, Collection<ActionableItemArtifact> actionableItems, SkynetTransaction transaction) throws OseeCoreException {
+   private TeamWorkFlowArtifact createAction(TestNames testName, Collection<IAtsActionableItem> actionableItems, SkynetTransaction transaction) throws OseeCoreException {
       Date createdDate = new Date();
       IAtsUser createdBy = AtsUsersClient.getUser();
       Artifact actionArt =

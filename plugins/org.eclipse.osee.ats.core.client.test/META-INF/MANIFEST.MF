@@ -13,4 +13,3 @@ Import-Package: org.eclipse.osee.ats.core.validator,
  org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.support.test.util
-Service-Component: OSGI-INF/*.xml, OSGI-INF/mock.task.title.provider.xml

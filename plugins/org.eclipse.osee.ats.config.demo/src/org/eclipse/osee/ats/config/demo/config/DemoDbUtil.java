@@ -18,9 +18,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.config.demo.internal.Activator;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -140,8 +140,7 @@ public class DemoDbUtil {
 
    public static Artifact getInterfaceInitializationSoftwareRequirement(boolean DEBUG, Branch branch) throws OseeCoreException {
       if (DEBUG) {
-         OseeLog.log(Activator.class, Level.INFO,
-            "Getting \"" + INTERFACE_INITIALIZATION + "\" requirement.");
+         OseeLog.log(Activator.class, Level.INFO, "Getting \"" + INTERFACE_INITIALIZATION + "\" requirement.");
       }
       return ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, INTERFACE_INITIALIZATION,
          branch);
@@ -151,10 +150,10 @@ public class DemoDbUtil {
       return UserManager.getUserByName(demoUser.getName());
    }
 
-   public static Collection<ActionableItemArtifact> getActionableItems(String[] aiasNames) throws OseeCoreException {
-      Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
+   public static Collection<IAtsActionableItem> getActionableItems(String[] aiasNames) throws OseeCoreException {
+      Set<IAtsActionableItem> aias = new HashSet<IAtsActionableItem>();
       for (String str : aiasNames) {
-         for (ActionableItemArtifact aia : ActionableItemManagerCore.getActionableItemsAll()) {
+         for (IAtsActionableItem aia : ActionableItems.getActionableItemsAll()) {
             if (str.equals(aia.getName())) {
                aias.add(aia);
             }

@@ -22,15 +22,16 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.column.ReviewFormalTypeColumn;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewFormalType;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsCacheManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.core.workflow.WorkPageType;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -43,25 +44,24 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSe
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
  * @author Donald G. Dunne
  */
 public class ReviewWorldSearchItem extends WorldUISearchItem {
 
-   private Collection<ActionableItemArtifact> aias;
+   private Collection<IAtsActionableItem> aias;
    private final boolean recurseChildren;
    private boolean includeCompleted;
    private final Collection<String> aiNames;
-   private final Artifact versionArt;
+   private final IAtsVersion versionArt;
    private final IAtsUser userArt;
    private final boolean includeCancelled;
    private final String stateName;
    private final ReviewFormalType reviewFormalType;
    private final ReviewType reviewType;
 
-   public ReviewWorldSearchItem(String displayName, List<String> aiNames, boolean includeCompleted, boolean includeCancelled, boolean recurseChildren, Artifact versionArt, IAtsUser userArt, ReviewFormalType reviewFormalType, ReviewType reviewType, String stateName) {
+   public ReviewWorldSearchItem(String displayName, List<String> aiNames, boolean includeCompleted, boolean includeCancelled, boolean recurseChildren, IAtsVersion versionArt, IAtsUser userArt, ReviewFormalType reviewFormalType, ReviewType reviewType, String stateName) {
       super(displayName, AtsImage.REVIEW);
       this.includeCancelled = includeCancelled;
       this.versionArt = versionArt;
@@ -74,7 +74,7 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
       this.stateName = stateName;
    }
 
-   public ReviewWorldSearchItem(String displayName, Collection<ActionableItemArtifact> aias, boolean includeCompleted, boolean includeCancelled, boolean recurseChildren, Artifact versionArt, IAtsUser userArt, ReviewFormalType reviewFormalType, ReviewType reviewType, String stateName) {
+   public ReviewWorldSearchItem(String displayName, Collection<IAtsActionableItem> aias, boolean includeCompleted, boolean includeCancelled, boolean recurseChildren, IAtsVersion versionArt, IAtsUser userArt, ReviewFormalType reviewFormalType, ReviewType reviewType, String stateName) {
       super(displayName, AtsImage.REVIEW);
       this.includeCancelled = includeCancelled;
       this.versionArt = versionArt;
@@ -106,7 +106,7 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
       if (aiNames != null) {
          return aiNames;
       } else if (aias != null) {
-         return Artifacts.getNames(aias);
+         return ActionableItems.getNames(aias);
       }
       return new ArrayList<String>();
    }
@@ -121,17 +121,15 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
     */
    public void getAIs() {
       if (aiNames != null && aias == null) {
-         aias = new HashSet<ActionableItemArtifact>();
+         aias = new HashSet<IAtsActionableItem>();
          for (String teamDefName : aiNames) {
-            ActionableItemArtifact aia =
-               (ActionableItemArtifact) AtsCacheManager.getSoleArtifactByName(AtsArtifactTypes.ActionableItem,
-                  teamDefName);
+            IAtsActionableItem aia = AtsConfigCache.getSoleByName(teamDefName, IAtsActionableItem.class);
             if (aia != null) {
                aias.add(aia);
             }
          }
       } else if (aiNames == null && aias == null) {
-         aias = new HashSet<ActionableItemArtifact>();
+         aias = new HashSet<IAtsActionableItem>();
       }
    }
 
@@ -139,9 +137,9 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       getAIs();
       Set<String> actionableItemGuids = new HashSet<String>(aias.size());
-      for (ActionableItemArtifact aia : aias) {
+      for (IAtsActionableItem aia : aias) {
          if (recurseChildren) {
-            for (ActionableItemArtifact childTeamDef : ActionableItemManagerCore.getActionableItemsFromItemAndChildren(aia)) {
+            for (IAtsActionableItem childTeamDef : ActionableItems.getActionableItemsFromItemAndChildren(aia)) {
                actionableItemGuids.add(childTeamDef.getGuid());
             }
          } else {

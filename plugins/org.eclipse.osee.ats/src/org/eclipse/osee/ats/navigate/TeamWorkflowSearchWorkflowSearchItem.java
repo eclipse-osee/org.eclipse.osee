@@ -14,9 +14,11 @@ import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
+import org.eclipse.osee.ats.core.config.Versions;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.util.widgets.XStateSearchCombo;
@@ -30,7 +32,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
@@ -101,7 +102,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    @Override
    public String getSelectedName(SearchType searchType) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
-      Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
+      Collection<IAtsTeamDefinition> teamDefs = getSelectedTeamDefinitions();
       if (!teamDefs.isEmpty()) {
          sb.append(" - Teams: ");
          sb.append(org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", teamDefs));
@@ -167,18 +168,18 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
             public void widgetModified(XWidget widget) {
                if (versionCombo != null) {
                   try {
-                     Collection<TeamDefinitionArtifact> teamDefArts = getSelectedTeamDefinitions();
+                     Collection<IAtsTeamDefinition> teamDefArts = getSelectedTeamDefinitions();
                      if (teamDefArts.isEmpty()) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
                      }
-                     TeamDefinitionArtifact teamDefHoldingVersions =
+                     IAtsTeamDefinition teamDefHoldingVersions =
                         teamDefArts.iterator().next().getTeamDefinitionHoldingVersions();
                      if (teamDefHoldingVersions == null) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
                      }
-                     Collection<String> names = Artifacts.getNames(teamDefHoldingVersions.getVersionsArtifacts());
+                     Collection<String> names = Versions.getNames(teamDefHoldingVersions.getVersions());
                      if (names.isEmpty()) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
@@ -239,7 +240,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       }
    }
 
-   public Artifact getSelectedVersionArtifact() throws OseeCoreException {
+   public IAtsVersion getSelectedVersionArtifact() throws OseeCoreException {
       if (versionCombo == null) {
          return null;
       }
@@ -247,13 +248,13 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       if (!Strings.isValid(versionStr)) {
          return null;
       }
-      Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
+      Collection<IAtsTeamDefinition> teamDefs = getSelectedTeamDefinitions();
       if (teamDefs.size() > 0) {
-         TeamDefinitionArtifact teamDefHoldingVersions = teamDefs.iterator().next().getTeamDefinitionHoldingVersions();
+         IAtsTeamDefinition teamDefHoldingVersions = teamDefs.iterator().next().getTeamDefinitionHoldingVersions();
          if (teamDefHoldingVersions == null) {
             return null;
          }
-         for (Artifact versionArtifact : teamDefHoldingVersions.getVersionsArtifacts()) {
+         for (IAtsVersion versionArtifact : teamDefHoldingVersions.getVersions()) {
             if (versionArtifact.getName().equals(versionStr)) {
                return versionArtifact;
             }
@@ -268,14 +269,14 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       }
    }
 
-   public Collection<TeamDefinitionArtifact> getSelectedTeamDefinitions() {
+   public Collection<IAtsTeamDefinition> getSelectedTeamDefinitions() {
       if (teamCombo == null) {
          return java.util.Collections.emptyList();
       }
       return teamCombo.getSelectedTeamDefintions();
    }
 
-   public void setSelectedTeamDefinitions(Collection<TeamDefinitionArtifact> selectedTeamDefs) {
+   public void setSelectedTeamDefinitions(Collection<IAtsTeamDefinition> selectedTeamDefs) {
       if (teamCombo != null) {
          teamCombo.setSelectedTeamDefs(selectedTeamDefs);
          teamCombo.notifyXModifiedListeners();
@@ -310,11 +311,11 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    public Result isParameterSelectionValid() throws OseeCoreException {
       try {
          boolean selected = false;
-         Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
+         Collection<IAtsTeamDefinition> teamDefs = getSelectedTeamDefinitions();
          if (teamDefs.size() > 0) {
             selected = true;
          }
-         Artifact verArt = getSelectedVersionArtifact();
+         IAtsVersion verArt = getSelectedVersionArtifact();
          if (verArt != null) {
             selected = true;
          }
@@ -345,7 +346,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    }
 
    @Override
-   public Artifact getTargetedVersionArtifact() throws OseeCoreException {
+   public IAtsVersion getTargetedVersionArtifact() throws OseeCoreException {
       if (versionCombo == null) {
          return null;
       }

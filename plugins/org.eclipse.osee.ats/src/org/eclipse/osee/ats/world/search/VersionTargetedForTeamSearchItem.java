@@ -14,12 +14,13 @@ package org.eclipse.osee.ats.world.search;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.client.config.VersionsClient;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.version.VersionArtifact;
-import org.eclipse.osee.ats.core.client.version.VersionLockedType;
-import org.eclipse.osee.ats.core.client.version.VersionReleaseType;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
+import org.eclipse.osee.ats.core.model.VersionLockedType;
+import org.eclipse.osee.ats.core.model.VersionReleaseType;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
@@ -35,16 +36,16 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
  * @author Donald G. Dunne
  */
 public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
-   private final VersionArtifact versionArt;
-   private VersionArtifact selectedVersionArt;
+   private final IAtsVersion versionArt;
+   private IAtsVersion selectedVersionArt;
    private final boolean returnAction;
-   private final TeamDefinitionArtifact teamDef;
+   private final IAtsTeamDefinition teamDef;
 
-   public VersionTargetedForTeamSearchItem(TeamDefinitionArtifact teamDef, VersionArtifact versionArt, boolean returnAction, LoadView loadView) {
+   public VersionTargetedForTeamSearchItem(IAtsTeamDefinition teamDef, IAtsVersion versionArt, boolean returnAction, LoadView loadView) {
       this(null, teamDef, versionArt, returnAction, loadView);
    }
 
-   public VersionTargetedForTeamSearchItem(String name, TeamDefinitionArtifact teamDef, VersionArtifact versionArt, boolean returnAction, LoadView loadView) {
+   public VersionTargetedForTeamSearchItem(String name, IAtsTeamDefinition teamDef, IAtsVersion versionArt, boolean returnAction, LoadView loadView) {
       super(name != null ? name : (returnAction ? "Actions" : "Workflows") + " Targeted-For Version", loadView,
          FrameworkImage.VERSION);
       this.teamDef = teamDef;
@@ -67,7 +68,7 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
       return "";
    }
 
-   public VersionArtifact getSearchVersionArtifact() {
+   public IAtsVersion getSearchVersionArtifact() {
       if (versionArt != null) {
          return versionArt;
       }
@@ -82,7 +83,7 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
       }
 
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
-      for (Artifact art : getSearchVersionArtifact().getTargetedForTeamArtifacts()) {
+      for (Artifact art : VersionsClient.getTargetedForTeamWorkflows(getSearchVersionArtifact())) {
          if (returnAction) {
             ActionArtifact parentAction = ((TeamWorkFlowArtifact) art).getParentActionArtifact();
             if (parentAction != null) {
@@ -108,23 +109,23 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
          return;
       }
       try {
-         TeamDefinitionArtifact selectedTeamDef = teamDef;
+         IAtsTeamDefinition selectedTeamDef = teamDef;
          if (versionArt == null && selectedTeamDef == null) {
             TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
-            ld.setInput(TeamDefinitionManager.getTeamReleaseableDefinitions(Active.Both));
+            ld.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Both));
             int result = ld.open();
             if (result == 0) {
-               selectedTeamDef = (TeamDefinitionArtifact) ld.getResult()[0];
+               selectedTeamDef = (IAtsTeamDefinition) ld.getResult()[0];
             } else {
                cancelled = true;
             }
          }
          if (versionArt == null && selectedTeamDef != null) {
             final VersionListDialog vld =
-               new VersionListDialog("Select Version", "Select Version", selectedTeamDef.getVersionsArtifacts(
+               new VersionListDialog("Select Version", "Select Version", selectedTeamDef.getVersions(
                   VersionReleaseType.Both, VersionLockedType.Both));
             if (vld.open() == 0) {
-               selectedVersionArt = (VersionArtifact) vld.getResult()[0];
+               selectedVersionArt = (IAtsVersion) vld.getResult()[0];
                return;
             }
          }
@@ -137,7 +138,7 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
    /**
     * @param selectedVersionArt the selectedVersionArt to set
     */
-   public void setSelectedVersionArt(VersionArtifact selectedVersionArt) {
+   public void setSelectedVersionArt(IAtsVersion selectedVersionArt) {
       this.selectedVersionArt = selectedVersionArt;
    }
 

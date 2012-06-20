@@ -13,10 +13,11 @@ package org.eclipse.osee.ats.config.demo;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.config.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
@@ -27,8 +28,7 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskStates;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DemoTestUtil;
@@ -470,7 +470,7 @@ public class PopulateDemoActionsTest {
       }
    }
 
-   private static void testTeamContents(TeamWorkFlowArtifact teamArt, String title, String priority, String versionName, String currentStateName, String actionableItemStr, String assigneeStr, IArtifactType artifactType, TeamDefinitionArtifact teamDef) throws OseeCoreException {
+   private static void testTeamContents(TeamWorkFlowArtifact teamArt, String title, String priority, String versionName, String currentStateName, String actionableItemStr, String assigneeStr, IArtifactType artifactType, IAtsTeamDefinition teamDef) throws OseeCoreException {
       Assert.assertEquals(currentStateName, teamArt.getCurrentStateName());
       Assert.assertEquals(priority, teamArt.getSoleAttributeValue(AtsAttributeTypes.PriorityType, ""));
       // want targeted version, not error/exception

@@ -7,6 +7,7 @@ package org.eclipse.osee.ats.util;
 
 import junit.framework.Assert;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
+import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -28,8 +29,10 @@ public class CreateActionUsingAllActionableItemsTest {
    @BeforeClass
    @AfterClass
    public static void cleanup() throws OseeCoreException {
+      AtsBulkLoad.reloadConfig(true);
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), CreateActionUsingAllActionableItemsTest.class.getSimpleName());
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(),
+            CreateActionUsingAllActionableItemsTest.class.getSimpleName());
       for (Artifact art : ArtifactQuery.getArtifactListFromName("Big Action Test - Delete Me",
          AtsUtil.getAtsBranchToken(), DeletionFlag.EXCLUDE_DELETED)) {
          art.deleteAndPersist(transaction);

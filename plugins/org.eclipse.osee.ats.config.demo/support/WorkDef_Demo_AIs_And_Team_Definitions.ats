@@ -192,6 +192,7 @@ teamDefinition "Teams" GetOrCreate {
 	}
 }
 actionableItem "Actionable Items" GetOrCreate {
+	actionable False
 	children {
 		actionableItem "CIS CSCI" {
 			actionable False

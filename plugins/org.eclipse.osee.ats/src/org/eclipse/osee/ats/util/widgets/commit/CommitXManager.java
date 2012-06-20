@@ -18,7 +18,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.branch.CommitStatus;
-import org.eclipse.osee.ats.core.client.commit.ICommitConfigArtifact;
+import org.eclipse.osee.ats.core.model.ICommitConfigArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.widgets.Composite;
@@ -86,7 +87,7 @@ public class CommitXManager extends XViewer {
          ICommitConfigArtifact configArt = null;
          if (firstSelectedArt instanceof ICommitConfigArtifact) {
             configArt = (ICommitConfigArtifact) firstSelectedArt;
-            branch = configArt.getParentBranch();
+            branch = BranchManager.getBranchByGuid(configArt.getBaslineBranchGuid());
             displayName = configArt.toString();
          } else if (firstSelectedArt instanceof TransactionRecord) {
             TransactionRecord txRecord = (TransactionRecord) firstSelectedArt;

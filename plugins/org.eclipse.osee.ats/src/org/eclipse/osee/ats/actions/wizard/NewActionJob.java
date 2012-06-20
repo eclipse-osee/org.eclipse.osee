@@ -21,9 +21,9 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.action.INewActionListener;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -46,11 +46,11 @@ public class NewActionJob extends Job {
    private final Date needByDate;
    private final boolean validationRequired;
    private Artifact actionArt;
-   private final Set<ActionableItemArtifact> actionableItems;
+   private final Set<IAtsActionableItem> actionableItems;
    private final NewActionWizard wizard;
    private final INewActionListener newActionListener;
 
-   public NewActionJob(String title, String desc, ChangeType changeType, String priority, Date needByDate, boolean validationRequired, Set<ActionableItemArtifact> actionableItems, NewActionWizard wizard, INewActionListener newActionListener) {
+   public NewActionJob(String title, String desc, ChangeType changeType, String priority, Date needByDate, boolean validationRequired, Set<IAtsActionableItem> actionableItems, NewActionWizard wizard, INewActionListener newActionListener) {
       super("Creating New Action");
       this.title = title;
       this.desc = desc;

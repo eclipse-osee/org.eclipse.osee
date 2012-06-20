@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.skynet.core.utility.ElapsedTime;
 
 /**
  * Calculate differences between coveragePackage and coverageImport and return MergeItems
- *
+ * 
  * @author Donald G. Dunne
  */
 public class MergeManager {

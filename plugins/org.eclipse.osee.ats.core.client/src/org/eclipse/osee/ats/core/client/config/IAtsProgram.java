@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.ats.core.client.config;
 
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -23,6 +24,6 @@ public interface IAtsProgram {
 
    public String getProgramName() throws OseeCoreException;
 
-   public TeamDefinitionArtifact getTeamDefHoldingVersions() throws OseeCoreException;
+   public IAtsTeamDefinition getTeamDefHoldingVersions() throws OseeCoreException;
 
 }

@@ -34,7 +34,7 @@ import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsCacheManager;
+import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
@@ -198,7 +198,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
             }
             transaction.execute();
 
-            AtsCacheManager.decache((AbstractTaskableArtifact) iXTaskViewer.getAwa());
+            AtsTaskCache.decache((AbstractTaskableArtifact) iXTaskViewer.getAwa());
             taskXViewer.remove(items.toArray(new Object[items.size()]));
             taskArts.removeAll(items);
 
@@ -224,7 +224,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
                ((AbstractTaskableArtifact) iXTaskViewer.getAwa()).createNewTask(ed.getEntry(), new Date(),
                   AtsUsersClient.getUser());
             taskArt.persist("Create New Task");
-            AtsCacheManager.decache((AbstractTaskableArtifact) iXTaskViewer.getAwa());
+            AtsTaskCache.decache((AbstractTaskableArtifact) iXTaskViewer.getAwa());
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }

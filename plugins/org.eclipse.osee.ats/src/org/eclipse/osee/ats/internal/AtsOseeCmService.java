@@ -20,13 +20,13 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.wizard.NewActionJob;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
+import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
@@ -140,7 +140,7 @@ public class AtsOseeCmService implements IOseeCmService {
          if (cType == null) {
             cType = ChangeType.Improvement;
          }
-         Set<ActionableItemArtifact> aias = ActionableItemManagerCore.getActionableItems(productNames);
+         Set<IAtsActionableItem> aias = ActionableItems.getActionableItems(productNames);
          if (aias.isEmpty()) {
             throw new OseeArgumentException("Can not resolve productNames to Actionable Items");
          }

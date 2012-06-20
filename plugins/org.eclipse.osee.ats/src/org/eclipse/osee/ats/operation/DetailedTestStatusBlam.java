@@ -37,14 +37,16 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.config.IAtsProgram;
+import org.eclipse.osee.ats.core.client.config.VersionsClient;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.version.VersionArtifact;
 import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.util.VersionList;
 import org.eclipse.osee.ats.util.widgets.XAtsProgramComboWidget;
 import org.eclipse.osee.define.traceability.report.RequirementStatus;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -65,10 +67,10 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -99,11 +101,11 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    private final HashSet<String> requirementPocs = new HashSet<String>();
    private final ArrayList<String[]> statusLines = new ArrayList<String[]>();
    private final ArrayList<RequirementStatus> statuses = new ArrayList<RequirementStatus>(100);
-   private Collection<VersionArtifact> versions;
+   private Collection<IAtsVersion> versions;
    private HashCollection<String, Artifact> requirementNameToTestProcedures;
 
    private XBranchSelectWidget reportBranchWidget;
-   private XArtifactList versionsListViewer;
+   private VersionList versionsListViewer;
 
    private IOseeBranch selectedBranch;
    private IAtsProgram selectedProgram;
@@ -132,10 +134,10 @@ public class DetailedTestStatusBlam extends AbstractBlam {
             (IStructuredSelection) event.getSelectionProvider().getSelection();
          Iterator<?> iter = versionArtifactSelection.iterator();
          if (iter.hasNext()) {
-            VersionArtifact versionArtifact = (VersionArtifact) iter.next();
+            IAtsVersion versionArtifact = (IAtsVersion) iter.next();
 
             try {
-               selectedBranch = versionArtifact.getBaselineBranch();
+               selectedBranch = BranchManager.getBranchByGuid(versionArtifact.getBaselineBranchGuidInherited());
 
                reportBranchWidget.setSelection(selectedBranch);
             } catch (OseeCoreException ex) {
@@ -157,9 +159,8 @@ public class DetailedTestStatusBlam extends AbstractBlam {
             selectedBranch = null;
 
             try {
-               Collection<VersionArtifact> versionArtifacts =
-                  selectedProgram.getTeamDefHoldingVersions().getVersionsArtifacts();
-               versionsListViewer.setInputArtifacts(versionArtifacts);
+               Collection<IAtsVersion> versionArtifacts = selectedProgram.getTeamDefHoldingVersions().getVersions();
+               versionsListViewer.setInputAtsObjects(versionArtifacts);
 
                reportBranchWidget.setSelection(null);
 
@@ -227,7 +228,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
 
       IOseeBranch reportBranch = variableMap.getBranch("Requirements Branch");
       IOseeBranch resultsBranch = variableMap.getBranch("Test Results Branch");
-      versions = variableMap.getCollection(VersionArtifact.class, "Versions");
+      versions = variableMap.getCollection(IAtsVersion.class, "Versions");
       init();
 
       //100
@@ -568,8 +569,9 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    private void loadReqTaskMap(IProgressMonitor monitor) throws Exception {
       monitor.subTask("Loading tasks");
 
-      for (VersionArtifact version : versions) {
-         Collection<TeamWorkFlowArtifact> targetedForTeamArtifacts = version.getTargetedForTeamArtifacts();
+      for (IAtsVersion version : versions) {
+         Collection<TeamWorkFlowArtifact> targetedForTeamArtifacts =
+            VersionsClient.getTargetedForTeamWorkflows(version);
          double increment = 100.0 / targetedForTeamArtifacts.size();
          double progress = 0;
          for (TeamWorkFlowArtifact workflow : targetedForTeamArtifacts) {
@@ -588,7 +590,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       String widgetLabel = xWidget.getLabel();
 
       if (widgetLabel.equals("Versions")) {
-         versionsListViewer = (XArtifactList) xWidget;
+         versionsListViewer = (VersionList) xWidget;
       } else if (widgetLabel.equals("Requirements Branch")) {
          reportBranchWidget = (XBranchSelectWidget) xWidget;
       }

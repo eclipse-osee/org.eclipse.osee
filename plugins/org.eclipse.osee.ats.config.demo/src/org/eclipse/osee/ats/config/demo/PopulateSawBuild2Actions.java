@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.config.demo.config.DemoDbAIs;
 import org.eclipse.osee.ats.config.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.config.demo.config.DemoDbUtil.SoftwareRequirementStrs;
@@ -21,19 +22,18 @@ import org.eclipse.osee.ats.config.demo.internal.Activator;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -95,7 +96,7 @@ public class PopulateSawBuild2Actions {
 
    private static ActionArtifact sawBuild2Action4_createUnCommittedConflictedAction(SkynetTransaction transaction) throws OseeCoreException {
       String title = "SAW (uncommitted-conflicted) More Requirement Changes for Diagram View";
-      Collection<ActionableItemArtifact> aias =
+      Collection<IAtsActionableItem> aias =
          DemoDbUtil.getActionableItems(new String[] {DemoDbAIs.SAW_Requirements.getAIName()});
       Date createdDate = new Date();
       IAtsUser createdBy = AtsUsersClient.getUser();
@@ -123,9 +124,10 @@ public class PopulateSawBuild2Actions {
          }
 
          teamWf.persist(transaction);
-         Artifact verArt =
-            ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, versionStr, AtsUtil.getAtsBranch());
-         teamWf.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, verArt);
+
+         IAtsVersion version = AtsConfigCache.getSoleByName(versionStr, IAtsVersion.class);
+         teamWf.setTargetedVersion(version);
+         teamWf.setTargetedVersionLink(version);
          teamWf.persist(transaction);
       }
       return actionArt;
@@ -133,7 +135,7 @@ public class PopulateSawBuild2Actions {
 
    private static ActionArtifact sawBuild2Action3_createNoBranchAction(SkynetTransaction transaction) throws OseeCoreException {
       String title = "SAW (no-branch) Even More Requirement Changes for Diagram View";
-      Collection<ActionableItemArtifact> aias =
+      Collection<IAtsActionableItem> aias =
          DemoDbUtil.getActionableItems(new String[] {
             DemoDbAIs.SAW_Code.getAIName(),
             DemoDbAIs.SAW_SW_Design.getAIName(),
@@ -199,9 +201,10 @@ public class PopulateSawBuild2Actions {
          }
 
          teamWf.persist(transaction);
-         Artifact verArt =
-            ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, versionStr, AtsUtil.getAtsBranch());
-         teamWf.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, verArt);
+
+         IAtsVersion version = AtsConfigCache.getSoleByName(versionStr, IAtsVersion.class);
+         teamWf.setTargetedVersion(version);
+         teamWf.setTargetedVersionLink(version);
          teamWf.persist(transaction);
       }
       return actionArt;
@@ -209,7 +212,7 @@ public class PopulateSawBuild2Actions {
 
    private static ActionArtifact sawBuild2Action2_createUnCommittedAction(SkynetTransaction transaction) throws OseeCoreException {
       String title = "SAW (uncommitted) More Reqt Changes for Diagram View";
-      Collection<ActionableItemArtifact> aias =
+      Collection<IAtsActionableItem> aias =
          DemoDbUtil.getActionableItems(new String[] {
             DemoDbAIs.SAW_Code.getAIName(),
             DemoDbAIs.SAW_SW_Design.getAIName(),
@@ -277,10 +280,10 @@ public class PopulateSawBuild2Actions {
          }
 
          teamWf.persist(transaction);
-         Artifact verArt =
-            ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, versionStr, AtsUtil.getAtsBranch());
-         teamWf.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, verArt);
 
+         IAtsVersion version = AtsConfigCache.getSoleByName(versionStr, IAtsVersion.class);
+         teamWf.setTargetedVersion(version);
+         teamWf.setTargetedVersionLink(version);
          teamWf.persist(transaction);
       }
       return actionArt;
@@ -288,7 +291,7 @@ public class PopulateSawBuild2Actions {
 
    private static ActionArtifact sawBuild2Action1_createCommittedAction(SkynetTransaction transaction) throws OseeCoreException {
       String title = "SAW (committed) Reqt Changes for Diagram View";
-      Collection<ActionableItemArtifact> aias =
+      Collection<IAtsActionableItem> aias =
          DemoDbUtil.getActionableItems(new String[] {
             DemoDbAIs.SAW_Requirements.getAIName(),
             DemoDbAIs.SAW_Code.getAIName(),
@@ -337,9 +340,9 @@ public class PopulateSawBuild2Actions {
          }
 
          teamWf.persist(transaction);
-         Artifact verArt =
-            ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, versionStr, AtsUtil.getAtsBranch());
-         teamWf.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, verArt);
+         IAtsVersion version = AtsConfigCache.getSoleByName(versionStr, IAtsVersion.class);
+         teamWf.setTargetedVersion(version);
+         teamWf.setTargetedVersionLink(version);
          teamWf.persist(transaction);
       }
       return actionArt;
@@ -428,8 +431,8 @@ public class PopulateSawBuild2Actions {
          OseeLog.log(Activator.class, Level.INFO, "Committing branch");
       }
       Job job =
-         AtsBranchManager.commitWorkingBranch(reqTeam, false, true, reqTeam.getTargetedVersion().getParentBranch(),
-            true);
+         AtsBranchManager.commitWorkingBranch(reqTeam, false, true,
+            BranchManager.getBranchByGuid(reqTeam.getTargetedVersion().getBaslineBranchGuid()), true);
       try {
          job.join();
       } catch (InterruptedException ex) {

@@ -18,6 +18,8 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -28,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
  */
 public class TargetedVersionUtil {
 
-   public static VersionArtifact getTargetedVersion(Object object) throws OseeCoreException {
+   public static IAtsVersion getTargetedVersion(Object object) throws OseeCoreException {
       if (object instanceof AbstractWorkflowArtifact) {
          TeamWorkFlowArtifact teamArt = ((AbstractWorkflowArtifact) object).getParentTeamWorkflow();
          if (teamArt != null) {
@@ -38,9 +40,9 @@ public class TargetedVersionUtil {
                if (verArts.size() > 1) {
                   OseeLog.log(Activator.class, Level.SEVERE,
                      "Multiple targeted versions for artifact " + teamArt.toStringWithId());
-                  return (VersionArtifact) verArts.iterator().next();
+                  return AtsConfigCache.getSoleByGuid(verArts.iterator().next().getGuid(), IAtsVersion.class);
                } else {
-                  return (VersionArtifact) verArts.iterator().next();
+                  return AtsConfigCache.getSoleByGuid(verArts.iterator().next().getGuid(), IAtsVersion.class);
                }
             }
          }

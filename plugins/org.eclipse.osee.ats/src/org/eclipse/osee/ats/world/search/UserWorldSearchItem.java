@@ -14,21 +14,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
@@ -36,8 +36,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  */
 public class UserWorldSearchItem {
 
-   private final Collection<TeamDefinitionArtifact> teamDefs;
-   private final Collection<Artifact> versions;
+   private final Collection<IAtsTeamDefinition> teamDefs;
+   private final Collection<IAtsVersion> versions;
    private final Collection<UserSearchOption> options;
    private final IAtsUser user;
    private final String selectedState;
@@ -55,7 +55,7 @@ public class UserWorldSearchItem {
       IncludeTasks
    };
 
-   public UserWorldSearchItem(IAtsUser user, Collection<TeamDefinitionArtifact> teamDefs, Collection<Artifact> versions, String selectedState, UserSearchOption... userSearchOption) {
+   public UserWorldSearchItem(IAtsUser user, Collection<IAtsTeamDefinition> teamDefs, Collection<IAtsVersion> versions, String selectedState, UserSearchOption... userSearchOption) {
       this.user = user;
       this.teamDefs = teamDefs;
       this.versions = versions;

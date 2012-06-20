@@ -16,12 +16,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import org.eclipse.osee.ats.core.client.AtsTestUtil;
-import org.eclipse.osee.ats.core.client.commit.ICommitConfigArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.version.VersionArtifact;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
+import org.eclipse.osee.ats.core.model.ICommitConfigArtifact;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -38,7 +36,7 @@ import org.junit.Test;
 
 /**
  * Test unit for {@AtsBranchManagerCore}
- *
+ * 
  * @author Shawn F. Cook
  */
 public class AtsBranchManagerCoreTest {
@@ -62,19 +60,20 @@ public class AtsBranchManagerCoreTest {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
 
       //Test Version-based Team Arts
-      VersionArtifact verArt1 = AtsTestUtil.getVerArt1();
-      VersionArtifact verArt2 = AtsTestUtil.getVerArt2();
-      verArt1.addRelation(AtsRelationTypes.ParallelVersion_Child, verArt2);
-      teamArt.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, verArt1);
+      IAtsVersion verArt1 = AtsTestUtil.getVerArt1();
+      IAtsVersion verArt2 = AtsTestUtil.getVerArt2();
+      verArt1.getParallelVersions().add(verArt2);
+      teamArt.setTargetedVersion(verArt1);
+      teamArt.setTargetedVersionLink(verArt1);
       Collection<Object> commitObjs = AtsBranchManagerCore.getCommitTransactionsAndConfigItemsForTeamWf(teamArt);
       assertTrue("commitObjs has wrong size", commitObjs.size() == 2);
       assertTrue("commitObjs is missing verArt1", commitObjs.contains(verArt1));
       assertTrue("commitObjs is missing verArt2", commitObjs.contains(verArt2));
 
       //Test Team Def-base Team Arts
-      TeamDefinitionArtifact teamDef = teamArt.getTeamDefinition();
-      teamDef.setSoleAttributeValue(AtsAttributeTypes.TeamUsesVersions, false);
-      teamDef.setSoleAttributeValue(AtsAttributeTypes.BaselineBranchGuid, DemoSawBuilds.SAW_Bld_1.getGuid());
+      IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
+      teamDef.setTeamUsesVersions(false);
+      teamDef.setBaselineBranchGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
       commitObjs = AtsBranchManagerCore.getCommitTransactionsAndConfigItemsForTeamWf(teamArt);
       assertTrue("commitObjs has wrong size", commitObjs.size() == 1);
       assertTrue("commitObjs is missing teamDef", commitObjs.contains(teamDef));

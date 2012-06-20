@@ -19,8 +19,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
-import org.eclipse.osee.ats.core.client.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.model.ICommitConfigArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -260,7 +261,7 @@ public final class AtsBranchManager {
     * @param commitConfigArt that configures commit or null
     */
    public static ChangeData getChangeData(TeamWorkFlowArtifact teamArt, ICommitConfigArtifact commitConfigArt) throws OseeCoreException {
-      if (commitConfigArt != null && commitConfigArt.getParentBranch() == null) {
+      if (commitConfigArt != null && !Strings.isValid(commitConfigArt.getBaslineBranchGuid())) {
          throw new OseeArgumentException("Parent Branch not configured for [%s]", commitConfigArt);
       }
       Collection<Change> changes = new ArrayList<Change>();
@@ -284,7 +285,7 @@ public final class AtsBranchManager {
                    * id's branch.
                    */
                   for (TransactionRecord transId : transIds) {
-                     if (transId.getBranch() == commitConfigArt.getParentBranch()) {
+                     if (transId.getBranch().getGuid().equals(commitConfigArt.getBaslineBranchGuid())) {
                         transactionId = transId;
                      }
                   }

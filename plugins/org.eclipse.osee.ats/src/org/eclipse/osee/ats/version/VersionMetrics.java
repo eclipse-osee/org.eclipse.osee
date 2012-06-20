@@ -17,26 +17,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.config.VersionsClient;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.version.VersionArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
  */
 public class VersionMetrics {
 
-   private final VersionArtifact verArt;
+   private final IAtsVersion verArt;
    private final VersionTeamMetrics verTeamMet;
 
-   public VersionMetrics(VersionArtifact verArt, VersionTeamMetrics verTeamMet) {
+   public VersionMetrics(IAtsVersion verArt, VersionTeamMetrics verTeamMet) {
       this.verArt = verArt;
       this.verTeamMet = verTeamMet;
    }
@@ -47,7 +46,7 @@ public class VersionMetrics {
       sb.append("\n");
       try {
          sb.append("Workflows: ");
-         sb.append(verArt.getTargetedForTeamArtifacts().size());
+         sb.append(VersionsClient.getTargetedForTeamWorkflows(verArt).size());
          sb.append(" Problem: ");
          sb.append(getTeamWorkFlows(ChangeType.Problem).size());
          sb.append(" Improve: ");
@@ -55,7 +54,7 @@ public class VersionMetrics {
          sb.append(" Support: ");
          sb.append(getTeamWorkFlows(ChangeType.Support).size());
          sb.append(" Release Date: ");
-         sb.append(verArt.getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null));
+         sb.append(verArt.getReleaseDate());
          VersionMetrics prevVerMet = getPreviousVerMetViaReleaseDate();
          if (prevVerMet == null) {
             sb.append(" Prev Release Version: <not found>");
@@ -63,7 +62,7 @@ public class VersionMetrics {
             sb.append(" Prev Release Version \"");
             sb.append(prevVerMet);
             sb.append("\"   Release Date: ");
-            sb.append(verArt.getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null));
+            sb.append(verArt.getReleaseDate());
          }
          sb.append(" Start Date: ");
          sb.append(getReleaseStartDate());
@@ -80,7 +79,7 @@ public class VersionMetrics {
       if (startDate == null) {
          return null;
       }
-      Date relDate = verArt.getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null);
+      Date relDate = verArt.getReleaseDate();
       if (relDate == null) {
          return null;
       }
@@ -92,14 +91,14 @@ public class VersionMetrics {
       if (prevVerMet == null) {
          return null;
       }
-      Date relDate = prevVerMet.getVerArt().getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null);
+      Date relDate = prevVerMet.getVerArt().getReleaseDate();
       return relDate;
    }
 
    public Collection<TeamWorkFlowArtifact> getTeamWorkFlows(ChangeType... changeType) throws OseeCoreException {
       List<ChangeType> changeTypes = Arrays.asList(changeType);
       Set<TeamWorkFlowArtifact> teams = new HashSet<TeamWorkFlowArtifact>();
-      for (TeamWorkFlowArtifact team : verArt.getTargetedForTeamArtifacts()) {
+      for (TeamWorkFlowArtifact team : VersionsClient.getTargetedForTeamWorkflows(verArt)) {
          if (changeTypes.contains(ChangeTypeUtil.getChangeType(team))) {
             teams.add(team);
          }
@@ -107,8 +106,8 @@ public class VersionMetrics {
       return teams;
    }
 
-   public VersionMetrics getPreviousVerMetViaReleaseDate() throws OseeCoreException {
-      if (verArt.getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null) == null) {
+   public VersionMetrics getPreviousVerMetViaReleaseDate() {
+      if (verArt.getReleaseDate() == null) {
          return null;
       }
       int index = verTeamMet.getReleasedOrderedVersions().indexOf(this);
@@ -118,8 +117,8 @@ public class VersionMetrics {
       return null;
    }
 
-   public VersionMetrics getNextVerMetViaReleaseDate() throws OseeCoreException {
-      if (verArt.getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null) == null) {
+   public VersionMetrics getNextVerMetViaReleaseDate() {
+      if (verArt.getReleaseDate() == null) {
          return null;
       }
       int index = verTeamMet.getReleasedOrderedVersions().indexOf(this);
@@ -129,7 +128,7 @@ public class VersionMetrics {
       return null;
    }
 
-   public Artifact getVerArt() {
+   public IAtsVersion getVerArt() {
       return verArt;
    }
 

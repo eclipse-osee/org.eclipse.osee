@@ -13,8 +13,7 @@ package org.eclipse.osee.ats.util.widgets;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.ActionableItemTreeWithChildrenDialog;
 import org.eclipse.osee.ats.world.WorldEditor;
@@ -31,15 +30,15 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelec
 public class XHyperlabelActionableItemSelection extends XHyperlinkLabelCmdValueSelection {
 
    public static final String WIDGET_ID = XHyperlabelActionableItemSelection.class.getSimpleName();
-   Collection<ActionableItemArtifact> selectedAis = new HashSet<ActionableItemArtifact>();
-   Collection<ActionableItemArtifact> teamDefs;
+   Collection<IAtsActionableItem> selectedAis = new HashSet<IAtsActionableItem>();
+   Collection<IAtsActionableItem> teamDefs;
    ActionableItemTreeWithChildrenDialog dialog = null;
 
    public XHyperlabelActionableItemSelection(String label) {
       super(label, true, WorldEditor.TITLE_MAX_LENGTH);
    }
 
-   public Collection<ActionableItemArtifact> getSelectedActionableItems() {
+   public Collection<IAtsActionableItem> getSelectedActionableItems() {
       return selectedAis;
    }
 
@@ -54,7 +53,7 @@ public class XHyperlabelActionableItemSelection extends XHyperlinkLabelCmdValueS
       return Artifacts.commaArts(selectedAis);
    }
 
-   public void setSelectedAIs(Collection<ActionableItemArtifact> selectedAIs) {
+   public void setSelectedAIs(Collection<IAtsActionableItem> selectedAIs) {
       this.selectedAis = selectedAIs;
       refresh();
       notifyXModifiedListeners();
@@ -79,7 +78,7 @@ public class XHyperlabelActionableItemSelection extends XHyperlinkLabelCmdValueS
          if (result == 0) {
             selectedAis.clear();
             for (Object obj : dialog.getResultAndRecursedAIs()) {
-               selectedAis.add((ActionableItemArtifact) obj);
+               selectedAis.add((IAtsActionableItem) obj);
             }
             notifyXModifiedListeners();
          }
@@ -90,7 +89,7 @@ public class XHyperlabelActionableItemSelection extends XHyperlinkLabelCmdValueS
       return false;
    }
 
-   public void setTeamDefs(Collection<ActionableItemArtifact> teamDefs) {
+   public void setTeamDefs(Collection<IAtsActionableItem> teamDefs) {
       this.teamDefs = teamDefs;
       if (dialog != null) {
          dialog.setInput(teamDefs);

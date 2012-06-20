@@ -12,10 +12,11 @@ package org.eclipse.osee.ats.config.copy;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.client.config.AtsObjectsClient;
+import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -52,36 +53,36 @@ public class CopyAtsValidation {
 
       // Validate AIs to TeamDefs
       Set<Artifact> aias = new HashSet<Artifact>();
-      aias.addAll(ActionableItemManagerCore.getActionableItemsFromItemAndChildren(configData.getActionableItem()));
+      aias.addAll(AtsObjectsClient.getArtifacts(ActionableItems.getActionableItemsFromItemAndChildren(configData.getActionableItem())));
       ValidateAtsDatabase.testActionableItemToTeamDefinition(testNameToResultsMap, aias);
 
       // Validate TeamDefs have Workflow Definitions
-      Set<Artifact> teamDefs = new HashSet<Artifact>();
-      teamDefs.addAll(TeamDefinitionManager.getTeamsFromItemAndChildren(configData.getTeamDef()));
+      Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>();
+      teamDefs.addAll(TeamDefinitions.getTeamsFromItemAndChildren(configData.getTeamDef()));
 
       ValidateAtsDatabase.addResultsMapToResultData(resultData, testNameToResultsMap);
    }
 
-   private void validateTeamDefinition(TeamDefinitionArtifact teamDef) throws OseeCoreException {
+   private void validateTeamDefinition(IAtsTeamDefinition teamDef) throws OseeCoreException {
       String newName = CopyAtsUtil.getConvertedName(configData, teamDef.getName());
       if (newName.equals(teamDef.getName())) {
          resultData.logErrorWithFormat("Could not get new name from name conversion for Team Definition [%s]",
             teamDef.getName());
       }
-      for (TeamDefinitionArtifact childTeamDef : TeamDefinitionManager.getTeamsFromItemAndChildren(teamDef)) {
-         if (!teamDef.equals(childTeamDef)) {
+      for (IAtsTeamDefinition childTeamDef : TeamDefinitions.getTeamsFromItemAndChildren(teamDef)) {
+         if (!teamDef.getGuid().equals(childTeamDef.getGuid())) {
             validateTeamDefinition(childTeamDef);
          }
       }
    }
 
-   private void validateActionableItem(ActionableItemArtifact aiArt) throws OseeCoreException {
+   private void validateActionableItem(IAtsActionableItem aiArt) throws OseeCoreException {
       String newName = CopyAtsUtil.getConvertedName(configData, aiArt.getName());
       if (newName.equals(aiArt.getName())) {
          resultData.logErrorWithFormat("Could not get new name from name conversion for ActionableItem [%s]",
             aiArt.getName());
       }
-      for (ActionableItemArtifact childAiArt : ActionableItemManagerCore.getActionableItemsFromItemAndChildren(aiArt)) {
+      for (IAtsActionableItem childAiArt : ActionableItems.getActionableItemsFromItemAndChildren(aiArt)) {
          if (!aiArt.equals(childAiArt)) {
             validateActionableItem(childAiArt);
          }

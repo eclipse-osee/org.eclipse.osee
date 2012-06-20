@@ -14,7 +14,8 @@ import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.world.WorldEditor;
@@ -82,7 +83,7 @@ public class GoalSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    @Override
    public String getSelectedName(SearchType searchType) {
       StringBuffer sb = new StringBuffer();
-      Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
+      Collection<IAtsTeamDefinition> teamDefs = getSelectedTeamDefinitions();
       if (teamDefs.size() > 0) {
          sb.append(" - Teams: ");
          sb.append(org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", teamDefs));
@@ -136,14 +137,14 @@ public class GoalSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       }
    }
 
-   public Collection<TeamDefinitionArtifact> getSelectedTeamDefinitions() {
+   public Collection<IAtsTeamDefinition> getSelectedTeamDefinitions() {
       if (teamCombo == null) {
          return java.util.Collections.emptyList();
       }
       return teamCombo.getSelectedTeamDefintions();
    }
 
-   public void setSelectedTeamDefinitions(Collection<TeamDefinitionArtifact> selectedTeamDefs) {
+   public void setSelectedTeamDefinitions(Collection<IAtsTeamDefinition> selectedTeamDefs) {
       if (teamCombo != null) {
          teamCombo.setSelectedTeamDefs(selectedTeamDefs);
          teamCombo.notifyXModifiedListeners();
@@ -181,7 +182,7 @@ public class GoalSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    }
 
    @Override
-   public Artifact getTargetedVersionArtifact() {
+   public IAtsVersion getTargetedVersionArtifact() {
       return null;
    }
 

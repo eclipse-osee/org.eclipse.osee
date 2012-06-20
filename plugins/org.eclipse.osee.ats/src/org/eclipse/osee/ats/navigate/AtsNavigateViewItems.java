@@ -27,9 +27,10 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.actions.NewGoal;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.config.editor.AtsConfigResultsEditorNavigateItem;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.goal.GoalSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
@@ -241,6 +242,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          new MassEditDirtyArtifactOperation());
       new ClearAtsWorkDefinitionCache(utilItems);
       new XNavigateItemBlam(utilItems, new MoveTeamWorkflowsBlam(), AtsImage.TEAM_WORKFLOW);
+      new AtsConfigResultsEditorNavigateItem(utilItems);
 
       items.add(utilItems);
    }
@@ -273,8 +275,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
    private void createVersionsSection(XNavigateItem parent, List<XNavigateItem> items) {
       try {
          XNavigateItem releaseItems = new XNavigateItem(parent, "Versions", FrameworkImage.VERSION);
-         new MassEditTeamVersionItem("Team Versions", releaseItems, (TeamDefinitionArtifact) null,
-            FrameworkImage.VERSION);
+         new MassEditTeamVersionItem("Team Versions", releaseItems, (IAtsTeamDefinition) null, FrameworkImage.VERSION);
          new SearchNavigateItem(releaseItems, new VersionTargetedForTeamSearchItem(null, null, false,
             LoadView.WorldEditor));
          new SearchNavigateItem(releaseItems, new NextVersionSearchItem(null, LoadView.WorldEditor));
@@ -291,7 +292,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
    private void createGoalsSection(XNavigateItem parent, List<XNavigateItem> items) {
       try {
          XNavigateItem goalItem = new XNavigateItem(parent, "Goals", AtsImage.GOAL);
-         new SearchNavigateItem(goalItem, new GoalSearchItem("InWork Goals", new ArrayList<TeamDefinitionArtifact>(),
+         new SearchNavigateItem(goalItem, new GoalSearchItem("InWork Goals", new ArrayList<IAtsTeamDefinition>(),
             false, null));
          new SearchNavigateItem(goalItem, new GoalSearchWorkflowSearchItem());
          new SearchNavigateItem(goalItem, new MyFavoritesGoalsSearchItem("Favorites", AtsUsersClient.getUser()));

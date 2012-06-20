@@ -17,12 +17,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.GoalManager;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.util.AtsCacheManager;
+import org.eclipse.osee.ats.artifact.GoalManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -31,14 +32,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
  * @author Donald G. Dunne
  */
 public class GoalSearchItem extends WorldUISearchItem {
 
-   private Collection<TeamDefinitionArtifact> teamDefs;
+   private Collection<IAtsTeamDefinition> teamDefs;
    private boolean showFinished;
    private final Collection<String> teamDefNames;
    private final User userArt;
@@ -50,7 +50,7 @@ public class GoalSearchItem extends WorldUISearchItem {
       this.showFinished = showFinished;
    }
 
-   public GoalSearchItem(String displayName, Collection<TeamDefinitionArtifact> teamDefs, boolean showFinished, User userArt) {
+   public GoalSearchItem(String displayName, Collection<IAtsTeamDefinition> teamDefs, boolean showFinished, User userArt) {
       super(displayName, AtsImage.GOAL);
       this.userArt = userArt;
       this.teamDefNames = null;
@@ -70,7 +70,7 @@ public class GoalSearchItem extends WorldUISearchItem {
       if (teamDefNames != null && teamDefNames.size() > 0) {
          return String.valueOf(teamDefNames);
       } else if (teamDefs != null && teamDefs.size() > 0) {
-         return String.valueOf(Artifacts.getNames(teamDefs));
+         return String.valueOf(TeamDefinitions.getNames(teamDefs));
       }
       return "";
    }
@@ -89,11 +89,9 @@ public class GoalSearchItem extends WorldUISearchItem {
     */
    public void getTeamDefs() {
       if (teamDefNames != null && teamDefs == null) {
-         teamDefs = new HashSet<TeamDefinitionArtifact>();
+         teamDefs = new HashSet<IAtsTeamDefinition>();
          for (String teamDefName : teamDefNames) {
-            TeamDefinitionArtifact aia =
-               (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(AtsArtifactTypes.TeamDefinition,
-                  teamDefName);
+            IAtsTeamDefinition aia = AtsConfigCache.getSoleByName(teamDefName, IAtsTeamDefinition.class);
             if (aia != null) {
                teamDefs.add(aia);
             }
@@ -106,7 +104,7 @@ public class GoalSearchItem extends WorldUISearchItem {
       getTeamDefs();
       Set<String> teamDefinitionGuids = new HashSet<String>(teamDefs != null ? teamDefs.size() : 0);
       if (teamDefs != null) {
-         for (TeamDefinitionArtifact teamDef : teamDefs) {
+         for (IAtsTeamDefinition teamDef : teamDefs) {
             teamDefinitionGuids.add(teamDef.getGuid());
          }
       }

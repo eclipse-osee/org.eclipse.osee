@@ -16,8 +16,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskXViewer;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -60,19 +60,18 @@ public class AtsNavigateItemsToTaskEditorTest {
    public void testTaskSearch() throws Exception {
       SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
 
-      Collection<TeamDefinitionArtifact> selectedUsers =
-         TeamDefinitionManager.getTeamTopLevelDefinitions(Active.Active);
+      Collection<IAtsTeamDefinition> selectedUsers = TeamDefinitions.getTeamTopLevelDefinitions(Active.Active);
       TaskEditor.closeAll();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Task Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof TaskSearchWorldSearchItem);
       handleGeneralDoubleClickAndTestResults(item, CoreArtifactTypes.Artifact, 0, TableLoadOption.DontCopySearchItem);
-      runGeneralTaskSearchOnCompletedCancelledTest(item, true, 19);
+      runGeneralTaskSearchOnCompletedCancelledTest(item, true, 14);
       runGeneralTaskSearchOnCompletedCancelledTest(item, false, 0);
       runGeneralTaskSearchOnTeamTest(item, selectedUsers, 0);
       selectedUsers.clear();
       List<String> teamDefs = new ArrayList<String>();
       teamDefs.add("SAW Code");
-      Set<TeamDefinitionArtifact> tda = TeamDefinitionManager.getTeamDefinitions(teamDefs);
+      Set<IAtsTeamDefinition> tda = TeamDefinitions.getTeamDefinitions(teamDefs);
       runGeneralTaskSearchOnTeamTest(item, tda, 14);
       runGeneralTaskSearchOnAssigneeTest(item, "Joe Smith", 14);
       runGeneralTaskSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_1.getName(), 0);
@@ -97,7 +96,7 @@ public class AtsNavigateItemsToTaskEditorTest {
       runGeneralTaskSearchTest(item, expectedNum);
    }
 
-   public void runGeneralTaskSearchOnTeamTest(XNavigateItem item, Collection<TeamDefinitionArtifact> selectedUsers, int expectedNum) throws Exception {
+   public void runGeneralTaskSearchOnTeamTest(XNavigateItem item, Collection<IAtsTeamDefinition> selectedUsers, int expectedNum) throws Exception {
       // need to set team selected users
       TaskEditor editor = getSingleEditorOrFail();
       IDynamicWidgetLayoutListener dwl = editor.getTaskActionPage().getDynamicWidgetLayoutListener();

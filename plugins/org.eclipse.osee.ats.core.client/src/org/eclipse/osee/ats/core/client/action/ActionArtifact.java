@@ -14,8 +14,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -28,8 +28,8 @@ public class ActionArtifact extends Artifact {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
-   public Set<ActionableItemArtifact> getActionableItems() throws OseeCoreException {
-      Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
+   public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException {
+      Set<IAtsActionableItem> aias = new HashSet<IAtsActionableItem>();
       for (TeamWorkFlowArtifact team : getTeams()) {
          aias.addAll(team.getActionableItemsDam().getActionableItems());
       }

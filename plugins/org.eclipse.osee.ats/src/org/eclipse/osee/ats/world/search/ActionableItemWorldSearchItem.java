@@ -17,11 +17,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.util.AtsCacheManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.ActionActionableItemListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -30,15 +31,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
  * @author Donald G. Dunne
  */
 public class ActionableItemWorldSearchItem extends WorldUISearchItem {
 
-   private Collection<ActionableItemArtifact> actionItems;
-   private Set<ActionableItemArtifact> selectedActionItems;
+   private Collection<IAtsActionableItem> actionItems;
+   private Set<IAtsActionableItem> selectedActionItems;
    private boolean recurseChildren;
    private boolean selectedRecurseChildren; // Used to not corrupt original values
    private boolean showFinished;
@@ -58,7 +58,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
       this.selectedShowAction = showAction;
    }
 
-   public ActionableItemWorldSearchItem(String displayName, Collection<ActionableItemArtifact> actionItems, boolean showFinished, boolean recurseChildren, boolean showAction) {
+   public ActionableItemWorldSearchItem(String displayName, Collection<IAtsActionableItem> actionItems, boolean showFinished, boolean recurseChildren, boolean showAction) {
       super(displayName, AtsImage.ACTIONABLE_ITEM);
       this.actionItemNames = null;
       this.actionItems = actionItems;
@@ -80,9 +80,9 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
       if (actionItemNames != null) {
          return actionItemNames;
       } else if (actionItems != null) {
-         return Artifacts.getNames(actionItems);
+         return ActionableItems.getNames(actionItems);
       } else if (selectedActionItems != null) {
-         return Artifacts.getNames(selectedActionItems);
+         return ActionableItems.getNames(selectedActionItems);
       }
       return new ArrayList<String>();
    }
@@ -94,11 +94,9 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
 
    public void getActionableItems() {
       if (actionItemNames != null && actionItems == null) {
-         actionItems = new HashSet<ActionableItemArtifact>();
+         actionItems = new HashSet<IAtsActionableItem>();
          for (String actionItemName : actionItemNames) {
-            ActionableItemArtifact aia =
-               (ActionableItemArtifact) AtsCacheManager.getSoleArtifactByName(AtsArtifactTypes.ActionableItem,
-                  actionItemName);
+            IAtsActionableItem aia = AtsConfigCache.getSoleByName(actionItemName, IAtsActionableItem.class);
             if (aia != null) {
                actionItems.add(aia);
             }
@@ -109,15 +107,15 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
    /**
     * @return All directly specified teamDefs plus if recurse, will get all children
     */
-   private Set<ActionableItemArtifact> getSearchActionableItems() throws OseeCoreException {
+   private Set<IAtsActionableItem> getSearchActionableItems() throws OseeCoreException {
       getActionableItems();
-      Set<ActionableItemArtifact> srchTeamDefs = new HashSet<ActionableItemArtifact>();
-      for (ActionableItemArtifact actionableItem : actionItems != null ? actionItems : selectedActionItems) {
+      Set<IAtsActionableItem> srchTeamDefs = new HashSet<IAtsActionableItem>();
+      for (IAtsActionableItem actionableItem : actionItems != null ? actionItems : selectedActionItems) {
          srchTeamDefs.add(actionableItem);
       }
       if (selectedRecurseChildren) {
-         for (ActionableItemArtifact actionableItem : actionItems != null ? actionItems : selectedActionItems) {
-            Artifacts.getChildrenOfType(actionableItem, srchTeamDefs, ActionableItemArtifact.class, true);
+         for (IAtsActionableItem actionableItem : actionItems != null ? actionItems : selectedActionItems) {
+            ActionableItems.getChildrenOfType(actionableItem, srchTeamDefs, IAtsActionableItem.class, true);
          }
       }
       return srchTeamDefs;
@@ -125,9 +123,9 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
-      Set<ActionableItemArtifact> items = getSearchActionableItems();
+      Set<IAtsActionableItem> items = getSearchActionableItems();
       List<String> actionItemGuids = new ArrayList<String>(items.size());
-      for (ActionableItemArtifact ai : items) {
+      for (IAtsActionableItem ai : items) {
          actionItemGuids.add(ai.getGuid());
       }
       List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>();
@@ -180,12 +178,12 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
          selectedRecurseChildren = diag.isRecurseChildren();
          selectedShowAction = diag.isShowAction();
          if (selectedActionItems == null) {
-            selectedActionItems = new HashSet<ActionableItemArtifact>();
+            selectedActionItems = new HashSet<IAtsActionableItem>();
          } else {
             selectedActionItems.clear();
          }
          for (Object obj : diag.getResult()) {
-            selectedActionItems.add((ActionableItemArtifact) obj);
+            selectedActionItems.add((IAtsActionableItem) obj);
          }
          return;
       }
@@ -220,7 +218,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
    /**
     * @param selectedActionItems the selectedActionItems to set
     */
-   public void setSelectedActionItems(Set<ActionableItemArtifact> selectedActionItems) {
+   public void setSelectedActionItems(Set<IAtsActionableItem> selectedActionItems) {
       this.selectedActionItems = selectedActionItems;
    }
 

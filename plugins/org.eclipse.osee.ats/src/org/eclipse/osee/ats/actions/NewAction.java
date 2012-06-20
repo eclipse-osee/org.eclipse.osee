@@ -15,7 +15,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.wizard.NewActionWizard;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ui.PlatformUI;
 
@@ -43,7 +43,7 @@ public class NewAction extends AbstractAtsAction {
       AtsBulkLoad.loadConfig(true);
       NewActionWizard wizard = new NewActionWizard();
       if (actionableItem != null) {
-         wizard.setInitialAias(ActionableItemManagerCore.getActionableItems(Arrays.asList(actionableItem)));
+         wizard.setInitialAias(ActionableItems.getActionableItems(Arrays.asList(actionableItem)));
       }
       if (initialDescription != null) {
          wizard.setInitialDescription(initialDescription);

@@ -13,12 +13,12 @@ package org.eclipse.osee.ats.config.demo.artifact;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.actions.wizard.TeamWorkflowProviderAdapter;
-import org.eclipse.osee.ats.config.demo.internal.Activator;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.config.demo.internal.Activator;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -30,7 +30,7 @@ import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 public class DemoTeamWorkflows extends TeamWorkflowProviderAdapter {
 
    @Override
-   public IArtifactType getTeamWorkflowArtifactType(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) {
+   public IArtifactType getTeamWorkflowArtifactType(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems) {
       if (teamDef.getName().contains("Code")) {
          return DemoArtifactTypes.DemoCodeTeamWorkflow;
       } else if (teamDef.getName().contains("Test")) {
@@ -42,7 +42,7 @@ public class DemoTeamWorkflows extends TeamWorkflowProviderAdapter {
    }
 
    @Override
-   public boolean isResponsibleForTeamWorkflowCreation(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) {
+   public boolean isResponsibleForTeamWorkflowCreation(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems) {
       return teamDef.getName().contains("SAW") || teamDef.getName().contains("CIS");
    }
 

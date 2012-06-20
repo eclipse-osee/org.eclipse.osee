@@ -15,6 +15,4 @@ package org.eclipse.osee.ats.core.client.task.createtasks;
  */
 public interface ITaskTitleProvider {
    public String getTaskTitle(TaskMetadata metadata);
-
-   public boolean isKeySupported(String taskTitleProviderKey);
 }

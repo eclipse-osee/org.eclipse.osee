@@ -11,14 +11,9 @@
 package org.eclipse.osee.ats.actions.wizard;
 
 import java.util.Locale;
-import java.util.logging.Level;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.framework.ui.swt.OSEEFilteredTree;
 
 public class ActionableItemFilter extends ViewerFilter {
@@ -35,23 +30,19 @@ public class ActionableItemFilter extends ViewerFilter {
       if (!isFiltering()) {
          return true;
       }
-      return checkItemAndChildren((ActionableItemArtifact) element);
+      return checkItemAndChildren((IAtsActionableItem) element);
    }
 
-   private boolean checkItemAndChildren(ActionableItemArtifact item) {
-      try {
-         boolean show = item.getName().toLowerCase().contains(contains.toLowerCase(Locale.US));
+   private boolean checkItemAndChildren(IAtsActionableItem item) {
+      boolean show = item.getName().toLowerCase().contains(contains.toLowerCase(Locale.US));
+      if (show) {
+         return true;
+      }
+      for (IAtsActionableItem child : item.getChildrenActionableItems()) {
+         show = checkItemAndChildren(child);
          if (show) {
             return true;
          }
-         for (Artifact child : item.getChildren()) {
-            show = checkItemAndChildren((ActionableItemArtifact) child);
-            if (show) {
-               return true;
-            }
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return false;
    }

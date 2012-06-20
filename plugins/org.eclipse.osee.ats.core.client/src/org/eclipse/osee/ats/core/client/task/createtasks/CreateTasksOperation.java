@@ -22,17 +22,17 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManagerCore;
+import org.eclipse.osee.ats.core.client.config.ActionableItemManager;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.CreateTeamOption;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
-import org.eclipse.osee.ats.core.client.version.VersionArtifact;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
@@ -47,8 +47,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  * @author Shawn F. Cook
  */
 public class CreateTasksOperation extends AbstractOperation {
-   private final VersionArtifact destVersion;
-   private final ActionableItemArtifact actionableItemArt;
+   private final IAtsVersion destVersion;
+   private final IAtsActionableItem actionableItemArt;
    private final ChangeData changeData;
    private final TeamWorkFlowArtifact reqTeamWf;
    private final boolean reportOnly;
@@ -56,7 +56,7 @@ public class CreateTasksOperation extends AbstractOperation {
    private final SkynetTransaction transaction;
    private final ITaskTitleProvider taskTitleProvider;
 
-   public CreateTasksOperation(VersionArtifact destinationVersion, ActionableItemArtifact actionableItemArt, ChangeData changeData, TeamWorkFlowArtifact reqTeamWf, boolean reportOnly, XResultData resultData, SkynetTransaction transaction, OperationLogger logger, ITaskTitleProvider taskTitleProvider) {
+   public CreateTasksOperation(IAtsVersion destinationVersion, IAtsActionableItem actionableItemArt, ChangeData changeData, TeamWorkFlowArtifact reqTeamWf, boolean reportOnly, XResultData resultData, SkynetTransaction transaction, OperationLogger logger, ITaskTitleProvider taskTitleProvider) {
       super("Create Tasks Operation for [" + reqTeamWf.getName() + "]", Activator.PLUGIN_ID, logger);
       this.destVersion = destinationVersion;
       this.actionableItemArt = actionableItemArt;
@@ -143,7 +143,7 @@ public class CreateTasksOperation extends AbstractOperation {
       resultData.addRaw(AHTML.endMultiColumnTable());
    }
 
-   private TeamWorkFlowArtifact findDestTeamWf(TeamWorkFlowArtifact reqTeamWf, ActionableItemArtifact actionableItemArt, VersionArtifact destVersion) throws OseeCoreException {
+   private TeamWorkFlowArtifact findDestTeamWf(TeamWorkFlowArtifact reqTeamWf, IAtsActionableItem actionableItemArt, IAtsVersion destVersion) throws OseeCoreException {
       TeamWorkFlowArtifact destTeamWf = null;
       List<Artifact> deriveToArts = reqTeamWf.getRelatedArtifacts(AtsRelationTypes.Derive_To);
       for (Artifact derivedArt : deriveToArts) {
@@ -151,10 +151,10 @@ public class CreateTasksOperation extends AbstractOperation {
          if (derivedArt instanceof TeamWorkFlowArtifact) {
             derivedTeamWfArt = (TeamWorkFlowArtifact) derivedArt;
 
-            VersionArtifact derivedArtVersion = derivedTeamWfArt.getTargetedVersion();
+            IAtsVersion derivedArtVersion = derivedTeamWfArt.getTargetedVersion();
             boolean isDestVersion = destVersion.equals(derivedArtVersion);
 
-            ActionableItemManagerCore actionableItemsDamFromArt = derivedTeamWfArt.getActionableItemsDam();
+            ActionableItemManager actionableItemsDamFromArt = derivedTeamWfArt.getActionableItemsDam();
             boolean isAia = actionableItemsDamFromArt.getActionableItems().contains(actionableItemArt);
 
             if (isDestVersion && isAia) {
@@ -175,10 +175,10 @@ public class CreateTasksOperation extends AbstractOperation {
    /**
     * Get the team workflow related to the teamWf parameter via the 'derived from' relationship that is also targeted
     * for the version parameter. If such a workflow does not exist then return null.
-    *
+    * 
     * @throws OseeCoreException
     */
-   private TeamWorkFlowArtifact ensureDestTeamWfExists(TeamWorkFlowArtifact reqTeamWf, ActionableItemArtifact actionableItemArt, VersionArtifact destVersion, SkynetTransaction transaction, boolean reportOnly) throws OseeCoreException {
+   private TeamWorkFlowArtifact ensureDestTeamWfExists(TeamWorkFlowArtifact reqTeamWf, IAtsActionableItem actionableItemArt, IAtsVersion destVersion, SkynetTransaction transaction, boolean reportOnly) throws OseeCoreException {
       Date createdDate = new Date();
       IAtsUser createdBy = AtsUsersClient.getUser();
 
@@ -186,19 +186,18 @@ public class CreateTasksOperation extends AbstractOperation {
 
       if (destTeamWf == null && !reportOnly) {
          Artifact actionArt = reqTeamWf.getParentActionArtifact();
-         TeamDefinitionArtifact teamDef =
-            TeamDefinitionManagerCore.getImpactedTeamDefs(Collections.singleton(actionableItemArt)).iterator().next();
+         IAtsTeamDefinition teamDef =
+            TeamDefinitions.getImpactedTeamDefs(Collections.singleton(actionableItemArt)).iterator().next();
 
          destTeamWf =
             ActionManager.createTeamWorkflow(actionArt, teamDef, Collections.singleton(actionableItemArt),
                Arrays.asList(AtsUsersClient.getUser()), transaction, createdDate, createdBy, null,
                CreateTeamOption.Duplicate_If_Exists);
          if (destTeamWf != null) {
-            destTeamWf.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
-               Collections.singleton(destVersion));
+            destTeamWf.setTargetedVersion(destVersion);
+            destTeamWf.setTargetedVersionLink(destVersion);
          }
       }
       return destTeamWf;
    }
-
 }

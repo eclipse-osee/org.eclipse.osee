@@ -21,11 +21,11 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.column.ActionableItemsColumn;
 import org.eclipse.osee.ats.core.client.action.ActionArtifactRollup;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
@@ -107,7 +107,7 @@ public class ConvertActionableItemsAction extends Action {
             //
             "You will be prompted to confirm this conversion.", Active.Both);
 
-      diag.setInput(ActionableItemManagerCore.getTopLevelActionableItems(Active.Both));
+      diag.setInput(ActionableItems.getTopLevelActionableItems(Active.Both));
       if (diag.open() != 0) {
          return Result.FalseResult;
       }
@@ -117,11 +117,10 @@ public class ConvertActionableItemsAction extends Action {
       if (diag.getChecked().size() > 1) {
          return new Result("Only ONE actionable item can be selected for converts");
       }
-      ActionableItemArtifact selectedAia = diag.getChecked().iterator().next();
-      Collection<TeamDefinitionArtifact> teamDefs =
-         ActionableItemManagerCore.getImpactedTeamDefs(Arrays.asList(selectedAia));
+      IAtsActionableItem selectedAia = diag.getChecked().iterator().next();
+      Collection<IAtsTeamDefinition> teamDefs = ActionableItems.getImpactedTeamDefs(Arrays.asList(selectedAia));
       if (teamDefs.size() == 1) {
-         TeamDefinitionArtifact newTeamDef = teamDefs.iterator().next();
+         IAtsTeamDefinition newTeamDef = teamDefs.iterator().next();
          // NEED TO FIX THIS
          /**
           * In order for conversion to work, need to validate work defs are same and valid for new AI, check the
@@ -152,7 +151,7 @@ public class ConvertActionableItemsAction extends Action {
          sb.append("\nTeam: ");
          sb.append(newTeamDef.getName());
          if (MessageDialog.openConfirm(Displays.getActiveShell(), "Confirm Convert", sb.toString())) {
-            Set<ActionableItemArtifact> toProcess = new HashSet<ActionableItemArtifact>();
+            Set<IAtsActionableItem> toProcess = new HashSet<IAtsActionableItem>();
             toProcess.add(selectedAia);
             toReturn = actionableItemsTx(teamArt, AtsUtil.getAtsBranch(), toProcess, newTeamDef);
          }
@@ -163,7 +162,7 @@ public class ConvertActionableItemsAction extends Action {
       return toReturn;
    }
 
-   private Result isResultingArtifactTypesSame(TeamDefinitionArtifact newTeamDef, TeamWorkFlowArtifact teamArt, ActionableItemArtifact newAI) throws OseeCoreException {
+   private Result isResultingArtifactTypesSame(IAtsTeamDefinition newTeamDef, TeamWorkFlowArtifact teamArt, IAtsActionableItem newAI) throws OseeCoreException {
       IArtifactType newTeamWorkflowArtifactType =
          TeamWorkFlowManager.getTeamWorkflowArtifactType(newTeamDef, Arrays.asList(newAI));
       if (!newTeamWorkflowArtifactType.equals(teamArt.getArtifactType())) {
@@ -175,11 +174,11 @@ public class ConvertActionableItemsAction extends Action {
       return Result.TrueResult;
    }
 
-   private Result actionableItemsTx(TeamWorkFlowArtifact teamArt, Branch branch, Set<ActionableItemArtifact> selectedAlias, TeamDefinitionArtifact teamDefinition) throws OseeCoreException {
+   private Result actionableItemsTx(TeamWorkFlowArtifact teamArt, Branch branch, Set<IAtsActionableItem> selectedAlias, IAtsTeamDefinition teamDef) throws OseeCoreException {
       Result workResult = teamArt.getActionableItemsDam().setActionableItems(selectedAlias);
       if (workResult.isTrue()) {
-         if (teamDefinition != null) {
-            teamArt.setTeamDefinition(teamDefinition);
+         if (teamDef != null) {
+            teamArt.setTeamDefinition(teamDef);
          }
          SkynetTransaction transaction = TransactionManager.createTransaction(branch, "Convert Actionable Item");
          ActionArtifactRollup rollup = new ActionArtifactRollup(teamArt.getParentActionArtifact(), transaction);

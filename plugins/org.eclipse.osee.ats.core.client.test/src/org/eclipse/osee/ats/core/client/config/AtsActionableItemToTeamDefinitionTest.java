@@ -12,12 +12,11 @@ package org.eclipse.osee.ats.core.client.config;
 
 import static org.junit.Assert.assertFalse;
 import java.util.Arrays;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManagerCore;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import java.util.Collection;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 
 /**
  * @author Donald G. Dunne
@@ -28,12 +27,14 @@ public class AtsActionableItemToTeamDefinitionTest {
    public void testAtsActionableItemToTeamDefinition() throws Exception {
       boolean error = false;
       StringBuffer sb = new StringBuffer("Actionable Actionable Items with no Team Def associated:\n");
-      for (Artifact artifact : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.ActionableItem,
-         AtsUtilCore.getAtsBranch())) {
-         ActionableItemArtifact aia = (ActionableItemArtifact) artifact;
+      AtsBulkLoad.loadConfig(true);
+      for (IAtsActionableItem aia : AtsConfigCache.get(IAtsActionableItem.class)) {
          if (aia.isActionable()) {
-            if (TeamDefinitionManagerCore.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {
+            Collection<IAtsTeamDefinition> impactedTeamDefs = TeamDefinitions.getImpactedTeamDefs(Arrays.asList(aia));
+            if (impactedTeamDefs.isEmpty()) {
+               System.out.println(" ");
                sb.append("[" + aia + "]");
+               AtsConfigCache.get(IAtsTeamDefinition.class);
                error = true;
             }
          }

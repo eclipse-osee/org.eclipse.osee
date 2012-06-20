@@ -31,22 +31,25 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManagerCore;
+import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.version.VersionArtifact;
 import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.log.AtsLog;
 import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
+import org.eclipse.osee.ats.core.model.IAtsConfigObject;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workdef.WorkDefinition;
@@ -446,18 +449,18 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             continue;
          }
          if (artifact.isOfType(AtsArtifactTypes.Version)) {
-            // Test baseline branch guid
-            Artifact verArt = artifact;
-            try {
-               String parentBranchGuid =
-                  verArt.getSoleAttributeValueAsString(AtsAttributeTypes.BaselineBranchGuid, null);
-               if (parentBranchGuid != null) {
-                  validateBranchGuid(verArt, parentBranchGuid);
+            IAtsVersion version = AtsConfigCache.getSoleByGuid(artifact.getGuid(), IAtsVersion.class);
+            if (version != null) {
+               try {
+                  String parentBranchGuid = version.getBaslineBranchGuid();
+                  if (Strings.isValid(parentBranchGuid)) {
+                     validateBranchGuid(version, parentBranchGuid);
+                  }
+               } catch (Exception ex) {
+                  testNameToResultsMap.put(
+                     "testVersionArtifacts",
+                     "Error: " + version.getName() + " exception testing testVersionArtifacts: " + ex.getLocalizedMessage());
                }
-            } catch (Exception ex) {
-               testNameToResultsMap.put(
-                  "testVersionArtifacts",
-                  "Error: " + verArt.getArtifactTypeName() + " exception testing testVersionArtifacts: " + ex.getLocalizedMessage());
             }
          }
       }
@@ -470,18 +473,16 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (art.isDeleted()) {
             continue;
          }
-         if (art instanceof TeamDefinitionArtifact) {
-            TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) art;
+         if (art.isOfType(AtsArtifactTypes.TeamDefinition)) {
+            IAtsTeamDefinition teamDef = AtsConfigCache.getSoleByGuid(art.getGuid(), IAtsTeamDefinition.class);
             try {
-               String parentBranchGuid =
-                  teamDef.getSoleAttributeValueAsString(AtsAttributeTypes.BaselineBranchGuid, null);
-               if (parentBranchGuid != null) {
+               String parentBranchGuid = teamDef.getBaslineBranchGuid();
+               if (Strings.isValid(parentBranchGuid)) {
                   validateBranchGuid(teamDef, parentBranchGuid);
                }
             } catch (Exception ex) {
-               testNameToResultsMap.put(
-                  "testTeamDefinitionss",
-                  "Error: " + teamDef.getArtifactTypeName() + " exception testing testTeamDefinitions: " + ex.getLocalizedMessage());
+               testNameToResultsMap.put("testTeamDefinitionss",
+                  "Error: " + teamDef.getName() + " exception testing testTeamDefinitions: " + ex.getLocalizedMessage());
             }
          }
       }
@@ -541,30 +542,29 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       logTestTimeSpent(date, "testAtsBranchManager", testNameToTimeSpentMap);
    }
 
-   private void validateBranchGuid(Artifact artifact, String parentBranchGuid) {
+   private void validateBranchGuid(IAtsConfigObject name, String parentBranchGuid) {
       Date date = new Date();
       try {
          Branch branch = BranchManager.getBranchByGuid(parentBranchGuid);
          if (branch.getArchiveState().isArchived()) {
             testNameToResultsMap.put("validateBranchGuid", String.format(
                "Error: [%s][%s][%s] has Parent Branch Id attribute set to Archived Branch [%s] named [%s]",
-               artifact.getArtifactTypeName(), artifact.getHumanReadableId(), artifact, parentBranchGuid, branch));
+               name.getName(), name.getHumanReadableId(), name, parentBranchGuid, branch));
          } else if (!branch.getBranchType().isBaselineBranch()) {
             testNameToResultsMap.put(
                "validateBranchGuid",
                String.format(
                   "Error: [%s][%s][%s] has Parent Branch Id attribute [%s][%s] that is a [%s] branch; should be a BASLINE branch",
-                  artifact.getArtifactTypeName(), artifact.getHumanReadableId(), artifact,
-                  branch.getBranchType().name(), parentBranchGuid, branch));
+                  name.getName(), name.getHumanReadableId(), name, branch.getBranchType().name(), parentBranchGuid,
+                  branch));
          }
       } catch (BranchDoesNotExist ex) {
          testNameToResultsMap.put("validateBranchGuid", String.format(
-            "Error: [%s][%s][%s] has Parent Branch Id attribute [%s] that references a non-existant",
-            artifact.getArtifactTypeName(), artifact.getHumanReadableId(), artifact, parentBranchGuid));
+            "Error: [%s][%s][%s] has Parent Branch Id attribute [%s] that references a non-existant", name.getName(),
+            name.getHumanReadableId(), name, parentBranchGuid));
       } catch (Exception ex) {
-         testNameToResultsMap.put(
-            "validateBranchGuid",
-            "Error: " + artifact.getArtifactTypeName() + " [" + artifact.toStringWithId() + "] exception: " + ex.getLocalizedMessage());
+         testNameToResultsMap.put("validateBranchGuid",
+            "Error: " + name.getName() + " [" + name.toStringWithId() + "] exception: " + ex.getLocalizedMessage());
       }
       logTestTimeSpent(date, "validateBranchGuid", testNameToTimeSpentMap);
    }
@@ -720,13 +720,13 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                }
                // Test that targeted version belongs to teamDefHoldingVersion
                else {
-                  VersionArtifact verArt = teamArt.getTargetedVersion();
+                  IAtsVersion verArt = teamArt.getTargetedVersion();
                   if (verArt != null && teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions() != null) {
-                     if (!teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions().getVersionsArtifacts().contains(
-                        verArt)) {
+                     if (!teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions().getVersions().contains(verArt)) {
                         testNameToResultsMap.put(
                            "testAtsWorkflowsHaveZeroOrOneVersion",
-                           "Error: Team workflow " + XResultDataUI.getHyperlink(teamArt) + " has version" + XResultDataUI.getHyperlink(teamArt) + " that does not belong to teamDefHoldingVersions" + XResultDataUI.getHyperlink(teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions()));
+                           "Error: Team workflow " + XResultDataUI.getHyperlink(teamArt) + " has version" + XResultDataUI.getHyperlink(teamArt) + " that does not belong to teamDefHoldingVersions" + XResultDataUI.getHyperlink(new TeamDefinitionArtifactStore(
+                              teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions()).getArtifact()));
                      }
                   }
                }
@@ -749,13 +749,13 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          try {
             if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
-               VersionArtifact verArt = teamArt.getTargetedVersion();
+               IAtsVersion verArt = teamArt.getTargetedVersion();
                if (verArt != null && teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions() != null) {
-                  if (!teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions().getVersionsArtifacts().contains(
-                     verArt)) {
+                  if (!teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions().getVersions().contains(verArt)) {
                      testNameToResultsMap.put(
                         "testAtsWorkflowsValidVersion",
-                        "Error: Team workflow " + XResultDataUI.getHyperlink(teamArt) + " has version" + XResultDataUI.getHyperlink(verArt) + " that does not belong to teamDefHoldingVersions" + XResultDataUI.getHyperlink(teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions()));
+                        "Error: Team workflow " + XResultDataUI.getHyperlink(teamArt) + " has version" + XResultDataUI.getHyperlink(artifact) + " that does not belong to teamDefHoldingVersions" + XResultDataUI.getHyperlink(new TeamDefinitionArtifactStore(
+                           teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions()).getArtifact()));
                   }
                }
             }
@@ -803,12 +803,12 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             continue;
          }
          try {
-            if (artifact instanceof ActionableItemArtifact) {
-               ActionableItemArtifact aia = (ActionableItemArtifact) artifact;
-               if (aia.isActionable() && TeamDefinitionManagerCore.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {
+            if (artifact.isOfType(AtsArtifactTypes.ActionableItem)) {
+               IAtsActionableItem aia = AtsConfigCache.getSoleByGuid(artifact.getGuid(), IAtsActionableItem.class);
+               if (aia.isActionable() && TeamDefinitions.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {
                   testNameToResultsMap.put(
                      "testActionableItemToTeamDefinition",
-                     "Error: ActionableItem " + XResultDataUI.getHyperlink(artifact.getName(), artifact) + " has to related TeamDefinition and is set to Actionable");
+                     "Error: ActionableItem " + XResultDataUI.getHyperlink(artifact.getName(), artifact) + " has to related IAtsTeamDefinition and is set to Actionable");
                }
             }
          } catch (OseeCoreException ex) {

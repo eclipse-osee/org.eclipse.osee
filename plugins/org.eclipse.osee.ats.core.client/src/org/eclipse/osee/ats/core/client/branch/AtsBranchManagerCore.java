@@ -23,8 +23,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ats.core.client.commit.ICommitConfigArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewDefinitionManager;
@@ -33,8 +31,10 @@ import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.client.version.VersionArtifact;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
+import org.eclipse.osee.ats.core.model.ICommitConfigArtifact;
 import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.ats.core.workdef.DecisionReviewDefinition;
 import org.eclipse.osee.ats.core.workdef.PeerReviewDefinition;
@@ -80,7 +80,7 @@ public class AtsBranchManagerCore {
    /**
     * Return working branch associated with SMA whether it is committed or not; This data is cached across all workflows
     * with the cache being updated by local and remote events.
-    *
+    * 
     * @param force == true does not used cached value
     */
    public static Branch getWorkingBranch(TeamWorkFlowArtifact teamArt, boolean force) throws OseeCoreException {
@@ -164,12 +164,12 @@ public class AtsBranchManagerCore {
    }
 
    public static TransactionRecord getCommitTransactionRecord(TeamWorkFlowArtifact teamArt, ICommitConfigArtifact configArt) throws OseeCoreException {
-      Branch branch = configArt.getParentBranch();
+      Branch branch = BranchManager.getBranchByGuid(configArt.getBaslineBranchGuid());
       return getCommitTransactionRecord(teamArt, branch);
    }
 
    public static CommitStatus getCommitStatus(TeamWorkFlowArtifact teamArt, ICommitConfigArtifact configArt) throws OseeCoreException {
-      Branch destinationBranch = configArt.getParentBranch();
+      Branch destinationBranch = BranchManager.getBranchByGuid(configArt.getBaslineBranchGuid());
       return getCommitStatus(teamArt, destinationBranch, null);
    }
 
@@ -200,7 +200,7 @@ public class AtsBranchManagerCore {
       if (configArt == null) {
          result = AtsBranchManagerCore.isCommitBranchAllowed(teamArt);
       } else {
-         result = configArt.isCommitBranchAllowed();
+         result = configArt.isAllowCommitBranchInherited();
       }
       if (result.isFalse()) {
          return CommitStatus.Branch_Commit_Disabled;
@@ -249,23 +249,23 @@ public class AtsBranchManagerCore {
          if (teamArt.getTargetedVersion() == null) {
             return new Result(false, "Workflow not targeted for Version");
          }
-         Result result = teamArt.getTargetedVersion().isCommitBranchAllowed();
+         Result result = teamArt.getTargetedVersion().isAllowCommitBranchInherited();
          if (result.isFalse()) {
             return result;
          }
 
-         if (teamArt.getTargetedVersion().getParentBranch() == null) {
+         if (!Strings.isValid(teamArt.getTargetedVersion().getBaslineBranchGuid())) {
             return new Result(false, "Parent Branch not configured for Version [" + teamArt.getTargetedVersion() + "]");
          }
          return Result.TrueResult;
 
       } else {
-         Result result = teamArt.getTeamDefinition().isCommitBranchAllowed();
+         Result result = teamArt.getTeamDefinition().isAllowCommitBranchInherited();
          if (result.isFalse()) {
             return result;
          }
 
-         if (teamArt.getTeamDefinition().getParentBranch() == null) {
+         if (!Strings.isValid(teamArt.getTeamDefinition().getBaslineBranchGuid())) {
             return new Result(false,
                "Parent Branch not configured for Team Definition [" + teamArt.getTeamDefinition() + "]");
          }
@@ -282,30 +282,30 @@ public class AtsBranchManagerCore {
          if (teamArt.getTargetedVersion() == null) {
             return new Result(false, "Workflow not targeted for Version");
          }
-         Result result = teamArt.getTargetedVersion().isCreateBranchAllowed();
+         Result result = teamArt.getTargetedVersion().isAllowCreateBranchInherited();
          if (result.isFalse()) {
             return result;
          }
 
-         if (teamArt.getTargetedVersion().getParentBranch() == null) {
+         if (!Strings.isValid(teamArt.getTargetedVersion().getBaslineBranchGuid())) {
             return new Result(false, "Parent Branch not configured for Version [" + teamArt.getTargetedVersion() + "]");
          }
-         if (!teamArt.getTargetedVersion().getParentBranch().getBranchType().isBaselineBranch()) {
+         if (!BranchManager.getBranchByGuid(teamArt.getTargetedVersion().getBaslineBranchGuid()).getBranchType().isBaselineBranch()) {
             return new Result(false, "Parent Branch must be of Baseline branch type.  See Admin for configuration.");
          }
          return Result.TrueResult;
 
       } else {
-         Result result = teamArt.getTeamDefinition().isCreateBranchAllowed();
+         Result result = teamArt.getTeamDefinition().isAllowCreateBranchInherited();
          if (result.isFalse()) {
             return result;
          }
 
-         if (teamArt.getTeamDefinition().getParentBranch() == null) {
+         if (!Strings.isValid(teamArt.getTeamDefinition().getBaslineBranchGuid())) {
             return new Result(false,
                "Parent Branch not configured for Team Definition [" + teamArt.getTeamDefinition() + "]");
          }
-         if (!teamArt.getTeamDefinition().getParentBranch().getBranchType().isBaselineBranch()) {
+         if (!BranchManager.getBranchByGuid(teamArt.getTeamDefinition().getBaslineBranchGuid()).getBranchType().isBaselineBranch()) {
             return new Result(false, "Parent Branch must be of Baseline branch type.  See Admin for configuration.");
          }
          return Result.TrueResult;
@@ -327,7 +327,7 @@ public class AtsBranchManagerCore {
             teamArt.getTargetedVersion().getParallelVersions(configObjects);
          }
       } else {
-         if (teamArt.isTeamWorkflow() && teamArt.getTeamDefinition().getParentBranch() != null) {
+         if (teamArt.isTeamWorkflow() && Strings.isValid(teamArt.getTeamDefinition().getBaslineBranchGuid())) {
             configObjects.add(teamArt.getTeamDefinition());
          }
       }
@@ -340,7 +340,7 @@ public class AtsBranchManagerCore {
             return teamArt.getTargetedVersion();
          }
       } else {
-         if (teamArt.isTeamWorkflow() && teamArt.getTeamDefinition().getParentBranch() != null) {
+         if (teamArt.isTeamWorkflow() && Strings.isValid(teamArt.getTeamDefinition().getBaslineBranchGuid())) {
             return teamArt.getTeamDefinition();
          }
       }
@@ -365,10 +365,10 @@ public class AtsBranchManagerCore {
    public static Collection<Branch> getBranchesToCommitTo(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       Set<Branch> branches = new HashSet<Branch>();
       for (Object obj : getConfigArtifactsConfiguredToCommitTo(teamArt)) {
-         if (obj instanceof VersionArtifact && ((VersionArtifact) obj).getParentBranch() != null) {
-            branches.add(((VersionArtifact) obj).getParentBranch());
-         } else if (obj instanceof TeamDefinitionArtifact && ((TeamDefinitionArtifact) obj).getParentBranch() != null) {
-            branches.add(((TeamDefinitionArtifact) obj).getParentBranch());
+         if (obj instanceof IAtsVersion && Strings.isValid(((IAtsVersion) obj).getBaslineBranchGuid())) {
+            branches.add(BranchManager.getBranchByGuid(((IAtsVersion) obj).getBaslineBranchGuid()));
+         } else if (obj instanceof IAtsTeamDefinition && Strings.isValid(((IAtsTeamDefinition) obj).getBaslineBranchGuid())) {
+            branches.add(BranchManager.getBranchByGuid(((IAtsTeamDefinition) obj).getBaslineBranchGuid()));
          }
       }
       return branches;
@@ -425,15 +425,15 @@ public class AtsBranchManagerCore {
 
       // Check for parent branch id in Version artifact
       if (teamArt.isTeamUsesVersions()) {
-         VersionArtifact verArt = teamArt.getTargetedVersion();
-         if (verArt != null) {
-            parentBranch = verArt.getParentBranch();
+         IAtsVersion verArt = teamArt.getTargetedVersion();
+         if (verArt != null && Strings.isValid(verArt.getBaslineBranchGuid())) {
+            parentBranch = BranchManager.getBranchByGuid(verArt.getBaslineBranchGuid());
          }
       }
 
       // If not defined in version, check for parent branch from team definition
-      if (parentBranch == null && teamArt.isTeamWorkflow()) {
-         parentBranch = teamArt.getTeamDefinition().getParentBranch();
+      if (parentBranch == null && teamArt.isTeamWorkflow() && Strings.isValid(teamArt.getTeamDefinition().getBaslineBranchGuid())) {
+         parentBranch = BranchManager.getBranchByGuid(teamArt.getTeamDefinition().getBaslineBranchGuid());
       }
 
       // If not defined, return null
@@ -471,7 +471,7 @@ public class AtsBranchManagerCore {
 
    /**
     * This method was refactored from above so it could be tested independently
-    *
+    * 
     * @param configArtSet
     * @param commitTxs
     * @return
@@ -491,7 +491,7 @@ public class AtsBranchManagerCore {
          // ... compare the branch of the tx commit to all the parent branches in configArtSet and do NOT add the tx
          // commit if it is already represented.
          for (ICommitConfigArtifact configArt : configArtSet) {
-            Branch configArtBranch = configArt.getParentBranch();
+            Branch configArtBranch = BranchManager.getBranchByGuid(configArt.getBaslineBranchGuid());
             if (txBranch == configArtBranch) {
                isCommitAlreadyPresent = true;
                break;
@@ -556,7 +556,7 @@ public class AtsBranchManagerCore {
 
    /**
     * Perform error checks and popup confirmation dialogs associated with creating a working branch.
-    *
+    * 
     * @param popup if true, errors are popped up to user; otherwise sent silently in Results
     * @return Result return of status
     */

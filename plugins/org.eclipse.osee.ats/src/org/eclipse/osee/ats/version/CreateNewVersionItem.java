@@ -11,19 +11,27 @@
 
 package org.eclipse.osee.ats.version;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.artifact.VersionManager;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
-import org.eclipse.osee.ats.core.client.version.VersionArtifact;
+import org.eclipse.osee.ats.core.client.config.AtsObjectsClient;
+import org.eclipse.osee.ats.core.client.config.store.VersionArtifactStore;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.config.VersionFactory;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -42,12 +50,12 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class CreateNewVersionItem extends XNavigateItemAction {
 
-   private final TeamDefinitionArtifact teamDefHoldingVersions;
+   private final IAtsTeamDefinition teamDefHoldingVersions;
 
    /**
     * @param teamDefHoldingVersions Team Definition Artifact that is related to versions or null for popup selection
     */
-   public CreateNewVersionItem(XNavigateItem parent, TeamDefinitionArtifact teamDefHoldingVersions) {
+   public CreateNewVersionItem(XNavigateItem parent, IAtsTeamDefinition teamDefHoldingVersions) {
       super(parent,
          "Create New " + (teamDefHoldingVersions != null ? teamDefHoldingVersions + " " : "") + "Version(s)",
          FrameworkImage.VERSION);
@@ -56,9 +64,9 @@ public class CreateNewVersionItem extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      TeamDefinitionArtifact teamDefHoldingVersions = null;
+      IAtsTeamDefinition teamDefHoldingVersions = null;
       try {
-         teamDefHoldingVersions = getReleaseableTeamDefinitionArtifact();
+         teamDefHoldingVersions = getReleaseableTeamDefinition();
       } catch (Exception ex) {
          // do nothing
       }
@@ -77,8 +85,8 @@ public class CreateNewVersionItem extends XNavigateItemAction {
          XResultData resultData = new XResultData(false);
          SkynetTransaction transaction =
             TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Create New Version(s)");
-         Collection<VersionArtifact> newVersions =
-            VersionManager.createVersions(resultData, transaction, teamDefHoldingVersions, newVersionNames);
+         Collection<IAtsVersion> newVersions =
+            createVersions(resultData, transaction, teamDefHoldingVersions, newVersionNames);
          if (resultData.isErrors()) {
             resultData.log(String.format(
                "\nErrors found while creating version(s) for [%s].\nPlease resolve and try again.",
@@ -88,24 +96,51 @@ public class CreateNewVersionItem extends XNavigateItemAction {
          }
          transaction.execute();
          if (newVersions.size() == 1) {
-            RendererManager.open(newVersions.iterator().next(), PresentationType.DEFAULT_OPEN);
+            RendererManager.open(AtsObjectsClient.getSoleArtifact(newVersions.iterator().next()),
+               PresentationType.DEFAULT_OPEN);
          } else {
             MassArtifactEditor.editArtifacts(String.format("New Versions for [%s]", teamDefHoldingVersions),
-               newVersions, TableLoadOption.None);
+               AtsObjectsClient.getArtifacts(newVersions), TableLoadOption.None);
          }
 
       }
    }
 
-   public TeamDefinitionArtifact getReleaseableTeamDefinitionArtifact() throws OseeCoreException {
+   public static Collection<IAtsVersion> createVersions(XResultData resultData, SkynetTransaction transaction, IAtsTeamDefinition teamDefHoldingVersions, Collection<String> newVersionNames) throws OseeCoreException {
+      List<IAtsVersion> verArts = new ArrayList<IAtsVersion>();
+      for (String newVer : newVersionNames) {
+         if (!Strings.isValid(newVer)) {
+            resultData.logError("Version name can't be blank");
+         }
+         for (IAtsVersion verArt : teamDefHoldingVersions.getVersions()) {
+            if (verArt.getName().equals(newVer)) {
+               resultData.logError(String.format("Version [%s] already exists", newVer));
+            }
+         }
+      }
+      if (!resultData.isErrors()) {
+         try {
+            for (String newVer : newVersionNames) {
+               IAtsVersion version = VersionFactory.createVersion(newVer);
+               version.setTeamDefinition(teamDefHoldingVersions);
+               new VersionArtifactStore(version).saveToArtifact(transaction);
+            }
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         }
+      }
+      return verArts;
+   }
+
+   public IAtsTeamDefinition getReleaseableTeamDefinition() throws OseeCoreException {
       if (teamDefHoldingVersions != null) {
          return teamDefHoldingVersions;
       }
       TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
-      ld.setInput(TeamDefinitionManager.getTeamReleaseableDefinitions(Active.Active));
+      ld.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Active));
       int result = ld.open();
       if (result == 0) {
-         return (TeamDefinitionArtifact) ld.getResult()[0];
+         return (IAtsTeamDefinition) ld.getResult()[0];
       }
       return null;
    }

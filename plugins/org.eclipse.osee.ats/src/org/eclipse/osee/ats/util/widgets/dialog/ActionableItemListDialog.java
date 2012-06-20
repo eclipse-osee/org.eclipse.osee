@@ -12,13 +12,13 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.util.ArtifactDescriptiveLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
@@ -29,21 +29,21 @@ import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 public class ActionableItemListDialog extends CheckedTreeSelectionDialog {
 
    public ActionableItemListDialog(Active active) {
-      super(Displays.getActiveShell(), new ArtifactDescriptiveLabelProvider(), new AITreeContentProvider(active));
+      super(Displays.getActiveShell(), new AtsObjectLabelProvider(), new AITreeContentProvider(active));
       setTitle("Select Actionable Item(s)");
       setMessage("Select Actionable Item(s)");
       setComparator(new ArtifactNameSorter());
       try {
-         setInput(ActionableItemManagerCore.getTopLevelActionableItems(active));
+         setInput(ActionableItems.getTopLevelActionableItems(active));
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
-   public Set<ActionableItemArtifact> getSelected() {
-      Set<ActionableItemArtifact> selectedactionItems = new HashSet<ActionableItemArtifact>();
+   public Set<IAtsActionableItem> getSelected() {
+      Set<IAtsActionableItem> selectedactionItems = new HashSet<IAtsActionableItem>();
       for (Object obj : getResult()) {
-         selectedactionItems.add((ActionableItemArtifact) obj);
+         selectedactionItems.add((IAtsActionableItem) obj);
       }
       return selectedactionItems;
    }

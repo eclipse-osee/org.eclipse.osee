@@ -9,17 +9,17 @@ import org.junit.Test;
 
 /**
  * Test case for {@link RuleManager}
- *
+ * 
  * @author Donald G. Dunne
  */
 public class RuleManagerTest {
 
    @Test
    public void testGetOrCreateRule() {
-      new RuleManager();
-      RuleManager.getOrCreateRule(RuleDefinitionOption.AddDecisionValidateBlockingReview.name());
-      RuleManager.getOrCreateRule(RuleDefinitionOption.AddDecisionValidateBlockingReview.name());
-      RuleManager.getOrCreateRule("test");
+      RuleManager mgr = new RuleManager();
+      mgr.getOrCreateRule(RuleDefinitionOption.AddDecisionValidateBlockingReview.name());
+      mgr.getOrCreateRule(RuleDefinitionOption.AddDecisionValidateBlockingReview.name());
+      mgr.getOrCreateRule("test");
    }
 
 }

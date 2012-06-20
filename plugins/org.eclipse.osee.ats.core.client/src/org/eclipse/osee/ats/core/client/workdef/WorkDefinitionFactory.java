@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -30,6 +29,7 @@ import org.eclipse.osee.ats.core.client.util.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.client.workdef.provider.AtsWorkDefinitionProviderCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ITeamWorkflowProvider;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.workdef.ConvertWorkDefinitionToAtsDsl;
 import org.eclipse.osee.ats.core.workdef.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
@@ -115,6 +115,32 @@ public class WorkDefinitionFactory {
       return match;
    }
 
+   private static WorkDefinitionMatch getWorkDefinitionFromArtifactsAttributeValue(IAtsTeamDefinition teamDef) throws OseeCoreException {
+      // If this artifact specifies it's own workflow definition, use it
+      String workFlowDefId = teamDef.getWorkflowDefinition();
+      if (Strings.isValid(workFlowDefId)) {
+         WorkDefinitionMatch match = getWorkDefinition(workFlowDefId);
+         if (match.isMatched()) {
+            match.addTrace(String.format("from artifact [%s] for id [%s]", teamDef, workFlowDefId));
+            return match;
+         }
+      }
+      return new WorkDefinitionMatch();
+   }
+
+   private static WorkDefinitionMatch getTaskWorkDefinitionFromArtifactsAttributeValue(IAtsTeamDefinition teamDef) throws OseeCoreException {
+      // If this artifact specifies it's own workflow definition, use it
+      String workFlowDefId = teamDef.getRelatedTaskWorkDefinition();
+      if (Strings.isValid(workFlowDefId)) {
+         WorkDefinitionMatch match = getWorkDefinition(workFlowDefId);
+         if (match.isMatched()) {
+            match.addTrace(String.format("from artifact [%s] for id [%s]", teamDef, workFlowDefId));
+            return match;
+         }
+      }
+      return new WorkDefinitionMatch();
+   }
+
    private static WorkDefinitionMatch getWorkDefinitionFromArtifactsAttributeValue(Artifact artifact) throws OseeCoreException {
       // If this artifact specifies it's own workflow definition, use it
       String workFlowDefId = artifact.getSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, null);
@@ -144,14 +170,14 @@ public class WorkDefinitionFactory {
    /**
     * Look at team def's attribute for Work Definition setting, otherwise, walk up team tree for setting
     */
-   protected static WorkDefinitionMatch getWorkDefinitionFromTeamDefinitionAttributeInherited(TeamDefinitionArtifact teamDef) throws OseeCoreException {
+   protected static WorkDefinitionMatch getWorkDefinitionFromTeamDefinitionAttributeInherited(IAtsTeamDefinition teamDef) throws OseeCoreException {
       WorkDefinitionMatch match = getWorkDefinitionFromArtifactsAttributeValue(teamDef);
       if (match.isMatched()) {
          return match;
       }
-      Artifact parentArt = teamDef.getParent();
-      if (parentArt != null && parentArt instanceof TeamDefinitionArtifact) {
-         return getWorkDefinitionFromTeamDefinitionAttributeInherited((TeamDefinitionArtifact) parentArt);
+      IAtsTeamDefinition parentArt = teamDef.getParentTeamDef();
+      if (parentArt != null) {
+         return getWorkDefinitionFromTeamDefinitionAttributeInherited(parentArt);
       }
       return new WorkDefinitionMatch();
    }
@@ -197,7 +223,7 @@ public class WorkDefinitionFactory {
          }
       }
       if (!match.isMatched()) {
-         // Else If parent TeamWorkflow's TeamDefinition has a related task definition workflow id, use it
+         // Else If parent TeamWorkflow's IAtsTeamDefinition has a related task definition workflow id, use it
          match = getTaskWorkDefinitionFromArtifactsAttributeValue(teamWf.getTeamDefinition());
       }
       if (!match.isMatched()) {
@@ -228,7 +254,7 @@ public class WorkDefinitionFactory {
                // Otherwise, use workflow defined by attribute of WorkflowDefinition
                // Note: This is new.  Old TeamDefs got workflow off relation
                if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-                  TeamDefinitionArtifact teamDef = ((TeamWorkFlowArtifact) artifact).getTeamDefinition();
+                  IAtsTeamDefinition teamDef = ((TeamWorkFlowArtifact) artifact).getTeamDefinition();
                   match = getWorkDefinitionFromTeamDefinitionAttributeInherited(teamDef);
                } else if (artifact.isOfType(AtsArtifactTypes.Goal)) {
                   match = getWorkDefinition(GoalWorkflowDefinitionId);

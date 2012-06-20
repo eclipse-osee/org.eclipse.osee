@@ -11,10 +11,10 @@
 package org.eclipse.osee.ats.config.copy;
 
 import junit.framework.Assert;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.support.test.util.DemoActionableItems;
@@ -37,9 +37,9 @@ public class ConfigDataTest {
 
       data.setReplaceStr("ReplStr");
       data.setSearchStr("SrchStr");
-      TeamDefinitionArtifact tda = DemoTestUtil.getTeamDef(DemoTeam.CIS_SW);
+      IAtsTeamDefinition tda = DemoTestUtil.getTeamDef(DemoTeam.CIS_SW);
       data.setTeamDef(tda);
-      ActionableItemArtifact aia = DemoTestUtil.getActionableItem(DemoActionableItems.CIS_Code);
+      IAtsActionableItem aia = DemoTestUtil.getActionableItem(DemoActionableItems.CIS_Code);
       data.setActionableItem(aia);
       results.clear();
       data.validateData(results);
@@ -49,7 +49,7 @@ public class ConfigDataTest {
    @org.junit.Test
    public void testGetSetTeamDefinition() throws Exception {
       ConfigData data = new ConfigData();
-      TeamDefinitionArtifact tda = DemoTestUtil.getTeamDef(DemoTeam.CIS_SW);
+      IAtsTeamDefinition tda = DemoTestUtil.getTeamDef(DemoTeam.CIS_SW);
       data.setTeamDef(tda);
       Assert.assertEquals(tda, data.getTeamDef());
    }
@@ -57,7 +57,7 @@ public class ConfigDataTest {
    @org.junit.Test
    public void testGetAiArts() throws Exception {
       ConfigData data = new ConfigData();
-      ActionableItemArtifact aia = DemoTestUtil.getActionableItem(DemoActionableItems.CIS_Code);
+      IAtsActionableItem aia = DemoTestUtil.getActionableItem(DemoActionableItems.CIS_Code);
       data.setActionableItem(aia);
       Assert.assertEquals(aia, data.getActionableItem());
    }
@@ -65,25 +65,25 @@ public class ConfigDataTest {
    @org.junit.Test
    public void testParentTeamDefinition() throws Exception {
       ConfigData data = new ConfigData();
-      TeamDefinitionArtifact tda = DemoTestUtil.getTeamDef(DemoTeam.CIS_Code);
+      IAtsTeamDefinition tda = DemoTestUtil.getTeamDef(DemoTeam.CIS_Code);
       data.setTeamDef(tda);
       Assert.assertEquals(DemoTestUtil.getTeamDef(DemoTeam.CIS_SW), data.getParentTeamDef());
 
       tda = DemoTestUtil.getTeamDef(DemoTeam.CIS_SW);
       data.setTeamDef(tda);
-      Assert.assertEquals(TeamDefinitionManager.getTopTeamDefinition(), data.getParentTeamDef());
+      Assert.assertEquals(TeamDefinitions.getTopTeamDefinition(), data.getParentTeamDef());
    }
 
    @org.junit.Test
    public void testParentActionableItem() throws Exception {
       ConfigData data = new ConfigData();
-      TeamDefinitionArtifact tda = DemoTestUtil.getTeamDef(DemoTeam.CIS_Code);
+      IAtsTeamDefinition tda = DemoTestUtil.getTeamDef(DemoTeam.CIS_Code);
       data.setTeamDef(tda);
       Assert.assertEquals(DemoTestUtil.getActionableItem(DemoActionableItems.CIS_CSCI), data.getParentActionableItem());
 
       tda = DemoTestUtil.getTeamDef(DemoTeam.CIS_SW);
       data.setTeamDef(tda);
-      Assert.assertEquals(ActionableItemManagerCore.getTopActionableItem(), data.getParentActionableItem());
+      Assert.assertEquals(ActionableItems.getTopActionableItem(), data.getParentActionableItem());
 
    }
 }

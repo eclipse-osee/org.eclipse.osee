@@ -11,9 +11,9 @@
 package org.eclipse.osee.ats.core.client.workflow;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
@@ -25,17 +25,17 @@ public interface ITeamWorkflowProvider {
    /**
     * Return true if this class/plugin is responsible for the creation of the Team Workflow that will be created for the
     * given Team Definition. This should be a light-weight check.
-    *
+    * 
     * @param teamDef related to the workflow to be created
     * @param actionableItems that were selected for the creation
     * @return true if responsible, false if not
     */
-   public boolean isResponsibleForTeamWorkflowCreation(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException;
+   public boolean isResponsibleForTeamWorkflowCreation(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems) throws OseeCoreException;
 
    /**
     * Same as @link getTeamWorkflowArtifactName() but returns the IArtifactType instead of String name.
     */
-   public IArtifactType getTeamWorkflowArtifactType(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException;
+   public IArtifactType getTeamWorkflowArtifactType(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems) throws OseeCoreException;
 
    /**
     * Notification that a teamWorkflow is being duplicated. This allows the extension to do necessary changes to

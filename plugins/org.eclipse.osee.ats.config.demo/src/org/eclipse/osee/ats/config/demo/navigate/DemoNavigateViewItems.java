@@ -14,14 +14,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.config.demo.PopulateDemoActions;
 import org.eclipse.osee.ats.config.demo.internal.Activator;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.navigate.IAtsNavigateItem;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.version.CreateNewVersionItem;
 import org.eclipse.osee.ats.version.ReleaseVersionItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
@@ -34,8 +35,6 @@ import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -55,14 +54,14 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       super();
    }
 
-   private static TeamDefinitionArtifact getTeamDef(DemoTeam team) throws OseeCoreException {
+   private static IAtsTeamDefinition getTeamDef(DemoTeam team) throws OseeCoreException {
       // Add check to keep exception from occurring for OSEE developers running against production
       if (ClientSessionManager.isProductionDataStore()) {
          return null;
       }
       try {
-         return (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition,
-            team.name().replaceAll("_", " "), AtsUtil.getAtsBranch());
+         String name = team.name().replaceAll("_", " ");
+         return AtsConfigCache.getSoleByName(name, IAtsTeamDefinition.class);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -94,15 +93,14 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
 
       for (DemoTeam team : DemoTeam.values()) {
          try {
-            TeamDefinitionArtifact teamDef = getTeamDef(team);
+            IAtsTeamDefinition teamDef = getTeamDef(team);
             XNavigateItem teamItems = new XNavigateItemFolder(jhuItem, "JHU " + team.name().replaceAll("_", " "));
             new SearchNavigateItem(teamItems, new TeamWorldSearchItem("Show Open " + teamDef + " Actions",
                Arrays.asList(teamDef), false, false, true, true, null, null, ReleasedOption.Both, null));
             new SearchNavigateItem(teamItems, new TeamWorldSearchItem("Show Open " + teamDef + " Workflows",
                Arrays.asList(teamDef), false, false, false, true, null, null, ReleasedOption.Both, null));
             // Handle all children teams
-            for (TeamDefinitionArtifact childTeamDef : Artifacts.getChildrenOfTypeSet(teamDef,
-               TeamDefinitionArtifact.class, true)) {
+            for (IAtsTeamDefinition childTeamDef : TeamDefinitions.getChildren(teamDef, true)) {
                new SearchNavigateItem(teamItems, new TeamWorldSearchItem("Show Open " + childTeamDef + " Workflows",
                   Arrays.asList(childTeamDef), false, false, false, false, null, null, ReleasedOption.Both, null));
             }

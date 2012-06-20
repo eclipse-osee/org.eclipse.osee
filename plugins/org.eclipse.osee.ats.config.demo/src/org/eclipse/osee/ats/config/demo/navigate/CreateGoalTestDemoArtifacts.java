@@ -24,8 +24,8 @@ import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
+import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
@@ -98,7 +98,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
    private void createAction7(SkynetTransaction transaction, GoalArtifact facilitiesGoal) throws OseeCoreException {
       Artifact action =
          ActionManager.createAction(null, "Add the Improvement", "Description", ChangeType.Improvement, "4", false,
-            null, ActionableItemManagerCore.getActionableItems(Arrays.asList("Network")), createdDate, createdBy, null,
+            null, ActionableItems.getActionableItems(Arrays.asList("Network")), createdDate, createdBy, null,
             transaction);
       action.persist(transaction);
       facilitiesGoal.addMember(action);
@@ -109,8 +109,8 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
       for (String msaTool : Arrays.asList("Backups", "Computers", "Network")) {
          Artifact action =
             ActionManager.createAction(null, "Fix " + msaTool + " button", "Description", ChangeType.Problem, "4",
-               false, null, ActionableItemManagerCore.getActionableItems(Arrays.asList(msaTool)), createdDate,
-               createdBy, null, transaction);
+               false, null, ActionableItems.getActionableItems(Arrays.asList(msaTool)), createdDate, createdBy, null,
+               transaction);
          action.persist(transaction);
          facilitiesGoal.addMember(ActionManager.getFirstTeam(action));
          teamArt = ActionManager.getFirstTeam(action);
@@ -127,8 +127,8 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
    private void createAction3(SkynetTransaction transaction, GoalArtifact sawCodeGoal, GoalArtifact cisReqGoal) throws OseeCoreException {
       Artifact action =
          ActionManager.createAction(null, "Remove Workflow button", "Description", ChangeType.Problem, "4", false,
-            null, ActionableItemManagerCore.getActionableItems(Arrays.asList("SAW Code", "CIS Requirements")),
-            createdDate, createdBy, null, transaction);
+            null, ActionableItems.getActionableItems(Arrays.asList("SAW Code", "CIS Requirements")), createdDate,
+            createdBy, null, transaction);
       action.persist(transaction);
       sawCodeGoal.addMember(ActionManager.getFirstTeam(action));
       cisReqGoal.addMember(ActionManager.getFirstTeam(action));
@@ -138,8 +138,8 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
    private void createAction2(SkynetTransaction transaction, GoalArtifact sawCodeGoal, GoalArtifact cisReqGoal) throws OseeCoreException {
       ActionArtifact action =
          ActionManager.createAction(null, "Add CDB Check Signals", "Description", ChangeType.Problem, "4", false, null,
-            ActionableItemManagerCore.getActionableItems(Arrays.asList("SAW Code", "CIS Requirements")), createdDate,
-            createdBy, null, transaction);
+            ActionableItems.getActionableItems(Arrays.asList("SAW Code", "CIS Requirements")), createdDate, createdBy,
+            null, transaction);
       action.persist(transaction);
       sawCodeGoal.addMember(ActionManager.getFirstTeam(action));
       cisReqGoal.addMember(ActionManager.getFirstTeam(action));
@@ -151,8 +151,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
    private TeamWorkFlowArtifact createAction1(SkynetTransaction transaction, GoalArtifact sawCodeGoal) throws OseeCoreException {
       Artifact action =
          ActionManager.createAction(null, "Fix this model", "Description", ChangeType.Problem, "2", false, null,
-            ActionableItemManagerCore.getActionableItems(Arrays.asList("SAW Code")), createdDate, createdBy, null,
-            transaction);
+            ActionableItems.getActionableItems(Arrays.asList("SAW Code")), createdDate, createdBy, null, transaction);
       action.persist(transaction);
       sawCodeGoal.addMember(ActionManager.getFirstTeam(action));
       TeamWorkFlowArtifact teamArt = ActionManager.getFirstTeam(action);

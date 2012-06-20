@@ -179,6 +179,10 @@ public final class ArtifactImageManager {
       return ImageManager.setupImageWithOverlay(BaseImage.getBaseImageEnum(artifact), overlay, location).getImageKey();
    }
 
+   public static String setupImage(KeyedImage image, KeyedImage overlay, Location location) {
+      return ImageManager.setupImageWithOverlay(image, overlay, location).getImageKey();
+   }
+
    public static void registerOverrideImageProvider(ArtifactImageProvider imageProvider, IArtifactType artifactType) {
       providersOverrideImageMap.put(artifactType, imageProvider);
    }

@@ -17,15 +17,15 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFilteredTreeDialog;
 import org.eclipse.swt.widgets.Composite;
@@ -39,21 +39,21 @@ public class AICheckTreeDialog extends OSEECheckedFilteredTreeDialog {
 
    private static PatternFilter patternFilter = new PatternFilter();
    private final Active active;
-   private Collection<ActionableItemArtifact> initialAias;
+   private Collection<IAtsActionableItem> initialAias;
 
    public AICheckTreeDialog(String title, String message, Active active) {
-      super(title, message, patternFilter, new AITreeContentProvider(active), new ArtifactLabelProvider(),
+      super(title, message, patternFilter, new AITreeContentProvider(active), new AtsObjectLabelProvider(),
          new ArtifactNameSorter());
       this.active = active;
    }
 
-   public Collection<ActionableItemArtifact> getChecked() {
+   public Collection<IAtsActionableItem> getChecked() {
       if (super.getTreeViewer() == null) {
          return Collections.emptyList();
       }
-      Set<ActionableItemArtifact> checked = new HashSet<ActionableItemArtifact>();
+      Set<IAtsActionableItem> checked = new HashSet<IAtsActionableItem>();
       for (Object obj : super.getTreeViewer().getChecked()) {
-         checked.add((ActionableItemArtifact) obj);
+         checked.add((IAtsActionableItem) obj);
       }
       return checked;
    }
@@ -62,14 +62,14 @@ public class AICheckTreeDialog extends OSEECheckedFilteredTreeDialog {
    protected Control createDialogArea(Composite container) {
       Control comp = super.createDialogArea(container);
       try {
-         getTreeViewer().getViewer().setInput(ActionableItemManagerCore.getTopLevelActionableItems(active));
+         getTreeViewer().getViewer().setInput(ActionableItems.getTopLevelActionableItems(active));
          getTreeViewer().getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
             @Override
             public void selectionChanged(SelectionChangedEvent event) {
                try {
-                  for (ActionableItemArtifact aia : getChecked()) {
+                  for (IAtsActionableItem aia : getChecked()) {
                      if (!aia.isActionable()) {
-                        AWorkbench.popup("ERROR", ActionableItemManagerCore.getNotActionableItemError(aia));
+                        AWorkbench.popup("ERROR", ActionableItems.getNotActionableItemError(aia));
                      }
                   }
                } catch (Exception ex) {
@@ -89,7 +89,7 @@ public class AICheckTreeDialog extends OSEECheckedFilteredTreeDialog {
    @Override
    protected Result isComplete() {
       try {
-         for (ActionableItemArtifact aia : getChecked()) {
+         for (IAtsActionableItem aia : getChecked()) {
             if (!aia.isActionable()) {
                return Result.FalseResult;
             }
@@ -103,14 +103,14 @@ public class AICheckTreeDialog extends OSEECheckedFilteredTreeDialog {
    /**
     * @return the initialAias
     */
-   public Collection<ActionableItemArtifact> getInitialAias() {
+   public Collection<IAtsActionableItem> getInitialAias() {
       return initialAias;
    }
 
    /**
     * @param initialAias the initialAias to set
     */
-   public void setInitialAias(Collection<ActionableItemArtifact> initialAias) {
+   public void setInitialAias(Collection<IAtsActionableItem> initialAias) {
       this.initialAias = initialAias;
    }
 

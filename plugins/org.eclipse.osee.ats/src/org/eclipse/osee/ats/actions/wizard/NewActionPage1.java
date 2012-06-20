@@ -21,28 +21,25 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManagerCore;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.util.AtsObjectLabelProvider;
 import org.eclipse.osee.ats.util.widgets.dialog.AITreeContentProvider;
+import org.eclipse.osee.ats.util.widgets.dialog.AtsObjectNameSorter;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
-import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFilteredTree;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
@@ -71,7 +68,7 @@ public class NewActionPage1 extends WizardPage {
    private static PatternFilter patternFilter = new PatternFilter();
    private Text descriptionLabel;
    private boolean debugPopulated = false;
-   private static Artifact atsAi;
+   private static IAtsActionableItem atsAi;
 
    protected NewActionPage1(NewActionWizard actionWizard) {
       super("Create new ATS Action", "Create ATS Action", null);
@@ -123,13 +120,13 @@ public class NewActionPage1 extends WizardPage {
                SWT.CHECK | SWT.MULTI | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter);
          treeViewer.getViewer().getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
          treeViewer.getViewer().setContentProvider(new AITreeContentProvider(Active.Active));
-         treeViewer.getViewer().setLabelProvider(new ArtifactLabelProvider());
+         treeViewer.getViewer().setLabelProvider(new AtsObjectLabelProvider());
          try {
-            treeViewer.getViewer().setInput(ActionableItemManagerCore.getTopLevelActionableItems(Active.Active));
+            treeViewer.getViewer().setInput(ActionableItems.getTopLevelActionableItems(Active.Active));
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
-         treeViewer.getViewer().setSorter(new ArtifactNameSorter());
+         treeViewer.getViewer().setSorter(new AtsObjectNameSorter());
          treeViewer.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
             @Override
             public void selectionChanged(SelectionChangedEvent event) {
@@ -177,9 +174,7 @@ public class NewActionPage1 extends WizardPage {
       try {
          ((XText) getXWidget("Title")).set("tt");
          if (atsAi == null) {
-            atsAi =
-               ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.ActionableItem, "ATS",
-                  BranchManager.getCommonBranch());
+            atsAi = AtsConfigCache.getSoleByName("ATS", IAtsActionableItem.class);
          }
          treeViewer.getViewer().setSelection(new StructuredSelection(Arrays.asList(atsAi)));
          treeViewer.setInitalChecked(Arrays.asList(atsAi));
@@ -197,12 +192,8 @@ public class NewActionPage1 extends WizardPage {
          if (sel.isEmpty()) {
             return;
          }
-         ActionableItemArtifact aia = (ActionableItemArtifact) sel.getFirstElement();
-         try {
-            descriptionLabel.setText(aia.getSoleAttributeValue(AtsAttributeTypes.Description, ""));
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
+         IAtsActionableItem aia = (IAtsActionableItem) sel.getFirstElement();
+         descriptionLabel.setText(aia.getDescription());
       }
    }
 
@@ -210,10 +201,10 @@ public class NewActionPage1 extends WizardPage {
       HelpUtil.setHelp(this.getControl(), AtsHelpContext.NEW_ACTION_PAGE_1);
    }
 
-   public Set<ActionableItemArtifact> getSelectedActionableItemArtifacts() {
-      Set<ActionableItemArtifact> selected = new HashSet<ActionableItemArtifact>();
+   public Set<IAtsActionableItem> getSelectedIAtsActionableItems() {
+      Set<IAtsActionableItem> selected = new HashSet<IAtsActionableItem>();
       for (Object obj : treeViewer.getChecked()) {
-         selected.add((ActionableItemArtifact) obj);
+         selected.add((IAtsActionableItem) obj);
       }
       return selected;
    }
@@ -229,14 +220,14 @@ public class NewActionPage1 extends WizardPage {
          return false;
       }
       try {
-         for (ActionableItemArtifact aia : getSelectedActionableItemArtifacts()) {
+         for (IAtsActionableItem aia : getSelectedIAtsActionableItems()) {
             if (!aia.isActionable()) {
-               AWorkbench.popup("ERROR", ActionableItemManagerCore.getNotActionableItemError(aia));
+               AWorkbench.popup("ERROR", ActionableItems.getNotActionableItemError(aia));
                return false;
             }
          }
-         Collection<TeamDefinitionArtifact> teamDefs =
-            TeamDefinitionManagerCore.getImpactedTeamDefs(getSelectedActionableItemArtifacts());
+         Collection<IAtsTeamDefinition> teamDefs =
+            TeamDefinitions.getImpactedTeamDefs(getSelectedIAtsActionableItems());
          if (teamDefs.isEmpty()) {
             AWorkbench.popup("ERROR", "No Teams Associated with selected Actionable Items");
             return false;

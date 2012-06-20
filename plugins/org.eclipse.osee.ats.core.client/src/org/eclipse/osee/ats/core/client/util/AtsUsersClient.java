@@ -21,6 +21,7 @@ public class AtsUsersClient {
    public static IAtsUser currentUser;
 
    public static void start() throws OseeCoreException {
+      AtsUsers.clearCache();
       for (User user : UserManager.getUsersAll()) {
          AtsUsers.addUser(getUserFromOseeUser(user));
       }

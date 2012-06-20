@@ -11,12 +11,13 @@
 package org.eclipse.osee.ats.config;
 
 import java.util.Arrays;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.config.AtsArtifactToken;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.client.config.store.ActionableItemArtifactStore;
+import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
 import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
@@ -26,6 +27,7 @@ import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
@@ -35,16 +37,23 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
    public void run() throws OseeCoreException {
       createAtsFolders();
 
+      // load top team into cache
+      Artifact topTeamDefArt =
+         ArtifactQuery.getArtifactFromToken(AtsArtifactToken.TopTeamDefinition, AtsUtil.getAtsBranchToken());
+      TeamDefinitionArtifactStore teamDefStore = new TeamDefinitionArtifactStore(topTeamDefArt);
+      IAtsTeamDefinition teamDef = teamDefStore.getTeamDefinition();
+      teamDef.setWorkflowDefinition(WorkDefinitionFactory.TeamWorkflowDefaultDefinitionId);
+      teamDefStore.save("Set Top Team Work Definition");
+
+      // load top ai into cache
+      Artifact topAiArt =
+         ArtifactQuery.getArtifactFromToken(AtsArtifactToken.TopActionableItem, AtsUtil.getAtsBranchToken());
+      ActionableItemArtifactStore aiStore = new ActionableItemArtifactStore(topAiArt);
+      IAtsActionableItem aia = aiStore.getActionableItem();
+      aia.setActionable(false);
+      aiStore.save("Set Top AI to Non Actionable");
+
       AtsWorkDefinitionSheetProviders.initializeDatabase(new XResultData(false), false);
-
-      Artifact topTeam = TeamDefinitionManager.getTopTeamDefinition();
-      topTeam.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition,
-         WorkDefinitionFactory.TeamWorkflowDefaultDefinitionId);
-      topTeam.persist("Set Top Team Work Definition");
-
-      Artifact topAi = ActionableItemManagerCore.getTopActionableItem();
-      topAi.setSoleAttributeValue(AtsAttributeTypes.Actionable, false);
-      topAi.persist("Set Top AI to Non Actionable");
 
       AtsGroup.AtsAdmin.getArtifact().persist(getClass().getSimpleName());
       AtsGroup.AtsTempAdmin.getArtifact().persist(getClass().getSimpleName());

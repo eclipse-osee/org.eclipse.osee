@@ -17,15 +17,13 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.version.VersionArtifact;
-import org.eclipse.osee.ats.core.client.version.VersionLockedType;
-import org.eclipse.osee.ats.core.client.version.VersionReleaseType;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
+import org.eclipse.osee.ats.core.model.VersionLockedType;
+import org.eclipse.osee.ats.core.model.VersionReleaseType;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -41,7 +39,7 @@ import org.eclipse.swt.widgets.Control;
 public class ActionTeamVersionListDialog extends ActionTeamListDialog {
 
    XListViewer versionList = new XListViewer("Version");
-   VersionArtifact selectedVersion = null;
+   IAtsVersion selectedVersion = null;
 
    public ActionTeamVersionListDialog(Active active) {
       super(active);
@@ -60,7 +58,7 @@ public class ActionTeamVersionListDialog extends ActionTeamListDialog {
                   return;
                }
                IStructuredSelection sel = (IStructuredSelection) getTableViewer().getSelection();
-               for (Artifact art : ((TeamDefinitionArtifact) sel.iterator().next()).getVersionsFromTeamDefHoldingVersions(
+               for (IAtsVersion art : ((IAtsTeamDefinition) sel.iterator().next()).getVersionsFromTeamDefHoldingVersions(
                   VersionReleaseType.Both, VersionLockedType.Both)) {
                   objs.add(art);
                }
@@ -75,9 +73,9 @@ public class ActionTeamVersionListDialog extends ActionTeamListDialog {
       comp.setLayout(new GridLayout(1, false));
       comp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      versionList.setLabelProvider(new VersionArtifactLabelProvider());
+      versionList.setLabelProvider(new VersionLabelProvider());
       versionList.setContentProvider(new ArrayContentProvider());
-      versionList.setSorter(new ArtifactViewerSorter());
+      versionList.setSorter(new AtsObjectNameSorter());
       versionList.setGrabHorizontal(true);
       versionList.setMultiSelect(false);
       versionList.createWidgets(comp, 2);
@@ -92,7 +90,7 @@ public class ActionTeamVersionListDialog extends ActionTeamListDialog {
             if (versionList.getSelected().isEmpty()) {
                selectedVersion = null;
             } else {
-               selectedVersion = (VersionArtifact) versionList.getSelected().iterator().next();
+               selectedVersion = (IAtsVersion) versionList.getSelected().iterator().next();
             }
          };
       });
@@ -103,7 +101,7 @@ public class ActionTeamVersionListDialog extends ActionTeamListDialog {
    /**
     * @return the selectedVersion
     */
-   public VersionArtifact getSelectedVersion() {
+   public IAtsVersion getSelectedVersion() {
       return selectedVersion;
    }
 

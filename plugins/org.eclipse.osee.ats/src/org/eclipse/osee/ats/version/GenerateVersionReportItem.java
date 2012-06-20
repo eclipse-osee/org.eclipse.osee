@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.version;
 
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ats.core.client.version.VersionArtifact;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamVersionListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -33,7 +33,7 @@ public class GenerateVersionReportItem extends XNavigateItemAction {
       TeamVersionListDialog ld = new TeamVersionListDialog(Active.Both);
       int result = ld.open();
       if (result == 0) {
-         VersionArtifact verArt = (VersionArtifact) ld.getSelectedVersion();
+         IAtsVersion verArt = ld.getSelectedVersion();
          String title = ld.getSelectedTeamDef().getName() + " Version \"" + verArt.getName() + "\" Report";
          VersionReportJob job = new VersionReportJob(title, verArt);
          job.setUser(true);

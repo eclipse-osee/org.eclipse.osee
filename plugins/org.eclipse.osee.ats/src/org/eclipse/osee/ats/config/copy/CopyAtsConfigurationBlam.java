@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.config.copy;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.util.widgets.XActionableItemCombo;
 import org.eclipse.osee.ats.util.widgets.XTeamDefinitionCombo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -58,12 +58,12 @@ public class CopyAtsConfigurationBlam extends AbstractBlam {
       return builder.toString();
    }
 
-   private TeamDefinitionArtifact getSelectedTeamDefinition() {
-      return (TeamDefinitionArtifact) xTeamDefinitionCombo.getSelectedTeamDef();
+   private IAtsTeamDefinition getSelectedTeamDefinition() {
+      return (IAtsTeamDefinition) xTeamDefinitionCombo.getSelectedTeamDef();
    }
 
-   private ActionableItemArtifact getSelectedActionableItem() {
-      return (ActionableItemArtifact) xActionableItemCombo.getSelectedAi();
+   private IAtsActionableItem getSelectedActionableItem() {
+      return xActionableItemCombo.getSelectedAi();
    }
 
    @Override
@@ -85,7 +85,7 @@ public class CopyAtsConfigurationBlam extends AbstractBlam {
          new CopyAtsValidation(data, resultData).validate();
          if (resultData.isErrors() || !data.isPersistChanges()) {
             resultData.log("Validation Complete");
-            XResultDataUI.report(resultData,getName());
+            XResultDataUI.report(resultData, getName());
             return;
          }
 

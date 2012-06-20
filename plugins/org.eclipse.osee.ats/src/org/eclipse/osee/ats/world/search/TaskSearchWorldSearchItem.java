@@ -16,17 +16,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
-import org.eclipse.osee.ats.core.client.task.TaskArtifact;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.config.VersionsClient;
+import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
+import org.eclipse.osee.ats.core.client.task.TaskArtifact;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
-import org.eclipse.osee.ats.core.client.version.VersionLockedType;
-import org.eclipse.osee.ats.core.client.version.VersionReleaseType;
+import org.eclipse.osee.ats.core.config.Versions;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
+import org.eclipse.osee.ats.core.model.VersionLockedType;
+import org.eclipse.osee.ats.core.model.VersionReleaseType;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.task.ITaskEditorProvider;
 import org.eclipse.osee.ats.task.TaskEditor;
@@ -47,7 +50,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
@@ -104,8 +106,8 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
    @Override
    public Collection<? extends Artifact> getTaskEditorTaskArtifacts() throws OseeCoreException {
       List<Artifact> workflows = new ArrayList<Artifact>();
-      Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
-      Artifact verArt = getSelectedVersionArtifact();
+      Collection<IAtsTeamDefinition> teamDefs = getSelectedTeamDefinitions();
+      IAtsVersion verArt = getSelectedVersionArtifact();
       Collection<Artifact> groups = getSelectedGroups();
       IAtsUser user = getSelectedUser();
 
@@ -133,7 +135,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
 
       } // If version specified, get workflows from targeted relation
       if (verArt != null) {
-         for (Artifact art : verArt.getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow)) {
+         for (Artifact art : VersionsClient.getTargetedForTeamWorkflows(verArt)) {
             if (teamDefs.isEmpty()) {
                workflows.add(art);
             }
@@ -248,7 +250,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
    @Override
    public String getTaskEditorLabel(SearchType searchType) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
-      Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
+      Collection<IAtsTeamDefinition> teamDefs = getSelectedTeamDefinitions();
       if (teamDefs.size() > 0) {
          sb.append(" - Teams: ");
          sb.append(org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", teamDefs));
@@ -322,19 +324,19 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
             public void widgetModified(XWidget widget) {
                if (versionCombo != null) {
                   try {
-                     Collection<TeamDefinitionArtifact> teamDefArts = getSelectedTeamDefinitions();
+                     Collection<IAtsTeamDefinition> teamDefArts = getSelectedTeamDefinitions();
                      if (teamDefArts.isEmpty()) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
                      }
-                     TeamDefinitionArtifact teamDefHoldingVersions =
+                     IAtsTeamDefinition teamDefHoldingVersions =
                         teamDefArts.iterator().next().getTeamDefinitionHoldingVersions();
                      if (teamDefHoldingVersions == null) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
                      }
                      Collection<String> names =
-                        Artifacts.getNames(teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both,
+                        Versions.getNames(teamDefHoldingVersions.getVersions(VersionReleaseType.Both,
                            VersionLockedType.Both));
                      if (names.isEmpty()) {
                         versionCombo.setDataStrings(new String[] {});
@@ -396,7 +398,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       return stateCombo.getSelectedState();
    }
 
-   private Artifact getSelectedVersionArtifact() throws OseeCoreException {
+   private IAtsVersion getSelectedVersionArtifact() throws OseeCoreException {
       if (versionCombo == null) {
          return null;
       }
@@ -404,13 +406,13 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       if (!Strings.isValid(versionStr)) {
          return null;
       }
-      Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
+      Collection<IAtsTeamDefinition> teamDefs = getSelectedTeamDefinitions();
       if (teamDefs.size() > 0) {
-         TeamDefinitionArtifact teamDefHoldingVersions = teamDefs.iterator().next().getTeamDefinitionHoldingVersions();
+         IAtsTeamDefinition teamDefHoldingVersions = teamDefs.iterator().next().getTeamDefinitionHoldingVersions();
          if (teamDefHoldingVersions == null) {
             return null;
          }
-         for (Artifact versionArtifact : teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both,
+         for (IAtsVersion versionArtifact : teamDefHoldingVersions.getVersions(VersionReleaseType.Both,
             VersionLockedType.Both)) {
             if (versionArtifact.getName().equals(versionStr)) {
                return versionArtifact;
@@ -426,11 +428,11 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       }
    }
 
-   private Collection<TeamDefinitionArtifact> getSelectedTeamDefinitions() {
+   private Collection<IAtsTeamDefinition> getSelectedTeamDefinitions() {
       return teamCombo.getSelectedTeamDefintions();
    }
 
-   public void setSelectedTeamDefinitions(Collection<TeamDefinitionArtifact> selectedTeamDefs) {
+   public void setSelectedTeamDefinitions(Collection<IAtsTeamDefinition> selectedTeamDefs) {
       if (teamCombo != null) {
          teamCombo.setSelectedTeamDefs(selectedTeamDefs);
          teamCombo.notifyXModifiedListeners();

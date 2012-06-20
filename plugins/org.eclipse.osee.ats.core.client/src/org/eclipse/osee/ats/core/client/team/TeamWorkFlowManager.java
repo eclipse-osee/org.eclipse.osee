@@ -20,8 +20,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -30,6 +28,8 @@ import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.workflow.IWorkPage;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -45,7 +45,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 /**
  * Methods in support of programatically transitioning the DefaultWorkFlow through it's states. Only to be used for the
  * DefaultTeamWorkflow of Endorse->Analyze->Auth->Implement->Complete
- *
+ * 
  * @author Donald G. Dunne
  */
 public class TeamWorkFlowManager {
@@ -61,7 +61,7 @@ public class TeamWorkFlowManager {
    /**
     * Quickly transition to a state with minimal metrics and data entered. Should only be used for automated transition
     * for things such as developmental testing and demos.
-    *
+    * 
     * @param user User to transition to OR null if should use user of current state
     */
    public Result transitionTo(TeamState toState, IAtsUser user, boolean popup, SkynetTransaction transaction) throws OseeCoreException {
@@ -261,7 +261,7 @@ public class TeamWorkFlowManager {
       return teamArt.getBranchName();
    }
 
-   public static ITeamWorkflowProvider getTeamWorkflowProvider(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) {
+   public static ITeamWorkflowProvider getTeamWorkflowProvider(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems) {
       for (ITeamWorkflowProvider teamExtension : TeamWorkflowProviders.getAtsTeamWorkflowProviders()) {
          boolean isResponsible = false;
          try {
@@ -276,7 +276,7 @@ public class TeamWorkFlowManager {
       return null;
    }
 
-   public static IArtifactType getTeamWorkflowArtifactType(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException {
+   public static IArtifactType getTeamWorkflowArtifactType(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems) throws OseeCoreException {
       IArtifactType teamWorkflowArtifactType = AtsArtifactTypes.TeamWorkflow;
       ITeamWorkflowProvider teamWorkflowProvider = getTeamWorkflowProvider(teamDef, actionableItems);
       if (teamWorkflowProvider != null) {
@@ -300,4 +300,5 @@ public class TeamWorkFlowManager {
          getTeamWorkflowArtifactTypesRecursive(ArtifactTypeManager.getType(child), allArtifactTypes);
       }
    }
+
 }

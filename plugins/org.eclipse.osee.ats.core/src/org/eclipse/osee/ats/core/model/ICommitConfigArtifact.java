@@ -8,10 +8,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.commit;
+package org.eclipse.osee.ats.core.model;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 
 /**
@@ -19,12 +18,12 @@ import org.eclipse.osee.framework.core.util.Result;
  */
 public interface ICommitConfigArtifact {
 
-   public Branch getParentBranch() throws OseeCoreException;
+   public String getBaslineBranchGuid() throws OseeCoreException;
 
-   public Result isCommitBranchAllowed() throws OseeCoreException;
+   public Result isAllowCommitBranchInherited() throws OseeCoreException;
 
-   public Result isCreateBranchAllowed() throws OseeCoreException;
+   public Result isAllowCreateBranchInherited() throws OseeCoreException;
 
-   public String getFullDisplayName() throws OseeCoreException;
+   public String getCommitFullDisplayName() throws OseeCoreException;
 
 }

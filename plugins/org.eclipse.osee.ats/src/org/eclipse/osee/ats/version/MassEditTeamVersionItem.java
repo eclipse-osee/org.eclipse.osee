@@ -11,10 +11,10 @@
 
 package org.eclipse.osee.ats.version;
 
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
-import org.eclipse.osee.ats.core.client.util.AtsCacheManager;
+import org.eclipse.osee.ats.core.client.config.AtsObjectsClient;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -36,8 +36,8 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 public class MassEditTeamVersionItem extends XNavigateItemAction {
 
    private final String teamDefName;
-   private final TeamDefinitionArtifact teamDef;
-   private TeamDefinitionArtifact selectedTeamDef;
+   private final IAtsTeamDefinition teamDef;
+   private IAtsTeamDefinition selectedTeamDef;
 
    public MassEditTeamVersionItem(XNavigateItem parent, String teamDefName, KeyedImage oseeImage) {
       this("Show Team Versions", parent, teamDefName, oseeImage);
@@ -49,17 +49,17 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
       this.teamDef = null;
    }
 
-   public MassEditTeamVersionItem(XNavigateItem parent, TeamDefinitionArtifact teamDef, KeyedImage oseeImage) {
+   public MassEditTeamVersionItem(XNavigateItem parent, IAtsTeamDefinition teamDef, KeyedImage oseeImage) {
       this("Show Team Versions", parent, teamDef, oseeImage);
    }
 
-   public MassEditTeamVersionItem(String name, XNavigateItem parent, TeamDefinitionArtifact teamDef, KeyedImage oseeImage) {
+   public MassEditTeamVersionItem(String name, XNavigateItem parent, IAtsTeamDefinition teamDef, KeyedImage oseeImage) {
       super(parent, name, oseeImage);
       this.teamDef = teamDef;
       this.teamDefName = null;
    }
 
-   private TeamDefinitionArtifact getTeamDefinition() throws OseeCoreException {
+   private IAtsTeamDefinition getTeamDefinition() throws OseeCoreException {
       if (selectedTeamDef != null) {
          return selectedTeamDef;
       }
@@ -67,21 +67,20 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
          return teamDef;
       }
       if (Strings.isValid(teamDefName)) {
-         TeamDefinitionArtifact teamDef =
-            (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(AtsArtifactTypes.TeamDefinition, teamDefName);
+         IAtsTeamDefinition teamDef = AtsConfigCache.getSoleByName(teamDefName, IAtsTeamDefinition.class);
          if (teamDef != null) {
             return teamDef;
          }
       }
       TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
       try {
-         ld.setInput(TeamDefinitionManager.getTeamReleaseableDefinitions(Active.Active));
+         ld.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Active));
       } catch (MultipleAttributesExist ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       int result = ld.open();
       if (result == 0) {
-         return (TeamDefinitionArtifact) ld.getResult()[0];
+         return (IAtsTeamDefinition) ld.getResult()[0];
       }
       return null;
    }
@@ -89,7 +88,7 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       try {
-         TeamDefinitionArtifact teamDef = getTeamDefinition();
+         IAtsTeamDefinition teamDef = getTeamDefinition();
          if (teamDef == null) {
             return;
          }
@@ -97,7 +96,8 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
             AWorkbench.popup("ERROR", "Team is not configured to use versions.");
             return;
          }
-         MassArtifactEditor.editArtifacts(getName(), teamDef.getTeamDefinitionHoldingVersions().getVersionsArtifacts());
+         MassArtifactEditor.editArtifacts(getName(),
+            AtsObjectsClient.getArtifacts(teamDef.getTeamDefinitionHoldingVersions().getVersions()));
          selectedTeamDef = null;
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -107,7 +107,7 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
    /**
     * @param selectedTeamDef the selectedTeamDef to set
     */
-   public void setSelectedTeamDef(TeamDefinitionArtifact selectedTeamDef) {
+   public void setSelectedTeamDef(IAtsTeamDefinition selectedTeamDef) {
       this.selectedTeamDef = selectedTeamDef;
    }
 

@@ -22,15 +22,16 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.ats.artifact.VersionManager;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
-import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.task.TaskEditor;
@@ -401,7 +402,7 @@ public class AtsNavigateItemsToWorldViewTest {
    public void testTeamWorkflowSearch() throws Exception {
       SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
 
-      List<TeamDefinitionArtifact> selectedTeamDefs = TeamDefinitionManager.getTeamTopLevelDefinitions(Active.Active);
+      List<IAtsTeamDefinition> selectedTeamDefs = TeamDefinitions.getTeamTopLevelDefinitions(Active.Active);
       WorldEditor.closeAll();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Team Workflow Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof TeamWorkflowSearchWorkflowSearchItem);
@@ -419,7 +420,7 @@ public class AtsNavigateItemsToWorldViewTest {
       List<String> teamDefs = new ArrayList<String>();
       teamDefs.add("SAW Test");
       teamDefs.add("SAW Design");
-      Set<TeamDefinitionArtifact> tda = TeamDefinitionManager.getTeamDefinitions(teamDefs);
+      Set<IAtsTeamDefinition> tda = TeamDefinitions.getTeamDefinitions(teamDefs);
       runGeneralTeamWorkflowSearchOnTeamTest(item, tda, 3);
       runGeneralTeamWorkflowSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_1.getName(), 0);
       runGeneralTeamWorkflowSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_2.getName(), 3);
@@ -442,7 +443,7 @@ public class AtsNavigateItemsToWorldViewTest {
       runGeneralTeamWorkflowSearchTest(item, expectedNum);
    }
 
-   private void runGeneralTeamWorkflowSearchOnTeamTest(XNavigateItem item, Collection<TeamDefinitionArtifact> selectedTeamDefs, int expectedNum) throws Exception {
+   private void runGeneralTeamWorkflowSearchOnTeamTest(XNavigateItem item, Collection<IAtsTeamDefinition> selectedTeamDefs, int expectedNum) throws Exception {
       // need to set team selected users
       WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
       IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
@@ -488,7 +489,7 @@ public class AtsNavigateItemsToWorldViewTest {
 
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Actionable Item Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ActionableItemWorldSearchItem);
-      ((ActionableItemWorldSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedActionItems(ActionableItemManagerCore.getActionableItems(Arrays.asList("SAW Code")));
+      ((ActionableItemWorldSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedActionItems(ActionableItems.getActionableItems(Arrays.asList("SAW Code")));
       // normal searches copy search item which would clear out the set value above; for this test, don't copy item
       runGeneralLoadingTest(item, AtsArtifactTypes.TeamWorkflow, 3, null, TableLoadOption.DontCopySearchItem);
       TestUtil.severeLoggingEnd(monitor);
@@ -502,8 +503,8 @@ public class AtsNavigateItemsToWorldViewTest {
       // First one is the global one
       XNavigateItem item = items.iterator().next();
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof VersionTargetedForTeamSearchItem);
-      ((VersionTargetedForTeamSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedVersionArt(VersionManager.getVersions(
-         Arrays.asList(DemoSawBuilds.SAW_Bld_2.getName())).iterator().next());
+      IAtsVersion version = AtsConfigCache.getSoleByName(DemoSawBuilds.SAW_Bld_2.getName(), IAtsVersion.class);
+      ((VersionTargetedForTeamSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedVersionArt(version);
       runGeneralLoadingTest(item, AtsArtifactTypes.TeamWorkflow, 14, null, TableLoadOption.DontCopySearchItem);
       TestUtil.severeLoggingEnd(monitor);
    }
@@ -516,7 +517,7 @@ public class AtsNavigateItemsToWorldViewTest {
       // First one is the global one
       XNavigateItem item = items.iterator().next();
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof NextVersionSearchItem);
-      ((NextVersionSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedTeamDef(TeamDefinitionManager.getTeamDefinitions(
+      ((NextVersionSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedTeamDef(TeamDefinitions.getTeamDefinitions(
          Arrays.asList("SAW SW")).iterator().next());
       runGeneralLoadingTest(item, AtsArtifactTypes.TeamWorkflow, 14, null, TableLoadOption.DontCopySearchItem);
       TestUtil.severeLoggingEnd(monitor);
@@ -672,14 +673,16 @@ public class AtsNavigateItemsToWorldViewTest {
 
    private void verifyXColumns(ITableLabelProvider labelProv, Collection<Artifact> arts, List<XViewerColumn> columns) {
       for (XViewerColumn xCol : columns) {
-         verifyArtifact(labelProv, arts, getXViewer().getCustomizeMgr().getColumnNumFromXViewerColumn(xCol));
+         verifyArtifact(xCol, labelProv, arts, getXViewer().getCustomizeMgr().getColumnNumFromXViewerColumn(xCol));
       }
    }
 
-   private void verifyArtifact(ITableLabelProvider labelProv, Collection<Artifact> arts, int colIndex) {
+   private void verifyArtifact(XViewerColumn xCol, ITableLabelProvider labelProv, Collection<Artifact> arts, int colIndex) {
       for (Artifact art : arts) {
          String colText = labelProv.getColumnText(art, colIndex);
-         NavigateTestUtil.testExpectedVersusActual("No Error in XCol expected", true, !colText.contains("!Error"));
+         NavigateTestUtil.testExpectedVersusActual(
+            "No Error expected in XCol [" + xCol.getName() + "] but got [" + colText + "]", true,
+            !colText.contains("!Error"));
       }
    }
 

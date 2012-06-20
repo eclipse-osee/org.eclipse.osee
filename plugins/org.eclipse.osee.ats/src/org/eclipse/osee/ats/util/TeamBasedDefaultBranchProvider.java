@@ -10,17 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IDefaultInitialBranchesProvider;
 
 /**
@@ -32,13 +36,15 @@ public class TeamBasedDefaultBranchProvider implements IDefaultInitialBranchesPr
    public Collection<Branch> getDefaultInitialBranches() throws OseeCoreException {
       IAtsUser user = AtsUsersClient.getUser();
       try {
-         Collection<TeamDefinitionArtifact> teams =
-            AtsUsersClient.getOseeUser(user).getRelatedArtifacts(AtsRelationTypes.TeamMember_Team, TeamDefinitionArtifact.class);
+         Collection<IAtsTeamDefinition> teams = new ArrayList<IAtsTeamDefinition>();
+         for (Artifact art : AtsUsersClient.getOseeUser(user).getRelatedArtifacts(AtsRelationTypes.TeamMember_Team)) {
+            teams.add(AtsConfigCache.getSoleByGuid(art.getGuid(), IAtsTeamDefinition.class));
+         }
          Collection<Branch> branches = new LinkedList<Branch>();
 
          Branch branch;
-         for (TeamDefinitionArtifact team : teams) {
-            branch = team.getTeamBranch();
+         for (IAtsTeamDefinition team : teams) {
+            branch = BranchManager.getBranchByGuid(team.getTeamBranchGuid());
             if (branch != null) {
                branches.add(branch);
             }
@@ -51,5 +57,4 @@ public class TeamBasedDefaultBranchProvider implements IDefaultInitialBranchesPr
 
       return Collections.emptyList();
    }
-
 }

@@ -12,22 +12,21 @@ package org.eclipse.osee.ats.core.client.notify;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.email.EmailGroup;
 import org.eclipse.osee.framework.skynet.core.utility.INotificationManager;
@@ -55,7 +54,7 @@ public class AtsNotificationManager {
    }
 
    /**
-    * Handle notifications for subscription by TeamDefinition and ActionableItem
+    * Handle notifications for subscription by IAtsTeamDefinition and ActionableItem
     */
    public static void notifySubscribedByTeamOrActionableItem(TeamWorkFlowArtifact teamArt) {
       if (isInTest() || !AtsUtilCore.isEmailEnabled() || !isProduction()) {
@@ -63,27 +62,29 @@ public class AtsNotificationManager {
       }
       boolean notificationAdded = false;
       try {
+
+         Collection<IAtsUser> subscribedUsers = new HashSet<IAtsUser>();
          // Handle Team Definitions
-         Collection<User> subscribedUsers =
-            Collections.castAll(teamArt.getTeamDefinition().getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User));
+         IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
+         subscribedUsers.addAll(teamDef.getSubscribed());
          if (subscribedUsers.size() > 0) {
             notificationAdded = true;
             getNotificationManager().addNotificationEvent(
                new OseeNotificationEvent(
-                  subscribedUsers,
+                  AtsUsersClient.getOseeUsers(subscribedUsers),
                   getIdString(teamArt),
                   "Workflow Creation",
                   "You have subscribed for email notification for Team \"" + teamArt.getTeamName() + "\"; New Team Workflow created with title \"" + teamArt.getName() + "\""));
          }
 
          // Handle Actionable Items
-         for (ActionableItemArtifact aia : teamArt.getActionableItemsDam().getActionableItems()) {
-            subscribedUsers = Collections.castAll(aia.getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User));
+         for (IAtsActionableItem aia : teamArt.getActionableItemsDam().getActionableItems()) {
+            subscribedUsers = aia.getSubscribed();
             if (subscribedUsers.size() > 0) {
                notificationAdded = true;
                getNotificationManager().addNotificationEvent(
                   new OseeNotificationEvent(
-                     subscribedUsers,
+                     AtsUsersClient.getOseeUsers(subscribedUsers),
                      getIdString(teamArt),
                      "Workflow Creation",
                      "You have subscribed for email notification for Actionable Item \"" + teamArt.getTeamName() + "\"; New Team Workflow created with title \"" + teamArt.getName() + "\""));

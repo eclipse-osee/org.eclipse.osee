@@ -21,7 +21,9 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osee.ats.core.model.IAtsObject;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.util.AtsObjectLabelProvider;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -117,7 +119,7 @@ public class ArtifactSelectWizardPage extends WizardPage {
 
          artList = new ListViewer(rightComp, SWT.BORDER | SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
          artList.setContentProvider(new ArrayContentProvider());
-         artList.setLabelProvider(new ArtifactDescriptiveLabelProvider());
+         artList.setLabelProvider(new AtsObjectLabelProvider());
 
          artList.setSorter(new ViewerSorter() {
             @SuppressWarnings("unchecked")
@@ -157,13 +159,23 @@ public class ArtifactSelectWizardPage extends WizardPage {
 
       @Override
       public String getText(Object arg0) {
-         Artifact art = (Artifact) arg0;
-         if (showArtData) {
-            return String.format("%s - (%s  %s  %s)", art.getName(), art.getArtId(), art.getHumanReadableId(),
-               art.getGuid());
-         } else {
-            return art.getName();
+         if (arg0 instanceof Artifact) {
+            Artifact art = (Artifact) arg0;
+            if (showArtData) {
+               return String.format("%s - (%s  %s  %s)", art.getName(), art.getArtId(), art.getHumanReadableId(),
+                  art.getGuid());
+            } else {
+               return art.getName();
+            }
+         } else if (arg0 instanceof IAtsObject) {
+            IAtsObject art = (IAtsObject) arg0;
+            if (showArtData) {
+               return String.format("%s - (%s  %s)", art.getName(), art.getHumanReadableId(), art.getGuid());
+            } else {
+               return art.getName();
+            }
          }
+         return arg0.toString();
       }
 
       @Override

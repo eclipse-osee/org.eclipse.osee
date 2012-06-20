@@ -21,13 +21,16 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.client.config.VersionsClient;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsObject;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
+import org.eclipse.osee.ats.util.widgets.dialog.AtsObjectMultiChoiceSelect;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
@@ -39,10 +42,8 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactMultiChoiceSelect;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayout;
@@ -58,7 +59,7 @@ public class TaskMetrics extends AbstractBlam {
    private ISheetWriter excelWriter;
 
    private XHyperlabelTeamDefinitionSelection teamCombo;
-   private XArtifactMultiChoiceSelect versionsWidget;
+   private AtsObjectMultiChoiceSelect versionsWidget;
 
    public TaskMetrics() {
       metrics = new CountingMap<IAtsUser>();
@@ -84,12 +85,13 @@ public class TaskMetrics extends AbstractBlam {
 
          //IArtifactType artifctType = variableMap.getArtifactType("Artifact Type");
 
-         List<Artifact> versionArtifacts = versionsWidget.getSelected();
+         List<IAtsObject> versionArtifacts = versionsWidget.getSelected();
 
          if (!versionArtifacts.isEmpty()) {
-            Set<Artifact> teamWorkflows =
-               RelationManager.getRelatedArtifacts(versionArtifacts, 1,
-                  AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow);
+            Set<Artifact> teamWorkflows = new HashSet<Artifact>();
+            for (IAtsObject version : versionArtifacts) {
+               teamWorkflows.addAll(VersionsClient.getTargetedForTeamWorkflows((IAtsVersion) version));
+            }
 
             int counter = 0;
             for (Artifact art : teamWorkflows) {
@@ -158,7 +160,7 @@ public class TaskMetrics extends AbstractBlam {
       String widgetLabel = xWidget.getLabel();
 
       if (widgetLabel.equals("Version(s)")) {
-         versionsWidget = (XArtifactMultiChoiceSelect) xWidget;
+         versionsWidget = (AtsObjectMultiChoiceSelect) xWidget;
       }
    }
 
@@ -184,18 +186,18 @@ public class TaskMetrics extends AbstractBlam {
       @Override
       public void widgetModified(XWidget widget) {
 
-         Collection<Artifact> versions = new HashSet<Artifact>();
+         Collection<IAtsObject> versions = new HashSet<IAtsObject>();
 
-         versionsWidget.setSelectableItems(Collections.<Artifact> emptyList());
+         versionsWidget.setSelectableItems(Collections.<IAtsObject> emptyList());
 
-         for (TeamDefinitionArtifact teamDef : teamCombo.getSelectedTeamDefintions()) {
-            TeamDefinitionArtifact teamDefinitionHoldingVersions;
+         for (IAtsTeamDefinition teamDef : teamCombo.getSelectedTeamDefintions()) {
+            IAtsTeamDefinition teamDefinitionHoldingVersions;
             try {
 
                teamDefinitionHoldingVersions = teamDef.getTeamDefinitionHoldingVersions();
 
                if (teamDefinitionHoldingVersions != null) {
-                  versions.addAll(teamDefinitionHoldingVersions.getVersionsArtifacts());
+                  versions.addAll(teamDefinitionHoldingVersions.getVersions());
                }
 
             } catch (OseeCoreException ex) {

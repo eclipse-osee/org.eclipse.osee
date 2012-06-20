@@ -20,11 +20,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.client.config.VersionsClient;
+import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.version.VersionArtifact;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -34,12 +35,12 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
  */
 public class VersionTeamMetrics {
 
-   private final TeamDefinitionArtifact verTeamDef;
+   private final IAtsTeamDefinition verTeamDef;
    private final List<VersionMetrics> releasedOrderedVersions = new ArrayList<VersionMetrics>();
    private final Set<VersionMetrics> verMets = new HashSet<VersionMetrics>();
    Map<Date, VersionMetrics> relDateToVerMet = new HashMap<Date, VersionMetrics>();
 
-   public VersionTeamMetrics(TeamDefinitionArtifact verTeamDef) throws OseeCoreException {
+   public VersionTeamMetrics(IAtsTeamDefinition verTeamDef) throws OseeCoreException {
       this.verTeamDef = verTeamDef;
       loadMetrics();
    }
@@ -50,7 +51,8 @@ public class VersionTeamMetrics {
    }
 
    private void bulkLoadArtifacts() throws OseeCoreException {
-      RelationManager.getRelatedArtifacts(Arrays.asList(this.verTeamDef), 6,
+      RelationManager.getRelatedArtifacts(
+         Arrays.asList(new TeamDefinitionArtifactStore(this.verTeamDef).getArtifact()), 6,
          CoreRelationTypes.Default_Hierarchical__Child, AtsRelationTypes.TeamDefinitionToVersion_Version,
          AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, AtsRelationTypes.SmaToTask_Task,
          AtsRelationTypes.ActionToWorkflow_Action);
@@ -61,8 +63,8 @@ public class VersionTeamMetrics {
    public Collection<TeamWorkFlowArtifact> getWorkflowsOriginatedBetween(Date startDate, Date endDate) throws OseeCoreException {
       if (teamWorkflowToOrigDate == null) {
          teamWorkflowToOrigDate = new HashMap<TeamWorkFlowArtifact, Date>();
-         for (VersionArtifact verArt : verTeamDef.getVersionsArtifacts()) {
-            for (TeamWorkFlowArtifact team : verArt.getTargetedForTeamArtifacts()) {
+         for (IAtsVersion verArt : verTeamDef.getVersions()) {
+            for (TeamWorkFlowArtifact team : VersionsClient.getTargetedForTeamWorkflows(verArt)) {
                Date origDate = team.getCreatedDate();
                teamWorkflowToOrigDate.put(team, origDate);
             }
@@ -78,9 +80,9 @@ public class VersionTeamMetrics {
    }
 
    private void orderReleasedVersions() throws OseeCoreException {
-      for (VersionArtifact verArt : verTeamDef.getVersionsArtifacts()) {
+      for (IAtsVersion verArt : verTeamDef.getVersions()) {
          VersionMetrics verMet = new VersionMetrics(verArt, this);
-         Date relDate = verArt.getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null);
+         Date relDate = verArt.getReleaseDate();
          if (relDate != null) {
             relDateToVerMet.put(relDate, verMet);
          }
@@ -96,7 +98,7 @@ public class VersionTeamMetrics {
    /**
     * @return the verTeamDef
     */
-   public TeamDefinitionArtifact getVerTeamDef() {
+   public IAtsTeamDefinition getVerTeamDef() {
       return verTeamDef;
    }
 

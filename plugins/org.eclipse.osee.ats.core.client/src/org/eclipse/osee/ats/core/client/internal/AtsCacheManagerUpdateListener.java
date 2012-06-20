@@ -15,14 +15,16 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsCacheManager;
+import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.event.EventUtil;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
@@ -36,6 +38,15 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
  * @author Donald G. Dunne
  */
 public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
+
+   public static AtsCacheManagerUpdateListener updateListener = null;
+
+   public static void start() {
+      if (updateListener == null) {
+         updateListener = new AtsCacheManagerUpdateListener();
+         OseeEventManager.addPriorityListener(updateListener);
+      }
+   }
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
@@ -51,15 +62,16 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
    }
 
    private void processRelations(ArtifactEvent artifactEvent) {
+      // TODO AtsBulkLoad.reloadConfig(false) if config relation modified
       for (EventBasicGuidRelation guidRel : artifactEvent.getRelations()) {
          try {
             if (guidRel.is(AtsRelationTypes.SmaToTask_Task)) {
                for (TaskArtifact taskArt : ArtifactCache.getActive(guidRel, TaskArtifact.class)) {
-                  AtsCacheManager.decache(taskArt.getParent());
+                  AtsTaskCache.decache(taskArt.getParent());
                }
                for (Artifact artifact : ArtifactCache.getActive(guidRel)) {
                   if (artifact instanceof AbstractTaskableArtifact) {
-                     AtsCacheManager.decache(artifact);
+                     AtsTaskCache.decache(artifact);
                   }
                }
             }
@@ -71,34 +83,54 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
 
    private void processArtifacts(ArtifactEvent artifactEvent) {
       for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {
+         if (isConfigArtifactType(guidArt)) {
+            AtsBulkLoad.reloadConfig(false);
+            continue;
+         }
+      }
+      for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {
          try {
             if (guidArt.is(EventModType.Deleted, EventModType.Purged)) {
-               if (guidArt.is(AtsArtifactTypes.Task) && guidArt.is(EventModType.Deleted)) {
-                  Artifact artifact = ArtifactCache.getActive(guidArt);
-                  if (artifact != null) {
-                     AtsCacheManager.decache(artifact.getParent());
-                  }
-               }
-               Artifact artifact = ArtifactCache.getActive(guidArt);
-               if (artifact instanceof AbstractTaskableArtifact) {
-                  AtsCacheManager.decache(artifact);
-               }
+               handleTaskCacheForDeletedPurged(guidArt);
             }
             if (guidArt.is(EventModType.Added, EventModType.Modified)) {
-               // Only process if in cache
-               Artifact artifact = ArtifactCache.getActive(guidArt);
-               if (artifact != null && guidArt.is(EventModType.Added)) {
-                  if (artifact.isOfType(AtsArtifactTypes.Task)) {
-                     AtsCacheManager.decache(artifact.getParent());
-                  }
-                  if (artifact instanceof AbstractTaskableArtifact) {
-                     AtsCacheManager.decache(artifact);
-                  }
-               }
+               handleTaskCacheForAddedModified(guidArt);
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
+      }
+   }
+
+   private boolean isConfigArtifactType(EventBasicGuidArtifact guidArt) {
+      return guidArt.getArtTypeGuid().equals(AtsArtifactTypes.Version.getGuid()) || guidArt.getArtTypeGuid().equals(
+         AtsArtifactTypes.TeamDefinition.getGuid()) || guidArt.getArtTypeGuid().equals(
+         AtsArtifactTypes.ActionableItem.getGuid());
+   }
+
+   private void handleTaskCacheForAddedModified(EventBasicGuidArtifact guidArt) throws OseeCoreException {
+      // Only process if in cache
+      Artifact artifact = ArtifactCache.getActive(guidArt);
+      if (artifact != null && guidArt.is(EventModType.Added)) {
+         if (artifact.isOfType(AtsArtifactTypes.Task)) {
+            AtsTaskCache.decache(artifact.getParent());
+         }
+         if (artifact instanceof AbstractTaskableArtifact) {
+            AtsTaskCache.decache(artifact);
+         }
+      }
+   }
+
+   private void handleTaskCacheForDeletedPurged(EventBasicGuidArtifact guidArt) throws OseeCoreException {
+      if (guidArt.is(AtsArtifactTypes.Task) && guidArt.is(EventModType.Deleted)) {
+         Artifact artifact = ArtifactCache.getActive(guidArt);
+         if (artifact != null) {
+            AtsTaskCache.decache(artifact.getParent());
+         }
+      }
+      Artifact artifact = ArtifactCache.getActive(guidArt);
+      if (artifact instanceof AbstractTaskableArtifact) {
+         AtsTaskCache.decache(artifact);
       }
    }
 

@@ -7,7 +7,7 @@ package org.eclipse.osee.ats.core.model;
 
 /**
  * Base class to build all ats config and action objects on
- *
+ * 
  * @author Donald G. Dunne
  */
 public interface IAtsObject {

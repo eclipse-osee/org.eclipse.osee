@@ -13,9 +13,9 @@ package org.eclipse.osee.ats.world.search;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -30,16 +30,16 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.RelationCriteria;
 public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
    private final boolean returnActions;
    private final Collection<String> pcrIds;
-   private final Collection<TeamDefinitionArtifact> teamDefs;
+   private final Collection<IAtsTeamDefinition> teamDefs;
 
-   public LegacyPCRActionsWorldSearchItem(Collection<String> pcrIds, Collection<TeamDefinitionArtifact> teamDefs, boolean returnActions) {
+   public LegacyPCRActionsWorldSearchItem(Collection<String> pcrIds, Collection<IAtsTeamDefinition> teamDefs, boolean returnActions) {
       super("");
       this.pcrIds = pcrIds;
       this.teamDefs = teamDefs;
       this.returnActions = returnActions;
    }
 
-   public LegacyPCRActionsWorldSearchItem(Collection<TeamDefinitionArtifact> teamDefs, boolean returnActions) {
+   public LegacyPCRActionsWorldSearchItem(Collection<IAtsTeamDefinition> teamDefs, boolean returnActions) {
       this(null, teamDefs, returnActions);
    }
 
@@ -56,7 +56,7 @@ public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
 
       if (teamDefs != null && teamDefs.size() > 0) {
          List<String> teamDefGuids = new ArrayList<String>(teamDefs.size());
-         for (TeamDefinitionArtifact teamDef : teamDefs) {
+         for ( IAtsTeamDefinition teamDef : teamDefs) {
             teamDefGuids.add(teamDef.getGuid());
          }
          criteria.add(new AttributeCriteria(AtsAttributeTypes.TeamDefinition, teamDefGuids));

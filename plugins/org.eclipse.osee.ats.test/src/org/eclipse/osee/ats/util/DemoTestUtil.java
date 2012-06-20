@@ -20,16 +20,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManagerCore;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
+import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IUserToken;
@@ -97,8 +98,8 @@ public class DemoTestUtil {
    public static TeamWorkFlowArtifact createSimpleAction(String title, SkynetTransaction transaction) throws OseeCoreException {
       Artifact actionArt =
          ActionManager.createAction(null, title, "Description", ChangeType.Improvement, "2", false, null,
-            ActionableItemManagerCore.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
-            new Date(), AtsUsersClient.getUser(), null, transaction);
+            ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())), new Date(),
+            AtsUsersClient.getUser(), null, transaction);
 
       TeamWorkFlowArtifact teamArt = null;
       for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
@@ -109,18 +110,17 @@ public class DemoTestUtil {
       return teamArt;
    }
 
-   public static Set<ActionableItemArtifact> getActionableItems(DemoActionableItems demoActionableItems) {
-      return ActionableItemManagerCore.getActionableItems(Arrays.asList(demoActionableItems.getName()));
+   public static Set<IAtsActionableItem> getActionableItems(DemoActionableItems demoActionableItems) {
+      return ActionableItems.getActionableItems(Arrays.asList(demoActionableItems.getName()));
    }
 
-   public static ActionableItemArtifact getActionableItem(DemoActionableItems demoActionableItems) {
+   public static IAtsActionableItem getActionableItem(DemoActionableItems demoActionableItems) {
       return getActionableItems(demoActionableItems).iterator().next();
    }
 
    public static TeamWorkFlowArtifact addTeamWorkflow(Artifact actionArt, String title, SkynetTransaction transaction) throws OseeCoreException {
-      Set<ActionableItemArtifact> actionableItems = getActionableItems(DemoActionableItems.SAW_Test);
-      ;
-      Collection<TeamDefinitionArtifact> teamDefs = TeamDefinitionManagerCore.getImpactedTeamDefs(actionableItems);
+      Set<IAtsActionableItem> actionableItems = getActionableItems(DemoActionableItems.SAW_Test);
+      Collection<IAtsTeamDefinition> teamDefs = TeamDefinitions.getImpactedTeamDefs(actionableItems);
 
       ActionManager.createTeamWorkflow(actionArt, teamDefs.iterator().next(), actionableItems,
          Arrays.asList(AtsUsersClient.getUser()), transaction, new Date(), AtsUsersClient.getUser(), null);
@@ -142,7 +142,8 @@ public class DemoTestUtil {
       for (int x = 1; x < numTasks + 1; x++) {
          names.add(title + " " + x);
       }
-      return teamArt.createTasks(names, Arrays.asList(AtsUsersClient.getUser()), new Date(), AtsUsersClient.getUser(), transaction);
+      return teamArt.createTasks(names, Arrays.asList(AtsUsersClient.getUser()), new Date(), AtsUsersClient.getUser(),
+         transaction);
    }
 
    public static TeamWorkFlowArtifact getToolsTeamWorkflow() throws OseeCoreException {
@@ -216,14 +217,14 @@ public class DemoTestUtil {
 
    }
 
-   public static TeamDefinitionArtifact getTeamDef(DemoTeam team) throws OseeCoreException {
+   public static IAtsTeamDefinition getTeamDef(DemoTeam team) throws OseeCoreException {
       // Add check to keep exception from occurring for OSEE developers running against production
       if (ClientSessionManager.isProductionDataStore()) {
          return null;
       }
       try {
-         return (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition,
-            team.name().replaceAll("_", " "), AtsUtil.getAtsBranch());
+         String name = team.name().replaceAll("_", " ");
+         return AtsConfigCache.getSoleByName(name, IAtsTeamDefinition.class);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.client.actions;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -19,6 +19,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface ISelectedTeamDefinitionArtifacts {
 
-   Collection<TeamDefinitionArtifact> getSelectedTeamDefinitions() throws OseeCoreException;
+   Collection<IAtsTeamDefinition> getSelectedTeamDefinitions() throws OseeCoreException;
 
 }

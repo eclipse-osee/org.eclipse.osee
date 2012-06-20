@@ -10,20 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -32,22 +30,10 @@ import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
-public class ActionableItemManager {
-
-   public static Set<ActionableItemArtifact> getAIsFromItemAndChildren(ActionableItemArtifact aia) throws OseeCoreException {
-      Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
-      aias.add(aia);
-      for (Artifact art : aia.getChildren()) {
-         if (art instanceof ActionableItemArtifact) {
-            aias.addAll(getAIsFromItemAndChildren((ActionableItemArtifact) art));
-         }
-      }
-      return aias;
-   }
+public class EditActionableItems {
 
    public static Result editActionableItems(ActionArtifact actionArt) throws OseeCoreException {
       final AICheckTreeDialog diag =
@@ -63,9 +49,9 @@ public class ActionableItemManager {
 
       // ensure that at least one actionable item exists for each team after aias added/removed
       for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
-         Set<ActionableItemArtifact> currentAias = team.getActionableItemsDam().getActionableItems();
-         Collection<ActionableItemArtifact> checkedAias = diag.getChecked();
-         for (ActionableItemArtifact aia : new CopyOnWriteArrayList<ActionableItemArtifact>(currentAias)) {
+         Set<IAtsActionableItem> currentAias = team.getActionableItemsDam().getActionableItems();
+         Collection<IAtsActionableItem> checkedAias = diag.getChecked();
+         for (IAtsActionableItem aia : new CopyOnWriteArrayList<IAtsActionableItem>(currentAias)) {
             if (!checkedAias.contains(aia)) {
                currentAias.remove(aia);
             }
@@ -84,13 +70,13 @@ public class ActionableItemManager {
       IAtsUser createdBy = AtsUsersClient.getUser();
 
       // Add new aias
-      for (ActionableItemArtifact aia : diag.getChecked()) {
+      for (IAtsActionableItem aia : diag.getChecked()) {
          Result result = addActionableItemToTeamsOrAddTeams(actionArt, aia, createdDate, createdBy, transaction);
          sb.append(result.getText());
       }
       // Remove unchecked aias
       for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
-         for (ActionableItemArtifact aia : team.getActionableItemsDam().getActionableItems()) {
+         for (IAtsActionableItem aia : team.getActionableItemsDam().getActionableItems()) {
             if (!diag.getChecked().contains(aia)) {
                team.getActionableItemsDam().removeActionableItem(aia);
             }
@@ -102,9 +88,9 @@ public class ActionableItemManager {
       return new Result(true, sb.toString());
    }
 
-   public static Result addActionableItemToTeamsOrAddTeams(Artifact actionArt, ActionableItemArtifact aia, Date createdDate, IAtsUser createdBy, SkynetTransaction transaction) throws OseeCoreException {
+   public static Result addActionableItemToTeamsOrAddTeams(Artifact actionArt, IAtsActionableItem aia, Date createdDate, IAtsUser createdBy, SkynetTransaction transaction) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
-      for (TeamDefinitionArtifact tda : TeamDefinitionManagerCore.getImpactedTeamDefs(Arrays.asList(aia))) {
+      for (IAtsTeamDefinition tda : TeamDefinitions.getImpactedTeamDefs(Arrays.asList(aia))) {
          boolean teamExists = false;
          // Look for team workflow that is associated with this tda
          for (TeamWorkFlowArtifact teamArt : ActionManager.getTeams(actionArt)) {
@@ -125,8 +111,8 @@ public class ActionableItemManager {
          }
          if (!teamExists) {
             TeamWorkFlowArtifact teamArt =
-               ActionManager.createTeamWorkflow(actionArt, tda, Arrays.asList(aia),
-                  AtsUsers.toList(tda.getLeads()), transaction, createdDate, createdBy, null);
+               ActionManager.createTeamWorkflow(actionArt, tda, Arrays.asList(aia), AtsUsers.toList(tda.getLeads()),
+                  transaction, createdDate, createdBy, null);
             teamArt.persist(transaction);
             sb.append(aia.getName() + " => added team workflow \"" + tda.getName() + "\"\n");
          }
@@ -139,17 +125,7 @@ public class ActionableItemManager {
       if (parentAction == null) {
          return new Result("No Parent Action; Aborting");
       }
-      return ActionableItemManager.editActionableItems(parentAction);
-   }
-
-   public static Set<ActionableItemArtifact> getActionableItemsNameStartsWith(String prefix) throws OseeCoreException {
-      Set<ActionableItemArtifact> artifacts = new HashSet<ActionableItemArtifact>();
-      for (Artifact art : ArtifactQuery.getArtifactListFromName(prefix + "%", AtsUtil.getAtsBranch(), EXCLUDE_DELETED)) {
-         if (art instanceof ActionableItemArtifact) {
-            artifacts.add((ActionableItemArtifact) art);
-         }
-      }
-      return artifacts;
+      return EditActionableItems.editActionableItems(parentAction);
    }
 
 }

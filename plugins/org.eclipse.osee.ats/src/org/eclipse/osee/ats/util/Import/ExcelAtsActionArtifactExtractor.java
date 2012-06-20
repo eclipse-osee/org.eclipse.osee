@@ -26,23 +26,22 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManagerCore;
 import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.client.notify.AtsNotifyType;
 import org.eclipse.osee.ats.core.client.team.CreateTeamOption;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.util.AtsCacheManager;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
+import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -89,21 +88,21 @@ public class ExcelAtsActionArtifactExtractor {
          if (aData.title.equals("")) {
             rd.logError("Row " + rowNum + "; Invalid Title");
          }
-         Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
+         Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>();
          if (aData.actionableItems.isEmpty()) {
             rd.logError("Row " + rowNum + ": Must have at least one ActionableItem defined");
          } else {
             for (String actionableItemName : aData.actionableItems) {
                try {
-                  Collection<Artifact> aias =
-                     AtsCacheManager.getArtifactsByName(AtsArtifactTypes.ActionableItem, actionableItemName);
+                  Collection<IAtsActionableItem> aias =
+                     AtsConfigCache.getByName(actionableItemName, IAtsActionableItem.class);
                   if (aias.isEmpty()) {
                      rd.logError("Row " + rowNum + ": Couldn't find actionable item for \"" + actionableItemName + "\"");
                   } else if (aias.size() > 1) {
                      rd.logError("Row " + rowNum + ": Duplicate actionable items found with name \"" + actionableItemName + "\"");
                   }
-                  ActionableItemArtifact aia = (ActionableItemArtifact) aias.iterator().next();
-                  teamDefs.addAll(ActionableItemManagerCore.getImpactedTeamDefs(Arrays.asList(aia)));
+                  IAtsActionableItem aia = aias.iterator().next();
+                  teamDefs.addAll(ActionableItems.getImpactedTeamDefs(Arrays.asList(aia)));
                   if (teamDefs.isEmpty()) {
                      rd.logError("Row " + rowNum + ": No related Team Definition for Actionable Item\"" + actionableItemName + "\"");
                   } else if (teamDefs.size() > 1) {
@@ -118,12 +117,12 @@ public class ExcelAtsActionArtifactExtractor {
          }
          if (!aData.version.equals("")) {
             try {
-               for (TeamDefinitionArtifact teamDef : teamDefs) {
+               for (IAtsTeamDefinition teamDef : teamDefs) {
                   if (teamDef.getTeamDefinitionHoldingVersions() == null) {
                      rd.logErrorWithFormat("No Team Definitions Holding Versions found for Team Definition [%s]",
                         teamDef);
                   }
-                  if (teamDef.getTeamDefinitionHoldingVersions().getVersionArtifact(aData.version, false) == null) {
+                  if (teamDef.getTeamDefinitionHoldingVersions().getVersion(aData.version) == null) {
                      rd.logErrorWithFormat("No version [%s] configured for Team Definition [%s]", aData.version,
                         teamDef);
                   }
@@ -167,16 +166,15 @@ public class ExcelAtsActionArtifactExtractor {
             if (actionArt == null) {
                actionArt =
                   ActionManager.createAction(null, aData.title, aData.desc, ChangeType.getChangeType(aData.changeType),
-                     aData.priorityStr, false, null,
-                     ActionableItemManagerCore.getActionableItems(aData.actionableItems), createdDate, createdBy, null,
-                     transaction);
+                     aData.priorityStr, false, null, ActionableItems.getActionableItems(aData.actionableItems),
+                     createdDate, createdBy, null, transaction);
                newTeamArts = ActionManager.getTeams(actionArt);
                actionNameToAction.put(aData.title, actionArt);
                actionArts.add(actionArt);
             } else {
-               Set<ActionableItemArtifact> aias = ActionableItemManagerCore.getActionableItems(aData.actionableItems);
-               Map<TeamDefinitionArtifact, Collection<ActionableItemArtifact>> teamDefToAias = getTeamDefToAias(aias);
-               for (Entry<TeamDefinitionArtifact, Collection<ActionableItemArtifact>> entry : teamDefToAias.entrySet()) {
+               Set<IAtsActionableItem> aias = ActionableItems.getActionableItems(aData.actionableItems);
+               Map<IAtsTeamDefinition, Collection<IAtsActionableItem>> teamDefToAias = getTeamDefToAias(aias);
+               for (Entry<IAtsTeamDefinition, Collection<IAtsActionableItem>> entry : teamDefToAias.entrySet()) {
 
                   TeamWorkFlowArtifact teamWorkflow =
                      ActionManager.createTeamWorkflow(actionArt, entry.getKey(), entry.getValue(), aData.assignees,
@@ -191,14 +189,14 @@ public class ExcelAtsActionArtifactExtractor {
             }
             if (!aData.version.equals("")) {
                for (TeamWorkFlowArtifact team : newTeamArts) {
-                  Artifact verArt =
-                     team.getTeamDefinition().getTeamDefinitionHoldingVersions().getVersionArtifact(aData.version,
-                        false);
-                  if (verArt == null) {
+                  IAtsVersion version =
+                     team.getTeamDefinition().getTeamDefinitionHoldingVersions().getVersion(aData.version);
+                  if (version == null) {
                      throw new OseeArgumentException("No version [%s] configured for Team Definition [%s]",
                         aData.version, team.getTeamDefinition());
                   }
-                  verArt.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, team);
+                  team.setTargetedVersion(version);
+                  team.setTargetedVersionLink(version);
                }
             }
             if (aData.estimatedHours != null) {
@@ -229,12 +227,11 @@ public class ExcelAtsActionArtifactExtractor {
       }
    }
 
-   public Map<TeamDefinitionArtifact, Collection<ActionableItemArtifact>> getTeamDefToAias(Collection<ActionableItemArtifact> aias) throws OseeCoreException {
-      Map<TeamDefinitionArtifact, Collection<ActionableItemArtifact>> teamDefToAias =
-         new HashMap<TeamDefinitionArtifact, Collection<ActionableItemArtifact>>();
-      for (ActionableItemArtifact aia : aias) {
-         TeamDefinitionArtifact teamDef =
-            TeamDefinitionManagerCore.getImpactedTeamDefs(Arrays.asList(aia)).iterator().next();
+   public Map<IAtsTeamDefinition, Collection<IAtsActionableItem>> getTeamDefToAias(Collection<IAtsActionableItem> aias) throws OseeCoreException {
+      Map<IAtsTeamDefinition, Collection<IAtsActionableItem>> teamDefToAias =
+         new HashMap<IAtsTeamDefinition, Collection<IAtsActionableItem>>();
+      for (IAtsActionableItem aia : aias) {
+         IAtsTeamDefinition teamDef = TeamDefinitions.getImpactedTeamDefs(Arrays.asList(aia)).iterator().next();
          if (teamDefToAias.containsKey(teamDef)) {
             teamDefToAias.get(teamDef).add(aia);
          } else {

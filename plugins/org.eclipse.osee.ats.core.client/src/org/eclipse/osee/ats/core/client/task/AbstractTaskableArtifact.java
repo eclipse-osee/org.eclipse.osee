@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.internal.Activator;
-import org.eclipse.osee.ats.core.client.util.AtsCacheManager;
+import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -73,11 +73,11 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
    }
 
    public Collection<TaskArtifact> getTaskArtifacts() throws OseeCoreException {
-      return AtsCacheManager.getTaskArtifacts(this);
+      return AtsTaskCache.getTaskArtifacts(this);
    }
 
    public Collection<TaskArtifact> getTaskArtifactsSorted() throws OseeCoreException {
-      return AtsCacheManager.getTaskArtifacts(this);
+      return AtsTaskCache.getTaskArtifacts(this);
    }
 
    public Collection<TaskArtifact> getTaskArtifactsFromCurrentState() throws OseeCoreException {

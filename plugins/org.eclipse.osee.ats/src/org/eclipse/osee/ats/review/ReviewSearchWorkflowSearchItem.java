@@ -16,13 +16,14 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManagerCore;
 import org.eclipse.osee.ats.core.client.review.ReviewFormalType;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
-import org.eclipse.osee.ats.core.client.version.VersionArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.config.Versions;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelActionableItemSelection;
 import org.eclipse.osee.ats.util.widgets.XReviewStateSearchCombo;
@@ -34,7 +35,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
@@ -105,7 +105,7 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
    @Override
    public String getSelectedName(SearchType searchType) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
-      Collection<ActionableItemArtifact> teamDefs = getSelectedAIs();
+      Collection<IAtsActionableItem> teamDefs = getSelectedAIs();
       if (teamDefs.size() > 0) {
          sb.append(" - AIs: ");
          sb.append(org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", teamDefs));
@@ -181,17 +181,17 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
             public void widgetModified(XWidget widget) {
                if (versionCombo != null) {
                   try {
-                     Collection<ActionableItemArtifact> aiArts = getSelectedAIs();
+                     Collection<IAtsActionableItem> aiArts = getSelectedAIs();
                      if (aiArts.isEmpty()) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
                      }
-                     Set<VersionArtifact> versions = getSelectableVersionArtifacts();
+                     Set<IAtsVersion> versions = getSelectableVersionArtifacts();
                      if (versions.isEmpty()) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
                      }
-                     Collection<String> names = Artifacts.getNames(versions);
+                     Collection<String> names = Versions.getNames(versions);
                      if (names.isEmpty()) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
@@ -274,7 +274,7 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
       }
    }
 
-   public Artifact getSelectedVersionArtifact() throws OseeCoreException {
+   public IAtsVersion getSelectedVersionArtifact() throws OseeCoreException {
       if (versionCombo == null) {
          return null;
       }
@@ -283,7 +283,7 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
          return null;
       }
 
-      for (Artifact versionArtifact : getSelectableVersionArtifacts()) {
+      for (IAtsVersion versionArtifact : getSelectableVersionArtifacts()) {
          if (versionArtifact.getName().equals(versionStr)) {
             return versionArtifact;
          }
@@ -291,14 +291,14 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
       return null;
    }
 
-   protected Set<VersionArtifact> getSelectableVersionArtifacts() throws OseeCoreException {
-      Collection<ActionableItemArtifact> aias = getSelectedAIs();
-      Set<VersionArtifact> versions = new HashSet<VersionArtifact>();
+   protected Set<IAtsVersion> getSelectableVersionArtifacts() throws OseeCoreException {
+      Collection<IAtsActionableItem> aias = getSelectedAIs();
+      Set<IAtsVersion> versions = new HashSet<IAtsVersion>();
       if (!aias.isEmpty()) {
-         for (TeamDefinitionArtifact teamDef : TeamDefinitionManagerCore.getImpactedTeamDefs(aias)) {
-            TeamDefinitionArtifact teamDefHoldingVersions = teamDef.getTeamDefinitionHoldingVersions();
+         for (IAtsTeamDefinition teamDef : TeamDefinitions.getImpactedTeamDefs(aias)) {
+            IAtsTeamDefinition teamDefHoldingVersions = teamDef.getTeamDefinitionHoldingVersions();
             if (teamDefHoldingVersions != null) {
-               versions.addAll(teamDefHoldingVersions.getVersionsArtifacts());
+               versions.addAll(teamDefHoldingVersions.getVersions());
             }
          }
       }
@@ -311,14 +311,14 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
       }
    }
 
-   public Collection<ActionableItemArtifact> getSelectedAIs() {
+   public Collection<IAtsActionableItem> getSelectedAIs() {
       if (aiCombo == null) {
          return java.util.Collections.emptyList();
       }
       return aiCombo.getSelectedActionableItems();
    }
 
-   public void setSelectedTeamDefinitions(Collection<ActionableItemArtifact> selectedAis) {
+   public void setSelectedTeamDefinitions(Collection<IAtsActionableItem> selectedAis) {
       if (aiCombo != null) {
          aiCombo.setSelectedAIs(selectedAis);
          aiCombo.notifyXModifiedListeners();
@@ -340,11 +340,11 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
    public Result isParameterSelectionValid() throws OseeCoreException {
       try {
          boolean selected = false;
-         Collection<ActionableItemArtifact> ais = getSelectedAIs();
+         Collection<IAtsActionableItem> ais = getSelectedAIs();
          if (ais.size() > 0) {
             selected = true;
          }
-         Artifact verArt = getSelectedVersionArtifact();
+         IAtsVersion verArt = getSelectedVersionArtifact();
          if (verArt != null) {
             selected = true;
          }
@@ -375,7 +375,7 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
    }
 
    @Override
-   public Artifact getTargetedVersionArtifact() throws OseeCoreException {
+   public IAtsVersion getTargetedVersionArtifact() throws OseeCoreException {
       if (versionCombo == null) {
          return null;
       }

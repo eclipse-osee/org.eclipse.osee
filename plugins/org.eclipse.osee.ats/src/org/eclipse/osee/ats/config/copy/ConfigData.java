@@ -10,23 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.copy;
 
-import java.util.List;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import java.util.Collection;
+import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public class ConfigData {
 
    String searchStr;
    String replaceStr;
-   TeamDefinitionArtifact teamDef;
-   ActionableItemArtifact actionableItem;
+   IAtsTeamDefinition teamDef;
+   IAtsActionableItem actionableItem;
    boolean retainTeamLeads;
    boolean persistChanges;
 
@@ -64,11 +61,11 @@ public class ConfigData {
       this.replaceStr = replaceStr;
    }
 
-   public TeamDefinitionArtifact getTeamDef() {
+   public IAtsTeamDefinition getTeamDef() {
       return teamDef;
    }
 
-   public void setTeamDef(TeamDefinitionArtifact teamDef) {
+   public void setTeamDef(IAtsTeamDefinition teamDef) {
       this.teamDef = teamDef;
    }
 
@@ -88,33 +85,33 @@ public class ConfigData {
       this.persistChanges = persistChanges;
    }
 
-   public TeamDefinitionArtifact getParentTeamDef() throws OseeCoreException {
-      TeamDefinitionArtifact parentTeamDef = null;
-      if (teamDef.getParent() instanceof TeamDefinitionArtifact) {
-         parentTeamDef = (TeamDefinitionArtifact) teamDef.getParent();
+   public IAtsTeamDefinition getParentTeamDef() {
+      IAtsTeamDefinition parentTeamDef = null;
+      if (teamDef.getParentTeamDef() != null) {
+         parentTeamDef = teamDef.getParentTeamDef();
       } else {
-         parentTeamDef = TeamDefinitionManager.getTopTeamDefinition();
+         parentTeamDef = TeamDefinitions.getTopTeamDefinition();
       }
       return parentTeamDef;
    }
 
-   public ActionableItemArtifact getParentActionableItem() throws OseeCoreException {
-      ActionableItemArtifact parentActionableItem = null;
+   public IAtsActionableItem getParentActionableItem() {
+      IAtsActionableItem parentActionableItem = null;
       // Determine parent actionable item if possible, otherwise use top actionable item
-      List<Artifact> fromAias = teamDef.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_ActionableItem);
+      Collection<IAtsActionableItem> fromAias = teamDef.getActionableItems();
       if (fromAias.size() == 1) {
-         parentActionableItem = (ActionableItemArtifact) fromAias.iterator().next().getParent();
+         parentActionableItem = fromAias.iterator().next().getParentActionableItem();
       } else {
-         parentActionableItem = ActionableItemManagerCore.getTopActionableItem();
+         parentActionableItem = ActionableItems.getTopActionableItem();
       }
       return parentActionableItem;
    }
 
-   public ActionableItemArtifact getActionableItem() {
+   public IAtsActionableItem getActionableItem() {
       return actionableItem;
    }
 
-   public void setActionableItem(ActionableItemArtifact actionableItem) {
+   public void setActionableItem(IAtsActionableItem actionableItem) {
       this.actionableItem = actionableItem;
    }
 

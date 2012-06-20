@@ -12,16 +12,9 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.logging.Level;
-
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.client.version.VersionArtifact;
-import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameReverseSorter;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -39,23 +32,23 @@ public class VersionListDialog extends org.eclipse.ui.dialogs.ListDialog {
 
    XCheckBox showReleased = new XCheckBox("Show Released Versions");
    VersionContentProvider versionContentProvider;
-   private final Collection<VersionArtifact> verArts;
+   private final Collection<IAtsVersion> verArts;
 
-   public VersionListDialog(String title, String message, Collection<VersionArtifact> verArts) {
+   public VersionListDialog(String title, String message, Collection<IAtsVersion> verArts) {
       super(Displays.getActiveShell());
       this.verArts = verArts;
       this.setTitle(title);
       this.setMessage(message);
       versionContentProvider = new VersionContentProvider(false);
       this.setContentProvider(versionContentProvider);
-      setLabelProvider(new VersionArtifactLabelProvider());
+      setLabelProvider(new VersionLabelProvider());
       setInput(verArts);
    }
 
    @Override
    protected Control createDialogArea(Composite container) {
       Control control = super.createDialogArea(container);
-      getTableViewer().setSorter(new ArtifactNameReverseSorter());
+      getTableViewer().setSorter(new AtsObjectNameReverseSorter());
 
       if (AtsUtilCore.isAtsAdmin()) {
          Composite comp = new Composite(control.getParent(), SWT.NONE);
@@ -95,19 +88,13 @@ public class VersionListDialog extends org.eclipse.ui.dialogs.ListDialog {
          if (inputElement instanceof Collection) {
             Collection list = (Collection) inputElement;
             Collection<Object> verArts = new LinkedList<Object>();
-            for (Object obj : list.toArray(new Artifact[list.size()])) {
-               if (obj instanceof VersionArtifact) {
-                  VersionArtifact verArt = (VersionArtifact) obj;
-                  try {
-                     if (showReleased || (!showReleased && !verArt.isReleased())) {
-                        verArts.add(verArt);
-                     }
-                  } catch (OseeCoreException ex) {
-                     OseeLog.log(Activator.class, Level.SEVERE, ex);
-                  }
+            for (Object obj : list.toArray(new IAtsVersion[list.size()])) {
+               IAtsVersion verArt = (IAtsVersion) obj;
+               if (showReleased || (!showReleased && !verArt.isReleased())) {
+                  verArts.add(verArt);
                }
             }
-            return verArts.toArray(new Artifact[verArts.size()]);
+            return verArts.toArray(new IAtsVersion[verArts.size()]);
          }
          return super.getElements(inputElement);
       }

@@ -8,10 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.version;
+package org.eclipse.osee.ats.core.model;
 
-public  enum VersionReleaseType {
-   Released,
-   UnReleased,
+public enum VersionLockedType {
+   Locked,
+   UnLocked,
    Both
 };

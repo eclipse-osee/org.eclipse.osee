@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -18,14 +19,12 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
-import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
-import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
 import org.eclipse.osee.ats.world.search.UserRelatedToAtsObjectSearch;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -70,10 +69,13 @@ public class AtsArtifactChecks extends ArtifactCheck {
    }
 
    private String checkActionableItems(Collection<Artifact> artifacts) throws OseeCoreException {
-      Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
+      Set<IAtsActionableItem> aias = new HashSet<IAtsActionableItem>();
       for (Artifact art : artifacts) {
-         if (art instanceof ActionableItemArtifact) {
-            aias.add((ActionableItemArtifact) art);
+         if (art.isOfType(AtsArtifactTypes.ActionableItem)) {
+            IAtsActionableItem aia = AtsConfigCache.getSoleByGuid(art.getGuid(), IAtsActionableItem.class);
+            if (aia != null) {
+               aias.add(aia);
+            }
          }
       }
       if (aias.size() > 0) {
@@ -88,21 +90,20 @@ public class AtsArtifactChecks extends ArtifactCheck {
    }
 
    private String checkTeamDefinitions(Collection<Artifact> artifacts) throws OseeCoreException {
-      Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
+      List<String> guids = new ArrayList<String>();
       for (Artifact art : artifacts) {
-         if (art instanceof TeamDefinitionArtifact) {
-            teamDefs.add((TeamDefinitionArtifact) art);
+         if (art.isOfType(AtsArtifactTypes.TeamDefinition)) {
+            guids.add(art.getGuid());
          }
       }
-      if (teamDefs.size() > 0) {
-
-         TeamWorldSearchItem srch =
-            new TeamWorldSearchItem("Team Def search", teamDefs, true, true, false, true, null, null,
-               ReleasedOption.Both, null);
-         if (srch.performSearchGetResults(false).size() > 0) {
+      if (guids.size() > 0) {
+         List<Artifact> artifactListFromIds =
+            ArtifactQuery.getArtifactListFromAttributeValues(AtsAttributeTypes.TeamDefinition, guids,
+               AtsUtil.getAtsBranch(), 5);
+         if (artifactListFromIds.size() > 0) {
             return String.format(
                "Team Definition (or children Team Definitions) [%s] selected to delete have related Team Workflows; Delete or re-assign Team Workflows first.",
-               teamDefs);
+               guids);
          }
       }
       return null;
@@ -133,7 +134,8 @@ public class AtsArtifactChecks extends ArtifactCheck {
       }
       for (User user : users) {
          UserRelatedToAtsObjectSearch srch =
-            new UserRelatedToAtsObjectSearch("User search", AtsUsersClient.getUserFromOseeUser(user), false, LoadView.None);
+            new UserRelatedToAtsObjectSearch("User search", AtsUsersClient.getUserFromOseeUser(user), false,
+               LoadView.None);
          if (srch.performSearchGetResults().size() > 0) {
             return String.format(
                "User name: \"%s\" userId: \"%s\" selected to delete has related ATS Objects; Un-relate to ATS first before deleting.",

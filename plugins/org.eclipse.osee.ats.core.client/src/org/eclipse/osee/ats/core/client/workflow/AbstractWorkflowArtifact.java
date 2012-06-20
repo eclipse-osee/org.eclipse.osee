@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.artifact.AbstractAtsArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.client.notify.AtsNotifyType;
@@ -34,7 +33,6 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.version.TargetedVersionUtil;
-import org.eclipse.osee.ats.core.client.version.VersionArtifact;
 import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.client.workflow.log.ArtifactLog;
 import org.eclipse.osee.ats.core.client.workflow.log.AtsLog;
@@ -43,7 +41,9 @@ import org.eclipse.osee.ats.core.client.workflow.log.LogType;
 import org.eclipse.osee.ats.core.client.workflow.note.ArtifactNote;
 import org.eclipse.osee.ats.core.client.workflow.note.AtsNote;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.core.model.IAtsWorkData;
 import org.eclipse.osee.ats.core.model.IAtsWorkItem;
 import org.eclipse.osee.ats.core.model.WorkStateProvider;
@@ -133,10 +133,16 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          String completedFromState = getSoleAttributeValue(AtsAttributeTypes.CompletedFromState, "");
          if (Strings.isValid(completedFromState)) {
             StateDefinition stateDef = getWorkDefinition().getStateByName(completedFromState);
-            for (IAtsUser user : getStateMgr().getAssignees(stateDef)) {
-               if (!implementers.contains(user)) {
-                  implementers.add(user);
+            if (stateDef != null) {
+               for (IAtsUser user : getStateMgr().getAssignees(stateDef)) {
+                  if (!implementers.contains(user)) {
+                     implementers.add(user);
+                  }
                }
+            } else {
+               OseeLog.log(Activator.class, Level.SEVERE, String.format(
+                  "Invalid CompletedFromState [%s] for Worklfow [%s] and WorkDefinition [%]", completedFromState,
+                  toStringWithId(), getWorkDefinition().getName()));
             }
          }
       }
@@ -298,7 +304,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    /**
     * Return true if this artifact, it's ATS relations and any of the other side artifacts are dirty
-    *
+    * 
     * @return true if any object in SMA tree is dirty
     */
    public Result isSMAEditorDirty() {
@@ -471,8 +477,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    /**
-    * Return true if awa is TeamWorkflowArtifact or review of a team workflow and it's TeamDefinitionArtifact has rule
-    * set
+    * Return true if awa is TeamWorkflowArtifact or review of a team workflow and it's IAtsTeamDefinition has rule set
     */
    public boolean teamDefHasRule(RuleDefinitionOption option) throws OseeCoreException {
       TeamWorkFlowArtifact teamArt = null;
@@ -498,7 +503,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
     */
    public boolean isReleased() {
       try {
-         VersionArtifact verArt = getTargetedVersion();
+         IAtsVersion verArt = getTargetedVersion();
          if (verArt != null) {
             return verArt.isReleased();
          }
@@ -510,7 +515,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public boolean isVersionLocked() {
       try {
-         VersionArtifact verArt = getTargetedVersion();
+         IAtsVersion verArt = getTargetedVersion();
          if (verArt != null) {
             return verArt.isVersionLocked();
          }
@@ -520,7 +525,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return false;
    }
 
-   public VersionArtifact getTargetedVersion() throws OseeCoreException {
+   public IAtsVersion getTargetedVersion() throws OseeCoreException {
       return TargetedVersionUtil.getTargetedVersion(this);
    }
 
@@ -718,13 +723,13 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return this instanceof AbstractReviewArtifact;
    }
 
-   protected void addPrivilegedUsersUpTeamDefinitionTree(TeamDefinitionArtifact tda, Set<IAtsUser> users) throws OseeCoreException {
+   protected void addPrivilegedUsersUpTeamDefinitionTree(IAtsTeamDefinition tda, Set<IAtsUser> users) throws OseeCoreException {
       users.addAll(tda.getLeads());
       users.addAll(tda.getPrivilegedMembers());
 
       // Walk up tree to get other editors
-      if (tda.getParent() != null && tda.getParent() instanceof TeamDefinitionArtifact) {
-         addPrivilegedUsersUpTeamDefinitionTree((TeamDefinitionArtifact) tda.getParent(), users);
+      if (tda.getParentTeamDef() != null) {
+         addPrivilegedUsersUpTeamDefinitionTree(tda.getParentTeamDef(), users);
       }
    }
 

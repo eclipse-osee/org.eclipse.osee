@@ -12,6 +12,7 @@
 package org.eclipse.osee.ats.core.client.team;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -21,15 +22,18 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionArtifactRollup;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.client.config.ActionableItemManager;
+import org.eclipse.osee.ats.core.client.config.store.VersionArtifactStore;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsCacheManager;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.version.TargetedVersionUtil;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -49,22 +53,20 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IATSStateMachineArtifact {
 
    private static final Set<Integer> teamArtsWithNoAction = new HashSet<Integer>();
-   private final ActionableItemManagerCore actionableItemsDam;
+   private final ActionableItemManager actionableItemsDam;
    private boolean creatingWorkingBranch = false;
    private boolean committingWorkingBranch = false;
+   private IAtsVersion targetedVersion;
 
    public TeamWorkFlowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
-      actionableItemsDam = new ActionableItemManagerCore(this);
+      actionableItemsDam = new ActionableItemManager(this);
    }
 
    @Override
    public void getSmaArtifactsOneLevel(AbstractWorkflowArtifact smaArtifact, Set<Artifact> artifacts) throws OseeCoreException {
       super.getSmaArtifactsOneLevel(smaArtifact, artifacts);
       try {
-         if (getTargetedVersion() != null) {
-            artifacts.add(getTargetedVersion());
-         }
          artifacts.addAll(ReviewManager.getReviews(this));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -116,20 +118,21 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
       return super.getEditorTitle();
    }
 
-   public ActionableItemManagerCore getActionableItemsDam() {
+   public ActionableItemManager getActionableItemsDam() {
       return actionableItemsDam;
    }
 
-   public void setTeamDefinition(TeamDefinitionArtifact tda) throws OseeCoreException {
+   public void setTeamDefinition(IAtsTeamDefinition tda) throws OseeCoreException {
       this.setSoleAttributeValue(AtsAttributeTypes.TeamDefinition, tda.getGuid());
    }
 
-   public TeamDefinitionArtifact getTeamDefinition() throws OseeCoreException, OseeCoreException {
+   public IAtsTeamDefinition getTeamDefinition() throws OseeCoreException, OseeCoreException {
       String guid = this.getSoleAttributeValue(AtsAttributeTypes.TeamDefinition, "");
       if (!Strings.isValid(guid)) {
-         throw new OseeArgumentException("TeamWorkflow [%s] has no TeamDefinition associated.", getHumanReadableId());
+         throw new OseeArgumentException("TeamWorkflow [%s] has no IAtsTeamDefinition associated.",
+            getHumanReadableId());
       }
-      return AtsCacheManager.getTeamDefinitionArtifact(guid);
+      return AtsConfigCache.getSoleByGuid(guid, IAtsTeamDefinition.class);
    }
 
    public String getTeamName() {
@@ -251,6 +254,31 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
 
    public void setWorkingBranchCommitInProgress(boolean inProgress) {
       this.committingWorkingBranch = inProgress;
+   }
+
+   public void setTargetedVersion(IAtsVersion targetedVersion) {
+      this.targetedVersion = targetedVersion;
+   }
+
+   public void setTargetedVersionLink(IAtsVersion targetedVersion) throws OseeCoreException {
+      VersionArtifactStore store = new VersionArtifactStore(targetedVersion);
+      Artifact versionArt = store.getArtifact();
+      if (versionArt != null) {
+         setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, Collections.singleton(versionArt));
+      }
+   }
+
+   @Override
+   public IAtsVersion getTargetedVersion() {
+      return targetedVersion;
+   }
+
+   public IAtsVersion getTargetedVersionLinkAndUpdate() throws OseeCoreException {
+      IAtsVersion targetVersion = TargetedVersionUtil.getTargetedVersion(this);
+      if (targetedVersion != targetVersion) {
+         targetedVersion = targetVersion;
+      }
+      return targetedVersion;
    }
 
 }

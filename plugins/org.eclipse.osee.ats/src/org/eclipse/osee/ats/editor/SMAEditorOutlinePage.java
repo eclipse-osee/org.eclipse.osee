@@ -24,10 +24,10 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.ats.core.workdef.CompositeStateItem;
@@ -445,8 +445,8 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          // add rules from Team Definition
          if (awa.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             try {
-               TeamDefinitionArtifact teamDef = ((TeamWorkFlowArtifact) awa).getTeamDefinition();
-               for (RuleDefinition workRuleDef : teamDef.getWorkRules()) {
+               IAtsTeamDefinition teamDef = ((TeamWorkFlowArtifact) awa).getTeamDefinition();
+               for (RuleDefinition workRuleDef : teamDef.getRules()) {
                   String location = String.format("Team Definition [%s]", teamDef);
                   result.add(new RuleAndLocation(workRuleDef, location));
                   if (workRuleDef.getName().startsWith("ats")) {

@@ -21,8 +21,9 @@ import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.config.AtsConfigManager;
 import org.eclipse.osee.ats.config.AtsConfigManager.Display;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.client.config.AtsObjectsClient;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.workdef.WorkDefinition;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -40,8 +41,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.progress.UIJob;
 
 /**
- * Create new new .shape-file. Those files can be used with the ShapesEditor (see plugin.xml).
- * 
  * @author Donald G. Dunne
  */
 public class AtsConfigWizard extends Wizard implements INewWizard {
@@ -80,15 +79,15 @@ public class AtsConfigWizard extends Wizard implements INewWizard {
    private static final class OpenAtsConfigEditors implements Display {
 
       @Override
-      public void openAtsConfigurationEditors(final TeamDefinitionArtifact teamDef, final Collection<ActionableItemArtifact> aias, final WorkDefinition workDefinition) {
+      public void openAtsConfigurationEditors(final IAtsTeamDefinition teamDef, final Collection<IAtsActionableItem> aias, final WorkDefinition workDefinition) {
          Job job = new UIJob("Open Ats Configuration Editors") {
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
-               AtsUtil.openATSAction(teamDef, AtsOpenOption.OpenAll);
-               for (ActionableItemArtifact aia : aias) {
-                  AtsUtil.openATSAction(aia, AtsOpenOption.OpenAll);
-               }
                try {
+                  AtsUtil.openATSAction(AtsObjectsClient.getSoleArtifact(teamDef), AtsOpenOption.OpenAll);
+                  for (IAtsActionableItem aia : aias) {
+                     AtsUtil.openATSAction(AtsObjectsClient.getSoleArtifact(aia), AtsOpenOption.OpenAll);
+                  }
                   RendererManager.open(ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition,
                      workDefinition.getName(), AtsUtil.getAtsBranch()), PresentationType.SPECIALIZED_EDIT, monitor);
                } catch (OseeCoreException ex) {

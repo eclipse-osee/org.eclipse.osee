@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.column.CancelledDateColumn;
 import org.eclipse.osee.ats.column.CompletedDateColumn;
 import org.eclipse.osee.ats.column.CreatedDateColumn;
 import org.eclipse.osee.ats.column.StateColumn;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.WorkflowManagerCore;
@@ -30,6 +29,8 @@ import org.eclipse.osee.ats.core.client.workflow.HoursSpentUtil;
 import org.eclipse.osee.ats.core.client.workflow.PriorityUtil;
 import org.eclipse.osee.ats.core.client.workflow.StateManager;
 import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.internal.Activator;
@@ -256,7 +257,7 @@ public class WorkflowManager {
 
    }
 
-   public static Collection<AbstractWorkflowArtifact> getTeamDefinitionWorkflows(Collection<? extends Artifact> artifacts, Collection<TeamDefinitionArtifact> teamDefs) throws OseeCoreException {
+   public static Collection<AbstractWorkflowArtifact> getTeamDefinitionWorkflows(Collection<? extends Artifact> artifacts, Collection<IAtsTeamDefinition> teamDefs) throws OseeCoreException {
       List<AbstractWorkflowArtifact> returnawas = new ArrayList<AbstractWorkflowArtifact>();
       for (AbstractWorkflowArtifact awa : getAwas(artifacts)) {
          if (awa.getParentTeamWorkflow() == null) {
@@ -269,7 +270,7 @@ public class WorkflowManager {
       return returnawas;
    }
 
-   public static Collection<AbstractWorkflowArtifact> getVersionWorkflows(Collection<? extends Artifact> artifacts, Collection<Artifact> versionArts) throws OseeCoreException {
+   public static Collection<AbstractWorkflowArtifact> getVersionWorkflows(Collection<? extends Artifact> artifacts, Collection<IAtsVersion> versionArts) throws OseeCoreException {
       List<AbstractWorkflowArtifact> returnawas = new ArrayList<AbstractWorkflowArtifact>();
       for (AbstractWorkflowArtifact awa : getAwas(artifacts)) {
          if (awa.getParentTeamWorkflow() == null) {

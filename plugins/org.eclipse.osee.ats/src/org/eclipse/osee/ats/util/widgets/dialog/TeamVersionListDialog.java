@@ -12,17 +12,16 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.ArrayList;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
-import org.eclipse.osee.ats.core.client.version.VersionLockedType;
-import org.eclipse.osee.ats.core.client.version.VersionReleaseType;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
+import org.eclipse.osee.ats.core.model.VersionLockedType;
+import org.eclipse.osee.ats.core.model.VersionReleaseType;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
-import org.eclipse.osee.framework.ui.skynet.util.ArtifactDescriptiveLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -41,10 +40,10 @@ public class TeamVersionListDialog extends SelectionDialog {
 
    XComboViewer teamCombo = new XComboViewer("Team", SWT.READ_ONLY);
    XComboViewer versionCombo = new XComboViewer("Version", SWT.READ_ONLY);
-   Artifact selectedVersion = null;
-   TeamDefinitionArtifact selectedTeamDef = null;
+   IAtsVersion selectedVersion = null;
+   IAtsTeamDefinition selectedTeamDef = null;
    private final Active active;
-   private final TeamDefinitionArtifact teamDef;
+   private final IAtsTeamDefinition teamDef;
 
    public TeamVersionListDialog(Active active) {
       super(Displays.getActiveShell());
@@ -54,7 +53,7 @@ public class TeamVersionListDialog extends SelectionDialog {
       setMessage("Select Version");
    }
 
-   public TeamVersionListDialog(TeamDefinitionArtifact teamDef, Active active) {
+   public TeamVersionListDialog(IAtsTeamDefinition teamDef, Active active) {
       super(Displays.getActiveShell());
       this.teamDef = teamDef;
       this.active = active;
@@ -67,7 +66,7 @@ public class TeamVersionListDialog extends SelectionDialog {
 
       ArrayList<Object> objs = new ArrayList<Object>();
       try {
-         for (Artifact art : TeamDefinitionManager.getTeamReleaseableDefinitions(active)) {
+         for (IAtsTeamDefinition art : TeamDefinitions.getTeamReleaseableDefinitions(active)) {
             objs.add(art);
          }
       } catch (Exception ex) {
@@ -80,9 +79,9 @@ public class TeamVersionListDialog extends SelectionDialog {
 
       if (teamDef == null) {
          teamCombo.setInput(objs);
-         teamCombo.setLabelProvider(new ArtifactDescriptiveLabelProvider());
+         teamCombo.setLabelProvider(new AtsObjectLabelProvider());
          teamCombo.setContentProvider(new ArrayContentProvider());
-         teamCombo.setSorter(new ArtifactViewerSorter());
+         teamCombo.setSorter(new AtsObjectNameSorter());
          teamCombo.setGrabHorizontal(true);
          teamCombo.createWidgets(comp, 2);
          teamCombo.getCombo().setVisibleItemCount(20);
@@ -96,9 +95,8 @@ public class TeamVersionListDialog extends SelectionDialog {
             public void widgetSelected(SelectionEvent e) {
                ArrayList<Object> objs = new ArrayList<Object>();
                try {
-                  selectedTeamDef = (TeamDefinitionArtifact) teamCombo.getSelected();
-                  for (Artifact pda : selectedTeamDef.getVersionsArtifacts(VersionReleaseType.Both,
-                     VersionLockedType.Both)) {
+                  selectedTeamDef = (IAtsTeamDefinition) teamCombo.getSelected();
+                  for (IAtsVersion pda : selectedTeamDef.getVersions(VersionReleaseType.Both, VersionLockedType.Both)) {
                      objs.add(pda);
                   }
                   versionCombo.setInput(objs);
@@ -111,9 +109,9 @@ public class TeamVersionListDialog extends SelectionDialog {
          selectedTeamDef = teamDef;
       }
 
-      versionCombo.setLabelProvider(new ArtifactDescriptiveLabelProvider());
+      versionCombo.setLabelProvider(new AtsObjectLabelProvider());
       versionCombo.setContentProvider(new ArrayContentProvider());
-      versionCombo.setSorter(new ArtifactViewerSorter());
+      versionCombo.setSorter(new AtsObjectNameSorter());
       versionCombo.setGrabHorizontal(true);
       versionCombo.createWidgets(comp, 2);
       versionCombo.getCombo().setVisibleItemCount(20);
@@ -125,13 +123,13 @@ public class TeamVersionListDialog extends SelectionDialog {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            selectedVersion = (Artifact) versionCombo.getSelected();
+            selectedVersion = (IAtsVersion) versionCombo.getSelected();
          };
       });
       if (teamDef != null) {
          objs = new ArrayList<Object>();
          try {
-            for (Artifact pda : teamDef.getVersionsArtifacts(VersionReleaseType.Both, VersionLockedType.Both)) {
+            for (IAtsVersion pda : teamDef.getVersions(VersionReleaseType.Both, VersionLockedType.Both)) {
                objs.add(pda);
             }
             versionCombo.setInput(objs);
@@ -143,14 +141,14 @@ public class TeamVersionListDialog extends SelectionDialog {
       return container;
    }
 
-   public Artifact getSelectedVersion() {
+   public IAtsVersion getSelectedVersion() {
       return selectedVersion;
    }
 
    /**
     * @return the selectedTeamDef
     */
-   public TeamDefinitionArtifact getSelectedTeamDef() {
+   public IAtsTeamDefinition getSelectedTeamDef() {
       return selectedTeamDef;
    }
 

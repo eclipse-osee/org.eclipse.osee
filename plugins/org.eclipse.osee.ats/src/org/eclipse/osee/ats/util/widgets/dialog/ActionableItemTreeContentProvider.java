@@ -14,14 +14,9 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 import java.util.Collection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 public class ActionableItemTreeContentProvider implements ITreeContentProvider {
 
@@ -42,11 +37,10 @@ public class ActionableItemTreeContentProvider implements ITreeContentProvider {
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Collection) {
          return ((Collection) parentElement).toArray();
-      } else if (parentElement instanceof ActionableItemArtifact && active != null) {
+      } else if (parentElement instanceof IAtsActionableItem && active != null) {
          try {
-            ActionableItemArtifact aia = (ActionableItemArtifact) parentElement;
-            return AtsUtilCore.getActive(Artifacts.getChildrenOfTypeSet(aia, ActionableItemArtifact.class, false),
-               active, ActionableItemArtifact.class).toArray();
+            IAtsActionableItem aia = (IAtsActionableItem) parentElement;
+            return ActionableItems.getActive(ActionableItems.getChildren(aia, false), active).toArray();
          } catch (Exception ex) {
             // do nothing
          }
@@ -56,12 +50,8 @@ public class ActionableItemTreeContentProvider implements ITreeContentProvider {
 
    @Override
    public Object getParent(Object element) {
-      try {
-         if (element instanceof ActionableItemArtifact) {
-            return ((ActionableItemArtifact) element).getParent();
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      if (element instanceof IAtsActionableItem) {
+         return ((IAtsActionableItem) element).getParentActionableItem();
       }
       return null;
    }

@@ -14,14 +14,11 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
+import org.eclipse.osee.ats.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.skynet.util.ArtifactDescriptiveLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -43,27 +40,26 @@ public class TeamDefinitionTreeWithChildrenDialog extends CheckedTreeSelectionDi
    protected Composite dialogComp;
 
    public TeamDefinitionTreeWithChildrenDialog(Active active) throws OseeCoreException {
-      this(active, TeamDefinitionManager.getTeamTopLevelDefinitions(active));
+      this(active, TeamDefinitions.getTeamTopLevelDefinitions(active));
    }
 
-   public TeamDefinitionTreeWithChildrenDialog(Active active, Collection<TeamDefinitionArtifact> teamDefinitionArtifacts) {
-      super(Displays.getActiveShell(), new ArtifactDescriptiveLabelProvider(), new TeamDefinitionTreeContentProvider(
-         active));
+   public TeamDefinitionTreeWithChildrenDialog(Active active, Collection<IAtsTeamDefinition> TeamDefinitions) {
+      super(Displays.getActiveShell(), new AtsObjectLabelProvider(), new TeamDefinitionTreeContentProvider(active));
       setTitle("Select Team Definition");
       setMessage("Select Team Definition");
-      setComparator(new ArtifactNameSorter());
-      setInput(teamDefinitionArtifacts);
+      setComparator(new AtsObjectNameSorter());
+      setInput(TeamDefinitions);
    }
 
    /**
     * @return selected team defs and children if recurseChildren was checked
     */
-   public Collection<TeamDefinitionArtifact> getResultAndRecursedTeamDefs() throws OseeCoreException {
-      Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>(10);
+   public Collection<IAtsTeamDefinition> getResultAndRecursedTeamDefs() throws OseeCoreException {
+      Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>(10);
       for (Object obj : getResult()) {
-         teamDefs.add((TeamDefinitionArtifact) obj);
+         teamDefs.add((IAtsTeamDefinition) obj);
          if (recurseChildren) {
-            teamDefs.addAll(Artifacts.getChildrenOfTypeSet((Artifact) obj, TeamDefinitionArtifact.class, true));
+            teamDefs.addAll(TeamDefinitions.getChildren((IAtsTeamDefinition) obj, true));
          }
       }
       return teamDefs;

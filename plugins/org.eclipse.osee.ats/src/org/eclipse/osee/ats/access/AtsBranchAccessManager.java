@@ -22,8 +22,10 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.access.AtsBranchAccessContextId;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.client.config.store.ActionableItemArtifactStore;
+import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
@@ -164,14 +166,14 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
       try {
          contextIds.addAll(getFromArtifact(teamArt));
          if (contextIds.isEmpty()) {
-            for (ActionableItemArtifact aia : teamArt.getActionableItemsDam().getActionableItems()) {
-               contextIds.addAll(getFromArtifact(aia));
+            for (IAtsActionableItem aia : teamArt.getActionableItemsDam().getActionableItems()) {
+               contextIds.addAll(getFromArtifact(new ActionableItemArtifactStore(aia).getArtifact()));
                if (!contextIds.isEmpty()) {
                   return contextIds;
                }
             }
             if (contextIds.isEmpty()) {
-               contextIds.addAll(getFromArtifact(teamArt.getTeamDefinition()));
+               contextIds.addAll(getFromArtifact(new TeamDefinitionArtifactStore(teamArt.getTeamDefinition()).getArtifact()));
             }
          }
       } catch (Exception ex) {

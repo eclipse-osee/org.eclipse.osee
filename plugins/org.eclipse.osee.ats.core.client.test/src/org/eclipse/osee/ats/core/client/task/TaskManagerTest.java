@@ -12,14 +12,14 @@ package org.eclipse.osee.ats.core.client.task;
 
 import java.util.Arrays;
 import junit.framework.Assert;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.client.workflow.HoursSpentUtil;
-import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.workdef.WorkDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
@@ -31,7 +31,7 @@ import org.junit.BeforeClass;
 
 /**
  * Test unit for {@link TaskManager}
- *
+ * 
  * @author Donald G. Dunne
  */
 public class TaskManagerTest extends TaskManager {
@@ -81,9 +81,8 @@ public class TaskManagerTest extends TaskManager {
       WorkDefinitionFactory.addWorkDefinition(differentTaskWorkDef);
 
       // set teamWf2 to use that work def for tasks
-      teamWf2.getTeamDefinition().setSoleAttributeValue(AtsAttributeTypes.RelatedTaskWorkDefinition,
-         differentTaskWorkDef.getName());
-      teamWf2.getTeamDefinition().persist("testMoveTasks - set related task workDef");
+      IAtsTeamDefinition teamDef = teamWf2.getTeamDefinition();
+      teamDef.setRelatedTaskWorkDefinition(differentTaskWorkDef.getName());
 
       WorkDefinition newTaskWorkDef =
          WorkDefinitionFactory.getWorkDefinitionForTaskNotYetCreated(teamWf2).getWorkDefinition();

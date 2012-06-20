@@ -9,6 +9,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import junit.framework.Assert;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.AtsTestUtil.AtsTestUtilState;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
@@ -18,8 +20,6 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskManager;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -42,7 +42,7 @@ import org.junit.BeforeClass;
 
 /**
  * Test unit for {@link TransitionManager}
- *
+ * 
  * @author Donald G. Dunne
  */
 public class TransitionManagerTest {
@@ -374,15 +374,14 @@ public class TransitionManagerTest {
       Assert.assertTrue(results.isEmpty());
 
       // validate that can't transition without targeted version when team def rule is set
-      teamArt.getTeamDefinition().addAttribute(AtsAttributeTypes.RuleDefinition,
-         RuleDefinitionOption.RequireTargetedVersion.name());
+      teamArt.getTeamDefinition().addRule(RuleDefinitionOption.RequireTargetedVersion.name());
       results.clear();
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.contains(teamArt, TransitionResult.MUST_BE_TARGETED_FOR_VERSION));
 
       // set targeted version; transition validation should succeed
       results.clear();
-      teamArt.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, AtsTestUtil.getVerArt1());
+      teamArt.setTargetedVersion(AtsTestUtil.getVerArt1());
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.isEmpty());
    }
@@ -411,7 +410,7 @@ public class TransitionManagerTest {
 
       // set targeted version; transition validation should succeed
       results.clear();
-      teamArt.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, AtsTestUtil.getVerArt1());
+      teamArt.setTargetedVersion(AtsTestUtil.getVerArt1());
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.isEmpty());
    }
@@ -457,7 +456,8 @@ public class TransitionManagerTest {
       results.clear();
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
-      DecisionReviewManager.transitionTo(decArt, DecisionReviewState.Completed, AtsUsersClient.getUser(), false, transaction);
+      DecisionReviewManager.transitionTo(decArt, DecisionReviewState.Completed, AtsUsersClient.getUser(), false,
+         transaction);
       transaction.execute();
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.isEmpty());

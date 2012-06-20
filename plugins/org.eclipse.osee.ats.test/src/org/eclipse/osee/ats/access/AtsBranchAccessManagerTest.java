@@ -13,10 +13,12 @@ package org.eclipse.osee.ats.access;
 import java.util.Arrays;
 import java.util.logging.Level;
 import junit.framework.Assert;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.client.config.store.ActionableItemArtifactStore;
+import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DemoTestUtil;
@@ -113,10 +115,10 @@ public class AtsBranchAccessManagerTest {
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "testGetContextIdArtifact cleanup");
-      teamArt.getTeamDefinition().deleteAttributes(CoreAttributeTypes.AccessContextId);
-      teamArt.getTeamDefinition().persist(transaction);
-      for (Artifact art : teamArt.getTeamDefinition().getRelatedArtifacts(
-         AtsRelationTypes.TeamActionableItem_ActionableItem)) {
+      Artifact teamDefArt = new TeamDefinitionArtifactStore(teamArt.getTeamDefinition()).getArtifact();
+      teamDefArt.deleteAttributes(CoreAttributeTypes.AccessContextId);
+      teamDefArt.persist(transaction);
+      for (Artifact art : teamDefArt.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_ActionableItem)) {
          art.deleteAttributes(CoreAttributeTypes.AccessContextId);
          art.persist(transaction);
       }
@@ -144,9 +146,10 @@ public class AtsBranchAccessManagerTest {
 
       String teamDefContextId1 = "teamDef.context.1";
       String teamDefContextId2 = "teamDef.context.2";
-      teamArt.getTeamDefinition().setAttributeValues(CoreAttributeTypes.AccessContextId,
+      Artifact teamDefArt = new TeamDefinitionArtifactStore(teamArt.getTeamDefinition()).getArtifact();
+      teamDefArt.setAttributeValues(CoreAttributeTypes.AccessContextId,
          Arrays.asList(teamDefContextId1, teamDefContextId2));
-      teamArt.getTeamDefinition().persist(getClass().getSimpleName());
+      teamDefArt.persist(getClass().getSimpleName());
 
       try {
          TestUtil.sleep(1000);
@@ -158,7 +161,8 @@ public class AtsBranchAccessManagerTest {
 
       String aiContextId = "ai.context.1";
       Artifact aiArt =
-         ActionableItemManagerCore.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Requirements.getName())).iterator().next();
+         new ActionableItemArtifactStore(ActionableItems.getActionableItems(
+            Arrays.asList(DemoActionableItems.SAW_Requirements.getName())).iterator().next()).getArtifact();
       aiArt.setAttributeValues(CoreAttributeTypes.AccessContextId, Arrays.asList(aiContextId));
       aiArt.persist(getClass().getSimpleName());
 
@@ -201,9 +205,9 @@ public class AtsBranchAccessManagerTest {
       Assert.assertEquals(0, mgr.getContextId(teamArt.getWorkingBranch()).size());
 
       String teamDefContextId1 = "teamDef.context.1, this is the name";
-      teamArt.getTeamDefinition().setAttributeValues(CoreAttributeTypes.AccessContextId,
-         Arrays.asList(teamDefContextId1));
-      teamArt.getTeamDefinition().persist(getClass().getSimpleName());
+      Artifact teamDefArt = new TeamDefinitionArtifactStore(teamArt.getTeamDefinition()).getArtifact();
+      teamDefArt.setAttributeValues(CoreAttributeTypes.AccessContextId, Arrays.asList(teamDefContextId1));
+      teamDefArt.persist(getClass().getSimpleName());
 
       try {
          TestUtil.sleep(2000);

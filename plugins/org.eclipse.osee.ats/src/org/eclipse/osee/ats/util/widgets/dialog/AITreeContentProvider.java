@@ -12,17 +12,15 @@
 package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 public class AITreeContentProvider implements ITreeContentProvider {
 
@@ -39,12 +37,13 @@ public class AITreeContentProvider implements ITreeContentProvider {
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Collection) {
          return ((Collection) parentElement).toArray();
-      } else if (parentElement instanceof ActionableItemArtifact) {
+      } else if (parentElement instanceof IAtsActionableItem) {
          if (showChildren) {
             try {
-               ActionableItemArtifact ai = (ActionableItemArtifact) parentElement;
-               return AtsUtilCore.getActive(Artifacts.getChildrenOfTypeSet(ai, ActionableItemArtifact.class, false),
-                  active, ActionableItemArtifact.class).toArray();
+               IAtsActionableItem ai = (IAtsActionableItem) parentElement;
+               List<IAtsActionableItem> aias =
+                  ActionableItems.getActive(ActionableItems.getChildren(ai, false), active);
+               return aias.toArray();
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -55,12 +54,8 @@ public class AITreeContentProvider implements ITreeContentProvider {
 
    @Override
    public Object getParent(Object element) {
-      try {
-         if (element instanceof ActionableItemArtifact) {
-            return ((ActionableItemArtifact) element).getParent();
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      if (element instanceof IAtsActionableItem) {
+         return ((IAtsActionableItem) element).getParentActionableItem();
       }
       return null;
    }

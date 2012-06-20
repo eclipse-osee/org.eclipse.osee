@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.core.workflow.IWorkPage;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.navigate.VisitedItems;
@@ -619,7 +620,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
    }
 
    @Override
-   public Artifact getMetricsVersionArtifact() throws OseeCoreException {
+   public IAtsVersion getMetricsVersionArtifact() throws OseeCoreException {
       return awa.getTargetedVersion();
    }
 

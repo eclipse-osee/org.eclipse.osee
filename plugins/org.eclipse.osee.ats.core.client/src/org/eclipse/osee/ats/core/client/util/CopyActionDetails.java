@@ -6,14 +6,12 @@
 package org.eclipse.osee.ats.core.client.util;
 
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -32,7 +30,7 @@ public class CopyActionDetails {
       String detailsStr = "";
       try {
          if (awa.getParentTeamWorkflow() != null) {
-            TeamDefinitionArtifact teamDef = awa.getParentTeamWorkflow().getTeamDefinition();
+            IAtsTeamDefinition teamDef = awa.getParentTeamWorkflow().getTeamDefinition();
             String formatStr = getFormatStr(teamDef);
             if (Strings.isValid(formatStr)) {
                detailsStr = formatStr;
@@ -57,8 +55,7 @@ public class CopyActionDetails {
       if (awa instanceof TeamWorkFlowArtifact) {
          TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) awa;
          result = ChangeTypeUtil.getChangeTypeStr(awa);
-         if (teamArt.getTeamDefinition().getAttributesToStringList(CoreAttributeTypes.StaticId).contains(
-            USE_DEVELOPER_CHANGE_TYPES)) {
+         if (teamArt.getTeamDefinition().getStaticIds().contains(USE_DEVELOPER_CHANGE_TYPES)) {
             if (result.equals("Improvement")) {
                result = "feature";
             } else if (result.equals("Problem")) {
@@ -78,14 +75,14 @@ public class CopyActionDetails {
       return result;
    }
 
-   private String getFormatStr(TeamDefinitionArtifact teamDef) throws OseeCoreException {
+   private String getFormatStr(IAtsTeamDefinition teamDef) throws OseeCoreException {
       if (teamDef != null) {
-         String formatStr = teamDef.getSoleAttributeValue(AtsAttributeTypes.ActionDetailsFormat, "");
+         String formatStr = teamDef.getActionDetailsFormat();
          if (Strings.isValid(formatStr)) {
             return formatStr;
          }
-         if (teamDef.getParent() instanceof TeamDefinitionArtifact) {
-            return getFormatStr((TeamDefinitionArtifact) teamDef.getParent());
+         if (teamDef.getParentTeamDef() != null) {
+            return getFormatStr(teamDef.getParentTeamDef());
          }
       }
       return null;

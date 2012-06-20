@@ -17,9 +17,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManagerCore;
 import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.client.team.CreateTeamOption;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -28,6 +25,9 @@ import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.client.workflow.ITeamWorkflowProvider;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -45,7 +45,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public class ActionManager {
 
-   public static ActionArtifact createAction(IProgressMonitor monitor, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<ActionableItemArtifact> actionableItems, Date createdDate, IAtsUser createdBy, INewActionListener newActionListener, SkynetTransaction transaction) throws OseeCoreException {
+   public static ActionArtifact createAction(IProgressMonitor monitor, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate, IAtsUser createdBy, INewActionListener newActionListener, SkynetTransaction transaction) throws OseeCoreException {
       // if "tt" is title, this is an action created for development. To
       // make it easier, all fields are automatically filled in for ATS developer
 
@@ -60,20 +60,20 @@ public class ActionManager {
       if (monitor != null) {
          monitor.subTask("Creating WorkFlows");
       }
-      Collection<TeamDefinitionArtifact> teamDefs = TeamDefinitionManagerCore.getImpactedTeamDefs(actionableItems);
+      Collection<IAtsTeamDefinition> teamDefs = TeamDefinitions.getImpactedTeamDefs(actionableItems);
       if (teamDefs.isEmpty()) {
          StringBuffer sb = new StringBuffer("No teams returned for Action's selected Actionable Items\n");
-         for (ActionableItemArtifact aia : actionableItems) {
+         for (IAtsActionableItem aia : actionableItems) {
             sb.append("Selected AI \"" + aia + "\" " + aia.getHumanReadableId() + "\n");
          }
          throw new OseeStateException(sb.toString());
       }
 
       // Create team workflow artifacts
-      for (TeamDefinitionArtifact teamDef : teamDefs) {
+      for (IAtsTeamDefinition teamDef : teamDefs) {
+         List<IAtsUser> leads = AtsUsers.toList(teamDef.getLeads(actionableItems));
          TeamWorkFlowArtifact teamWf =
-            createTeamWorkflow(actionArt, teamDef, actionableItems,
-               AtsUsers.toList(teamDef.getLeads(actionableItems)), transaction, createdDate, createdBy,
+            createTeamWorkflow(actionArt, teamDef, actionableItems, leads, transaction, createdDate, createdBy,
                newActionListener);
          teamWf.getStateMgr().writeToArtifact();
       }
@@ -87,7 +87,7 @@ public class ActionManager {
       return actionArt;
    }
 
-   public static TeamWorkFlowArtifact createTeamWorkflow(Artifact actionArt, TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, List<? extends IAtsUser> assignees, SkynetTransaction transaction, Date createdDate, IAtsUser createdBy, INewActionListener newActionListener, CreateTeamOption... createTeamOption) throws OseeCoreException {
+   public static TeamWorkFlowArtifact createTeamWorkflow(Artifact actionArt, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends IAtsUser> assignees, SkynetTransaction transaction, Date createdDate, IAtsUser createdBy, INewActionListener newActionListener, CreateTeamOption... createTeamOption) throws OseeCoreException {
       ITeamWorkflowProvider teamExt = TeamWorkFlowManager.getTeamWorkflowProvider(teamDef, actionableItems);
       IArtifactType teamWorkflowArtifactType =
          TeamWorkFlowManager.getTeamWorkflowArtifactType(teamDef, actionableItems);
@@ -103,7 +103,7 @@ public class ActionManager {
       return teamArt;
    }
 
-   public static TeamWorkFlowArtifact createTeamWorkflow(Artifact actionArt, TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String guid, String hrid, IArtifactType artifactType, INewActionListener newActionListener, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
+   public static TeamWorkFlowArtifact createTeamWorkflow(Artifact actionArt, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String guid, String hrid, IArtifactType artifactType, INewActionListener newActionListener, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
 
       if (!Collections.getAggregate(createTeamOption).contains(CreateTeamOption.Duplicate_If_Exists)) {
          // Make sure team doesn't already exist
@@ -127,8 +127,9 @@ public class ActionManager {
 
       // Relate Workflow to ActionableItems (by guid) if team is responsible
       // for that AI
-      for (ActionableItemArtifact aia : actionableItems) {
-         if (aia.getImpactedTeamDefs().contains(teamDef)) {
+      for (IAtsActionableItem aia : actionableItems) {
+         IAtsTeamDefinition teamDefinitionInherited = aia.getTeamDefinitionInherited();
+         if (teamDefinitionInherited != null && teamDef.getGuid().equals(teamDefinitionInherited.getGuid())) {
             teamArt.getActionableItemsDam().addActionableItem(aia);
          }
       }

@@ -18,16 +18,16 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFilteredTreeDialog;
 import org.eclipse.swt.widgets.Composite;
@@ -41,21 +41,21 @@ public class TeamDefinitionCheckTreeDialog extends OSEECheckedFilteredTreeDialog
 
    private static PatternFilter patternFilter = new PatternFilter();
    private final Active active;
-   private List<TeamDefinitionArtifact> initialTeamDefs;
+   private List<IAtsTeamDefinition> initialTeamDefs;
 
    public TeamDefinitionCheckTreeDialog(String title, String message, Active active) {
-      super(title, message, patternFilter, new TeamDefinitionTreeContentProvider(active), new ArtifactLabelProvider(),
+      super(title, message, patternFilter, new TeamDefinitionTreeContentProvider(active), new AtsObjectLabelProvider(),
          new ArtifactNameSorter());
       this.active = active;
    }
 
-   public Collection<TeamDefinitionArtifact> getChecked() {
+   public Collection<IAtsTeamDefinition> getChecked() {
       if (super.getTreeViewer() == null) {
          return Collections.emptyList();
       }
-      Set<TeamDefinitionArtifact> checked = new HashSet<TeamDefinitionArtifact>();
+      Set<IAtsTeamDefinition> checked = new HashSet<IAtsTeamDefinition>();
       for (Object obj : super.getTreeViewer().getChecked()) {
-         checked.add((TeamDefinitionArtifact) obj);
+         checked.add((IAtsTeamDefinition) obj);
       }
       return checked;
    }
@@ -64,14 +64,14 @@ public class TeamDefinitionCheckTreeDialog extends OSEECheckedFilteredTreeDialog
    protected Control createDialogArea(Composite container) {
       Control comp = super.createDialogArea(container);
       try {
-         getTreeViewer().getViewer().setInput(TeamDefinitionManager.getTopLevelTeamDefinitions(active));
+         getTreeViewer().getViewer().setInput(TeamDefinitions.getTopLevelTeamDefinitions(active));
          getTreeViewer().getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
             @Override
             public void selectionChanged(SelectionChangedEvent event) {
                try {
-                  for (TeamDefinitionArtifact teamDef : getChecked()) {
+                  for (IAtsTeamDefinition teamDef : getChecked()) {
                      if (!teamDef.isActionable()) {
-                        AWorkbench.popup("ERROR", ActionableItemManagerCore.getNotActionableItemError(teamDef));
+                        AWorkbench.popup("ERROR", ActionableItems.getNotActionableItemError(teamDef));
                      }
                   }
                } catch (Exception ex) {
@@ -91,7 +91,7 @@ public class TeamDefinitionCheckTreeDialog extends OSEECheckedFilteredTreeDialog
    @Override
    protected Result isComplete() {
       try {
-         for (TeamDefinitionArtifact aia : getChecked()) {
+         for (IAtsTeamDefinition aia : getChecked()) {
             if (!aia.isActionable()) {
                return Result.FalseResult;
             }
@@ -105,14 +105,14 @@ public class TeamDefinitionCheckTreeDialog extends OSEECheckedFilteredTreeDialog
    /**
     * @return the initialTeamDefs
     */
-   public List<TeamDefinitionArtifact> getInitialTeamDefs() {
+   public List<IAtsTeamDefinition> getInitialTeamDefs() {
       return initialTeamDefs;
    }
 
    /**
     * @param initialTeamDefs the initialTeamDefs to set
     */
-   public void setInitialTeamDefs(List<TeamDefinitionArtifact> initialTeamDefs) {
+   public void setInitialTeamDefs(List<IAtsTeamDefinition> initialTeamDefs) {
       this.initialTeamDefs = initialTeamDefs;
    }
 

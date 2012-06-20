@@ -14,14 +14,9 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 import java.util.Collection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
 
@@ -42,11 +37,10 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Collection) {
          return ((Collection) parentElement).toArray();
-      } else if (parentElement instanceof TeamDefinitionArtifact && active != null) {
+      } else if (parentElement instanceof IAtsTeamDefinition && active != null) {
          try {
-            TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) parentElement;
-            return AtsUtilCore.getActive(Artifacts.getChildrenOfTypeSet(teamDef, TeamDefinitionArtifact.class, false),
-               active, TeamDefinitionArtifact.class).toArray();
+            IAtsTeamDefinition teamDef = (IAtsTeamDefinition) parentElement;
+            return TeamDefinitions.getActive(TeamDefinitions.getChildren(teamDef, false), active).toArray();
          } catch (Exception ex) {
             // do nothing
          }
@@ -56,12 +50,8 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
 
    @Override
    public Object getParent(Object element) {
-      try {
-         if (element instanceof TeamDefinitionArtifact) {
-            return ((TeamDefinitionArtifact) element).getParent();
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      if (element instanceof IAtsTeamDefinition) {
+         return ((IAtsTeamDefinition) element).getParentTeamDef();
       }
       return null;
    }

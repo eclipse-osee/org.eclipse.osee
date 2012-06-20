@@ -13,13 +13,14 @@ package org.eclipse.osee.ats.workdef.config;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.config.store.ActionableItemArtifactStore;
+import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
 import org.eclipse.osee.ats.core.client.workdef.provider.UserRefUtilClient;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.workdef.provider.BooleanDefUtil;
 import org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
@@ -57,8 +58,10 @@ public class ImportAIsAndTeamDefinitionsToDb {
 
    public void execute() throws OseeCoreException {
       importUserDefinitions(atsDsl.getUserDef());
-      importTeamDefinitions(atsDsl.getTeamDef(), TeamDefinitionManager.getTopTeamDefinition());
-      importActionableItems(atsDsl.getActionableItemDef(), ActionableItemManagerCore.getTopActionableItem());
+      importTeamDefinitions(atsDsl.getTeamDef(),
+         new TeamDefinitionArtifactStore(TeamDefinitions.getTopTeamDefinition()).getArtifact());
+      importActionableItems(atsDsl.getActionableItemDef(),
+         new ActionableItemArtifactStore(ActionableItems.getTopActionableItem()).getArtifact());
    }
 
    public void importUserDefinitions(EList<UserDef> userDefs) throws OseeCoreException {
@@ -128,7 +131,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
                dslTeamDef.getRelatedTaskWorkDefinition());
          }
          importAccessContextIds(newTeam, dslTeamDef.getAccessContextId());
-         importVersionDefinitions(dslTeamDef.getVersion(), (TeamDefinitionArtifact) newTeam);
+         importVersionDefinitions(dslTeamDef.getVersion(), newTeam);
          // process children
          importTeamDefinitions(dslTeamDef.getChildren(), newTeam);
          newTeam.persist(transaction);
@@ -142,14 +145,16 @@ public class ImportAIsAndTeamDefinitionsToDb {
       }
    }
 
-   public void importVersionDefinitions(EList<VersionDef> versionDefs, TeamDefinitionArtifact teamDef) throws OseeCoreException {
+   public void importVersionDefinitions(EList<VersionDef> versionDefs, Artifact teamDef) throws OseeCoreException {
       Map<String, Artifact> nameToVerArt = new HashMap<String, Artifact>();
       for (VersionDef dslVersionDef : versionDefs) {
          String dslVerName = Strings.unquote(dslVersionDef.getName());
          // System.out.println("   - Importing Version " + dslVerName);
          Artifact newVer =
             ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), dslVerName);
-         teamDef.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, newVer);
+         Artifact teamDefArt = new TeamDefinitionArtifactStore(teamDef).getArtifact();
+
+         teamDefArt.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, newVer);
          nameToVerArt.put(newVer.getName(), newVer);
          newVersions.put(newVer.getName(), newVer);
          newVer.setSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch,
@@ -223,9 +228,11 @@ public class ImportAIsAndTeamDefinitionsToDb {
       Artifact parent = parentArtifact;
       if (parent == null) {
          if (isTeamDef) {
-            parent = TeamDefinitionManager.getTopTeamDefinition();
+            parent =
+               new TeamDefinitionArtifactStore(TeamDefinitions.getTopTeamDefinition()).getArtifactOrCreate(transaction);
          } else {
-            parent = ActionableItemManagerCore.getTopActionableItem();
+            parent =
+               new ActionableItemArtifactStore(ActionableItems.getTopActionableItem()).getArtifactOrCreate(transaction);
          }
       }
       if (parent.getName().equals(artifactName)) {

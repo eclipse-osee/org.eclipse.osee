@@ -23,12 +23,12 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.util.SubscribeManager;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -45,7 +45,7 @@ import org.junit.Assert;
 
 /**
  * Test unit for {@link AtsNotifyUsers}
- *
+ * 
  * @author Donald G. Dunne
  */
 public class AtsNotifyUsersTest {
@@ -231,8 +231,8 @@ public class AtsNotifyUsersTest {
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       ActionManager.createAction(null, getClass().getSimpleName() + "-OnNewAction", "Description",
          ChangeType.Improvement, "2", false, null,
-         ActionableItemManagerCore.getActionableItems(Arrays.asList(DemoActionableItems.SAW_SW_Design.getName())),
-         new Date(), AtsUsersClient.getUser(), null, transaction);
+         ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_SW_Design.getName())), new Date(),
+         AtsUsersClient.getUser(), null, transaction);
       transaction.execute();
 
       Assert.assertEquals(1, notifyManager.getNotificationEvents().size());

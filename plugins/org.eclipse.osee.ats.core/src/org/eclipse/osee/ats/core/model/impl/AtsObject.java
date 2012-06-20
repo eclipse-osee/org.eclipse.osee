@@ -13,8 +13,8 @@ import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
  */
 public class AtsObject implements IAtsObject {
 
-   private final String hrid;
-   private final String name;
+   private String humanReadableId;
+   private String name;
    private String guid;
 
    public void setGuid(String guid) {
@@ -26,7 +26,7 @@ public class AtsObject implements IAtsObject {
    public AtsObject(String name, String guid, String hrid) {
       this.name = name;
       this.guid = guid;
-      this.hrid = hrid;
+      this.humanReadableId = hrid;
    }
 
    public AtsObject(String name) {
@@ -50,11 +50,28 @@ public class AtsObject implements IAtsObject {
 
    @Override
    public String getHumanReadableId() {
-      return hrid;
+      return humanReadableId;
    }
 
    public void setDescription(String desc) {
       this.desc = desc;
+   }
+
+   public void setHumanReadableId(String hrid) {
+      this.humanReadableId = hrid;
+   }
+
+   public void setName(String name) {
+      this.name = name;
+   }
+
+   @Override
+   public String toString() {
+      return getName();
+   }
+
+   public final String toStringWithId() {
+      return String.format("[%s][%s]", getHumanReadableId(), getName());
    }
 
    @Override

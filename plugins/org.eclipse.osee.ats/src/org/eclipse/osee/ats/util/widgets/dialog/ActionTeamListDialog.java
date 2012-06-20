@@ -11,14 +11,20 @@
 package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.ArrayList;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
+import java.util.Collection;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactListDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -27,11 +33,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.dialogs.ListDialog;
 
 /**
  * @author Donald G. Dunne
  */
-public class ActionTeamListDialog extends ArtifactListDialog {
+public class ActionTeamListDialog extends ListDialog {
 
    XCheckBox recurseChildrenCheck = new XCheckBox("Include all children Team's Actions");
    boolean recurseChildren = false;
@@ -39,14 +46,19 @@ public class ActionTeamListDialog extends ArtifactListDialog {
    boolean showFinished = false;
    XCheckBox showActionCheck = new XCheckBox("Show Action instead of Workflows");
    boolean showAction = false;
+   boolean requireSelection = true;
+   private ViewerSorter viewerSorter;
 
    public ActionTeamListDialog(Active active) {
       super(Displays.getActiveShell());
+      setContentProvider(new ArrayContentProvider());
+      setLabelProvider(new AtsObjectLabelProvider());
+      setShellStyle(getShellStyle() | SWT.RESIZE);
       setTitle("Select Team(s)");
       setMessage("Select Team(s)");
-      ArrayList<Artifact> arts = new ArrayList<Artifact>();
+      ArrayList<IAtsTeamDefinition> arts = new ArrayList<IAtsTeamDefinition>();
       try {
-         for (Artifact prod : TeamDefinitionManager.getTeamDefinitions(active)) {
+         for (IAtsTeamDefinition prod : TeamDefinitions.getTeamDefinitions(active)) {
             arts.add(prod);
          }
       } catch (Exception ex) {
@@ -65,9 +77,20 @@ public class ActionTeamListDialog extends ArtifactListDialog {
 
    @Override
    protected Control createDialogArea(Composite container) {
+      Control c = super.createDialogArea(container);
+      if (viewerSorter == null) {
+         getTableViewer().setSorter(new ViewerSorter() {
+            @SuppressWarnings("unchecked")
+            @Override
+            public int compare(Viewer viewer, Object e1, Object e2) {
+               return getComparator().compare(((Artifact) e1).getName(), ((Artifact) e2).getName());
+            }
+         });
+      } else {
+         getTableViewer().setSorter(viewerSorter);
+      }
 
-      Control control = super.createDialogArea(container);
-      Composite comp = new Composite(control.getParent(), SWT.NONE);
+      Composite comp = new Composite(c.getParent(), SWT.NONE);
       comp.setLayout(new GridLayout(2, false));
       comp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
@@ -136,6 +159,36 @@ public class ActionTeamListDialog extends ArtifactListDialog {
     */
    public void setRecurseChildren(boolean recurseChildren) {
       this.recurseChildren = recurseChildren;
+   }
+
+   public boolean isRequireSelection() {
+      return requireSelection;
+   }
+
+   public void setRequireSelection(boolean requireSelection) {
+      this.requireSelection = requireSelection;
+   }
+
+   public IAtsTeamDefinition getSelection() {
+      return (IAtsTeamDefinition) getResult()[0];
+   }
+
+   public void setArtifacts(Collection<? extends IAtsTeamDefinition> teamDefs) {
+      setInput(teamDefs);
+   }
+
+   public void updateArtifacts(Collection<? extends IAtsTeamDefinition> teamDefs) {
+      getTableViewer().setInput(teamDefs);
+      getTableViewer().refresh();
+   }
+
+   @Override
+   protected void okPressed() {
+      if (requireSelection && getTableViewer().getSelection().isEmpty()) {
+         AWorkbench.popup("ERROR", "Must make selection.");
+         return;
+      }
+      super.okPressed();
    }
 
 }

@@ -12,13 +12,12 @@ package org.eclipse.osee.ats.workdef.provider;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.dsl.atsDsl.BooleanDef;
@@ -27,13 +26,10 @@ import org.eclipse.osee.ats.dsl.atsDsl.UserByName;
 import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
 import org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslFactoryImpl;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * Take existing AIs, TeamDefs and Versions and create AtsDsl
@@ -55,11 +51,11 @@ public class ConvertAIsAndTeamsToAtsDsl {
 
       try {
          // Add all TeamDef definitions
-         TeamDef topTeam = convertTeamDef(TeamDefinitionManager.getTopTeamDefinition(), null);
+         TeamDef topTeam = convertTeamDef(TeamDefinitions.getTopTeamDefinition(), null);
          atsDsl.getTeamDef().add(topTeam);
 
          // Add all AI definitions
-         ActionableItemDef topAi = convertAIDef(ActionableItemManagerCore.getTopActionableItem(), null);
+         ActionableItemDef topAi = convertAIDef(ActionableItems.getTopActionableItem(), null);
          atsDsl.getActionableItemDef().add(topAi);
 
       } catch (OseeCoreException ex) {
@@ -69,41 +65,37 @@ public class ConvertAIsAndTeamsToAtsDsl {
       return atsDsl;
    }
 
-   private ActionableItemDef convertAIDef(ActionableItemArtifact aiArt, ActionableItemDef dslParentAIDef) throws OseeCoreException {
+   private ActionableItemDef convertAIDef(IAtsActionableItem aiArt, ActionableItemDef dslParentAIDef) throws OseeCoreException {
       ActionableItemDef dslAIDef = AtsDslFactoryImpl.init().createActionableItemDef();
       if (dslParentAIDef != null) {
          dslParentAIDef.getChildren().add(dslAIDef);
       }
       dslAIDef.setName(aiArt.getName());
       dslAIDefs.put(aiArt.getName(), dslAIDef);
-      if (aiArt.getSoleAttributeValue(AtsAttributeTypes.Active, false)) {
+      if (aiArt.isActive()) {
          dslAIDef.setActive(BooleanDef.TRUE);
       }
-      if (aiArt.getSoleAttributeValue(AtsAttributeTypes.Actionable, false)) {
+      if (aiArt.isActionable()) {
          dslAIDef.setActionable(BooleanDef.TRUE);
       }
-      for (String staticId : aiArt.getAttributesToStringList(CoreAttributeTypes.StaticId)) {
+      for (String staticId : aiArt.getStaticIds()) {
          dslAIDef.getStaticId().add(staticId);
       }
       for (IAtsUser user : aiArt.getLeads()) {
          dslAIDef.getLead().add(getUserByName(user));
       }
-      try {
-         Artifact teamDef = aiArt.getRelatedArtifact(AtsRelationTypes.TeamActionableItem_Team);
-         if (teamDef != null) {
-            dslAIDef.setTeamDef(teamDef.getName());
-         }
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
+      IAtsTeamDefinition teamDef = aiArt.getTeamDefinition();
+      if (teamDef != null) {
+         dslAIDef.setTeamDef(teamDef.getName());
       }
       // process children
-      for (Artifact childAiArt : aiArt.getChildren()) {
-         convertAIDef((ActionableItemArtifact) childAiArt, dslAIDef);
+      for (IAtsActionableItem childAiArt : aiArt.getChildrenActionableItems()) {
+         convertAIDef(childAiArt, dslAIDef);
       }
       return dslAIDef;
    }
 
-   private TeamDef convertTeamDef(TeamDefinitionArtifact teamDef, TeamDef dslParentTeamDef) throws OseeCoreException {
+   private TeamDef convertTeamDef(IAtsTeamDefinition teamDef, TeamDef dslParentTeamDef) throws OseeCoreException {
       TeamDef dslTeamDef = AtsDslFactoryImpl.init().createTeamDef();
       if (dslParentTeamDef != null) {
          dslParentTeamDef.getChildren().add(dslTeamDef);
@@ -111,13 +103,13 @@ public class ConvertAIsAndTeamsToAtsDsl {
 
       dslTeamDef.setName(teamDef.getName());
       dslTeamDefs.put(teamDef.getName(), dslTeamDef);
-      if (teamDef.getSoleAttributeValue(AtsAttributeTypes.Active, false)) {
+      if (teamDef.isActive()) {
          dslTeamDef.setActive(BooleanDef.TRUE);
       }
-      if (teamDef.getSoleAttributeValue(AtsAttributeTypes.TeamUsesVersions, false)) {
+      if (teamDef.isTeamUsesVersions()) {
          dslTeamDef.setUsesVersions(BooleanDef.TRUE);
       }
-      for (String staticId : teamDef.getAttributesToStringList(CoreAttributeTypes.StaticId)) {
+      for (String staticId : teamDef.getStaticIds()) {
          dslTeamDef.getStaticId().add(staticId);
       }
       for (IAtsUser user : teamDef.getLeads()) {
@@ -129,36 +121,36 @@ public class ConvertAIsAndTeamsToAtsDsl {
       for (IAtsUser user : teamDef.getPrivilegedMembers()) {
          dslTeamDef.getPrivileged().add(getUserByName(user));
       }
-      for (Artifact verArt : teamDef.getVersionsArtifacts()) {
+      for (IAtsVersion verArt : teamDef.getVersions()) {
          convertVersionArtifact(dslTeamDef, verArt, teamDef);
       }
       // process children
-      for (Artifact childAiArt : teamDef.getChildren()) {
-         convertTeamDef((TeamDefinitionArtifact) childAiArt, dslTeamDef);
+      for (IAtsTeamDefinition childAiArt : teamDef.getChildrenTeamDefinitions()) {
+         convertTeamDef(childAiArt, dslTeamDef);
       }
       return dslTeamDef;
    }
 
-   private void convertVersionArtifact(TeamDef dslTeamDef, Artifact art, TeamDefinitionArtifact teamDef) throws OseeCoreException {
+   private void convertVersionArtifact(TeamDef dslTeamDef, IAtsVersion verArt, IAtsTeamDefinition teamDef) {
       VersionDef dslVerDef = AtsDslFactoryImpl.init().createVersionDef();
-      dslVerDef.setName(art.getName());
-      if (art.getSoleAttributeValue(AtsAttributeTypes.NextVersion, false)) {
+      dslVerDef.setName(verArt.getName());
+      if (verArt.isNextVersion()) {
          dslVerDef.setNext(BooleanDef.TRUE);
       }
-      for (String staticId : teamDef.getAttributesToStringList(CoreAttributeTypes.StaticId)) {
+      for (String staticId : teamDef.getStaticIds()) {
          dslVerDef.getStaticId().add(staticId);
       }
-      if (art.getSoleAttributeValue(AtsAttributeTypes.Released, false)) {
+      if (verArt.isReleased()) {
          dslVerDef.setReleased(BooleanDef.TRUE);
       }
-      if (art.getSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, false)) {
+      if (verArt.isAllowCommitBranchInherited().isTrue()) {
          dslVerDef.setAllowCommitBranch(BooleanDef.TRUE);
       }
-      if (art.getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, false)) {
+      if (verArt.isAllowCreateBranchInherited().isTrue()) {
          dslVerDef.setAllowCreateBranch(BooleanDef.TRUE);
       }
-      if (art.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchGuid, null) != null) {
-         dslVerDef.setBaselineBranchGuid((String) art.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchGuid));
+      if (verArt.getBaselineBranchGuidInherited() != null) {
+         dslVerDef.setBaselineBranchGuid(verArt.getBaselineBranchGuidInherited());
       }
       dslTeamDef.getVersion().add(dslVerDef);
    }

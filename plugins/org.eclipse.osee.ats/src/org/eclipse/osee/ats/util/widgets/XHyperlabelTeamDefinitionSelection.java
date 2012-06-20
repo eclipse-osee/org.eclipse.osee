@@ -13,8 +13,7 @@ package org.eclipse.osee.ats.util.widgets;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionTreeWithChildrenDialog;
 import org.eclipse.osee.ats.world.WorldEditor;
@@ -31,15 +30,15 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelec
 public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelCmdValueSelection {
 
    public static final String WIDGET_ID = XHyperlabelTeamDefinitionSelection.class.getSimpleName();
-   Collection<TeamDefinitionArtifact> selectedTeamDefs = new HashSet<TeamDefinitionArtifact>();
-   Collection<TeamDefinitionArtifact> teamDefs;
+   Collection<IAtsTeamDefinition> selectedTeamDefs = new HashSet<IAtsTeamDefinition>();
+   Collection<IAtsTeamDefinition> teamDefs;
    TeamDefinitionTreeWithChildrenDialog dialog = null;
 
    public XHyperlabelTeamDefinitionSelection(String label) {
       super(label, true, WorldEditor.TITLE_MAX_LENGTH);
    }
 
-   public Collection<TeamDefinitionArtifact> getSelectedTeamDefintions() {
+   public Collection<IAtsTeamDefinition> getSelectedTeamDefintions() {
       return selectedTeamDefs;
    }
 
@@ -54,7 +53,7 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelCmdValueS
       return Artifacts.commaArts(selectedTeamDefs);
    }
 
-   public void setSelectedTeamDefs(Collection<TeamDefinitionArtifact> selectedTeamDefs) {
+   public void setSelectedTeamDefs(Collection<IAtsTeamDefinition> selectedTeamDefs) {
       this.selectedTeamDefs = selectedTeamDefs;
       refresh();
       notifyXModifiedListeners();
@@ -79,7 +78,7 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelCmdValueS
          if (result == 0) {
             selectedTeamDefs.clear();
             for (Object obj : dialog.getResultAndRecursedTeamDefs()) {
-               selectedTeamDefs.add((TeamDefinitionArtifact) obj);
+               selectedTeamDefs.add(( IAtsTeamDefinition) obj);
             }
             notifyXModifiedListeners();
          }
@@ -90,7 +89,7 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelCmdValueS
       return false;
    }
 
-   public void setTeamDefs(Collection<TeamDefinitionArtifact> teamDefs) {
+   public void setTeamDefs(Collection<IAtsTeamDefinition> teamDefs) {
       this.teamDefs = teamDefs;
       if (dialog != null) {
          dialog.setInput(teamDefs);

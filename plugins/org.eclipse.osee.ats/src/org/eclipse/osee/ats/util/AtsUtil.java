@@ -23,15 +23,16 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.artifact.ActionableItemManager;
+import org.eclipse.osee.ats.artifact.EditActionableItems;
 import org.eclipse.osee.ats.artifact.TeamWorkflowLabelProvider;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsCacheManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.StateManager;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
@@ -169,7 +170,7 @@ public final class AtsUtil {
    }
 
    public static void editActionableItems(ActionArtifact actionArt) throws OseeCoreException {
-      Result result = ActionableItemManager.editActionableItems(actionArt);
+      Result result = EditActionableItems.editActionableItems(actionArt);
       if (result.isFalse() && result.getText().equals("")) {
          return;
       }
@@ -179,7 +180,7 @@ public final class AtsUtil {
    }
 
    public static void editActionableItems(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      Result result = ActionableItemManager.editActionableItems(teamArt);
+      Result result = EditActionableItems.editActionableItems(teamArt);
       if (result.isFalse() && result.getText().equals("")) {
          return;
       }
@@ -231,8 +232,8 @@ public final class AtsUtil {
    public static void createATSAction(String initialDescription, String actionableItemName) {
       // Ensure actionable item is configured for ATS before continuing
       try {
-         Artifact artifact = AtsCacheManager.getSoleArtifactByName(AtsArtifactTypes.ActionableItem, actionableItemName);
-         if (artifact == null) {
+         IAtsActionableItem aia = AtsConfigCache.getSoleByName(actionableItemName, IAtsActionableItem.class);
+         if (aia == null) {
             AWorkbench.popup(
                "Configuration Error",
                "Actionable Item \"" + actionableItemName + "\" is not configured for ATS tracking.\n\nAction can not be created.");

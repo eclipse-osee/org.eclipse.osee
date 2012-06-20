@@ -11,16 +11,19 @@
 
 package org.eclipse.osee.ats.navigate;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.client.config.AtsObjectsClient;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionCheckTreeDialog;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -42,15 +45,18 @@ public class SubscribeByTeamDefinition extends XNavigateItemAction {
          new TeamDefinitionCheckTreeDialog(getName(),
             "Select Team Definition\n\nEmail will be sent for every Action created against these Teams.", Active.Active);
       try {
-         List<TeamDefinitionArtifact> objs =
-            Collections.castAll(AtsUsersClient.getOseeUser().getRelatedArtifactsOfType(
-               AtsRelationTypes.SubscribedUser_Artifact, TeamDefinitionArtifact.class));
+         List<IAtsTeamDefinition> objs = new ArrayList<IAtsTeamDefinition>();
+         objs.addAll(AtsObjectsClient.getConfigObjects(
+            AtsUsersClient.getOseeUser().getRelatedArtifacts(AtsRelationTypes.SubscribedUser_Artifact),
+            IAtsTeamDefinition.class));
          diag.setInitialTeamDefs(objs);
          if (diag.open() != 0) {
             return;
          }
-         AtsUsersClient.getOseeUser().setRelationsOfTypeUseCurrentOrder(AtsRelationTypes.SubscribedUser_Artifact,
-            diag.getChecked(), TeamDefinitionArtifact.class);
+         Collection<Artifact> arts = AtsObjectsClient.getArtifacts(diag.getChecked());
+
+         AtsUsersClient.getOseeUser().setRelationsOfTypeUseCurrentOrder(AtsRelationTypes.SubscribedUser_Artifact, arts,
+            IAtsTeamDefinition.class);
          AtsUsersClient.getOseeUser().persist(getClass().getSimpleName());
          AWorkbench.popup(getName(), "Subscriptions updated.");
       } catch (Exception ex) {

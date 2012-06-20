@@ -38,9 +38,9 @@ public class AtsBulkLoad {
 
    public static void reloadConfig(boolean pend) {
       if (pend) {
-         Operations.executeWork(new AtsLoadConfigArtifactsOperation());
+         Operations.executeWork(new AtsLoadConfigArtifactsOperation(true));
       } else {
-         Operations.executeAsJob(new AtsLoadConfigArtifactsOperation(), false);
+         Operations.executeAsJob(new AtsLoadConfigArtifactsOperation(true), false);
       }
    }
 

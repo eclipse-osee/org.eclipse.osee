@@ -14,13 +14,11 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
+import org.eclipse.osee.ats.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.skynet.util.ArtifactDescriptiveLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -43,27 +41,27 @@ public class ActionableItemTreeWithChildrenDialog extends CheckedTreeSelectionDi
    protected Composite dialogComp;
 
    public ActionableItemTreeWithChildrenDialog(Active active) throws OseeCoreException {
-      this(active, ActionableItemManagerCore.getTopLevelActionableItems(active));
+      this(active, ActionableItems.getTopLevelActionableItems(active));
    }
 
-   public ActionableItemTreeWithChildrenDialog(Active active, Collection<ActionableItemArtifact> ActionableItemArtifacts) {
-      super(Displays.getActiveShell(), new ArtifactDescriptiveLabelProvider(), new ActionableItemTreeContentProvider(
-         active));
+   public ActionableItemTreeWithChildrenDialog(Active active, Collection<IAtsActionableItem> actionableItems) {
+      super(Displays.getActiveShell(), new AtsObjectLabelProvider(), new ActionableItemTreeContentProvider(active));
       setTitle("Select Actionable Item");
       setMessage("Select Actionable Item");
       setComparator(new ArtifactNameSorter());
-      setInput(ActionableItemArtifacts);
+      setInput(actionableItems);
    }
 
    /**
     * @return selected AIs and children if recurseChildren was checked
     */
-   public Collection<ActionableItemArtifact> getResultAndRecursedAIs() throws OseeCoreException {
-      Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>(10);
+   public Collection<IAtsActionableItem> getResultAndRecursedAIs() throws OseeCoreException {
+      Set<IAtsActionableItem> aias = new HashSet<IAtsActionableItem>(10);
       for (Object obj : getResult()) {
-         aias.add((ActionableItemArtifact) obj);
+         IAtsActionableItem ai = (IAtsActionableItem) obj;
+         aias.add(ai);
          if (recurseChildren) {
-            aias.addAll(Artifacts.getChildrenOfTypeSet((Artifact) obj, ActionableItemArtifact.class, true));
+            aias.addAll(ActionableItems.getChildren(ai, true));
          }
       }
       return aias;

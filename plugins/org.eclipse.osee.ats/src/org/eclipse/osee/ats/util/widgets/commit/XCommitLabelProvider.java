@@ -16,9 +16,9 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.branch.CommitStatus;
-import org.eclipse.osee.ats.core.client.commit.ICommitConfigArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.version.VersionArtifact;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
+import org.eclipse.osee.ats.core.model.ICommitConfigArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
@@ -45,7 +46,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       Branch branch = null;
       if (element instanceof ICommitConfigArtifact) {
          ICommitConfigArtifact configArt = (ICommitConfigArtifact) element;
-         branch = configArt.getParentBranch();
+         branch = BranchManager.getBranchByGuid(configArt.getBaslineBranchGuid());
       } else if (element instanceof TransactionRecord) {
          TransactionRecord txRecord = (TransactionRecord) element;
          branch = txRecord.getBranch();
@@ -100,7 +101,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       Branch branch = null;
       if (element instanceof ICommitConfigArtifact) {
          ICommitConfigArtifact configArt = (ICommitConfigArtifact) element;
-         branch = configArt.getParentBranch();
+         branch = BranchManager.getBranchByGuid(configArt.getBaslineBranchGuid());
       } else if (element instanceof TransactionRecord) {
          TransactionRecord txRecord = (TransactionRecord) element;
          branch = txRecord.getBranch();
@@ -166,9 +167,9 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    }
 
    private String handleDestBranchColumn(Object element, Branch branch) {
-      if (element instanceof VersionArtifact) {
+      if (element instanceof IAtsVersion) {
          return branch == null ? "Parent Branch Not Configured for Version [" + element + "]" : branch.getShortName();
-      } else if (element instanceof TeamDefinitionArtifact) {
+      } else if (element instanceof IAtsTeamDefinition) {
          return branch == null ? "Parent Branch Not Configured for Team Definition [" + element + "]" : branch.getShortName();
       } else if (element instanceof TransactionRecord) {
          return branch.getShortName();
@@ -177,9 +178,9 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    }
 
    private String handleDestBranchCreationDateColumn(Object element, Branch branch) throws OseeCoreException {
-      if (element instanceof VersionArtifact) {
+      if (element instanceof IAtsVersion) {
          return branch == null ? "Parent Branch Not Configured for Version [" + element + "]" : DateUtil.getMMDDYYHHMM(branch.getBaseTransaction().getTimeStamp());
-      } else if (element instanceof TeamDefinitionArtifact) {
+      } else if (element instanceof IAtsTeamDefinition) {
          return branch == null ? "Parent Branch Not Configured for Team Definition [" + element + "]" : DateUtil.getMMDDYYHHMM(branch.getBaseTransaction().getTimeStamp());
       } else if (element instanceof TransactionRecord) {
          return DateUtil.getMMDDYYHHMM(branch.getBaseTransaction().getTimeStamp());

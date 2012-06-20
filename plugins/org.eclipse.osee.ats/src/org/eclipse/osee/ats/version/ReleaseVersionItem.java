@@ -13,15 +13,16 @@ package org.eclipse.osee.ats.version;
 
 import java.util.Date;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.client.config.VersionsClient;
+import org.eclipse.osee.ats.core.client.config.store.VersionArtifactStore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.client.version.VersionArtifact;
-import org.eclipse.osee.ats.core.client.version.VersionLockedType;
-import org.eclipse.osee.ats.core.client.version.VersionReleaseType;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
+import org.eclipse.osee.ats.core.model.VersionLockedType;
+import org.eclipse.osee.ats.core.model.VersionReleaseType;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
@@ -43,12 +44,12 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class ReleaseVersionItem extends XNavigateItemAction {
 
    public static String strs[] = new String[] {};
-   private final TeamDefinitionArtifact teamDefHoldingVersions;
+   private final IAtsTeamDefinition teamDefHoldingVersions;
 
    /**
     * @param teamDefHoldingVersions Team Definition Artifact that is related to versions or null for popup selection
     */
-   public ReleaseVersionItem(XNavigateItem parent, TeamDefinitionArtifact teamDefHoldingVersions) {
+   public ReleaseVersionItem(XNavigateItem parent, IAtsTeamDefinition teamDefHoldingVersions) {
       super(parent, "Release " + (teamDefHoldingVersions != null ? teamDefHoldingVersions + " " : "") + "Version",
          FrameworkImage.VERSION);
       this.teamDefHoldingVersions = teamDefHoldingVersions;
@@ -56,27 +57,26 @@ public class ReleaseVersionItem extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      TeamDefinitionArtifact teamDefHoldingVersions = getReleaseableTeamDefinitionArtifact();
+      IAtsTeamDefinition teamDefHoldingVersions = getReleaseableTeamDefinition();
       if (teamDefHoldingVersions == null) {
          return;
       }
       try {
          VersionListDialog ld =
             new VersionListDialog("Select Version", "Select Version to Release",
-               teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.UnReleased, VersionLockedType.Both));
+               teamDefHoldingVersions.getVersions(VersionReleaseType.UnReleased, VersionLockedType.Both));
          int result = ld.open();
          if (result == 0) {
-            VersionArtifact verArt = (VersionArtifact) ld.getResult()[0];
+            IAtsVersion verArt = (IAtsVersion) ld.getResult()[0];
 
             // Validate team lead status
-            if (!AtsUtilCore.isAtsAdmin() && !verArt.getParentTeamDefinition().getLeads().contains(
-               AtsUsersClient.getUser())) {
+            if (!AtsUtilCore.isAtsAdmin() && !verArt.getTeamDefinition().getLeads().contains(AtsUsersClient.getUser())) {
                AWorkbench.popup("ERROR", "Only lead can release version.");
                return;
             }
             // Validate that all Team Workflows are Completed or Cancelled
             String errorStr = null;
-            for (TeamWorkFlowArtifact team : verArt.getTargetedForTeamArtifacts()) {
+            for (TeamWorkFlowArtifact team : VersionsClient.getTargetedForTeamWorkflows(verArt)) {
                if (!team.isCancelled() && !team.isCompleted()) {
                   errorStr =
                      "All Team Workflows must be either Completed or " + "Cancelled before releasing a version.\n\n" + team.getHumanReadableId() + " - is in the\"" + team.getStateMgr().getCurrentStateName() + "\" state.";
@@ -92,21 +92,23 @@ public class ReleaseVersionItem extends XNavigateItemAction {
                return;
             }
 
-            verArt.setSoleAttributeValue(AtsAttributeTypes.Released, true);
-            verArt.setSoleAttributeValue(AtsAttributeTypes.ReleaseDate, new Date());
+            verArt.setReleased(true);
+            verArt.setReleaseDate(new Date());
             verArt.setNextVersion(false);
-            verArt.persist(getClass().getSimpleName());
+            VersionArtifactStore store = new VersionArtifactStore(verArt);
+            store.save(getClass().getSimpleName());
 
             if (MessageDialog.openQuestion(Displays.getActiveShell(), "Select NEW Next Release Version",
                "Release Complete.\n\nSelect NEW Next Release Version?")) {
                ld =
                   new VersionListDialog("Select Next Release Version", "Select New Next Release Version",
-                     teamDefHoldingVersions.getVersionsArtifacts());
+                     teamDefHoldingVersions.getVersions());
                result = ld.open();
                if (result == 0) {
-                  verArt = (VersionArtifact) ld.getResult()[0];
+                  verArt = (IAtsVersion) ld.getResult()[0];
                   verArt.setNextVersion(true);
-                  verArt.persist(getClass().getSimpleName());
+                  store = new VersionArtifactStore(verArt);
+                  store.save(getClass().getSimpleName());
                }
             }
          }
@@ -115,19 +117,19 @@ public class ReleaseVersionItem extends XNavigateItemAction {
       }
    }
 
-   public TeamDefinitionArtifact getReleaseableTeamDefinitionArtifact() throws OseeCoreException {
+   public IAtsTeamDefinition getReleaseableTeamDefinition() throws OseeCoreException {
       if (teamDefHoldingVersions != null) {
          return teamDefHoldingVersions;
       }
       TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
       try {
-         ld.setInput(TeamDefinitionManager.getTeamReleaseableDefinitions(Active.Active));
+         ld.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Active));
       } catch (MultipleAttributesExist ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       int result = ld.open();
       if (result == 0) {
-         return (TeamDefinitionArtifact) ld.getResult()[0];
+         return (IAtsTeamDefinition) ld.getResult()[0];
       }
       return null;
    }

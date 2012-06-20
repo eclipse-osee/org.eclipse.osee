@@ -15,17 +15,18 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.version.TargetedVersionUtil;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
@@ -76,9 +77,13 @@ public abstract class AbstractWorkflowVersionDateColumn extends XViewerAtsAttrib
    public static Date getDateFromTargetedVersion(IAttributeType attributeType, Object object) throws OseeCoreException {
       if (Artifacts.isOfType(object, AtsArtifactTypes.TeamWorkflow)) {
          TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) object;
-         Artifact verArt = TargetedVersionUtil.getTargetedVersion(teamArt);
+         IAtsVersion verArt = TargetedVersionUtil.getTargetedVersion(teamArt);
          if (verArt != null) {
-            return verArt.getSoleAttributeValue(attributeType, null);
+            if (attributeType == AtsAttributeTypes.ReleaseDate) {
+               return verArt.getReleaseDate();
+            } else if (attributeType == AtsAttributeTypes.EstimatedReleaseDate) {
+               return verArt.getEstimatedReleaseDate();
+            }
          }
       } else if (object instanceof AbstractWorkflowArtifact) {
          TeamWorkFlowArtifact teamArt = ((AbstractWorkflowArtifact) object).getParentTeamWorkflow();

@@ -18,10 +18,6 @@ public final class AtsArtifactToken {
 
    public static IArtifactToken HeadingFolder = TokenFactory.createArtifactToken("AAABER+3yR4A8O7WYQ+Xbw",
       "Action Tracking System", CoreArtifactTypes.Folder);
-   public static IArtifactToken TopTeamDefinition = TokenFactory.createArtifactToken("AAABER+35b4A8O7WHrXTiA", "Teams",
-      AtsArtifactTypes.TeamDefinition);
-   public static IArtifactToken TopActionableItem = TokenFactory.createArtifactToken("AAABER+37QEA8O7WSQaqJQ",
-      "Actionable Items", AtsArtifactTypes.ActionableItem);
    public static IArtifactToken ConfigFolder = TokenFactory.createArtifactToken("AAABF4n18eYAc1ruQSSWdg", "Config",
       CoreArtifactTypes.Folder);
    public static IArtifactToken WorkDefinitionsFolder = TokenFactory.createArtifactToken("ADTfjCLEj2DH2WYyeOgA",

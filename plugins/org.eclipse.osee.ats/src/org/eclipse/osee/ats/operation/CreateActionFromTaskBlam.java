@@ -22,12 +22,12 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -105,7 +105,7 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
                try {
                   AtsUtilCore.setEmailEnabled(false);
                   Collection<TaskArtifact> taskArts = Collections.castAll(artifacts);
-                  Collection<ActionableItemArtifact> aias = Collections.castAll(aiasArts);
+                  Collection<IAtsActionableItem> aias = Collections.castAll(aiasArts);
                   handleCreateActions(taskArts, title, aias, changeType, priority, monitor);
                } catch (Exception ex) {
                   log(ex);
@@ -120,7 +120,7 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
       });
    }
 
-   private void handleCreateActions(Collection<TaskArtifact> tasks, String title, Collection<ActionableItemArtifact> aias, ChangeType changeType, String priority, IProgressMonitor monitor) throws OseeCoreException {
+   private void handleCreateActions(Collection<TaskArtifact> tasks, String title, Collection<IAtsActionableItem> aias, ChangeType changeType, String priority, IProgressMonitor monitor) throws OseeCoreException {
       Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<TeamWorkFlowArtifact>();
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Create Actions from Tasks");

@@ -20,10 +20,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
-import org.eclipse.osee.ats.core.client.commit.ICommitConfigArtifact;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.model.ICommitConfigArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
@@ -72,7 +73,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
          if (rd.toString().equals("")) {
             rd.log("No Problems Found");
          }
-         final String html = XResultDataUI.getReport(rd,jobName).getManipulatedHtml(Arrays.asList(Manipulations.NONE));
+         final String html = XResultDataUI.getReport(rd, jobName).getManipulatedHtml(Arrays.asList(Manipulations.NONE));
          final String title = jobName;
          Displays.pendInDisplayThread(new Runnable() {
             @Override
@@ -118,7 +119,8 @@ public class CreateActionArtifactChangeReportJob extends Job {
          monitor.subTask(result);
          rd.log("\nRPCR " + rcprId);
          for (ICommitConfigArtifact commitConfigArt : AtsBranchManagerCore.getConfigArtifactsConfiguredToCommitTo(teamArt)) {
-            processTeam(teamArt, commitConfigArt.getParentBranch().getShortName(), attributeType, commitConfigArt, rd);
+            processTeam(teamArt, BranchManager.getBranchByGuid(commitConfigArt.getBaslineBranchGuid()).getShortName(),
+               attributeType, commitConfigArt, rd);
          }
          x++;
 

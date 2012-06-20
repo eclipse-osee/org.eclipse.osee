@@ -17,15 +17,16 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.client.config.ActionableItemManager;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.review.role.UserRole;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.client.workflow.StateManager;
+import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -40,12 +41,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
  */
 public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
 
-   private ActionableItemManagerCore actionableItemsDam;
+   private ActionableItemManager actionableItemsDam;
    private Boolean standAlone = null;
 
    public AbstractReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
-      actionableItemsDam = new ActionableItemManagerCore(this);
+      actionableItemsDam = new ActionableItemManager(this);
    }
 
    @Override
@@ -80,20 +81,20 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
       return ReviewBlockType.valueOf(typeStr);
    }
 
-   public Set<TeamDefinitionArtifact> getCorrespondingTeamDefinitionArtifact() throws OseeCoreException {
-      Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
+   public Set<IAtsTeamDefinition> getCorrespondingTeamDefinition() throws OseeCoreException {
+      Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>();
       if (getParentTeamWorkflow() != null) {
          teamDefs.add(getParentTeamWorkflow().getTeamDefinition());
       }
       if (getActionableItemsDam().getActionableItems().size() > 0) {
-         teamDefs.addAll(ActionableItemManagerCore.getImpactedTeamDefs(getActionableItemsDam().getActionableItems()));
+         teamDefs.addAll(ActionableItems.getImpactedTeamDefs(getActionableItemsDam().getActionableItems()));
       }
       return teamDefs;
    }
 
-   public ActionableItemManagerCore getActionableItemsDam() {
+   public ActionableItemManager getActionableItemsDam() {
       if (actionableItemsDam == null) {
-         actionableItemsDam = new ActionableItemManagerCore(this);
+         actionableItemsDam = new ActionableItemManager(this);
       }
       return actionableItemsDam;
    }

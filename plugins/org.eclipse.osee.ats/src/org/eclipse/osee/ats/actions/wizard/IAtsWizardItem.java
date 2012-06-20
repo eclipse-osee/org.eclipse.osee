@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.actions.wizard;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -28,12 +28,12 @@ public interface IAtsWizardItem {
     * determine what (if any) widgets should be added. eg. <XWidget displayName=\"Description\" height=\"80\"
     * required=\"true\" xwidgetType=\"XText\" fill=\"Vertically\" \"/>");
     */
-   void getWizardXWidgetExtensions(Collection<ActionableItemArtifact> aias, StringBuffer stringBuffer) throws Exception;
+   void getWizardXWidgetExtensions(Collection<IAtsActionableItem> aias, StringBuffer stringBuffer) throws Exception;
 
    /**
     * @return true if widgets will be added based on selected aias
     */
-   boolean hasWizardXWidgetExtensions(Collection<ActionableItemArtifact> aias) throws Exception;
+   boolean hasWizardXWidgetExtensions(Collection<IAtsActionableItem> aias) throws Exception;
 
    /**
     * Determine if Action is valid to create based on wizard data entered. hasWizardXWidgetExtenstions will be called to
@@ -42,7 +42,7 @@ public interface IAtsWizardItem {
     * @return result of validation. if true, action will be created; if not, error will popup and action will not be
     * created
     */
-   Result isActionValidToCreate(Collection<ActionableItemArtifact> aias, NewActionWizard wizard);
+   Result isActionValidToCreate(Collection<IAtsActionableItem> aias, NewActionWizard wizard);
 
    /**
     * Callback with created action upon completion and creation of the action and it's workflows.

@@ -18,16 +18,14 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsCacheManager;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.client.workflow.PriorityUtil;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.version.VersionMetrics;
@@ -53,7 +51,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
 
-   private final TeamDefinitionArtifact teamDef;
+   private final IAtsTeamDefinition teamDef;
    private final String teamDefName;
 
    public FirstTimeQualityMetricReportItem(XNavigateItem parent, String name, String teamDefName) {
@@ -73,16 +71,15 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      TeamDefinitionArtifact useTeamDef = teamDef;
+      IAtsTeamDefinition useTeamDef = teamDef;
       if (useTeamDef == null && teamDefName != null) {
-         useTeamDef =
-            (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(AtsArtifactTypes.TeamDefinition, teamDefName);
+         useTeamDef = AtsConfigCache.getSoleByName(teamDefName, IAtsTeamDefinition.class);
       }
       if (useTeamDef == null) {
          TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
          ld.setTitle(getName());
          try {
-            ld.setInput(TeamDefinitionManager.getTeamReleaseableDefinitions(Active.Both));
+            ld.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Both));
          } catch (MultipleAttributesExist ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
@@ -92,7 +89,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
                AWorkbench.popup("ERROR", "You must select a team to operate against.");
                return;
             }
-            useTeamDef = (TeamDefinitionArtifact) ld.getResult()[0];
+            useTeamDef = (IAtsTeamDefinition) ld.getResult()[0];
          } else {
             return;
          }
@@ -108,9 +105,9 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
 
    private static class ReportJob extends Job {
 
-      private final TeamDefinitionArtifact teamDef;
+      private final IAtsTeamDefinition teamDef;
 
-      public ReportJob(String title, TeamDefinitionArtifact teamDef) {
+      public ReportJob(String title, IAtsTeamDefinition teamDef) {
          super(title);
          this.teamDef = teamDef;
       }
@@ -142,7 +139,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
     * Ratio of # of priority 1 and 2 OSEE problem actions (non-cancelled) that were orginated between a release and the
     * next release / # of non-support actions released in that release
     */
-   public static String getTeamWorkflowReport(String title, TeamDefinitionArtifact teamDef, IProgressMonitor monitor) throws OseeCoreException {
+   public static String getTeamWorkflowReport(String title, IAtsTeamDefinition teamDef, IProgressMonitor monitor) throws OseeCoreException {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.heading(3, title));
       sb.append(AHTML.beginMultiColumnTable(100, 1));
@@ -155,13 +152,13 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
       monitor.beginTask("Processing Versions", verMets.size());
       for (VersionMetrics verMet : verMets) {
          Date thisReleaseStartDate = verMet.getReleaseStartDate();
-         Date thisReleaseEndDate = verMet.getVerArt().getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null);
+         Date thisReleaseEndDate = verMet.getVerArt().getReleaseDate();
          Date nextReleaseStartDate = null;
          Date nextReleaseEndDate = null;
          VersionMetrics nextVerMet = verMet.getNextVerMetViaReleaseDate();
          if (nextVerMet != null) {
             nextReleaseStartDate = nextVerMet.getReleaseStartDate();
-            nextReleaseEndDate = nextVerMet.getVerArt().getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null);
+            nextReleaseEndDate = nextVerMet.getVerArt().getReleaseDate();
          }
          Integer numOrigDurningNextReleaseCycle = 0;
          if (nextReleaseStartDate != null && nextReleaseEndDate != null) {

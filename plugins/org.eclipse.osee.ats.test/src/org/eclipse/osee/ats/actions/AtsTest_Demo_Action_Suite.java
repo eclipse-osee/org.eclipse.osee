@@ -47,8 +47,6 @@ import org.junit.runners.Suite;
    OpenNewAtsWorldEditorSelectedActionTest.class,
    OpenParentActionTest.class,
    OpenReviewPerspectiveActionTest.class,
-   OpenTeamDefinitionActionTest.class,
-   OpenVersionArtifactActionTest.class,
    OpenWorkflowByIdActionTest.class,
    OpenWorldByIdActionTest.class,
    RefreshDirtyActionTest.class,
@@ -60,8 +58,7 @@ import org.junit.runners.Suite;
    ShowWorkDefinitionActionTest.class,
    SubscribedActionTest.class,
    TaskAddActionTest.class,
-   TaskDeleteActionTest.class,
-})
+   TaskDeleteActionTest.class,})
 /**
  * @author Donald G. Dunne
  */

@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -62,7 +62,7 @@ public class NewActionPage3 extends WizardPage {
    public void notifyAtsWizardItemExtensions(Artifact action, SkynetTransaction transaction) {
       for (IAtsWizardItem item : wizardExtensionItems) {
          try {
-            if (item.hasWizardXWidgetExtensions(wizard.getSelectedActionableItemArtifacts())) {
+            if (item.hasWizardXWidgetExtensions(wizard.getSelectedIAtsActionableItems())) {
                item.wizardCompleted(action, wizard, transaction);
             }
          } catch (Exception ex) {
@@ -95,8 +95,8 @@ public class NewActionPage3 extends WizardPage {
             // + ATSAttributes.DESCRIPTION_ATTRIBUTE.getDescription() + "\"/>");
             for (IAtsWizardItem item : wizardExtensionItems) {
                try {
-                  if (item.hasWizardXWidgetExtensions(wizard.getSelectedActionableItemArtifacts())) {
-                     item.getWizardXWidgetExtensions(wizard.getSelectedActionableItemArtifacts(), stringBuffer);
+                  if (item.hasWizardXWidgetExtensions(wizard.getSelectedIAtsActionableItems())) {
+                     item.getWizardXWidgetExtensions(wizard.getSelectedIAtsActionableItems(), stringBuffer);
                   }
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -136,7 +136,7 @@ public class NewActionPage3 extends WizardPage {
       // Check wizard extension item validation
       for (IAtsWizardItem item : wizardExtensionItems) {
          try {
-            if (item.hasWizardXWidgetExtensions(wizard.getSelectedActionableItemArtifacts())) {
+            if (item.hasWizardXWidgetExtensions(wizard.getSelectedIAtsActionableItems())) {
                Result result = item.isWizardXWidgetsComplete(wizard);
                if (result.isFalse()) {
                   setErrorMessage(result.getText());
@@ -191,7 +191,7 @@ public class NewActionPage3 extends WizardPage {
       }
    }
 
-   public static boolean isPage3Necesary(Collection<ActionableItemArtifact> aias) {
+   public static boolean isPage3Necesary(Collection<IAtsActionableItem> aias) {
       getWizardXWidgetExtensions();
       for (IAtsWizardItem item : wizardExtensionItems) {
          try {
@@ -209,8 +209,8 @@ public class NewActionPage3 extends WizardPage {
       getWizardXWidgetExtensions();
       for (IAtsWizardItem item : wizardExtensionItems) {
          try {
-            if (item.hasWizardXWidgetExtensions(wizard.getSelectedActionableItemArtifacts())) {
-               Result result = item.isActionValidToCreate(wizard.getSelectedActionableItemArtifacts(), wizard);
+            if (item.hasWizardXWidgetExtensions(wizard.getSelectedIAtsActionableItems())) {
+               Result result = item.isActionValidToCreate(wizard.getSelectedIAtsActionableItems(), wizard);
                if (result.isFalse()) {
                   return result;
                }

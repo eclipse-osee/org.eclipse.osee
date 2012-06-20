@@ -16,10 +16,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.util.AtsCacheManager;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.version.VersionReportJob;
@@ -40,11 +39,11 @@ import org.eclipse.swt.widgets.FileDialog;
  */
 public class PublishFullVersionReportItem extends XNavigateItemAction {
 
-   private final TeamDefinitionArtifact teamDef;
+   private final IAtsTeamDefinition teamDef;
    private final String publishToFilename;
    private final String teamDefName;
 
-   public PublishFullVersionReportItem(XNavigateItem parent, String name, TeamDefinitionArtifact teamDef, String publishToFilename) {
+   public PublishFullVersionReportItem(XNavigateItem parent, String name, IAtsTeamDefinition teamDef, String publishToFilename) {
       super(parent, name);
       this.teamDef = teamDef;
       this.teamDefName = null;
@@ -73,17 +72,16 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
             return;
          }
       }
-      TeamDefinitionArtifact useTeamDef = teamDef;
+      IAtsTeamDefinition useTeamDef = teamDef;
       if (useTeamDef == null && teamDefName != null) {
-         useTeamDef =
-            (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(AtsArtifactTypes.TeamDefinition, teamDefName);
+         useTeamDef = AtsConfigCache.getSoleByName(teamDefName, IAtsTeamDefinition.class);
       }
       if (useTeamDef == null) {
          TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
-         ld.setInput(TeamDefinitionManager.getTeamDefinitions(Active.Both));
+         ld.setInput(TeamDefinitions.getTeamDefinitions(Active.Both));
          int result = ld.open();
          if (result == 0) {
-            useTeamDef = (TeamDefinitionArtifact) ld.getResult()[0];
+            useTeamDef = (IAtsTeamDefinition) ld.getResult()[0];
          } else {
             return;
          }
@@ -100,10 +98,10 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
 
    private static class PublishReportJob extends Job {
 
-      private final TeamDefinitionArtifact teamDef;
+      private final IAtsTeamDefinition teamDef;
       private final String filename;
 
-      public PublishReportJob(String title, TeamDefinitionArtifact teamDef, String filename) {
+      public PublishReportJob(String title, IAtsTeamDefinition teamDef, String filename) {
          super(title);
          this.teamDef = teamDef;
          this.filename = filename;

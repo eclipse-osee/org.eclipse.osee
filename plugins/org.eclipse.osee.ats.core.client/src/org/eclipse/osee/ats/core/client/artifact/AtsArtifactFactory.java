@@ -16,15 +16,12 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
-import org.eclipse.osee.ats.core.client.version.VersionArtifact;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -40,9 +37,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 public class AtsArtifactFactory extends ArtifactFactory {
 
    public AtsArtifactFactory() {
-      super(AtsArtifactTypes.Action, AtsArtifactTypes.Version, AtsArtifactTypes.PeerToPeerReview,
-         AtsArtifactTypes.DecisionReview, AtsArtifactTypes.ActionableItem, AtsArtifactTypes.Task,
-         AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.TeamDefinition, AtsArtifactTypes.Goal);
+      super(AtsArtifactTypes.Action, AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview,
+         AtsArtifactTypes.Task, AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Goal);
       try {
          for (IArtifactType teamWorkflowTypeName : TeamWorkFlowManager.getTeamWorkflowArtifactTypes()) {
             registerAsResponsible(teamWorkflowTypeName);
@@ -58,16 +54,10 @@ public class AtsArtifactFactory extends ArtifactFactory {
          return new TaskArtifact(this, guid, humandReadableId, branch, artifactType);
       } else if (ArtifactTypeManager.inheritsFrom(artifactType, AtsArtifactTypes.TeamWorkflow)) {
          return new TeamWorkFlowArtifact(this, guid, humandReadableId, branch, artifactType);
-      } else if (artifactType.equals(AtsArtifactTypes.TeamDefinition)) {
-         return new TeamDefinitionArtifact(this, guid, humandReadableId, branch, artifactType);
-      } else if (artifactType.equals(AtsArtifactTypes.ActionableItem)) {
-         return new ActionableItemArtifact(this, guid, humandReadableId, branch, artifactType);
       } else if (artifactType.equals(AtsArtifactTypes.DecisionReview)) {
          return new DecisionReviewArtifact(this, guid, humandReadableId, branch, artifactType);
       } else if (artifactType.equals(AtsArtifactTypes.PeerToPeerReview)) {
          return new PeerToPeerReviewArtifact(this, guid, humandReadableId, branch, artifactType);
-      } else if (artifactType.equals(AtsArtifactTypes.Version)) {
-         return new VersionArtifact(this, guid, humandReadableId, branch, artifactType);
       } else if (artifactType.equals(AtsArtifactTypes.Goal)) {
          return new GoalArtifact(this, guid, humandReadableId, branch, artifactType);
       } else if (artifactType.equals(AtsArtifactTypes.Action)) {
@@ -80,9 +70,6 @@ public class AtsArtifactFactory extends ArtifactFactory {
    @Override
    public Collection<IArtifactType> getEternalArtifactTypes() {
       List<IArtifactType> artifactTypes = new ArrayList<IArtifactType>();
-      artifactTypes.add(AtsArtifactTypes.Version);
-      artifactTypes.add(AtsArtifactTypes.TeamDefinition);
-      artifactTypes.add(AtsArtifactTypes.ActionableItem);
       artifactTypes.add(AtsArtifactTypes.WorkDefinition);
       return artifactTypes;
    }

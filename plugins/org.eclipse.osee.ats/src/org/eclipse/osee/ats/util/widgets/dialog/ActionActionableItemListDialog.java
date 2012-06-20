@@ -11,13 +11,12 @@
 
 package org.eclipse.osee.ats.util.widgets.dialog;
 
-import org.eclipse.osee.ats.core.client.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.util.ArtifactDescriptiveLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -42,12 +41,12 @@ public class ActionActionableItemListDialog extends CheckedTreeSelectionDialog {
    boolean showAction = false;
 
    public ActionActionableItemListDialog(Active active) {
-      super(Displays.getActiveShell(), new ArtifactDescriptiveLabelProvider(), new AITreeContentProvider(active));
+      super(Displays.getActiveShell(), new AtsObjectLabelProvider(), new AITreeContentProvider(active));
       setTitle("Select Actionable Items");
       setMessage("Select Actionable Items");
-      setComparator(new ArtifactNameSorter());
+      setComparator(new AtsObjectNameSorter());
       try {
-         setInput(ActionableItemManagerCore.getTopLevelActionableItems(active));
+         setInput(ActionableItems.getTopLevelActionableItems(active));
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

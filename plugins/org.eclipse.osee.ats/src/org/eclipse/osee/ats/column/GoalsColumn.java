@@ -23,9 +23,9 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.goal.GoalCheckTreeDialog;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
@@ -107,7 +107,7 @@ public class GoalsColumn extends XViewerAtsColumn implements IXViewerValueColumn
          selected.addAll(awa.getRelatedArtifacts(AtsRelationTypes.Goal_Goal));
       }
       Collection<Artifact> allGoals =
-         new GoalSearchItem("", new ArrayList<TeamDefinitionArtifact>(), false, null).performSearchGetResults();
+         new GoalSearchItem("", new ArrayList<IAtsTeamDefinition>(), false, null).performSearchGetResults();
       GoalCheckTreeDialog dialog = new GoalCheckTreeDialog(allGoals);
       dialog.setInitialSelections(selected.toArray());
       if (dialog.open() == 0) {

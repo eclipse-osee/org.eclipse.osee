@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
@@ -148,7 +149,7 @@ public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
    }
 
    @Override
-   public Artifact getTargetedVersionArtifact() {
+   public IAtsVersion getTargetedVersionArtifact() {
       if (worldUISearchItem instanceof VersionTargetedForTeamSearchItem) {
          return ((VersionTargetedForTeamSearchItem) worldUISearchItem).getSearchVersionArtifact();
       } else if (worldUISearchItem instanceof NextVersionSearchItem) {

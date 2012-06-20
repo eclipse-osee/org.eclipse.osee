@@ -19,9 +19,9 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -68,9 +68,9 @@ public class ActionableItemsColumn extends XViewerAtsAttributeValueColumn {
       return Artifacts.commaArts(getActionableItems(element));
    }
 
-   public static Collection<ActionableItemArtifact> getActionableItems(Object element) throws OseeCoreException {
+   public static Collection<IAtsActionableItem> getActionableItems(Object element) throws OseeCoreException {
       if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-         Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
+         Set<IAtsActionableItem> aias = new HashSet<IAtsActionableItem>();
          // Roll up if same for all children
          for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
             aias.addAll(team.getActionableItemsDam().getActionableItems());

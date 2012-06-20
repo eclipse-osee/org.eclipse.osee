@@ -12,12 +12,12 @@ package org.eclipse.osee.ats.util;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
@@ -33,10 +33,8 @@ public class PrivilegedUserManager {
       if (workflow.getParentTeamWorkflow() != null) {
          users.addAll(getPrivilegedUsers(workflow.getParentTeamWorkflow()));
       } else {
-         for (ActionableItemArtifact aia : workflow.getParentTeamWorkflow().getActionableItemsDam().getActionableItems()) {
-            for (TeamDefinitionArtifact teamDef : aia.getImpactedTeamDefs()) {
-               addPrivilegedUsersUpTeamDefinitionTree(teamDef, users);
-            }
+         for (IAtsActionableItem aia : workflow.getParentTeamWorkflow().getActionableItemsDam().getActionableItems()) {
+            addPrivilegedUsersUpTeamDefinitionTree(aia.getTeamDefinitionInherited(), users);
          }
       }
       AbstractWorkflowArtifact parentSma = workflow.getParentAWA();
@@ -88,13 +86,13 @@ public class PrivilegedUserManager {
       return users;
    }
 
-   protected static void addPrivilegedUsersUpTeamDefinitionTree(TeamDefinitionArtifact tda, Set<IAtsUser> users) throws OseeCoreException {
+   protected static void addPrivilegedUsersUpTeamDefinitionTree(IAtsTeamDefinition tda, Set<IAtsUser> users) throws OseeCoreException {
       users.addAll(tda.getLeads());
       users.addAll(tda.getPrivilegedMembers());
 
       // Walk up tree to get other editors
-      if (tda.getParent() instanceof TeamDefinitionArtifact) {
-         addPrivilegedUsersUpTeamDefinitionTree((TeamDefinitionArtifact) tda.getParent(), users);
+      if (tda.getParentTeamDef() != null) {
+         addPrivilegedUsersUpTeamDefinitionTree(tda.getParentTeamDef(), users);
       }
    }
 

@@ -18,15 +18,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
-import org.eclipse.osee.ats.core.client.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
@@ -38,14 +34,20 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.client.version.VersionArtifact;
 import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.config.ActionableItemFactory;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.config.TeamDefinitionFactory;
+import org.eclipse.osee.ats.core.config.VersionFactory;
+import org.eclipse.osee.ats.core.model.IAtsActionableItem;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.core.workdef.DecisionReviewOption;
 import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
@@ -58,9 +60,10 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -73,18 +76,18 @@ import org.eclipse.osee.support.test.util.TestUtil;
 /**
  * Test utility that will create a new work definition, team definition, versions and allow tests to easily
  * create/cleanup team workflows, tasks and reviews.
- *
+ * 
  * @author Donald G. Dunne
  */
 public class AtsTestUtil {
 
    private static TeamWorkFlowArtifact teamArt = null, teamArt2 = null, teamArt3 = null, teamArt4 = null;
-   private static TeamDefinitionArtifact teamDef = null;
-   private static VersionArtifact verArt1, verArt2 = null, verArt3 = null, verArt4 = null;
+   private static IAtsTeamDefinition teamDef = null;
+   private static IAtsVersion verArt1 = null, verArt2 = null, verArt3 = null, verArt4 = null;
    private static DecisionReviewArtifact decRevArt = null;
    private static PeerToPeerReviewArtifact peerRevArt = null;
    private static TaskArtifact taskArtWf1 = null, taskArtWf2 = null;
-   private static ActionableItemArtifact testAi = null, testAi2 = null, testAi3 = null, testAi4 = null;
+   private static IAtsActionableItem testAi = null, testAi2 = null, testAi3 = null, testAi4 = null;
    private static ActionArtifact actionArt = null, actionArt2 = null, actionArt3 = null, actionArt4 = null;
    private static StateDefinition analyze, implement, completed, cancelled = null;
    private static WorkDefinition workDef = null;
@@ -108,12 +111,12 @@ public class AtsTestUtil {
       validateObjectsNull("teamArt", teamArt);
       validateObjectsNull("teamArt2", teamArt2);
       validateObjectsNull("teamArt3", teamArt3);
-      validateObjectsNull("teamArt3", teamArt4);
+      validateObjectsNull("teamArt4", teamArt4);
       validateObjectsNull("teamDef", teamDef);
       validateObjectsNull("verArt1", verArt1);
       validateObjectsNull("verArt2", verArt2);
-      validateObjectsNull("verArt2", verArt3);
-      validateObjectsNull("verArt2", verArt4);
+      validateObjectsNull("verArt3", verArt3);
+      validateObjectsNull("verArt4", verArt4);
       validateObjectsNull("decRevArt", decRevArt);
       validateObjectsNull("peerRevArt", peerRevArt);
       validateObjectsNull("taskArt1", taskArtWf1);
@@ -214,6 +217,21 @@ public class AtsTestUtil {
       verArt4 = null;
       decRevArt = null;
       peerRevArt = null;
+      for (IAtsActionableItem aia : AtsConfigCache.get(IAtsActionableItem.class)) {
+         if (aia.getName().contains("AtsTestUtil")) {
+            AtsConfigCache.decache(aia);
+         }
+      }
+      for (IAtsTeamDefinition aia : AtsConfigCache.get(IAtsTeamDefinition.class)) {
+         if (aia.getName().contains("AtsTestUtil")) {
+            AtsConfigCache.decache(aia);
+         }
+      }
+      for (IAtsVersion ver : AtsConfigCache.get(IAtsVersion.class)) {
+         if (ver.getName().contains("AtsTestUtil")) {
+            AtsConfigCache.decache(ver);
+         }
+      }
    }
 
    private static String getTitle(String objectName, String postFixName) {
@@ -280,62 +298,45 @@ public class AtsTestUtil {
 
       WorkDefinitionFactory.addWorkDefinition(workDef);
 
-      testAi =
-         (ActionableItemArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem,
-            AtsUtilCore.getAtsBranchToken(), getTitle("AI", postFixName));
-      testAi.setSoleAttributeValue(AtsAttributeTypes.Active, true);
-      testAi.setSoleAttributeValue(AtsAttributeTypes.Actionable, true);
+      testAi = ActionableItemFactory.createActionableItem(GUID.create(), getTitle("AI", postFixName));
+      testAi.setActive(true);
+      testAi.setActionable(true);
 
-      testAi2 =
-         (ActionableItemArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem,
-            AtsUtilCore.getAtsBranchToken(), getTitle("AI2", postFixName));
-      testAi2.setSoleAttributeValue(AtsAttributeTypes.Active, true);
-      testAi2.setSoleAttributeValue(AtsAttributeTypes.Actionable, true);
+      testAi2 = ActionableItemFactory.createActionableItem(GUID.create(), getTitle("AI2", postFixName));
+      testAi2.setActive(true);
+      testAi2.setActionable(true);
 
-      testAi3 =
-         (ActionableItemArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem,
-            AtsUtilCore.getAtsBranchToken(), getTitle("AI3", postFixName));
-      testAi3.setSoleAttributeValue(AtsAttributeTypes.Active, true);
-      testAi3.setSoleAttributeValue(AtsAttributeTypes.Actionable, true);
+      testAi3 = ActionableItemFactory.createActionableItem(GUID.create(), getTitle("AI3", postFixName));
+      testAi3.setActive(true);
+      testAi3.setActionable(true);
 
-      testAi4 =
-         (ActionableItemArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem,
-            AtsUtilCore.getAtsBranchToken(), getTitle("AI4", postFixName));
-      testAi4.setSoleAttributeValue(AtsAttributeTypes.Active, true);
-      testAi4.setSoleAttributeValue(AtsAttributeTypes.Actionable, true);
+      testAi4 = ActionableItemFactory.createActionableItem(GUID.create(), getTitle("AI4", postFixName));
+      testAi4.setActive(true);
+      testAi4.setActionable(true);
 
-      teamDef =
-         (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition,
-            AtsUtilCore.getAtsBranchToken(), getTitle("Team Def", postFixName));
-      teamDef.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, WORK_DEF_NAME);
-      teamDef.setSoleAttributeValue(AtsAttributeTypes.Active, true);
-      teamDef.setSoleAttributeValue(AtsAttributeTypes.TeamUsesVersions, true);
-      teamDef.addRelation(AtsRelationTypes.TeamLead_Lead, AtsUsersClient.getOseeUser());
+      teamDef = TeamDefinitionFactory.createTeamDefinition(GUID.create(), getTitle("Team Def", postFixName));
+      teamDef.setWorkflowDefinition(WORK_DEF_NAME);
+      teamDef.setActive(true);
+      teamDef.setTeamUsesVersions(true);
+      teamDef.getLeads().add(AtsUsersClient.getUser());
 
-      testAi.addRelation(AtsRelationTypes.TeamActionableItem_Team, teamDef);
-      testAi2.addRelation(AtsRelationTypes.TeamActionableItem_Team, teamDef);
-      testAi3.addRelation(AtsRelationTypes.TeamActionableItem_Team, teamDef);
-      testAi4.addRelation(AtsRelationTypes.TeamActionableItem_Team, teamDef);
+      testAi.setTeamDefinition(teamDef);
+      testAi2.setTeamDefinition(teamDef);
+      testAi3.setTeamDefinition(teamDef);
+      testAi4.setTeamDefinition(teamDef);
 
       verArt1 =
-         (VersionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtilCore.getAtsBranchToken(),
-            getTitle("ver 1.0", postFixName));
-      verArt1.addRelation(AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition, teamDef);
+         VersionFactory.createVersion(getTitle("ver 1.0", postFixName), GUID.create(), HumanReadableId.generate());
+      teamDef.getVersions().add(verArt1);
 
-      verArt2 =
-         (VersionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtilCore.getAtsBranchToken(),
-            getTitle("ver 2.0", postFixName));
-      verArt2.addRelation(AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition, teamDef);
+      verArt2 = VersionFactory.createVersion(getTitle("ver 2.0", postFixName));
+      teamDef.getVersions().add(verArt2);
 
-      verArt3 =
-         (VersionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtilCore.getAtsBranchToken(),
-            getTitle("ver 3.0", postFixName));
-      verArt3.addRelation(AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition, teamDef);
+      verArt3 = VersionFactory.createVersion(getTitle("ver 3.0", postFixName));
+      teamDef.getVersions().add(verArt3);
 
-      verArt4 =
-         (VersionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtilCore.getAtsBranchToken(),
-            getTitle("ver 4.0", postFixName));
-      verArt4.addRelation(AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition, teamDef);
+      verArt4 = VersionFactory.createVersion(getTitle("ver 4.0", postFixName));
+      teamDef.getVersions().add(verArt4);
 
       actionArt =
          ActionManager.createAction(null, getTitle("Team WF", postFixName), "description", ChangeType.Improvement, "1",
@@ -343,15 +344,6 @@ public class AtsTestUtil {
 
       teamArt = actionArt.getFirstTeam();
 
-      testAi.persist(transaction);
-      testAi2.persist(transaction);
-      testAi3.persist(transaction);
-      testAi4.persist(transaction);
-      teamDef.persist(transaction);
-      verArt1.persist(transaction);
-      verArt2.persist(transaction);
-      verArt3.persist(transaction);
-      verArt4.persist(transaction);
       teamArt.persist(transaction);
       actionArt.persist(transaction);
       transaction.execute();
@@ -398,13 +390,13 @@ public class AtsTestUtil {
       return teamArt;
    }
 
-   public static ActionableItemArtifact getTestAi() throws OseeCoreException {
+   public static IAtsActionableItem getTestAi() throws OseeCoreException {
       ensureLoaded();
       return testAi;
 
    }
 
-   public static TeamDefinitionArtifact getTestTeamDef() throws OseeCoreException {
+   public static IAtsTeamDefinition getTestTeamDef() throws OseeCoreException {
       ensureLoaded();
       return teamDef;
    }
@@ -412,7 +404,7 @@ public class AtsTestUtil {
    /**
     * All team defs, AIs, action and workflows will be deleted and new ones created with "name" as part of object
     * names/titles. In addition, ArtifactCache will validate that it is not dirty or display errors if it is.
-    *
+    * 
     * @throws OseeCoreException
     */
    public static void cleanupAndReset(String name) throws OseeCoreException {
@@ -462,9 +454,6 @@ public class AtsTestUtil {
       delete(transaction1, decRevArt);
       delete(transaction1, taskArtWf1);
       delete(transaction1, taskArtWf2);
-      delete(transaction1, teamArt2);
-      delete(transaction1, teamArt3);
-      delete(transaction1, teamArt4);
       delete(transaction1, actionArt);
       delete(transaction1, actionArt2);
       delete(transaction1, actionArt3);
@@ -476,41 +465,25 @@ public class AtsTestUtil {
       deleteTeamWf(teamArt3);
       deleteTeamWf(teamArt4);
 
-      SkynetTransaction transaction3 =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
-            AtsTestUtil.class.getSimpleName() + " - cleanup 3");
-
-      delete(transaction3, testAi);
-      delete(transaction3, testAi2);
-      delete(transaction3, testAi3);
-      delete(transaction3, testAi4);
-      delete(transaction3, verArt1);
-      delete(transaction3, verArt2);
-      delete(transaction3, verArt3);
-      delete(transaction3, verArt4);
-      delete(transaction3, teamDef);
-
-      transaction3.execute();
-
       clearCaches();
 
       // validate that there are no dirty artifacts in cache
       AtsTestUtil.validateArtifactCache();
    }
 
-   public static VersionArtifact getVerArt1() {
+   public static IAtsVersion getVerArt1() {
       return verArt1;
    }
 
-   public static VersionArtifact getVerArt2() {
+   public static IAtsVersion getVerArt2() {
       return verArt2;
    }
 
-   public static VersionArtifact getVerArt3() {
+   public static IAtsVersion getVerArt3() {
       return verArt3;
    }
 
-   public static VersionArtifact getVerArt4() {
+   public static IAtsVersion getVerArt4() {
       return verArt4;
    }
 
@@ -623,7 +596,7 @@ public class AtsTestUtil {
       return teamArt2;
    }
 
-   public static ActionableItemArtifact getTestAi2() throws OseeCoreException {
+   public static IAtsActionableItem getTestAi2() throws OseeCoreException {
       ensureLoaded();
       return testAi2;
    }
@@ -643,7 +616,7 @@ public class AtsTestUtil {
       return teamArt3;
    }
 
-   public static ActionableItemArtifact getTestAi3() throws OseeCoreException {
+   public static IAtsActionableItem getTestAi3() throws OseeCoreException {
       ensureLoaded();
       return testAi3;
    }
@@ -663,7 +636,7 @@ public class AtsTestUtil {
       return teamArt4;
    }
 
-   public static ActionableItemArtifact getTestAi4() throws OseeCoreException {
+   public static IAtsActionableItem getTestAi4() throws OseeCoreException {
       ensureLoaded();
       return testAi4;
    }
@@ -728,14 +701,13 @@ public class AtsTestUtil {
    }
 
    public static void configureVer1ForWorkingBranch() throws OseeCoreException {
-      VersionArtifact verArt = getVerArt1();
-      verArt.setSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, true);
-      verArt.setSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, true);
-      verArt.setSoleAttributeValue(AtsAttributeTypes.BaselineBranchGuid,
-         BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1).getGuid());
-      verArt.persist(AtsTestUtil.class.getSimpleName() + "-ConfigureVer1ForWorkingBranch");
+      IAtsVersion verArt = getVerArt1();
+      verArt.setAllowCreateBranch(true);
+      verArt.setAllowCommitBranch(true);
+      verArt.setBaselineBranchGuid(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1).getGuid());
       if (getTeamWf().getTargetedVersion() == null) {
-         getTeamWf().addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, getVerArt1());
+         getTeamWf().setTargetedVersion(getVerArt1());
+         getTeamWf().setTargetedVersionLink(getVerArt1());
          getTeamWf().persist(AtsTestUtil.class.getSimpleName() + "-SetTeamWfTargetedVer1");
       }
    }

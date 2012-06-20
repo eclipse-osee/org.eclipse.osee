@@ -23,16 +23,15 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.version.TargetedVersionUtil;
-import org.eclipse.osee.ats.core.client.version.VersionArtifact;
-import org.eclipse.osee.ats.core.client.version.VersionLockedType;
-import org.eclipse.osee.ats.core.client.version.VersionReleaseType;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
+import org.eclipse.osee.ats.core.model.VersionLockedType;
+import org.eclipse.osee.ats.core.model.VersionReleaseType;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
@@ -119,7 +118,7 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
    }
 
    public static boolean promptChangeVersion(final Collection<? extends TeamWorkFlowArtifact> awas, VersionReleaseType versionReleaseType, VersionLockedType versionLockType) throws OseeCoreException {
-      TeamDefinitionArtifact teamDefHoldingVersions = null;
+      IAtsTeamDefinition teamDefHoldingVersions = null;
       for (TeamWorkFlowArtifact teamArt : awas) {
          if (!teamArt.getTeamDefinition().isTeamUsesVersions()) {
             AWorkbench.popup("ERROR", "Team \"" + teamArt.getTeamDefinition().getName() + "\" doesn't use versions.");
@@ -149,7 +148,7 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
          return false;
       }
       final VersionListDialog vld =
-         new VersionListDialog("Select Version", "Select Version", teamDefHoldingVersions.getVersionsArtifacts(
+         new VersionListDialog("Select Version", "Select Version", teamDefHoldingVersions.getVersions(
             versionReleaseType, versionLockType));
       if (awas.size() == 1 && awas.iterator().next().getTargetedVersion() != null) {
          Object[] objs = new Object[1];
@@ -161,10 +160,10 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
          return false;
       }
       Object obj = vld.getResult()[0];
-      VersionArtifact newVersion = (VersionArtifact) obj;
+      IAtsVersion newVersion = (IAtsVersion) obj;
       //now check selected version
       if (newVersion.isVersionLocked()) {
-         String error = "Version \"" + newVersion.getFullDisplayName() + "\" is locked or already released.";
+         String error = "Version \"" + newVersion.getCommitFullDisplayName() + "\" is locked or already released.";
          if (AtsUtilCore.isAtsAdmin() && !MessageDialog.openConfirm(Displays.getActiveShell(), "Change Version",
             error + "\n\nOverride?")) {
             return false;
@@ -174,8 +173,8 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
       }
 
       for (TeamWorkFlowArtifact teamArt : awas) {
-         teamArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
-            java.util.Collections.singleton(newVersion));
+         teamArt.setTargetedVersion(newVersion);
+         teamArt.setTargetedVersionLink(newVersion);
       }
       Artifacts.persistInTransaction("ATS Prompt Change Version", awas);
       return true;

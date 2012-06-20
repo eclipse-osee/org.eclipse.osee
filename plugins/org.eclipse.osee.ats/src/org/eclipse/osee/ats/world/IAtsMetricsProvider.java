@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.world;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -21,7 +22,7 @@ public interface IAtsMetricsProvider {
 
    public Collection<? extends Artifact> getMetricsArtifacts() throws OseeCoreException;
 
-   public Artifact getMetricsVersionArtifact() throws OseeCoreException;
+   public IAtsVersion getMetricsVersionArtifact() throws OseeCoreException;
 
    public double getManHoursPerDayPreference() throws OseeCoreException;
 }

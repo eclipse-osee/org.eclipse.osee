@@ -84,45 +84,6 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
-      //      AtsWorkDefinitionProvider.get().loadTeamWorkDefFromFileOldWay();
-      //      AtsWorkDefinitionProvider.get().loadTeamWorkDefFromFileNewWay();
-
-      //      PluginUtil util = new PluginUtil("org.eclipse.osee.ats");
-      //      String filename = "support/WorkDef_Team_Default.ats";
-      //      try {
-      //         File file = util.getPluginFile(filename);
-      //         if (!file.exists()) {
-      //            System.err.println("File " + filename + " doesn't exist");
-      //         }
-      //
-      //         WorkDefinitionSheet sheet = new WorkDefinitionSheet("WorkDef_Team_Default", "osee.ats.teamWorkflow", file);
-      //         AtsWorkDefinitionProvider.get().loadWorkFlowDefinitionFromFile(sheet);
-      //      } catch (Exception ex) {
-      //         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      //      }
-
-      //      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Admin Cleanup");
-      //      Artifact verArt =
-      //            ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, "0.9.0", AtsUtil.getAtsBranch());
-      //      for (Attribute<?> attr : verArt.getAttributes()) {
-      //         if (attr.getAttributeType().getName().equals(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName())) {
-      //            System.out.println("next " + attr.getValue());
-      //            attr.delete();
-      //            break;
-      //         }
-      //      }
-      //      verArt.persist(transaction);
-      //      verArt = ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, "0.8.2", AtsUtil.getAtsBranch());
-      //      for (Attribute<?> attr : verArt.getAttributes()) {
-      //         if (attr.getAttributeType().getName().equals(ATSAttributes.RELEASED_ATTRIBUTE.getStoreName())) {
-      //            System.out.println("released " + attr.getValue());
-      //            attr.delete();
-      //            break;
-      //         }
-      //      }
-      //      verArt.persist(transaction);
-      //      transaction.execute();
-
       AWorkbench.popup("Completed", "Complete");
    }
 }

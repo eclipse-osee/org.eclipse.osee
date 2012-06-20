@@ -19,18 +19,19 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.AtsOpenOption;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.artifact.SmaWorkflowLabelProvider;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsEditor;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.LegacyPCRActions;
+import org.eclipse.osee.ats.util.widgets.dialog.AtsObjectNameSorter;
 import org.eclipse.osee.ats.world.IWorldEditorConsumer;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorOperationProvider;
@@ -47,7 +48,6 @@ import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDecoratorPreferences;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.SimpleCheckFilteredTreeDialog;
@@ -143,7 +143,7 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
                SimpleCheckFilteredTreeDialog dialog =
                   new SimpleCheckFilteredTreeDialog("Select Available Change Reports",
                      "Select available Change Reports to run.", new ArrayTreeContentProvider(),
-                     new ArtifactLabelProvider(artDecorator), new ArtifactViewerSorter(), 0, Integer.MAX_VALUE);
+                     new ArtifactLabelProvider(artDecorator), new AtsObjectNameSorter(), 0, Integer.MAX_VALUE);
                dialog.setInput(addedArts);
                if (dialog.open() == 0) {
                   if (dialog.getResult().length == 0) {
@@ -202,7 +202,7 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
 
    private void searchAndSplitResults() throws OseeCoreException {
       resultAtsArts.addAll(LegacyPCRActions.getTeamsTeamWorkflowArtifacts(data.getIds(),
-         (Collection<TeamDefinitionArtifact>) null));
+         (Collection<IAtsTeamDefinition>) null));
 
       // This does artId search
       if (data.isIncludeArtIds() && data.getBranchForIncludeArtIds() != null) {

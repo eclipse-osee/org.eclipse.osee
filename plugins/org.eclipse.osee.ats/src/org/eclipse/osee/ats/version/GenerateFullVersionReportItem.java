@@ -16,10 +16,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
-import org.eclipse.osee.ats.core.client.util.AtsCacheManager;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -43,7 +42,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class GenerateFullVersionReportItem extends XNavigateItemAction {
 
-   private final TeamDefinitionArtifact teamDef;
+   private final IAtsTeamDefinition teamDef;
    private final String teamDefName;
 
    public GenerateFullVersionReportItem(XNavigateItem parent) {
@@ -52,7 +51,7 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
       this.teamDef = null;
    }
 
-   public GenerateFullVersionReportItem(XNavigateItem parent, TeamDefinitionArtifact teamDef) {
+   public GenerateFullVersionReportItem(XNavigateItem parent, IAtsTeamDefinition teamDef) {
       super(parent, "Generate Full Version Report", FrameworkImage.VERSION);
       this.teamDefName = null;
       this.teamDef = teamDef;
@@ -66,7 +65,7 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      TeamDefinitionArtifact teamDef = getTeamDefinition();
+      IAtsTeamDefinition teamDef = getTeamDefinition();
       if (teamDef == null) {
          return;
       }
@@ -79,36 +78,34 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
       job.schedule();
    }
 
-   public TeamDefinitionArtifact getTeamDefinition() throws OseeCoreException {
+   public IAtsTeamDefinition getTeamDefinition() throws OseeCoreException {
       if (teamDef != null) {
          return teamDef;
       }
       if (Strings.isValid(teamDefName)) {
-         TeamDefinitionArtifact teamDef =
-            (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(AtsArtifactTypes.TeamDefinition, teamDefName);
-
+         IAtsTeamDefinition teamDef = AtsConfigCache.getSoleByName(teamDefName, IAtsTeamDefinition.class);
          if (teamDef != null) {
             return teamDef;
          }
       }
       TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
       try {
-         ld.setInput(TeamDefinitionManager.getTeamReleaseableDefinitions(Active.Active));
+         ld.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Active));
       } catch (MultipleAttributesExist ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       int result = ld.open();
       if (result == 0) {
-         return (TeamDefinitionArtifact) ld.getResult()[0];
+         return (IAtsTeamDefinition) ld.getResult()[0];
       }
       return null;
    }
 
    private static class PublishReportJob extends Job {
 
-      private final TeamDefinitionArtifact teamDef;
+      private final IAtsTeamDefinition teamDef;
 
-      public PublishReportJob(TeamDefinitionArtifact teamDef) {
+      public PublishReportJob(IAtsTeamDefinition teamDef) {
          super(teamDef.getName() + " as of " + DateUtil.getDateNow());
          this.teamDef = teamDef;
       }
@@ -119,7 +116,7 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
             String html = VersionReportJob.getFullReleaseReport(teamDef, monitor);
             XResultData rd = new XResultData();
             rd.addRaw(html);
-            XResultDataUI.report(rd,getName(), Manipulations.RAW_HTML);
+            XResultDataUI.report(rd, getName(), Manipulations.RAW_HTML);
          } catch (Exception ex) {
             return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.toString(), ex);
          }

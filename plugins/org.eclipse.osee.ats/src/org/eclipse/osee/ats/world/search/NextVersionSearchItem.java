@@ -11,12 +11,14 @@
 
 package org.eclipse.osee.ats.world.search;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.config.VersionsClient;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -32,15 +34,15 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
  */
 public class NextVersionSearchItem extends WorldUISearchItem {
 
-   private final TeamDefinitionArtifact teamDefHoldingVersions;
-   private TeamDefinitionArtifact selectedTeamDef;
-   private Artifact selectedVersionArt;
+   private final IAtsTeamDefinition teamDefHoldingVersions;
+   private IAtsTeamDefinition selectedTeamDef;
+   private IAtsVersion selectedVersionArt;
 
-   public NextVersionSearchItem(TeamDefinitionArtifact teamDefHoldingVersions, LoadView loadView) {
+   public NextVersionSearchItem(IAtsTeamDefinition teamDefHoldingVersions, LoadView loadView) {
       this(null, teamDefHoldingVersions, loadView);
    }
 
-   public NextVersionSearchItem(String name, TeamDefinitionArtifact teamDefHoldingVersions, LoadView loadView) {
+   public NextVersionSearchItem(String name, IAtsTeamDefinition teamDefHoldingVersions, LoadView loadView) {
       super(name != null ? name : "Workflows Targeted-For Next Version", loadView, FrameworkImage.VERSION_NEXT);
       this.teamDefHoldingVersions = teamDefHoldingVersions;
    }
@@ -54,7 +56,7 @@ public class NextVersionSearchItem extends WorldUISearchItem {
    @Override
    public String getSelectedName(SearchType searchType) throws OseeCoreException {
       String name = super.getName();
-      TeamDefinitionArtifact teamDef = getTeamDefinition();
+      IAtsTeamDefinition teamDef = getTeamDefinition();
       try {
          if (teamDef != null) {
             name += " - " + teamDef.getName();
@@ -68,7 +70,7 @@ public class NextVersionSearchItem extends WorldUISearchItem {
       return name;
    }
 
-   private TeamDefinitionArtifact getTeamDefinition() {
+   private IAtsTeamDefinition getTeamDefinition() {
       if (teamDefHoldingVersions != null) {
          return teamDefHoldingVersions;
       }
@@ -84,9 +86,8 @@ public class NextVersionSearchItem extends WorldUISearchItem {
          AWorkbench.popup("ERROR", "No version marked as Next Release for \"" + getTeamDefinition() + "\"");
          return EMPTY_SET;
       }
-      List<Artifact> arts =
-         getTeamDefinition().getNextReleaseVersion().getRelatedArtifacts(
-            AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow);
+      List<Artifact> arts = new ArrayList<Artifact>();
+      arts.addAll(VersionsClient.getTargetedForTeamWorkflows(getTeamDefinition().getNextReleaseVersion()));
       if (isCancelled()) {
          return EMPTY_SET;
       }
@@ -104,10 +105,10 @@ public class NextVersionSearchItem extends WorldUISearchItem {
       }
       try {
          TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
-         ld.setInput(TeamDefinitionManager.getTeamReleaseableDefinitions(Active.Active));
+         ld.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Active));
          int result = ld.open();
          if (result == 0) {
-            selectedTeamDef = (TeamDefinitionArtifact) ld.getResult()[0];
+            selectedTeamDef = (IAtsTeamDefinition) ld.getResult()[0];
             return;
          } else {
             cancelled = true;
@@ -121,7 +122,7 @@ public class NextVersionSearchItem extends WorldUISearchItem {
    /**
     * @param selectedTeamDef the selectedTeamDef to set
     */
-   public void setSelectedTeamDef(TeamDefinitionArtifact selectedTeamDef) {
+   public void setSelectedTeamDef(IAtsTeamDefinition selectedTeamDef) {
       this.selectedTeamDef = selectedTeamDef;
    }
 
@@ -133,7 +134,7 @@ public class NextVersionSearchItem extends WorldUISearchItem {
    /**
     * @return the selectedVersionArt
     */
-   public Artifact getSelectedVersionArt() {
+   public IAtsVersion getSelectedVersionArt() {
       return selectedVersionArt;
    }
 

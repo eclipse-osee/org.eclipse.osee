@@ -13,7 +13,8 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 import java.util.Collection;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -36,7 +37,7 @@ public class TeamDefinitionDialog extends org.eclipse.ui.dialogs.ListDialog {
          public Object[] getElements(Object inputElement) {
             if (inputElement instanceof Collection) {
                Collection list = (Collection) inputElement;
-               return list.toArray(new TeamDefinitionArtifact[list.size()]);
+               return list.toArray(new IAtsTeamDefinition[list.size()]);
             }
             return super.getElements(inputElement);
          }
@@ -44,16 +45,16 @@ public class TeamDefinitionDialog extends org.eclipse.ui.dialogs.ListDialog {
       setLabelProvider(new LabelProvider() {
          @Override
          public String getText(Object element) {
-            if (element instanceof TeamDefinitionArtifact) {
-               return ((TeamDefinitionArtifact) element).getName();
+            if (element instanceof IAtsTeamDefinition) {
+               return ((IAtsTeamDefinition) element).getName();
             }
             return "Unknown element type";
          }
 
          @Override
          public Image getImage(Object element) {
-            if (element instanceof TeamDefinitionArtifact) {
-               return ArtifactImageManager.getImage((TeamDefinitionArtifact) element);
+            if (element instanceof IAtsTeamDefinition) {
+               return ArtifactImageManager.getImage(AtsArtifactTypes.TeamDefinition);
             }
             return null;
          }

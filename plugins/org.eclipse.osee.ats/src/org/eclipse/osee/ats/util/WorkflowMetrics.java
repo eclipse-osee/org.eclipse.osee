@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.column.RemainingHoursColumn;
 import org.eclipse.osee.ats.column.WorkDaysNeededColumn;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
@@ -30,6 +29,7 @@ import org.eclipse.osee.ats.core.client.workflow.EstimatedHoursUtil;
 import org.eclipse.osee.ats.core.client.workflow.HoursSpentUtil;
 import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -49,7 +49,7 @@ public class WorkflowMetrics {
 
    Date estimatedReleaseDate;
    long daysTillRel = 0;
-   Artifact versionArtifact = null;
+   IAtsVersion versionArtifact = null;
    String str = "";
    Set<TeamWorkFlowArtifact> teamArts = new HashSet<TeamWorkFlowArtifact>();
    Set<Artifact> actionArts = new HashSet<Artifact>();
@@ -65,7 +65,7 @@ public class WorkflowMetrics {
       HashSet.class, 100);
    private final double manHoursPerDay;
 
-   public WorkflowMetrics(Collection<? extends Artifact> artifacts, Artifact versionArtifact, double manHoursPerDay, Date estimatedReleaseDate) throws OseeCoreException {
+   public WorkflowMetrics(Collection<? extends Artifact> artifacts, IAtsVersion versionArtifact, double manHoursPerDay, Date estimatedReleaseDate) throws OseeCoreException {
       this.manHoursPerDay = manHoursPerDay;
       this.versionArtifact = versionArtifact;
       this.estimatedReleaseDate = estimatedReleaseDate;
@@ -134,7 +134,7 @@ public class WorkflowMetrics {
       Date today = new Date();
       daysTillRel = 0;
       if (versionArtifact != null && estimatedReleaseDate == null) {
-         estimatedReleaseDate = versionArtifact.getSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, null);
+         estimatedReleaseDate = versionArtifact.getEstimatedReleaseDate();
       }
       if (estimatedReleaseDate != null && estimatedReleaseDate.after(today)) {
          daysTillRel = DateUtil.getWorkingDaysBetween(today, estimatedReleaseDate);
@@ -259,7 +259,7 @@ public class WorkflowMetrics {
       return str;
    }
 
-   public static String getEstRemainMetrics(Collection<? extends Artifact> awas, Artifact versionArtifact, double manHoursPerDay, Date estimatedrelDate) throws OseeCoreException {
+   public static String getEstRemainMetrics(Collection<? extends Artifact> awas, IAtsVersion versionArtifact, double manHoursPerDay, Date estimatedrelDate) throws OseeCoreException {
       return new WorkflowMetrics(awas, versionArtifact, manHoursPerDay, estimatedrelDate).str;
    }
 
@@ -318,11 +318,11 @@ public class WorkflowMetrics {
       this.daysTillRel = daysTillRel;
    }
 
-   public Artifact getVersionArtifact() {
+   public IAtsVersion getVersionArtifact() {
       return versionArtifact;
    }
 
-   public void setVersionArtifact(Artifact versionArtifact) {
+   public void setVersionArtifact(IAtsVersion versionArtifact) {
       this.versionArtifact = versionArtifact;
    }
 

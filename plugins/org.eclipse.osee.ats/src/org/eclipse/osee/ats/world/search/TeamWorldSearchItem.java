@@ -18,19 +18,18 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.WorkflowManager;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
-import org.eclipse.osee.ats.core.client.team.TeamState;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.util.AtsCacheManager;
-import org.eclipse.osee.ats.core.client.version.VersionArtifact;
+import org.eclipse.osee.ats.artifact.WorkflowManager;
+import org.eclipse.osee.ats.core.client.team.TeamState;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.core.workflow.WorkPageType;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -45,7 +44,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
  * @author Donald G. Dunne
@@ -57,13 +55,13 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
       UnReleased,
       Both
    };
-   private Collection<TeamDefinitionArtifact> teamDefs;
+   private Collection<IAtsTeamDefinition> teamDefs;
    private final boolean recurseChildren;
    private boolean includeCompleted;
    private boolean showAction;
    private final Collection<String> teamDefNames;
    private final ChangeType changeType;
-   private final Artifact versionArt;
+   private final IAtsVersion versionArt;
    private final IAtsUser userArt;
    private final ReleasedOption releasedOption;
    private final boolean includeCancelled;
@@ -72,7 +70,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
    private IAttributeType attrValueSearchType;
    private final List<String> attrValueSearchOrValues = new ArrayList<String>();
 
-   public TeamWorldSearchItem(String displayName, List<String> teamDefNames, boolean includeCompleted, boolean includeCancelled, boolean showAction, boolean recurseChildren, ChangeType changeType, Artifact versionArt, IAtsUser userArt, ReleasedOption releasedOption, String stateName) {
+   public TeamWorldSearchItem(String displayName, List<String> teamDefNames, boolean includeCompleted, boolean includeCancelled, boolean showAction, boolean recurseChildren, ChangeType changeType, IAtsVersion versionArt, IAtsUser userArt, ReleasedOption releasedOption, String stateName) {
       super(displayName, AtsImage.TEAM_WORKFLOW);
       this.includeCancelled = includeCancelled;
       this.versionArt = versionArt;
@@ -86,7 +84,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
       this.stateName = stateName;
    }
 
-   public TeamWorldSearchItem(String displayName, Collection<TeamDefinitionArtifact> teamDefs, boolean includeCompleted, boolean includeCancelled, boolean showAction, boolean recurseChildren, Artifact versionArt, IAtsUser userArt, ReleasedOption releasedOption, String stateName) {
+   public TeamWorldSearchItem(String displayName, Collection<IAtsTeamDefinition> teamDefs, boolean includeCompleted, boolean includeCancelled, boolean showAction, boolean recurseChildren, IAtsVersion versionArt, IAtsUser userArt, ReleasedOption releasedOption, String stateName) {
       super(displayName, AtsImage.TEAM_WORKFLOW);
       this.includeCancelled = includeCancelled;
       this.versionArt = versionArt;
@@ -120,7 +118,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
       if (teamDefNames != null) {
          return teamDefNames;
       } else if (teamDefs != null) {
-         return Artifacts.getNames(teamDefs);
+         return TeamDefinitions.getNames(teamDefs);
       }
       return new ArrayList<String>();
    }
@@ -135,11 +133,9 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
     */
    public void getTeamDefs() {
       if (teamDefNames != null && teamDefs == null) {
-         teamDefs = new HashSet<TeamDefinitionArtifact>();
+         teamDefs = new HashSet<IAtsTeamDefinition>();
          for (String teamDefName : teamDefNames) {
-            TeamDefinitionArtifact aia =
-               (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(AtsArtifactTypes.TeamDefinition,
-                  teamDefName);
+            IAtsTeamDefinition aia = AtsConfigCache.getSoleByName(teamDefName, IAtsTeamDefinition.class);
             if (aia != null) {
                teamDefs.add(aia);
             }
@@ -151,9 +147,9 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       getTeamDefs();
       Set<String> teamDefinitionGuids = new HashSet<String>(teamDefs.size());
-      for (TeamDefinitionArtifact teamDef : teamDefs) {
+      for (IAtsTeamDefinition teamDef : teamDefs) {
          if (recurseChildren) {
-            for (TeamDefinitionArtifact childTeamDef : TeamDefinitionManager.getTeamsFromItemAndChildren(teamDef)) {
+            for (IAtsTeamDefinition childTeamDef : TeamDefinitions.getTeamsFromItemAndChildren(teamDef)) {
                teamDefinitionGuids.add(childTeamDef.getGuid());
             }
          } else {
@@ -202,7 +198,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
                TeamWorkFlowArtifact team = awa.getParentTeamWorkflow();
                if (team != null) {
                   // skip if released is desired and version artifact is not set
-                  VersionArtifact setVerArt = team.getTargetedVersion();
+                  IAtsVersion setVerArt = team.getTargetedVersion();
                   if (setVerArt == null && releasedOption == ReleasedOption.Released) {
                      continue;
                   }

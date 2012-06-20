@@ -18,16 +18,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionManager;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.util.AtsObjectLabelProvider;
+import org.eclipse.osee.ats.util.widgets.dialog.AtsObjectNameSorter;
 import org.eclipse.osee.ats.workflow.ChangeTypeLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
-import org.eclipse.osee.framework.ui.skynet.util.ArtifactDescriptiveLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -132,9 +132,9 @@ public class ActionTeamDateListDialog extends SelectionDialog {
       comp.setLayout(new GridLayout(2, false));
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      teamDefList.setLabelProvider(new ArtifactDescriptiveLabelProvider());
+      teamDefList.setLabelProvider(new AtsObjectLabelProvider());
       teamDefList.setContentProvider(new ArrayContentProvider());
-      teamDefList.setSorter(new ArtifactViewerSorter());
+      teamDefList.setSorter(new AtsObjectNameSorter());
       teamDefList.setGrabHorizontal(true);
       teamDefList.setMultiSelect(true);
       teamDefList.createWidgets(comp, 2);
@@ -147,7 +147,7 @@ public class ActionTeamDateListDialog extends SelectionDialog {
       }
       Set<Object> objs = new HashSet<Object>();
       try {
-         for (TeamDefinitionArtifact teamDef : TeamDefinitionManager.getTeamDefinitions(Active.Both)) {
+         for (IAtsTeamDefinition teamDef : TeamDefinitions.getTeamDefinitions(Active.Both)) {
             objs.add(teamDef);
          }
       } catch (Exception ex) {
@@ -170,10 +170,10 @@ public class ActionTeamDateListDialog extends SelectionDialog {
       teamDefList.getTable().setLayoutData(gd);
    }
 
-   public List<TeamDefinitionArtifact> getSelectedTeamDefs() {
-      ArrayList<TeamDefinitionArtifact> adas = new ArrayList<TeamDefinitionArtifact>();
+   public List<IAtsTeamDefinition> getSelectedTeamDefs() {
+      ArrayList<IAtsTeamDefinition> adas = new ArrayList<IAtsTeamDefinition>();
       for (Object obj : selectedTeamDefs) {
-         adas.add((TeamDefinitionArtifact) obj);
+         adas.add((IAtsTeamDefinition) obj);
       }
       return adas;
    }

@@ -10,9 +10,6 @@ package org.eclipse.osee.ats.core.model;
  */
 public interface IAtsConfigObject extends IAtsObject {
 
-   public IAtsUserGroup getPrivilegedEditors();
+   String toStringWithId();
 
-   public IAtsUserGroup getLeads();
-
-   public IAtsUserGroup getMembers();
 }

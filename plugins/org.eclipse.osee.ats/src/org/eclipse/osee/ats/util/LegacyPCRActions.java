@@ -17,8 +17,8 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
-import org.eclipse.osee.ats.core.client.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.world.search.LegacyPCRActionsWorldSearchItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -28,11 +28,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class LegacyPCRActions {
 
-   public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(TeamDefinitionArtifact teamDef) throws OseeCoreException {
+   public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts( IAtsTeamDefinition teamDef) throws OseeCoreException {
       return getTeamsTeamWorkflowArtifacts(Arrays.asList(teamDef));
    }
 
-   public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(Collection<TeamDefinitionArtifact> teamDefs) throws OseeCoreException {
+   public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(Collection<IAtsTeamDefinition> teamDefs) throws OseeCoreException {
       LegacyPCRActionsWorldSearchItem search = new LegacyPCRActionsWorldSearchItem(teamDefs, false);
       Set<TeamWorkFlowArtifact> teamArts = new HashSet<TeamWorkFlowArtifact>();
       for (Artifact art : search.performSearchGetResults()) {
@@ -43,19 +43,19 @@ public class LegacyPCRActions {
       return teamArts;
    }
 
-   public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(String pcrId, Collection<TeamDefinitionArtifact> teamDefs) throws OseeCoreException {
+   public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(String pcrId, Collection<IAtsTeamDefinition> teamDefs) throws OseeCoreException {
       return getTeamsTeamWorkflowArtifacts(Arrays.asList(pcrId), teamDefs);
    }
 
    public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(String pcrId) throws OseeCoreException {
-      return getTeamsTeamWorkflowArtifacts(Arrays.asList(pcrId), (Collection<TeamDefinitionArtifact>) null);
+      return getTeamsTeamWorkflowArtifacts(Arrays.asList(pcrId), (Collection<IAtsTeamDefinition>) null);
    }
 
-   public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(Collection<String> pcrIds, TeamDefinitionArtifact teamDef) throws OseeCoreException {
+   public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(Collection<String> pcrIds, IAtsTeamDefinition teamDef) throws OseeCoreException {
       return getTeamsTeamWorkflowArtifacts(pcrIds, teamDef != null ? Arrays.asList(teamDef) : null);
    }
 
-   public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(Collection<String> pcrIds, Collection<TeamDefinitionArtifact> teamDefs) throws OseeCoreException {
+   public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(Collection<String> pcrIds, Collection<IAtsTeamDefinition> teamDefs) throws OseeCoreException {
       LegacyPCRActionsWorldSearchItem search = new LegacyPCRActionsWorldSearchItem(pcrIds, teamDefs, false);
       Set<TeamWorkFlowArtifact> teamArts = new HashSet<TeamWorkFlowArtifact>();
       for (Artifact art : search.performSearchGetResults()) {
@@ -66,11 +66,11 @@ public class LegacyPCRActions {
       return teamArts;
    }
 
-   public static Collection<ActionArtifact> getTeamsActionArtifacts(TeamDefinitionArtifact teamDef) throws OseeCoreException {
+   public static Collection<ActionArtifact> getTeamsActionArtifacts( IAtsTeamDefinition teamDef) throws OseeCoreException {
       return getTeamsActionArtifacts(Arrays.asList(teamDef));
    }
 
-   public static Collection<ActionArtifact> getTeamsActionArtifacts(Collection<TeamDefinitionArtifact> teamDefs) throws OseeCoreException {
+   public static Collection<ActionArtifact> getTeamsActionArtifacts(Collection<IAtsTeamDefinition> teamDefs) throws OseeCoreException {
       LegacyPCRActionsWorldSearchItem search = new LegacyPCRActionsWorldSearchItem(teamDefs, true);
       Set<ActionArtifact> actArts = new HashSet<ActionArtifact>();
       for (Artifact art : search.performSearchGetResults()) {
@@ -81,11 +81,11 @@ public class LegacyPCRActions {
       return actArts;
    }
 
-   public static Collection<Artifact> getTeamsActionArtifacts(String pcrId, Collection<TeamDefinitionArtifact> teamDefs) throws OseeCoreException {
+   public static Collection<Artifact> getTeamsActionArtifacts(String pcrId, Collection<IAtsTeamDefinition> teamDefs) throws OseeCoreException {
       return getTeamsActionArtifacts(Arrays.asList(pcrId), teamDefs);
    }
 
-   public static Collection<Artifact> getTeamsActionArtifacts(Collection<String> pcrIds, Collection<TeamDefinitionArtifact> teamDefs) throws OseeCoreException {
+   public static Collection<Artifact> getTeamsActionArtifacts(Collection<String> pcrIds, Collection<IAtsTeamDefinition> teamDefs) throws OseeCoreException {
       LegacyPCRActionsWorldSearchItem search = new LegacyPCRActionsWorldSearchItem(pcrIds, teamDefs, true);
       Set<Artifact> actArts = new HashSet<Artifact>();
       for (Artifact art : search.performSearchGetResults()) {

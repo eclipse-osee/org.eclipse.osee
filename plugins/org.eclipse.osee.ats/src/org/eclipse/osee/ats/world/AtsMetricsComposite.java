@@ -18,10 +18,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.WorkflowMetrics;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -132,10 +132,8 @@ public class AtsMetricsComposite extends ScrolledComposite {
       addSpace();
 
       try {
-         if (estimatedReleaseXDate.getDate() == null && iAtsMetricsProvider.getMetricsVersionArtifact() != null && iAtsMetricsProvider.getMetricsVersionArtifact().getSoleAttributeValue(
-            AtsAttributeTypes.EstimatedReleaseDate, null) != null) {
-            estimatedReleaseXDate.setDate((Date) iAtsMetricsProvider.getMetricsVersionArtifact().getSoleAttributeValue(
-               AtsAttributeTypes.EstimatedReleaseDate, null));
+         if (estimatedReleaseXDate.getDate() == null && iAtsMetricsProvider.getMetricsVersionArtifact() != null && iAtsMetricsProvider.getMetricsVersionArtifact().getEstimatedReleaseDate() != null) {
+            estimatedReleaseXDate.setDate(iAtsMetricsProvider.getMetricsVersionArtifact().getEstimatedReleaseDate());
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -160,15 +158,14 @@ public class AtsMetricsComposite extends ScrolledComposite {
          return estimatedReleaseXDate.getDate();
       }
       if (iAtsMetricsProvider.getMetricsVersionArtifact() != null) {
-         return iAtsMetricsProvider.getMetricsVersionArtifact().getSoleAttributeValue(
-            AtsAttributeTypes.EstimatedReleaseDate, null);
+         return iAtsMetricsProvider.getMetricsVersionArtifact().getEstimatedReleaseDate();
       }
       // Try to find an estimated release date from one of the workflows
       for (Artifact art : iAtsMetricsProvider.getMetricsArtifacts()) {
          if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-            Artifact verArt = ((TeamWorkFlowArtifact) art).getTargetedVersion();
+            IAtsVersion verArt = ((TeamWorkFlowArtifact) art).getTargetedVersion();
             if (verArt != null) {
-               Date estRelDate = verArt.getSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, null);
+               Date estRelDate = verArt.getEstimatedReleaseDate();
                if (estRelDate != null) {
                   return estRelDate;
                }
@@ -227,11 +224,10 @@ public class AtsMetricsComposite extends ScrolledComposite {
             "Targeted Version",
             0,
             iAtsMetricsProvider.getMetricsVersionArtifact() == null ? "Not Set" : iAtsMetricsProvider.getMetricsVersionArtifact().getName()));
-         lines.add(new XBarGraphLine(
-            "Targeted Version - Estimated Release Date",
-            0,
-            iAtsMetricsProvider.getMetricsVersionArtifact() == null ? "Not Set" : iAtsMetricsProvider.getMetricsVersionArtifact().getSoleAttributeValueAsString(
-               AtsAttributeTypes.EstimatedReleaseDate, "Not Set")));
+         String estimatedReleaseDateStr =
+            iAtsMetricsProvider.getMetricsVersionArtifact().getEstimatedReleaseDate() == null ? "Not Set" : iAtsMetricsProvider.getMetricsVersionArtifact().getEstimatedReleaseDate().toString();
+         lines.add(new XBarGraphLine("Targeted Version - Estimated Release Date", 0,
+            iAtsMetricsProvider.getMetricsVersionArtifact() == null ? "Not Set" : estimatedReleaseDateStr));
          lines.add(new XBarGraphLine("Metrics Estimated Release Date", 0,
             getEstimatedReleaseDate() == null ? "Not Set" : getEstimatedReleaseDate().toString()));
          lines.add(new XBarGraphLine("Work-Days Till Release", 0,
