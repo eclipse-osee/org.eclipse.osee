@@ -81,7 +81,7 @@ public class VcpSourceFile {
    }
 
    public void cleanup() {
-      filename = null;
+      //      filename = null;
       unitNumber = null;
       if (coverageDataFile != null) {
          coverageDataFile.cleanup();

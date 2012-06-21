@@ -323,14 +323,12 @@ public class MergeManager {
                childICoverage, false));
             unMatchedImportCoverageItems.remove(childICoverage);
          }
-
          // Check for test units change
-         System.err.println("MergeManager: add test_units back in");
-         //         else if (childMatchItem != null && isCoverageItemTestUnitsUpdate(childMatchItem)) {
-         //            groupMergeItems.add(new MergeItem(MergeType.CI_Test_Units_Update, childMatchItem.getPackageItem(),
-         //               childICoverage, false));
-         //            unMatchedImportCoverageItems.remove(childICoverage);
-         //         }
+         else if (childMatchItem != null && isCoverageItemTestUnitsUpdate(childMatchItem)) {
+            groupMergeItems.add(new MergeItem(MergeType.CI_Test_Units_Update, childMatchItem.getPackageItem(),
+               childICoverage, false));
+            unMatchedImportCoverageItems.remove(childICoverage);
+         }
       }
 
       // Check for moves in any items left unhandled by above renames and adds
