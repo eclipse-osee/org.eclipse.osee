@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -24,7 +25,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -196,7 +196,7 @@ public class ArtifactTypeManager {
     * @param purgeArtifactTypes types to be converted and purged
     * @param newArtifactType new type to convert any existing artifacts of the old type
     */
-   public static void purgeArtifactTypesWithCheck(Collection<? extends IArtifactType> purgeArtifactTypes, IArtifactType newArtifactType) throws OseeCoreException {
+   public static void purgeArtifactTypesWithCheck(Collection<? extends IArtifactType> purgeArtifactTypes, IArtifactType newArtifactType) throws CoreException {
       for (IArtifactType purgeArtifactType : purgeArtifactTypes) {
          // find all artifact of this type on all branches and make a unique list for type change (since it is not by branch)
          List<Artifact> artifacts =
@@ -218,29 +218,6 @@ public class ArtifactTypeManager {
             }
          }
          purgeArtifactType(purgeArtifactType);
-      }
-   }
-
-   /**
-    * Run code that will be run during purge with convert and report on what relations, attributes will be deleted as
-    * part of the conversion.
-    */
-   public static void purgeArtifactTypesWithConversionReportOnly(StringBuffer results, Collection<IArtifactType> purgeArtifactTypes, IArtifactType newArtifactType) throws OseeCoreException {
-      try {
-         for (IArtifactType purgeArtifactType : purgeArtifactTypes) {
-            // find all artifact of this type on all branches and make a unique list for type change (since it is not by branch)
-            List<Artifact> artifacts =
-               ArtifactQuery.getArtifactListFromType(purgeArtifactType, DeletionFlag.INCLUDE_DELETED);
-            if (artifacts.size() > 0) {
-               HashMap<Integer, Artifact> artifactMap = new HashMap<Integer, Artifact>();
-               for (Artifact artifact : artifacts) {
-                  artifactMap.put(artifact.getArtId(), artifact);
-               }
-               ChangeArtifactType.changeArtifactTypeReportOnly(results, artifactMap.values(), newArtifactType);
-            }
-         }
-      } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
       }
    }
 
