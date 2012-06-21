@@ -1509,7 +1509,7 @@
              plugin="org.eclipse.osee.framework.skynet.core">
        </statusHandler>
        <statusHandler
-             class="org.eclipse.osee.framework.ui.skynet.handler.ArtifactChangeHandler"
+             class="org.eclipse.osee.framework.ui.skynet.handler.ChangeArtifactTypeHandler"
              code="257"
              id="org.eclipse.osee.framework.ui.skynet.ArtifactChangeHandler"
              plugin="org.eclipse.osee.framework.skynet.core">

@@ -10,20 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.handler;
 
+import org.apache.commons.lang.mutable.MutableBoolean;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.debug.core.IStatusHandler;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Ryan D. Brooks
  */
-public class ArtifactChangeHandler implements IStatusHandler {
+public class ChangeArtifactTypeHandler implements IStatusHandler {
    @Override
    public Object handleStatus(IStatus status, Object source) {
-      final MutableInteger result = new MutableInteger(0);
+      final MutableBoolean result = new MutableBoolean(false);
       final String message = (String) source;
 
       Runnable runnable = new Runnable() {
@@ -31,13 +31,13 @@ public class ArtifactChangeHandler implements IStatusHandler {
          public void run() {
             if (MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                "Confirm Artifact Type Change ", message)) {
-               result.setValue(1);
+               result.setValue(true);
             }
          }
 
       };
 
       Displays.pendInDisplayThread(runnable);
-      return result.getValue() == 1;
+      return result.getValue();
    }
 }
