@@ -56,7 +56,7 @@ public class MockDataProxy implements DataProxy {
 
    @SuppressWarnings("unused")
    @Override
-   public void persist(int storageId) throws OseeCoreException {
+   public void persist(long storageId) throws OseeCoreException {
       //
    }
 

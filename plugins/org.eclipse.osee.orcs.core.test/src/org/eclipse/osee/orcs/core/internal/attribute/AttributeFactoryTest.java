@@ -10,45 +10,89 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute;
 
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
-import org.eclipse.osee.framework.core.model.mocks.MockOseeDataAccessor;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
-import org.eclipse.osee.framework.core.model.type.OseeEnumType;
-import org.eclipse.osee.orcs.core.internal.attribute.primitives.PrimitiveAttributeClassProvider;
-import org.junit.Ignore;
+import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.core.ds.AttributeData;
+import org.eclipse.osee.orcs.core.ds.AttributeDataFactory;
+import org.eclipse.osee.orcs.core.ds.DataProxy;
+import org.eclipse.osee.orcs.core.ds.VersionData;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link AttributeFactory}
  * 
- * @author Roberto E. Escobar
+ * @author John Misinco
  */
 public class AttributeFactoryTest {
 
+   @Mock
+   private Log logger;
+   @Mock
+   private AttributeTypeCache cache;
+   @Mock
+   private AttributeType attrType;
+   @Mock
+   private AttributeClassResolver resolver;
+   @Mock
+   private AttributeDataFactory dataFactory;
+   //   @Mock
+   //   private AttributeContainer container;
+   @Mock
+   private AttributeData data;
+   @Mock
+   private DataProxy proxy;
+   @Mock
+   private Attribute<Object> attr;
+
+   private AttributeFactory factory;
+
+   @Before
+   public void initMocks() throws OseeCoreException {
+      MockitoAnnotations.initMocks(this);
+      when(cache.getByGuid(anyLong())).thenReturn(attrType);
+      when(resolver.createAttribute(any(AttributeType.class))).thenReturn(attr);
+      when(data.getDataProxy()).thenReturn(proxy);
+      factory = new AttributeFactory(logger, resolver, cache, dataFactory);
+   }
+
    @Test
-   @Ignore
-   public void test() throws OseeCoreException {
-      //      Log logger = new MockLog();
-      AttributeTypeCache cache = new AttributeTypeCache(new MockOseeDataAccessor<Long, AttributeType>());
-      AttributeClassResolver resolver = new AttributeClassResolver();
-      resolver.addProvider(new PrimitiveAttributeClassProvider());
-      //      AttributeFactory factory = new AttributeFactory(logger, resolver, cache);
-      AttributeTypeFactory typeFactory = new AttributeTypeFactory();
-      typeFactory.createOrUpdate(cache, CoreAttributeTypes.Name.getGuid(), CoreAttributeTypes.Name.getName(),
-         "StringAttribute", "name", "name", "name", new OseeEnumType(CoreAttributeTypes.Name.getGuid(),
-            CoreAttributeTypes.Name.getName()), 1, 1, "", "");
-      //      typeFactory.create(guid, name, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension, defaultValue, minOccurrences, maxOccurrences, tipText, taggerId)
-      //      AttributeType type = new AttributeType(guid, typeName, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension, defaultValue, minOccurrences, maxOccurrences, description, taggerId).createAttributeType();
-      //      cache.cache(type);
-      //      NamedIdentity<String> namedIdentity = new NamedIdentity<String>("something", "name");
-      //      AttributeContainer container = new AttributeContainerImpl(namedIdentity);
-      //      AttributeData row = new AttributeData();
-      //      row.setAttrTypeUuid(CoreAttributeTypes.Name.getGuid());
-      //      row.getArtifactId();
-      //      //      factory.loadAttribute(container, row);
-      //      System.out.println("check the container");
+   public void testCreateAttribute() throws OseeCoreException {
+      //      factory.createAttribute(container, data);
+      //      verify(container).add(attrType, attr);
+   }
+
+   @Test
+   public void testCopyAttribute() throws OseeCoreException {
+      when(attr.getOrcsData()).thenReturn(data);
+      AttributeData copyAttrData = mock(AttributeData.class);
+      when(copyAttrData.getDataProxy()).thenReturn(proxy);
+      when(dataFactory.copy(CoreBranches.COMMON, data)).thenReturn(copyAttrData);
+      //      Attribute<?> copy = factory.copyAttribute(attr, CoreBranches.COMMON, container);
+
+      //      verify(container).add(attrType, copy);
+      verify(dataFactory).copy(CoreBranches.COMMON, data);
+   }
+
+   @Test
+   public void testIntroduceAttribute() throws OseeCoreException {
+      VersionData version = mock(VersionData.class);
+      AttributeData newAttrData = mock(AttributeData.class);
+      when(newAttrData.getDataProxy()).thenReturn(proxy);
+      when(attr.getOrcsData()).thenReturn(data);
+      when(data.getVersion()).thenReturn(version);
+      when(version.isInStorage()).thenReturn(true);
+      when(dataFactory.introduce(CoreBranches.COMMON, data)).thenReturn(newAttrData);
+      //      factory.introduceAttribute(attr, CoreBranches.COMMON, container);
+
+      verify(dataFactory).introduce(CoreBranches.COMMON, data);
+      //      verify(container).add(attrType, attr);
    }
 }

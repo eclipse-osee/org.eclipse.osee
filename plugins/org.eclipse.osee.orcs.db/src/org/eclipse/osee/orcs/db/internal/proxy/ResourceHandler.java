@@ -70,7 +70,7 @@ public class ResourceHandler implements DataHandler {
    }
 
    @Override
-   public void save(int storageId, DataResource dataResource, byte[] rawContent) throws OseeCoreException {
+   public void save(long storageId, DataResource dataResource, byte[] rawContent) throws OseeCoreException {
       StringBuilder storageName = new StringBuilder();
       storageName.append(dataResource.getStorageName());
       String extension = dataResource.getExtension();
@@ -79,7 +79,7 @@ public class ResourceHandler implements DataHandler {
          storageName.append(extension);
       }
 
-      String seed = Integer.toString(storageId);
+      String seed = String.valueOf(storageId);
       IResourceLocator locatorHint = resourceManager.generateResourceLocator("attr", seed, storageName.toString());
 
       String contentType = dataResource.getContentType();

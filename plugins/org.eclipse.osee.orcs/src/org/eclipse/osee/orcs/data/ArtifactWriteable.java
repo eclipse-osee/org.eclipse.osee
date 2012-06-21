@@ -40,18 +40,24 @@ public interface ArtifactWriteable extends Writeable, ArtifactReadable {
 
    void createAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException;
 
-   <T> void setSoleAttribute(IAttributeType attributeType, T value) throws OseeCoreException;
+   <T> void setSoleAttributeValue(IAttributeType attributeType, T value) throws OseeCoreException;
 
    void setSoleAttributeFromStream(IAttributeType attributeType, InputStream inputStream) throws OseeCoreException;
 
    void setSoleAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException;
 
-   void setAttributes(IAttributeType attributeType, Collection<String> values) throws OseeCoreException;
+   <T> void setAttributesFromValues(IAttributeType attributeType, Collection<T> values) throws OseeCoreException;
+
+   void setAttributesFromStrings(IAttributeType attributeType, Collection<String> values) throws OseeCoreException;
 
    void deleteSoleAttribute(IAttributeType attributeType) throws OseeCoreException;
 
    void deleteAttributes(IAttributeType attributeType) throws OseeCoreException;
 
    void deleteAttributesWithValue(IAttributeType attributeType, Object value) throws OseeCoreException;
+
+   boolean isDirty() throws OseeCoreException;
+
+   boolean isDeleted() throws OseeCoreException;
 
 }

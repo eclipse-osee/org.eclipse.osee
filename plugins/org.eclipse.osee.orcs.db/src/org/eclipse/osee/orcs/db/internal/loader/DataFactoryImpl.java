@@ -133,4 +133,14 @@ public class DataFactoryImpl implements DataFactory {
          aArt.getLocalId(), bArt.getLocalId(), rationale);
    }
 
+   @Override
+   public ArtifactData clone(ArtifactData source) {
+      return objectFactory.createCopy(source);
+   }
+
+   @Override
+   public AttributeData clone(AttributeData source) throws OseeCoreException {
+      return objectFactory.createCopy(source);
+   }
+
 }

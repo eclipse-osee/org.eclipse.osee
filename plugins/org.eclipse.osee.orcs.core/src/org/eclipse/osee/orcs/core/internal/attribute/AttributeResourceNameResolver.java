@@ -12,7 +12,8 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
+import org.eclipse.osee.framework.core.data.Identity;
+import org.eclipse.osee.framework.core.data.Named;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -35,7 +36,7 @@ public class AttributeResourceNameResolver implements ResourceNameResolver {
 
    @Override
    public String getStorageName() throws OseeCoreException {
-      NamedIdentity<String> identity = attribute.getContainer().getParent();
+      Identity<String> identity = attribute.getContainer();
       String guid = identity.getGuid();
       Conditions.checkExpressionFailOnTrue(!GUID.isValid(guid), "Artifact has an invalid guid [%s]", guid);
       return guid;
@@ -43,7 +44,7 @@ public class AttributeResourceNameResolver implements ResourceNameResolver {
 
    @Override
    public String getInternalFileName() throws OseeCoreException {
-      NamedIdentity<String> identity = attribute.getContainer().getParent();
+      Named identity = attribute.getContainer();
 
       StringBuilder builder = new StringBuilder();
       try {

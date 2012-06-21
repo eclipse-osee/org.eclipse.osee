@@ -130,4 +130,15 @@ public class VersionDataImpl implements VersionData {
       return "Version [branchId=" + branchId + ", txId=" + txId + ", gamma=" + gamma + ", historical=" + historical + ", stripeId=" + stripeId + "]";
    }
 
+   @Override
+   public VersionData clone() {
+      VersionData copy = new VersionDataImpl();
+      copy.setBranchId(getBranchId());
+      copy.setGammaId(getGammaId());
+      copy.setHistorical(isHistorical());
+      copy.setStripeId(getStripeId());
+      copy.setTransactionId(getTransactionId());
+      return copy;
+   }
+
 }

@@ -25,7 +25,7 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.HasOrcsData;
-import org.eclipse.osee.orcs.core.internal.artifact.AttributeContainer;
+import org.eclipse.osee.orcs.core.internal.artifact.AttributeManager;
 import org.eclipse.osee.orcs.data.AttributeWriteable;
 
 /**
@@ -33,13 +33,13 @@ import org.eclipse.osee.orcs.data.AttributeWriteable;
  */
 public abstract class Attribute<T> implements HasOrcsData<AttributeData>, Comparable<Attribute<T>>, AttributeWriteable<T> {
    private AttributeType attributeType;
-   private Reference<AttributeContainer> containerReference;
+   private Reference<AttributeManager> containerReference;
    private boolean dirty;
    private String defaultValue;
    private Log logger;
    private AttributeData attributeData;
 
-   public void internalInitialize(Reference<AttributeContainer> containerReference, AttributeData attributeData, AttributeType attributeType, boolean isDirty, boolean setDefaultValue) throws OseeCoreException {
+   public void internalInitialize(Reference<AttributeManager> containerReference, AttributeData attributeData, AttributeType attributeType, boolean isDirty, boolean setDefaultValue) throws OseeCoreException {
       this.containerReference = containerReference;
       this.attributeData = attributeData;
       this.attributeType = attributeType;
@@ -195,7 +195,7 @@ public abstract class Attribute<T> implements HasOrcsData<AttributeData>, Compar
       //      }
    }
 
-   public AttributeContainer getContainer() throws OseeStateException {
+   public AttributeManager getContainer() throws OseeStateException {
       if (containerReference.get() == null) {
          throw new OseeStateException("Attribute parent has been garbage collected");
       }
@@ -242,10 +242,16 @@ public abstract class Attribute<T> implements HasOrcsData<AttributeData>, Compar
 
    /**
     * Deletes the attribute
+    * 
+    * @throws OseeStateException
     */
    @Override
-   public final void delete() {
-      markAsChanged(ModificationType.DELETED);
+   public final void delete() throws OseeStateException {
+      if (isInDb()) {
+         markAsChanged(ModificationType.DELETED);
+      } else {
+         getContainer().remove(getAttributeType(), this);
+      }
    }
 
    @Override
@@ -256,7 +262,7 @@ public abstract class Attribute<T> implements HasOrcsData<AttributeData>, Compar
    @Override
    public boolean canDelete() {
       try {
-         return getContainer().getCount(getAttributeType()) > getAttributeType().getMinOccurrences();
+         return getContainer().getAttributeCount(getAttributeType()) > getAttributeType().getMinOccurrences();
       } catch (OseeCoreException ex) {
          return false;
       }
@@ -304,7 +310,7 @@ public abstract class Attribute<T> implements HasOrcsData<AttributeData>, Compar
 
    @Override
    public boolean isDeleted() {
-      return attributeData.getModType().isDeleted();
+      return getModificationType().isDeleted();
    }
 
    /**

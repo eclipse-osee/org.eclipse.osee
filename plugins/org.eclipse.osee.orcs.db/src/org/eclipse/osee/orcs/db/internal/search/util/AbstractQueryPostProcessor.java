@@ -114,7 +114,7 @@ public abstract class AbstractQueryPostProcessor extends QueryPostProcessor impl
          Map<AttributeReadable<?>, List<MatchLocation>> matchedAttributes = null;
          for (ArtifactReadable artifact : artifacts) {
             checkForCancelled();
-            for (AttributeReadable<?> attribute : getAttributes(artifact)) {
+            for (AttributeReadable<Object> attribute : getAttributes(artifact)) {
                checkForCancelled();
                try {
                   if (getTypes().contains(attribute.getAttributeType())) {
@@ -143,16 +143,15 @@ public abstract class AbstractQueryPostProcessor extends QueryPostProcessor impl
          return results;
       }
 
-      @SuppressWarnings("unchecked")
-      private <T> List<AttributeReadable<T>> getAttributes(ArtifactReadable artifact) throws OseeCoreException {
-         List<AttributeReadable<T>> toReturn;
+      private List<AttributeReadable<Object>> getAttributes(ArtifactReadable artifact) throws OseeCoreException {
+         List<AttributeReadable<Object>> toReturn;
 
          Collection<? extends IAttributeType> toCheck = getTypes();
          if (toCheck != null && !toCheck.isEmpty()) {
-            toReturn = new ArrayList<AttributeReadable<T>>();
+            toReturn = new ArrayList<AttributeReadable<Object>>();
             for (IAttributeType attributeType : toCheck) {
-               for (AttributeReadable<?> attr : artifact.getAttributes(attributeType)) {
-                  toReturn.add((AttributeReadable<T>) attr);
+               for (AttributeReadable<Object> attr : artifact.getAttributes(attributeType)) {
+                  toReturn.add(attr);
                   checkForCancelled();
                }
             }

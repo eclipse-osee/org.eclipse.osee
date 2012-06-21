@@ -66,7 +66,7 @@ public class MappedDataProxy extends AbstractDataProxy implements CharacterDataP
    //   }
 
    @Override
-   public void persist(int storageId) throws OseeCoreException {
+   public void persist(long storageId) throws OseeCoreException {
       try {
          if (isFromLocalWorkspace()) {
             InputStream inputStream = null;

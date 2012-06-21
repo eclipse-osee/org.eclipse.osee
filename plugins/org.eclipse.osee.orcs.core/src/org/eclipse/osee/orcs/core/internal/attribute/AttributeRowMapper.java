@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
-import org.eclipse.osee.orcs.core.internal.artifact.AttributeContainer;
+import org.eclipse.osee.orcs.core.internal.artifact.AttributeManager;
 
 /**
  * @author Roberto E. Escobar
@@ -23,17 +23,17 @@ import org.eclipse.osee.orcs.core.internal.artifact.AttributeContainer;
 public class AttributeRowMapper implements AttributeDataHandler {
 
    private final AttributeFactory factory;
-   private final Map<Integer, ? extends AttributeContainer> attributeContainers;
+   private final Map<Integer, ? extends AttributeManager> attributeContainers;
    private final Log logger;
 
-   public AttributeRowMapper(Log logger, AttributeFactory attributeFactory, Map<Integer, ? extends AttributeContainer> attributeContainers) {
+   public AttributeRowMapper(Log logger, AttributeFactory attributeFactory, Map<Integer, ? extends AttributeManager> attributeContainers) {
       this.logger = logger;
       this.attributeContainers = attributeContainers;
       this.factory = attributeFactory;
    }
 
-   private AttributeContainer getContainer(AttributeData current) {
-      AttributeContainer container = attributeContainers.get(current.getArtifactId());
+   private AttributeManager getContainer(AttributeData current) {
+      AttributeManager container = attributeContainers.get(current.getArtifactId());
       if (container == null) {
          logger.warn("Orphaned attribute detected - [%s]", current);
       }
@@ -42,7 +42,7 @@ public class AttributeRowMapper implements AttributeDataHandler {
 
    @Override
    public void onData(AttributeData data) throws OseeCoreException {
-      AttributeContainer container = getContainer(data);
+      AttributeManager container = getContainer(data);
       if (container == null) {
          return; // If the artifact is null, it means the attributes are orphaned.
       }

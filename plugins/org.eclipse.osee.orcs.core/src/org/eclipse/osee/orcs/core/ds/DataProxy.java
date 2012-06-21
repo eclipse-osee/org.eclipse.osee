@@ -30,7 +30,7 @@ public interface DataProxy {
 
    public Object[] getData() throws OseeCoreException;
 
-   public void persist(int storageId) throws OseeCoreException;
+   public void persist(long storageId) throws OseeCoreException;
 
    public void purge() throws OseeCoreException;
 }

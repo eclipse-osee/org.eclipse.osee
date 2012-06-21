@@ -22,7 +22,8 @@ public abstract class OrcsObjectImpl implements OrcsData {
 
    private int localId = RelationalConstants.DEFAULT_ITEM_ID;
    private long typeUuid = RelationalConstants.DEFAULT_TYPE_UUID;
-   private ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
+   private ModificationType originalModType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
+   private ModificationType updatedModType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
 
    private final VersionData version;
 
@@ -53,12 +54,12 @@ public abstract class OrcsObjectImpl implements OrcsData {
 
    @Override
    public ModificationType getModType() {
-      return modType;
+      return updatedModType;
    }
 
    @Override
    public void setModType(ModificationType modType) {
-      this.modType = modType;
+      this.updatedModType = modType;
    }
 
    @Override
@@ -67,11 +68,21 @@ public abstract class OrcsObjectImpl implements OrcsData {
    }
 
    @Override
+   public void setLoadedModType(ModificationType modType) {
+      originalModType = modType;
+   }
+
+   @Override
+   public ModificationType getLoadedModType() {
+      return originalModType;
+   }
+
+   @Override
    public int hashCode() {
       final int prime = 31;
       int result = 1;
       result = prime * result + localId;
-      result = prime * result + ((modType == null) ? 0 : modType.hashCode());
+      result = prime * result + ((originalModType == null) ? 0 : originalModType.hashCode());
       result = prime * result + (int) (typeUuid ^ (typeUuid >>> 32));
       result = prime * result + ((version == null) ? 0 : version.hashCode());
       return result;
@@ -92,7 +103,7 @@ public abstract class OrcsObjectImpl implements OrcsData {
       if (localId != other.localId) {
          return false;
       }
-      if (modType != other.modType) {
+      if (originalModType != other.originalModType) {
          return false;
       }
       if (typeUuid != other.typeUuid) {
@@ -110,7 +121,7 @@ public abstract class OrcsObjectImpl implements OrcsData {
 
    @Override
    public String toString() {
-      return "OrcsObject [localId=" + localId + ", typeUuid=" + typeUuid + ", modType=" + modType + ", version=" + version + "]";
+      return "OrcsObject [localId=" + localId + ", typeUuid=" + typeUuid + ", modType=" + originalModType + ", version=" + version + "]";
    }
 
 }

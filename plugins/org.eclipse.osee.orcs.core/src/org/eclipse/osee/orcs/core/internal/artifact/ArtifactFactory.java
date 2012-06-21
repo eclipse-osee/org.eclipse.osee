@@ -19,8 +19,10 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataFactory;
@@ -95,11 +97,15 @@ public class ArtifactFactory {
       return toReturn;
    }
 
+   public ArtifactData clone(ArtifactData source) {
+      return factory.clone(source);
+   }
+
    public ArtifactWriteable copyArtifact(ArtifactReadable source, Collection<? extends IAttributeType> types, IOseeBranch ontoBranch) throws OseeCoreException {
       ArtifactData artifactData = factory.copy(ontoBranch, getOrcsData(source));
       ArtifactWriteable duplicate = createWriteableArtifact(artifactData);
 
-      AttributeContainer destination = getAttributeContainer(duplicate);
+      AttributeManager destination = asAttributeManager(duplicate);
       Collection<? extends IAttributeType> typeToCopy = getAllowedTypes(duplicate, types);
       for (IAttributeType attributeType : typeToCopy) {
          for (AttributeReadable<?> attributeSource : source.getAttributes(attributeType)) {
@@ -116,7 +122,7 @@ public class ArtifactFactory {
       ArtifactData artifactData = factory.introduce(ontoBranch, getOrcsData(source));
 
       ArtifactWriteable duplicate = createWriteableArtifact(artifactData);
-      AttributeContainer destination = getAttributeContainer(duplicate);
+      AttributeManager destination = asAttributeManager(duplicate);
 
       Collection<? extends IAttributeType> typeToCopy = getAllowedTypes(duplicate, source.getExistingAttributeTypes());
       for (IAttributeType attributeType : typeToCopy) {
@@ -139,21 +145,20 @@ public class ArtifactFactory {
       return toReturn;
    }
 
-   private AttributeContainer getAttributeContainer(ArtifactWriteable item) {
-      return asArtifactImpl(item).getAttributeContainer();
+   private AttributeManager asAttributeManager(ArtifactWriteable item) {
+      return asArtifactImpl(item);
    }
 
-   private ArtifactData getOrcsData(ArtifactReadable item) {
+   public ArtifactData getOrcsData(ArtifactReadable item) {
       return asArtifactImpl(item).getOrcsData();
    }
 
    private ArtifactImpl createArtifactImpl(ArtifactData artifactData) throws OseeCoreException {
-      //      RelationContainer relationContainer = relationFactory.createRelationContainer(artifactData.getLocalId());
+      RelationContainer relationContainer = relationFactory.createRelationContainer(artifactData.getLocalId());
 
-      //      ArtifactType type = artifactTypeCache.getByGuid(artifactData.getTypeUuid());
-      //      Branch branch = branchCache.getById(artifactData.getBranchId());
-      ArtifactImpl artifact = null;
-      //         new ArtifactImpl(type, branch, relationContainer, artifactData);
-      return artifact;
+      ArtifactType type = artifactTypeCache.getByGuid(artifactData.getTypeUuid());
+      Branch branch = branchCache.getById(artifactData.getVersion().getBranchId());
+
+      return new ArtifactImpl(type, branch, artifactData, attributeFactory, relationContainer);
    }
 }

@@ -17,12 +17,12 @@ import org.eclipse.osee.orcs.data.AttributeReadable;
 /**
  * @author John R. Misinco
  */
-public class MockAttribute implements AttributeReadable<String> {
+public class MockAttribute<T> implements AttributeReadable<T> {
 
    private final IAttributeType attrType;
-   private final String value;
+   private final T value;
 
-   public MockAttribute(IAttributeType attrType, String value) {
+   public MockAttribute(IAttributeType attrType, T value) {
       this.attrType = attrType;
       this.value = value;
    }
@@ -53,13 +53,13 @@ public class MockAttribute implements AttributeReadable<String> {
    }
 
    @Override
-   public String getValue() {
+   public T getValue() {
       return value;
    }
 
    @Override
    public String getDisplayableString() {
-      return value;
+      return String.valueOf(value);
    }
 
    @Override

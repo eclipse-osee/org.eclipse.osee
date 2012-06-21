@@ -22,4 +22,5 @@ public interface AttributeData extends OrcsData {
    DataProxy getDataProxy();
 
    void setDataProxy(DataProxy proxy);
+
 }

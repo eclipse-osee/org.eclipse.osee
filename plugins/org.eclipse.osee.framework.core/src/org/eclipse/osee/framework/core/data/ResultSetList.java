@@ -41,14 +41,21 @@ public class ResultSetList<T> implements ResultSet<T> {
    }
 
    @Override
-   public T getExactlyOne() throws OseeCoreException {
+   public T getAtMostOneOrNull() throws OseeCoreException {
       List<T> result = getList();
-      if (result.isEmpty()) {
-         throw new ItemDoesNotExist("No item found");
-      } else if (result.size() > 1) {
-         throw new MultipleItemsExist("Multiple items found - total [%s]", result.size());
+      if (result.size() > 1) {
+         throw createManyExistException(result.size());
       }
-      return result.iterator().next();
+      return result.isEmpty() ? null : result.iterator().next();
+   }
+
+   @Override
+   public T getExactlyOne() throws OseeCoreException {
+      T result = getAtMostOneOrNull();
+      if (result == null) {
+         throw createDoesNotExistException();
+      }
+      return result;
    }
 
    @Override
@@ -65,4 +72,13 @@ public class ResultSetList<T> implements ResultSet<T> {
    public Iterator<T> iterator() {
       return getList().iterator();
    }
+
+   protected OseeCoreException createManyExistException(int count) {
+      return new MultipleItemsExist("Multiple items found - total [%s]", count);
+   }
+
+   protected OseeCoreException createDoesNotExistException() {
+      return new ItemDoesNotExist("No item found");
+   }
+
 }

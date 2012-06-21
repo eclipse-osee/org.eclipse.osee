@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.core.ds;
 /**
  * @author Roberto E. Escobar
  */
-public interface VersionData {
+public interface VersionData extends Cloneable {
 
    long getGammaId();
 
@@ -36,5 +36,7 @@ public interface VersionData {
    boolean isHistorical();
 
    void setHistorical(boolean historical);
+
+   VersionData clone();
 
 }

@@ -35,18 +35,22 @@ public interface ArtifactReadable extends Readable, Identifiable, HasLocalId {
 
    boolean isOfType(IArtifactType... otherTypes);
 
+   int getAttributeCount(IAttributeType type) throws OseeCoreException;
+
    boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException;
 
-   Collection<IAttributeType> getExistingAttributeTypes() throws OseeCoreException;
+   Collection<? extends IAttributeType> getExistingAttributeTypes() throws OseeCoreException;
+
+   List<AttributeReadable<Object>> getAttributes() throws OseeCoreException;
+
+   <T> List<AttributeReadable<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException;
+
+   <T> T getSoleAttributeValue(IAttributeType attributeType) throws OseeCoreException;
 
    String getSoleAttributeAsString(IAttributeType attributeType) throws OseeCoreException;
 
    String getSoleAttributeAsString(IAttributeType attributeType, String defaultValue) throws OseeCoreException;
 
-   <T> T getSoleAttributeValue(IAttributeType attributeType) throws OseeCoreException;
-
-   <T> List<AttributeReadable<T>> getAttributes() throws OseeCoreException;
-
-   <T> List<AttributeReadable<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException;
+   <T> List<T> getAttributeValues(IAttributeType attributeType) throws OseeCoreException;
 
 }

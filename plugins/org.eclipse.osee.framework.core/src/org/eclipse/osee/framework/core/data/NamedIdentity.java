@@ -16,8 +16,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 /**
  * @author Ryan D. Brooks
  */
-public class NamedIdentity<T> extends BaseIdentity<T> implements FullyNamed, HasDescription {
+public class NamedIdentity<T> extends AbstractNamedIdentity<T> {
    private String name;
+   private T guid;
    private final String description;
 
    public NamedIdentity(T guid, String name) {
@@ -25,7 +26,6 @@ public class NamedIdentity<T> extends BaseIdentity<T> implements FullyNamed, Has
    }
 
    public NamedIdentity(T guid, String name, String description) {
-      super(guid);
       if (guid == null) {
          throw new IllegalArgumentException("uuid cannot be null");
       }
@@ -34,18 +34,13 @@ public class NamedIdentity<T> extends BaseIdentity<T> implements FullyNamed, Has
    }
 
    @Override
+   public T getGuid() {
+      return guid;
+   }
+
+   @Override
    public String getName() {
       return name;
-   }
-
-   @Override
-   public String getUnqualifiedName() {
-      return name.substring(name.lastIndexOf('.') + 1);
-   }
-
-   @Override
-   public String toString() {
-      return getName();
    }
 
    @Override
@@ -58,11 +53,4 @@ public class NamedIdentity<T> extends BaseIdentity<T> implements FullyNamed, Has
       this.name = name;
    }
 
-   @Override
-   public int compareTo(Named other) {
-      if (other != null && other.getName() != null && getName() != null) {
-         return getName().compareTo(other.getName());
-      }
-      return -1;
-   }
 }

@@ -125,7 +125,7 @@ public class UriDataProxy extends AbstractDataProxy implements CharacterDataProx
    }
 
    @Override
-   public void persist(int storageId) throws OseeCoreException {
+   public void persist(long storageId) throws OseeCoreException {
       getStorage().persist(storageId);
    }
 

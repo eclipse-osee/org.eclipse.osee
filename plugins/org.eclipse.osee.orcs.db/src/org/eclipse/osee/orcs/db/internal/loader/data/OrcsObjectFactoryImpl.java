@@ -142,6 +142,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       data.setLocalId(localId);
       data.setTypeUuid(type);
       data.setModType(modType);
+      data.setLoadedModType(modType);
       data.setGuid(guid);
       data.setHumanReadableId(humanReadableId);
       return data;
@@ -152,6 +153,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       data.setLocalId(localId);
       data.setTypeUuid(localTypeID);
       data.setModType(modType);
+      data.setLoadedModType(modType);
       data.setArtifactId(artifactId);
       data.setDataProxy(proxy);
       return data;
@@ -162,6 +164,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       data.setLocalId(localId);
       data.setTypeUuid(localTypeID);
       data.setModType(modType);
+      data.setLoadedModType(modType);
       data.setParentId(parentId);
       data.setArtIdA(aArtId);
       data.setArtIdB(bArtId);

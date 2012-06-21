@@ -25,5 +25,7 @@ public interface ArtifactDataFactory {
 
    ArtifactData copy(IOseeBranch destination, ArtifactData source) throws OseeCoreException;
 
+   ArtifactData clone(ArtifactData source);
+
    ArtifactData introduce(IOseeBranch destination, ArtifactData source) throws OseeCoreException;
 }

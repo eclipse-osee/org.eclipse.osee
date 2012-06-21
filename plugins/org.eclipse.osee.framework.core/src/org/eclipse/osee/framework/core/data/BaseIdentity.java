@@ -14,11 +14,12 @@ package org.eclipse.osee.framework.core.data;
 /**
  * @author Roberto E. Escobar
  */
-public class BaseIdentity<T> implements Identity<T> {
+public class BaseIdentity<T> extends AbstractIdentity<T> {
 
    private final T guid;
 
    public BaseIdentity(T guid) {
+      super();
       this.guid = guid;
       if (guid == null) {
          throw new IllegalArgumentException("uuid cannot be null");
@@ -28,34 +29,6 @@ public class BaseIdentity<T> implements Identity<T> {
    @Override
    public T getGuid() {
       return guid;
-   }
-
-   @Override
-   public int hashCode() {
-      return getGuid().hashCode();
-   }
-
-   @Override
-   public boolean equals(Object obj) {
-      if (obj instanceof BaseIdentity) {
-         return getGuid().equals(((BaseIdentity<?>) obj).getGuid());
-      }
-      return false;
-   }
-
-   @Override
-   public String toString() {
-      return String.valueOf(getGuid());
-   }
-
-   @Override
-   public boolean matches(Identity<?>... identities) {
-      for (Identity<?> identity : identities) {
-         if (equals(identity)) {
-            return true;
-         }
-      }
-      return false;
    }
 
 }

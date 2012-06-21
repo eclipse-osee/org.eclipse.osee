@@ -24,6 +24,8 @@ public interface AttributeDataFactory {
 
    AttributeData copy(IOseeBranch destination, AttributeData orcsData) throws OseeCoreException;
 
+   AttributeData clone(AttributeData source) throws OseeCoreException;
+
    AttributeData introduce(IOseeBranch destination, AttributeData source) throws OseeCoreException;
 
 }

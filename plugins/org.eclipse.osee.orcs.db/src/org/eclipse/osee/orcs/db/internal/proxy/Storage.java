@@ -65,7 +65,7 @@ public class Storage extends DataResource {
       return this.rawContent;
    }
 
-   public void persist(int storageId) throws OseeCoreException {
+   public void persist(long storageId) throws OseeCoreException {
       if (isDataValid()) {
          handler.save(storageId, this, rawContent);
       }

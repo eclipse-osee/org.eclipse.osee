@@ -20,7 +20,7 @@ import org.eclipse.osee.orcs.db.internal.proxy.DataResource;
 public class MockDataHandler implements DataHandler {
 
    private DataResource resource;
-   private int storageId;
+   private long storageId;
    private byte[] content;
    private boolean acquire;
    private boolean save;
@@ -41,7 +41,7 @@ public class MockDataHandler implements DataHandler {
 
    @SuppressWarnings("unused")
    @Override
-   public void save(int storageId, DataResource resource, byte[] rawContent) throws OseeCoreException {
+   public void save(long storageId, DataResource resource, byte[] rawContent) throws OseeCoreException {
       setSave(true);
       this.storageId = storageId;
       this.resource = resource;
@@ -59,7 +59,7 @@ public class MockDataHandler implements DataHandler {
       return resource;
    }
 
-   public int getStorageId() {
+   public long getStorageId() {
       return storageId;
    }
 

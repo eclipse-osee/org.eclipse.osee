@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -131,7 +132,7 @@ public class MockArtifact implements ArtifactReadable {
       return attributes.keySet();
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings({"unchecked", "rawtypes"})
    @Override
    public <T> List<AttributeReadable<T>> getAttributes(IAttributeType attributeType) {
       Collection<String> values = attributes.getValues(attributeType);
@@ -139,7 +140,7 @@ public class MockArtifact implements ArtifactReadable {
       if (values != null && !values.isEmpty()) {
          toReturn = new LinkedList<AttributeReadable<T>>();
          for (String value : values) {
-            AttributeReadable<T> attr = (AttributeReadable<T>) new MockAttribute(attributeType, value);
+            AttributeReadable<T> attr = new MockAttribute(attributeType, value);
             toReturn.add(attr);
          }
       } else {
@@ -168,13 +169,12 @@ public class MockArtifact implements ArtifactReadable {
       return name;
    }
 
-   @SuppressWarnings("unchecked")
    @Override
-   public <T> List<AttributeReadable<T>> getAttributes() {
-      List<AttributeReadable<T>> toReturn = new ArrayList<AttributeReadable<T>>();
+   public List<AttributeReadable<Object>> getAttributes() {
+      List<AttributeReadable<Object>> toReturn = new ArrayList<AttributeReadable<Object>>();
       for (Entry<IAttributeType, Collection<String>> entry : attributes.entrySet()) {
          for (String value : entry.getValue()) {
-            toReturn.add((AttributeReadable<T>) new MockAttribute(entry.getKey(), value));
+            toReturn.add(new MockAttribute<Object>(entry.getKey(), value));
          }
       }
       return toReturn;
@@ -205,4 +205,13 @@ public class MockArtifact implements ArtifactReadable {
       return false;
    }
 
+   @Override
+   public int getAttributeCount(IAttributeType type) throws OseeCoreException {
+      return attributes.getValues(type).size();
+   }
+
+   @Override
+   public <T> List<T> getAttributeValues(IAttributeType attributeType) throws OseeCoreException {
+      return null;
+   }
 }

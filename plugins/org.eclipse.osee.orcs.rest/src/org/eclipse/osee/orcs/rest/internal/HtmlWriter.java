@@ -72,7 +72,7 @@ public class HtmlWriter {
       }
       data.put("Branch", asLink(uri.toASCIIString(), branch.getName()));
 
-      Collection<IAttributeType> types = artifact.getExistingAttributeTypes();
+      Collection<? extends IAttributeType> types = artifact.getExistingAttributeTypes();
       for (IAttributeType type : types) {
          for (AttributeReadable<?> attr : artifact.getAttributes(type)) {
             String value = attr.getDisplayableString();

@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.transaction;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -24,10 +25,13 @@ import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
+import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
+import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
 import org.eclipse.osee.orcs.data.GraphReadable;
@@ -43,6 +47,8 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
    private final IOseeBranch branch;
    private final BranchDataStore dataStore;
    private final ArtifactFactory artifactFactory;
+   private AttributeFactory attributeFactory;
+   private RelationFactory relationFactory;
 
    private String comment;
    private ArtifactReadable authorArtifact;
@@ -75,19 +81,33 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
       return comment;
    }
 
+   private Collection<TxVisitable> getTxData() {
+      return Collections.emptyList();
+   }
+
    @Override
-   public Collection<ArtifactWriteable> getWriteables() {
-      return writeableArtifacts.values();
+   public Collection<ArtifactTransactionData> getArtifactTransactionData() throws OseeCoreException {
+      ComputeTxDataVisitor visitor = new ComputeTxDataVisitor(artifactFactory, attributeFactory);
+      Collection<TxVisitable> items = getTxData();
+      for (TxVisitable item : items) {
+         item.accept(visitor);
+      }
+      return visitor.getData();
    }
 
    @Override
    public void rollback() {
-      // TODO
-      // ? 
+      Collection<TxVisitable> items = getTxData();
+      for (TxVisitable item : items) {
+         item.setWriteState(true);
+      }
    }
 
    private void startCommit() {
-      // TODO
+      Collection<TxVisitable> items = getTxData();
+      for (TxVisitable item : items) {
+         item.setWriteState(false);
+      }
    }
 
    private void closeCommit() {
@@ -99,8 +119,16 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
       ITransaction transaction = null;
       try {
          startCommit();
+
+         // null out all the writeables' inner proxy objects
+
+         // Build the Change List (clone the datas)
+
          Callable<ITransaction> callable = dataStore.commitTransaction(this);
          transaction = callable.call();
+
+         // Successful then update the Impls with the new datas
+
       } catch (Exception ex) {
          rollback();
          OseeExceptions.wrapAndThrow(ex);

@@ -23,6 +23,8 @@ public interface ResultSet<T> extends Iterable<T> {
 
    T getExactlyOne() throws OseeCoreException;
 
+   T getAtMostOneOrNull() throws OseeCoreException;
+
    List<T> getList() throws OseeCoreException;
 
    Iterable<T> getIterable(int fetchSize) throws OseeCoreException;

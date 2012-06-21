@@ -57,7 +57,7 @@ public class Tester {
       }
 
       wArt1.setName("Name");
-      wArt1.setSoleAttribute(CoreAttributeTypes.Annotation, "hello");
+      wArt1.setSoleAttributeValue(CoreAttributeTypes.Annotation, "hello");
 
       wArt2.setName("Shawn");
 

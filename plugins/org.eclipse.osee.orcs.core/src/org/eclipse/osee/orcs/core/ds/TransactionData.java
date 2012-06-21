@@ -12,8 +12,8 @@ package org.eclipse.osee.orcs.core.ds;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.ArtifactWriteable;
 
 public interface TransactionData {
 
@@ -23,5 +23,5 @@ public interface TransactionData {
 
    String getComment();
 
-   Collection<ArtifactWriteable> getWriteables();
+   Collection<ArtifactTransactionData> getArtifactTransactionData() throws OseeCoreException;
 }

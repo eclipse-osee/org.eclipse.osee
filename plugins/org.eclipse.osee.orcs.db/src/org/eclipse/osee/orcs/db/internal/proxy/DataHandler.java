@@ -19,7 +19,7 @@ public interface DataHandler {
 
    byte[] acquire(DataResource resource) throws OseeCoreException;
 
-   void save(int storageId, DataResource resource, byte[] rawContent) throws OseeCoreException;
+   void save(long storageId, DataResource resource, byte[] rawContent) throws OseeCoreException;
 
    void delete(DataResource resource) throws OseeCoreException;
 

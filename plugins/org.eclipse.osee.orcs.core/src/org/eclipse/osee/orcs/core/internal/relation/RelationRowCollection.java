@@ -92,4 +92,8 @@ public class RelationRowCollection {
       return relations.keySet();
    }
 
+   public Collection<List<RelationData>> getRelationData() {
+      return relations.values();
+   }
+
 }

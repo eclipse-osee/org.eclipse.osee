@@ -33,7 +33,7 @@ import org.eclipse.osee.orcs.core.internal.artifact.ArtifactCollector;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactRowMapper;
-import org.eclipse.osee.orcs.core.internal.artifact.AttributeContainer;
+import org.eclipse.osee.orcs.core.internal.artifact.AttributeManager;
 import org.eclipse.osee.orcs.core.internal.artifact.RelationContainer;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeRowMapper;
@@ -122,7 +122,7 @@ public class OrcsObjectLoader {
    private static class ArtifactCollectorImpl implements ArtifactCollector, RelationDataHandlerFactory, AttributeDataHandlerFactory {
 
       private final Map<Integer, RelationContainer> relationContainers = new HashMap<Integer, RelationContainer>();;
-      private final Map<Integer, AttributeContainer> attributeContainers = new HashMap<Integer, AttributeContainer>();
+      private final Map<Integer, AttributeManager> attributeContainers = new HashMap<Integer, AttributeManager>();
 
       private final List<ArtifactReadable> artifacts;
 
@@ -152,10 +152,9 @@ public class OrcsObjectLoader {
          artifacts.add(artifact);
 
          ArtifactImpl artifactImpl = artifactFactory.asArtifactImpl(artifact);
-         AttributeContainer attrContainer = artifactImpl.getAttributeContainer();
          RelationContainer relContainer = artifactImpl.getRelationContainer();
 
-         attributeContainers.put(artifact.getLocalId(), attrContainer);
+         attributeContainers.put(artifact.getLocalId(), artifactImpl);
          relationContainers.put(artifact.getLocalId(), relContainer);
       }
    }
