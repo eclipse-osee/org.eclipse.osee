@@ -1,0 +1,79 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.orcs.db.internal.loader.data;
+
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
+import org.eclipse.osee.orcs.db.internal.loader.IdFactory;
+
+/**
+ * @author Roberto E. Escobar
+ */
+public class IdFactoryImpl implements IdFactory {
+
+   private final IOseeDatabaseService dbService;
+   private final BranchCache branchCache;
+
+   public IdFactoryImpl(IOseeDatabaseService dbService, BranchCache branchCache) {
+      super();
+      this.dbService = dbService;
+      this.branchCache = branchCache;
+   }
+
+   @Override
+   public int getBranchId(IOseeBranch branch) throws OseeCoreException {
+      return branchCache.getLocalId(branch);
+   }
+
+   @Override
+   public int createArtifactId() throws OseeCoreException {
+      return dbService.getSequence().getNextArtifactId();
+   }
+
+   @Override
+   public int createAttrId() throws OseeCoreException {
+      return dbService.getSequence().getNextAttributeId();
+   }
+
+   @Override
+   public int createRelationId() throws OseeCoreException {
+      return dbService.getSequence().getNextRelationId();
+   }
+
+   @Override
+   public String getUniqueGuid(String guid) {
+      String toReturn = guid;
+      if (toReturn == null) {
+         toReturn = GUID.create();
+      }
+      return toReturn;
+   }
+
+   @Override
+   public String getUniqueHumanReadableId(String humanReadableId) throws OseeCoreException {
+      String toReturn = humanReadableId;
+      if (toReturn == null) {
+         String hrid = HumanReadableId.generate();
+         toReturn = isUniqueHRID(hrid) ? hrid : HumanReadableId.generate();
+      }
+      return toReturn;
+   }
+
+   private boolean isUniqueHRID(String id) throws OseeCoreException {
+      String DUPLICATE_HRID_SEARCH =
+         "select count(1) from (select DISTINCT(art_id) from osee_artifact where human_readable_id = ?) t1";
+      return dbService.runPreparedQueryFetchObject(0L, DUPLICATE_HRID_SEARCH, id) <= 0;
+   }
+}

@@ -17,10 +17,8 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.util.Conditions;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -35,62 +33,16 @@ import org.eclipse.osee.orcs.data.HasLocalId;
  */
 public class DataFactoryImpl implements DataFactory {
 
-   private final OrcsObjectFactory rowFactory;
-   private final IOseeDatabaseService dbService;
-
-   private final BranchCache branchCache;
+   private final IdFactory idFactory;
+   private final OrcsObjectFactory objectFactory;
    private final ArtifactTypeCache artifactCache;
 
-   public DataFactoryImpl(OrcsObjectFactory rowFactory, IOseeDatabaseService dbService, BranchCache branchCache, ArtifactTypeCache artifactCache) {
+   public DataFactoryImpl(IdFactory idFactory, OrcsObjectFactory objectFactory, ArtifactTypeCache artifactCache) {
       super();
-      this.rowFactory = rowFactory;
-      this.dbService = dbService;
-      this.branchCache = branchCache;
+      this.idFactory = idFactory;
+      this.objectFactory = objectFactory;
       this.artifactCache = artifactCache;
    }
-
-   /////////////////////////////////////
-
-   private boolean isUniqueHRID(String id) throws OseeCoreException {
-      String DUPLICATE_HRID_SEARCH =
-         "select count(1) from (select DISTINCT(art_id) from osee_artifact where human_readable_id = ?) t1";
-      return dbService.runPreparedQueryFetchObject(0L, DUPLICATE_HRID_SEARCH, id) <= 0;
-   }
-
-   private String getUniqueGuid(String guid) {
-      String toReturn = guid;
-      if (toReturn == null) {
-         toReturn = GUID.create();
-      }
-      return toReturn;
-   }
-
-   private String getUniqueHumanReadableId(String humanReadableId) throws OseeCoreException {
-      String toReturn = humanReadableId;
-      if (toReturn == null) {
-         String hrid = HumanReadableId.generate();
-         toReturn = isUniqueHRID(hrid) ? hrid : HumanReadableId.generate();
-      }
-      return toReturn;
-   }
-
-   private int getBranchId(IOseeBranch branch) throws OseeCoreException {
-      return branchCache.getLocalId(branch);
-   }
-
-   private int generateArtId() throws OseeCoreException {
-      return dbService.getSequence().getNextArtifactId();
-   }
-
-   private int generateAttrId() throws OseeCoreException {
-      return dbService.getSequence().getNextAttributeId();
-   }
-
-   private int generateRelationId() throws OseeCoreException {
-      return dbService.getSequence().getNextRelationId();
-   }
-
-   /////////////////////////////////////
 
    @Override
    public ArtifactData create(IOseeBranch branch, IArtifactType artifactType, String guid) throws OseeCoreException {
@@ -105,8 +57,8 @@ public class DataFactoryImpl implements DataFactory {
       Conditions.checkExpressionFailOnTrue(artifactType.isAbstract(),
          "Cannot create an instance of abstract type [%s]", artifactType);
 
-      String guidToSet = getUniqueGuid(guid);
-      String humanReadableId = getUniqueHumanReadableId(hrid);
+      String guidToSet = idFactory.getUniqueGuid(guid);
+      String humanReadableId = idFactory.getUniqueHumanReadableId(hrid);
 
       Conditions.checkExpressionFailOnTrue(!GUID.isValid(guidToSet),
          "Invalid guid [%s] during artifact creation [type: %s]", guidToSet, artifactType);
@@ -115,14 +67,15 @@ public class DataFactoryImpl implements DataFactory {
          "Invalid human readable id [%s] during artifact creation [type: %s, guid: %s]", humanReadableId, artifactType,
          guid);
 
-      int branchId = getBranchId(branch);
+      int branchId = idFactory.getBranchId(branch);
 
-      VersionData version = rowFactory.createDefaultVersionData();
+      VersionData version = objectFactory.createDefaultVersionData();
       version.setBranchId(branchId);
 
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
+      int artifactId = idFactory.createArtifactId();
       ArtifactData artifactData =
-         rowFactory.createArtifactData(version, generateArtId(), artifactType, modType, guidToSet, humanReadableId);
+         objectFactory.createArtifactData(version, artifactId, artifactType, modType, guidToSet, humanReadableId);
 
       //      artifact.meetMinimumAttributeCounts(true);
       //      ArtifactCache.cache(artifact);
@@ -132,8 +85,8 @@ public class DataFactoryImpl implements DataFactory {
 
    @Override
    public ArtifactData copy(IOseeBranch destination, ArtifactData source) throws OseeCoreException {
-      ArtifactData copy = rowFactory.createCopy(source);
-      copy.getVersion().setBranchId(getBranchId(destination));
+      ArtifactData copy = objectFactory.createCopy(source);
+      copy.getVersion().setBranchId(idFactory.getBranchId(destination));
       copy.setModType(ModificationType.NEW);
       return copy;
    }
@@ -148,15 +101,16 @@ public class DataFactoryImpl implements DataFactory {
 
    @Override
    public AttributeData create(HasLocalId parent, IAttributeType attributeType) throws OseeCoreException {
-      VersionData version = rowFactory.createDefaultVersionData();
+      VersionData version = objectFactory.createDefaultVersionData();
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
-      return rowFactory.createAttributeData(version, generateAttrId(), attributeType, modType, parent.getLocalId());
+      int attributeId = idFactory.createAttrId();
+      return objectFactory.createAttributeData(version, attributeId, attributeType, modType, parent.getLocalId());
    }
 
    @Override
    public AttributeData copy(IOseeBranch destination, AttributeData orcsData) throws OseeCoreException {
-      int branchId = getBranchId(destination);
-      AttributeData copy = rowFactory.createCopy(orcsData);
+      int branchId = idFactory.getBranchId(destination);
+      AttributeData copy = objectFactory.createCopy(orcsData);
       copy.getVersion().setBranchId(branchId);
       copy.setModType(ModificationType.NEW);
       return copy;
@@ -172,9 +126,10 @@ public class DataFactoryImpl implements DataFactory {
 
    @Override
    public RelationData createRelationData(IRelationType relationType, HasLocalId parent, HasLocalId aArt, HasLocalId bArt, String rationale) throws OseeCoreException {
-      VersionData version = rowFactory.createDefaultVersionData();
+      VersionData version = objectFactory.createDefaultVersionData();
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
-      return rowFactory.createRelationData(version, generateRelationId(), relationType, modType, parent.getLocalId(),
+      int relationId = idFactory.createRelationId();
+      return objectFactory.createRelationData(version, relationId, relationType, modType, parent.getLocalId(),
          aArt.getLocalId(), bArt.getLocalId(), rationale);
    }
 

@@ -19,6 +19,7 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
+import org.eclipse.osee.orcs.db.internal.loader.data.IdFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.loader.data.OrcsObjectFactoryImpl;
 
 /**
@@ -43,7 +44,8 @@ public class DataModuleFactory {
    }
 
    public DataFactory createDataFactory(OrcsObjectFactory factory, BranchCache branchCache, ArtifactTypeCache artifactTypeCache) {
-      return new DataFactoryImpl(factory, dbService, branchCache, artifactTypeCache);
+      IdFactory idFactory = new IdFactoryImpl(dbService, branchCache);
+      return new DataFactoryImpl(idFactory, factory, artifactTypeCache);
    }
 
    public DataLoader createDataLoader(SqlProvider sqlProvider, OrcsObjectFactory factory) {
