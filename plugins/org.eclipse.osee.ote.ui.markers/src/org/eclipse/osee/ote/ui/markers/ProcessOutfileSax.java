@@ -11,13 +11,13 @@
 package org.eclipse.osee.ote.ui.markers;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 import java.util.logging.Level;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -69,8 +69,9 @@ public class ProcessOutfileSax implements IExceptionableRunnable {
 
       monitor.setTaskName(String.format("Computing overview information for [%s].", file.getName()));
 
-      InputStream contents = file.getContents();
-
+      // Using this because IFile was acting very flaky for this.
+      FileInputStream contents = new FileInputStream(outfile);
+      
       parseContents(contents);
 
       OteMarkerHelper helper = new OteMarkerHelper(this.testPointDatas);
