@@ -23,9 +23,9 @@ import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.workflow.IWorkPage;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.workdef.api.IStateToken;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -47,12 +47,12 @@ import org.eclipse.ui.forms.IMessageManager;
  */
 public class TaskInfoXWidget extends XLabelValueBase {
 
-   private final IWorkPage forState;
+   private final IStateToken forState;
    private final IManagedForm managedForm;
    private final AbstractTaskableArtifact taskableArt;
 
-   public TaskInfoXWidget(IManagedForm managedForm, final AbstractTaskableArtifact taskableArt, final IWorkPage forState, Composite composite, int horizontalSpan) {
-      super("\"" + forState.getPageName() + "\" State Tasks");
+   public TaskInfoXWidget(IManagedForm managedForm, final AbstractTaskableArtifact taskableArt, final IStateToken forState, Composite composite, int horizontalSpan) {
+      super("\"" + forState.getName() + "\" State Tasks");
       this.managedForm = managedForm;
       this.taskableArt = taskableArt;
       this.forState = forState;
@@ -86,7 +86,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
             IMessageManager messageManager = managedForm.getMessageManager();
             if (messageManager != null) {
                messageManager.addMessage("validation.error",
-                  "State \"" + forState.getPageName() + "\" has uncompleted Tasks", null, IMessageProvider.ERROR,
+                  "State \"" + forState.getName() + "\" has uncompleted Tasks", null, IMessageProvider.ERROR,
                   labelWidget);
             }
          } else {
@@ -99,7 +99,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
       }
    }
 
-   private String getStatus(AbstractTaskableArtifact taskableArt, IWorkPage state) throws OseeCoreException {
+   private String getStatus(AbstractTaskableArtifact taskableArt, IStateToken state) throws OseeCoreException {
       int completed = 0, cancelled = 0, inWork = 0;
       for (TaskArtifact taskArt : taskableArt.getTaskArtifacts(state)) {
          if (taskArt.isCompleted()) {
@@ -136,7 +136,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
                               }
                               TransitionHelper helper =
                                  new TransitionHelper("Transition to Completed", Arrays.asList(taskArt),
-                                    TaskStates.Completed.getPageName(), null, null,
+                                    TaskStates.Completed.getName(), null, null,
                                     TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
                               TransitionManager transitionMgr = new TransitionManager(helper);
                               TransitionResults results = transitionMgr.handleAll();

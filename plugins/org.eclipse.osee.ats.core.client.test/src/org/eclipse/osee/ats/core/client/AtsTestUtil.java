@@ -48,14 +48,15 @@ import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.model.IAtsVersion;
-import org.eclipse.osee.ats.core.workdef.DecisionReviewOption;
-import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
-import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
-import org.eclipse.osee.ats.core.workdef.WorkDefinition;
-import org.eclipse.osee.ats.core.workflow.IWorkPage;
-import org.eclipse.osee.ats.core.workflow.WorkPageAdapter;
-import org.eclipse.osee.ats.core.workflow.WorkPageType;
+import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
+import org.eclipse.osee.ats.core.workflow.StateTypeAdapter;
+import org.eclipse.osee.ats.workdef.api.IAtsDecisionReviewOption;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
+import org.eclipse.osee.ats.workdef.api.IStateToken;
+import org.eclipse.osee.ats.workdef.api.ReviewBlockType;
+import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -89,10 +90,10 @@ public class AtsTestUtil {
    private static TaskArtifact taskArtWf1 = null, taskArtWf2 = null;
    private static IAtsActionableItem testAi = null, testAi2 = null, testAi3 = null, testAi4 = null;
    private static ActionArtifact actionArt = null, actionArt2 = null, actionArt3 = null, actionArt4 = null;
-   private static StateDefinition analyze, implement, completed, cancelled = null;
-   private static WorkDefinition workDef = null;
+   private static IAtsStateDefinition analyze, implement, completed, cancelled = null;
+   private static IAtsWorkDefinition workDef = null;
    public static String WORK_DEF_NAME = "Test_Team _Workflow_Definition";
-   private static WidgetDefinition estHoursWidgetDef, workPackageWidgetDef;
+   private static IAtsWidgetDefinition estHoursWidgetDef, workPackageWidgetDef;
    private static String postFixName;
 
    public static void validateArtifactCache() throws OseeStateException {
@@ -144,37 +145,37 @@ public class AtsTestUtil {
       }
    }
 
-   public static WorkDefinition getWorkDef() throws OseeCoreException {
+   public static IAtsWorkDefinition getWorkDef() throws OseeCoreException {
       ensureLoaded();
       return workDef;
    }
 
-   public static StateDefinition getAnalyzeStateDef() throws OseeCoreException {
+   public static IAtsStateDefinition getAnalyzeStateDef() throws OseeCoreException {
       ensureLoaded();
       return analyze;
    }
 
-   public static WidgetDefinition getEstHoursWidgetDef() throws OseeCoreException {
+   public static IAtsWidgetDefinition getEstHoursWidgetDef() throws OseeCoreException {
       ensureLoaded();
       return estHoursWidgetDef;
    }
 
-   public static WidgetDefinition getWorkPackageWidgetDef() throws OseeCoreException {
+   public static IAtsWidgetDefinition getWorkPackageWidgetDef() throws OseeCoreException {
       ensureLoaded();
       return workPackageWidgetDef;
    }
 
-   public static StateDefinition getImplementStateDef() throws OseeCoreException {
+   public static IAtsStateDefinition getImplementStateDef() throws OseeCoreException {
       ensureLoaded();
       return implement;
    }
 
-   public static StateDefinition getCompletedStateDef() throws OseeCoreException {
+   public static IAtsStateDefinition getCompletedStateDef() throws OseeCoreException {
       ensureLoaded();
       return completed;
    }
 
-   public static StateDefinition getCancelledStateDef() throws OseeCoreException {
+   public static IAtsStateDefinition getCancelledStateDef() throws OseeCoreException {
       ensureLoaded();
       return cancelled;
    }
@@ -245,33 +246,33 @@ public class AtsTestUtil {
       AtsTestUtil.postFixName = postFixName;
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName());
-      workDef = new WorkDefinition(WORK_DEF_NAME);
+      workDef = AtsWorkDefinitionService.getService().createWorkDefinition(WORK_DEF_NAME);
 
-      analyze = new StateDefinition("Analyze");
+      analyze = AtsWorkDefinitionService.getService().createStateDefinition("Analyze");
       analyze.setWorkDefinition(workDef);
-      analyze.setWorkPageType(WorkPageType.Working);
+      analyze.setStateType(StateType.Working);
       analyze.setOrdinal(1);
-      workDef.getStates().add(analyze);
+      workDef.addState(analyze);
 
       workDef.setStartState(analyze);
 
-      implement = new StateDefinition("Implement");
+      implement = AtsWorkDefinitionService.getService().createStateDefinition("Implement");
       implement.setWorkDefinition(workDef);
-      implement.setWorkPageType(WorkPageType.Working);
+      implement.setStateType(StateType.Working);
       implement.setOrdinal(2);
-      workDef.getStates().add(implement);
+      workDef.addState(implement);
 
-      completed = new StateDefinition("Completed");
+      completed = AtsWorkDefinitionService.getService().createStateDefinition("Completed");
       completed.setWorkDefinition(workDef);
-      completed.setWorkPageType(WorkPageType.Completed);
+      completed.setStateType(StateType.Completed);
       completed.setOrdinal(3);
-      workDef.getStates().add(completed);
+      workDef.addState(completed);
 
-      cancelled = new StateDefinition("Cancelled");
+      cancelled = AtsWorkDefinitionService.getService().createStateDefinition("Cancelled");
       cancelled.setWorkDefinition(workDef);
-      cancelled.setWorkPageType(WorkPageType.Cancelled);
+      cancelled.setStateType(StateType.Cancelled);
       cancelled.setOrdinal(4);
-      workDef.getStates().add(cancelled);
+      workDef.addState(cancelled);
 
       analyze.setDefaultToState(implement);
       analyze.getToStates().addAll(Arrays.asList(implement, completed, cancelled));
@@ -288,11 +289,13 @@ public class AtsTestUtil {
       cancelled.getToStates().addAll(Arrays.asList(analyze, implement));
       cancelled.getOverrideAttributeValidationStates().addAll(Arrays.asList(analyze, implement));
 
-      estHoursWidgetDef = new WidgetDefinition(AtsAttributeTypes.EstimatedHours.getUnqualifiedName());
+      estHoursWidgetDef =
+         AtsWorkDefinitionService.getService().createWidgetDefinition(AtsAttributeTypes.EstimatedHours.getUnqualifiedName());
       estHoursWidgetDef.setAttributeName(AtsAttributeTypes.EstimatedHours.getName());
       estHoursWidgetDef.setXWidgetName("XFloatDam");
 
-      workPackageWidgetDef = new WidgetDefinition(AtsAttributeTypes.WorkPackage.getUnqualifiedName());
+      workPackageWidgetDef =
+         AtsWorkDefinitionService.getService().createWidgetDefinition(AtsAttributeTypes.WorkPackage.getUnqualifiedName());
       workPackageWidgetDef.setAttributeName(AtsAttributeTypes.WorkPackage.getName());
       workPackageWidgetDef.setXWidgetName("XTextDam");
 
@@ -372,13 +375,14 @@ public class AtsTestUtil {
    public static DecisionReviewArtifact getOrCreateDecisionReview(ReviewBlockType reviewBlockType, AtsTestUtilState relatedToState) throws OseeCoreException {
       ensureLoaded();
       if (decRevArt == null) {
-         List<DecisionReviewOption> options = new ArrayList<DecisionReviewOption>();
-         options.add(new DecisionReviewOption(DecisionReviewState.Completed.getPageName(), false, null));
-         options.add(new DecisionReviewOption(DecisionReviewState.Followup.getPageName(), true,
-            Arrays.asList(AtsUsersClient.getUser().getUserId())));
+         List<IAtsDecisionReviewOption> options = new ArrayList<IAtsDecisionReviewOption>();
+         options.add(AtsWorkDefinitionService.getService().createDecisionReviewOption(DecisionReviewState.Completed.getName(),
+            false, null));
+         options.add(AtsWorkDefinitionService.getService().createDecisionReviewOption(DecisionReviewState.Followup.getName(),
+            true, Arrays.asList(AtsUsersClient.getUser().getUserId())));
          decRevArt =
             DecisionReviewManager.createNewDecisionReview(teamArt, reviewBlockType,
-               AtsTestUtil.class.getSimpleName() + " Test Decision Review", relatedToState.getPageName(),
+               AtsTestUtil.class.getSimpleName() + " Test Decision Review", relatedToState.getName(),
                "Decision Review", options, Arrays.asList(AtsUsersClient.getUser()), new Date(),
                AtsUsersClient.getUser());
       }
@@ -540,9 +544,9 @@ public class AtsTestUtil {
 
    }
 
-   private static Result transitionToState(TeamWorkFlowArtifact teamArt, IWorkPage toState, IAtsUser user, SkynetTransaction transaction, TransitionOption... transitionOptions) {
+   private static Result transitionToState(TeamWorkFlowArtifact teamArt, IStateToken toState, IAtsUser user, SkynetTransaction transaction, TransitionOption... transitionOptions) {
       TransitionHelper helper =
-         new TransitionHelper("Transition to " + toState.getPageName(), Arrays.asList(teamArt), toState.getPageName(),
+         new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(teamArt), toState.getName(),
             Arrays.asList(user), null, transitionOptions);
       TransitionManager transitionMgr = new TransitionManager(helper, transaction);
       TransitionResults results = transitionMgr.handleAll();
@@ -552,22 +556,22 @@ public class AtsTestUtil {
       return new Result("Transition Error %s", results.toString());
    }
 
-   public static class AtsTestUtilState extends WorkPageAdapter {
-      public static AtsTestUtilState Analyze = new AtsTestUtilState("Analyze", WorkPageType.Working);
-      public static AtsTestUtilState Implement = new AtsTestUtilState("Implement", WorkPageType.Working);
-      public static AtsTestUtilState Completed = new AtsTestUtilState("Completed", WorkPageType.Completed);
-      public static AtsTestUtilState Cancelled = new AtsTestUtilState("Cancelled", WorkPageType.Cancelled);
+   public static class AtsTestUtilState extends StateTypeAdapter {
+      public static AtsTestUtilState Analyze = new AtsTestUtilState("Analyze", StateType.Working);
+      public static AtsTestUtilState Implement = new AtsTestUtilState("Implement", StateType.Working);
+      public static AtsTestUtilState Completed = new AtsTestUtilState("Completed", StateType.Completed);
+      public static AtsTestUtilState Cancelled = new AtsTestUtilState("Cancelled", StateType.Cancelled);
 
-      private AtsTestUtilState(String pageName, WorkPageType workPageType) {
-         super(AtsTestUtilState.class, pageName, workPageType);
+      private AtsTestUtilState(String pageName, StateType StateType) {
+         super(AtsTestUtilState.class, pageName, StateType);
       }
 
       public static AtsTestUtilState valueOf(String pageName) {
-         return WorkPageAdapter.valueOfPage(AtsTestUtilState.class, pageName);
+         return StateTypeAdapter.valueOfPage(AtsTestUtilState.class, pageName);
       }
 
       public static List<AtsTestUtilState> values() {
-         return WorkPageAdapter.pages(AtsTestUtilState.class);
+         return StateTypeAdapter.pages(AtsTestUtilState.class);
       }
    }
 
@@ -576,7 +580,7 @@ public class AtsTestUtil {
       if (peerRevArt == null) {
          peerRevArt =
             PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt,
-               AtsTestUtil.class.getSimpleName() + " Test Peer Review", relatedToState.getPageName(), transaction);
+               AtsTestUtil.class.getSimpleName() + " Test Peer Review", relatedToState.getName(), transaction);
       }
       return peerRevArt;
    }

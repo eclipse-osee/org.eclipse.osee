@@ -29,9 +29,9 @@ import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.model.IAtsUser;
-import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
-import org.eclipse.osee.ats.core.workflow.IWorkPage;
-import org.eclipse.osee.ats.core.workflow.WorkPageType;
+import org.eclipse.osee.ats.workdef.api.IStateToken;
+import org.eclipse.osee.ats.workdef.api.ReviewBlockType;
+import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -65,7 +65,7 @@ public class PeerToPeerReviewManager {
          return result;
       }
       result =
-         transitionToState(PeerToPeerReviewState.Review.getWorkPageType(), popup, reviewArt,
+         transitionToState(PeerToPeerReviewState.Review.getStateType(), popup, reviewArt,
             PeerToPeerReviewState.Review, transaction);
       if (result.isFalse()) {
          return result;
@@ -80,7 +80,7 @@ public class PeerToPeerReviewManager {
       }
 
       result =
-         transitionToState(PeerToPeerReviewState.Completed.getWorkPageType(), popup, reviewArt,
+         transitionToState(PeerToPeerReviewState.Completed.getStateType(), popup, reviewArt,
             PeerToPeerReviewState.Completed, transaction);
       if (result.isFalse()) {
          return result;
@@ -88,10 +88,10 @@ public class PeerToPeerReviewManager {
       return Result.TrueResult;
    }
 
-   private static Result transitionToState(WorkPageType workPageType, boolean popup, PeerToPeerReviewArtifact reviewArt, IWorkPage toState, SkynetTransaction transaction) throws OseeCoreException {
+   private static Result transitionToState(StateType StateType, boolean popup, PeerToPeerReviewArtifact reviewArt, IStateToken toState, SkynetTransaction transaction) throws OseeCoreException {
       TransitionHelper helper =
-         new TransitionHelper("Transition to " + toState.getPageName(), Arrays.asList(reviewArt),
-            toState.getPageName(), Arrays.asList(reviewArt.getStateMgr().getAssignees().iterator().next()), null,
+         new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(reviewArt),
+            toState.getName(), Arrays.asList(reviewArt.getStateMgr().getAssignees().iterator().next()), null,
             TransitionOption.OverrideAssigneeCheck);
       TransitionManager transitionMgr = new TransitionManager(helper, transaction);
       TransitionResults results = transitionMgr.handleAll();

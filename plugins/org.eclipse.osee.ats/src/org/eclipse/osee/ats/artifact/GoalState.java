@@ -11,24 +11,24 @@
 package org.eclipse.osee.ats.artifact;
 
 import java.util.List;
-import org.eclipse.osee.ats.core.workflow.WorkPageAdapter;
-import org.eclipse.osee.ats.core.workflow.WorkPageType;
+import org.eclipse.osee.ats.core.workflow.StateTypeAdapter;
+import org.eclipse.osee.ats.workdef.api.StateType;
 
-public class GoalState extends WorkPageAdapter {
-   public static GoalState InWork = new GoalState("InWork", WorkPageType.Working);
-   public static GoalState Completed = new GoalState("Completed", WorkPageType.Completed);
-   public static GoalState Cancelled = new GoalState("Cancelled", WorkPageType.Cancelled);
+public class GoalState extends StateTypeAdapter {
+   public static GoalState InWork = new GoalState("InWork", StateType.Working);
+   public static GoalState Completed = new GoalState("Completed", StateType.Completed);
+   public static GoalState Cancelled = new GoalState("Cancelled", StateType.Cancelled);
 
-   private GoalState(String pageName, WorkPageType workPageType) {
-      super(GoalState.class, pageName, workPageType);
+   private GoalState(String pageName, StateType StateType) {
+      super(GoalState.class, pageName, StateType);
    }
 
    public static GoalState valueOf(String pageName) {
-      return WorkPageAdapter.valueOfPage(GoalState.class, pageName);
+      return StateTypeAdapter.valueOfPage(GoalState.class, pageName);
    }
 
    public List<GoalState> values() {
-      return WorkPageAdapter.pages(GoalState.class);
+      return StateTypeAdapter.pages(GoalState.class);
    }
 
 };

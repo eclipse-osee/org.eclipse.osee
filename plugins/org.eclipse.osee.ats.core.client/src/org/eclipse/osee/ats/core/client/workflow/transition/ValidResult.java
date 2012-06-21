@@ -10,15 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.workflow.transition;
 
-import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
 
 public class ValidResult {
    private final ValidType type;
-   private final WidgetDefinition widgetDef;
+   private final IAtsWidgetDefinition widgetDef;
    private final String details;
    public static ValidResult Valid = new ValidResult(ValidType.Valid, null, null);
 
-   public ValidResult(ValidType type, WidgetDefinition widgetDef, String details) {
+   public ValidResult(ValidType type, IAtsWidgetDefinition widgetDef, String details) {
       super();
       this.type = type;
       this.widgetDef = widgetDef;
@@ -33,7 +33,7 @@ public class ValidResult {
       return type;
    }
 
-   public WidgetDefinition getWidgetDef() {
+   public IAtsWidgetDefinition getWidgetDef() {
       return widgetDef;
    }
 

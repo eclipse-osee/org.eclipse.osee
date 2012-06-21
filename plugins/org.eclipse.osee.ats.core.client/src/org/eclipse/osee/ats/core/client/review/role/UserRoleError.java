@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.review.role;
 
-import org.eclipse.osee.ats.core.validator.WidgetResult;
-import org.eclipse.osee.ats.core.validator.WidgetStatus;
-import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.workdef.api.WidgetResult;
+import org.eclipse.osee.ats.workdef.api.WidgetStatus;
 
 /**
  * @author Donald G. Dunne
@@ -42,7 +42,7 @@ public enum UserRoleError {
       return this == None;
    }
 
-   public WidgetResult toWidgetResult(WidgetDefinition widgetDef) {
+   public WidgetResult toWidgetResult(IAtsWidgetDefinition widgetDef) {
       if (this == None) {
          return WidgetResult.Valid;
       }

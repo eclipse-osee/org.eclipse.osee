@@ -25,13 +25,13 @@ public class XReviewStateSearchCombo extends XStateSearchCombo {
       if (validStates.isEmpty()) {
          validStates.add("--select--");
          for (DecisionReviewState state : DecisionReviewState.values()) {
-            if (!validStates.contains(state.getPageName())) {
-               validStates.add(state.getPageName());
+            if (!validStates.contains(state.getName())) {
+               validStates.add(state.getName());
             }
          }
          for (PeerToPeerReviewState state : PeerToPeerReviewState.values()) {
-            if (!validStates.contains(state.getPageName())) {
-               validStates.add(state.getPageName());
+            if (!validStates.contains(state.getName())) {
+               validStates.add(state.getName());
             }
          }
          Collections.sort(validStates);

@@ -10,19 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.team;
 
-import org.eclipse.osee.ats.core.workflow.WorkPageAdapter;
-import org.eclipse.osee.ats.core.workflow.WorkPageType;
+import org.eclipse.osee.ats.core.workflow.StateTypeAdapter;
+import org.eclipse.osee.ats.workdef.api.StateType;
 
-public class SimpleTeamState extends WorkPageAdapter {
+public class SimpleTeamState extends StateTypeAdapter {
    private final String name;
 
-   public SimpleTeamState(String name, WorkPageType workPageType) {
-      super(SimpleTeamState.class, name, workPageType);
+   public SimpleTeamState(String name, StateType StateType) {
+      super(SimpleTeamState.class, name, StateType);
       this.name = name;
    }
 
    @Override
-   public String getPageName() {
+   public String getName() {
       return name;
    }
 

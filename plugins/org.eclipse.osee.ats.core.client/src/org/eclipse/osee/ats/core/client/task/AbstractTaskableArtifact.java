@@ -29,8 +29,8 @@ import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.model.IAtsUser;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
-import org.eclipse.osee.ats.core.workflow.IWorkPage;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
+import org.eclipse.osee.ats.workdef.api.IStateToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -65,7 +65,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
    }
 
    @Override
-   public void transitioned(StateDefinition fromState, StateDefinition toState, Collection<? extends IAtsUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+   public void transitioned(IAtsStateDefinition fromState, IAtsStateDefinition toState, Collection<? extends IAtsUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
       super.transitioned(fromState, toState, toAssignees, transaction);
       for (TaskArtifact taskArt : getTaskArtifacts()) {
          taskArt.parentWorkFlowTransitioned(fromState, toState, toAssignees, transaction);
@@ -84,10 +84,10 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
       return getTaskArtifacts(getStateMgr().getCurrentState());
    }
 
-   public Collection<TaskArtifact> getTaskArtifacts(IWorkPage state) throws OseeCoreException {
+   public Collection<TaskArtifact> getTaskArtifacts(IStateToken state) throws OseeCoreException {
       List<TaskArtifact> arts = new ArrayList<TaskArtifact>();
       for (TaskArtifact taskArt : getTaskArtifacts()) {
-         if (taskArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "").equals(state.getPageName())) {
+         if (taskArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "").equals(state.getName())) {
             arts.add(taskArt);
          }
       }
@@ -108,7 +108,8 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
          (TaskArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Task, AtsUtilCore.getAtsBranch(), title);
 
       addRelation(AtsRelationTypes.SmaToTask_Task, taskArt);
-      taskArt.initializeNewStateMachine(assignees, new Date(), (createdBy == null ? AtsUsersClient.getUser() : createdBy));
+      taskArt.initializeNewStateMachine(assignees, new Date(),
+         (createdBy == null ? AtsUsersClient.getUser() : createdBy));
 
       // Set parent state task is related to
       taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, getStateMgr().getCurrentStateName());
@@ -130,7 +131,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
       return Result.TrueResult;
    }
 
-   public Result areTasksComplete(IWorkPage state) {
+   public Result areTasksComplete(IStateToken state) {
       try {
          for (TaskArtifact taskArt : getTaskArtifacts(state)) {
             if (taskArt.isInWork()) {
@@ -160,12 +161,12 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
 
    /**
     * Return Estimated Task Hours of "Related to State" stateName
-    *
+    * 
     * @param relatedToState state name of parent workflow's state
     * @return Returns the Estimated Hours
     */
    @Override
-   public double getEstimatedHoursFromTasks(IWorkPage relatedToState) throws OseeCoreException {
+   public double getEstimatedHoursFromTasks(IStateToken relatedToState) throws OseeCoreException {
       double hours = 0;
       for (TaskArtifact taskArt : getTaskArtifacts(relatedToState)) {
          hours += taskArt.getEstimatedHoursTotal();
@@ -188,11 +189,11 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
 
    /**
     * Return Remain Task Hours of "Related to State" stateName
-    *
+    * 
     * @param relatedToState state name of parent workflow's state
     * @return Returns the Remain Hours
     */
-   public double getRemainHoursFromTasks(IWorkPage relatedToState) throws OseeCoreException {
+   public double getRemainHoursFromTasks(IStateToken relatedToState) throws OseeCoreException {
       double hours = 0;
       for (TaskArtifact taskArt : getTaskArtifacts(relatedToState)) {
          hours += taskArt.getRemainHoursFromArtifact();
@@ -214,11 +215,11 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
 
    /**
     * Return Total Percent Complete / # Tasks for "Related to State" stateName
-    *
+    * 
     * @param relatedToState state name of parent workflow's state
     * @return Returns the Percent Complete.
     */
-   public int getPercentCompleteFromTasks(IWorkPage relatedToState) throws OseeCoreException {
+   public int getPercentCompleteFromTasks(IStateToken relatedToState) throws OseeCoreException {
       int spent = 0;
       Collection<TaskArtifact> taskArts = getTaskArtifacts(relatedToState);
       for (TaskArtifact taskArt : taskArts) {

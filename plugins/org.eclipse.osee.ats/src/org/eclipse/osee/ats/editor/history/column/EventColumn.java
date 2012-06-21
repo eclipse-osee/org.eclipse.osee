@@ -23,9 +23,10 @@ import org.eclipse.osee.ats.core.client.workflow.AtsWorkStateFactory;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
-import org.eclipse.osee.ats.core.workflow.WorkPageType;
+import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
+import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -69,9 +70,9 @@ public class EventColumn extends XViewerValueColumn {
                return processCurrentStateChange(change);
             }
             if (change.getItemTypeName().equals(AtsAttributeTypes.CurrentStateType.getName())) {
-               if (change.getIsValue().equals(WorkPageType.Completed.name())) {
+               if (change.getIsValue().equals(StateType.Completed.name())) {
                   return "Completed";
-               } else if (change.getIsValue().equals(WorkPageType.Cancelled.name())) {
+               } else if (change.getIsValue().equals(StateType.Cancelled.name())) {
                   return "Cancelled";
                }
             }
@@ -105,8 +106,8 @@ public class EventColumn extends XViewerValueColumn {
 
    public String processCurrentStateChange(Change change) {
       try {
-         StateDefinition stateDef = new StateDefinition("");
-         stateDef.setWorkPageType(WorkPageType.Working);
+         IAtsStateDefinition stateDef = AtsWorkDefinitionService.getService().createStateDefinition("");
+         stateDef.setStateType(StateType.Working);
          WorkStateImpl was = AtsWorkStateFactory.getFromXml(change.getWasValue());
          WorkStateImpl is = AtsWorkStateFactory.getFromXml(change.getIsValue());
          if (change.getWasValue().equals("")) {

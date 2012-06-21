@@ -17,17 +17,18 @@ import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Dispositi
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.InjectionActivity;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.core.validator.ValidatorTestUtil;
-import org.eclipse.osee.ats.core.validator.WidgetResult;
-import org.eclipse.osee.ats.core.validator.WidgetStatus;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
-import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
-import org.eclipse.osee.ats.core.workdef.WidgetOption;
-import org.eclipse.osee.ats.core.workflow.WorkPageType;
+import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.workdef.api.WidgetOption;
+import org.eclipse.osee.ats.workdef.api.WidgetResult;
+import org.eclipse.osee.ats.workdef.api.WidgetStatus;
+import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * Test unit for {@link AtsXDefectValidator}
- *
+ * 
  * @author Donald G. Dunne
  */
 public class AtsXDefectValidatorTest {
@@ -36,13 +37,13 @@ public class AtsXDefectValidatorTest {
    public void testValidateTransition() throws OseeCoreException {
       AtsXDefectValidator validator = new AtsXDefectValidator();
 
-      WidgetDefinition widgetDef = new WidgetDefinition("test");
+      IAtsWidgetDefinition widgetDef = AtsWorkDefinitionService.getService().createWidgetDefinition("test");
       widgetDef.setXWidgetName("xList");
 
-      StateDefinition fromStateDef = new StateDefinition("from");
-      fromStateDef.setWorkPageType(WorkPageType.Working);
-      StateDefinition toStateDef = new StateDefinition("to");
-      toStateDef.setWorkPageType(WorkPageType.Working);
+      IAtsStateDefinition fromStateDef = AtsWorkDefinitionService.getService().createStateDefinition("from");
+      fromStateDef.setStateType(StateType.Working);
+      IAtsStateDefinition toStateDef = AtsWorkDefinitionService.getService().createStateDefinition("to");
+      toStateDef.setStateType(StateType.Working);
 
       // Valid for anything not XDefectViewer
       WidgetResult result =
@@ -65,13 +66,13 @@ public class AtsXDefectValidatorTest {
    public void testValidateTransition__Defect() throws OseeCoreException {
       AtsXDefectValidator validator = new AtsXDefectValidator();
 
-      WidgetDefinition widgetDef = new WidgetDefinition("test");
+      IAtsWidgetDefinition widgetDef = AtsWorkDefinitionService.getService().createWidgetDefinition("test");
       widgetDef.setXWidgetName("XDefectViewer");
 
-      StateDefinition fromStateDef = new StateDefinition("from");
-      fromStateDef.setWorkPageType(WorkPageType.Working);
-      StateDefinition toStateDef = new StateDefinition("to");
-      toStateDef.setWorkPageType(WorkPageType.Working);
+      IAtsStateDefinition fromStateDef = AtsWorkDefinitionService.getService().createStateDefinition("from");
+      fromStateDef.setStateType(StateType.Working);
+      IAtsStateDefinition toStateDef = AtsWorkDefinitionService.getService().createStateDefinition("to");
+      toStateDef.setStateType(StateType.Working);
 
       ReviewDefectItem item = getValidItem();
       MockDefectValueProvider itemValueProvider = new MockDefectValueProvider(Arrays.asList(item));

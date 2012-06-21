@@ -5,12 +5,13 @@
  */
 package org.eclipse.osee.ats.core.workdef;
 
+import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
  * Test case for {@link WorkDefinitionMatch}
- *
+ * 
  * @author Donald G. Dunne
  */
 public class WorkDefinitionMatchTest {
@@ -24,7 +25,9 @@ public class WorkDefinitionMatchTest {
 
    @Test
    public void testWorkDefinitionMatchWorkDefinitionString() {
-      WorkDefinitionMatch match = new WorkDefinitionMatch(new WorkDefinition("mine"), "trace");
+      IAtsWorkDefinition workDef = AtsWorkDefinitionService.getService().createWorkDefinition("mine");
+      WorkDefinitionMatch match = new WorkDefinitionMatch(workDef.getName(), "trace");
+      match.setWorkDefinition(workDef);
       Assert.assertNotNull(match.getWorkDefinition());
       Assert.assertFalse(match.getTrace().isEmpty());
    }
@@ -33,7 +36,7 @@ public class WorkDefinitionMatchTest {
    public void testGetSetWorkDefinition() {
       WorkDefinitionMatch match = new WorkDefinitionMatch();
       Assert.assertNull(match.getWorkDefinition());
-      match.setWorkDefinition(new WorkDefinition("mine"));
+      match.setWorkDefinition(AtsWorkDefinitionService.getService().createWorkDefinition("mine"));
       Assert.assertNotNull(match.getWorkDefinition());
    }
 
@@ -53,7 +56,9 @@ public class WorkDefinitionMatchTest {
 
    @Test
    public void testIsMatched() {
-      WorkDefinitionMatch match = new WorkDefinitionMatch(new WorkDefinition("mine"), "trace");
+      IAtsWorkDefinition workDef = AtsWorkDefinitionService.getService().createWorkDefinition("mine");
+      WorkDefinitionMatch match = new WorkDefinitionMatch(workDef.getName(), "trace");
+      match.setWorkDefinition(workDef);
       Assert.assertTrue(match.isMatched());
       match.setWorkDefinition(null);
       Assert.assertFalse(match.isMatched());
@@ -61,7 +66,9 @@ public class WorkDefinitionMatchTest {
 
    @Test
    public void testToString() {
-      WorkDefinitionMatch match = new WorkDefinitionMatch(new WorkDefinition("mine"), "trace");
+      IAtsWorkDefinition workDef = AtsWorkDefinitionService.getService().createWorkDefinition("mine");
+      WorkDefinitionMatch match = new WorkDefinitionMatch(workDef.getName(), "trace");
+      match.setWorkDefinition(workDef);
       Assert.assertEquals("mine", match.toString());
    }
 

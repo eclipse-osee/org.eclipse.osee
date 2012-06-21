@@ -5,9 +5,7 @@
  */
 package org.eclipse.osee.ats.core.client.config.store;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -24,7 +22,6 @@ import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.workdef.RuleDefinition;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -62,9 +59,6 @@ public class TeamDefinitionArtifactStore extends ArtifactAtsObjectStore {
       if (actionable != teamDef.isActionable()) {
          teamDefArt.setSoleAttributeValue(AtsAttributeTypes.Actionable, teamDef.isActionable());
       }
-      if (Strings.isValid(teamDef.getActionDetailsFormat())) {
-         teamDefArt.setSoleAttributeValue(AtsAttributeTypes.ActionDetailsFormat, teamDef.getActionDetailsFormat());
-      }
       teamDefArt.setSoleAttributeValue(AtsAttributeTypes.TeamUsesVersions, teamDef.isTeamUsesVersions());
 
       boolean allowCommitBranch = teamDefArt.getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, true);
@@ -75,9 +69,6 @@ public class TeamDefinitionArtifactStore extends ArtifactAtsObjectStore {
       boolean allowCreateBranch = teamDefArt.getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, true);
       if (allowCreateBranch != teamDef.isAllowCreateBranch()) {
          teamDefArt.setSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, teamDef.isAllowCreateBranch());
-      }
-      if (teamDef.getManDayHours() != null) {
-         teamDefArt.setSoleAttributeValue(AtsAttributeTypes.HoursPerWorkDay, teamDef.getManDayHours());
       }
       if (Strings.isValid(teamDef.getBaslineBranchGuid())) {
          teamDefArt.setSoleAttributeValue(AtsAttributeTypes.BaselineBranchGuid, teamDef.getBaslineBranchGuid());
@@ -139,11 +130,7 @@ public class TeamDefinitionArtifactStore extends ArtifactAtsObjectStore {
       setRelationsOfType(teamDefArt, teamDef.getPrivilegedMembers(), AtsRelationTypes.PrivilegedMember_Member);
 
       // update rules if changed
-      Set<String> rules = new HashSet<String>();
-      for (RuleDefinition ruleDef : teamDef.getRules()) {
-         rules.add(ruleDef.getName());
-      }
-      teamDefArt.setAttributeValues(AtsAttributeTypes.RuleDefinition, rules);
+      teamDefArt.setAttributeValues(AtsAttributeTypes.RuleDefinition, teamDef.getRules());
 
       // update staticIds
       if (!teamDef.getStaticIds().isEmpty()) {
@@ -192,13 +179,9 @@ public class TeamDefinitionArtifactStore extends ArtifactAtsObjectStore {
          teamDef.setActive(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.Active, true));
          teamDef.setActionable(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.Actionable, true));
          String actionDetailsFormat = teamDefArt.getSoleAttributeValue(AtsAttributeTypes.ActionDetailsFormat, "");
-         if (Strings.isValid(actionDetailsFormat)) {
-            teamDef.setActionDetailsFormat(actionDetailsFormat);
-         }
          teamDef.setTeamUsesVersions(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.TeamUsesVersions, true));
          teamDef.setAllowCommitBranch(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, true));
          teamDef.setAllowCreateBranch(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, true));
-         teamDef.setManDayHours(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.HoursPerWorkDay, 0.0));
          String baselineBranchGuid = teamDefArt.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchGuid, "");
          if (Strings.isValid(baselineBranchGuid)) {
             teamDef.setBaselineBranchGuid(baselineBranchGuid);

@@ -12,19 +12,20 @@ package org.eclipse.osee.ats.core.client.review;
 
 import java.util.Arrays;
 import junit.framework.Assert;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.transition.MockTransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.workdef.PeerReviewDefinition;
-import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
-import org.eclipse.osee.ats.core.workdef.StateEventType;
+import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
+import org.eclipse.osee.ats.workdef.api.IAtsPeerReviewDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
+import org.eclipse.osee.ats.workdef.api.ReviewBlockType;
+import org.eclipse.osee.ats.workdef.api.StateEventType;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -34,7 +35,7 @@ import org.junit.BeforeClass;
 
 /**
  * Test unit for {@link PeerReviewDefinitionManager}
- *
+ * 
  * @author Donald G. Dunne
  */
 public class PeerReviewDefinitionManagerTest extends PeerReviewDefinitionManager {
@@ -50,12 +51,13 @@ public class PeerReviewDefinitionManagerTest extends PeerReviewDefinitionManager
       AtsTestUtil.cleanupAndReset("PeerReviewDefinitionManagerTest");
 
       // configure WorkDefinition to create a new Review on transition to Implement
-      StateDefinition implement = AtsTestUtil.getImplementStateDef();
+      IAtsStateDefinition implement = AtsTestUtil.getImplementStateDef();
 
-      PeerReviewDefinition revDef = new PeerReviewDefinition("Create New on Implement");
+      IAtsPeerReviewDefinition revDef =
+         AtsWorkDefinitionService.getService().createPeerReviewDefinition("Create New on Implement");
       revDef.setBlockingType(ReviewBlockType.Transition);
       revDef.setDescription("the description");
-      revDef.setRelatedToState(implement.getPageName());
+      revDef.setRelatedToState(implement.getName());
       revDef.setStateEventType(StateEventType.TransitionTo);
       revDef.setReviewTitle("This is my review title");
       revDef.getAssignees().add(SystemUser.UnAssigned.getUserId());
@@ -68,7 +70,7 @@ public class PeerReviewDefinitionManagerTest extends PeerReviewDefinitionManager
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       MockTransitionHelper helper =
-         new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), implement.getPageName(),
+         new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), implement.getName(),
             Arrays.asList(AtsUsersClient.getUser()), null, TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper, transaction);
       TransitionResults results = transMgr.handleAll();
@@ -79,13 +81,13 @@ public class PeerReviewDefinitionManagerTest extends PeerReviewDefinitionManager
       Assert.assertEquals("One review should be present", 1, ReviewManager.getReviews(teamArt).size());
       PeerToPeerReviewArtifact decArt = (PeerToPeerReviewArtifact) ReviewManager.getReviews(teamArt).iterator().next();
 
-      Assert.assertEquals(PeerToPeerReviewState.Prepare.getPageName(), decArt.getCurrentStateName());
+      Assert.assertEquals(PeerToPeerReviewState.Prepare.getName(), decArt.getCurrentStateName());
       Assert.assertEquals("UnAssigned", decArt.getStateMgr().getAssigneesStr());
       Assert.assertEquals(ReviewBlockType.Transition.name(),
          decArt.getSoleAttributeValue(AtsAttributeTypes.ReviewBlocks));
       Assert.assertEquals("This is my review title", decArt.getName());
       Assert.assertEquals("the description", decArt.getSoleAttributeValue(AtsAttributeTypes.Description));
-      Assert.assertEquals(implement.getPageName(), decArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState));
+      Assert.assertEquals(implement.getName(), decArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState));
 
       AtsTestUtil.validateArtifactCache();
    }

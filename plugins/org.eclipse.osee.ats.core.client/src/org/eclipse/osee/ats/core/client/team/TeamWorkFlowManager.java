@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
-import org.eclipse.osee.ats.core.workflow.IWorkPage;
+import org.eclipse.osee.ats.workdef.api.IStateToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -68,7 +68,7 @@ public class TeamWorkFlowManager {
       Assert.isNotNull(user);
       Date date = new Date();
       if (toState == TeamState.Endorse) {
-         if (!teamArt.getCurrentStateName().equals(TeamState.Endorse.getPageName())) {
+         if (!teamArt.getCurrentStateName().equals(TeamState.Endorse.getName())) {
             return new Result("Workflow current state [%s] past desired Endorse state", teamArt.getCurrentStateName());
          }
          return Result.TrueResult;
@@ -158,9 +158,9 @@ public class TeamWorkFlowManager {
       return Result.TrueResult;
    }
 
-   private Result transitionToState(boolean popup, TeamWorkFlowArtifact teamArt, IWorkPage toState, IAtsUser user, SkynetTransaction transaction) {
+   private Result transitionToState(boolean popup, TeamWorkFlowArtifact teamArt, IStateToken toState, IAtsUser user, SkynetTransaction transaction) {
       TransitionHelper helper =
-         new TransitionHelper("Transition to " + toState.getPageName(), Arrays.asList(teamArt), toState.getPageName(),
+         new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(teamArt), toState.getName(),
             Arrays.asList(user), null, transitionOptions);
       TransitionManager transitionMgr = new TransitionManager(helper, transaction);
       TransitionResults results = transitionMgr.handleAll();

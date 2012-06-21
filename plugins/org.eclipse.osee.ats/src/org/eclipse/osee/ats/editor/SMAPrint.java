@@ -162,15 +162,15 @@ public class SMAPrint extends Action {
       for (StateXWidgetPage statePage : WorkflowManager.getStatePagesOrderedByOrdinal(sma)) {
          if (sma.isInState(statePage) || sma.getStateMgr().isStateVisited(statePage)) {
             // Don't show completed or cancelled state if not currently those state
-            if (statePage.isCompletedPage() && !sma.isCompleted()) {
+            if (statePage.getStateType().isCompletedState() && !sma.isCompleted()) {
                continue;
             }
-            if (statePage.isCancelledPage() && !sma.isCancelled()) {
+            if (statePage.getStateType().isCancelledState() && !sma.isCancelled()) {
                continue;
             }
             StringBuffer notesSb = new StringBuffer();
             for (NoteItem note : sma.getNotes().getNoteItems()) {
-               if (note.getState().equals(statePage.getPageName())) {
+               if (note.getState().equals(statePage.getName())) {
                   notesSb.append(note.toHTML());
                   notesSb.append(AHTML.newline());
                }
@@ -194,7 +194,7 @@ public class SMAPrint extends Action {
 
    private String getStateHoursSpentHtml(StateXWidgetPage statePage) throws OseeCoreException {
       return AHTML.getLabelValueStr("State Hours Spent",
-         AtsUtilCore.doubleToI18nString(sma.getStateMgr().getHoursSpent(statePage.getPageName())) + "<br>");
+         AtsUtilCore.doubleToI18nString(sma.getStateMgr().getHoursSpent(statePage.getName())) + "<br>");
    }
 
    public boolean isIncludeTaskList() {

@@ -13,7 +13,7 @@ import org.eclipse.osee.ats.core.mock.MockWorkData;
 import org.eclipse.osee.ats.core.mock.MockWorkItem;
 import org.eclipse.osee.ats.core.model.HasWorkData;
 import org.eclipse.osee.ats.core.model.IAtsWorkData;
-import org.eclipse.osee.ats.core.workflow.WorkPageType;
+import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -33,7 +33,7 @@ public class AssigneeColumnTest {
 
    @org.junit.Test
    public void testGetAssigneeStrFromInWorkWorkflow() throws OseeCoreException {
-      MockWorkItem workItem = new MockWorkItem("this", "Working", WorkPageType.Working);
+      MockWorkItem workItem = new MockWorkItem("this", "Working", StateType.Working);
       Assert.assertEquals("", AssigneeColumn.instance.getAssigneeStr(workItem));
 
       workItem.getStateData().setAssignees("Working", Arrays.asList(joe, steve, alice));
@@ -43,10 +43,10 @@ public class AssigneeColumnTest {
 
    @org.junit.Test
    public void testGetAssigneeStrFromCompletedWorkflow() throws OseeCoreException {
-      MockWorkItem workItem = new MockWorkItem("this", "Working", WorkPageType.Working);
+      MockWorkItem workItem = new MockWorkItem("this", "Working", StateType.Working);
       Assert.assertEquals("", AssigneeColumn.instance.getAssigneeStr(workItem));
 
-      workItem = new MockWorkItem("this", "Completed", WorkPageType.Completed);
+      workItem = new MockWorkItem("this", "Completed", StateType.Completed);
       workItem.getWorkData().setCompletedBy(steve);
       Assert.assertEquals("(steve)", AssigneeColumn.instance.getAssigneeStr(workItem));
 
@@ -63,10 +63,10 @@ public class AssigneeColumnTest {
 
    @org.junit.Test
    public void testGetAssigneeStrFromCancelledWorkflow() throws OseeCoreException {
-      MockWorkItem workItem = new MockWorkItem("this", "Working", WorkPageType.Working);
+      MockWorkItem workItem = new MockWorkItem("this", "Working", StateType.Working);
       Assert.assertEquals("", AssigneeColumn.instance.getAssigneeStr(workItem));
 
-      workItem = new MockWorkItem("this", "Cancelled", WorkPageType.Cancelled);
+      workItem = new MockWorkItem("this", "Cancelled", StateType.Cancelled);
       workItem.getWorkData().setCancelledBy(steve);
       Assert.assertEquals("(steve)", AssigneeColumn.instance.getAssigneeStr(workItem));
 
@@ -83,9 +83,9 @@ public class AssigneeColumnTest {
    @org.junit.Test
    public void testGetAssigneesStr_hasActions_oneWorkingOneCancelled() throws OseeCoreException {
 
-      MockWorkItem workItem1 = new MockWorkItem("this", "Working", WorkPageType.Working);
+      MockWorkItem workItem1 = new MockWorkItem("this", "Working", StateType.Working);
 
-      MockWorkItem workItem2 = new MockWorkItem("that", "Cancelled", WorkPageType.Cancelled);
+      MockWorkItem workItem2 = new MockWorkItem("that", "Cancelled", StateType.Cancelled);
       workItem2.addImplementer(joe);
 
       MockActionGroup group = new MockActionGroup("group");
@@ -98,10 +98,10 @@ public class AssigneeColumnTest {
    @org.junit.Test
    public void testGetAssigneesStr_hasActions_duplicateImplementers() throws OseeCoreException {
 
-      MockWorkItem workItem1 = new MockWorkItem("this", "Cancelled", WorkPageType.Cancelled);
+      MockWorkItem workItem1 = new MockWorkItem("this", "Cancelled", StateType.Cancelled);
       workItem1.addImplementer(joe);
 
-      MockWorkItem workItem2 = new MockWorkItem("that", "Cancelled", WorkPageType.Cancelled);
+      MockWorkItem workItem2 = new MockWorkItem("that", "Cancelled", StateType.Cancelled);
       workItem2.addImplementer(joe);
 
       MockActionGroup group = new MockActionGroup("group");
@@ -114,10 +114,10 @@ public class AssigneeColumnTest {
    @org.junit.Test
    public void testGetAssigneesStr_hasActions_twoCancelled() throws OseeCoreException {
 
-      MockWorkItem workItem1 = new MockWorkItem("this", "Cancelled", WorkPageType.Cancelled);
+      MockWorkItem workItem1 = new MockWorkItem("this", "Cancelled", StateType.Cancelled);
       workItem1.addImplementer(steve);
 
-      MockWorkItem workItem2 = new MockWorkItem("that", "Cancelled", WorkPageType.Cancelled);
+      MockWorkItem workItem2 = new MockWorkItem("that", "Cancelled", StateType.Cancelled);
       workItem2.addImplementer(joe);
 
       MockActionGroup group = new MockActionGroup("group");
@@ -130,11 +130,11 @@ public class AssigneeColumnTest {
    @org.junit.Test
    public void testGetAssigneesStr_hasActions_twoWorkingDuplicates() throws OseeCoreException {
 
-      MockWorkItem workItem1 = new MockWorkItem("this", "Working", WorkPageType.Working);
+      MockWorkItem workItem1 = new MockWorkItem("this", "Working", StateType.Working);
       workItem1.getStateData().setCurrentStateName("Implement");
       workItem1.getStateData().addState("Implement", Arrays.asList(steve));
 
-      MockWorkItem workItem2 = new MockWorkItem("that", "Working", WorkPageType.Working);
+      MockWorkItem workItem2 = new MockWorkItem("that", "Working", StateType.Working);
       workItem2.getStateData().setCurrentStateName("Implement");
       workItem2.getStateData().addState("Implement", Arrays.asList(steve));
 
@@ -155,7 +155,7 @@ public class AssigneeColumnTest {
          }
       });
 
-      MockWorkItem workItem1 = new MockWorkItem("this", "Completed", WorkPageType.Completed);
+      MockWorkItem workItem1 = new MockWorkItem("this", "Completed", StateType.Completed);
       workItem1.addImplementer(joe);
 
       Assert.assertEquals("", column.getAssigneeStr(workItem1));
@@ -170,7 +170,7 @@ public class AssigneeColumnTest {
 
       @Override
       public IAtsWorkData getWorkData() {
-         return new MockWorkData(WorkPageType.Working);
+         return new MockWorkData(StateType.Working);
       }
 
    }

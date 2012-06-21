@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionArtifactRollup;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.config.ActionableItemManager;
+import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
 import org.eclipse.osee.ats.core.client.config.store.VersionArtifactStore;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
@@ -34,6 +35,7 @@ import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsVersion;
+import org.eclipse.osee.ats.core.util.AtsUtilCoreCore;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -200,11 +202,28 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
    @Override
    public double getManHrsPerDayPreference() throws OseeCoreException {
       try {
-         return getTeamDefinition().getManDayHrsFromItemAndChildren();
+         return getHoursPerWorkDayFromItemAndChildren(getTeamDefinition());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return super.getManHrsPerDayPreference();
+   }
+
+   private double getHoursPerWorkDayFromItemAndChildren(IAtsTeamDefinition teamDef) {
+      try {
+         double manDayHours = 0;
+         Artifact artifact = new TeamDefinitionArtifactStore(getTeamDefinition()).getArtifact();
+         if (artifact != null) {
+            manDayHours = artifact.getSoleAttributeValue(AtsAttributeTypes.HoursPerWorkDay, 0.0);
+         }
+         if (manDayHours == 0 && teamDef.getParentTeamDef() != null) {
+            return getHoursPerWorkDayFromItemAndChildren(teamDef.getParentTeamDef());
+         }
+         return AtsUtilCoreCore.DEFAULT_HOURS_PER_WORK_DAY;
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return 0.0;
    }
 
    @Override

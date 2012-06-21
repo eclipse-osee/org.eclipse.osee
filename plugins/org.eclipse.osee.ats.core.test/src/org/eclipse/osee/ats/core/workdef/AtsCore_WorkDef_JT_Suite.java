@@ -18,26 +18,13 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   WidgetOptionTest.class,
-   ConvertWorkDefinitionToAtsDslTest.class,
-   ModelUtilTest.class,
-   StateDefinitionTest.class,
-   WorkDefinitionTest.class,
-   WidgetOptionHandlerTest.class,
-   WidgetDefinitionTest.class,
    WorkDefinitionMatchTest.class,
    WorkDefinitionSheetTest.class,
    StateEventTypeTest.class,
    StateColorTest.class,
    RuleManagerTest.class,
    RuleDefinitionOptionTest.class,
-   RuleDefinitionTest.class,
-   ReviewBlockTypeTest.class,
-   PeerReviewDefinitionTest.class,
-   DecisionReviewOptionTest.class,
-   DecisionReviewDefinitionTest.class,
-   AbstractWorkDefItemTest.class,
-   CompositeStateItemTest.class})
+   ReviewBlockTypeTest.class})
 /**
  * This test suite contains tests that can be run as stand-alone JUnit tests (JT)
  *

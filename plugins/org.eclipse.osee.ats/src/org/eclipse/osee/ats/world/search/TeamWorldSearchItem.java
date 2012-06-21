@@ -30,9 +30,9 @@ import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.model.IAtsVersion;
-import org.eclipse.osee.ats.core.workflow.WorkPageType;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -228,15 +228,15 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
       try {
          if (AttributeTypeManager.getType(AtsAttributeTypes.CurrentStateType) != null) {
             if (!includeCancelled && !includeCompleted) {
-               criteria.add(new AttributeCriteria(AtsAttributeTypes.CurrentStateType, WorkPageType.Working.name()));
+               criteria.add(new AttributeCriteria(AtsAttributeTypes.CurrentStateType, StateType.Working.name()));
             } else {
                List<String> cancelOrComplete = new ArrayList<String>(2);
-               cancelOrComplete.add(WorkPageType.Working.name());
+               cancelOrComplete.add(StateType.Working.name());
                if (includeCompleted) {
-                  cancelOrComplete.add(WorkPageType.Completed.name());
+                  cancelOrComplete.add(StateType.Completed.name());
                }
                if (includeCancelled) {
-                  cancelOrComplete.add(WorkPageType.Cancelled.name());
+                  cancelOrComplete.add(StateType.Cancelled.name());
                }
                criteria.add(new AttributeCriteria(AtsAttributeTypes.CurrentStateType, cancelOrComplete));
             }
@@ -246,10 +246,10 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
          // Backward compatibility; remove after 0.9.7 release
          List<String> cancelOrComplete = new ArrayList<String>(2);
          if (!includeCancelled) {
-            cancelOrComplete.add(TeamState.Cancelled.getPageName() + ";;;");
+            cancelOrComplete.add(TeamState.Cancelled.getName() + ";;;");
          }
          if (!includeCompleted) {
-            cancelOrComplete.add(TeamState.Completed.getPageName() + ";;;");
+            cancelOrComplete.add(TeamState.Completed.getName() + ";;;");
          }
          if (cancelOrComplete.size() > 0) {
             criteria.add(new AttributeCriteria(AtsAttributeTypes.CurrentState, cancelOrComplete));

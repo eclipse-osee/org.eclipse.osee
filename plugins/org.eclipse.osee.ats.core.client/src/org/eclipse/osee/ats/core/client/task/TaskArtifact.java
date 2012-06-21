@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.model.IAtsUser;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -62,17 +62,17 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
       }
    }
 
-   public Result parentWorkFlowTransitioned(StateDefinition fromState, StateDefinition toState, Collection<? extends IAtsUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
-      if (toState.getPageName().equals(TeamState.Cancelled.getPageName()) && isInWork()) {
+   public Result parentWorkFlowTransitioned(IAtsStateDefinition fromState, IAtsStateDefinition toState, Collection<? extends IAtsUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+      if (toState.getName().equals(TeamState.Cancelled.getName()) && isInWork()) {
          TransitionHelper helper =
-            new TransitionHelper("Transition to Cancelled", Arrays.asList(this), TaskStates.Cancelled.getPageName(),
+            new TransitionHelper("Transition to Cancelled", Arrays.asList(this), TaskStates.Cancelled.getName(),
                null, "Parent Cancelled", TransitionOption.None);
          TransitionManager transitionMgr = new TransitionManager(helper, transaction);
          TransitionResults results = transitionMgr.handleAll();
          if (!results.isEmpty()) {
             return new Result("Transition Error %s", results.toString());
          }
-      } else if (fromState.getPageName().equals(TeamState.Cancelled.getPageName()) && isCancelled()) {
+      } else if (fromState.getName().equals(TeamState.Cancelled.getName()) && isCancelled()) {
          Result result = TaskManager.transitionToInWork(this, AtsUsersClient.getUser(), 99, 0, transaction);
          return result;
       }

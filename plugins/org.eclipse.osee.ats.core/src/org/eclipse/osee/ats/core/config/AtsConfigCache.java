@@ -22,9 +22,6 @@ public class AtsConfigCache {
       new HashCollection<String, IAtsConfigObject>();
 
    public static void cache(IAtsConfigObject configObject) {
-      if (configObject.getName().equals("CIS SW")) {
-         System.out.println("here");
-      }
       configObjects.add(configObject);
       cacheByTag(configObject.getGuid(), configObject);
    }

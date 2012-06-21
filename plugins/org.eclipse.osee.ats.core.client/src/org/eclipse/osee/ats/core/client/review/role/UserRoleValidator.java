@@ -15,7 +15,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewState;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -44,7 +44,7 @@ public class UserRoleValidator {
       return UserRoleError.None;
    }
 
-   public static UserRoleError isValid(UserRoleManager roleMgr, StateDefinition fromStateDef, StateDefinition toStateDef) throws OseeCoreException {
+   public static UserRoleError isValid(UserRoleManager roleMgr, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) throws OseeCoreException {
       if (roleMgr.getUserRoles().isEmpty()) {
          return UserRoleError.OneRoleEntryRequired;
       }
@@ -55,7 +55,7 @@ public class UserRoleValidator {
          return UserRoleError.MustHaveAtLeastOneReviewer;
       }
       // If in review state, all roles must have hours spent entered
-      if ((fromStateDef.getPageName().equals(PeerToPeerReviewState.Review.getPageName())) || (fromStateDef.getPageName().equals(PeerToPeerReviewState.Meeting.getPageName()))) {
+      if ((fromStateDef.getName().equals(PeerToPeerReviewState.Review.getName())) || (fromStateDef.getName().equals(PeerToPeerReviewState.Meeting.getName()))) {
          for (UserRole uRole : roleMgr.getUserRoles()) {
             if (uRole.getHoursSpent() == null) {
                return UserRoleError.HoursSpentMustBeEnteredForEachRole;

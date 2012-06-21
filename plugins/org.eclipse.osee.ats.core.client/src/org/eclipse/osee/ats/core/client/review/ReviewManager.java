@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.HoursSpentUtil;
 import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
-import org.eclipse.osee.ats.core.workflow.IWorkPage;
+import org.eclipse.osee.ats.workdef.api.IStateToken;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -52,7 +52,7 @@ public class ReviewManager {
     *
     * @param relatedToState state name of parent workflow's state
     */
-   public static double getEstimatedHours(TeamWorkFlowArtifact teamArt, IWorkPage relatedToState) throws OseeCoreException {
+   public static double getEstimatedHours(TeamWorkFlowArtifact teamArt, IStateToken relatedToState) throws OseeCoreException {
       double hours = 0;
       for (AbstractReviewArtifact revArt : getReviews(teamArt, relatedToState)) {
          hours += revArt.getEstimatedHoursTotal();
@@ -80,10 +80,10 @@ public class ReviewManager {
       return getReviews(teamArt, teamArt.getStateMgr().getCurrentState());
    }
 
-   public static Collection<AbstractReviewArtifact> getReviews(TeamWorkFlowArtifact teamArt, IWorkPage state) throws OseeCoreException {
+   public static Collection<AbstractReviewArtifact> getReviews(TeamWorkFlowArtifact teamArt, IStateToken state) throws OseeCoreException {
       Set<AbstractReviewArtifact> arts = new HashSet<AbstractReviewArtifact>();
       for (AbstractReviewArtifact revArt : getReviews(teamArt)) {
-         if (revArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "").equals(state.getPageName())) {
+         if (revArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "").equals(state.getName())) {
             arts.add(revArt);
          }
       }
@@ -116,7 +116,7 @@ public class ReviewManager {
     *
     * @param relatedToState state name of parent workflow's state
     */
-   public static double getHoursSpent(TeamWorkFlowArtifact teamArt, IWorkPage relatedToState) throws OseeCoreException {
+   public static double getHoursSpent(TeamWorkFlowArtifact teamArt, IStateToken relatedToState) throws OseeCoreException {
       double spent = 0;
       for (AbstractReviewArtifact reviewArt : getReviews(teamArt, relatedToState)) {
          spent += HoursSpentUtil.getHoursSpentTotal(reviewArt);
@@ -129,7 +129,7 @@ public class ReviewManager {
     *
     * @param relatedToState state name of parent workflow's state
     */
-   public static int getPercentComplete(TeamWorkFlowArtifact teamArt, IWorkPage relatedToState) throws OseeCoreException {
+   public static int getPercentComplete(TeamWorkFlowArtifact teamArt, IStateToken relatedToState) throws OseeCoreException {
       int spent = 0;
       Collection<AbstractReviewArtifact> reviewArts = getReviews(teamArt, relatedToState);
       for (AbstractReviewArtifact reviewArt : reviewArts) {

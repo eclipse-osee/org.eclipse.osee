@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.workdef;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 
 /**
  * @author Donald G. Dunne
@@ -25,8 +25,8 @@ public class StateDefinitionViewSorter extends ViewerSorter {
 
    @Override
    public int compare(Viewer viewer, Object e1, Object e2) {
-      StateDefinition def1 = (StateDefinition) e1;
-      StateDefinition def2 = (StateDefinition) e2;
+      IAtsStateDefinition def1 = (IAtsStateDefinition) e1;
+      IAtsStateDefinition def2 = (IAtsStateDefinition) e2;
       if (def1.getOrdinal() == def2.getOrdinal()) {
          return compareByName(def1, def2);
       } else if (def1.getOrdinal() < def2.getOrdinal()) {
@@ -37,7 +37,7 @@ public class StateDefinitionViewSorter extends ViewerSorter {
    }
 
    @SuppressWarnings("unchecked")
-   private int compareByName(StateDefinition def1, StateDefinition def2) {
+   private int compareByName(IAtsStateDefinition def1, IAtsStateDefinition def2) {
       return getComparator().compare(def1.getName(), def2.getName());
    }
 }

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow.transition;
 
+import org.eclipse.osee.ats.workdef.api.ITransitionResult;
+
 /**
  * @author Donald G. Dunne
  */

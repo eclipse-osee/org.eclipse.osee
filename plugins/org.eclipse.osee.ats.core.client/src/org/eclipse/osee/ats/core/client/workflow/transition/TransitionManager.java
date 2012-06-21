@@ -28,12 +28,12 @@ import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.log.LogType;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.users.AtsUsers;
-import org.eclipse.osee.ats.core.validator.WidgetResult;
-import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
-import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
-import org.eclipse.osee.ats.core.workflow.IWorkPage;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionResult;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
+import org.eclipse.osee.ats.workdef.api.IStateToken;
+import org.eclipse.osee.ats.workdef.api.ReviewBlockType;
+import org.eclipse.osee.ats.workdef.api.RuleDefinitionOption;
+import org.eclipse.osee.ats.workdef.api.WidgetResult;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -84,7 +84,7 @@ public class TransitionManager {
 
    /**
     * Validate AbstractWorkflowArtifact for transition including checking widget validation, rules, assignment, etc.
-    *
+    * 
     * @return Result.isFalse if failure
     */
    public void handleTransitionValidation(TransitionResults results) {
@@ -108,8 +108,8 @@ public class TransitionManager {
       for (AbstractWorkflowArtifact awa : helper.getAwas()) {
          try {
             // Validate toState valid
-            StateDefinition fromStateDef = awa.getStateDefinition();
-            StateDefinition toStateDef = awa.getStateDefinitionByName(helper.getToStateName());
+            IAtsStateDefinition fromStateDef = awa.getStateDefinition();
+            IAtsStateDefinition toStateDef = awa.getStateDefinitionByName(helper.getToStateName());
             if (toStateDef == null) {
                results.addResult(
                   awa,
@@ -120,10 +120,10 @@ public class TransitionManager {
             }
 
             // Validate transition from fromState and toState
-            if (!helper.isOverrideTransitionValidityCheck() && !fromStateDef.getToStates().contains(toStateDef) && !fromStateDef.isCompletedOrCancelledPage()) {
+            if (!helper.isOverrideTransitionValidityCheck() && !fromStateDef.getToStates().contains(toStateDef) && !fromStateDef.getStateType().isCompletedOrCancelledState()) {
                String errStr =
                   String.format("Work Definition [%s] is not configured to transition from \"[%s]\" to \"[%s]\"",
-                     toStateDef.getName(), fromStateDef.getPageName(), toStateDef.getPageName());
+                     toStateDef.getName(), fromStateDef.getName(), toStateDef.getName());
                OseeLog.log(Activator.class, Level.SEVERE, errStr);
                results.addResult(awa, new TransitionResult(errStr));
                continue;
@@ -154,7 +154,7 @@ public class TransitionManager {
             }
 
             // Validate Assignees (UnAssigned ok cause will be resolve to current user upon transition
-            if (!overrideAssigneeCheck && !toStateDef.isCancelledPage() && helper.isSystemUserAssingee(awa)) {
+            if (!overrideAssigneeCheck && !toStateDef.getStateType().isCancelledState() && helper.isSystemUserAssingee(awa)) {
                results.addResult(awa, TransitionResult.CAN_NOT_TRANSITION_WITH_SYSTEM_USER_ASSIGNED);
                continue;
             }
@@ -178,7 +178,7 @@ public class TransitionManager {
       }
    }
 
-   public void isTransitionValidForExtensions(TransitionResults results, AbstractWorkflowArtifact awa, StateDefinition fromStateDef, StateDefinition toStateDef) {
+   public void isTransitionValidForExtensions(TransitionResults results, AbstractWorkflowArtifact awa, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) {
       // Check extension points for valid transition
       for (ITransitionListener listener : TransitionListeners.getListeners()) {
          try {
@@ -216,7 +216,7 @@ public class TransitionManager {
 
    /**
     * Request extra information if transition requires hours spent prompt, cancellation reason, etc.
-    *
+    * 
     * @return Result.isFalse if failure or Result.isCancelled if canceled
     */
    public void handleTransitionUi(TransitionResults results) {
@@ -238,7 +238,7 @@ public class TransitionManager {
 
    /**
     * Process transition and persist changes to given skynet transaction
-    *
+    * 
     * @return Result.isFalse if failure
     */
    public void handleTransition(TransitionResults results) {
@@ -248,21 +248,21 @@ public class TransitionManager {
          }
          for (AbstractWorkflowArtifact awa : helper.getAwas()) {
             try {
-               StateDefinition fromState = awa.getStateDefinition();
-               StateDefinition toState = awa.getStateDefinitionByName(helper.getToStateName());
+               IAtsStateDefinition fromState = awa.getStateDefinition();
+               IAtsStateDefinition toState = awa.getStateDefinitionByName(helper.getToStateName());
 
                Date transitionDate = getTransitionOnDate();
                IAtsUser transitionUser = getTransitionAsUser();
                // Log transition
-               if (fromState.isCancelledPage()) {
+               if (fromState.getStateType().isCancelledState()) {
                   logWorkflowUnCancelledEvent(awa);
-               } else if (fromState.isCompletedPage()) {
+               } else if (fromState.getStateType().isCompletedState()) {
                   logWorkflowUnCompletedEvent(awa);
                }
-               if (toState.isCancelledPage()) {
+               if (toState.getStateType().isCancelledState()) {
                   logWorkflowCancelledEvent(awa, awa.getStateMgr().getCurrentStateName(), completedCancellationReason,
                      transitionDate, transitionUser);
-               } else if (toState.isCompletedPage()) {
+               } else if (toState.getStateType().isCompletedState()) {
                   logWorkflowCompletedEvent(awa, awa.getStateMgr().getCurrentStateName(), completedCancellationReason,
                      transitionDate, transitionUser);
                } else {
@@ -273,7 +273,7 @@ public class TransitionManager {
 
                // Get transition to assignees
                List<IAtsUser> toAssignees = new LinkedList<IAtsUser>();
-               if (!toState.isCompletedOrCancelledPage()) {
+               if (!toState.getStateType().isCompletedOrCancelledState()) {
                   if (helper.getToAssignees() != null) {
                      toAssignees.addAll(helper.getToAssignees());
                   }
@@ -302,7 +302,7 @@ public class TransitionManager {
                for (ITransitionListener listener : TransitionListeners.getListeners()) {
                   listener.transitioned(awa, fromState, toState, helper.getToAssignees(), transaction);
                }
-               if (toState.isCompletedOrCancelledPage()) {
+               if (toState.getStateType().isCompletedOrCancelledState()) {
                   awa.clearImplementersCache();
                }
             } catch (Exception ex) {
@@ -317,28 +317,28 @@ public class TransitionManager {
 
    }
 
-   private void isWorkingBranchTransitionable(TransitionResults results, AbstractWorkflowArtifact awa, StateDefinition toStateDef) throws OseeCoreException {
+   private void isWorkingBranchTransitionable(TransitionResults results, AbstractWorkflowArtifact awa, IAtsStateDefinition toStateDef) throws OseeCoreException {
       if (awa.isTeamWorkflow() && helper.isWorkingBranchInWork((TeamWorkFlowArtifact) awa)) {
-         if (toStateDef.getPageName().equals(TeamState.Cancelled.getPageName())) {
+         if (toStateDef.getName().equals(TeamState.Cancelled.getName())) {
             results.addResult(awa, TransitionResult.DELETE_WORKING_BRANCH_BEFORE_CANCEL);
          }
          if (helper.isBranchInCommit((TeamWorkFlowArtifact) awa)) {
             results.addResult(awa, TransitionResult.WORKING_BRANCH_BEING_COMMITTED);
          }
-         if (!toStateDef.hasRule(RuleDefinitionOption.AllowTransitionWithWorkingBranch)) {
+         if (!toStateDef.hasRule(RuleDefinitionOption.AllowTransitionWithWorkingBranch.name())) {
             results.addResult(awa, TransitionResult.WORKING_BRANCH_EXISTS);
          }
       }
    }
 
-   private void isStateTransitionable(TransitionResults results, AbstractWorkflowArtifact awa, StateDefinition toStateDef) throws OseeCoreException {
+   private void isStateTransitionable(TransitionResults results, AbstractWorkflowArtifact awa, IAtsStateDefinition toStateDef) throws OseeCoreException {
       boolean isOverrideAttributeValidationState =
          helper.isOverrideTransitionValidityCheck() || awa.getStateDefinition().getOverrideAttributeValidationStates().contains(
             toStateDef);
-      if (toStateDef.isCancelledPage()) {
+      if (toStateDef.getStateType().isCancelledState()) {
          validateTaskCompletion(results, awa, toStateDef);
          validateReviewsCancelled(results, awa, toStateDef);
-      } else if (!toStateDef.isCancelledPage() && !isOverrideAttributeValidationState) {
+      } else if (!toStateDef.getStateType().isCancelledState() && !isOverrideAttributeValidationState) {
 
          // Validate XWidgets for transition
          Collection<WidgetResult> widgetResults =
@@ -354,12 +354,12 @@ public class TransitionManager {
          // Don't transition without targeted version if so configured
          boolean teamDefRequiresTargetedVersion = awa.teamDefHasRule(RuleDefinitionOption.RequireTargetedVersion);
          boolean pageRequiresTargetedVersion =
-            awa.getStateDefinition().hasRule(RuleDefinitionOption.RequireTargetedVersion);
+            awa.getStateDefinition().hasRule(RuleDefinitionOption.RequireTargetedVersion.name());
 
          // Only check this if TeamWorkflow, not for reviews
          if (awa.isOfType(AtsArtifactTypes.TeamWorkflow) && (teamDefRequiresTargetedVersion || pageRequiresTargetedVersion) && //
          awa.getTargetedVersion() == null && //
-         !toStateDef.isCancelledPage()) {
+         !toStateDef.getStateType().isCancelledState()) {
             results.addResult(awa, TransitionResult.MUST_BE_TARGETED_FOR_VERSION);
          }
 
@@ -374,8 +374,8 @@ public class TransitionManager {
       }
    }
 
-   private void validateReviewsCancelled(TransitionResults results, AbstractWorkflowArtifact awa, StateDefinition toStateDef) throws OseeCoreException {
-      if (awa instanceof TeamWorkFlowArtifact && toStateDef.isCancelledPage()) {
+   private void validateReviewsCancelled(TransitionResults results, AbstractWorkflowArtifact awa, IAtsStateDefinition toStateDef) throws OseeCoreException {
+      if (awa instanceof TeamWorkFlowArtifact && toStateDef.getStateType().isCancelledState()) {
          for (AbstractReviewArtifact reviewArt : ReviewManager.getReviewsFromCurrentState((TeamWorkFlowArtifact) awa)) {
             if (reviewArt.getReviewBlockType() == ReviewBlockType.Transition && !reviewArt.isCompletedOrCancelled()) {
                results.addResult(awa, TransitionResult.CANCEL_REVIEWS_BEFORE_CANCEL);
@@ -385,17 +385,17 @@ public class TransitionManager {
       }
    }
 
-   private void validateTaskCompletion(TransitionResults results, AbstractWorkflowArtifact awa, StateDefinition toStateDef) throws OseeCoreException {
+   private void validateTaskCompletion(TransitionResults results, AbstractWorkflowArtifact awa, IAtsStateDefinition toStateDef) throws OseeCoreException {
       // Loop through this state's tasks to confirm complete
       boolean checkTasksCompletedForState = true;
       // Don't check for task completion if transition to working state and AllowTransitionWithoutTaskCompletion rule is set
-      if (awa.getStateDefinition().hasRule(RuleDefinitionOption.AllowTransitionWithoutTaskCompletion) && toStateDef.isWorkingPage()) {
+      if (awa.getStateDefinition().hasRule(RuleDefinitionOption.AllowTransitionWithoutTaskCompletion.name()) && toStateDef.getStateType().isWorkingState()) {
          checkTasksCompletedForState = false;
       }
       if (checkTasksCompletedForState && awa instanceof AbstractTaskableArtifact && !awa.isCompletedOrCancelled()) {
          Set<TaskArtifact> tasksToCheck = new HashSet<TaskArtifact>();
          // If transitioning to completed/cancelled, all tasks must be completed/cancelled
-         if (toStateDef.isCompletedOrCancelledPage()) {
+         if (toStateDef.getStateType().isCompletedOrCancelledState()) {
             tasksToCheck.addAll(((AbstractTaskableArtifact) awa).getTaskArtifacts());
          }
          // Else, just check current state tasks
@@ -452,8 +452,8 @@ public class TransitionManager {
       awa.getLog().addLog(LogType.StateComplete, fromStateName, Strings.isValid(reason) ? reason : "", date, user);
    }
 
-   public static void logStateStartedEvent(AbstractWorkflowArtifact awa, IWorkPage state, Date date, IAtsUser user) throws OseeCoreException {
-      awa.getLog().addLog(LogType.StateEntered, state.getPageName(), "", date, user);
+   public static void logStateStartedEvent(AbstractWorkflowArtifact awa, IStateToken state, Date date, IAtsUser user) throws OseeCoreException {
+      awa.getLog().addLog(LogType.StateEntered, state.getName(), "", date, user);
    }
 
    public SkynetTransaction getTransaction() {

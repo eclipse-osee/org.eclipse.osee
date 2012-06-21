@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workdef;
 
-import org.eclipse.osee.ats.core.workdef.StateColor;
+import org.eclipse.osee.ats.workdef.api.StateColor;
 import org.eclipse.swt.SWT;
 
 /**

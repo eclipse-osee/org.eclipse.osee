@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
-import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
+import org.eclipse.osee.ats.workdef.api.ReviewBlockType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -121,7 +121,7 @@ public class AtsTestUtilTest extends AtsTestUtil {
       AtsTestUtil.cleanupAndReset("AtsTestUtilTest");
 
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Analyze.getPageName());
+      Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Analyze.getName());
 
       SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "test");
 
@@ -129,13 +129,13 @@ public class AtsTestUtilTest extends AtsTestUtil {
          AtsTestUtil.transitionTo(AtsTestUtilState.Implement, AtsUsersClient.getUser(), transaction,
             TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       Assert.assertEquals(Result.TrueResult, result);
-      Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Implement.getPageName());
+      Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Implement.getName());
 
       result =
          AtsTestUtil.transitionTo(AtsTestUtilState.Completed, AtsUsersClient.getUser(), transaction,
             TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       Assert.assertEquals(Result.TrueResult, result);
-      Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Completed.getPageName());
+      Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Completed.getName());
 
       teamArt.reloadAttributesAndRelations();
 
@@ -150,7 +150,7 @@ public class AtsTestUtilTest extends AtsTestUtil {
       AtsTestUtil.cleanupAndReset("AtsTestUtilTest");
 
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Analyze.getPageName());
+      Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Analyze.getName());
 
       SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "test");
 
@@ -158,7 +158,7 @@ public class AtsTestUtilTest extends AtsTestUtil {
          AtsTestUtil.transitionTo(AtsTestUtilState.Cancelled, AtsUsersClient.getUser(), transaction,
             TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       Assert.assertEquals(Result.TrueResult, result);
-      Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Cancelled.getPageName());
+      Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Cancelled.getName());
 
       teamArt.reloadAttributesAndRelations();
 

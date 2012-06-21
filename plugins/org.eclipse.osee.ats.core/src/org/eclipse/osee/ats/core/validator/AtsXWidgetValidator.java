@@ -11,13 +11,15 @@
 package org.eclipse.osee.ats.core.validator;
 
 import java.util.Date;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
-import org.eclipse.osee.ats.core.workdef.WidgetConstraint;
-import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
-import org.eclipse.osee.ats.core.workdef.WidgetDefinitionFloatMinMaxConstraint;
-import org.eclipse.osee.ats.core.workdef.WidgetDefinitionIntMinMaxConstraint;
-import org.eclipse.osee.ats.core.workdef.WidgetDefinitionListMinMaxSelectedConstraint;
-import org.eclipse.osee.ats.core.workdef.WidgetOption;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsWidgetConstraint;
+import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinitionFloatMinMaxConstraint;
+import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinitionIntMinMaxConstraint;
+import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinitionListMinMaxSelectedConstraint;
+import org.eclipse.osee.ats.workdef.api.WidgetOption;
+import org.eclipse.osee.ats.workdef.api.WidgetResult;
+import org.eclipse.osee.ats.workdef.api.WidgetStatus;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 
@@ -26,15 +28,15 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
  */
 public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
 
-   public boolean isTransitionToComplete(StateDefinition toStateDef) {
-      return toStateDef.isCompletedPage();
+   public boolean isTransitionToComplete(IAtsStateDefinition toStateDef) {
+      return toStateDef.getStateType().isCompletedState();
    }
 
-   public boolean isRequiredForTransition(WidgetDefinition widgetDef) {
+   public boolean isRequiredForTransition(IAtsWidgetDefinition widgetDef) {
       return widgetDef.getOptions().contains(WidgetOption.REQUIRED_FOR_TRANSITION);
    }
 
-   public boolean isRequiredForCompletion(WidgetDefinition widgetDef) {
+   public boolean isRequiredForCompletion(IAtsWidgetDefinition widgetDef) {
       return widgetDef.getOptions().contains(WidgetOption.REQUIRED_FOR_COMPLETION);
    }
 
@@ -42,7 +44,7 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       return provider.isEmpty();
    }
 
-   public WidgetResult validateWidgetIsRequired(IValueProvider provider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef) throws OseeCoreException {
+   public WidgetResult validateWidgetIsRequired(IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) throws OseeCoreException {
       if (isRequiredForTransition(widgetDef) && isEmptyValue(provider)) {
          return new WidgetResult(WidgetStatus.Invalid_Incompleted, widgetDef, "[%s] is required for transition",
             widgetDef.getName());
@@ -54,11 +56,11 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
    }
 
    @Override
-   public abstract WidgetResult validateTransition(IValueProvider valueProvider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef) throws OseeCoreException;
+   public abstract WidgetResult validateTransition(IValueProvider valueProvider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) throws OseeCoreException;
 
    @SuppressWarnings("unchecked")
-   public <A> A getConstraintOfType(WidgetDefinition widgetDef, Class<A> clazz) {
-      for (WidgetConstraint constraint : widgetDef.getConstraints()) {
+   public <A> A getConstraintOfType(IAtsWidgetDefinition widgetDef, Class<A> clazz) {
+      for (IAtsWidgetConstraint constraint : widgetDef.getConstraints()) {
          if (clazz.isInstance(constraint)) {
             return (A) constraint;
          }
@@ -66,7 +68,7 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       return null;
    }
 
-   public WidgetResult isValidDate(IValueProvider valueProvider, WidgetDefinition widgetDef) throws OseeCoreException {
+   public WidgetResult isValidDate(IValueProvider valueProvider, IAtsWidgetDefinition widgetDef) throws OseeCoreException {
       for (Date date : valueProvider.getDateValues()) {
          if (widgetDef.is(WidgetOption.FUTURE_DATE_REQUIRED)) {
             if (date.before(new Date())) {
@@ -78,7 +80,7 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       return WidgetResult.Valid;
    }
 
-   public WidgetResult isValidInteger(IValueProvider valueProvider, WidgetDefinition widgetDef) throws OseeCoreException {
+   public WidgetResult isValidInteger(IValueProvider valueProvider, IAtsWidgetDefinition widgetDef) throws OseeCoreException {
       for (String attrStr : valueProvider.getValues()) {
          if (!isInteger(attrStr)) {
             return new WidgetResult(WidgetStatus.Invalid_Type, widgetDef, "[%s] value [%s] is not a valid integer",
@@ -111,7 +113,7 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       }
    }
 
-   public WidgetResult isValidFloat(IValueProvider valueProvider, WidgetDefinition widgetDef) throws OseeCoreException {
+   public WidgetResult isValidFloat(IValueProvider valueProvider, IAtsWidgetDefinition widgetDef) throws OseeCoreException {
       for (String attrStr : valueProvider.getValues()) {
          if (!isFloat(attrStr)) {
             return new WidgetResult(WidgetStatus.Invalid_Type, widgetDef, "[%s] value [%s] is not a valid float",
@@ -144,61 +146,61 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       }
    }
 
-   public Integer getIntMinValueSet(WidgetDefinition widgetDef) {
-      WidgetDefinitionIntMinMaxConstraint intCon =
-         getConstraintOfType(widgetDef, WidgetDefinitionIntMinMaxConstraint.class);
+   public Integer getIntMinValueSet(IAtsWidgetDefinition widgetDef) {
+      IAtsWidgetDefinitionIntMinMaxConstraint intCon =
+         getConstraintOfType(widgetDef, IAtsWidgetDefinitionIntMinMaxConstraint.class);
       if (intCon != null) {
          return intCon.getMinValue();
       }
       return null;
    }
 
-   public Integer getIntMaxValueSet(WidgetDefinition widgetDef) {
-      WidgetDefinitionIntMinMaxConstraint intCon =
-         getConstraintOfType(widgetDef, WidgetDefinitionIntMinMaxConstraint.class);
+   public Integer getIntMaxValueSet(IAtsWidgetDefinition widgetDef) {
+      IAtsWidgetDefinitionIntMinMaxConstraint intCon =
+         getConstraintOfType(widgetDef, IAtsWidgetDefinitionIntMinMaxConstraint.class);
       if (intCon != null) {
          return intCon.getMaxValue();
       }
       return null;
    }
 
-   public Double getFloatMinValueSet(WidgetDefinition widgetDef) {
-      WidgetDefinitionFloatMinMaxConstraint floatCon =
-         getConstraintOfType(widgetDef, WidgetDefinitionFloatMinMaxConstraint.class);
+   public Double getFloatMinValueSet(IAtsWidgetDefinition widgetDef) {
+      IAtsWidgetDefinitionFloatMinMaxConstraint floatCon =
+         getConstraintOfType(widgetDef, IAtsWidgetDefinitionFloatMinMaxConstraint.class);
       if (floatCon != null) {
          return floatCon.getMinValue();
       }
       return null;
    }
 
-   public Double getFloatMaxValueSet(WidgetDefinition widgetDef) {
-      WidgetDefinitionFloatMinMaxConstraint floatCon =
-         getConstraintOfType(widgetDef, WidgetDefinitionFloatMinMaxConstraint.class);
+   public Double getFloatMaxValueSet(IAtsWidgetDefinition widgetDef) {
+      IAtsWidgetDefinitionFloatMinMaxConstraint floatCon =
+         getConstraintOfType(widgetDef, IAtsWidgetDefinitionFloatMinMaxConstraint.class);
       if (floatCon != null) {
          return floatCon.getMaxValue();
       }
       return null;
    }
 
-   public Integer getListMinSelected(WidgetDefinition widgetDef) {
-      WidgetDefinitionListMinMaxSelectedConstraint intCon =
-         getConstraintOfType(widgetDef, WidgetDefinitionListMinMaxSelectedConstraint.class);
+   public Integer getListMinSelected(IAtsWidgetDefinition widgetDef) {
+      IAtsWidgetDefinitionListMinMaxSelectedConstraint intCon =
+         getConstraintOfType(widgetDef, IAtsWidgetDefinitionListMinMaxSelectedConstraint.class);
       if (intCon != null) {
          return intCon.getMinSelected();
       }
       return null;
    }
 
-   public Integer getListMaxSelected(WidgetDefinition widgetDef) {
-      WidgetDefinitionListMinMaxSelectedConstraint intCon =
-         getConstraintOfType(widgetDef, WidgetDefinitionListMinMaxSelectedConstraint.class);
+   public Integer getListMaxSelected(IAtsWidgetDefinition widgetDef) {
+      IAtsWidgetDefinitionListMinMaxSelectedConstraint intCon =
+         getConstraintOfType(widgetDef, IAtsWidgetDefinitionListMinMaxSelectedConstraint.class);
       if (intCon != null) {
          return intCon.getMaxSelected();
       }
       return null;
    }
 
-   public WidgetResult isValidList(IValueProvider valueProvider, WidgetDefinition widgetDef) throws OseeCoreException {
+   public WidgetResult isValidList(IValueProvider valueProvider, IAtsWidgetDefinition widgetDef) throws OseeCoreException {
       int selected = valueProvider.getValues().size();
 
       Integer minSelected = getListMinSelected(widgetDef);

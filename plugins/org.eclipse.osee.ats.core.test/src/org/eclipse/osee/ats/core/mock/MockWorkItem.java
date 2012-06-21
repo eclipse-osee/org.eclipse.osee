@@ -13,7 +13,7 @@ import org.eclipse.osee.ats.core.model.WorkStateProvider;
 import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.ats.core.model.impl.WorkStateProviderImpl;
 import org.eclipse.osee.ats.core.util.AtsUserGroup;
-import org.eclipse.osee.ats.core.workflow.WorkPageType;
+import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 public class MockWorkItem implements IAtsWorkItem {
@@ -24,13 +24,13 @@ public class MockWorkItem implements IAtsWorkItem {
    private WorkStateProvider workStateProvider;
    private final AtsUserGroup implementers = new AtsUserGroup();
 
-   public MockWorkItem(String name, String currentStateName, WorkPageType workPageType) {
-      this(name, new MockWorkData(workPageType), new WorkStateProviderImpl(new MockWorkStateFactory(),
+   public MockWorkItem(String name, String currentStateName, StateType StateType) {
+      this(name, new MockWorkData(StateType), new WorkStateProviderImpl(new MockWorkStateFactory(),
          new WorkStateImpl(currentStateName)));
    }
 
    public MockWorkItem(String name, String currentStateName, List<? extends IAtsUser> assignees) {
-      this(name, new MockWorkData(WorkPageType.Working), new WorkStateProviderImpl(new MockWorkStateFactory(),
+      this(name, new MockWorkData(StateType.Working), new WorkStateProviderImpl(new MockWorkStateFactory(),
          new WorkStateImpl(currentStateName)));
    }
 

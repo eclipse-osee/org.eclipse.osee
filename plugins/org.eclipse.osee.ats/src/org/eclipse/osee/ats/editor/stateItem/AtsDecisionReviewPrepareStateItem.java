@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.model.IAtsUser;
-import org.eclipse.osee.ats.core.workflow.IWorkPage;
+import org.eclipse.osee.ats.workdef.api.IStateToken;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
@@ -37,17 +37,17 @@ public class AtsDecisionReviewPrepareStateItem extends AtsStateItem implements I
    }
 
    @Override
-   public void transitioning(TransitionResults results, AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<? extends IAtsUser> toAssignees) throws OseeCoreException {
-      if (sma.isOfType(AtsArtifactTypes.DecisionReview) && fromState.getPageName().equals(
-         DecisionReviewState.Prepare.getPageName()) && toState.getPageName().equals(
-         DecisionReviewState.Decision.getPageName())) {
+   public void transitioning(TransitionResults results, AbstractWorkflowArtifact sma, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees) throws OseeCoreException {
+      if (sma.isOfType(AtsArtifactTypes.DecisionReview) && fromState.getName().equals(
+         DecisionReviewState.Prepare.getName()) && toState.getName().equals(
+         DecisionReviewState.Decision.getName())) {
          XDecisionOptions decOptions = new XDecisionOptions(sma);
          decOptions.validateDecisionOptions(results);
       }
    }
 
    @Override
-   public void transitioned(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<? extends IAtsUser> toAssignees, SkynetTransaction transaction) {
+   public void transitioned(AbstractWorkflowArtifact sma, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, SkynetTransaction transaction) {
       // do nothing
    }
 

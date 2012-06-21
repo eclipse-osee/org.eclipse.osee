@@ -33,13 +33,13 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.model.IAtsVersion;
-import org.eclipse.osee.ats.core.workflow.IWorkPage;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.task.IXTaskViewer;
 import org.eclipse.osee.ats.task.TaskComposite;
 import org.eclipse.osee.ats.task.TaskTabXWidgetActionPage;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.workdef.api.IStateToken;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
 import org.eclipse.osee.framework.access.AccessControlManager;
@@ -559,7 +559,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
    }
 
    @Override
-   public Collection<TaskArtifact> getTaskArtifacts(IWorkPage state) throws OseeCoreException {
+   public Collection<TaskArtifact> getTaskArtifacts(IStateToken state) throws OseeCoreException {
       if (awa instanceof AbstractTaskableArtifact) {
          return ((AbstractTaskableArtifact) awa).getTaskArtifacts(state);
       }

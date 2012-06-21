@@ -11,13 +11,13 @@
 package org.eclipse.osee.ats.core.validator;
 
 import junit.framework.Assert;
-import org.eclipse.osee.ats.core.validator.AtsXComboValidator;
-import org.eclipse.osee.ats.core.validator.WidgetResult;
-import org.eclipse.osee.ats.core.validator.WidgetStatus;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
-import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
-import org.eclipse.osee.ats.core.workdef.WidgetOption;
-import org.eclipse.osee.ats.core.workflow.WorkPageType;
+import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.workdef.api.WidgetOption;
+import org.eclipse.osee.ats.workdef.api.WidgetResult;
+import org.eclipse.osee.ats.workdef.api.WidgetStatus;
+import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -29,13 +29,13 @@ public class AtsXComboValidatorTest {
    public void testValidateTransition() throws OseeCoreException {
       AtsXComboValidator validator = new AtsXComboValidator();
 
-      WidgetDefinition widgetDef = new WidgetDefinition("test");
+      IAtsWidgetDefinition widgetDef = AtsWorkDefinitionService.getService().createWidgetDefinition("test");
       widgetDef.setXWidgetName("xLabel");
 
-      StateDefinition fromStateDef = new StateDefinition("from");
-      fromStateDef.setWorkPageType(WorkPageType.Working);
-      StateDefinition toStateDef = new StateDefinition("to");
-      toStateDef.setWorkPageType(WorkPageType.Working);
+      IAtsStateDefinition fromStateDef = AtsWorkDefinitionService.getService().createStateDefinition("from");
+      fromStateDef.setStateType(StateType.Working);
+      IAtsStateDefinition toStateDef = AtsWorkDefinitionService.getService().createStateDefinition("to");
+      toStateDef.setStateType(StateType.Working);
 
       // Valid for anything not XIntegerDam
       WidgetResult result =

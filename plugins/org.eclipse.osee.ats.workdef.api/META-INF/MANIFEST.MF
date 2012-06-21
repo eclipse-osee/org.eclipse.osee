@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ATS Work Definition Api
+Bundle-SymbolicName: org.eclipse.osee.ats.workdef.api
+Bundle-Version: 0.10.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.osee.framework.core.util,
+ org.osgi.framework;version="1.3.0"
+Export-Package: org.eclipse.osee.ats.workdef.api
+Bundle-Vendor: Eclipse Open System Engineering Environment

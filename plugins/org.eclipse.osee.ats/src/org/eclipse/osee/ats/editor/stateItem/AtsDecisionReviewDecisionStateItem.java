@@ -22,8 +22,8 @@ import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
 import org.eclipse.osee.ats.core.client.review.XDecisionOptions;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.model.IAtsUser;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.util.Result;
@@ -47,9 +47,9 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
    }
 
    @Override
-   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, StateDefinition stateDefinition, Artifact art, boolean isEditable) throws OseeCoreException {
-      if (art.isOfType(AtsArtifactTypes.DecisionReview) && stateDefinition.getPageName().equals(
-         DecisionReviewState.Decision.getPageName())) {
+   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable) throws OseeCoreException {
+      if (art.isOfType(AtsArtifactTypes.DecisionReview) && stateDefinition.getName().equals(
+         DecisionReviewState.Decision.getName())) {
          if (xWidget == null) {
             throw new OseeStateException("Can't retrieve decision review combo widget to set.");
          }
@@ -82,7 +82,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
 
    private boolean isApplicable(SMAWorkFlowSection section) {
       return section.getSma().isOfType(AtsArtifactTypes.DecisionReview) && section.getSma().getCurrentStateName().equals(
-         DecisionReviewState.Decision.getPageName());
+         DecisionReviewState.Decision.getName());
    }
 
    public String getOverrideTransitionToStateName(DecisionReviewArtifact decArt, XComboDam decisionComboDam) throws OseeCoreException {
@@ -92,9 +92,9 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
       }
       boolean followUpRequired = decisionOption.isFollowupRequired();
       if (followUpRequired) {
-         return DecisionReviewState.Followup.getPageName();
+         return DecisionReviewState.Followup.getName();
       } else {
-         return DecisionReviewState.Completed.getPageName();
+         return DecisionReviewState.Completed.getName();
       }
    }
 
@@ -117,7 +117,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
 
    private boolean isApplicable(AbstractWorkflowArtifact awa) {
       return awa.isOfType(AtsArtifactTypes.DecisionReview) && awa.getCurrentStateName().equals(
-         DecisionReviewState.Decision.getPageName());
+         DecisionReviewState.Decision.getName());
    }
 
    private DecisionOption getDecisionOption(DecisionReviewArtifact decRevArt, String decision) throws OseeCoreException {

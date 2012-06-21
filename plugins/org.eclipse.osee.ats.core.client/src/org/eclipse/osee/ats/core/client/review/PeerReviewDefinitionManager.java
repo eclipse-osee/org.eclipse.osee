@@ -19,10 +19,10 @@ import org.eclipse.osee.ats.core.client.workflow.log.LogType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionAdapter;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.users.AtsUsers;
-import org.eclipse.osee.ats.core.workdef.PeerReviewDefinition;
-import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
-import org.eclipse.osee.ats.core.workdef.StateEventType;
-import org.eclipse.osee.ats.core.workflow.IWorkPage;
+import org.eclipse.osee.ats.workdef.api.IAtsPeerReviewDefinition;
+import org.eclipse.osee.ats.workdef.api.IStateToken;
+import org.eclipse.osee.ats.workdef.api.ReviewBlockType;
+import org.eclipse.osee.ats.workdef.api.StateEventType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -38,7 +38,7 @@ public class PeerReviewDefinitionManager extends TransitionAdapter {
    /**
     * Creates PeerToPeer review if one of same name doesn't already exist
     */
-   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(PeerReviewDefinition peerRevDef, SkynetTransaction transaction, TeamWorkFlowArtifact teamArt, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
+   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(IAtsPeerReviewDefinition peerRevDef, SkynetTransaction transaction, TeamWorkFlowArtifact teamArt, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
       String title = peerRevDef.getReviewTitle();
       if (!Strings.isValid(title)) {
          title = String.format("Review [%s]", teamArt.getName());
@@ -72,7 +72,7 @@ public class PeerReviewDefinitionManager extends TransitionAdapter {
    }
 
    @Override
-   public void transitioned(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<? extends IAtsUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+   public void transitioned(AbstractWorkflowArtifact sma, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
       // Create any decision or peerToPeer reviews for transitionTo and transitionFrom
       if (!sma.isTeamWorkflow()) {
          return;
@@ -81,7 +81,7 @@ public class PeerReviewDefinitionManager extends TransitionAdapter {
       IAtsUser createdBy = AtsUsers.getSystemUser();
       TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) sma;
 
-      for (PeerReviewDefinition peerRevDef : teamArt.getStateDefinition().getPeerReviews()) {
+      for (IAtsPeerReviewDefinition peerRevDef : teamArt.getStateDefinition().getPeerReviews()) {
          if (peerRevDef.getStateEventType() != null && peerRevDef.getStateEventType().equals(
             StateEventType.TransitionTo)) {
             PeerToPeerReviewArtifact decArt =

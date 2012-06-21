@@ -5,8 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import org.eclipse.osee.ats.core.internal.Activator;
+import org.eclipse.osee.ats.core.config.RuleManager;
 import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
@@ -15,16 +14,12 @@ import org.eclipse.osee.ats.core.model.TeamDefinitionOptions;
 import org.eclipse.osee.ats.core.model.VersionLockedType;
 import org.eclipse.osee.ats.core.model.VersionReleaseType;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
-import org.eclipse.osee.ats.core.util.AtsUtilCoreCore;
-import org.eclipse.osee.ats.core.workdef.RuleDefinition;
-import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
-import org.eclipse.osee.ats.core.workdef.RuleManager;
+import org.eclipse.osee.ats.workdef.api.RuleDefinitionOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
@@ -40,9 +35,7 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
    private String description = null;
    private String fullName = null;
    private String workflowDefinitionName;
-   private String actionDetailsFormat;
    private String relatedTaskWorkDefinition;
-   private Double manDayHours = 0.0;
 
    private IAtsTeamDefinition parentTeamDef;
 
@@ -102,7 +95,7 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
          setTeamUsesVersions(true);
       }
       if (teamDefOptions.contains(TeamDefinitionOptions.RequireTargetedVersion)) {
-         addRule(RuleDefinitionOption.RequireTargetedVersion);
+         addRule(RuleDefinitionOption.RequireTargetedVersion.name());
       }
       actionableItems.addAll(actionableItems);
    }
@@ -148,32 +141,6 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
          return new ArrayList<IAtsVersion>();
       }
       return teamDef.getVersions(releaseType, lockedType);
-   }
-
-   @Override
-   public double getManDayHrsFromItemAndChildren() {
-      return getHoursPerWorkDayFromItemAndChildren(this);
-   }
-
-   /**
-    * If hours per work day attribute is set, use it, otherwise, walk up the Team Definition tree. Value used in
-    * calculations.
-    */
-
-   @Override
-   public double getHoursPerWorkDayFromItemAndChildren(IAtsTeamDefinition teamDef) {
-      try {
-         if (manDayHours != null && manDayHours != 0) {
-            return manDayHours;
-         }
-         if (teamDef.getParentTeamDef() != null) {
-            return teamDef.getHoursPerWorkDayFromItemAndChildren(teamDef.getParentTeamDef());
-         }
-         return AtsUtilCoreCore.DEFAULT_HOURS_PER_WORK_DAY;
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      return 0.0;
    }
 
    /**
@@ -290,31 +257,6 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
       return actionable;
    }
 
-   @Override
-   public Collection<RuleDefinition> getRules() {
-      return ruleMgr.getRules();
-   }
-
-   @Override
-   public RuleDefinition addRule(RuleDefinitionOption option) {
-      return ruleMgr.addRule(option);
-   }
-
-   @Override
-   public RuleDefinition addRule(String ruleId) {
-      return ruleMgr.addRule(ruleId);
-   }
-
-   @Override
-   public boolean hasRule(RuleDefinitionOption option) {
-      return ruleMgr.hasRule(option);
-   }
-
-   @Override
-   public boolean hasRule(String ruleId) {
-      return ruleMgr.hasRule(ruleId);
-   }
-
    /**
     * Returns the branch associated with this team. If this team does not have a branch associated then the parent team
     * will be asked, this results in a recursive look at parent teams until a parent artifact has a related branch or
@@ -402,16 +344,6 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
    }
 
    @Override
-   public Double getManDayHours() {
-      return manDayHours;
-   }
-
-   @Override
-   public void setManDayHours(Double manDayHours) {
-      this.manDayHours = manDayHours;
-   }
-
-   @Override
    public void setActionable(boolean actionable) {
       this.actionable = actionable;
    }
@@ -447,16 +379,6 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
    }
 
    @Override
-   public String getActionDetailsFormat() {
-      return actionDetailsFormat;
-   }
-
-   @Override
-   public void setActionDetailsFormat(String actionDetailsFormat) {
-      this.actionDetailsFormat = actionDetailsFormat;
-   }
-
-   @Override
    public Collection<IAtsActionableItem> getActionableItems() {
       return actionableItems;
    }
@@ -477,6 +399,29 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
    @Override
    public Collection<IAtsUser> getSubscribed() {
       return subscribed;
+   }
+
+   /**
+    * Rules
+    */
+   @Override
+   public void removeRule(String rule) {
+      ruleMgr.removeRule(rule);
+   }
+
+   @Override
+   public List<String> getRules() {
+      return ruleMgr.getRules();
+   }
+
+   @Override
+   public void addRule(String rule) {
+      ruleMgr.addRule(rule);
+   }
+
+   @Override
+   public boolean hasRule(String rule) {
+      return ruleMgr.hasRule(rule);
    }
 
 }

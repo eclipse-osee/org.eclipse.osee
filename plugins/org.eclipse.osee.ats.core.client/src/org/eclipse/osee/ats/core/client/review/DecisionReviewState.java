@@ -11,25 +11,25 @@
 package org.eclipse.osee.ats.core.client.review;
 
 import java.util.List;
-import org.eclipse.osee.ats.core.workflow.WorkPageAdapter;
-import org.eclipse.osee.ats.core.workflow.WorkPageType;
+import org.eclipse.osee.ats.core.workflow.StateTypeAdapter;
+import org.eclipse.osee.ats.workdef.api.StateType;
 
-public class DecisionReviewState extends WorkPageAdapter {
-   public static DecisionReviewState Prepare = new DecisionReviewState("Prepare", WorkPageType.Working);
-   public static DecisionReviewState Decision = new DecisionReviewState("Decision", WorkPageType.Working);
-   public static DecisionReviewState Followup = new DecisionReviewState("Followup", WorkPageType.Working);
-   public static DecisionReviewState Completed = new DecisionReviewState("Completed", WorkPageType.Completed);
+public class DecisionReviewState extends StateTypeAdapter {
+   public static DecisionReviewState Prepare = new DecisionReviewState("Prepare", StateType.Working);
+   public static DecisionReviewState Decision = new DecisionReviewState("Decision", StateType.Working);
+   public static DecisionReviewState Followup = new DecisionReviewState("Followup", StateType.Working);
+   public static DecisionReviewState Completed = new DecisionReviewState("Completed", StateType.Completed);
 
-   private DecisionReviewState(String pageName, WorkPageType workPageType) {
-      super(DecisionReviewState.class, pageName, workPageType);
+   private DecisionReviewState(String pageName, StateType StateType) {
+      super(DecisionReviewState.class, pageName, StateType);
    }
 
    public static DecisionReviewState valueOf(String pageName) {
-      return WorkPageAdapter.valueOfPage(DecisionReviewState.class, pageName);
+      return StateTypeAdapter.valueOfPage(DecisionReviewState.class, pageName);
    }
 
    public static List<DecisionReviewState> values() {
-      return WorkPageAdapter.pages(DecisionReviewState.class);
+      return StateTypeAdapter.pages(DecisionReviewState.class);
    }
 
 };

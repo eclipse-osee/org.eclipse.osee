@@ -6,6 +6,7 @@
 package org.eclipse.osee.ats.core.validator;
 
 import junit.framework.Assert;
+import org.eclipse.osee.ats.workdef.api.WidgetStatus;
 import org.junit.Test;
 
 public class WidgetStatusTest {

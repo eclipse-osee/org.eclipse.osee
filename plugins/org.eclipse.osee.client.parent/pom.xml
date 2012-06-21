@@ -51,6 +51,8 @@
 		<module>../../plugins/org.eclipse.osee.ats.dsl</module>
 		<module>../../plugins/org.eclipse.osee.ats.dsl.ui</module>
 		<module>../../plugins/org.eclipse.osee.ats.config.demo</module>
+		<module>../../plugins/org.eclipse.osee.ats.workdef.api</module>
+		<module>../../plugins/org.eclipse.osee.ats.workdef.impl</module>
 
 		<module>../../features/org.eclipse.osee.framework.feature</module>
 		<module>../../features/org.eclipse.osee.framework.feature.source</module>

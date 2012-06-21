@@ -5,6 +5,8 @@
  */
 package org.eclipse.osee.ats.core.workdef;
 
+import org.eclipse.osee.ats.core.config.RuleManager;
+import org.eclipse.osee.ats.workdef.api.RuleDefinitionOption;
 import org.junit.Test;
 
 /**
@@ -17,9 +19,9 @@ public class RuleManagerTest {
    @Test
    public void testGetOrCreateRule() {
       RuleManager mgr = new RuleManager();
-      mgr.getOrCreateRule(RuleDefinitionOption.AddDecisionValidateBlockingReview.name());
-      mgr.getOrCreateRule(RuleDefinitionOption.AddDecisionValidateBlockingReview.name());
-      mgr.getOrCreateRule("test");
+      mgr.addRule(RuleDefinitionOption.AddDecisionValidateBlockingReview.name());
+      mgr.addRule(RuleDefinitionOption.AddDecisionValidateBlockingReview.name());
+      mgr.addRule("test");
    }
 
 }

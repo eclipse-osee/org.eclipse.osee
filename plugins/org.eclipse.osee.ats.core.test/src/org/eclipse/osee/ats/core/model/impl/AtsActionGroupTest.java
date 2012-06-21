@@ -7,7 +7,7 @@ package org.eclipse.osee.ats.core.model.impl;
 
 import java.util.Arrays;
 import org.eclipse.osee.ats.core.mock.MockWorkItem;
-import org.eclipse.osee.ats.core.workflow.WorkPageType;
+import org.eclipse.osee.ats.workdef.api.StateType;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -24,8 +24,8 @@ public class AtsActionGroupTest {
       Assert.assertEquals(0, group.getActions().size());
       Assert.assertEquals(null, group.getFirstAction());
 
-      MockWorkItem item1 = new MockWorkItem("item 1", "Endorse", WorkPageType.Working);
-      MockWorkItem item2 = new MockWorkItem("item 2", "Endorse", WorkPageType.Working);
+      MockWorkItem item1 = new MockWorkItem("item 1", "Endorse", StateType.Working);
+      MockWorkItem item2 = new MockWorkItem("item 2", "Endorse", StateType.Working);
       group.addAction(item1);
       group.addAction(item2);
       Assert.assertEquals(2, group.getActions().size());
@@ -36,8 +36,8 @@ public class AtsActionGroupTest {
    public void testSetActions() {
       AtsActionGroup group = new AtsActionGroup("do this");
 
-      MockWorkItem item1 = new MockWorkItem("item 1", "Endorse", WorkPageType.Working);
-      MockWorkItem item2 = new MockWorkItem("item 2", "Endorse", WorkPageType.Working);
+      MockWorkItem item1 = new MockWorkItem("item 1", "Endorse", StateType.Working);
+      MockWorkItem item2 = new MockWorkItem("item 2", "Endorse", StateType.Working);
       group.setActions(Arrays.asList(item1, item2));
       Assert.assertEquals(2, group.getActions().size());
 

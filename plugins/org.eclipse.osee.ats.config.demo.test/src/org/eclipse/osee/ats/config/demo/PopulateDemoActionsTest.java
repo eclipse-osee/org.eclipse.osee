@@ -77,17 +77,17 @@ public class PopulateDemoActionsTest {
          if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Code")) {
             numTested++;
             codeTeamArt = teamArt;
-            testTeamContents(teamArt, title, "1", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getPageName(),
+            testTeamContents(teamArt, title, "1", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getName(),
                "SAW Code", "Joe Smith", DemoArtifactTypes.DemoCodeTeamWorkflow,
                DemoTestUtil.getTeamDef(DemoTeam.SAW_Code));
          } else if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Test")) {
             numTested++;
-            testTeamContents(teamArt, title, "1", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getPageName(),
+            testTeamContents(teamArt, title, "1", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getName(),
                "SAW Test", "Kay Jones", DemoArtifactTypes.DemoTestTeamWorkflow,
                DemoTestUtil.getTeamDef(DemoTeam.SAW_Test));
          } else if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Req")) {
             numTested++;
-            testTeamContents(teamArt, title, "1", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getPageName(),
+            testTeamContents(teamArt, title, "1", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getName(),
                "SAW Requirements", "Joe Smith", DemoArtifactTypes.DemoReqTeamWorkflow,
                DemoTestUtil.getTeamDef(DemoTeam.SAW_Requirements));
          }
@@ -108,16 +108,16 @@ public class PopulateDemoActionsTest {
       }
       Assert.assertNotNull(rev1);
       Assert.assertNotNull(rev2);
-      testReviewContents(rev1, "Peer Review algorithm used in code", PeerToPeerReviewState.Review.getPageName(),
+      testReviewContents(rev1, "Peer Review algorithm used in code", PeerToPeerReviewState.Review.getName(),
          new String[] {"Joe Smith", "Kay Jones"});
-      testReviewContents(rev2, "Peer Review first set of code changes", PeerToPeerReviewState.Prepare.getPageName(),
+      testReviewContents(rev2, "Peer Review first set of code changes", PeerToPeerReviewState.Prepare.getName(),
          "Joe Smith");
 
       // test tasks
       List<String> taskNames = new ArrayList<String>();
       taskNames.addAll(DemoTestUtil.getTaskTitles(true));
       for (TaskArtifact task : codeTeamArt.getTaskArtifacts()) {
-         testTaskContents(task, TaskStates.InWork.getPageName(), TeamState.Implement.getPageName());
+         testTaskContents(task, TaskStates.InWork.getName(), TeamState.Implement.getName());
          taskNames.remove(task.getName());
          Assert.assertEquals("Joe Smith; Kay Jones", task.getStateMgr().getAssigneesStr());
       }
@@ -142,26 +142,26 @@ public class PopulateDemoActionsTest {
             numTested++;
 
             codeTeam = teamArt;
-            testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getPageName(),
+            testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getName(),
                "SAW Code", "Joe Smith", DemoArtifactTypes.DemoCodeTeamWorkflow,
                DemoTestUtil.getTeamDef(DemoTeam.SAW_Code));
          } else if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Test")) {
             numTested++;
 
-            testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getPageName(),
+            testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getName(),
                "SAW Test", "Kay Jones", DemoArtifactTypes.DemoTestTeamWorkflow,
                DemoTestUtil.getTeamDef(DemoTeam.SAW_Test));
          } else if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Req")) {
             numTested++;
 
-            testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getPageName(),
+            testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getName(),
                "SAW Requirements", "Joe Smith", DemoArtifactTypes.DemoReqTeamWorkflow,
                DemoTestUtil.getTeamDef(DemoTeam.SAW_Requirements));
          } else if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Design")) {
             numTested++;
 
             designTeam = teamArt;
-            testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getPageName(),
+            testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getName(),
                "SAW SW Design", "Kay Jones", AtsArtifactTypes.TeamWorkflow,
                DemoTestUtil.getTeamDef(DemoTeam.SAW_SW_Design));
          }
@@ -173,13 +173,13 @@ public class PopulateDemoActionsTest {
       Collection<AbstractReviewArtifact> reviews = ReviewManager.getReviews(codeTeam);
       Assert.assertEquals(1, reviews.size());
       PeerToPeerReviewArtifact revArt = (PeerToPeerReviewArtifact) reviews.iterator().next();
-      testReviewContents(revArt, "Review new logic", PeerToPeerReviewState.Completed.getPageName());
+      testReviewContents(revArt, "Review new logic", PeerToPeerReviewState.Completed.getName());
 
       //  - test tasks
       List<String> taskNames = new ArrayList<String>();
       taskNames.addAll(DemoTestUtil.getTaskTitles(false));
       for (TaskArtifact task : codeTeam.getTaskArtifacts()) {
-         testTaskContents(task, TaskStates.InWork.getPageName(), TeamState.Implement.getPageName());
+         testTaskContents(task, TaskStates.InWork.getName(), TeamState.Implement.getName());
          taskNames.remove(task.getName());
          Assert.assertEquals("Joe Smith", task.getStateMgr().getAssigneesStr());
       }
@@ -208,26 +208,26 @@ public class PopulateDemoActionsTest {
          if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Code")) {
             numTested++;
 
-            testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getPageName(),
+            testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getName(),
                "SAW Code", "Joe Smith", DemoArtifactTypes.DemoCodeTeamWorkflow,
                DemoTestUtil.getTeamDef(DemoTeam.SAW_Code));
          } else if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Test")) {
             numTested++;
 
-            testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getPageName(),
+            testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getName(),
                "SAW Test", "Kay Jones", DemoArtifactTypes.DemoTestTeamWorkflow,
                DemoTestUtil.getTeamDef(DemoTeam.SAW_Test));
          } else if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Req")) {
             numTested++;
 
-            testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getPageName(),
+            testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getName(),
                "SAW Requirements", "Joe Smith", DemoArtifactTypes.DemoReqTeamWorkflow,
                DemoTestUtil.getTeamDef(DemoTeam.SAW_Requirements));
          } else if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Design")) {
             numTested++;
 
             designTeam = teamArt;
-            testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getPageName(),
+            testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getName(),
                "SAW SW Design", "Kay Jones", AtsArtifactTypes.TeamWorkflow,
                DemoTestUtil.getTeamDef(DemoTeam.SAW_SW_Design));
          }
@@ -249,7 +249,7 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
 
-      testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getPageName(),
+      testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getName(),
          "SAW Requirements", "Joe Smith", DemoArtifactTypes.DemoReqTeamWorkflow,
          DemoTestUtil.getTeamDef(DemoTeam.SAW_Requirements));
    }
@@ -264,7 +264,7 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
 
-      testTeamContents(teamArt, title, "1", DemoSawBuilds.SAW_Bld_1.getName(), TeamState.Completed.getPageName(),
+      testTeamContents(teamArt, title, "1", DemoSawBuilds.SAW_Bld_1.getName(), TeamState.Completed.getName(),
          "Adapter", "", DemoArtifactTypes.DemoReqTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_HW));
    }
 
@@ -278,7 +278,7 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
 
-      testTeamContents(teamArt, title, "1", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getPageName(),
+      testTeamContents(teamArt, title, "1", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getName(),
          "Adapter", "Jason Michael", DemoArtifactTypes.DemoReqTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_HW));
    }
 
@@ -292,7 +292,7 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
 
-      testTeamContents(teamArt, title, "1", DemoSawBuilds.SAW_Bld_3.getName(), TeamState.Implement.getPageName(),
+      testTeamContents(teamArt, title, "1", DemoSawBuilds.SAW_Bld_3.getName(), TeamState.Implement.getName(),
          "Adapter", "Jason Michael", DemoArtifactTypes.DemoReqTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_HW));
    }
 
@@ -306,7 +306,7 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
 
-      testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_1.getName(), TeamState.Completed.getPageName(),
+      testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_1.getName(), TeamState.Completed.getName(),
          "SAW SW Design", "", AtsArtifactTypes.TeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_SW_Design));
    }
 
@@ -320,7 +320,7 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
 
-      testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Endorse.getPageName(),
+      testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Endorse.getName(),
          "SAW SW Design", "Kay Jones", AtsArtifactTypes.TeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_SW_Design));
    }
 
@@ -334,7 +334,7 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
 
-      testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_3.getName(), TeamState.Endorse.getPageName(),
+      testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_3.getName(), TeamState.Endorse.getName(),
          "SAW SW Design", "Kay Jones", AtsArtifactTypes.TeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_SW_Design));
    }
 
@@ -348,14 +348,14 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
 
-      testTeamContents(teamArt, title, "3", "", TeamState.Completed.getPageName(), "Reader", "",
+      testTeamContents(teamArt, title, "3", "", TeamState.Completed.getName(), "Reader", "",
          AtsArtifactTypes.TeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.Tools_Team));
 
       // test decision review
       Collection<AbstractReviewArtifact> reviews = ReviewManager.getReviews(teamArt);
       Assert.assertEquals(1, reviews.size());
       DecisionReviewArtifact revArt = (DecisionReviewArtifact) reviews.iterator().next();
-      testReviewContents(revArt, "Is the resolution of this Action valid?", DecisionReviewState.Decision.getPageName(),
+      testReviewContents(revArt, "Is the resolution of this Action valid?", DecisionReviewState.Decision.getName(),
          "Joe Smith");
 
    }
@@ -370,14 +370,14 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
 
-      testTeamContents(teamArt, title, "3", "", TeamState.Analyze.getPageName(), "CIS Test", "Kay Jones",
+      testTeamContents(teamArt, title, "3", "", TeamState.Analyze.getName(), "CIS Test", "Kay Jones",
          DemoArtifactTypes.DemoTestTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.CIS_Test));
 
       // test decision review
       Collection<AbstractReviewArtifact> reviews = ReviewManager.getReviews(teamArt);
       Assert.assertEquals(1, reviews.size());
       DecisionReviewArtifact revArt = (DecisionReviewArtifact) reviews.iterator().next();
-      testReviewContents(revArt, "Is the resolution of this Action valid?", DecisionReviewState.Followup.getPageName(),
+      testReviewContents(revArt, "Is the resolution of this Action valid?", DecisionReviewState.Followup.getName(),
          "Joe Smith");
 
    }
@@ -392,7 +392,7 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
 
-      testTeamContents(teamArt, title, "3", "", TeamState.Endorse.getPageName(), "CIS Test", "Kay Jones",
+      testTeamContents(teamArt, title, "3", "", TeamState.Endorse.getName(), "CIS Test", "Kay Jones",
          DemoArtifactTypes.DemoTestTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.CIS_Test));
    }
 
@@ -406,7 +406,7 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
 
-      testTeamContents(teamArt, title, "1", "", TeamState.Implement.getPageName(), "Adapter", "Jason Michael",
+      testTeamContents(teamArt, title, "1", "", TeamState.Implement.getName(), "Adapter", "Jason Michael",
          DemoArtifactTypes.DemoReqTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_HW));
 
    }
@@ -421,7 +421,7 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
 
-      testTeamContents(teamArt, title, "3", "", TeamState.Endorse.getPageName(), "CIS Test", "Kay Jones",
+      testTeamContents(teamArt, title, "3", "", TeamState.Endorse.getName(), "CIS Test", "Kay Jones",
          DemoArtifactTypes.DemoTestTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.CIS_Test));
 
    }
@@ -436,7 +436,7 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
 
-      testTeamContents(teamArt, title, "1", "", TeamState.Implement.getPageName(), "Adapter", "Jason Michael",
+      testTeamContents(teamArt, title, "1", "", TeamState.Implement.getName(), "Adapter", "Jason Michael",
          DemoArtifactTypes.DemoReqTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_HW));
 
    }
@@ -451,7 +451,7 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
 
-      testTeamContents(teamArt, title, "4", "", TeamState.Implement.getPageName(), "Timesheet", "Jeffery Kay",
+      testTeamContents(teamArt, title, "4", "", TeamState.Implement.getName(), "Timesheet", "Jeffery Kay",
          AtsArtifactTypes.TeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.Tools_Team));
 
    }
@@ -506,11 +506,11 @@ public class PopulateDemoActionsTest {
       testReviewContents(
          peerArt,
          "Auto-created Decision Review from ruleId atsAddPeerToPeerReview.test.addPeerToPeerReview.Authorize.None.TransitionTo",
-         PeerToPeerReviewState.Prepare.getPageName(), "UnAssigned");
+         PeerToPeerReviewState.Prepare.getName(), "UnAssigned");
       testReviewContents(
          decArt,
          "Auto-created Decision Review from ruleId: atsAddDecisionReview.test.addDecisionReview.Analyze.None.TransitionTo",
-         DecisionReviewState.Decision.getPageName(), "UnAssigned");
+         DecisionReviewState.Decision.getName(), "UnAssigned");
 
    }
 

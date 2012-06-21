@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.StateListDialog;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
+import org.eclipse.osee.ats.workdef.api.WorkDefUtil;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -97,7 +98,8 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
             }
             SkynetTransaction transaction = null;
             if (persist) {
-               transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Related-to-State");
+               transaction =
+                  TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Related-to-State");
             }
             for (TaskArtifact task : tasks) {
                String state = task.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "");
@@ -121,7 +123,7 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
 
    private static List<String> getValidStates(TeamWorkFlowArtifact teamArt) {
       List<String> names = new ArrayList<String>();
-      names.addAll(teamArt.getWorkDefinition().getStateNames());
+      names.addAll(WorkDefUtil.getStateNames(teamArt.getWorkDefinition()));
       Collections.sort(names);
       return names;
    }

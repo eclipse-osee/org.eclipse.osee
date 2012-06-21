@@ -34,9 +34,9 @@ import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.model.IAtsVersion;
-import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.workdef.api.ReviewBlockType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -115,7 +115,7 @@ public class PopulateSawBuild2Actions {
          Result result = dtwm.transitionTo(toState, teamWf.getAssignees().iterator().next(), false, transaction);
          if (result.isFalse()) {
             throw new OseeCoreException("Error transitioning [%s] to state [%s]: [%s]", teamWf.toStringWithId(),
-               toState.getPageName(), result.getText());
+               toState.getName(), result.getText());
          }
 
          if (!teamWf.isCompletedOrCancelled()) {
@@ -160,7 +160,7 @@ public class PopulateSawBuild2Actions {
                dtwm.transitionTo(TeamState.Analyze, teamWf.getAssignees().iterator().next(), false, transaction);
             if (result.isFalse()) {
                throw new OseeCoreException("Error transitioning [%s] to Analyze state: [%s]", teamWf.toStringWithId(),
-                  toState.getPageName(), result.getText());
+                  toState.getName(), result.getText());
             }
             if (ReviewManager.getReviews(teamWf).size() != 1) {
                throw new OseeCoreException(
@@ -176,7 +176,7 @@ public class PopulateSawBuild2Actions {
                dtwm.transitionTo(TeamState.Authorize, teamWf.getAssignees().iterator().next(), false, transaction);
             if (result.isFalse()) {
                throw new OseeCoreException("Error transitioning [%s] to Authorize state: [%s]",
-                  teamWf.toStringWithId(), toState.getPageName(), result.getText());
+                  teamWf.toStringWithId(), toState.getName(), result.getText());
             }
             if (ReviewManager.getReviews(teamWf).size() != 2) {
                throw new OseeCoreException("Error, 2 reviews should exist instead of " + ReviewManager.getReviews(
@@ -192,7 +192,7 @@ public class PopulateSawBuild2Actions {
          Result result = dtwm.transitionTo(toState, teamWf.getAssignees().iterator().next(), false, transaction);
          if (result.isFalse()) {
             throw new OseeCoreException("Error transitioning [%s] to state [%s]: [%s]", teamWf.toStringWithId(),
-               toState.getPageName(), result.getText());
+               toState.getName(), result.getText());
          }
 
          if (!teamWf.isCompletedOrCancelled()) {
@@ -238,7 +238,7 @@ public class PopulateSawBuild2Actions {
                dtwm.transitionTo(TeamState.Analyze, teamWf.getAssignees().iterator().next(), false, transaction);
             if (result.isFalse()) {
                throw new OseeCoreException("Error transitioning [%s] to Analyze state: [%s]", teamWf.toStringWithId(),
-                  toState.getPageName(), result.getText());
+                  toState.getName(), result.getText());
             }
             if (ReviewManager.getReviews(teamWf).size() != 1) {
                throw new OseeCoreException(
@@ -254,7 +254,7 @@ public class PopulateSawBuild2Actions {
                dtwm.transitionTo(TeamState.Authorize, teamWf.getAssignees().iterator().next(), false, transaction);
             if (result.isFalse()) {
                throw new OseeCoreException("Error transitioning [%s] to Authorize state: [%s]",
-                  teamWf.toStringWithId(), toState.getPageName(), result.getText());
+                  teamWf.toStringWithId(), toState.getName(), result.getText());
             }
             if (ReviewManager.getReviews(teamWf).size() != 2) {
                throw new OseeCoreException("Error, 2 reviews should exist instead of " + ReviewManager.getReviews(
@@ -271,7 +271,7 @@ public class PopulateSawBuild2Actions {
          Result result = dtwm.transitionTo(toState, teamWf.getAssignees().iterator().next(), false, transaction);
          if (result.isFalse()) {
             throw new OseeCoreException("Error transitioning [%s] to state [%s]: [%s]", teamWf.toStringWithId(),
-               toState.getPageName(), result.getText());
+               toState.getName(), result.getText());
          }
 
          if (!teamWf.isCompletedOrCancelled()) {
@@ -331,7 +331,7 @@ public class PopulateSawBuild2Actions {
          Result result = dtwm.transitionTo(toState, teamWf.getAssignees().iterator().next(), false, transaction);
          if (result.isFalse()) {
             throw new OseeCoreException("Error transitioning [%s] to state [%s]: [%s]", teamWf.toStringWithId(),
-               toState.getPageName(), result.getText());
+               toState.getName(), result.getText());
          }
 
          if (!teamWf.isCompletedOrCancelled()) {

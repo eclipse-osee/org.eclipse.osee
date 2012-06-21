@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.workdef;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -27,12 +27,12 @@ public class StateDefinitionLabelProvider implements ILabelProvider {
 
    @Override
    public String getText(Object arg0) {
-      return ((StateDefinition) arg0).getPageName() + getCompletedAppend((StateDefinition) arg0);
+      return ((IAtsStateDefinition) arg0).getName() + getCompletedAppend((IAtsStateDefinition) arg0);
    }
 
-   private String getCompletedAppend(StateDefinition page) {
-      if (page.isCompletedPage() && !page.getName().startsWith("Complete")) {
-         if (!page.getPageName().equals("Completed")) {
+   private String getCompletedAppend(IAtsStateDefinition page) {
+      if (page.getStateType().isCompletedState() && !page.getName().startsWith("Complete")) {
+         if (!page.getName().equals("Completed")) {
             return " (Completed)";
          }
       }

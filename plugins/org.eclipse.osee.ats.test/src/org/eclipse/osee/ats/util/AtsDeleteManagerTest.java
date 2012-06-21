@@ -28,8 +28,8 @@ import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.core.model.IAtsUser;
-import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.util.AtsDeleteManager.DeleteOption;
+import org.eclipse.osee.ats.workdef.api.ReviewBlockType;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.Named;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -215,7 +215,7 @@ public class AtsDeleteManagerTest {
 
       DecisionReviewArtifact decRev =
          DecisionReviewManager.createNewDecisionReview(teamArt, ReviewBlockType.None, testName.name(),
-            TeamState.Endorse.getPageName(), "Description", DecisionReviewManager.getDefaultDecisionReviewOptions(),
+            TeamState.Endorse.getName(), "Description", DecisionReviewManager.getDefaultDecisionReviewOptions(),
             Arrays.asList(AtsUsersClient.getUser()), createdDate, createdBy);
       decRev.persist(transaction);
 

@@ -11,19 +11,16 @@
 package org.eclipse.osee.ats.editor.stateItem;
 
 import static org.junit.Assert.assertFalse;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import org.eclipse.osee.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
-import org.eclipse.osee.ats.core.workdef.RuleDefinition;
-import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
-import org.eclipse.osee.ats.core.workflow.IWorkPage;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DemoTestUtil;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
+import org.eclipse.osee.ats.workdef.api.IStateToken;
+import org.eclipse.osee.ats.workdef.api.RuleDefinitionOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -63,15 +60,9 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
    public static void testCleanup() throws Exception {
       // Test adds the atsForceAssigneesToTeamLeads; remove it before and after test
       if (teamArt != null) {
-         StateDefinition authStateDef = teamArt.getWorkDefinition().getStateByName(TeamState.Authorize.getPageName());
-         List<RuleDefinition> rules = authStateDef.getRules();
-         List<RuleDefinition> toRemove = new ArrayList<RuleDefinition>();
-         for (RuleDefinition ruleDef : rules) {
-            if (ruleDef.getName().equals(RuleDefinitionOption.ForceAssigneesToTeamLeads.name())) {
-               toRemove.add(ruleDef);
-            }
-         }
-         authStateDef.getRules().removeAll(toRemove);
+         IAtsStateDefinition authStateDef =
+            teamArt.getWorkDefinition().getStateByName(TeamState.Authorize.getName());
+         authStateDef.removeRule(RuleDefinitionOption.ForceAssigneesToTeamLeads.name());
       }
 
       AtsTestUtil.cleanupSimpleTest(AtsForceAssigneesToTeamLeadsStateItemTest.class.getSimpleName());
@@ -83,19 +74,21 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
 
       // assignee should be Joe Smith
       Assert.assertEquals(1, teamArt.getStateMgr().getAssignees().size());
-      Assert.assertEquals(AtsUsersClient.getUserByName(JOE_SMITH), teamArt.getStateMgr().getAssignees().iterator().next());
+      Assert.assertEquals(AtsUsersClient.getUserByName(JOE_SMITH),
+         teamArt.getStateMgr().getAssignees().iterator().next());
 
       // set assignee to Alex Kay
       teamArt.getStateMgr().setAssignee(AtsUsersClient.getUserByName(ALEX_KAY));
       teamArt.persist(getClass().getSimpleName());
       Assert.assertEquals(1, teamArt.getStateMgr().getAssignees().size());
-      Assert.assertEquals(AtsUsersClient.getUserByName(ALEX_KAY), teamArt.getStateMgr().getAssignees().iterator().next());
+      Assert.assertEquals(AtsUsersClient.getUserByName(ALEX_KAY),
+         teamArt.getStateMgr().getAssignees().iterator().next());
 
-      IWorkPage fromState = teamArt.getWorkDefinition().getStateByName(TeamState.Analyze.getPageName());
-      IWorkPage toState = teamArt.getWorkDefinition().getStateByName(TeamState.Authorize.getPageName());
+      IStateToken fromState = teamArt.getWorkDefinition().getStateByName(TeamState.Analyze.getName());
+      IStateToken toState = teamArt.getWorkDefinition().getStateByName(TeamState.Authorize.getName());
 
-      StateDefinition authStateDef = teamArt.getWorkDefinition().getStateByName(TeamState.Authorize.getPageName());
-      authStateDef.getRules().add(new RuleDefinition(RuleDefinitionOption.ForceAssigneesToTeamLeads));
+      IAtsStateDefinition authStateDef = teamArt.getWorkDefinition().getStateByName(TeamState.Authorize.getName());
+      authStateDef.getRules().add(RuleDefinitionOption.ForceAssigneesToTeamLeads.name());
 
       // make call to state item that should set options based on artifact's attribute value
       AtsForceAssigneesToTeamLeadsStateItem stateItem = new AtsForceAssigneesToTeamLeadsStateItem();
@@ -106,6 +99,7 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
 
       // assignee should be Joe Smith
       Assert.assertEquals(1, teamArt.getStateMgr().getAssignees().size());
-      Assert.assertEquals(AtsUsersClient.getUserByName(JOE_SMITH), teamArt.getStateMgr().getAssignees().iterator().next());
+      Assert.assertEquals(AtsUsersClient.getUserByName(JOE_SMITH),
+         teamArt.getStateMgr().getAssignees().iterator().next());
    }
 }

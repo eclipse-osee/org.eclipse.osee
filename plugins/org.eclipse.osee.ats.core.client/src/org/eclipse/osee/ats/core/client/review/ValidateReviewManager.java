@@ -24,9 +24,9 @@ import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.model.IAtsUser;
-import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
-import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
+import org.eclipse.osee.ats.workdef.api.ReviewBlockType;
+import org.eclipse.osee.ats.workdef.api.RuleDefinitionOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -34,18 +34,18 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * Convenience methods used to create a validation decision review if so selected on the new action wizard
- *
+ * 
  * @author Donald G. Dunne
  */
 public class ValidateReviewManager {
 
    private final static String VALIDATE_REVIEW_TITLE = "Is the resolution of this Action valid?";
 
-   public static boolean isValidatePage(StateDefinition stateDefinition) {
-      if (stateDefinition.hasRule(RuleDefinitionOption.AddDecisionValidateBlockingReview)) {
+   public static boolean isValidatePage(IAtsStateDefinition stateDefinition) {
+      if (stateDefinition.hasRule(RuleDefinitionOption.AddDecisionValidateBlockingReview.name())) {
          return true;
       }
-      if (stateDefinition.hasRule(RuleDefinitionOption.AddDecisionValidateNonBlockingReview)) {
+      if (stateDefinition.hasRule(RuleDefinitionOption.AddDecisionValidateNonBlockingReview.name())) {
          return true;
       }
       return false;
@@ -53,7 +53,7 @@ public class ValidateReviewManager {
 
    /**
     * Create a new decision review configured and transitioned to handle action validation
-    *
+    * 
     * @param force will force the creation of the review without checking that a review should be created
     */
    public static DecisionReviewArtifact createValidateReview(TeamWorkFlowArtifact teamArt, boolean force, Date createdDate, IAtsUser createdBy, SkynetTransaction transaction) throws OseeCoreException {
@@ -83,7 +83,7 @@ public class ValidateReviewManager {
 
          TransitionHelper helper =
             new TransitionHelper("Transition to Decision", Arrays.asList(decRev),
-               DecisionReviewState.Decision.getPageName(), Arrays.asList(teamArt.getCreatedBy()), null,
+               DecisionReviewState.Decision.getName(), Arrays.asList(teamArt.getCreatedBy()), null,
                TransitionOption.None);
          TransitionManager transitionMgr = new TransitionManager(helper, transaction);
          TransitionResults results = transitionMgr.handleAll();
@@ -100,8 +100,8 @@ public class ValidateReviewManager {
       return null;
    }
 
-   public static boolean isValidateReviewBlocking(StateDefinition stateDefinition) {
-      return stateDefinition.hasRule(RuleDefinitionOption.AddDecisionValidateBlockingReview);
+   public static boolean isValidateReviewBlocking(IAtsStateDefinition stateDefinition) {
+      return stateDefinition.hasRule(RuleDefinitionOption.AddDecisionValidateBlockingReview.name());
    }
 
    public static String getValidateReviewFollowupUsersStr(TeamWorkFlowArtifact teamArt) {

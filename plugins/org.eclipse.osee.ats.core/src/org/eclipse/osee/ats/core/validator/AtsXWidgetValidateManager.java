@@ -12,8 +12,10 @@ package org.eclipse.osee.ats.core.validator;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
-import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.workdef.api.WidgetResult;
+import org.eclipse.osee.ats.workdef.api.WidgetStatus;
 
 /**
  * @author Donald G. Dunne
@@ -25,7 +27,7 @@ public class AtsXWidgetValidateManager {
    protected AtsXWidgetValidateManager() {
    }
 
-   public void validateTransition(List<WidgetResult> results, IValueProvider valueProvider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef) {
+   public void validateTransition(List<WidgetResult> results, IValueProvider valueProvider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) {
       for (AtsXWidgetValidatorProvider provider : providers) {
          for (IAtsXWidgetValidator validator : provider.getValidators()) {
             try {

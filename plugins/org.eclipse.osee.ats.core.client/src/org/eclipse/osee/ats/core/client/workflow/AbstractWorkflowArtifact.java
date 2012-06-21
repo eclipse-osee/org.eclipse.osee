@@ -49,12 +49,12 @@ import org.eclipse.osee.ats.core.model.IAtsWorkItem;
 import org.eclipse.osee.ats.core.model.WorkStateProvider;
 import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
-import org.eclipse.osee.ats.core.workdef.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
-import org.eclipse.osee.ats.core.workflow.IWorkPage;
-import org.eclipse.osee.ats.core.workflow.WorkPageType;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
+import org.eclipse.osee.ats.workdef.api.IStateToken;
+import org.eclipse.osee.ats.workdef.api.RuleDefinitionOption;
+import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -104,11 +104,11 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public void initializeNewStateMachine(List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
-      StateDefinition startState = getWorkDefinition().getStartState();
+      IAtsStateDefinition startState = getWorkDefinition().getStartState();
       initializeNewStateMachine(startState, assignees, createdDate, createdBy);
    }
 
-   private void initializeNewStateMachine(IWorkPage state, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
+   private void initializeNewStateMachine(IStateToken state, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
       getStateMgr().initializeStateMachine(state, assignees, (createdBy == null ? AtsUsersClient.getUser() : createdBy));
       IAtsUser user = createdBy == null ? AtsUsersClient.getUser() : createdBy;
       setCreatedBy(user, true, createdDate);
@@ -132,7 +132,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       if (isCompleted()) {
          String completedFromState = getSoleAttributeValue(AtsAttributeTypes.CompletedFromState, "");
          if (Strings.isValid(completedFromState)) {
-            StateDefinition stateDef = getWorkDefinition().getStateByName(completedFromState);
+            IAtsStateDefinition stateDef = getWorkDefinition().getStateByName(completedFromState);
             if (stateDef != null) {
                for (IAtsUser user : getStateMgr().getAssignees(stateDef)) {
                   if (!implementers.contains(user)) {
@@ -219,8 +219,8 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return getStateMgr().getCurrentStateName();
    }
 
-   public boolean isInState(IWorkPage state) {
-      return getStateMgr().getCurrentStateName().equals(state.getPageName());
+   public boolean isInState(IStateToken state) {
+      return getStateMgr().getCurrentStateName().equals(state.getName());
    }
 
    public String implementersStr = null;
@@ -232,7 +232,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return 0;
    }
 
-   public double getEstimatedHoursFromTasks(IWorkPage relatedToState) throws OseeCoreException {
+   public double getEstimatedHoursFromTasks(IStateToken relatedToState) throws OseeCoreException {
       if (!(this instanceof AbstractTaskableArtifact)) {
          return 0;
       }
@@ -253,14 +253,14 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return 0;
    }
 
-   public double getEstimatedHoursFromReviews(IWorkPage relatedToState) throws OseeCoreException {
+   public double getEstimatedHoursFromReviews(IStateToken relatedToState) throws OseeCoreException {
       if (isTeamWorkflow()) {
          return ReviewManager.getEstimatedHours((TeamWorkFlowArtifact) this, relatedToState);
       }
       return 0;
    }
 
-   public double getEstimatedHoursTotal(IWorkPage relatedToState) throws OseeCoreException {
+   public double getEstimatedHoursTotal(IStateToken relatedToState) throws OseeCoreException {
       return getEstimatedHoursFromArtifact() + getEstimatedHoursFromTasks(relatedToState) + getEstimatedHoursFromReviews(relatedToState);
    }
 
@@ -380,7 +380,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
     * to transition.
     */
    @SuppressWarnings("unused")
-   public void transitioned(StateDefinition fromState, StateDefinition toState, Collection<? extends IAtsUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+   public void transitioned(IAtsStateDefinition fromState, IAtsStateDefinition toState, Collection<? extends IAtsUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
       // provided for subclass implementation
    }
 
@@ -392,7 +392,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    /**
     * Return Percent Complete ONLY on tasks related to stateName. Total Percent / # Tasks
     */
-   public int getPercentCompleteSMAStateTasks(IWorkPage state) throws OseeCoreException {
+   public int getPercentCompleteSMAStateTasks(IStateToken state) throws OseeCoreException {
       if (!(this instanceof AbstractTaskableArtifact)) {
          return 0;
       }
@@ -425,7 +425,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return Result.FalseResult;
    }
 
-   public WorkDefinition getWorkDefinition() {
+   public IAtsWorkDefinition getWorkDefinition() {
       return getWorkDefinitionMatch().getWorkDefinition();
    }
 
@@ -438,14 +438,14 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return null;
    }
 
-   public StateDefinition getStateDefinition() {
+   public IAtsStateDefinition getStateDefinition() {
       if (getStateMgr().getCurrentStateName() == null) {
          return null;
       }
       return getWorkDefinition().getStateByName(getStateMgr().getCurrentStateName());
    }
 
-   public StateDefinition getStateDefinitionByName(String name) {
+   public IAtsStateDefinition getStateDefinitionByName(String name) {
       return getWorkDefinition().getStateByName(name);
    }
 
@@ -453,7 +453,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return isHistorical();
    }
 
-   public List<StateDefinition> getToStates() {
+   public List<IAtsStateDefinition> getToStates() {
       return getStateDefinition().getToStates();
    }
 
@@ -491,7 +491,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          return false;
       }
       try {
-         return teamArt.getTeamDefinition().hasRule(option);
+         return teamArt.getTeamDefinition().hasRule(option.name());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return false;
@@ -621,24 +621,24 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return null;
    }
 
-   public LogItem getStateCompletedData(IWorkPage state) throws OseeCoreException {
-      return getStateCompletedData(state.getPageName());
+   public LogItem getStateCompletedData(IStateToken state) throws OseeCoreException {
+      return getStateCompletedData(state.getName());
    }
 
    public LogItem getStateCompletedData(String stateName) throws OseeCoreException {
       return getLog().getStateEvent(LogType.StateComplete, stateName);
    }
 
-   public LogItem getStateCancelledData(IWorkPage state) throws OseeCoreException {
-      return getStateCancelledData(state.getPageName());
+   public LogItem getStateCancelledData(IStateToken state) throws OseeCoreException {
+      return getStateCancelledData(state.getName());
    }
 
    public LogItem getStateCancelledData(String stateName) throws OseeCoreException {
       return getLog().getStateEvent(LogType.StateCancelled, stateName);
    }
 
-   public LogItem getStateStartedData(IWorkPage state) throws OseeCoreException {
-      return getStateStartedData(state.getPageName());
+   public LogItem getStateStartedData(IStateToken state) throws OseeCoreException {
+      return getStateStartedData(state.getName());
    }
 
    public LogItem getStateStartedData(String stateName) throws OseeCoreException {
@@ -654,15 +654,15 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public boolean isInWork() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.CurrentStateType, "").equals(WorkPageType.Working.name());
+      return getSoleAttributeValue(AtsAttributeTypes.CurrentStateType, "").equals(StateType.Working.name());
    }
 
    public boolean isCompleted() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.CurrentStateType, "").equals(WorkPageType.Completed.name());
+      return getSoleAttributeValue(AtsAttributeTypes.CurrentStateType, "").equals(StateType.Completed.name());
    }
 
    public boolean isCancelled() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.CurrentStateType, "").equals(WorkPageType.Cancelled.name());
+      return getSoleAttributeValue(AtsAttributeTypes.CurrentStateType, "").equals(StateType.Cancelled.name());
    }
 
    public boolean isCompletedOrCancelled() throws OseeCoreException {
@@ -749,18 +749,18 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       this.targetedErrorLogged = targetedErrorLogged;
    }
 
-   public List<StateDefinition> getToStatesWithCompleteCancelReturnStates() throws OseeCoreException {
-      List<StateDefinition> allPages = new ArrayList<StateDefinition>();
-      StateDefinition currState = getStateDefinition();
+   public List<IAtsStateDefinition> getToStatesWithCompleteCancelReturnStates() throws OseeCoreException {
+      List<IAtsStateDefinition> allPages = new ArrayList<IAtsStateDefinition>();
+      IAtsStateDefinition currState = getStateDefinition();
       allPages.addAll(currState.getToStates());
-      if (currState.isCompletedPage()) {
-         StateDefinition completedFromState = getWorkDefinition().getStateByName(getCompletedFromState());
+      if (currState.getStateType().isCompletedState()) {
+         IAtsStateDefinition completedFromState = getWorkDefinition().getStateByName(getCompletedFromState());
          if (completedFromState != null && !allPages.contains(completedFromState)) {
             allPages.add(completedFromState);
          }
       }
-      if (currState.isCancelledPage()) {
-         StateDefinition cancelledFromState = getWorkDefinition().getStateByName(getCancelledFromState());
+      if (currState.getStateType().isCancelledState()) {
+         IAtsStateDefinition cancelledFromState = getWorkDefinition().getStateByName(getCancelledFromState());
          if (cancelledFromState != null && !allPages.contains(cancelledFromState)) {
             allPages.add(cancelledFromState);
          }

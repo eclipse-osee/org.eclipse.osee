@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.workdef.viewer.model;
 
 import java.util.List;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
@@ -23,11 +23,11 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  */
 public class StateDefShape extends RectangleShape {
 
-   private final StateDefinition stateDef;
+   private final IAtsStateDefinition stateDef;
    public static String START_PAGE = "Start Page";
    public static String NAME = "Name";
 
-   public StateDefShape(StateDefinition stateDef) {
+   public StateDefShape(IAtsStateDefinition stateDef) {
       this.stateDef = stateDef;
    }
 
@@ -57,7 +57,7 @@ public class StateDefShape extends RectangleShape {
       return getWorkflowDiagram().getWorkDefinition().getStartState().equals(stateDef);
    }
 
-   public StateDefinition getStateDefinition() {
+   public IAtsStateDefinition getStateDefinition() {
       return stateDef;
    }
 
@@ -67,11 +67,11 @@ public class StateDefShape extends RectangleShape {
    }
 
    public boolean isCancelledState() {
-      return getStateDefinition().isCancelledPage();
+      return getStateDefinition().getStateType().isCancelledState();
    }
 
    public boolean isCompletedState() {
-      return getStateDefinition().isCompletedPage();
+      return getStateDefinition().getStateType().isCompletedState();
    }
 
    @Override

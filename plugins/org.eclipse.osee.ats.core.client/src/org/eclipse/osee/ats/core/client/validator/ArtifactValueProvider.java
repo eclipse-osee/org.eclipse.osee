@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.core.validator.IValueProvider;
-import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -34,7 +34,7 @@ public class ArtifactValueProvider implements IValueProvider {
    private final Artifact artifact;
    private final String attributeTypeName;
 
-   public ArtifactValueProvider(Artifact artifact, WidgetDefinition widgetDef) {
+   public ArtifactValueProvider(Artifact artifact, IAtsWidgetDefinition widgetDef) {
       this.artifact = artifact;
       this.attributeTypeName = widgetDef.getAtrributeName();
    }

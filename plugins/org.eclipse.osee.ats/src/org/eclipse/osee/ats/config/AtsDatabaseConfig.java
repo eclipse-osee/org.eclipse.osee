@@ -53,7 +53,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       aia.setActionable(false);
       aiStore.save("Set Top AI to Non Actionable");
 
-      AtsWorkDefinitionSheetProviders.initializeDatabase(new XResultData(false), false);
+      AtsWorkDefinitionSheetProviders.initializeDatabase(new XResultData(false));
 
       AtsGroup.AtsAdmin.getArtifact().persist(getClass().getSimpleName());
       AtsGroup.AtsTempAdmin.getArtifact().persist(getClass().getSimpleName());

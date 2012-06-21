@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
-import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
+import org.eclipse.osee.ats.workdef.api.ReviewBlockType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
@@ -287,7 +287,7 @@ public class AtsNotificationManagerTest {
          AtsTestUtil.transitionTo(AtsTestUtilState.Completed, AtsUsersClient.getUser(), transaction,
             TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       Assert.assertEquals(Result.TrueResult, result);
-      Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Completed.getPageName());
+      Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Completed.getName());
       transaction.execute();
 
       // verify notification to originator
@@ -329,7 +329,7 @@ public class AtsNotificationManagerTest {
          AtsTestUtil.transitionTo(AtsTestUtilState.Cancelled, AtsUsersClient.getUser(), transaction,
             TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       Assert.assertEquals(Result.TrueResult, result);
-      Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Cancelled.getPageName());
+      Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Cancelled.getName());
       transaction.execute();
 
       // verify notification to originator

@@ -19,8 +19,6 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
-import org.eclipse.osee.ats.core.workflow.IWorkPage;
-import org.eclipse.osee.ats.core.workflow.WorkPageType;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
@@ -31,6 +29,9 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.XCancellationReasonTextWidget;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
+import org.eclipse.osee.ats.workdef.api.IStateToken;
+import org.eclipse.osee.ats.workdef.api.StateType;
+import org.eclipse.osee.ats.workdef.api.WorkDefUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -81,8 +82,7 @@ public class SMAWorkFlowSection extends SectionPart {
       this.sma = sma;
       this.editor = editor;
 
-      isEditable =
-         WorkflowManagerCore.isEditable(sma, page.getStateDefinition(), editor.isPrivilegedEditModeEnabled());
+      isEditable = WorkflowManagerCore.isEditable(sma, page.getStateDefinition(), editor.isPrivilegedEditModeEnabled());
       isGlobalEditable = !sma.isReadOnly() && sma.isAccessControlWrite() && editor.isPrivilegedEditModeEnabled();
       isCurrentState = sma.isInState(page);
       // parent.setBackground(Displays.getSystemColor(SWT.COLOR_CYAN));
@@ -94,8 +94,8 @@ public class SMAWorkFlowSection extends SectionPart {
 
       section = getSection();
       try {
-         section.setText(getCurrentStateTitle(sma, statePage.getPageName(), isEditable, isCurrentState,
-            statePage.isCancelledPage()));
+         section.setText(getCurrentStateTitle(sma, statePage.getName(), isEditable, isCurrentState,
+            statePage.getStateType().isCancelledState()));
          if (sma.isInState(statePage)) {
             section.setTitleBarForeground(Displays.getSystemColor(SWT.COLOR_DARK_GREEN));
             section.setBackground(AtsUtil.ACTIVE_COLOR);
@@ -131,7 +131,7 @@ public class SMAWorkFlowSection extends SectionPart {
    /**
     * Override to apply different algorithm to current section expansion.
     */
-   public boolean isCurrentSectionExpanded(IWorkPage state) {
+   public boolean isCurrentSectionExpanded(IStateToken state) {
       return sma.isInState(state);
    }
 
@@ -146,7 +146,7 @@ public class SMAWorkFlowSection extends SectionPart {
       // mainComp.setBackground(Displays.getSystemColor(SWT.COLOR_DARK_YELLOW));
       mainComp.layout();
 
-      SMAWorkFlowTab.createStateNotesHeader(mainComp, editor.getToolkit(), sma, 2, statePage.getPageName());
+      SMAWorkFlowTab.createStateNotesHeader(mainComp, editor.getToolkit(), sma, 2, statePage.getName());
 
       Composite workComp = createWorkArea(mainComp, statePage, editor.getToolkit());
 
@@ -185,21 +185,21 @@ public class SMAWorkFlowSection extends SectionPart {
 
       // Add any dynamic XWidgets declared for page by IAtsStateItem extensions
       for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
-         for (XWidget xWidget : item.getDynamicXWidgetsPreBody(sma, statePage.getPageName())) {
+         for (XWidget xWidget : item.getDynamicXWidgetsPreBody(sma, statePage.getName())) {
             xWidget.createWidgets(workComp, 2);
             allXWidgets.add(xWidget);
             allXWidgets.addAll(xWidget.getChildrenXWidgets());
          }
       }
 
-      if (statePage.isCompletedOrCancelledPage()) {
+      if (statePage.getStateType().isCompletedOrCancelledState()) {
          Composite completeComp = new Composite(workComp, SWT.None);
          GridLayout layout = new GridLayout(1, false);
          completeComp.setLayout(layout);
          completeComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         if (statePage.isCancelledPage()) {
+         if (statePage.getStateType().isCancelledState()) {
             createCancelledPageWidgets(completeComp);
-         } else if (statePage.isCompletedPage()) {
+         } else if (statePage.getStateType().isCompletedState()) {
             createCompletedPageWidgets(completeComp);
          }
       }
@@ -214,7 +214,7 @@ public class SMAWorkFlowSection extends SectionPart {
 
       // Add any dynamic XWidgets declared for page by IAtsStateItem extensions
       for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
-         for (XWidget xWidget : item.getDynamicXWidgetsPostBody(sma, statePage.getPageName())) {
+         for (XWidget xWidget : item.getDynamicXWidgetsPostBody(sma, statePage.getName())) {
             xWidget.createWidgets(workComp, 2);
             allXWidgets.add(xWidget);
             allXWidgets.addAll(xWidget.getChildrenXWidgets());
@@ -258,13 +258,13 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    private void createMetricsHeader(Composite parent) {
-      if (!statePage.isCompletedOrCancelledPage()) {
+      if (!statePage.getStateType().isCompletedOrCancelledState()) {
          Composite comp = new Composite(parent, SWT.None);
          GridLayout layout = ALayout.getZeroMarginLayout(4, false);
          layout.marginLeft = 2;
          comp.setLayout(layout);
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         if (sma.getWorkDefinition().isStateWeightingEnabled()) {
+         if (WorkDefUtil.isStateWeightingEnabled(sma.getWorkDefinition())) {
             allXWidgets.add(new StatePercentCompleteXWidget(getManagedForm(), statePage, sma, comp, 2, xModListener,
                isCurrentState, editor));
          }
@@ -273,7 +273,7 @@ public class SMAWorkFlowSection extends SectionPart {
       }
    }
 
-   private void createReviewFooter(Composite parent, IWorkPage forState) {
+   private void createReviewFooter(Composite parent, IStateToken forState) {
       if (isShowReviewInfo() && sma.isTeamWorkflow()) {
          Composite comp = new Composite(parent, SWT.None);
          GridLayout layout = new GridLayout(1, false);
@@ -284,7 +284,7 @@ public class SMAWorkFlowSection extends SectionPart {
       }
    }
 
-   private void createTaskFooter(Composite parent, IWorkPage state) {
+   private void createTaskFooter(Composite parent, IStateToken state) {
       if (sma instanceof AbstractTaskableArtifact) {
          Composite comp = new Composite(parent, SWT.None);
          GridLayout layout = new GridLayout(6, false);
@@ -354,7 +354,7 @@ public class SMAWorkFlowSection extends SectionPart {
       }
       if (isCurrentState) {
          if (sma.isCompleted()) {
-            if (!sma.getCurrentStateName().equals(WorkPageType.Completed.toString())) {
+            if (!sma.getCurrentStateName().equals(StateType.Completed.toString())) {
                sb.append(" (Completed)");
             }
             sb.append(" - ");
@@ -365,7 +365,7 @@ public class SMAWorkFlowSection extends SectionPart {
                sb.append(item.getUser().getName());
             }
          } else if (sma.isCancelled()) {
-            if (!sma.getCurrentStateName().equals(WorkPageType.Cancelled.toString())) {
+            if (!sma.getCurrentStateName().equals(StateType.Cancelled.toString())) {
                sb.append(" (Cancelled)");
             }
             sb.append(" - ");

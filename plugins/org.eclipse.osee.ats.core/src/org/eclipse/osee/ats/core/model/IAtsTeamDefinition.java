@@ -6,8 +6,6 @@
 package org.eclipse.osee.ats.core.model;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.core.workdef.RuleDefinition;
-import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 
@@ -21,6 +19,8 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
 
    void setDescription(String description);
 
+   void setHumanReadableId(String hrid);
+
    @Override
    String getDescription();
 
@@ -28,8 +28,6 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
    void setFullName(String fullName);
 
    String getFullName();
-
-   void setHumanReadableId(String hrid);
 
    /*****************************
     * Misc
@@ -43,19 +41,7 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
 
    boolean isActive();
 
-   void setActionDetailsFormat(String actionDetailsFormat);
-
-   String getActionDetailsFormat();
-
    Collection<String> getStaticIds();
-
-   void setManDayHours(Double manDayHours);
-
-   Double getManDayHours();
-
-   double getHoursPerWorkDayFromItemAndChildren(IAtsTeamDefinition teamDef);
-
-   double getManDayHrsFromItemAndChildren();
 
    /*****************************
     * Related Actionable Items
@@ -159,18 +145,15 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
     * Rules
     ******************************/
    @Override
-   RuleDefinition addRule(RuleDefinitionOption option);
+   void addRule(String rule);
 
    @Override
-   RuleDefinition addRule(String ruleId);
+   Collection<String> getRules();
 
    @Override
-   Collection<RuleDefinition> getRules();
+   boolean hasRule(String rule);
 
    @Override
-   boolean hasRule(RuleDefinitionOption option);
-
-   @Override
-   boolean hasRule(String ruleId);
+   void removeRule(String rule);
 
 }

@@ -14,7 +14,7 @@ import org.eclipse.osee.ats.core.mock.MockAtsUser;
 import org.eclipse.osee.ats.core.mock.MockWorkItem;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.users.UnAssigned;
-import org.eclipse.osee.ats.core.workflow.WorkPageType;
+import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -47,7 +47,7 @@ public class ImplementersColumnTest {
     */
    @org.junit.Test
    public void testGetImplementersStrFromInWorkWorkflow_workItem() throws OseeCoreException {
-      MockWorkItem workItem = new MockWorkItem("this", "InWork", WorkPageType.Working);
+      MockWorkItem workItem = new MockWorkItem("this", "InWork", StateType.Working);
       Assert.assertEquals("", ImplementersColumn.instance.getImplementersStr(workItem));
    }
 
@@ -56,7 +56,7 @@ public class ImplementersColumnTest {
     */
    @org.junit.Test
    public void testGetImplementersStrFromInWorkWorkflow_blankIfAssigned() throws OseeCoreException {
-      MockWorkItem workItem = new MockWorkItem("this", "InWork", WorkPageType.Working);
+      MockWorkItem workItem = new MockWorkItem("this", "InWork", StateType.Working);
       workItem.getStateData().setAssignees(Arrays.asList(joe, steve, alice));
       Assert.assertEquals("", ImplementersColumn.instance.getImplementersStr(workItem));
    }
@@ -66,10 +66,10 @@ public class ImplementersColumnTest {
     */
    @org.junit.Test
    public void testGetImplementersStrFromCompletedCancelledWorkflow_blankIfNothingToShow() throws OseeCoreException {
-      MockWorkItem workItem = new MockWorkItem("this", "Completed", WorkPageType.Completed);
+      MockWorkItem workItem = new MockWorkItem("this", "Completed", StateType.Completed);
       Assert.assertEquals("", ImplementersColumn.instance.getImplementersStr(workItem));
 
-      workItem = new MockWorkItem("this", "Cancelled", WorkPageType.Cancelled);
+      workItem = new MockWorkItem("this", "Cancelled", StateType.Cancelled);
       Assert.assertEquals("", ImplementersColumn.instance.getImplementersStr(workItem));
    }
 
@@ -78,11 +78,11 @@ public class ImplementersColumnTest {
     */
    @org.junit.Test
    public void testGetImplementersStrFromCompletedCancelledWorkflow_completedBySet() throws OseeCoreException {
-      MockWorkItem workItem = new MockWorkItem("this", "Completed", WorkPageType.Completed);
+      MockWorkItem workItem = new MockWorkItem("this", "Completed", StateType.Completed);
       workItem.getWorkData().setCompletedBy(steve);
       Assert.assertEquals("steve", ImplementersColumn.instance.getImplementersStr(workItem));
 
-      workItem = new MockWorkItem("this", "Cancelled", WorkPageType.Cancelled);
+      workItem = new MockWorkItem("this", "Cancelled", StateType.Cancelled);
       workItem.getWorkData().setCancelledBy(steve);
       Assert.assertEquals("steve", ImplementersColumn.instance.getImplementersStr(workItem));
 
@@ -93,13 +93,13 @@ public class ImplementersColumnTest {
     */
    @org.junit.Test
    public void testGetImplementersStrFromCompletedCancelledWorkflow_completedByAndAssignee() throws OseeCoreException {
-      MockWorkItem workItem = new MockWorkItem("this", "Completed", WorkPageType.Completed);
+      MockWorkItem workItem = new MockWorkItem("this", "Completed", StateType.Completed);
       workItem.getWorkData().setCompletedBy(steve);
       workItem.getWorkData().setCompletedFromState("Implement");
       workItem.getStateData().addState("Implement", Arrays.asList(alice));
       Assert.assertEquals("alice; steve", ImplementersColumn.instance.getImplementersStr(workItem));
 
-      workItem = new MockWorkItem("this", "Cancelled", WorkPageType.Cancelled);
+      workItem = new MockWorkItem("this", "Cancelled", StateType.Cancelled);
       workItem.getWorkData().setCancelledBy(steve);
       workItem.getWorkData().setCancelledFromState("Implement");
       workItem.getStateData().addState("Implement", Arrays.asList(alice));
@@ -111,13 +111,13 @@ public class ImplementersColumnTest {
     */
    @org.junit.Test
    public void testGetImplementersStrFromCompletedCancelledWorkflow_completedByAndAssigneeWithUnassigned() throws OseeCoreException {
-      MockWorkItem workItem = new MockWorkItem("this", "Completed", WorkPageType.Completed);
+      MockWorkItem workItem = new MockWorkItem("this", "Completed", StateType.Completed);
       workItem.getWorkData().setCompletedBy(steve);
       workItem.getWorkData().setCompletedFromState("Implement");
       workItem.getStateData().addState("Implement", Arrays.asList(alice, UnAssigned.instance));
       Assert.assertEquals("alice; steve", ImplementersColumn.instance.getImplementersStr(workItem));
 
-      workItem = new MockWorkItem("this", "Cancelled", WorkPageType.Cancelled);
+      workItem = new MockWorkItem("this", "Cancelled", StateType.Cancelled);
       workItem.getWorkData().setCancelledBy(steve);
       workItem.getWorkData().setCancelledFromState("Implement");
       workItem.getStateData().addState("Implement", Arrays.asList(alice, UnAssigned.instance));
@@ -129,14 +129,14 @@ public class ImplementersColumnTest {
     */
    @org.junit.Test
    public void testGetImplementersStrFromCompletedCancelledWorkflow_duplicatesHandled() throws OseeCoreException {
-      MockWorkItem workItem = new MockWorkItem("this", "Completed", WorkPageType.Completed);
+      MockWorkItem workItem = new MockWorkItem("this", "Completed", StateType.Completed);
       workItem.getWorkData().setCompletedBy(steve);
       workItem.getWorkData().setCompletedFromState("Implement");
       workItem.getStateData().addState("Implement", Arrays.asList(alice));
       workItem.getStateData().addAssignee("Implement", steve);
       Assert.assertEquals("alice; steve", ImplementersColumn.instance.getImplementersStr(workItem));
 
-      workItem = new MockWorkItem("this", "Cancelled", WorkPageType.Cancelled);
+      workItem = new MockWorkItem("this", "Cancelled", StateType.Cancelled);
       workItem.getWorkData().setCancelledBy(steve);
       workItem.getWorkData().setCancelledFromState("Implement");
       workItem.getStateData().addState("Implement", Arrays.asList(alice));
@@ -149,7 +149,7 @@ public class ImplementersColumnTest {
     */
    @org.junit.Test
    public void testGetImplementersStrFromCompletedCancelledWorkflow_fromAll() throws OseeCoreException {
-      MockWorkItem workItem = new MockWorkItem("this", "Completed", WorkPageType.Completed);
+      MockWorkItem workItem = new MockWorkItem("this", "Completed", StateType.Completed);
       workItem.getWorkData().setCompletedBy(steve);
       workItem.getWorkData().setCompletedFromState("Implement");
       workItem.getStateData().addState("Implement", Arrays.asList(alice));
@@ -157,7 +157,7 @@ public class ImplementersColumnTest {
       workItem.addImplementer(joe);
       Assert.assertEquals("alice; joe; steve", ImplementersColumn.instance.getImplementersStr(workItem));
 
-      workItem = new MockWorkItem("this", "Cancelled", WorkPageType.Cancelled);
+      workItem = new MockWorkItem("this", "Cancelled", StateType.Cancelled);
       workItem.getWorkData().setCancelledBy(steve);
       workItem.getWorkData().setCancelledFromState("Implement");
       workItem.getStateData().addState("Implement", Arrays.asList(alice));
@@ -168,13 +168,13 @@ public class ImplementersColumnTest {
 
    @org.junit.Test
    public void testGetImplementersStrFromCompletedWorkflow_duplicates() throws OseeCoreException {
-      MockWorkItem workItem = new MockWorkItem("this", "Completed", WorkPageType.Completed);
+      MockWorkItem workItem = new MockWorkItem("this", "Completed", StateType.Completed);
       workItem.getWorkData().setCompletedFromState("Implement");
       workItem.getStateData().addState("Implement", Arrays.asList(alice));
       workItem.addImplementer(alice);
       Assert.assertEquals("alice", ImplementersColumn.instance.getImplementersStr(workItem));
 
-      workItem = new MockWorkItem("this", "Cancelled", WorkPageType.Cancelled);
+      workItem = new MockWorkItem("this", "Cancelled", StateType.Cancelled);
       workItem.getWorkData().setCancelledFromState("Implement");
       workItem.getStateData().addState("Implement", Arrays.asList(alice));
       workItem.addImplementer(alice);
@@ -183,7 +183,7 @@ public class ImplementersColumnTest {
 
    @org.junit.Test
    public void testGetImplementers_fromCompletedCancelledBy_noDuplicatesIfInImplementersAndCompletedBy() throws OseeCoreException {
-      MockWorkItem workItem = new MockWorkItem("this", "Completed", WorkPageType.Completed);
+      MockWorkItem workItem = new MockWorkItem("this", "Completed", StateType.Completed);
       workItem.getWorkData().setCompletedFromState("Implement");
       workItem.getStateData().addState("Implement", Arrays.asList(alice));
       List<IAtsUser> implementers = new ArrayList<IAtsUser>();
@@ -192,7 +192,7 @@ public class ImplementersColumnTest {
       ImplementersColumn.instance.getImplementers_fromCompletedCancelledBy(workItem, implementers);
       Assert.assertEquals(implementers.iterator().next(), alice);
 
-      workItem = new MockWorkItem("this", "Cancelled", WorkPageType.Cancelled);
+      workItem = new MockWorkItem("this", "Cancelled", StateType.Cancelled);
       workItem.getWorkData().setCancelledFromState("Implement");
       workItem.getStateData().addState("Implement", Arrays.asList(alice));
       implementers = new ArrayList<IAtsUser>();
@@ -204,7 +204,7 @@ public class ImplementersColumnTest {
 
    @org.junit.Test
    public void testGetImplementers_fromWorkItem_noDuplicates() throws OseeCoreException {
-      MockWorkItem workItem = new MockWorkItem("this", "Completed", WorkPageType.Completed);
+      MockWorkItem workItem = new MockWorkItem("this", "Completed", StateType.Completed);
       List<IAtsUser> implementers = new ArrayList<IAtsUser>();
       implementers.add(alice);
       workItem.addImplementer(alice);
@@ -216,11 +216,11 @@ public class ImplementersColumnTest {
    @org.junit.Test
    public void testGetImplementersFromActionGroup() throws OseeCoreException {
 
-      MockWorkItem workItem1 = new MockWorkItem("this", "Working", WorkPageType.Working);
+      MockWorkItem workItem1 = new MockWorkItem("this", "Working", StateType.Working);
       workItem1.getWorkData().setCancelledBy(alice);
       Assert.assertEquals("", ImplementersColumn.instance.getImplementersStr(workItem1));
 
-      MockWorkItem workItem2 = new MockWorkItem("that", "Working", WorkPageType.Working);
+      MockWorkItem workItem2 = new MockWorkItem("that", "Working", StateType.Working);
       workItem2.getWorkData().setCancelledBy(steve);
       Assert.assertEquals("", ImplementersColumn.instance.getImplementersStr(workItem2));
 
@@ -230,10 +230,10 @@ public class ImplementersColumnTest {
 
       Assert.assertEquals("", ImplementersColumn.instance.getImplementersStr(group));
 
-      workItem1.getWorkData().setWorkPageType(WorkPageType.Cancelled);
+      workItem1.getWorkData().setStateType(StateType.Cancelled);
       workItem1.getWorkData().setCancelledBy(alice);
 
-      workItem2.getWorkData().setWorkPageType(WorkPageType.Cancelled);
+      workItem2.getWorkData().setStateType(StateType.Cancelled);
       workItem2.getWorkData().setCancelledBy(steve);
 
       Assert.assertEquals("alice; steve", ImplementersColumn.instance.getImplementersStr(group));
@@ -242,10 +242,10 @@ public class ImplementersColumnTest {
    @org.junit.Test
    public void testGetImplementersFromActionGroup_noDuplicates() throws OseeCoreException {
 
-      MockWorkItem workItem1 = new MockWorkItem("this", "Cancelled", WorkPageType.Cancelled);
+      MockWorkItem workItem1 = new MockWorkItem("this", "Cancelled", StateType.Cancelled);
       workItem1.getWorkData().setCancelledBy(steve);
 
-      MockWorkItem workItem2 = new MockWorkItem("that", "Cancelled", WorkPageType.Cancelled);
+      MockWorkItem workItem2 = new MockWorkItem("that", "Cancelled", StateType.Cancelled);
       workItem2.getWorkData().setCancelledBy(steve);
 
       MockActionGroup group = new MockActionGroup("group");

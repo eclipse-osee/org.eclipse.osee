@@ -39,7 +39,7 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
    private final SMAEditor editor;
 
    public StateHoursSpentXWidget(IManagedForm managedForm, StateXWidgetPage page, final AbstractWorkflowArtifact sma, Composite composite, int horizontalSpan, XModifiedListener xModListener, boolean isCurrentState, SMAEditor editor) {
-      super("\"" + page.getPageName() + "\"" + " State Hours Spent");
+      super("\"" + page.getName() + "\"" + " State Hours Spent");
       this.page = page;
       this.sma = sma;
       this.isCurrentState = isCurrentState;
@@ -81,7 +81,7 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
       try {
          StringBuffer sb =
             new StringBuffer(String.format("        State Hours: %5.2f",
-               sma.getStateMgr().getHoursSpent(page.getPageName())));
+               sma.getStateMgr().getHoursSpent(page.getName())));
          setEditable(isCurrentState && !sma.isReadOnly());
          boolean breakoutNeeded = false;
          if (sma instanceof AbstractTaskableArtifact && ((AbstractTaskableArtifact) sma).hasTaskArtifacts()) {
@@ -98,7 +98,7 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
             setToolTip(sb.toString());
             return String.format("%5.2f", HoursSpentUtil.getHoursSpentStateTotal(sma, page));
          } else {
-            return String.format("%5.2f", sma.getStateMgr().getHoursSpent(page.getPageName()));
+            return String.format("%5.2f", sma.getStateMgr().getHoursSpent(page.getName()));
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

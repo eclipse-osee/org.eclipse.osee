@@ -17,8 +17,8 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
+import org.eclipse.osee.ats.workdef.AtsDslUtil;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
-import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionProvider;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -63,7 +63,7 @@ public class ValidateWorkspaceToDatabaseWorkDefinitions extends XNavigateItemAct
             resultData.logError(" No Artifact Found with name [" + sheet.getName() + "]");
             continue;
          }
-         String sheetText = AtsWorkDefinitionProvider.get().loadWorkFlowDefinitionStringFromFile(sheet);
+         String sheetText = AtsDslUtil.getString(sheet);
          sheetText = sheetText.replaceAll("\r\n", "\n");
          String artText = workDefArt.getSoleAttributeValueAsString(AtsAttributeTypes.DslSheet, "");
          artText = artText.replaceAll("\r\n", "\n");

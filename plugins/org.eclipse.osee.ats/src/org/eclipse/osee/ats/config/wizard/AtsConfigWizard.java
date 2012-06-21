@@ -24,9 +24,9 @@ import org.eclipse.osee.ats.config.AtsConfigManager.Display;
 import org.eclipse.osee.ats.core.client.config.AtsObjectsClient;
 import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.workdef.WorkDefinition;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -79,7 +79,7 @@ public class AtsConfigWizard extends Wizard implements INewWizard {
    private static final class OpenAtsConfigEditors implements Display {
 
       @Override
-      public void openAtsConfigurationEditors(final IAtsTeamDefinition teamDef, final Collection<IAtsActionableItem> aias, final WorkDefinition workDefinition) {
+      public void openAtsConfigurationEditors(final IAtsTeamDefinition teamDef, final Collection<IAtsActionableItem> aias, final IAtsWorkDefinition workDefinition) {
          Job job = new UIJob("Open Ats Configuration Editors") {
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {

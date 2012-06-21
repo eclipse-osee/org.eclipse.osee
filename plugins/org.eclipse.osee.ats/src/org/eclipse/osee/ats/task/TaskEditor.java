@@ -26,9 +26,9 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.model.IAtsVersion;
-import org.eclipse.osee.ats.core.workflow.IWorkPage;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.workdef.api.IStateToken;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
 import org.eclipse.osee.ats.world.WorldEditor;
@@ -355,7 +355,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IAtsMetricsPro
    }
 
    @Override
-   public Collection<TaskArtifact> getTaskArtifacts(IWorkPage state) {
+   public Collection<TaskArtifact> getTaskArtifacts(IStateToken state) {
       return tasks;
    }
 

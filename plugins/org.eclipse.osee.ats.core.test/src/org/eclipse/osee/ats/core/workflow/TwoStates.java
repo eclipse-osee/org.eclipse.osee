@@ -11,25 +11,25 @@
 package org.eclipse.osee.ats.core.workflow;
 
 import java.util.List;
-import org.eclipse.osee.ats.core.workflow.WorkPageAdapter;
-import org.eclipse.osee.ats.core.workflow.WorkPageType;
+import org.eclipse.osee.ats.core.workflow.StateTypeAdapter;
+import org.eclipse.osee.ats.workdef.api.StateType;
 
-public class TwoStates extends WorkPageAdapter {
+public class TwoStates extends StateTypeAdapter {
 
-   public static TwoStates Endorse = new TwoStates("Endorse", WorkPageType.Working);
-   public static TwoStates Cancelled = new TwoStates("Cancelled", WorkPageType.Cancelled);
-   public static TwoStates Completed = new TwoStates("Completed", WorkPageType.Completed);
+   public static TwoStates Endorse = new TwoStates("Endorse", StateType.Working);
+   public static TwoStates Cancelled = new TwoStates("Cancelled", StateType.Cancelled);
+   public static TwoStates Completed = new TwoStates("Completed", StateType.Completed);
 
-   public TwoStates(String pageName, WorkPageType workPageType) {
-      super(TwoStates.class, pageName, workPageType);
+   public TwoStates(String pageName, StateType StateType) {
+      super(TwoStates.class, pageName, StateType);
    }
 
    public static TwoStates valueOf(String pageName) {
-      return WorkPageAdapter.valueOfPage(TwoStates.class, pageName);
+      return StateTypeAdapter.valueOfPage(TwoStates.class, pageName);
    }
 
    public static List<TwoStates> values() {
-      return WorkPageAdapter.pages(TwoStates.class);
+      return StateTypeAdapter.pages(TwoStates.class);
    }
 
 }

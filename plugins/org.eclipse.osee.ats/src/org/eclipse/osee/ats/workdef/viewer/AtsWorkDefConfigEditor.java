@@ -35,9 +35,10 @@ import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.gef.ui.parts.TreeViewer;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.util.TransferDropTargetListener;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
-import org.eclipse.osee.ats.core.workdef.WorkDefinition;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
+import org.eclipse.osee.ats.workdef.api.WorkDefUtil;
 import org.eclipse.osee.ats.workdef.viewer.model.DefaultTransitionConnection;
 import org.eclipse.osee.ats.workdef.viewer.model.ReturnTransitionConnection;
 import org.eclipse.osee.ats.workdef.viewer.model.StateDefShape;
@@ -211,26 +212,26 @@ public class AtsWorkDefConfigEditor extends GraphicalEditorWithFlyoutPalette {
       super.setInput(input);
       if (input instanceof AtsWorkDefConfigEditorInput) {
          AtsWorkDefConfigEditorInput editorInput = (AtsWorkDefConfigEditorInput) input;
-         WorkDefinition workflowDef = editorInput.workflow;
+         IAtsWorkDefinition workflowDef = editorInput.workflow;
          try {
             setPartName(workflowDef.getName());
             diagram = new WorkDefinitionDiagram(workflowDef);
             int yLocNormalState = 20;
             int yLocCancelledState = 40;
-            StateDefinition startPage = workflowDef.getStartState();
+            IAtsStateDefinition startPage = workflowDef.getStartState();
             if (startPage == null || startPage.getName().equals("")) {
                throw new OseeArgumentException("StartPage null for workflow " + workflowDef);
             }
             // Create states
-            List<StateDefinition> stateDefs = workflowDef.getStatesOrderedByDefaultToState();
-            for (StateDefinition stateDef : workflowDef.getStates()) {
+            List<IAtsStateDefinition> stateDefs = WorkDefUtil.getStatesOrderedByDefaultToState(workflowDef);
+            for (IAtsStateDefinition stateDef : workflowDef.getStates()) {
                if (!stateDefs.contains(stateDef)) {
                   stateDefs.add(stateDef);
                }
             }
-            for (StateDefinition pageDef : stateDefs) {
+            for (IAtsStateDefinition pageDef : stateDefs) {
                StateDefShape stateShape = new StateDefShape(pageDef);
-               if (pageDef.isCancelledPage()) {
+               if (pageDef.getStateType().isCancelledState()) {
                   stateShape.setLocation(new Point(350, yLocCancelledState));
                   yLocCancelledState += 90;
                } else {
@@ -241,14 +242,14 @@ public class AtsWorkDefConfigEditor extends GraphicalEditorWithFlyoutPalette {
             }
 
             // Create transitions
-            for (StateDefinition stateDef : workflowDef.getStatesOrderedByDefaultToState()) {
+            for (IAtsStateDefinition stateDef : WorkDefUtil.getStatesOrderedByDefaultToState(workflowDef)) {
                StateDefShape pageShape = getStateDefShape(stateDef);
                // Handle to pages
-               Set<StateDefinition> toPages = new HashSet<StateDefinition>();
+               Set<IAtsStateDefinition> toPages = new HashSet<IAtsStateDefinition>();
                toPages.addAll(pageShape.getStateDefinition().getToStates());
-               List<StateDefinition> returnStateDefs =
+               List<IAtsStateDefinition> returnStateDefs =
                   pageShape.getStateDefinition().getOverrideAttributeValidationStates();
-               for (StateDefinition toStateDef : toPages) {
+               for (IAtsStateDefinition toStateDef : toPages) {
                   // Don't want to show return pages twice
                   if (returnStateDefs.contains(toStateDef)) {
                      continue;
@@ -263,7 +264,7 @@ public class AtsWorkDefConfigEditor extends GraphicalEditorWithFlyoutPalette {
                   }
                }
                // Handle return pages
-               for (StateDefinition toPageDef : returnStateDefs) {
+               for (IAtsStateDefinition toPageDef : returnStateDefs) {
                   StateDefShape toPageShape = getStateDefShape(toPageDef);
                   new ReturnTransitionConnection(pageShape, toPageShape);
                   //               System.out.println("Return: " + atsWorkPage.getName() + " -> " + toPageShape.getName());
@@ -279,7 +280,7 @@ public class AtsWorkDefConfigEditor extends GraphicalEditorWithFlyoutPalette {
 
    }
 
-   private StateDefShape getStateDefShape(StateDefinition stateDef) {
+   private StateDefShape getStateDefShape(IAtsStateDefinition stateDef) {
       for (Object object : getModel().getChildren()) {
          if (object instanceof StateDefShape) {
             if (((StateDefShape) object).getId().equals(stateDef.getName())) {

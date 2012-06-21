@@ -15,8 +15,8 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -39,10 +39,10 @@ public class AtsPeerToPeerReviewPrepareStateItem extends AtsStateItem {
    }
 
    @Override
-   public void xWidgetCreated(XWidget widget, FormToolkit toolkit, StateDefinition stateDefinition, Artifact art, boolean isEditable) {
+   public void xWidgetCreated(XWidget widget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable) {
       try {
          if (art.isOfType(AtsArtifactTypes.PeerToPeerReview) && //
-         stateDefinition.getPageName().equals(PeerToPeerReviewState.Prepare.getPageName()) && //
+         stateDefinition.getName().equals(PeerToPeerReviewState.Prepare.getName()) && //
          ReviewManager.cast(art).getParentAWA() == null && //
          widget.getLabel().equals(AtsAttributeTypes.ReviewBlocks.getUnqualifiedName())) {
             XComboDam decisionComboDam = (XComboDam) widget;

@@ -30,20 +30,20 @@ import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.users.AtsUsers;
-import org.eclipse.osee.ats.core.workdef.CompositeStateItem;
-import org.eclipse.osee.ats.core.workdef.DecisionReviewDefinition;
-import org.eclipse.osee.ats.core.workdef.DecisionReviewOption;
-import org.eclipse.osee.ats.core.workdef.PeerReviewDefinition;
-import org.eclipse.osee.ats.core.workdef.RuleDefinition;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
-import org.eclipse.osee.ats.core.workdef.StateItem;
-import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
-import org.eclipse.osee.ats.core.workdef.WidgetOption;
-import org.eclipse.osee.ats.core.workdef.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.workdef.api.IAtsCompositeLayoutItem;
+import org.eclipse.osee.ats.workdef.api.IAtsDecisionReviewDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsDecisionReviewOption;
+import org.eclipse.osee.ats.workdef.api.IAtsLayoutItem;
+import org.eclipse.osee.ats.workdef.api.IAtsPeerReviewDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
+import org.eclipse.osee.ats.workdef.api.WidgetOption;
+import org.eclipse.osee.ats.workdef.api.WorkDefUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -98,7 +98,8 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          if (getTreeViewer() != null) {
             if (editor != null) {
                getTreeViewer().setInput(editor);
-               StateDefinition stateDef = WorkflowManager.getCurrentAtsWorkPage((editor).getAwa()).getStateDefinition();
+               IAtsStateDefinition stateDef =
+                  WorkflowManager.getCurrentAtsWorkPage((editor).getAwa()).getStateDefinition();
                StructuredSelection newSelection = new StructuredSelection(Arrays.asList(stateDef));
                getTreeViewer().expandToLevel((editor).getAwa(), 2);
                getTreeViewer().expandToLevel(stateDef, 1);
@@ -131,7 +132,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
             return ((SMAEditor) element).getTitleImage();
          } else if (element instanceof AbstractWorkflowArtifact) {
             return ArtifactImageManager.getImage((AbstractWorkflowArtifact) element);
-         } else if (element instanceof StateDefinition) {
+         } else if (element instanceof IAtsStateDefinition) {
             return ImageManager.getImage(AtsImage.STATE_DEFINITION);
          } else if (element instanceof IAtsStateItem || element instanceof WrappedStateItems) {
             return ImageManager.getImage(AtsImage.STATE_ITEM);
@@ -139,9 +140,9 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
             return ImageManager.getImage(AtsImage.TRACE);
          } else if (element instanceof WorkDefinitionMatch) {
             return ImageManager.getImage(AtsImage.WORKFLOW_CONFIG);
-         } else if (element instanceof WidgetDefinition) {
+         } else if (element instanceof IAtsWidgetDefinition) {
             return ImageManager.getImage(FrameworkImage.GEAR);
-         } else if (element instanceof CompositeStateItem || element instanceof WrappedLayout) {
+         } else if (element instanceof IAtsCompositeLayoutItem || element instanceof WrappedLayout) {
             return ImageManager.getImage(AtsImage.COMPOSITE_STATE_ITEM);
          } else if (element instanceof String || element instanceof WidgetOption || element instanceof WrappedPercentWeight) {
             return ImageManager.getImage(AtsImage.RIGHT_ARROW_SM);
@@ -151,11 +152,11 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
             return ImageManager.getImage(FrameworkImage.RULE);
          } else if (element instanceof User) {
             return ImageManager.getImage(FrameworkImage.USER);
-         } else if (element instanceof WrappedPeerReviews || element instanceof PeerReviewDefinition) {
+         } else if (element instanceof WrappedPeerReviews || element instanceof IAtsPeerReviewDefinition) {
             return ImageManager.getImage(AtsImage.PEER_REVIEW);
-         } else if (element instanceof WrappedDecisionReviews || element instanceof DecisionReviewDefinition) {
+         } else if (element instanceof WrappedDecisionReviews || element instanceof IAtsDecisionReviewDefinition) {
             return ImageManager.getImage(AtsImage.DECISION_REVIEW);
-         } else if (element instanceof DecisionReviewOption) {
+         } else if (element instanceof IAtsDecisionReviewOption) {
             return ImageManager.getImage(FrameworkImage.QUESTION);
          }
          return null;
@@ -199,10 +200,10 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
             items.addAll(((WrappedTrace) element).getTrace());
          } else if (element instanceof WorkDefinitionMatch) {
             getChildrenFromWorkDefinitionMatch(element, items);
-         } else if (element instanceof StateDefinition) {
+         } else if (element instanceof IAtsStateDefinition) {
             getChildrenFromStateDefinition(element, items);
-         } else if (element instanceof CompositeStateItem) {
-            items.addAll(((CompositeStateItem) element).getStateItems());
+         } else if (element instanceof IAtsCompositeLayoutItem) {
+            items.addAll(((IAtsCompositeLayoutItem) element).getaLayoutItems());
          } else if (element instanceof User) {
             items.add("Assignee: " + ((User) element).getName());
          } else if (element instanceof WrappedStateItems) {
@@ -212,19 +213,19 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
             items.add("Full Name: " + ((IAtsStateItem) element).getFullName());
          } else if (element instanceof WrappedTransitions) {
             items.addAll(((WrappedTransitions) element).getTransitions());
-         } else if (element instanceof DecisionReviewDefinition) {
+         } else if (element instanceof IAtsDecisionReviewDefinition) {
             getChildrenFromDecisionReviewDefinition(element, items);
-         } else if (element instanceof PeerReviewDefinition) {
+         } else if (element instanceof IAtsPeerReviewDefinition) {
             getChildrenFromPeerReviewDefinition(element, items);
-         } else if (element instanceof DecisionReviewOption) {
-            getUsersFromDecisionReviewOpt((DecisionReviewOption) element, items);
+         } else if (element instanceof IAtsDecisionReviewOption) {
+            getUsersFromDecisionReviewOpt((IAtsDecisionReviewOption) element, items);
          } else if (element instanceof WrappedDecisionReviews) {
             items.addAll(((WrappedDecisionReviews) element).getDecisionReviews());
          } else if (element instanceof WrappedPeerReviews) {
             items.addAll(((WrappedPeerReviews) element).getPeerReviews());
          } else if (element instanceof WrappedRules) {
             items.addAll(((WrappedRules) element).getRuleAndLocations());
-         } else if (element instanceof WidgetDefinition) {
+         } else if (element instanceof IAtsWidgetDefinition) {
             getChildrenFromWidgetDefinition(element, items);
          } else if (element instanceof String) {
             items.add(element);
@@ -239,12 +240,10 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       public Object getParent(Object element) {
          if (element instanceof AbstractWorkflowArtifact) {
             return editor;
-         } else if (element instanceof WorkDefinition) {
+         } else if (element instanceof IAtsWorkDefinition) {
             return editor;
-         } else if (element instanceof StateDefinition) {
-            return ((StateDefinition) element).getWorkDefinition();
-         } else if (element instanceof RuleDefinition) {
-            return editor;
+         } else if (element instanceof IAtsStateDefinition) {
+            return ((IAtsStateDefinition) element).getWorkDefinition();
          } else if (element instanceof String) {
             return editor;
          }
@@ -259,26 +258,24 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
             return true;
          } else if (element instanceof WorkDefinitionMatch) {
             return true;
-         } else if (element instanceof StateDefinition) {
+         } else if (element instanceof IAtsStateDefinition) {
             return true;
-         } else if (element instanceof RuleDefinition) {
-            return false;
-         } else if (element instanceof CompositeStateItem) {
+         } else if (element instanceof IAtsCompositeLayoutItem) {
             return true;
          } else if (element instanceof IAtsStateItem) {
             return true;
-         } else if (element instanceof WidgetDefinition) {
+         } else if (element instanceof IAtsWidgetDefinition) {
             return true;
-         } else if (element instanceof PeerReviewDefinition) {
+         } else if (element instanceof IAtsPeerReviewDefinition) {
             return true;
-         } else if (element instanceof DecisionReviewDefinition) {
+         } else if (element instanceof IAtsDecisionReviewDefinition) {
             return true;
-         } else if (element instanceof DecisionReviewOption) {
-            return !((DecisionReviewOption) element).getUserIds().isEmpty();
+         } else if (element instanceof IAtsDecisionReviewOption) {
+            return !((IAtsDecisionReviewOption) element).getUserIds().isEmpty();
          } else if (element instanceof WrappedTransitions) {
             return true;
          } else if (element instanceof WrappedPercentWeight) {
-            return ((WrappedPercentWeight) element).getWorkDef().isStateWeightingEnabled();
+            return WorkDefUtil.isStateWeightingEnabled(((WrappedPercentWeight) element).getWorkDef());
          } else if (element instanceof WrappedLayout) {
             return !((WrappedLayout) element).stateItems.isEmpty();
          } else if (element instanceof WrappedDecisionReviews) {
@@ -300,42 +297,42 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       }
 
       private void getChildrenFromWrappedPercentDefinition(WrappedPercentWeight weightDef, List<Object> items) {
-         for (StateDefinition stateDef : weightDef.getWorkDef().getStatesOrderedByDefaultToState()) {
+         for (IAtsStateDefinition stateDef : WorkDefUtil.getStatesOrderedByDefaultToState(weightDef.getWorkDef())) {
             items.add(String.format("State [%s]: %d", stateDef.getName(), stateDef.getStateWeight()));
          }
       }
 
       private void getChildrenFromWidgetDefinition(Object element, List<Object> items) {
-         items.add("XWidget: " + ((WidgetDefinition) element).getXWidgetName());
-         items.add("Attribute Name: " + ((WidgetDefinition) element).getAtrributeName());
-         if (Strings.isValid(((WidgetDefinition) element).getDescription())) {
-            items.add("Description: " + ((WidgetDefinition) element).getDescription());
+         items.add("XWidget: " + ((IAtsWidgetDefinition) element).getXWidgetName());
+         items.add("Attribute Name: " + ((IAtsWidgetDefinition) element).getAtrributeName());
+         if (Strings.isValid(((IAtsWidgetDefinition) element).getDescription())) {
+            items.add("Description: " + ((IAtsWidgetDefinition) element).getDescription());
          }
-         if (((WidgetDefinition) element).getHeight() > 0) {
-            items.add("Height: " + ((WidgetDefinition) element).getHeight());
+         if (((IAtsWidgetDefinition) element).getHeight() > 0) {
+            items.add("Height: " + ((IAtsWidgetDefinition) element).getHeight());
          }
-         if (Strings.isValid(((WidgetDefinition) element).getAtrributeName())) {
-            items.add("Tooltip: " + ((WidgetDefinition) element).getAtrributeName());
+         if (Strings.isValid(((IAtsWidgetDefinition) element).getAtrributeName())) {
+            items.add("Tooltip: " + ((IAtsWidgetDefinition) element).getAtrributeName());
          }
-         if (!((WidgetDefinition) element).getOptions().getXOptions().isEmpty()) {
-            items.addAll(((WidgetDefinition) element).getOptions().getXOptions());
+         if (!((IAtsWidgetDefinition) element).getOptions().getXOptions().isEmpty()) {
+            items.addAll(((IAtsWidgetDefinition) element).getOptions().getXOptions());
          }
       }
 
       private void getChildrenFromPeerReviewDefinition(Object element, List<Object> items) {
-         if (Strings.isValid(((PeerReviewDefinition) element).getReviewTitle())) {
-            items.add("Title: " + ((PeerReviewDefinition) element).getReviewTitle());
+         if (Strings.isValid(((IAtsPeerReviewDefinition) element).getReviewTitle())) {
+            items.add("Title: " + ((IAtsPeerReviewDefinition) element).getReviewTitle());
          }
-         if (Strings.isValid(((PeerReviewDefinition) element).getDescription())) {
-            items.add("Description: " + ((PeerReviewDefinition) element).getDescription());
+         if (Strings.isValid(((IAtsPeerReviewDefinition) element).getDescription())) {
+            items.add("Description: " + ((IAtsPeerReviewDefinition) element).getDescription());
          }
-         if (Strings.isValid(((PeerReviewDefinition) element).getLocation())) {
-            items.add("Description: " + ((PeerReviewDefinition) element).getLocation());
+         if (Strings.isValid(((IAtsPeerReviewDefinition) element).getLocation())) {
+            items.add("Description: " + ((IAtsPeerReviewDefinition) element).getLocation());
          }
-         items.add("On Event: " + ((PeerReviewDefinition) element).getStateEventType().name());
-         items.add("Related To State: " + ((PeerReviewDefinition) element).getRelatedToState());
-         items.add("Review Blocks: " + ((PeerReviewDefinition) element).getBlockingType().name());
-         for (String userId : ((PeerReviewDefinition) element).getAssignees()) {
+         items.add("On Event: " + ((IAtsPeerReviewDefinition) element).getStateEventType().name());
+         items.add("Related To State: " + ((IAtsPeerReviewDefinition) element).getRelatedToState());
+         items.add("Review Blocks: " + ((IAtsPeerReviewDefinition) element).getBlockingType().name());
+         for (String userId : ((IAtsPeerReviewDefinition) element).getAssignees()) {
             try {
                items.add(UserManager.getUserByUserId(userId));
             } catch (OseeCoreException ex) {
@@ -346,17 +343,17 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       }
 
       private void getChildrenFromDecisionReviewDefinition(Object element, List<Object> items) {
-         if (Strings.isValid(((DecisionReviewDefinition) element).getReviewTitle())) {
-            items.add("Title: " + ((DecisionReviewDefinition) element).getReviewTitle());
+         if (Strings.isValid(((IAtsDecisionReviewDefinition) element).getReviewTitle())) {
+            items.add("Title: " + ((IAtsDecisionReviewDefinition) element).getReviewTitle());
          }
-         if (Strings.isValid(((DecisionReviewDefinition) element).getDescription())) {
-            items.add("Description: " + ((DecisionReviewDefinition) element).getDescription());
+         if (Strings.isValid(((IAtsDecisionReviewDefinition) element).getDescription())) {
+            items.add("Description: " + ((IAtsDecisionReviewDefinition) element).getDescription());
          }
-         items.add("On Event: " + ((DecisionReviewDefinition) element).getStateEventType().name());
-         items.add("Related To State: " + ((DecisionReviewDefinition) element).getRelatedToState());
-         items.add("Review Blocks: " + ((DecisionReviewDefinition) element).getBlockingType().name());
-         items.add("Auto Transition to Decision: " + ((DecisionReviewDefinition) element).isAutoTransitionToDecision());
-         for (String userId : ((DecisionReviewDefinition) element).getAssignees()) {
+         items.add("On Event: " + ((IAtsDecisionReviewDefinition) element).getStateEventType().name());
+         items.add("Related To State: " + ((IAtsDecisionReviewDefinition) element).getRelatedToState());
+         items.add("Review Blocks: " + ((IAtsDecisionReviewDefinition) element).getBlockingType().name());
+         items.add("Auto Transition to Decision: " + ((IAtsDecisionReviewDefinition) element).isAutoTransitionToDecision());
+         for (String userId : ((IAtsDecisionReviewDefinition) element).getAssignees()) {
             try {
                items.add(UserManager.getUserByUserId(userId));
             } catch (OseeCoreException ex) {
@@ -364,16 +361,16 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
                items.add(String.format("Exception loading user from id [%s] [%s]", userId, ex.getLocalizedMessage()));
             }
          }
-         items.addAll(((DecisionReviewDefinition) element).getOptions());
+         items.addAll(((IAtsDecisionReviewDefinition) element).getOptions());
       }
 
       private void getChildrenFromStateDefinition(Object element, List<Object> items) {
-         StateDefinition stateDef = (StateDefinition) element;
+         IAtsStateDefinition stateDef = (IAtsStateDefinition) element;
          items.add("Ordinal: " + stateDef.getOrdinal());
          if (Strings.isValid(stateDef.getDescription())) {
             items.add("Description: " + stateDef.getDescription());
          }
-         items.add(new WrappedLayout(stateDef.getStateItems()));
+         items.add(new WrappedLayout(stateDef.getLayoutItems()));
          items.add(new WrappedRules(stateDef, awa));
          if (stateDef.getRecommendedPercentComplete() == null) {
             items.add("Recommended Percent Complete: not set");
@@ -389,16 +386,13 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       }
 
       private void getChildrenFromWorkDefinitionMatch(Object element, List<Object> items) {
-         for (String id : ((WorkDefinitionMatch) element).getWorkDefinition().getIds()) {
-            items.add("Id: " + id);
-         }
-         items.addAll(((WorkDefinitionMatch) element).getWorkDefinition().getStatesOrderedByDefaultToState());
+         items.addAll(WorkDefUtil.getStatesOrderedByDefaultToState(((WorkDefinitionMatch) element).getWorkDefinition()));
          items.addAll(((WorkDefinitionMatch) element).getWorkDefinition().getRules());
          items.add(new WrappedPercentWeight(((WorkDefinitionMatch) element).getWorkDefinition()));
          items.add(new WrappedTrace(((WorkDefinitionMatch) element).getTrace()));
       }
 
-      private void getUsersFromDecisionReviewOpt(DecisionReviewOption revOpt, List<Object> items) {
+      private void getUsersFromDecisionReviewOpt(IAtsDecisionReviewOption revOpt, List<Object> items) {
          for (String userId : revOpt.getUserIds()) {
             IAtsUser user = AtsUsers.getUser(userId);
             items.add(user);
@@ -421,10 +415,10 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
    }
 
    private static class WrappedRules {
-      private final StateDefinition stateDef;
+      private final IAtsStateDefinition stateDef;
       private final AbstractWorkflowArtifact awa;
 
-      public WrappedRules(StateDefinition stateDef, AbstractWorkflowArtifact awa) {
+      public WrappedRules(IAtsStateDefinition stateDef, AbstractWorkflowArtifact awa) {
          this.stateDef = stateDef;
          this.awa = awa;
       }
@@ -437,20 +431,18 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       public Collection<RuleAndLocation> getRuleAndLocations() {
          List<RuleAndLocation> result = new ArrayList<SMAEditorOutlinePage.RuleAndLocation>();
          // get rules from stateDef
-         for (RuleDefinition ruleDef : stateDef.getRules()) {
-            for (String location : stateDef.getRuleLocations(ruleDef)) {
-               result.add(new RuleAndLocation(ruleDef, location));
-            }
+         for (String ruleDef : stateDef.getRules()) {
+            result.add(new RuleAndLocation(ruleDef, "State Definition"));
          }
          // add rules from Team Definition
          if (awa.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             try {
                IAtsTeamDefinition teamDef = ((TeamWorkFlowArtifact) awa).getTeamDefinition();
-               for (RuleDefinition workRuleDef : teamDef.getRules()) {
+               for (String workRuleDef : teamDef.getRules()) {
                   String location = String.format("Team Definition [%s]", teamDef);
                   result.add(new RuleAndLocation(workRuleDef, location));
-                  if (workRuleDef.getName().startsWith("ats")) {
-                     result.add(new RuleAndLocation(new RuleDefinition(workRuleDef.getName().replaceFirst("^ats", "")),
+                  if (workRuleDef.startsWith("ats")) {
+                     result.add(new RuleAndLocation(workRuleDef.replaceFirst("^ats", ""),
                         location + " translated from WorkRuleDefinition starting with ats"));
                   }
                }
@@ -463,26 +455,26 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
    }
 
    private static class RuleAndLocation {
-      private final RuleDefinition ruleDef;
+      private final String rule;
       private final String location;
 
-      public RuleAndLocation(RuleDefinition ruleDef, String location) {
-         this.ruleDef = ruleDef;
+      public RuleAndLocation(String rule, String location) {
+         this.rule = rule;
          this.location = location;
       }
 
       @Override
       public String toString() {
-         return String.format("%s [%s]", ruleDef.getName(), location);
+         return String.format("%s [%s]", rule, location);
       }
 
    }
 
    private static class WrappedStates {
       private final String name;
-      private final Collection<StateDefinition> states;
+      private final Collection<IAtsStateDefinition> states;
 
-      public WrappedStates(String name, Collection<StateDefinition> states) {
+      public WrappedStates(String name, Collection<IAtsStateDefinition> states) {
          this.name = name;
          this.states = states;
       }
@@ -492,37 +484,37 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          return name + (states.isEmpty() ? " (Empty)" : "");
       }
 
-      public Collection<StateDefinition> getStates() {
+      public Collection<IAtsStateDefinition> getStates() {
          return states;
       }
 
    }
    private static class WrappedPercentWeight {
 
-      private final WorkDefinition workDef;
+      private final IAtsWorkDefinition workDef;
 
-      public WrappedPercentWeight(WorkDefinition workDef) {
+      public WrappedPercentWeight(IAtsWorkDefinition workDef) {
          this.workDef = workDef;
       }
 
       @Override
       public String toString() {
-         if (workDef.isStateWeightingEnabled()) {
+         if (WorkDefUtil.isStateWeightingEnabled(workDef)) {
             return "Total Percent Weighting";
          } else {
             return "Total Percent Weighting: Single Percent";
          }
       }
 
-      public WorkDefinition getWorkDef() {
+      public IAtsWorkDefinition getWorkDef() {
          return workDef;
       }
 
    }
    private static class WrappedDecisionReviews {
-      private final Collection<DecisionReviewDefinition> decReviews;
+      private final Collection<IAtsDecisionReviewDefinition> decReviews;
 
-      public WrappedDecisionReviews(Collection<DecisionReviewDefinition> decReviews) {
+      public WrappedDecisionReviews(Collection<IAtsDecisionReviewDefinition> decReviews) {
          this.decReviews = decReviews;
       }
 
@@ -531,7 +523,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          return "Decision Reviews" + (decReviews.isEmpty() ? " (Empty)" : "");
       }
 
-      public Collection<DecisionReviewDefinition> getDecisionReviews() {
+      public Collection<IAtsDecisionReviewDefinition> getDecisionReviews() {
          return decReviews;
       }
 
@@ -554,9 +546,9 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
 
    }
    private static class WrappedPeerReviews {
-      private final Collection<PeerReviewDefinition> decReviews;
+      private final Collection<IAtsPeerReviewDefinition> decReviews;
 
-      public WrappedPeerReviews(Collection<PeerReviewDefinition> decReviews) {
+      public WrappedPeerReviews(Collection<IAtsPeerReviewDefinition> decReviews) {
          this.decReviews = decReviews;
       }
 
@@ -565,7 +557,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          return "Peer Reviews" + (decReviews.isEmpty() ? " (Empty)" : "");
       }
 
-      public Collection<PeerReviewDefinition> getPeerReviews() {
+      public Collection<IAtsPeerReviewDefinition> getPeerReviews() {
          return decReviews;
       }
 
@@ -588,9 +580,9 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
 
    }
    private static class WrappedLayout {
-      private final Collection<StateItem> stateItems;
+      private final Collection<IAtsLayoutItem> stateItems;
 
-      public WrappedLayout(Collection<StateItem> stateItems) {
+      public WrappedLayout(Collection<IAtsLayoutItem> stateItems) {
          this.stateItems = stateItems;
       }
 
@@ -599,7 +591,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          return "Layout" + (stateItems.isEmpty() ? " (Empty)" : "");
       }
 
-      public Collection<StateItem> getStateItems() {
+      public Collection<IAtsLayoutItem> getStateItems() {
          return stateItems;
       }
 
@@ -607,14 +599,14 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
 
    private static class WrappedTransitions {
 
-      private final StateDefinition stateDef;
+      private final IAtsStateDefinition stateDef;
 
-      public WrappedTransitions(StateDefinition stateDef) {
+      public WrappedTransitions(IAtsStateDefinition stateDef) {
          this.stateDef = stateDef;
       }
 
       public Collection<Object> getTransitions() {
-         List<StateDefinition> defaultToStates = new ArrayList<StateDefinition>();
+         List<IAtsStateDefinition> defaultToStates = new ArrayList<IAtsStateDefinition>();
          if (stateDef.getDefaultToState() != null) {
             defaultToStates.add(stateDef.getDefaultToState());
          }

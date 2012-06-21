@@ -21,8 +21,8 @@ import org.eclipse.osee.ats.core.client.review.role.UserRole;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.model.IAtsUser;
-import org.eclipse.osee.ats.core.workflow.IWorkPage;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.workdef.api.IStateToken;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -90,8 +90,8 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
       Assert.assertEquals(1, peerRevArt.getStateMgr().getAssignees().size());
       Assert.assertEquals(AtsUsersClient.getUser(), peerRevArt.getStateMgr().getAssignees().iterator().next());
 
-      IWorkPage fromState = peerRevArt.getWorkDefinition().getStateByName(PeerToPeerReviewState.Prepare.getPageName());
-      IWorkPage toState = peerRevArt.getWorkDefinition().getStateByName(PeerToPeerReviewState.Review.getPageName());
+      IStateToken fromState = peerRevArt.getWorkDefinition().getStateByName(PeerToPeerReviewState.Prepare.getName());
+      IStateToken toState = peerRevArt.getWorkDefinition().getStateByName(PeerToPeerReviewState.Review.getName());
 
       // make call to state item that should set options based on artifact's attribute value
       AtsPeerToPeerReviewReviewStateItem stateItem = new AtsPeerToPeerReviewReviewStateItem();

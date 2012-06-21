@@ -14,7 +14,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.WorkflowManagerCore;
-import org.eclipse.osee.ats.core.workflow.IWorkPage;
+import org.eclipse.osee.ats.workdef.api.IStateToken;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -55,9 +55,9 @@ public class PercentCompleteSMAStateUtil {
    /**
     * Return Percent Complete working ONLY the SMA stateName (not children SMAs)
     */
-   public static int getPercentCompleteSMAState(Artifact artifact, IWorkPage state) throws OseeCoreException {
+   public static int getPercentCompleteSMAState(Artifact artifact, IStateToken state) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-         return WorkflowManagerCore.getStateManager(artifact).getPercentComplete(state.getPageName());
+         return WorkflowManagerCore.getStateManager(artifact).getPercentComplete(state.getName());
       }
       return 0;
    }

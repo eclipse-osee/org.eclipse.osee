@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore
 import org.eclipse.osee.ats.core.client.config.store.VersionArtifactStore;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.client.workdef.ConvertAtsDslToWorkDefinition;
+import org.eclipse.osee.ats.core.client.workdef.AtsWorkDefinitionStore;
 import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.config.ActionableItemFactory;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
@@ -35,16 +35,16 @@ import org.eclipse.osee.ats.core.config.VersionFactory;
 import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsVersion;
-import org.eclipse.osee.ats.core.workdef.ConvertWorkDefinitionToAtsDsl;
-import org.eclipse.osee.ats.core.workdef.WorkDefinition;
+import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
-import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
-import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionProvider;
+import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
+import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionImporter;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -68,7 +68,7 @@ import org.eclipse.ui.progress.UIJob;
 public class AtsConfigManager extends AbstractOperation {
 
    public static interface Display {
-      public void openAtsConfigurationEditors(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> aias, WorkDefinition workDefinition);
+      public void openAtsConfigurationEditors(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> aias, IAtsWorkDefinition workDefinition);
    }
 
    private final String name;
@@ -95,7 +95,7 @@ public class AtsConfigManager extends AbstractOperation {
       WorkDefinitionMatch match = null;
       try {
          match = WorkDefinitionFactory.getWorkDefinition(name);
-      } catch (OseeArgumentException ex) {
+      } catch (Exception ex) {
          return;
       }
       if (match.isMatched()) {
@@ -119,7 +119,7 @@ public class AtsConfigManager extends AbstractOperation {
       createVersions(transaction, teamDefinition);
 
       XResultData resultData = new XResultData();
-      WorkDefinition workDefinition = createWorkflow(transaction, resultData, teamDefinition);
+      IAtsWorkDefinition workDefinition = createWorkflow(transaction, resultData, teamDefinition);
 
       transaction.execute();
       monitor.worked(calculateWork(0.30));
@@ -187,50 +187,49 @@ public class AtsConfigManager extends AbstractOperation {
       }
    }
 
-   private WorkDefinition createWorkflow(SkynetTransaction transaction, XResultData resultData, IAtsTeamDefinition teamDef) throws OseeCoreException {
+   private IAtsWorkDefinition createWorkflow(SkynetTransaction transaction, XResultData resultData, IAtsTeamDefinition teamDef) throws OseeCoreException {
       WorkDefinitionMatch workDefMatch = WorkDefinitionFactory.getWorkDefinition(name);
-      WorkDefinition workDef = null;
+      IAtsWorkDefinition workDef = null;
       // If can't be found, create a new one
       if (!workDefMatch.isMatched()) {
          workDef = generateDefaultWorkflow(name, resultData, transaction, teamDef);
-         String workDefXml = AtsWorkDefinitionProvider.get().workFlowDefinitionToString(workDef, resultData);
-         Artifact workDefArt =
-            AtsWorkDefinitionProvider.get().importWorkDefinitionToDb(workDefXml, workDef.getName(), name, resultData,
-               transaction);
-
-         Artifact folder = AtsUtilCore.getFromToken(AtsArtifactToken.WorkDefinitionsFolder);
-         folder.addChild(workDefArt);
-         folder.persist(transaction);
+         try {
+            String workDefXml = AtsWorkDefinitionService.getService().getStorageString(workDef, resultData);
+            Artifact workDefArt =
+               AtsWorkDefinitionImporter.get().importWorkDefinitionToDb(workDefXml, workDef.getName(), name,
+                  resultData, transaction);
+            Artifact folder = AtsUtilCore.getFromToken(AtsArtifactToken.WorkDefinitionsFolder);
+            folder.addChild(workDefArt);
+            folder.persist(transaction);
+         } catch (Exception ex) {
+            throw new OseeWrappedException(ex);
+         }
       } else {
          workDef = workDefMatch.getWorkDefinition();
       }
       // Relate new team def to workflow artifact
-      teamDef.setWorkflowDefinition(workDef.getIds().iterator().next());
+      teamDef.setWorkflowDefinition(workDef.getId());
       new TeamDefinitionArtifactStore(teamDef).saveToArtifact(transaction);
       return workDef;
    }
 
-   private WorkDefinition generateDefaultWorkflow(String name, XResultData resultData, SkynetTransaction transaction, IAtsTeamDefinition teamDef) throws OseeCoreException {
-      WorkDefinition defaultWorkDef =
+   private IAtsWorkDefinition generateDefaultWorkflow(String name, XResultData resultData, SkynetTransaction transaction, IAtsTeamDefinition teamDef) throws OseeCoreException {
+      IAtsWorkDefinition defaultWorkDef =
          WorkDefinitionFactory.getWorkDefinition(AtsWorkDefinitionSheetProviders.WORK_DEF_TEAM_DEFAULT).getWorkDefinition();
 
       // Duplicate default team workflow definition w/ namespace changes
-      ConvertWorkDefinitionToAtsDsl converter = new ConvertWorkDefinitionToAtsDsl(resultData);
-      AtsDsl atsDsl = converter.convert(name, defaultWorkDef);
 
-      // Convert back to WorkDefinition
-      ConvertAtsDslToWorkDefinition converter2 = new ConvertAtsDslToWorkDefinition(name, atsDsl);
-      WorkDefinition newWorkDef = converter2.convert();
-      newWorkDef.getIds().clear();
-      newWorkDef.getIds().add(name);
-      newWorkDef.setName(name);
+      IAtsWorkDefinition newWorkDef =
+         AtsWorkDefinitionService.getService().copyWorkDefinition(name, defaultWorkDef, resultData,
+            AtsWorkDefinitionStore.getInstance().getAttributeResolver(),
+            AtsWorkDefinitionStore.getInstance().getUserResolver());
       return newWorkDef;
    }
 
    public static final class OpenAtsConfigEditors implements Display {
 
       @Override
-      public void openAtsConfigurationEditors(final IAtsTeamDefinition teamDef, final Collection<IAtsActionableItem> aias, final WorkDefinition workDefinition) {
+      public void openAtsConfigurationEditors(final IAtsTeamDefinition teamDef, final Collection<IAtsActionableItem> aias, final IAtsWorkDefinition workDefinition) {
          Job job = new UIJob("Open Ats Configuration Editors") {
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {

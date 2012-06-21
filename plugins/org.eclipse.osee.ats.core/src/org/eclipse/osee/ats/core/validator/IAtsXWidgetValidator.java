@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.validator;
 
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
-import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.workdef.api.WidgetResult;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -21,6 +22,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface IAtsXWidgetValidator {
 
-   public WidgetResult validateTransition(IValueProvider provider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef) throws OseeCoreException;
+   public WidgetResult validateTransition(IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) throws OseeCoreException;
 
 }

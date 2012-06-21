@@ -26,14 +26,12 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkflowProviders;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.util.WorkflowManagerCore;
-import org.eclipse.osee.ats.core.client.workdef.provider.AtsWorkDefinitionProviderCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.workdef.ConvertWorkDefinitionToAtsDsl;
-import org.eclipse.osee.ats.core.workdef.WorkDefinition;
+import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
-import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
+import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -63,12 +61,14 @@ public class WorkDefinitionFactory {
       workDefIdToWorkDefintion.clear();
    }
 
-   public static void addWorkDefinition(WorkDefinition workDef) {
-      workDefIdToWorkDefintion.put(workDef.getName(), new WorkDefinitionMatch(workDef,
-         "programatically added via WorkDefinitionFactory.addWorkDefinition"));
+   public static void addWorkDefinition(IAtsWorkDefinition workDef) {
+      WorkDefinitionMatch match =
+         new WorkDefinitionMatch(workDef.getId(), "programatically added via WorkDefinitionFactory.addWorkDefinition");
+      match.setWorkDefinition(workDef);
+      workDefIdToWorkDefintion.put(workDef.getName(), match);
    }
 
-   public static void removeWorkDefinition(WorkDefinition workDef) {
+   public static void removeWorkDefinition(IAtsWorkDefinition workDef) {
       workDefIdToWorkDefintion.remove(workDef.getName());
    }
 
@@ -80,8 +80,8 @@ public class WorkDefinitionFactory {
       return awaArtIdToWorkDefinition.get(artifact.getArtId());
    }
 
-   public static Collection<WorkDefinition> getLoadedWorkDefinitions() {
-      List<WorkDefinition> workDefs = new ArrayList<WorkDefinition>();
+   public static Collection<IAtsWorkDefinition> getLoadedWorkDefinitions() {
+      List<IAtsWorkDefinition> workDefs = new ArrayList<IAtsWorkDefinition>();
       for (WorkDefinitionMatch match : workDefIdToWorkDefintion.values()) {
          if (match.getWorkDefinition() != null) {
             workDefs.add(match.getWorkDefinition());
@@ -90,15 +90,24 @@ public class WorkDefinitionFactory {
       return workDefs;
    }
 
-   public static WorkDefinitionMatch getWorkDefinition(String id) throws OseeCoreException {
+   public static WorkDefinitionMatch getWorkDefinition(String id) {
       if (!workDefIdToWorkDefintion.containsKey(id)) {
          WorkDefinitionMatch match = new WorkDefinitionMatch();
          // Try to get from new DSL provider if configured to use it
          if (!match.isMatched()) {
-            WorkDefinition workDef = AtsWorkDefinitionProviderCore.get().getWorkFlowDefinition(id);
-            if (workDef != null) {
-               match.setWorkDefinition(workDef);
-               match.addTrace((String.format("from DSL provider loaded id [%s]", id)));
+            try {
+               XResultData resultData = new XResultData(false);
+               IAtsWorkDefinition workDef = AtsWorkDefinitionService.getService().getWorkDef(id, resultData);
+               if (workDef != null) {
+                  match.setWorkDefinition(workDef);
+                  if (!resultData.isEmpty()) {
+                     match.addTrace((String.format("from DSL provider loaded id [%s] [%s]", id, resultData.toString())));
+                  } else {
+                     match.addTrace((String.format("from DSL provider loaded id [%s]", id)));
+                  }
+               }
+            } catch (Exception ex) {
+               return new WorkDefinitionMatch(null, ex.getLocalizedMessage());
             }
          }
          if (match.isMatched()) {
@@ -274,15 +283,24 @@ public class WorkDefinitionFactory {
 
    public static Set<String> errorDisplayed = new HashSet<String>();
 
-   public static Set<WorkDefinition> loadAllDefinitions() throws OseeCoreException {
-      Set<WorkDefinition> workDefs = new HashSet<WorkDefinition>();
+   public static Set<IAtsWorkDefinition> loadAllDefinitions() throws OseeCoreException {
+      Set<IAtsWorkDefinition> workDefs = new HashSet<IAtsWorkDefinition>();
       // This load is faster than loading each by artifact type
       for (Artifact art : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.WorkDefinition,
          AtsUtilCore.getAtsBranch(), DeletionFlag.EXCLUDE_DELETED)) {
          try {
-            WorkDefinition workDef = AtsWorkDefinitionProviderCore.get().loadWorkDefinitionFromArtifact(art);
-            workDefs.add(workDef);
-         } catch (OseeCoreException ex) {
+            XResultData resultData = new XResultData(false);
+            IAtsWorkDefinition workDef = AtsWorkDefinitionService.getService().getWorkDef(art.getName(), resultData);
+            if (!resultData.isEmpty()) {
+               OseeLog.log(Activator.class, Level.SEVERE, resultData.toString());
+            }
+            if (workDef == null) {
+               OseeLog.logf(Activator.class, Level.SEVERE, "Null WorkDef loaded for Artifact [%s]",
+                  art.toStringWithId());
+            } else {
+               workDefs.add(workDef);
+            }
+         } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE,
                "Error loading WorkDefinition from artifact " + art.toStringWithId(), ex);
          }
@@ -294,13 +312,9 @@ public class WorkDefinitionFactory {
       return taskArt.getSoleAttributeValueAsString(AtsAttributeTypes.WorkflowDefinition, null) != null;
    }
 
-   public static WorkDefinition copyWorkDefinition(String newName, WorkDefinition workDef, XResultData resultData) {
-      ConvertWorkDefinitionToAtsDsl converter = new ConvertWorkDefinitionToAtsDsl(resultData);
-      AtsDsl atsDsl = converter.convert(newName, workDef);
-
-      // Convert back to WorkDefinition
-      ConvertAtsDslToWorkDefinition converter2 = new ConvertAtsDslToWorkDefinition(newName, atsDsl);
-      WorkDefinition newWorkDef = converter2.convert();
-      return newWorkDef;
+   public static IAtsWorkDefinition copyWorkDefinition(String newName, IAtsWorkDefinition workDef, XResultData resultData) {
+      return org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService.getService().copyWorkDefinition(newName,
+         workDef, resultData, AtsWorkDefinitionStore.getInstance().getAttributeResolver(),
+         AtsWorkDefinitionStore.getInstance().getUserResolver());
    }
 }

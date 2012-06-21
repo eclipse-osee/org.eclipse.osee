@@ -39,7 +39,7 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
    private final SMAEditor editor;
 
    public StatePercentCompleteXWidget(IManagedForm managedForm, StateXWidgetPage page, final AbstractWorkflowArtifact sma, Composite composite, int horizontalSpan, XModifiedListener xModListener, boolean isCurrentState, SMAEditor editor) {
-      super("\"" + page.getPageName() + "\"" + " State Percent Complete");
+      super("\"" + page.getName() + "\"" + " State Percent Complete");
       this.page = page;
       this.sma = sma;
       this.isCurrentState = isCurrentState;
@@ -82,7 +82,7 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
          setEditable(isCurrentState && !sma.isReadOnly());
          StringBuffer sb =
             new StringBuffer(String.format("        State Percent: %d",
-               sma.getStateMgr().getPercentComplete(page.getPageName())));
+               sma.getStateMgr().getPercentComplete(page.getName())));
          boolean breakoutNeeded = false;
          if (sma instanceof AbstractTaskableArtifact && ((AbstractTaskableArtifact) sma).hasTaskArtifacts()) {
             sb.append(String.format("\n        Task  Percent: %d",
@@ -100,7 +100,7 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
             }
             return String.valueOf(PercentCompleteTotalUtil.getPercentCompleteSMAStateTotal(sma, page));
          } else {
-            return String.valueOf(sma.getStateMgr().getPercentComplete(page.getPageName()));
+            return String.valueOf(sma.getStateMgr().getPercentComplete(page.getName()));
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

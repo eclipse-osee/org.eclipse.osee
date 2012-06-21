@@ -10,32 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
-import org.eclipse.osee.ats.core.workdef.ConvertWorkDefinitionToAtsDsl;
-import org.eclipse.osee.ats.core.workdef.ModelUtil;
-import org.eclipse.osee.ats.core.workdef.WorkDefinition;
-import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
-import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
-import org.eclipse.osee.framework.core.util.XResultData;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.ws.AWorkspace;
 
 /**
  * @author Donald G. Dunne
@@ -46,43 +25,11 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       super(parent, "Does Not Work - ATS - ConvertSaveAndOpenWorkDefToAtsDsl", PluginUiImage.ADMIN);
    }
 
-   private void writeModel(AtsDsl atsDsl, String filename) throws IOException {
-      OutputStream outputStream = null;
-      try {
-         File file = OseeData.getFile(filename);
-         outputStream = new BufferedOutputStream(new FileOutputStream(file));
-         String modelName = String.format("ats:/%s", filename);
-         ModelUtil.saveModel(atsDsl, modelName, outputStream);
-      } finally {
-         Lib.close(outputStream);
-      }
-   }
-
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       //      if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName())) {
       //         return;
       //      }
-
-      try {
-         WorkDefinition workDef =
-            WorkDefinitionFactory.getWorkDefinition(AtsWorkDefinitionSheetProviders.WORK_DEF_TEAM_DEFAULT).getWorkDefinition();
-
-         XResultData resultData = new XResultData();
-         ConvertWorkDefinitionToAtsDsl converter = new ConvertWorkDefinitionToAtsDsl(resultData);
-         AtsDsl atsDsl = converter.convert(workDef.getName(), workDef);
-         String filename = String.format("%s.%s.ats", workDef.getName(), Lib.getDateTimeString());
-         try {
-            writeModel(atsDsl, filename);
-            IFile iFile = OseeData.getIFile(filename);
-            AWorkspace.openEditor(iFile);
-         } catch (Exception ex) {
-            throw new OseeWrappedException(ex);
-         }
-
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
 
       AWorkbench.popup("Completed", "Complete");
    }

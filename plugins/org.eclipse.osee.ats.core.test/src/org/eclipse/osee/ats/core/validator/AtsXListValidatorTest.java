@@ -12,11 +12,14 @@ package org.eclipse.osee.ats.core.validator;
 
 import java.util.Arrays;
 import junit.framework.Assert;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
-import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
-import org.eclipse.osee.ats.core.workdef.WidgetDefinitionListMinMaxSelectedConstraint;
-import org.eclipse.osee.ats.core.workdef.WidgetOption;
-import org.eclipse.osee.ats.core.workflow.WorkPageType;
+import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinitionListMinMaxSelectedConstraint;
+import org.eclipse.osee.ats.workdef.api.WidgetOption;
+import org.eclipse.osee.ats.workdef.api.WidgetResult;
+import org.eclipse.osee.ats.workdef.api.WidgetStatus;
+import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -28,13 +31,13 @@ public class AtsXListValidatorTest {
    public void testValidateTransition() throws OseeCoreException {
       AtsXListValidator validator = new AtsXListValidator();
 
-      WidgetDefinition widgetDef = new WidgetDefinition("test");
+      IAtsWidgetDefinition widgetDef = AtsWorkDefinitionService.getService().createWidgetDefinition("test");
       widgetDef.setXWidgetName("xLabel");
 
-      StateDefinition fromStateDef = new StateDefinition("from");
-      fromStateDef.setWorkPageType(WorkPageType.Working);
-      StateDefinition toStateDef = new StateDefinition("to");
-      toStateDef.setWorkPageType(WorkPageType.Working);
+      IAtsStateDefinition fromStateDef = AtsWorkDefinitionService.getService().createStateDefinition("from");
+      fromStateDef.setStateType(StateType.Working);
+      IAtsStateDefinition toStateDef = AtsWorkDefinitionService.getService().createStateDefinition("to");
+      toStateDef.setStateType(StateType.Working);
 
       // Valid for anything not XIntegerDam
       WidgetResult result =
@@ -57,17 +60,17 @@ public class AtsXListValidatorTest {
    public void testValidateTransition_MinMaxConstraint() throws OseeCoreException {
       AtsXListValidator validator = new AtsXListValidator();
 
-      WidgetDefinitionListMinMaxSelectedConstraint constraint =
-         new WidgetDefinitionListMinMaxSelectedConstraint("0", "0");
+      IAtsWidgetDefinitionListMinMaxSelectedConstraint constraint =
+         AtsWorkDefinitionService.getService().createWidgetDefinitionListMinMaxSelectedConstraint("0", "0");
 
-      WidgetDefinition widgetDef = new WidgetDefinition("test");
+      IAtsWidgetDefinition widgetDef = AtsWorkDefinitionService.getService().createWidgetDefinition("test");
       widgetDef.setXWidgetName("XListDam");
       widgetDef.getConstraints().add(constraint);
 
-      StateDefinition fromStateDef = new StateDefinition("from");
-      fromStateDef.setWorkPageType(WorkPageType.Working);
-      StateDefinition toStateDef = new StateDefinition("to");
-      toStateDef.setWorkPageType(WorkPageType.Working);
+      IAtsStateDefinition fromStateDef = AtsWorkDefinitionService.getService().createStateDefinition("from");
+      fromStateDef.setStateType(StateType.Working);
+      IAtsStateDefinition toStateDef = AtsWorkDefinitionService.getService().createStateDefinition("to");
+      toStateDef.setStateType(StateType.Working);
 
       // Valid is nothing entered
       WidgetResult result =
@@ -93,7 +96,8 @@ public class AtsXListValidatorTest {
       ValidatorTestUtil.assertValidResult(result);
 
       // test nulls
-      constraint = new WidgetDefinitionListMinMaxSelectedConstraint((String) null, null);
+      constraint =
+         AtsWorkDefinitionService.getService().createWidgetDefinitionListMinMaxSelectedConstraint((String) null, null);
       Assert.assertEquals(null, constraint.getMinSelected());
       Assert.assertEquals(null, constraint.getMaxSelected());
 

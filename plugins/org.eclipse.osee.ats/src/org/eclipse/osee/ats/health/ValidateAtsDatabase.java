@@ -52,10 +52,10 @@ import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.workdef.WorkDefinition;
-import org.eclipse.osee.ats.core.workflow.IWorkPage;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
+import org.eclipse.osee.ats.workdef.api.IStateToken;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -371,7 +371,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
                if (awa.isInWork()) {
                   String currentStatename = awa.getCurrentStateName();
-                  WorkDefinition workDef = awa.getWorkDefinition();
+                  IAtsWorkDefinition workDef = awa.getWorkDefinition();
                   if (workDef.getStateByName(currentStatename) == null) {
                      testNameToResultsMap.put(
                         "testStateInWorkDefinition",
@@ -894,7 +894,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                            "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " exception accessing originator: " + ex.getLocalizedMessage());
                      }
                   }
-                  for (IWorkPage state : Arrays.asList(TeamState.Completed, TeamState.Cancelled)) {
+                  for (IStateToken state : Arrays.asList(TeamState.Completed, TeamState.Cancelled)) {
                      if (awa.isInState(state)) {
                         LogItem logItem = awa.getStateStartedData(state);
                         if (logItem == null) {

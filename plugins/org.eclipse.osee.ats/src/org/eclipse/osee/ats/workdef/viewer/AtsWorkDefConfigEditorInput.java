@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.workdef.viewer;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.core.workdef.WorkDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
@@ -19,9 +19,9 @@ import org.eclipse.ui.IPersistableElement;
  * @author Donald G. Dunne
  */
 public class AtsWorkDefConfigEditorInput implements IEditorInput {
-   protected WorkDefinition workflow;
+   protected IAtsWorkDefinition workflow;
 
-   public AtsWorkDefConfigEditorInput(WorkDefinition workflow) {
+   public AtsWorkDefConfigEditorInput(IAtsWorkDefinition workflow) {
       this.workflow = workflow;
    }
 

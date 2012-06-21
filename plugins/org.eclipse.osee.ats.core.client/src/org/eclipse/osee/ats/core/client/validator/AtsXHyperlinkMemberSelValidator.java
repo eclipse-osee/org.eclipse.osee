@@ -12,9 +12,9 @@ package org.eclipse.osee.ats.core.client.validator;
 
 import org.eclipse.osee.ats.core.validator.AtsXWidgetValidator;
 import org.eclipse.osee.ats.core.validator.IValueProvider;
-import org.eclipse.osee.ats.core.validator.WidgetResult;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
-import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.workdef.api.WidgetResult;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 public class AtsXHyperlinkMemberSelValidator extends AtsXWidgetValidator {
 
    @Override
-   public WidgetResult validateTransition(IValueProvider provider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef) throws OseeCoreException {
+   public WidgetResult validateTransition(IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) throws OseeCoreException {
       WidgetResult result = WidgetResult.Valid;
       if ("XHyperlabelMemberSelDam".equals(widgetDef.getXWidgetName())) {
          result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, toStateDef);

@@ -36,9 +36,9 @@ import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.core.model.ICommitConfigArtifact;
 import org.eclipse.osee.ats.core.users.AtsUsers;
-import org.eclipse.osee.ats.core.workdef.DecisionReviewDefinition;
-import org.eclipse.osee.ats.core.workdef.PeerReviewDefinition;
-import org.eclipse.osee.ats.core.workdef.StateEventType;
+import org.eclipse.osee.ats.workdef.api.IAtsDecisionReviewDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsPeerReviewDefinition;
+import org.eclipse.osee.ats.workdef.api.StateEventType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -640,7 +640,7 @@ public class AtsBranchManagerCore {
          throw new OseeStateException("Invalid stateEventType [%s]", stateEventType);
       }
       // Create any decision and peerToPeer reviews for createBranch and commitBranch
-      for (DecisionReviewDefinition decRevDef : teamArt.getStateDefinition().getDecisionReviews()) {
+      for (IAtsDecisionReviewDefinition decRevDef : teamArt.getStateDefinition().getDecisionReviews()) {
          if (decRevDef.getStateEventType() != null && decRevDef.getStateEventType().equals(stateEventType)) {
             DecisionReviewArtifact decArt =
                DecisionReviewDefinitionManager.createNewDecisionReview(decRevDef, transaction, teamArt, createdDate,
@@ -650,7 +650,7 @@ public class AtsBranchManagerCore {
             }
          }
       }
-      for (PeerReviewDefinition peerRevDef : teamArt.getStateDefinition().getPeerReviews()) {
+      for (IAtsPeerReviewDefinition peerRevDef : teamArt.getStateDefinition().getPeerReviews()) {
          if (peerRevDef.getStateEventType() != null && peerRevDef.getStateEventType().equals(stateEventType)) {
             PeerToPeerReviewArtifact peerArt =
                PeerReviewDefinitionManager.createNewPeerToPeerReview(peerRevDef, transaction, teamArt, createdDate,

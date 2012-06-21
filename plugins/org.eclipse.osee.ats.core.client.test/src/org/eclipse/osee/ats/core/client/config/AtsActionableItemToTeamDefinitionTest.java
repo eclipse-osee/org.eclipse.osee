@@ -27,7 +27,7 @@ public class AtsActionableItemToTeamDefinitionTest {
    public void testAtsActionableItemToTeamDefinition() throws Exception {
       boolean error = false;
       StringBuffer sb = new StringBuffer("Actionable Actionable Items with no Team Def associated:\n");
-      AtsBulkLoad.loadConfig(true);
+      AtsBulkLoad.reloadConfig(true);
       for (IAtsActionableItem aia : AtsConfigCache.get(IAtsActionableItem.class)) {
          if (aia.isActionable()) {
             Collection<IAtsTeamDefinition> impactedTeamDefs = TeamDefinitions.getImpactedTeamDefs(Arrays.asList(aia));

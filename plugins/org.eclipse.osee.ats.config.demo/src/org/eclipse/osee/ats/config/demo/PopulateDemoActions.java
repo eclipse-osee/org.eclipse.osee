@@ -43,10 +43,10 @@ import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.model.IAtsVersion;
-import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.ats.util.SubscribeManagerUI;
+import org.eclipse.osee.ats.workdef.api.ReviewBlockType;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -325,7 +325,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                      teamWf.getAssignees().iterator().next(), false, transaction);
                if (result.isFalse()) {
                   throw new OseeCoreException("Error transitioning [%s] to state [%s]: [%s]", teamWf.toStringWithId(),
-                     aData.toState.getPageName(), result.getText());
+                     aData.toState.getName(), result.getText());
                }
                if (!teamWf.isCompletedOrCancelled()) {
                   // Reset assignees that may have been overwritten during transition 

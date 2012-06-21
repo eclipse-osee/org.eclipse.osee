@@ -6,6 +6,8 @@
 package org.eclipse.osee.ats.core.client.util;
 
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -16,6 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public class CopyActionDetails {
 
@@ -77,9 +80,12 @@ public class CopyActionDetails {
 
    private String getFormatStr(IAtsTeamDefinition teamDef) throws OseeCoreException {
       if (teamDef != null) {
-         String formatStr = teamDef.getActionDetailsFormat();
-         if (Strings.isValid(formatStr)) {
-            return formatStr;
+         Artifact artifact = new TeamDefinitionArtifactStore(teamDef).getArtifact();
+         if (artifact != null) {
+            String formatStr = artifact.getSoleAttributeValue(AtsAttributeTypes.ActionDetailsFormat);
+            if (Strings.isValid(formatStr)) {
+               return formatStr;
+            }
          }
          if (teamDef.getParentTeamDef() != null) {
             return getFormatStr(teamDef.getParentTeamDef());

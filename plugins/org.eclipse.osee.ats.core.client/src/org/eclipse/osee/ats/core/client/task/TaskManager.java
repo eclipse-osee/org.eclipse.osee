@@ -58,7 +58,7 @@ public class TaskManager {
             taskArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, estimatedHours);
          }
          TransitionHelper helper =
-            new TransitionHelper("Transition to Completed", Arrays.asList(taskArt), TaskStates.Completed.getPageName(),
+            new TransitionHelper("Transition to Completed", Arrays.asList(taskArt), TaskStates.Completed.getName(),
                null, null);
          TransitionManager transitionMgr = new TransitionManager(helper, transaction);
          TransitionResults results = transitionMgr.handleAll();
@@ -78,7 +78,7 @@ public class TaskManager {
          return Result.TrueResult;
       }
       TransitionHelper helper =
-         new TransitionHelper("Transition to InWork", Arrays.asList(taskArt), TaskStates.InWork.getPageName(),
+         new TransitionHelper("Transition to InWork", Arrays.asList(taskArt), TaskStates.InWork.getName(),
             Arrays.asList(toUser), null, TransitionOption.OverrideAssigneeCheck);
       TransitionManager transitionMgr = new TransitionManager(helper, transaction);
       TransitionResults results = transitionMgr.handleAll();

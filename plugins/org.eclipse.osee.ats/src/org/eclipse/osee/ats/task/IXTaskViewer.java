@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.task;
 import java.util.Collection;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.workflow.IWorkPage;
+import org.eclipse.osee.ats.workdef.api.IStateToken;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 
@@ -24,7 +24,7 @@ public interface IXTaskViewer {
 
    public String getTabName() throws OseeCoreException;
 
-   public Collection<TaskArtifact> getTaskArtifacts(IWorkPage state) throws OseeCoreException;
+   public Collection<TaskArtifact> getTaskArtifacts(IStateToken state) throws OseeCoreException;
 
    public Collection<TaskArtifact> getTaskArtifacts() throws OseeCoreException;
 

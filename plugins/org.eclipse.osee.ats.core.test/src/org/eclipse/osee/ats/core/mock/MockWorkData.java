@@ -8,23 +8,23 @@ package org.eclipse.osee.ats.core.mock;
 import java.util.Date;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.model.IAtsWorkData;
-import org.eclipse.osee.ats.core.workflow.WorkPageType;
+import org.eclipse.osee.ats.workdef.api.StateType;
 
 public class MockWorkData implements IAtsWorkData {
 
-   private WorkPageType workPageType;
+   private StateType StateType;
 
    private Date completedDate, cancelledDate;
    private IAtsUser completedBy, cancelledBy;
    private String completedFromState, cancelledFromState, cancelledReason;
 
-   public MockWorkData(WorkPageType workPageType) {
-      this.workPageType = workPageType;
+   public MockWorkData(StateType StateType) {
+      this.StateType = StateType;
    }
 
    @Override
-   public void setWorkPageType(WorkPageType workPageType) {
-      this.workPageType = workPageType;
+   public void setStateType(StateType StateType) {
+      this.StateType = StateType;
    }
 
    public String getCancelledReason() {
@@ -37,7 +37,7 @@ public class MockWorkData implements IAtsWorkData {
 
    @Override
    public boolean isCompleted() {
-      return workPageType.isCompletedPage();
+      return StateType.isCompletedState();
    }
 
    @Override
@@ -47,7 +47,7 @@ public class MockWorkData implements IAtsWorkData {
 
    @Override
    public boolean isCancelled() {
-      return workPageType.isCancelledPage();
+      return StateType.isCancelledState();
    }
 
    @Override
@@ -62,7 +62,7 @@ public class MockWorkData implements IAtsWorkData {
 
    @Override
    public boolean isInWork() {
-      return workPageType.isWorkingPage();
+      return StateType.isWorkingState();
    }
 
    @Override
@@ -75,8 +75,8 @@ public class MockWorkData implements IAtsWorkData {
       return cancelledDate;
    }
 
-   public WorkPageType getWorkPageType() {
-      return workPageType;
+   public StateType getStateType() {
+      return StateType;
    }
 
    public void setCompletedDate(Date completedDate) {
@@ -115,8 +115,8 @@ public class MockWorkData implements IAtsWorkData {
       this.cancelledFromState = cancelledFromState;
    }
 
-   public void setWorkingPageType(WorkPageType workPageType) {
-      this.workPageType = workPageType;
+   public void setWorkingPageType(StateType StateType) {
+      this.StateType = StateType;
    }
 
 }

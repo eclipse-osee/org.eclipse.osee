@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.ats.core.workdef.WorkDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
@@ -31,9 +31,9 @@ public class WorkDefinitionDiagram extends ModelElement {
    public static final String CHILD_REMOVED_PROP = "WorkflowDiagram.ChildRemoved";
    private final List<Shape> shapes = new ArrayList<Shape>();
    private final List<Shape> deletedShapes = new ArrayList<Shape>();
-   private final WorkDefinition workDef;
+   private final IAtsWorkDefinition workDef;
 
-   public WorkDefinitionDiagram(WorkDefinition workDef) {
+   public WorkDefinitionDiagram(IAtsWorkDefinition workDef) {
       super();
       this.workDef = workDef;
    }
@@ -111,7 +111,7 @@ public class WorkDefinitionDiagram extends ModelElement {
    /**
     * @return the workFlowDefinition
     */
-   public WorkDefinition getWorkDefinition() {
+   public IAtsWorkDefinition getWorkDefinition() {
       return workDef;
    }
 

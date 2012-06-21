@@ -11,27 +11,27 @@
 package org.eclipse.osee.ats.core.client.team;
 
 import java.util.List;
-import org.eclipse.osee.ats.core.workflow.WorkPageAdapter;
-import org.eclipse.osee.ats.core.workflow.WorkPageType;
+import org.eclipse.osee.ats.core.workflow.StateTypeAdapter;
+import org.eclipse.osee.ats.workdef.api.StateType;
 
-public class TeamState extends WorkPageAdapter {
-   public static TeamState Endorse = new TeamState("Endorse", WorkPageType.Working);
-   public static TeamState Analyze = new TeamState("Analyze", WorkPageType.Working);
-   public static TeamState Authorize = new TeamState("Authorize", WorkPageType.Working);
-   public static TeamState Implement = new TeamState("Implement", WorkPageType.Working);
-   public static TeamState Completed = new TeamState("Completed", WorkPageType.Completed);
-   public static TeamState Cancelled = new TeamState("Cancelled", WorkPageType.Cancelled);
+public class TeamState extends StateTypeAdapter {
+   public static TeamState Endorse = new TeamState("Endorse", StateType.Working);
+   public static TeamState Analyze = new TeamState("Analyze", StateType.Working);
+   public static TeamState Authorize = new TeamState("Authorize", StateType.Working);
+   public static TeamState Implement = new TeamState("Implement", StateType.Working);
+   public static TeamState Completed = new TeamState("Completed", StateType.Completed);
+   public static TeamState Cancelled = new TeamState("Cancelled", StateType.Cancelled);
 
-   private TeamState(String pageName, WorkPageType workPageType) {
-      super(TeamState.class, pageName, workPageType);
+   private TeamState(String pageName, StateType StateType) {
+      super(TeamState.class, pageName, StateType);
    }
 
    public static TeamState valueOf(String pageName) {
-      return WorkPageAdapter.valueOfPage(TeamState.class, pageName);
+      return StateTypeAdapter.valueOfPage(TeamState.class, pageName);
    }
 
    public static List<TeamState> values() {
-      return WorkPageAdapter.pages(TeamState.class);
+      return StateTypeAdapter.pages(TeamState.class);
    }
 
 }

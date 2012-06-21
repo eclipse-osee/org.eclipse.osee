@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.core.validator;
 
 import java.util.ArrayList;
-import org.eclipse.osee.ats.core.validator.WidgetResult;
-import org.eclipse.osee.ats.core.validator.WidgetStatus;
+import org.eclipse.osee.ats.workdef.api.WidgetResult;
+import org.eclipse.osee.ats.workdef.api.WidgetStatus;
 import org.junit.Assert;
 
 /**

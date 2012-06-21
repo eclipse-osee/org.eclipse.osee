@@ -20,8 +20,8 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.StateManager;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -56,7 +56,7 @@ public class StateCompletedColumn extends XViewerAtsColumn implements IXViewerVa
       try {
          if (element instanceof AbstractWorkflowArtifact) {
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) element;
-            StateDefinition state = awa.getStateDefinitionByName(stateName);
+            IAtsStateDefinition state = awa.getStateDefinitionByName(stateName);
             if (state != null) {
                String date = StateManager.getCompletedDateByState(awa, state);
                return date;
@@ -64,7 +64,7 @@ public class StateCompletedColumn extends XViewerAtsColumn implements IXViewerVa
          } else if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<String> dates = new HashSet<String>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
-               StateDefinition state = team.getStateDefinitionByName(stateName);
+               IAtsStateDefinition state = team.getStateDefinitionByName(stateName);
                if (state != null) {
                   String date = StateManager.getCompletedDateByState(team, state);
                   if (Strings.isValid(date)) {

@@ -17,6 +17,7 @@ Import-Package: com.google.inject,
  org.eclipse.osee.ats.dsl,
  org.eclipse.osee.ats.dsl.atsDsl,
  org.eclipse.osee.ats.dsl.atsDsl.impl,
+ org.eclipse.osee.ats.workdef.api,
  org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
@@ -42,3 +43,4 @@ Export-Package: org.eclipse.osee.ats.core.column,
  org.eclipse.osee.ats.core.workflow,
  org.eclipse.osee.ats.core.workflow.transition
 Bundle-Activator: org.eclipse.osee.ats.core.internal.Activator
+Service-Component: OSGI-INF/*.xml

@@ -49,7 +49,7 @@ public class ImportWorkDefinitionsItem extends XNavigateItemAction {
          SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), getName());
          Artifact folder =
             OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.WorkDefinitionsFolder, AtsUtil.getAtsBranch());
-         AtsWorkDefinitionSheetProviders.importWorkDefinitionSheets(resultData, true, transaction, folder,
+         AtsWorkDefinitionSheetProviders.importWorkDefinitionSheets(resultData, transaction, folder,
             dialog.getSelection());
 
          if (!resultData.isErrors()) {

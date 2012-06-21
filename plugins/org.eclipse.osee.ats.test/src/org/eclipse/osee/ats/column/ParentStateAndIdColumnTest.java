@@ -42,7 +42,7 @@ public class ParentStateAndIdColumnTest {
 
       PeerToPeerReviewArtifact peerArt =
          (PeerToPeerReviewArtifact) codeArt.getRelatedArtifact(AtsRelationTypes.TeamWorkflowToReview_Review);
-      Assert.assertEquals(TeamState.Implement.getPageName(),
+      Assert.assertEquals(TeamState.Implement.getName(),
          ParentStateColumn.getInstance().getColumnText(peerArt, ParentHridColumn.getInstance(), 0));
       Assert.assertEquals(codeArt.getHumanReadableId(),
          ParentHridColumn.getInstance().getColumnText(peerArt, ParentHridColumn.getInstance(), 0));

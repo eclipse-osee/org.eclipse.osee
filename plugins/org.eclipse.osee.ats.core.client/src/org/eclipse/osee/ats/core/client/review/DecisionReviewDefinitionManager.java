@@ -21,9 +21,9 @@ import org.eclipse.osee.ats.core.client.workflow.log.LogType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionAdapter;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.users.AtsUsers;
-import org.eclipse.osee.ats.core.workdef.DecisionReviewDefinition;
-import org.eclipse.osee.ats.core.workdef.StateEventType;
-import org.eclipse.osee.ats.core.workflow.IWorkPage;
+import org.eclipse.osee.ats.workdef.api.IAtsDecisionReviewDefinition;
+import org.eclipse.osee.ats.workdef.api.IStateToken;
+import org.eclipse.osee.ats.workdef.api.StateEventType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
  * Create DecisionReview from transition if defined by StateDefinition.
- *
+ * 
  * @author Donald G. Dunne
  */
 public class DecisionReviewDefinitionManager extends TransitionAdapter {
@@ -40,7 +40,7 @@ public class DecisionReviewDefinitionManager extends TransitionAdapter {
    /**
     * Creates decision review if one of same name doesn't already exist
     */
-   public static DecisionReviewArtifact createNewDecisionReview(DecisionReviewDefinition revDef, SkynetTransaction transaction, TeamWorkFlowArtifact teamArt, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
+   public static DecisionReviewArtifact createNewDecisionReview(IAtsDecisionReviewDefinition revDef, SkynetTransaction transaction, TeamWorkFlowArtifact teamArt, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
       if (Artifacts.getNames(ReviewManager.getReviews(teamArt)).contains(revDef.getReviewTitle())) {
          // Already created this review
          return null;
@@ -75,7 +75,7 @@ public class DecisionReviewDefinitionManager extends TransitionAdapter {
    }
 
    @Override
-   public void transitioned(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<? extends IAtsUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+   public void transitioned(AbstractWorkflowArtifact sma, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
       // Create any decision or peerToPeer reviews for transitionTo and transitionFrom
       if (!sma.isTeamWorkflow()) {
          return;
@@ -84,7 +84,7 @@ public class DecisionReviewDefinitionManager extends TransitionAdapter {
       IAtsUser createdBy = AtsUsers.getSystemUser();
       TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) sma;
 
-      for (DecisionReviewDefinition decRevDef : teamArt.getStateDefinition().getDecisionReviews()) {
+      for (IAtsDecisionReviewDefinition decRevDef : teamArt.getStateDefinition().getDecisionReviews()) {
          if (decRevDef.getStateEventType() != null && decRevDef.getStateEventType().equals(StateEventType.TransitionTo)) {
             DecisionReviewArtifact decArt =
                DecisionReviewDefinitionManager.createNewDecisionReview(decRevDef, transaction, teamArt, createdDate,

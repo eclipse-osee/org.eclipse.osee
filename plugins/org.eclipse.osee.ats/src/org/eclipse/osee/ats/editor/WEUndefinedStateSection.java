@@ -16,8 +16,9 @@ import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.team.SimpleTeamState;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.workflow.WorkPageType;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.workdef.api.StateType;
+import org.eclipse.osee.ats.workdef.api.WorkDefUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -83,7 +84,7 @@ public class WEUndefinedStateSection extends SectionPart {
 
    public static List<String> getUndefinedStateNames(AbstractWorkflowArtifact awa) throws OseeCoreException {
       // Display pages that are in data store, but not in Work Definition
-      Collection<String> stateNamesDefined = awa.getWorkDefinition().getStateNames();
+      Collection<String> stateNamesDefined = WorkDefUtil.getStateNames(awa.getWorkDefinition());
       List<String> stateNamesUndefined = new ArrayList<String>();
       for (String pageName : awa.getAttributesToStringList(AtsAttributeTypes.State)) {
          String justPage = pageName.replaceFirst(";.*$", "");
@@ -107,12 +108,12 @@ public class WEUndefinedStateSection extends SectionPart {
 
       toolkit.createLabel(composite, "This state is no-longer defined by the current Work Definition.", SWT.NONE);
 
-      SimpleTeamState state = new SimpleTeamState(stateName, WorkPageType.Working);
+      SimpleTeamState state = new SimpleTeamState(stateName, StateType.Working);
       String infoStr = "";
       try {
          infoStr =
-            String.format("Name: [%s] Assignees: [%s] Hours Spent: [%s]", state.getPageName(),
-               awa.getStateMgr().getAssigneesStr(state, 100), awa.getStateMgr().getHoursSpent(state.getPageName()));
+            String.format("Name: [%s] Assignees: [%s] Hours Spent: [%s]", state.getName(),
+               awa.getStateMgr().getAssigneesStr(state, 100), awa.getStateMgr().getHoursSpent(state.getName()));
       } catch (OseeCoreException ex) {
          infoStr = "Exception processing state data (see log for details) " + ex.getLocalizedMessage();
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

@@ -28,18 +28,18 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.workdef.CompositeStateItem;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
-import org.eclipse.osee.ats.core.workdef.StateItem;
-import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
-import org.eclipse.osee.ats.core.workdef.WidgetOption;
-import org.eclipse.osee.ats.core.workdef.WorkDefinition;
-import org.eclipse.osee.ats.core.workflow.IWorkPage;
-import org.eclipse.osee.ats.core.workflow.WorkPageType;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
+import org.eclipse.osee.ats.workdef.api.IAtsCompositeLayoutItem;
+import org.eclipse.osee.ats.workdef.api.IAtsLayoutItem;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
+import org.eclipse.osee.ats.workdef.api.IStateToken;
+import org.eclipse.osee.ats.workdef.api.StateType;
+import org.eclipse.osee.ats.workdef.api.WidgetOption;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
@@ -68,15 +68,15 @@ import org.w3c.dom.Element;
  * 
  * @author Donald G. Dunne
  */
-public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage {
+public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateToken {
 
    private static final Pair<IStatus, XWidget> OK_PAIR = new Pair<IStatus, XWidget>(Status.OK_STATUS, null);
    protected DynamicXWidgetLayout dynamicXWidgetLayout;
-   protected final StateDefinition stateDefinition;
-   protected final WorkDefinition workDefinition;
+   protected final IAtsStateDefinition stateDefinition;
+   protected final IAtsWorkDefinition workDefinition;
    private AbstractWorkflowArtifact sma;
 
-   private StateXWidgetPage(WorkDefinition workDefinition, StateDefinition stateDefinition, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
+   private StateXWidgetPage(IAtsWorkDefinition workDefinition, IAtsStateDefinition stateDefinition, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
       this.workDefinition = workDefinition;
       this.stateDefinition = stateDefinition;
       if (dynamicWidgetLayoutListener == null) {
@@ -86,14 +86,14 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
       }
    }
 
-   public StateXWidgetPage(WorkDefinition workFlowDefinition, StateDefinition stateDefinition, String xWidgetsXml, IXWidgetOptionResolver optionResolver) {
+   public StateXWidgetPage(IAtsWorkDefinition workFlowDefinition, IAtsStateDefinition stateDefinition, String xWidgetsXml, IXWidgetOptionResolver optionResolver) {
       this(workFlowDefinition, stateDefinition, xWidgetsXml, optionResolver, null);
    }
 
    /**
     * @param instructionLines input lines of WorkAttribute declarations
     */
-   public StateXWidgetPage(WorkDefinition workDefinition, StateDefinition stateDefinition, String xWidgetsXml, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
+   public StateXWidgetPage(IAtsWorkDefinition workDefinition, IAtsStateDefinition stateDefinition, String xWidgetsXml, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
       this(workDefinition, stateDefinition, optionResolver, dynamicWidgetLayoutListener);
       try {
          if (xWidgetsXml != null) {
@@ -104,7 +104,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
       }
    }
 
-   public StateXWidgetPage(WorkDefinition workDefinition, StateDefinition stateDefinition, List<DynamicXWidgetLayoutData> datas, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
+   public StateXWidgetPage(IAtsWorkDefinition workDefinition, IAtsStateDefinition stateDefinition, List<DynamicXWidgetLayoutData> datas, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
       this(workDefinition, stateDefinition, optionResolver, dynamicWidgetLayoutListener);
       dynamicXWidgetLayout.setLayoutDatas(datas);
    }
@@ -180,7 +180,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
 
    public String getHtml(String backgroundColor, String preHtml, String postHtml) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
-      sb.append(AHTML.startBorderTable(100, backgroundColor, getPageName()));
+      sb.append(AHTML.startBorderTable(100, backgroundColor, getName()));
       if (preHtml != null) {
          sb.append(preHtml);
       }
@@ -203,11 +203,10 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
    public String toString() {
       StringBuffer sb =
          new StringBuffer(
-            stateDefinition.getPageName() + (stateDefinition.getName() != null ? " (" + stateDefinition.getName() + ") " : "") + "\n");
+            stateDefinition.getName() + (stateDefinition.getName() != null ? " (" + stateDefinition.getName() + ") " : "") + "\n");
       try {
-         for (StateDefinition page : stateDefinition.getToStates()) {
-            sb.append("-> " + page.getPageName() + (stateDefinition.getOverrideAttributeValidationStates().contains(
-               page) ? " (return)" : "") + "\n");
+         for (IAtsStateDefinition page : stateDefinition.getToStates()) {
+            sb.append("-> " + page.getName() + (stateDefinition.getOverrideAttributeValidationStates().contains(page) ? " (return)" : "") + "\n");
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -237,39 +236,35 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
    }
 
    @Override
-   public String getPageName() {
-      return stateDefinition.getPageName();
+   public String getName() {
+      return stateDefinition.getName();
    }
 
    @Override
-   public WorkPageType getWorkPageType() {
-      return stateDefinition.getWorkPageType();
-   }
-
-   public String getName() {
-      return stateDefinition.getName();
+   public StateType getStateType() {
+      return stateDefinition.getStateType();
    }
 
    public String getFullName() {
       return stateDefinition.getFullName();
    }
 
-   public List<StateDefinition> getToPages() {
+   public List<IAtsStateDefinition> getToPages() {
       return stateDefinition.getToStates();
    }
 
-   public StateDefinition getDefaultToPage() {
+   public IAtsStateDefinition getDefaultToPage() {
       if (stateDefinition.getDefaultToState() != null) {
          return stateDefinition.getDefaultToState();
       }
       return null;
    }
 
-   public StateDefinition getStateDefinition() {
+   public IAtsStateDefinition getStateDefinition() {
       return stateDefinition;
    }
 
-   public WorkDefinition getWorkDefinition() {
+   public IAtsWorkDefinition getWorkDefinition() {
       return workDefinition;
    }
 
@@ -280,26 +275,6 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
    @Override
    public int hashCode() {
       return super.hashCode();
-   }
-
-   @Override
-   public boolean isCompletedOrCancelledPage() {
-      return getWorkPageType().isCompletedOrCancelledPage();
-   }
-
-   @Override
-   public boolean isCompletedPage() {
-      return getWorkPageType().isCompletedPage();
-   }
-
-   @Override
-   public boolean isCancelledPage() {
-      return getWorkPageType().isCancelledPage();
-   }
-
-   @Override
-   public boolean isWorkingPage() {
-      return getWorkPageType().isWorkingPage();
    }
 
    @Override
@@ -320,10 +295,10 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
    }
 
    public boolean isCurrentNonCompleteCancelledState(AbstractWorkflowArtifact sma) {
-      return isCurrentState(sma) && !isCompletedOrCancelledPage();
+      return isCurrentState(sma) && !getStateType().isCompletedOrCancelledState();
    }
 
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, StateDefinition stateDef, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, IAtsStateDefinition stateDef, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       // Check extension points for page creation
       if (sma != null) {
          for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
@@ -357,7 +332,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
 
    }
 
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, StateDefinition stateDefinition, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, IAtsStateDefinition stateDefinition, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       // Check extension points for page creation
       if (sma != null) {
          for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
@@ -372,23 +347,23 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
    public void generateLayoutDatas(AbstractWorkflowArtifact sma) {
       this.sma = sma;
       // Add static layoutDatas to statePage
-      for (StateItem stateItem : stateDefinition.getStateItems()) {
-         if (stateItem instanceof WidgetDefinition) {
-            processWidgetDefinition((WidgetDefinition) stateItem, sma);
-         } else if (stateItem instanceof CompositeStateItem) {
-            processComposite((CompositeStateItem) stateItem, sma);
+      for (IAtsLayoutItem stateItem : stateDefinition.getLayoutItems()) {
+         if (stateItem instanceof IAtsWidgetDefinition) {
+            processWidgetDefinition((IAtsWidgetDefinition) stateItem, sma);
+         } else if (stateItem instanceof IAtsCompositeLayoutItem) {
+            processComposite((IAtsCompositeLayoutItem) stateItem, sma);
          }
       }
    }
 
-   private void processComposite(CompositeStateItem compositeStateItem, AbstractWorkflowArtifact sma) {
+   private void processComposite(IAtsCompositeLayoutItem compositeStateItem, AbstractWorkflowArtifact sma) {
       boolean firstWidget = true;
-      List<StateItem> stateItems = compositeStateItem.getStateItems();
+      List<IAtsLayoutItem> stateItems = compositeStateItem.getaLayoutItems();
       for (int x = 0; x < stateItems.size(); x++) {
          boolean lastWidget = x == stateItems.size() - 1;
-         StateItem stateItem = stateItems.get(x);
-         if (stateItem instanceof WidgetDefinition) {
-            DynamicXWidgetLayoutData data = processWidgetDefinition((WidgetDefinition) stateItem, sma);
+         IAtsLayoutItem stateItem = stateItems.get(x);
+         if (stateItem instanceof IAtsWidgetDefinition) {
+            DynamicXWidgetLayoutData data = processWidgetDefinition((IAtsWidgetDefinition) stateItem, sma);
             if (firstWidget) {
                if (compositeStateItem.getNumColumns() > 0) {
                   data.setBeginComposite(compositeStateItem.getNumColumns());
@@ -397,8 +372,8 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
             if (lastWidget) {
                data.setEndComposite(true);
             }
-         } else if (stateItem instanceof CompositeStateItem) {
-            processComposite((CompositeStateItem) stateItem, sma);
+         } else if (stateItem instanceof IAtsCompositeLayoutItem) {
+            processComposite((IAtsCompositeLayoutItem) stateItem, sma);
          }
          firstWidget = false;
       }
@@ -407,7 +382,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
    /**
     * TODO This will eventually go away and ATS pages will be generated straight from WidgetDefinitions.
     */
-   private DynamicXWidgetLayoutData processWidgetDefinition(WidgetDefinition widgetDef, AbstractWorkflowArtifact sma) {
+   private DynamicXWidgetLayoutData processWidgetDefinition(IAtsWidgetDefinition widgetDef, AbstractWorkflowArtifact sma) {
       DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(getDynamicXWidgetLayout());
       data.setDefaultValue(widgetDef.getDefaultValue());
       data.setHeight(widgetDef.getHeight());

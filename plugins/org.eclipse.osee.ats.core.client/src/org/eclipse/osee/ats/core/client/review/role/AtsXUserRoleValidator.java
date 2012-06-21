@@ -12,9 +12,9 @@ package org.eclipse.osee.ats.core.client.review.role;
 
 import org.eclipse.osee.ats.core.validator.AtsXWidgetValidator;
 import org.eclipse.osee.ats.core.validator.IValueProvider;
-import org.eclipse.osee.ats.core.validator.WidgetResult;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
-import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.workdef.api.WidgetResult;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -25,7 +25,7 @@ public class AtsXUserRoleValidator extends AtsXWidgetValidator {
    public static String WIDGET_NAME = "XUserRoleViewer";
 
    @Override
-   public WidgetResult validateTransition(IValueProvider provider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef) throws OseeCoreException {
+   public WidgetResult validateTransition(IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) throws OseeCoreException {
       WidgetResult result = WidgetResult.Valid;
       if (WIDGET_NAME.equals(widgetDef.getXWidgetName())) {
          // ReviewDefectValidation converted to provider IValueProvider

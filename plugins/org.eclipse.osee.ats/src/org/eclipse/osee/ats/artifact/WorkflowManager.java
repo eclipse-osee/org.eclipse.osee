@@ -31,11 +31,12 @@ import org.eclipse.osee.ats.core.client.workflow.StateManager;
 import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
 import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsVersion;
-import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
+import org.eclipse.osee.ats.workdef.api.RuleDefinitionOption;
+import org.eclipse.osee.ats.workdef.api.WorkDefUtil;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -54,7 +55,7 @@ public class WorkflowManager {
 
       (WorkflowManagerCore.isEditable(awa, awa.getStateDefinition(), privilegedEditEnabled) || //
          // page is define to allow anyone to edit
-         awa.getStateDefinition().hasRule(RuleDefinitionOption.AllowAssigneeToAll) ||
+         awa.getStateDefinition().hasRule(RuleDefinitionOption.AllowAssigneeToAll.name()) ||
          // awa is child of TeamWorkflow that has AllowAssigneeToAll rule
          isParentTeamWorklfowCurrentStateAllowAssigneeToAll(awa) ||
       // team definition has allowed anyone to edit
@@ -64,7 +65,7 @@ public class WorkflowManager {
    private static boolean isParentTeamWorklfowCurrentStateAllowAssigneeToAll(AbstractWorkflowArtifact awa) throws OseeCoreException {
       TeamWorkFlowArtifact parentTeamArt = awa.getParentTeamWorkflow();
       return (parentTeamArt != null && parentTeamArt.getStateDefinition().hasRule(
-         RuleDefinitionOption.AllowAssigneeToAll));
+         RuleDefinitionOption.AllowAssigneeToAll.name()));
    }
 
    public static List<TeamWorkFlowArtifact> getAllTeamWorkflowArtifacts() throws OseeCoreException {
@@ -303,7 +304,7 @@ public class WorkflowManager {
 
    public static StateXWidgetPage getCurrentAtsWorkPage(AbstractWorkflowArtifact awa) {
       for (StateXWidgetPage statePage : getStatePagesOrderedByDefaultToState(awa)) {
-         if (awa.getStateMgr().getCurrentStateName().equals(statePage.getPageName())) {
+         if (awa.getStateMgr().getCurrentStateName().equals(statePage.getName())) {
             return statePage;
          }
       }
@@ -312,7 +313,7 @@ public class WorkflowManager {
 
    public static List<StateXWidgetPage> getStatePagesOrderedByOrdinal(AbstractWorkflowArtifact awa) {
       List<StateXWidgetPage> statePages = new ArrayList<StateXWidgetPage>();
-      for (StateDefinition stateDefinition : awa.getWorkDefinition().getStatesOrderedByOrdinal()) {
+      for (IAtsStateDefinition stateDefinition : WorkDefUtil.getStatesOrderedByOrdinal(awa.getWorkDefinition())) {
          try {
             StateXWidgetPage statePage =
                new StateXWidgetPage(awa.getWorkDefinition(), stateDefinition, null,
@@ -328,7 +329,7 @@ public class WorkflowManager {
 
    public static List<StateXWidgetPage> getStatePagesOrderedByDefaultToState(AbstractWorkflowArtifact awa) {
       List<StateXWidgetPage> statePages = new ArrayList<StateXWidgetPage>();
-      for (StateDefinition stateDefinition : awa.getWorkDefinition().getStatesOrderedByDefaultToState()) {
+      for (IAtsStateDefinition stateDefinition : WorkDefUtil.getStatesOrderedByDefaultToState(awa.getWorkDefinition())) {
          try {
             StateXWidgetPage statePage =
                new StateXWidgetPage(awa.getWorkDefinition(), stateDefinition, null,

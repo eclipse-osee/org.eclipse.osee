@@ -56,6 +56,6 @@ public class SMATestUtil {
    }
 
    public static boolean isCompletedCancelledState(AbstractWorkflowArtifact aba, String stateName) {
-      return aba.getWorkDefinition().getStateByName(stateName).isCompletedOrCancelledPage();
+      return aba.getWorkDefinition().getStateByName(stateName).getStateType().isCompletedOrCancelledState();
    }
 }

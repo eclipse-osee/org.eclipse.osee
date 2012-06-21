@@ -19,8 +19,8 @@ import org.eclipse.osee.ats.core.client.team.SimpleTeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.WorkflowManagerCore;
-import org.eclipse.osee.ats.core.workflow.IWorkPage;
-import org.eclipse.osee.ats.core.workflow.WorkPageType;
+import org.eclipse.osee.ats.workdef.api.IStateToken;
+import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -52,12 +52,12 @@ public class HoursSpentUtil {
    /**
     * Return hours spent working all states, reviews and tasks (not children SMAs)
     */
-   public static double getHoursSpentTotal(Artifact artifact, IWorkPage state) throws OseeCoreException {
+   public static double getHoursSpentTotal(Artifact artifact, IStateToken state) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
          AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
          double hours = 0.0;
          for (String stateName : awa.getStateMgr().getVisitedStateNames()) {
-            hours += getHoursSpentStateTotal(awa, new SimpleTeamState(stateName, WorkPageType.Working));
+            hours += getHoursSpentStateTotal(awa, new SimpleTeamState(stateName, StateType.Working));
          }
          return hours;
       }
@@ -86,7 +86,7 @@ public class HoursSpentUtil {
    /**
     * Return hours spent working SMA state, state tasks and state reviews (not children SMAs)
     */
-   public static double getHoursSpentStateTotal(Artifact artifact, IWorkPage state) throws OseeCoreException {
+   public static double getHoursSpentStateTotal(Artifact artifact, IStateToken state) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
          AbstractWorkflowArtifact awa = WorkflowManagerCore.cast(artifact);
          return getHoursSpentSMAState(awa, state) + getHoursSpentFromStateTasks(awa, state) + getHoursSpentStateReview(
@@ -117,7 +117,7 @@ public class HoursSpentUtil {
    /**
     * Return hours spent working ONLY the SMA stateName (not children SMAs)
     */
-   public static double getHoursSpentStateReview(Artifact artifact, IWorkPage state) throws OseeCoreException {
+   public static double getHoursSpentStateReview(Artifact artifact, IStateToken state) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
          return ReviewManager.getHoursSpent(TeamWorkFlowManager.cast(artifact), state);
       }
@@ -146,9 +146,9 @@ public class HoursSpentUtil {
    /**
     * Return hours spent working ONLY the SMA stateName (not children SMAs)
     */
-   public static double getHoursSpentSMAState(Artifact artifact, IWorkPage state) throws OseeCoreException {
+   public static double getHoursSpentSMAState(Artifact artifact, IStateToken state) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-         return WorkflowManagerCore.getStateManager(artifact).getHoursSpent(state.getPageName());
+         return WorkflowManagerCore.getStateManager(artifact).getHoursSpent(state.getName());
       }
       return 0;
    }
@@ -179,7 +179,7 @@ public class HoursSpentUtil {
     * @param relatedToState state name of parent workflow's state
     * @return Returns the Hours Spent
     */
-   public static double getHoursSpentFromStateTasks(Artifact artifact, IWorkPage relatedToState) throws OseeCoreException {
+   public static double getHoursSpentFromStateTasks(Artifact artifact, IStateToken relatedToState) throws OseeCoreException {
       double spent = 0;
       if (artifact instanceof AbstractTaskableArtifact) {
          for (TaskArtifact taskArt : ((AbstractTaskableArtifact) artifact).getTaskArtifacts(relatedToState)) {

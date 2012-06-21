@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.workdef;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -19,25 +20,34 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class WorkDefinitionMatch {
 
-   private WorkDefinition workDefinition;
+   private IAtsWorkDefinition workDefinition;
+   private String workDefinitionId;
    private final List<String> trace = new ArrayList<String>();
 
    public WorkDefinitionMatch() {
       this(null, null);
    }
 
-   public WorkDefinitionMatch(WorkDefinition WorkDefinition, String trace) {
-      this.workDefinition = WorkDefinition;
+   public WorkDefinitionMatch(String workDefinitionId, String trace) {
+      this.workDefinitionId = workDefinitionId;
       if (Strings.isValid(trace)) {
          this.trace.add(trace);
       }
    }
 
-   public WorkDefinition getWorkDefinition() {
+   public String getWorkDefinitionId() {
+      return workDefinitionId;
+   }
+
+   public void setWorkDefinitionId(String workDefinitionId) {
+      this.workDefinitionId = workDefinitionId;
+   }
+
+   public IAtsWorkDefinition getWorkDefinition() {
       return workDefinition;
    }
 
-   public void setWorkDefinition(WorkDefinition WorkDefinition) {
+   public void setWorkDefinition(IAtsWorkDefinition WorkDefinition) {
       this.workDefinition = WorkDefinition;
    }
 

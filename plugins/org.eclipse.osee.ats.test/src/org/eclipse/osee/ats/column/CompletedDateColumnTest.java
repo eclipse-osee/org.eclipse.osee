@@ -60,7 +60,7 @@ public class CompletedDateColumnTest {
       Assert.assertEquals("", CompletedDateColumn.getDateStr(teamArt));
 
       TransitionHelper helper =
-         new TransitionHelper("Transition to Completed", Arrays.asList(teamArt), TeamState.Completed.getPageName(),
+         new TransitionHelper("Transition to Completed", Arrays.asList(teamArt), TeamState.Completed.getName(),
             null, null, TransitionOption.OverrideTransitionValidityCheck, TransitionOption.OverrideAssigneeCheck);
       TransitionManager transitionMgr = new TransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
@@ -74,7 +74,7 @@ public class CompletedDateColumnTest {
          CompletedDateColumn.getInstance().getColumnText(teamArt, CompletedDateColumn.getInstance(), 0));
 
       helper =
-         new TransitionHelper("Transition to Endorse", Arrays.asList(teamArt), TeamState.Endorse.getPageName(),
+         new TransitionHelper("Transition to Endorse", Arrays.asList(teamArt), TeamState.Endorse.getName(),
             Arrays.asList(AtsUsersClient.getUser()), null, TransitionOption.OverrideTransitionValidityCheck,
             TransitionOption.OverrideAssigneeCheck);
       transitionMgr = new TransitionManager(helper);

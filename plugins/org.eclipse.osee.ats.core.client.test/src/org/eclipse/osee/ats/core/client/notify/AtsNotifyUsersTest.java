@@ -198,7 +198,7 @@ public class AtsNotifyUsersTest {
       notifyManager.clear();
       teamArt.getStateMgr().initializeStateMachine(TeamState.Analyze, null, AtsUsersClient.getUser());
       TransitionHelper helper =
-         new TransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), TeamState.Cancelled.getPageName(),
+         new TransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), TeamState.Cancelled.getName(),
             null, "this is the reason", TransitionOption.OverrideTransitionValidityCheck);
       transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       TransitionManager transitionMgr = new TransitionManager(helper, transaction);

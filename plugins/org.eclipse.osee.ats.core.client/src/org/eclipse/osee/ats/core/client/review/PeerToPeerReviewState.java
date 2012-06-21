@@ -11,25 +11,25 @@
 package org.eclipse.osee.ats.core.client.review;
 
 import java.util.List;
-import org.eclipse.osee.ats.core.workflow.WorkPageAdapter;
-import org.eclipse.osee.ats.core.workflow.WorkPageType;
+import org.eclipse.osee.ats.core.workflow.StateTypeAdapter;
+import org.eclipse.osee.ats.workdef.api.StateType;
 
-public class PeerToPeerReviewState extends WorkPageAdapter {
-   public static PeerToPeerReviewState Prepare = new PeerToPeerReviewState("Prepare", WorkPageType.Working);
-   public static PeerToPeerReviewState Review = new PeerToPeerReviewState("Review", WorkPageType.Working);
-   public static PeerToPeerReviewState Meeting = new PeerToPeerReviewState("Meeting", WorkPageType.Working);
-   public static PeerToPeerReviewState Completed = new PeerToPeerReviewState("Completed", WorkPageType.Completed);
+public class PeerToPeerReviewState extends StateTypeAdapter {
+   public static PeerToPeerReviewState Prepare = new PeerToPeerReviewState("Prepare", StateType.Working);
+   public static PeerToPeerReviewState Review = new PeerToPeerReviewState("Review", StateType.Working);
+   public static PeerToPeerReviewState Meeting = new PeerToPeerReviewState("Meeting", StateType.Working);
+   public static PeerToPeerReviewState Completed = new PeerToPeerReviewState("Completed", StateType.Completed);
 
-   private PeerToPeerReviewState(String pageName, WorkPageType workPageType) {
-      super(PeerToPeerReviewState.class, pageName, workPageType);
+   private PeerToPeerReviewState(String pageName, StateType StateType) {
+      super(PeerToPeerReviewState.class, pageName, StateType);
    }
 
    public static PeerToPeerReviewState valueOf(String pageName) {
-      return WorkPageAdapter.valueOfPage(PeerToPeerReviewState.class, pageName);
+      return StateTypeAdapter.valueOfPage(PeerToPeerReviewState.class, pageName);
    }
 
    public static List<PeerToPeerReviewState> values() {
-      return WorkPageAdapter.pages(PeerToPeerReviewState.class);
+      return StateTypeAdapter.pages(PeerToPeerReviewState.class);
    }
 
 };

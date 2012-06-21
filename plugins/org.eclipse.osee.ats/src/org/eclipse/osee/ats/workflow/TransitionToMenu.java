@@ -31,10 +31,10 @@ import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionToOperation;
 import org.eclipse.osee.ats.core.model.IAtsUser;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.TransitionStatusDialog;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
@@ -56,7 +56,7 @@ public class TransitionToMenu {
       MenuManager editMenuManager =
          new MenuManager(name, ImageManager.getImageDescriptor(AtsImage.TRANSITION), "transition-to");
       final Set<AbstractWorkflowArtifact> awas = new HashSet<AbstractWorkflowArtifact>();
-      Set<StateDefinition> toStateDefs = new HashSet<StateDefinition>();
+      Set<IAtsStateDefinition> toStateDefs = new HashSet<IAtsStateDefinition>();
       for (TreeItem treeItem : selectedTreeItems) {
          if (treeItem.getData() instanceof AbstractWorkflowArtifact) {
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) treeItem.getData();
@@ -80,13 +80,13 @@ public class TransitionToMenu {
          });
       } else {
          Set<Integer> stateOrdinals = new HashSet<Integer>();
-         for (final StateDefinition stateDef : toStateDefs) {
+         for (final IAtsStateDefinition stateDef : toStateDefs) {
             stateOrdinals.add(stateDef.getOrdinal());
          }
          Integer[] toStates = stateOrdinals.toArray(new Integer[stateOrdinals.size()]);
          Arrays.sort(toStates);
          for (Integer stateOrdinal : stateOrdinals) {
-            for (final StateDefinition stateDef : toStateDefs) {
+            for (final IAtsStateDefinition stateDef : toStateDefs) {
                if (stateDef.getOrdinal() == stateOrdinal) {
                   editMenuManager.add(new Action(getTransitionToString(stateDef),
                      ImageManager.getImageDescriptor(AtsImage.TRANSITION)) {
@@ -104,21 +104,20 @@ public class TransitionToMenu {
       return editMenuManager;
    }
 
-   private static String getTransitionToString(StateDefinition stateDef) {
-      return String.format("%s%s%s", stateDef.getPageName(), getStateTypeName(stateDef),
-         getDefaultStatePercent(stateDef));
+   private static String getTransitionToString(IAtsStateDefinition stateDef) {
+      return String.format("%s%s%s", stateDef.getName(), getStateTypeName(stateDef), getDefaultStatePercent(stateDef));
    }
 
-   private static Object getDefaultStatePercent(StateDefinition stateDef) {
+   private static Object getDefaultStatePercent(IAtsStateDefinition stateDef) {
       if (stateDef.getRecommendedPercentComplete() != null && stateDef.getRecommendedPercentComplete() != 0) {
          return String.format(" - %d%%", stateDef.getRecommendedPercentComplete());
       }
       return "";
    }
 
-   private static String getStateTypeName(StateDefinition stateDef) {
-      return stateDef.isWorkingPage() || stateDef.getPageName().equals(TeamState.Completed.getPageName()) || stateDef.getPageName().equals(
-         TeamState.Cancelled.getPageName()) ? "" : " (" + stateDef.getWorkPageType().name() + ")";
+   private static String getStateTypeName(IAtsStateDefinition stateDef) {
+      return stateDef.getStateType().isWorkingState() || stateDef.getName().equals(TeamState.Completed.getName()) || stateDef.getName().equals(
+         TeamState.Cancelled.getName()) ? "" : " (" + stateDef.getStateType().name() + ")";
    }
 
    private static void handleTransitionToSelected(final String toStateName, final Set<AbstractWorkflowArtifact> awas) {
@@ -131,13 +130,14 @@ public class TransitionToMenu {
 
                @Override
                public void run() {
-                  StateDefinition toStateDef = awas.iterator().next().getWorkDefinition().getStateByName(toStateName);
-                  boolean showPercentCompleted = !toStateDef.isCompletedOrCancelledPage();
+                  IAtsStateDefinition toStateDef =
+                     awas.iterator().next().getWorkDefinition().getStateByName(toStateName);
+                  boolean showPercentCompleted = !toStateDef.getStateType().isCompletedOrCancelledState();
                   TransitionStatusData data = new TransitionStatusData(getAwas(), showPercentCompleted);
                   if (toStateDef.getRecommendedPercentComplete() != null) {
                      data.setDefaultPercent(toStateDef.getRecommendedPercentComplete());
                      data.setPercent(100);
-                  } else if (toStateDef.isCompletedOrCancelledPage()) {
+                  } else if (toStateDef.getStateType().isCompletedOrCancelledState()) {
                      data.setDefaultPercent(100);
                      data.setPercent(100);
                   }
@@ -194,8 +194,8 @@ public class TransitionToMenu {
                @Override
                public void run() {
                   AbstractWorkflowArtifact awa = getAwas().iterator().next();
-                  StateDefinition stateDef = awa.getStateDefinitionByName(getToStateName());
-                  if (stateDef.isCancelledPage()) {
+                  IAtsStateDefinition stateDef = awa.getStateDefinitionByName(getToStateName());
+                  if (stateDef.getStateType().isCancelledState()) {
                      EntryDialog dialog = new EntryDialog("Enter Cancellation Reason", "Enter Cancellation Reason");
                      if (dialog.open() != 0) {
                         result.setCancelled(true);

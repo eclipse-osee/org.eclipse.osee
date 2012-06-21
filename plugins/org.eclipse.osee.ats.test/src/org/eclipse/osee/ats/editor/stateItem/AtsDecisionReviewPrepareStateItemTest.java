@@ -12,16 +12,16 @@ package org.eclipse.osee.ats.editor.stateItem;
 
 import static org.junit.Assert.assertFalse;
 import java.util.Arrays;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.workflow.IWorkPage;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.workdef.api.IStateToken;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.junit.AfterClass;
@@ -70,8 +70,8 @@ public class AtsDecisionReviewPrepareStateItemTest {
       decRevArt.setSoleAttributeValue(AtsAttributeTypes.DecisionReviewOptions, decisionOptionStr);
       decRevArt.persist(getClass().getSimpleName());
 
-      IWorkPage fromState = decRevArt.getWorkDefinition().getStateByName(DecisionReviewState.Prepare.getPageName());
-      IWorkPage toState = decRevArt.getWorkDefinition().getStateByName(DecisionReviewState.Decision.getPageName());
+      IStateToken fromState = decRevArt.getWorkDefinition().getStateByName(DecisionReviewState.Prepare.getName());
+      IStateToken toState = decRevArt.getWorkDefinition().getStateByName(DecisionReviewState.Decision.getName());
 
       // make call to state item that should set options based on artifact's attribute value
       AtsDecisionReviewPrepareStateItem stateItem = new AtsDecisionReviewPrepareStateItem();

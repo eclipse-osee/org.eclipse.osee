@@ -168,7 +168,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
    private void makeChanges7(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
       TransitionHelper helper =
-         new TransitionHelper("Remote Event Test", Arrays.asList(teamArt), TeamState.Analyze.getPageName(),
+         new TransitionHelper("Remote Event Test", Arrays.asList(teamArt), TeamState.Analyze.getName(),
             Collections.singleton(AtsUsersClient.getUser()), null, TransitionOption.None);
       TransitionManager transitionMgr = new TransitionManager(helper, transaction);
       TransitionResults results = transitionMgr.handleAll();
@@ -283,7 +283,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
          expectedTargetedVersion = "not set";
       }
       testEquals("Targeted Version", expectedTargetedVersion, "2.5.7");
-      testEquals("State", TeamState.Analyze.getPageName(), teamArt.getStateMgr().getCurrentStateName());
+      testEquals("State", TeamState.Analyze.getName(), teamArt.getStateMgr().getCurrentStateName());
    }
 
    private void testEquals(String name, Object expected, Object actual) {

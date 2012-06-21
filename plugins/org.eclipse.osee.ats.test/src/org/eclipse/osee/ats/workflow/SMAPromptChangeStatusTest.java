@@ -79,23 +79,23 @@ public class SMAPromptChangeStatusTest {
 
       // Change two to 100, 1 hr split
       SMAPromptChangeStatus.performChangeStatus(tasks, null, 1, 100, true, true);
-      SMATestUtil.validateSMAs(tasks, TaskStates.InWork.getPageName(), 100, 0.25);
+      SMATestUtil.validateSMAs(tasks, TaskStates.InWork.getName(), 100, 0.25);
 
       // Change two to 100, 1 hr split
       // hours should be added to inwork state; make sure completed state isn't statused
       SMAPromptChangeStatus.performChangeStatus(tasks, null, 1, 100, true, true);
-      SMATestUtil.validateSMAs(tasks, TaskStates.InWork.getPageName(), 100, 0.50);
+      SMATestUtil.validateSMAs(tasks, TaskStates.InWork.getName(), 100, 0.50);
 
       // Change two to 99, 1 hr split
       // transitions to InWork and adds hours
       // make sure hours not added to completed state
       SMAPromptChangeStatus.performChangeStatus(tasks, null, 1, 99, true, true);
-      SMATestUtil.validateSMAs(tasks, TaskStates.InWork.getPageName(), 99, 0.75);
+      SMATestUtil.validateSMAs(tasks, TaskStates.InWork.getName(), 99, 0.75);
 
       // Change two to 55, 0
       // no transition, no hours spent
       SMAPromptChangeStatus.performChangeStatus(tasks, null, 0, 55, true, true);
-      SMATestUtil.validateSMAs(tasks, TaskStates.InWork.getPageName(), 55, 0.75);
+      SMATestUtil.validateSMAs(tasks, TaskStates.InWork.getName(), 55, 0.75);
 
    }
 
@@ -113,7 +113,7 @@ public class SMAPromptChangeStatusTest {
       // test that if one task is cancelled, can't change status
       transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       TransitionHelper helper =
-         new TransitionHelper("Transition to Cancelled", Arrays.asList(cancelTask), TaskStates.Cancelled.getPageName(),
+         new TransitionHelper("Transition to Cancelled", Arrays.asList(cancelTask), TaskStates.Cancelled.getName(),
             null, null, TransitionOption.None);
       TransitionManager transitionMgr = new TransitionManager(helper, transaction);
       TransitionResults results = transitionMgr.handleAll();
@@ -139,7 +139,7 @@ public class SMAPromptChangeStatusTest {
 
       // test that if task not in related-to state of workflows's current status, can't change status
       transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
-      taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, TeamState.Analyze.getPageName());
+      taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, TeamState.Analyze.getName());
       transaction.execute();
       Result result = SMAPromptChangeStatus.isValidToChangeStatus(tasks);
       assertTrue(result.isFalse());

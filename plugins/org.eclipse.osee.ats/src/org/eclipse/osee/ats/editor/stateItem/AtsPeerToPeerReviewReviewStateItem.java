@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.model.IAtsUser;
-import org.eclipse.osee.ats.core.workflow.IWorkPage;
+import org.eclipse.osee.ats.workdef.api.IStateToken;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
@@ -41,9 +41,9 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem implements 
    }
 
    @Override
-   public void transitioned(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<? extends IAtsUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
-      if (sma.isOfType(AtsArtifactTypes.PeerToPeerReview) && toState.getPageName().equals(
-         PeerToPeerReviewState.Review.getPageName())) {
+   public void transitioned(AbstractWorkflowArtifact sma, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+      if (sma.isOfType(AtsArtifactTypes.PeerToPeerReview) && toState.getName().equals(
+         PeerToPeerReviewState.Review.getName())) {
          // Set Assignees to all user roles users
          Set<IAtsUser> assignees = new HashSet<IAtsUser>();
          PeerToPeerReviewArtifact peerArt = (PeerToPeerReviewArtifact) sma;
@@ -60,7 +60,7 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem implements 
    }
 
    @Override
-   public void transitioning(TransitionResults results, AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<? extends IAtsUser> toAssignees) {
+   public void transitioning(TransitionResults results, AbstractWorkflowArtifact sma, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees) {
       // do nothing
    }
 

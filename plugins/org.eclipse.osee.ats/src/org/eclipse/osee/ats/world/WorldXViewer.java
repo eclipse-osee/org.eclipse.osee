@@ -546,7 +546,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    public void setCancelledNotification() {
       TreeItem item = getTree().getItem(0);
       if (item.getData() instanceof String) {
-         item.setData(TeamState.Cancelled.getPageName());
+         item.setData(TeamState.Cancelled.getName());
       }
       refresh(item.getData());
    }

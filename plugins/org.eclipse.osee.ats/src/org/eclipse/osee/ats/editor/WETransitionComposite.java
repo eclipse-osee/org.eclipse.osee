@@ -33,8 +33,6 @@ import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionToOperation;
 import org.eclipse.osee.ats.core.model.IAtsUser;
-import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.Activator;
@@ -42,6 +40,9 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TransitionStatusDialog;
 import org.eclipse.osee.ats.workdef.StateDefinitionLabelProvider;
 import org.eclipse.osee.ats.workdef.StateDefinitionViewSorter;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
+import org.eclipse.osee.ats.workdef.api.RuleDefinitionOption;
+import org.eclipse.osee.ats.workdef.api.WorkDefUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
@@ -101,7 +102,7 @@ public class WETransitionComposite extends Composite {
       transitionToStateCombo = new XComboViewer("Transition To State Combo", SWT.NONE);
       transitionToStateCombo.setDisplayLabel(false);
       List<Object> allPages = new ArrayList<Object>();
-      for (StateDefinition nextState : awa.getToStatesWithCompleteCancelReturnStates()) {
+      for (IAtsStateDefinition nextState : awa.getToStatesWithCompleteCancelReturnStates()) {
          if (!allPages.contains(nextState)) {
             allPages.add(nextState);
          }
@@ -119,11 +120,11 @@ public class WETransitionComposite extends Composite {
          defaultPage.add(workflowSection.getPage().getDefaultToPage());
          transitionToStateCombo.setSelected(defaultPage);
       }
-      if (workflowSection.getPage().isCancelledPage() && Strings.isValid(awa.getCancelledFromState())) {
+      if (workflowSection.getPage().getStateType().isCancelledState() && Strings.isValid(awa.getCancelledFromState())) {
          defaultPage.add(awa.getStateDefinitionByName(awa.getCancelledFromState()));
          transitionToStateCombo.setSelected(defaultPage);
       }
-      if (workflowSection.getPage().isCompletedPage() && Strings.isValid(awa.getCompletedFromState())) {
+      if (workflowSection.getPage().getStateType().isCompletedState() && Strings.isValid(awa.getCompletedFromState())) {
          defaultPage.add(awa.getStateDefinitionByName(awa.getCompletedFromState()));
          transitionToStateCombo.setSelected(defaultPage);
       }
@@ -182,8 +183,8 @@ public class WETransitionComposite extends Composite {
    private void handleTransitionButtonSelection(final SMAEditor editor, final boolean isEditable) {
       editor.doSave(null);
       final List<AbstractWorkflowArtifact> awas = Arrays.asList(awa);
-      final StateDefinition toStateDef = (StateDefinition) transitionToStateCombo.getSelected();
-      final StateDefinition fromStateDef = awa.getStateDefinition();
+      final IAtsStateDefinition toStateDef = (IAtsStateDefinition) transitionToStateCombo.getSelected();
+      final IAtsStateDefinition fromStateDef = awa.getStateDefinition();
       ITransitionHelper helper = new TransitionHelperAdapter() {
 
          @Override
@@ -238,8 +239,9 @@ public class WETransitionComposite extends Composite {
 
                @Override
                public void run() {
-                  StateDefinition toStateDef = getAwas().iterator().next().getStateDefinitionByName(getToStateName());
-                  if (toStateDef.isCancelledPage()) {
+                  IAtsStateDefinition toStateDef =
+                     getAwas().iterator().next().getStateDefinitionByName(getToStateName());
+                  if (toStateDef.getStateType().isCancelledState()) {
                      EntryDialog cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
                      if (cancelDialog.open() != 0) {
                         result.setCancelled(true);
@@ -286,13 +288,13 @@ public class WETransitionComposite extends Composite {
       return min.intValue();
    }
 
-   private boolean handlePopulateStateMetrics(StateDefinition fromStateDefinition, StateDefinition toStateDefinition) throws OseeCoreException {
+   private boolean handlePopulateStateMetrics(IAtsStateDefinition fromStateDefinition, IAtsStateDefinition toStateDefinition) throws OseeCoreException {
       int percent = 0;
       // If state weighting, always 100 cause state is completed
-      if (awa.getWorkDefinition().isStateWeightingEnabled()) {
+      if (WorkDefUtil.isStateWeightingEnabled(awa.getWorkDefinition())) {
          percent = 100;
       } else {
-         if (toStateDefinition.isCompletedOrCancelledPage()) {
+         if (toStateDefinition.getStateType().isCompletedOrCancelledState()) {
             percent = 100;
          } else {
             percent = awa.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0);
@@ -302,7 +304,7 @@ public class WETransitionComposite extends Composite {
       double hoursSpent = awa.getStateMgr().getHoursSpent(awa.getCurrentStateName());
       double additionalHours = 0.0;
 
-      if (isRequireStateHoursSpentPrompt(fromStateDefinition) && !toStateDefinition.isCancelledPage()) {
+      if (isRequireStateHoursSpentPrompt(fromStateDefinition) && !toStateDefinition.getStateType().isCancelledState()) {
          // Otherwise, open dialog to ask for hours complete
          String msg =
             awa.getStateMgr().getCurrentStateName() + " State\n\n" + AtsUtilCore.doubleToI18nString(hoursSpent) + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
@@ -321,8 +323,8 @@ public class WETransitionComposite extends Composite {
       return true;
    }
 
-   private boolean isRequireStateHoursSpentPrompt(StateDefinition stateDefinition) {
-      return stateDefinition.hasRule(RuleDefinitionOption.RequireStateHourSpentPrompt);
+   private boolean isRequireStateHoursSpentPrompt(IAtsStateDefinition stateDefinition) {
+      return stateDefinition.hasRule(RuleDefinitionOption.RequireStateHourSpentPrompt.name());
    }
 
    public void updateTransitionToAssignees() throws OseeCoreException {
@@ -362,12 +364,12 @@ public class WETransitionComposite extends Composite {
       }
       if (transitionStateOverride != null) {
          // Return if override state is same as selected
-         if (((StateDefinition) transitionToStateCombo.getSelected()).getName().equals(transitionStateOverride)) {
+         if (((IAtsStateDefinition) transitionToStateCombo.getSelected()).getName().equals(transitionStateOverride)) {
             return;
          }
          // Find page corresponding to override state name
-         for (StateDefinition toState : awa.getToStates()) {
-            if (toState.getPageName().equals(transitionStateOverride)) {
+         for (IAtsStateDefinition toState : awa.getToStates()) {
+            if (toState.getName().equals(transitionStateOverride)) {
                // Reset selection
                ArrayList<Object> defaultPage = new ArrayList<Object>();
                defaultPage.add(toState);
@@ -380,7 +382,7 @@ public class WETransitionComposite extends Composite {
 
    public void refresh() throws OseeCoreException {
       if (Widgets.isAccessible(transitionAssigneesLabel)) {
-         StateDefinition toWorkPage = (StateDefinition) transitionToStateCombo.getSelected();
+         IAtsStateDefinition toWorkPage = (IAtsStateDefinition) transitionToStateCombo.getSelected();
          if (toWorkPage == null) {
             transitionAssigneesLabel.setText("");
          } else {
@@ -391,12 +393,12 @@ public class WETransitionComposite extends Composite {
    }
 
    private void handleChangeTransitionAssignees(AbstractWorkflowArtifact aba) throws OseeCoreException {
-      StateDefinition toWorkPage = (StateDefinition) transitionToStateCombo.getSelected();
+      IAtsStateDefinition toWorkPage = (IAtsStateDefinition) transitionToStateCombo.getSelected();
       if (toWorkPage == null) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "No Transition State Selected");
          return;
       }
-      if (toWorkPage.isCancelledPage() || toWorkPage.isCompletedPage()) {
+      if (toWorkPage.getStateType().isCompletedOrCancelledState()) {
          AWorkbench.popup("ERROR", "No Assignees in Completed and Cancelled states");
          return;
       }

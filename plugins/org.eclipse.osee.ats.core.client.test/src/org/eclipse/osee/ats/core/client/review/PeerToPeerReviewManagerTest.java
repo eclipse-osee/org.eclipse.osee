@@ -49,17 +49,17 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
 
       PeerToPeerReviewArtifact peerArt =
          PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt, reviewTitle,
-            AtsTestUtil.getAnalyzeStateDef().getPageName(), new Date(), AtsUsersClient.getUser(), transaction);
+            AtsTestUtil.getAnalyzeStateDef().getName(), new Date(), AtsUsersClient.getUser(), transaction);
       transaction.execute();
 
       Assert.assertNotNull(peerArt);
       Assert.assertFalse(
          String.format("PeerToPeer Review artifact should not be dirty [%s]", Artifacts.getDirtyReport(peerArt)),
          peerArt.isDirty());
-      Assert.assertEquals(PeerToPeerReviewState.Prepare.getPageName(), peerArt.getCurrentStateName());
+      Assert.assertEquals(PeerToPeerReviewState.Prepare.getName(), peerArt.getCurrentStateName());
       Assert.assertEquals("Joe Smith", peerArt.getStateMgr().getAssigneesStr());
       Assert.assertEquals("Joe Smith", peerArt.getCreatedBy().getName());
-      Assert.assertEquals(AtsTestUtil.getAnalyzeStateDef().getPageName(),
+      Assert.assertEquals(AtsTestUtil.getAnalyzeStateDef().getName(),
          peerArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState));
 
    }
@@ -76,16 +76,16 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
 
       PeerToPeerReviewArtifact peerArt =
          PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt, reviewTitle,
-            AtsTestUtil.getAnalyzeStateDef().getPageName(), transaction);
+            AtsTestUtil.getAnalyzeStateDef().getName(), transaction);
       transaction.execute();
 
       Assert.assertNotNull(peerArt);
       Assert.assertFalse(
          String.format("PeerToPeer Review artifact should not be dirty [%s]", Artifacts.getDirtyReport(peerArt)),
          peerArt.isDirty());
-      Assert.assertEquals(PeerToPeerReviewState.Prepare.getPageName(), peerArt.getCurrentStateName());
+      Assert.assertEquals(PeerToPeerReviewState.Prepare.getName(), peerArt.getCurrentStateName());
       Assert.assertEquals("Joe Smith", peerArt.getStateMgr().getAssigneesStr());
-      Assert.assertEquals(AtsTestUtil.getAnalyzeStateDef().getPageName(),
+      Assert.assertEquals(AtsTestUtil.getAnalyzeStateDef().getName(),
          peerArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState));
 
    }

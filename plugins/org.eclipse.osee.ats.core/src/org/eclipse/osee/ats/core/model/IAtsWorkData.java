@@ -6,7 +6,7 @@
 package org.eclipse.osee.ats.core.model;
 
 import java.util.Date;
-import org.eclipse.osee.ats.core.workflow.WorkPageType;
+import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -38,7 +38,7 @@ public interface IAtsWorkData {
 
    public void setCancelledFromState(String string) throws OseeCoreException;
 
-   public void setWorkPageType(WorkPageType workPageType) throws OseeCoreException;
+   public void setStateType(StateType StateType) throws OseeCoreException;
 
    public void setCompletedDate(Date completedDate) throws OseeCoreException;
 

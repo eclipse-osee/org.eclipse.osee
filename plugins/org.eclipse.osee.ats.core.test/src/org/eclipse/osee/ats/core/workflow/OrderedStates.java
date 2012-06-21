@@ -11,30 +11,30 @@
 package org.eclipse.osee.ats.core.workflow;
 
 import java.util.List;
-import org.eclipse.osee.ats.core.workflow.WorkPageAdapter;
-import org.eclipse.osee.ats.core.workflow.WorkPageType;
+import org.eclipse.osee.ats.core.workflow.StateTypeAdapter;
+import org.eclipse.osee.ats.workdef.api.StateType;
 
-public class OrderedStates extends WorkPageAdapter {
+public class OrderedStates extends StateTypeAdapter {
 
-   public static OrderedStates One = new OrderedStates("One", WorkPageType.Working);
-   public static OrderedStates Two = new OrderedStates("Two", WorkPageType.Working);
-   public static OrderedStates Three = new OrderedStates("Three", WorkPageType.Working);
-   public static OrderedStates Four = new OrderedStates("Four", WorkPageType.Working);
-   public static OrderedStates Five = new OrderedStates("Five", WorkPageType.Working);
-   public static OrderedStates Six = new OrderedStates("Six", WorkPageType.Working);
-   public static OrderedStates Cancelled = new OrderedStates("Cancelled", WorkPageType.Cancelled);
-   public static OrderedStates Completed = new OrderedStates("Completed", WorkPageType.Completed);
+   public static OrderedStates One = new OrderedStates("One", StateType.Working);
+   public static OrderedStates Two = new OrderedStates("Two", StateType.Working);
+   public static OrderedStates Three = new OrderedStates("Three", StateType.Working);
+   public static OrderedStates Four = new OrderedStates("Four", StateType.Working);
+   public static OrderedStates Five = new OrderedStates("Five", StateType.Working);
+   public static OrderedStates Six = new OrderedStates("Six", StateType.Working);
+   public static OrderedStates Cancelled = new OrderedStates("Cancelled", StateType.Cancelled);
+   public static OrderedStates Completed = new OrderedStates("Completed", StateType.Completed);
 
-   public OrderedStates(String pageName, WorkPageType workPageType) {
-      super(OrderedStates.class, pageName, workPageType);
+   public OrderedStates(String pageName, StateType StateType) {
+      super(OrderedStates.class, pageName, StateType);
    }
 
    public static OrderedStates valueOf(String pageName) {
-      return WorkPageAdapter.valueOfPage(OrderedStates.class, pageName);
+      return StateTypeAdapter.valueOfPage(OrderedStates.class, pageName);
    }
 
    public static List<OrderedStates> values() {
-      return WorkPageAdapter.pages(OrderedStates.class);
+      return StateTypeAdapter.pages(OrderedStates.class);
    }
 
 }

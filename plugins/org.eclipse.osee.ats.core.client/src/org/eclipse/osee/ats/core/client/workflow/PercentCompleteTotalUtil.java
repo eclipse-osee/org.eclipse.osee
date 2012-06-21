@@ -21,8 +21,9 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.model.WorkStateProvider;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
-import org.eclipse.osee.ats.core.workflow.IWorkPage;
+import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
+import org.eclipse.osee.ats.workdef.api.IStateToken;
+import org.eclipse.osee.ats.workdef.api.WorkDefUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -41,11 +42,11 @@ public class PercentCompleteTotalUtil {
          return 0;
       }
       AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
-      if (awa.getWorkDefinition().isStateWeightingEnabled()) {
+      if (WorkDefUtil.isStateWeightingEnabled(awa.getWorkDefinition())) {
          // Calculate total percent using configured weighting
          int percent = 0;
-         for (StateDefinition stateDef : awa.getWorkDefinition().getStates()) {
-            if (!stateDef.isCompletedPage() && !stateDef.isCancelledPage()) {
+         for (IAtsStateDefinition stateDef : awa.getWorkDefinition().getStates()) {
+            if (!stateDef.getStateType().isCompletedState() && !stateDef.getStateType().isCancelledState()) {
                double stateWeightInt = stateDef.getStateWeight();
                double weight = stateWeightInt / 100;
                int percentCompleteForState = getPercentCompleteSMAStateTotal(awa, stateDef);
@@ -63,8 +64,8 @@ public class PercentCompleteTotalUtil {
          }
          if (isAnyStateHavePercentEntered(awa.getStateMgr())) {
             int numStates = 0;
-            for (StateDefinition state : awa.getWorkDefinition().getStates()) {
-               if (!state.isCompletedPage() && !state.isCancelledPage()) {
+            for (IAtsStateDefinition state : awa.getWorkDefinition().getStates()) {
+               if (!state.getStateType().isCompletedState() && !state.getStateType().isCancelledState()) {
                   percent += getPercentCompleteSMAStateTotal(awa, state);
                   numStates++;
                }
@@ -123,11 +124,11 @@ public class PercentCompleteTotalUtil {
     * Return Percent Complete on all things (including children SMAs) related to stateName. Total Percent for state,
     * tasks and reviews / 1 + # Tasks + # Reviews
     */
-   public static int getPercentCompleteSMAStateTotal(Artifact artifact, IWorkPage state) throws OseeCoreException {
+   public static int getPercentCompleteSMAStateTotal(Artifact artifact, IStateToken state) throws OseeCoreException {
       return getStateMetricsData(artifact, state).getResultingPercent();
    }
 
-   private static StateMetricsData getStateMetricsData(Artifact artifact, IWorkPage teamState) throws OseeCoreException {
+   private static StateMetricsData getStateMetricsData(Artifact artifact, IStateToken teamState) throws OseeCoreException {
       if (!(artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact))) {
          return null;
       }
@@ -207,9 +208,9 @@ public class PercentCompleteTotalUtil {
    /**
     * Return Percent Complete working ONLY the SMA stateName (not children SMAs)
     */
-   public static int getPercentCompleteSMAState(Artifact artifact, IWorkPage state) throws OseeCoreException {
+   public static int getPercentCompleteSMAState(Artifact artifact, IStateToken state) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-         return WorkflowManagerCore.getStateManager(artifact).getPercentComplete(state.getPageName());
+         return WorkflowManagerCore.getStateManager(artifact).getPercentComplete(state.getName());
       }
       return 0;
    }
