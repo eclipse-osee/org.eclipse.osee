@@ -14,11 +14,13 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import static org.eclipse.osee.framework.core.enums.LoadLevel.FULL;
 import static org.eclipse.osee.framework.skynet.core.artifact.LoadType.INCLUDE_CACHE;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -31,7 +33,6 @@ import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.SearchOptions;
 import org.eclipse.osee.framework.core.message.SearchRequest;
@@ -39,6 +40,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
@@ -518,23 +520,28 @@ public class ArtifactQuery {
    }
 
    public static Collection<? extends Artifact> reloadArtifacts(Collection<? extends Artifact> artifacts) throws OseeCoreException {
+      Collection<Artifact> reloadedArts = new ArrayList<Artifact>(artifacts.size());
+      HashCollection<IOseeBranch, Artifact> branchMap = new HashCollection<IOseeBranch, Artifact>();
       if (artifacts.isEmpty()) {
          return artifacts;
       }
-      Set<Integer> artIds = new HashSet<Integer>();
-      IOseeBranch branch = null;
       for (Artifact artifact : artifacts) {
-         if (branch == null) {
-            branch = artifact.getBranch();
-         } else if (!branch.equals(artifact.getBranch())) {
-            throw new OseeArgumentException("Reloading artifacts of different branches not supported");
-         }
-         artIds.add(artifact.getArtId());
+         // separate/group artifacts by branch since ArtifactQueryBuilder only supports a single branch
+         branchMap.put(artifact.getBranch(), artifact);
       }
-      ArtifactQueryBuilder query = new ArtifactQueryBuilder(artIds, branch, INCLUDE_DELETED, FULL);
+      Set<Integer> artIds = new HashSet<Integer>();
+      for (Entry<IOseeBranch, Collection<Artifact>> entrySet : branchMap.entrySet()) {
 
-      Collection<Artifact> reloadedArts = query.reloadArtifacts(artifacts.size());
-      OseeEventManager.kickLocalArtifactReloadEvent(query, reloadedArts);
+         for (Artifact artifact : entrySet.getValue()) {
+            artIds.add(artifact.getArtId());
+         }
+
+         ArtifactQueryBuilder query = new ArtifactQueryBuilder(artIds, entrySet.getKey(), INCLUDE_DELETED, FULL);
+
+         reloadedArts.addAll(query.reloadArtifacts(artIds.size()));
+         OseeEventManager.kickLocalArtifactReloadEvent(query, reloadedArts);
+         artIds.clear();
+      }
       return reloadedArts;
    }
 
