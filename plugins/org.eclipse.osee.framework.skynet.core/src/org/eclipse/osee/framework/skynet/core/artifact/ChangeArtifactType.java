@@ -12,36 +12,43 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
-import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventChangeTypeBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * Changes the descriptor type of an artifact to the provided descriptor.
@@ -49,43 +56,105 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
  * @author Jeff C. Phillips
  */
 public class ChangeArtifactType {
-   private static List<Attribute<?>> attributesToPurge;
-   private static List<RelationLink> relationsToDelete;
-   private static final IStatus promptStatus = new Status(IStatus.WARNING, Activator.PLUGIN_ID, 256, "", null);
-   private static boolean userAnsweredYesToAll = false;
+   private final HashSet<IAttributeType> attributeTypes = new HashSet<IAttributeType>();
+   private final HashSet<IRelationType> relationTypes = new HashSet<IRelationType>();
+   private final HashMap<IOseeBranch, SkynetTransaction> txMap = new HashMap<IOseeBranch, SkynetTransaction>();
+   private final Set<EventBasicGuidArtifact> artifactChanges = new HashSet<EventBasicGuidArtifact>();
+   private final List<Artifact> modifiedArtifacts = new ArrayList<Artifact>();
+   private static final IStatus promptStatus = new Status(IStatus.WARNING, Activator.PLUGIN_ID, 257, "", null);
 
-   /**
-    * Changes the descriptor of the artifacts to the provided artifact descriptor
-    */
-   public static void changeArtifactType(Collection<? extends Artifact> artifacts, IArtifactType artifactTypeToken) throws OseeCoreException {
-      if (artifacts.isEmpty()) {
+   public static void changeArtifactType(Collection<? extends Artifact> inputArtifacts, IArtifactType newArtifactTypeToken) throws OseeCoreException {
+
+      ChangeArtifactType app = new ChangeArtifactType();
+      if (inputArtifacts.isEmpty()) {
          throw new OseeArgumentException("The artifact list can not be empty");
       }
 
-      ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeToken);
-      List<Artifact> artifactsUserAccepted = new ArrayList<Artifact>();
-      Set<EventBasicGuidArtifact> artifactChanges = new HashSet<EventBasicGuidArtifact>();
-      for (Artifact artifact : artifacts) {
-         processAttributes(artifact, artifactType);
-         processRelations(artifact, artifactType);
-         artifactsUserAccepted.add(artifact);
-         if (userAnsweredYesToAll || doesUserAcceptArtifactChange(artifact, artifactType)) {
-            ArtifactType originalType = artifact.getArtifactType();
-            boolean success = changeArtifactTypeThroughHistory(artifact, artifactType);
-            if (success) {
-               artifactChanges.add(new EventChangeTypeBasicGuidArtifact(artifact.getBranch().getGuid(),
-                  originalType.getGuid(), artifactType.getGuid(), artifact.getGuid()));
-            }
-         }
+      if (newArtifactTypeToken == null) {
+         throw new OseeArgumentException("The new artifact type can not be empty");
       }
 
-      // Kick Local and Remote Events
+      ArtifactType newArtifactType = ArtifactTypeManager.getType(newArtifactTypeToken);
+
+      try {
+         app.internalChangeArtifactType(inputArtifacts, newArtifactType);
+      } catch (Exception ex) {
+         ArtifactQuery.reloadArtifacts(app.modifiedArtifacts);
+         OseeExceptions.wrapAndThrow(ex);
+      }
+
+   }
+
+   /**
+    * the order of operations for this BLAM is important. Since the representations for the Attribute Type and the
+    * associated attributes and relations are both in memory and in the database, it is important complete both
+    * memory/database changes in such a manner that they stay in sync therefore, if any part of this blam fails, then
+    * the type should not be changed
+    */
+   private void internalChangeArtifactType(Collection<? extends Artifact> inputArtifacts, ArtifactType newArtifactType) throws OseeDataStoreException, OseeCoreException {
+
+      createAttributeRelationTransactions(inputArtifacts, newArtifactType);
+      boolean changeOk = doesUserAcceptArtifactChange(newArtifactType);
+
+      if (!changeOk) {
+         ArtifactQuery.reloadArtifacts(modifiedArtifacts);
+         return;
+      }
+
+      for (SkynetTransaction transaction : txMap.values()) {
+         transaction.execute();
+      }
+
+      changeArtifactTypeOutsideofHistory(inputArtifacts, newArtifactType);
+
+      sendLocalAndRemoteEvents(modifiedArtifacts);
+   }
+
+   private void sendLocalAndRemoteEvents(Collection<? extends Artifact> artifacts) throws OseeCoreException {
       ArtifactEvent artifactEvent = new ArtifactEvent(artifacts.iterator().next().getBranch());
       for (EventBasicGuidArtifact guidArt : artifactChanges) {
          artifactEvent.getArtifacts().add(guidArt);
       }
-      OseeEventManager.kickPersistEvent(ChangeArtifactType.class, artifactEvent);
 
+      OseeEventManager.kickPersistEvent(ChangeArtifactType.class, artifactEvent);
+   }
+
+   private void createAttributeRelationTransactions(Collection<? extends Artifact> inputArtifacts, ArtifactType newArtifactType) throws OseeDataStoreException, OseeCoreException {
+      IdJoinQuery artifactJoin = populateJoinIdTable(inputArtifacts);
+      IOseeDatabaseService database = ServiceUtil.getOseeDatabaseService();
+      IOseeStatement chStmt = database.getStatement();
+
+      try {
+         chStmt.runPreparedQuery(
+            "select art_id, branch_id from osee_join_id jid, osee_artifact art, osee_txs txs where jid.query_id = ? and jid.id = art.art_id and art.gamma_id = txs.gamma_id and txs.tx_current = ?",
+            artifactJoin.getQueryId(), TxChange.CURRENT.getValue());
+
+         while (chStmt.next()) {
+            int artId = chStmt.getInt("art_id");
+            int branchId = chStmt.getInt("branch_id");
+            IOseeBranch branch = BranchManager.getBranch(branchId);
+            Artifact artifact = ArtifactQuery.getArtifactFromId(artId, branch);
+            deleteInvalidAttributes(artifact, newArtifactType);
+            deleteInvalidRelations(artifact, newArtifactType);
+            addTransaction(artifact, txMap);
+            artifactChanges.add(new EventChangeTypeBasicGuidArtifact(artifact.getBranch().getGuid(),
+               newArtifactType.getGuid(), newArtifactType.getGuid(), artifact.getGuid()));
+         }
+      } finally {
+         chStmt.close();
+         artifactJoin.delete();
+      }
+   }
+
+   private void addTransaction(Artifact artifact, HashMap<IOseeBranch, SkynetTransaction> txMap) throws OseeCoreException {
+      IOseeBranch branch = artifact.getBranch();
+      SkynetTransaction transaction = txMap.get(branch);
+      if (transaction == null) {
+         transaction = TransactionManager.createTransaction(branch, "Change Artifact Type");
+         txMap.put(branch, transaction);
+      }
+      transaction.addArtifact(artifact);
+      modifiedArtifacts.add(artifact);
    }
 
    public static void handleRemoteChangeType(EventChangeTypeBasicGuidArtifact guidArt) {
@@ -103,166 +172,91 @@ public class ChangeArtifactType {
       }
    }
 
-   public static void changeArtifactTypeReportOnly(StringBuffer results, Collection<Artifact> artifacts, IArtifactType artifactType) throws OseeCoreException {
-      if (artifacts.isEmpty()) {
-         throw new OseeArgumentException("The artifact list can not be empty");
-      }
-
-      for (Artifact artifact : artifacts) {
-         processAttributes(artifact, artifactType);
-         processRelations(artifact, artifactType);
-
-         if (!relationsToDelete.isEmpty() || !attributesToPurge.isEmpty()) {
-            getConflictString(results, artifact, artifactType);
-         }
-      }
+   private void getConflictString(StringBuilder message, IArtifactType artifactType) {
+      message.append("The following types are not supported on the artifact type " + artifactType.getName() + ":\n");
+      message.append("\n");
+      message.append("Attribute Types:\n" + attributeTypes + "\n");
+      message.append("\n");
+      message.append("Relation Types:\n" + relationTypes + "\n");
    }
 
-   private static void getConflictString(StringBuffer results, Artifact artifact, IArtifactType artifactType) {
-      results.append("There has been a conflict in changing artifact " + artifact.getGuid() + " - \"" + artifact.getName() + "\"" +
-      //
-      " to \"" + artifactType.getName() + "\" type. \n" + "The following data will need to be purged ");
-      for (RelationLink relationLink : relationsToDelete) {
-         results.append("([Relation][" + relationLink + "])");
-      }
-      for (Attribute<?> attribute : attributesToPurge) {
-         results.append("([Attribute][" + attribute.getAttributeType().getName() + "][" + attribute.toString() + "])");
-      }
-      results.append("\n\n");
-   }
-
-   /**
-    * Splits the attributes of the current artifact into two groups. The attributes that are compatible for the new type
-    * and the attributes that will need to be purged.
-    */
-   private static void processAttributes(Artifact artifact, IArtifactType artifactType) throws OseeCoreException {
-      attributesToPurge = new LinkedList<Attribute<?>>();
+   private void deleteInvalidAttributes(Artifact artifact, IArtifactType artifactType) throws OseeCoreException {
 
       for (IAttributeType attributeType : artifact.getAttributeTypes()) {
          ArtifactType aType = ArtifactTypeManager.getType(artifactType);
          if (!aType.isValidAttributeType(attributeType, artifact.getFullBranch())) {
-            attributesToPurge.addAll(artifact.getAttributes(attributeType));
+            artifact.deleteAttributes(attributeType);
+            attributeTypes.add(attributeType);
          }
       }
    }
 
-   /**
-    * Splits the relationLinks of the current artifact into Two groups. The links that are compatible for the new type
-    * and the links that will need to be purged.
-    */
-   private static void processRelations(Artifact artifact, IArtifactType artifactType) throws OseeCoreException {
-      relationsToDelete = new LinkedList<RelationLink>();
+   private void deleteInvalidRelations(Artifact artifact, IArtifactType artifactType) throws OseeCoreException {
 
       for (RelationLink link : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
          if (RelationTypeManager.getRelationSideMax(link.getRelationType(), artifactType, link.getSide(artifact)) == 0) {
-            relationsToDelete.add(link);
+            link.delete(false);
+            relationTypes.add(link.getRelationType());
          }
       }
    }
 
    /**
-    * @return true if the user accepts the purging of the attributes and relations that are not compatible for the new
+    * @return true if the user accepts the deletion of the attributes and relations that are not compatible for the new
     * artifact type else false.
     */
-   private static boolean doesUserAcceptArtifactChange(final Artifact artifact, final ArtifactType artifactType) {
-      if ((!relationsToDelete.isEmpty() || !attributesToPurge.isEmpty()) && !userAnsweredYesToAll) {
+   private boolean doesUserAcceptArtifactChange(IArtifactType artifactType) throws OseeCoreException {
+      if (!relationTypes.isEmpty() || !attributeTypes.isEmpty()) {
 
-         StringBuffer sb = new StringBuffer(50);
-         getConflictString(sb, artifact, artifactType);
+         StringBuilder sb = new StringBuilder(1024);
+         getConflictString(sb, artifactType);
+
+         Object result;
          try {
-            Object result =
-               DebugPlugin.getDefault().getStatusHandler(promptStatus).handleStatus(promptStatus, sb.toString());
-
-            MutableBoolean answer = null;
-
-            if (result instanceof Pair<?, ?>) {
-               Pair<?, ?> value = (Pair<?, ?>) result;
-               answer = (MutableBoolean) value.getFirst();
-               Integer kindOfAnswer = (Integer) value.getSecond();
-
-               userAnsweredYesToAll = kindOfAnswer == 1 && answer.getValue();
-            }
-            return answer == null ? false : answer.getValue();
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            result = DebugPlugin.getDefault().getStatusHandler(promptStatus).handleStatus(promptStatus, sb.toString());
+         } catch (CoreException ex) {
+            OseeExceptions.wrapAndThrow(ex);
+            // the following will never execute - above line always exceptions
             return false;
          }
+
+         return (Boolean) result;
+
       } else {
          return true;
       }
    }
 
-   /**
-    * Sets the artifact descriptor.
-    */
-   private static boolean changeArtifactTypeThroughHistory(Artifact artifact, ArtifactType newArtifactType) throws OseeCoreException {
-      for (Attribute<?> attribute : attributesToPurge) {
-         attribute.purge();
-      }
-      purgeAttributes();
+   private void changeArtifactTypeOutsideofHistory(Collection<? extends Artifact> inputArtifacts, ArtifactType newArtifactType) throws OseeCoreException {
+      List<Object[]> insertData = new ArrayList<Object[]>();
 
-      for (RelationLink relation : relationsToDelete) {
-         relation.delete(true);
-      }
-      ArtifactCache.deCache(artifact);
-      RelationManager.deCache(artifact);
+      String UPDATE = "UPDATE osee_artifact SET art_type_id = ? WHERE art_id = ?";
 
-      ArtifactType originalType = artifact.getArtifactType();
-      artifact.setArtifactType(newArtifactType);
-      try {
-         ConnectionHandler.runPreparedUpdate("UPDATE osee_artifact SET art_type_id = ? WHERE art_id = ?",
-            newArtifactType.getId(), artifact.getArtId());
-      } catch (OseeDataStoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-         artifact.setArtifactType(originalType);
-         return false;
-      } finally {
+      for (Artifact artifact : inputArtifacts) {
+         insertData.add(toUpdate(newArtifactType.getId(), artifact.getArtId()));
+      }
+
+      ServiceUtil.getOseeDatabaseService().runBatchUpdate(UPDATE, insertData);
+
+      for (Artifact artifact : modifiedArtifacts) {
+         artifact.setArtifactType(newArtifactType);
          artifact.clearEditState();
       }
-      return true;
    }
 
-   private static void purgeAttributes() throws OseeCoreException {
-      IdJoinQuery txsJoin = populateTxsJoinTable();
-
-      try {
-         String delete_txs =
-            "DELETE FROM osee_txs txs1 WHERE EXISTS (select 1 from osee_join_id jt1 WHERE jt1.query_id = ? AND jt1.id = txs1.gamma_id)";
-         String delete_attr =
-            "DELETE FROM osee_attribute attr1 WHERE EXISTS (select 1 from osee_join_id jt1 WHERE jt1.query_id = ? AND jt1.id = attr1.gamma_id)";
-         ConnectionHandler.runPreparedUpdate(delete_txs, txsJoin.getQueryId());
-         ConnectionHandler.runPreparedUpdate(delete_attr, txsJoin.getQueryId());
-      } finally {
-         txsJoin.delete();
-      }
+   private Object[] toUpdate(int art_type_id, int art_id) {
+      return new Object[] {art_type_id, art_id};
    }
 
-   private static IdJoinQuery populateTxsJoinTable() throws OseeDataStoreException, OseeCoreException {
-      IdJoinQuery attributeJoin = JoinUtility.createIdJoinQuery();
+   private IdJoinQuery populateJoinIdTable(Collection<? extends Artifact> inputArtifacts) throws OseeDataStoreException, OseeCoreException {
+      IdJoinQuery artifactJoin = JoinUtility.createIdJoinQuery();
 
-      for (Attribute<?> attribute : attributesToPurge) {
-         attributeJoin.add(attribute.getId());
+      for (Artifact artifact : inputArtifacts) {
+         artifactJoin.add(artifact.getArtId());
       }
 
-      IdJoinQuery txsJoin = JoinUtility.createIdJoinQuery();
-      try {
-         attributeJoin.store();
-         IOseeStatement chStmt = ConnectionHandler.getStatement();
-         String selectAttrGammas =
-            "select gamma_id from osee_attribute t1, osee_join_id t2 where t1.attr_id = t2.id and t2.query_id = ?";
+      artifactJoin.store();
 
-         try {
-            chStmt.runPreparedQuery(10000, selectAttrGammas, attributeJoin.getQueryId());
-            while (chStmt.next()) {
-               txsJoin.add(chStmt.getInt("gamma_id"));
-            }
-            txsJoin.store();
-         } finally {
-            chStmt.close();
-         }
-      } finally {
-         attributeJoin.delete();
-      }
-      return txsJoin;
+      return artifactJoin;
    }
 }

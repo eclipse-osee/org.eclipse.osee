@@ -40,6 +40,6 @@ public class ChangeArtifactTypeBlam extends AbstractBlam {
 
    @Override
    public Collection<String> getCategories() {
-      return Arrays.asList("Admin");
+      return Arrays.asList("Util");
    }
 }
