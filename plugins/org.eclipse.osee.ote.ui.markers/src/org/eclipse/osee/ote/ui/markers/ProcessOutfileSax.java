@@ -32,6 +32,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
@@ -72,7 +73,19 @@ public class ProcessOutfileSax implements IExceptionableRunnable {
       // Using this because IFile was acting very flaky for this.
       FileInputStream contents = new FileInputStream(outfile);
       
-      parseContents(contents);
+      boolean hadParseException = false;
+      int numberOfTries = 0;
+      do{
+         try {
+            parseContents(contents);
+         } catch (SAXParseException ex) {
+            hadParseException = true;
+            System.out.println("Had PARSE EXCEPTION HERE IN parseContents!!! numberOfTries = " + numberOfTries);
+         }
+         finally {
+            numberOfTries++;
+         }
+      } while(hadParseException && (numberOfTries < 5));
 
       OteMarkerHelper helper = new OteMarkerHelper(this.testPointDatas);
       MarkerPlugin.updateMarkerInfo(file, helper.getMarkers());
