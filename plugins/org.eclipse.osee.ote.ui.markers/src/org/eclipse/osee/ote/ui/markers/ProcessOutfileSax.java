@@ -77,6 +77,7 @@ public class ProcessOutfileSax implements IExceptionableRunnable {
       int numberOfTries = 0;
       do{
          try {
+            hadParseException = false;
             parseContents(contents);
          } catch (SAXParseException ex) {
             hadParseException = true;
