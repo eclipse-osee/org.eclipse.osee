@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
+import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.internal.artifact.AttributeManager;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory.MultiplicityState;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -53,6 +54,11 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
       this.attributes = new AttributeCollection(this);
       this.artifactData = artifactData;
       this.attributeFactory = attributeFactory;
+   }
+
+   @Override
+   public void setBackingData(List<AttributeData> data) throws OseeCoreException {
+      attributes.setBackingData(data);
    }
 
    @Override
@@ -474,6 +480,18 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
    private void ensureAttributesLoaded() throws OseeCoreException {
       //      if (!isLoaded() && isInDb()) {
       //         ArtifactLoader.loadArtifactData(this, LoadLevel.ATTRIBUTE);
+      //      }
+      meetMinimumAttributes();
+   }
+
+   //   @Override
+   private void meetMinimumAttributes() throws OseeCoreException {
+      //      for (IAttributeType attributeType : getValidAttributeTypes()) {
+      //         int missingCount = artifact.getMinOccurrences(attributeType) - artifact.getAttributeCount(attributeType);
+      //         for (int i = 0; i < missingCount; i++) {
+      //            Attribute<Object> attr = attributeFactory.createAttribute(artifact, artifact.getOrcsData(), attributeType);
+      //            attr.clearDirty();
+      //         }
       //      }
    }
 

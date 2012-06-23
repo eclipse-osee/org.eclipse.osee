@@ -17,4 +17,5 @@ public interface HasOrcsData<T extends OrcsData> {
 
    T getOrcsData();
 
+   void setOrcsData(T data);
 }

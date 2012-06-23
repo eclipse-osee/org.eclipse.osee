@@ -18,12 +18,11 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.orcs.core.internal.transaction.TxVisitable;
-import org.eclipse.osee.orcs.core.internal.transaction.TxVisitor;
+import org.eclipse.osee.orcs.core.internal.transaction.WriteableProxy;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
 import org.eclipse.osee.orcs.data.AttributeWriteable;
 
-public class WritableArtifactProxy extends ReadableArtifactProxy implements ArtifactWriteable, TxVisitable {
+public class WritableArtifactProxy extends ReadableArtifactProxy implements ArtifactWriteable, WriteableProxy {
 
    private boolean isCopyRequired;
    private ArtifactImpl original;
@@ -69,11 +68,6 @@ public class WritableArtifactProxy extends ReadableArtifactProxy implements Arti
          }
       }
       return getProxiedObject();
-   }
-
-   @Override
-   public void accept(TxVisitor visitor) throws OseeCoreException {
-      visitor.visit(getProxiedObject());
    }
 
    @Override

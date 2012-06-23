@@ -10,12 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.transaction;
 
-import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 
-public interface InsertDataProvider<T extends OrcsData> {
+public interface SqlProvider<T extends OrcsData> {
 
-   void getInsertData(InsertDataCollector collector, Collection<T> datas) throws OseeCoreException;
+   void getInsertData(InsertDataCollector collector, T data) throws OseeCoreException;
 
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.artifact;
 
+import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -31,7 +32,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements HasOrcsData<Ar
    private final ArtifactType artifactType;
    private final Branch branch;
    private EditState objectEditState;
-   private final ArtifactData artifactData;
+   private ArtifactData artifactData;
 
    public ArtifactImpl(ArtifactType artifactType, Branch branch, ArtifactData artifactData, AttributeFactory attributeFactory, RelationContainer relationContainer) {
       super(artifactData, attributeFactory);
@@ -39,7 +40,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements HasOrcsData<Ar
       this.artifactType = artifactType;
       this.branch = branch;
       this.relationContainer = relationContainer;
-      objectEditState = EditState.NO_CHANGE;
+      this.objectEditState = EditState.NO_CHANGE;
    }
 
    public RelationContainer getRelationContainer() {
@@ -49,6 +50,12 @@ public class ArtifactImpl extends AttributeManagerImpl implements HasOrcsData<Ar
    @Override
    public ArtifactData getOrcsData() {
       return artifactData;
+   }
+
+   @Override
+   public void setOrcsData(ArtifactData data) {
+      this.artifactData = data;
+      objectEditState = EditState.NO_CHANGE;
    }
 
    public ModificationType getModificationType() {
@@ -94,11 +101,10 @@ public class ArtifactImpl extends AttributeManagerImpl implements HasOrcsData<Ar
    public void setArtifactType(IArtifactType artifactType) {
       if (!this.artifactType.equals(artifactType)) {
          objectEditState = EditState.ARTIFACT_TYPE_MODIFIED;
-         //TX_TODO
-         //         if (version.isInStorage()) {
-         //            lastValidModType = modType;
-         //            modType = ModificationType.MODIFIED;
-         //         }
+         if (getOrcsData().getVersion().isInStorage()) {
+            //            lastValidModType = modType;
+            getOrcsData().setModType(ModificationType.MODIFIED);
+         }
       }
    }
 
@@ -109,7 +115,11 @@ public class ArtifactImpl extends AttributeManagerImpl implements HasOrcsData<Ar
 
    @Override
    public final boolean isDirty() {
-      return areAttributesDirty() || hasDirtyRelations() || hasDirtyArtifactType();
+      return areAttributesDirty() || hasDirtyRelations() || hasDirtyArtifactType() || isReplaceWithVersion();
+   }
+
+   private final boolean isReplaceWithVersion() {
+      return getModificationType() == ModificationType.REPLACED_WITH_VERSION;
    }
 
    private final boolean hasDirtyArtifactType() {
@@ -141,12 +151,17 @@ public class ArtifactImpl extends AttributeManagerImpl implements HasOrcsData<Ar
 
    @Override
    public boolean isDeleted() {
-      return getModificationType() == ModificationType.DELETED;
+      return getModificationType().isDeleted();
    }
 
    @Override
    public boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException {
       return artifactType.isValidAttributeType(attributeType, branch);
+   }
+
+   @Override
+   public Collection<? extends IAttributeType> getValidAttributeTypes() throws OseeCoreException {
+      return artifactType.getAttributeTypes(branch);
    }
 
    @Override

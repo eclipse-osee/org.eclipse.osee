@@ -14,14 +14,13 @@ import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
-import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.CreateBranchData;
 
 /**
  * @author Roberto E. Escobar
@@ -46,5 +45,5 @@ public interface BranchDataStore {
 
    Callable<URI> checkBranchExchangeIntegrity(URI fileToCheck);
 
-   Callable<ITransaction> commitTransaction(TransactionData transaction);
+   Callable<TransactionResult> commitTransaction(TransactionData transaction);
 }

@@ -13,14 +13,17 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.orcs.core.ds.AttributeData;
 
 /**
  * @author Roberto E. Escobar
@@ -35,6 +38,17 @@ public class AttributeCollection {
    public AttributeCollection(AttributeExceptionFactory exceptionFactory) {
       super();
       this.exceptionFactory = exceptionFactory;
+   }
+
+   public void setBackingData(List<AttributeData> datas) throws OseeCoreException {
+      Map<Integer, Attribute<?>> attrById = new HashMap<Integer, Attribute<?>>();
+      for (Attribute<?> attribute : attributes.getValues()) {
+         attrById.put(attribute.getId(), attribute);
+      }
+      for (AttributeData data : datas) {
+         Attribute<?> attribute = attrById.get(data.getLocalId());
+         attribute.setOrcsData(data);
+      }
    }
 
    public void addAttribute(IAttributeType type, Attribute<?> attribute) {

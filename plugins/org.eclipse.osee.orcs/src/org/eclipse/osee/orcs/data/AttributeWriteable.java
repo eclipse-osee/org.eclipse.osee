@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.data;
 import java.io.InputStream;
 import org.eclipse.osee.framework.core.data.Writeable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 
 /**
  * @author Roberto E. Escobar
@@ -27,11 +26,11 @@ public interface AttributeWriteable<T> extends Writeable, AttributeReadable<T> {
 
    boolean setValueFromInputStream(InputStream value) throws OseeCoreException;
 
-   boolean isDirty();
+   boolean isDirty() throws OseeCoreException;
 
    void resetToDefaultValue() throws OseeCoreException;
 
-   boolean canDelete();
+   boolean canDelete() throws OseeCoreException;
 
-   void delete() throws OseeStateException;
+   void delete() throws OseeCoreException;
 }

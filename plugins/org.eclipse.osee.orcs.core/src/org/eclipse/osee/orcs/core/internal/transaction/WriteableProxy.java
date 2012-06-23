@@ -10,11 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.transaction;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
+public interface WriteableProxy {
 
-public interface TxVisitor {
+   void setWriteState(boolean isWriteAllowed);
 
-   void visit(ArtifactImpl modified) throws OseeCoreException;
+   boolean isWriteAllowed();
 
 }

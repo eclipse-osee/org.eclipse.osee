@@ -64,8 +64,8 @@ public interface OrcsTransaction {
 
    ////////////////////////
 
-   void rollback();
-
    ITransaction commit() throws OseeCoreException;
+
+   boolean isCommitInProgress();
 
 }

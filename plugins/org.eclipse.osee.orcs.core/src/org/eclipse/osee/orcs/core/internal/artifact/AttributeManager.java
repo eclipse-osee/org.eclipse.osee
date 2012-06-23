@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.data.Named;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.AttributeWriteable;
@@ -25,6 +26,8 @@ import org.eclipse.osee.orcs.data.AttributeWriteable;
  * @author Roberto E. Escobar
  */
 public interface AttributeManager extends Named, Identity<String> {
+
+   void setBackingData(List<AttributeData> data) throws OseeCoreException;
 
    void add(IAttributeType type, Attribute<? extends Object> attribute);
 
@@ -46,8 +49,11 @@ public interface AttributeManager extends Named, Identity<String> {
 
    boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException;
 
+   Collection<? extends IAttributeType> getValidAttributeTypes() throws OseeCoreException;
+
    Collection<? extends IAttributeType> getExistingAttributeTypes() throws OseeCoreException;
 
+   // TODO see if we can get away with not exposing the attribute objects
    List<AttributeReadable<Object>> getAttributes() throws OseeCoreException;
 
    <T> List<AttributeReadable<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException;

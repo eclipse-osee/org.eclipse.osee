@@ -12,11 +12,15 @@ package org.eclipse.osee.orcs.db.internal.loader.data;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
+import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.db.internal.loader.IdFactory;
+import org.eclipse.osee.orcs.db.internal.loader.RelationalConstants;
 
 /**
  * @author Roberto E. Escobar
@@ -32,24 +36,28 @@ public class IdFactoryImpl implements IdFactory {
       this.branchCache = branchCache;
    }
 
+   private IOseeSequence getSequence() throws OseeDataStoreException {
+      return dbService.getSequence();
+   }
+
    @Override
    public int getBranchId(IOseeBranch branch) throws OseeCoreException {
       return branchCache.getLocalId(branch);
    }
 
    @Override
-   public int createArtifactId() throws OseeCoreException {
-      return dbService.getSequence().getNextArtifactId();
+   public int getNextArtifactId() throws OseeCoreException {
+      return getSequence().getNextArtifactId();
    }
 
    @Override
-   public int createAttrId() throws OseeCoreException {
-      return dbService.getSequence().getNextAttributeId();
+   public int getNextAttributeId() throws OseeCoreException {
+      return getSequence().getNextAttributeId();
    }
 
    @Override
-   public int createRelationId() throws OseeCoreException {
-      return dbService.getSequence().getNextRelationId();
+   public int getNextRelationId() throws OseeCoreException {
+      return getSequence().getNextRelationId();
    }
 
    @Override
@@ -75,5 +83,20 @@ public class IdFactoryImpl implements IdFactory {
       String DUPLICATE_HRID_SEARCH =
          "select count(1) from (select DISTINCT(art_id) from osee_artifact where human_readable_id = ?) t1";
       return dbService.runPreparedQueryFetchObject(0L, DUPLICATE_HRID_SEARCH, id) <= 0;
+   }
+
+   @Override
+   public long getNextGammaId(OrcsData data) throws OseeCoreException {
+      long toReturn = data.getVersion().getGammaId();
+      if (RelationalConstants.GAMMA_SENTINEL == toReturn || isGammaCreationAllowed(data)) {
+         toReturn = getSequence().getNextGammaId();
+      } else {
+         toReturn = data.getVersion().getGammaId();
+      }
+      return toReturn;
+   }
+
+   protected boolean isGammaCreationAllowed(OrcsData data) {
+      return !data.getModType().isExistingVersionUsed();
    }
 }

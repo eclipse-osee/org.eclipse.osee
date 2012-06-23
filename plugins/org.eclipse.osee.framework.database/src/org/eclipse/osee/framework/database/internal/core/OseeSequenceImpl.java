@@ -110,28 +110,8 @@ public class OseeSequenceImpl implements IOseeSequence {
    }
 
    @Override
-   public int getNextOseeEnumTypeId() throws OseeCoreException {
-      return (int) getNextSequence(ENUM_TYPE_ID_SEQ);
-   }
-
-   @Override
    public int getNextGammaId() throws OseeCoreException {
       return (int) getNextSequence(GAMMA_ID_SEQ);
-   }
-
-   @Override
-   public int getNextArtifactTypeId() throws OseeCoreException {
-      return (int) getNextSequence(ART_TYPE_ID_SEQ);
-   }
-
-   @Override
-   public int getNextAttributeBaseTypeId() throws OseeCoreException {
-      return (int) getNextSequence(ATTR_BASE_TYPE_ID_SEQ);
-   }
-
-   @Override
-   public int getNextAttributeProviderTypeId() throws OseeCoreException {
-      return (int) getNextSequence(ATTR_PROVIDER_TYPE_ID_SEQ);
    }
 
    @Override
@@ -140,23 +120,8 @@ public class OseeSequenceImpl implements IOseeSequence {
    }
 
    @Override
-   public int getNextAttributeTypeId() throws OseeCoreException {
-      return (int) getNextSequence(ATTR_TYPE_ID_SEQ);
-   }
-
-   @Override
-   public int getNextFactoryId() throws OseeCoreException {
-      return (int) getNextSequence(FACTORY_ID_SEQ);
-   }
-
-   @Override
    public int getNextBranchId() throws OseeCoreException {
       return (int) getNextSequence(BRANCH_ID_SEQ);
-   }
-
-   @Override
-   public int getNextRelationTypeId() throws OseeCoreException {
-      return (int) getNextSequence(REL_LINK_TYPE_ID_SEQ);
    }
 
    @Override

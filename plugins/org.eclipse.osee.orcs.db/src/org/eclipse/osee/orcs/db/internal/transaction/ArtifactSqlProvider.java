@@ -10,23 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.transaction;
 
-import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
+import org.eclipse.osee.orcs.db.internal.loader.IdFactory;
 import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
 
-public class ArtifactInsertProvider extends BaseInsertProvider implements InsertDataProvider<ArtifactData> {
+public class ArtifactSqlProvider extends AbstractSqlProvider implements SqlProvider<ArtifactData> {
 
    private static final String INSERT_ARTIFACT =
       "INSERT INTO osee_artifact (gamma_id, art_id, art_type_id, guid, human_readable_id) VALUES (?,?,?,?,?)";
 
+   public ArtifactSqlProvider(IdFactory idFactory) {
+      super(idFactory);
+   }
+
    @Override
-   public void getInsertData(InsertDataCollector collector, Collection<ArtifactData> datas) throws OseeCoreException {
-      for (ArtifactData data : datas) {
-         collector.addInsertToBatch(1, INSERT_ARTIFACT, getGammaId(data), data.getLocalId(), data.getTypeUuid(),
-            data.getGuid(), data.getHumanReadableId());
-         collector.addTxNotCurrentToBatch(OseeSql.TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS, data.getLocalId(),
-            data.getModType());
-      }
+   public void getInsertData(InsertDataCollector collector, ArtifactData data) throws OseeCoreException {
+      collector.addInsertToBatch(1, INSERT_ARTIFACT, getGammaId(data), data.getLocalId(), data.getTypeUuid(),
+         data.getGuid(), data.getHumanReadableId());
+      collector.addTxNotCurrentToBatch(OseeSql.TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS, data.getLocalId(),
+         data.getModType());
    }
 }

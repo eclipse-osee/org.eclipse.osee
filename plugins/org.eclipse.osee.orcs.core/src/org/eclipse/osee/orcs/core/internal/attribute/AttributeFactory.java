@@ -12,6 +12,8 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -88,6 +90,15 @@ public class AttributeFactory {
          result = introducedAttribute != null;
       }
       return result;
+   }
+
+   public List<AttributeData> getChangeData(AttributeManager container) throws OseeCoreException {
+      List<AttributeData> data = new LinkedList<AttributeData>();
+      for (AttributeReadable<?> attribute : container.getAttributesDirty()) {
+         Attribute<?> attributeImpl = asAttributeImpl(attribute);
+         data.add(clone(attributeImpl.getOrcsData()));
+      }
+      return data;
    }
 
    public AttributeData clone(AttributeData source) throws OseeCoreException {

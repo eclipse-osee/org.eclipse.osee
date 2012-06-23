@@ -59,6 +59,11 @@ public abstract class Attribute<T> implements HasOrcsData<AttributeData>, Compar
       return attributeData;
    }
 
+   @Override
+   public void setOrcsData(AttributeData data) {
+      attributeData = data;
+   }
+
    /**
     * Base implementation does nothing. Subclasses may override to do setup that depends on the attribute state data.
     */

@@ -11,20 +11,36 @@
 package org.eclipse.osee.orcs.core.internal.attribute;
 
 import java.io.InputStream;
+import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.orcs.core.internal.transaction.WriteableProxy;
 import org.eclipse.osee.orcs.data.AttributeWriteable;
 
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeWritableProxy<T> extends AttributeReadableProxy<T> implements AttributeWriteable<T> {
+public class AttributeWritableProxy<T> extends AttributeReadableProxy<T> implements AttributeWriteable<T>, WriteableProxy {
+
+   private volatile boolean isWriteAllowed;
 
    public AttributeWritableProxy(Attribute<T> proxied) {
       super(proxied);
    }
 
-   private synchronized Attribute<T> getObjectForWrite() {
+   @Override
+   public void setWriteState(boolean isWriteAllowed) {
+      this.isWriteAllowed = isWriteAllowed;
+   }
+
+   @Override
+   public boolean isWriteAllowed() {
+      return isWriteAllowed;
+   }
+
+   private synchronized Attribute<T> getObjectForWrite() throws OseeAccessDeniedException {
+      if (!isWriteAllowed()) {
+         throw new OseeAccessDeniedException("The artifact being accessed has been invalidated");
+      }
       //      if (isCopyRequired) {
       //         try {
       //            Attribute<T> copy = getOriginal().clone();
@@ -53,7 +69,7 @@ public class AttributeWritableProxy<T> extends AttributeReadableProxy<T> impleme
    }
 
    @Override
-   public boolean isDirty() {
+   public boolean isDirty() throws OseeCoreException {
       return getObjectForWrite().isDirty();
    }
 
@@ -63,12 +79,12 @@ public class AttributeWritableProxy<T> extends AttributeReadableProxy<T> impleme
    }
 
    @Override
-   public boolean canDelete() {
+   public boolean canDelete() throws OseeCoreException {
       return getObjectForWrite().canDelete();
    }
 
    @Override
-   public void delete() throws OseeStateException {
+   public void delete() throws OseeCoreException {
       getObjectForWrite().delete();
    }
 

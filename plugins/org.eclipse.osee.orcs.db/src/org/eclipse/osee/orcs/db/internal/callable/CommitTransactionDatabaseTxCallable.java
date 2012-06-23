@@ -12,11 +12,8 @@ package org.eclipse.osee.orcs.db.internal.callable;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.eclipse.osee.database.schema.DatabaseTxCallable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -32,19 +29,15 @@ import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
-import org.eclipse.osee.orcs.core.ds.AttributeData;
-import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
-import org.eclipse.osee.orcs.db.internal.transaction.InsertDataCollector;
-import org.eclipse.osee.orcs.db.internal.transaction.InsertDataProvider;
+import org.eclipse.osee.orcs.db.internal.transaction.BinaryStoreTx;
+import org.eclipse.osee.orcs.db.internal.transaction.TxSqlBuilder;
 
 /**
  * @author Roberto E. Escobar
@@ -62,19 +55,13 @@ public final class CommitTransactionDatabaseTxCallable extends DatabaseTxCallabl
    private static final String UPDATE_TXS_NOT_CURRENT =
       "UPDATE osee_txs SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " WHERE branch_id = ? AND transaction_id = ? AND gamma_id = ?";
 
-   private final HashCollection<String, Object[]> dataItemInserts = new HashCollection<String, Object[]>();
-   private final HashCollection<OseeSql, Object[]> txNotCurrents = new HashCollection<OseeSql, Object[]>();
-   private final Map<Integer, String> dataInsertOrder = new HashMap<Integer, String>();
-
    private final BranchCache branchCache;
    private final TransactionRecordFactory factory = null;
    private final TransactionCache transactionCache = null;
    private SqlProvider sqlProvider;
 
    private final TransactionData transactionData;
-   private InsertDataProvider<ArtifactData> artifactDataProvider;
-   private InsertDataProvider<AttributeData> attributeDataProvider;
-   private InsertDataProvider<RelationData> relationDataProvider;
+   private List<BinaryStoreTx> binaryStores;
 
    public CommitTransactionDatabaseTxCallable(Log logger, IOseeDatabaseService dbService, BranchCache branchCache, IOseeBranch branch, TransactionData transactionData) {
       super(logger, dbService, String.format("Committing Transaction: [%s] for branch [%s]",
@@ -85,23 +72,16 @@ public final class CommitTransactionDatabaseTxCallable extends DatabaseTxCallabl
 
    @Override
    protected TransactionRecord handleTxWork(OseeConnection connection) throws OseeCoreException {
-      Collection<ArtifactTransactionData> artifactTransactionData = transactionData.getArtifactTransactionData();
-      Conditions.checkNotNullOrEmpty(artifactTransactionData, "artifacts modified");
+      Collection<ArtifactTransactionData> txData = transactionData.getArtifactTransactionData();
+      Conditions.checkNotNullOrEmpty(txData, "artifacts modified");
 
-      InsertDataCollector collector = new DataCollector();
-
-      for (ArtifactTransactionData txData : artifactTransactionData) {
-         artifactDataProvider.getInsertData(collector, Collections.singletonList(txData.getArtifactData()));
-         attributeDataProvider.getInsertData(collector, txData.getAttributeData());
-         relationDataProvider.getInsertData(collector, txData.getRelationData());
-      }
       Branch branch = branchCache.get(transactionData.getBranch());
       TransactionRecord txRecord =
          createTransactionRecord(branch, transactionData.getAuthor(), transactionData.getComment());
       persistTx(connection, txRecord);
 
-      if (!artifactTransactionData.isEmpty()) {
-         executeTransactionDataItems(connection, branch);
+      if (!txData.isEmpty()) {
+         executeTransactionDataItems(txData, connection, branch);
       }
 
       if (branch.getBranchState() == BranchState.CREATED) {
@@ -111,10 +91,31 @@ public final class CommitTransactionDatabaseTxCallable extends DatabaseTxCallabl
       return txRecord;
    }
 
-   private void executeTransactionDataItems(OseeConnection connection, Branch branch) throws OseeCoreException {
+   @Override
+   protected void handleTxException(Exception ex) {
+      super.handleTxException(ex);
+      for (BinaryStoreTx tx : binaryStores) {
+         try {
+            tx.rollBack();
+         } catch (OseeCoreException ex1) {
+            //TX_TODO 
+            getLogger().error(ex1, "Error during rollback");
+         }
+      }
+   }
+
+   private void executeTransactionDataItems(Collection<ArtifactTransactionData> txData, OseeConnection connection, Branch branch) throws OseeCoreException {
+      TxSqlBuilder builder = new TxSqlBuilder(txData);
+      builder.build();
+
+      binaryStores = builder.getBinaryTxs();
+      for (BinaryStoreTx tx : binaryStores) {
+         tx.persist();
+      }
+
       List<Object[]> txNotCurrentData = new ArrayList<Object[]>();
-      for (OseeSql sql : txNotCurrents.keySet()) {
-         for (Object[] params : txNotCurrents.getValues(sql)) {
+      for (OseeSql sql : builder.getTxSql()) {
+         for (Object[] params : builder.getTxParameters(sql)) {
             fetchTxNotCurrent(connection, branch, txNotCurrentData, sql, params);
          }
       }
@@ -126,11 +127,8 @@ public final class CommitTransactionDatabaseTxCallable extends DatabaseTxCallabl
       //      }
 
       // Insert into data tables - i.e. attribute, relation and artifact version tables
-      List<Integer> keys = new ArrayList<Integer>(dataInsertOrder.keySet());
-      Collections.sort(keys);
-      for (int priority : keys) {
-         String sqlKey = dataInsertOrder.get(priority);
-         getDatabaseService().runBatchUpdate(connection, sqlKey, (List<Object[]>) dataItemInserts.getValues(sqlKey));
+      for (String sql : builder.getObjectSql()) {
+         getDatabaseService().runBatchUpdate(connection, sql, builder.getObjectParameters(sql));
       }
 
       // Set stale tx currents in txs table
@@ -229,28 +227,4 @@ public final class CommitTransactionDatabaseTxCallable extends DatabaseTxCallabl
    //      return ConnectionHandler.getSequence().getNextAttributeId();
    //   }
 
-   private class DataCollector implements InsertDataCollector {
-
-      //      @Override
-      //      public int getTransactionNumber() {
-      //         return 0;
-      //      }
-      //
-      //      @Override
-      //      public int getBranchId() {
-      //         return 0;
-      //      }
-
-      @Override
-      public void addInsertToBatch(int insertPriority, String insertSql, Object... data) {
-         dataItemInserts.put(insertSql, data);
-         dataInsertOrder.put(insertPriority, insertSql);
-      }
-
-      @Override
-      public void addTxNotCurrentToBatch(OseeSql insertSql, Object... data) {
-         txNotCurrents.put(insertSql, data);
-      }
-
-   }
 }

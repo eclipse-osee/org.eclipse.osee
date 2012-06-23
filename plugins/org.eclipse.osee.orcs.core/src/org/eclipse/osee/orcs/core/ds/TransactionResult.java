@@ -8,16 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.internal.transaction;
+package org.eclipse.osee.orcs.core.ds;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import java.util.List;
+import org.eclipse.osee.framework.core.data.ITransaction;
 
-public interface TxVisitable {
+public interface TransactionResult {
 
-   void setWriteState(boolean isAllowed);
+   ITransaction getTransaction();
 
-   boolean isWriteAllowed();
-
-   void accept(TxVisitor visitor) throws OseeCoreException;
-
+   List<ArtifactTransactionData> getData();
 }

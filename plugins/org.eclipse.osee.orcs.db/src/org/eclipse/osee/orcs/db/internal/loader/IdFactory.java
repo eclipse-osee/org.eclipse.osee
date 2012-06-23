@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.loader;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.core.ds.OrcsData;
 
 /**
  * @author Roberto E. Escobar
@@ -20,14 +21,16 @@ public interface IdFactory {
 
    int getBranchId(IOseeBranch branch) throws OseeCoreException;
 
-   int createArtifactId() throws OseeCoreException;
+   int getNextArtifactId() throws OseeCoreException;
 
-   int createAttrId() throws OseeCoreException;
+   int getNextAttributeId() throws OseeCoreException;
 
-   int createRelationId() throws OseeCoreException;
+   int getNextRelationId() throws OseeCoreException;
 
    String getUniqueGuid(String guid) throws OseeCoreException;
 
    String getUniqueHumanReadableId(String humanReadableId) throws OseeCoreException;
+
+   long getNextGammaId(OrcsData data) throws OseeCoreException;
 
 }

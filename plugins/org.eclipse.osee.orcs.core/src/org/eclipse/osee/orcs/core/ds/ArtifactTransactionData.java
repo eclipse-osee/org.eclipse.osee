@@ -10,14 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import java.util.Collection;
+import java.util.List;
+import org.eclipse.osee.framework.core.data.Identity;
 
-public interface ArtifactTransactionData {
+public interface ArtifactTransactionData extends Identity<String> {
+
+   @Override
+   String getGuid();
 
    ArtifactData getArtifactData();
 
-   Collection<AttributeData> getAttributeData();
+   List<AttributeData> getAttributeData();
 
-   Collection<RelationData> getRelationData();
+   List<RelationData> getRelationData();
 
 }

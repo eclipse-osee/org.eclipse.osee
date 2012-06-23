@@ -10,17 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.transaction;
 
-import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.core.ds.OrcsData;
+import org.eclipse.osee.orcs.db.internal.loader.IdFactory;
 
-public interface InsertDataCollector {
+public abstract class AbstractSqlProvider {
 
-   //   int getTransactionNumber();
-   //
-   //   int getBranchId();
+   private final IdFactory idFactory;
 
-   void addBinaryStore(BinaryStoreTx binaryTx);
+   protected AbstractSqlProvider(IdFactory idFactory) {
+      super();
+      this.idFactory = idFactory;
+   }
 
-   void addInsertToBatch(int insertPriority, String insertSql, Object... data);
-
-   void addTxNotCurrentToBatch(OseeSql insertSql, Object... data);
+   long getGammaId(OrcsData data) throws OseeCoreException {
+      return idFactory.getNextGammaId(data);
+   }
 }
