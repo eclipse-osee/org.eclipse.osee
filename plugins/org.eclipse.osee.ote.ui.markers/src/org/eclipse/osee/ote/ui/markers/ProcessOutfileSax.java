@@ -32,7 +32,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
-import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
@@ -70,24 +69,32 @@ public class ProcessOutfileSax implements IExceptionableRunnable {
 
       monitor.setTaskName(String.format("Computing overview information for [%s].", file.getName()));
 
-      // Using this because IFile was acting very flaky for this.
-      FileInputStream contents = new FileInputStream(outfile);
+//      InputStream contents = file.getContents();
       
       boolean hadParseException = false;
       int numberOfTries = 0;
       do{
+         // Using this because IFile was acting very flaky for this.
+         FileInputStream contents = new FileInputStream(outfile);
+
          try {
             hadParseException = false;
             parseContents(contents);
-         } catch (SAXParseException ex) {
+         } catch (Exception ex) {
             hadParseException = true;
-            System.out.println("Had PARSE EXCEPTION HERE IN parseContents!!! numberOfTries = " + numberOfTries);
+            System.out.println("Had EXCEPTION HERE FROM parseContents()!!! numberOfTries = " + numberOfTries);
          }
          finally {
             numberOfTries++;
+            Thread.sleep(1000);
          }
       } while(hadParseException && (numberOfTries < 5));
-
+      if (numberOfTries > 1){
+         FileInputStream contents = new FileInputStream(outfile);
+         parseContents(contents);
+      }
+      
+      
       OteMarkerHelper helper = new OteMarkerHelper(this.testPointDatas);
       MarkerPlugin.updateMarkerInfo(file, helper.getMarkers());
 

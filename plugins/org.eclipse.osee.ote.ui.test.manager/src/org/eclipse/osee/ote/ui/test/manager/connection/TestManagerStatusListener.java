@@ -28,6 +28,7 @@ import org.eclipse.osee.ote.core.environment.status.msg.TestStartMessage;
 import org.eclipse.osee.ote.message.event.OteEventMessageUtil;
 import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
@@ -37,12 +38,14 @@ import org.osgi.service.event.EventHandler;
 public final class TestManagerStatusListener implements EventHandler {
 
    private final TestManagerServiceStatusDataVisitor testManagerServiceDataVisitor;
+   private ServiceRegistration<?> eventReference;
+   
 
    public TestManagerStatusListener(TestManagerEditor testManagerEditor, ScriptManager userEnvironment) {
       this.testManagerServiceDataVisitor = new TestManagerServiceStatusDataVisitor(userEnvironment, testManagerEditor);
       Hashtable<String, Object> properties = new Hashtable<String, Object>();
       properties.put("event.topics", "ote/status/*");
-      FrameworkUtil.getBundle(getClass()).getBundleContext().registerService(EventHandler.class.getName(), this, properties);
+      eventReference = FrameworkUtil.getBundle(getClass()).getBundleContext().registerService(EventHandler.class.getName(), this, properties);
    }
 
    @Override
@@ -86,5 +89,9 @@ public final class TestManagerStatusListener implements EventHandler {
 		   OseeLog.log(getClass(), Level.SEVERE, event.getTopic(), e);
 	   }
 
+   }
+
+   public void unregisterEventListener() {
+	   eventReference.unregister();
    }
 }

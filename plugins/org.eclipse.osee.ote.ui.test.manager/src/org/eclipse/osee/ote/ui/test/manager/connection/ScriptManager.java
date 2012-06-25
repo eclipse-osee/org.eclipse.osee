@@ -21,7 +21,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -94,8 +93,6 @@ public abstract class ScriptManager implements Runnable {
           * Setup the status listener for commands
           */
          statusListenerImpl = new TestManagerStatusListener(testManager, this);
-
-//         connectedEnv.addStatusListener((IServiceStatusListener) event.getConnector().export(statusListenerImpl));
          return false;
       } catch (Exception e) {
          TestManagerPlugin.log(Level.SEVERE, "failed to connect script manager", e);
@@ -110,15 +107,8 @@ public abstract class ScriptManager implements Runnable {
       connectedEnv = null;
       sessionKey = null;
       guidToScriptTask.clear();
-//      try {
-
-//         event.getEnvironment().removeStatusListener(
-//            (IServiceStatusListener) event.getConnector().findExport(statusListenerImpl));
-         return false;
-//      } catch (RemoteException e) {
-//         TestManagerPlugin.log(Level.INFO, "problems removing listener", e);
-//         return true;
-//      }
+      statusListenerImpl.unregisterEventListener();
+      return false;
    }
 
    public boolean onConnectionLost() {
