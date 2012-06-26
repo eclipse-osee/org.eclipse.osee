@@ -14,7 +14,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
-
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.service.Activator;
@@ -45,7 +44,7 @@ class ListenerNotifier {
             for (ITestConnectionListener listener : testConnectionListeners) {
                try {
                   listener.onPostConnect(event);
-               } catch (Exception ex) {
+               } catch (Throwable ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, "exception notifying listener of post connect event", ex);
                }
             }
@@ -58,7 +57,7 @@ class ListenerNotifier {
       for (ITestConnectionListener listener : testConnectionListeners) {
          try {
             listener.onPreDisconnect(event);
-         } catch (Exception ex) {
+         } catch (Throwable ex) {
             OseeLog.log(Activator.class, Level.SEVERE, "exception notifying listener of disconnect event", ex);
          }
       }
@@ -72,7 +71,7 @@ class ListenerNotifier {
             for (ITestConnectionListener listener : testConnectionListeners) {
                try {
                   listener.onConnectionLost(connector);
-               } catch (Exception ex) {
+               } catch (Throwable ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, "exception notifying listener of connection error event",
                      ex);
                }
