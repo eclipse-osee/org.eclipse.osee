@@ -11,52 +11,43 @@
 package org.eclipse.osee.orcs.rest.internal;
 
 import java.util.Collections;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 
 /**
  * @author Roberto E. Escobar
  */
-public class BranchResource {
+public class TxResource {
 
+   // Allows to insert contextual objects into the class, 
+   // e.g. ServletContext, Request, Response, UriInfo
    @Context
    UriInfo uriInfo;
    @Context
    Request request;
 
    String branchUuid;
+   int txId;
 
-   public BranchResource(UriInfo uriInfo, Request request, String branchUuid) {
+   public TxResource(UriInfo uriInfo2, Request request2, String branchUuid, int txId) {
       this.uriInfo = uriInfo;
       this.request = request;
       this.branchUuid = branchUuid;
+      this.txId = txId;
    }
 
-   @Path("artifact")
-   public ArtifactsResource getArtifacts() {
-      return new ArtifactsResource(uriInfo, request, branchUuid);
-   }
-
-   @Path("txs")
-   public TxsResource getTransactions() {
-      return new TxsResource(uriInfo, request, branchUuid);
-   }
-
-   @GET
    @Produces(MediaType.TEXT_HTML)
    public String getAsHtml() throws OseeCoreException {
-      IOseeBranch token = TokenFactory.createBranch(branchUuid, "");
-      Branch branch = OrcsApplication.getOrcsApi().getBranchCache().get(token);
+      TransactionCache txCache = OrcsApplication.getOrcsApi().getTxsCache();
+      TransactionRecord txRecord = txCache.getOrLoad(txId);
       HtmlWriter writer = new HtmlWriter(uriInfo);
-      return writer.toHtml(Collections.singleton(branch));
+      return writer.toHtml(Collections.singleton(txRecord));
    }
+
 }

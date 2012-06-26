@@ -35,7 +35,7 @@ public class AttributeDataProxyFactory implements ProxyDataFactory {
 
    @Override
    public DataProxy createProxy(long typeUuid, String value, String uri) throws OseeCoreException {
-      return createProxy(typeUuid, value, uri);
+      return createProxy(typeUuid, (Object) value, (Object) uri);
    }
 
    private boolean isEnumOrBoolean(AttributeType attributeType) {

@@ -28,12 +28,11 @@ import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.internal.artifact.AttributeManager;
-import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory.MultiplicityState;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.AttributeWriteable;
 
@@ -47,13 +46,12 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
    private final AttributeCollection attributes;
    private boolean isLoaded;
 
-   private final ArtifactData artifactData;
    private final AttributeFactory attributeFactory;
 
-   public AttributeManagerImpl(ArtifactData artifactData, AttributeFactory attributeFactory) {
-      this.attributes = new AttributeCollection(this);
-      this.artifactData = artifactData;
+   protected AttributeManagerImpl(AttributeFactory attributeFactory) {
+      super();
       this.attributeFactory = attributeFactory;
+      this.attributes = new AttributeCollection(this);
    }
 
    @Override
@@ -77,7 +75,7 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
    }
 
    @Override
-   public void setLoaded(boolean value) {
+   public void setLoaded(boolean value) throws OseeCoreException {
       this.isLoaded = value;
       if (value == true) {
          onLoaded();
@@ -119,6 +117,26 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
          name = Lib.exceptionToString(ex);
       }
       return name;
+   }
+
+   @Override
+   public int getMaximumAttributeTypeAllowed(IAttributeType attributeType) throws OseeCoreException {
+      int result = -1;
+      if (isAttributeTypeValid(attributeType)) {
+         AttributeType fullType = attributeFactory.getAttribeType(attributeType);
+         result = fullType.getMaxOccurrences();
+      }
+      return result;
+   }
+
+   @Override
+   public int getMinimumAttributeTypeAllowed(IAttributeType attributeType) throws OseeCoreException {
+      int result = -1;
+      if (isAttributeTypeValid(attributeType)) {
+         AttributeType fullType = attributeFactory.getAttribeType(attributeType);
+         result = fullType.getMinOccurrences();
+      }
+      return result;
    }
 
    @Override
@@ -272,11 +290,12 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
    }
 
    private void deleteAttribute(Attribute<?> attribute) throws OseeCoreException {
-      checkMultiplicityCanDelete(attribute.getAttributeType());
+      IAttributeType attributeType = attribute.getAttributeType();
+      checkMultiplicityCanDelete(attributeType);
       if (attribute.isInDb()) {
          attribute.delete();
       } else {
-         attributes.removeAttribute(attribute.getAttributeType(), attribute);
+         attributes.removeAttribute(attributeType, attribute);
       }
    }
 
@@ -301,7 +320,7 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
    private <T> Attribute<T> createAttributeHelper(IAttributeType attributeType) throws OseeCoreException {
       checkTypeValid(attributeType);
       checkMultiplicityCanAdd(attributeType);
-      return attributeFactory.createAttribute(this, artifactData, attributeType);
+      return attributeFactory.createAttribute(this, getOrcsData(), attributeType);
    }
 
    private <T> Attribute<T> getOrCreateSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
@@ -443,8 +462,10 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
    //////////////////////////////////////////////////////////////
 
    private void checkTypeValid(IAttributeType attributeType) throws OseeCoreException {
-      Conditions.checkExpressionFailOnTrue(!isAttributeTypeValid(attributeType),
-         "The attribute type [%s] is not valid for artifacts [%s]", attributeType, getExceptionString());
+      if (!CoreAttributeTypes.Name.equals(attributeType)) {
+         Conditions.checkExpressionFailOnTrue(!isAttributeTypeValid(attributeType),
+            "The attribute type [%s] is not valid for artifacts [%s]", attributeType, getExceptionString());
+      }
    }
 
    private void checkMultiplicityCanAdd(IAttributeType attributeType) throws OseeCoreException {
@@ -456,7 +477,7 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
    }
 
    private void checkMultiplicity(IAttributeType attributeType, int count) throws OseeCoreException {
-      MultiplicityState state = attributeFactory.getAttributeMuliplicityState(attributeType, count);
+      MultiplicityState state = getAttributeMuliplicityState(attributeType, count);
       switch (state) {
          case MAX_VIOLATION:
             throw new OseeStateException("Attribute type [%s] exceeds max occurrence rule on artifacts [%s]",
@@ -469,30 +490,49 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
       }
    }
 
-   //////////////////////////////////////////////////////////////
-
-   private void onLoaded() {
-      //      computeLastDateModified();
-      //    artifact.meetMinimumAttributeCounts(false);
+   private static enum MultiplicityState {
+      IS_VALID,
+      MAX_VIOLATION,
+      MIN_VIOLATION;
    }
 
-   @SuppressWarnings("unused")
-   private void ensureAttributesLoaded() throws OseeCoreException {
-      //      if (!isLoaded() && isInDb()) {
-      //         ArtifactLoader.loadArtifactData(this, LoadLevel.ATTRIBUTE);
-      //      }
+   private MultiplicityState getAttributeMuliplicityState(IAttributeType attributeType, int count) throws OseeCoreException {
+      MultiplicityState state = MultiplicityState.IS_VALID;
+      AttributeType fullType = attributeFactory.getAttribeType(attributeType);
+      if (count > fullType.getMaxOccurrences()) {
+         state = MultiplicityState.MAX_VIOLATION;
+      } else if (count < fullType.getMinOccurrences()) {
+         state = MultiplicityState.MIN_VIOLATION;
+      }
+      return state;
+   }
+
+   //////////////////////////////////////////////////////////////
+
+   private void onLoaded() throws OseeCoreException {
+      //      computeLastDateModified();
       meetMinimumAttributes();
    }
 
-   //   @Override
-   private void meetMinimumAttributes() throws OseeCoreException {
-      //      for (IAttributeType attributeType : getValidAttributeTypes()) {
-      //         int missingCount = artifact.getMinOccurrences(attributeType) - artifact.getAttributeCount(attributeType);
-      //         for (int i = 0; i < missingCount; i++) {
-      //            Attribute<Object> attr = attributeFactory.createAttribute(artifact, artifact.getOrcsData(), attributeType);
-      //            attr.clearDirty();
-      //         }
+   private void ensureAttributesLoaded() {
+      //      if (!isLoaded() && isInDb()) {
+      //         ArtifactLoader.loadArtifactData(this, LoadLevel.ATTRIBUTE);
       //      }
+   }
+
+   private void meetMinimumAttributes() throws OseeCoreException {
+      for (IAttributeType attributeType : getValidAttributeTypes()) {
+         int missingCount = getRemainingAttributeCount(attributeType);
+         for (int i = 0; i < missingCount; i++) {
+            Attribute<Object> attr = attributeFactory.createAttribute(this, getOrcsData(), attributeType);
+            attr.clearDirty();
+         }
+      }
+   }
+
+   private final int getRemainingAttributeCount(IAttributeType token) throws OseeCoreException {
+      AttributeType attributeType = attributeFactory.getAttribeType(token);
+      return attributeType.getMinOccurrences() - getAttributeCount(attributeType);
    }
 
    //////////////////////////////////////////////////////////////

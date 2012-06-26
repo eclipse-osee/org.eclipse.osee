@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
+import org.eclipse.osee.orcs.core.internal.artifact.ArtifactTestSuite;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeTestSuite;
 import org.eclipse.osee.orcs.core.internal.branch.BranchTestSuite;
 import org.eclipse.osee.orcs.core.internal.relation.RelationTestSuite;
@@ -21,7 +22,12 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AttributeTestSuite.class, BranchTestSuite.class, RelationTestSuite.class, QueryTestSuite.class})
+@Suite.SuiteClasses({
+   ArtifactTestSuite.class,
+   AttributeTestSuite.class,
+   BranchTestSuite.class,
+   RelationTestSuite.class,
+   QueryTestSuite.class})
 public class InternalTestSuite {
    // Test Suite
 }

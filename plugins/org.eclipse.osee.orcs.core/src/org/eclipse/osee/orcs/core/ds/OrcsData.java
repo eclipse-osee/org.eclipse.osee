@@ -29,4 +29,5 @@ public interface OrcsData extends HasLocalId, HasVersion {
 
    ModificationType getLoadedModType();
 
+   boolean isStorageAllowed();
 }

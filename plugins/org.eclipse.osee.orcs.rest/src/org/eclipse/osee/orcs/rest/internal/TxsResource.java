@@ -10,23 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
-import java.util.Collections;
+import java.util.Arrays;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.enums.TransactionVersion;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 
 /**
  * @author Roberto E. Escobar
  */
-public class BranchResource {
+public class TxsResource {
 
    @Context
    UriInfo uriInfo;
@@ -35,28 +37,28 @@ public class BranchResource {
 
    String branchUuid;
 
-   public BranchResource(UriInfo uriInfo, Request request, String branchUuid) {
+   public TxsResource(UriInfo uriInfo, Request request, String branchUuid) {
       this.uriInfo = uriInfo;
       this.request = request;
       this.branchUuid = branchUuid;
    }
 
-   @Path("artifact")
-   public ArtifactsResource getArtifacts() {
-      return new ArtifactsResource(uriInfo, request, branchUuid);
-   }
-
-   @Path("txs")
-   public TxsResource getTransactions() {
-      return new TxsResource(uriInfo, request, branchUuid);
+   @Path("{txId}")
+   public TxResource getTransaction(@PathParam("txId") int txId) {
+      return new TxResource(uriInfo, request, branchUuid, txId);
    }
 
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getAsHtml() throws OseeCoreException {
-      IOseeBranch token = TokenFactory.createBranch(branchUuid, "");
-      Branch branch = OrcsApplication.getOrcsApi().getBranchCache().get(token);
+
+      TransactionCache txCache = OrcsApplication.getOrcsApi().getTxsCache();
+      Branch branch = OrcsApplication.getOrcsApi().getBranchCache().getByGuid(branchUuid);
+
+      TransactionRecord txBase = txCache.getTransaction(branch, TransactionVersion.BASE);
+      TransactionRecord txHead = txCache.getTransaction(branch, TransactionVersion.HEAD);
+
       HtmlWriter writer = new HtmlWriter(uriInfo);
-      return writer.toHtml(Collections.singleton(branch));
+      return writer.toHtml(Arrays.asList(txBase, txHead));
    }
 }

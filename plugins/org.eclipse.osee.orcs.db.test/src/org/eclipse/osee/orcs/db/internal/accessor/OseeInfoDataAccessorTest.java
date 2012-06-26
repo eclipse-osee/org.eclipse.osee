@@ -20,7 +20,8 @@ import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
-import org.eclipse.osee.orcs.db.mock.OsgiUtil;
+import org.eclipse.osee.orcs.db.mock.OsgiRule;
+import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.db.mocks.MockLog;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -33,12 +34,16 @@ import org.junit.Rule;
 public class OseeInfoDataAccessorTest {
 
    @Rule
+   public OsgiRule osgi = new OsgiRule(this);
+
+   @Rule
    public OseeDatabase db = new OseeDatabase("osee.demo.h2");
+
+   @OsgiService
+   IOseeDatabaseService dbService;
 
    @org.junit.Test
    public void testGetSetValue() throws OseeCoreException {
-      IOseeDatabaseService dbService = OsgiUtil.getService(IOseeDatabaseService.class);
-
       OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
       accessor.setLogger(new MockLog());
       accessor.setDatabaseService(dbService);
@@ -55,8 +60,6 @@ public class OseeInfoDataAccessorTest {
 
    @org.junit.Test(expected = OseeStateException.class)
    public void testSetBinaryDataPath() throws OseeCoreException {
-      IOseeDatabaseService dbService = OsgiUtil.getService(IOseeDatabaseService.class);
-
       OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
       accessor.setLogger(new MockLog());
       accessor.setDatabaseService(dbService);
@@ -66,8 +69,6 @@ public class OseeInfoDataAccessorTest {
 
    @org.junit.Test
    public void testGetBinaryDataPath() throws OseeCoreException {
-      IOseeDatabaseService dbService = OsgiUtil.getService(IOseeDatabaseService.class);
-
       OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
       accessor.setLogger(new MockLog());
       accessor.setDatabaseService(dbService);
@@ -86,8 +87,6 @@ public class OseeInfoDataAccessorTest {
 
    @org.junit.Test(expected = OseeStateException.class)
    public void testSetDatabaseHintsSupported() throws OseeCoreException {
-      IOseeDatabaseService dbService = OsgiUtil.getService(IOseeDatabaseService.class);
-
       OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
       accessor.setLogger(new MockLog());
       accessor.setDatabaseService(dbService);
@@ -97,8 +96,6 @@ public class OseeInfoDataAccessorTest {
 
    @org.junit.Test
    public void testGetDatabaseHintsSupported() throws OseeCoreException {
-      IOseeDatabaseService dbService = OsgiUtil.getService(IOseeDatabaseService.class);
-
       OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
       accessor.setLogger(new MockLog());
       accessor.setDatabaseService(dbService);
@@ -118,8 +115,6 @@ public class OseeInfoDataAccessorTest {
 
    @org.junit.Test(expected = OseeStateException.class)
    public void testSetCheckTagQueueOnStartupAllowed() throws OseeCoreException {
-      IOseeDatabaseService dbService = OsgiUtil.getService(IOseeDatabaseService.class);
-
       OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
       accessor.setLogger(new MockLog());
       accessor.setDatabaseService(dbService);
@@ -129,8 +124,6 @@ public class OseeInfoDataAccessorTest {
 
    @org.junit.Test
    public void testGetCheckTagQueueOnStartupAllowed() throws OseeCoreException {
-      IOseeDatabaseService dbService = OsgiUtil.getService(IOseeDatabaseService.class);
-
       OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
       accessor.setLogger(new MockLog());
       accessor.setDatabaseService(dbService);
@@ -149,7 +142,6 @@ public class OseeInfoDataAccessorTest {
 
    @org.junit.Test
    public void testGetKeys() throws OseeCoreException {
-      IOseeDatabaseService dbService = OsgiUtil.getService(IOseeDatabaseService.class);
       OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
       accessor.setLogger(new MockLog());
       accessor.setDatabaseService(dbService);

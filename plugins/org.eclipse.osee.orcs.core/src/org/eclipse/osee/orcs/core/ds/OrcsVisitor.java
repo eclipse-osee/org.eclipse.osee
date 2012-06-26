@@ -8,22 +8,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.transaction;
+package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.core.ds.OrcsData;
-import org.eclipse.osee.orcs.db.internal.loader.IdFactory;
 
-public abstract class AbstractSqlProvider {
+/**
+ * @author Roberto E. Escobar
+ */
+public interface OrcsVisitor {
 
-   private final IdFactory idFactory;
+   void visit(ArtifactData data) throws OseeCoreException;
 
-   protected AbstractSqlProvider(IdFactory idFactory) {
-      super();
-      this.idFactory = idFactory;
-   }
+   void visit(AttributeData data) throws OseeCoreException;
 
-   long getGammaId(OrcsData data) throws OseeCoreException {
-      return idFactory.getNextGammaId(data);
-   }
+   void visit(RelationData data) throws OseeCoreException;
+
 }

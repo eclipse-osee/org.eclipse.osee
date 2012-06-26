@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2012 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,13 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal;
+package org.eclipse.osee.orcs.db.internal.transaction;
 
-import org.eclipse.osee.orcs.db.internal.exchange.ExchangeTestSuite;
-import org.eclipse.osee.orcs.db.internal.proxy.ProxyTestSuite;
-import org.eclipse.osee.orcs.db.internal.resource.ResourceTestSuite;
-import org.eclipse.osee.orcs.db.internal.search.SearchTestSuite;
-import org.eclipse.osee.orcs.db.internal.transaction.TransactionTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -22,12 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-   ExchangeTestSuite.class,
-   ProxyTestSuite.class,
-   ResourceTestSuite.class,
-   TransactionTestSuite.class,
-   SearchTestSuite.class})
-public class InternalJunitTestSuite {
+@Suite.SuiteClasses({DaoToSqlTest.class, TxSqlBuilderTest.class})
+public class TransactionTestSuite {
    // Test Suite
 }

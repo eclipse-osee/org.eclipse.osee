@@ -25,12 +25,12 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.core.OrcsIntegrationRule;
 import org.eclipse.osee.orcs.core.mock.TestBranches;
-import org.eclipse.osee.orcs.core.mock.Utility;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
-import org.eclipse.osee.orcs.db.mock.OsgiUtil;
+import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.CaseType;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.Operator;
@@ -49,18 +49,20 @@ import org.junit.Test;
 public class OrcsQueryTest {
 
    @Rule
+   public OrcsIntegrationRule osgi = new OrcsIntegrationRule(this);
+
+   @Rule
    public OseeDatabase db = new OseeDatabase("osee.demo.h2");
 
    private final boolean includeMatchLocationTests = false;
 
+   @OsgiService
+   OrcsApi orcsApi;
+
    @Test
    public void testQueries() throws OseeCoreException {
-      Utility.checkRequiredServices();
-
-      OrcsApi oseeApi = OsgiUtil.getService(OrcsApi.class);
-
       ApplicationContext context = null; // TODO use real application context
-      QueryFactory factory = oseeApi.getQueryFactory(null);
+      QueryFactory factory = orcsApi.getQueryFactory(null);
 
       checkQueryByIds(factory);
 

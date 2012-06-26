@@ -40,7 +40,7 @@ public class AttributeCollection {
       this.exceptionFactory = exceptionFactory;
    }
 
-   public void setBackingData(List<AttributeData> datas) throws OseeCoreException {
+   public void setBackingData(List<AttributeData> datas) {
       Map<Integer, Attribute<?>> attrById = new HashMap<Integer, Attribute<?>>();
       for (Attribute<?> attribute : attributes.getValues()) {
          attrById.put(attribute.getId(), attribute);

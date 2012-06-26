@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.orcs.core.internal.transaction.WriteableProxy;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
 import org.eclipse.osee.orcs.data.AttributeWriteable;
@@ -25,11 +24,13 @@ import org.eclipse.osee.orcs.data.AttributeWriteable;
 public class WritableArtifactProxy extends ReadableArtifactProxy implements ArtifactWriteable, WriteableProxy {
 
    private boolean isCopyRequired;
+   private final ArtifactFactory artifactFactory;
    private ArtifactImpl original;
    private volatile boolean isWriteAllowed;
 
-   public WritableArtifactProxy(ArtifactImpl originalArtifact) {
+   public WritableArtifactProxy(ArtifactFactory artifactFactory, ArtifactImpl originalArtifact) {
       super(originalArtifact);
+      this.artifactFactory = artifactFactory;
       isWriteAllowed = true;
    }
 
@@ -59,12 +60,14 @@ public class WritableArtifactProxy extends ReadableArtifactProxy implements Arti
          throw new OseeAccessDeniedException("The artifact being accessed has been invalidated");
       }
       if (isCopyRequired) {
+         boolean successful = false;
          try {
-            ArtifactImpl copy = getOriginal().clone();
+            ArtifactImpl copy = artifactFactory.clone(getOriginal());
             super.setProxiedObject(copy);
             isCopyRequired = false;
-         } catch (CloneNotSupportedException ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            successful = true;
+         } finally {
+            setWriteState(successful);
          }
       }
       return getProxiedObject();
@@ -147,11 +150,11 @@ public class WritableArtifactProxy extends ReadableArtifactProxy implements Arti
 
    @Override
    public boolean isDirty() throws OseeCoreException {
-      return getObjectForWrite().isDirty();
+      return getProxiedObject().isDirty();
    }
 
    @Override
    public boolean isDeleted() throws OseeCoreException {
-      return getObjectForWrite().isDeleted();
+      return getProxiedObject().isDeleted();
    }
 }

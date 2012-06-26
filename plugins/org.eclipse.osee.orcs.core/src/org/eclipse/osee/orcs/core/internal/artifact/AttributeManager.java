@@ -35,7 +35,7 @@ public interface AttributeManager extends Named, Identity<String> {
 
    boolean isLoaded();
 
-   void setLoaded(boolean value);
+   void setLoaded(boolean value) throws OseeCoreException;
 
    /////////////////////////////////////////////////////////////////
 
@@ -46,6 +46,10 @@ public interface AttributeManager extends Named, Identity<String> {
    void setAttributesToNotDirty();
 
    int getAttributeCount(IAttributeType type) throws OseeCoreException;
+
+   int getMaximumAttributeTypeAllowed(IAttributeType attributeType) throws OseeCoreException;
+
+   int getMinimumAttributeTypeAllowed(IAttributeType attributeType) throws OseeCoreException;
 
    boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException;
 

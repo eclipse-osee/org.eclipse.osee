@@ -125,28 +125,13 @@ public class AttributeFactory {
       Attribute<T> toReturn = null;
       if (readable instanceof Attribute) {
          toReturn = (Attribute<T>) readable;
+      } else if (readable instanceof AttributeWritableProxy) {
+         toReturn = ((AttributeWritableProxy<T>) readable).getProxiedObject();
       }
       return toReturn;
    }
 
-   public static enum MultiplicityState {
-      IS_VALID,
-      MAX_VIOLATION,
-      MIN_VIOLATION;
-   }
-
-   public MultiplicityState getAttributeMuliplicityState(IAttributeType attributeType, int count) throws OseeCoreException {
-      MultiplicityState state = MultiplicityState.IS_VALID;
-      AttributeType fullType = getAttribeType(attributeType);
-      if (count > fullType.getMaxOccurrences()) {
-         state = MultiplicityState.MAX_VIOLATION;
-      } else if (count < fullType.getMinOccurrences()) {
-         state = MultiplicityState.MIN_VIOLATION;
-      }
-      return state;
-   }
-
-   private AttributeType getAttribeType(IAttributeType token) throws OseeCoreException {
+   public AttributeType getAttribeType(IAttributeType token) throws OseeCoreException {
       return token instanceof AttributeType ? (AttributeType) token : cache.get(token);
    }
 

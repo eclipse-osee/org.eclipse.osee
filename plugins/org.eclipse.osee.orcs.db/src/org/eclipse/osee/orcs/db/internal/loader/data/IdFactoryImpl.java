@@ -18,9 +18,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
-import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.db.internal.loader.IdFactory;
-import org.eclipse.osee.orcs.db.internal.loader.RelationalConstants;
 
 /**
  * @author Roberto E. Escobar
@@ -61,6 +59,11 @@ public class IdFactoryImpl implements IdFactory {
    }
 
    @Override
+   public long getNextGammaId() throws OseeCoreException {
+      return getSequence().getNextGammaId();
+   }
+
+   @Override
    public String getUniqueGuid(String guid) {
       String toReturn = guid;
       if (toReturn == null) {
@@ -85,18 +88,4 @@ public class IdFactoryImpl implements IdFactory {
       return dbService.runPreparedQueryFetchObject(0L, DUPLICATE_HRID_SEARCH, id) <= 0;
    }
 
-   @Override
-   public long getNextGammaId(OrcsData data) throws OseeCoreException {
-      long toReturn = data.getVersion().getGammaId();
-      if (RelationalConstants.GAMMA_SENTINEL == toReturn || isGammaCreationAllowed(data)) {
-         toReturn = getSequence().getNextGammaId();
-      } else {
-         toReturn = data.getVersion().getGammaId();
-      }
-      return toReturn;
-   }
-
-   protected boolean isGammaCreationAllowed(OrcsData data) {
-      return !data.getModType().isExistingVersionUsed();
-   }
 }

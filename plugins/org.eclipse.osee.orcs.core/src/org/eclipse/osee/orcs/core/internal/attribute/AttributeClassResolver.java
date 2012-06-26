@@ -35,6 +35,14 @@ public class AttributeClassResolver {
       this.logger = logger;
    }
 
+   public void start() {
+      //
+   }
+
+   public void stop() {
+      //
+   }
+
    public void addProvider(AttributeClassProvider provider) {
       for (Class<? extends Attribute<?>> clazz : provider.getClasses()) {
          String alias = toAlias(clazz);
@@ -66,7 +74,7 @@ public class AttributeClassResolver {
       return map.get(alias);
    }
 
-   Class<? extends Attribute<?>> getBaseClazz(AttributeType attributeType) {
+   protected Class<? extends Attribute<?>> getBaseClazz(AttributeType attributeType) {
       String alias = attributeType.getBaseAttributeTypeId();
       if (alias.contains(".")) {
          alias = Lib.getExtension(alias);

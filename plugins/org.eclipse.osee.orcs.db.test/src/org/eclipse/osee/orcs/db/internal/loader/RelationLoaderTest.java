@@ -23,15 +23,16 @@ import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
-import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
+import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.db.internal.loader.data.OrcsObjectFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.loader.data.RelationDataImpl;
 import org.eclipse.osee.orcs.db.internal.loader.data.VersionDataImpl;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
-import org.eclipse.osee.orcs.db.mock.OsgiUtil;
+import org.eclipse.osee.orcs.db.mock.OsgiRule;
+import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.db.mocks.MockLog;
 import org.eclipse.osee.orcs.db.mocks.MockSystemPreferences;
 import org.junit.AfterClass;
@@ -47,9 +48,18 @@ import org.junit.Rule;
 public class RelationLoaderTest {
 
    @Rule
+   public OsgiRule osgi = new OsgiRule(this);
+
+   @Rule
    public OseeDatabase db = new OseeDatabase("osee.demo.h2");
 
    private static StaticSqlProvider sqlProvider;
+
+   @OsgiService
+   IOseeDatabaseService oseeDbService;
+
+   @OsgiService
+   IdentityService identityService;
 
    @BeforeClass
    public static void setUp() {
@@ -65,10 +75,6 @@ public class RelationLoaderTest {
 
    @org.junit.Test
    public void testRelationLoadingData() throws OseeCoreException {
-
-      IOseeDatabaseService oseeDbService = OsgiUtil.getService(IOseeDatabaseService.class);
-      IdentityService identityService = OsgiUtil.getService(IdentityService.class);
-
       OrcsObjectFactoryImpl factory = new OrcsObjectFactoryImpl(null, identityService);
       RelationLoader relationLoader = new RelationLoader(new MockLog(), sqlProvider, oseeDbService, factory);
 
@@ -107,10 +113,6 @@ public class RelationLoaderTest {
 
    @org.junit.Test
    public void testNoRelationsFound() throws OseeCoreException {
-
-      IOseeDatabaseService oseeDbService = OsgiUtil.getService(IOseeDatabaseService.class);
-      IdentityService identityService = OsgiUtil.getService(IdentityService.class);
-
       OrcsObjectFactoryImpl factory = new OrcsObjectFactoryImpl(null, identityService);
       RelationLoader relationLoader = new RelationLoader(new MockLog(), sqlProvider, oseeDbService, factory);
 
@@ -138,9 +140,6 @@ public class RelationLoaderTest {
 
    @org.junit.Test
    public void testHistoricalLoad() throws OseeCoreException {
-      IOseeDatabaseService oseeDbService = OsgiUtil.getService(IOseeDatabaseService.class);
-      IdentityService identityService = OsgiUtil.getService(IdentityService.class);
-
       OrcsObjectFactoryImpl factory = new OrcsObjectFactoryImpl(null, identityService);
       RelationLoader relationLoader = new RelationLoader(new MockLog(), sqlProvider, oseeDbService, factory);
 

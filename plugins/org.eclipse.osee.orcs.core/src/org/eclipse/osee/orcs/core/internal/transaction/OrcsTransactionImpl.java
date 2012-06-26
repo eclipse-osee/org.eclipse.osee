@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.transaction;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -80,8 +81,8 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
    }
 
    @Override
-   public Collection<ArtifactTransactionData> getArtifactTransactionData() throws OseeCoreException {
-      Collection<ArtifactTransactionData> data = new ArrayList<ArtifactTransactionData>();
+   public List<ArtifactTransactionData> getArtifactTransactionData() throws OseeCoreException {
+      List<ArtifactTransactionData> data = new LinkedList<ArtifactTransactionData>();
       for (ArtifactWriteable writeable : writeableArtifacts.values()) {
          data.add(artifactFactory.getChangeData(writeable));
       }
@@ -204,13 +205,14 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
 
    @Override
    public GraphWriteable asWriteableGraph(GraphReadable readableGraph) throws OseeCoreException {
-      //TX_TODO
-      return null;
+      //TX_TODO Relation Stuff?
+      throw new UnsupportedOperationException();
    }
 
    @Override
    public void deleteArtifact(ArtifactWriteable artifact) throws OseeCoreException {
-      //TX_TODO
+      //TX_TODO Delete artifact and relation stuff
+      throw new UnsupportedOperationException();
       //      public static void deleteArtifact(SkynetTransaction transaction, boolean overrideDeleteCheck, final Artifact... artifacts) throws OseeCoreException {
       //         deleteArtifactCollection(transaction, overrideDeleteCheck, Arrays.asList(artifacts));
       //      }

@@ -12,14 +12,12 @@ package org.eclipse.osee.orcs.db.internal.loader;
 
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
-import org.eclipse.osee.orcs.db.internal.loader.data.IdFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.loader.data.OrcsObjectFactoryImpl;
 
 /**
@@ -43,8 +41,7 @@ public class DataModuleFactory {
       return new OrcsObjectFactoryImpl(dataProxyFactory, identityService);
    }
 
-   public DataFactory createDataFactory(OrcsObjectFactory factory, BranchCache branchCache, ArtifactTypeCache artifactTypeCache) {
-      IdFactory idFactory = new IdFactoryImpl(dbService, branchCache);
+   public DataFactory createDataFactory(OrcsObjectFactory factory, IdFactory idFactory, ArtifactTypeCache artifactTypeCache) {
       return new DataFactoryImpl(idFactory, factory, artifactTypeCache);
    }
 

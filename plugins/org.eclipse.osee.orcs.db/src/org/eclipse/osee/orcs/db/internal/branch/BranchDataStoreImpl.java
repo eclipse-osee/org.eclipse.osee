@@ -34,6 +34,7 @@ import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
+import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.callable.BranchCopyTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CheckBranchExchangeIntegrityCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CommitBranchDatabaseCallable;
@@ -43,6 +44,8 @@ import org.eclipse.osee.orcs.db.internal.callable.ExportBranchDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.callable.ImportBranchDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeBranchDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportItemFactory;
+import org.eclipse.osee.orcs.db.internal.loader.IdFactory;
+import org.eclipse.osee.orcs.db.internal.transaction.CommitTransactionDatabaseTxCallable;
 
 /**
  * @author Roberto E. Escobar
@@ -60,7 +63,10 @@ public class BranchDataStoreImpl implements BranchDataStore {
    private final IOseeModelFactoryService modelFactory;
    private final IOseeModelingService typeModelService;
 
-   public BranchDataStoreImpl(Log logger, IOseeDatabaseService dbService, IdentityService identityService, IOseeCachingService cachingService, SystemPreferences preferences, ExecutorAdmin executorAdmin, IResourceManager resourceManager, IOseeModelFactoryService modelFactory, IOseeModelingService typeModelService) {
+   private final SqlProvider sqlProvider;
+   private final IdFactory idFactory;
+
+   public BranchDataStoreImpl(Log logger, IOseeDatabaseService dbService, IdentityService identityService, IOseeCachingService cachingService, SystemPreferences preferences, ExecutorAdmin executorAdmin, IResourceManager resourceManager, IOseeModelFactoryService modelFactory, IOseeModelingService typeModelService, SqlProvider sqlProvider, IdFactory idFactory) {
       super();
       this.logger = logger;
       this.dbService = dbService;
@@ -71,6 +77,8 @@ public class BranchDataStoreImpl implements BranchDataStore {
       this.resourceManager = resourceManager;
       this.modelFactory = modelFactory;
       this.typeModelService = typeModelService;
+      this.sqlProvider = sqlProvider;
+      this.idFactory = idFactory;
    }
 
    @Override
@@ -132,16 +140,10 @@ public class BranchDataStoreImpl implements BranchDataStore {
    }
 
    @Override
-   public Callable<TransactionResult> commitTransaction(TransactionData transaction) {
-      ///// 
-      // TODO:
-      // 1. Make this whole method a critical region on a per branch basis - can only write to a branch on one thread at time
-      // 2. This is where we will eventually check that the gammaIds have not changed from under us for: attributes, artifacts and relations
-      // 3. Don't burn transaction ID until now
-      // 4.
-      // delete  new DeleteRelationDatabaseCallable(logger, dbService, identityService, cachingService.getBranchCache(),    branch, relationType, aArtId, bArtId, artUserId, comment);
-      ////
-      return null;
+   public Callable<TransactionResult> commitTransaction(TransactionData data) {
+      return new CommitTransactionDatabaseTxCallable(logger, dbService, identityService, sqlProvider, idFactory,
+         cachingService.getBranchCache(), cachingService.getTransactionCache(), modelFactory.getTransactionFactory(),
+         data);
    }
 
 }

@@ -8,19 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.transaction;
+package org.eclipse.osee.orcs.core.internal.transaction;
 
-import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-public interface InsertDataCollector {
-
-   //   int getTransactionNumber();
-   //
-   //   int getBranchId();
-
-   void addBinaryStore(BinaryStoreTx binaryTx);
-
-   void addInsertToBatch(int insertPriority, String insertSql, Object... data);
-
-   void addTxNotCurrentToBatch(OseeSql insertSql, Object... data);
+@RunWith(Suite.class)
+@Suite.SuiteClasses({OrcsTransactionImplTest.class})
+public class TransactionTestSuite {
+   // Test Suite
 }

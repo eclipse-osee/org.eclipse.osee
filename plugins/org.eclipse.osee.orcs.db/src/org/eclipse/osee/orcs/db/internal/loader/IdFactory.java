@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.db.internal.loader;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.core.ds.OrcsData;
 
 /**
  * @author Roberto E. Escobar
@@ -31,6 +30,6 @@ public interface IdFactory {
 
    String getUniqueHumanReadableId(String humanReadableId) throws OseeCoreException;
 
-   long getNextGammaId(OrcsData data) throws OseeCoreException;
+   long getNextGammaId() throws OseeCoreException;
 
 }

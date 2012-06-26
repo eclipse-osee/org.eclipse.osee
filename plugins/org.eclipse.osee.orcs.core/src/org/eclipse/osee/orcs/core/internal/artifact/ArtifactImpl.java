@@ -21,12 +21,11 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
-import org.eclipse.osee.orcs.core.ds.HasOrcsData;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeManagerImpl;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
 
-public class ArtifactImpl extends AttributeManagerImpl implements HasOrcsData<ArtifactData>, ArtifactWriteable, Cloneable {
+public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWriteable {
 
    private final RelationContainer relationContainer;
    private final ArtifactType artifactType;
@@ -35,7 +34,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements HasOrcsData<Ar
    private ArtifactData artifactData;
 
    public ArtifactImpl(ArtifactType artifactType, Branch branch, ArtifactData artifactData, AttributeFactory attributeFactory, RelationContainer relationContainer) {
-      super(artifactData, attributeFactory);
+      super(attributeFactory);
       this.artifactData = artifactData;
       this.artifactType = artifactType;
       this.branch = branch;
@@ -101,6 +100,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements HasOrcsData<Ar
    public void setArtifactType(IArtifactType artifactType) {
       if (!this.artifactType.equals(artifactType)) {
          objectEditState = EditState.ARTIFACT_TYPE_MODIFIED;
+         getOrcsData().setTypeUuid(artifactType.getGuid());
          if (getOrcsData().getVersion().isInStorage()) {
             //            lastValidModType = modType;
             getOrcsData().setModType(ModificationType.MODIFIED);
@@ -132,24 +132,6 @@ public class ArtifactImpl extends AttributeManagerImpl implements HasOrcsData<Ar
    }
 
    @Override
-   public ArtifactImpl clone() throws CloneNotSupportedException {
-      //      ArtifactImpl otherObject = (ArtifactImpl) super.clone();
-      //      otherObject.humandReadableId = this.humandReadableId;
-      //      otherObject.historical = this.historical;
-      //      otherObject.branch = this.branch;
-      //      otherObject.artifactType = this.artifactType;
-
-      // TODO finish copying
-      //      otherObject.relationProxy = this.relationProxy;
-      //      otherObject.attributeContainer = new AttributeContainerImpl(otherObject);
-
-      //      for (AttributeReadable<?> attribute : this.attributeContainer.getAttributes()) {
-      //         attributeContainer.add(attribute.getAttributeType(), attribute.);
-      //      }
-      throw new CloneNotSupportedException("Implementation not finished");
-   }
-
-   @Override
    public boolean isDeleted() {
       return getModificationType().isDeleted();
    }
@@ -166,7 +148,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements HasOrcsData<Ar
 
    @Override
    public String getExceptionString() {
-      return String.format("artifact [%s] guid[%s] on branch[%s]", getName(), getGuid(), getBranch());
+      return String.format("artifact type [%s] guid[%s] on branch[%s]", getArtifactType(), getGuid(), getBranch());
    }
 
 }

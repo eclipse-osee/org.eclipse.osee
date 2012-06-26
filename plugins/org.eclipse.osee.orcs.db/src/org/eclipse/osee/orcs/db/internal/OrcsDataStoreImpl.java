@@ -30,7 +30,9 @@ import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.db.internal.branch.BranchDataStoreImpl;
 import org.eclipse.osee.orcs.db.internal.loader.DataModuleFactory;
 import org.eclipse.osee.orcs.db.internal.loader.DataProxyFactoryProvider;
+import org.eclipse.osee.orcs.db.internal.loader.IdFactory;
 import org.eclipse.osee.orcs.db.internal.loader.OrcsObjectFactory;
+import org.eclipse.osee.orcs.db.internal.loader.data.IdFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.search.QueryModuleFactory;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
@@ -106,22 +108,22 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
    }
 
    public void start() {
-      branchStore =
-         new BranchDataStoreImpl(logger, dbService, identityService, cacheService, preferences, executorAdmin,
-            resourceManager, modelFactory, typeModelService);
-
-      dataStoreAdmin = new DataStoreAdminImpl(logger, dbService, identityService, branchStore, preferences);
-
       StaticSqlProvider sqlProvider = new StaticSqlProvider();
       sqlProvider.setLogger(logger);
       sqlProvider.setPreferences(preferences);
 
+      IdFactory idFactory = new IdFactoryImpl(dbService, cacheService.getBranchCache());
+
+      branchStore =
+         new BranchDataStoreImpl(logger, dbService, identityService, cacheService, preferences, executorAdmin,
+            resourceManager, modelFactory, typeModelService, sqlProvider, idFactory);
+
+      dataStoreAdmin = new DataStoreAdminImpl(logger, dbService, identityService, branchStore, preferences);
+
       DataModuleFactory dataModuleFactory = new DataModuleFactory(logger, dbService, identityService);
       OrcsObjectFactory rowDataFactory =
          dataModuleFactory.createOrcsObjectFactory(proxyProvider, cacheService.getAttributeTypeCache());
-      dataFactory =
-         dataModuleFactory.createDataFactory(rowDataFactory, cacheService.getBranchCache(),
-            cacheService.getArtifactTypeCache());
+      dataFactory = dataModuleFactory.createDataFactory(rowDataFactory, idFactory, cacheService.getArtifactTypeCache());
       dataLoader = dataModuleFactory.createDataLoader(sqlProvider, rowDataFactory);
 
       QueryModuleFactory factory = new QueryModuleFactory(logger, dbService, identityService, executorAdmin);

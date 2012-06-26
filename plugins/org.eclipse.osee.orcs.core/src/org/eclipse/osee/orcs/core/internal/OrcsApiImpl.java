@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal;
 
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
@@ -122,6 +123,11 @@ public class OrcsApiImpl implements OrcsApi {
    }
 
    @Override
+   public TransactionCache getTxsCache() {
+      return cacheService.getTransactionCache();
+   }
+
+   @Override
    public BranchCache getBranchCache() {
       return cacheService.getBranchCache();
    }
@@ -174,4 +180,5 @@ public class OrcsApiImpl implements OrcsApi {
       String sessionId = GUID.create(); // TODO context.getSessionId() attach to application context
       return new SessionContextImpl(sessionId);
    }
+
 }

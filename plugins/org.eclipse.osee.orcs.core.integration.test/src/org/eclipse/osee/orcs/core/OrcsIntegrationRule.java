@@ -8,11 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.mock;
+package org.eclipse.osee.orcs.core;
 
 import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelingService;
@@ -21,36 +20,37 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.DataStoreTypeCache;
 import org.eclipse.osee.orcs.core.SystemPreferences;
-import org.eclipse.osee.orcs.core.ds.DataLoader;
-import org.eclipse.osee.orcs.core.ds.QueryEngine;
+import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeClassResolver;
-import org.eclipse.osee.orcs.db.mock.OsgiUtil;
+import org.eclipse.osee.orcs.db.mock.OsgiRule;
+import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.osgi.service.event.EventAdmin;
 
 /**
  * @author Roberto E. Escobar
  */
-public final class Utility {
+public class OrcsIntegrationRule extends OsgiRule {
 
-   private Utility() {
-      // Utility Class
+   public OrcsIntegrationRule(Object testObject) {
+      super(new CheckServices(), testObject);
    }
 
-   public static void checkRequiredServices() throws OseeCoreException {
-      OsgiUtil.getService(Log.class);
-      OsgiUtil.getService(SystemPreferences.class);
-      OsgiUtil.getService(IdentityService.class);
-      OsgiUtil.getService(IOseeDatabaseService.class);
-      OsgiUtil.getService(IOseeModelFactoryService.class);
-      OsgiUtil.getService(IOseeModelingService.class);
-      OsgiUtil.getService(EventAdmin.class);
-      OsgiUtil.getService(EventService.class);
-      OsgiUtil.getService(ExecutorAdmin.class);
-      OsgiUtil.getService(IOseeCachingService.class);
-      OsgiUtil.getService(QueryEngine.class);
-      OsgiUtil.getService(DataStoreTypeCache.class);
-      OsgiUtil.getService(DataLoader.class);
-      OsgiUtil.getService(AttributeClassResolver.class);
+   public static class CheckServices {
+      // @formatter:off
+      @OsgiService public Log log;
+      @OsgiService public SystemPreferences preferences;
+      @OsgiService public IdentityService idService;
+      @OsgiService public IOseeDatabaseService dbService;
+      @OsgiService public IOseeModelFactoryService modelFactory;
+      @OsgiService public IOseeModelingService modelService;
+      @OsgiService public EventAdmin eventAdmin;
+      @OsgiService public EventService eventService;
+      @OsgiService public ExecutorAdmin executorAdmin;
+      @OsgiService public IOseeCachingService cachingService;
+      @OsgiService public OrcsDataStore dataStore;
+      @OsgiService public DataStoreTypeCache typeCache;
+      @OsgiService public AttributeClassResolver resolver;
+      // @formatter:on
    }
 
 }

@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.GraphReadable;
@@ -45,6 +46,9 @@ public class HtmlWriter {
          } else if (object instanceof ArtifactReadable) {
             ArtifactReadable artifact = (ArtifactReadable) object;
             addTable(builder, toData(artifact));
+         } else if (object instanceof TransactionRecord) {
+            TransactionRecord tx = (TransactionRecord) object;
+            addTable(builder, toData(tx));
          } else {
             Map<String, Object> unhandled = new LinkedHashMap<String, Object>();
             unhandled.put("Class", object.getClass().getSimpleName());
@@ -130,6 +134,24 @@ public class HtmlWriter {
       return data;
    }
 
+   public Map<String, Object> toData(TransactionRecord txRecord) throws OseeCoreException {
+      Map<String, Object> data = new LinkedHashMap<String, Object>();
+      data.put("TxId", txRecord.getId());
+      data.put("TxType", txRecord.getTxType());
+      data.put("Date", txRecord.getTimeStamp());
+      data.put("Comment", txRecord.getComment());
+      data.put("Author", txRecord.getAuthor());
+      IOseeBranch parent = txRecord.getBranch();
+      URI uri;
+      if (isAtEndOfPath(uriInfo.getPath(), "branch")) {
+         uri = uriInfo.getAbsolutePathBuilder().path("{uuid}").build(parent.getGuid());
+      } else {
+         uri = uriInfo.getAbsolutePathBuilder().path("../{uuid}").build(parent.getGuid());
+      }
+      data.put("Branch", asLink(uri.toASCIIString(), parent.getName()));
+      return data;
+   }
+
    public String asLink(String url, String text) {
       return String.format("<a href=\"%s\">%s</a>", url, text);
    }
@@ -153,4 +175,5 @@ public class HtmlWriter {
       }
       return toCheck.endsWith(value);
    }
+
 }

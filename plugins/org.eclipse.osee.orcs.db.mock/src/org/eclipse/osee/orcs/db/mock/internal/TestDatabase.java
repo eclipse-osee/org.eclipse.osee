@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.h2.H2DbServer;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
-import org.eclipse.osee.orcs.db.mock.OsgiUtil;
 import org.junit.Assert;
 import org.junit.runners.model.FrameworkMethod;
 import org.osgi.framework.Bundle;

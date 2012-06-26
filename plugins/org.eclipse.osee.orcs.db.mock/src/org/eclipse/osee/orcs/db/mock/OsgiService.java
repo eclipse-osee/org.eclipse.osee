@@ -8,20 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.ds;
+package org.eclipse.osee.orcs.db.mock;
 
-import java.util.List;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
+import static java.lang.annotation.ElementType.FIELD;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public interface TransactionData {
-
-   IOseeBranch getBranch();
-
-   ArtifactReadable getAuthor();
-
-   String getComment();
-
-   List<ArtifactTransactionData> getArtifactTransactionData() throws OseeCoreException;
+@Target({FIELD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface OsgiService {
+   //
 }

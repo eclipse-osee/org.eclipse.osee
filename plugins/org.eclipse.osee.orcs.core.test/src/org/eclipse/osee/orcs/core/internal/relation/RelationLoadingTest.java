@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -25,9 +26,11 @@ import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.mocks.MockOseeDataAccessor;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.orcs.core.ds.RelationData;
+import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.core.internal.artifact.RelationContainer;
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -132,18 +135,23 @@ public class RelationLoadingTest {
          if (row.length != 9) {
             Assert.assertTrue("Data file is not formatted correctly", false);
          }
-         // TX_TODO         
-         //         RelationData relationRow = new RelationData();
-         //         relationRow.setParentId(Integer.parseInt(row[0]));
-         //         relationRow.setArtIdA(Integer.parseInt(row[1]));
-         //         relationRow.setArtIdB(Integer.parseInt(row[2]));
-         //         relationRow.setBranch(Integer.parseInt(row[3]));
-         //         relationRow.setGammaId(Integer.parseInt(row[4]));
-         //         relationRow.setModType(ModificationType.valueOf(row[5]));
-         //         relationRow.setRationale(row[6]);
-         //         relationRow.setRelationId(Integer.parseInt(row[7]));
-         //         relationRow.setRelationTypeId(Integer.parseInt(row[8]));
-         //         data.add(relationRow);
+
+         VersionData version = Mockito.mock(VersionData.class);
+         version.setBranchId(Integer.parseInt(row[3]));
+         version.setGammaId(Integer.parseInt(row[4]));
+
+         RelationData relationRow = Mockito.mock(RelationData.class);
+
+         Mockito.when(relationRow.getParentId()).thenReturn(Integer.parseInt(row[0]));
+         Mockito.when(relationRow.getArtIdA()).thenReturn(Integer.parseInt(row[1]));
+         Mockito.when(relationRow.getArtIdB()).thenReturn(Integer.parseInt(row[2]));
+         Mockito.when(relationRow.getModType()).thenReturn(ModificationType.valueOf(row[5]));
+         Mockito.when(relationRow.getRationale()).thenReturn(row[6]);
+         Mockito.when(relationRow.getLocalId()).thenReturn(Integer.parseInt(row[7]));
+         Mockito.when(relationRow.getTypeUuid()).thenReturn(Long.parseLong(row[8]));
+         Mockito.when(relationRow.getVersion()).thenReturn(version);
+
+         data.add(relationRow);
       }
    }
 }

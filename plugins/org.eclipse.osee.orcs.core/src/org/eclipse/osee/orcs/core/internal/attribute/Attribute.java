@@ -61,7 +61,7 @@ public abstract class Attribute<T> implements HasOrcsData<AttributeData>, Compar
 
    @Override
    public void setOrcsData(AttributeData data) {
-      attributeData = data;
+      this.attributeData = data;
    }
 
    /**

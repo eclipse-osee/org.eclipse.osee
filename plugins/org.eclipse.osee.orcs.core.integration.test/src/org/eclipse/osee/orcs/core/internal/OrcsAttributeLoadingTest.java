@@ -22,9 +22,10 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.core.OrcsIntegrationRule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
-import org.eclipse.osee.orcs.db.mock.OsgiUtil;
+import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.Operator;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -36,12 +37,16 @@ import org.junit.Rule;
 public class OrcsAttributeLoadingTest {
 
    @Rule
+   public OrcsIntegrationRule osgi = new OrcsIntegrationRule(this);
+
+   @Rule
    public OseeDatabase db = new OseeDatabase("osee.demo.h2");
+
+   @OsgiService
+   OrcsApi orcsApi;
 
    @org.junit.Test
    public void testAttributeLoading() throws Exception {
-      OrcsApi orcsApi = OsgiUtil.getService(OrcsApi.class);
-
       ApplicationContext context = null; // TODO use real application context
 
       QueryFactory queryFactory = orcsApi.getQueryFactory(context);

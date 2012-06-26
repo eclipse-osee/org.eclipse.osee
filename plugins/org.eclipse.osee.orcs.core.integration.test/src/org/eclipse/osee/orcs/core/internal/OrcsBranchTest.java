@@ -17,10 +17,11 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
+import org.eclipse.osee.orcs.core.OrcsIntegrationRule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
-import org.eclipse.osee.orcs.db.mock.OsgiUtil;
+import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.junit.Assert;
 import org.junit.Before;
@@ -34,22 +35,24 @@ import org.junit.Test;
 public class OrcsBranchTest {
 
    @Rule
+   public OrcsIntegrationRule osgi = new OrcsIntegrationRule(this);
+
+   @Rule
    public OseeDatabase db = new OseeDatabase("osee.demo.h2");
 
-   private OrcsApi orcsApi = null;
    private OrcsBranch branchInterface = null;
    private final ApplicationContext context = null; // TODO use real application context
 
    private final static String ARTIFACT_NAME = "Joe Smith";
+
+   @OsgiService
+   OrcsApi orcsApi;
 
    /**
     * @throws java.lang.Exception
     */
    @Before
    public void setUp() throws Exception {
-
-      orcsApi = OsgiUtil.getService(OrcsApi.class);
-
       branchInterface = orcsApi.getBranchOps(context);
    }
 

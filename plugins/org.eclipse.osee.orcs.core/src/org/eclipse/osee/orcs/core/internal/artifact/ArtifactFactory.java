@@ -12,10 +12,8 @@ package org.eclipse.osee.orcs.core.internal.artifact;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.AbstractIdentity;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -32,7 +30,7 @@ import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataFactory;
 import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
-import org.eclipse.osee.orcs.core.ds.RelationData;
+import org.eclipse.osee.orcs.core.ds.data.ArtifactTxDataImpl;
 import org.eclipse.osee.orcs.core.internal.AbstractProxy;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
@@ -64,13 +62,15 @@ public class ArtifactFactory {
    public ArtifactWriteable createWriteableArtifact(ArtifactData artifactData) throws OseeCoreException {
       //TODO implement an artifact class resolver for specific artifact types
       ArtifactImpl artifact = createArtifact(artifactData);
-      WritableArtifactProxy proxy = new WritableArtifactProxy(artifact);
+      artifact.setLoaded(true);
+      WritableArtifactProxy proxy = new WritableArtifactProxy(this, artifact);
       return proxy;
    }
 
    public ArtifactWriteable createWriteableArtifact(IOseeBranch branch, IArtifactType artifactType, String guid) throws OseeCoreException {
       ArtifactImpl artifact = createArtifact(branch, artifactType, guid);
-      WritableArtifactProxy proxy = new WritableArtifactProxy(artifact);
+      artifact.setLoaded(true);
+      WritableArtifactProxy proxy = new WritableArtifactProxy(this, artifact);
       return proxy;
    }
 
@@ -81,15 +81,23 @@ public class ArtifactFactory {
    }
 
    public ArtifactWriteable copyArtifact(ArtifactReadable source, Collection<? extends IAttributeType> types, IOseeBranch ontoBranch) throws OseeCoreException {
-      ArtifactImpl artifact = copyArtifactHelper(source, types, ontoBranch);
-      WritableArtifactProxy proxy = new WritableArtifactProxy(artifact);
+      ArtifactImpl artifact = copyArtifactHelperTypeChecked(asArtifactImpl(source), ontoBranch, types);
+      artifact.setLoaded(true);
+      WritableArtifactProxy proxy = new WritableArtifactProxy(this, artifact);
       return proxy;
    }
 
    public ArtifactWriteable introduceArtifact(ArtifactReadable source, IOseeBranch ontoBranch) throws OseeCoreException {
-      ArtifactImpl artifact = introduceArtifactHelper(source, ontoBranch);
-      WritableArtifactProxy proxy = new WritableArtifactProxy(artifact);
+      ArtifactImpl artifact = introduceArtifactHelper(asArtifactImpl(source), ontoBranch);
+      artifact.setLoaded(true);
+      WritableArtifactProxy proxy = new WritableArtifactProxy(this, artifact);
       return proxy;
+   }
+
+   public ArtifactImpl clone(ArtifactImpl source) throws OseeCoreException {
+      ArtifactImpl copy = copyAllHelper(source);
+      copy.setLoaded(true);
+      return copy;
    }
 
    //////////////////////////////////////////////////////////////
@@ -111,8 +119,19 @@ public class ArtifactFactory {
       return artifact;
    }
 
-   private ArtifactImpl copyArtifactHelper(ArtifactReadable source, Collection<? extends IAttributeType> types, IOseeBranch ontoBranch) throws OseeCoreException {
-      ArtifactData artifactData = factory.copy(ontoBranch, getOrcsData(source));
+   private ArtifactImpl copyAllHelper(ArtifactImpl source) throws OseeCoreException {
+      ArtifactData artifactData = factory.copy(source.getBranch(), source.getOrcsData());
+      ArtifactImpl artifact = createArtifact(artifactData);
+      for (IAttributeType attributeType : source.getExistingAttributeTypes()) {
+         for (AttributeReadable<?> attributeSource : source.getAttributes(attributeType)) {
+            attributeFactory.copyAttribute(attributeSource, source.getBranch(), artifact);
+         }
+      }
+      return artifact;
+   }
+
+   private ArtifactImpl copyArtifactHelperTypeChecked(ArtifactImpl source, IOseeBranch ontoBranch, Collection<? extends IAttributeType> types) throws OseeCoreException {
+      ArtifactData artifactData = factory.copy(ontoBranch, source.getOrcsData());
       ArtifactImpl artifact = createArtifact(artifactData);
       Collection<? extends IAttributeType> typeToCopy = getAllowedTypes(artifact, types);
       for (IAttributeType attributeType : typeToCopy) {
@@ -123,11 +142,11 @@ public class ArtifactFactory {
       return artifact;
    }
 
-   private ArtifactImpl introduceArtifactHelper(ArtifactReadable source, IOseeBranch ontoBranch) throws OseeCoreException {
+   private ArtifactImpl introduceArtifactHelper(ArtifactImpl source, IOseeBranch ontoBranch) throws OseeCoreException {
       Conditions.checkExpressionFailOnTrue(ontoBranch.equals(source.getBranch()),
          "Source artifact is on the same branch as transaction [%s]", ontoBranch);
 
-      ArtifactData artifactData = factory.introduce(ontoBranch, getOrcsData(source));
+      ArtifactData artifactData = factory.introduce(ontoBranch, source.getOrcsData());
       ArtifactImpl artifact = createArtifact(artifactData);
       Collection<? extends IAttributeType> typeToCopy = getAllowedTypes(artifact, source.getExistingAttributeTypes());
       for (IAttributeType attributeType : typeToCopy) {
@@ -159,9 +178,9 @@ public class ArtifactFactory {
          toReturn = (WritableArtifactProxy) readable;
       } else if (readable instanceof ReadableArtifactProxy) {
          ArtifactImpl artifact = asArtifactImpl(readable);
-         toReturn = new WritableArtifactProxy(artifact);
+         toReturn = new WritableArtifactProxy(this, artifact);
       } else if (readable instanceof ArtifactImpl) {
-         toReturn = new WritableArtifactProxy((ArtifactImpl) readable);
+         toReturn = new WritableArtifactProxy(this, (ArtifactImpl) readable);
       } else {
          throw new OseeStateException("Unable to convert from [%s] to ArtifactWriteable ",
             readable != null ? readable.getClass().getName() : "null");
@@ -175,16 +194,13 @@ public class ArtifactFactory {
       if (readable instanceof AbstractProxy) {
          AbstractProxy<? extends ArtifactImpl> proxy = (AbstractProxy<? extends ArtifactImpl>) readable;
          toReturn = proxy.getProxiedObject();
+      } else if (readable instanceof ArtifactImpl) {
+         toReturn = (ArtifactImpl) readable;
       }
       return toReturn;
    }
 
-   private ArtifactData getOrcsData(ArtifactReadable item) {
-      return asArtifactImpl(item).getOrcsData();
-   }
-
    /////////////////////////////////////////////
-
    public void setBackingData(ArtifactWriteable writeable, ArtifactTransactionData data) throws OseeCoreException {
       // TX_TODO In Case of exception restore all to original ?
       if (writeable instanceof WritableArtifactProxy) {
@@ -218,44 +234,12 @@ public class ArtifactFactory {
       ArtifactTxDataImpl toReturn = null;
       ArtifactImpl impl = asArtifactImpl(artifact);
       if (artifact.isDirty()) {
-         ArtifactData artifactData = factory.clone(impl.getOrcsData());
+         ArtifactData artData = impl.getOrcsData();
+         ArtifactData artifactData = factory.clone(artData);
          List<AttributeData> attributes = attributeFactory.getChangeData(impl);
          toReturn = new ArtifactTxDataImpl(artifactData, attributes);
       }
       return toReturn;
    }
 
-   private static class ArtifactTxDataImpl extends AbstractIdentity<String> implements ArtifactTransactionData {
-
-      private final ArtifactData artifactData;
-      private final List<AttributeData> attributeData;
-      private final List<RelationData> relationData = new LinkedList<RelationData>();
-
-      public ArtifactTxDataImpl(ArtifactData artifactData, List<AttributeData> attributeData) {
-         super();
-         this.artifactData = artifactData;
-         this.attributeData = attributeData;
-      }
-
-      @Override
-      public String getGuid() {
-         return getArtifactData().getGuid();
-      }
-
-      @Override
-      public ArtifactData getArtifactData() {
-         return artifactData;
-      }
-
-      @Override
-      public List<AttributeData> getAttributeData() {
-         return attributeData;
-      }
-
-      @Override
-      public List<RelationData> getRelationData() {
-         return relationData;
-      }
-
-   }
 }
