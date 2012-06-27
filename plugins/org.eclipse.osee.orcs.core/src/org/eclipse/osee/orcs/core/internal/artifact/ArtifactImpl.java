@@ -87,7 +87,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWritea
    }
 
    @Override
-   public IArtifactType getArtifactType() {
+   public ArtifactType getArtifactType() {
       return artifactType;
    }
 
@@ -99,8 +99,9 @@ public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWritea
    @Override
    public void setArtifactType(IArtifactType artifactType) {
       if (!this.artifactType.equals(artifactType)) {
-         objectEditState = EditState.ARTIFACT_TYPE_MODIFIED;
          getOrcsData().setTypeUuid(artifactType.getGuid());
+
+         objectEditState = EditState.ARTIFACT_TYPE_MODIFIED;
          if (getOrcsData().getVersion().isInStorage()) {
             //            lastValidModType = modType;
             getOrcsData().setModType(ModificationType.MODIFIED);
@@ -110,7 +111,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWritea
 
    @Override
    public boolean isOfType(IArtifactType... otherTypes) {
-      return artifactType.inheritsFrom(otherTypes);
+      return getArtifactType().inheritsFrom(otherTypes);
    }
 
    @Override
@@ -126,11 +127,6 @@ public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWritea
       return objectEditState.isArtifactTypeChange();
    }
 
-   public final boolean hasDirtyRelations() {
-      //TX_TODO: Implement this
-      return false;
-   }
-
    @Override
    public boolean isDeleted() {
       return getModificationType().isDeleted();
@@ -138,17 +134,22 @@ public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWritea
 
    @Override
    public boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException {
-      return artifactType.isValidAttributeType(attributeType, branch);
+      return getArtifactType().isValidAttributeType(attributeType, branch);
    }
 
    @Override
    public Collection<? extends IAttributeType> getValidAttributeTypes() throws OseeCoreException {
-      return artifactType.getAttributeTypes(branch);
+      return getArtifactType().getAttributeTypes(branch);
    }
 
    @Override
    public String getExceptionString() {
       return String.format("artifact type [%s] guid[%s] on branch[%s]", getArtifactType(), getGuid(), getBranch());
+   }
+
+   public final boolean hasDirtyRelations() {
+      //TX_TODO: Implement this
+      return false;
    }
 
 }

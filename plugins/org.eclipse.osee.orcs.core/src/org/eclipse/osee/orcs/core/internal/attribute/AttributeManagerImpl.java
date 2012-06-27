@@ -32,7 +32,9 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
+import org.eclipse.osee.orcs.core.ds.HasOrcsData;
 import org.eclipse.osee.orcs.core.internal.artifact.AttributeManager;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.AttributeWriteable;
@@ -40,7 +42,7 @@ import org.eclipse.osee.orcs.data.AttributeWriteable;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AttributeManagerImpl extends AbstractIdentity<String> implements AttributeManager, AttributeOwner, AttributeExceptionFactory {
+public abstract class AttributeManagerImpl extends AbstractIdentity<String> implements HasOrcsData<ArtifactData>, AttributeManager, AttributeExceptionFactory {
 
    private final AttributeSetHelper<Object, String> ATTRIBUTE_STRING_SETTER = new FromStringAttributeSetHelper();
 

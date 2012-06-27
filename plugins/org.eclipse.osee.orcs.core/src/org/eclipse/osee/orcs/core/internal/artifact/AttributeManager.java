@@ -14,8 +14,7 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.Identity;
-import org.eclipse.osee.framework.core.data.Named;
+import org.eclipse.osee.framework.core.data.Identifiable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
@@ -25,7 +24,7 @@ import org.eclipse.osee.orcs.data.AttributeWriteable;
 /**
  * @author Roberto E. Escobar
  */
-public interface AttributeManager extends Named, Identity<String> {
+public interface AttributeManager extends Identifiable {
 
    void setBackingData(List<AttributeData> data) throws OseeCoreException;
 
@@ -36,6 +35,11 @@ public interface AttributeManager extends Named, Identity<String> {
    boolean isLoaded();
 
    void setLoaded(boolean value) throws OseeCoreException;
+
+   String getExceptionString();
+
+   @Override
+   String toString();
 
    /////////////////////////////////////////////////////////////////
 
