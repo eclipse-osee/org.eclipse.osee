@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({PurgeBranchTest.class, DeletedBranchProviderTest.class, MultiBranchProviderTest.class})
+@Suite.SuiteClasses({DeletedBranchProviderTest.class, MultiBranchProviderTest.class})
 /**
  * @author John R. Misinco
  */

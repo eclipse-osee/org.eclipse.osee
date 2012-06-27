@@ -31,9 +31,9 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
-import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.HasOrcsData;
 import org.eclipse.osee.orcs.core.internal.artifact.AttributeManager;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -57,9 +57,8 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
       this.attributes = new AttributeCollection(this);
    }
 
-   @Override
-   public void setBackingData(List<AttributeData> data) throws OseeCoreException {
-      attributes.setBackingData(data);
+   protected List<Attribute<?>> getAllAttributes() {
+      return attributes.getAllAttributes();
    }
 
    @Override
@@ -86,29 +85,20 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
    }
 
    @Override
-   public List<AttributeWriteable<Object>> getAttributesDirty() {
-      List<Attribute<Object>> items = attributes.getAttributesDirty();
-      return asWriteable(items);
-
+   public List<Attribute<Object>> getAttributesDirty() throws OseeCoreException {
+      return attributes.getAttributeListDirties();
    }
 
    @Override
-   public void setAttributesToNotDirty() {
-      for (Attribute<?> attribute : attributes.getAllAttributes()) {
+   public void setAttributesNotDirty() {
+      for (Attribute<?> attribute : getAllAttributes()) {
          attribute.clearDirty();
       }
    }
 
    @Override
    public boolean areAttributesDirty() {
-      boolean result = false;
-      for (Attribute<?> attribute : attributes.getAllAttributes()) {
-         if (attribute.isDirty()) {
-            result = true;
-            break;
-         }
-      }
-      return result;
+      return attributes.hasAttributesDirty();
    }
 
    @Override
@@ -156,13 +146,13 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
    @Override
    public List<AttributeReadable<Object>> getAttributes() throws OseeCoreException {
       List<Attribute<Object>> items = getAttributesExcludeDeleted();
-      return asReadable(items);
+      return Collections.castAll(items);
    }
 
    @Override
    public <T> List<AttributeReadable<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException {
       List<Attribute<T>> items = getAttributesExcludeDeleted(attributeType);
-      return asReadable(items);
+      return Collections.castAll(items);
    }
 
    @Override
@@ -182,13 +172,13 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
    @Override
    public <T> List<AttributeWriteable<T>> getWriteableAttributes() throws OseeCoreException {
       List<Attribute<T>> items = getAttributesExcludeDeleted();
-      return asWriteable(items);
+      return Collections.castAll(items);
    }
 
    @Override
    public <T> List<AttributeWriteable<T>> getWriteableAttributes(IAttributeType attributeType) throws OseeCoreException {
       List<Attribute<T>> items = getAttributesExcludeDeleted(attributeType);
-      return asWriteable(items);
+      return Collections.castAll(items);
    }
 
    @Override
@@ -314,23 +304,23 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
 
    @Override
    public void createAttribute(IAttributeType attributeType) throws OseeCoreException {
-      createAttributeHelper(attributeType);
+      internalCreateAttributeHelper(attributeType);
    }
 
    @Override
    public <T> void createAttribute(IAttributeType attributeType, T value) throws OseeCoreException {
-      Attribute<T> attribute = createAttributeHelper(attributeType);
+      Attribute<T> attribute = internalCreateAttributeHelper(attributeType);
       attribute.setValue(value);
    }
 
    @Override
    public void createAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException {
-      Attribute<Object> attribute = createAttributeHelper(attributeType);
+      Attribute<Object> attribute = internalCreateAttributeHelper(attributeType);
       attribute.setFromString(value);
    }
 
    //////////////////////////////////////////////////////////////
-   private <T> Attribute<T> createAttributeHelper(IAttributeType attributeType) throws OseeCoreException {
+   public <T> Attribute<T> internalCreateAttributeHelper(IAttributeType attributeType) throws OseeCoreException {
       checkTypeValid(attributeType);
       checkMultiplicityCanAdd(attributeType);
       return attributeFactory.createAttribute(this, getOrcsData(), attributeType);
@@ -341,7 +331,7 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
       ResultSet<Attribute<T>> result = attributes.getAttributeSet(attributeType, DeletionFlag.EXCLUDE_DELETED);
       Attribute<T> attribute = result.getAtMostOneOrNull();
       if (attribute == null) {
-         attribute = createAttributeHelper(attributeType);
+         attribute = internalCreateAttributeHelper(attributeType);
       }
       return attribute;
    }
@@ -438,7 +428,7 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
       @Override
       public void createAttribute(IAttributeType attributeType, T value) throws OseeCoreException {
          ResultSet<Attribute<T>> result =
-            attributes.getAttributeSet(attributeType, DeletionFlag.EXCLUDE_DELETED, value);
+            attributes.getAttributeSetFromValue(attributeType, DeletionFlag.EXCLUDE_DELETED, value);
          if (result.getOneOrNull() == null) {
             createAttribute(attributeType, value);
          }
@@ -549,23 +539,6 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
    }
 
    //////////////////////////////////////////////////////////////
-   private <T> List<AttributeReadable<T>> asReadable(List<Attribute<T>> items) {
-      List<AttributeReadable<T>> toReturn = new LinkedList<AttributeReadable<T>>();
-      for (Attribute<T> attribute : items) {
-         AttributeReadable<T> data = attributeFactory.asAttributeReadable(attribute);
-         toReturn.add(data);
-      }
-      return toReturn;
-   }
-
-   private <T> List<AttributeWriteable<T>> asWriteable(List<Attribute<T>> items) {
-      List<AttributeWriteable<T>> toReturn = new LinkedList<AttributeWriteable<T>>();
-      for (Attribute<T> attribute : items) {
-         AttributeWriteable<T> data = attributeFactory.asAttributeWritable(attribute);
-         toReturn.add(data);
-      }
-      return toReturn;
-   }
 
    @Override
    public MultipleAttributesExist createManyExistException(IAttributeType type, int count) {

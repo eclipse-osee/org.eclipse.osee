@@ -21,11 +21,14 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
+import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeManagerImpl;
+import org.eclipse.osee.orcs.core.internal.relation.HasRelationContainer;
+import org.eclipse.osee.orcs.core.internal.relation.RelationContainer;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
 
-public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWriteable {
+public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWriteable, HasRelationContainer, ArtifactVisitable {
 
    private final RelationContainer relationContainer;
    private final ArtifactType artifactType;
@@ -42,6 +45,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWritea
       this.objectEditState = EditState.NO_CHANGE;
    }
 
+   @Override
    public RelationContainer getRelationContainer() {
       return relationContainer;
    }
@@ -77,13 +81,13 @@ public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWritea
    }
 
    @Override
-   public IOseeBranch getBranch() {
-      return branch;
+   public int getTransactionId() {
+      return getOrcsData().getVersion().getTransactionId();
    }
 
    @Override
-   public int getTransactionId() {
-      return getOrcsData().getVersion().getTransactionId();
+   public IOseeBranch getBranch() {
+      return branch;
    }
 
    @Override
@@ -98,7 +102,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWritea
 
    @Override
    public void setArtifactType(IArtifactType artifactType) {
-      if (!this.artifactType.equals(artifactType)) {
+      if (!getArtifactType().equals(artifactType)) {
          getOrcsData().setTypeUuid(artifactType.getGuid());
 
          objectEditState = EditState.ARTIFACT_TYPE_MODIFIED;
@@ -115,15 +119,15 @@ public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWritea
    }
 
    @Override
-   public final boolean isDirty() {
+   public boolean isDirty() {
       return areAttributesDirty() || hasDirtyRelations() || hasDirtyArtifactType() || isReplaceWithVersion();
    }
 
-   private final boolean isReplaceWithVersion() {
+   private boolean isReplaceWithVersion() {
       return getModificationType() == ModificationType.REPLACED_WITH_VERSION;
    }
 
-   private final boolean hasDirtyArtifactType() {
+   private boolean hasDirtyArtifactType() {
       return objectEditState.isArtifactTypeChange();
    }
 
@@ -147,9 +151,18 @@ public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWritea
       return String.format("artifact type [%s] guid[%s] on branch[%s]", getArtifactType(), getGuid(), getBranch());
    }
 
-   public final boolean hasDirtyRelations() {
+   public boolean hasDirtyRelations() {
       //TX_TODO: Implement this
       return false;
    }
 
+   @Override
+   public void accept(ArtifactVisitor visitor) throws OseeCoreException {
+      visitor.visit(this);
+      for (Attribute<?> attribute : getAllAttributes()) {
+         visitor.visit(attribute);
+      }
+      // TX_TODO loop through relations
+
+   }
 }

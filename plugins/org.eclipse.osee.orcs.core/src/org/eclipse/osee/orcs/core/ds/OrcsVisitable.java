@@ -8,22 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.internal;
+package org.eclipse.osee.orcs.core.ds;
 
-public abstract class AbstractProxy<T> {
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
-   private T proxied;
+/**
+ * @author Roberto E. Escobar
+ */
+public interface OrcsVisitable {
 
-   protected AbstractProxy(T proxied) {
-      setProxiedObject(proxied);
-   }
-
-   public void setProxiedObject(T proxied) {
-      this.proxied = proxied;
-   }
-
-   public T getProxiedObject() {
-      return proxied;
-   }
+   void accept(OrcsVisitor visitor) throws OseeCoreException;
 
 }

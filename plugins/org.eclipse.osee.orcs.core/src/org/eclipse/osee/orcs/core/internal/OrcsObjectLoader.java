@@ -10,34 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
-import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
-import org.eclipse.osee.orcs.core.ds.AttributeDataHandlerFactory;
+import org.eclipse.osee.orcs.core.ds.ArtifactBuilder;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
-import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
-import org.eclipse.osee.orcs.core.ds.RelationDataHandlerFactory;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactCollector;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactRowMapper;
-import org.eclipse.osee.orcs.core.internal.artifact.AttributeManager;
-import org.eclipse.osee.orcs.core.internal.artifact.RelationContainer;
-import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
-import org.eclipse.osee.orcs.core.internal.attribute.AttributeRowMapper;
-import org.eclipse.osee.orcs.core.internal.relation.RelationRowMapper;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -47,18 +30,13 @@ public class OrcsObjectLoader {
 
    private final DataLoader dataLoader;
    private final Log logger;
-   private final BranchCache branchCache;
-   private final ArtifactFactory artifactFactory;
-   private final AttributeFactory attributeFactory;
+   private final ArtifactBuilderFactory builderFactory;
 
-   public OrcsObjectLoader(Log logger, DataLoader dataLoader, ArtifactFactory artifactFactory, AttributeFactory attributeFactory, BranchCache branchCache) {
+   public OrcsObjectLoader(Log logger, DataLoader dataLoader, ArtifactBuilderFactory builderFactory) {
       super();
       this.logger = logger;
       this.dataLoader = dataLoader;
-      this.artifactFactory = artifactFactory;
-      this.attributeFactory = attributeFactory;
-
-      this.branchCache = branchCache;
+      this.builderFactory = builderFactory;
    }
 
    public int countObjects(HasCancellation cancellation, QueryContext queryContext) throws OseeCoreException {
@@ -82,19 +60,12 @@ public class OrcsObjectLoader {
          startTime = System.currentTimeMillis();
       }
 
-      List<ArtifactReadable> artifacts = new ArrayList<ArtifactReadable>();
-
-      ArtifactCollectorImpl artifactHandler =
-         new ArtifactCollectorImpl(logger, artifactFactory, attributeFactory, artifacts);
-
-      ArtifactDataHandler artifactRowHandler = new ArtifactRowMapper(sessionContext, artifactFactory, artifactHandler);
-
-      dataLoader.loadArtifacts(cancellation, artifactRowHandler, branchCache.getLocalId(branch), ids, loadOptions,
-         artifactHandler, artifactHandler);
+      ArtifactBuilder builder = builderFactory.createArtifactBuilder(sessionContext);
+      dataLoader.loadArtifacts(cancellation, builder, branch, ids, loadOptions);
       if (logger.isTraceEnabled()) {
          logger.trace("Objects from ids loaded in [%s]", Lib.getElapseString(startTime));
       }
-      return artifacts;
+      return builder.getArtifacts();
    }
 
    public List<ArtifactReadable> load(HasCancellation cancellation, QueryContext queryContext, LoadOptions loadOptions, SessionContext sessionContext) throws OseeCoreException {
@@ -102,61 +73,13 @@ public class OrcsObjectLoader {
       if (logger.isTraceEnabled()) {
          startTime = System.currentTimeMillis();
       }
-
-      List<ArtifactReadable> artifacts = new ArrayList<ArtifactReadable>();
-
-      ArtifactCollectorImpl artifactHandler =
-         new ArtifactCollectorImpl(logger, artifactFactory, attributeFactory, artifacts);
-
-      ArtifactDataHandler artifactRowHandler = new ArtifactRowMapper(sessionContext, artifactFactory, artifactHandler);
-
-      dataLoader.loadArtifacts(cancellation, artifactRowHandler, queryContext, loadOptions, artifactHandler,
-         artifactHandler);
+      ArtifactBuilder builder = builderFactory.createArtifactBuilder(sessionContext);
+      dataLoader.loadArtifacts(cancellation, builder, queryContext, loadOptions);
 
       if (logger.isTraceEnabled()) {
          logger.trace("Objects from query loaded in [%s]", Lib.getElapseString(startTime));
       }
-      return artifacts;
-   }
-
-   private static class ArtifactCollectorImpl implements ArtifactCollector, RelationDataHandlerFactory, AttributeDataHandlerFactory {
-
-      private final Map<Integer, RelationContainer> relationContainers = new HashMap<Integer, RelationContainer>();;
-      private final Map<Integer, AttributeManager> attributeContainers = new HashMap<Integer, AttributeManager>();
-
-      private final List<ArtifactReadable> artifacts;
-
-      private final Log logger;
-      private final AttributeFactory attributeFactory;
-      private final ArtifactFactory artifactFactory;
-
-      public ArtifactCollectorImpl(Log logger, ArtifactFactory artifactFactory, AttributeFactory attributeFactory, List<ArtifactReadable> artifacts) {
-         this.logger = logger;
-         this.artifactFactory = artifactFactory;
-         this.attributeFactory = attributeFactory;
-         this.artifacts = artifacts;
-      }
-
-      @Override
-      public AttributeDataHandler createAttributeDataHandler() {
-         return new AttributeRowMapper(logger, attributeFactory, attributeContainers);
-      }
-
-      @Override
-      public RelationDataHandler createRelationDataHandler() {
-         return new RelationRowMapper(relationContainers);
-      }
-
-      @Override
-      public void onArtifact(ArtifactReadable artifact, LoadSourceType loadSourceType) {
-         artifacts.add(artifact);
-
-         ArtifactImpl artifactImpl = artifactFactory.asArtifactImpl(artifact);
-         RelationContainer relContainer = artifactImpl.getRelationContainer();
-
-         attributeContainers.put(artifact.getLocalId(), artifactImpl);
-         relationContainers.put(artifact.getLocalId(), relContainer);
-      }
+      return builder.getArtifacts();
    }
 
 }

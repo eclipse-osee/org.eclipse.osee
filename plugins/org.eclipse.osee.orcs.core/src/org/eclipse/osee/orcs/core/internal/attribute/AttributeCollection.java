@@ -13,22 +13,24 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.orcs.core.ds.AttributeData;
+import org.eclipse.osee.orcs.core.internal.attribute.AttributeDirtyFilter.DirtyFlag;
 
 /**
  * @author Roberto E. Escobar
  */
 public class AttributeCollection {
+
+   private static final AttributeFilter FILTER_NONE_DIRTY = new AttributeDirtyFilter(DirtyFlag.DIRTY);
+   private static final AttributeFilter INCLUDE_DELETED = new AttributeDeletedFilter(DeletionFlag.INCLUDE_DELETED);
+   private static final AttributeFilter EXCLUDE_DELETED = new AttributeDeletedFilter(DeletionFlag.EXCLUDE_DELETED);
 
    private final HashCollection<IAttributeType, Attribute<?>> attributes =
       new HashCollection<IAttributeType, Attribute<?>>(false, LinkedList.class, 12);
@@ -38,17 +40,6 @@ public class AttributeCollection {
    public AttributeCollection(AttributeExceptionFactory exceptionFactory) {
       super();
       this.exceptionFactory = exceptionFactory;
-   }
-
-   public void setBackingData(List<AttributeData> datas) {
-      Map<Integer, Attribute<?>> attrById = new HashMap<Integer, Attribute<?>>();
-      for (Attribute<?> attribute : attributes.getValues()) {
-         attrById.put(attribute.getId(), attribute);
-      }
-      for (AttributeData data : datas) {
-         Attribute<?> attribute = attrById.get(data.getLocalId());
-         attribute.setOrcsData(data);
-      }
    }
 
    public void addAttribute(IAttributeType type, Attribute<?> attribute) {
@@ -63,29 +54,6 @@ public class AttributeCollection {
       return attributes.getValues();
    }
 
-   @SuppressWarnings({"rawtypes", "unchecked"})
-   public List<Attribute<Object>> getAttributesDirty() {
-      List<Attribute<Object>> toReturn = new ArrayList<Attribute<Object>>();
-      for (Attribute attribute : getAllAttributes()) {
-         if (attribute.isDirty()) {
-            toReturn.add(attribute);
-         }
-      }
-      return toReturn;
-   }
-
-   public <T> ResultSet<Attribute<T>> getAttributeSetFromString(IAttributeType attributeType, DeletionFlag includeDeleted, String value) throws OseeCoreException {
-      AttributeFilter filter = new AttributeModTypeFilter(includeDeleted);
-      filter = filter.and(new AttributeFromStringFilter(value));
-      return getSetByFilter(attributes.getValues(attributeType), filter);
-   }
-
-   public <T> ResultSet<Attribute<T>> getAttributeSet(IAttributeType attributeType, DeletionFlag includeDeleted, T value) throws OseeCoreException {
-      AttributeFilter filter = new AttributeModTypeFilter(includeDeleted);
-      filter = filter.and(new AttributeValueFilter<T>(value));
-      return getSetByFilter(attributes.getValues(attributeType), filter);
-   }
-
    public Collection<AttributeType> getExistingTypes(DeletionFlag includeDeleted) throws OseeCoreException {
       List<AttributeType> toReturn = new ArrayList<AttributeType>();
       for (Attribute<?> attribute : getAttributeList(includeDeleted)) {
@@ -93,6 +61,16 @@ public class AttributeCollection {
       }
       return toReturn;
    }
+
+   public List<Attribute<Object>> getAttributeListDirties() throws OseeCoreException {
+      return getListByFilter(attributes.getValues(), FILTER_NONE_DIRTY);
+   }
+
+   public boolean hasAttributesDirty() {
+      return hasItemMatchingFilter(attributes.getValues(), FILTER_NONE_DIRTY);
+   }
+
+   //////////////////////////////////////////////////////////////
 
    public <T> ResultSet<Attribute<T>> getAttributeSet(IAttributeType attributeType, DeletionFlag includeDeleted) throws OseeCoreException {
       List<Attribute<T>> result = getListByFilter(attributes.getValues(attributeType), includeDeleted);
@@ -103,9 +81,23 @@ public class AttributeCollection {
       return getSetByFilter(attributes.getValues(), includeDeleted);
    }
 
-   private <T> ResultSet<Attribute<T>> getSetByFilter(Collection<Attribute<?>> source, DeletionFlag includeDeleted) throws OseeCoreException {
-      return getSetByFilter(source, new AttributeModTypeFilter(includeDeleted));
+   public <T> ResultSet<Attribute<T>> getAttributeSetFromString(IAttributeType attributeType, DeletionFlag includeDeleted, String value) throws OseeCoreException {
+      AttributeFilter filter = new AttributeDeletedFilter(includeDeleted);
+      filter = filter.and(new AttributeFromStringFilter(value));
+      return getSetByFilter(attributes.getValues(attributeType), filter);
    }
+
+   public <T> ResultSet<Attribute<T>> getAttributeSetFromValue(IAttributeType attributeType, DeletionFlag includeDeleted, T value) throws OseeCoreException {
+      AttributeFilter filter = new AttributeDeletedFilter(includeDeleted);
+      filter = filter.and(new AttributeValueFilter<T>(value));
+      return getSetByFilter(attributes.getValues(attributeType), filter);
+   }
+
+   private <T> ResultSet<Attribute<T>> getSetByFilter(Collection<Attribute<?>> source, DeletionFlag includeDeleted) throws OseeCoreException {
+      return getSetByFilter(source, DeletionFlag.INCLUDE_DELETED == includeDeleted ? INCLUDE_DELETED : EXCLUDE_DELETED);
+   }
+
+   //////////////////////////////////////////////////////////////
 
    public <T> List<Attribute<T>> getAttributeList(IAttributeType attributeType, DeletionFlag includeDeleted) throws OseeCoreException {
       return getListByFilter(attributes.getValues(attributeType), includeDeleted);
@@ -116,8 +108,10 @@ public class AttributeCollection {
    }
 
    private <T> List<Attribute<T>> getListByFilter(Collection<Attribute<?>> source, DeletionFlag includeDeleted) throws OseeCoreException {
-      return getListByFilter(source, new AttributeModTypeFilter(includeDeleted));
+      return getListByFilter(source, DeletionFlag.INCLUDE_DELETED == includeDeleted ? INCLUDE_DELETED : EXCLUDE_DELETED);
    }
+
+   //////////////////////////////////////////////////////////////
 
    private <T> AttributeResultSet<T> getSetByFilter(Collection<Attribute<?>> source, AttributeFilter filter) throws OseeCoreException {
       List<Attribute<T>> values = getListByFilter(source, filter);
@@ -138,6 +132,23 @@ public class AttributeCollection {
          toReturn = Collections.emptyList();
       }
       return toReturn;
+   }
+
+   private boolean hasItemMatchingFilter(Collection<Attribute<?>> source, AttributeFilter filter) {
+      boolean result = false;
+      if (source != null && !source.isEmpty()) {
+         for (Attribute<?> attribute : source) {
+            try {
+               if (filter.accept(attribute)) {
+                  result = true;
+                  break;
+               }
+            } catch (OseeCoreException ex) {
+               // do nothing
+            }
+         }
+      }
+      return result;
    }
 
 }

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.internal.artifact;
+package org.eclipse.osee.orcs.core.internal.relation;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;

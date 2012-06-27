@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
-import org.eclipse.osee.orcs.core.internal.artifact.RelationContainer;
 
 /**
  * @author Andrew M. Finkbeiner

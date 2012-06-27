@@ -124,7 +124,7 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
       OrcsObjectFactory rowDataFactory =
          dataModuleFactory.createOrcsObjectFactory(proxyProvider, cacheService.getAttributeTypeCache());
       dataFactory = dataModuleFactory.createDataFactory(rowDataFactory, idFactory, cacheService.getArtifactTypeCache());
-      dataLoader = dataModuleFactory.createDataLoader(sqlProvider, rowDataFactory);
+      dataLoader = dataModuleFactory.createDataLoader(sqlProvider, idFactory, rowDataFactory);
 
       QueryModuleFactory factory = new QueryModuleFactory(logger, dbService, identityService, executorAdmin);
       TaggingEngine taggingEngine = factory.createTaggingEngine(cacheService.getAttributeTypeCache());

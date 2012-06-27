@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({QueryFactoryTest.class, QueryStatisticsTest.class})
+@Suite.SuiteClasses({QueryStatisticsTest.class})
 public class QueryTestSuite {
    // Test Suite
 }

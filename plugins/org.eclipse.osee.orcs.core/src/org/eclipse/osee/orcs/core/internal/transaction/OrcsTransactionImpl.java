@@ -12,11 +12,8 @@ package org.eclipse.osee.orcs.core.internal.transaction;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -31,7 +28,7 @@ import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
+import org.eclipse.osee.orcs.core.internal.proxy.ArtifactProxyFactory;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
 import org.eclipse.osee.orcs.data.GraphReadable;
@@ -43,21 +40,25 @@ import org.eclipse.osee.orcs.transaction.OrcsTransaction;
  */
 public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
 
+   @SuppressWarnings("unused")
    private final Log logger;
-   private final IOseeBranch branch;
    private final BranchDataStore dataStore;
-   private final ArtifactFactory artifactFactory;
+   private final ArtifactProxyFactory factory;
 
+   private final IOseeBranch branch;
    private String comment;
    private ArtifactReadable authorArtifact;
-   private final Map<String, ArtifactWriteable> writeableArtifacts = new ConcurrentHashMap<String, ArtifactWriteable>();
+
+   private final TxDataManager manager;
+
    private volatile boolean isCommitInProgress;
 
-   public OrcsTransactionImpl(Log logger, SessionContext sessionContext, BranchDataStore dataStore, ArtifactFactory artifactFactory, IOseeBranch branch) {
+   public OrcsTransactionImpl(Log logger, SessionContext sessionContext, BranchDataStore dataStore, ArtifactProxyFactory factory, TxDataManager manager, IOseeBranch branch) {
       super();
       this.logger = logger;
       this.dataStore = dataStore;
-      this.artifactFactory = artifactFactory;
+      this.factory = factory;
+      this.manager = manager;
       this.branch = branch;
    }
 
@@ -81,36 +82,26 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
    }
 
    @Override
-   public List<ArtifactTransactionData> getArtifactTransactionData() throws OseeCoreException {
-      List<ArtifactTransactionData> data = new LinkedList<ArtifactTransactionData>();
-      for (ArtifactWriteable writeable : writeableArtifacts.values()) {
-         data.add(artifactFactory.getChangeData(writeable));
-      }
-      return data;
+   public List<ArtifactTransactionData> getTxData() throws OseeCoreException {
+      return manager.getChanges();
    }
 
-   private void startCommit() {
+   protected void startCommit() throws OseeCoreException {
       isCommitInProgress = true;
-      for (ArtifactWriteable writeable : writeableArtifacts.values()) {
-         artifactFactory.setEditState(writeable, false);
-      }
+      manager.onCommitStart();
    }
 
-   private void rollback() {
-      for (ArtifactWriteable writeable : writeableArtifacts.values()) {
-         artifactFactory.setEditState(writeable, true);
-      }
+   private void rollback() throws OseeCoreException {
+      manager.onCommitRollback();
    }
 
    private void commitSuccess(TransactionResult result) throws OseeCoreException {
-      for (ArtifactTransactionData txData : result.getData()) {
-         ArtifactWriteable writeable = writeableArtifacts.get(txData.getGuid());
-         artifactFactory.setBackingData(writeable, txData);
-      }
+      manager.onCommitSuccess(result);
    }
 
-   private void closeCommit() {
+   private void endCommit() throws OseeCoreException {
       isCommitInProgress = false;
+      manager.onCommitEnd();
    }
 
    @Override
@@ -129,10 +120,16 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
          commitSuccess(result);
          transaction = result.getTransaction();
       } catch (Exception ex) {
-         rollback();
-         OseeExceptions.wrapAndThrow(ex);
+         Exception toThrow = ex;
+         try {
+            rollback();
+         } catch (Exception ex2) {
+            toThrow = new OseeCoreException("Exception during rollback and commit", ex);
+         } finally {
+            OseeExceptions.wrapAndThrow(toThrow);
+         }
       } finally {
-         closeCommit();
+         endCommit();
       }
       return transaction;
    }
@@ -142,19 +139,13 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
       return branch;
    }
 
-   private synchronized void addWriteable(ArtifactWriteable writeable) {
-      writeableArtifacts.put(writeable.getGuid(), writeable);
+   private void addWriteable(ArtifactWriteable writeable) throws OseeCoreException {
+      manager.addWrite(writeable);
    }
 
    @Override
-   public synchronized ArtifactWriteable asWritable(ArtifactReadable readable) throws OseeCoreException {
-      String guid = readable.getGuid();
-      ArtifactWriteable toReturn = writeableArtifacts.get(guid);
-      if (toReturn == null) {
-         toReturn = artifactFactory.asWriteableArtifact(readable);
-         addWriteable(toReturn);
-      }
-      return toReturn;
+   public ArtifactWriteable asWritable(ArtifactReadable readable) throws OseeCoreException {
+      return manager.getOrAddWrite(readable);
    }
 
    @Override
@@ -168,22 +159,21 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
 
    @Override
    public ArtifactWriteable createArtifact(IArtifactType artifactType, String name, String guid) throws OseeCoreException {
-      ArtifactWriteable artifact = artifactFactory.createWriteableArtifact(getBranch(), artifactType, guid);
-      artifact.setName(name);
+      ArtifactWriteable artifact = factory.create(getBranch(), artifactType, guid, name);
       addWriteable(artifact);
       return artifact;
    }
 
    @Override
    public ArtifactWriteable duplicateArtifact(ArtifactReadable source, Collection<? extends IAttributeType> types) throws OseeCoreException {
-      ArtifactWriteable toReturn = artifactFactory.copyArtifact(source, types, getBranch());
+      ArtifactWriteable toReturn = factory.copy(source, types, getBranch());
       addWriteable(toReturn);
       return toReturn;
    }
 
    @Override
    public ArtifactWriteable introduceArtifact(ArtifactReadable source) throws OseeCoreException {
-      ArtifactWriteable toReturn = artifactFactory.introduceArtifact(source, getBranch());
+      ArtifactWriteable toReturn = factory.introduce(source, getBranch());
       addWriteable(toReturn);
       return toReturn;
    }

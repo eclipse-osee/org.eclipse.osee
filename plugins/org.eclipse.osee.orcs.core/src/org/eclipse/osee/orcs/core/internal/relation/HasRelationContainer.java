@@ -8,16 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.loader;
+package org.eclipse.osee.orcs.core.internal.relation;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 
 /**
- * @author Roberto E. Escobar
+ * @author Andrew M. Finkbeiner
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ArtifactLoaderTest.class, AttributeLoaderTest.class, RelationLoaderTest.class})
-public class LoaderTestSuite {
-   // Test Suite
+public interface HasRelationContainer {
+
+   RelationContainer getRelationContainer();
 }

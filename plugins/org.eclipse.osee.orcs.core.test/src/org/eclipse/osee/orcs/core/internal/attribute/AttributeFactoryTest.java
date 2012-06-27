@@ -10,19 +10,33 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import java.lang.ref.WeakReference;
+import junit.framework.Assert;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.AttributeDataFactory;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
+import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
 import org.eclipse.osee.orcs.core.ds.VersionData;
+import org.eclipse.osee.orcs.core.internal.artifact.AttributeManager;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -33,66 +47,172 @@ import org.mockito.MockitoAnnotations;
  */
 public class AttributeFactoryTest {
 
-   @Mock
-   private Log logger;
-   @Mock
-   private AttributeTypeCache cache;
-   @Mock
-   private AttributeType attrType;
-   @Mock
-   private AttributeClassResolver resolver;
-   @Mock
-   private AttributeDataFactory dataFactory;
-   //   @Mock
-   //   private AttributeContainer container;
-   @Mock
-   private AttributeData data;
-   @Mock
-   private DataProxy proxy;
-   @Mock
-   private Attribute<Object> attr;
+   @Rule
+   public ExpectedException thrown = ExpectedException.none();
+
+   // @formatter:off
+   @Mock private AttributeClassResolver classResolver;
+   @Mock private AttributeTypeCache cache;
+   @Mock private AttributeDataFactory dataFactory;
+   
+   @Mock private AttributeData attributeData;
+   @Mock private VersionData attrVersionData;
+   
+   @Mock private AttributeType attributeType;
+   @Mock private Attribute<Object> attribute;
+
+   @Mock private AttributeManager container;
+   @Mock private DataProxy proxy;
+   // @formatter:on
 
    private AttributeFactory factory;
+   private long expectedGuid;
+   private final IOseeBranch branch = CoreBranches.COMMON;
 
    @Before
-   public void initMocks() throws OseeCoreException {
+   public void init() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
-      when(cache.getByGuid(anyLong())).thenReturn(attrType);
-      when(resolver.createAttribute(any(AttributeType.class))).thenReturn(attr);
-      when(data.getDataProxy()).thenReturn(proxy);
-      factory = new AttributeFactory(logger, resolver, cache, dataFactory);
+
+      factory = new AttributeFactory(classResolver, cache, dataFactory);
+
+      expectedGuid = CoreAttributeTypes.Name.getGuid();
+
+      when(attributeData.getTypeUuid()).thenReturn(expectedGuid);
+      when(cache.getByGuid(expectedGuid)).thenReturn(attributeType);
+      when(classResolver.createAttribute(attributeType)).thenReturn(attribute);
+      when(attributeData.getDataProxy()).thenReturn(proxy);
    }
 
+   @Test
+   public void testCreateAttributeNullType() throws OseeCoreException {
+      when(cache.getByGuid(expectedGuid)).thenReturn(null);
+
+      thrown.expect(OseeArgumentException.class);
+      thrown.expectMessage("attributeType cannot be null - Cannot find attribute type with uuid[" + expectedGuid + "]");
+      factory.createAttribute(container, attributeData);
+   }
+
+   @SuppressWarnings({"unchecked", "rawtypes"})
    @Test
    public void testCreateAttribute() throws OseeCoreException {
-      //      factory.createAttribute(container, data);
-      //      verify(container).add(attrType, attr);
+      ArgumentCaptor<ResourceNameResolver> resolverCapture = ArgumentCaptor.forClass(ResourceNameResolver.class);
+      ArgumentCaptor<WeakReference> refCapture = ArgumentCaptor.forClass(WeakReference.class);
+
+      Attribute<Object> actual = factory.createAttribute(container, attributeData);
+
+      Assert.assertTrue(attribute == actual);
+
+      verify(proxy).setResolver(resolverCapture.capture());
+      verify(attribute).internalInitialize(refCapture.capture(), eq(attributeData), eq(attributeType), eq(false),
+         eq(false));
+      verify(container).add(attributeType, attribute);
+      Assert.assertEquals(container, refCapture.getValue().get());
+
    }
 
+   @SuppressWarnings({"unchecked", "rawtypes"})
+   @Test
+   public void testCreateAttributeFromArtifactDataAndType() throws OseeCoreException {
+      ArtifactData artifactData = mock(ArtifactData.class);
+      VersionData artVersionData = mock(VersionData.class);
+
+      when(dataFactory.create(artifactData, attributeType)).thenReturn(attributeData);
+      when(attributeData.getVersion()).thenReturn(attrVersionData);
+      when(artifactData.getVersion()).thenReturn(artVersionData);
+      when(artVersionData.getBranchId()).thenReturn(45);
+
+      ArgumentCaptor<ResourceNameResolver> resolverCapture = ArgumentCaptor.forClass(ResourceNameResolver.class);
+      ArgumentCaptor<WeakReference> refCapture = ArgumentCaptor.forClass(WeakReference.class);
+
+      Attribute<Object> actual = factory.createAttribute(container, artifactData, attributeType);
+
+      verify(dataFactory).create(artifactData, attributeType);
+      verify(attrVersionData).setBranchId(45);
+      Assert.assertTrue(attribute == actual);
+
+      verify(proxy).setResolver(resolverCapture.capture());
+      verify(attribute).internalInitialize(refCapture.capture(), eq(attributeData), eq(attributeType), eq(false),
+         eq(false));
+      verify(container).add(attributeType, attribute);
+      Assert.assertEquals(container, refCapture.getValue().get());
+
+   }
+
+   @SuppressWarnings({"unchecked", "rawtypes"})
    @Test
    public void testCopyAttribute() throws OseeCoreException {
-      when(attr.getOrcsData()).thenReturn(data);
-      AttributeData copyAttrData = mock(AttributeData.class);
-      when(copyAttrData.getDataProxy()).thenReturn(proxy);
-      when(dataFactory.copy(CoreBranches.COMMON, data)).thenReturn(copyAttrData);
-      //      Attribute<?> copy = factory.copyAttribute(attr, CoreBranches.COMMON, container);
+      AttributeData copiedAttributeData = mock(AttributeData.class);
 
-      //      verify(container).add(attrType, copy);
-      verify(dataFactory).copy(CoreBranches.COMMON, data);
+      when(dataFactory.copy(branch, attributeData)).thenReturn(copiedAttributeData);
+      when(copiedAttributeData.getTypeUuid()).thenReturn(expectedGuid);
+      when(copiedAttributeData.getDataProxy()).thenReturn(proxy);
+
+      ArgumentCaptor<ResourceNameResolver> resolverCapture = ArgumentCaptor.forClass(ResourceNameResolver.class);
+      ArgumentCaptor<WeakReference> refCapture = ArgumentCaptor.forClass(WeakReference.class);
+
+      Attribute<Object> actual = factory.copyAttribute(attributeData, branch, container);
+
+      Assert.assertTrue(attribute == actual);
+
+      verify(dataFactory).copy(branch, attributeData);
+
+      verify(proxy).setResolver(resolverCapture.capture());
+      verify(attribute).internalInitialize(refCapture.capture(), eq(copiedAttributeData), eq(attributeType), eq(false),
+         eq(false));
+      verify(container).add(attributeType, attribute);
+      Assert.assertEquals(container, refCapture.getValue().get());
    }
 
    @Test
-   public void testIntroduceAttribute() throws OseeCoreException {
-      VersionData version = mock(VersionData.class);
-      AttributeData newAttrData = mock(AttributeData.class);
-      when(newAttrData.getDataProxy()).thenReturn(proxy);
-      when(attr.getOrcsData()).thenReturn(data);
-      when(data.getVersion()).thenReturn(version);
-      when(version.isInStorage()).thenReturn(true);
-      when(dataFactory.introduce(CoreBranches.COMMON, data)).thenReturn(newAttrData);
-      //      factory.introduceAttribute(attr, CoreBranches.COMMON, container);
+   public void testIntroduceAttributeNotInStorage() throws OseeCoreException {
+      when(attributeData.getVersion()).thenReturn(attrVersionData);
+      when(attrVersionData.isInStorage()).thenReturn(false);
 
-      verify(dataFactory).introduce(CoreBranches.COMMON, data);
-      //      verify(container).add(attrType, attr);
+      boolean actual = factory.introduceAttribute(attributeData, branch, container);
+      Assert.assertFalse(actual);
+   }
+
+   @SuppressWarnings({"rawtypes", "unchecked"})
+   @Test
+   public void testIntroduceAttribute() throws OseeCoreException {
+      AttributeData introducedAttributeData = mock(AttributeData.class);
+
+      when(attributeData.getVersion()).thenReturn(attrVersionData);
+      when(attrVersionData.isInStorage()).thenReturn(true);
+
+      when(dataFactory.introduce(branch, attributeData)).thenReturn(introducedAttributeData);
+      when(introducedAttributeData.getTypeUuid()).thenReturn(expectedGuid);
+      when(introducedAttributeData.getDataProxy()).thenReturn(proxy);
+
+      ArgumentCaptor<ResourceNameResolver> resolverCapture = ArgumentCaptor.forClass(ResourceNameResolver.class);
+      ArgumentCaptor<WeakReference> refCapture = ArgumentCaptor.forClass(WeakReference.class);
+
+      boolean actual = factory.introduceAttribute(attributeData, branch, container);
+      Assert.assertTrue(actual);
+
+      verify(dataFactory).introduce(branch, attributeData);
+
+      verify(proxy).setResolver(resolverCapture.capture());
+      verify(attribute).internalInitialize(refCapture.capture(), eq(introducedAttributeData), eq(attributeType),
+         eq(false), eq(false));
+      verify(container).add(attributeType, attribute);
+      Assert.assertEquals(container, refCapture.getValue().get());
+   }
+
+   @Test
+   public void testGetAttributeType() throws OseeCoreException {
+      IAttributeType token = mock(IAttributeType.class);
+
+      when(cache.get(token)).thenReturn(attributeType);
+
+      AttributeType actual = factory.getAttribeType(attributeType);
+
+      Assert.assertTrue(actual == attributeType);
+      verify(cache, times(0)).get(attributeType);
+
+      AttributeType actual1 = factory.getAttribeType(token);
+
+      Assert.assertTrue(actual1 == attributeType);
+      verify(cache).get(token);
    }
 }

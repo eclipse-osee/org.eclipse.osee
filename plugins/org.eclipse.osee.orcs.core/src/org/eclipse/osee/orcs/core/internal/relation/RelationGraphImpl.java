@@ -29,10 +29,9 @@ import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
-import org.eclipse.osee.orcs.core.internal.AbstractProxy;
 import org.eclipse.osee.orcs.core.internal.OrcsObjectLoader;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
+import org.eclipse.osee.orcs.core.internal.proxy.HasProxiedObject;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
 import org.eclipse.osee.orcs.data.GraphWriteable;
@@ -57,12 +56,15 @@ public class RelationGraphImpl implements GraphWriteable, Cloneable {
       this.relationTypeCache = relationTypeCache;
    }
 
-   @SuppressWarnings("unchecked")
-   private ArtifactImpl asArtifact(ArtifactReadable readable) {
-      ArtifactImpl toReturn = null;
-      if (readable instanceof AbstractProxy) {
-         AbstractProxy<? extends ArtifactImpl> proxy = (AbstractProxy<? extends ArtifactImpl>) readable;
-         toReturn = proxy.getProxiedObject();
+   private RelationContainer getRelationContainer(ArtifactReadable readable) {
+      RelationContainer toReturn = null;
+      Object object = readable;
+      if (object instanceof HasProxiedObject) {
+         object = ((HasProxiedObject) readable).getProxiedObject();
+      }
+      if (object instanceof HasRelationContainer) {
+         HasRelationContainer proxy = (HasRelationContainer) object;
+         toReturn = proxy.getRelationContainer();
       }
       return toReturn;
    }
@@ -74,7 +76,8 @@ public class RelationGraphImpl implements GraphWriteable, Cloneable {
    }
 
    private void loadRelatedArtifactIds(ArtifactReadable art, IRelationTypeSide relationTypeSide, Collection<Integer> results) {
-      asArtifact(art).getRelationContainer().getArtifactIds(results, relationTypeSide);
+      RelationContainer container = getRelationContainer(art);
+      container.getArtifactIds(results, relationTypeSide);
    }
 
    @Override
@@ -89,7 +92,8 @@ public class RelationGraphImpl implements GraphWriteable, Cloneable {
 
    @Override
    public Collection<IRelationTypeSide> getExistingRelationTypes(ArtifactReadable art) {
-      return asArtifact(art).getRelationContainer().getExistingRelationTypes();
+      RelationContainer container = getRelationContainer(art);
+      return container.getExistingRelationTypes();
    }
 
    @Override

@@ -87,7 +87,7 @@ public final class CommitTransactionDatabaseTxCallable extends DatabaseTxCallabl
       // 3. Don't burn transaction ID until now
       // 4.
       ////
-      List<ArtifactTransactionData> txData = transactionData.getArtifactTransactionData();
+      List<ArtifactTransactionData> txData = transactionData.getTxData();
       checkPreconditions(txData);
 
       Branch branch = branchCache.get(transactionData.getBranch());

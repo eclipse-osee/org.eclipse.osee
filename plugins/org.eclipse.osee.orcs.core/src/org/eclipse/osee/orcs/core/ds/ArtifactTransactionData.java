@@ -12,9 +12,8 @@ package org.eclipse.osee.orcs.core.ds;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.Identity;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
-public interface ArtifactTransactionData extends Identity<String> {
+public interface ArtifactTransactionData extends Identity<String>, OrcsVisitable {
 
    @Override
    String getGuid();
@@ -24,7 +23,5 @@ public interface ArtifactTransactionData extends Identity<String> {
    List<AttributeData> getAttributeData();
 
    List<RelationData> getRelationData();
-
-   void accept(OrcsVisitor visitor) throws OseeCoreException;
 
 }

@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({DaoToSqlTest.class, TxSqlBuilderTest.class})
+@Suite.SuiteClasses({DaoToSqlTest.class})
 public class TransactionTestSuite {
    // Test Suite
 }

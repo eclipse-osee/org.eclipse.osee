@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import org.eclipse.osee.executor.admin.HasCancellation;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -21,14 +22,13 @@ import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
+import org.eclipse.osee.orcs.core.ds.ArtifactBuilder;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
 import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
-import org.eclipse.osee.orcs.core.ds.AttributeDataHandlerFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
 import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
-import org.eclipse.osee.orcs.core.ds.RelationDataHandlerFactory;
 import org.eclipse.osee.orcs.db.internal.search.SqlContext;
 
 /**
@@ -42,10 +42,12 @@ public class DataLoaderImpl implements DataLoader {
    private final ArtifactLoader artifactLoader;
    private final AttributeLoader attributeLoader;
    private final RelationLoader relationLoader;
+   private final IdFactory idFactory;
 
-   public DataLoaderImpl(IOseeDatabaseService oseeDatabaseService, ArtifactLoader artifactLoader, AttributeLoader attributeLoader, RelationLoader relationLoader) {
+   public DataLoaderImpl(IOseeDatabaseService oseeDatabaseService, IdFactory idFactory, ArtifactLoader artifactLoader, AttributeLoader attributeLoader, RelationLoader relationLoader) {
       super();
       this.oseeDatabaseService = oseeDatabaseService;
+      this.idFactory = idFactory;
       this.artifactLoader = artifactLoader;
       this.attributeLoader = attributeLoader;
       this.relationLoader = relationLoader;
@@ -88,8 +90,9 @@ public class DataLoaderImpl implements DataLoader {
    }
 
    @Override
-   public void loadArtifacts(HasCancellation cancellation, ArtifactDataHandler handler, int branchId, Collection<Integer> artIds, LoadOptions loadOptions, RelationDataHandlerFactory relationRowHandlerFactory, AttributeDataHandlerFactory attributeRowHandlerFactory) throws OseeCoreException {
+   public void loadArtifacts(HasCancellation cancellation, ArtifactBuilder builder, IOseeBranch branch, Collection<Integer> artIds, LoadOptions loadOptions) throws OseeCoreException {
       if (!artIds.isEmpty()) {
+         int branchId = idFactory.getBranchId(branch);
          int fetchSize = computeFetchSize(artIds.size());
 
          ArtifactJoinQuery join = JoinUtility.createArtifactJoinQuery(oseeDatabaseService);
@@ -100,8 +103,7 @@ public class DataLoaderImpl implements DataLoader {
 
          try {
             join.store();
-            loadArtifacts(cancellation, join, fetchSize, handler, loadOptions, relationRowHandlerFactory,
-               attributeRowHandlerFactory);
+            loadArtifacts(cancellation, builder, join, fetchSize, loadOptions);
          } finally {
             join.delete();
          }
@@ -109,7 +111,7 @@ public class DataLoaderImpl implements DataLoader {
    }
 
    @Override
-   public void loadArtifacts(HasCancellation cancellation, ArtifactDataHandler handler, QueryContext queryContext, LoadOptions loadOptions, RelationDataHandlerFactory relationRowHandlerFactory, AttributeDataHandlerFactory attributeRowHandlerFactory) throws OseeCoreException {
+   public void loadArtifacts(HasCancellation cancellation, ArtifactBuilder builder, QueryContext queryContext, LoadOptions loadOptions) throws OseeCoreException {
       SqlContext sqlContext = toSqlContext(queryContext);
       int fetchSize = computeFetchSize(sqlContext);
 
@@ -117,31 +119,31 @@ public class DataLoaderImpl implements DataLoader {
 
       try {
          join.store();
-         loadArtifacts(cancellation, join, fetchSize, handler, loadOptions, relationRowHandlerFactory,
-            attributeRowHandlerFactory);
+         loadArtifacts(cancellation, builder, join, fetchSize, loadOptions);
       } finally {
          join.delete();
       }
    }
 
-   private void loadArtifacts(HasCancellation cancellation, AbstractJoinQuery join, int fetchSize, ArtifactDataHandler handler, LoadOptions loadOptions, RelationDataHandlerFactory relationRowHandlerFactory, AttributeDataHandlerFactory attributeRowHandlerFactory) throws OseeCoreException {
+   private void loadArtifacts(HasCancellation cancellation, ArtifactBuilder builder, AbstractJoinQuery join, int fetchSize, LoadOptions loadOptions) throws OseeCoreException {
       int queryId = join.getQueryId();
 
       checkCancelled(cancellation);
 
-      artifactLoader.loadFromQueryId(handler, loadOptions, fetchSize, queryId);
+      ArtifactDataHandler artHandler = builder.createArtifactDataHandler();
+      artifactLoader.loadFromQueryId(artHandler, loadOptions, fetchSize, queryId);
 
       checkCancelled(cancellation);
 
       if (isAttributeLoadingAllowed(loadOptions.getLoadLevel())) {
-         AttributeDataHandler attrHandler = attributeRowHandlerFactory.createAttributeDataHandler();
+         AttributeDataHandler attrHandler = builder.createAttributeDataHandler();
          attributeLoader.loadFromQueryId(attrHandler, loadOptions, fetchSize, queryId);
       }
 
       checkCancelled(cancellation);
 
       if (isRelationLoadingAllowed(loadOptions.getLoadLevel())) {
-         RelationDataHandler relHandler = relationRowHandlerFactory.createRelationDataHandler();
+         RelationDataHandler relHandler = builder.createRelationDataHandler();
          relationLoader.loadFromQueryId(relHandler, loadOptions, fetchSize, queryId);
       }
    }

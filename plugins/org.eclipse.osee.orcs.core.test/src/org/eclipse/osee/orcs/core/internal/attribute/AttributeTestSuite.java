@@ -19,9 +19,15 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    AttributeClassResolverTest.class,
+   AttributeCollectionTest.class,
+   AttributeDeletedFilterTest.class,
+   AttributeDirtyFilterTest.class,
    AttributeFactoryTest.class,
-   AttributeFactoryTest.class,
-   AttributeCollectionTest.class})
+   AttributeFilterTest.class,
+   AttributeFromStringFilterTest.class,
+   AttributeResultSetTest.class,
+   AttributeRowMapperTest.class,
+   AttributeValueFilterTest.class})
 public class AttributeTestSuite {
    // Test Suite
 }

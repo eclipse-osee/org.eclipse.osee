@@ -45,10 +45,10 @@ public class DataModuleFactory {
       return new DataFactoryImpl(idFactory, factory, artifactTypeCache);
    }
 
-   public DataLoader createDataLoader(SqlProvider sqlProvider, OrcsObjectFactory factory) {
+   public DataLoader createDataLoader(SqlProvider sqlProvider, IdFactory idFactory, OrcsObjectFactory factory) {
       ArtifactLoader artifactLoader = new ArtifactLoader(logger, sqlProvider, dbService, factory);
       AttributeLoader attributeLoader = new AttributeLoader(logger, sqlProvider, dbService, factory);
       RelationLoader relationLoader = new RelationLoader(logger, sqlProvider, dbService, factory);
-      return new DataLoaderImpl(dbService, artifactLoader, attributeLoader, relationLoader);
+      return new DataLoaderImpl(dbService, idFactory, artifactLoader, attributeLoader, relationLoader);
    }
 }

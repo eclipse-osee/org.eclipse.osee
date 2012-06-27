@@ -10,57 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.data;
 
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.Writeable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  * @author Andrew M. Finkbeiner
  */
-public interface ArtifactWriteable extends Writeable, ArtifactReadable {
+public interface ArtifactWriteable extends ArtifactReadable, AttributesWriteable {
 
    void setArtifactType(IArtifactType artifactType) throws OseeCoreException;
-
-   // Attributes
-   <T> List<AttributeWriteable<T>> getWriteableAttributes() throws OseeCoreException;
-
-   <T> List<AttributeWriteable<T>> getWriteableAttributes(IAttributeType attributeType) throws OseeCoreException;
-
-   void setName(String name) throws OseeCoreException;
-
-   void createAttribute(IAttributeType attributeType) throws OseeCoreException;
-
-   <T> void createAttribute(IAttributeType attributeType, T value) throws OseeCoreException;
-
-   void createAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException;
-
-   <T> void setSoleAttributeValue(IAttributeType attributeType, T value) throws OseeCoreException;
-
-   void setSoleAttributeFromStream(IAttributeType attributeType, InputStream inputStream) throws OseeCoreException;
-
-   void setSoleAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException;
-
-   <T> void setAttributesFromValues(IAttributeType attributeType, T... values) throws OseeCoreException;
-
-   <T> void setAttributesFromValues(IAttributeType attributeType, Collection<T> values) throws OseeCoreException;
-
-   void setAttributesFromStrings(IAttributeType attributeType, String... values) throws OseeCoreException;
-
-   void setAttributesFromStrings(IAttributeType attributeType, Collection<String> values) throws OseeCoreException;
-
-   void deleteSoleAttribute(IAttributeType attributeType) throws OseeCoreException;
-
-   void deleteAttributes(IAttributeType attributeType) throws OseeCoreException;
-
-   void deleteAttributesWithValue(IAttributeType attributeType, Object value) throws OseeCoreException;
 
    boolean isDirty() throws OseeCoreException;
 
    boolean isDeleted() throws OseeCoreException;
+
+   void setName(String name) throws OseeCoreException;
 
 }

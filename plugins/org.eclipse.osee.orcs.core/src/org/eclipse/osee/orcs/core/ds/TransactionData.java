@@ -23,5 +23,5 @@ public interface TransactionData {
 
    String getComment();
 
-   List<ArtifactTransactionData> getArtifactTransactionData() throws OseeCoreException;
+   List<ArtifactTransactionData> getTxData() throws OseeCoreException;
 }

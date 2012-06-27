@@ -24,15 +24,18 @@ import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.OrcsPerformance;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
+import org.eclipse.osee.orcs.core.internal.artifact.ArtifactBuilderFactoryImpl;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeClassResolver;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.indexer.IndexerModule;
+import org.eclipse.osee.orcs.core.internal.proxy.ArtifactProxyFactory;
 import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
 import org.eclipse.osee.orcs.core.internal.relation.RelationGraphImpl;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.core.internal.session.SessionContextImpl;
 import org.eclipse.osee.orcs.core.internal.transaction.TransactionFactoryImpl;
+import org.eclipse.osee.orcs.core.internal.transaction.handler.TxDataHandlerFactoryImpl;
 import org.eclipse.osee.orcs.data.GraphReadable;
 import org.eclipse.osee.orcs.search.QueryFacade;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -53,11 +56,11 @@ public class OrcsApiImpl implements OrcsApi {
    private ExecutorAdmin executorAdmin;
    private SystemPreferences preferences;
 
-   private ArtifactFactory artifactFactory;
-   private AttributeFactory attributeFactory;
+   private ArtifactProxyFactory proxyFactory;
    private OrcsObjectLoader objectLoader;
    private QueryModule queryModule;
    private IndexerModule indexerModule;
+   private TxDataHandlerFactoryImpl txUpdateFactory;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -90,16 +93,21 @@ public class OrcsApiImpl implements OrcsApi {
    public void start() {
       RelationFactory relationFactory = new RelationFactory(dataStoreTypeCache.getRelationTypeCache());
 
-      attributeFactory =
-         new AttributeFactory(logger, resolver, dataStoreTypeCache.getAttributeTypeCache(), dataStore.getDataFactory());
+      AttributeFactory attributeFactory =
+         new AttributeFactory(resolver, dataStoreTypeCache.getAttributeTypeCache(), dataStore.getDataFactory());
 
-      artifactFactory =
+      ArtifactFactory artifactFactory =
          new ArtifactFactory(dataStore.getDataFactory(), attributeFactory, relationFactory,
             cacheService.getArtifactTypeCache(), cacheService.getBranchCache());
 
-      objectLoader =
-         new OrcsObjectLoader(logger, dataStore.getDataLoader(), artifactFactory, attributeFactory,
-            cacheService.getBranchCache());
+      proxyFactory = new ArtifactProxyFactory(artifactFactory);
+
+      txUpdateFactory = new TxDataHandlerFactoryImpl(dataStore.getDataFactory(), proxyFactory);
+
+      ArtifactBuilderFactory builderFactory =
+         new ArtifactBuilderFactoryImpl(logger, proxyFactory, artifactFactory, attributeFactory);
+
+      objectLoader = new OrcsObjectLoader(logger, dataStore.getDataLoader(), builderFactory);
 
       queryModule =
          new QueryModule(logger, dataStore.getQueryEngine(), objectLoader, dataStoreTypeCache.getAttributeTypeCache());
@@ -112,8 +120,10 @@ public class OrcsApiImpl implements OrcsApi {
       if (indexerModule != null) {
          indexerModule.stop();
       }
-      objectLoader = null;
       queryModule = null;
+      objectLoader = null;
+      txUpdateFactory = null;
+      proxyFactory = null;
    }
 
    @Override
@@ -154,7 +164,8 @@ public class OrcsApiImpl implements OrcsApi {
    @Override
    public TransactionFactory getTransactionFactory(ApplicationContext context) {
       SessionContext sessionContext = getSessionContext(context);
-      return new TransactionFactoryImpl(logger, sessionContext, dataStore.getBranchDataStore(), artifactFactory);
+      return new TransactionFactoryImpl(logger, sessionContext, dataStore.getBranchDataStore(), proxyFactory,
+         txUpdateFactory);
    }
 
    @Override

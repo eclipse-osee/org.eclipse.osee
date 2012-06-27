@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.orcs.core.ds.RelationData;
-import org.eclipse.osee.orcs.core.internal.artifact.RelationContainer;
 
 /**
  * @author Andrew M. Finkbeiner

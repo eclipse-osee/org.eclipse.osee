@@ -12,15 +12,12 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.util.LinkedList;
-import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.Conditions;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.AttributeDataFactory;
@@ -28,8 +25,6 @@ import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.core.internal.artifact.AttributeManager;
-import org.eclipse.osee.orcs.data.AttributeReadable;
-import org.eclipse.osee.orcs.data.AttributeWriteable;
 
 /**
  * @author Roberto E. Escobar
@@ -40,7 +35,7 @@ public class AttributeFactory {
    private final AttributeTypeCache cache;
    private final AttributeDataFactory dataFactory;
 
-   public AttributeFactory(Log logger, AttributeClassResolver classResolver, AttributeTypeCache cache, AttributeDataFactory dataFactory) {
+   public AttributeFactory(AttributeClassResolver classResolver, AttributeTypeCache cache, AttributeDataFactory dataFactory) {
       this.classResolver = classResolver;
       this.cache = cache;
       this.dataFactory = dataFactory;
@@ -65,26 +60,26 @@ public class AttributeFactory {
       ResourceNameResolver resolver = createResolver(attribute);
       proxy.setResolver(resolver);
 
+      Reference<AttributeManager> artifactRef = new WeakReference<AttributeManager>(container);
+      attribute.internalInitialize(artifactRef, data, type, isDirty, false);
+
       synchronized (container) {
-         Reference<AttributeManager> artifactRef = new WeakReference<AttributeManager>(container);
-         attribute.internalInitialize(artifactRef, data, type, isDirty, false);
          container.add(type, attribute);
       }
       return attribute;
    }
 
-   public Attribute<?> copyAttribute(AttributeReadable<?> source, IOseeBranch ontoBranch, AttributeManager destinationContainer) throws OseeCoreException {
-      AttributeData attributeData = dataFactory.copy(ontoBranch, getOrcsData(source));
-      Attribute<?> destinationAttribute = createAttribute(destinationContainer, attributeData);
+   public <T> Attribute<T> copyAttribute(AttributeData source, IOseeBranch ontoBranch, AttributeManager destinationContainer) throws OseeCoreException {
+      AttributeData attributeData = dataFactory.copy(ontoBranch, source);
+      Attribute<T> destinationAttribute = createAttribute(destinationContainer, attributeData);
       return destinationAttribute;
    }
 
-   public boolean introduceAttribute(AttributeReadable<?> source, IOseeBranch ontoBranch, AttributeManager destination) throws OseeCoreException {
+   public boolean introduceAttribute(AttributeData source, IOseeBranch ontoBranch, AttributeManager destination) throws OseeCoreException {
       boolean result = false;
-      AttributeData sourceAttrData = getOrcsData(source);
       // In order to reflect attributes they must exist in the data store
-      if (sourceAttrData.getVersion().isInStorage()) {
-         AttributeData attributeData = dataFactory.introduce(ontoBranch, sourceAttrData);
+      if (source.getVersion().isInStorage()) {
+         AttributeData attributeData = dataFactory.introduce(ontoBranch, source);
 
          Attribute<?> introducedAttribute = createAttribute(destination, attributeData);
          result = introducedAttribute != null;
@@ -92,47 +87,12 @@ public class AttributeFactory {
       return result;
    }
 
-   public List<AttributeData> getChangeData(AttributeManager container) throws OseeCoreException {
-      List<AttributeData> data = new LinkedList<AttributeData>();
-      for (AttributeReadable<?> attribute : container.getAttributesDirty()) {
-         Attribute<?> attributeImpl = asAttributeImpl(attribute);
-         data.add(clone(attributeImpl.getOrcsData()));
-      }
-      return data;
-   }
-
-   public AttributeData clone(AttributeData source) throws OseeCoreException {
-      return dataFactory.clone(source);
-   }
-
-   public <T> AttributeWriteable<T> asAttributeWritable(Attribute<T> attribute) {
-      return new AttributeWritableProxy<T>(attribute);
-   }
-
-   public <T> AttributeWriteable<T> asAttributeReadable(Attribute<T> attribute) {
-      return new AttributeWritableProxy<T>(attribute);
+   public AttributeType getAttribeType(IAttributeType token) throws OseeCoreException {
+      return token instanceof AttributeType ? (AttributeType) token : cache.get(token);
    }
 
    private ResourceNameResolver createResolver(Attribute<?> attribute) {
       return new AttributeResourceNameResolver(attribute);
-   }
-
-   private AttributeData getOrcsData(AttributeReadable<?> item) {
-      return asAttributeImpl(item).getOrcsData();
-   }
-
-   public <T> Attribute<T> asAttributeImpl(AttributeReadable<T> readable) {
-      Attribute<T> toReturn = null;
-      if (readable instanceof Attribute) {
-         toReturn = (Attribute<T>) readable;
-      } else if (readable instanceof AttributeWritableProxy) {
-         toReturn = ((AttributeWritableProxy<T>) readable).getProxiedObject();
-      }
-      return toReturn;
-   }
-
-   public AttributeType getAttribeType(IAttributeType token) throws OseeCoreException {
-      return token instanceof AttributeType ? (AttributeType) token : cache.get(token);
    }
 
 }

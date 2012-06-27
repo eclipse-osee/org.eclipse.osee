@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Boeing.
+ * Copyright (c) 2004, 2007 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,12 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.internal.transaction;
+package org.eclipse.osee.orcs.db.internal.loader;
 
-public interface WriteableProxy {
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-   void setWriteState(boolean isWriteAllowed);
-
-   boolean isWriteAllowed();
-
+/**
+ * @author Roberto E. Escobar
+ */
+@RunWith(Suite.class)
+@Suite.SuiteClasses({ArtifactLoaderTest.class, AttributeLoaderTest.class, RelationLoaderTest.class})
+public class PdeUnitLoaderTestSuite {
+   // Test Suite
 }

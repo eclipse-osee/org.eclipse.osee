@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
+import java.lang.reflect.Proxy;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -76,6 +77,8 @@ public class OrcsTransactionTest {
 
       String id = writeable.getGuid();
 
+      Assert.assertTrue(Proxy.isProxyClass(writeable.getClass()));
+
       TransactionRecord newTx = tx.commit();
       Assert.assertFalse(tx.isCommitInProgress());
 
@@ -90,6 +93,8 @@ public class OrcsTransactionTest {
       Assert.assertEquals(expectedAnnotation,
          artifact.getAttributeValues(CoreAttributeTypes.Annotation).iterator().next());
       Assert.assertEquals(writeable, artifact);
+
+      Assert.assertTrue(Proxy.isProxyClass(artifact.getClass()));
    }
 
    private ArtifactReadable getSystemUser() throws OseeCoreException {

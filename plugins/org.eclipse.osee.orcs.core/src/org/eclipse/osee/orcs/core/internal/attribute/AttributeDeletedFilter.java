@@ -10,26 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute;
 
-import java.util.Set;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeModTypeFilter extends AttributeFilter {
-   private final Set<ModificationType> toMatch;
+public class AttributeDeletedFilter extends AttributeFilter {
 
-   public AttributeModTypeFilter(DeletionFlag includeDeleted) {
-      if (includeDeleted.areDeletedAllowed()) {
-         toMatch = ModificationType.getAllCurrentModTypes();
-      } else {
-         toMatch = ModificationType.getCurrentModTypes();
-      }
+   private final boolean checkNeeded;
+
+   public AttributeDeletedFilter(DeletionFlag includeDeleted) {
+      this.checkNeeded = !includeDeleted.areDeletedAllowed();
    }
 
    @Override
    public boolean accept(Attribute<?> attribute) {
-      return toMatch != null && toMatch.contains(attribute.getModificationType());
+      boolean result = true;
+      if (checkNeeded) {
+         result = !attribute.isDeleted();
+      }
+      return result;
    }
 }

@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.artifact;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.orcs.core.internal.relation.RelationContainer;
 import org.eclipse.osee.orcs.data.HasLocalId;
 
 /**

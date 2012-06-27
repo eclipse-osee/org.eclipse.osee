@@ -76,10 +76,6 @@ public class DataFactoryImpl implements DataFactory {
       int artifactId = idFactory.getNextArtifactId();
       ArtifactData artifactData =
          objectFactory.createArtifactData(version, artifactId, artifactType, modType, guidToSet, humanReadableId);
-
-      //      artifact.meetMinimumAttributeCounts(true);
-      //      ArtifactCache.cache(artifact);
-      //      artifact.setLinksLoaded(true);
       return artifactData;
    }
 
@@ -103,7 +99,7 @@ public class DataFactoryImpl implements DataFactory {
    public AttributeData create(HasLocalId parent, IAttributeType attributeType) throws OseeCoreException {
       VersionData version = objectFactory.createDefaultVersionData();
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
-      int attributeId = idFactory.getNextAttributeId();
+      int attributeId = RelationalConstants.DEFAULT_ITEM_ID;
       return objectFactory.createAttributeData(version, attributeId, attributeType, modType, parent.getLocalId());
    }
 
@@ -128,7 +124,7 @@ public class DataFactoryImpl implements DataFactory {
    public RelationData createRelationData(IRelationType relationType, HasLocalId parent, HasLocalId aArt, HasLocalId bArt, String rationale) throws OseeCoreException {
       VersionData version = objectFactory.createDefaultVersionData();
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
-      int relationId = idFactory.getNextRelationId();
+      int relationId = RelationalConstants.DEFAULT_ITEM_ID;
       return objectFactory.createRelationData(version, relationId, relationType, modType, parent.getLocalId(),
          aArt.getLocalId(), bArt.getLocalId(), rationale);
    }
@@ -140,6 +136,11 @@ public class DataFactoryImpl implements DataFactory {
 
    @Override
    public AttributeData clone(AttributeData source) throws OseeCoreException {
+      return objectFactory.createCopy(source);
+   }
+
+   @Override
+   public RelationData clone(RelationData source) throws OseeCoreException {
       return objectFactory.createCopy(source);
    }
 

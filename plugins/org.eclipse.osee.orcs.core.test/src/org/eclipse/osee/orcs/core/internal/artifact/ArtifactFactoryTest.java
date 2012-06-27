@@ -10,12 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.artifact;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-import java.util.Collection;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
@@ -24,97 +30,215 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataFactory;
-import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
+import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
+import org.eclipse.osee.orcs.core.internal.relation.RelationContainer;
 import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
+/**
+ * Test Case for {@link ArtifactFactory}
+ * 
+ * @author John Misinco
+ */
 public class ArtifactFactoryTest {
+
+   @Rule
+   public ExpectedException thrown = ExpectedException.none();
 
    // @formatter:off
    @Mock private Branch branch;
    @Mock private ArtifactType artifactType;
    @Mock private ArtifactData artifactData;
    @Mock private RelationContainer relationContainer;
+   @Mock private VersionData artifactVersion;
+   
+   @Mock private ArtifactDataFactory dataFactory;
+   @Mock private AttributeFactory attributeFactory;
+   @Mock private RelationFactory relationFactory;
+   @Mock private ArtifactTypeCache artifactTypeCache;
+   @Mock private BranchCache branchCache;
+   
+   @Mock private Attribute<Object> attribute;
+   @Mock private AttributeData attributeData;
+   @Mock private ArtifactImpl source;
+   
+   @Mock private ArtifactData otherArtifactData;
    // @formatter:on
 
-   private final String guid = GUID.create();
-
+   private String guid;
    private ArtifactFactory artifactFactory;
+   private List<IAttributeType> types;
 
    @Before
    public void init() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
-      AttributeFactory attributeFactory = mock(AttributeFactory.class);
-      RelationFactory relationFactory = mock(RelationFactory.class);
-      ArtifactTypeCache artifactTypeCache = mock(ArtifactTypeCache.class);
-      BranchCache branchCache = mock(BranchCache.class);
-      ArtifactDataFactory factory = mock(ArtifactDataFactory.class);
-      artifactFactory = new ArtifactFactory(factory, attributeFactory, relationFactory, artifactTypeCache, branchCache);
-      when(artifactTypeCache.getByGuid(anyLong())).thenReturn(artifactType);
-      when(branchCache.getById(anyInt())).thenReturn(branch);
-      VersionData version = mock(VersionData.class);
-      when(artifactData.getVersion()).thenReturn(version);
-      when(relationFactory.createRelationContainer(anyInt())).thenReturn(relationContainer);
-      when(factory.create(branch, artifactType, guid)).thenReturn(artifactData);
-      when(factory.copy(branch, artifactData)).thenReturn(artifactData);
+
+      artifactFactory =
+         new ArtifactFactory(dataFactory, attributeFactory, relationFactory, artifactTypeCache, branchCache);
+
+      guid = GUID.create();
+
+      types = new ArrayList<IAttributeType>();
+      types.add(CoreAttributeTypes.RelationOrder);
+      types.add(CoreAttributeTypes.City);
+      types.add(CoreAttributeTypes.Annotation);
+
+      when(artifactData.getLocalId()).thenReturn(45);
       when(artifactData.getGuid()).thenReturn(guid);
+      when(artifactData.getTypeUuid()).thenReturn(65L);
+      when(artifactData.getVersion()).thenReturn(artifactVersion);
+      when(artifactVersion.getBranchId()).thenReturn(23);
+
+      when(otherArtifactData.getLocalId()).thenReturn(45);
+      when(otherArtifactData.getGuid()).thenReturn(guid);
+      when(otherArtifactData.getTypeUuid()).thenReturn(65L);
+      when(otherArtifactData.getVersion()).thenReturn(artifactVersion);
+
+      when(relationFactory.createRelationContainer(45)).thenReturn(relationContainer);
+      when(artifactTypeCache.getByGuid(65L)).thenReturn(artifactType);
+      when(branchCache.getById(23)).thenReturn(branch);
    }
 
    @Test
-   public void testCreateWriteableArtifact() throws OseeCoreException {
-      ArtifactReadable artifact = artifactFactory.createWriteableArtifact(artifactData);
-      assertEquals(artifactType, artifact.getArtifactType());
-      assertEquals(guid, artifact.getGuid());
+   public void testCreateArtifactFromBranchTypeAndGuid() throws OseeCoreException {
+      when(dataFactory.create(branch, artifactType, guid)).thenReturn(artifactData);
 
-      artifact = artifactFactory.createWriteableArtifact(branch, artifactType, guid);
-      assertEquals(artifactType, artifact.getArtifactType());
-      assertEquals(guid, artifact.getGuid());
-   }
+      ArtifactImpl artifact = artifactFactory.createArtifact(branch, artifactType, guid);
 
-   @Test
-   public void testCreateReadableArtifact() throws OseeCoreException {
-      ArtifactReadable artifact = artifactFactory.createReadableArtifact(artifactData);
+      verify(dataFactory).create(branch, artifactType, guid);
       assertEquals(artifactType, artifact.getArtifactType());
       assertEquals(guid, artifact.getGuid());
    }
 
    @Test
-   @Ignore
+   public void testCreateArtifactFromArtifactData() throws OseeCoreException {
+      when(relationFactory.createRelationContainer(45)).thenReturn(relationContainer);
+      when(artifactTypeCache.getByGuid(65L)).thenReturn(artifactType);
+      when(branchCache.getById(23)).thenReturn(branch);
+
+      ArtifactImpl artifact = artifactFactory.createArtifact(artifactData);
+
+      assertEquals(artifactType, artifact.getArtifactType());
+      assertEquals(guid, artifact.getGuid());
+   }
+
+   @Test
    public void testCopyArtifact() throws OseeCoreException {
-      WritableArtifactProxy source = mock(WritableArtifactProxy.class);
-      Collection<? extends IAttributeType> types = mock(Collection.class);
-      ArtifactImpl impl = mock(ArtifactImpl.class);
-      when(source.getProxiedObject()).thenReturn(impl);
-      when(impl.getOrcsData()).thenReturn(artifactData);
-      artifactFactory.copyArtifact(source, types, branch);
+      when(source.getOrcsData()).thenReturn(artifactData);
+      when(dataFactory.copy(branch, artifactData)).thenReturn(otherArtifactData);
+
+      when(source.getAttributes(CoreAttributeTypes.Annotation)).thenAnswer(new ReturnAttribute(attribute));
+      when(attribute.getOrcsData()).thenReturn(attributeData);
+      when(artifactType.isValidAttributeType(CoreAttributeTypes.Annotation, branch)).thenReturn(true);
+
+      ArgumentCaptor<ArtifactImpl> implCapture = ArgumentCaptor.forClass(ArtifactImpl.class);
+
+      ArtifactImpl actual = artifactFactory.copyArtifact(source, types, branch);
+
+      verify(source, times(0)).getAttributes(CoreAttributeTypes.RelationOrder);
+      verify(source, times(0)).getAttributes(CoreAttributeTypes.City);
+      verify(source, times(1)).getAttributes(CoreAttributeTypes.Annotation);
+      verify(attributeFactory).copyAttribute(eq(attributeData), eq(branch), implCapture.capture());
+      Assert.assertTrue(implCapture.getValue().isLoaded());
+      Assert.assertTrue(actual == implCapture.getValue());
    }
 
    @Test
-   public void testSetBackingData() throws OseeCoreException {
-      WritableArtifactProxy writeable = mock(WritableArtifactProxy.class);
-      ArtifactImpl original = mock(ArtifactImpl.class);
-      ArtifactImpl proxied = mock(ArtifactImpl.class);
-      List<AttributeData> attrData = mock(List.class);
-      ArtifactTransactionData data = mock(ArtifactTransactionData.class);
+   public void testIntroduceArtifactBranchException() throws OseeCoreException {
+      when(source.getBranch()).thenReturn(branch);
 
-      when(writeable.getOriginal()).thenReturn(original);
-      when(writeable.getProxiedObject()).thenReturn(proxied);
-      when(data.getArtifactData()).thenReturn(artifactData);
-      when(data.getAttributeData()).thenReturn(attrData);
-
-      artifactFactory.setBackingData(writeable, data);
-
-      verify(original).setOrcsData(artifactData);
-      verify(original).setBackingData(attrData);
-      verify(proxied).setOrcsData(artifactData);
-      verify(proxied).setBackingData(attrData);
+      thrown.expect(OseeArgumentException.class);
+      thrown.expectMessage("Source artifact is on the same branch as [" + branch + "]");
+      artifactFactory.introduceArtifact(source, branch);
    }
+
+   @Test
+   public void testIntroduceArtifact() throws OseeCoreException {
+      Branch otherBranch = mock(Branch.class);
+
+      when(source.getBranch()).thenReturn(otherBranch);
+      when(source.getOrcsData()).thenReturn(artifactData);
+
+      when(dataFactory.introduce(branch, artifactData)).thenReturn(otherArtifactData);
+
+      when(source.getExistingAttributeTypes()).thenAnswer(new ReturnExistingTypes(types));
+      when(source.getAttributes(CoreAttributeTypes.Annotation)).thenAnswer(new ReturnAttribute(attribute));
+      when(attribute.getOrcsData()).thenReturn(attributeData);
+      when(artifactType.isValidAttributeType(CoreAttributeTypes.Annotation, branch)).thenReturn(true);
+
+      ArgumentCaptor<ArtifactImpl> implCapture = ArgumentCaptor.forClass(ArtifactImpl.class);
+
+      ArtifactImpl actual = artifactFactory.introduceArtifact(source, branch);
+
+      verify(source, times(0)).getAttributes(CoreAttributeTypes.RelationOrder);
+      verify(source, times(0)).getAttributes(CoreAttributeTypes.City);
+      verify(source, times(1)).getAttributes(CoreAttributeTypes.Annotation);
+
+      verify(attributeFactory).introduceAttribute(eq(attributeData), eq(branch), implCapture.capture());
+
+      Assert.assertTrue(implCapture.getValue().isLoaded());
+      Assert.assertTrue(actual == implCapture.getValue());
+   }
+
+   @Test
+   public void testClone() throws OseeCoreException {
+      when(source.getOrcsData()).thenReturn(artifactData);
+      when(dataFactory.copy(branch, artifactData)).thenReturn(otherArtifactData);
+
+      when(source.getExistingAttributeTypes()).thenAnswer(new ReturnExistingTypes(types));
+      when(source.getAttributes(CoreAttributeTypes.Annotation)).thenAnswer(new ReturnAttribute(attribute));
+      when(attribute.getOrcsData()).thenReturn(attributeData);
+      when(artifactType.isValidAttributeType(CoreAttributeTypes.Annotation, branch)).thenReturn(true);
+
+      ArgumentCaptor<ArtifactImpl> implCapture = ArgumentCaptor.forClass(ArtifactImpl.class);
+
+      ArtifactImpl actual = artifactFactory.copyArtifact(source, types, branch);
+
+      verify(source, times(0)).getAttributes(CoreAttributeTypes.RelationOrder);
+      verify(source, times(0)).getAttributes(CoreAttributeTypes.City);
+      verify(source, times(1)).getAttributes(CoreAttributeTypes.Annotation);
+      verify(attributeFactory).copyAttribute(eq(attributeData), eq(branch), implCapture.capture());
+      Assert.assertTrue(implCapture.getValue().isLoaded());
+      Assert.assertTrue(actual == implCapture.getValue());
+   }
+
+   private static final class ReturnAttribute implements Answer<List<Attribute<Object>>> {
+
+      private final Attribute<Object> attribute;
+
+      public ReturnAttribute(Attribute<Object> attribute) {
+         this.attribute = attribute;
+      }
+
+      @Override
+      public List<Attribute<Object>> answer(InvocationOnMock invocation) throws Throwable {
+         return Collections.singletonList(attribute);
+      }
+   };
+
+   private static final class ReturnExistingTypes implements Answer<List<IAttributeType>> {
+
+      private final List<IAttributeType> types;
+
+      public ReturnExistingTypes(List<IAttributeType> types) {
+         this.types = types;
+      }
+
+      @Override
+      public List<IAttributeType> answer(InvocationOnMock invocation) throws Throwable {
+         return types;
+      }
+   };
 }

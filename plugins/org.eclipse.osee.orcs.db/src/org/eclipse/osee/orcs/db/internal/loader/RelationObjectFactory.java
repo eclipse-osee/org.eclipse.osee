@@ -13,8 +13,8 @@ package org.eclipse.osee.orcs.db.internal.loader;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
+import org.eclipse.osee.orcs.core.ds.VersionData;
 
 /**
  * @author Roberto E. Escobar
@@ -25,4 +25,5 @@ public interface RelationObjectFactory extends VersionObjectFactory {
 
    RelationData createRelationData(VersionData version, int localId, IRelationType type, ModificationType modType, int parentId, int aArtId, int bArtId, String rationale) throws OseeCoreException;
 
+   RelationData createCopy(RelationData source) throws OseeCoreException;
 }

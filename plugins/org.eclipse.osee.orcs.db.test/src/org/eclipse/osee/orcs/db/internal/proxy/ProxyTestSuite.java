@@ -20,7 +20,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    VarCharDataProxyTest.class,
    DataResourceTest.class,
-   ResourceDataProxyFactoryTest.class,
    ResourceHandlerTest.class,
    StorageTest.class,
    UriDataProxyTest.class})

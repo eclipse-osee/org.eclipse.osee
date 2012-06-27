@@ -81,6 +81,10 @@ public class InsertVisitor implements OrcsVisitor {
 
          DaoToSql daoToSql = new DaoToSql(gammaId, dataProxy, !useExistingBackingData(data));
          addBinaryStore(daoToSql);
+         if (RelationalConstants.DEFAULT_ITEM_ID == data.getLocalId()) {
+            int localId = idFactory.getNextAttributeId();
+            data.setLocalId(localId);
+         }
          addInsertToBatch(2, INSERT_ATTRIBUTE, data.getArtifactId(), data.getLocalId(), localTypeId,
             daoToSql.getValue(), gammaId, daoToSql.getUri());
 
@@ -92,6 +96,10 @@ public class InsertVisitor implements OrcsVisitor {
    public void visit(RelationData data) throws OseeCoreException {
       if (data.isStorageAllowed()) {
          int localTypeId = getLocalTypeId(data.getTypeUuid());
+         if (RelationalConstants.DEFAULT_ITEM_ID == data.getLocalId()) {
+            int localId = idFactory.getNextRelationId();
+            data.setLocalId(localId);
+         }
          addInsertToBatch(3, INSERT_RELATION_TABLE, data.getLocalId(), localTypeId, data.getArtIdA(), data.getArtIdB(),
             data.getRationale(), getGammaId(data));
 

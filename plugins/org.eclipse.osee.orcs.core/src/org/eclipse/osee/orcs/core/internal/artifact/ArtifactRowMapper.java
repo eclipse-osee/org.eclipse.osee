@@ -38,8 +38,7 @@ public class ArtifactRowMapper implements ArtifactDataHandler {
       ArtifactReadable artifact = getLoadedArtifact(data);
       if (artifact == null) {
          loadSourceType = LoadSourceType.WAS_CREATED;
-
-         artifact = artifactFactory.createReadableArtifact(data);
+         artifact = artifactFactory.createArtifact(data);
       }
       artifactReceiver.onArtifact(artifact, loadSourceType);
    }

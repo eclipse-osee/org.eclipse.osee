@@ -8,24 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.internal.search;
-
-import org.eclipse.osee.orcs.search.QueryFactory;
-import org.junit.Ignore;
-import org.junit.Test;
+package org.eclipse.osee.orcs.core.ds;
 
 /**
- * Test Case for {@link QueryFactory}
- * 
  * @author Roberto E. Escobar
  */
-public class QueryFactoryTest {
+public interface ArtifactDataHandlerFactory {
 
-   @Test
-   @Ignore
-   public void testX() {
-      //      QueryFactory factory = new QueryFactoryImpl();
-      //      factory.fromArtifact(branch, artifactToken);
+   ArtifactDataHandler createArtifactDataHandler();
 
-   }
 }

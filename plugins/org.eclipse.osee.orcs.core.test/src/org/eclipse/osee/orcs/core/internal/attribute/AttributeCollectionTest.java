@@ -10,20 +10,37 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import java.util.Collection;
+import java.util.List;
+import junit.framework.Assert;
+import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+/**
+ * Test Case for {@link AttributeCollection}
+ * 
+ * @author Roberto E. Escobar
+ */
+@SuppressWarnings("rawtypes")
 public class AttributeCollectionTest {
 
    // @formatter:off
    @Mock private AttributeExceptionFactory exceptionFactory;
+   @Mock Attribute dirtyAttr;
+   @Mock Attribute cleanAttr;
+   @Mock Attribute deletedAttr;
    // @formatter:on
 
    private AttributeCollection attributeCollection;
@@ -32,22 +49,148 @@ public class AttributeCollectionTest {
    public void init() {
       MockitoAnnotations.initMocks(this);
       attributeCollection = new AttributeCollection(exceptionFactory);
+
+      attributeCollection.addAttribute(CoreAttributeTypes.Country, dirtyAttr);
+      attributeCollection.addAttribute(CoreAttributeTypes.Active, cleanAttr);
+      attributeCollection.addAttribute(CoreAttributeTypes.Annotation, deletedAttr);
+
+      when(dirtyAttr.isDirty()).thenReturn(true);
+      when(deletedAttr.isDeleted()).thenReturn(true);
    }
 
    @Test
-   @SuppressWarnings("unchecked")
-   public void testGetAttributesDirty() {
-      Attribute<String> dirtyAttr = mock(Attribute.class);
-      Attribute<String> cleanAttr = mock(Attribute.class);
-      when(dirtyAttr.isDirty()).thenReturn(true);
-      attributeCollection.addAttribute(CoreAttributeTypes.Country, dirtyAttr);
-      attributeCollection.addAttribute(CoreAttributeTypes.Country, cleanAttr);
-      assertEquals(1, attributeCollection.getAttributesDirty().size());
-      assertEquals(dirtyAttr, attributeCollection.getAttributesDirty().iterator().next());
+   public void testGetAttributesDirty() throws OseeCoreException {
+      assertEquals(1, attributeCollection.getAttributeListDirties().size());
+      assertEquals(dirtyAttr, attributeCollection.getAttributeListDirties().iterator().next());
+   }
+
+   @Test
+   public void testHasAttributesDirty() {
+      boolean actual1 = attributeCollection.hasAttributesDirty();
+      assertTrue(actual1);
+
+      attributeCollection.removeAttribute(CoreAttributeTypes.Country, dirtyAttr);
+
+      boolean actual2 = attributeCollection.hasAttributesDirty();
+      assertFalse(actual2);
+   }
+
+   @Test
+   public void testGetAllAttributes() {
+      List<Attribute<?>> attributes = attributeCollection.getAllAttributes();
+      assertEquals(3, attributes.size());
+
+      assertTrue(attributes.contains(dirtyAttr));
+      assertTrue(attributes.contains(cleanAttr));
+      assertTrue(attributes.contains(deletedAttr));
+   }
+
+   @Test
+   public void testGetExistingTypes() throws OseeCoreException {
+      AttributeType typeA = mock(AttributeType.class);
+      AttributeType typeB = mock(AttributeType.class);
+      AttributeType typeC = mock(AttributeType.class);
+
+      when(dirtyAttr.getAttributeType()).thenReturn(typeA);
+      when(dirtyAttr.isDeleted()).thenReturn(true);
+
+      when(cleanAttr.getAttributeType()).thenReturn(typeB);
+      when(cleanAttr.isDeleted()).thenReturn(true);
+
+      when(deletedAttr.getAttributeType()).thenReturn(typeC);
+      when(deletedAttr.isDeleted()).thenReturn(false);
+
+      Collection<AttributeType> types = attributeCollection.getExistingTypes(DeletionFlag.INCLUDE_DELETED);
+
+      assertEquals(3, types.size());
+
+      assertTrue(types.contains(typeA));
+      assertTrue(types.contains(typeB));
+      assertTrue(types.contains(typeC));
+
+      Collection<AttributeType> types2 = attributeCollection.getExistingTypes(DeletionFlag.EXCLUDE_DELETED);
+      assertEquals(1, types2.size());
+
+      assertFalse(types2.contains(typeA));
+      assertFalse(types2.contains(typeB));
+      assertTrue(types2.contains(typeC));
+   }
+
+   @Test
+   public void testGetListDeletionFlag() throws OseeCoreException {
+      List<Attribute<Object>> list1 = attributeCollection.getAttributeList(DeletionFlag.INCLUDE_DELETED);
+
+      assertEquals(3, list1.size());
+      assertTrue(list1.contains(dirtyAttr));
+      assertTrue(list1.contains(cleanAttr));
+      assertTrue(list1.contains(deletedAttr));
+
+      List<Attribute<Object>> list2 = attributeCollection.getAttributeList(DeletionFlag.EXCLUDE_DELETED);
+      assertEquals(2, list2.size());
+
+      assertTrue(list2.contains(dirtyAttr));
+      assertTrue(list2.contains(cleanAttr));
+      assertFalse(list2.contains(deletedAttr));
+   }
+
+   @Test
+   public void testGetSetDeletionFlag() throws OseeCoreException {
+      ResultSet<Attribute<Object>> set1 = attributeCollection.getAttributeSet(DeletionFlag.INCLUDE_DELETED);
+
+      assertEquals(3, set1.getList().size());
+      assertTrue(set1.getList().contains(dirtyAttr));
+      assertTrue(set1.getList().contains(cleanAttr));
+      assertTrue(set1.getList().contains(deletedAttr));
+
+      ResultSet<Attribute<Object>> set2 = attributeCollection.getAttributeSet(DeletionFlag.EXCLUDE_DELETED);
+      assertEquals(2, set2.getList().size());
+
+      assertTrue(set2.getList().contains(dirtyAttr));
+      assertTrue(set2.getList().contains(cleanAttr));
+      assertFalse(set2.getList().contains(deletedAttr));
+   }
+
+   @Test
+   public void testGetListTypeAndDelete() throws OseeCoreException {
+      List<Attribute<Object>> list1 =
+         attributeCollection.getAttributeList(CoreAttributeTypes.Annotation, DeletionFlag.INCLUDE_DELETED);
+      assertEquals(1, list1.size());
+      assertTrue(list1.contains(deletedAttr));
+
+      List<Attribute<Object>> list2 =
+         attributeCollection.getAttributeList(CoreAttributeTypes.Annotation, DeletionFlag.EXCLUDE_DELETED);
+      assertEquals(0, list2.size());
+   }
+
+   @Test
+   public void testGetSetTypeAndDelete() throws OseeCoreException {
+      ResultSet<Attribute<Object>> set1 =
+         attributeCollection.getAttributeSet(CoreAttributeTypes.Annotation, DeletionFlag.INCLUDE_DELETED);
+
+      assertEquals(1, set1.getList().size());
+      assertTrue(set1.getList().contains(deletedAttr));
+
+      ResultSet<Attribute<Object>> set2 =
+         attributeCollection.getAttributeSet(CoreAttributeTypes.Annotation, DeletionFlag.EXCLUDE_DELETED);
+      assertEquals(0, set2.getList().size());
    }
 
    @Test
    public void testGetAttributeSetFromString() throws OseeCoreException {
-      attributeCollection.getAttributeSetFromString(CoreAttributeTypes.Country, DeletionFlag.EXCLUDE_DELETED, "test");
+      when(cleanAttr.getValue()).thenReturn(true);
+
+      ResultSet<Attribute<Object>> set =
+         attributeCollection.getAttributeSetFromString(CoreAttributeTypes.Active, DeletionFlag.EXCLUDE_DELETED, "true");
+      Assert.assertEquals(cleanAttr, set.getExactlyOne());
    }
+
+   @Test
+   public void testGetAttributeSetFromValue() throws OseeCoreException {
+      when(cleanAttr.getValue()).thenReturn(true);
+
+      ResultSet<Attribute<Boolean>> set =
+         attributeCollection.getAttributeSetFromValue(CoreAttributeTypes.Active, DeletionFlag.EXCLUDE_DELETED, true);
+      Assert.assertEquals(cleanAttr, set.getExactlyOne());
+   }
+
 }

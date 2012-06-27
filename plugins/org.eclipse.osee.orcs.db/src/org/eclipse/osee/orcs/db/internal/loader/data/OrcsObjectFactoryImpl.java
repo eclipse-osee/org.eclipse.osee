@@ -172,4 +172,11 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       return data;
    }
 
+   @Override
+   public RelationData createCopy(RelationData source) {
+      VersionData newVersion = createCopy(source.getVersion());
+      return createRelationData(newVersion, source.getLocalId(), source.getTypeUuid(), source.getModType(),
+         source.getParentId(), source.getArtIdA(), source.getArtIdB(), source.getRationale());
+   }
+
 }

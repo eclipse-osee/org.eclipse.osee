@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal;
 
 import org.eclipse.osee.orcs.db.internal.exchange.ExchangeTestSuite;
+import org.eclipse.osee.orcs.db.internal.loader.JUnitLoaderTestSuite;
 import org.eclipse.osee.orcs.db.internal.proxy.ProxyTestSuite;
 import org.eclipse.osee.orcs.db.internal.resource.ResourceTestSuite;
 import org.eclipse.osee.orcs.db.internal.search.SearchTestSuite;
@@ -24,6 +25,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    ExchangeTestSuite.class,
+   JUnitLoaderTestSuite.class,
    ProxyTestSuite.class,
    ResourceTestSuite.class,
    TransactionTestSuite.class,

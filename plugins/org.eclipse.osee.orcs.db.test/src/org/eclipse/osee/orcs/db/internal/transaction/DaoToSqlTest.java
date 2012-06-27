@@ -27,7 +27,7 @@ import org.mockito.MockitoAnnotations;
 public class DaoToSqlTest {
 
    @Mock
-   DataProxy proxy;
+   private DataProxy proxy;
 
    @Before
    public void setUp() {
@@ -98,7 +98,7 @@ public class DaoToSqlTest {
 
       DaoToSql dao2 = new DaoToSql(gammaId, proxy, false);
       dao2.persist();
-      Mockito.verifyZeroInteractions(proxy);
+      Mockito.verify(proxy, Mockito.times(0)).persist(gammaId);
    }
 
    @Test
@@ -112,7 +112,7 @@ public class DaoToSqlTest {
 
       DaoToSql dao2 = new DaoToSql(gammaId, proxy, false);
       dao2.rollBack();
-      Mockito.verifyZeroInteractions(proxy);
+      Mockito.verify(proxy, Mockito.times(0)).purge();
    }
 
 }

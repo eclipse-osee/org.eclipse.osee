@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
+
 /**
  * @author Roberto E. Escobar
  */
 public interface OrcsObjectFactory extends ArtifactObjectFactory, AttributeObjectFactory, RelationObjectFactory {
+
    //
 }
