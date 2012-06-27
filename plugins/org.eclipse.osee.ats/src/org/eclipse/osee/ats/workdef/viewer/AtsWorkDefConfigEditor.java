@@ -35,10 +35,10 @@ import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.gef.ui.parts.TreeViewer;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.util.TransferDropTargetListener;
+import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
-import org.eclipse.osee.ats.workdef.api.WorkDefUtil;
 import org.eclipse.osee.ats.workdef.viewer.model.DefaultTransitionConnection;
 import org.eclipse.osee.ats.workdef.viewer.model.ReturnTransitionConnection;
 import org.eclipse.osee.ats.workdef.viewer.model.StateDefShape;
@@ -223,7 +223,8 @@ public class AtsWorkDefConfigEditor extends GraphicalEditorWithFlyoutPalette {
                throw new OseeArgumentException("StartPage null for workflow " + workflowDef);
             }
             // Create states
-            List<IAtsStateDefinition> stateDefs = WorkDefUtil.getStatesOrderedByDefaultToState(workflowDef);
+            List<IAtsStateDefinition> stateDefs =
+               AtsWorkDefinitionService.getService().getStatesOrderedByDefaultToState(workflowDef);
             for (IAtsStateDefinition stateDef : workflowDef.getStates()) {
                if (!stateDefs.contains(stateDef)) {
                   stateDefs.add(stateDef);
@@ -242,7 +243,8 @@ public class AtsWorkDefConfigEditor extends GraphicalEditorWithFlyoutPalette {
             }
 
             // Create transitions
-            for (IAtsStateDefinition stateDef : WorkDefUtil.getStatesOrderedByDefaultToState(workflowDef)) {
+            for (IAtsStateDefinition stateDef : AtsWorkDefinitionService.getService().getStatesOrderedByDefaultToState(
+               workflowDef)) {
                StateDefShape pageShape = getStateDefShape(stateDef);
                // Handle to pages
                Set<IAtsStateDefinition> toPages = new HashSet<IAtsStateDefinition>();

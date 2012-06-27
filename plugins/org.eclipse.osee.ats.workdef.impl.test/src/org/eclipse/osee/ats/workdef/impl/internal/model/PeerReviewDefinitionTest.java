@@ -9,7 +9,6 @@ import junit.framework.Assert;
 import org.eclipse.osee.ats.workdef.api.IAtsPeerReviewDefinition;
 import org.eclipse.osee.ats.workdef.api.ReviewBlockType;
 import org.eclipse.osee.ats.workdef.api.StateEventType;
-import org.eclipse.osee.ats.workdef.impl.internal.model.PeerReviewDefinition;
 import org.junit.Test;
 
 /**

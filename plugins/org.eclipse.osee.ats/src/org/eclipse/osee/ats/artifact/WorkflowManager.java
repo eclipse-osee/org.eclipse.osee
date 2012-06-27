@@ -31,12 +31,12 @@ import org.eclipse.osee.ats.core.client.workflow.StateManager;
 import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
 import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsVersion;
+import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 import org.eclipse.osee.ats.workdef.api.RuleDefinitionOption;
-import org.eclipse.osee.ats.workdef.api.WorkDefUtil;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -313,7 +313,8 @@ public class WorkflowManager {
 
    public static List<StateXWidgetPage> getStatePagesOrderedByOrdinal(AbstractWorkflowArtifact awa) {
       List<StateXWidgetPage> statePages = new ArrayList<StateXWidgetPage>();
-      for (IAtsStateDefinition stateDefinition : WorkDefUtil.getStatesOrderedByOrdinal(awa.getWorkDefinition())) {
+      for (IAtsStateDefinition stateDefinition : AtsWorkDefinitionService.getService().getStatesOrderedByOrdinal(
+         awa.getWorkDefinition())) {
          try {
             StateXWidgetPage statePage =
                new StateXWidgetPage(awa.getWorkDefinition(), stateDefinition, null,
@@ -329,7 +330,8 @@ public class WorkflowManager {
 
    public static List<StateXWidgetPage> getStatePagesOrderedByDefaultToState(AbstractWorkflowArtifact awa) {
       List<StateXWidgetPage> statePages = new ArrayList<StateXWidgetPage>();
-      for (IAtsStateDefinition stateDefinition : WorkDefUtil.getStatesOrderedByDefaultToState(awa.getWorkDefinition())) {
+      for (IAtsStateDefinition stateDefinition : AtsWorkDefinitionService.getService().getStatesOrderedByDefaultToState(
+         awa.getWorkDefinition())) {
          try {
             StateXWidgetPage statePage =
                new StateXWidgetPage(awa.getWorkDefinition(), stateDefinition, null,

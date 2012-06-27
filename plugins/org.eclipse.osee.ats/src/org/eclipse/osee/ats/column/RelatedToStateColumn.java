@@ -24,11 +24,11 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.StateListDialog;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
-import org.eclipse.osee.ats.workdef.api.WorkDefUtil;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -123,7 +123,7 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
 
    private static List<String> getValidStates(TeamWorkFlowArtifact teamArt) {
       List<String> names = new ArrayList<String>();
-      names.addAll(WorkDefUtil.getStateNames(teamArt.getWorkDefinition()));
+      names.addAll(AtsWorkDefinitionService.getService().getStateNames(teamArt.getWorkDefinition()));
       Collections.sort(names);
       return names;
    }

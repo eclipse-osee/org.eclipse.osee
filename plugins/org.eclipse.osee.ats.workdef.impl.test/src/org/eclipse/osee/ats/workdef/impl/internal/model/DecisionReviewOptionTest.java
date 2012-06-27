@@ -8,7 +8,6 @@ package org.eclipse.osee.ats.workdef.impl.internal.model;
 import java.util.Arrays;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.workdef.api.IAtsDecisionReviewOption;
-import org.eclipse.osee.ats.workdef.impl.internal.model.DecisionReviewOption;
 import org.junit.Test;
 
 /**

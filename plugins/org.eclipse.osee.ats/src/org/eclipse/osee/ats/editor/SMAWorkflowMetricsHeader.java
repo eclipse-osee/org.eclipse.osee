@@ -16,8 +16,8 @@ import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.HoursSpentUtil;
 import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
+import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.workdef.api.WorkDefUtil;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
@@ -46,14 +46,14 @@ public class SMAWorkflowMetricsHeader extends Composite {
       try {
 
          int numColumns = 8;
-         if (!WorkDefUtil.isStateWeightingEnabled(awa.getWorkDefinition())) {
+         if (!AtsWorkDefinitionService.getService().isStateWeightingEnabled(awa.getWorkDefinition())) {
             numColumns = 10;
          }
          toolkit.adapt(this);
          setLayout(ALayout.getZeroMarginLayout(numColumns, false));
          setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-         if (WorkDefUtil.isStateWeightingEnabled(awa.getWorkDefinition())) {
+         if (AtsWorkDefinitionService.getService().isStateWeightingEnabled(awa.getWorkDefinition())) {
             percentLabel =
                FormsUtil.createLabelValue(toolkit, this, "Total Percent: ", "",
                   "Calculation: Sum of percent for all states (including all tasks and reviews) / # statusable states (if configured)");

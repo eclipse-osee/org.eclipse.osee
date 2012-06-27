@@ -8,6 +8,13 @@ package org.eclipse.osee.ats.workdef.api;
 import java.util.List;
 
 public interface IAtsWorkDefinition {
+   /**
+    * NOTE: Extend Identifiable and HasDescription
+    */
+
+   /**
+    * NOTE: Don't expose the set methods
+    */
 
    /**
     * Identification

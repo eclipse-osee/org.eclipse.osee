@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
+import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
@@ -31,7 +32,6 @@ import org.eclipse.osee.ats.util.XCancellationReasonTextWidget;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.workdef.api.IStateToken;
 import org.eclipse.osee.ats.workdef.api.StateType;
-import org.eclipse.osee.ats.workdef.api.WorkDefUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -264,7 +264,7 @@ public class SMAWorkFlowSection extends SectionPart {
          layout.marginLeft = 2;
          comp.setLayout(layout);
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         if (WorkDefUtil.isStateWeightingEnabled(sma.getWorkDefinition())) {
+         if (AtsWorkDefinitionService.getService().isStateWeightingEnabled(sma.getWorkDefinition())) {
             allXWidgets.add(new StatePercentCompleteXWidget(getManagedForm(), statePage, sma, comp, 2, xModListener,
                isCurrentState, editor));
          }

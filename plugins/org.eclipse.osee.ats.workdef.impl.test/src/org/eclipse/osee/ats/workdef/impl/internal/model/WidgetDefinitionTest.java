@@ -8,7 +8,6 @@ package org.eclipse.osee.ats.workdef.impl.internal.model;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.workdef.api.WidgetOption;
-import org.eclipse.osee.ats.workdef.impl.internal.model.WidgetDefinition;
 import org.junit.Test;
 
 /**

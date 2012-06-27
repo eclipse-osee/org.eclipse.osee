@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionToOperation;
 import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.Activator;
@@ -42,7 +43,6 @@ import org.eclipse.osee.ats.workdef.StateDefinitionLabelProvider;
 import org.eclipse.osee.ats.workdef.StateDefinitionViewSorter;
 import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 import org.eclipse.osee.ats.workdef.api.RuleDefinitionOption;
-import org.eclipse.osee.ats.workdef.api.WorkDefUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
@@ -291,7 +291,7 @@ public class WETransitionComposite extends Composite {
    private boolean handlePopulateStateMetrics(IAtsStateDefinition fromStateDefinition, IAtsStateDefinition toStateDefinition) throws OseeCoreException {
       int percent = 0;
       // If state weighting, always 100 cause state is completed
-      if (WorkDefUtil.isStateWeightingEnabled(awa.getWorkDefinition())) {
+      if (AtsWorkDefinitionService.getService().isStateWeightingEnabled(awa.getWorkDefinition())) {
          percent = 100;
       } else {
          if (toStateDefinition.getStateType().isCompletedOrCancelledState()) {

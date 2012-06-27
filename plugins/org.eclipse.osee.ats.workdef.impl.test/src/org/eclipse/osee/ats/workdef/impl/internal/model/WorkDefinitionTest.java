@@ -13,9 +13,7 @@ import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
 import org.eclipse.osee.ats.workdef.api.RuleDefinitionOption;
 import org.eclipse.osee.ats.workdef.api.StateType;
-import org.eclipse.osee.ats.workdef.api.WorkDefUtil;
-import org.eclipse.osee.ats.workdef.impl.internal.model.StateDefinition;
-import org.eclipse.osee.ats.workdef.impl.internal.model.WorkDefinition;
+import org.eclipse.osee.ats.workdef.impl.internal.AtsWorkDefinitionServiceImpl;
 import org.junit.Test;
 
 /**
@@ -54,7 +52,7 @@ public class WorkDefinitionTest {
       analyze.setOrdinal(2);
       implement.setOrdinal(3);
       Assert.assertEquals(4, def.getStates().size());
-      List<IAtsStateDefinition> states = WorkDefUtil.getStatesOrderedByOrdinal(def);
+      List<IAtsStateDefinition> states = new AtsWorkDefinitionServiceImpl().getStatesOrderedByOrdinal(def);
       Assert.assertEquals(endorse, states.get(0));
       Assert.assertEquals(analyze, states.get(1));
       Assert.assertEquals(implement, states.get(2));
@@ -64,7 +62,7 @@ public class WorkDefinitionTest {
    @Test(expected = IllegalArgumentException.class)
    public void testGetStatesOrderedByDefaultToState_exception() {
       IAtsWorkDefinition def = new WorkDefinition("this");
-      WorkDefUtil.getStatesOrderedByDefaultToState(def);
+      new AtsWorkDefinitionServiceImpl().getStatesOrderedByDefaultToState(def);
       def.setStartState(null);
    }
 
@@ -90,14 +88,14 @@ public class WorkDefinitionTest {
       endorse.getToStates().add(completed);
 
       // handle case where one state is completed
-      List<IAtsStateDefinition> states = WorkDefUtil.getStatesOrderedByDefaultToState(def);
+      List<IAtsStateDefinition> states = new AtsWorkDefinitionServiceImpl().getStatesOrderedByDefaultToState(def);
       Assert.assertEquals(endorse, states.get(0));
       Assert.assertEquals(analyze, states.get(1));
       Assert.assertEquals(completed, states.get(2));
 
       // handle case where all states are working
       completed.setStateType(StateType.Working);
-      states = WorkDefUtil.getStatesOrderedByDefaultToState(def);
+      states = new AtsWorkDefinitionServiceImpl().getStatesOrderedByDefaultToState(def);
       Assert.assertEquals(endorse, states.get(0));
       Assert.assertEquals(analyze, states.get(1));
       Assert.assertEquals(completed, states.get(2));
@@ -116,7 +114,7 @@ public class WorkDefinitionTest {
       IAtsWorkDefinition def = new WorkDefinition("this");
       List<IAtsStateDefinition> states = new LinkedList<IAtsStateDefinition>();
       states.addAll(Arrays.asList(endorse, analyze));
-      WorkDefUtil.getStatesOrderedByDefaultToState(def, endorse, states);
+      new AtsWorkDefinitionServiceImpl().getStatesOrderedByDefaultToState(def, endorse, states);
       Assert.assertEquals(2, states.size());
    }
 
@@ -133,7 +131,7 @@ public class WorkDefinitionTest {
       endorse.setDefaultToState(endorse);
       List<IAtsStateDefinition> states = new LinkedList<IAtsStateDefinition>();
       states.addAll(Arrays.asList(analyze, completed));
-      WorkDefUtil.getStatesOrderedByDefaultToState(def, endorse, states);
+      new AtsWorkDefinitionServiceImpl().getStatesOrderedByDefaultToState(def, endorse, states);
       Assert.assertEquals(3, states.size());
    }
 
@@ -151,9 +149,9 @@ public class WorkDefinitionTest {
       IAtsWorkDefinition def = new WorkDefinition("this");
       def.addState(new StateDefinition("endorse"));
       def.addState(new StateDefinition("analyze"));
-      Assert.assertEquals(2, WorkDefUtil.getStateNames(def).size());
-      Assert.assertTrue(WorkDefUtil.getStateNames(def).contains("endorse"));
-      Assert.assertTrue(WorkDefUtil.getStateNames(def).contains("analyze"));
+      Assert.assertEquals(2, new AtsWorkDefinitionServiceImpl().getStateNames(def).size());
+      Assert.assertTrue(new AtsWorkDefinitionServiceImpl().getStateNames(def).contains("endorse"));
+      Assert.assertTrue(new AtsWorkDefinitionServiceImpl().getStateNames(def).contains("analyze"));
    }
 
    @Test
@@ -205,13 +203,13 @@ public class WorkDefinitionTest {
    @Test
    public void testIsStateWeightingEnabled() {
       IAtsWorkDefinition def = new WorkDefinition("this");
-      Assert.assertFalse(WorkDefUtil.isStateWeightingEnabled(def));
+      Assert.assertFalse(new AtsWorkDefinitionServiceImpl().isStateWeightingEnabled(def));
       IAtsStateDefinition endorse = def.addState(new StateDefinition("endorse"));
       endorse.setStateWeight(34);
-      Assert.assertTrue(WorkDefUtil.isStateWeightingEnabled(def));
+      Assert.assertTrue(new AtsWorkDefinitionServiceImpl().isStateWeightingEnabled(def));
 
       endorse.setStateWeight(0);
-      Assert.assertFalse(WorkDefUtil.isStateWeightingEnabled(def));
+      Assert.assertFalse(new AtsWorkDefinitionServiceImpl().isStateWeightingEnabled(def));
    }
 
    @Test

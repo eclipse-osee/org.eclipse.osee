@@ -21,8 +21,8 @@ import org.eclipse.osee.ats.actions.wizard.NewNoteWizard;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.note.NoteType;
+import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
-import org.eclipse.osee.ats.workdef.api.WorkDefUtil;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -54,7 +54,8 @@ public class AddNoteAction extends AbstractAtsAction {
       ArrayList<String> artifactNames = new ArrayList<String>();
       Map<String, String> selectedToStateName = new HashMap<String, String>();
       artifactNames.add("Whole \"" + sma.getArtifactTypeName() + "\"");
-      for (IAtsStateDefinition stateDefinition : WorkDefUtil.getStatesOrderedByDefaultToState(sma.getWorkDefinition())) {
+      for (IAtsStateDefinition stateDefinition : AtsWorkDefinitionService.getService().getStatesOrderedByDefaultToState(
+         sma.getWorkDefinition())) {
          String displayName = "\"" + stateDefinition.getName() + "\" State";
          artifactNames.add(displayName);
          selectedToStateName.put(displayName, stateDefinition.getName());

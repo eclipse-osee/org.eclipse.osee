@@ -21,9 +21,9 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.model.WorkStateProvider;
+import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 import org.eclipse.osee.ats.workdef.api.IStateToken;
-import org.eclipse.osee.ats.workdef.api.WorkDefUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -42,7 +42,7 @@ public class PercentCompleteTotalUtil {
          return 0;
       }
       AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
-      if (WorkDefUtil.isStateWeightingEnabled(awa.getWorkDefinition())) {
+      if (AtsWorkDefinitionService.getService().isStateWeightingEnabled(awa.getWorkDefinition())) {
          // Calculate total percent using configured weighting
          int percent = 0;
          for (IAtsStateDefinition stateDef : awa.getWorkDefinition().getStates()) {

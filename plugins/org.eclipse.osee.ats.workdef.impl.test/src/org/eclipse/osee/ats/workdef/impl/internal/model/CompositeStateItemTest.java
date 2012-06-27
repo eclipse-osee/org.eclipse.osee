@@ -6,7 +6,6 @@
 package org.eclipse.osee.ats.workdef.impl.internal.model;
 
 import org.eclipse.osee.ats.workdef.api.IAtsCompositeLayoutItem;
-import org.eclipse.osee.ats.workdef.impl.internal.model.CompositeLayoutItem;
 import org.junit.Assert;
 import org.junit.Test;
 

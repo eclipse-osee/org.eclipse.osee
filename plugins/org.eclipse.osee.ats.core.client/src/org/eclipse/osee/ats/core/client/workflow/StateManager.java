@@ -40,11 +40,11 @@ import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.ats.core.model.impl.WorkStateProviderImpl;
 import org.eclipse.osee.ats.core.notify.IAtsNotificationListener;
 import org.eclipse.osee.ats.core.users.AtsUsers;
+import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
 import org.eclipse.osee.ats.workdef.api.IStateToken;
 import org.eclipse.osee.ats.workdef.api.StateType;
-import org.eclipse.osee.ats.workdef.api.WorkDefUtil;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -141,7 +141,7 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
    public void updateMetrics(IStateToken state, double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException {
       getStateProvider().setHoursSpent(state.getName(),
          getStateProvider().getHoursSpent(state.getName()) + additionalHours);
-      if (WorkDefUtil.isStateWeightingEnabled(awa.getWorkDefinition())) {
+      if (AtsWorkDefinitionService.getService().isStateWeightingEnabled(awa.getWorkDefinition())) {
          getStateProvider().setPercentComplete(state.getName(), percentComplete);
       } else {
          awa.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, percentComplete);
@@ -330,7 +330,7 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
          allValidtateNames = new ArrayList<String>();
          try {
             for (IAtsWorkDefinition workDef : WorkDefinitionFactory.loadAllDefinitions()) {
-               for (String stateName : WorkDefUtil.getStateNames(workDef)) {
+               for (String stateName : AtsWorkDefinitionService.getService().getStateNames(workDef)) {
                   if (!allValidtateNames.contains(stateName)) {
                      allValidtateNames.add(stateName);
                   }

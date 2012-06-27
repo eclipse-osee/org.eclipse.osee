@@ -9,8 +9,6 @@ import junit.framework.Assert;
 import org.eclipse.osee.ats.workdef.api.IAtsDecisionReviewDefinition;
 import org.eclipse.osee.ats.workdef.api.ReviewBlockType;
 import org.eclipse.osee.ats.workdef.api.StateEventType;
-import org.eclipse.osee.ats.workdef.impl.internal.model.DecisionReviewDefinition;
-import org.eclipse.osee.ats.workdef.impl.internal.model.DecisionReviewOption;
 import org.junit.Test;
 
 /**

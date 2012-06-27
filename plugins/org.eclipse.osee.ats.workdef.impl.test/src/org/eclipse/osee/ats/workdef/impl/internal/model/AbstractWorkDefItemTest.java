@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.ats.workdef.impl.internal.model;
 
-import org.eclipse.osee.ats.workdef.impl.internal.model.AbstractWorkDefItem;
 import org.junit.Assert;
 import org.junit.Test;
 
