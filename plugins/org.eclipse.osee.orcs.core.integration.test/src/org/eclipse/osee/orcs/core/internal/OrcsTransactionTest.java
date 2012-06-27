@@ -10,11 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
-import junit.framework.Assert;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.core.OrcsIntegrationRule;
@@ -24,6 +27,7 @@ import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.transaction.OrcsTransaction;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -55,17 +59,51 @@ public class OrcsTransactionTest {
    @Test
    public void testCreateArtifact() throws OseeCoreException {
       String comment = "Test Artifact Write";
-      OrcsTransaction tx = txFactory.createTransaction(CoreBranches.COMMON, userArtifact, comment);
+      String expectedName = "Create A Folder";
+      String expectedAnnotation = "Annotate It";
 
-      String name = "Create A Folder";
-      ArtifactWriteable writeable = tx.createArtifact(CoreArtifactTypes.Folder, "Create A Folder");
-      Assert.assertEquals(name, writeable.getName());
+      Branch branch = orcsApi.getBranchCache().get(CoreBranches.COMMON);
+      TransactionRecord currentTx = orcsApi.getTxsCache().getHeadTransaction(branch);
 
-      tx.commit();
+      OrcsTransaction tx = txFactory.createTransaction(branch, userArtifact, comment);
+
+      ArtifactWriteable writeable = tx.createArtifact(CoreArtifactTypes.Folder, expectedName);
+
+      writeable.setAttributesFromStrings(CoreAttributeTypes.Annotation, expectedAnnotation);
+      Assert.assertEquals(expectedName, writeable.getName());
+      Assert.assertEquals(expectedAnnotation,
+         writeable.getAttributeValues(CoreAttributeTypes.Annotation).iterator().next());
+
+      String id = writeable.getGuid();
+
+      TransactionRecord newTx = tx.commit();
+      Assert.assertFalse(tx.isCommitInProgress());
+
+      TransactionRecord newHeadTx = orcsApi.getTxsCache().getHeadTransaction(branch);
+
+      checkTransaction(currentTx, newTx, branch, comment, userArtifact);
+      Assert.assertEquals(newTx, newHeadTx);
+
+      ArtifactReadable artifact =
+         orcsApi.getQueryFactory(context).fromBranch(CoreBranches.COMMON).andGuidsOrHrids(id).getResults().getExactlyOne();
+      Assert.assertEquals(expectedName, artifact.getName());
+      Assert.assertEquals(expectedAnnotation,
+         artifact.getAttributeValues(CoreAttributeTypes.Annotation).iterator().next());
+      Assert.assertEquals(writeable, artifact);
    }
 
    private ArtifactReadable getSystemUser() throws OseeCoreException {
       return orcsApi.getQueryFactory(context).fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+   }
+
+   private void checkTransaction(TransactionRecord previousTx, TransactionRecord newTx, Branch branch, String comment, ArtifactReadable user) throws OseeCoreException {
+      Assert.assertEquals(previousTx.getId() + 1, newTx.getId());
+      Assert.assertEquals(comment, newTx.getComment());
+      Assert.assertEquals(branch, newTx.getBranch());
+      Assert.assertEquals(TransactionDetailsType.NonBaselined, newTx.getTxType());
+      Assert.assertEquals(user.getLocalId(), newTx.getAuthor());
+      Assert.assertEquals(-1, newTx.getCommit());
+      Assert.assertTrue(previousTx.getTimeStamp().before(newTx.getTimeStamp()));
    }
 
    //   public static void main(String[] args) throws Exception {

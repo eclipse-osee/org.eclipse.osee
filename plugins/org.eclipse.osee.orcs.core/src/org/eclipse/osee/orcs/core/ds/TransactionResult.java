@@ -11,11 +11,11 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 
 public interface TransactionResult {
 
-   ITransaction getTransaction();
+   TransactionRecord getTransaction();
 
    List<ArtifactTransactionData> getData();
 }

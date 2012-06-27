@@ -80,7 +80,11 @@ public interface AttributeManager extends Named, Identity<String> {
 
    void setSoleAttributeFromStream(IAttributeType attributeType, InputStream inputStream) throws OseeCoreException;
 
+   <T> void setAttributesFromValues(IAttributeType attributeType, T... values) throws OseeCoreException;
+
    <T> void setAttributesFromValues(IAttributeType attributeType, Collection<T> values) throws OseeCoreException;
+
+   void setAttributesFromStrings(IAttributeType attributeType, String... values) throws OseeCoreException;
 
    void setAttributesFromStrings(IAttributeType attributeType, Collection<String> values) throws OseeCoreException;
 

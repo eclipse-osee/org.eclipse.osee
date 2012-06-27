@@ -21,9 +21,9 @@ import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
@@ -119,9 +119,9 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
    }
 
    @Override
-   public ITransaction commit() throws OseeCoreException {
+   public TransactionRecord commit() throws OseeCoreException {
       Conditions.checkExpressionFailOnTrue(isCommitInProgress(), "Commit is already in progress");
-      ITransaction transaction = null;
+      TransactionRecord transaction = null;
       try {
          startCommit();
          Callable<TransactionResult> callable = dataStore.commitTransaction(this);

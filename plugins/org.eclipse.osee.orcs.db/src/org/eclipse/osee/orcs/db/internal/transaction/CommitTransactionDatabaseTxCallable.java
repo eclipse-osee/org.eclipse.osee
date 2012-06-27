@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.database.schema.DatabaseTxCallable;
-import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -180,17 +179,17 @@ public final class CommitTransactionDatabaseTxCallable extends DatabaseTxCallabl
 
    private final class TransactionResultImpl implements TransactionResult {
 
-      private final ITransaction tx;
+      private final TransactionRecord tx;
       private final List<ArtifactTransactionData> data;
 
-      public TransactionResultImpl(ITransaction tx, List<ArtifactTransactionData> data) {
+      public TransactionResultImpl(TransactionRecord tx, List<ArtifactTransactionData> data) {
          super();
          this.tx = tx;
          this.data = data;
       }
 
       @Override
-      public ITransaction getTransaction() {
+      public TransactionRecord getTransaction() {
          return tx;
       }
 

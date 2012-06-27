@@ -27,7 +27,6 @@ public interface ArtifactWriteable extends Writeable, ArtifactReadable {
    void setArtifactType(IArtifactType artifactType) throws OseeCoreException;
 
    // Attributes
-
    <T> List<AttributeWriteable<T>> getWriteableAttributes() throws OseeCoreException;
 
    <T> List<AttributeWriteable<T>> getWriteableAttributes(IAttributeType attributeType) throws OseeCoreException;
@@ -46,7 +45,11 @@ public interface ArtifactWriteable extends Writeable, ArtifactReadable {
 
    void setSoleAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException;
 
+   <T> void setAttributesFromValues(IAttributeType attributeType, T... values) throws OseeCoreException;
+
    <T> void setAttributesFromValues(IAttributeType attributeType, Collection<T> values) throws OseeCoreException;
+
+   void setAttributesFromStrings(IAttributeType attributeType, String... values) throws OseeCoreException;
 
    void setAttributesFromStrings(IAttributeType attributeType, Collection<String> values) throws OseeCoreException;
 

@@ -119,6 +119,16 @@ public class WritableArtifactProxy extends ReadableArtifactProxy implements Arti
    }
 
    @Override
+   public <T> void setAttributesFromValues(IAttributeType attributeType, T... values) throws OseeCoreException {
+      getObjectForWrite().setAttributesFromValues(attributeType, values);
+   }
+
+   @Override
+   public void setAttributesFromStrings(IAttributeType attributeType, String... values) throws OseeCoreException {
+      getObjectForWrite().setAttributesFromStrings(attributeType, values);
+   }
+
+   @Override
    public void setAttributesFromStrings(IAttributeType attributeType, Collection<String> values) throws OseeCoreException {
       getObjectForWrite().setAttributesFromStrings(attributeType, values);
    }
@@ -157,4 +167,5 @@ public class WritableArtifactProxy extends ReadableArtifactProxy implements Arti
    public boolean isDeleted() throws OseeCoreException {
       return getProxiedObject().isDeleted();
    }
+
 }

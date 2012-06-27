@@ -16,8 +16,8 @@ import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
 import org.eclipse.osee.orcs.data.GraphReadable;
@@ -64,7 +64,7 @@ public interface OrcsTransaction {
 
    ////////////////////////
 
-   ITransaction commit() throws OseeCoreException;
+   TransactionRecord commit() throws OseeCoreException;
 
    boolean isCommitInProgress();
 

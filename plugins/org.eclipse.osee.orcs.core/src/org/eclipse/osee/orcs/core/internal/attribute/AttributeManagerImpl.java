@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -247,8 +248,18 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
    }
 
    @Override
+   public void setAttributesFromStrings(IAttributeType attributeType, String... values) throws OseeCoreException {
+      setAttributesFromStrings(attributeType, Arrays.asList(values));
+   }
+
+   @Override
    public void setAttributesFromStrings(IAttributeType attributeType, Collection<String> values) throws OseeCoreException {
       setAttributesFromValuesHelper(ATTRIBUTE_STRING_SETTER, attributeType, values);
+   }
+
+   @Override
+   public <T> void setAttributesFromValues(IAttributeType attributeType, T... values) throws OseeCoreException {
+      setAttributesFromValues(attributeType, Arrays.asList(values));
    }
 
    @Override
