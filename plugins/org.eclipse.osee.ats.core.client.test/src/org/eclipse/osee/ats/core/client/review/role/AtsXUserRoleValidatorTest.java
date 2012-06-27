@@ -14,13 +14,12 @@ import java.util.Arrays;
 import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.core.validator.ValidatorTestUtil;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
-import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
-import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.mocks.shared.MockStateDefinition;
+import org.eclipse.osee.ats.mocks.shared.MockWidgetDefinition;
+import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.ats.workdef.api.WidgetOption;
 import org.eclipse.osee.ats.workdef.api.WidgetResult;
 import org.eclipse.osee.ats.workdef.api.WidgetStatus;
-import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -32,12 +31,12 @@ public class AtsXUserRoleValidatorTest {
    public void testValidateTransition() throws OseeCoreException {
       AtsXUserRoleValidator validator = new AtsXUserRoleValidator();
 
-      IAtsWidgetDefinition widgetDef = AtsWorkDefinitionService.getService().createWidgetDefinition("test");
+      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
       widgetDef.setXWidgetName("xList");
 
-      IAtsStateDefinition fromStateDef = AtsWorkDefinitionService.getService().createStateDefinition("from");
+      MockStateDefinition fromStateDef = new MockStateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
-      IAtsStateDefinition toStateDef = AtsWorkDefinitionService.getService().createStateDefinition("to");
+      MockStateDefinition toStateDef = new MockStateDefinition("to");
       toStateDef.setStateType(StateType.Working);
 
       // Valid for anything not XIntegerDam
@@ -64,12 +63,12 @@ public class AtsXUserRoleValidatorTest {
    public void testValidateTransition_Roles() throws OseeCoreException {
       AtsXUserRoleValidator validator = new AtsXUserRoleValidator();
 
-      IAtsWidgetDefinition widgetDef = AtsWorkDefinitionService.getService().createWidgetDefinition("test");
+      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
       widgetDef.setXWidgetName("XUserRoleViewer");
 
-      IAtsStateDefinition fromStateDef = AtsWorkDefinitionService.getService().createStateDefinition("from");
+      MockStateDefinition fromStateDef = new MockStateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
-      IAtsStateDefinition toStateDef = AtsWorkDefinitionService.getService().createStateDefinition("to");
+      MockStateDefinition toStateDef = new MockStateDefinition("to");
       toStateDef.setStateType(StateType.Working);
 
       UserRole author = new UserRole(Role.Author, "2134", 0.0, false);

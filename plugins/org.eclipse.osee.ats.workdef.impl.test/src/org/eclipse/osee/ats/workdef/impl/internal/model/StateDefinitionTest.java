@@ -7,7 +7,6 @@ package org.eclipse.osee.ats.workdef.impl.internal.model;
 
 import junit.framework.Assert;
 import org.eclipse.osee.ats.workdef.api.IAtsCompositeLayoutItem;
-import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.workdef.api.RuleDefinitionOption;
 import org.eclipse.osee.ats.workdef.api.StateColor;
@@ -19,7 +18,7 @@ public class StateDefinitionTest {
 
    @Test
    public void testToString() {
-      IAtsStateDefinition def = new StateDefinition("endorse");
+      StateDefinition def = new StateDefinition("endorse");
       Assert.assertEquals("[endorse][null]", def.toString());
       def.setStateType(StateType.Working);
       Assert.assertEquals("[endorse][Working]", def.toString());
@@ -27,7 +26,7 @@ public class StateDefinitionTest {
 
    @Test
    public void testGetStateItems() {
-      IAtsStateDefinition def = new StateDefinition("endorse");
+      StateDefinition def = new StateDefinition("endorse");
       Assert.assertEquals(0, def.getLayoutItems().size());
       def.getLayoutItems().add(new LayoutItem("item"));
       Assert.assertEquals(1, def.getLayoutItems().size());
@@ -35,7 +34,7 @@ public class StateDefinitionTest {
 
    @Test
    public void testAddRemoveRule() {
-      IAtsStateDefinition def = new StateDefinition("endorse");
+      StateDefinition def = new StateDefinition("endorse");
       Assert.assertEquals(0, def.getRules().size());
       def.addRule("rule");
       Assert.assertEquals(1, def.getRules().size());
@@ -51,7 +50,7 @@ public class StateDefinitionTest {
 
    @Test
    public void testGetSetStateType() {
-      IAtsStateDefinition def = new StateDefinition("endorse");
+      StateDefinition def = new StateDefinition("endorse");
       Assert.assertNull(def.getStateType());
       def.setStateType(StateType.Working);
       Assert.assertEquals(StateType.Working, def.getStateType());
@@ -59,7 +58,7 @@ public class StateDefinitionTest {
 
    @Test
    public void testGetSetOrdinal() {
-      IAtsStateDefinition def = new StateDefinition("endorse");
+      StateDefinition def = new StateDefinition("endorse");
       Assert.assertEquals(0, def.getOrdinal());
       def.setOrdinal(3);
       Assert.assertEquals(3, def.getOrdinal());
@@ -67,9 +66,9 @@ public class StateDefinitionTest {
 
    @Test
    public void testGetToStates() {
-      IAtsStateDefinition endorse = new StateDefinition("endorse");
-      IAtsStateDefinition analyze = new StateDefinition("endorse");
-      IAtsStateDefinition completed = new StateDefinition("endorse");
+      StateDefinition endorse = new StateDefinition("endorse");
+      StateDefinition analyze = new StateDefinition("endorse");
+      StateDefinition completed = new StateDefinition("endorse");
       endorse.getToStates().add(analyze);
       endorse.getToStates().add(completed);
       Assert.assertTrue(endorse.getToStates().contains(analyze));
@@ -78,14 +77,14 @@ public class StateDefinitionTest {
 
    @Test
    public void testGetPageName() {
-      IAtsStateDefinition endorse = new StateDefinition("endorse");
+      StateDefinition endorse = new StateDefinition("endorse");
       Assert.assertEquals("endorse", endorse.getName());
    }
 
    @Test
    public void testGetSetWorkDefinition() {
       WorkDefinition workDef = new WorkDefinition("mine");
-      IAtsStateDefinition state = new StateDefinition("endorse");
+      StateDefinition state = new StateDefinition("endorse");
       Assert.assertNull(state.getWorkDefinition());
       state.setWorkDefinition(workDef);
       Assert.assertEquals(workDef, state.getWorkDefinition());
@@ -95,7 +94,7 @@ public class StateDefinitionTest {
 
    @Test
    public void testStateType() {
-      IAtsStateDefinition state = new StateDefinition("endorse");
+      StateDefinition state = new StateDefinition("endorse");
       state.setStateType(StateType.Working);
 
       Assert.assertTrue(state.getStateType().isWorkingState());
@@ -114,9 +113,9 @@ public class StateDefinitionTest {
 
    @Test
    public void testGetOverrideAttributeValidationStates() {
-      IAtsStateDefinition endorse = new StateDefinition("endorse");
-      IAtsStateDefinition analyze = new StateDefinition("endorse");
-      IAtsStateDefinition completed = new StateDefinition("endorse");
+      StateDefinition endorse = new StateDefinition("endorse");
+      StateDefinition analyze = new StateDefinition("endorse");
+      StateDefinition completed = new StateDefinition("endorse");
       endorse.getOverrideAttributeValidationStates().add(analyze);
       endorse.getOverrideAttributeValidationStates().add(completed);
       Assert.assertTrue(endorse.getOverrideAttributeValidationStates().contains(analyze));
@@ -125,7 +124,7 @@ public class StateDefinitionTest {
 
    @Test
    public void testGetWidgetsFromStateItems() {
-      IAtsStateDefinition def = new StateDefinition("endorse");
+      StateDefinition def = new StateDefinition("endorse");
       Assert.assertEquals(0, new AtsWorkDefinitionServiceImpl().getWidgetsFromLayoutItems(def).size());
 
       IAtsWidgetDefinition widget1 = new WidgetDefinition("item 1");
@@ -149,7 +148,7 @@ public class StateDefinitionTest {
 
    @Test
    public void testGetDecisionReviews() {
-      IAtsStateDefinition def = new StateDefinition("endorse");
+      StateDefinition def = new StateDefinition("endorse");
       Assert.assertEquals(0, def.getDecisionReviews().size());
       def.getDecisionReviews().add(new DecisionReviewDefinition("review 1"));
       def.getDecisionReviews().add(new DecisionReviewDefinition("review 2"));
@@ -158,7 +157,7 @@ public class StateDefinitionTest {
 
    @Test
    public void testGetPeerReviews() {
-      IAtsStateDefinition def = new StateDefinition("endorse");
+      StateDefinition def = new StateDefinition("endorse");
       Assert.assertEquals(0, def.getPeerReviews().size());
       def.getPeerReviews().add(new PeerReviewDefinition("review 1"));
       def.getPeerReviews().add(new PeerReviewDefinition("review 2"));
@@ -167,7 +166,7 @@ public class StateDefinitionTest {
 
    @Test
    public void testGetSetPercentWeight() {
-      IAtsStateDefinition def = new StateDefinition("endorse");
+      StateDefinition def = new StateDefinition("endorse");
       Assert.assertEquals(0, def.getStateWeight());
       def.setStateWeight(34);
       Assert.assertEquals(34, def.getStateWeight());
@@ -176,7 +175,7 @@ public class StateDefinitionTest {
 
    @Test
    public void testGetSetRecommendedPercentComplete() {
-      IAtsStateDefinition endorse = new StateDefinition("endorse");
+      StateDefinition endorse = new StateDefinition("endorse");
       Assert.assertEquals((Integer) null, endorse.getRecommendedPercentComplete());
       endorse.setRecommendedPercentComplete(34);
       Assert.assertEquals((Integer) 34, endorse.getRecommendedPercentComplete());
@@ -184,7 +183,7 @@ public class StateDefinitionTest {
 
    @Test
    public void testGetSetColor() {
-      IAtsStateDefinition endorse = new StateDefinition("endorse");
+      StateDefinition endorse = new StateDefinition("endorse");
       Assert.assertNull(endorse.getColor());
       endorse.setColor(StateColor.BLUE);
       Assert.assertEquals(StateColor.BLUE, endorse.getColor());
@@ -192,7 +191,7 @@ public class StateDefinitionTest {
 
    @Test
    public void testHasWidgetNamed() {
-      IAtsStateDefinition def = new StateDefinition("endorse");
+      StateDefinition def = new StateDefinition("endorse");
       Assert.assertFalse(new AtsWorkDefinitionServiceImpl().hasWidgetNamed(def, "item 2"));
 
       IAtsCompositeLayoutItem stateItem2 = new CompositeLayoutItem(2);
@@ -208,28 +207,28 @@ public class StateDefinitionTest {
 
    @Test
    public void testEqualsObject() {
-      IAtsStateDefinition obj = new StateDefinition("hello");
+      StateDefinition obj = new StateDefinition("hello");
       Assert.assertTrue(obj.equals(obj));
 
-      IAtsStateDefinition obj2 = new StateDefinition("hello");
+      StateDefinition obj2 = new StateDefinition("hello");
 
       Assert.assertTrue(obj.equals(obj2));
       Assert.assertFalse(obj.equals(null));
       Assert.assertFalse(obj.equals("str"));
 
-      IAtsStateDefinition obj3 = new StateDefinition("hello");
+      StateDefinition obj3 = new StateDefinition("hello");
       obj3.setName(null);
       Assert.assertFalse(obj.equals(obj3));
       Assert.assertFalse(obj3.equals(obj));
 
-      IAtsStateDefinition obj4 = new StateDefinition("hello");
+      StateDefinition obj4 = new StateDefinition("hello");
       obj4.setName(null);
       Assert.assertFalse(obj3.equals(obj4));
    }
 
    @Test
    public void testHashCode() {
-      IAtsStateDefinition obj = new StateDefinition("hello");
+      StateDefinition obj = new StateDefinition("hello");
       Assert.assertEquals(99162353, obj.hashCode());
 
       obj = new StateDefinition("hello");

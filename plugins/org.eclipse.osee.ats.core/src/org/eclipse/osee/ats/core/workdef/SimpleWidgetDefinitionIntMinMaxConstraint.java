@@ -8,44 +8,44 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.workdef.impl.internal.model;
+package org.eclipse.osee.ats.core.workdef;
 
-import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinitionFloatMinMaxConstraint;
+import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinitionIntMinMaxConstraint;
 
 
 /**
  * @author Donald G. Dunne
  */
-public class WidgetDefinitionFloatMinMaxConstraint implements IAtsWidgetDefinitionFloatMinMaxConstraint {
-   private Double minValue = null;
-   private Double maxValue = null;
+public class SimpleWidgetDefinitionIntMinMaxConstraint implements IAtsWidgetDefinitionIntMinMaxConstraint {
+   private Integer minValue = null;
+   private Integer maxValue = null;
 
-   public WidgetDefinitionFloatMinMaxConstraint(Double minValue, Double maxValue) {
+   public SimpleWidgetDefinitionIntMinMaxConstraint(Integer minValue, Integer maxValue) {
       set(minValue, maxValue);
    }
 
-   public WidgetDefinitionFloatMinMaxConstraint(String minValue, String maxValue) {
+   public SimpleWidgetDefinitionIntMinMaxConstraint(String minValue, String maxValue) {
       if (minValue != null) {
-         this.minValue = new Double(minValue);
+         this.minValue = new Integer(minValue);
       }
       if (maxValue != null) {
-         this.maxValue = new Double(maxValue);
+         this.maxValue = new Integer(maxValue);
       }
    }
 
    @Override
-   public void set(Double minValue, Double maxValue) {
+   public void set(Integer minValue, Integer maxValue) {
       this.minValue = minValue;
       this.maxValue = maxValue;
    }
 
    @Override
-   public Double getMinValue() {
+   public Integer getMinValue() {
       return minValue;
    }
 
    @Override
-   public Double getMaxValue() {
+   public Integer getMaxValue() {
       return maxValue;
    }
 

@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.ats.core.workdef;
 
+import org.eclipse.osee.ats.mocks.shared.MockWorkDefinition;
 import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,7 +26,7 @@ public class WorkDefinitionMatchTest {
 
    @Test
    public void testWorkDefinitionMatchWorkDefinitionString() {
-      IAtsWorkDefinition workDef = AtsWorkDefinitionService.getService().createWorkDefinition("mine");
+      IAtsWorkDefinition workDef = new MockWorkDefinition("mine");
       WorkDefinitionMatch match = new WorkDefinitionMatch(workDef.getName(), "trace");
       match.setWorkDefinition(workDef);
       Assert.assertNotNull(match.getWorkDefinition());
@@ -36,7 +37,7 @@ public class WorkDefinitionMatchTest {
    public void testGetSetWorkDefinition() {
       WorkDefinitionMatch match = new WorkDefinitionMatch();
       Assert.assertNull(match.getWorkDefinition());
-      match.setWorkDefinition(AtsWorkDefinitionService.getService().createWorkDefinition("mine"));
+      match.setWorkDefinition(new MockWorkDefinition("mine"));
       Assert.assertNotNull(match.getWorkDefinition());
    }
 
@@ -56,7 +57,7 @@ public class WorkDefinitionMatchTest {
 
    @Test
    public void testIsMatched() {
-      IAtsWorkDefinition workDef = AtsWorkDefinitionService.getService().createWorkDefinition("mine");
+      IAtsWorkDefinition workDef = new MockWorkDefinition("mine");
       WorkDefinitionMatch match = new WorkDefinitionMatch(workDef.getName(), "trace");
       match.setWorkDefinition(workDef);
       Assert.assertTrue(match.isMatched());
@@ -66,7 +67,7 @@ public class WorkDefinitionMatchTest {
 
    @Test
    public void testToString() {
-      IAtsWorkDefinition workDef = AtsWorkDefinitionService.getService().createWorkDefinition("mine");
+      IAtsWorkDefinition workDef = new MockWorkDefinition("mine");
       WorkDefinitionMatch match = new WorkDefinitionMatch(workDef.getName(), "trace");
       match.setWorkDefinition(workDef);
       Assert.assertEquals("mine", match.toString());

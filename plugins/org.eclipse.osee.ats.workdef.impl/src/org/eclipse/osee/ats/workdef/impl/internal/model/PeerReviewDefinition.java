@@ -39,7 +39,6 @@ public class PeerReviewDefinition implements IAtsPeerReviewDefinition {
       return name;
    }
 
-   @Override
    public void setName(String name) {
       this.name = name;
    }
@@ -49,7 +48,6 @@ public class PeerReviewDefinition implements IAtsPeerReviewDefinition {
       return description;
    }
 
-   @Override
    public void setDescription(String description) {
       this.description = description;
    }
@@ -59,7 +57,6 @@ public class PeerReviewDefinition implements IAtsPeerReviewDefinition {
       return blockingType;
    }
 
-   @Override
    public void setBlockingType(ReviewBlockType blockingType) {
       this.blockingType = blockingType;
    }
@@ -69,7 +66,6 @@ public class PeerReviewDefinition implements IAtsPeerReviewDefinition {
       return stateEventType;
    }
 
-   @Override
    public void setStateEventType(StateEventType stateEventType) {
       this.stateEventType = stateEventType;
    }
@@ -89,7 +85,6 @@ public class PeerReviewDefinition implements IAtsPeerReviewDefinition {
       return reviewTitle;
    }
 
-   @Override
    public void setReviewTitle(String reviewTitle) {
       this.reviewTitle = reviewTitle;
    }
@@ -99,7 +94,6 @@ public class PeerReviewDefinition implements IAtsPeerReviewDefinition {
       return relatedToState;
    }
 
-   @Override
    public void setRelatedToState(String relatedToState) {
       this.relatedToState = relatedToState;
    }
@@ -109,7 +103,6 @@ public class PeerReviewDefinition implements IAtsPeerReviewDefinition {
       return location;
    }
 
-   @Override
    public void setLocation(String location) {
       this.location = location;
    }

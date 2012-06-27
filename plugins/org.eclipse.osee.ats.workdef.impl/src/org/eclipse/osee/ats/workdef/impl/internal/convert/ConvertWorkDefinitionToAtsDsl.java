@@ -75,9 +75,6 @@ public class ConvertWorkDefinitionToAtsDsl {
       dslWorkDef = AtsDslFactoryImpl.init().createWorkDef();
       dslWorkDef.setName(Strings.quote(definitionName));
       dslWorkDef.getId().add(definitionName);
-      if (!workDef.getRules().isEmpty()) {
-         resultData.logError("Unhandled Rules for WorkDefinition");
-      }
 
       // Process Work States
       for (IAtsStateDefinition stateDef : workDef.getStates()) {

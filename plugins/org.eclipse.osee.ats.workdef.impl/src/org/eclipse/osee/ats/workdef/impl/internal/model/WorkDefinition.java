@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
+import org.eclipse.osee.framework.core.data.Identity;
 
 /**
  * @author Donald G. Dunne
@@ -21,7 +22,6 @@ import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
 public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefinition {
 
    private final List<IAtsStateDefinition> states = new ArrayList<IAtsStateDefinition>(5);
-   private final RuleManager ruleMgr = new RuleManager();
    private String id;
    private IAtsStateDefinition startState;
 
@@ -44,7 +44,7 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
+      result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
       return result;
    }
 
@@ -59,14 +59,14 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
       if (getClass() != obj.getClass()) {
          return false;
       }
-      AbstractWorkDefItem other = (AbstractWorkDefItem) obj;
-      if (getName() == null) {
-         if (other.getName() != null) {
+      WorkDefinition other = (WorkDefinition) obj;
+      if (getId() == null) {
+         if (other.getId() != null) {
             return false;
          } else {
             return false;
          }
-      } else if (!getName().equals(other.getName())) {
+      } else if (!getId().equals(other.getId())) {
          return false;
       }
       return true;
@@ -77,7 +77,6 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
       return startState;
    }
 
-   @Override
    public void setStartState(IAtsStateDefinition startState) {
       this.startState = startState;
    }
@@ -87,12 +86,10 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
       return id;
    }
 
-   @Override
    public void setId(String id) {
       this.id = id;
    }
 
-   @Override
    public IAtsStateDefinition addState(IAtsStateDefinition state) {
       IAtsStateDefinition currState = getStateByName(state.getName());
       if (currState != null) {
@@ -107,27 +104,19 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
       return states;
    }
 
-   /**
-    * Rules
-    */
    @Override
-   public void removeRule(String rule) {
-      ruleMgr.removeRule(rule);
+   public String getGuid() {
+      return null;
    }
 
    @Override
-   public List<String> getRules() {
-      return ruleMgr.getRules();
-   }
-
-   @Override
-   public void addRule(String rule) {
-      ruleMgr.addRule(rule);
-   }
-
-   @Override
-   public boolean hasRule(String rule) {
-      return ruleMgr.hasRule(rule);
+   public boolean matches(Identity<?>... identities) {
+      for (Identity<?> identity : identities) {
+         if (equals(identity)) {
+            return true;
+         }
+      }
+      return false;
    }
 
 }

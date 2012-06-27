@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.core.client.review.defect;
 
 import java.util.Date;
 import junit.framework.Assert;
-import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Disposition;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.InjectionActivity;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;

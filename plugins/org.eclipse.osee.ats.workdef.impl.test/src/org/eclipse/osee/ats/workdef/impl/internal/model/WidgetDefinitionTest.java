@@ -6,7 +6,6 @@
 package org.eclipse.osee.ats.workdef.impl.internal.model;
 
 import junit.framework.Assert;
-import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.workdef.api.WidgetOption;
 import org.junit.Test;
 
@@ -19,7 +18,7 @@ public class WidgetDefinitionTest {
 
    @Test
    public void testGetSetDescription() {
-      IAtsWidgetDefinition item = new WidgetDefinition("review");
+      WidgetDefinition item = new WidgetDefinition("review");
       Assert.assertEquals(null, item.getDescription());
       item.setDescription("desc");
       Assert.assertEquals("desc", item.getDescription());
@@ -27,13 +26,13 @@ public class WidgetDefinitionTest {
 
    @Test
    public void testToString() {
-      IAtsWidgetDefinition item = new WidgetDefinition("review");
+      WidgetDefinition item = new WidgetDefinition("review");
       Assert.assertEquals("[review][null]", item.toString());
    }
 
    @Test
    public void testGetSetAttribute() {
-      IAtsWidgetDefinition item = new WidgetDefinition("review");
+      WidgetDefinition item = new WidgetDefinition("review");
       Assert.assertEquals(null, item.getAtrributeName());
       item.setAttributeName("desc");
       Assert.assertEquals("desc", item.getAtrributeName());
@@ -41,7 +40,7 @@ public class WidgetDefinitionTest {
 
    @Test
    public void testGetSetTooltip() {
-      IAtsWidgetDefinition item = new WidgetDefinition("review");
+      WidgetDefinition item = new WidgetDefinition("review");
       Assert.assertEquals(null, item.getToolTip());
       item.setToolTip("desc");
       Assert.assertEquals("desc", item.getToolTip());
@@ -49,7 +48,7 @@ public class WidgetDefinitionTest {
 
    @Test
    public void testGetSetWidgetname() {
-      IAtsWidgetDefinition item = new WidgetDefinition("review");
+      WidgetDefinition item = new WidgetDefinition("review");
       Assert.assertEquals(null, item.getXWidgetName());
       item.setXWidgetName("desc");
       Assert.assertEquals("desc", item.getXWidgetName());
@@ -57,7 +56,7 @@ public class WidgetDefinitionTest {
 
    @Test
    public void testGetSetDefaultName() {
-      IAtsWidgetDefinition item = new WidgetDefinition("review");
+      WidgetDefinition item = new WidgetDefinition("review");
       Assert.assertEquals(null, item.getDefaultValue());
       item.setDefaultValue("desc");
       Assert.assertEquals("desc", item.getDefaultValue());
@@ -65,7 +64,7 @@ public class WidgetDefinitionTest {
 
    @Test
    public void testGetSetHeight() {
-      IAtsWidgetDefinition item = new WidgetDefinition("review");
+      WidgetDefinition item = new WidgetDefinition("review");
       Assert.assertEquals(0, item.getHeight());
       item.setHeight(4);
       Assert.assertEquals(4, item.getHeight());
@@ -73,7 +72,7 @@ public class WidgetDefinitionTest {
 
    @Test
    public void testSet() {
-      IAtsWidgetDefinition item = new WidgetDefinition("review");
+      WidgetDefinition item = new WidgetDefinition("review");
       Assert.assertFalse(item.is(WidgetOption.ALIGN_CENTER));
       item.set(WidgetOption.ALIGN_CENTER);
       Assert.assertTrue(item.is(WidgetOption.ALIGN_CENTER));

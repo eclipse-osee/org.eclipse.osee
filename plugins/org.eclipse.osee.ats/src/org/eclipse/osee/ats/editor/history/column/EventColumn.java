@@ -23,9 +23,7 @@ import org.eclipse.osee.ats.core.client.workflow.AtsWorkStateFactory;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -106,8 +104,6 @@ public class EventColumn extends XViewerValueColumn {
 
    public String processCurrentStateChange(Change change) {
       try {
-         IAtsStateDefinition stateDef = AtsWorkDefinitionService.getService().createStateDefinition("");
-         stateDef.setStateType(StateType.Working);
          WorkStateImpl was = AtsWorkStateFactory.getFromXml(change.getWasValue());
          WorkStateImpl is = AtsWorkStateFactory.getFromXml(change.getIsValue());
          if (change.getWasValue().equals("")) {

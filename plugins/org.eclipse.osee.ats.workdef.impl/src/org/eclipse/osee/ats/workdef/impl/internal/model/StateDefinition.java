@@ -53,7 +53,6 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
       return StateType;
    }
 
-   @Override
    public void setStateType(StateType StateType) {
       this.StateType = StateType;
    }
@@ -63,7 +62,6 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
       return ordinal;
    }
 
-   @Override
    public void setOrdinal(int ordinal) {
       this.ordinal = ordinal;
    }
@@ -142,7 +140,6 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
       return defaultToState;
    }
 
-   @Override
    public void setDefaultToState(IAtsStateDefinition defaultToState) {
       this.defaultToState = defaultToState;
    }
@@ -169,12 +166,10 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
     * @param percentWeight int value where all stateWeights in workdefinition == 100
     */
 
-   @Override
    public void setStateWeight(int percentWeight) {
       this.stateWeight = percentWeight;
    }
 
-   @Override
    public void setRecommendedPercentComplete(int recommendedPercentComplete) {
       this.recommendedPercentComplete = recommendedPercentComplete;
    }
@@ -184,7 +179,6 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
       return recommendedPercentComplete;
    }
 
-   @Override
    public void setColor(StateColor stateColor) {
       this.color = stateColor;
    }
@@ -197,7 +191,6 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
    /**
     * Rules
     */
-   @Override
    public void removeRule(String rule) {
       ruleMgr.removeRule(rule);
    }
@@ -207,7 +200,6 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
       return ruleMgr.getRules();
    }
 
-   @Override
    public void addRule(String rule) {
       ruleMgr.addRule(rule);
    }

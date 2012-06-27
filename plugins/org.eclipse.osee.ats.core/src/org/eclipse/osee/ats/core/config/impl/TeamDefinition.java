@@ -365,7 +365,8 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
 
    @Override
    public void setWorkflowDefinition(String workDefinitionName) {
-      workflowDefinitionName = workDefinitionName;
+      System.out.println("WorkDefinition [" + getName() + "] - WorkDefinition [" + workDefinitionName + "]");
+      this.workflowDefinitionName = workDefinitionName;
    }
 
    @Override

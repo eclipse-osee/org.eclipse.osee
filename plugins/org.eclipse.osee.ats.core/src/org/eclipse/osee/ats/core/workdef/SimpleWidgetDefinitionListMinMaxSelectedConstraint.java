@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.workdef.impl.internal.model;
+package org.eclipse.osee.ats.core.workdef;
 
 import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinitionListMinMaxSelectedConstraint;
 
@@ -16,15 +16,15 @@ import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinitionListMinMaxSelectedCo
 /**
  * @author Donald G. Dunne
  */
-public class WidgetDefinitionListMinMaxSelectedConstraint implements IAtsWidgetDefinitionListMinMaxSelectedConstraint {
+public class SimpleWidgetDefinitionListMinMaxSelectedConstraint implements IAtsWidgetDefinitionListMinMaxSelectedConstraint {
    private Integer minSelected = null;
    private Integer maxSelected = null;
 
-   public WidgetDefinitionListMinMaxSelectedConstraint(Integer minSelected, Integer maxSelected) {
+   public SimpleWidgetDefinitionListMinMaxSelectedConstraint(Integer minSelected, Integer maxSelected) {
       set(minSelected, maxSelected);
    }
 
-   public WidgetDefinitionListMinMaxSelectedConstraint(String minSelected, String maxSelected) {
+   public SimpleWidgetDefinitionListMinMaxSelectedConstraint(String minSelected, String maxSelected) {
       if (minSelected != null) {
          this.minSelected = new Integer(minSelected);
       }

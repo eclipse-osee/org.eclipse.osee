@@ -48,10 +48,12 @@ import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.model.IAtsVersion;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
+import org.eclipse.osee.ats.core.workdef.SimpleDecisionReviewOption;
 import org.eclipse.osee.ats.core.workflow.StateTypeAdapter;
+import org.eclipse.osee.ats.mocks.shared.MockStateDefinition;
+import org.eclipse.osee.ats.mocks.shared.MockWidgetDefinition;
+import org.eclipse.osee.ats.mocks.shared.MockWorkDefinition;
 import org.eclipse.osee.ats.workdef.api.IAtsDecisionReviewOption;
-import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
 import org.eclipse.osee.ats.workdef.api.IStateToken;
@@ -90,10 +92,10 @@ public class AtsTestUtil {
    private static TaskArtifact taskArtWf1 = null, taskArtWf2 = null;
    private static IAtsActionableItem testAi = null, testAi2 = null, testAi3 = null, testAi4 = null;
    private static ActionArtifact actionArt = null, actionArt2 = null, actionArt3 = null, actionArt4 = null;
-   private static IAtsStateDefinition analyze, implement, completed, cancelled = null;
-   private static IAtsWorkDefinition workDef = null;
+   private static MockStateDefinition analyze, implement, completed, cancelled = null;
+   private static MockWorkDefinition workDef = null;
    public static String WORK_DEF_NAME = "Test_Team _Workflow_Definition";
-   private static IAtsWidgetDefinition estHoursWidgetDef, workPackageWidgetDef;
+   private static MockWidgetDefinition estHoursWidgetDef, workPackageWidgetDef;
    private static String postFixName;
 
    public static void validateArtifactCache() throws OseeStateException {
@@ -150,7 +152,7 @@ public class AtsTestUtil {
       return workDef;
    }
 
-   public static IAtsStateDefinition getAnalyzeStateDef() throws OseeCoreException {
+   public static MockStateDefinition getAnalyzeStateDef() throws OseeCoreException {
       ensureLoaded();
       return analyze;
    }
@@ -165,17 +167,17 @@ public class AtsTestUtil {
       return workPackageWidgetDef;
    }
 
-   public static IAtsStateDefinition getImplementStateDef() throws OseeCoreException {
+   public static MockStateDefinition getImplementStateDef() throws OseeCoreException {
       ensureLoaded();
       return implement;
    }
 
-   public static IAtsStateDefinition getCompletedStateDef() throws OseeCoreException {
+   public static MockStateDefinition getCompletedStateDef() throws OseeCoreException {
       ensureLoaded();
       return completed;
    }
 
-   public static IAtsStateDefinition getCancelledStateDef() throws OseeCoreException {
+   public static MockStateDefinition getCancelledStateDef() throws OseeCoreException {
       ensureLoaded();
       return cancelled;
    }
@@ -246,9 +248,9 @@ public class AtsTestUtil {
       AtsTestUtil.postFixName = postFixName;
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName());
-      workDef = AtsWorkDefinitionService.getService().createWorkDefinition(WORK_DEF_NAME);
+      workDef = new MockWorkDefinition(WORK_DEF_NAME);
 
-      analyze = AtsWorkDefinitionService.getService().createStateDefinition("Analyze");
+      analyze = new MockStateDefinition("Analyze");
       analyze.setWorkDefinition(workDef);
       analyze.setStateType(StateType.Working);
       analyze.setOrdinal(1);
@@ -256,19 +258,19 @@ public class AtsTestUtil {
 
       workDef.setStartState(analyze);
 
-      implement = AtsWorkDefinitionService.getService().createStateDefinition("Implement");
+      implement = new MockStateDefinition("Implement");
       implement.setWorkDefinition(workDef);
       implement.setStateType(StateType.Working);
       implement.setOrdinal(2);
       workDef.addState(implement);
 
-      completed = AtsWorkDefinitionService.getService().createStateDefinition("Completed");
+      completed = new MockStateDefinition("Completed");
       completed.setWorkDefinition(workDef);
       completed.setStateType(StateType.Completed);
       completed.setOrdinal(3);
       workDef.addState(completed);
 
-      cancelled = AtsWorkDefinitionService.getService().createStateDefinition("Cancelled");
+      cancelled = new MockStateDefinition("Cancelled");
       cancelled.setWorkDefinition(workDef);
       cancelled.setStateType(StateType.Cancelled);
       cancelled.setOrdinal(4);
@@ -289,13 +291,11 @@ public class AtsTestUtil {
       cancelled.getToStates().addAll(Arrays.asList(analyze, implement));
       cancelled.getOverrideAttributeValidationStates().addAll(Arrays.asList(analyze, implement));
 
-      estHoursWidgetDef =
-         AtsWorkDefinitionService.getService().createWidgetDefinition(AtsAttributeTypes.EstimatedHours.getUnqualifiedName());
+      estHoursWidgetDef = new MockWidgetDefinition(AtsAttributeTypes.EstimatedHours.getUnqualifiedName());
       estHoursWidgetDef.setAttributeName(AtsAttributeTypes.EstimatedHours.getName());
       estHoursWidgetDef.setXWidgetName("XFloatDam");
 
-      workPackageWidgetDef =
-         AtsWorkDefinitionService.getService().createWidgetDefinition(AtsAttributeTypes.WorkPackage.getUnqualifiedName());
+      workPackageWidgetDef = new MockWidgetDefinition(AtsAttributeTypes.WorkPackage.getUnqualifiedName());
       workPackageWidgetDef.setAttributeName(AtsAttributeTypes.WorkPackage.getName());
       workPackageWidgetDef.setXWidgetName("XTextDam");
 
@@ -376,10 +376,9 @@ public class AtsTestUtil {
       ensureLoaded();
       if (decRevArt == null) {
          List<IAtsDecisionReviewOption> options = new ArrayList<IAtsDecisionReviewOption>();
-         options.add(AtsWorkDefinitionService.getService().createDecisionReviewOption(DecisionReviewState.Completed.getName(),
-            false, null));
-         options.add(AtsWorkDefinitionService.getService().createDecisionReviewOption(DecisionReviewState.Followup.getName(),
-            true, Arrays.asList(AtsUsersClient.getUser().getUserId())));
+         options.add(new SimpleDecisionReviewOption(DecisionReviewState.Completed.getName(), false, null));
+         options.add(new SimpleDecisionReviewOption(DecisionReviewState.Followup.getName(), true,
+            Arrays.asList(AtsUsersClient.getUser().getUserId())));
          decRevArt =
             DecisionReviewManager.createNewDecisionReview(teamArt, reviewBlockType,
                AtsTestUtil.class.getSimpleName() + " Test Decision Review", relatedToState.getName(),

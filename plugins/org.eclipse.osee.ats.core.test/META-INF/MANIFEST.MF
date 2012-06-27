@@ -9,4 +9,5 @@ Require-Bundle: org.junit;bundle-version="4.8.1"
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.ats.core
 Import-Package: org.eclipse.emf.ecore.util,
- org.eclipse.osee.ats.core
+ org.eclipse.osee.ats.core,
+ org.eclipse.osee.ats.mocks.shared

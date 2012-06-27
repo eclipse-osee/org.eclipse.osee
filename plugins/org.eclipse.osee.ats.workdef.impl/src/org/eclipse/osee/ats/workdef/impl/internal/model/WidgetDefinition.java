@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.workdef.api.IAtsWidgetConstraint;
 import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.workdef.api.IAtsWidgetOptionHandler;
 import org.eclipse.osee.ats.workdef.api.WidgetOption;
+import org.eclipse.osee.ats.workdef.api.WidgetOptionHandler;
 
 /**
  * @author Donald G. Dunne
@@ -40,7 +41,6 @@ public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition
       return attributeName;
    }
 
-   @Override
    public void setAttributeName(String storeName) {
       this.attributeName = storeName;
    }
@@ -50,7 +50,6 @@ public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition
       return toolTip;
    }
 
-   @Override
    public void setToolTip(String toolTip) {
       this.toolTip = toolTip;
    }
@@ -80,7 +79,6 @@ public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition
       return defaultValue;
    }
 
-   @Override
    public void setDefaultValue(String defaultValue) {
       this.defaultValue = defaultValue;
    }

@@ -6,29 +6,20 @@
 package org.eclipse.osee.ats.workdef.api;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.data.HasDescription;
+import org.eclipse.osee.framework.core.data.Identifiable;
 
-public interface IAtsWorkDefinition {
-   /**
-    * NOTE: Extend Identifiable and HasDescription
-    */
-
-   /**
-    * NOTE: Don't expose the set methods
-    */
+public interface IAtsWorkDefinition extends Identifiable, HasDescription {
 
    /**
     * Identification
     */
+   @Override
    public abstract String getName();
-
-   public abstract void setName(String string);
 
    public abstract String getId();
 
-   public abstract void setId(String id);
-
-   public abstract void setDescription(String format);
-
+   @Override
    public abstract String getDescription();
 
    /**
@@ -36,23 +27,8 @@ public interface IAtsWorkDefinition {
     */
    public abstract List<IAtsStateDefinition> getStates();
 
-   public abstract IAtsStateDefinition addState(IAtsStateDefinition state);
-
    public abstract IAtsStateDefinition getStateByName(String name);
 
    public abstract IAtsStateDefinition getStartState();
-
-   public abstract void setStartState(IAtsStateDefinition startState);
-
-   /**
-    * Rules
-    */
-   public abstract boolean hasRule(String rule);
-
-   public abstract List<String> getRules();
-
-   public abstract void addRule(String rule);
-
-   public abstract void removeRule(String rule);
 
 }

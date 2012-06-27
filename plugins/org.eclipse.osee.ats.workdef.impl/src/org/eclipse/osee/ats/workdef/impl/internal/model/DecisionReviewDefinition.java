@@ -41,7 +41,6 @@ public class DecisionReviewDefinition implements IAtsDecisionReviewDefinition {
       return name;
    }
 
-   @Override
    public void setName(String name) {
       this.name = name;
    }
@@ -51,7 +50,6 @@ public class DecisionReviewDefinition implements IAtsDecisionReviewDefinition {
       return description;
    }
 
-   @Override
    public void setDescription(String description) {
       this.description = description;
    }
@@ -61,7 +59,6 @@ public class DecisionReviewDefinition implements IAtsDecisionReviewDefinition {
       return blockingType;
    }
 
-   @Override
    public void setBlockingType(ReviewBlockType blockingType) {
       this.blockingType = blockingType;
    }
@@ -71,7 +68,6 @@ public class DecisionReviewDefinition implements IAtsDecisionReviewDefinition {
       return stateEventType;
    }
 
-   @Override
    public void setStateEventType(StateEventType stateEventType) {
       this.stateEventType = stateEventType;
    }
@@ -81,7 +77,6 @@ public class DecisionReviewDefinition implements IAtsDecisionReviewDefinition {
       return autoTransitionToDecision;
    }
 
-   @Override
    public void setAutoTransitionToDecision(boolean autoTransitionToDecision) {
       this.autoTransitionToDecision = autoTransitionToDecision;
    }
@@ -106,7 +101,6 @@ public class DecisionReviewDefinition implements IAtsDecisionReviewDefinition {
       return reviewTitle;
    }
 
-   @Override
    public void setReviewTitle(String reviewTitle) {
       this.reviewTitle = reviewTitle;
    }
@@ -116,7 +110,6 @@ public class DecisionReviewDefinition implements IAtsDecisionReviewDefinition {
       return relatedToState;
    }
 
-   @Override
    public void setRelatedToState(String relatedToState) {
       this.relatedToState = relatedToState;
    }

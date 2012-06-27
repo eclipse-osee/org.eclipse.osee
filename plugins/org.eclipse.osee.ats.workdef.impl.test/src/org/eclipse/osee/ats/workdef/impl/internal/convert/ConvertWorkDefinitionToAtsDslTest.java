@@ -20,19 +20,22 @@ import org.eclipse.osee.ats.dsl.atsDsl.WidgetDef;
 import org.eclipse.osee.ats.dsl.atsDsl.WorkflowEventType;
 import org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslFactoryImpl;
 import org.eclipse.osee.ats.workdef.api.IAtsCompositeLayoutItem;
-import org.eclipse.osee.ats.workdef.api.IAtsDecisionReviewDefinition;
 import org.eclipse.osee.ats.workdef.api.IAtsDecisionReviewOption;
-import org.eclipse.osee.ats.workdef.api.IAtsPeerReviewDefinition;
-import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
-import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
 import org.eclipse.osee.ats.workdef.api.ReviewBlockType;
 import org.eclipse.osee.ats.workdef.api.RuleDefinitionOption;
 import org.eclipse.osee.ats.workdef.api.StateEventType;
 import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.ats.workdef.api.WidgetOption;
 import org.eclipse.osee.ats.workdef.impl.internal.AtsWorkDefinitionServiceImpl;
-import org.eclipse.osee.ats.workdef.impl.internal.convert.ConvertWorkDefinitionToAtsDsl;
+import org.eclipse.osee.ats.workdef.impl.internal.model.CompositeLayoutItem;
+import org.eclipse.osee.ats.workdef.impl.internal.model.DecisionReviewDefinition;
+import org.eclipse.osee.ats.workdef.impl.internal.model.DecisionReviewOption;
+import org.eclipse.osee.ats.workdef.impl.internal.model.LayoutItem;
+import org.eclipse.osee.ats.workdef.impl.internal.model.PeerReviewDefinition;
+import org.eclipse.osee.ats.workdef.impl.internal.model.StateDefinition;
+import org.eclipse.osee.ats.workdef.impl.internal.model.WidgetDefinition;
+import org.eclipse.osee.ats.workdef.impl.internal.model.WorkDefinition;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.junit.Test;
 
@@ -46,29 +49,16 @@ public class ConvertWorkDefinitionToAtsDslTest {
    AtsWorkDefinitionServiceImpl service = new AtsWorkDefinitionServiceImpl();
 
    @Test
-   public void test_workDefRulesErrorCase() {
-      XResultData resultData = new XResultData(false);
-
-      IAtsWorkDefinition def = service.createWorkDefinition("this");
-
-      ConvertWorkDefinitionToAtsDsl convert = new ConvertWorkDefinitionToAtsDsl(resultData);
-      def.getRules().add(RuleDefinitionOption.AddDecisionValidateBlockingReview.name());
-      convert.convert("this", def);
-      Assert.assertEquals(1, resultData.getNumErrors());
-   }
-
-   @Test
    public void test_stateDescription() {
       XResultData resultData = new XResultData(false);
 
-      IAtsWorkDefinition workDef = service.createWorkDefinition("this");
-      IAtsStateDefinition endorse = service.createStateDefinition("endorse");
+      WorkDefinition workDef = new WorkDefinition("this");
+      StateDefinition endorse = new StateDefinition("endorse");
       endorse.setStateType(StateType.Working);
       workDef.addState(endorse);
       workDef.setStartState(endorse);
 
       ConvertWorkDefinitionToAtsDsl convert = new ConvertWorkDefinitionToAtsDsl(resultData);
-      workDef.getRules().add(RuleDefinitionOption.AddDecisionValidateBlockingReview.name());
       AtsDsl dsl = convert.convert("this", workDef);
       Assert.assertEquals(null, dsl.getWorkDef().getStates().iterator().next().getDescription());
       dsl = convert.convert("this", workDef);
@@ -78,11 +68,11 @@ public class ConvertWorkDefinitionToAtsDslTest {
    public void test_stateTransitionExceptions() {
       XResultData resultData = new XResultData(false);
 
-      IAtsWorkDefinition workDef = service.createWorkDefinition("this");
-      IAtsStateDefinition endorse = service.createStateDefinition("endorse");
+      WorkDefinition workDef = new WorkDefinition("this");
+      StateDefinition endorse = new StateDefinition("endorse");
       endorse.setStateType(StateType.Working);
       workDef.addState(endorse);
-      IAtsStateDefinition analyze = service.createStateDefinition("analyze");
+      StateDefinition analyze = new StateDefinition("analyze");
       analyze.setStateType(StateType.Working);
       workDef.addState(analyze);
       // setup endorse to transition to itself
@@ -93,7 +83,6 @@ public class ConvertWorkDefinitionToAtsDslTest {
       workDef.setStartState(endorse);
 
       ConvertWorkDefinitionToAtsDsl convert = new ConvertWorkDefinitionToAtsDsl(resultData);
-      workDef.getRules().add(RuleDefinitionOption.AddDecisionValidateBlockingReview.name());
       AtsDsl dsl = convert.convert("this", workDef);
 
       StateDef endorseDef = dsl.getWorkDef().getStates().get(0);
@@ -129,19 +118,18 @@ public class ConvertWorkDefinitionToAtsDslTest {
    public void test_processStateWidgets() {
       StateDef dslState = AtsDslFactoryImpl.init().createStateDef();
       XResultData resultData = new XResultData(false);
-      IAtsWorkDefinition workDef = service.createWorkDefinition("this");
-      IAtsStateDefinition endorse = service.createStateDefinition("endorse");
+      WorkDefinition workDef = new WorkDefinition("this");
+      StateDefinition endorse = new StateDefinition("endorse");
       endorse.setStateType(StateType.Working);
       workDef.addState(endorse);
       workDef.setStartState(endorse);
 
       ConvertWorkDefinitionToAtsDsl convert = new ConvertWorkDefinitionToAtsDsl(resultData);
-      workDef.addRule(RuleDefinitionOption.AddDecisionValidateBlockingReview.name());
       convert.convert("this", workDef);
 
       convert.processStateWidgets(endorse, dslState);
 
-      IAtsWidgetDefinition widgetDef = service.createWidgetDefinition("wid1");
+      IAtsWidgetDefinition widgetDef = new WidgetDefinition("wid1");
       endorse.getLayoutItems().add(widgetDef);
 
       convert.processStateWidgets(endorse, dslState);
@@ -149,13 +137,13 @@ public class ConvertWorkDefinitionToAtsDslTest {
 
    @Test
    public void test_convertWithDecisionReview() {
-      IAtsDecisionReviewDefinition revDef = service.createDecisionReviewDefinition("review");
+      DecisionReviewDefinition revDef = new DecisionReviewDefinition("review");
       revDef.setBlockingType(ReviewBlockType.Transition);
       revDef.setStateEventType(StateEventType.CommitBranch);
 
       XResultData resultData = new XResultData(false);
-      IAtsWorkDefinition workDef = service.createWorkDefinition("this");
-      IAtsStateDefinition endorse = service.createStateDefinition("endorse");
+      WorkDefinition workDef = new WorkDefinition("this");
+      StateDefinition endorse = new StateDefinition("endorse");
       endorse.setStateType(StateType.Working);
       endorse.getDecisionReviews().add(revDef);
       workDef.addState(endorse);
@@ -172,18 +160,18 @@ public class ConvertWorkDefinitionToAtsDslTest {
 
    @Test
    public void test_createDecisionReview() {
-      IAtsDecisionReviewDefinition revDef = service.createDecisionReviewDefinition("review");
+      DecisionReviewDefinition revDef = new DecisionReviewDefinition("review");
       revDef.setBlockingType(ReviewBlockType.Transition);
       revDef.setStateEventType(StateEventType.CommitBranch);
       revDef.setRelatedToState("endorse");
       revDef.getAssignees().add("12345");
       revDef.setAutoTransitionToDecision(true);
-      IAtsDecisionReviewOption option = service.createDecisionReviewOption("yes");
+      IAtsDecisionReviewOption option = new DecisionReviewOption("yes");
       option.getUserIds().add("1234");
       option.getUserNames().add("Don");
       option.setFollowupRequired(true);
       revDef.getOptions().add(option);
-      IAtsDecisionReviewOption option2 = service.createDecisionReviewOption("no");
+      IAtsDecisionReviewOption option2 = new DecisionReviewOption("no");
       option2.getUserIds().add("1234");
       option2.getUserNames().add("Don");
       revDef.getOptions().add(option2);
@@ -204,7 +192,7 @@ public class ConvertWorkDefinitionToAtsDslTest {
 
    @Test
    public void test_createDecisionReview2() {
-      IAtsDecisionReviewDefinition revDef = service.createDecisionReviewDefinition("review");
+      DecisionReviewDefinition revDef = new DecisionReviewDefinition("review");
       revDef.setBlockingType(ReviewBlockType.Transition);
       revDef.setStateEventType(StateEventType.CommitBranch);
       revDef.setAutoTransitionToDecision(false);
@@ -219,13 +207,13 @@ public class ConvertWorkDefinitionToAtsDslTest {
 
    @Test
    public void test_convertWithPeerReview() {
-      IAtsPeerReviewDefinition revDef = service.createPeerReviewDefinition("review");
+      PeerReviewDefinition revDef = new PeerReviewDefinition("review");
       revDef.setBlockingType(ReviewBlockType.Transition);
       revDef.setStateEventType(StateEventType.CommitBranch);
 
       XResultData resultData = new XResultData(false);
-      IAtsWorkDefinition workDef = service.createWorkDefinition("this");
-      IAtsStateDefinition endorse = service.createStateDefinition("endorse");
+      WorkDefinition workDef = new WorkDefinition("this");
+      StateDefinition endorse = new StateDefinition("endorse");
       endorse.setStateType(StateType.Working);
       endorse.getPeerReviews().add(revDef);
       workDef.addState(endorse);
@@ -242,7 +230,7 @@ public class ConvertWorkDefinitionToAtsDslTest {
 
    @Test
    public void test_createPeerReview() {
-      IAtsPeerReviewDefinition revDef = service.createPeerReviewDefinition("review");
+      PeerReviewDefinition revDef = new PeerReviewDefinition("review");
       revDef.setBlockingType(ReviewBlockType.Transition);
       revDef.setStateEventType(StateEventType.CommitBranch);
       revDef.setRelatedToState("endorse");
@@ -266,7 +254,7 @@ public class ConvertWorkDefinitionToAtsDslTest {
 
    @Test
    public void test_createPeerReview_nullLocationTitle() {
-      IAtsPeerReviewDefinition revDef = service.createPeerReviewDefinition("review");
+      PeerReviewDefinition revDef = new PeerReviewDefinition("review");
       revDef.setBlockingType(ReviewBlockType.Transition);
       revDef.setStateEventType(StateEventType.CommitBranch);
       revDef.setRelatedToState("endorse");
@@ -283,7 +271,7 @@ public class ConvertWorkDefinitionToAtsDslTest {
    @Test
    public void testProcessStateItem() {
       LayoutDef layout = AtsDslFactoryImpl.init().createLayoutDef();
-      IAtsCompositeLayoutItem comp = service.createCompositeLayoutItem();
+      IAtsCompositeLayoutItem comp = new CompositeLayoutItem();
       comp.setNumColumns(5);
       comp.setName("name");
 
@@ -293,14 +281,14 @@ public class ConvertWorkDefinitionToAtsDslTest {
       Assert.assertEquals(0, resultData.getNumErrors());
       Assert.assertEquals(1, layout.getLayoutItems().size());
 
-      convert.processStateItem(layout, null, service.createLayoutItem("dummy"));
+      convert.processStateItem(layout, null, new LayoutItem("dummy"));
       Assert.assertEquals(1, resultData.getNumErrors());
    }
 
    @Test
    public void testProcessCompositeStateItem() {
       LayoutDef layout = AtsDslFactoryImpl.init().createLayoutDef();
-      IAtsCompositeLayoutItem comp = service.createCompositeLayoutItem();
+      IAtsCompositeLayoutItem comp = new CompositeLayoutItem();
       comp.setNumColumns(5);
       comp.setName("name");
 
@@ -315,7 +303,7 @@ public class ConvertWorkDefinitionToAtsDslTest {
    @Test
    public void testProcessWidgetDefinitionStateItem_attrWidget() {
       LayoutDef layout = AtsDslFactoryImpl.init().createLayoutDef();
-      IAtsWidgetDefinition widgetDef = service.createWidgetDefinition("Change Type");
+      IAtsWidgetDefinition widgetDef = new WidgetDefinition("Change Type");
 
       XResultData resultData = new XResultData(false);
       ConvertWorkDefinitionToAtsDsl convert = new ConvertWorkDefinitionToAtsDsl(resultData);
@@ -335,7 +323,7 @@ public class ConvertWorkDefinitionToAtsDslTest {
    public void testGetOrCreateWidget_cache() {
       XResultData resultData = new XResultData(false);
       ConvertWorkDefinitionToAtsDsl convert = new ConvertWorkDefinitionToAtsDsl(resultData);
-      IAtsWidgetDefinition widgetDef = service.createWidgetDefinition("Change Type");
+      IAtsWidgetDefinition widgetDef = new WidgetDefinition("Change Type");
       WidgetDef widgetDef2 = convert.getOrCreateWidget(widgetDef);
       WidgetDef widgetDef3 = convert.getOrCreateWidget(widgetDef);
       Assert.assertEquals(widgetDef2, widgetDef3);
@@ -346,7 +334,7 @@ public class ConvertWorkDefinitionToAtsDslTest {
       XResultData resultData = new XResultData(false);
       ConvertWorkDefinitionToAtsDsl convert = new ConvertWorkDefinitionToAtsDsl(resultData);
 
-      IAtsWidgetDefinition widgetDef = service.createWidgetDefinition("Change Type");
+      IAtsWidgetDefinition widgetDef = new WidgetDefinition("Change Type");
       widgetDef.getOptions().getXOptions().add(WidgetOption.ALIGN_CENTER);
       WidgetDef widgetDef4 = convert.getOrCreateWidget(widgetDef);
       Assert.assertTrue(widgetDef4.getOption().contains(WidgetOption.ALIGN_CENTER.name()));
@@ -355,7 +343,7 @@ public class ConvertWorkDefinitionToAtsDslTest {
    @Test
    public void testProcessWidgetDefinitionStateItem_nonAttrWidget() {
       LayoutDef layout = AtsDslFactoryImpl.init().createLayoutDef();
-      IAtsWidgetDefinition widgetDef = service.createWidgetDefinition("wid");
+      IAtsWidgetDefinition widgetDef = new WidgetDefinition("wid");
 
       XResultData resultData = new XResultData(false);
       ConvertWorkDefinitionToAtsDsl convert = new ConvertWorkDefinitionToAtsDsl(resultData);

@@ -124,7 +124,7 @@ public class WorkDefinitionFactory {
       return match;
    }
 
-   private static WorkDefinitionMatch getWorkDefinitionFromArtifactsAttributeValue(IAtsTeamDefinition teamDef) throws OseeCoreException {
+   private static WorkDefinitionMatch getWorkDefinitionFromArtifactsAttributeValue(IAtsTeamDefinition teamDef) {
       // If this artifact specifies it's own workflow definition, use it
       String workFlowDefId = teamDef.getWorkflowDefinition();
       if (Strings.isValid(workFlowDefId)) {
@@ -137,7 +137,7 @@ public class WorkDefinitionFactory {
       return new WorkDefinitionMatch();
    }
 
-   private static WorkDefinitionMatch getTaskWorkDefinitionFromArtifactsAttributeValue(IAtsTeamDefinition teamDef) throws OseeCoreException {
+   private static WorkDefinitionMatch getTaskWorkDefinitionFromArtifactsAttributeValue(IAtsTeamDefinition teamDef) {
       // If this artifact specifies it's own workflow definition, use it
       String workFlowDefId = teamDef.getRelatedTaskWorkDefinition();
       if (Strings.isValid(workFlowDefId)) {

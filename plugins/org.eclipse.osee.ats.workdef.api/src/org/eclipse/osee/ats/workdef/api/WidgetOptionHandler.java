@@ -8,13 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.workdef.impl.internal.model;
+package org.eclipse.osee.ats.workdef.api;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.workdef.api.IAtsWidgetOptionHandler;
-import org.eclipse.osee.ats.workdef.api.WidgetOption;
 
 /**
  * @author Donald G. Dunne

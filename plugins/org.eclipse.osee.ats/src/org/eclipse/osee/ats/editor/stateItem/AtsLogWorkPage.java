@@ -10,12 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.stateItem;
 
-import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
+import org.eclipse.osee.ats.workdef.api.IAtsDecisionReviewDefinition;
+import org.eclipse.osee.ats.workdef.api.IAtsLayoutItem;
+import org.eclipse.osee.ats.workdef.api.IAtsPeerReviewDefinition;
 import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
+import org.eclipse.osee.ats.workdef.api.StateColor;
+import org.eclipse.osee.ats.workdef.api.StateType;
+import org.eclipse.osee.framework.core.data.Identity;
 
 /**
  * @author Donald G. Dunne
@@ -26,8 +30,7 @@ public class AtsLogWorkPage extends StateXWidgetPage {
 
    public static class EmptyWorkFlowDefinition implements IAtsWorkDefinition {
 
-      private String name;
-      private String id;
+      private final String name;
 
       public EmptyWorkFlowDefinition(String name) {
          this.name = name;
@@ -44,41 +47,13 @@ public class AtsLogWorkPage extends StateXWidgetPage {
       }
 
       @Override
-      public boolean hasRule(String name) {
-         return false;
-      }
-
-      @Override
-      public List<String> getRules() {
-         return Collections.emptyList();
-      }
-
-      @Override
       public IAtsStateDefinition getStartState() {
          return null;
       }
 
       @Override
-      public void setStartState(IAtsStateDefinition startState) {
-      }
-
-      @Override
       public String getId() {
          return "";
-      }
-
-      @Override
-      public void setName(String name) {
-         this.name = name;
-      }
-
-      @Override
-      public void setDescription(String description) {
-      }
-
-      @Override
-      public void setId(String id) {
-         this.id = id;
       }
 
       @Override
@@ -92,21 +67,108 @@ public class AtsLogWorkPage extends StateXWidgetPage {
       }
 
       @Override
-      public void addRule(String rule) {
-      }
-
-      @Override
-      public void removeRule(String rule) {
-      }
-
-      @Override
-      public IAtsStateDefinition addState(IAtsStateDefinition state) {
+      public String getGuid() {
          return null;
+      }
+
+      @Override
+      public boolean matches(Identity<?>... identities) {
+         return false;
       }
    }
 
    public AtsLogWorkPage(String title) {
-      super(new EmptyWorkFlowDefinition(PAGE_ID), AtsWorkDefinitionService.getService().createStateDefinition(PAGE_ID), null, null);
+      super(new EmptyWorkFlowDefinition(PAGE_ID), new IAtsStateDefinition() {
+
+         @Override
+         public String getDescription() {
+            return null;
+         }
+
+         @Override
+         public void setWorkDefinition(IAtsWorkDefinition workDefinition) {
+         }
+
+         @Override
+         public boolean hasRule(String name) {
+            return false;
+         }
+
+         @Override
+         public IAtsWorkDefinition getWorkDefinition() {
+            return null;
+         }
+
+         @Override
+         public List<IAtsStateDefinition> getToStates() {
+            return null;
+         }
+
+         @Override
+         public int getStateWeight() {
+            return 0;
+         }
+
+         @Override
+         public StateType getStateType() {
+            return null;
+         }
+
+         @Override
+         public List<String> getRules() {
+            return null;
+         }
+
+         @Override
+         public Integer getRecommendedPercentComplete() {
+            return null;
+         }
+
+         @Override
+         public List<IAtsPeerReviewDefinition> getPeerReviews() {
+            return null;
+         }
+
+         @Override
+         public List<IAtsStateDefinition> getOverrideAttributeValidationStates() {
+            return null;
+         }
+
+         @Override
+         public int getOrdinal() {
+            return 0;
+         }
+
+         @Override
+         public String getName() {
+            return PAGE_ID;
+         }
+
+         @Override
+         public List<IAtsLayoutItem> getLayoutItems() {
+            return null;
+         }
+
+         @Override
+         public String getFullName() {
+            return null;
+         }
+
+         @Override
+         public IAtsStateDefinition getDefaultToState() {
+            return null;
+         }
+
+         @Override
+         public List<IAtsDecisionReviewDefinition> getDecisionReviews() {
+            return null;
+         }
+
+         @Override
+         public StateColor getColor() {
+            return null;
+         }
+      }, null, null);
    }
 
 }

@@ -21,8 +21,7 @@ import org.eclipse.osee.ats.core.client.workflow.transition.MockTransitionHelper
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
-import org.eclipse.osee.ats.workdef.api.IAtsPeerReviewDefinition;
+import org.eclipse.osee.ats.mocks.shared.MockPeerReviewDefinition;
 import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 import org.eclipse.osee.ats.workdef.api.ReviewBlockType;
 import org.eclipse.osee.ats.workdef.api.StateEventType;
@@ -53,8 +52,7 @@ public class PeerReviewDefinitionManagerTest extends PeerReviewDefinitionManager
       // configure WorkDefinition to create a new Review on transition to Implement
       IAtsStateDefinition implement = AtsTestUtil.getImplementStateDef();
 
-      IAtsPeerReviewDefinition revDef =
-         AtsWorkDefinitionService.getService().createPeerReviewDefinition("Create New on Implement");
+      MockPeerReviewDefinition revDef = new MockPeerReviewDefinition("Create New on Implement");
       revDef.setBlockingType(ReviewBlockType.Transition);
       revDef.setDescription("the description");
       revDef.setRelatedToState(implement.getName());

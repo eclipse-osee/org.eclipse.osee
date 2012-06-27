@@ -60,9 +60,8 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
    public static void testCleanup() throws Exception {
       // Test adds the atsForceAssigneesToTeamLeads; remove it before and after test
       if (teamArt != null) {
-         IAtsStateDefinition authStateDef =
-            teamArt.getWorkDefinition().getStateByName(TeamState.Authorize.getName());
-         authStateDef.removeRule(RuleDefinitionOption.ForceAssigneesToTeamLeads.name());
+         // IAtsStateDefinition authStateDef = teamArt.getWorkDefinition().getStateByName(TeamState.Authorize.getName());
+         // authStateDef.removeRule(RuleDefinitionOption.ForceAssigneesToTeamLeads.name());
       }
 
       AtsTestUtil.cleanupSimpleTest(AtsForceAssigneesToTeamLeadsStateItemTest.class.getSimpleName());

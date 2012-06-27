@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
+import org.eclipse.osee.ats.mocks.shared.MockDecisionReviewOption;
 import org.eclipse.osee.ats.workdef.api.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.workdef.api.ReviewBlockType;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -58,10 +58,9 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
 
       List<IAtsDecisionReviewOption> options = new ArrayList<IAtsDecisionReviewOption>();
-      options.add(AtsWorkDefinitionService.getService().createDecisionReviewOption(
-         DecisionReviewState.Completed.getName(), false, null));
-      options.add(AtsWorkDefinitionService.getService().createDecisionReviewOption(
-         DecisionReviewState.Followup.getName(), true, Arrays.asList(AtsUsersClient.getUser().getUserId())));
+      options.add(new MockDecisionReviewOption(DecisionReviewState.Completed.getName(), false, null));
+      options.add(new MockDecisionReviewOption(DecisionReviewState.Followup.getName(), true,
+         Arrays.asList(AtsUsersClient.getUser().getUserId())));
 
       // create and transition decision review
       SkynetTransaction transaction =
@@ -88,10 +87,9 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
 
       List<IAtsDecisionReviewOption> options = new ArrayList<IAtsDecisionReviewOption>();
-      options.add(AtsWorkDefinitionService.getService().createDecisionReviewOption(
-         DecisionReviewState.Completed.getName(), false, null));
-      options.add(AtsWorkDefinitionService.getService().createDecisionReviewOption(
-         DecisionReviewState.Followup.getName(), true, Arrays.asList(AtsUsersClient.getUser().getUserId())));
+      options.add(new MockDecisionReviewOption(DecisionReviewState.Completed.getName(), false, null));
+      options.add(new MockDecisionReviewOption(DecisionReviewState.Followup.getName(), true,
+         Arrays.asList(AtsUsersClient.getUser().getUserId())));
 
       // create and transition decision review
       SkynetTransaction transaction =
@@ -129,8 +127,7 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
       Assert.assertEquals(reviewTitle, decRev.getName());
       Assert.assertEquals(DecisionReviewState.Prepare.getName(), decRev.getCurrentStateName());
       Assert.assertEquals("Alex Kay", decRev.getStateMgr().getAssigneesStr());
-      Assert.assertEquals(TeamState.Implement.getName(),
-         decRev.getSoleAttributeValue(AtsAttributeTypes.RelatedToState));
+      Assert.assertEquals(TeamState.Implement.getName(), decRev.getSoleAttributeValue(AtsAttributeTypes.RelatedToState));
       Assert.assertEquals(ReviewBlockType.Commit.name(), decRev.getSoleAttributeValue(AtsAttributeTypes.ReviewBlocks));
    }
 
@@ -163,8 +160,7 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
       Assert.assertEquals("Should we do this?  Yes will require followup, No will not", decRev.getName());
       Assert.assertEquals(DecisionReviewState.Prepare.getName(), decRev.getCurrentStateName());
       Assert.assertEquals("Joe Smith", decRev.getStateMgr().getAssigneesStr());
-      Assert.assertEquals(TeamState.Analyze.getName(),
-         decRev.getSoleAttributeValue(AtsAttributeTypes.RelatedToState));
+      Assert.assertEquals(TeamState.Analyze.getName(), decRev.getSoleAttributeValue(AtsAttributeTypes.RelatedToState));
       Assert.assertEquals(ReviewBlockType.Commit.name(),
          decRev.getSoleAttributeValue(AtsAttributeTypes.ReviewBlocks, ""));
    }

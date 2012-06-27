@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.workdef.impl.internal.model;
+package org.eclipse.osee.ats.core.workdef;
 
 import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinitionFloatMinMaxConstraint;
 
@@ -16,15 +16,15 @@ import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinitionFloatMinMaxConstrain
 /**
  * @author Donald G. Dunne
  */
-public class WidgetDefinitionFloatMinMaxConstraint implements IAtsWidgetDefinitionFloatMinMaxConstraint {
+public class SimpleWidgetDefinitionFloatMinMaxConstraint implements IAtsWidgetDefinitionFloatMinMaxConstraint {
    private Double minValue = null;
    private Double maxValue = null;
 
-   public WidgetDefinitionFloatMinMaxConstraint(Double minValue, Double maxValue) {
+   public SimpleWidgetDefinitionFloatMinMaxConstraint(Double minValue, Double maxValue) {
       set(minValue, maxValue);
    }
 
-   public WidgetDefinitionFloatMinMaxConstraint(String minValue, String maxValue) {
+   public SimpleWidgetDefinitionFloatMinMaxConstraint(String minValue, String maxValue) {
       if (minValue != null) {
          this.minValue = new Double(minValue);
       }

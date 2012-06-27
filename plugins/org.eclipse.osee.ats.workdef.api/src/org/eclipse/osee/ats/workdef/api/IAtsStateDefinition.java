@@ -15,8 +15,6 @@ public interface IAtsStateDefinition extends IStateToken {
    @Override
    public abstract String getName();
 
-   public abstract void setName(String string);
-
    /**
     * Returns fully qualified name of <work definition name>.<this state name>
     */
@@ -24,15 +22,11 @@ public interface IAtsStateDefinition extends IStateToken {
 
    public abstract int getOrdinal();
 
-   public abstract void setOrdinal(int ordinal);
-
    /**
     * State Type
     */
    @Override
    public abstract StateType getStateType();
-
-   public abstract void setStateType(StateType StateType);
 
    /**
     * Layout
@@ -45,8 +39,6 @@ public interface IAtsStateDefinition extends IStateToken {
    public abstract List<IAtsStateDefinition> getToStates();
 
    public abstract IAtsStateDefinition getDefaultToState();
-
-   public abstract void setDefaultToState(IAtsStateDefinition defaultToState);
 
    /**
     * Parent Work Definition
@@ -69,15 +61,9 @@ public interface IAtsStateDefinition extends IStateToken {
     * 
     * @param percentWeight int value where all stateWeights in workdefinition == 100
     */
-   public abstract void setStateWeight(int percentWeight);
-
    public abstract int getStateWeight();
 
-   public abstract void setRecommendedPercentComplete(int recommendedPercentComplete);
-
    public abstract Integer getRecommendedPercentComplete();
-
-   public abstract void setColor(StateColor stateColor);
 
    public abstract StateColor getColor();
 
@@ -91,10 +77,6 @@ public interface IAtsStateDefinition extends IStateToken {
    /**
     * Rules
     */
-   public abstract void removeRule(String rule);
-
-   public abstract void addRule(String rule);
-
    public abstract List<String> getRules();
 
    public abstract boolean hasRule(String name);

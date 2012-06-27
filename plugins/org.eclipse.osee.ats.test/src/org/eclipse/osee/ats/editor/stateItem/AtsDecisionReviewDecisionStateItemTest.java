@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.model.IAtsUser;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
+import org.eclipse.osee.ats.mocks.shared.MockStateDefinition;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -74,7 +74,7 @@ public class AtsDecisionReviewDecisionStateItemTest {
       XComboDam decisionComboDam = new XComboDam("Decision");
       // set combo values an verify they got set
       decisionComboDam.setDataStrings(new String[] {"One", "Two", "Three"});
-      IAtsStateDefinition stateDef = AtsWorkDefinitionService.getService().createStateDefinition("Decision");
+      IAtsStateDefinition stateDef = new MockStateDefinition("Decision");
       Assert.assertEquals("Two", decisionComboDam.getDisplayArray()[2]);
 
       // make call to state item that should set options based on artifact's attribute value

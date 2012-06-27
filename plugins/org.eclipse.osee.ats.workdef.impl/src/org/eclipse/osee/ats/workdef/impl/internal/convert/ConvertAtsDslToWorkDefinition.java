@@ -56,7 +56,16 @@ import org.eclipse.osee.ats.workdef.api.StateColor;
 import org.eclipse.osee.ats.workdef.api.StateEventType;
 import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.ats.workdef.api.WidgetOption;
-import org.eclipse.osee.ats.workdef.impl.internal.AtsWorkDefinitionServiceImpl;
+import org.eclipse.osee.ats.workdef.impl.internal.model.CompositeLayoutItem;
+import org.eclipse.osee.ats.workdef.impl.internal.model.DecisionReviewDefinition;
+import org.eclipse.osee.ats.workdef.impl.internal.model.DecisionReviewOption;
+import org.eclipse.osee.ats.workdef.impl.internal.model.PeerReviewDefinition;
+import org.eclipse.osee.ats.workdef.impl.internal.model.StateDefinition;
+import org.eclipse.osee.ats.workdef.impl.internal.model.WidgetDefinition;
+import org.eclipse.osee.ats.workdef.impl.internal.model.WidgetDefinitionFloatMinMaxConstraint;
+import org.eclipse.osee.ats.workdef.impl.internal.model.WidgetDefinitionIntMinMaxConstraint;
+import org.eclipse.osee.ats.workdef.impl.internal.model.WidgetDefinitionListMinMaxSelectedConstraint;
+import org.eclipse.osee.ats.workdef.impl.internal.model.WorkDefinition;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -64,7 +73,6 @@ public class ConvertAtsDslToWorkDefinition {
 
    private final String name;
    private final AtsDsl atsDsl;
-   AtsWorkDefinitionServiceImpl service = new AtsWorkDefinitionServiceImpl();
    private final XResultData resultData;
    private final IAttributeResolver attrResolver;
    private final IUserResolver userResolver;
@@ -81,7 +89,7 @@ public class ConvertAtsDslToWorkDefinition {
       if (atsDsl.getWorkDef() == null) {
          return null;
       }
-      IAtsWorkDefinition workDef = service.createWorkDefinition(Strings.unquote(atsDsl.getWorkDef().getName()));
+      WorkDefinition workDef = new WorkDefinition(Strings.unquote(atsDsl.getWorkDef().getName()));
       workDef.setId(atsDsl.getWorkDef().getId().iterator().next());
 
       List<IAtsWidgetDefinition> widgetDefs = retrieveWigetDefs(atsDsl, name);
@@ -90,7 +98,8 @@ public class ConvertAtsDslToWorkDefinition {
       // Process and define all states
       for (StateDef dslState : atsDsl.getWorkDef().getStates()) {
          String stateName = Strings.unquote(dslState.getName());
-         IAtsStateDefinition stateDef = workDef.addState(service.createStateDefinition(stateName));
+         StateDefinition stateDef = new StateDefinition(stateName);
+         workDef.addState(stateDef);
 
          stateDef.setWorkDefinition(workDef);
 
@@ -141,7 +150,7 @@ public class ConvertAtsDslToWorkDefinition {
 
       // Process and define all transitions
       for (StateDef dslState : atsDsl.getWorkDef().getStates()) {
-         IAtsStateDefinition stateDef = workDef.getStateByName(Strings.unquote(dslState.getName()));
+         StateDefinition stateDef = (StateDefinition) workDef.getStateByName(Strings.unquote(dslState.getName()));
          // Process transitions
          for (ToState dslToState : dslState.getTransitionStates()) {
             IAtsStateDefinition toStateDef = workDef.getStateByName(Strings.unquote(dslToState.getState().getName()));
@@ -162,7 +171,7 @@ public class ConvertAtsDslToWorkDefinition {
          IAtsStateDefinition stateDef = workDef.getStateByName(Strings.unquote(dslState.getName()));
          for (DecisionReviewRef dslRevRef : dslState.getDecisionReviews()) {
             DecisionReviewDef dslRevDef = dslRevRef.getDecisionReview();
-            IAtsDecisionReviewDefinition revDef = convertDslDecisionReview(dslRevDef);
+            DecisionReviewDefinition revDef = (DecisionReviewDefinition) convertDslDecisionReview(dslRevDef);
             if (!Strings.isValid(revDef.getRelatedToState())) {
                revDef.setRelatedToState(stateDef.getName());
             }
@@ -175,7 +184,7 @@ public class ConvertAtsDslToWorkDefinition {
          IAtsStateDefinition stateDef = workDef.getStateByName(Strings.unquote(dslState.getName()));
          for (PeerReviewRef peerRevRef : dslState.getPeerReviews()) {
             PeerReviewDef dslRevDef = peerRevRef.getPeerReview();
-            IAtsPeerReviewDefinition revDef = convertDslPeerReview(dslRevDef);
+            PeerReviewDefinition revDef = (PeerReviewDefinition) convertDslPeerReview(dslRevDef);
             if (!Strings.isValid(revDef.getRelatedToState())) {
                revDef.setRelatedToState(stateDef.getName());
             }
@@ -185,12 +194,13 @@ public class ConvertAtsDslToWorkDefinition {
 
       // Set the start state
       workDef.setStartState(workDef.getStateByName(Strings.unquote(atsDsl.getWorkDef().getStartState().getName())));
-
+      workDef.setName(name);
+      workDef.setId(name);
       return workDef;
    }
 
    private IAtsDecisionReviewDefinition convertDslDecisionReview(DecisionReviewDef dslRevDef) {
-      IAtsDecisionReviewDefinition revDef = service.createDecisionReviewDefinition(dslRevDef.getName());
+      DecisionReviewDefinition revDef = new DecisionReviewDefinition(dslRevDef.getName());
       revDef.setReviewTitle(dslRevDef.getTitle());
       revDef.setDescription(dslRevDef.getDescription());
 
@@ -216,7 +226,7 @@ public class ConvertAtsDslToWorkDefinition {
       revDef.setAutoTransitionToDecision(BooleanDefUtil.get(dslRevDef.getAutoTransitionToDecision(), false));
 
       for (DecisionReviewOpt dslOpt : dslRevDef.getOptions()) {
-         IAtsDecisionReviewOption revOpt = service.createDecisionReviewOption(Strings.unquote(dslOpt.getName()));
+         IAtsDecisionReviewOption revOpt = new DecisionReviewOption(Strings.unquote(dslOpt.getName()));
          FollowupRef followupRef = dslOpt.getFollowup();
          if (followupRef == null) {
             revOpt.setFollowupRequired(false);
@@ -257,8 +267,7 @@ public class ConvertAtsDslToWorkDefinition {
                   resultData.logErrorWithFormat("Invalid attribute name [%s] in WorkDefinition [%s]", attributeName,
                      SHEET_NAME);
                } else {
-                  IAtsWidgetDefinition widgetDef =
-                     service.createWidgetDefinition(attrResolver.getUnqualifiedName(attributeName));
+                  WidgetDefinition widgetDef = new WidgetDefinition(attrResolver.getUnqualifiedName(attributeName));
                   widgetDef.setAttributeName(attributeName);
                   attrResolver.setXWidgetNameBasedOnAttributeName(attributeName, widgetDef);
                   extractDslWidgetDefOptions(attrWidget.getOption(), SHEET_NAME, widgetDef);
@@ -270,7 +279,7 @@ public class ConvertAtsDslToWorkDefinition {
             }
          } else if (layoutItem instanceof Composite) {
             Composite composite = (Composite) layoutItem;
-            IAtsCompositeLayoutItem compStateItem = service.createCompositeLayoutItem(composite.getNumColumns());
+            IAtsCompositeLayoutItem compStateItem = new CompositeLayoutItem(composite.getNumColumns());
             if (!composite.getLayoutItems().isEmpty()) {
                processLayoutItems(SHEET_NAME, widgetDefs, compStateItem.getaLayoutItems(), composite.getLayoutItems());
             }
@@ -281,7 +290,7 @@ public class ConvertAtsDslToWorkDefinition {
    }
 
    private IAtsPeerReviewDefinition convertDslPeerReview(PeerReviewDef dslRevDef) {
-      IAtsPeerReviewDefinition revDef = service.createPeerReviewDefinition(dslRevDef.getName());
+      PeerReviewDefinition revDef = new PeerReviewDefinition(dslRevDef.getName());
       revDef.setReviewTitle(dslRevDef.getTitle());
       revDef.setDescription(dslRevDef.getDescription());
       revDef.setLocation(dslRevDef.getLocation());
@@ -352,7 +361,7 @@ public class ConvertAtsDslToWorkDefinition {
    }
 
    private IAtsWidgetDefinition convertDslWidgetDef(WidgetDef dslWidgetDef, String SHEET_NAME) {
-      IAtsWidgetDefinition widgetDef = service.createWidgetDefinition(Strings.unquote(dslWidgetDef.getName()));
+      WidgetDefinition widgetDef = new WidgetDefinition(Strings.unquote(dslWidgetDef.getName()));
       widgetDef.setAttributeName(dslWidgetDef.getAttributeName());
       // Set description if model defines it
       if (Strings.isValid(dslWidgetDef.getDescription())) {
@@ -396,15 +405,13 @@ public class ConvertAtsDslToWorkDefinition {
          return;
       }
       if (widgetDef.getXWidgetName().contains("Float")) {
-         widgetDef.getConstraints().add(
-            service.createWidgetDefinitionFloatMinMaxConstraint(minConstraint, minConstraint));
+         widgetDef.getConstraints().add(new WidgetDefinitionFloatMinMaxConstraint(minConstraint, minConstraint));
       }
       if (widgetDef.getXWidgetName().contains("Integer")) {
-         widgetDef.getConstraints().add(service.createWidgetDefinitionIntMinMaxConstraint(minConstraint, minConstraint));
+         widgetDef.getConstraints().add(new WidgetDefinitionIntMinMaxConstraint(minConstraint, minConstraint));
       }
       if (widgetDef.getXWidgetName().contains("List")) {
-         widgetDef.getConstraints().add(
-            service.createWidgetDefinitionListMinMaxSelectedConstraint(minConstraint, minConstraint));
+         widgetDef.getConstraints().add(new WidgetDefinitionListMinMaxSelectedConstraint(minConstraint, minConstraint));
       }
    }
 

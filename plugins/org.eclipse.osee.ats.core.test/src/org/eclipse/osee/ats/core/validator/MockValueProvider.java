@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.core.validator;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import org.eclipse.osee.ats.core.validator.IValueProvider;
 
 /**
  * @author Donald G. Dunne

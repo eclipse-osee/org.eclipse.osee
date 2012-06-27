@@ -12,14 +12,15 @@ package org.eclipse.osee.ats.core.validator;
 
 import java.util.Arrays;
 import junit.framework.Assert;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
-import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
-import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.core.validator.AtsXListValidator;
+import org.eclipse.osee.ats.core.workdef.SimpleWidgetDefinitionListMinMaxSelectedConstraint;
+import org.eclipse.osee.ats.mocks.shared.MockStateDefinition;
+import org.eclipse.osee.ats.mocks.shared.MockWidgetDefinition;
 import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinitionListMinMaxSelectedConstraint;
+import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.ats.workdef.api.WidgetOption;
 import org.eclipse.osee.ats.workdef.api.WidgetResult;
 import org.eclipse.osee.ats.workdef.api.WidgetStatus;
-import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -31,12 +32,12 @@ public class AtsXListValidatorTest {
    public void testValidateTransition() throws OseeCoreException {
       AtsXListValidator validator = new AtsXListValidator();
 
-      IAtsWidgetDefinition widgetDef = AtsWorkDefinitionService.getService().createWidgetDefinition("test");
+      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
       widgetDef.setXWidgetName("xLabel");
 
-      IAtsStateDefinition fromStateDef = AtsWorkDefinitionService.getService().createStateDefinition("from");
+      MockStateDefinition fromStateDef = new MockStateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
-      IAtsStateDefinition toStateDef = AtsWorkDefinitionService.getService().createStateDefinition("to");
+      MockStateDefinition toStateDef = new MockStateDefinition("to");
       toStateDef.setStateType(StateType.Working);
 
       // Valid for anything not XIntegerDam
@@ -61,15 +62,15 @@ public class AtsXListValidatorTest {
       AtsXListValidator validator = new AtsXListValidator();
 
       IAtsWidgetDefinitionListMinMaxSelectedConstraint constraint =
-         AtsWorkDefinitionService.getService().createWidgetDefinitionListMinMaxSelectedConstraint("0", "0");
+         new SimpleWidgetDefinitionListMinMaxSelectedConstraint("0", "0");
 
-      IAtsWidgetDefinition widgetDef = AtsWorkDefinitionService.getService().createWidgetDefinition("test");
+      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
       widgetDef.setXWidgetName("XListDam");
       widgetDef.getConstraints().add(constraint);
 
-      IAtsStateDefinition fromStateDef = AtsWorkDefinitionService.getService().createStateDefinition("from");
+      MockStateDefinition fromStateDef = new MockStateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
-      IAtsStateDefinition toStateDef = AtsWorkDefinitionService.getService().createStateDefinition("to");
+      MockStateDefinition toStateDef = new MockStateDefinition("to");
       toStateDef.setStateType(StateType.Working);
 
       // Valid is nothing entered
@@ -96,8 +97,7 @@ public class AtsXListValidatorTest {
       ValidatorTestUtil.assertValidResult(result);
 
       // test nulls
-      constraint =
-         AtsWorkDefinitionService.getService().createWidgetDefinitionListMinMaxSelectedConstraint((String) null, null);
+      constraint = new SimpleWidgetDefinitionListMinMaxSelectedConstraint((String) null, null);
       Assert.assertEquals(null, constraint.getMinSelected());
       Assert.assertEquals(null, constraint.getMaxSelected());
 

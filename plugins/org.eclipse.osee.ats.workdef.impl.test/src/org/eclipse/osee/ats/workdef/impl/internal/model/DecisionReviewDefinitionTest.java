@@ -6,21 +6,20 @@
 package org.eclipse.osee.ats.workdef.impl.internal.model;
 
 import junit.framework.Assert;
-import org.eclipse.osee.ats.workdef.api.IAtsDecisionReviewDefinition;
 import org.eclipse.osee.ats.workdef.api.ReviewBlockType;
 import org.eclipse.osee.ats.workdef.api.StateEventType;
 import org.junit.Test;
 
 /**
  * Test case for {@link DecisionReviewDefinition}
- *
+ * 
  * @author Donald G. Dunne
  */
 public class DecisionReviewDefinitionTest {
 
    @Test
    public void testGetSetName() {
-      IAtsDecisionReviewDefinition rev = new DecisionReviewDefinition("review");
+      DecisionReviewDefinition rev = new DecisionReviewDefinition("review");
       Assert.assertEquals("review", rev.getName());
       rev.setName("new rev");
       Assert.assertEquals("new rev", rev.getName());
@@ -28,7 +27,7 @@ public class DecisionReviewDefinitionTest {
 
    @Test
    public void testGetSetDescription() {
-      IAtsDecisionReviewDefinition item = new DecisionReviewDefinition("review");
+      DecisionReviewDefinition item = new DecisionReviewDefinition("review");
       Assert.assertEquals("", item.getDescription());
       item.setDescription("desc");
       Assert.assertEquals("desc", item.getDescription());
@@ -36,7 +35,7 @@ public class DecisionReviewDefinitionTest {
 
    @Test
    public void testGetSetBlockingType() {
-      IAtsDecisionReviewDefinition item = new DecisionReviewDefinition("review");
+      DecisionReviewDefinition item = new DecisionReviewDefinition("review");
       Assert.assertNull(item.getBlockingType());
       item.setBlockingType(ReviewBlockType.Commit);
       Assert.assertEquals(ReviewBlockType.Commit, item.getBlockingType());
@@ -44,7 +43,7 @@ public class DecisionReviewDefinitionTest {
 
    @Test
    public void testGetSetStateEventType() {
-      IAtsDecisionReviewDefinition item = new DecisionReviewDefinition("review");
+      DecisionReviewDefinition item = new DecisionReviewDefinition("review");
       Assert.assertNull(item.getStateEventType());
       item.setStateEventType(StateEventType.CommitBranch);
       Assert.assertEquals(StateEventType.CommitBranch, item.getStateEventType());
@@ -52,7 +51,7 @@ public class DecisionReviewDefinitionTest {
 
    @Test
    public void testIsAutoTransitionToDecision() {
-      IAtsDecisionReviewDefinition item = new DecisionReviewDefinition("review");
+      DecisionReviewDefinition item = new DecisionReviewDefinition("review");
       Assert.assertFalse(item.isAutoTransitionToDecision());
       item.setAutoTransitionToDecision(true);
       Assert.assertTrue(item.isAutoTransitionToDecision());
@@ -60,7 +59,7 @@ public class DecisionReviewDefinitionTest {
 
    @Test
    public void testGetAssignees() {
-      IAtsDecisionReviewDefinition item = new DecisionReviewDefinition("review");
+      DecisionReviewDefinition item = new DecisionReviewDefinition("review");
       Assert.assertTrue(item.getAssignees().isEmpty());
       item.getAssignees().add("Joe");
       Assert.assertEquals(1, item.getAssignees().size());
@@ -69,7 +68,7 @@ public class DecisionReviewDefinitionTest {
 
    @Test
    public void testGetOptions() {
-      IAtsDecisionReviewDefinition item = new DecisionReviewDefinition("review");
+      DecisionReviewDefinition item = new DecisionReviewDefinition("review");
       Assert.assertTrue(item.getOptions().isEmpty());
       item.getOptions().add(new DecisionReviewOption("Completed"));
       Assert.assertEquals(1, item.getOptions().size());
@@ -77,13 +76,13 @@ public class DecisionReviewDefinitionTest {
 
    @Test
    public void testToString() {
-      IAtsDecisionReviewDefinition item = new DecisionReviewDefinition("review");
+      DecisionReviewDefinition item = new DecisionReviewDefinition("review");
       Assert.assertEquals("review", item.toString());
    }
 
    @Test
    public void testGetTitle() {
-      IAtsDecisionReviewDefinition item = new DecisionReviewDefinition("review");
+      DecisionReviewDefinition item = new DecisionReviewDefinition("review");
       Assert.assertNull(item.getReviewTitle());
       item.setReviewTitle("title");
       Assert.assertEquals("title", item.getReviewTitle());
@@ -91,7 +90,7 @@ public class DecisionReviewDefinitionTest {
 
    @Test
    public void testGetSetRelatedToState() {
-      IAtsDecisionReviewDefinition item = new DecisionReviewDefinition("review");
+      DecisionReviewDefinition item = new DecisionReviewDefinition("review");
       Assert.assertNull(item.getRelatedToState());
       item.setRelatedToState("Implement");
       Assert.assertEquals("Implement", item.getRelatedToState());

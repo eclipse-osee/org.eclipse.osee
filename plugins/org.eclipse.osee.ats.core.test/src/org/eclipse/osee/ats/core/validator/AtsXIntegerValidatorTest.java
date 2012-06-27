@@ -12,14 +12,15 @@ package org.eclipse.osee.ats.core.validator;
 
 import java.util.Arrays;
 import junit.framework.Assert;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
-import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
-import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.core.validator.AtsXIntegerValidator;
+import org.eclipse.osee.ats.core.workdef.SimpleWidgetDefinitionIntMinMaxConstraint;
+import org.eclipse.osee.ats.mocks.shared.MockStateDefinition;
+import org.eclipse.osee.ats.mocks.shared.MockWidgetDefinition;
 import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinitionIntMinMaxConstraint;
+import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.ats.workdef.api.WidgetOption;
 import org.eclipse.osee.ats.workdef.api.WidgetResult;
 import org.eclipse.osee.ats.workdef.api.WidgetStatus;
-import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -31,12 +32,12 @@ public class AtsXIntegerValidatorTest {
    public void testValidateTransition() throws OseeCoreException {
       AtsXIntegerValidator validator = new AtsXIntegerValidator();
 
-      IAtsWidgetDefinition widgetDef = AtsWorkDefinitionService.getService().createWidgetDefinition("test");
+      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
       widgetDef.setXWidgetName("xList");
 
-      IAtsStateDefinition fromStateDef = AtsWorkDefinitionService.getService().createStateDefinition("from");
+      MockStateDefinition fromStateDef = new MockStateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
-      IAtsStateDefinition toStateDef = AtsWorkDefinitionService.getService().createStateDefinition("to");
+      MockStateDefinition toStateDef = new MockStateDefinition("to");
       toStateDef.setStateType(StateType.Working);
 
       // Valid for anything not XIntegerDam
@@ -60,16 +61,15 @@ public class AtsXIntegerValidatorTest {
    public void testValidateTransition_MinMaxConstraint() throws OseeCoreException {
       AtsXIntegerValidator validator = new AtsXIntegerValidator();
 
-      IAtsWidgetDefinitionIntMinMaxConstraint constraint =
-         AtsWorkDefinitionService.getService().createWidgetDefinitionIntMinMaxConstraint("0", "0");
+      IAtsWidgetDefinitionIntMinMaxConstraint constraint = new SimpleWidgetDefinitionIntMinMaxConstraint("0", "0");
 
-      IAtsWidgetDefinition widgetDef = AtsWorkDefinitionService.getService().createWidgetDefinition("test");
+      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
       widgetDef.setXWidgetName("XIntegerDam");
       widgetDef.getConstraints().add(constraint);
 
-      IAtsStateDefinition fromStateDef = AtsWorkDefinitionService.getService().createStateDefinition("from");
+      MockStateDefinition fromStateDef = new MockStateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
-      IAtsStateDefinition toStateDef = AtsWorkDefinitionService.getService().createStateDefinition("to");
+      MockStateDefinition toStateDef = new MockStateDefinition("to");
       toStateDef.setStateType(StateType.Working);
 
       // Valid is nothing entered
@@ -96,7 +96,7 @@ public class AtsXIntegerValidatorTest {
       ValidatorTestUtil.assertValidResult(result);
 
       // test nulls
-      constraint = AtsWorkDefinitionService.getService().createWidgetDefinitionIntMinMaxConstraint((String) null, null);
+      constraint = new SimpleWidgetDefinitionIntMinMaxConstraint((String) null, null);
       Assert.assertEquals(null, constraint.getMinValue());
       Assert.assertEquals(null, constraint.getMaxValue());
 

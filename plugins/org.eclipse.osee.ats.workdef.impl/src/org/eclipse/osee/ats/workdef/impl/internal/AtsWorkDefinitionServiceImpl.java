@@ -12,34 +12,18 @@ import java.util.List;
 import org.eclipse.osee.ats.dsl.ModelUtil;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.workdef.api.IAtsCompositeLayoutItem;
-import org.eclipse.osee.ats.workdef.api.IAtsDecisionReviewDefinition;
-import org.eclipse.osee.ats.workdef.api.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.workdef.api.IAtsLayoutItem;
-import org.eclipse.osee.ats.workdef.api.IAtsPeerReviewDefinition;
 import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
-import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinitionFloatMinMaxConstraint;
-import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinitionIntMinMaxConstraint;
-import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinitionListMinMaxSelectedConstraint;
 import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
 import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.workdef.api.IAttributeResolver;
 import org.eclipse.osee.ats.workdef.api.IUserResolver;
 import org.eclipse.osee.ats.workdef.impl.internal.convert.ConvertAtsDslToWorkDefinition;
 import org.eclipse.osee.ats.workdef.impl.internal.convert.ConvertWorkDefinitionToAtsDsl;
-import org.eclipse.osee.ats.workdef.impl.internal.model.CompositeLayoutItem;
-import org.eclipse.osee.ats.workdef.impl.internal.model.DecisionReviewDefinition;
-import org.eclipse.osee.ats.workdef.impl.internal.model.DecisionReviewOption;
-import org.eclipse.osee.ats.workdef.impl.internal.model.LayoutItem;
-import org.eclipse.osee.ats.workdef.impl.internal.model.PeerReviewDefinition;
-import org.eclipse.osee.ats.workdef.impl.internal.model.StateDefinition;
-import org.eclipse.osee.ats.workdef.impl.internal.model.WidgetDefinition;
-import org.eclipse.osee.ats.workdef.impl.internal.model.WidgetDefinitionFloatMinMaxConstraint;
-import org.eclipse.osee.ats.workdef.impl.internal.model.WidgetDefinitionIntMinMaxConstraint;
-import org.eclipse.osee.ats.workdef.impl.internal.model.WidgetDefinitionListMinMaxSelectedConstraint;
-import org.eclipse.osee.ats.workdef.impl.internal.model.WorkDefinition;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * Provides new and stored Work Definitions
@@ -57,8 +41,6 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       ConvertAtsDslToWorkDefinition converter2 =
          new ConvertAtsDslToWorkDefinition(newName, atsDsl, resultData, attrResolver, userResolver);
       IAtsWorkDefinition newWorkDef = converter2.convert();
-      newWorkDef.setId(newName);
-      newWorkDef.setName(newName);
       return newWorkDef;
    }
 
@@ -94,86 +76,6 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
             AtsWorkDefinitionStore.getService().getAttributeResolver(),
             AtsWorkDefinitionStore.getService().getUserResolver());
       return convert.convert();
-   }
-
-   @Override
-   public IAtsWorkDefinition createWorkDefinition(String name) {
-      return new WorkDefinition(name);
-   }
-
-   @Override
-   public IAtsDecisionReviewOption createDecisionReviewOption(String pageName, boolean isFollowupRequired, List<String> userIds) {
-      return new DecisionReviewOption(pageName, isFollowupRequired, userIds);
-   }
-
-   @Override
-   public IAtsCompositeLayoutItem createCompositeLayoutItem() {
-      return new CompositeLayoutItem();
-   }
-
-   @Override
-   public IAtsLayoutItem createLayoutItem(String name) {
-      return new LayoutItem(name);
-   }
-
-   @Override
-   public IAtsStateDefinition createStateDefinition(String name) {
-      return new StateDefinition(name);
-   }
-
-   @Override
-   public IAtsWidgetDefinition createWidgetDefinition(String name) {
-      return new WidgetDefinition(name);
-   }
-
-   @Override
-   public IAtsPeerReviewDefinition createPeerReviewDefinition(String name) {
-      return new PeerReviewDefinition(name);
-   }
-
-   @Override
-   public IAtsDecisionReviewDefinition createDecisionReviewDefinition(String name) {
-      return new DecisionReviewDefinition(name);
-   }
-
-   @Override
-   public IAtsDecisionReviewOption createDecisionReviewOption(String name) {
-      return new DecisionReviewOption(name);
-   }
-
-   @Override
-   public IAtsCompositeLayoutItem createCompositeLayoutItem(int numColumns) {
-      return new CompositeLayoutItem(numColumns);
-   }
-
-   @Override
-   public IAtsWidgetDefinitionFloatMinMaxConstraint createWidgetDefinitionFloatMinMaxConstraint(String minConstraint, String minConstraint2) {
-      return new WidgetDefinitionFloatMinMaxConstraint(minConstraint, minConstraint2);
-   }
-
-   @Override
-   public IAtsWidgetDefinitionIntMinMaxConstraint createWidgetDefinitionIntMinMaxConstraint(String minConstraint, String minConstraint2) {
-      return new WidgetDefinitionIntMinMaxConstraint(minConstraint, minConstraint2);
-   }
-
-   @Override
-   public IAtsWidgetDefinitionListMinMaxSelectedConstraint createWidgetDefinitionListMinMaxSelectedConstraint(String minConstraint, String minConstraint2) {
-      return new WidgetDefinitionListMinMaxSelectedConstraint(minConstraint, minConstraint2);
-   }
-
-   @Override
-   public IAtsWidgetDefinitionIntMinMaxConstraint createWidgetDefinitionIntMinMaxConstraint(int minValue, int maxValue) {
-      return new WidgetDefinitionIntMinMaxConstraint(minValue, maxValue);
-   }
-
-   @Override
-   public IAtsWidgetDefinitionListMinMaxSelectedConstraint createWidgetDefinitionListMinMaxSelectedConstraint(int minSelected, int maxSelected) {
-      return new WidgetDefinitionListMinMaxSelectedConstraint(minSelected, maxSelected);
-   }
-
-   @Override
-   public IAtsWidgetDefinitionFloatMinMaxConstraint createWidgetDefinitionFloatMinMaxConstraint(double minValue, double maxValue) {
-      return new WidgetDefinitionFloatMinMaxConstraint(minValue, maxValue);
    }
 
    @Override
@@ -286,5 +188,19 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
          }
       }
       return false;
+   }
+
+   @Override
+   public IAtsWorkDefinition getWorkDefinition(String workDefinitionDsl) throws Exception {
+      AtsDsl atsDsl = ModelUtil.loadModel("model.ats", workDefinitionDsl);
+      XResultData result = new XResultData(false);
+      ConvertAtsDslToWorkDefinition convert =
+         new ConvertAtsDslToWorkDefinition(Strings.unquote(atsDsl.getWorkDef().getName()), atsDsl, result,
+            AtsWorkDefinitionStore.getService().getAttributeResolver(),
+            AtsWorkDefinitionStore.getService().getUserResolver());
+      if (!result.isEmpty()) {
+         throw new IllegalStateException(result.toString());
+      }
+      return convert.convert();
    }
 }

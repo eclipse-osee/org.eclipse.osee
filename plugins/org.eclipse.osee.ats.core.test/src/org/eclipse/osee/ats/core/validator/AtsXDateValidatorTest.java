@@ -15,13 +15,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import junit.framework.Assert;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
-import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
-import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.mocks.shared.MockStateDefinition;
+import org.eclipse.osee.ats.mocks.shared.MockWidgetDefinition;
+import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.ats.workdef.api.WidgetOption;
 import org.eclipse.osee.ats.workdef.api.WidgetResult;
 import org.eclipse.osee.ats.workdef.api.WidgetStatus;
-import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -33,12 +32,12 @@ public class AtsXDateValidatorTest {
    public void testValidateTransition() throws OseeCoreException {
       AtsXDateValidator validator = new AtsXDateValidator();
 
-      IAtsWidgetDefinition widgetDef = AtsWorkDefinitionService.getService().createWidgetDefinition("test");
+      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
       widgetDef.setXWidgetName("xList");
 
-      IAtsStateDefinition fromStateDef = AtsWorkDefinitionService.getService().createStateDefinition("from");
+      MockStateDefinition fromStateDef = new MockStateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
-      IAtsStateDefinition toStateDef = AtsWorkDefinitionService.getService().createStateDefinition("to");
+      MockStateDefinition toStateDef = new MockStateDefinition("to");
       toStateDef.setStateType(StateType.Working);
 
       // Valid for anything not XIntegerDam
@@ -62,12 +61,12 @@ public class AtsXDateValidatorTest {
    public void testValidateTransition_validDate() throws OseeCoreException {
       AtsXDateValidator validator = new AtsXDateValidator();
 
-      IAtsWidgetDefinition widgetDef = AtsWorkDefinitionService.getService().createWidgetDefinition("test");
+      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
       widgetDef.setXWidgetName("XDateDam");
 
-      IAtsStateDefinition fromStateDef = AtsWorkDefinitionService.getService().createStateDefinition("from");
+      MockStateDefinition fromStateDef = new MockStateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
-      IAtsStateDefinition toStateDef = AtsWorkDefinitionService.getService().createStateDefinition("to");
+      MockStateDefinition toStateDef = new MockStateDefinition("to");
       toStateDef.setStateType(StateType.Working);
 
       MockDateValueProvider dateProvider = new MockDateValueProvider(Arrays.asList(new Date()));
@@ -81,13 +80,13 @@ public class AtsXDateValidatorTest {
    public void testValidateTransition_validRange() throws OseeCoreException {
       AtsXDateValidator validator = new AtsXDateValidator();
 
-      IAtsWidgetDefinition widgetDef = AtsWorkDefinitionService.getService().createWidgetDefinition("test");
+      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
       widgetDef.setXWidgetName("XDateDam");
       widgetDef.getOptions().add(WidgetOption.FUTURE_DATE_REQUIRED);
 
-      IAtsStateDefinition fromStateDef = AtsWorkDefinitionService.getService().createStateDefinition("from");
+      MockStateDefinition fromStateDef = new MockStateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
-      IAtsStateDefinition toStateDef = AtsWorkDefinitionService.getService().createStateDefinition("to");
+      MockStateDefinition toStateDef = new MockStateDefinition("to");
       toStateDef.setStateType(StateType.Working);
 
       Calendar cal = new GregorianCalendar(2010, 02, 05);

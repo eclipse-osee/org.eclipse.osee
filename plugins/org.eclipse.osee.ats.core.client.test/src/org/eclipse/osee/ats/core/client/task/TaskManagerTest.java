@@ -76,7 +76,6 @@ public class TaskManagerTest extends TaskManager {
       XResultData resultData = new XResultData();
       IAtsWorkDefinition differentTaskWorkDef =
          WorkDefinitionFactory.copyWorkDefinition(taskWorkDef.getName() + "2", taskWorkDef, resultData);
-      differentTaskWorkDef.setName(taskWorkDef.getName() + "2");
       Assert.assertFalse("Should be no errors", resultData.isErrors());
       WorkDefinitionFactory.addWorkDefinition(differentTaskWorkDef);
 
@@ -108,7 +107,6 @@ public class TaskManagerTest extends TaskManager {
       XResultData resultData = new XResultData();
       IAtsWorkDefinition differentTaskWorkDef =
          WorkDefinitionFactory.copyWorkDefinition(taskWorkDef.getName() + "2", taskWorkDef, resultData);
-      differentTaskWorkDef.setName(taskWorkDef.getName() + "2");
       Assert.assertFalse("Should be no errors", resultData.isErrors());
       WorkDefinitionFactory.addWorkDefinition(differentTaskWorkDef);
 

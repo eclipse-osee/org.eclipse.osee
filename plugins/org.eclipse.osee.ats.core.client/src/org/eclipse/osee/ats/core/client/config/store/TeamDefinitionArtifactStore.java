@@ -178,7 +178,6 @@ public class TeamDefinitionArtifactStore extends ArtifactAtsObjectStore {
          atsObject = teamDef;
          teamDef.setActive(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.Active, true));
          teamDef.setActionable(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.Actionable, true));
-         String actionDetailsFormat = teamDefArt.getSoleAttributeValue(AtsAttributeTypes.ActionDetailsFormat, "");
          teamDef.setTeamUsesVersions(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.TeamUsesVersions, true));
          teamDef.setAllowCommitBranch(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, true));
          teamDef.setAllowCreateBranch(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, true));

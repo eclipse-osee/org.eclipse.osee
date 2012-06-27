@@ -11,7 +11,6 @@ import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
-import org.eclipse.osee.ats.workdef.api.RuleDefinitionOption;
 import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.ats.workdef.impl.internal.AtsWorkDefinitionServiceImpl;
 import org.junit.Test;
@@ -25,8 +24,8 @@ public class WorkDefinitionTest {
 
    @Test
    public void testGetStates() {
-      IAtsStateDefinition endorse = new StateDefinition("endorse");
-      IAtsWorkDefinition def = new WorkDefinition("this");
+      StateDefinition endorse = new StateDefinition("endorse");
+      WorkDefinition def = new WorkDefinition("this");
       def.addState(endorse);
       Assert.assertEquals(1, def.getStates().size());
       Assert.assertEquals(endorse, def.getStates().iterator().next());
@@ -34,16 +33,16 @@ public class WorkDefinitionTest {
 
    @Test
    public void testGetStatesOrderedByOrdinal() {
-      IAtsStateDefinition endorse = new StateDefinition("endorse");
+      StateDefinition endorse = new StateDefinition("endorse");
       endorse.setStateType(StateType.Working);
-      IAtsStateDefinition analyze = new StateDefinition("analyze");
+      StateDefinition analyze = new StateDefinition("analyze");
       analyze.setStateType(StateType.Working);
-      IAtsStateDefinition implement = new StateDefinition("implement");
+      StateDefinition implement = new StateDefinition("implement");
       implement.setStateType(StateType.Working);
-      IAtsStateDefinition completed = new StateDefinition("completed");
+      StateDefinition completed = new StateDefinition("completed");
       completed.setStateType(StateType.Completed);
 
-      IAtsWorkDefinition def = new WorkDefinition("this");
+      WorkDefinition def = new WorkDefinition("this");
       def.addState(completed);
       def.addState(analyze);
       def.addState(endorse);
@@ -61,21 +60,21 @@ public class WorkDefinitionTest {
 
    @Test(expected = IllegalArgumentException.class)
    public void testGetStatesOrderedByDefaultToState_exception() {
-      IAtsWorkDefinition def = new WorkDefinition("this");
+      WorkDefinition def = new WorkDefinition("this");
       new AtsWorkDefinitionServiceImpl().getStatesOrderedByDefaultToState(def);
       def.setStartState(null);
    }
 
    @Test
    public void testGetStatesOrderedByDefaultToState() {
-      IAtsStateDefinition endorse = new StateDefinition("endorse");
+      StateDefinition endorse = new StateDefinition("endorse");
       endorse.setStateType(StateType.Working);
-      IAtsStateDefinition analyze = new StateDefinition("analyze");
+      StateDefinition analyze = new StateDefinition("analyze");
       analyze.setStateType(StateType.Working);
-      IAtsStateDefinition completed = new StateDefinition("completed");
+      StateDefinition completed = new StateDefinition("completed");
       completed.setStateType(StateType.Completed);
 
-      IAtsWorkDefinition def = new WorkDefinition("this");
+      WorkDefinition def = new WorkDefinition("this");
       def.addState(completed);
       def.addState(analyze);
       def.addState(endorse);
@@ -104,11 +103,11 @@ public class WorkDefinitionTest {
 
    @Test
    public void testGetStatesOrderedByDefaultToState_startStateOrderedPages() {
-      IAtsStateDefinition endorse = new StateDefinition("endorse");
+      StateDefinition endorse = new StateDefinition("endorse");
       endorse.setStateType(StateType.Working);
-      IAtsStateDefinition analyze = new StateDefinition("analyze");
+      StateDefinition analyze = new StateDefinition("analyze");
       analyze.setStateType(StateType.Working);
-      IAtsStateDefinition completed = new StateDefinition("completed");
+      StateDefinition completed = new StateDefinition("completed");
       completed.setStateType(StateType.Completed);
 
       IAtsWorkDefinition def = new WorkDefinition("this");
@@ -120,11 +119,11 @@ public class WorkDefinitionTest {
 
    @Test
    public void testGetStatesOrderedByDefaultToState_defaultPage() {
-      IAtsStateDefinition endorse = new StateDefinition("endorse");
+      StateDefinition endorse = new StateDefinition("endorse");
       endorse.setStateType(StateType.Working);
-      IAtsStateDefinition analyze = new StateDefinition("analyze");
+      StateDefinition analyze = new StateDefinition("analyze");
       analyze.setStateType(StateType.Working);
-      IAtsStateDefinition completed = new StateDefinition("completed");
+      StateDefinition completed = new StateDefinition("completed");
       completed.setStateType(StateType.Completed);
 
       IAtsWorkDefinition def = new WorkDefinition("this");
@@ -137,8 +136,8 @@ public class WorkDefinitionTest {
 
    @Test
    public void testGetDefaultToState() {
-      IAtsStateDefinition endorse = new StateDefinition("endorse");
-      IAtsStateDefinition analyze = new StateDefinition("analyze");
+      StateDefinition endorse = new StateDefinition("endorse");
+      StateDefinition analyze = new StateDefinition("analyze");
       Assert.assertNull(endorse.getDefaultToState());
       endorse.setDefaultToState(analyze);
       Assert.assertEquals(analyze, endorse.getDefaultToState());
@@ -146,7 +145,7 @@ public class WorkDefinitionTest {
 
    @Test
    public void testGetStateNames() {
-      IAtsWorkDefinition def = new WorkDefinition("this");
+      WorkDefinition def = new WorkDefinition("this");
       def.addState(new StateDefinition("endorse"));
       def.addState(new StateDefinition("analyze"));
       Assert.assertEquals(2, new AtsWorkDefinitionServiceImpl().getStateNames(def).size());
@@ -156,9 +155,9 @@ public class WorkDefinitionTest {
 
    @Test
    public void testGetStateByName() {
-      IAtsWorkDefinition def = new WorkDefinition("this");
-      IAtsStateDefinition endorse = new StateDefinition("endorse");
-      IAtsStateDefinition analyze = new StateDefinition("analyze");
+      WorkDefinition def = new WorkDefinition("this");
+      StateDefinition endorse = new StateDefinition("endorse");
+      StateDefinition analyze = new StateDefinition("analyze");
       def.addState(endorse);
       def.addState(analyze);
       Assert.assertEquals(endorse, def.getStateByName("endorse"));
@@ -167,31 +166,18 @@ public class WorkDefinitionTest {
    }
 
    @Test
-   public void testHasRule() {
-      IAtsStateDefinition endorse = new StateDefinition("endorse");
-      IAtsWorkDefinition def = new WorkDefinition("this");
-      Assert.assertFalse(def.hasRule(RuleDefinitionOption.AddDecisionValidateBlockingReview.name()));
-      Assert.assertFalse(def.hasRule("asdf"));
-
-      def.addState(endorse);
-      def.getRules().add(RuleDefinitionOption.AddDecisionValidateBlockingReview.name());
-
-      Assert.assertTrue(def.hasRule(RuleDefinitionOption.AddDecisionValidateBlockingReview.name()));
-      Assert.assertFalse(def.hasRule("asdf"));
-   }
-
-   @Test
    public void testGetStartState() {
-      IAtsWorkDefinition def = new WorkDefinition("this");
+      WorkDefinition def = new WorkDefinition("this");
       Assert.assertNull(def.getStartState());
-      IAtsStateDefinition endorse = def.addState(new StateDefinition("endorse"));
+      StateDefinition endorse = new StateDefinition("endorse");
+      def.addState(endorse);
       def.setStartState(endorse);
       Assert.assertEquals(endorse, def.getStartState());
    }
 
    @Test
    public void testGetIds() {
-      IAtsWorkDefinition def = new WorkDefinition("this");
+      WorkDefinition def = new WorkDefinition("this");
       Assert.assertEquals("", def.getId());
       Assert.assertEquals("this", def.getId());
       def.setId("3.4");
@@ -202,9 +188,10 @@ public class WorkDefinitionTest {
 
    @Test
    public void testIsStateWeightingEnabled() {
-      IAtsWorkDefinition def = new WorkDefinition("this");
+      WorkDefinition def = new WorkDefinition("this");
       Assert.assertFalse(new AtsWorkDefinitionServiceImpl().isStateWeightingEnabled(def));
-      IAtsStateDefinition endorse = def.addState(new StateDefinition("endorse"));
+      StateDefinition endorse = new StateDefinition("endorse");
+      def.addState(endorse);
       endorse.setStateWeight(34);
       Assert.assertTrue(new AtsWorkDefinitionServiceImpl().isStateWeightingEnabled(def));
 

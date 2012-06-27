@@ -8,6 +8,7 @@ package org.eclipse.osee.ats.workdef.impl.internal.model;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.workdef.api.WidgetOption;
+import org.eclipse.osee.ats.workdef.api.WidgetOptionHandler;
 import org.junit.Assert;
 import org.junit.Test;
 

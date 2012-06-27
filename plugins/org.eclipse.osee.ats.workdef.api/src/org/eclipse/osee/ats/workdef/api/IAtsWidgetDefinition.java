@@ -17,22 +17,14 @@ public interface IAtsWidgetDefinition extends IAtsLayoutItem {
 
    public abstract String getToolTip();
 
-   public abstract void setToolTip(String toolTip);
-
    public abstract String getDescription();
-
-   public abstract void setDescription(String description);
 
    /**
     * Storage
     */
    public abstract String getAtrributeName();
 
-   public abstract void setAttributeName(String storeName);
-
    public abstract String getDefaultValue();
-
-   public abstract void setDefaultValue(String defaultValue);
 
    /**
     * Options

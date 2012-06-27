@@ -12,14 +12,14 @@ package org.eclipse.osee.ats.core.validator;
 
 import java.util.Arrays;
 import junit.framework.Assert;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
-import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
-import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.core.workdef.SimpleWidgetDefinitionFloatMinMaxConstraint;
+import org.eclipse.osee.ats.mocks.shared.MockStateDefinition;
+import org.eclipse.osee.ats.mocks.shared.MockWidgetDefinition;
 import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinitionFloatMinMaxConstraint;
+import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.ats.workdef.api.WidgetOption;
 import org.eclipse.osee.ats.workdef.api.WidgetResult;
 import org.eclipse.osee.ats.workdef.api.WidgetStatus;
-import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -31,12 +31,12 @@ public class AtsXFloatValidatorTest {
    public void testValidateTransition() throws OseeCoreException {
       AtsXFloatValidator validator = new AtsXFloatValidator();
 
-      IAtsWidgetDefinition widgetDef = AtsWorkDefinitionService.getService().createWidgetDefinition("test");
+      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
       widgetDef.setXWidgetName("xList");
 
-      IAtsStateDefinition fromStateDef = AtsWorkDefinitionService.getService().createStateDefinition("from");
+      MockStateDefinition fromStateDef = new MockStateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
-      IAtsStateDefinition toStateDef = AtsWorkDefinitionService.getService().createStateDefinition("to");
+      MockStateDefinition toStateDef = new MockStateDefinition("to");
       toStateDef.setStateType(StateType.Working);
 
       // Valid for anything not XIntegerDam
@@ -61,15 +61,15 @@ public class AtsXFloatValidatorTest {
       AtsXFloatValidator validator = new AtsXFloatValidator();
 
       IAtsWidgetDefinitionFloatMinMaxConstraint constraint =
-         AtsWorkDefinitionService.getService().createWidgetDefinitionFloatMinMaxConstraint("0.0", "0.0");
+         new SimpleWidgetDefinitionFloatMinMaxConstraint("0.0", "0.0");
 
-      IAtsWidgetDefinition widgetDef = AtsWorkDefinitionService.getService().createWidgetDefinition("test");
+      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
       widgetDef.setXWidgetName("XFloatDam");
       widgetDef.getConstraints().add(constraint);
 
-      IAtsStateDefinition fromStateDef = AtsWorkDefinitionService.getService().createStateDefinition("from");
+      MockStateDefinition fromStateDef = new MockStateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
-      IAtsStateDefinition toStateDef = AtsWorkDefinitionService.getService().createStateDefinition("to");
+      MockStateDefinition toStateDef = new MockStateDefinition("to");
       toStateDef.setStateType(StateType.Working);
 
       // Valid is nothing entered
@@ -96,7 +96,7 @@ public class AtsXFloatValidatorTest {
       ValidatorTestUtil.assertValidResult(result);
 
       // test nulls
-      constraint = AtsWorkDefinitionService.getService().createWidgetDefinitionFloatMinMaxConstraint((String) null, null);
+      constraint = new SimpleWidgetDefinitionFloatMinMaxConstraint((String) null, null);
       Assert.assertEquals(null, constraint.getMinValue());
       Assert.assertEquals(null, constraint.getMaxValue());
 

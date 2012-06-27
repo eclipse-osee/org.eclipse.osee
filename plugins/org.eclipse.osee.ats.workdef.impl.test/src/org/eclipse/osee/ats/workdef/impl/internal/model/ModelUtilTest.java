@@ -13,8 +13,6 @@ import java.util.Collections;
 import org.eclipse.osee.ats.dsl.IResourceProvider;
 import org.eclipse.osee.ats.dsl.ModelUtil;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
-import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
-import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
 import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.ats.workdef.impl.internal.convert.ConvertWorkDefinitionToAtsDsl;
@@ -83,9 +81,9 @@ public class ModelUtilTest {
    }
 
    public IAtsWorkDefinition getWorkDefinition() {
-      IAtsWorkDefinition workDef = new WorkDefinition("WorkDef_Team_Default");
+      WorkDefinition workDef = new WorkDefinition("WorkDef_Team_Default");
 
-      IAtsStateDefinition analyze = new StateDefinition("Analyze");
+      StateDefinition analyze = new StateDefinition("Analyze");
       analyze.setWorkDefinition(workDef);
       analyze.setStateType(StateType.Working);
       analyze.setOrdinal(1);
@@ -93,19 +91,19 @@ public class ModelUtilTest {
 
       workDef.setStartState(analyze);
 
-      IAtsStateDefinition implement = new StateDefinition("Implement");
+      StateDefinition implement = new StateDefinition("Implement");
       implement.setWorkDefinition(workDef);
       implement.setStateType(StateType.Working);
       implement.setOrdinal(2);
       workDef.addState(implement);
 
-      IAtsStateDefinition completed = new StateDefinition("Completed");
+      StateDefinition completed = new StateDefinition("Completed");
       completed.setWorkDefinition(workDef);
       completed.setStateType(StateType.Completed);
       completed.setOrdinal(3);
       workDef.addState(completed);
 
-      IAtsStateDefinition cancelled = new StateDefinition("Cancelled");
+      StateDefinition cancelled = new StateDefinition("Cancelled");
       cancelled.setWorkDefinition(workDef);
       cancelled.setStateType(StateType.Cancelled);
       cancelled.setOrdinal(4);
@@ -126,11 +124,11 @@ public class ModelUtilTest {
       cancelled.getToStates().addAll(Arrays.asList(analyze, implement));
       cancelled.getOverrideAttributeValidationStates().addAll(Arrays.asList(analyze, implement));
 
-      IAtsWidgetDefinition estHoursWidgetDef = new WidgetDefinition("Estimated Hours");
+      WidgetDefinition estHoursWidgetDef = new WidgetDefinition("Estimated Hours");
       estHoursWidgetDef.setAttributeName("ats.Estimated Hours");
       estHoursWidgetDef.setXWidgetName("XFloatDam");
 
-      IAtsWidgetDefinition workPackageWidgetDef = new WidgetDefinition("Work Package");
+      WidgetDefinition workPackageWidgetDef = new WidgetDefinition("Work Package");
       workPackageWidgetDef.setAttributeName("ats.Work Package");
       workPackageWidgetDef.setXWidgetName("XTextDam");
 

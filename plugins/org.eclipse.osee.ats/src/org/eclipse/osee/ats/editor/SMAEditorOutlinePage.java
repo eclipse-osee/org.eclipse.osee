@@ -275,7 +275,8 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          } else if (element instanceof WrappedTransitions) {
             return true;
          } else if (element instanceof WrappedPercentWeight) {
-            return AtsWorkDefinitionService.getService().isStateWeightingEnabled(((WrappedPercentWeight) element).getWorkDef());
+            return AtsWorkDefinitionService.getService().isStateWeightingEnabled(
+               ((WrappedPercentWeight) element).getWorkDef());
          } else if (element instanceof WrappedLayout) {
             return !((WrappedLayout) element).stateItems.isEmpty();
          } else if (element instanceof WrappedDecisionReviews) {
@@ -297,7 +298,8 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       }
 
       private void getChildrenFromWrappedPercentDefinition(WrappedPercentWeight weightDef, List<Object> items) {
-         for (IAtsStateDefinition stateDef : AtsWorkDefinitionService.getService().getStatesOrderedByDefaultToState(weightDef.getWorkDef())) {
+         for (IAtsStateDefinition stateDef : AtsWorkDefinitionService.getService().getStatesOrderedByDefaultToState(
+            weightDef.getWorkDef())) {
             items.add(String.format("State [%s]: %d", stateDef.getName(), stateDef.getStateWeight()));
          }
       }
@@ -386,8 +388,8 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       }
 
       private void getChildrenFromWorkDefinitionMatch(Object element, List<Object> items) {
-         items.addAll(AtsWorkDefinitionService.getService().getStatesOrderedByDefaultToState(((WorkDefinitionMatch) element).getWorkDefinition()));
-         items.addAll(((WorkDefinitionMatch) element).getWorkDefinition().getRules());
+         items.addAll(AtsWorkDefinitionService.getService().getStatesOrderedByDefaultToState(
+            ((WorkDefinitionMatch) element).getWorkDefinition()));
          items.add(new WrappedPercentWeight(((WorkDefinitionMatch) element).getWorkDefinition()));
          items.add(new WrappedTrace(((WorkDefinitionMatch) element).getTrace()));
       }

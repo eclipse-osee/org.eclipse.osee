@@ -21,8 +21,7 @@ import org.eclipse.osee.ats.core.client.workflow.transition.MockTransitionHelper
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
-import org.eclipse.osee.ats.workdef.api.IAtsDecisionReviewDefinition;
+import org.eclipse.osee.ats.mocks.shared.MockDecisionReviewDefinition;
 import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 import org.eclipse.osee.ats.workdef.api.ReviewBlockType;
 import org.eclipse.osee.ats.workdef.api.StateEventType;
@@ -53,8 +52,7 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
       // configure WorkDefinition to create a new Review on transition to Implement
       IAtsStateDefinition implement = AtsTestUtil.getImplementStateDef();
 
-      IAtsDecisionReviewDefinition revDef =
-         AtsWorkDefinitionService.getService().createDecisionReviewDefinition("Create New on Implement");
+      MockDecisionReviewDefinition revDef = new MockDecisionReviewDefinition("Create New on Implement");
       revDef.setAutoTransitionToDecision(true);
       revDef.setBlockingType(ReviewBlockType.Transition);
       revDef.setDescription("the description");
@@ -101,8 +99,7 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
       // configure WorkDefinition to create a new Review on transition to Implement
       IAtsStateDefinition implement = AtsTestUtil.getImplementStateDef();
 
-      IAtsDecisionReviewDefinition revDef =
-         AtsWorkDefinitionService.getService().createDecisionReviewDefinition("Create New on Implement");
+      MockDecisionReviewDefinition revDef = new MockDecisionReviewDefinition("Create New on Implement");
       revDef.setAutoTransitionToDecision(false);
       revDef.setBlockingType(ReviewBlockType.Commit);
       revDef.setReviewTitle("This is the title");

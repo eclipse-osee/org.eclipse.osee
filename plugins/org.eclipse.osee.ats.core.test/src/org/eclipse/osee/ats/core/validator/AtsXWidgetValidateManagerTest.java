@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import junit.framework.Assert;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
+import org.eclipse.osee.ats.mocks.shared.MockWidgetDefinition;
 import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
 import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.workdef.api.WidgetResult;
@@ -59,7 +59,7 @@ public class AtsXWidgetValidateManagerTest {
       AtsXWidgetValidateManager manager = new AtsXWidgetValidateManager();
 
       manager.add(new TestValidatorProvider(new AtsExceptoinValidator()));
-      IAtsWidgetDefinition widgetDef = AtsWorkDefinitionService.getService().createWidgetDefinition("Widget Name");
+      MockWidgetDefinition widgetDef = new MockWidgetDefinition("Widget Name");
       manager.validateTransition(results, ValidatorTestUtil.emptyValueProvider, widgetDef, null, null);
       Assert.assertFalse(results.isEmpty());
       Assert.assertEquals(results.iterator().next().getStatus(), WidgetStatus.Exception);

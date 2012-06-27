@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.workdef.impl.internal.model;
 
 import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinitionIntMinMaxConstraint;
 
+
 /**
  * @author Donald G. Dunne
  */
