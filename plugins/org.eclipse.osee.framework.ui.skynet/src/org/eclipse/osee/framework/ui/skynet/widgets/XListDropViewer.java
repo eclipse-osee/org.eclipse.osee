@@ -13,12 +13,15 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.ClientLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
@@ -49,6 +52,8 @@ public class XListDropViewer extends XListViewer implements IXWidgetInputAddable
 
    private Menu popupMenu;
 
+   protected boolean singleItemMode;
+
    public XListDropViewer(String displayLabel) {
       super(displayLabel);
       this.myArrayContentProvider = new ArrayContentProvider();
@@ -71,7 +76,7 @@ public class XListDropViewer extends XListViewer implements IXWidgetInputAddable
 
    private void createRemoveFromMenuItem(final Menu popupMenu) {
       removeFromMenuItem = new MenuItem(popupMenu, SWT.PUSH);
-      removeFromMenuItem.setText("Remove From This Blam's Parameters ");
+      removeFromMenuItem.setText("Remove");
       removeFromMenuItem.addSelectionListener(new SelectionAdapter() {
 
          @Override
@@ -79,15 +84,20 @@ public class XListDropViewer extends XListViewer implements IXWidgetInputAddable
             IStructuredSelection structuredSelection = (IStructuredSelection) myTableViewer.getSelection();
             Iterator<?> iterator = structuredSelection.iterator();
 
-            Object orginalInput = getInput();
-            Collection<Object> modList = getCollectionInput();
+            Collection<Object> items = getCollectionInput();
+            if (items != null && !items.isEmpty()) {
+               List<Object> modList = new ArrayList<Object>();
 
-            while (iterator.hasNext()) {
-               modList.remove(iterator.next());
+               while (iterator.hasNext()) {
+                  modList.remove(iterator.next());
+               }
+
+               Object orginalInput = getInput();
+               myArrayContentProvider.inputChanged(myTableViewer, orginalInput, modList);
+               setInput(modList);
+               notifyXModifiedListeners();
+               refresh();
             }
-
-            myArrayContentProvider.inputChanged(myTableViewer, orginalInput, modList);
-            refresh();
          }
 
       });
@@ -107,8 +117,8 @@ public class XListDropViewer extends XListViewer implements IXWidgetInputAddable
                      TextTransfer transfer = TextTransfer.getInstance();
                      String data = (String) cb.getContents(transfer);
                      Branch branch = BranchSelectionDialog.getBranchFromUser();
-                     Operations.executeAsJob(new StringGuidsToArtifactListOperation(new ClientLogger(
-                        Activator.class), data, branch, XListDropViewer.this), true);
+                     Operations.executeAsJob(new StringGuidsToArtifactListOperation(new ClientLogger(Activator.class),
+                        data, branch, XListDropViewer.this), true);
                   } finally {
                      cb.dispose();
                   }
@@ -119,16 +129,24 @@ public class XListDropViewer extends XListViewer implements IXWidgetInputAddable
       });
    }
 
+   public List<Artifact> getArtifacts() {
+      return Collections.castAll(getData());
+   }
+
+   public List<Artifact> getSelectedArtifacts() {
+      List<Object> selectedArtifacts = new ArrayList<Object>();
+      Collections.flatten(getSelected(), selectedArtifacts);
+      return Collections.castAll(Artifact.class, selectedArtifacts);
+   }
+
    /**
     * Adds artifacts to the viewer's input.
     */
    public void addToInput(Artifact... artifacts) {
-      ArrayList<Object> objects = new ArrayList<Object>();
-
+      List<Object> objects = new ArrayList<Object>();
       for (Artifact artifact : artifacts) {
          objects.add(artifact);
       }
-
       addToInput(objects);
    }
 
@@ -150,12 +168,14 @@ public class XListDropViewer extends XListViewer implements IXWidgetInputAddable
       }
    }
 
+   @SuppressWarnings("unchecked")
    @Override
-   public Object getData() {
-      return getInput();
+   public Collection<Object> getData() {
+      return (Collection<Object>) getInput();
    }
 
    private class XDragAndDrop extends SkynetDragAndDrop {
+
       public XDragAndDrop() {
          super(null, getControl(), "viewId");
       }
@@ -175,6 +195,13 @@ public class XListDropViewer extends XListViewer implements IXWidgetInputAddable
       @Override
       public void performArtifactDrop(Artifact[] dropArtifacts) {
          addToInput(dropArtifacts);
+         if (XListDropViewer.this.singleItemMode && dropArtifacts.length > 1) {
+            setMessage(XListDropViewer.class.getSimpleName(), String.format("Only 1 [%s] can be present", getLabel()),
+               IMessageProvider.ERROR);
+         }
+         setSelected(dropArtifacts);
+         notifyXModifiedListeners();
+         refresh();
       }
    }
 }

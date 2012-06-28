@@ -317,4 +317,27 @@ public class Collections {
       }
       return true;
    }
+
+   /**
+    * Iterates over a collectionInput, pulls out individual elements or instances of Collection, and puts them into a
+    * flattenedOutput list.
+    * <p>
+    * Example: <br/>
+    * Collection<String> input = [[A], B, C, [D , E, [F]]]; <br/>
+    * List<String> output = [A, B, C, D, E, F];
+    * </p>
+    *
+    * @param collectionInput
+    * @param modList
+    */
+   @SuppressWarnings("unchecked")
+   public static <T> void flatten(Collection<T> input, List<T> flattenedOutput) {
+      for (T item : input) {
+         if (item instanceof Collection<?>) {
+            flatten((Collection<T>) item, flattenedOutput);
+         } else {
+            flattenedOutput.add(item);
+         }
+      }
+   }
 }

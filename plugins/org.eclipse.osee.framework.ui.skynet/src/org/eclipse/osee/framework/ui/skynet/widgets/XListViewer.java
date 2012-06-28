@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import org.eclipse.core.runtime.IStatus;
@@ -72,6 +73,8 @@ public class XListViewer extends GenericXWidget {
    private int widthHint;
    private int heightHint;
 
+   private StructuredSelection preselected;
+
    public XListViewer(String displayLabel) {
       super(displayLabel);
    }
@@ -103,14 +106,16 @@ public class XListViewer extends GenericXWidget {
       this.sorter = sorter;
    }
 
-   public void setInput(Collection<Object> input) {
-      this.input = input;
-      if (listViewer != null) {
-         listViewer.setInput(input);
-      }
+   public void setInputArtifacts(Collection<? extends Artifact> arts) {
+      setInput(arts);
    }
 
    public void setInput(Object input) {
+      setInput(Arrays.asList(input));
+   }
+
+   public void setInput(Collection<Object> input) {
+      this.input = input;
       if (listViewer != null) {
          listViewer.setInput(input);
       }
@@ -122,12 +127,6 @@ public class XListViewer extends GenericXWidget {
 
    public Collection<Object> getCollectionInput() {
       return input;
-   }
-
-   public void setInputArtifacts(Collection<? extends Artifact> arts) {
-      ArrayList<Object> objs = new ArrayList<Object>();
-      objs.addAll(arts);
-      setInput(objs);
    }
 
    public void addSelectionChangedListener(ISelectionChangedListener listener) {
@@ -192,6 +191,7 @@ public class XListViewer extends GenericXWidget {
             handleSelection();
          }
       });
+
       GridData gd = new GridData(GridData.FILL_BOTH);
       gd.verticalSpan = 10;
       if (grabHorizontal) {
@@ -210,6 +210,10 @@ public class XListViewer extends GenericXWidget {
       if (defaultSelectedObject != null) {
          setSelected(defaultSelectedObject);
       }
+      if (preselected != null) {
+         setSelected(preselected);
+      }
+
       updateListWidget();
    }
 
@@ -258,8 +262,10 @@ public class XListViewer extends GenericXWidget {
    }
 
    protected void updateListWidget() {
-      listViewer.refresh();
-      validate();
+      if (listViewer != null) {
+         listViewer.refresh();
+         validate();
+      }
    }
 
    public void add(Object object) {
@@ -280,16 +286,20 @@ public class XListViewer extends GenericXWidget {
    }
 
    public void setSelected(ArrayList<Object> selected) {
-      setSelected(new StructuredSelection(selected.toArray(new Object[selected.size()])));
+      preselected = new StructuredSelection(selected.toArray(new Object[selected.size()]));
+      setSelected(preselected);
    }
 
    public void setSelected(Object selected) {
-      setSelected(new StructuredSelection(selected));
+      preselected = new StructuredSelection(selected);
+      setSelected(preselected);
    }
 
    private void setSelected(StructuredSelection selection) {
-      listViewer.setSelection(selection);
-      updateListWidget();
+      if (listViewer != null) {
+         listViewer.setSelection(selection);
+         updateListWidget();
+      }
    }
 
    @Override

@@ -17,7 +17,9 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactReferenceAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.BranchReferenceAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.utility.AttributeTypeToXWidgetName;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
@@ -57,6 +59,10 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
          if (useMultiLineWidget(attributeType)) {
             xWidgetName = "XStackedDam";
             defaultData.getXOptionHandler().add(XOption.NOT_EDITABLE);
+         } else if (AttributeTypeManager.isBaseTypeCompatible(BranchReferenceAttribute.class, attributeType)) {
+            xWidgetName = "XBranchSelectWidgetWithSave";
+         } else if (AttributeTypeManager.isBaseTypeCompatible(ArtifactReferenceAttribute.class, attributeType)) {
+            xWidgetName = "XListDropViewerWithSave";
          }
       } catch (OseeCoreException ex) {
          xWidgetName = "XTextDam";

@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactTypeMultiChoiceSele
 import org.eclipse.osee.framework.ui.skynet.widgets.XAttributeTypeComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XAttributeTypeMultiChoiceSelect;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidgetWithSave;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButton;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPush;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
@@ -64,6 +65,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XLabel;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewWithSave;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersList;
@@ -251,11 +253,9 @@ public final class FrameworkXWidgetProvider {
             xWidget = combo;
             if (Strings.isValid(xWidgetLayoutData.getDefaultValue())) {
                String value = xWidgetLayoutData.getDefaultValue();
-               if (value == null) {
-                  combo.set("");
-               } else if (value.equals("true") || value.equals("yes")) {
+               if ("true".equals(value) || "yes".equals(value)) {
                   combo.set("yes");
-               } else if (value.equals("false") || value.equals("no")) {
+               } else if ("false".equals(value) || "no".equals(value)) {
                   combo.set("no");
                } else {
                   combo.set("");
@@ -307,7 +307,11 @@ public final class FrameworkXWidgetProvider {
          } else if (xWidgetName.equals("XHyperlabelMemberSelection")) {
             xWidget = new XHyperlabelMemberSelection(name);
          } else if (xWidgetName.startsWith("XListDropViewer")) {
-            xWidget = new XListDropViewer(name);
+            if ("XListDropViewerWithSave".equals(xWidgetName)) {
+               xWidget = new XListDropViewWithSave(name);
+            } else {
+               xWidget = new XListDropViewer(name);
+            }
          } else if (xWidgetName.startsWith("XList")) {
             String values[] =
                xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
@@ -326,8 +330,15 @@ public final class FrameworkXWidgetProvider {
             XArtifactList artifactList = new XArtifactList(name);
             artifactList.setMultiSelect(xWidgetLayoutData.getXOptionHandler().contains(XOption.MULTI_SELECT));
             xWidget = artifactList;
-         } else if (xWidgetName.equals(XBranchSelectWidget.WIDGET_ID)) {
-            XBranchSelectWidget widget = new XBranchSelectWidget(name);
+         } else if (xWidgetName.startsWith(XBranchSelectWidget.WIDGET_ID)) {
+            XBranchSelectWidget widget = null;
+
+            if (xWidgetName.endsWith("WithSave")) {
+               widget = new XBranchSelectWidgetWithSave(name);
+            } else {
+               widget = new XBranchSelectWidget(name);
+            }
+
             widget.setToolTip(xWidgetLayoutData.getToolTip());
             try {
                String branchGuid = xWidgetLayoutData.getDefaultValue();

@@ -14,9 +14,11 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactReferenceAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.BinaryAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.BranchReferenceAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
@@ -60,6 +62,10 @@ public class AttributeTypeToXWidgetName {
          xWidgetName = "XFloatDam";
       } else if (AttributeTypeManager.isBaseTypeCompatible(BinaryAttribute.class, attributeType)) {
          xWidgetName = "XLabelDam";
+      } else if (AttributeTypeManager.isBaseTypeCompatible(BranchReferenceAttribute.class, attributeType)) {
+         xWidgetName = "XBranchSelectWidget";
+      } else if (AttributeTypeManager.isBaseTypeCompatible(ArtifactReferenceAttribute.class, attributeType)) {
+         xWidgetName = "XListDropViewWithSave";
       } else if (AttributeTypeManager.isBaseTypeCompatible(StringAttribute.class, attributeType)) {
          if (maxOccurrence == 1) {
             xWidgetName = "XTextDam";

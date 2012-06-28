@@ -87,7 +87,6 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
 
    @Override
    public void showBusy(boolean busy) {
-      super.showBusy(busy);
       ArtifactFormPage page = getFormPage();
       if (page != null) {
          page.showBusy(busy);

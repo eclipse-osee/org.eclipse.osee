@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.junit.Assert;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.junit.Test;
 
 /**
@@ -103,6 +102,22 @@ public class CollectionsTest {
       Assert.assertTrue(complementSet.contains(5));
       Assert.assertTrue(complementSet.contains(15));
       Assert.assertTrue(complementSet.contains(20));
+   }
+
+   @Test
+   public void test_flatten() {
+      Collection<Object> deepList = new ArrayList<Object>();
+      deepList.add("A");
+      deepList.add(Arrays.asList("B", "C"));
+      deepList.add(Arrays.asList("D"));
+      deepList.add(Arrays.asList("E"));
+
+      List<Object> flattened = new ArrayList<Object>();
+      Collections.flatten(deepList, flattened);
+
+      List<Object> expected = Collections.castAll(Object.class, getTestList());
+
+      Assert.assertTrue(expected.equals(flattened));
    }
 
    private List<String> getTestList() {

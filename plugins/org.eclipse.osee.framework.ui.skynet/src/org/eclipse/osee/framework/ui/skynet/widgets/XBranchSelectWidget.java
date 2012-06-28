@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Listener;
 public class XBranchSelectWidget extends GenericXWidget implements Listener {
    public static final String WIDGET_ID = XBranchSelectWidget.class.getSimpleName();
 
-   private BranchSelectComposite selectComposite;
+   protected BranchSelectComposite selectComposite;
    private Composite composite;
    private IOseeBranch defaultBranch;
 
@@ -141,7 +141,7 @@ public class XBranchSelectWidget extends GenericXWidget implements Listener {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            if (Strings.isValid(toolTip) != false) {
+            if (Strings.isValid(toolTip)) {
                XBranchSelectWidget.super.setToolTip(toolTip);
                if (selectComposite != null && selectComposite.isDisposed() != true) {
                   selectComposite.setToolTipText(toolTip);
@@ -158,6 +158,7 @@ public class XBranchSelectWidget extends GenericXWidget implements Listener {
    public void handleEvent(Event event) {
       super.validate();
       notifyListeners(event);
+      notifyXModifiedListeners();
    }
 
    public void addListener(Listener listener) {
@@ -184,5 +185,4 @@ public class XBranchSelectWidget extends GenericXWidget implements Listener {
    public BranchSelectComposite getSelectComposite() {
       return selectComposite;
    }
-
 }
