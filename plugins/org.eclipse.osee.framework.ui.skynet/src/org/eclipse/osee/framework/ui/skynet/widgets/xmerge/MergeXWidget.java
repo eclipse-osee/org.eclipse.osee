@@ -494,7 +494,16 @@ public class MergeXWidget extends GenericXWidget {
 
    private void checkForCompleteCommit() {
       boolean isVisible = !hasMergeBranchBeenCommitted() && areAllConflictsResolved();
-      isVisible &= sourceBranch != null && sourceBranch.getBranchState().isRebaselineInProgress();
+      if (sourceBranch != null) {
+         try {
+            isVisible &=
+               sourceBranch.getBranchState().isRebaselineInProgress() && sourceBranch.getParentBranch().equals(
+                  destBranch.getParentBranch());
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            isVisible = false;
+         }
+      }
       setCompleteCommitItemVisible(isVisible);
    }
 
