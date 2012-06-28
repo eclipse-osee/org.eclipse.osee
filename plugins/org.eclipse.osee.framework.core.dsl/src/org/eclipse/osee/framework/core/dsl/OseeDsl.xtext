@@ -53,7 +53,8 @@ XAttributeType:
 
 AttributeBaseType:
 	'BooleanAttribute' | 'CompressedContentAttribute' | 'DateAttribute' | 'EnumeratedAttribute' |
-	'FloatingPointAttribute' | 'IntegerAttribute' | 'JavaObjectAttribute' | 'StringAttribute' | 'WordAttribute' | 'OutlineNumberAttribute' |
+	'FloatingPointAttribute' | 'IntegerAttribute' | 'JavaObjectAttribute' | 'StringAttribute' |
+	'ArtifactReferenceAttribute' | 'BranchReferenceAttribute' | 'WordAttribute' | 'OutlineNumberAttribute' |
 	QUALIFIED_NAME;
 
 XOseeEnumType:
@@ -120,16 +121,13 @@ XArtifactMatcher:
 ///////////////////////////////////////
 Role:
 	'role' name=STRING ('extends' superRoles+=[Role|STRING])? '{'
-	(usersAndGroups+=UsersAndGroups | referencedContexts+=ReferencedContext)+ '}'
-;
+	(usersAndGroups+=UsersAndGroups | referencedContexts+=ReferencedContext)+ '}';
 
 ReferencedContext:
-	'accessContext' accessContextRef=STRING ';'
-;
+	'accessContext' accessContextRef=STRING ';';
 
 UsersAndGroups:
-	'guid' userOrGroupGuid=STRING ';'
-;
+	'guid' userOrGroupGuid=STRING ';';
 
 AccessContext:
 	'accessContext' name=STRING ('extends'

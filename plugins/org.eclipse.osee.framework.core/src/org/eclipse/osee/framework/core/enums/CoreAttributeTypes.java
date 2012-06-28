@@ -23,6 +23,8 @@ public final class CoreAttributeTypes {
    public static final IAttributeType AccessContextId = TokenFactory.createAttributeType(0x100000000000007EL, "Access Context Id");
    public static final IAttributeType Active = TokenFactory.createAttributeType(0x1000000000000059L, "Active");
    public static final IAttributeType Annotation = TokenFactory.createAttributeType(0x1000000000000076L, "Annotation");
+   public static final IAttributeType ArtifactReference = TokenFactory.createAttributeType(0x1000BA00000000F8L, "Artifact Reference");
+   public static final IAttributeType BranchReference = TokenFactory.createAttributeType(0x1000BA00000000FBL, "Branch Reference");
    public static final IAttributeType Category = TokenFactory.createAttributeType(0x1000000000000091L, "Category");
    public static final IAttributeType City = TokenFactory.createAttributeType(0x100000000000005CL, "City");
    public static final IAttributeType CommonNalRequirement = TokenFactory.createAttributeType(0x1000000000000081L, "Common NAL Requirement");

@@ -1,1680 +1,1699 @@
 artifactType "Artifact" {
-   guid "AAMFDh6S7gRLupAMwywA"
-   uuid 0x0000000000000001
-   attribute "Name"
-   attribute "Annotation"
-   attribute "Static Id"
-   attribute "Relation Order"
+	guid "AAMFDh6S7gRLupAMwywA"
+	uuid 0x0000000000000001
+	attribute "Name"
+	attribute "Annotation"
+	attribute "Static Id"
+	attribute "Relation Order"
 }
 
 artifactType "Access Control Model" extends "General Data" {
-   guid "CJr1bPfZQkbiuTA4FewA"
-   uuid 0x0000000000000002
+	guid "CJr1bPfZQkbiuTA4FewA"
+	uuid 0x0000000000000002
 }
 
 artifactType "Global Preferences" extends "Artifact" {
-   guid "AAMFDho2kBqyoOZEw+gA"
-   uuid 0x0000000000000003
-   attribute "Dictionary"
-   attribute "osee.config.Default Mail Server"
+	guid "AAMFDho2kBqyoOZEw+gA"
+	uuid 0x0000000000000003
+	attribute "Dictionary"
+	attribute "osee.config.Default Mail Server"
+}
+attributeType "Artifact Reference" extends ArtifactReferenceAttribute {
+	guid "AQazLX91tV9GYF06fPQA"
+	uuid 0x1000BA00000000F8
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	description "Light-weight artifact reference"
+}
+
+attributeType "Branch Reference" extends BranchReferenceAttribute {
+	guid "AA_3APZ8IVjQU2IYaLQA"
+	uuid 0x1000BA00000000FB
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	description "Light-weight branch reference"
 }
 
 attributeType "Cross Branch Link" extends StringAttribute {
-   guid "AXUR3KcbcVPqyNCdQmAA"
-   uuid 0x1000000000000056
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max unlimited
+	guid "AXUR3KcbcVPqyNCdQmAA"
+	uuid 0x1000000000000056
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
 }
 
 attributeType "osee.config.Default Mail Server" extends StringAttribute {
-   guid "ABMuIC3FejpGilonfAgA"
-   uuid 0x1000000000000057
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-   description
-   "fully qualified name of the machine running the SMTP server which will be used by default for sending email"
+	guid "ABMuIC3FejpGilonfAgA"
+	uuid 0x1000000000000057
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	description
+	"fully qualified name of the machine running the SMTP server which will be used by default for sending email"
 }
 
 abstract artifactType "Test Unit" extends "Artifact" {
-   guid "ABM2d6uxUw66aSdo0LwA"
-   uuid 0x0000000000000004
+	guid "ABM2d6uxUw66aSdo0LwA"
+	uuid 0x0000000000000004
 }
 
 attributeType "Extension" extends StringAttribute {
-   guid "AAMFEcUbJEERZTnwJzAA"
-   uuid 0x1000000000000058
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AAMFEcUbJEERZTnwJzAA"
+	uuid 0x1000000000000058
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 artifactType "User" extends "Artifact" {
-   guid "AAMFDhmr+Dqqe5pn3kAA"
-   uuid 0x0000000000000005
-   attribute "Active"
-   attribute "City"
-   attribute "Company Title"
-   attribute "Company"
-   attribute "Country"
-   attribute "Dictionary"
-   attribute "Email"
-   attribute "Favorite Branch"
-   attribute "Fax Phone"
-   attribute "Mobile Phone"
-   attribute "Notes"
-   attribute "Phone"
-   attribute "State"
-   attribute "Street"
-   attribute "User Id"
-   attribute "User Settings"
-   attribute "Website"
-   attribute "XViewer Customization"
-   attribute "XViewer Defaults"
-   attribute "Zip"
+	guid "AAMFDhmr+Dqqe5pn3kAA"
+	uuid 0x0000000000000005
+	attribute "Active"
+	attribute "City"
+	attribute "Company Title"
+	attribute "Company"
+	attribute "Country"
+	attribute "Dictionary"
+	attribute "Email"
+	attribute "Favorite Branch"
+	attribute "Fax Phone"
+	attribute "Mobile Phone"
+	attribute "Notes"
+	attribute "Phone"
+	attribute "State"
+	attribute "Street"
+	attribute "User Id"
+	attribute "User Settings"
+	attribute "Website"
+	attribute "XViewer Customization"
+	attribute "XViewer Defaults"
+	attribute "Zip"
 }
 
 attributeType "Active" extends BooleanAttribute {
-   guid "AAMFEbImQyR38BY8A5QA"
-   uuid 0x1000000000000059
-   dataProvider DefaultAttributeDataProvider
-   min 1
-   max 1
-   defaultValue "yes"
+	guid "AAMFEbImQyR38BY8A5QA"
+	uuid 0x1000000000000059
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	defaultValue "yes"
 }
 
 attributeType "Company" extends StringAttribute {
-   guid "AAMFEbgTIG1iJuHoe6wA"
-   uuid 0x100000000000005A
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEbgTIG1iJuHoe6wA"
+	uuid 0x100000000000005A
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "Company Title" extends StringAttribute {
-   guid "AAMFEbiRtwq7hoavdXwA"
-   uuid 0x100000000000005B
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEbiRtwq7hoavdXwA"
+	uuid 0x100000000000005B
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "City" extends StringAttribute {
-   guid "AAMFEbkRZE1lIUmm_0AA"
-   uuid 0x100000000000005C
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEbkRZE1lIUmm_0AA"
+	uuid 0x100000000000005C
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "Street" extends StringAttribute {
-   guid "AAMFEbmjn19BhPhE2cwA"
-   uuid 0x100000000000005D
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEbmjn19BhPhE2cwA"
+	uuid 0x100000000000005D
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "State" extends StringAttribute {
-   guid "AAMFEbolfGTBLHnDCRQA"
-   uuid 0x100000000000005E
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEbolfGTBLHnDCRQA"
+	uuid 0x100000000000005E
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "Zip" extends StringAttribute {
-   guid "AAMFEbqmQUTrgrQ7rKgA"
-   uuid 0x100000000000005F
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEbqmQUTrgrQ7rKgA"
+	uuid 0x100000000000005F
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "Country" extends StringAttribute {
-   guid "AAMFEbsk1xGUlmXk8zgA"
-   uuid 0x1000000000000060
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEbsk1xGUlmXk8zgA"
+	uuid 0x1000000000000060
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "User Id" extends StringAttribute {
-   guid "AAMFEbKl8RCQr17bDAQA"
-   uuid 0x1000000000000061
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEbKl8RCQr17bDAQA"
+	uuid 0x1000000000000061
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "Favorite Branch" extends StringAttribute {
-   guid "AAMFEbMnzS7P92knZKAA"
-   uuid 0x1000000000000062
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max unlimited
+	guid "AAMFEbMnzS7P92knZKAA"
+	uuid 0x1000000000000062
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
 }
 
 oseeEnumType "enum.test.proc.status" {
-   guid "AKkmjINR11UDdTOE1WAA"
-   uuid 0x3000000000000178
-   entry "Not Performed"
-   entryGuid "APt7jzRPv2HBlrjQZXAA"
-   entry "Completed -- Analysis in Work"
-   entryGuid "APt7j0WUEAIFUyyzVZgA"
-   entry "Completed -- Passed"
-   entryGuid "APt7j0YZq1AjCER1qzAA"
-   entry "Completed -- With Issues"
-   entryGuid "APt7j0aZWF2BJc_BqnQA"
-   entry "Completed -- With Issues Resolved"
-   entryGuid "APt7j0cv9B1ImjckeTAA"
-   entry "Partially Complete"
-   entryGuid "AAvULbOIbxhPUO_oDFQA"
+	guid "AKkmjINR11UDdTOE1WAA"
+	uuid 0x3000000000000178
+	entry "Not Performed"
+	entryGuid "APt7jzRPv2HBlrjQZXAA"
+	entry "Completed -- Analysis in Work"
+	entryGuid "APt7j0WUEAIFUyyzVZgA"
+	entry "Completed -- Passed"
+	entryGuid "APt7j0YZq1AjCER1qzAA"
+	entry "Completed -- With Issues"
+	entryGuid "APt7j0aZWF2BJc_BqnQA"
+	entry "Completed -- With Issues Resolved"
+	entryGuid "APt7j0cv9B1ImjckeTAA"
+	entry "Partially Complete"
+	entryGuid "AAvULbOIbxhPUO_oDFQA"
 }
 
 attributeType "Test Procedure Status" extends EnumeratedAttribute {
-   guid "AKkUuN2K1ilSHnvIMPQA"
-   uuid 0x1000000000000063
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   enumType "enum.test.proc.status"
+	guid "AKkUuN2K1ilSHnvIMPQA"
+	uuid 0x1000000000000063
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	enumType "enum.test.proc.status"
 }
 
 attributeType "User Settings" extends StringAttribute {
-   guid "AAMFEbOnewRpnYFgnHQA"
-   uuid 0x1000000000000064
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   fileExtension "xml"
+	guid "AAMFEbOnewRpnYFgnHQA"
+	uuid 0x1000000000000064
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	fileExtension "xml"
 }
 
 attributeType "XViewer Customization" extends StringAttribute {
-   guid "AAMFEbQk+hTB9fE3uNAA"
-   uuid 0x1000000000000065
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max unlimited
-   fileExtension "xml"
+	guid "AAMFEbQk+hTB9fE3uNAA"
+	uuid 0x1000000000000065
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	fileExtension "xml"
 }
 
 attributeType "XViewer Defaults" extends StringAttribute {
-   guid "AAMFEbSjkAKRqLzkWpAA"
-   uuid 0x1000000000000066
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max unlimited
+	guid "AAMFEbSjkAKRqLzkWpAA"
+	uuid 0x1000000000000066
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
 }
 
 attributeType "Phone" extends StringAttribute {
-   guid "AAMFEbUkVSwKu4LSpWAA"
-   uuid 0x1000000000000067
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AAMFEbUkVSwKu4LSpWAA"
+	uuid 0x1000000000000067
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "Mobile Phone" extends StringAttribute {
-   guid "AAMFEbWi7AIC1z82PxQA"
-   uuid 0x1000000000000068
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AAMFEbWi7AIC1z82PxQA"
+	uuid 0x1000000000000068
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "Fax Phone" extends StringAttribute {
-   guid "AAMFEbYdJAmEGg0TFhAA"
-   uuid 0x1000000000000069
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AAMFEbYdJAmEGg0TFhAA"
+	uuid 0x1000000000000069
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "Email" extends StringAttribute {
-   guid "AAMFEbaZjEVoecDFCCQA"
-   uuid 0x100000000000006A
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEbaZjEVoecDFCCQA"
+	uuid 0x100000000000006A
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "Dictionary" extends StringAttribute {
-   guid "AAMFEbcV9BXFKOqkVIwA"
-   uuid 0x100000000000006B
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEbcV9BXFKOqkVIwA"
+	uuid 0x100000000000006B
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "Website" extends StringAttribute {
-   guid "AAMFEbwiBAmrHwSeMHgA"
-   uuid 0x100000000000006C
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEbwiBAmrHwSeMHgA"
+	uuid 0x100000000000006C
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "Notes" extends StringAttribute {
-   guid "AAMFEbulnFZFQCiyvpAA"
-   uuid 0x100000000000006D
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max unlimited
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEbulnFZFQCiyvpAA"
+	uuid 0x100000000000006D
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	taggerId DefaultAttributeTaggerProvider
 }
 
 artifactType "Group Artifact" extends "Artifact" {
-   guid "ABM4FTvWVzDQsTsM6jQA"
-   uuid 0x0000000000000006
+	guid "ABM4FTvWVzDQsTsM6jQA"
+	uuid 0x0000000000000006
 }
 
 attributeType "Default Group" extends BooleanAttribute {
-   guid "AA37C8T6J1QyaT0+jBwA"
-   uuid 0x100000000000006E
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-   description "Specifies whether to automatically add new users into this group"
-   defaultValue "no"
+	guid "AA37C8T6J1QyaT0+jBwA"
+	uuid 0x100000000000006E
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	description "Specifies whether to automatically add new users into this group"
+	defaultValue "no"
 }
 
 artifactType "User Group" extends "Abstract Access Controlled" , "Group Artifact" {
-   guid "AAMFDhrEbXqZKPfWkwAA"
-   uuid 0x0000000000000007
-   attribute "Default Group"
+	guid "AAMFDhrEbXqZKPfWkwAA"
+	uuid 0x0000000000000007
+	attribute "Default Group"
 }
 
 artifactType "Universal Group" extends "Group Artifact" {
-   guid "AAMFDhLY2TnADPA_EQQA"
-   uuid 0x0000000000000008
-   attribute "Description"
+	guid "AAMFDhLY2TnADPA_EQQA"
+	uuid 0x0000000000000008
+	attribute "Description"
 }
 
 artifactType "Renderer Template" extends "MS Word Whole Document" {
-   guid "AAMFDhvZnHKgSeFKMXgA"
-   uuid 0x0000000000000009
-   attribute "Template Match Criteria"
+	guid "AAMFDhvZnHKgSeFKMXgA"
+	uuid 0x0000000000000009
+	attribute "Template Match Criteria"
 }
 
 attributeType "Template Match Criteria" extends StringAttribute {
-   guid "AAMFEbeRRENHX5KTmxwA"
-   uuid 0x100000000000006F
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max unlimited
-   description "Criteria that determines what template is selected ie: \'Render Artifact PresentationType Option\'"
+	guid "AAMFEbeRRENHX5KTmxwA"
+	uuid 0x100000000000006F
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	description "Criteria that determines what template is selected ie: \'Render Artifact PresentationType Option\'"
 }
 
 relationType "Default Hierarchical" {
-   guid "AAMFE9skWhPMi6I1WdAA"
-   uuid 0x2000000000000154
-   sideAName "parent"
-   sideAArtifactType "Artifact"
-   sideBName "child"
-   sideBArtifactType "Artifact"
-   defaultOrderType Lexicographical_Ascending
-   multiplicity ONE_TO_MANY
+	guid "AAMFE9skWhPMi6I1WdAA"
+	uuid 0x2000000000000154
+	sideAName "parent"
+	sideAArtifactType "Artifact"
+	sideBName "child"
+	sideBArtifactType "Artifact"
+	defaultOrderType Lexicographical_Ascending
+	multiplicity ONE_TO_MANY
 }
 
 artifactType "Root Artifact" extends "Artifact" {
-   guid "AAMFDhHDqlbzKcIxcsAA"
-   uuid 0x000000000000000A
+	guid "AAMFDhHDqlbzKcIxcsAA"
+	uuid 0x000000000000000A
 }
 
 artifactType "Folder" extends "Artifact" {
-   guid "AAMFDg_wmiYHHY5swJwA"
-   uuid 0x000000000000000B
+	guid "AAMFDg_wmiYHHY5swJwA"
+	uuid 0x000000000000000B
 }
 
 artifactType "General Data" extends "Artifact" {
-   guid "AAMFDhQXfyb2m+jCwlwA"
-   uuid 0x000000000000000C
-   attribute "General String Data"
-   attribute "PublishInline"
+	guid "AAMFDhQXfyb2m+jCwlwA"
+	uuid 0x000000000000000C
+	attribute "General String Data"
+	attribute "PublishInline"
 }
 
 artifactType "Support Document" extends "MS Word Template" {
-   guid "AAMFDhJOQTCu5A7LNQwA"
-   uuid 0x000000000000000D
+	guid "AAMFDhJOQTCu5A7LNQwA"
+	uuid 0x000000000000000D
 }
 
 artifactType "General Document" extends "Native Artifact" {
-   guid "AAMFDhCjkTvP+VBpBCQA"
-   uuid 0x000000000000000E
+	guid "AAMFDhCjkTvP+VBpBCQA"
+	uuid 0x000000000000000E
 }
 
 artifactType "Url" extends "Artifact" {
-   guid "AAMFDhOL0VfVy56cqwgA"
-   uuid 0x000000000000000F
-   attribute "Description"
-   attribute "Content URL"
+	guid "AAMFDhOL0VfVy56cqwgA"
+	uuid 0x000000000000000F
+	attribute "Description"
+	attribute "Content URL"
 }
 
 attributeType "Name" extends StringAttribute {
-   guid "AAMFEcF1AzV7PKuHmxwA"
-   uuid 0x1000000000000070
-   dataProvider DefaultAttributeDataProvider
-   min 1
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-   description "Descriptive Name"
-   defaultValue "unnamed"
+	guid "AAMFEcF1AzV7PKuHmxwA"
+	uuid 0x1000000000000070
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	description "Descriptive Name"
+	defaultValue "unnamed"
 }
 
 attributeType "Relation Order" extends StringAttribute {
-   guid "ABM5kHa9cFsTbI_ooyQA"
-   uuid 0x1000000000000071
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-   description "Defines relation ordering information"
+	guid "ABM5kHa9cFsTbI_ooyQA"
+	uuid 0x1000000000000071
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	description "Defines relation ordering information"
 }
 
 attributeType "Description" extends StringAttribute {
-   guid "AAMFEcK+kyOhG8GYvPgA"
-   uuid 0x1000000000000072
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEcK+kyOhG8GYvPgA"
+	uuid 0x1000000000000072
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 oseeEnumType "enum.doc.page.type" {
-   guid "ABbjHDYCtmvuIrCz2MAA"
-   uuid 0x3000000000000179
-   entry "Portrait"
-   entryGuid "CArJmR0aZl3A8pWTQ8AA"
-   entry "Landscape"
-   entryGuid "CArJmPtdrFEmxk6+tqQA"
+	guid "ABbjHDYCtmvuIrCz2MAA"
+	uuid 0x3000000000000179
+	entry "Portrait"
+	entryGuid "CArJmR0aZl3A8pWTQ8AA"
+	entry "Landscape"
+	entryGuid "CArJmPtdrFEmxk6+tqQA"
 }
 
 attributeType "Page Type" extends EnumeratedAttribute {
-   guid "AAMFEcNiRF2N5xhkYyAA"
-   uuid 0x1000000000000073
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-   enumType "enum.doc.page.type"
-   description "Page Type: Landscape/Portrait"
-   defaultValue "Portrait"
+	guid "AAMFEcNiRF2N5xhkYyAA"
+	uuid 0x1000000000000073
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	enumType "enum.doc.page.type"
+	description "Page Type: Landscape/Portrait"
+	defaultValue "Portrait"
 }
 
 attributeType "Word Ole Data" extends StringAttribute {
-   guid "AAMFEcP2rmoCzqmzJxQA"
-   uuid 0x1000000000000074
-   dataProvider UriAttributeDataProvider
-   min 0
-   max 1
-   description "Word Ole Data"
-   fileExtension "xml"
+	guid "AAMFEcP2rmoCzqmzJxQA"
+	uuid 0x1000000000000074
+	dataProvider UriAttributeDataProvider
+	min 0
+	max 1
+	description "Word Ole Data"
+	fileExtension "xml"
 }
 
 attributeType "Workflow Definition" extends StringAttribute {
-   guid "AAMFEcSPdVbU8mGugOQA"
-   uuid 0x1000000000000075
-   dataProvider UriAttributeDataProvider
-   min 0
-   max 1
-   description "xml definition of a Workflow"
-   fileExtension "vue"
+	guid "AAMFEcSPdVbU8mGugOQA"
+	uuid 0x1000000000000075
+	dataProvider UriAttributeDataProvider
+	min 0
+	max 1
+	description "xml definition of a Workflow"
+	fileExtension "vue"
 }
 
 attributeType "Annotation" extends StringAttribute {
-   guid "AAMFEcWy0xc4e3tcemQA"
-   uuid 0x1000000000000076
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max unlimited
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEcWy0xc4e3tcemQA"
+	uuid 0x1000000000000076
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "Static Id" extends StringAttribute {
-   guid "AAMFEcY5DUbWyuIpZVwA"
-   uuid 0x1000000000000077
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max unlimited
+	guid "AAMFEcY5DUbWyuIpZVwA"
+	uuid 0x1000000000000077
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
 }
 
 attributeType "General String Data" extends StringAttribute {
-   guid "AAMFEca+MB5ssx+Ax5wA"
-   uuid 0x1000000000000078
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max unlimited
+	guid "AAMFEca+MB5ssx+Ax5wA"
+	uuid 0x1000000000000078
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
 }
 
 attributeType "Native Content" extends CompressedContentAttribute {
-   guid "AAMFEcdBJGBK9nr9TTQA"
-   uuid 0x1000000000000079
-   dataProvider UriAttributeDataProvider
-   min 0
-   max 1
-   description "content that will be edited by a native program"
-   fileExtension "bin"
+	guid "AAMFEcdBJGBK9nr9TTQA"
+	uuid 0x1000000000000079
+	dataProvider UriAttributeDataProvider
+	min 0
+	max 1
+	description "content that will be edited by a native program"
+	fileExtension "bin"
 }
 
 attributeType "Word Template Content" extends WordAttribute {
-   guid "AAMFEcfcGS2V3SqQN2wA"
-   uuid 0x100000000000007A
-   dataProvider UriAttributeDataProvider
-   min 0
-   max 1
-   taggerId XmlAttributeTaggerProvider
-   description "value must comply with WordML xml schema"
-   defaultValue "<w:p xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\"><w:r><w:t></w:t></w:r></w:p>"
-   fileExtension "xml"
+	guid "AAMFEcfcGS2V3SqQN2wA"
+	uuid 0x100000000000007A
+	dataProvider UriAttributeDataProvider
+	min 0
+	max 1
+	taggerId XmlAttributeTaggerProvider
+	description "value must comply with WordML xml schema"
+	defaultValue "<w:p xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\"><w:r><w:t></w:t></w:r></w:p>"
+	fileExtension "xml"
 }
 
 attributeType "Whole Word Content" extends WordAttribute {
-   guid "AAMFEchZmAzZo2tHjVAA"
-   uuid 0x100000000000007B
-   dataProvider UriAttributeDataProvider
-   min 0
-   max 1
-   taggerId XmlAttributeTaggerProvider
-   description "value must comply with WordML xml schema"
-   defaultValue
-   "<?xml version=\'1.0\' encoding=\'UTF-8\' standalone=\'yes\'?><?mso-application progid=\'Word.Document\'?><w:wordDocument xmlns:w=\'http://schemas.microsoft.com/office/word/2003/wordml\' xmlns:v=\'urn:schemas-microsoft-com:vml\' xmlns:w10=\'urn:schemas-microsoft-com:office:word\' xmlns:sl=\'http://schemas.microsoft.com/schemaLibrary/2003/core\' xmlns:aml=\'http://schemas.microsoft.com/aml/2001/core\' xmlns:wx=\'http://schemas.microsoft.com/office/word/2003/auxHint\' xmlns:o=\'urn:schemas-microsoft-com:office:office\' xmlns:dt=\'uuid:C2F41010-65B3-11d1-A29F-00AA00C14882\' xmlns:wsp=\'http://schemas.microsoft.com/office/word/2003/wordml/sp2\' xmlns:ns0=\'http://www.w3.org/2001/XMLSchema\' xmlns:ns1=\'http://eclipse.org/artifact.xsd\' xmlns:st1=\'urn:schemas-microsoft-com:office:smarttags\' w:macrosPresent=\'no\' w:embeddedObjPresent=\'no\' w:ocxPresent=\'no\' xml:space=\'preserve\'><w:body></w:body></w:wordDocument>"
-   fileExtension "xml"
+	guid "AAMFEchZmAzZo2tHjVAA"
+	uuid 0x100000000000007B
+	dataProvider UriAttributeDataProvider
+	min 0
+	max 1
+	taggerId XmlAttributeTaggerProvider
+	description "value must comply with WordML xml schema"
+	defaultValue
+	"<?xml version=\'1.0\' encoding=\'UTF-8\' standalone=\'yes\'?><?mso-application progid=\'Word.Document\'?><w:wordDocument xmlns:w=\'http://schemas.microsoft.com/office/word/2003/wordml\' xmlns:v=\'urn:schemas-microsoft-com:vml\' xmlns:w10=\'urn:schemas-microsoft-com:office:word\' xmlns:sl=\'http://schemas.microsoft.com/schemaLibrary/2003/core\' xmlns:aml=\'http://schemas.microsoft.com/aml/2001/core\' xmlns:wx=\'http://schemas.microsoft.com/office/word/2003/auxHint\' xmlns:o=\'urn:schemas-microsoft-com:office:office\' xmlns:dt=\'uuid:C2F41010-65B3-11d1-A29F-00AA00C14882\' xmlns:wsp=\'http://schemas.microsoft.com/office/word/2003/wordml/sp2\' xmlns:ns0=\'http://www.w3.org/2001/XMLSchema\' xmlns:ns1=\'http://eclipse.org/artifact.xsd\' xmlns:st1=\'urn:schemas-microsoft-com:office:smarttags\' w:macrosPresent=\'no\' w:embeddedObjPresent=\'no\' w:ocxPresent=\'no\' xml:space=\'preserve\'><w:body></w:body></w:wordDocument>"
+	fileExtension "xml"
 }
 
 relationType "Dependency" {
-   guid "AAMFE9uek34jqArVRuAA"
-   uuid 0x2000000000000155
-   sideAName "artifact"
-   sideAArtifactType "Artifact"
-   sideBName "dependency"
-   sideBArtifactType "Artifact"
-   defaultOrderType Unordered
-   multiplicity MANY_TO_MANY
+	guid "AAMFE9uek34jqArVRuAA"
+	uuid 0x2000000000000155
+	sideAName "artifact"
+	sideAArtifactType "Artifact"
+	sideBName "dependency"
+	sideBArtifactType "Artifact"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
 }
 
 relationType "Universal Grouping" {
-   guid "AAMFE9yOp2hIrXwZ13wA"
-   uuid 0x2000000000000156
-   sideAName "group"
-   sideAArtifactType "Universal Group"
-   sideBName "members"
-   sideBArtifactType "Artifact"
-   defaultOrderType Lexicographical_Ascending
-   multiplicity MANY_TO_MANY
+	guid "AAMFE9yOp2hIrXwZ13wA"
+	uuid 0x2000000000000156
+	sideAName "group"
+	sideAArtifactType "Universal Group"
+	sideBName "members"
+	sideBArtifactType "Artifact"
+	defaultOrderType Lexicographical_Ascending
+	multiplicity MANY_TO_MANY
 }
 
 abstract artifactType "MS Word" extends "Artifact" {
-   guid "ABM8Rd_GKRGZWlU1JHAA"
-   uuid 0x0000000000000010
-   attribute "Imported Paragraph Number"
+	guid "ABM8Rd_GKRGZWlU1JHAA"
+	uuid 0x0000000000000010
+	attribute "Imported Paragraph Number"
 }
 
 abstract artifactType "Abstract Access Controlled" extends "Artifact" {
-   guid "AAFVUREVAxmEmLW2KkAA"
-   uuid 0x0000000000000011
-   attribute "Access Context Id"
+	guid "AAFVUREVAxmEmLW2KkAA"
+	uuid 0x0000000000000011
+	attribute "Access Context Id"
 }
 
 artifactType "MS Word Whole Document" extends "MS Word" {
-   guid "ABM9Dt9SyGjwuvem7SQA"
-   uuid 0x0000000000000012
-   attribute "Whole Word Content"
+	guid "ABM9Dt9SyGjwuvem7SQA"
+	uuid 0x0000000000000012
+	attribute "Whole Word Content"
 }
 
 artifactType "MS Word Template" extends "MS Word" {
-   guid "ABM96xK5ZlE5IZP2digA"
-   uuid 0x0000000000000013
-   attribute "Word Ole Data"
-   attribute "Page Type"
-   attribute "Word Template Content"
-   attribute "PublishInline"
+	guid "ABM96xK5ZlE5IZP2digA"
+	uuid 0x0000000000000013
+	attribute "Word Ole Data"
+	attribute "Page Type"
+	attribute "Word Template Content"
+	attribute "PublishInline"
 }
 
 abstract artifactType "Native Artifact" extends "Artifact" {
-   guid "ABM+oSPp6DqH59607PAA"
-   uuid 0x0000000000000014
-   attribute "Extension"
-   attribute "Description"
-   attribute "Native Content"
+	guid "ABM+oSPp6DqH59607PAA"
+	uuid 0x0000000000000014
+	attribute "Extension"
+	attribute "Description"
+	attribute "Native Content"
 }
 
 attributeType "Content URL" extends StringAttribute {
-   guid "AAMFEcIP+U+ML_gzH7AA"
-   uuid 0x100000000000007C
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AAMFEcIP+U+ML_gzH7AA"
+	uuid 0x100000000000007C
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "Imported Paragraph Number" extends OutlineNumberAttribute {
-   guid "AAMFEQ3boD3sp6VfArAA"
-   uuid 0x100000000000007D
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   description
-   "This is the corresponding section number from the outline of document from which this artifact was imported"
+	guid "AAMFEQ3boD3sp6VfArAA"
+	uuid 0x100000000000007D
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	description
+	"This is the corresponding section number from the outline of document from which this artifact was imported"
 }
 
 attributeType "Access Context Id" extends StringAttribute {
-   guid "AAFAgR3B7AN_g0NPCLAA"
-   uuid 0x100000000000007E
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max unlimited
+	guid "AAFAgR3B7AN_g0NPCLAA"
+	uuid 0x100000000000007E
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
 }
 
 artifactType "Requirement" extends "Artifact" {
-   guid "ABM_vxEEowY+8i2_q9gA"
-   uuid 0x0000000000000015
-   attribute "Development Assurance Level"
-   attribute "Qualification Method"
-   attribute "Test Frequency"
-   attribute "Subsystem"
-   attribute "Technical Performance Parameter"
-   attribute "PublishInline"
+	guid "ABM_vxEEowY+8i2_q9gA"
+	uuid 0x0000000000000015
+	attribute "Development Assurance Level"
+	attribute "Qualification Method"
+	attribute "Test Frequency"
+	attribute "Subsystem"
+	attribute "Technical Performance Parameter"
+	attribute "PublishInline"
 }
 
 attributeType "Test Frequency" extends EnumeratedAttribute {
-   guid "AS7E+gDvsymdt28Aw3gA"
-   uuid 0x100000000000007F
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-   enumType "enum.req.test.frequency"
+	guid "AS7E+gDvsymdt28Aw3gA"
+	uuid 0x100000000000007F
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	enumType "enum.req.test.frequency"
 }
 
 oseeEnumType "enum.req.test.frequency" {
-   guid "AS7K6KiFKy3Fb5j3xlwA"
-   uuid 0x300000000000017A
-   entry "One Time"
-   entryGuid "AS7P7QAx8CQb1qp8BqwA"
-   entry "Recurring"
-   entryGuid "AS7RJUFz2EPIYq+sQvwA"
+	guid "AS7K6KiFKy3Fb5j3xlwA"
+	uuid 0x300000000000017A
+	entry "One Time"
+	entryGuid "AS7P7QAx8CQb1qp8BqwA"
+	entry "Recurring"
+	entryGuid "AS7RJUFz2EPIYq+sQvwA"
 }
 
 abstract artifactType "Direct Software Requirement" extends "Abstract Software Requirement" {
-   guid "BtMwyalHkHkrRo7D0aAA"
-   uuid 0x0000000000000016
+	guid "BtMwyalHkHkrRo7D0aAA"
+	uuid 0x0000000000000016
 }
 
 abstract artifactType "Abstract Software Requirement" extends "Requirement" {
-   guid "ABNAYPwV6H4EkjQ3+QQA"
-   uuid 0x0000000000000017
-   attribute "CSCI"
-   attribute "Partition"
-   attribute "Crew Interface Requirement"
-   attribute "Category"
-   attribute "Common NAL Requirement"
-   attribute "System Security Requirement"
-   attribute "Training Effectivity"
+	guid "ABNAYPwV6H4EkjQ3+QQA"
+	uuid 0x0000000000000017
+	attribute "CSCI"
+	attribute "Partition"
+	attribute "Crew Interface Requirement"
+	attribute "Category"
+	attribute "Common NAL Requirement"
+	attribute "System Security Requirement"
+	attribute "Training Effectivity"
 }
 
 artifactType "Software Requirement" extends "MS Word Template" , "Direct Software Requirement" {
-   guid "AAMFDiAwhRFXwIyapJAA"
-   uuid 0x0000000000000018
+	guid "AAMFDiAwhRFXwIyapJAA"
+	uuid 0x0000000000000018
 }
 
 artifactType "Indirect Software Requirement" extends "Abstract Software Requirement" , "MS Word Template" {
-   guid "AAMFDiC7HRQMqr5S0QwA"
-   uuid 0x0000000000000019
+	guid "AAMFDiC7HRQMqr5S0QwA"
+	uuid 0x0000000000000019
 }
 
 artifactType "Implementation Details" extends "Indirect Software Requirement" {
-   guid "AMyewS0I5ADnjgL63tQA"
-   uuid 0x000000000000001A
+	guid "AMyewS0I5ADnjgL63tQA"
+	uuid 0x000000000000001A
 }
 
 artifactType "Software Requirement Procedure" extends "Indirect Software Requirement" {
-   guid "ABNBLPY4LnIKtcON0mgA"
-   uuid 0x000000000000001B
+	guid "ABNBLPY4LnIKtcON0mgA"
+	uuid 0x000000000000001B
 }
 
 artifactType "Software Requirement Function" extends "Indirect Software Requirement" {
-   guid "ABNBwZMdFgEDTVQ7pTAA"
-   uuid 0x000000000000001C
+	guid "ABNBwZMdFgEDTVQ7pTAA"
+	uuid 0x000000000000001C
 }
 
 artifactType "Software Requirement Drawing" extends "Indirect Software Requirement" {
-   guid "ABNClhgUfwj6A3EAArQA"
-   uuid 0x000000000000001D
+	guid "ABNClhgUfwj6A3EAArQA"
+	uuid 0x000000000000001D
 }
 
 artifactType "System Requirement" extends "Requirement" , "MS Word Template" {
-   guid "AAMFDiSTcDGdUd9+tHAA"
-   uuid 0x000000000000001E
-   attribute "Legacy Id"
-   attribute "Req Type"
-   attribute "Verification Level"
-   attribute "Effectivity"
-   attribute "Verification Acceptance Criteria"
-   attribute "Verification Event"
+	guid "AAMFDiSTcDGdUd9+tHAA"
+	uuid 0x000000000000001E
+	attribute "Legacy Id"
+	attribute "Req Type"
+	attribute "Verification Level"
+	attribute "Effectivity"
+	attribute "Verification Acceptance Criteria"
+	attribute "Verification Event"
 }
 
 attributeType "Req Type" extends EnumeratedAttribute {
-   guid "AEQ9uyqjH3NpD0eThgAA"
-   uuid 0x1000000000000080
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-   enumType "Req Type Enum"
-   defaultValue "Unspecified"
+	guid "AEQ9uyqjH3NpD0eThgAA"
+	uuid 0x1000000000000080
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	enumType "Req Type Enum"
+	defaultValue "Unspecified"
 }
 
 oseeEnumType "Req Type Enum" {
-   guid "AEQpMgL+4CmkHXKP2_AA"
-   uuid 0x300000000000017B
-   entry "DesignConstraint"
-   entryGuid "AEUNGcq8_mdWzYbO9fwA"
-   entry "EnvironmentalReq"
-   entryGuid "AEUQtA+xYml92hqzaLwA"
-   entry "FunctionalReq"
-   entryGuid "AEUTBnJKsXq0_p2GUPgA"
-   entry "Info"
-   entryGuid "AEUUfCXnYg+iTEf1ldQA"
-   entry "InterfaceReq"
-   entryGuid "AEUXWYpm1nsYUIQb3dgA"
-   entry "ModeDef"
-   entryGuid "AEUZNPCyPGq2a0Iy11QA"
-   entry "PerformanceReq"
-   entryGuid "AEUbpIQJJBKjIWEkFGgA"
-   entry "PhysicalReq"
-   entryGuid "AEUeJcW9PQRmtPYk+JQA"
-   entry "Requirement"
-   entryGuid "ASbiRa9+fnprR9wb7bgA"
-   entry "VerificationReq"
-   entryGuid "AEUgQJN+rn32mrPoydgA"
-   entry "Unspecified"
-   entryGuid "AEUiMfEaQG4gCx6FsRwA"
+	guid "AEQpMgL+4CmkHXKP2_AA"
+	uuid 0x300000000000017B
+	entry "DesignConstraint"
+	entryGuid "AEUNGcq8_mdWzYbO9fwA"
+	entry "EnvironmentalReq"
+	entryGuid "AEUQtA+xYml92hqzaLwA"
+	entry "FunctionalReq"
+	entryGuid "AEUTBnJKsXq0_p2GUPgA"
+	entry "Info"
+	entryGuid "AEUUfCXnYg+iTEf1ldQA"
+	entry "InterfaceReq"
+	entryGuid "AEUXWYpm1nsYUIQb3dgA"
+	entry "ModeDef"
+	entryGuid "AEUZNPCyPGq2a0Iy11QA"
+	entry "PerformanceReq"
+	entryGuid "AEUbpIQJJBKjIWEkFGgA"
+	entry "PhysicalReq"
+	entryGuid "AEUeJcW9PQRmtPYk+JQA"
+	entry "Requirement"
+	entryGuid "ASbiRa9+fnprR9wb7bgA"
+	entry "VerificationReq"
+	entryGuid "AEUgQJN+rn32mrPoydgA"
+	entry "Unspecified"
+	entryGuid "AEUiMfEaQG4gCx6FsRwA"
 }
 
 artifactType "Subsystem Requirement" extends "Requirement" , "MS Word Template" {
-   guid "AAMFDiN9KiAkhuLqOhQA"
-   uuid 0x000000000000001F
-   attribute "Legacy Id"
-   attribute "Verification Level"
-   attribute "Verification Event"
-   attribute "Effectivity"
+	guid "AAMFDiN9KiAkhuLqOhQA"
+	uuid 0x000000000000001F
+	attribute "Legacy Id"
+	attribute "Verification Level"
+	attribute "Verification Event"
+	attribute "Effectivity"
 }
 
 artifactType "Interface Requirement" extends "Requirement" , "MS Word Template" {
-   guid "AAMFDjgcukv7xEsPf2QA"
-   uuid 0x0000000000000020
-   attribute "Component"
+	guid "AAMFDjgcukv7xEsPf2QA"
+	uuid 0x0000000000000020
+	attribute "Component"
 }
 
 artifactType "Hardware Requirement" extends "Requirement" , "MS Word Template" {
-   guid "AAMFDh8dhUflUdK9FdgA"
-   uuid 0x0000000000000021
+	guid "AAMFDh8dhUflUdK9FdgA"
+	uuid 0x0000000000000021
 }
 
 abstract artifactType "Function" extends "MS Word Template" {
-   guid "ABNDbXzoYyef9lHIWdAA"
-   uuid 0x0000000000000022
-   attribute "Safety Criticality"
+	guid "ABNDbXzoYyef9lHIWdAA"
+	uuid 0x0000000000000022
+	attribute "Safety Criticality"
 }
 
 artifactType "System Function" extends "Function" , "System Design" {
-   guid "AAMFDjisx2s6BUTDo3wA"
-   uuid 0x0000000000000023
+	guid "AAMFDjisx2s6BUTDo3wA"
+	uuid 0x0000000000000023
 }
 
 artifactType "Subsystem Function" extends "Function" , "Subsystem Design" {
-   guid "AAMFDjk6pAAd3tpGEqwA"
-   uuid 0x0000000000000024
+	guid "AAMFDjk6pAAd3tpGEqwA"
+	uuid 0x0000000000000024
 }
 
 artifactType "Test Plan Element" extends "MS Word Template" {
-   guid "ATi_kUpvPBiW2upYC_wA"
-   uuid 0x0000000000000025
+	guid "ATi_kUpvPBiW2upYC_wA"
+	uuid 0x0000000000000025
 }
 
 abstract artifactType "Abstract Test Result" extends "Artifact" {
-   guid "ATkaanWmHH3PkhGNVjwA"
-   uuid 0x0000000000000026
+	guid "ATkaanWmHH3PkhGNVjwA"
+	uuid 0x0000000000000026
 }
 
 artifactType "Test Result Native" extends "Abstract Test Result" , "Native Artifact" {
-   guid "ATk4k88aVV6WqOfBidgA"
-   uuid 0x0000000000000027
+	guid "ATk4k88aVV6WqOfBidgA"
+	uuid 0x0000000000000027
 }
 
 artifactType "Test Result WML" extends "Abstract Test Result" , "MS Word Whole Document" {
-   guid "ATk6NKFFmD_zg1b_eaQA"
-   uuid 0x0000000000000028
+	guid "ATk6NKFFmD_zg1b_eaQA"
+	uuid 0x0000000000000028
 }
 
 artifactType "Test Information Sheet" extends "MS Word Template" , "Test Unit" {
-   guid "AAMFDjnM3wQxCjwatKAA"
-   uuid 0x0000000000000029
-   attribute "TIS Test Number"
-   attribute "TIS Test Type"
-   attribute "TIS Test Category"
+	guid "AAMFDjnM3wQxCjwatKAA"
+	uuid 0x0000000000000029
+	attribute "TIS Test Number"
+	attribute "TIS Test Type"
+	attribute "TIS Test Category"
 }
 
 artifactType "Design" extends "MS Word Template" {
-   guid "AAMFE+XjcSaqnXfOXVQA"
-   uuid 0x000000000000015A
-   attribute "Development Assurance Level"
-   attribute "Safety Criticality"
+	guid "AAMFE+XjcSaqnXfOXVQA"
+	uuid 0x000000000000015A
+	attribute "Development Assurance Level"
+	attribute "Safety Criticality"
 }
 
 artifactType "Subsystem Design" extends "Design" {
-   guid "AAMFDiHVwBo+Yx73BoQA"
-   uuid 0x000000000000002B
-   attribute "Subsystem"
+	guid "AAMFDiHVwBo+Yx73BoQA"
+	uuid 0x000000000000002B
+	attribute "Subsystem"
 }
 
 artifactType "System Design" extends "Design" {
-   guid "AAMFDiFI+lLm46F3HdQA"
-   uuid 0x000000000000002C
+	guid "AAMFDiFI+lLm46F3HdQA"
+	uuid 0x000000000000002C
 }
 
 artifactType "Software Design" extends "Design" {
-   guid "AAMFDh+nBRDS2smKPLAA"
-   uuid 0x000000000000002D
+	guid "AAMFDh+nBRDS2smKPLAA"
+	uuid 0x000000000000002D
 }
 
 artifactType "Test Procedure" extends "Test Unit" {
-   guid "AAMFDjsjiGhoWpqM4PQA"
-   uuid 0x000000000000002E
-   attribute "Subsystem"
-   attribute "Test Procedure Status"
+	guid "AAMFDjsjiGhoWpqM4PQA"
+	uuid 0x000000000000002E
+	attribute "Subsystem"
+	attribute "Test Procedure Status"
 }
 
 artifactType "Test Procedure WML" extends "Test Procedure" , "MS Word Whole Document" {
-   guid "AAMFDiUeCG3KWx5XqeQA"
-   uuid 0x000000000000002F
+	guid "AAMFDiUeCG3KWx5XqeQA"
+	uuid 0x000000000000002F
 }
 
 artifactType "Test Procedure Native" extends "Test Procedure" , "Native Artifact" {
-   guid "AAMFDiWs_HdDJTbPPQgA"
-   uuid 0x0000000000000030
+	guid "AAMFDiWs_HdDJTbPPQgA"
+	uuid 0x0000000000000030
 }
 
 artifactType "Supporting Content" extends "Url" {
-   guid "AAMFDiQI2QuheFY71jgA"
-   uuid 0x0000000000000031
+	guid "AAMFDiQI2QuheFY71jgA"
+	uuid 0x0000000000000031
 }
 
 attributeType "Common NAL Requirement" extends BooleanAttribute {
-   guid "AAMFEQpKOwh5p+AgC8wA"
-   uuid 0x1000000000000081
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   description
-   "Requirement that is common to all NCORE (Networked Common Operating Real-time Environment) Application Layers"
-   defaultValue "no"
+	guid "AAMFEQpKOwh5p+AgC8wA"
+	uuid 0x1000000000000081
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	description
+	"Requirement that is common to all NCORE (Networked Common Operating Real-time Environment) Application Layers"
+	defaultValue "no"
 }
 
 attributeType "Crew Interface Requirement" extends BooleanAttribute {
-   guid "AAMFEQrZMEwBcq2pQTgA"
-   uuid 0x1000000000000082
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   defaultValue "no"
+	guid "AAMFEQrZMEwBcq2pQTgA"
+	uuid 0x1000000000000082
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	defaultValue "no"
 }
 
 attributeType "Legacy Id" extends StringAttribute {
-   guid "AAMFEQ5rrGxHTSvY73gA"
-   uuid 0x1000000000000083
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   description "SLATE unique identifier (caution: not guaranteed to be immutable)"
+	guid "AAMFEQ5rrGxHTSvY73gA"
+	uuid 0x1000000000000083
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	description "SLATE unique identifier (caution: not guaranteed to be immutable)"
 }
 
 attributeType "Effectivity" extends EnumeratedAttribute {
-   guid "B1fqGH5hxBMylPX9VEQA"
-   uuid 0x1000000000000084
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   enumType "enum.effectivity"
-   defaultValue "Unspecified"
+	guid "B1fqGH5hxBMylPX9VEQA"
+	uuid 0x1000000000000084
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	enumType "enum.effectivity"
+	defaultValue "Unspecified"
 }
 
 oseeEnumType "enum.effectivity" {
-   guid "B1gfpUSVrEvaDvqLeqQA"
-   uuid 0x300000000000017C
-   entry "Unspecified"
-   entryGuid "B1hxfljxnTDYqcYhlDAA"
+	guid "B1gfpUSVrEvaDvqLeqQA"
+	uuid 0x300000000000017C
+	entry "Unspecified"
+	entryGuid "B1hxfljxnTDYqcYhlDAA"
 }
 
 attributeType "System Security Requirement" extends BooleanAttribute {
-   guid "AAMFERC8OyWTMm8tMOQA"
-   uuid 0x1000000000000085
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   defaultValue "no"
+	guid "AAMFERC8OyWTMm8tMOQA"
+	uuid 0x1000000000000085
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	defaultValue "no"
 }
 
 attributeType "Training Effectivity" extends BooleanAttribute {
-   guid "AAMFERFJAm0_WZ0WQaQA"
-   uuid 0x1000000000000086
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   defaultValue "no"
+	guid "AAMFERFJAm0_WZ0WQaQA"
+	uuid 0x1000000000000086
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	defaultValue "no"
 }
 
 oseeEnumType "enum.req.partition" {
-   guid "ABbjHBzHfCU9H2BPpqAA"
-   uuid 0x300000000000017D
-   entry "Graphics Handler"
-   entryGuid "AHggI+3RUnQwf1KtsqAA"
-   entry "Communication"
-   entryGuid "AHggI+_WjDloKP_beTgA"
-   entry "Flight Control"
-   entryGuid "AHggI_I2olatAugkrrgA"
-   entry "Input/Output Processor"
-   entryGuid "AHggI_cJoCK4KsG6mwgA"
-   entry "Navigation"
-   entryGuid "AHggI_xoLlJwuOWCN3QA"
-   entry "Unspecified"
-   entryGuid "AHggJAD2BiADTH74DhAA"
+	guid "ABbjHBzHfCU9H2BPpqAA"
+	uuid 0x300000000000017D
+	entry "Graphics Handler"
+	entryGuid "AHggI+3RUnQwf1KtsqAA"
+	entry "Communication"
+	entryGuid "AHggI+_WjDloKP_beTgA"
+	entry "Flight Control"
+	entryGuid "AHggI_I2olatAugkrrgA"
+	entry "Input/Output Processor"
+	entryGuid "AHggI_cJoCK4KsG6mwgA"
+	entry "Navigation"
+	entryGuid "AHggI_xoLlJwuOWCN3QA"
+	entry "Unspecified"
+	entryGuid "AHggJAD2BiADTH74DhAA"
 }
 
 attributeType "Partition" extends EnumeratedAttribute {
-   guid "AAMFERHj9w6pmoLBCaQA"
-   uuid 0x1000000000000087
-   dataProvider DefaultAttributeDataProvider
-   min 1
-   max unlimited
-   taggerId DefaultAttributeTaggerProvider
-   enumType "enum.req.partition"
-   defaultValue "Unspecified"
+	guid "AAMFERHj9w6pmoLBCaQA"
+	uuid 0x1000000000000087
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max unlimited
+	taggerId DefaultAttributeTaggerProvider
+	enumType "enum.req.partition"
+	defaultValue "Unspecified"
 }
 
 oseeEnumType "enum.req.subsystem" {
-   guid "ABbjHB5dcGIVi9+p9bQA"
-   uuid 0x300000000000017E
-   entry "Robot_API"
-   entryGuid "AHjfb6Ot_Atsy5Hj5xAA"
-   entry "Robot_Survivability_Equipment"
-   entryGuid "AHjfd+vzwB5D1DjSPWgA"
-   entry "Robot_Systems_Management"
-   entryGuid "AHjfd+zuqmUAQPB6MbwA"
-   entry "Chasis"
-   entryGuid "AHjfd+3D_2WDdzxL9hwA"
-   entry "Cognitive_Decision_Aiding"
-   entryGuid "AHjfd+7AwSFsRzmC84QA"
-   entry "Communications"
-   entryGuid "AHjfd++j_hUNRmwobMwA"
-   entry "Data_Management"
-   entryGuid "AHjfd_Cw5zMXN1T21YwA"
-   entry "Electrical"
-   entryGuid "AHjfd_LUzm7Z2jeLDeQA"
-   entry "Controls"
-   entryGuid "AHjfd_RZSXYHzkv1rOQA"
-   entry "Hydraulics"
-   entryGuid "AHjfd_VSQDj9YzYfD7wA"
-   entry "Navigation"
-   entryGuid "AHjfd_ZHOyLb+diLv5gA"
-   entry "Propulsion"
-   entryGuid "AHjfd_c32nOglFGiMxgA"
-   entry "Unknown"
-   entryGuid "AHjfd_kVkkdX2Y9lhIwA"
-   entry "Unspecified"
-   entryGuid "AHjfd_7ljkRqqttzhDQA"
+	guid "ABbjHB5dcGIVi9+p9bQA"
+	uuid 0x300000000000017E
+	entry "Robot_API"
+	entryGuid "AHjfb6Ot_Atsy5Hj5xAA"
+	entry "Robot_Survivability_Equipment"
+	entryGuid "AHjfd+vzwB5D1DjSPWgA"
+	entry "Robot_Systems_Management"
+	entryGuid "AHjfd+zuqmUAQPB6MbwA"
+	entry "Chasis"
+	entryGuid "AHjfd+3D_2WDdzxL9hwA"
+	entry "Cognitive_Decision_Aiding"
+	entryGuid "AHjfd+7AwSFsRzmC84QA"
+	entry "Communications"
+	entryGuid "AHjfd++j_hUNRmwobMwA"
+	entry "Data_Management"
+	entryGuid "AHjfd_Cw5zMXN1T21YwA"
+	entry "Electrical"
+	entryGuid "AHjfd_LUzm7Z2jeLDeQA"
+	entry "Controls"
+	entryGuid "AHjfd_RZSXYHzkv1rOQA"
+	entry "Hydraulics"
+	entryGuid "AHjfd_VSQDj9YzYfD7wA"
+	entry "Navigation"
+	entryGuid "AHjfd_ZHOyLb+diLv5gA"
+	entry "Propulsion"
+	entryGuid "AHjfd_c32nOglFGiMxgA"
+	entry "Unknown"
+	entryGuid "AHjfd_kVkkdX2Y9lhIwA"
+	entry "Unspecified"
+	entryGuid "AHjfd_7ljkRqqttzhDQA"
 }
 
 attributeType "Subsystem" extends EnumeratedAttribute {
-   guid "AAMFERJ1GweNukuSd8QA"
-   uuid 0x1000000000000088
-   dataProvider DefaultAttributeDataProvider
-   min 1
-   max 1
-   enumType "enum.req.subsystem"
-   defaultValue "Unspecified"
+	guid "AAMFERJ1GweNukuSd8QA"
+	uuid 0x1000000000000088
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	enumType "enum.req.subsystem"
+	defaultValue "Unspecified"
 }
 
 oseeEnumType "enum.req.qualification.method" {
-   guid "ABbjHCAHCGyBB5TlmFQA"
-   uuid 0x300000000000017F
-   entry "Demonstration"
-   entryGuid "CArJmMA53UpBedWUq2wA"
-   entry "Test"
-   entryGuid "CArJmMCo5ABG2ARPMAgA"
-   entry "Analysis"
-   entryGuid "CArJmMEVehxBzLEB5BAA"
-   entry "Inspection"
-   entryGuid "CArJmMGDMTQTjfQ38MAA"
-   entry "Similarity"
-   entryGuid "ASc33qQU1W+9s0suWHwA" // same as Legacy
+	guid "ABbjHCAHCGyBB5TlmFQA"
+	uuid 0x300000000000017F
+	entry "Demonstration"
+	entryGuid "CArJmMA53UpBedWUq2wA"
+	entry "Test"
+	entryGuid "CArJmMCo5ABG2ARPMAgA"
+	entry "Analysis"
+	entryGuid "CArJmMEVehxBzLEB5BAA"
+	entry "Inspection"
+	entryGuid "CArJmMGDMTQTjfQ38MAA"
+	entry "Similarity"
+	entryGuid "ASc33qQU1W+9s0suWHwA" // same as Legacy
 
-   entry "Special Qualification"
-   entryGuid "CArJmMHtrXO88eBgpDwA"
-   entry "Legacy"
-   entryGuid "CArJmMJahR1CShy_tbAA"
-   entry "Unspecified"
-   entryGuid "CArJmMLRzxv5GEsV81gA"
+	entry "Special Qualification"
+	entryGuid "CArJmMHtrXO88eBgpDwA"
+	entry "Legacy"
+	entryGuid "CArJmMJahR1CShy_tbAA"
+	entry "Unspecified"
+	entryGuid "CArJmMLRzxv5GEsV81gA"
 }
 
 attributeType "Qualification Method" extends EnumeratedAttribute {
-   guid "AAMFERMRKHkM9k_Rg2QA"
-   uuid 0x1000000000000089
-   dataProvider DefaultAttributeDataProvider
-   min 1
-   max unlimited
-   enumType "enum.req.qualification.method"
-   description
-   "Demonstration:  The operation of the CSCI, or a part of the CSCI, that relies on observable functional operation not requiring the use of instrumentation, special test equipment, or subsequent analysis.\n\nTest:  The operation of the CSCI, or a part of the CSCI, using instrumentation or other special test equipment to collect data for later analysis.\n\nAnalysis:  The processing of accumulated data obtained from other qualification methods.  Examples are reduction, interpretation, or extrapolation of test results.\n\nInspection:  The visual examination of CSCI code, documentation, etc.\n\nSpecial Qualification Methods:  Any special qualification methods for the CSCI, such as special tools, techniques, procedures, facilities, and acceptance limits.\n\nLegacy:  Requirement, design, or implementation has not changed since last qualification (use sparingly - Not to be used with functions implemented in internal software).\n\nUnspecified:  The qualification method has yet to be set."
-   defaultValue "Unspecified"
+	guid "AAMFERMRKHkM9k_Rg2QA"
+	uuid 0x1000000000000089
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max unlimited
+	enumType "enum.req.qualification.method"
+	description
+	"Demonstration:  The operation of the CSCI, or a part of the CSCI, that relies on observable functional operation not requiring the use of instrumentation, special test equipment, or subsequent analysis.\n\nTest:  The operation of the CSCI, or a part of the CSCI, using instrumentation or other special test equipment to collect data for later analysis.\n\nAnalysis:  The processing of accumulated data obtained from other qualification methods.  Examples are reduction, interpretation, or extrapolation of test results.\n\nInspection:  The visual examination of CSCI code, documentation, etc.\n\nSpecial Qualification Methods:  Any special qualification methods for the CSCI, such as special tools, techniques, procedures, facilities, and acceptance limits.\n\nLegacy:  Requirement, design, or implementation has not changed since last qualification (use sparingly - Not to be used with functions implemented in internal software).\n\nUnspecified:  The qualification method has yet to be set."
+	defaultValue "Unspecified"
 }
 
 oseeEnumType "enum.req.safety.criticality" {
-   guid "ABbjHCNxJBcbZ6yiZDgA"
-   uuid 0x3000000000000180
-   entry "I"
-   entryGuid "CArJmMT4W0M7RHz21FQA"
-   entry "II"
-   entryGuid "CArJmMVi32d309GaF2QA"
-   entry "III"
-   entryGuid "CArJmMXNMQmB_pYCUmgA"
-   entry "IV"
-   entryGuid "CArJmMZEHicX8fSbRWQA"
-   entry "V"
-   entryGuid "CArJmMa0N3h90kh02XwA"
+	guid "ABbjHCNxJBcbZ6yiZDgA"
+	uuid 0x3000000000000180
+	entry "I"
+	entryGuid "CArJmMT4W0M7RHz21FQA"
+	entry "II"
+	entryGuid "CArJmMVi32d309GaF2QA"
+	entry "III"
+	entryGuid "CArJmMXNMQmB_pYCUmgA"
+	entry "IV"
+	entryGuid "CArJmMZEHicX8fSbRWQA"
+	entry "V"
+	entryGuid "CArJmMa0N3h90kh02XwA"
 }
 
 attributeType "Safety Criticality" extends EnumeratedAttribute {
-   guid "AAMFERg99R51HIz45HAA"
-   uuid 0x100000000000008A
-   dataProvider DefaultAttributeDataProvider
-   min 1
-   max 1
-   enumType "enum.req.safety.criticality"
-   description "Criticality Classification"
-   defaultValue "V"
+	guid "AAMFERg99R51HIz45HAA"
+	uuid 0x100000000000008A
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	enumType "enum.req.safety.criticality"
+	description "Criticality Classification"
+	defaultValue "V"
 }
 
 oseeEnumType "enum.req.verification.level" {
-   guid "ABbjHC2WXXrSKP4puzgA"
-   uuid 0x3000000000000181
-   entry "System"
-   entryGuid "AHgseTiNRW1AhGHenkAA"
-   entry "Subsystem"
-   entryGuid "AHgseTubynFhgg9eXjQA"
-   entry "Component"
-   entryGuid "AHgseT6tBlXP7azH7LQA"
-   entry "Unspecified"
-   entryGuid "AHgseUA7nhAJY46rRDQA"
+	guid "ABbjHC2WXXrSKP4puzgA"
+	uuid 0x3000000000000181
+	entry "System"
+	entryGuid "AHgseTiNRW1AhGHenkAA"
+	entry "Subsystem"
+	entryGuid "AHgseTubynFhgg9eXjQA"
+	entry "Component"
+	entryGuid "AHgseT6tBlXP7azH7LQA"
+	entry "Unspecified"
+	entryGuid "AHgseUA7nhAJY46rRDQA"
 }
 
 attributeType "Verification Level" extends EnumeratedAttribute {
-   guid "AAMFEXRTkyKVIFqcMwQA"
-   uuid 0x100000000000008B
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-   enumType "enum.req.verification.level"
-   defaultValue "Unspecified"
+	guid "AAMFEXRTkyKVIFqcMwQA"
+	uuid 0x100000000000008B
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	enumType "enum.req.verification.level"
+	defaultValue "Unspecified"
 }
 
 attributeType "TIS Test Number" extends StringAttribute {
-   guid "AAMFERjRSDDgyyBh+OAA"
-   uuid 0x100000000000008C
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   description "Test Number"
+	guid "AAMFERjRSDDgyyBh+OAA"
+	uuid 0x100000000000008C
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	description "Test Number"
 }
 
 attributeType "Verification Acceptance Criteria" extends StringAttribute {
-   guid "Ae5xBFpvDnWRi8nloxgA"
-   uuid 0x100000000000008D
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "Ae5xBFpvDnWRi8nloxgA"
+	uuid 0x100000000000008D
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 oseeEnumType "enum.test.tis.type" {
-   guid "ABbjHCU5SnXJ62yrqgQA"
-   uuid 0x3000000000000182
-   entry "Stationary Vehicle"
-   entryGuid "AHj4p6gxxxlUbouQY4gA"
-   entry "In Operation"
-   entryGuid "AHj4p6kFZ3S4g4sDOEgA"
+	guid "ABbjHCU5SnXJ62yrqgQA"
+	uuid 0x3000000000000182
+	entry "Stationary Vehicle"
+	entryGuid "AHj4p6gxxxlUbouQY4gA"
+	entry "In Operation"
+	entryGuid "AHj4p6kFZ3S4g4sDOEgA"
 }
 
 attributeType "TIS Test Type" extends EnumeratedAttribute {
-   guid "AAMFEVXVuFcy8wCED5AA"
-   uuid 0x100000000000008E
-   dataProvider DefaultAttributeDataProvider
-   min 1
-   max unlimited
-   enumType "enum.test.tis.type"
-   description "TIS Test Type"
-   defaultValue "Stationary Vehicle"
+	guid "AAMFEVXVuFcy8wCED5AA"
+	uuid 0x100000000000008E
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max unlimited
+	enumType "enum.test.tis.type"
+	description "TIS Test Type"
+	defaultValue "Stationary Vehicle"
 }
 
 oseeEnumType "enum.test.tis.category" {
-   guid "ABbjHCbrnnqEZAX3kzwA"
-   uuid 0x3000000000000183
-   entry "SPEC_COMP"
-   entryGuid "CArJmMeaR3xHDdsfMmQA"
-   entry "DEV"
-   entryGuid "CArJmQdaJgLQKdfWuqAA"
-   entry "USG"
-   entryGuid "CArJmQe87RfF8MxEp6AA"
+	guid "ABbjHCbrnnqEZAX3kzwA"
+	uuid 0x3000000000000183
+	entry "SPEC_COMP"
+	entryGuid "CArJmMeaR3xHDdsfMmQA"
+	entry "DEV"
+	entryGuid "CArJmQdaJgLQKdfWuqAA"
+	entry "USG"
+	entryGuid "CArJmQe87RfF8MxEp6AA"
 }
 
 attributeType "TIS Test Category" extends EnumeratedAttribute {
-   guid "AAMFEVbEtV4QJQvA5eQA"
-   uuid 0x100000000000008F
-   dataProvider DefaultAttributeDataProvider
-   min 1
-   max 1
-   enumType "enum.test.tis.category"
-   description "TIS Test Category"
-   defaultValue "DEV"
+	guid "AAMFEVbEtV4QJQvA5eQA"
+	uuid 0x100000000000008F
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	enumType "enum.test.tis.category"
+	description "TIS Test Category"
+	defaultValue "DEV"
 }
 
 oseeEnumType "enum.req.development.assurance.level" {
-   guid "ABNKg0zpK359Z5qvBsQA"
-   uuid 0x3000000000000184
-   entry "A"
-   entryGuid "CArJmQghfXnRkiCKD5AA"
-   entry "B"
-   entryGuid "CArJmQiEOmcK4CBlp2gA"
-   entry "C"
-   entryGuid "CArJmQjodlQbcdQmm1AA"
-   entry "D"
-   entryGuid "CArJmQlRRwo1OPaSGhwA"
-   entry "E"
-   entryGuid "CArJmQm9Lx76RVS3lIwA"
+	guid "ABNKg0zpK359Z5qvBsQA"
+	uuid 0x3000000000000184
+	entry "A"
+	entryGuid "CArJmQghfXnRkiCKD5AA"
+	entry "B"
+	entryGuid "CArJmQiEOmcK4CBlp2gA"
+	entry "C"
+	entryGuid "CArJmQjodlQbcdQmm1AA"
+	entry "D"
+	entryGuid "CArJmQlRRwo1OPaSGhwA"
+	entry "E"
+	entryGuid "CArJmQm9Lx76RVS3lIwA"
 }
 
 attributeType "Development Assurance Level" extends EnumeratedAttribute {
-   guid "AAMFEVdW8Bdjtx4GvfwA"
-   uuid 0x1000000000000090
-   dataProvider DefaultAttributeDataProvider
-   min 1
-   max 1
-   enumType "enum.req.development.assurance.level"
-   description "Development Assurance Level"
-   defaultValue "E"
+	guid "AAMFEVdW8Bdjtx4GvfwA"
+	uuid 0x1000000000000090
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	enumType "enum.req.development.assurance.level"
+	description "Development Assurance Level"
+	defaultValue "E"
 }
 
 attributeType "Category" extends StringAttribute {
-   guid "AAMFEVfcEjwtly9djdgA"
-   uuid 0x1000000000000091
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AAMFEVfcEjwtly9djdgA"
+	uuid 0x1000000000000091
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "PublishInline" extends BooleanAttribute {
-   guid "ADpktgUh1xxE38Ht66QA"
-   uuid 0x1000000000000092
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "ADpktgUh1xxE38Ht66QA"
+	uuid 0x1000000000000092
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "Technical Performance Parameter" extends BooleanAttribute {
-   guid "AAMFEVhhNTVx42mlvlQA"
-   uuid 0x1000000000000093
-   dataProvider DefaultAttributeDataProvider
-   min 1
-   max 1
-   defaultValue "no"
+	guid "AAMFEVhhNTVx42mlvlQA"
+	uuid 0x1000000000000093
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	defaultValue "no"
 }
 
 oseeEnumType "enum.req.verification.event" {
-   guid "ABbjHC9L9lc8UkipZnQA"
-   uuid 0x3000000000000185
-   entry "Unspecified"
-   entryGuid "AHgx7FoBjTj1Gjx2lwwA"
+	guid "ABbjHC9L9lc8UkipZnQA"
+	uuid 0x3000000000000185
+	entry "Unspecified"
+	entryGuid "AHgx7FoBjTj1Gjx2lwwA"
 }
 
 attributeType "Verification Event" extends EnumeratedAttribute {
-   guid "AAMFEXlt02WfQ0jcQtAA"
-   uuid 0x1000000000000094
-   dataProvider DefaultAttributeDataProvider
-   min 1
-   max 1
-   enumType "enum.req.verification.event"
-   defaultValue "Unspecified"
+	guid "AAMFEXlt02WfQ0jcQtAA"
+	uuid 0x1000000000000094
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	enumType "enum.req.verification.event"
+	defaultValue "Unspecified"
 }
 
 oseeEnumType "enum.req.component" {
-   guid "ABbjHCpCFT4BoiZph4gA"
-   uuid 0x3000000000000186
-   entry "Top level product component"
-   entryGuid "AHgx7E8De1cxZ5soXEwA"
-   entry "Unspecified"
-   entryGuid "AHgx7FDclWxiskAifqgA"
+	guid "ABbjHCpCFT4BoiZph4gA"
+	uuid 0x3000000000000186
+	entry "Top level product component"
+	entryGuid "AHgx7E8De1cxZ5soXEwA"
+	entry "Unspecified"
+	entryGuid "AHgx7FDclWxiskAifqgA"
 }
 
 attributeType "Component" extends EnumeratedAttribute {
-   guid "AAMFEVjkKR2EMfwWk4AA"
-   uuid 0x1000000000000095
-   dataProvider DefaultAttributeDataProvider
-   min 1
-   max 1
-   enumType "enum.req.component"
-   defaultValue "Unspecified"
+	guid "AAMFEVjkKR2EMfwWk4AA"
+	uuid 0x1000000000000095
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	enumType "enum.req.component"
+	defaultValue "Unspecified"
 }
 
 relationType "Allocation" {
-   guid "AAMFE+RS8gRV2BXaCtQA"
-   uuid 0x2000000000000157
-   sideAName "requirement"
-   sideAArtifactType "Requirement"
-   sideBName "component"
-   sideBArtifactType "Component"
-   defaultOrderType Lexicographical_Ascending
-   multiplicity MANY_TO_MANY
+	guid "AAMFE+RS8gRV2BXaCtQA"
+	uuid 0x2000000000000157
+	sideAName "requirement"
+	sideAArtifactType "Requirement"
+	sideBName "component"
+	sideBArtifactType "Component"
+	defaultOrderType Lexicographical_Ascending
+	multiplicity MANY_TO_MANY
 }
 
 relationType "Code-Requirement" {
-   guid "AAMFE+TNKxG5ytcGHqgA"
-   uuid 0x2000000000000158
-   sideAName "code"
-   sideAArtifactType "Code Unit"
-   sideBName "requirement"
-   sideBArtifactType "Requirement"
-   defaultOrderType Unordered
-   multiplicity MANY_TO_MANY
+	guid "AAMFE+TNKxG5ytcGHqgA"
+	uuid 0x2000000000000158
+	sideAName "code"
+	sideAArtifactType "Code Unit"
+	sideBName "requirement"
+	sideBArtifactType "Requirement"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
 }
 
 relationType "Component-Requirement" {
-   guid "AAMFE+VoIUTy9BoL1PgA"
-   uuid 0x2000000000000159
-   sideAName "component"
-   sideAArtifactType "Component"
-   sideBName "requirement"
-   sideBArtifactType "Requirement"
-   defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+	guid "AAMFE+VoIUTy9BoL1PgA"
+	uuid 0x2000000000000159
+	sideAName "component"
+	sideAArtifactType "Component"
+	sideBName "requirement"
+	sideBArtifactType "Requirement"
+	defaultOrderType Unordered
+	multiplicity ONE_TO_MANY
 }
 
 relationType "Design" {
-   guid "AAMFE1XjcSaqnXfOXVQA"
-   uuid 0x200000000000015A
-   sideAName "requirement"
-   sideAArtifactType "Requirement"
-   sideBName "design"
-   sideBArtifactType "Design"
-   defaultOrderType Unordered
-   multiplicity MANY_TO_MANY
+	guid "AAMFE1XjcSaqnXfOXVQA"
+	uuid 0x200000000000015A
+	sideAName "requirement"
+	sideAArtifactType "Requirement"
+	sideBName "design"
+	sideBArtifactType "Design"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
 }
 
 relationType "Verification" {
-   guid "AAMFE+ZdqgB+D5zP5+gA"
-   uuid 0x200000000000015B
-   sideAName "requirement"
-   sideAArtifactType "Requirement"
-   sideBName "verifier"
-   sideBArtifactType "Test Unit"
-   defaultOrderType Unordered
-   multiplicity MANY_TO_MANY
+	guid "AAMFE+ZdqgB+D5zP5+gA"
+	uuid 0x200000000000015B
+	sideAName "requirement"
+	sideAArtifactType "Requirement"
+	sideBName "verifier"
+	sideBArtifactType "Test Unit"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
 }
 
 relationType "Verification Plan" {
-   guid "ATmJsVc28wU57zFAi7AA"
-   uuid 0x200000000000015C
-   sideAName "requirement"
-   sideAArtifactType "Requirement"
-   sideBName "test plan element"
-   sideBArtifactType "Test Plan Element"
-   defaultOrderType Lexicographical_Ascending
-   multiplicity MANY_TO_MANY
+	guid "ATmJsVc28wU57zFAi7AA"
+	uuid 0x200000000000015C
+	sideAName "requirement"
+	sideAArtifactType "Requirement"
+	sideBName "test plan element"
+	sideBArtifactType "Test Plan Element"
+	defaultOrderType Lexicographical_Ascending
+	multiplicity MANY_TO_MANY
 }
 
 relationType "Verification Procedure" {
-   guid "AAMFE+bY+ibHHBJu0dAA"
-   uuid 0x200000000000015D
-   sideAName "test information sheet"
-   sideAArtifactType "Test Information Sheet"
-   sideBName "test procedure"
-   sideBArtifactType "Test Procedure"
-   defaultOrderType Unordered
-   multiplicity MANY_TO_MANY
+	guid "AAMFE+bY+ibHHBJu0dAA"
+	uuid 0x200000000000015D
+	sideAName "test information sheet"
+	sideAArtifactType "Test Information Sheet"
+	sideBName "test procedure"
+	sideBArtifactType "Test Procedure"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
 }
 
 relationType "Executes" {
-   guid "AWo0+Hkh+2qNMeAlUwQA"
-   uuid 0x200000000000015E
-   sideAName "test plan element"
-   sideAArtifactType "Test Plan Element"
-   sideBName "test procedure"
-   sideBArtifactType "Test Procedure"
-   defaultOrderType Lexicographical_Ascending
-   multiplicity MANY_TO_MANY
+	guid "AWo0+Hkh+2qNMeAlUwQA"
+	uuid 0x200000000000015E
+	sideAName "test plan element"
+	sideAArtifactType "Test Plan Element"
+	sideBName "test procedure"
+	sideBArtifactType "Test Procedure"
+	defaultOrderType Lexicographical_Ascending
+	multiplicity MANY_TO_MANY
 }
 
 relationType "Requirement Trace" {
-   guid "AAMFE+dRBVFN6fAPXdwA"
-   uuid 0x200000000000015F
-   sideAName "higher-level requirement"
-   sideAArtifactType "Requirement"
-   sideBName "lower-level requirement"
-   sideBArtifactType "Requirement"
-   defaultOrderType Unordered
-   multiplicity MANY_TO_MANY
+	guid "AAMFE+dRBVFN6fAPXdwA"
+	uuid 0x200000000000015F
+	sideAName "higher-level requirement"
+	sideAArtifactType "Requirement"
+	sideBName "lower-level requirement"
+	sideBArtifactType "Requirement"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
 }
 
 relationType "Validation" {
-   guid "AAMFE+fMVRM8f9BUD0AA"
-   uuid 0x2000000000000160
-   sideAName "requirement"
-   sideAArtifactType "Requirement"
-   sideBName "validator"
-   sideBArtifactType "Artifact"
-   defaultOrderType Unordered
-   multiplicity MANY_TO_MANY
+	guid "AAMFE+fMVRM8f9BUD0AA"
+	uuid 0x2000000000000160
+	sideAName "requirement"
+	sideAArtifactType "Requirement"
+	sideBName "validator"
+	sideBArtifactType "Artifact"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
 }
 
 relationType "Specifying" {
-   guid "AAMFE+hPSXzdCioUZHgA"
-   uuid 0x2000000000000161
-   sideAName "function"
-   sideAArtifactType "Subsystem Function"
-   sideBName "requirement"
-   sideBArtifactType "Requirement"
-   defaultOrderType Unordered
-   multiplicity MANY_TO_ONE
+	guid "AAMFE+hPSXzdCioUZHgA"
+	uuid 0x2000000000000161
+	sideAName "function"
+	sideAArtifactType "Subsystem Function"
+	sideBName "requirement"
+	sideBArtifactType "Requirement"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_ONE
 }
 
 abstract artifactType "Work Item Definition" extends "Artifact" {
-   guid "ABNM6pIn_x_3e6a3aIgA"
-   uuid 0x0000000000000032
-   attribute "osee.wi.Work Id"
-   attribute "osee.wi.Work Type"
-   attribute "osee.wi.Work Parent Id"
-   attribute "osee.wi.Work Data"
-   attribute "osee.wi.Work Description"
+	guid "ABNM6pIn_x_3e6a3aIgA"
+	uuid 0x0000000000000032
+	attribute "osee.wi.Work Id"
+	attribute "osee.wi.Work Type"
+	attribute "osee.wi.Work Parent Id"
+	attribute "osee.wi.Work Data"
+	attribute "osee.wi.Work Description"
 }
 
 artifactType "Work Page Definition" extends "Work Item Definition" {
-   guid "AAMFDhzuyizN4qu7tXgA"
-   uuid 0x0000000000000033
-   attribute "osee.wi.Work Page Name"
-   attribute "osee.wi.Work Page Type"
-   attribute "osee.wi.Work Page Ordinal"
+	guid "AAMFDhzuyizN4qu7tXgA"
+	uuid 0x0000000000000033
+	attribute "osee.wi.Work Page Name"
+	attribute "osee.wi.Work Page Type"
+	attribute "osee.wi.Work Page Ordinal"
 }
 
 artifactType "Work Flow Definition" extends "Work Item Definition" {
-   guid "AAMFDh16eQ1GIHPWlYQA"
-   uuid 0x0000000000000034
-   attribute "osee.wi.Start Page"
-   attribute "osee.wi.Transition"
+	guid "AAMFDh16eQ1GIHPWlYQA"
+	uuid 0x0000000000000034
+	attribute "osee.wi.Start Page"
+	attribute "osee.wi.Transition"
 }
 
 artifactType "Work Rule Definition" extends "Work Item Definition" {
-   guid "AAMFDhxjHC2RUV2RkcQA"
-   uuid 0x0000000000000035
+	guid "AAMFDhxjHC2RUV2RkcQA"
+	uuid 0x0000000000000035
 }
 
 artifactType "Work Widget Definition" extends "Work Item Definition" {
-   guid "AAMFDh4IVzqPgVTpLrwA"
-   uuid 0x0000000000000036
+	guid "AAMFDh4IVzqPgVTpLrwA"
+	uuid 0x0000000000000036
 }
 
 artifactType "XViewer Global Customization" extends "Artifact" {
-   guid "AAMFDhtN7T4of30iYhAA"
-   uuid 0x0000000000000037
-   attribute "XViewer Customization"
+	guid "AAMFDhtN7T4of30iYhAA"
+	uuid 0x0000000000000037
+	attribute "XViewer Customization"
 }
 
 attributeType "osee.wi.Work Data" extends StringAttribute {
-   guid "AAMFEbyhslOoQf3+hyAA"
-   uuid 0x1000000000000096
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max unlimited
-   fileExtension "xml"
+	guid "AAMFEbyhslOoQf3+hyAA"
+	uuid 0x1000000000000096
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	fileExtension "xml"
 }
 
 attributeType "osee.wi.Work Id" extends StringAttribute {
-   guid "AAMFEb0hXw933Zrje2QA"
-   uuid 0x1000000000000097
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AAMFEb0hXw933Zrje2QA"
+	uuid 0x1000000000000097
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "osee.wi.Work Type" extends StringAttribute {
-   guid "AAMFEb2f9nh42sjMHfAA"
-   uuid 0x1000000000000098
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AAMFEb2f9nh42sjMHfAA"
+	uuid 0x1000000000000098
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "osee.wi.Work Description" extends StringAttribute {
-   guid "AAMFEb57TkhPHyzOLDwA"
-   uuid 0x1000000000000099
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AAMFEb57TkhPHyzOLDwA"
+	uuid 0x1000000000000099
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "osee.wi.Work Parent Id" extends StringAttribute {
-   guid "AAMFEb8R5y9WcjD5hcwA"
-   uuid 0x100000000000009A
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AAMFEb8R5y9WcjD5hcwA"
+	uuid 0x100000000000009A
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "osee.wi.Work Page Name" extends StringAttribute {
-   guid "AAMFEb+vCyCjKbzzHoQA"
-   uuid 0x100000000000009B
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max unlimited
+	guid "AAMFEb+vCyCjKbzzHoQA"
+	uuid 0x100000000000009B
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
 }
 
 attributeType "osee.wi.Work Page Ordinal" extends IntegerAttribute {
-   guid "AGb3uHUiiFc2GkZc1bwA"
-   uuid 0x100000000000009C
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AGb3uHUiiFc2GkZc1bwA"
+	uuid 0x100000000000009C
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "osee.wi.Transition" extends StringAttribute {
-   guid "AAMFEcBLGB5U+55hJrQA"
-   uuid 0x100000000000009D
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max unlimited
+	guid "AAMFEcBLGB5U+55hJrQA"
+	uuid 0x100000000000009D
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
 }
 
 attributeType "osee.wi.Work Page Type" extends StringAttribute {
-   guid "ATTKEn8ob0KafAl5vuAA"
-   uuid 0x100000000000009E
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "ATTKEn8ob0KafAl5vuAA"
+	uuid 0x100000000000009E
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "osee.wi.Start Page" extends StringAttribute {
-   guid "AAMFEcDfggQLaAdLlpQA"
-   uuid 0x100000000000009F
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AAMFEcDfggQLaAdLlpQA"
+	uuid 0x100000000000009F
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 relationType "Work Item" {
-   guid "AAMFE9jvEzcbzwAfjzwA"
-   uuid 0x2000000000000162
-   sideAName "Parent"
-   sideAArtifactType "Artifact"
-   sideBName "Child"
-   sideBArtifactType "Artifact"
-   defaultOrderType Lexicographical_Ascending
-   multiplicity MANY_TO_MANY
+	guid "AAMFE9jvEzcbzwAfjzwA"
+	uuid 0x2000000000000162
+	sideAName "Parent"
+	sideAArtifactType "Artifact"
+	sideBName "Child"
+	sideBArtifactType "Artifact"
+	defaultOrderType Lexicographical_Ascending
+	multiplicity MANY_TO_MANY
 }
 
 relationType "User Grouping" {
-   guid "AAMFE9lpTHwUo4DbvKAA"
-   uuid 0x2000000000000163
-   sideAName "group"
-   sideAArtifactType "User Group"
-   sideBName "users"
-   sideBArtifactType "User"
-   defaultOrderType Unordered
-   multiplicity MANY_TO_MANY
+	guid "AAMFE9lpTHwUo4DbvKAA"
+	uuid 0x2000000000000163
+	sideAName "group"
+	sideAArtifactType "User Group"
+	sideBName "users"
+	sideBArtifactType "User"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
 }
 
 relationType "Users" {
-   guid "AAMFE9nibXSCqcoXkMAA"
-   uuid 0x2000000000000164
-   sideAName "Artifact"
-   sideAArtifactType "Artifact"
-   sideBName "User"
-   sideBArtifactType "User"
-   defaultOrderType Unordered
-   multiplicity MANY_TO_MANY
+	guid "AAMFE9nibXSCqcoXkMAA"
+	uuid 0x2000000000000164
+	sideAName "Artifact"
+	sideAArtifactType "Artifact"
+	sideBName "User"
+	sideBArtifactType "User"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
 }
 
 relationType "Supercedes" {
-   guid "AAMFE9qJZC_qegaByjgA"
-   uuid 0x2000000000000165
-   sideAName "supercedes"
-   sideAArtifactType "Artifact"
-   sideBName "superceded by"
-   sideBArtifactType "Artifact"
-   defaultOrderType Unordered
-   multiplicity MANY_TO_MANY
+	guid "AAMFE9qJZC_qegaByjgA"
+	uuid 0x2000000000000165
+	sideAName "supercedes"
+	sideAArtifactType "Artifact"
+	sideBName "superceded by"
+	sideBArtifactType "Artifact"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
 }
 
 oseeEnumType "enum.req.csci" {
-   guid "ABbjHCvlIUEX3D7+BywA"
-   uuid 0x3000000000000187
-   entry "CoreUnit"
-   entryGuid "AHkD1ZWRgG65kO2xGawA"
-   entry "Framework"
-   entryGuid "AHkD1ZZ063rhGqAyBOAA"
-   entry "Interface"
-   entryGuid "AHkD1ZgrchP3YIc3P3AA"
-   entry "Navigation"
-   entryGuid "AHkD1ZnJ3kjo0mcY2bgA"
-   entry "Unspecified"
-   entryGuid "AHkD1ZtZdjiGWH2sJvwA"
-   entry "Visual"
-   entryGuid "AHkD1ZxHLlTIDMbxs6QA"
+	guid "ABbjHCvlIUEX3D7+BywA"
+	uuid 0x3000000000000187
+	entry "CoreUnit"
+	entryGuid "AHkD1ZWRgG65kO2xGawA"
+	entry "Framework"
+	entryGuid "AHkD1ZZ063rhGqAyBOAA"
+	entry "Interface"
+	entryGuid "AHkD1ZgrchP3YIc3P3AA"
+	entry "Navigation"
+	entryGuid "AHkD1ZnJ3kjo0mcY2bgA"
+	entry "Unspecified"
+	entryGuid "AHkD1ZtZdjiGWH2sJvwA"
+	entry "Visual"
+	entryGuid "AHkD1ZxHLlTIDMbxs6QA"
 }
 
 attributeType "CSCI" extends EnumeratedAttribute {
-   guid "AAMFEXPEnnkY_07EbRgA"
-   uuid 0x10000000000000A0
-   dataProvider DefaultAttributeDataProvider
-   min 1
-   max unlimited
-   enumType "enum.req.csci"
-   defaultValue "Unspecified"
+	guid "AAMFEXPEnnkY_07EbRgA"
+	uuid 0x10000000000000A0
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max unlimited
+	enumType "enum.req.csci"
+	defaultValue "Unspecified"
 }
 
 relationType "Supporting Info" {
-   guid "AAMFE9wWnVhFW0wtOPAA"
-   uuid 0x2000000000000166
-   sideAName "is supported by"
-   sideAArtifactType "Artifact"
-   sideBName "supporting info"
-   sideBArtifactType "Artifact"
-   defaultOrderType Unordered
-   multiplicity MANY_TO_MANY
+	guid "AAMFE9wWnVhFW0wtOPAA"
+	uuid 0x2000000000000166
+	sideAName "is supported by"
+	sideAArtifactType "Artifact"
+	sideBName "supporting info"
+	sideBArtifactType "Artifact"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
 }
 
 artifactType "Heading" extends "MS Word Template" {
-   guid "AAMFDhEzni8FpFb5yHwA"
-   uuid 0x0000000000000038
+	guid "AAMFDhEzni8FpFb5yHwA"
+	uuid 0x0000000000000038
 }
 
 artifactType "Component" extends "Artifact" {
-   guid "AAMFDkG6omAsD6dXPYgA"
-   uuid 0x0000000000000039
-   attribute "Developmental"
-   attribute "GFE / CFE"
+	guid "AAMFDkG6omAsD6dXPYgA"
+	uuid 0x0000000000000039
+	attribute "Developmental"
+	attribute "GFE / CFE"
 }
 
 artifactType "Code Unit" extends "Artifact" {
-   guid "AAMFDkEh216dzK1mTZgA"
-   uuid 0x000000000000003A
+	guid "AAMFDkEh216dzK1mTZgA"
+	uuid 0x000000000000003A
 }
 
 artifactType "Safety Assessment" extends "MS Word Template" {
-   guid "AAMFDkLwjkgP8iAj8KAA"
-   uuid 0x000000000000003B
-   attribute "Hazard"
-   attribute "AFHA"
-   attribute "SFHA"
-   attribute "Hazard Severity"
-   attribute "Safety Objective"
-   attribute "FTA Results"
+	guid "AAMFDkLwjkgP8iAj8KAA"
+	uuid 0x000000000000003B
+	attribute "Hazard"
+	attribute "AFHA"
+	attribute "SFHA"
+	attribute "Hazard Severity"
+	attribute "Safety Objective"
+	attribute "FTA Results"
 }
 
 attributeType "Developmental" extends BooleanAttribute {
-   guid "AAMFEP8lp3EupVzVp5QA"
-   uuid 0x10000000000000A1
-   dataProvider DefaultAttributeDataProvider
-   min 1
-   max 1
-   defaultValue "yes"
+	guid "AAMFEP8lp3EupVzVp5QA"
+	uuid 0x10000000000000A1
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	defaultValue "yes"
 }
 
 attributeType "Hazard" extends StringAttribute {
-   guid "AAMFEQEe6XK8hGjJNxgA"
-   uuid 0x10000000000000A2
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEQEe6XK8hGjJNxgA"
+	uuid 0x10000000000000A2
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "AFHA" extends StringAttribute {
-   guid "AAMFEQGsxihCZXcrWtQA"
-   uuid 0x10000000000000A3
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEQGsxihCZXcrWtQA"
+	uuid 0x10000000000000A3
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "SFHA" extends StringAttribute {
-   guid "AAMFEQI800ecbF8oCPwA"
-   uuid 0x10000000000000A4
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEQI800ecbF8oCPwA"
+	uuid 0x10000000000000A4
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 oseeEnumType "enum.req.hazard.severity" {
-   guid "ABbjHBmFwRMuPIuJlXgA"
-   uuid 0x3000000000000188
-   entry "Catastrophic, I"
-   entryGuid "CArJmKAfM2LFVagvdyAA"
-   entry "Severe-Major, II"
-   entryGuid "CArJmKCbLEwsmEBGn+gA"
-   entry "Critical, II"
-   entryGuid "CArJmKEZuXpODZmFkcQA"
-   entry "Major, III"
-   entryGuid "CArJmKGYAW4oWTiszZgA"
-   entry "Marginal, III"
-   entryGuid "CArJmKIYLBLj6JLdPigA"
-   entry "Minor, IV"
-   entryGuid "CArJmKKX+GP5wM5WJpAA"
-   entry "Negligible, IV"
-   entryGuid "CArJmKMSiWNzklMgHmAA"
-   entry "No Effect, V"
-   entryGuid "CArJmKOJ6x+k2bBnQ2gA"
-   entry "Unspecified"
-   entryGuid "CArJmKQGFVIRln+WloQA"
+	guid "ABbjHBmFwRMuPIuJlXgA"
+	uuid 0x3000000000000188
+	entry "Catastrophic, I"
+	entryGuid "CArJmKAfM2LFVagvdyAA"
+	entry "Severe-Major, II"
+	entryGuid "CArJmKCbLEwsmEBGn+gA"
+	entry "Critical, II"
+	entryGuid "CArJmKEZuXpODZmFkcQA"
+	entry "Major, III"
+	entryGuid "CArJmKGYAW4oWTiszZgA"
+	entry "Marginal, III"
+	entryGuid "CArJmKIYLBLj6JLdPigA"
+	entry "Minor, IV"
+	entryGuid "CArJmKKX+GP5wM5WJpAA"
+	entry "Negligible, IV"
+	entryGuid "CArJmKMSiWNzklMgHmAA"
+	entry "No Effect, V"
+	entryGuid "CArJmKOJ6x+k2bBnQ2gA"
+	entry "Unspecified"
+	entryGuid "CArJmKQGFVIRln+WloQA"
 }
 
 attributeType "Hazard Severity" extends EnumeratedAttribute {
-   guid "AAMFEQLLyEqgnjt85bwA"
-   uuid 0x10000000000000A5
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-   enumType "enum.req.hazard.severity"
+	guid "AAMFEQLLyEqgnjt85bwA"
+	uuid 0x10000000000000A5
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	enumType "enum.req.hazard.severity"
 }
 
 attributeType "Safety Objective" extends FloatingPointAttribute {
-   guid "AAMFEQNYjjVjRoKuDsAA"
-   uuid 0x10000000000000A6
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEQNYjjVjRoKuDsAA"
+	uuid 0x10000000000000A6
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "FTA Results" extends FloatingPointAttribute {
-   guid "AAMFEQPomlhpBRRUceQA"
-   uuid 0x10000000000000A7
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEQPomlhpBRRUceQA"
+	uuid 0x10000000000000A7
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 oseeEnumType "enum.req.gfe.cfe" {
-   guid "ABbjHBslh00N4r93HbQA"
-   uuid 0x3000000000000189
-   entry "CFE"
-   entryGuid "CArJmKSDJmlB5eQJFdQA"
-   entry "GFE"
-   entryGuid "CArJmKT8DCOjmZgXRLgA"
-   entry "Unspecified"
-   entryGuid "CArJmKVx8wtiwmzCcugA"
+	guid "ABbjHBslh00N4r93HbQA"
+	uuid 0x3000000000000189
+	entry "CFE"
+	entryGuid "CArJmKSDJmlB5eQJFdQA"
+	entry "GFE"
+	entryGuid "CArJmKT8DCOjmZgXRLgA"
+	entry "Unspecified"
+	entryGuid "CArJmKVx8wtiwmzCcugA"
 }
 
 attributeType "GFE / CFE" extends EnumeratedAttribute {
-   guid "AAMFEQR0SW+7bERFvXQA"
-   uuid 0x10000000000000A8
-   dataProvider DefaultAttributeDataProvider
-   min 1
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-   enumType "enum.req.gfe.cfe"
-   defaultValue "Unspecified"
+	guid "AAMFEQR0SW+7bERFvXQA"
+	uuid 0x10000000000000A8
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	enumType "enum.req.gfe.cfe"
+	defaultValue "Unspecified"
 }
 
 relationType "Functional decomposition " {
-   guid "AAMFE+PYuWYLd90Mm4AA"
-   uuid 0x2000000000000167
-   sideAName "higher-level component"
-   sideAArtifactType "Component"
-   sideBName "lower-level component"
-   sideBArtifactType "Component"
-   defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+	guid "AAMFE+PYuWYLd90Mm4AA"
+	uuid 0x2000000000000167
+	sideAName "higher-level component"
+	sideAArtifactType "Component"
+	sideBName "lower-level component"
+	sideBArtifactType "Component"
+	defaultOrderType Unordered
+	multiplicity ONE_TO_MANY
 }
 
 relationType "Results Data" {
-   guid "AQm9ouX6JwBD29WrFoAA"
-   uuid 0x2000000000000168
-   sideAName "test unit"
-   sideAArtifactType "Test Unit"
-   sideBName "test result"
-   sideBArtifactType "Abstract Test Result"
-   defaultOrderType Lexicographical_Ascending
-   multiplicity MANY_TO_MANY
+	guid "AQm9ouX6JwBD29WrFoAA"
+	uuid 0x2000000000000168
+	sideAName "test unit"
+	sideAArtifactType "Test Unit"
+	sideBName "test result"
+	sideBArtifactType "Abstract Test Result"
+	defaultOrderType Lexicographical_Ascending
+	multiplicity MANY_TO_MANY
 }
 
 attributeType "Uri General String Data" extends StringAttribute {
-   guid "AFnIJbPBoQFQpTP2jfQA"
-   uuid 0x1000000000000195
-   dataProvider UriAttributeDataProvider
-   min 0
-   max unlimited
+	guid "AFnIJbPBoQFQpTP2jfQA"
+	uuid 0x1000000000000195
+	dataProvider UriAttributeDataProvider
+	min 0
+	max unlimited
 }
 
-artifactType "Osee Type Definition" extends "Artifact"{
+artifactType "Osee Type Definition" extends "Artifact" {
 	guid "AFGVEpSssxutyEAP0twA"
-   uuid 0x000000000000003C
+	uuid 0x000000000000003C
 	attribute "Active"
 	attribute "Uri General String Data"
 }

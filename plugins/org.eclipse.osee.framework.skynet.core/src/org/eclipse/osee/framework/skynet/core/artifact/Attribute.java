@@ -88,22 +88,23 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
    }
 
    public void setValue(T value) throws OseeCoreException {
-      if (attributeType.getName().equals("Name") && !value.equals(getValue())) {
-         // Confirm artifact is fit to rename
-         for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
-            IStatus result = check.isRenamable(Arrays.asList(getArtifact()));
-            if (!result.isOK()) {
-               throw new OseeCoreException(result.getMessage());
-            }
-         }
-      }
-
+      checkIsRenameable(value);
       if (subClassSetValue(value)) {
          markAsNewOrChanged();
       }
    }
 
    public boolean setFromString(String value) throws OseeCoreException {
+      T toSet = convertStringToValue(value);
+      checkIsRenameable(toSet);
+      boolean response = subClassSetValue(toSet);
+      if (response) {
+         markAsNewOrChanged();
+      }
+      return response;
+   }
+
+   private void checkIsRenameable(T value) throws OseeCoreException {
       if (attributeType.equals(CoreAttributeTypes.Name) && !value.equals(getValue())) {
          // Confirm artifact is fit to rename
          for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
@@ -113,12 +114,6 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
             }
          }
       }
-
-      boolean response = subClassSetValue(convertStringToValue(value));
-      if (response) {
-         markAsNewOrChanged();
-      }
-      return response;
    }
 
    protected abstract T convertStringToValue(String value) throws OseeCoreException;

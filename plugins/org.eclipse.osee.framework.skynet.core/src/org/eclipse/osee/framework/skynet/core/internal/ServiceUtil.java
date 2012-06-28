@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.lifecycle.ILifecycleService;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
+import org.eclipse.osee.framework.skynet.core.attribute.service.AttributeAdapterService;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -74,6 +75,10 @@ public final class ServiceUtil {
    public static TransactionRecordFactory getTransactionFactory() throws OseeCoreException {
       IOseeModelFactoryService service = getService(IOseeModelFactoryService.class);
       return service != null ? service.getTransactionFactory() : null;
+   }
+
+   public static AttributeAdapterService getAttributeAdapterService() throws OseeCoreException {
+      return getService(AttributeAdapterService.class);
    }
 
    public static IOseeModelFactoryService getOseeModelFactoryService() throws OseeCoreException {

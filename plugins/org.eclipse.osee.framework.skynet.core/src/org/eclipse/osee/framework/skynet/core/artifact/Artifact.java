@@ -508,6 +508,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    /**
     * The use of this method is discouraged since it directly returns Attributes.
     */
+   @Deprecated
    public final <T> List<Attribute<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException {
       return Collections.castAll(getAttributesByModificationType(attributeType, ModificationType.getCurrentModTypes()));
    }
@@ -838,12 +839,50 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
             setOrAddAttribute(attributeType, newValue);
          } else {
             int index = remainingAttributes.size() - 1;
-            remainingAttributes.get(index).setValue(newValue);
+            remainingAttributes.get(index).setFromString(newValue);
             remainingAttributes.remove(index);
          }
       }
 
       for (Attribute<Object> attribute : remainingAttributes) {
+         attribute.delete();
+      }
+   }
+
+   public final <T> void setAttributeFromValues(IAttributeType attributeType, Collection<T> values) throws OseeCoreException {
+      ensureAttributesLoaded();
+
+      Set<T> uniqueItems = Collections.toSet(values);
+
+      List<Attribute<T>> remainingAttributes = getAttributes(attributeType);
+      List<T> remainingNewValues = new ArrayList<T>(uniqueItems.size());
+
+      // all existing attributes matching a new value will be left untouched
+      for (T newValue : uniqueItems) {
+         boolean found = false;
+         for (Attribute<T> attribute : remainingAttributes) {
+            if (newValue.equals(attribute.getValue())) {
+               remainingAttributes.remove(attribute);
+               found = true;
+               break;
+            }
+         }
+         if (!found) {
+            remainingNewValues.add(newValue);
+         }
+      }
+
+      for (T newValue : remainingNewValues) {
+         if (remainingAttributes.isEmpty()) {
+            setOrAddAttribute(attributeType, newValue);
+         } else {
+            int index = remainingAttributes.size() - 1;
+            remainingAttributes.get(index).setValue(newValue);
+            remainingAttributes.remove(index);
+         }
+      }
+
+      for (Attribute<T> attribute : remainingAttributes) {
          attribute.delete();
       }
    }
@@ -901,6 +940,20 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
       List<String> items = new ArrayList<String>();
       for (Attribute<?> attribute : getAttributes(attributeType)) {
          items.add(attribute.getDisplayableString());
+      }
+      return items;
+   }
+
+   public final <T> List<T> getAttributeValues(IAttributeType attributeType) throws OseeCoreException {
+      ensureAttributesLoaded();
+
+      List<T> items = new ArrayList<T>();
+      List<Attribute<T>> data = getAttributes(attributeType);
+      for (Attribute<T> attribute : data) {
+         T value = attribute.getValue();
+         if (value != null) {
+            items.add(value);
+         }
       }
       return items;
    }

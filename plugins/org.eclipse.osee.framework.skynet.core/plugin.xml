@@ -140,7 +140,23 @@
           <BinaryBackedAttributeType
                 class="org.eclipse.osee.framework.skynet.core.attribute.CompressedContentAttribute">
           </BinaryBackedAttributeType>
-       </extension>  
+       </extension>
+  <extension
+        id="ArtifactReferenceAttribute"
+        name="ArtifactReferenceAttribute"
+        point="org.eclipse.osee.framework.skynet.core.AttributeType">
+     <CharacterBackedAttributeType
+           class="org.eclipse.osee.framework.skynet.core.attribute.ArtifactReferenceAttribute">
+     </CharacterBackedAttributeType>
+  </extension>
+  <extension
+        id="BranchReferenceAttribute"
+        name="BranchReferenceAttribute"
+        point="org.eclipse.osee.framework.skynet.core.AttributeType">
+     <CharacterBackedAttributeType
+           class="org.eclipse.osee.framework.skynet.core.attribute.BranchReferenceAttribute">
+     </CharacterBackedAttributeType>
+  </extension>
       <extension
             id="DefaultAttributeDataProvider"
             name="DefaultAttributeDataProvider"
