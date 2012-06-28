@@ -16,9 +16,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.AtsTestUtil;
+import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.createtasks.CreateTasksOperation;
 import org.eclipse.osee.ats.core.client.task.createtasks.GenerateTaskOpList;
@@ -37,6 +39,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.core.util.XResultDataFile;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -48,6 +51,7 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -122,10 +126,10 @@ public class CreateTasksOperationTest {
 
       //Notice that the Actionable Item used is what will determine which TeamWF the CreateTasksOperation will chose
       // Kind of more complicated testing environment than I would prefer, but that's how it goes.
-      CreateTasksOperation createTasksOp_Proper =
+      CreateTasksOperation createTasksOp =
          new CreateTasksOperation(destinationVersion, actionableItemArt, changeData, reqTeamWf, false, resultData,
             transaction, stringLogger, taskTitleProvider);
-      Operations.executeWorkAndCheckStatus(createTasksOp_Proper);
+      Operations.executeWorkAndCheckStatus(createTasksOp);
 
       transaction.execute();
 
@@ -133,7 +137,7 @@ public class CreateTasksOperationTest {
    }
 
    @org.junit.Test
-   public void test_Case_Proper() throws OseeCoreException {
+   public void test_Case_Proper() throws OseeCoreException, InterruptedException {
       ensurePopulated();
 
       assert_Tasks_OriginalData(destTeamWf1_Proper);
@@ -151,7 +155,7 @@ public class CreateTasksOperationTest {
    }
 
    @org.junit.Test
-   public void test_Case_ChangesWithoutTasks() throws OseeCoreException {
+   public void test_Case_ChangesWithoutTasks() throws OseeCoreException, InterruptedException {
       ensurePopulated();
 
       assert_Tasks_OriginalData(destTeamWf1_Proper);
@@ -169,7 +173,7 @@ public class CreateTasksOperationTest {
    }
 
    @org.junit.Test
-   public void test_Case_TasksWithoutChanges() throws OseeCoreException {
+   public void test_Case_TasksWithoutChanges() throws OseeCoreException, InterruptedException {
       ensurePopulated();
 
       assert_Tasks_OriginalData(destTeamWf1_Proper);
@@ -187,7 +191,7 @@ public class CreateTasksOperationTest {
    }
 
    @org.junit.Test
-   public void testGenerateTaskOpList() throws OseeCoreException {
+   public void testGenerateTaskOpList() throws OseeCoreException, InterruptedException {
       ensurePopulated();
 
       //All changes and tasks should be accounted for - so no changes should be needed.
@@ -219,7 +223,7 @@ public class CreateTasksOperationTest {
       isPopulated = false;
    }
 
-   private void ensurePopulated() throws OseeCoreException {
+   private void ensurePopulated() throws OseeCoreException, InterruptedException {
       if (!isPopulated) {
          AtsTestUtil.cleanupAndReset(artifactNamePrefix);
          genTaskOpList = new GenerateTaskOpList();
@@ -244,13 +248,26 @@ public class CreateTasksOperationTest {
          destTeamWf3_TasksWithoutChanges.setTargetedVersion(ver3_TasksWithoutChanges);
          destTeamWf3_TasksWithoutChanges.setTargetedVersionLink(ver3_TasksWithoutChanges);
 
+         IAtsVersion verArt4 = AtsTestUtil.getVerArt4();
+         verArt4.setBaselineBranchGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
+         verArt4.setAllowCreateBranch(true);
+         reqTeamWf = AtsTestUtil.getTeamWf4();
+         Result result = AtsBranchManagerCore.createWorkingBranch_Validate(reqTeamWf);
+         Job createBranchJob = AtsBranchManagerCore.createWorkingBranch_Create(reqTeamWf);
+         createBranchJob.join();
+         int count = 0;
+         while (count++ < 10 && reqTeamWf.getWorkingBranch() == null) {
+            Thread.sleep(200);//Needed due to some multi-threaded nonsense
+         }
+         reqTeamWf.setRelations(AtsRelationTypes.Derive_To, Collections.getAggregate(destTeamWf1_Proper,
+            destTeamWf2_ChangesWithoutTasks, destTeamWf3_TasksWithoutChanges));
+         destTeamWf1_Proper.setRelations(AtsRelationTypes.Derive_From, Collections.getAggregate(reqTeamWf));
+         destTeamWf2_ChangesWithoutTasks.setRelations(AtsRelationTypes.Derive_From, Collections.getAggregate(reqTeamWf));
+         destTeamWf3_TasksWithoutChanges.setRelations(AtsRelationTypes.Derive_From, Collections.getAggregate(reqTeamWf));
+
          changeData_Proper = createProperChangesAndTasks(destTeamWf1_Proper);
          changeData_ChangesWithoutTasks = createChangesWithoutTasks();
          changeData_TasksWithoutChanges = createTasksWithoutChanges(destTeamWf3_TasksWithoutChanges);
-
-         reqTeamWf = AtsTestUtil.getTeamWf4();
-         reqTeamWf.setRelations(AtsRelationTypes.Derive_To, Collections.getAggregate(destTeamWf1_Proper,
-            destTeamWf2_ChangesWithoutTasks, destTeamWf3_TasksWithoutChanges));
 
          aia1_Proper = AtsTestUtil.getTestAi();
          aia2_ChangesWithoutTasks = AtsTestUtil.getTestAi2();
@@ -267,19 +284,19 @@ public class CreateTasksOperationTest {
 
       //Create MockChange objects
       Artifact changeArt01 =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(),
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, reqTeamWf.getWorkingBranch(),
             artifactNamePrefix + " Change Art 01 - Proper");
       Artifact changeArt02 =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(),
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, reqTeamWf.getWorkingBranch(),
             artifactNamePrefix + " Change Art 02 - Proper");
       Artifact changeArt03 =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(),
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, reqTeamWf.getWorkingBranch(),
             artifactNamePrefix + " Change Art 03 - Proper");
       Artifact changeArt04 =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(),
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, reqTeamWf.getWorkingBranch(),
             artifactNamePrefix + " Change Art 04 - Proper");
       Artifact changeArt05 =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(),
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, reqTeamWf.getWorkingBranch(),
             artifactNamePrefix + " Change Art 05 - Proper");
 
       Change mockChange01 = new MockChange(changeArt01);
@@ -301,27 +318,31 @@ public class CreateTasksOperationTest {
       TaskArtifact task05 =
          destTeamWf.createNewTask(artifactNamePrefix + " Task 05", createdDate, AtsUsers.getSystemUser());
 
-      //TODO: Utilize new attribute to relate change arts to tasks
-      task01.setSoleAttributeFromString(AtsAttributeTypes.Category1, changeArt01.getGuid());
-      task02.setSoleAttributeFromString(AtsAttributeTypes.Category1, changeArt02.getGuid());
-      task03.setSoleAttributeFromString(AtsAttributeTypes.Category1, changeArt03.getGuid());
-      task04.setSoleAttributeFromString(AtsAttributeTypes.Category1, changeArt04.getGuid());
-      task05.setSoleAttributeFromString(AtsAttributeTypes.Category1, changeArt05.getGuid());
+      task01.setSoleAttributeFromString(AtsAttributeTypes.TaskToChangedArtifactReference, changeArt01.getGuid());
+      task02.setSoleAttributeFromString(AtsAttributeTypes.TaskToChangedArtifactReference, changeArt02.getGuid());
+      task03.setSoleAttributeFromString(AtsAttributeTypes.TaskToChangedArtifactReference, changeArt03.getGuid());
+      task04.setSoleAttributeFromString(AtsAttributeTypes.TaskToChangedArtifactReference, changeArt04.getGuid());
+      task05.setSoleAttributeFromString(AtsAttributeTypes.TaskToChangedArtifactReference, changeArt05.getGuid());
 
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
+         TransactionManager.createTransaction(reqTeamWf.getWorkingBranch(),
             artifactNamePrefix + " - createProperChangesAndTasks");
       changeArt01.persist(transaction);
       changeArt02.persist(transaction);
       changeArt03.persist(transaction);
       changeArt04.persist(transaction);
       changeArt05.persist(transaction);
-      task01.persist(transaction);
-      task02.persist(transaction);
-      task03.persist(transaction);
-      task04.persist(transaction);
-      task05.persist(transaction);
       transaction.execute();
+
+      SkynetTransaction transaction2 =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
+            artifactNamePrefix + " - createProperChangesAndTasks - tasks");
+      task01.persist(transaction2);
+      task02.persist(transaction2);
+      task03.persist(transaction2);
+      task04.persist(transaction2);
+      task05.persist(transaction2);
+      transaction2.execute();
 
       Collection<Change> changes =
          new ArrayList<Change>(Collections.getAggregate(mockChange01, mockChange02, mockChange03, mockChange04,
@@ -335,19 +356,19 @@ public class CreateTasksOperationTest {
    private ChangeData createChangesWithoutTasks() throws OseeCoreException {
       //Create MockChange objects
       Artifact changeArt01 =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(),
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, reqTeamWf.getWorkingBranch(),
             artifactNamePrefix + " Change Art 01 - No task");
       Artifact changeArt02 =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(),
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, reqTeamWf.getWorkingBranch(),
             artifactNamePrefix + " Change Art 02 - No task");
       Artifact changeArt03 =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(),
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, reqTeamWf.getWorkingBranch(),
             artifactNamePrefix + " Change Art 03 - No task");
       Artifact changeArt04 =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(),
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, reqTeamWf.getWorkingBranch(),
             artifactNamePrefix + " Change Art 04 - No task");
       Artifact changeArt05 =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtilCore.getAtsBranch(),
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, reqTeamWf.getWorkingBranch(),
             artifactNamePrefix + " Change Art 05 - No task");
 
       Change mockChange01 = new MockChange(changeArt01);
@@ -357,7 +378,7 @@ public class CreateTasksOperationTest {
       Change mockChange05 = new MockChange(changeArt05);
 
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
+         TransactionManager.createTransaction(reqTeamWf.getWorkingBranch(),
             artifactNamePrefix + " - createChangesWithoutTasks");
       changeArt01.persist(transaction);
       changeArt02.persist(transaction);

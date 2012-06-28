@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.ats;singleton:=true
 Bundle-Version: 0.10.1.qualifier
 Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.eclipse.osee.ats.internal.Activator
-Service-Component: OSGI-INF/*.xml
+Service-Component: OSGI-INF/*.xml, OSGI-INF/ats.task.to.changed.art.ref.attr.adaptor.xml
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Require-Bundle: org.eclipse.gef,
  org.eclipse.osee.framework.jdk.core,

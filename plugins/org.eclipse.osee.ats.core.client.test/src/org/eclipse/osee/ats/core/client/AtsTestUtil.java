@@ -634,6 +634,7 @@ public class AtsTestUtil {
                "1", false, null, Arrays.asList(testAi4), new Date(), AtsUsersClient.getUser(), null, transaction);
 
          teamArt4 = actionArt4.getFirstTeam();
+         teamArt4.setTargetedVersion(verArt4);
          transaction.execute();
       }
       return teamArt4;

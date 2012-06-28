@@ -178,6 +178,27 @@ artifactType "Task" extends "ats.State Machine" {
    uuid 0x000000000000004A
    attribute "ats.Related To State"
    attribute "ats.Uses Resolution Options"
+   attribute "ats.Task To Changed Artifact Reference"
+}
+
+attributeType "ats.Artifact Reference" extends ArtifactReferenceAttribute {
+	guid "AGLQob1V12UEWGPQ7FAA"
+	uuid  0x1000BA00000000F9
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	description "Reference to an artifact"
+}
+
+attributeType "ats.Task To Changed Artifact Reference" extends ArtifactReferenceAttribute {
+	guid "AGg4eqU6J3h5O9HmdKgA"
+	uuid  0x1000BA00000000FA
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	description "Task reference to the changed artifact"
 }
 
 attributeType "ats.Baseline Branch Guid" extends StringAttribute {

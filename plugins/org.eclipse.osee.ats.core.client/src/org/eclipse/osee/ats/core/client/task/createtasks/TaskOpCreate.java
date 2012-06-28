@@ -45,8 +45,7 @@ public class TaskOpCreate extends AbstractTaskOp {
       // create for Implement state regardless of which state workflow is in
       taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, TeamState.Implement.getName());
       taskArt.setSingletonAttributeValue(CoreAttributeTypes.StaticId, AUTO_GENERATED_STATIC_ID);
-      //TODO: Update attribute to use new Task->Artifact association
-      taskArt.setSoleAttributeFromString(AtsAttributeTypes.Category1, changedArtifact.getGuid());
+      taskArt.setSoleAttributeFromString(AtsAttributeTypes.TaskToChangedArtifactReference, changedArtifact.getGuid());
 
       taskArt.persist(transaction);
       parentTeamWf.persist(transaction);

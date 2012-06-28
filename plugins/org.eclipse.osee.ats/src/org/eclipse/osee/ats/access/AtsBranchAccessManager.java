@@ -167,13 +167,19 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
          contextIds.addAll(getFromArtifact(teamArt));
          if (contextIds.isEmpty()) {
             for (IAtsActionableItem aia : teamArt.getActionableItemsDam().getActionableItems()) {
-               contextIds.addAll(getFromArtifact(new ActionableItemArtifactStore(aia).getArtifact()));
+               Artifact artifact = new ActionableItemArtifactStore(aia).getArtifact();
+               if (artifact != null) {
+                  contextIds.addAll(getFromArtifact(artifact));
+               }
                if (!contextIds.isEmpty()) {
                   return contextIds;
                }
             }
             if (contextIds.isEmpty()) {
-               contextIds.addAll(getFromArtifact(new TeamDefinitionArtifactStore(teamArt.getTeamDefinition()).getArtifact()));
+               Artifact artifact = new TeamDefinitionArtifactStore(teamArt.getTeamDefinition()).getArtifact();
+               if (artifact != null) {
+                  contextIds.addAll(getFromArtifact(artifact));
+               }
             }
          }
       } catch (Exception ex) {
