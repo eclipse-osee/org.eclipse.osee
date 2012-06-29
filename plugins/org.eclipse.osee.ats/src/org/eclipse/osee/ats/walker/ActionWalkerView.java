@@ -342,7 +342,7 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
       layoutMgr.saveState(memento);
    }
 
-   public String getToolTip(Artifact artifact) throws OseeCoreException {
+   public String getToolTip(Artifact artifact) {
       if (artifact.isDeleted()) {
          return "";
       }

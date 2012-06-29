@@ -76,11 +76,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       tree.setLayout(new FillLayout(SWT.VERTICAL));
       getTreeViewer().setContentProvider(new InternalContentProvider(editor));
       getTreeViewer().setLabelProvider(new InternalLabelProvider());
-      try {
-         setInput(editor != null ? editor : "No Input Available");
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
+      setInput(editor != null ? editor : "No Input Available");
 
       getSite().getActionBars().getToolBarManager().add(
          new Action("Refresh", ImageManager.getImageDescriptor(PluginUiImage.REFRESH)) {
@@ -92,7 +88,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       getSite().getActionBars().getToolBarManager().update(true);
    }
 
-   public void setInput(Object input) throws OseeCoreException {
+   public void setInput(Object input) {
       if (input instanceof SMAEditor) {
          this.editor = (SMAEditor) input;
          if (getTreeViewer() != null) {

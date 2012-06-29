@@ -106,7 +106,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
       }
    }
 
-   public static Collection<IAtsVersion> createVersions(XResultData resultData, SkynetTransaction transaction, IAtsTeamDefinition teamDefHoldingVersions, Collection<String> newVersionNames) throws OseeCoreException {
+   public static Collection<IAtsVersion> createVersions(XResultData resultData, SkynetTransaction transaction, IAtsTeamDefinition teamDefHoldingVersions, Collection<String> newVersionNames) {
       List<IAtsVersion> verArts = new ArrayList<IAtsVersion>();
       for (String newVer : newVersionNames) {
          if (!Strings.isValid(newVer)) {

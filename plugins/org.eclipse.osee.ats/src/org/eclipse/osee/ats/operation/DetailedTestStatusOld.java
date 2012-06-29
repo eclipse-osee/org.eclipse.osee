@@ -96,7 +96,6 @@ public class DetailedTestStatusOld extends AbstractBlam {
    private final CompositeKeyHashMap<String, String, RequirementStatus> reqTaskMap =
       new CompositeKeyHashMap<String, String, RequirementStatus>();
    private final StringBuilder sumFormula = new StringBuilder(500);
-   private int rowNumber;
    private HashCollection<Artifact, String> requirementToCodeUnitsMap;
    private final HashMap<String, String> testProcedureInfo = new HashMap<String, String>();
    private final HashCollection<String, IAtsUser> legacyIdToImplementers = new HashCollection<String, IAtsUser>();
@@ -168,8 +167,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
             selectedBranch = null;
 
             try {
-               Collection<IAtsVersion> versionArtifacts =
-                  selectedProgram.getTeamDefHoldingVersions().getVersions();
+               Collection<IAtsVersion> versionArtifacts = selectedProgram.getTeamDefHoldingVersions().getVersions();
                versionsListViewer.setInputAtsObjects(versionArtifacts);
 
                requirementsBranchWidget.setSelection(null);
@@ -191,7 +189,6 @@ public class DetailedTestStatusOld extends AbstractBlam {
       testRunArtifacts.clear();
       testProcedureInfo.clear();
       legacyIdToImplementers.clear();
-      rowNumber = 7;
    }
 
    private String getScriptName(String scriptPath) {
@@ -415,7 +412,6 @@ public class DetailedTestStatusOld extends AbstractBlam {
             statusLine[Index.TEST_SCRIPT.ordinal()] = "No script found";
             statusLine[Index.HOURS_REMAINING.ordinal()] = "=R3C6";
          }
-         rowNumber++;
          statusLines.add(statusLine);
       } else {
          setScriptCategories(requirement, scripts);
@@ -448,7 +444,6 @@ public class DetailedTestStatusOld extends AbstractBlam {
                   testPointTotalForScripts += individualTestPointTotal;
                }
             }
-            rowNumber++;
             statusLines.add(statusLine);
             String[] oldStatusLine = statusLine;
             statusLine = new String[100];
@@ -495,7 +490,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
       processTestScriptsAndProcedures(requirement, statusLine);
 
       for (String[] line : statusLines) {
-         excelWriter.writeRow(line);
+         excelWriter.writeRow((Object[]) line);
       }
    }
 

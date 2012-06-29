@@ -79,18 +79,22 @@ public class MockWorkData implements IAtsWorkData {
       return StateType;
    }
 
+   @Override
    public void setCompletedDate(Date completedDate) {
       this.completedDate = completedDate;
    }
 
+   @Override
    public void setCancelledDate(Date cancelledDate) {
       this.cancelledDate = cancelledDate;
    }
 
+   @Override
    public void setCompletedBy(IAtsUser completedBy) {
       this.completedBy = completedBy;
    }
 
+   @Override
    public void setCancelledBy(IAtsUser cancelledBy) {
       this.cancelledBy = cancelledBy;
    }

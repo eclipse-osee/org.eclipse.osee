@@ -99,7 +99,7 @@ public class WorkflowManager {
       return artifactsToReturn;
    }
 
-   public static Collection<AbstractWorkflowArtifact> filterOutState(Collection<AbstractWorkflowArtifact> awas, Collection<String> stateNames) throws OseeCoreException {
+   public static Collection<AbstractWorkflowArtifact> filterOutState(Collection<AbstractWorkflowArtifact> awas, Collection<String> stateNames) {
       List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<AbstractWorkflowArtifact>(awas.size());
       for (AbstractWorkflowArtifact awa : awas) {
          if (!stateNames.contains(awa.getStateMgr().getCurrentStateName())) {

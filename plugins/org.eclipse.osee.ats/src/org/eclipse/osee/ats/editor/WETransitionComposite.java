@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.editor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -275,17 +274,6 @@ public class WETransitionComposite extends Composite {
          }
 
       });
-   }
-
-   private int getCreationToNowDateDeltaMinutes() throws OseeCoreException {
-      Date createDate = awa.getStateStartedData(awa.getStateDefinition()).getDate();
-      long createDateLong = createDate.getTime();
-      Date date = new Date();
-      float diff = date.getTime() - createDateLong;
-      // System.out.println("diff *" + diff + "*");
-      Float min = diff / 60000;
-      // System.out.println("min *" + min + "*");
-      return min.intValue();
    }
 
    private boolean handlePopulateStateMetrics(IAtsStateDefinition fromStateDefinition, IAtsStateDefinition toStateDefinition) throws OseeCoreException {

@@ -87,6 +87,7 @@ public class AtsLogWorkPage extends StateXWidgetPage {
 
          @Override
          public void setWorkDefinition(IAtsWorkDefinition workDefinition) {
+            // do nothing
          }
 
          @Override

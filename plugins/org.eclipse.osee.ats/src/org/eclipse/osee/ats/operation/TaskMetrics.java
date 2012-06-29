@@ -93,10 +93,8 @@ public class TaskMetrics extends AbstractBlam {
                teamWorkflows.addAll(VersionsClient.getTargetedForTeamWorkflows((IAtsVersion) version));
             }
 
-            int counter = 0;
             for (Artifact art : teamWorkflows) {
                monitor.worked(1 / teamWorkflows.size());
-               counter++;
                if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
 
                   TeamWorkFlowArtifact workflow = (TeamWorkFlowArtifact) art;

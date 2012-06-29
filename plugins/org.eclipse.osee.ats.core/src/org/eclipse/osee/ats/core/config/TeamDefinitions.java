@@ -88,7 +88,7 @@ public class TeamDefinitions {
       return AtsConfigCache.getSoleByGuid(TopTeamDefinitionGuid, IAtsTeamDefinition.class);
    }
 
-   public static Set<IAtsTeamDefinition> getTeamReleaseableDefinitions(Active active) throws OseeCoreException {
+   public static Set<IAtsTeamDefinition> getTeamReleaseableDefinitions(Active active) {
       Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>();
       for (IAtsTeamDefinition teamDef : getTeamDefinitions(active)) {
          if (teamDef.getVersions().size() > 0) {

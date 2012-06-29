@@ -31,13 +31,10 @@ import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.version.VersionMetrics;
 import org.eclipse.osee.ats.version.VersionTeamMetrics;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -78,11 +75,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
       if (useTeamDef == null) {
          TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
          ld.setTitle(getName());
-         try {
-            ld.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Both));
-         } catch (MultipleAttributesExist ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         }
+         ld.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Both));
          int result = ld.open();
          if (result == 0) {
             if (ld.getResult().length == 0) {

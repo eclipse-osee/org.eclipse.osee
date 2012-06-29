@@ -43,7 +43,6 @@ public abstract class Shape extends ModelElement {
    private static final String HEIGHT_PROP = "Shape.Height";
    /** Property ID to use when the location of this shape is modified. */
    public static final String LOCATION_PROP = "Shape.Location";
-   private static final long serialVersionUID = 1;
    /** Property ID to use then the size of this shape is modified. */
    public static final String SIZE_PROP = "Shape.Size";
    /** Property ID to use when the list of outgoing connections is modified. */

@@ -134,7 +134,7 @@ public class VersionReportJob extends Job {
       return null;
    }
 
-   public static String getReleasedString(IAtsVersion verArt) throws OseeCoreException {
+   public static String getReleasedString(IAtsVersion verArt) {
       String released = "";
       if (verArt.isReleased() && verArt.getReleaseDate() != null) {
          released = " - " + "Released: " + getDateString(verArt.getReleaseDate());

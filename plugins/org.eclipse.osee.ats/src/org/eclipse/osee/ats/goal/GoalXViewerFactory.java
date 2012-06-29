@@ -121,6 +121,7 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
       this.soleGoalArtifact = soleGoalArtifact;
    }
 
+   @Override
    public boolean isSearhTop() {
       return true;
    }

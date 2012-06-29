@@ -66,7 +66,7 @@ public class ConvertActionableItemsAction extends Action {
             throw new OseeStateException("No TeamWorkflows selected");
          }
 
-         TeamWorkFlowArtifact teamArt = teamArts.iterator().next();
+         //         TeamWorkFlowArtifact teamArt = teamArts.iterator().next();
          AWorkbench.popup("Capability disabled in this release.  Add Actionable Item and cancel old workflow instead.");
          return;
          //         Result result = convertActionableItems(teamArt);
@@ -78,6 +78,7 @@ public class ConvertActionableItemsAction extends Action {
       }
    }
 
+   @SuppressWarnings("unused")
    private Result convertActionableItems(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       Result toReturn = Result.FalseResult;
       AICheckTreeDialog diag =

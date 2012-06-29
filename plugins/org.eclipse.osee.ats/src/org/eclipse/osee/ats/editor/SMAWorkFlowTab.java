@@ -255,7 +255,7 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       showBusy(set);
    }
 
-   private void createAtsBody() throws OseeCoreException {
+   private void createAtsBody() {
       if (Widgets.isAccessible(atsBody)) {
          atsBody.dispose();
       }

@@ -213,7 +213,7 @@ public class AtsConfigManager extends AbstractOperation {
       return workDef;
    }
 
-   private IAtsWorkDefinition generateDefaultWorkflow(String name, XResultData resultData, SkynetTransaction transaction, IAtsTeamDefinition teamDef) throws OseeCoreException {
+   private IAtsWorkDefinition generateDefaultWorkflow(String name, XResultData resultData, SkynetTransaction transaction, IAtsTeamDefinition teamDef) {
       IAtsWorkDefinition defaultWorkDef =
          WorkDefinitionFactory.getWorkDefinition(AtsWorkDefinitionSheetProviders.WORK_DEF_TEAM_DEFAULT).getWorkDefinition();
 

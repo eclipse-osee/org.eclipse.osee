@@ -155,11 +155,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
    public Object getAdapter(Class adapter) {
       if (adapter == IContentOutlinePage.class) {
          SMAEditorOutlinePage page = getOutlinePage();
-         try {
-            page.setInput(this);
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
+         page.setInput(this);
          return page;
       }
       return super.getAdapter(adapter);

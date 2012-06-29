@@ -74,7 +74,7 @@ public class VersionMetrics {
       return sb.toString();
    }
 
-   public Integer getNumberDaysInRelease() throws OseeCoreException {
+   public Integer getNumberDaysInRelease() {
       Date startDate = getReleaseStartDate();
       if (startDate == null) {
          return null;
@@ -86,7 +86,7 @@ public class VersionMetrics {
       return DateUtil.getDifference(startDate, relDate);
    }
 
-   public Date getReleaseStartDate() throws OseeCoreException {
+   public Date getReleaseStartDate() {
       VersionMetrics prevVerMet = getPreviousVerMetViaReleaseDate();
       if (prevVerMet == null) {
          return null;

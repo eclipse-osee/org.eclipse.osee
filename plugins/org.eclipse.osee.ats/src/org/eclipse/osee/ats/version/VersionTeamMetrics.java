@@ -79,7 +79,7 @@ public class VersionTeamMetrics {
       return teams;
    }
 
-   private void orderReleasedVersions() throws OseeCoreException {
+   private void orderReleasedVersions() {
       for (IAtsVersion verArt : verTeamDef.getVersions()) {
          VersionMetrics verMet = new VersionMetrics(verArt, this);
          Date relDate = verArt.getReleaseDate();
