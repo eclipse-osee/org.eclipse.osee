@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.workdef;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.workdef.api.IAtsDecisionReviewOption;
+import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 
 /**
  * @author Donald G. Dunne

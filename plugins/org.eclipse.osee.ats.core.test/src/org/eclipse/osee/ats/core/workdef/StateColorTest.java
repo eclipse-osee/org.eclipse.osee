@@ -6,7 +6,7 @@
 package org.eclipse.osee.ats.core.workdef;
 
 import junit.framework.Assert;
-import org.eclipse.osee.ats.workdef.api.StateColor;
+import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.junit.Test;
 
 /**

@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.core.client.review;
 
 import java.util.List;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.core.workflow.StateTypeAdapter;
-import org.eclipse.osee.ats.workdef.api.StateType;
 
 public class DecisionReviewState extends StateTypeAdapter {
    public static DecisionReviewState Prepare = new DecisionReviewState("Prepare", StateType.Working);

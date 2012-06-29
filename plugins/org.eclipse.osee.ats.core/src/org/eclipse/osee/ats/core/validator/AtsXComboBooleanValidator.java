@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.validator;
 
-import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
-import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
-import org.eclipse.osee.ats.workdef.api.WidgetResult;
-import org.eclipse.osee.ats.workdef.api.WidgetStatus;
+import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.WidgetResult;
+import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**

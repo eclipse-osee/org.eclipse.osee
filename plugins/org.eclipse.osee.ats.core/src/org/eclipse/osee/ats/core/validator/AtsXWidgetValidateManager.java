@@ -12,10 +12,10 @@ package org.eclipse.osee.ats.core.validator;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
-import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
-import org.eclipse.osee.ats.workdef.api.WidgetResult;
-import org.eclipse.osee.ats.workdef.api.WidgetStatus;
+import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.WidgetResult;
+import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 
 /**
  * @author Donald G. Dunne

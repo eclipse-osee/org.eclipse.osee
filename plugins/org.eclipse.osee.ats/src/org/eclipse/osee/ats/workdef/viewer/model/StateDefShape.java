@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.workdef.viewer.model;
 
 import java.util.List;
-import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;

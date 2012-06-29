@@ -20,6 +20,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -31,7 +33,6 @@ import org.eclipse.osee.ats.core.client.workflow.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
-import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -97,7 +98,11 @@ public class WorkDefinitionFactory {
          if (!match.isMatched()) {
             try {
                XResultData resultData = new XResultData(false);
-               IAtsWorkDefinition workDef = AtsWorkDefinitionService.getService().getWorkDef(id, resultData);
+               IAtsWorkDefinitionService service = AtsWorkDefinitionService.getService();
+               if (service == null) {
+                  throw new IllegalStateException("ATS Work Definition Service is not found.");
+               }
+               IAtsWorkDefinition workDef = service.getWorkDef(id, resultData);
                if (workDef != null) {
                   match.setWorkDefinition(workDef);
                   if (!resultData.isEmpty()) {

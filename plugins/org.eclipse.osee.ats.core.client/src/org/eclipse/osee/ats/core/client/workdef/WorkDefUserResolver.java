@@ -6,8 +6,8 @@
 package org.eclipse.osee.ats.core.client.workdef;
 
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.workdef.IUserResolver;
 import org.eclipse.osee.ats.core.client.internal.Activator;
-import org.eclipse.osee.ats.workdef.api.IUserResolver;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;

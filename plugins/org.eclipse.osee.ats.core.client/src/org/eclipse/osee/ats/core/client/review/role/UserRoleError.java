@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.review.role;
 
-import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
-import org.eclipse.osee.ats.workdef.api.WidgetResult;
-import org.eclipse.osee.ats.workdef.api.WidgetStatus;
+import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.WidgetResult;
+import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 
 /**
  * @author Donald G. Dunne

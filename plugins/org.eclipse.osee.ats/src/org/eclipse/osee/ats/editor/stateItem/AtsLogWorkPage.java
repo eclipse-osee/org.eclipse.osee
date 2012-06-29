@@ -11,14 +11,14 @@
 package org.eclipse.osee.ats.editor.stateItem;
 
 import java.util.List;
+import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewDefinition;
+import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
+import org.eclipse.osee.ats.api.workdef.IAtsPeerReviewDefinition;
+import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.StateColor;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
-import org.eclipse.osee.ats.workdef.api.IAtsDecisionReviewDefinition;
-import org.eclipse.osee.ats.workdef.api.IAtsLayoutItem;
-import org.eclipse.osee.ats.workdef.api.IAtsPeerReviewDefinition;
-import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
-import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
-import org.eclipse.osee.ats.workdef.api.StateColor;
-import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.framework.core.data.Identity;
 
 /**

@@ -10,7 +10,7 @@ Require-Bundle: org.junit;bundle-version="4.8.1"
 Export-Package: org.eclipse.osee.ats.core.client,
  org.eclipse.osee.ats.core.client.validator
 Import-Package: org.eclipse.osee.ats.core.validator,
- org.eclipse.osee.ats.mocks.shared,
+ org.eclipse.osee.ats.mocks,
  org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.plugin.core,
  org.eclipse.osee.framework.skynet.core,

@@ -5,8 +5,8 @@
  */
 package org.eclipse.osee.ats.core.workdef;
 
+import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.core.config.RuleManager;
-import org.eclipse.osee.ats.workdef.api.RuleDefinitionOption;
 import org.junit.Test;
 
 /**

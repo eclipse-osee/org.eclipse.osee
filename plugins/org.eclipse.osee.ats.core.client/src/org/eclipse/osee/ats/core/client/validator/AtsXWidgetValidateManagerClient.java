@@ -13,6 +13,9 @@ package org.eclipse.osee.ats.core.client.validator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.review.defect.AtsXDefectValidator;
 import org.eclipse.osee.ats.core.client.review.role.AtsXUserRoleValidator;
@@ -22,9 +25,6 @@ import org.eclipse.osee.ats.core.validator.AtsXWidgetValidateManager;
 import org.eclipse.osee.ats.core.validator.AtsXWidgetValidatorProvider;
 import org.eclipse.osee.ats.core.validator.IAtsXWidgetValidator;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
-import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
-import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
-import org.eclipse.osee.ats.workdef.api.WidgetResult;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 
 /**

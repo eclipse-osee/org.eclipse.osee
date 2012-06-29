@@ -11,8 +11,7 @@
 package org.eclipse.osee.ats.core.workflow;
 
 import java.util.List;
-import org.eclipse.osee.ats.core.workflow.StateTypeAdapter;
-import org.eclipse.osee.ats.workdef.api.StateType;
+import org.eclipse.osee.ats.api.workdef.StateType;
 
 public class OneStates extends StateTypeAdapter {
 

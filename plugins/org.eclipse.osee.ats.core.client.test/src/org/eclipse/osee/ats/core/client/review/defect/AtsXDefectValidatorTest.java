@@ -13,16 +13,16 @@ package org.eclipse.osee.ats.core.client.review.defect;
 import java.util.Arrays;
 import java.util.Date;
 import junit.framework.Assert;
+import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.WidgetOption;
+import org.eclipse.osee.ats.api.workdef.WidgetResult;
+import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Disposition;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.InjectionActivity;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.core.validator.ValidatorTestUtil;
-import org.eclipse.osee.ats.mocks.shared.MockStateDefinition;
-import org.eclipse.osee.ats.mocks.shared.MockWidgetDefinition;
-import org.eclipse.osee.ats.workdef.api.StateType;
-import org.eclipse.osee.ats.workdef.api.WidgetOption;
-import org.eclipse.osee.ats.workdef.api.WidgetResult;
-import org.eclipse.osee.ats.workdef.api.WidgetStatus;
+import org.eclipse.osee.ats.mocks.MockStateDefinition;
+import org.eclipse.osee.ats.mocks.MockWidgetDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**

@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workdef;
 
-import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinitionFloatMinMaxConstraint;
+import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinitionFloatMinMaxConstraint;
+
 
 
 /**

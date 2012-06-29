@@ -8,7 +8,7 @@ Fragment-Host: org.eclipse.osee.ats
 Require-Bundle: org.junit
 Import-Package: org.eclipse.osee.ats.core.client,
  org.eclipse.osee.ats.core.model,
- org.eclipse.osee.ats.mocks.shared,
+ org.eclipse.osee.ats.mocks,
  org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.model.type,
  org.eclipse.osee.framework.ui.skynet.test.cases,

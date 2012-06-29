@@ -6,6 +6,7 @@
 package org.eclipse.osee.ats.core.mock;
 
 import java.util.List;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.model.IAtsWorkData;
 import org.eclipse.osee.ats.core.model.IAtsWorkItem;
@@ -13,7 +14,6 @@ import org.eclipse.osee.ats.core.model.WorkStateProvider;
 import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.ats.core.model.impl.WorkStateProviderImpl;
 import org.eclipse.osee.ats.core.util.AtsUserGroup;
-import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 public class MockWorkItem implements IAtsWorkItem {

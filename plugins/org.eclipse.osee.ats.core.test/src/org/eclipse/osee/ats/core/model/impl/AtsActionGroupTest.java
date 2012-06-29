@@ -6,8 +6,8 @@
 package org.eclipse.osee.ats.core.model.impl;
 
 import java.util.Arrays;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.core.mock.MockWorkItem;
-import org.eclipse.osee.ats.workdef.api.StateType;
 import org.junit.Assert;
 import org.junit.Test;
 

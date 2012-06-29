@@ -9,11 +9,11 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import junit.framework.Assert;
-import org.eclipse.osee.ats.mocks.shared.MockWidgetDefinition;
-import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
-import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
-import org.eclipse.osee.ats.workdef.api.WidgetResult;
-import org.eclipse.osee.ats.workdef.api.WidgetStatus;
+import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.WidgetResult;
+import org.eclipse.osee.ats.api.workdef.WidgetStatus;
+import org.eclipse.osee.ats.mocks.MockWidgetDefinition;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.junit.Test;
 

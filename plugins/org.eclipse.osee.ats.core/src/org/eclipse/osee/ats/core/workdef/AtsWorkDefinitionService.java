@@ -5,7 +5,7 @@
  */
 package org.eclipse.osee.ats.core.workdef;
 
-import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinitionService;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 
 public class AtsWorkDefinitionService {
 
@@ -14,7 +14,7 @@ public class AtsWorkDefinitionService {
 
    public static IAtsWorkDefinitionService getService() {
       if (instance == null) {
-         throw new IllegalStateException("Service has not been activated");
+         throw new IllegalStateException("ATS Work Definition Service has not been activated");
       }
       return instance.service;
    }

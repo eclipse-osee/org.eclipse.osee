@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.core.client.team;
 
 import java.util.List;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.core.workflow.StateTypeAdapter;
-import org.eclipse.osee.ats.workdef.api.StateType;
 
 public class TeamState extends StateTypeAdapter {
    public static TeamState Endorse = new TeamState("Endorse", StateType.Working);

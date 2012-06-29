@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.artifact;
 
 import java.util.List;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.core.workflow.StateTypeAdapter;
-import org.eclipse.osee.ats.workdef.api.StateType;
 
 public class GoalState extends StateTypeAdapter {
    public static GoalState InWork = new GoalState("InWork", StateType.Working);

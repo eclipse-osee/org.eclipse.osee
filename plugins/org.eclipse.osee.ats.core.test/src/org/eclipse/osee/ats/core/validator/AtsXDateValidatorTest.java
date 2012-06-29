@@ -15,12 +15,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import junit.framework.Assert;
-import org.eclipse.osee.ats.mocks.shared.MockStateDefinition;
-import org.eclipse.osee.ats.mocks.shared.MockWidgetDefinition;
-import org.eclipse.osee.ats.workdef.api.StateType;
-import org.eclipse.osee.ats.workdef.api.WidgetOption;
-import org.eclipse.osee.ats.workdef.api.WidgetResult;
-import org.eclipse.osee.ats.workdef.api.WidgetStatus;
+import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.WidgetOption;
+import org.eclipse.osee.ats.api.workdef.WidgetResult;
+import org.eclipse.osee.ats.api.workdef.WidgetStatus;
+import org.eclipse.osee.ats.mocks.MockStateDefinition;
+import org.eclipse.osee.ats.mocks.MockWidgetDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**

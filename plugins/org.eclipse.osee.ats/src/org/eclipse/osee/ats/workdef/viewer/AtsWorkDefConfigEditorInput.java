@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.workdef.viewer;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 

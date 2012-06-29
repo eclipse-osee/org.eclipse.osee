@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.workdef;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -67,6 +67,10 @@ public class WorkDefinitionMatch {
 
    @Override
    public String toString() {
-      return workDefinition.getName();
+      if (workDefinition != null) {
+         return workDefinition.getName();
+      } else {
+         return trace.toString();
+      }
    }
 }

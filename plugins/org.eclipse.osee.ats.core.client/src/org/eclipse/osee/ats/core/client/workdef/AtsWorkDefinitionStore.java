@@ -7,9 +7,9 @@ package org.eclipse.osee.ats.core.client.workdef;
 
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinitionStore;
-import org.eclipse.osee.ats.workdef.api.IAttributeResolver;
-import org.eclipse.osee.ats.workdef.api.IUserResolver;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionStore;
+import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
+import org.eclipse.osee.ats.api.workdef.IUserResolver;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;

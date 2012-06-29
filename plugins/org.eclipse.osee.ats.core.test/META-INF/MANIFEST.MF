@@ -10,4 +10,4 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.ats.core
 Import-Package: org.eclipse.emf.ecore.util,
  org.eclipse.osee.ats.core,
- org.eclipse.osee.ats.mocks.shared
+ org.eclipse.osee.ats.mocks

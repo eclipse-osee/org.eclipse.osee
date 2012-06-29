@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow;
 
-import org.eclipse.osee.ats.workdef.api.StateType;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.junit.Assert;
 import org.junit.Test;
 

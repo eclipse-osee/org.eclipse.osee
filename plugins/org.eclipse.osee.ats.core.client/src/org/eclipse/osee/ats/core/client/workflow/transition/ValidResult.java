@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.workflow.transition;
 
-import org.eclipse.osee.ats.workdef.api.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 
 public class ValidResult {
    private final ValidType type;

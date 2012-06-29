@@ -6,12 +6,12 @@
 package org.eclipse.osee.ats.core.client.util;
 
 import junit.framework.Assert;
+import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.AtsTestUtil.AtsTestUtilState;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.util.CopyActionDetails;
-import org.eclipse.osee.ats.workdef.api.ReviewBlockType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

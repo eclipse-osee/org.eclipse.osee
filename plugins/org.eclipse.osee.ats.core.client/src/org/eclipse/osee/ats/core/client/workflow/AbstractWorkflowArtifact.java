@@ -21,6 +21,11 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.artifact.AbstractAtsArtifact;
 import org.eclipse.osee.ats.core.client.internal.Activator;
@@ -50,11 +55,6 @@ import org.eclipse.osee.ats.core.model.WorkStateProvider;
 import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
-import org.eclipse.osee.ats.workdef.api.IAtsStateDefinition;
-import org.eclipse.osee.ats.workdef.api.IAtsWorkDefinition;
-import org.eclipse.osee.ats.workdef.api.IStateToken;
-import org.eclipse.osee.ats.workdef.api.RuleDefinitionOption;
-import org.eclipse.osee.ats.workdef.api.StateType;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -426,7 +426,12 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public IAtsWorkDefinition getWorkDefinition() {
-      return getWorkDefinitionMatch().getWorkDefinition();
+      WorkDefinitionMatch match = getWorkDefinitionMatch();
+      if (!match.isMatched()) {
+         OseeLog.log(Activator.class, Level.SEVERE, match.toString());
+         return null;
+      }
+      return match.getWorkDefinition();
    }
 
    public WorkDefinitionMatch getWorkDefinitionMatch() {

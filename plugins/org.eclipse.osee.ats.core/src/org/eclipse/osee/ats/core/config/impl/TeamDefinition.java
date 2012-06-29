@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.core.config.RuleManager;
 import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
@@ -14,7 +15,6 @@ import org.eclipse.osee.ats.core.model.TeamDefinitionOptions;
 import org.eclipse.osee.ats.core.model.VersionLockedType;
 import org.eclipse.osee.ats.core.model.VersionReleaseType;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
-import org.eclipse.osee.ats.workdef.api.RuleDefinitionOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -365,7 +365,6 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
 
    @Override
    public void setWorkflowDefinition(String workDefinitionName) {
-      System.out.println("WorkDefinition [" + getName() + "] - WorkDefinition [" + workDefinitionName + "]");
       this.workflowDefinitionName = workDefinitionName;
    }
 
