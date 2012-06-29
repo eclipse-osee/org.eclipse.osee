@@ -118,7 +118,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       ByteArrayOutputStream data = new ByteArrayOutputStream((int) Math.pow(2, 10));
       XMLStreamWriter xmlWriter = null;
       try {
-         xmlWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(data);
+         xmlWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(data, "UTF-8");
          for (Element e : Jaxp.getChildDirects(formattedItemElement)) {
             Jaxp.writeNode(xmlWriter, e, false);
          }
