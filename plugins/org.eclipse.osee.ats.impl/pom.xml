@@ -10,7 +10,7 @@
 		<relativePath>../../plugins/org.eclipse.osee.client.parent</relativePath>
 	</parent>
 
-	<artifactId>org.eclipse.osee.ats.workdef.impl</artifactId>
+	<artifactId>org.eclipse.osee.ats.impl</artifactId>
 	<packaging>eclipse-plugin</packaging>
 	<name>OSEE ATS WorkDef Impl (Incubation)</name>
 
