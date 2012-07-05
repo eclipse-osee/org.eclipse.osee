@@ -33,9 +33,9 @@ public class TxDataManagerImpl implements TxDataManager {
 
    public static interface TxDataHandlerFactory {
 
-      ArtifactVisitor createDirtyHandler(List<ArtifactTransactionData> data);
+      ArtifactVisitor createOnDirtyHandler(List<ArtifactTransactionData> data);
 
-      OrcsVisitor createUpdateHandler(Map<String, ArtifactWriteable> writeableArtifacts);
+      OrcsVisitor createOnSuccessHandler(Map<String, ArtifactWriteable> writeableArtifacts);
    }
 
    private final Map<String, ArtifactWriteable> writeableArtifacts = new ConcurrentHashMap<String, ArtifactWriteable>();
@@ -91,7 +91,7 @@ public class TxDataManagerImpl implements TxDataManager {
 
    @Override
    public void onCommitSuccess(TransactionResult result) throws OseeCoreException {
-      OrcsVisitor visitor = handler.createUpdateHandler(writeableArtifacts);
+      OrcsVisitor visitor = handler.createOnSuccessHandler(writeableArtifacts);
       for (ArtifactTransactionData txData : result.getData()) {
          txData.accept(visitor);
       }
@@ -100,7 +100,7 @@ public class TxDataManagerImpl implements TxDataManager {
    @Override
    public List<ArtifactTransactionData> getChanges() throws OseeCoreException {
       List<ArtifactTransactionData> data = new ArrayList<ArtifactTransactionData>();
-      ArtifactVisitor visitor = handler.createDirtyHandler(data);
+      ArtifactVisitor visitor = handler.createOnDirtyHandler(data);
       for (ArtifactWriteable writeable : writeableArtifacts.values()) {
          if (writeable.isDirty()) {
             ArtifactImpl impl = proxyFactory.getProxiedObject(writeable);

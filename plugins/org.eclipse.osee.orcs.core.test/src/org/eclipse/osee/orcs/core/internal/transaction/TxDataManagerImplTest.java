@@ -142,7 +142,7 @@ public class TxDataManagerImplTest {
       List<ArtifactTransactionData> data = txManager.getChanges();
 
       verify(proxyFactory).getProxiedObject(expected);
-      verify(dataFactory).createDirtyHandler(data);
+      verify(dataFactory).createOnDirtyHandler(data);
       verify(impl).accept(null);
    }
 
@@ -155,7 +155,7 @@ public class TxDataManagerImplTest {
       TransactionResult result = mock(TransactionResult.class);
       final ArtifactTransactionData txData = mock(ArtifactTransactionData.class);
       OrcsVisitor vistor = mock(OrcsVisitor.class);
-      when(dataFactory.createUpdateHandler(writeableArtifacts)).thenReturn(vistor);
+      when(dataFactory.createOnSuccessHandler(writeableArtifacts)).thenReturn(vistor);
       when(result.getData()).thenAnswer(new Answer<List<ArtifactTransactionData>>() {
 
          @Override
@@ -169,7 +169,7 @@ public class TxDataManagerImplTest {
 
       txManager.onCommitSuccess(result);
 
-      verify(dataFactory).createUpdateHandler(writeableArtifacts);
+      verify(dataFactory).createOnSuccessHandler(writeableArtifacts);
       verify(txData).accept(vistor);
    }
 }

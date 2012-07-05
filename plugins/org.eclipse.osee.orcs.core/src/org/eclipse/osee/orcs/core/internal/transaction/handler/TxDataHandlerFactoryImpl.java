@@ -35,12 +35,14 @@ public class TxDataHandlerFactoryImpl implements TxDataHandlerFactory {
    }
 
    @Override
-   public ArtifactVisitor createDirtyHandler(List<ArtifactTransactionData> data) {
+   public ArtifactVisitor createOnDirtyHandler(List<ArtifactTransactionData> data) {
       return new CollectAndCopyDirtyData(dataFactory, data);
    }
 
    @Override
-   public OrcsVisitor createUpdateHandler(Map<String, ArtifactWriteable> writeableArtifacts) {
-      return new UpdateBackingData(artifactFactory, writeableArtifacts);
+   public OrcsVisitor createOnSuccessHandler(Map<String, ArtifactWriteable> writeableArtifacts) {
+      // Do Nothing on success;
+      return new NoOpOrcsVisitor();
+      //      return new UpdateBackingData(artifactFactory, writeableArtifacts);
    }
 }
