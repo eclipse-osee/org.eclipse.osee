@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.column;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -26,7 +27,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
@@ -74,8 +74,7 @@ public class CompletedDateColumn extends XViewerAtsColumn implements IXViewerVal
          if (((AbstractWorkflowArtifact) object).isCompleted()) {
             Date date = ((AbstractWorkflowArtifact) object).getCompletedDate();
             if (date == null) {
-               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
-                  "Completed with no date => " + awa.getHumanReadableId());
+               OseeLog.log(Activator.class, Level.SEVERE, "Completed with no date => " + awa.getHumanReadableId());
             }
             return date;
          }
