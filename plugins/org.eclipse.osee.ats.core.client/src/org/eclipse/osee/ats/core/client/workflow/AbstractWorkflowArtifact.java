@@ -141,7 +141,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
                }
             } else {
                OseeLog.log(Activator.class, Level.SEVERE, String.format(
-                  "Invalid CompletedFromState [%s] for Worklfow [%s] and WorkDefinition [%]", completedFromState,
+                  "Invalid CompletedFromState [%s] for Worklfow [%s] and WorkDefinition [%s]", completedFromState,
                   toStringWithId(), getWorkDefinition().getName()));
             }
          }
