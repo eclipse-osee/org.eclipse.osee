@@ -160,6 +160,7 @@ public enum FrameworkImage implements KeyedImage {
    RELATION("relate.gif"),
    RELOAD("reload.gif"),
    REFINEMENT("minor.gif"),
+   REFRESH("refresh.gif"),
    RES("res.gif"),
    REMOVE("remove.gif"),
    REMOVE_ALL("removeAll.gif"),
@@ -198,7 +199,9 @@ public enum FrameworkImage implements KeyedImage {
    WARNING("warn.gif"),
    WARNING_OVERLAY("alert_8_8.gif"),
    WWW(PluginUiImage.URL),
-   X_RED("redRemove.gif");
+   X_RED("redRemove.gif"),
+   ZOOM_IN("zoom_in.gif"),
+   ZOOM_OUT("zoom_out.gif");
 
    private final String fileName;
    private final KeyedImage alias;

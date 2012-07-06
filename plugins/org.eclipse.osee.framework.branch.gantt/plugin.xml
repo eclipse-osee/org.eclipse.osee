@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            name="Branch Visualization"
+            icon="images/branch.gif"
+            category="osee.jdk.core.category"
+            class="org.eclipse.osee.branch.gantt.views.BranchVisualizationView"
+            id="org.eclipse.osee.branch.gantt.views.BranchVisualizationView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <view
+               ratio="0.5"
+               relative="org.eclipse.ui.views.TaskList"
+               relationship="right"
+               id="org.eclipse.osee.branch.gantt.views.BranchVisualizationView">
+         </view>
+      </perspectiveExtension>
+   </extension>
+
+</plugin>
