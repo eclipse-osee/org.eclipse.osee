@@ -12,13 +12,16 @@ package org.eclipse.osee.support.test.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class UnitTestUtil {
 
    public static boolean isUnitTest(File file) throws IOException {
@@ -42,14 +45,14 @@ public class UnitTestUtil {
       return (file.getAbsolutePath().endsWith(".java") && file.getName().contains("Mock"));
    }
 
-   public static List<String> getAuthors(File file) throws IOException {
+   public static Set<String> getAuthors(File file) throws IOException {
       String text = Lib.fileToString(file);
       return getAuthors(text);
 
    }
 
-   public static List<String> getAuthors(String fileContents) {
-      List<String> authors = new ArrayList<String>();
+   public static Set<String> getAuthors(String fileContents) {
+      Set<String> authors = new HashSet<String>();
       for (String line : fileContents.split("\n")) {
          if (line.contains("* @author")) {
             String author = line;
