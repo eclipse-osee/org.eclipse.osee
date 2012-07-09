@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ATS Config Demo Test Fragment
 Bundle-SymbolicName: org.eclipse.osee.ats.config.demo.test;singleton:=true
-Bundle-Version: 0.10.0.qualifier
+Bundle-Version: 0.10.1.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.ats.config.demo
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
