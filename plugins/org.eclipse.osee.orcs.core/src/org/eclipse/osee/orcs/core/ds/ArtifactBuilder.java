@@ -11,13 +11,12 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import java.util.List;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactCollector;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Andrew M. Finkbeiner
  */
-public interface ArtifactBuilder extends ArtifactCollector, ArtifactDataHandlerFactory, RelationDataHandlerFactory, AttributeDataHandlerFactory {
+public interface ArtifactBuilder extends ArtifactDataHandlerFactory, RelationDataHandlerFactory, AttributeDataHandlerFactory {
 
    List<ArtifactReadable> getArtifacts();
 

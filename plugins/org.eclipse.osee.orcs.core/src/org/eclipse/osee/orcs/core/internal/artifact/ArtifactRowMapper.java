@@ -14,7 +14,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactCollector.LoadSourceType;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -34,13 +33,11 @@ public class ArtifactRowMapper implements ArtifactDataHandler {
 
    @Override
    public void onData(ArtifactData data) throws OseeCoreException {
-      LoadSourceType loadSourceType = LoadSourceType.FOUND_IN_CACHE;
       ArtifactReadable artifact = getLoadedArtifact(data);
       if (artifact == null) {
-         loadSourceType = LoadSourceType.WAS_CREATED;
          artifact = artifactFactory.createArtifact(data);
       }
-      artifactReceiver.onArtifact(artifact, loadSourceType);
+      artifactReceiver.onArtifact(artifact);
    }
 
    private ArtifactReadable getLoadedArtifact(ArtifactData current) {

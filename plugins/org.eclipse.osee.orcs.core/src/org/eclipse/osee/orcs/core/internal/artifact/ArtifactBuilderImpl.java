@@ -25,7 +25,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 /**
  * @author Andrew M. Finkbeiner
  */
-public abstract class ArtifactBuilderImpl implements ArtifactBuilder {
+public abstract class ArtifactBuilderImpl implements ArtifactBuilder, ArtifactCollector {
 
    private final Map<Integer, RelationContainer> relationContainers = new HashMap<Integer, RelationContainer>();;
    private final Map<Integer, AttributeManager> attributeContainers = new HashMap<Integer, AttributeManager>();
@@ -59,7 +59,7 @@ public abstract class ArtifactBuilderImpl implements ArtifactBuilder {
    }
 
    @Override
-   public void onArtifact(ArtifactReadable readable, LoadSourceType loadSourceType) {
+   public void onArtifact(ArtifactReadable readable) {
       ArtifactImpl artifactImpl = proxyFactory.getProxiedObject(readable);
       ArtifactReadable proxyReadable = proxyFactory.createReadable(artifactImpl);
       artifacts.add(proxyReadable);

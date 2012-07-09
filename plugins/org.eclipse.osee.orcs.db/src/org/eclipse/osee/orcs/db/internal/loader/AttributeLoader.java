@@ -10,10 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.database.core.IdJoinQuery;
+import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
@@ -51,6 +59,34 @@ public class AttributeLoader {
          sqlKey = OseeSql.LOAD_CURRENT_ATTRIBUTES;
       }
       return sqlProvider.getSql(sqlKey);
+   }
+
+   private IdentityService getIdentityService() {
+      return null;
+   }
+
+   private int toLocalId(Identity<Long> identity) throws OseeCoreException {
+      return getIdentityService().getLocalId(identity);
+   }
+
+   private List<AbstractJoinQuery> TOTOTOTOTODO(LoadOptions options) throws OseeCoreException {
+      List<AbstractJoinQuery> joins = new ArrayList<AbstractJoinQuery>();
+      if (options.isSelectiveLoadingById()) {
+         IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery();
+         for (Integer id : options.getAttributeIds()) {
+            joinQuery.add(id);
+         }
+         joins.add(joinQuery);
+      }
+
+      if (options.isSelectiveLoadingByType()) {
+         IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery();
+         for (IAttributeType type : options.getAttributeTypes()) {
+            joinQuery.add(toLocalId(type));
+         }
+         joins.add(joinQuery);
+      }
+      return joins;
    }
 
    public void loadFromQueryId(AttributeDataHandler handler, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException {

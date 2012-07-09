@@ -18,11 +18,6 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public interface ArtifactCollector {
 
-   public static enum LoadSourceType {
-      WAS_CREATED,
-      FOUND_IN_CACHE;
-   }
-
-   void onArtifact(ArtifactReadable artifact, LoadSourceType loadSourceType) throws OseeCoreException;
+   void onArtifact(ArtifactReadable artifact) throws OseeCoreException;
 
 }

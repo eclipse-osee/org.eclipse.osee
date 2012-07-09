@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
+import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -65,8 +66,9 @@ public class BranchDataStoreImpl implements BranchDataStore {
 
    private final SqlProvider sqlProvider;
    private final IdFactory idFactory;
+   private final DataLoader dataLoader;
 
-   public BranchDataStoreImpl(Log logger, IOseeDatabaseService dbService, IdentityService identityService, IOseeCachingService cachingService, SystemPreferences preferences, ExecutorAdmin executorAdmin, IResourceManager resourceManager, IOseeModelFactoryService modelFactory, IOseeModelingService typeModelService, SqlProvider sqlProvider, IdFactory idFactory) {
+   public BranchDataStoreImpl(Log logger, IOseeDatabaseService dbService, IdentityService identityService, IOseeCachingService cachingService, SystemPreferences preferences, ExecutorAdmin executorAdmin, IResourceManager resourceManager, IOseeModelFactoryService modelFactory, IOseeModelingService typeModelService, SqlProvider sqlProvider, IdFactory idFactory, DataLoader dataLoader) {
       super();
       this.logger = logger;
       this.dbService = dbService;
@@ -79,6 +81,7 @@ public class BranchDataStoreImpl implements BranchDataStore {
       this.typeModelService = typeModelService;
       this.sqlProvider = sqlProvider;
       this.idFactory = idFactory;
+      this.dataLoader = dataLoader;
    }
 
    @Override
@@ -143,7 +146,7 @@ public class BranchDataStoreImpl implements BranchDataStore {
    public Callable<TransactionResult> commitTransaction(TransactionData data) {
       return new CommitTransactionDatabaseTxCallable(logger, dbService, identityService, sqlProvider, idFactory,
          cachingService.getBranchCache(), cachingService.getTransactionCache(), modelFactory.getTransactionFactory(),
-         data);
+         data, dataLoader);
    }
 
 }

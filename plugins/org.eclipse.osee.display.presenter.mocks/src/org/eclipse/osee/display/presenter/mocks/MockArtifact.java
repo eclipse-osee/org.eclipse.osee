@@ -214,4 +214,9 @@ public class MockArtifact implements ArtifactReadable {
    public <T> List<T> getAttributeValues(IAttributeType attributeType) throws OseeCoreException {
       return null;
    }
+
+   @Override
+   public Collection<? extends IAttributeType> getValidAttributeTypes() throws OseeCoreException {
+      return null;
+   }
 }

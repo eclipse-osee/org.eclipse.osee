@@ -16,9 +16,9 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
-import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
+import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
 
@@ -65,6 +65,9 @@ public class RelationLoader {
             long gamma = statement.getInt("gamma_id");
 
             VersionData version = factory.createVersion(branchId, txId, gamma, options.isHistorical());
+            if (options.isHistorical()) {
+               version.setStripeId(statement.getInt("stripe_transaction_id"));
+            }
 
             int localId = statement.getInt("rel_link_id");
             int typeId = statement.getInt("rel_link_type_id");

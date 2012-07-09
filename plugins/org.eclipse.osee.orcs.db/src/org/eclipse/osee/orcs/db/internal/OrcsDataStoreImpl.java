@@ -114,17 +114,17 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
 
       IdFactory idFactory = new IdFactoryImpl(dbService, cacheService.getBranchCache());
 
-      branchStore =
-         new BranchDataStoreImpl(logger, dbService, identityService, cacheService, preferences, executorAdmin,
-            resourceManager, modelFactory, typeModelService, sqlProvider, idFactory);
-
-      dataStoreAdmin = new DataStoreAdminImpl(logger, dbService, identityService, branchStore, preferences);
-
       DataModuleFactory dataModuleFactory = new DataModuleFactory(logger, dbService, identityService);
       OrcsObjectFactory rowDataFactory =
          dataModuleFactory.createOrcsObjectFactory(proxyProvider, cacheService.getAttributeTypeCache());
       dataFactory = dataModuleFactory.createDataFactory(rowDataFactory, idFactory, cacheService.getArtifactTypeCache());
       dataLoader = dataModuleFactory.createDataLoader(sqlProvider, idFactory, rowDataFactory);
+
+      branchStore =
+         new BranchDataStoreImpl(logger, dbService, identityService, cacheService, preferences, executorAdmin,
+            resourceManager, modelFactory, typeModelService, sqlProvider, idFactory, dataLoader);
+
+      dataStoreAdmin = new DataStoreAdminImpl(logger, dbService, identityService, branchStore, preferences);
 
       QueryModuleFactory factory = new QueryModuleFactory(logger, dbService, identityService, executorAdmin);
       TaggingEngine taggingEngine = factory.createTaggingEngine(cacheService.getAttributeTypeCache());
