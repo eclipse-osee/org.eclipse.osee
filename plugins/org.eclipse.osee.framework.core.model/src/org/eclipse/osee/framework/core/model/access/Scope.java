@@ -20,6 +20,7 @@ import java.util.List;
 public class Scope implements Cloneable {
 
    private static final String LEGACY_SCOPE = "##";
+   private static final String ARTIFACT_LOCK_SCOPE = "##**";
 
    private final List<String> scopePath = new ArrayList<String>();
 
@@ -108,7 +109,11 @@ public class Scope implements Cloneable {
       return new LegacyScope();
    }
 
-   private static final class LegacyScope extends Scope {
+   public static Scope createArtifactLockScope() {
+      return new ArtifactLockScope();
+   }
+
+   private static abstract class NonCmScope extends Scope {
       @Override
       public Scope add(String path) {
          return this;
@@ -118,6 +123,9 @@ public class Scope implements Cloneable {
       public Scope addSubPath(String path) {
          return this;
       }
+   }
+
+   private static final class LegacyScope extends NonCmScope {
 
       @Override
       public String getPath() {
@@ -129,4 +137,18 @@ public class Scope implements Cloneable {
          return Scope.createLegacyScope();
       }
    }
+
+   private static final class ArtifactLockScope extends NonCmScope {
+
+      @Override
+      public String getPath() {
+         return ARTIFACT_LOCK_SCOPE;
+      }
+
+      @Override
+      public Scope clone() {
+         return Scope.createArtifactLockScope();
+      }
+   }
+
 }

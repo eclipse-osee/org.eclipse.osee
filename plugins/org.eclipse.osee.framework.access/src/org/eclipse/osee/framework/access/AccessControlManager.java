@@ -58,11 +58,11 @@ public final class AccessControlManager {
       getService().unLockObjects(objects, subject);
    }
 
-   public static boolean hasLock(Artifact object) {
+   public static boolean hasLock(Artifact object) throws OseeCoreException {
       return getService().hasLock(object);
    }
 
-   public static boolean canUnlockObject(Artifact object, Artifact subject) {
+   public static boolean canUnlockObject(Artifact object, Artifact subject) throws OseeCoreException {
       return getService().canUnlockObject(object, subject);
    }
 
