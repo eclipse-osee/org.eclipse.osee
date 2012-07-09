@@ -164,7 +164,6 @@ artifactType "Team Workflow" extends "ats.State Machine", "Abstract Access Contr
    attribute "ats.Proposed Resolution"
    attribute "ats.Team Definition"
    attribute "ats.User Community"
-   attribute "Cross Branch Link"
    attribute "ats.Operational Impact"
    attribute "ats.Operational Impact Description"
    attribute "ats.Operational Impact Workaround"

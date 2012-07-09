@@ -46,7 +46,6 @@ import org.eclipse.osee.framework.skynet.core.event.systems.FrameworkEventToRemo
 import org.eclipse.osee.framework.skynet.core.importing.ImportingSuite;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.ParsersSuite;
 import org.eclipse.osee.framework.skynet.core.internal.event.EventTestSuite;
-import org.eclipse.osee.framework.skynet.core.relation.CrossBranchLinkTest;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTestSuite;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictTest;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionTestSuite;
@@ -64,7 +63,6 @@ import org.junit.runners.Suite;
    BranchSuite.class,
    UserManagerTest.class,
    AttributePurgeTest.class,
-   CrossBranchLinkTest.class,
    UpdateBookmarkIdTest.class,
    ArtifactEventFiltersTest.class,
    BranchEventFiltersTest.class,

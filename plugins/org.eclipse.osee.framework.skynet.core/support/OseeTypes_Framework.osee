@@ -38,14 +38,6 @@ attributeType "Branch Reference" extends BranchReferenceAttribute {
 	description "Light-weight branch reference"
 }
 
-attributeType "Cross Branch Link" extends StringAttribute {
-	guid "AXUR3KcbcVPqyNCdQmAA"
-	uuid 0x1000000000000056
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max unlimited
-}
-
 attributeType "osee.config.Default Mail Server" extends StringAttribute {
 	guid "ABMuIC3FejpGilonfAgA"
 	uuid 0x1000000000000057
