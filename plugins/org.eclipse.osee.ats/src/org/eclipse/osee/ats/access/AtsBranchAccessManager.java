@@ -134,18 +134,22 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
       try {
          // don't access control common branch artifacts...yet
          if (!AtsUtil.getAtsBranchToken().equals(branch)) {
-            // Else, get from associated artifact
-            Artifact assocArtifact = getAssociatedArtifact(branch);
-            ArtifactType assocArtType = assocArtifact.getArtifactType();
-            if (assocArtType.inheritsFrom(AtsArtifactTypes.TeamWorkflow)) {
-               contextIds.addAll(internalGetFromWorkflow((TeamWorkFlowArtifact) assocArtifact));
-            } else if (assocArtifact.isOfType(AtsArtifactTypes.AtsArtifact)) {
-               contextIds.add(AtsBranchAccessContextId.DENY_CONTEXT);
-            } else {
-               contextIds.add(AtsBranchAccessContextId.DEFAULT_BRANCH_CONTEXT);
-            }
+            // do this check first since role will supersede others
             if (roleContextProvider != null) {
                contextIds.addAll(roleContextProvider.getContextId(UserManager.getUser()));
+            }
+
+            if (contextIds.isEmpty()) {
+               // Else, get from associated artifact
+               Artifact assocArtifact = getAssociatedArtifact(branch);
+               ArtifactType assocArtType = assocArtifact.getArtifactType();
+               if (assocArtType.inheritsFrom(AtsArtifactTypes.TeamWorkflow)) {
+                  contextIds.addAll(internalGetFromWorkflow((TeamWorkFlowArtifact) assocArtifact));
+               } else if (assocArtifact.isOfType(AtsArtifactTypes.AtsArtifact)) {
+                  contextIds.add(AtsBranchAccessContextId.DENY_CONTEXT);
+               } else {
+                  contextIds.add(AtsBranchAccessContextId.DEFAULT_BRANCH_CONTEXT);
+               }
             }
          }
       } catch (OseeCoreException ex) {
