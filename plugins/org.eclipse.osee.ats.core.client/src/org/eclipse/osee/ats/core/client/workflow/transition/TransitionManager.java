@@ -119,58 +119,60 @@ public class TransitionManager {
                continue;
             }
 
-            // Validate transition from fromState and toState
-            if (!helper.isOverrideTransitionValidityCheck() && !fromStateDef.getToStates().contains(toStateDef) && !fromStateDef.getStateType().isCompletedOrCancelledState()) {
-               String errStr =
-                  String.format("Work Definition [%s] is not configured to transition from \"[%s]\" to \"[%s]\"",
-                     toStateDef.getName(), fromStateDef.getName(), toStateDef.getName());
-               OseeLog.log(Activator.class, Level.SEVERE, errStr);
-               results.addResult(awa, new TransitionResult(errStr));
-               continue;
-            }
+            //Ignore transitions to the same state
+            if (!fromStateDef.equals(toStateDef)) {
+               // Validate transition from fromState and toState
+               if (!helper.isOverrideTransitionValidityCheck() && !fromStateDef.getToStates().contains(toStateDef) && !fromStateDef.getStateType().isCompletedOrCancelledState()) {
+                  String errStr =
+                     String.format("Work Definition [%s] is not configured to transition from \"[%s]\" to \"[%s]\"",
+                        toStateDef.getName(), fromStateDef.getName(), toStateDef.getName());
+                  OseeLog.log(Activator.class, Level.SEVERE, errStr);
+                  results.addResult(awa, new TransitionResult(errStr));
+                  continue;
+               }
 
-            // Validate Editable
-            boolean stateIsEditable =
-               WorkflowManagerCore.isEditable(awa, awa.getStateDefinition(), helper.isPrivilegedEditEnabled());
-            boolean currentlyUnAssigned = awa.getStateMgr().getAssignees().contains(AtsUsers.getUnAssigned());
-            awa.getStateMgr().validateNoBootstrapUser();
-            boolean overrideAssigneeCheck = helper.isOverrideAssigneeCheck();
-            // Allow anyone to transition any task to completed/cancelled/working if parent is working
-            if (awa.isTask() && awa.getParentTeamWorkflow().isCompletedOrCancelled()) {
-               results.addResult(awa, TransitionResult.TASK_CANT_TRANSITION_IF_PARENT_COMPLETED);
-               continue;
+               // Validate Editable
+               boolean stateIsEditable =
+                  WorkflowManagerCore.isEditable(awa, awa.getStateDefinition(), helper.isPrivilegedEditEnabled());
+               boolean currentlyUnAssigned = awa.getStateMgr().getAssignees().contains(AtsUsers.getUnAssigned());
+               awa.getStateMgr().validateNoBootstrapUser();
+               boolean overrideAssigneeCheck = helper.isOverrideAssigneeCheck();
+               // Allow anyone to transition any task to completed/cancelled/working if parent is working
+               if (awa.isTask() && awa.getParentTeamWorkflow().isCompletedOrCancelled()) {
+                  results.addResult(awa, TransitionResult.TASK_CANT_TRANSITION_IF_PARENT_COMPLETED);
+                  continue;
 
-            }
-            // Else, only allow transition if...
-            else if (!awa.isTask() && !stateIsEditable && !currentlyUnAssigned && !overrideAssigneeCheck) {
-               results.addResult(awa, TransitionResult.MUST_BE_ASSIGNED);
-               continue;
-            }
+               }
+               // Else, only allow transition if...
+               else if (!awa.isTask() && !stateIsEditable && !currentlyUnAssigned && !overrideAssigneeCheck) {
+                  results.addResult(awa, TransitionResult.MUST_BE_ASSIGNED);
+                  continue;
+               }
 
-            // Validate Working Branch
-            isWorkingBranchTransitionable(results, awa, toStateDef);
-            if (results.isCancelled()) {
-               continue;
-            }
+               // Validate Working Branch
+               isWorkingBranchTransitionable(results, awa, toStateDef);
+               if (results.isCancelled()) {
+                  continue;
+               }
 
-            // Validate Assignees (UnAssigned ok cause will be resolve to current user upon transition
-            if (!overrideAssigneeCheck && !toStateDef.getStateType().isCancelledState() && helper.isSystemUserAssingee(awa)) {
-               results.addResult(awa, TransitionResult.CAN_NOT_TRANSITION_WITH_SYSTEM_USER_ASSIGNED);
-               continue;
-            }
+               // Validate Assignees (UnAssigned ok cause will be resolve to current user upon transition
+               if (!overrideAssigneeCheck && !toStateDef.getStateType().isCancelledState() && helper.isSystemUserAssingee(awa)) {
+                  results.addResult(awa, TransitionResult.CAN_NOT_TRANSITION_WITH_SYSTEM_USER_ASSIGNED);
+                  continue;
+               }
 
-            // Validate state, widgets, rules unless OverrideAttributeValidation is set or transitioning to cancel
-            isStateTransitionable(results, awa, toStateDef);
-            if (results.isCancelled()) {
-               continue;
-            }
+               // Validate state, widgets, rules unless OverrideAttributeValidation is set or transitioning to cancel
+               isStateTransitionable(results, awa, toStateDef);
+               if (results.isCancelled()) {
+                  continue;
+               }
 
-            // Validate transition with extensions
-            isTransitionValidForExtensions(results, awa, fromStateDef, toStateDef);
-            if (results.isCancelled()) {
-               continue;
+               // Validate transition with extensions
+               isTransitionValidForExtensions(results, awa, fromStateDef, toStateDef);
+               if (results.isCancelled()) {
+                  continue;
+               }
             }
-
          } catch (OseeCoreException ex) {
             results.addResult(awa,
                new TransitionResult(String.format("Exception while validating transition [%s]", helper.getName()), ex));
@@ -251,59 +253,62 @@ public class TransitionManager {
                IAtsStateDefinition fromState = awa.getStateDefinition();
                IAtsStateDefinition toState = awa.getStateDefinitionByName(helper.getToStateName());
 
-               Date transitionDate = getTransitionOnDate();
-               IAtsUser transitionUser = getTransitionAsUser();
-               // Log transition
-               if (fromState.getStateType().isCancelledState()) {
-                  logWorkflowUnCancelledEvent(awa);
-               } else if (fromState.getStateType().isCompletedState()) {
-                  logWorkflowUnCompletedEvent(awa);
-               }
-               if (toState.getStateType().isCancelledState()) {
-                  logWorkflowCancelledEvent(awa, awa.getStateMgr().getCurrentStateName(), completedCancellationReason,
-                     transitionDate, transitionUser);
-               } else if (toState.getStateType().isCompletedState()) {
-                  logWorkflowCompletedEvent(awa, awa.getStateMgr().getCurrentStateName(), completedCancellationReason,
-                     transitionDate, transitionUser);
-               } else {
-                  logStateCompletedEvent(awa, awa.getStateMgr().getCurrentStateName(), completedCancellationReason,
-                     transitionDate, transitionUser);
-               }
-               logStateStartedEvent(awa, toState, transitionDate, transitionUser);
-
-               // Get transition to assignees
-               List<IAtsUser> toAssignees = new LinkedList<IAtsUser>();
-               if (!toState.getStateType().isCompletedOrCancelledState()) {
-                  if (helper.getToAssignees() != null) {
-                     toAssignees.addAll(helper.getToAssignees());
+               //Ignore transitions to the same state
+               if (!fromState.equals(toState)) {
+                  Date transitionDate = getTransitionOnDate();
+                  IAtsUser transitionUser = getTransitionAsUser();
+                  // Log transition
+                  if (fromState.getStateType().isCancelledState()) {
+                     logWorkflowUnCancelledEvent(awa);
+                  } else if (fromState.getStateType().isCompletedState()) {
+                     logWorkflowUnCompletedEvent(awa);
                   }
-                  if (toAssignees.contains(AtsUsers.getUnAssigned())) {
-                     toAssignees.remove(AtsUsers.getUnAssigned());
-                     toAssignees.add(AtsUsersClient.getUser());
+                  if (toState.getStateType().isCancelledState()) {
+                     logWorkflowCancelledEvent(awa, awa.getStateMgr().getCurrentStateName(),
+                        completedCancellationReason, transitionDate, transitionUser);
+                  } else if (toState.getStateType().isCompletedState()) {
+                     logWorkflowCompletedEvent(awa, awa.getStateMgr().getCurrentStateName(),
+                        completedCancellationReason, transitionDate, transitionUser);
+                  } else {
+                     logStateCompletedEvent(awa, awa.getStateMgr().getCurrentStateName(), completedCancellationReason,
+                        transitionDate, transitionUser);
                   }
-                  if (toAssignees.isEmpty()) {
-                     toAssignees.add(AtsUsersClient.getUser());
+                  logStateStartedEvent(awa, toState, transitionDate, transitionUser);
+
+                  // Get transition to assignees
+                  List<IAtsUser> toAssignees = new LinkedList<IAtsUser>();
+                  if (!toState.getStateType().isCompletedOrCancelledState()) {
+                     if (helper.getToAssignees() != null) {
+                        toAssignees.addAll(helper.getToAssignees());
+                     }
+                     if (toAssignees.contains(AtsUsers.getUnAssigned())) {
+                        toAssignees.remove(AtsUsers.getUnAssigned());
+                        toAssignees.add(AtsUsersClient.getUser());
+                     }
+                     if (toAssignees.isEmpty()) {
+                        toAssignees.add(AtsUsersClient.getUser());
+                     }
                   }
-               }
 
-               awa.getStateMgr().transitionHelper(toAssignees, fromState, toState, completedCancellationReason);
+                  awa.getStateMgr().transitionHelper(toAssignees, fromState, toState, completedCancellationReason);
 
-               if (awa.isValidationRequired() && awa.isTeamWorkflow()) {
-                  ValidateReviewManager.createValidateReview((TeamWorkFlowArtifact) awa, false, transitionDate,
-                     transitionUser, transaction);
-               }
+                  if (awa.isValidationRequired() && awa.isTeamWorkflow()) {
+                     ValidateReviewManager.createValidateReview((TeamWorkFlowArtifact) awa, false, transitionDate,
+                        transitionUser, transaction);
+                  }
 
-               // Persist
-               awa.persist(transaction);
+                  // Persist
+                  awa.persist(transaction);
 
-               awa.transitioned(fromState, toState, helper.getToAssignees(), transaction);
+                  awa.transitioned(fromState, toState, helper.getToAssignees(), transaction);
 
-               // Notify extension points of transition
-               for (ITransitionListener listener : TransitionListeners.getListeners()) {
-                  listener.transitioned(awa, fromState, toState, helper.getToAssignees(), transaction);
-               }
-               if (toState.getStateType().isCompletedOrCancelledState()) {
-                  awa.clearImplementersCache();
+                  // Notify extension points of transition
+                  for (ITransitionListener listener : TransitionListeners.getListeners()) {
+                     listener.transitioned(awa, fromState, toState, helper.getToAssignees(), transaction);
+                  }
+                  if (toState.getStateType().isCompletedOrCancelledState()) {
+                     awa.clearImplementersCache();
+                  }
                }
             } catch (Exception ex) {
                results.addResult(awa,

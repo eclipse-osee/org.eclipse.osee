@@ -532,4 +532,56 @@ public class TransitionManagerTest {
          TransitionManager.removeListener(listener4);
       }
    }
+
+   /**
+    * Test that artifacts can be transitioned to the same state without error. (i.e.: An action in Implement can be
+    * transition to Implement a second time and the TransitionManager will just ignore this second, redundant
+    * transition)
+    */
+   @org.junit.Test
+   public void testIsStateTransitionable__ToSameState() throws OseeCoreException {
+      AtsTestUtil.cleanupAndReset("TransitionManagerTest-8");
+      TeamWorkFlowArtifact teamArt01 = AtsTestUtil.getTeamWf();
+      TeamWorkFlowArtifact teamArt02 = AtsTestUtil.getTeamWf2();
+
+      //1. Initially transition workflows to Implement
+      MockTransitionHelper helper =
+         new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt01, teamArt02),
+            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsUsersClient.getUser()), null,
+            TransitionOption.None);
+      TransitionManager transMgr = new TransitionManager(helper);
+      TransitionResults results = new TransitionResults();
+      transMgr.handleTransitionValidation(results);
+      Assert.assertTrue(results.isEmpty());
+
+      //2. redundant transition workflows to Implement
+      MockTransitionHelper helper01 =
+         new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt01, teamArt02),
+            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsUsersClient.getUser()), null,
+            TransitionOption.None);
+      TransitionManager transMgr01 = new TransitionManager(helper01);
+      TransitionResults results01 = new TransitionResults();
+      transMgr01.handleTransitionValidation(results01);
+      Assert.assertTrue(results01.isEmpty());
+
+      //3. Transition one TeamWf to Complete
+      MockTransitionHelper helper02 =
+         new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt01),
+            AtsTestUtil.getCompletedStateDef().getName(), Arrays.asList(AtsUsersClient.getUser()), null,
+            TransitionOption.None);
+      TransitionManager transMgr02 = new TransitionManager(helper02);
+      TransitionResults results02 = new TransitionResults();
+      transMgr02.handleTransitionValidation(results02);
+      Assert.assertTrue(results02.isEmpty());
+
+      //4. redundant transition workflows to Implement
+      MockTransitionHelper helper03 =
+         new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt01, teamArt02),
+            AtsTestUtil.getCompletedStateDef().getName(), Arrays.asList(AtsUsersClient.getUser()), null,
+            TransitionOption.None);
+      TransitionManager transMgr03 = new TransitionManager(helper03);
+      TransitionResults results03 = new TransitionResults();
+      transMgr03.handleTransitionValidation(results03);
+      Assert.assertTrue(results03.isEmpty());
+   }
 }
