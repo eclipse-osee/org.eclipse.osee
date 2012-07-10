@@ -11,46 +11,117 @@
 
 package org.eclipse.osee.framework.skynet.core.attribute.service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeAdapter;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.ServiceReference;
 
 public class AttributeAdapterServiceImpl implements AttributeAdapterService {
 
-   private final Map<IAttributeType, AttributeAdapter<?>> registry;
+   private final Map<IAttributeType, AttributeAdapter<?>> adapterByType;
+
+   private final Map<String, AttributeAdapter<?>> registered;
+   private final List<ServiceReference<AttributeAdapter<?>>> pending;
+   private volatile boolean ready = false;
+   private Thread thread;
 
    public AttributeAdapterServiceImpl() {
-      registry = new ConcurrentHashMap<IAttributeType, AttributeAdapter<?>>();
+      registered = new ConcurrentHashMap<String, AttributeAdapter<?>>();
+      pending = new CopyOnWriteArrayList<ServiceReference<AttributeAdapter<?>>>();
+
+      adapterByType = new ConcurrentHashMap<IAttributeType, AttributeAdapter<?>>();
    }
 
-   public void addAdapter(AttributeAdapter<?> adapter) throws OseeArgumentException {
+   public void start() {
+      ready = true;
+      thread = new Thread("Register Pending Attribute Adapter Services") {
+         @Override
+         public void run() {
+            for (ServiceReference<AttributeAdapter<?>> reference : pending) {
+               try {
+                  register(reference);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(AttributeAdapterServiceImpl.class, Level.SEVERE, ex);
+               }
+            }
+            pending.clear();
+         }
+      };
+      thread.start();
+   }
+
+   public void stop() {
+      ready = false;
+      if (thread != null && thread.isAlive()) {
+         thread.interrupt();
+      }
+   }
+
+   private boolean isReady() {
+      return ready;
+   }
+
+   public void addAdapter(ServiceReference<AttributeAdapter<?>> reference) throws OseeCoreException {
+      if (isReady()) {
+         register(reference);
+      } else {
+         pending.add(reference);
+      }
+   }
+
+   public void removeAdapter(ServiceReference<AttributeAdapter<?>> reference) {
+      if (isReady()) {
+         unregister(reference);
+      } else {
+         pending.remove(reference);
+      }
+   }
+
+   private String generateKey(ServiceReference<AttributeAdapter<?>> reference) {
+      return (String) reference.getProperty("component.name");
+   }
+
+   private void unregister(ServiceReference<AttributeAdapter<?>> reference) {
+      String key = generateKey(reference);
+      AttributeAdapter<?> adapter = registered.remove(key);
       for (IAttributeType type : adapter.getSupportedTypes()) {
-         if (registry.containsKey(type)) {
-            String storedAdatperName = String.valueOf(registry.get(type));
+         adapterByType.remove(type);
+      }
+   }
+
+   private void register(ServiceReference<AttributeAdapter<?>> reference) throws OseeCoreException {
+      Bundle bundle = reference.getBundle();
+      AttributeAdapter<?> adapter = bundle.getBundleContext().getService(reference);
+      Conditions.checkNotNull(adapter, "AttributeAdapter");
+
+      String key = generateKey(reference);
+      registered.put(key, adapter);
+
+      for (IAttributeType type : adapter.getSupportedTypes()) {
+         if (adapterByType.containsKey(type)) {
+            String storedAdatperName = String.valueOf(adapterByType.get(type));
             throw new OseeArgumentException("Attribute type [%s] already in registry with adapter [%s]", type,
                storedAdatperName);
          }
 
-         registry.put(type, adapter);
-      }
-   }
-
-   public void removeAdapter(AttributeAdapter<?> adapter) {
-      for (IAttributeType type : adapter.getSupportedTypes()) {
-         registry.remove(type);
+         adapterByType.put(type, adapter);
       }
    }
 
    @Override
    public <T> T adapt(Attribute<?> attribute, Identity<String> identity) throws OseeCoreException {
       IAttributeType type = attribute.getAttributeType();
-
       AttributeAdapter<T> adapter = getAdapter(type);
       Conditions.checkNotNull(adapter, "adapter");
       return adapter.adapt(attribute, identity);
@@ -58,6 +129,7 @@ public class AttributeAdapterServiceImpl implements AttributeAdapterService {
 
    @SuppressWarnings("unchecked")
    public <T> AttributeAdapter<T> getAdapter(IAttributeType type) {
-      return (AttributeAdapter<T>) registry.get(type);
+      return (AttributeAdapter<T>) adapterByType.get(type);
    }
+
 }
