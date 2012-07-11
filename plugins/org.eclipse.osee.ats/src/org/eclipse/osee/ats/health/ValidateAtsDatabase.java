@@ -45,6 +45,7 @@ import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.log.AtsLog;
 import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
+import org.eclipse.osee.ats.core.client.workflow.log.LogType;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.model.IAtsActionableItem;
@@ -203,6 +204,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             }
             count += artifacts.size();
 
+            testCompletedCancelledStateAttributesSetWithPersist(artifacts);
             testStateAttributeDuplications(artifacts);
             testArtifactIds(artifacts);
             testAtsAttributevaluesWithPersist(artifacts);
@@ -241,6 +243,107 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       if (monitor != null) {
          xResultData.log(monitor, "Completed processing " + count + " artifacts.");
       }
+   }
+
+   public void testCompletedCancelledStateAttributesSetWithPersist(Collection<Artifact> artifacts) {
+      try {
+         SkynetTransaction transaction =
+            TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Validate ATS Database");
+         testCompletedCancelledStateAttributesSet(artifacts, transaction, testNameToResultsMap);
+         transaction.execute();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         testNameToResultsMap.put("testCompletedCancelledStateAttributesSet",
+            "Error: Exception: " + ex.getLocalizedMessage());
+      }
+   }
+
+   public static void testCompletedCancelledStateAttributesSet(Collection<Artifact> artifacts, SkynetTransaction transaction, HashCollection<String, String> testNameToResultsMap) {
+      for (Artifact artifact : artifacts) {
+         try {
+            if (artifact instanceof AbstractWorkflowArtifact) {
+               AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
+               if (awa.isCompleted()) {
+                  if (awa.getCompletedBy() == null || awa.getCompletedDate() == null || !Strings.isValid(awa.getCompletedFromState())) {
+                     testNameToResultsMap.put(
+                        "testCompletedCancelledStateAttributesSet",
+                        String.format("Error: Completed [%s] missing one or more Completed attributes for [%s]",
+                           awa.getArtifactTypeName(), XResultDataUI.getHyperlink(artifact)));
+                     fixCompletedByAttributes(transaction, awa, testNameToResultsMap);
+                  }
+               }
+               if (awa.isCancelled()) {
+                  if (awa.getCancelledBy() == null || awa.getCancelledDate() == null || !Strings.isValid(awa.getCancelledFromState())) {
+                     testNameToResultsMap.put(
+                        "testCompletedCancelledStateAttributesSet",
+                        String.format("Error: Cancelled missing Cancelled By attribute for [%s]",
+                           XResultDataUI.getHyperlink(artifact)));
+                     fixCancelledByAttributes(transaction, awa, testNameToResultsMap);
+                  }
+               }
+            }
+         } catch (Exception ex) {
+            testNameToResultsMap.put("testCompletedCancelledStateAttributesSet",
+               "Error: " + artifact.getArtifactTypeName() + " exception: " + ex.getLocalizedMessage());
+         }
+      }
+   }
+
+   private static void fixCancelledByAttributes(SkynetTransaction transaction, AbstractWorkflowArtifact awa, HashCollection<String, String> testNameToResultsMap) throws OseeCoreException {
+      LogItem cancelledItem = getCancelledLogItem(awa);
+      if (cancelledItem != null) {
+         testNameToResultsMap.put("testCompletedCancelledStateAttributesSet", String.format(
+            "   FIXED to By [%s] From State [%s] Date [%s] Reason [%s]", cancelledItem.getUserId(),
+            cancelledItem.getDate(), cancelledItem.getState(), cancelledItem.getMsg()));
+         awa.setSoleAttributeValue(AtsAttributeTypes.CancelledBy, cancelledItem.getUserId());
+         awa.setSoleAttributeValue(AtsAttributeTypes.CancelledDate, cancelledItem.getDate());
+         awa.setSoleAttributeValue(AtsAttributeTypes.CancelledFromState, cancelledItem.getState());
+         if (Strings.isValid(cancelledItem.getMsg())) {
+            awa.setSoleAttributeValue(AtsAttributeTypes.CancelledReason, cancelledItem.getMsg());
+         }
+         awa.persist(transaction);
+      }
+   }
+
+   private static void fixCompletedByAttributes(SkynetTransaction transaction, AbstractWorkflowArtifact awa, HashCollection<String, String> testNameToResultsMap) throws OseeCoreException {
+      LogItem completedItem = getPreviousStateLogItem(awa);
+      if (completedItem != null) {
+         testNameToResultsMap.put(
+            "testCompletedCancelledStateAttributesSet",
+            String.format("   FIXED to By [%s] From State [%s] Date [%s]", completedItem.getUserId(),
+               completedItem.getDate(), completedItem.getState()));
+         awa.setSoleAttributeValue(AtsAttributeTypes.CompletedBy, completedItem.getUserId());
+         awa.setSoleAttributeValue(AtsAttributeTypes.CompletedDate, completedItem.getDate());
+         awa.setSoleAttributeValue(AtsAttributeTypes.CompletedFromState, completedItem.getState());
+         awa.persist(transaction);
+      }
+   }
+
+   private static LogItem getCancelledLogItem(AbstractWorkflowArtifact awa) throws OseeCoreException {
+      String currentStateName = awa.getCurrentStateName();
+      LogItem fromItem = null;
+      for (LogItem item : awa.getLog().getLogItemsReversed()) {
+         if (item.getType() == LogType.StateCancelled && Strings.isValid(item.getState()) && !currentStateName.equals(item.getState())) {
+            fromItem = item;
+            break;
+         }
+      }
+      if (fromItem == null) {
+         fromItem = getPreviousStateLogItem(awa);
+      }
+      return fromItem;
+   }
+
+   private static LogItem getPreviousStateLogItem(AbstractWorkflowArtifact awa) throws OseeCoreException {
+      String currentStateName = awa.getCurrentStateName();
+      LogItem fromItem = null;
+      for (LogItem item : awa.getLog().getLogItemsReversed()) {
+         if (item.getType() == LogType.StateComplete && Strings.isValid(item.getState()) && !currentStateName.equals(item.getState())) {
+            fromItem = item;
+            break;
+         }
+      }
+      return fromItem;
    }
 
    private void testStateAttributeDuplications(Collection<Artifact> artifacts) throws OseeCoreException {
