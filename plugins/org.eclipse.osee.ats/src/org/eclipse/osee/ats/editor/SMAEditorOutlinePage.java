@@ -384,7 +384,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       }
 
       private void getChildrenFromWorkDefinitionMatch(Object element, List<Object> items) {
-         items.addAll(AtsWorkDefinitionService.getService().getStatesOrderedByDefaultToState(
+         items.addAll(AtsWorkDefinitionService.getService().getStatesOrderedByOrdinal(
             ((WorkDefinitionMatch) element).getWorkDefinition()));
          items.add(new WrappedPercentWeight(((WorkDefinitionMatch) element).getWorkDefinition()));
          items.add(new WrappedTrace(((WorkDefinitionMatch) element).getTrace()));
