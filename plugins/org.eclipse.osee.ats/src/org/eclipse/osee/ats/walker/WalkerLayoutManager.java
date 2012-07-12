@@ -17,6 +17,9 @@ import org.eclipse.zest.layouts.algorithms.RadialLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class WalkerLayoutManager {
 
    private HashMap<String, AbstractLayoutAlgorithm> layouts;

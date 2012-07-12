@@ -7,6 +7,9 @@ package org.eclipse.osee.ats.api.workdef;
 
 import java.util.List;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IAtsCompositeLayoutItem extends IAtsLayoutItem {
 
    public abstract void setName(String string);

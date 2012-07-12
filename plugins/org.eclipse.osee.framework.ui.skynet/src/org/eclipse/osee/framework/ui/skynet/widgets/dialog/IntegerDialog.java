@@ -12,6 +12,9 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class IntegerDialog extends EntryDialog {
 
    private final int minValue;

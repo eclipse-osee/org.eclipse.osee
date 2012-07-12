@@ -24,6 +24,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class PercentCompleteStateTasksColumn extends XViewerAtsColumn implements IXViewerValueColumn {
 
    public static PercentCompleteStateTasksColumn instance = new PercentCompleteStateTasksColumn();

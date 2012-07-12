@@ -17,6 +17,9 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsConfigManagerClient {
 
    public static void cacheConfigArtifact(Artifact artifact) throws OseeCoreException {

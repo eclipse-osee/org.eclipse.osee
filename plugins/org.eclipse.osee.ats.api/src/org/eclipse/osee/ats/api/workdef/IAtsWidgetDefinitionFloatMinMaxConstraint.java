@@ -5,6 +5,9 @@
  */
 package org.eclipse.osee.ats.api.workdef;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IAtsWidgetDefinitionFloatMinMaxConstraint extends IAtsWidgetConstraint {
 
    public abstract void set(Double minValue, Double maxValue);

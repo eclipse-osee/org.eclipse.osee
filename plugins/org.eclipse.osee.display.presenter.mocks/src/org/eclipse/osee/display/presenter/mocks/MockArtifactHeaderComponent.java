@@ -14,7 +14,7 @@ import org.eclipse.osee.display.api.components.ArtifactHeaderComponent;
 import org.eclipse.osee.display.api.data.ViewArtifact;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class MockArtifactHeaderComponent implements ArtifactHeaderComponent {
 

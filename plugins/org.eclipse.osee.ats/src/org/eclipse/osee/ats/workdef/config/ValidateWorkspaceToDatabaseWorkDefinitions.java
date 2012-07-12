@@ -31,6 +31,9 @@ import org.eclipse.osee.framework.ui.skynet.compare.CompareItem;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ValidateWorkspaceToDatabaseWorkDefinitions extends XNavigateItemAction {
 
    public ValidateWorkspaceToDatabaseWorkDefinitions(XNavigateItem parent) {

@@ -22,7 +22,7 @@ import org.junit.rules.TestName;
 /**
  * {@link OseeExceptions}
  * 
- * @author Karol Wilk
+ * @author Karol M. Wilk
  */
 public class OseeExceptionsTest {
 

@@ -24,6 +24,9 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.user.perspective.IUserNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsUserNavigateItems implements IUserNavigateItem {
 
    @Override

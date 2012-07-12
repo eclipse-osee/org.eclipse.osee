@@ -14,6 +14,9 @@ import java.util.List;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.core.workflow.StateTypeAdapter;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class GoalState extends StateTypeAdapter {
    public static GoalState InWork = new GoalState("InWork", StateType.Working);
    public static GoalState Completed = new GoalState("Completed", StateType.Completed);

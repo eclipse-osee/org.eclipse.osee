@@ -25,6 +25,9 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.OverlayImage.Location;
 import org.eclipse.swt.graphics.Image;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class MassLabelProvider extends XViewerLabelProvider {
 
    private final MassXViewer xViewer;

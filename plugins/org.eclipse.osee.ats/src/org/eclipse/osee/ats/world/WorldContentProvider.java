@@ -41,6 +41,9 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class WorldContentProvider implements ITreeContentProvider {
 
    // Store off relatedArts as they are discovered so they're not garbage collected

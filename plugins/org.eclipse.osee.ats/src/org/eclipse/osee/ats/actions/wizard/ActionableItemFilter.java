@@ -16,6 +16,9 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.framework.ui.swt.OSEEFilteredTree;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ActionableItemFilter extends ViewerFilter {
    private String contains = null;
    private final OSEEFilteredTree treeViewer;

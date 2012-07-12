@@ -15,7 +15,7 @@ import java.util.Map;
 import org.eclipse.osee.display.api.components.AttributeComponent;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class MockAttributeComponent implements AttributeComponent {
 

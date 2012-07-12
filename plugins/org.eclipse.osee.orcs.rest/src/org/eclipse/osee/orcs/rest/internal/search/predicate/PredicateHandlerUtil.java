@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.HexUtil;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  * @author Roberto E. Escobar
  */
 public class PredicateHandlerUtil {

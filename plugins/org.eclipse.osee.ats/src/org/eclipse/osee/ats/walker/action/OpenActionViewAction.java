@@ -15,6 +15,9 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class OpenActionViewAction extends Action {
 
    public OpenActionViewAction() {

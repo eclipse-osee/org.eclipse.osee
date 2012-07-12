@@ -15,7 +15,7 @@ import org.eclipse.osee.ats.ui.api.view.AtsSearchHeaderComponent;
 import org.eclipse.osee.orcs.ApplicationContext;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public interface AtsPresenterFactory<T extends AtsSearchHeaderComponent, K extends AtsSearchParameters> {
 

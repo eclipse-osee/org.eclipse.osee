@@ -9,6 +9,9 @@ import java.io.File;
 import junit.framework.Assert;
 import org.junit.Test;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class WorkDefinitionSheetTest {
 
    @Test

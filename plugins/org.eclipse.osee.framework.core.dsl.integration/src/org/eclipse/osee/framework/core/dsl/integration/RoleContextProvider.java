@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public interface RoleContextProvider {
 

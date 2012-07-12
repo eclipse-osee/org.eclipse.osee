@@ -18,6 +18,9 @@ import org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslFactoryImpl;
 import org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl;
 import org.junit.Test;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class UserRefUtilTest {
 
    @Test

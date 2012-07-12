@@ -5,6 +5,9 @@
  */
 package org.eclipse.osee.ats.api.workdef;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IAtsWorkDefinitionStore {
 
    public abstract String loadWorkDefinitionString(String workDefId);

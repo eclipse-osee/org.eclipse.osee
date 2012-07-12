@@ -7,6 +7,9 @@ package org.eclipse.osee.ats.util.validate;
 
 import java.util.Collection;
 
+/**
+ * @author Shawn F. Cook
+ */
 public class ValidationResult {
    private final Collection<String> errorMessages;
    private final boolean validationPassed;

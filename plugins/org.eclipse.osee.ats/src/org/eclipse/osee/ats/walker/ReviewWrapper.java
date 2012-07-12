@@ -18,6 +18,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ReviewWrapper implements IActionWalkerItem {
 
    private final TeamWorkFlowArtifact teamArt;

@@ -16,6 +16,9 @@ import org.eclipse.osee.ats.core.model.impl.WorkStateProviderImpl;
 import org.eclipse.osee.ats.core.util.AtsUserGroup;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class MockWorkItem implements IAtsWorkItem {
 
    private final String name;
@@ -25,8 +28,8 @@ public class MockWorkItem implements IAtsWorkItem {
    private final AtsUserGroup implementers = new AtsUserGroup();
 
    public MockWorkItem(String name, String currentStateName, StateType StateType) {
-      this(name, new MockWorkData(StateType), new WorkStateProviderImpl(new MockWorkStateFactory(),
-         new WorkStateImpl(currentStateName)));
+      this(name, new MockWorkData(StateType), new WorkStateProviderImpl(new MockWorkStateFactory(), new WorkStateImpl(
+         currentStateName)));
    }
 
    public MockWorkItem(String name, String currentStateName, List<? extends IAtsUser> assignees) {

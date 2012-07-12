@@ -37,6 +37,9 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactListDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
+/**
+ * @author Donald G. Dunne
+ */
 public final class GoalManager {
 
    private GoalManager() {

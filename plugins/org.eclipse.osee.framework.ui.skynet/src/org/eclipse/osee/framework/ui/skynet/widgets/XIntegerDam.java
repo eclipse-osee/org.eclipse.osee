@@ -20,6 +20,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class XIntegerDam extends XInteger implements IAttributeWidget {
 
    private Artifact artifact;

@@ -12,6 +12,9 @@ import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.model.IAtsWorkData;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsWorkData implements IAtsWorkData {
 
    private final AbstractWorkflowArtifact awa;

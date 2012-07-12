@@ -14,6 +14,9 @@ import org.eclipse.osee.ats.core.model.IAtsConfigObject;
 import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsConfigCache {
 
    private static final List<IAtsConfigObject> configObjects = new ArrayList<IAtsConfigObject>();

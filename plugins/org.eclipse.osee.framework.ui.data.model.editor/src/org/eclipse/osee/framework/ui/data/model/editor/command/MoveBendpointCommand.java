@@ -17,7 +17,7 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ConnectionModel;
 
 /**
- * @author Roberto E. Escobars
+ * @author Roberto E. Escobar
  */
 public class MoveBendpointCommand extends Command {
 

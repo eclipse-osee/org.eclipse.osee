@@ -30,8 +30,10 @@ import org.eclipse.osee.framework.messaging.internal.activemq.OseeExceptionListe
 import org.eclipse.osee.framework.messaging.services.internal.OseeMessagingStatusImpl;
 
 /**
- * @author Andrew M. Finkbeiner This is written using ActiveMQ as the use case. So it will only retry connection and it
- * will keep all subscribes so that when a valid connection is made it will do all of the requested subscriptions.
+ * This is written using ActiveMQ as the use case. So it will only retry connection and it will keep all subscribes so
+ * that when a valid connection is made it will do all of the requested subscriptions.
+ * 
+ * @author Andrew M. Finkbeiner
  */
 public class FailoverConnectionNode implements ConnectionNode, Runnable {
 

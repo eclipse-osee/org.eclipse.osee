@@ -20,6 +20,9 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class XWorkingBranchEnablement {
    boolean populated = false;
    boolean workingBranchCreationInProgress = false;

@@ -21,6 +21,9 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class OpenUsersInMassEditor extends Action {
 
    private final Active active;

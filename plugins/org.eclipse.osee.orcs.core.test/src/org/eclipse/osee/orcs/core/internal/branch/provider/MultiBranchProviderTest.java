@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.junit.Test;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class MultiBranchProviderTest {
 

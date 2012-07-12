@@ -43,7 +43,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class FrameworkAccessControlProxy implements CmAccessControl, HasAccessModel {
 

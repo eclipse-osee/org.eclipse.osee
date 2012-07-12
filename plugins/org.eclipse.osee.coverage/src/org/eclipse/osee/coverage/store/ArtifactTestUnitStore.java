@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class ArtifactTestUnitStore implements ITestUnitStore {
 

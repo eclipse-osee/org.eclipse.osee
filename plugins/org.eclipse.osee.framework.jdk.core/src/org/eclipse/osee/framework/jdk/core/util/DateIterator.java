@@ -17,9 +17,10 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @author Shawn F. Cook The DateIterator class is an iterable class that returns Calendar objects for every Monday date
- * between startCal and endCal. Note: All dates returned by DateIterator will have hours, minutes, seconds and
- * milliseconds normalized to 00.
+ * The DateIterator class is an iterable class that returns Calendar objects for every Monday date between startCal and
+ * endCal. Note: All dates returned by DateIterator will have hours, minutes, seconds and milliseconds normalized to 00.
+ * 
+ * @author Shawn F. Cook
  */
 public class DateIterator implements Iterator<Calendar>, Cloneable {
    private final Calendar startCal;
@@ -33,7 +34,7 @@ public class DateIterator implements Iterator<Calendar>, Cloneable {
 
    /**
     * Use this constructor for the very simple case of iterating from startCal to endCal once each day
-    *
+    * 
     * @param startCal
     * @param endCal
     */
@@ -43,7 +44,7 @@ public class DateIterator implements Iterator<Calendar>, Cloneable {
 
    /**
     * Use this constructor for the very simple case of iterating from startCal to endCal once each day
-    *
+    * 
     * @param startDate
     * @param startDate
     */
@@ -73,7 +74,7 @@ public class DateIterator implements Iterator<Calendar>, Cloneable {
     * Use this constructor to normalize on a particular Calendar field. For example: To only return Calendar dates on
     * Monday you would use this constructor like this:DateIterator(startDate, endDate, Calendar.WEEK_OF_YEAR, 1, true,
     * Calendar.DAY_OF_WEEK, Calendar.MONDAY)
-    *
+    * 
     * @param startDate
     * @param endDate
     * @param intervalField
@@ -188,7 +189,7 @@ public class DateIterator implements Iterator<Calendar>, Cloneable {
 
    /**
     * Given the unNormalDate return a date that will be the first iteration date at or after the unNormalDate.
-    *
+    * 
     * @param unNormalDate
     * @return
     */

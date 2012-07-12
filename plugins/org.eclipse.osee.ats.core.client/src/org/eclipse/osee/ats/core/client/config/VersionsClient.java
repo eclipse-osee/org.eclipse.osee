@@ -12,6 +12,9 @@ import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class VersionsClient {
 
    public static Collection<TeamWorkFlowArtifact> getTargetedForTeamWorkflows(IAtsVersion verArt) throws OseeCoreException {

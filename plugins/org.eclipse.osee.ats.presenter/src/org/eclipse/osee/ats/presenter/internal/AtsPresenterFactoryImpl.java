@@ -23,7 +23,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class AtsPresenterFactoryImpl<T extends AtsSearchHeaderComponent, K extends AtsSearchParameters> implements AtsPresenterFactory<AtsSearchHeaderComponent, AtsSearchParameters> {
 

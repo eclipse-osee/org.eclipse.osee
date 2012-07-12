@@ -16,7 +16,7 @@ import org.eclipse.osee.display.api.components.SearchResultComponent;
 import org.eclipse.osee.display.api.components.SearchResultsListComponent;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class MockSearchResultsListComponent implements SearchResultsListComponent {
 

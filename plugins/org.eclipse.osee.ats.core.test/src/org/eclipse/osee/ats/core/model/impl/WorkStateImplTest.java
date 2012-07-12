@@ -10,6 +10,9 @@ import org.eclipse.osee.ats.core.mock.MockAtsUser;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class WorkStateImplTest {
    private final MockAtsUser joe = new MockAtsUser("joe");
    private final MockAtsUser steve = new MockAtsUser("steve");

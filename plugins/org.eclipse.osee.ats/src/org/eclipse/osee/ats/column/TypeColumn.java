@@ -23,6 +23,9 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class TypeColumn extends XViewerAtsColumn implements IXViewerValueColumn {
 
    public static TypeColumn instance = new TypeColumn();

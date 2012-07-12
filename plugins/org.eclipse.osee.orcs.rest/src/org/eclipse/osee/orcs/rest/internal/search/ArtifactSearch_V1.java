@@ -30,7 +30,7 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  * @author Roberto E. Escobar
  */
 public class ArtifactSearch_V1 extends ArtifactSearch {

@@ -43,6 +43,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.progress.UIJob;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class XStackedDam extends XStackedWidget<String> implements IAttributeWidget {
    private Artifact artifact;
    private IAttributeType attributeType;

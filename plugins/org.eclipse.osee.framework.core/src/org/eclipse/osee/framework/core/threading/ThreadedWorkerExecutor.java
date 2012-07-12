@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class ThreadedWorkerExecutor<T> {
 

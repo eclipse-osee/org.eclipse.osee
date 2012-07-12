@@ -43,6 +43,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class EntryDialog extends MessageDialog {
 
    protected XText text;
@@ -117,7 +120,7 @@ public class EntryDialog extends MessageDialog {
             public void handleEvent(Event event) {
                XResultData resultData = new XResultData();
                resultData.addRaw(entryText);
-               XResultDataUI.report(resultData,dialogTitle);
+               XResultDataUI.report(resultData, dialogTitle);
                close();
             }
          });

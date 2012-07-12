@@ -7,6 +7,9 @@ package org.eclipse.osee.ats.core.mock;
 
 import org.eclipse.osee.ats.core.model.IAtsUser;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class MockAtsUser implements IAtsUser {
 
    private final String name;

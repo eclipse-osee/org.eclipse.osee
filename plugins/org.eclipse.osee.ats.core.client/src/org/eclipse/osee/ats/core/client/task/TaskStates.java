@@ -14,6 +14,9 @@ import java.util.List;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.core.workflow.StateTypeAdapter;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class TaskStates extends StateTypeAdapter {
    public static TaskStates InWork = new TaskStates("InWork", StateType.Working);
    public static TaskStates Completed = new TaskStates("Completed", StateType.Completed);

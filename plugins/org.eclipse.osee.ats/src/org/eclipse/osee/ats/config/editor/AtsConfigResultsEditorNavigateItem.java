@@ -25,6 +25,9 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsConfigResultsEditorNavigateItem extends XNavigateItemAction {
 
    public AtsConfigResultsEditorNavigateItem(XNavigateItem parent) {

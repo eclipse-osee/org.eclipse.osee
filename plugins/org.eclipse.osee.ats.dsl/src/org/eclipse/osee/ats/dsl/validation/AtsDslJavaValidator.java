@@ -33,6 +33,9 @@ import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.ComposedChecks;
 
 // Override the checks in AbstractAtsDslJavaValidator to provide own Name validator
+/**
+ * @author Donald G. Dunne
+ */
 @ComposedChecks(validators = {org.eclipse.xtext.validation.ImportUriValidator.class, AtsNamesAreUniqueValidator.class})
 public class AtsDslJavaValidator extends AbstractAtsDslJavaValidator {
 
@@ -63,7 +66,8 @@ public class AtsDslJavaValidator extends AbstractAtsDslJavaValidator {
       for (StateDef state : atsDsl.getWorkDef().getStates()) {
          if (ordinals.contains(state.getOrdinal())) {
             String message = String.format("Ordinals must be unique [%s].", state.getOrdinal());
-            error(message, state, AtsDslPackage.Literals.STATE_DEF__ORDINAL, AtsDslPackage.STATE_DEF__ORDINAL, "unique_ordinals");
+            error(message, state, AtsDslPackage.Literals.STATE_DEF__ORDINAL, AtsDslPackage.STATE_DEF__ORDINAL,
+               "unique_ordinals");
          } else {
             ordinals.add(state.getOrdinal());
          }
@@ -82,7 +86,8 @@ public class AtsDslJavaValidator extends AbstractAtsDslJavaValidator {
                if (asDefaultToState != null) {
                   String message =
                      String.format("Only One AsDefault state allowed [%s].", toState.getState().getName());
-                  error(message, toState, AtsDslPackage.Literals.STATE_DEF__TRANSITION_STATES, AtsDslPackage.STATE_DEF__TRANSITION_STATES, "single_as_default");
+                  error(message, toState, AtsDslPackage.Literals.STATE_DEF__TRANSITION_STATES,
+                     AtsDslPackage.STATE_DEF__TRANSITION_STATES, "single_as_default");
                } else {
                   asDefaultToState = toState;
                }
@@ -91,7 +96,8 @@ public class AtsDslJavaValidator extends AbstractAtsDslJavaValidator {
                state.getName())) {
                String message =
                   String.format("State should not transition to itself [%s].", toState.getState().getName());
-               error(message, toState, AtsDslPackage.Literals.STATE_DEF__TRANSITION_STATES, AtsDslPackage.STATE_DEF__TRANSITION_STATES, "no_transition_to_self");
+               error(message, toState, AtsDslPackage.Literals.STATE_DEF__TRANSITION_STATES,
+                  AtsDslPackage.STATE_DEF__TRANSITION_STATES, "no_transition_to_self");
             }
          }
       }
@@ -104,7 +110,8 @@ public class AtsDslJavaValidator extends AbstractAtsDslJavaValidator {
       }
       for (WidgetDef widget : atsDsl.getWorkDef().getWidgetDefs()) {
          String attributeName = widget.getAttributeName();
-         validateAttributeName(attributeName, widget, AtsDslPackage.Literals.WIDGET_DEF__ATTRIBUTE_NAME, AtsDslPackage.WIDGET_DEF__ATTRIBUTE_NAME);
+         validateAttributeName(attributeName, widget, AtsDslPackage.Literals.WIDGET_DEF__ATTRIBUTE_NAME,
+            AtsDslPackage.WIDGET_DEF__ATTRIBUTE_NAME);
       }
       for (StateDef state : atsDsl.getWorkDef().getStates()) {
          LayoutType layout = state.getLayout();
@@ -117,8 +124,8 @@ public class AtsDslJavaValidator extends AbstractAtsDslJavaValidator {
    private void validateAttributeNames(EList<LayoutItem> layoutItems) {
       for (LayoutItem item : layoutItems) {
          if (item instanceof AttrWidget) {
-            validateAttributeName(((AttrWidget) item).getAttributeName(), item,AtsDslPackage.Literals.ATTR_WIDGET__ATTRIBUTE_NAME,
-               AtsDslPackage.ATTR_WIDGET__ATTRIBUTE_NAME);
+            validateAttributeName(((AttrWidget) item).getAttributeName(), item,
+               AtsDslPackage.Literals.ATTR_WIDGET__ATTRIBUTE_NAME, AtsDslPackage.ATTR_WIDGET__ATTRIBUTE_NAME);
          } else if (item instanceof Composite) {
             validateAttributeNames(((Composite) item).getLayoutItems());
          }

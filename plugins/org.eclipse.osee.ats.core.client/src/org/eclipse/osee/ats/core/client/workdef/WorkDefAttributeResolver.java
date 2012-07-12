@@ -16,6 +16,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.AttributeTypeToXWidgetName;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class WorkDefAttributeResolver implements IAttributeResolver {
 
    @Override

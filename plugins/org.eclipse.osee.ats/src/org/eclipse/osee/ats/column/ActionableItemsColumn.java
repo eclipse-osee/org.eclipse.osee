@@ -30,6 +30,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.swt.SWT;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ActionableItemsColumn extends XViewerAtsAttributeValueColumn {
 
    public static ActionableItemsColumn instance = new ActionableItemsColumn();

@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.core.util.Conditions;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public final class DeletedBranchProvider implements BranchProvider {
    private final BranchCache branchCache;

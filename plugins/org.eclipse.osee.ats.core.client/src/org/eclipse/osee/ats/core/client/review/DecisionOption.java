@@ -22,6 +22,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class DecisionOption {
    private String name;
    private Collection<IAtsUser> assignees = new HashSet<IAtsUser>();

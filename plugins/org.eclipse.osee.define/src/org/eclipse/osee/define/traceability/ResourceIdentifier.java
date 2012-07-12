@@ -11,7 +11,7 @@
 package org.eclipse.osee.define.traceability;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class ResourceIdentifier {
 

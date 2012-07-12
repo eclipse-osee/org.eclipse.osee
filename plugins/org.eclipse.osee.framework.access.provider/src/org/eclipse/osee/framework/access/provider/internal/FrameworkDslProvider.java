@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class FrameworkDslProvider extends AbstractOseeDslProvider {
 

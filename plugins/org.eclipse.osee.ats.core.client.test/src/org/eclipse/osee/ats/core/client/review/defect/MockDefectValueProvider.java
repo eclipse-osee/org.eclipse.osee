@@ -17,6 +17,9 @@ import java.util.List;
 import org.eclipse.osee.ats.core.validator.IValueProvider;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class MockDefectValueProvider implements IValueProvider {
 
    private final List<ReviewDefectItem> defectItems;

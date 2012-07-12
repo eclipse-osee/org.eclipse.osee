@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.core.framework.saxparse;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.Actual;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.AdditionalInfo;
@@ -80,8 +79,10 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 /**
- * @author Andrew M. Finkbeiner XMLReader xmlReader = XMLReaderFactory.createXMLReader(); CollectionParser handler = new
+ * XMLReader xmlReader = XMLReaderFactory.createXMLReader(); CollectionParser handler = new
  * CollectionParser(collectors); xmlReader.setContentHandler(handler); xmlReader.parse(new InputSource(inputStream));
+ * 
+ * @author Andrew M. Finkbeiner
  */
 public class OteSaxHandler extends AbstractSaxHandler {
 

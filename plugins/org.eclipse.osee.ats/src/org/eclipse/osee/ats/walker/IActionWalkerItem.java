@@ -7,6 +7,9 @@ package org.eclipse.osee.ats.walker;
 
 import org.eclipse.swt.graphics.Image;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IActionWalkerItem {
 
    public Image getImage();

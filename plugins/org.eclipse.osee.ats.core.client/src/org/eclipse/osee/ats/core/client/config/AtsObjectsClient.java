@@ -16,6 +16,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsObjectsClient {
 
    public static Collection<Artifact> getArtifacts(Collection<? extends IAtsObject> atsObjects) throws OseeCoreException {

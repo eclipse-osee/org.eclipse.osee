@@ -16,7 +16,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ImportTraceUnitsOperationTest.class})
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class JobsTestSuite {
    // Tests added above

@@ -33,7 +33,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class TestUnitCacheTest {
 

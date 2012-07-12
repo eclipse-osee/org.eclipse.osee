@@ -23,6 +23,9 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class WorldLabelProvider extends XViewerLabelProvider {
 
    private final WorldXViewer worldXViewer;

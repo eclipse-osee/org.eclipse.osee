@@ -30,6 +30,9 @@ import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ActionableItemOwner extends XViewerAtsColumn implements IXViewerValueColumn {
 
    public static ActionableItemOwner instance = new ActionableItemOwner();

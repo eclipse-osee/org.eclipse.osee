@@ -19,6 +19,9 @@ import org.eclipse.osee.ats.core.client.review.role.UserRole;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class UserRoleContentProvider implements ITreeContentProvider {
 
    protected Collection<UserRole> rootSet = new HashSet<UserRole>();

@@ -10,6 +10,9 @@ import org.eclipse.osee.ats.walker.ActionWalkerView;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ActionWalkerRefreshAction extends Action {
 
    private final ActionWalkerView view;

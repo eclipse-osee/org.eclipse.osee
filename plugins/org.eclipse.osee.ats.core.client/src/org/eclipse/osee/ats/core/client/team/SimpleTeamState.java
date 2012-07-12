@@ -13,6 +13,9 @@ package org.eclipse.osee.ats.core.client.team;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.core.workflow.StateTypeAdapter;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class SimpleTeamState extends StateTypeAdapter {
    private final String name;
 

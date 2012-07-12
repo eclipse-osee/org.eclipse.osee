@@ -15,7 +15,7 @@ import org.eclipse.osee.display.api.components.SearchHeaderComponent;
 import org.eclipse.osee.display.api.data.ViewId;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public interface AtsSearchHeaderComponent extends SearchHeaderComponent {
 

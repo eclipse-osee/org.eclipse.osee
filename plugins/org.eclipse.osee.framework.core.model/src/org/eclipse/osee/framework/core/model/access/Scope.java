@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  * @author Roberto E. Escobar
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class Scope implements Cloneable {
 

@@ -13,6 +13,9 @@ package org.eclipse.osee.ats.core.workflow;
 import java.util.List;
 import org.eclipse.osee.ats.api.workdef.StateType;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class OneStates extends StateTypeAdapter {
 
    public static OneStates Endorse = new OneStates("Endorse", StateType.Working, "This is OneStates Endorse");

@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public interface BranchProvider {
    Collection<Branch> getBranches() throws OseeCoreException;

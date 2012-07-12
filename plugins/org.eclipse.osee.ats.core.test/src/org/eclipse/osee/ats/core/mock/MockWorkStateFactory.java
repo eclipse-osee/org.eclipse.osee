@@ -11,6 +11,9 @@ import org.eclipse.osee.ats.core.model.WorkState;
 import org.eclipse.osee.ats.core.model.WorkStateFactory;
 import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class MockWorkStateFactory implements WorkStateFactory {
 
    @Override

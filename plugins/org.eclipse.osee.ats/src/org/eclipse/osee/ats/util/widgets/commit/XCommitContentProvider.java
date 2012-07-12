@@ -15,6 +15,9 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class XCommitContentProvider implements ITreeContentProvider {
 
    public XCommitContentProvider() {

@@ -23,6 +23,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 
+/**
+ * @author Donald G. Dunne
+ */
 public final class LoadChangesOperation extends AbstractOperation {
 
    private final Collection<Change> changes;

@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * reflected in the Collection, and vice-versa. However, modifications to the Collection outside of this class are
  * generally discouraged because removal of the last item would then not guarantee removal of the key.
  * 
- * @author Don Dunne
+ * @author Donald G. Dunne
  */
 public class HashCollection<K, V> {
 

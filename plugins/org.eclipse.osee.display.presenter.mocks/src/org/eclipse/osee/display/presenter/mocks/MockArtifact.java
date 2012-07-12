@@ -34,7 +34,7 @@ import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class MockArtifact implements ReadableArtifact {
 

@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface ISMAEditorListener {
 
    public void editorDisposing();

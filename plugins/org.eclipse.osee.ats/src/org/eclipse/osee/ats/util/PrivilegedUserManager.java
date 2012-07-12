@@ -26,6 +26,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class PrivilegedUserManager {
 
    public static Set<IAtsUser> getPrivilegedUsers(AbstractWorkflowArtifact workflow) throws OseeCoreException {

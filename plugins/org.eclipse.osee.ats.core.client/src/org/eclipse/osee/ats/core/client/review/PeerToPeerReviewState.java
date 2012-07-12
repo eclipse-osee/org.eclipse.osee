@@ -14,6 +14,9 @@ import java.util.List;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.core.workflow.StateTypeAdapter;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class PeerToPeerReviewState extends StateTypeAdapter {
    public static PeerToPeerReviewState Prepare = new PeerToPeerReviewState("Prepare", StateType.Working);
    public static PeerToPeerReviewState Review = new PeerToPeerReviewState("Review", StateType.Working);

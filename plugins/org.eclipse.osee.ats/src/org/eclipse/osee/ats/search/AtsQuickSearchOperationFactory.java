@@ -14,6 +14,9 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IOperationFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCheckDialog;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsQuickSearchOperationFactory implements IOperationFactory {
 
    @Override

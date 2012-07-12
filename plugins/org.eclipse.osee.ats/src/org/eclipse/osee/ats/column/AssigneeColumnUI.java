@@ -45,6 +45,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AssigneeColumnUI extends XViewerAtsColumn implements IXViewerValueColumn, IAltLeftClickProvider, IMultiColumnEditProvider {
 
    public static AssigneeColumnUI instance = new AssigneeColumnUI();

@@ -34,6 +34,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class TeamDefinitionArtifactStore extends ArtifactAtsObjectStore {
 
    public TeamDefinitionArtifactStore(IAtsTeamDefinition teamDef) {

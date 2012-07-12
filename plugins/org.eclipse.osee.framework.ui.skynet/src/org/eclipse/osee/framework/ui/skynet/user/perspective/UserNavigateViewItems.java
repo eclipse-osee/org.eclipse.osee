@@ -33,6 +33,9 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.user.OpenUsersInMassEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class UserNavigateViewItems implements XNavigateViewItems, IXNavigateCommonItem {
 
    private final static UserNavigateViewItems instance = new UserNavigateViewItems();

@@ -21,6 +21,9 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ArtifactNote implements INoteStorageProvider {
    private final WeakReference<Artifact> artifactRef;
 

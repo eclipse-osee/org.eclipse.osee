@@ -15,6 +15,9 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.swt.graphics.Image;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ChangeTypeLabelProvider implements ILabelProvider {
 
    @Override

@@ -8,6 +8,9 @@ package org.eclipse.osee.ats.dsl;
 import java.util.Collection;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IResourceProvider {
    Collection<String> getErrors();
 

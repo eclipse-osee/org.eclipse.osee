@@ -5,6 +5,9 @@
  */
 package org.eclipse.osee.ats.api.workdef;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IAttributeResolver {
 
    boolean isAttributeNamed(String attributeName);

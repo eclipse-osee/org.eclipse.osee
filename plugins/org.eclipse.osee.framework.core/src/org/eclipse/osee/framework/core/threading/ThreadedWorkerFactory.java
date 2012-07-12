@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.core.threading;
 import java.util.concurrent.Callable;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public interface ThreadedWorkerFactory<T> {
 

@@ -9,6 +9,9 @@ import java.util.List;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IAtsNotificationListener {
 
    public void notifyAssigned(List<IAtsUser> notifyAssignees) throws OseeCoreException;

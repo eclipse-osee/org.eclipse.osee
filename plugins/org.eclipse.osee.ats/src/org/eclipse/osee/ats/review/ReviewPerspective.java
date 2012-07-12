@@ -17,6 +17,9 @@ import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ReviewPerspective implements IPerspectiveFactory {
    public static String ID = "org.eclipse.osee.ats.review.ReviewPerspective";
 

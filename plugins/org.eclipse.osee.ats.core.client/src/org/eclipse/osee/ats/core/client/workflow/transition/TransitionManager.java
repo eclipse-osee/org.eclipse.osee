@@ -41,6 +41,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class TransitionManager {
 
    private final ITransitionHelper helper;

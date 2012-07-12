@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.model;
 
+/**
+ * @author Donald G. Dunne
+ */
 public enum VersionLockedType {
    Locked,
    UnLocked,

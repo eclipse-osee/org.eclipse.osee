@@ -15,7 +15,7 @@ import org.eclipse.osee.display.api.data.ViewSearchParameters;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class AtsSearchParameters extends ViewSearchParameters {
 

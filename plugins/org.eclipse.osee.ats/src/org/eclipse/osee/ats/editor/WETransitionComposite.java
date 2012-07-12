@@ -68,6 +68,9 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class WETransitionComposite extends Composite {
 
    private final XComboViewer transitionToStateCombo;

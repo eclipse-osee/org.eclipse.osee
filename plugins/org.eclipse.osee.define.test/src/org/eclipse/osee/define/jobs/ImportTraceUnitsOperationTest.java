@@ -40,7 +40,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public final class ImportTraceUnitsOperationTest {
 

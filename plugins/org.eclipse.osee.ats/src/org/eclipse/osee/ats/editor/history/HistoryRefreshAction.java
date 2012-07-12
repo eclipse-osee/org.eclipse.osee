@@ -32,6 +32,9 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.ui.progress.UIJob;
 
+/**
+ * @author Donald G. Dunne
+ */
 public final class HistoryRefreshAction extends Action {
 
    private final XHistoryViewer xHistoryViewer;

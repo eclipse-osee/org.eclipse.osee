@@ -21,6 +21,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.junit.Test;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class WorkStateProviderImplTest {
    private final MockAtsUser joe = new MockAtsUser("joe");
    private final MockAtsUser steve = new MockAtsUser("steve");

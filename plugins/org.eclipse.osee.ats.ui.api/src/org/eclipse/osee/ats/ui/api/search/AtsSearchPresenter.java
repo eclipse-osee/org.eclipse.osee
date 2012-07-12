@@ -16,7 +16,7 @@ import org.eclipse.osee.display.api.data.ViewId;
 import org.eclipse.osee.display.api.search.SearchPresenter;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public interface AtsSearchPresenter<T extends AtsSearchHeaderComponent, K extends AtsSearchParameters> extends SearchPresenter<T, K> {
 

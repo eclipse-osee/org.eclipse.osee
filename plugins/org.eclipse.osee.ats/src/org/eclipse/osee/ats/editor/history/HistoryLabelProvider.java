@@ -16,6 +16,10 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.swt.graphics.Image;
 
+/**
+ * @author Donald G. Dunne
+ * @author Jeff C. Phillips
+ */
 public class HistoryLabelProvider extends XViewerLabelProvider {
 
    public HistoryLabelProvider(XViewer viewer) {

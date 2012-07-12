@@ -13,6 +13,9 @@ package org.eclipse.osee.ats.core.validator;
 import java.util.Collection;
 import java.util.Date;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class MockDateValueProvider extends MockValueProvider {
 
    private final Collection<Date> dateValues;

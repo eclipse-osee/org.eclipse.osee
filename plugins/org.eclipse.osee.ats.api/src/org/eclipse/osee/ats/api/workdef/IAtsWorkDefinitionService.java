@@ -9,6 +9,9 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.util.XResultData;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IAtsWorkDefinitionService {
 
    IAtsWorkDefinition getWorkDef(String id, XResultData resultData) throws Exception;

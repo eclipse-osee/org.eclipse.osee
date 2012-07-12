@@ -10,6 +10,9 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.model.IAtsWorkData;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class MockWorkData implements IAtsWorkData {
 
    private StateType StateType;

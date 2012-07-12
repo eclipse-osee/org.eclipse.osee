@@ -17,7 +17,7 @@ import java.nio.CharBuffer;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public abstract class AbstractSourceTagger {
 

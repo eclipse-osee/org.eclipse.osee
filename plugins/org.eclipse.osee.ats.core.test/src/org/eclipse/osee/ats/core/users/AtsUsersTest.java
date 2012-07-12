@@ -17,6 +17,9 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.junit.Test;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsUsersTest {
 
    private final MockAtsUser joe = new MockAtsUser("joe");

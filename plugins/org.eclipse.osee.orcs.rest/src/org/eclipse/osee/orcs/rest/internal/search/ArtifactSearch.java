@@ -14,7 +14,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  * @author Roberto E. Escobar
  */
 public abstract class ArtifactSearch {

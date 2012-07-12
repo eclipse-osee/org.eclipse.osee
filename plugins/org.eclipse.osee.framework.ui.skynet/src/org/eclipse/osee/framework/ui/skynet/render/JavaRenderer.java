@@ -52,7 +52,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class JavaRenderer extends FileSystemRenderer {
 

@@ -14,7 +14,7 @@ import java.util.Date;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public interface TestRunOperator {
 

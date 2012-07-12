@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class TestUnitTagger extends AbstractSourceTagger {
 

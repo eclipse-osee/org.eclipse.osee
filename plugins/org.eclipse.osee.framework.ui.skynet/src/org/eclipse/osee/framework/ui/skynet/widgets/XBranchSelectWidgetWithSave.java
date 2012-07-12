@@ -20,6 +20,9 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
+/**
+ * @author Jeff C. Phillips
+ */
 public class XBranchSelectWidgetWithSave extends XBranchSelectWidget implements IAttributeWidget {
 
    private Artifact artifact;

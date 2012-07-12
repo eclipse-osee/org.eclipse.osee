@@ -14,7 +14,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 
 /**
- * @author Don Dunne
+ * @author Donald G. Dunne
  */
 public final class CoverageArtifactTypes {
 

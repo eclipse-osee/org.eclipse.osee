@@ -27,6 +27,9 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class TitleColumn extends XViewerAtsAttributeValueColumn {
 
    public static TitleColumn instance = new TitleColumn();

@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public interface ArtifactProvider {
 

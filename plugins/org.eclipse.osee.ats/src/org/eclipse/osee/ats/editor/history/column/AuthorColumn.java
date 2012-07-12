@@ -16,6 +16,9 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.swt.SWT;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AuthorColumn extends XViewerValueColumn {
    private static AuthorColumn instance = new AuthorColumn();
 

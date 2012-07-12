@@ -8,6 +8,9 @@ package org.eclipse.osee.ats.core.model;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IAtsActionableItem extends IAtsConfigObject {
 
    /*****************************

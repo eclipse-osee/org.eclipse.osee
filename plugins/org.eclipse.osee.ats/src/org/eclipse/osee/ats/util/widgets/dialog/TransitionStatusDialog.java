@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 
 /**
- * @author Donald G Dunne
+ * @author Donald G. Dunne
  */
 public class TransitionStatusDialog extends MessageDialog {
 

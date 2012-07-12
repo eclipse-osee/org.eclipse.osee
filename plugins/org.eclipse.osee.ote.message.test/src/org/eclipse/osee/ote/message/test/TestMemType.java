@@ -13,7 +13,7 @@ package org.eclipse.osee.ote.message.test;
 import org.eclipse.osee.ote.message.enums.DataType;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  */
 public enum TestMemType implements DataType {
    ETHERNET,

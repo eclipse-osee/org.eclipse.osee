@@ -15,6 +15,9 @@ import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
+/**
+ * @author Shawn F. Cook
+ */
 public class ArtifactValidationRule extends AbstractValidationRule {
 
    private String getStatusMessage(Artifact itemChecked, IStatus status) throws OseeCoreException {

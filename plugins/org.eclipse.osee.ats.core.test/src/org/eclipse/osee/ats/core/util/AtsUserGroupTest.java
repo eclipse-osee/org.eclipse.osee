@@ -10,6 +10,9 @@ import junit.framework.Assert;
 import org.eclipse.osee.ats.core.mock.MockAtsUser;
 import org.junit.Test;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsUserGroupTest {
    private final MockAtsUser joe = new MockAtsUser("joe");
    private final MockAtsUser steve = new MockAtsUser("steve");

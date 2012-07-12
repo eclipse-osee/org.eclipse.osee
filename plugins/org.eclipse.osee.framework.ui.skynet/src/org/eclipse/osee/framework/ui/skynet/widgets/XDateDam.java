@@ -22,6 +22,9 @@ import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class XDateDam extends XDate implements IAttributeWidget {
 
    private Artifact artifact;

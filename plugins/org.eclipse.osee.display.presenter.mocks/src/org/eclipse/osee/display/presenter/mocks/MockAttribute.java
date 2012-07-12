@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class MockAttribute implements ReadableAttribute<String> {
 

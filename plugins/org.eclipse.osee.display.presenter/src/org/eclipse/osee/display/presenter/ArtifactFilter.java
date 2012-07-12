@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections.Filter;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class ArtifactFilter implements Filter<ReadableArtifact> {
 

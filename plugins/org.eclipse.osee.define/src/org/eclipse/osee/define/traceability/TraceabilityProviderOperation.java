@@ -13,7 +13,7 @@ package org.eclipse.osee.define.traceability;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public abstract class TraceabilityProviderOperation extends AbstractOperation implements ITraceabilityProvider {
 

@@ -14,7 +14,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
- * @author TheronVirgin
+ * @author Theron Virgin
  */
 public interface CommitAction {
    public void runCommitAction(IOseeBranch sourceBranch, IOseeBranch destinationBranch) throws OseeCoreException;

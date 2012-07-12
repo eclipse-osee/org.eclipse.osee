@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsCoreXWidgetValidatorProvider implements AtsXWidgetValidatorProvider {
    private static List<IAtsXWidgetValidator> atsValidators;
    public static AtsCoreXWidgetValidatorProvider instance = new AtsCoreXWidgetValidatorProvider();

@@ -14,7 +14,7 @@ import org.eclipse.osee.display.api.components.DisplayOptionsComponent;
 import org.eclipse.osee.display.api.data.DisplayOptions;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class MockDisplayOptionsComponent implements DisplayOptionsComponent {
 

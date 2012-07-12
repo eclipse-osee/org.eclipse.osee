@@ -11,7 +11,7 @@
 package org.eclipse.osee.display.api.components;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public interface DisplaysErrorComponent {
    public enum MsgType {

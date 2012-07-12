@@ -14,6 +14,9 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.swt.SWT;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ResolutionColumn extends XViewerAtsAttributeValueColumn {
 
    public static ResolutionColumn instance = new ResolutionColumn();

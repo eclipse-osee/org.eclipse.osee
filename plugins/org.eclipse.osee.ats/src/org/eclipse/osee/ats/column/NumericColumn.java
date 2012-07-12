@@ -15,6 +15,9 @@ import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.swt.SWT;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class NumericColumn extends XViewerAtsAttributeValueColumn {
 
    public static NumericColumn numeric1 = new NumericColumn(AtsAttributeTypes.Numeric1);

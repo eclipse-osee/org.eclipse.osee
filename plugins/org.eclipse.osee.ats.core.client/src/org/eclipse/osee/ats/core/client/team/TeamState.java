@@ -14,6 +14,9 @@ import java.util.List;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.core.workflow.StateTypeAdapter;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class TeamState extends StateTypeAdapter {
    public static TeamState Endorse = new TeamState("Endorse", StateType.Working);
    public static TeamState Analyze = new TeamState("Analyze", StateType.Working);

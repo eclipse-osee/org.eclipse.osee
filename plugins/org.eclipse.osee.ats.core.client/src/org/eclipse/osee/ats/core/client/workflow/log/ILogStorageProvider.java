@@ -12,6 +12,9 @@ package org.eclipse.osee.ats.core.client.workflow.log;
 
 import org.eclipse.core.runtime.IStatus;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface ILogStorageProvider {
 
    String getLogXml();

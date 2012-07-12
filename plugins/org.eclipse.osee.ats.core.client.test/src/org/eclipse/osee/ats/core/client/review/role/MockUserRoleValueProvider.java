@@ -14,10 +14,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import org.eclipse.osee.ats.core.client.review.role.UserRole;
 import org.eclipse.osee.ats.core.validator.IValueProvider;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class MockUserRoleValueProvider implements IValueProvider {
 
    private final List<UserRole> roles;

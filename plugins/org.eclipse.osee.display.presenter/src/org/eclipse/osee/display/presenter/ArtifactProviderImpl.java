@@ -48,7 +48,7 @@ import org.eclipse.osee.orcs.search.StringOperator;
 import com.google.common.collect.Lists;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class ArtifactProviderImpl implements ArtifactProvider {
 

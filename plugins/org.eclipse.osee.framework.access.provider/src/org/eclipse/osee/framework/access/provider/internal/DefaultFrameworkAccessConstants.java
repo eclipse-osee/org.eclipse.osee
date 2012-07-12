@@ -14,7 +14,7 @@ import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public final class DefaultFrameworkAccessConstants {
 

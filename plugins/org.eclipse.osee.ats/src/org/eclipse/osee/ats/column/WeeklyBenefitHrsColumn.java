@@ -15,6 +15,9 @@ import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.swt.SWT;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class WeeklyBenefitHrsColumn extends XViewerAtsAttributeValueColumn {
 
    public static WeeklyBenefitHrsColumn instance = new WeeklyBenefitHrsColumn();

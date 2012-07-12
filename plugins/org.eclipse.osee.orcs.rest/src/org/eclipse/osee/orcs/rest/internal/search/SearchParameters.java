@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.rest.internal.search;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  * @author Roberto E. Escobar
  */
 public class SearchParameters {

@@ -39,6 +39,9 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class CopyAtsConfigurationOperation extends AbstractOperation {
 
    private final ConfigData data;

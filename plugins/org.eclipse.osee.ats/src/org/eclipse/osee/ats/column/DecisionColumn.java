@@ -17,6 +17,9 @@ import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.swt.SWT;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class DecisionColumn extends XViewerAtsAttributeValueColumn {
 
    public static DecisionColumn instance = new DecisionColumn();

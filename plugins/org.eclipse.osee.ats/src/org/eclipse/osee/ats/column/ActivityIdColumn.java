@@ -5,6 +5,9 @@
  */
 package org.eclipse.osee.ats.column;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ActivityIdColumn extends WorkPackageColumn {
    public static ActivityIdColumn instance = new ActivityIdColumn();
 

@@ -9,6 +9,9 @@ import org.eclipse.osee.ats.core.config.impl.ActionableItem;
 import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ActionableItemFactory {
 
    public static IAtsActionableItem createActionableItem(String guid, String title) {

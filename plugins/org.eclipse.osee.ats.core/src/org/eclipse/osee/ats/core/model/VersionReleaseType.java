@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.model;
 
-public  enum VersionReleaseType {
+/**
+ * @author Donald G. Dunne
+ */
+public enum VersionReleaseType {
    Released,
    UnReleased,
    Both

@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
  * @author Donald G. Dunne
- * @author Karol M Wilk
+ * @author Karol M. Wilk
  */
 public class XWidgetsExampleBlam extends AbstractBlam {
 

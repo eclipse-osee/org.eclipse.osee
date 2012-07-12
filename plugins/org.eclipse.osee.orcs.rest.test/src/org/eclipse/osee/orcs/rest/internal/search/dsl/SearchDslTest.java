@@ -29,7 +29,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class SearchDslTest {
 

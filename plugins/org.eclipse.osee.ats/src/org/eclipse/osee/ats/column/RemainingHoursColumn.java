@@ -34,6 +34,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class RemainingHoursColumn extends XViewerAtsColumn implements IXViewerValueColumn, IAltLeftClickProvider {
 
    public static RemainingHoursColumn instance = new RemainingHoursColumn();

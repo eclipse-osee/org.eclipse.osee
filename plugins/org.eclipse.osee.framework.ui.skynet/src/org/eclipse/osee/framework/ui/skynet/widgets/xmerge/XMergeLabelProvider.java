@@ -25,6 +25,9 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
+/**
+ * @author Jeff C. Phillips
+ */
 public class XMergeLabelProvider extends XViewerLabelProvider {
    public static enum ConflictState {
       UNTOUCHED(2, " "),

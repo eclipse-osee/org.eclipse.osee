@@ -19,7 +19,7 @@ import org.junit.runners.Suite;
 AtsSearchPresenterTest.class,//
 })
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class AtsPresenterTestSuite {
 

@@ -55,7 +55,7 @@ import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.search.Match;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends ViewSearchParameters> implements SearchPresenter<T, K>, SearchProgressProvider {
 

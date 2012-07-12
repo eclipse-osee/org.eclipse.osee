@@ -5,6 +5,9 @@
  */
 package org.eclipse.osee.ats.actions;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface ImportListener {
 
    public void importCompleted();

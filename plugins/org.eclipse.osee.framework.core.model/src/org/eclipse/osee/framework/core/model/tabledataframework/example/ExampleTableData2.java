@@ -13,8 +13,10 @@ package org.eclipse.osee.framework.core.model.tabledataframework.example;
 import org.eclipse.osee.framework.core.model.tabledataframework.TableDataImpl;
 
 /**
- * @author Shawn F. Cook This class is a simpler example than ExampleTableData1. It has only one KeyColumn and two
- * Columns. There is also no error column so any exceptions that occur might be lost.
+ * This class is a simpler example than ExampleTableData1. It has only one KeyColumn and two Columns. There is also no
+ * error column so any exceptions that occur might be lost.
+ * 
+ * @author Shawn F. Cook
  */
 public class ExampleTableData2 extends TableDataImpl {
 

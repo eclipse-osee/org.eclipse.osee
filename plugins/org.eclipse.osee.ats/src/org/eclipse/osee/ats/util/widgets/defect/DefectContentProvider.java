@@ -19,6 +19,9 @@ import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class DefectContentProvider implements ITreeContentProvider {
 
    protected Collection<ReviewDefectItem> rootSet = new HashSet<ReviewDefectItem>();

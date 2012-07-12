@@ -58,7 +58,7 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Ryan D. Brooks
- * @author Jeff C. Philips
+ * @author Jeff C. Phillips
  */
 public class DefaultArtifactRenderer implements IRenderer {
    private static final IComparator DEFAULT_COMPARATOR = new DefaultArtifactCompare();

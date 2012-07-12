@@ -25,6 +25,9 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class XTeamDefinitionCombo extends XComboViewer {
    public static final String WIDGET_ID = XTeamDefinitionCombo.class.getSimpleName();
    private Artifact selectedTeamDef = null;

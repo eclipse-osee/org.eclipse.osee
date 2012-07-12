@@ -43,6 +43,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
 
    public static ChangeTypeColumn instance = new ChangeTypeColumn();

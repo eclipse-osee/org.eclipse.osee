@@ -34,6 +34,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class GoalOrderColumn extends XViewerAtsColumn implements IXViewerValueColumn, IAltLeftClickProvider {
 
    public static GoalOrderColumn instance = new GoalOrderColumn();
@@ -105,7 +108,8 @@ public class GoalOrderColumn extends XViewerAtsColumn implements IXViewerValueCo
    }
 
    public static GoalArtifact getParentGoalArtifact(TreeItem treeItem) {
-      if (Widgets.isAccessible(treeItem) && Widgets.isAccessible(treeItem.getParentItem()) && Artifacts.isOfType(treeItem.getParentItem().getData(), AtsArtifactTypes.Goal)) {
+      if (Widgets.isAccessible(treeItem) && Widgets.isAccessible(treeItem.getParentItem()) && Artifacts.isOfType(
+         treeItem.getParentItem().getData(), AtsArtifactTypes.Goal)) {
          return (GoalArtifact) treeItem.getParentItem().getData();
       }
       return null;

@@ -35,7 +35,7 @@ import org.eclipse.osee.orcs.search.Match;
 import org.junit.Test;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class AtsSearchPresenterTest {
 

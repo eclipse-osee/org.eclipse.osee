@@ -22,7 +22,7 @@ import org.eclipse.osee.display.api.data.ViewId;
 import org.eclipse.osee.display.api.data.ViewSearchParameters;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public interface SearchPresenter<T extends SearchHeaderComponent, K extends ViewSearchParameters> {
 

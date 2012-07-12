@@ -18,6 +18,9 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class GenerateGuid extends XNavigateItemAction {
 
    public GenerateGuid(XNavigateItem parent) {
@@ -34,7 +37,7 @@ public class GenerateGuid extends XNavigateItemAction {
          }
          resultData.log(guid);
       }
-      XResultDataUI.report(resultData,"GUIDs");
+      XResultDataUI.report(resultData, "GUIDs");
    }
 
 }

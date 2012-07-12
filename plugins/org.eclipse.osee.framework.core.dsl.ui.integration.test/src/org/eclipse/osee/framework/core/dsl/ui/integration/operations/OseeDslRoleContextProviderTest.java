@@ -32,7 +32,7 @@ import org.junit.Test;
 /**
  * Test Case for {@link OseeDslRoleContextProvider}
  * 
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class OseeDslRoleContextProviderTest {
 

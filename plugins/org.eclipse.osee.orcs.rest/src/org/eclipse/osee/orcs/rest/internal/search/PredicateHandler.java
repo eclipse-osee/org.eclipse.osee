@@ -14,7 +14,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  * @author Roberto E. Escobar
  */
 public interface PredicateHandler {

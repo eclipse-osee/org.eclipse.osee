@@ -33,7 +33,7 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extends AtsSearchParameters> extends SearchPresenterImpl<T, K> implements AtsSearchPresenter<T, K> {
 

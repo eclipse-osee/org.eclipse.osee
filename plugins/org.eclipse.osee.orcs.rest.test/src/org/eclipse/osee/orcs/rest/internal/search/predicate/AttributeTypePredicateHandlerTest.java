@@ -29,7 +29,7 @@ import org.eclipse.osee.orcs.search.StringOperator;
 import org.junit.Test;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class AttributeTypePredicateHandlerTest {
 

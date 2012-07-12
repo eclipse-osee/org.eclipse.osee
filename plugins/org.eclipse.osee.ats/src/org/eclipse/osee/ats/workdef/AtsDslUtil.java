@@ -17,6 +17,9 @@ import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsDslUtil {
 
    public static String getString(WorkDefinitionSheet sheet) throws OseeCoreException {

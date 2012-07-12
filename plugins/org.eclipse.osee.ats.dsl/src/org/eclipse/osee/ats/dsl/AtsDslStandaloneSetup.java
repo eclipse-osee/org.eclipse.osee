@@ -11,13 +11,13 @@
 package org.eclipse.osee.ats.dsl;
 
 /**
- * Initialization support for running Xtext languages 
- * without equinox extension registry
+ * Initialization support for running Xtext languages without equinox extension registry
+ * 
+ * @author Donald G. Dunne
  */
-public class AtsDslStandaloneSetup extends AtsDslStandaloneSetupGenerated{
+public class AtsDslStandaloneSetup extends AtsDslStandaloneSetupGenerated {
 
-	public static void doSetup() {
-		new AtsDslStandaloneSetup().createInjectorAndDoEMFRegistration();
-	}
+   public static void doSetup() {
+      new AtsDslStandaloneSetup().createInjectorAndDoEMFRegistration();
+   }
 }
-

@@ -9,6 +9,9 @@ import junit.framework.Assert;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.junit.Test;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class WidgetStatusTest {
 
    @Test

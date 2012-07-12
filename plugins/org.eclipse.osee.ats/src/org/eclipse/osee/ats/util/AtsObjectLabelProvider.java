@@ -15,6 +15,9 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.swt.graphics.Image;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsObjectLabelProvider extends LabelProvider { //StyledCellLabelProvider {
 
    public AtsObjectLabelProvider() {

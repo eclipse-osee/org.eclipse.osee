@@ -43,6 +43,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
 
    public static RelatedToStateColumn instance = new RelatedToStateColumn();

@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  * @author Donald G. Dunne
  */
 public class ShowNextTypeRemoteIds extends AbstractBlam {

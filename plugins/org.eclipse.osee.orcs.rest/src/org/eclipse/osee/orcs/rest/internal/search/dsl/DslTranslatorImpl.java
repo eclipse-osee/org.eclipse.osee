@@ -21,7 +21,7 @@ import org.eclipse.osee.orcs.rest.internal.search.Predicate;
 import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchDsl.DslTranslator;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  * @author Roberto E. Escobar
  */
 public class DslTranslatorImpl implements DslTranslator {

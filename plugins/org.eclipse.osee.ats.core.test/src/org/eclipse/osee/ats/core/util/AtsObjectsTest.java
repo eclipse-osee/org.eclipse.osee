@@ -16,6 +16,9 @@ import org.eclipse.osee.ats.core.users.SystemUser;
 import org.eclipse.osee.ats.core.users.UnAssigned;
 import org.junit.Test;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsObjectsTest {
 
    @Test

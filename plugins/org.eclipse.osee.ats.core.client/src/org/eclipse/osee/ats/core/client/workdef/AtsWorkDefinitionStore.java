@@ -17,6 +17,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsWorkDefinitionStore implements IAtsWorkDefinitionStore {
 
    public static AtsWorkDefinitionStore instance;

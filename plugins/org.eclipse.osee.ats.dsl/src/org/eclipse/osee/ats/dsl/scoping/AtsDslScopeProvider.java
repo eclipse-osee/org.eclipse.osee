@@ -6,11 +6,10 @@ package org.eclipse.osee.ats.dsl.scoping;
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider;
 
 /**
- * This class contains custom scoping description.
+ * This class contains custom scoping description. see :
+ * http://www.eclipse.org/Xtext/documentation/latest/xtext.html#scoping on how and when to use it
  * 
- * see : http://www.eclipse.org/Xtext/documentation/latest/xtext.html#scoping
- * on how and when to use it 
- *
+ * @author Donald G. Dunne
  */
 public class AtsDslScopeProvider extends AbstractDeclarativeScopeProvider {
 

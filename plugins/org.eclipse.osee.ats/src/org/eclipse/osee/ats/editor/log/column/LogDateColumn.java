@@ -16,6 +16,9 @@ import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.swt.SWT;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class LogDateColumn extends XViewerValueColumn {
 
    private static LogDateColumn instance = new LogDateColumn();

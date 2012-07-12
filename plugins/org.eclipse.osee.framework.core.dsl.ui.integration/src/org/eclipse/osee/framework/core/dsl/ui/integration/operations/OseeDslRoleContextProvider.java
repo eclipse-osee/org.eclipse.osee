@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class OseeDslRoleContextProvider implements RoleContextProvider {
 

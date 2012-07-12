@@ -13,7 +13,9 @@ package org.eclipse.osee.ote.core.environment.interfaces;
 import java.util.ArrayList;
 
 /**
- * @author Robert A. Fisher The TestPoint interface should be implemented by objects that store pass/fail data.
+ * The TestPoint interface should be implemented by objects that store pass/fail data.
+ * 
+ * @author Robert A. Fisher
  */
 public interface ITestGroup extends ITestPoint {
    public int size();

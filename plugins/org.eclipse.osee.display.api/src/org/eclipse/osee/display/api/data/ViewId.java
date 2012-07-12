@@ -15,7 +15,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class ViewId extends NamedIdentity<String> {
 

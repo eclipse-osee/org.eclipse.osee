@@ -15,6 +15,9 @@ import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.swt.SWT;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class CategoryColumn extends XViewerAtsAttributeValueColumn {
 
    public static CategoryColumn category1 = new CategoryColumn(AtsAttributeTypes.Category1);

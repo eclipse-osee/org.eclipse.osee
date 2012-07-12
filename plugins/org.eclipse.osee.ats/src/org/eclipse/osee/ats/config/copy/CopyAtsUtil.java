@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.copy;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class CopyAtsUtil {
 
    public static String getConvertedName(ConfigData configData, String name) {

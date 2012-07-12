@@ -36,6 +36,9 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultBrowserHyperCmd;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class Overview {
 
    public final static String normalColor = "#EEEEEE";

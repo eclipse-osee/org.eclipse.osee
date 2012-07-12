@@ -13,6 +13,9 @@ package org.eclipse.osee.ats.workdef;
 import java.util.Collection;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IAtsWorkDefinitionSheetProvider {
 
    public Collection<WorkDefinitionSheet> getWorkDefinitionSheets();

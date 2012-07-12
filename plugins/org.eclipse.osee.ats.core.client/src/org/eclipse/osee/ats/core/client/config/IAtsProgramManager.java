@@ -11,6 +11,9 @@ import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IAtsProgramManager {
 
    public String getName(TeamWorkFlowArtifact teamArt);

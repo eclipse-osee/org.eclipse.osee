@@ -18,6 +18,9 @@ import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.framework.core.enums.Active;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ActionableItemTreeContentProvider implements ITreeContentProvider {
 
    private final Active active;

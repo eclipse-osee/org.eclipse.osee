@@ -7,6 +7,9 @@ package org.eclipse.osee.ats.api.workdef;
 
 import java.util.List;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IAtsDecisionReviewOption {
 
    public abstract String getName();

@@ -14,7 +14,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public final class PurgeBranchTest {
 

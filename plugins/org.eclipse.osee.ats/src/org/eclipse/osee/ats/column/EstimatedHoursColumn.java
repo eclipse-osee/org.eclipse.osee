@@ -22,6 +22,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.swt.SWT;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class EstimatedHoursColumn extends XViewerAtsAttributeValueColumn {
 
    public static EstimatedHoursColumn instance = new EstimatedHoursColumn();

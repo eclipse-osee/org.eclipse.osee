@@ -12,6 +12,9 @@ package org.eclipse.osee.ats.core.client.workflow.note;
 
 import org.eclipse.core.runtime.IStatus;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface INoteStorageProvider {
 
    String getNoteXml();

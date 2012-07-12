@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public interface ITraceabilityProvider {
 

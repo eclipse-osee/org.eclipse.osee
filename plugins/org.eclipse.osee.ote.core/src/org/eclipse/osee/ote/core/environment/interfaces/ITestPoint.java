@@ -14,7 +14,9 @@ import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 
 /**
- * @author Robert A. Fisher The TestPoint interface should be implemented by objects that store pass/fail data.
+ * The TestPoint interface should be implemented by objects that store pass/fail data.
+ * 
+ * @author Robert A. Fisher
  */
 public interface ITestPoint extends Xmlizable, XmlizableStream {
    public boolean isPass();

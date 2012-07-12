@@ -14,6 +14,9 @@ import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ActionableItem extends AtsObject implements IAtsActionableItem {
 
    private boolean actionable = true;

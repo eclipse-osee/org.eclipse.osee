@@ -24,13 +24,17 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.DemoUsers;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsConfigAddDemoUsers implements IDbInitializationTask {
 
    @Override
    public void run() throws OseeCoreException {
       List<User> admins = new ArrayList<User>();
 
-      SkynetTransaction transaction = TransactionManager.createTransaction(BranchManager.getCommonBranch(), "Add Dev Users");
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(BranchManager.getCommonBranch(), "Add Dev Users");
       for (IUserToken userEnum : DemoUsers.values()) {
          User user = UserManager.createUser(userEnum, transaction);
          if (userEnum.isAdmin()) {
@@ -40,7 +44,8 @@ public class AtsConfigAddDemoUsers implements IDbInitializationTask {
 
       transaction.execute();
 
-      SkynetTransaction transaction1 = TransactionManager.createTransaction(BranchManager.getCommonBranch(), "Configure OSEEAdmin");
+      SkynetTransaction transaction1 =
+         TransactionManager.createTransaction(BranchManager.getCommonBranch(), "Configure OSEEAdmin");
       SystemGroup.OseeAdmin.getArtifact().persist(transaction1);
       AtsGroup.AtsAdmin.getArtifact().persist(transaction1);
       AtsGroup.AtsTempAdmin.addMember(UserManager.getUser(DemoUsers.Joe_Smith));

@@ -17,7 +17,7 @@ import java.io.InputStream;
 import javax.xml.bind.DatatypeConverter;
 
 /**
- * @author Jeff C. phillips
+ * @author Jeff C. Phillips
  */
 public class WordImageCompare {
 

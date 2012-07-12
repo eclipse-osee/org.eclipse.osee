@@ -11,7 +11,7 @@
 package org.eclipse.osee.display.api.data;
 
 /*
- * @author Shawn Cook
+ * @author Shawn F. Cook
  */
 public enum ViewRelationType {
    PARENT("Default Hierarchical - parent");

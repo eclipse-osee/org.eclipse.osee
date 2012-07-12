@@ -28,6 +28,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class XWidgetAccessDecorationProvider implements XWidgetDecorator.DecorationProvider {
 
    private static final Image LOCK_IMAGE = ImageManager.getImage(FrameworkImage.LOCK_OVERLAY);

@@ -10,6 +10,9 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.walker.ActionWalkerView;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ActionWalkerLayoutAction extends Action {
 
    private final ActionWalkerView view;

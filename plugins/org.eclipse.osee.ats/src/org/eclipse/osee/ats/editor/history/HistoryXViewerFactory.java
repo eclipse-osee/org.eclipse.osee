@@ -18,6 +18,10 @@ import org.eclipse.osee.ats.editor.history.column.DateColumn;
 import org.eclipse.osee.ats.editor.history.column.EventColumn;
 import org.eclipse.osee.ats.editor.history.column.TransactionColumn;
 
+/**
+ * @author Donald G. Dunne
+ * @author Jeff C. Phillips
+ */
 public class HistoryXViewerFactory extends XViewerFactory {
 
    public HistoryXViewerFactory() {

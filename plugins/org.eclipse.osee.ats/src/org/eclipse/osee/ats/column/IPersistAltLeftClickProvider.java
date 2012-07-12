@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IPersistAltLeftClickProvider {
 
    boolean isAltLeftClickPersist();

@@ -18,7 +18,7 @@ import org.eclipse.osee.display.api.data.SearchResultMatch;
 import org.eclipse.osee.display.api.data.ViewArtifact;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class MockSearchResultComponent implements SearchResultComponent {
 

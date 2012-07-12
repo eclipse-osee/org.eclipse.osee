@@ -7,6 +7,9 @@ package org.eclipse.osee.ats.core.workdef;
 
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsWorkDefinitionService {
 
    private static AtsWorkDefinitionService instance;

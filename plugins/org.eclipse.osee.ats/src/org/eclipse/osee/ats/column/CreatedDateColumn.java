@@ -28,6 +28,9 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class CreatedDateColumn extends XViewerAtsColumn implements IXViewerValueColumn {
 
    public static CreatedDateColumn instance = new CreatedDateColumn();

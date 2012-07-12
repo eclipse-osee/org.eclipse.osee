@@ -16,7 +16,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({PurgeBranchTest.class, DeletedBranchProviderTest.class, MultiBranchProviderTest.class})
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class BranchProviderTestSuite {
    // tests provided above

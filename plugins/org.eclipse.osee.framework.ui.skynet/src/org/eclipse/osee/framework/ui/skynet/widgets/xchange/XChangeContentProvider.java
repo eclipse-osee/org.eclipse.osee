@@ -14,6 +14,11 @@ import java.util.Collection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
+;
+
+/**
+ * @author Jeff C. Phillips
+ */
 public class XChangeContentProvider implements ITreeContentProvider {
    private static Object[] EMPTY_ARRAY = new Object[0];
 

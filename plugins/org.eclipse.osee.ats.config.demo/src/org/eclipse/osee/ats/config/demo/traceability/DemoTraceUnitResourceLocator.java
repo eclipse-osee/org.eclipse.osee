@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class DemoTraceUnitResourceLocator implements ITraceUnitResourceLocator {
 

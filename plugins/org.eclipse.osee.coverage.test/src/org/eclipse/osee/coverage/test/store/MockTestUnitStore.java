@@ -15,7 +15,7 @@ import org.eclipse.osee.coverage.store.TestUnitCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class MockTestUnitStore implements ITestUnitStore {
 

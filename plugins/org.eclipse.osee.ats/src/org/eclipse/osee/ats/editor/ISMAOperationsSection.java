@@ -13,6 +13,9 @@ package org.eclipse.osee.ats.editor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface ISMAOperationsSection {
 
    public abstract void createAdvancedSection(SMAEditor editor, Composite parent, FormToolkit toolkit);

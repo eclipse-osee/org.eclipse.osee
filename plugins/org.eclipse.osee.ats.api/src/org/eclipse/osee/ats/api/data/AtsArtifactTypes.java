@@ -13,6 +13,9 @@ package org.eclipse.osee.ats.api.data;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 
+/**
+ * @author Donald G. Dunne
+ */
 public final class AtsArtifactTypes {
 
    // @formatter:off

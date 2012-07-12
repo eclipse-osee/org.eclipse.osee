@@ -13,7 +13,7 @@ import org.eclipse.osee.framework.core.util.Result;
  * Input data object that provides data fields for Edit Status and Transitioning and error checking based on certain
  * criteria.
  *
- * @author Donald G Dunne
+ * @author Donald G. Dunne
  */
 public class TransitionStatusData {
 

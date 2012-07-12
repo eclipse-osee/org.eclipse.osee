@@ -15,7 +15,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public interface ImportHandler {
 

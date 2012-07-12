@@ -24,6 +24,9 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class VersionArtifactStore extends ArtifactAtsObjectStore {
 
    public VersionArtifactStore(IAtsVersion version) {

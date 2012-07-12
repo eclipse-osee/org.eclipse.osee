@@ -15,7 +15,9 @@ import org.eclipse.osee.ote.core.environment.interfaces.IScriptControl;
 import org.eclipse.osee.ote.core.environment.interfaces.ITimeout;
 
 /**
- * @author Ryan D. Brooks This class is used as a 'Time Out' object while waiting for the desired message element value.
+ * This class is used as a 'Time Out' object while waiting for the desired message element value.
+ * 
+ * @author Ryan D. Brooks
  */
 public class CycleCountDown implements ICancelTimer {
    private int cycleCount;

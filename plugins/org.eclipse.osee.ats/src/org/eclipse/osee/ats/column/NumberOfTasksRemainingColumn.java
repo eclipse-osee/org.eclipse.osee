@@ -27,6 +27,9 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class NumberOfTasksRemainingColumn extends XViewerAtsColumn implements IXViewerValueColumn {
 
    public static NumberOfTasksRemainingColumn instance = new NumberOfTasksRemainingColumn();

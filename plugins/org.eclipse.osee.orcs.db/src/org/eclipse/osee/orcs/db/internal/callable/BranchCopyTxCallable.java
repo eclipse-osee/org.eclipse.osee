@@ -36,7 +36,9 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 
 /**
- * @author David Miller the behavior of this class - it needs to: have a branch
+ * the behavior of this class - it needs to: have a branch
+ * 
+ * @author David Miller
  */
 public final class BranchCopyTxCallable extends DatabaseTxCallable<Branch> {
 

@@ -13,7 +13,7 @@ package org.eclipse.osee.display.presenter.mocks;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class MockSearchNavigator implements SearchNavigator {
    private String resultsUrl, artifactUrl;

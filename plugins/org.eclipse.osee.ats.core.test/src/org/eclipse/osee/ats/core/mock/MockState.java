@@ -9,6 +9,9 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.core.model.IAtsUser;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class MockState {
 
    private final String name;

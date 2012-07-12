@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class FrameworkAccessControl implements CmAccessControl {
 

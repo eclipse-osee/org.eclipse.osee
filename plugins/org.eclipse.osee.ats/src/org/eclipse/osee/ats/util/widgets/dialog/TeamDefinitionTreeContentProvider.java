@@ -18,6 +18,9 @@ import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.framework.core.enums.Active;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
 
    private final Active active;

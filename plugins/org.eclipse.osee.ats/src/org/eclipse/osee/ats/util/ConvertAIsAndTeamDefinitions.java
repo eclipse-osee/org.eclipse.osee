@@ -18,6 +18,9 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ConvertAIsAndTeamDefinitions extends XNavigateItemAction {
 
    public ConvertAIsAndTeamDefinitions(XNavigateItem parent) {

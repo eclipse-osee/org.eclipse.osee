@@ -21,6 +21,9 @@ import org.eclipse.osee.ats.core.validator.IValueProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsOperationalImpactWithWorkaroundValidator implements IAtsXWidgetValidator {
 
    public static String WIDGET_NAME = "OperationalImpactWithWorkaroundXWidget";

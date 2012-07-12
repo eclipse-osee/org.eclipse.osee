@@ -19,6 +19,9 @@ import org.eclipse.osee.ats.editor.log.column.LogEventColumn;
 import org.eclipse.osee.ats.editor.log.column.LogMessageColumn;
 import org.eclipse.osee.ats.editor.log.column.LogStateColumn;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class LogXViewerFactory extends XViewerFactory {
 
    public LogXViewerFactory() {

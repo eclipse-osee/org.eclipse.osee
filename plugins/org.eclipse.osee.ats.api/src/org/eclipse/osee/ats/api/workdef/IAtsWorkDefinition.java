@@ -9,6 +9,9 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.HasDescription;
 import org.eclipse.osee.framework.core.data.Identifiable;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IAtsWorkDefinition extends Identifiable, HasDescription {
 
    /**

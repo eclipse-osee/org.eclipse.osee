@@ -22,7 +22,7 @@ import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchMethod;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  * @author Roberto E. Escobar
  */
 public class IsOfTypePredicateHandler implements PredicateHandler {

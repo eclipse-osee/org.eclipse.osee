@@ -15,6 +15,9 @@ import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.swt.SWT;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class TransactionColumn extends XViewerValueColumn {
 
    private static TransactionColumn instance = new TransactionColumn();

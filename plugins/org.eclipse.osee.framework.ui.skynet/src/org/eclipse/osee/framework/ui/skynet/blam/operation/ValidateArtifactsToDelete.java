@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 /**
  * Calls extensions to determine if artifacts are valid to delete.
  * 
- * @author Don G. Dunne
+ * @author Donald G. Dunne
  */
 public class ValidateArtifactsToDelete extends AbstractBlam {
 

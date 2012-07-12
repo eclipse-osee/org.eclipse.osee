@@ -16,6 +16,9 @@ import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.swt.SWT;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class PointsColumn extends XViewerAtsAttributeValueColumn {
 
    public static PointsColumn instance = new PointsColumn();

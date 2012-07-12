@@ -27,6 +27,9 @@ import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsBranchManagerUpdateListener implements IBranchEventListener {
 
    private static final List<BranchEventType> EVENT_TYPES = Arrays.asList(BranchEventType.Added,

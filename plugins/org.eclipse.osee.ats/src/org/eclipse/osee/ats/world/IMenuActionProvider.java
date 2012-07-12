@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IMenuActionProvider {
 
    public void updateMenuActionsForTable();

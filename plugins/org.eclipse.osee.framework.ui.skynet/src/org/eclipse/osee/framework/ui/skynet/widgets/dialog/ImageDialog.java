@@ -31,6 +31,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ImageDialog extends MessageDialog {
    private String title = "Image Viewer";
    private static String buttons[] = new String[] {"Export as JPG", "Export as PNG", "Close"};

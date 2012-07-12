@@ -23,6 +23,9 @@ import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class XComboBooleanDam extends XCombo implements IAttributeWidget {
 
    private Artifact artifact;
@@ -73,9 +76,9 @@ public class XComboBooleanDam extends XCombo implements IAttributeWidget {
       if (isEditable()) {
          try {
             String enteredValue = get();
-         boolean storedValueBoolean = artifact.getSoleAttributeValue(attributeType);
-         String storedValue = storedValueBoolean ? "yes" : "no";
-         if (!enteredValue.equals(storedValue)) {
+            boolean storedValueBoolean = artifact.getSoleAttributeValue(attributeType);
+            String storedValue = storedValueBoolean ? "yes" : "no";
+            if (!enteredValue.equals(storedValue)) {
                return new Result(true, attributeType + " is dirty");
             }
          } catch (AttributeDoesNotExist ex) {

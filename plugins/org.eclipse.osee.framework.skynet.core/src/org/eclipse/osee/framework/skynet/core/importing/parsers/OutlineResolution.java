@@ -18,9 +18,9 @@ import org.eclipse.osee.framework.skynet.core.importing.ReqNumbering;
 
 /**
  * Decides whether a outline number is valid or invalid.
- *
+ * 
  * @see OutlineResolutionAndNumberTest
- * @author Karol Wilk
+ * @author Karol M. Wilk
  */
 public final class OutlineResolution {
 
@@ -28,7 +28,7 @@ public final class OutlineResolution {
     * Converts <code>currentOutlineNumber</code> and <code>lastOutlineNumber</code> to ReqNumbering (without trimming
     * ending 0s) and runs
     * <code>isInvalidOutlineNumber(ReqNumbering currentOutlineNumber, ReqNumbering lastOutlineNumber)</code>
-    *
+    * 
     * @param currentOutlineNumber
     * @param lastOutlineNumber
     * @return
@@ -51,7 +51,7 @@ public final class OutlineResolution {
     * Compares <code>currentOutlineNumber</code> and <code>lastOutlineNumber</code> to determine if current is not next
     * in outline numbering sequence. Assumes that <code>last</code> is the last valid outline number. <b>NOTE</b>
     * Accepts larger paragraph numbers
-    *
+    * 
     * @param currentOutlineNumber
     * @param lastOutlineNumber
     * @return

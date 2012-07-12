@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 /**
  * A container for multiple shapes. This is the "root" of the model data structure.
  * 
- * @author Donald G Dunne
+ * @author Donald G. Dunne
  */
 public class WorkDefinitionDiagram extends ModelElement {
 

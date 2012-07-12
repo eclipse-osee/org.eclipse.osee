@@ -19,6 +19,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class MassContentProvider implements ITreeContentProvider {
    protected Collection<Artifact> rootSet = new HashSet<Artifact>();
    private final MassXViewer xViewer;

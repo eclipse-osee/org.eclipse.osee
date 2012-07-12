@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class ArtifactEventFilter implements IEventFilter {
 

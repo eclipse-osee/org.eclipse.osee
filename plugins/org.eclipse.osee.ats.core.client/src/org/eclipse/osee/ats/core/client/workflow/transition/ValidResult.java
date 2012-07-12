@@ -12,6 +12,9 @@ package org.eclipse.osee.ats.core.client.workflow.transition;
 
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ValidResult {
    private final ValidType type;
    private final IAtsWidgetDefinition widgetDef;

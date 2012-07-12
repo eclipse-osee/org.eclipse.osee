@@ -15,7 +15,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({InternalTestSuite.class,})

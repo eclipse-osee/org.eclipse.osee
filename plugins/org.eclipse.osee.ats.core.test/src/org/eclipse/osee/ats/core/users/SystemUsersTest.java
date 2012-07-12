@@ -18,7 +18,7 @@ import org.junit.Test;
  * Test case for {@link UnAssigned}<br/>
  * Test case for {@link AbstractAtsUser}
  * 
- * @author Donald G Dunne
+ * @author Donald G. Dunne
  */
 public class SystemUsersTest {
 

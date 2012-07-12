@@ -21,6 +21,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class HoursSpentSMAStateColumn extends XViewerAtsColumn implements IXViewerValueColumn {
 
    public static HoursSpentSMAStateColumn instance = new HoursSpentSMAStateColumn();

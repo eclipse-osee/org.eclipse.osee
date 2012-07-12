@@ -7,6 +7,9 @@ package org.eclipse.osee.ats.api.workdef;
 
 import java.util.Collection;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IAtsWidgetOptionHandler {
 
    Collection<WidgetOption> getXOptions();

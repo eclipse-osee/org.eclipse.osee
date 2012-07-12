@@ -17,6 +17,9 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
+/**
+ * @author Shawn F. Cook
+ */
 public class UniqueNameRule extends AbstractValidationRule {
 
    private final IArtifactType artifactType;

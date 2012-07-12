@@ -16,6 +16,9 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.swt.SWT;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class DateColumn extends XViewerValueColumn {
 
    private static DateColumn instance = new DateColumn();

@@ -31,6 +31,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsDatabaseConfig implements IDbInitializationTask {
 
    @Override

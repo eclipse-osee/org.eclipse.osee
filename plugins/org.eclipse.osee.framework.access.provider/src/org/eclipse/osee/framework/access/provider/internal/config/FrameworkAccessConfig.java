@@ -30,7 +30,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class FrameworkAccessConfig implements IDbInitializationTask {
 

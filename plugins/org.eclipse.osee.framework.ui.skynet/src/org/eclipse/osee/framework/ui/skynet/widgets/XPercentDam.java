@@ -14,6 +14,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class XPercentDam extends XIntegerDam {
 
    public XPercentDam(String displayLabel) {

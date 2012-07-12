@@ -18,7 +18,7 @@ import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchMethod;
 import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchOp;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  * @author Roberto E. Escobar
  */
 @XmlRootElement(name = "predicate")

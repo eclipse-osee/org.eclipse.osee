@@ -42,6 +42,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class WorkDefinitionFactory {
 
    // Cache the WorkDefinition used for each AbstractWorkflowId so don't have to recompute each time

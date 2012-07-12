@@ -32,6 +32,9 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateCommonItems;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateViewItems;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ReviewNavigateViewItems implements XNavigateViewItems, IXNavigateCommonItem {
 
    private final static ReviewNavigateViewItems instance = new ReviewNavigateViewItems();

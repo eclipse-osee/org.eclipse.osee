@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public interface AtsArtifactProvider extends ArtifactProvider {
 

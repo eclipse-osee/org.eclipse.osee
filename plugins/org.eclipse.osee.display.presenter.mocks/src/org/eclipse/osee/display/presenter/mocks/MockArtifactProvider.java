@@ -26,7 +26,7 @@ import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.search.Match;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class MockArtifactProvider implements ArtifactProvider {
 

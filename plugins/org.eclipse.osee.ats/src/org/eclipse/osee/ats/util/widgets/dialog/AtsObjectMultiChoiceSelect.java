@@ -8,6 +8,9 @@ import org.eclipse.osee.framework.ui.skynet.util.filteredTree.MinMaxOSEECheckedF
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.SimpleCheckFilteredTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromDialog;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsObjectMultiChoiceSelect extends XSelectFromDialog<IAtsObject> {
 
    public static final String WIDGET_ID = AtsObjectMultiChoiceSelect.class.getSimpleName();

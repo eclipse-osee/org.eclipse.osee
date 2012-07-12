@@ -28,7 +28,7 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 
 /**
- * @author Karol M Wilk
+ * @author Karol M. Wilk
  */
 public final class SkynetTransactionTest {
 

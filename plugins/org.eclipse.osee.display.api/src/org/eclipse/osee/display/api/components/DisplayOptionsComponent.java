@@ -13,7 +13,7 @@ package org.eclipse.osee.display.api.components;
 import org.eclipse.osee.display.api.data.DisplayOptions;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public interface DisplayOptionsComponent {
 

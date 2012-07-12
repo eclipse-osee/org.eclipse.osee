@@ -15,6 +15,9 @@ import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 
+/**
+ * @author Donald G. Dunne
+ */
 public final class LogRefreshAction extends Action {
 
    private final XLogViewer xLogViewer;

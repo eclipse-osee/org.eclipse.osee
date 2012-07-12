@@ -21,6 +21,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.swt.SWT;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ReviewFormalTypeColumn extends XViewerAtsAttributeValueColumn {
 
    public static ReviewFormalTypeColumn instance = new ReviewFormalTypeColumn();

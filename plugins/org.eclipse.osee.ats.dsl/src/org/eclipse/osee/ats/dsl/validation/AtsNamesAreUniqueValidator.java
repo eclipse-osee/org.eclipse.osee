@@ -19,6 +19,9 @@ import org.eclipse.xtext.util.CancelIndicator;
 import org.eclipse.xtext.validation.NamesAreUniqueValidator;
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
 
+/**
+ * @author Shawn F. Cook
+ */
 public class AtsNamesAreUniqueValidator extends NamesAreUniqueValidator {
    AtsNamesAreUniqueValidationHelper atsHelper;
 

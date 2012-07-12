@@ -36,7 +36,7 @@ import org.eclipse.osee.logger.Log;
  * This class is responsible for managing server-side resources. The class accepts HTTP requests to perform uploads,
  * deletes, and gets from clients granting access to server-side managed resources.
  * 
- * @author Robeto E. Escobar
+ * @author Roberto E. Escobar
  */
 public class ResourceManagerServlet extends SecureOseeHttpServlet {
    private static final long serialVersionUID = 3777506351978711657L;

@@ -22,6 +22,9 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLog;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AITreeContentProvider implements ITreeContentProvider {
 
    private final Active active;

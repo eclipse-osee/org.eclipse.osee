@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public final class MockBranchProvider implements BranchProvider {
 

@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class HandleImport {
 

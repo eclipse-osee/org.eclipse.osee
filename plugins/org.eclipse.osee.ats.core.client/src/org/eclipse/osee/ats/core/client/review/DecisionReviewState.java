@@ -14,6 +14,9 @@ import java.util.List;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.core.workflow.StateTypeAdapter;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class DecisionReviewState extends StateTypeAdapter {
    public static DecisionReviewState Prepare = new DecisionReviewState("Prepare", StateType.Working);
    public static DecisionReviewState Decision = new DecisionReviewState("Decision", StateType.Working);

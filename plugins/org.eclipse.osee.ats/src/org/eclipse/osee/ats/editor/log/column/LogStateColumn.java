@@ -15,6 +15,9 @@ import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
 import org.eclipse.swt.SWT;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class LogStateColumn extends XViewerValueColumn {
    private static LogStateColumn instance = new LogStateColumn();
 

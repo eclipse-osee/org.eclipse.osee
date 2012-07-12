@@ -13,7 +13,7 @@ package org.eclipse.osee.display.presenter.mocks;
 import org.eclipse.osee.logger.Log;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class MockLogger implements Log {
 

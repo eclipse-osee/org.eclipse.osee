@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.ui.api.view.AtsSearchHeaderComponent;
 import org.eclipse.osee.orcs.ApplicationContext;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class MockAtsPresenterFactory implements AtsPresenterFactory<AtsSearchHeaderComponent, AtsSearchParameters> {
 

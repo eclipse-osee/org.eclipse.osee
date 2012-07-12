@@ -13,6 +13,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class WorkDefUserResolver implements IUserResolver {
 
    public WorkDefUserResolver() {

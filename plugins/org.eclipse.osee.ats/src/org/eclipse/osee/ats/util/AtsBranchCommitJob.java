@@ -38,6 +38,9 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.commit.CommitHandler;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsBranchCommitJob extends Job {
    private final boolean commitPopup;
    private final boolean overrideStateValidation;

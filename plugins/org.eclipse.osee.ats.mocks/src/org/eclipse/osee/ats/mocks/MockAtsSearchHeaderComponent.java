@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.ui.api.view.AtsSearchHeaderComponent;
 import org.eclipse.osee.display.api.data.ViewId;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class MockAtsSearchHeaderComponent implements AtsSearchHeaderComponent {
 

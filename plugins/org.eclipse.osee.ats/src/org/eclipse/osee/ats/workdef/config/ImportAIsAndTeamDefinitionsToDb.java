@@ -41,6 +41,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ImportAIsAndTeamDefinitionsToDb {
 
    private final AtsDsl atsDsl;

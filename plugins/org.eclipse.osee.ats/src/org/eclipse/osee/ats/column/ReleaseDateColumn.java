@@ -16,6 +16,9 @@ import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ReleaseDateColumn extends AbstractWorkflowVersionDateColumn {
 
    public static ReleaseDateColumn instance = new ReleaseDateColumn();

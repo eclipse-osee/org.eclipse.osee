@@ -29,6 +29,9 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class StateColumn extends XViewerAtsColumn implements IXViewerValueColumn {
 
    public static StateColumn instance = new StateColumn();

@@ -41,6 +41,9 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ArtifactSelectWizardPage extends WizardPage {
 
    private ListViewer artList;

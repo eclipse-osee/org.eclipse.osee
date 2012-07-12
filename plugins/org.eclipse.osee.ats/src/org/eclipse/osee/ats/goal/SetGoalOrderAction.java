@@ -22,6 +22,9 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class SetGoalOrderAction extends Action {
 
    private final GoalArtifact goalArt;

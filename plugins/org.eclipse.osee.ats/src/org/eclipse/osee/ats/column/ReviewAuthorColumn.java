@@ -22,6 +22,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ReviewAuthorColumn extends XViewerAtsColumn implements IXViewerValueColumn {
 
    public static ReviewAuthorColumn instance = new ReviewAuthorColumn();

@@ -17,7 +17,7 @@ import org.eclipse.osee.display.api.data.ViewArtifact;
 import org.eclipse.osee.display.api.data.ViewId;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class MockRelationComponent implements RelationComponent {
 

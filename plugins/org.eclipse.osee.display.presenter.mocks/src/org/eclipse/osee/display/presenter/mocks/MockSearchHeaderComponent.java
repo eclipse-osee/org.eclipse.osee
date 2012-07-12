@@ -13,7 +13,7 @@ package org.eclipse.osee.display.presenter.mocks;
 import org.eclipse.osee.display.api.components.SearchHeaderComponent;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class MockSearchHeaderComponent implements SearchHeaderComponent {
 

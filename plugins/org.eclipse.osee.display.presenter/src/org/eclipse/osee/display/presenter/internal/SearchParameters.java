@@ -13,7 +13,7 @@ package org.eclipse.osee.display.presenter.internal;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class SearchParameters {
    private final IOseeBranch branch;

@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.ats.core.model.IAtsVersion;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class Versions {
 
    public static Collection<String> getNames(Collection<? extends IAtsVersion> versions) {

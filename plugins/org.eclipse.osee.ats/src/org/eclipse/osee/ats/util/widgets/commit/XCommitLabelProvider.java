@@ -32,6 +32,9 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class XCommitLabelProvider extends XViewerLabelProvider {
 
    private final CommitXManager commitXManager;

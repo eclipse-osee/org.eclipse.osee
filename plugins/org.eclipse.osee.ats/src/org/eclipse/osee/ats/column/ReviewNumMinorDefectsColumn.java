@@ -20,6 +20,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ReviewNumMinorDefectsColumn extends XViewerAtsColumn implements IXViewerValueColumn {
 
    public static ReviewNumMinorDefectsColumn instance = new ReviewNumMinorDefectsColumn();

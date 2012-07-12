@@ -7,6 +7,9 @@ package org.eclipse.osee.ats.actions;
 
 import org.eclipse.osee.framework.core.util.Result;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IDirtyReportable {
 
    public Result isDirtyResult();

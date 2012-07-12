@@ -11,7 +11,7 @@
 package org.eclipse.osee.display.api.data;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class DisplayOptions {
 

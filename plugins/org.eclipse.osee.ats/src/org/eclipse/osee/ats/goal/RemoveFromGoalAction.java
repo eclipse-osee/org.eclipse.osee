@@ -27,6 +27,9 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class RemoveFromGoalAction extends Action {
 
    private final GoalArtifact goalArt;

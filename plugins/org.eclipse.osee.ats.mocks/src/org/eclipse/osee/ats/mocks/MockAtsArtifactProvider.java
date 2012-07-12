@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class MockAtsArtifactProvider extends MockArtifactProvider implements AtsArtifactProvider {
 

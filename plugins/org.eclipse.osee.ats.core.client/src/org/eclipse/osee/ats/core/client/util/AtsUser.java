@@ -9,6 +9,9 @@ import org.eclipse.osee.ats.core.model.IAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsUser implements IAtsUser {
 
    private final User user;

@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.model.mocks.MockOseeDataAccessor;
 import org.junit.Test;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public final class DeletedBranchProviderTest {
 

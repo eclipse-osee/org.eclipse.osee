@@ -17,6 +17,9 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 
+/**
+ * @author Donald G. Dunne
+ */
 public abstract class AbstractAtsArtifact extends Artifact implements IAtsObject {
 
    public AbstractAtsArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {

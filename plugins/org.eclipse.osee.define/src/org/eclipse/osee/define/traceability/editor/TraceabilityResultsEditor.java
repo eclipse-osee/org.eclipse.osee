@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class TraceabilityResultsEditor extends AbstractOperation {
 

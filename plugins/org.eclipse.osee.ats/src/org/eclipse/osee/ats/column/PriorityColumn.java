@@ -33,6 +33,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class PriorityColumn extends XViewerAtsAttributeValueColumn {
 
    public static PriorityColumn instance = new PriorityColumn();

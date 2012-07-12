@@ -19,7 +19,7 @@ import org.eclipse.osee.orcs.rest.internal.search.predicate.IdsPredicateHandler;
 import org.eclipse.osee.orcs.rest.internal.search.predicate.IsOfTypePredicateHandler;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  * @author Roberto E. Escobar
  */
 public class PredicateHandlerFactory {

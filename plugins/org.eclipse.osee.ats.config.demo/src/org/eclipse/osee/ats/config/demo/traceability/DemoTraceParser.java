@@ -17,7 +17,7 @@ import org.eclipse.osee.define.traceability.ITraceParser;
 import org.eclipse.osee.define.traceability.data.TraceMark;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class DemoTraceParser implements ITraceParser {
 

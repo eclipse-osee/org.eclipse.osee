@@ -10,6 +10,9 @@ import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class VersionFactory {
 
    public static IAtsVersion createVersion(String title) {

@@ -17,7 +17,7 @@ import java.util.List;
  * {@link StringsTest}
  * 
  * @author Jeff C. Phillips
- * @author Don Dunne
+ * @author Donald G. Dunne
  * @author Karol M. Wilk
  */
 public class Strings {

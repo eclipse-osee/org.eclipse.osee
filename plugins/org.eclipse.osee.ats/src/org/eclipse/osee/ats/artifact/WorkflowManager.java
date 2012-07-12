@@ -46,6 +46,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class WorkflowManager {
 
    public static boolean isAssigneeEditable(AbstractWorkflowArtifact awa, boolean privilegedEditEnabled) throws OseeCoreException {

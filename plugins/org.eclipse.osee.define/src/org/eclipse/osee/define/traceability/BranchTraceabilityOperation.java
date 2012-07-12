@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
- * @author John Misinco
+ * @author John R. Misinco
  */
 public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
 

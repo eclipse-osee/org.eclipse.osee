@@ -46,6 +46,9 @@ import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.chart.ResultsEditorChartTab;
 import org.eclipse.osee.framework.ui.skynet.results.html.ResultsEditorHtmlTab;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class BarChartExample extends XNavigateItemAction {
 
    public BarChartExample(XNavigateItem parent) {

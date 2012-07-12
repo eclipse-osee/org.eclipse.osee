@@ -16,6 +16,9 @@ import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
 import com.google.inject.Injector;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsDslResourceProvider implements IResourceProvider {
 
    private Resource resource;

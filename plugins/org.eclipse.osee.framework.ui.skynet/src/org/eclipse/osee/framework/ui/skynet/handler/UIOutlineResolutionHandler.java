@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
- * @author Roberto Escobar
+ * @author Roberto E. Escobar
  * @author Karol M. Wilk
  */
 
