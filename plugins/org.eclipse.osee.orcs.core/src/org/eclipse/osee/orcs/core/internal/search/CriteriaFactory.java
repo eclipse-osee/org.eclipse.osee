@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.orcs.core.ds.Criteria;
+import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactHrids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
@@ -57,36 +58,36 @@ public class CriteriaFactory {
       return toReturn;
    }
 
-   public Criteria createExistsCriteria(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
+   public Criteria<QueryOptions> createExistsCriteria(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
       return new CriteriaAttributeTypeExists(attributeTypes);
    }
 
-   public Criteria createExistsCriteria(IRelationTypeSide relationType) throws OseeCoreException {
+   public Criteria<QueryOptions> createExistsCriteria(IRelationTypeSide relationType) throws OseeCoreException {
       return new CriteriaRelationTypeExists(relationType);
    }
 
-   public Criteria createAttributeCriteria(IAttributeType attributeType, Operator operator, Collection<String> values) throws OseeCoreException {
+   public Criteria<QueryOptions> createAttributeCriteria(IAttributeType attributeType, Operator operator, Collection<String> values) throws OseeCoreException {
       return new CriteriaAttributeOther(attributeType, values, operator);
    }
 
-   public Criteria createAttributeCriteria(Collection<? extends IAttributeType> attributeTypes, StringOperator operator, CaseType match, String value) throws OseeCoreException {
+   public Criteria<QueryOptions> createAttributeCriteria(Collection<? extends IAttributeType> attributeTypes, StringOperator operator, CaseType match, String value) throws OseeCoreException {
       Collection<? extends IAttributeType> toReturn = checkForAnyType(attributeTypes);
       return new CriteriaAttributeKeyword(toReturn, value, operator, match);
    }
 
-   public Criteria createArtifactTypeCriteria(Collection<? extends IArtifactType> artifactTypes) throws OseeCoreException {
+   public Criteria<QueryOptions> createArtifactTypeCriteria(Collection<? extends IArtifactType> artifactTypes) throws OseeCoreException {
       return new CriteriaArtifactType(artifactTypes);
    }
 
-   public Criteria createArtifactIdCriteria(Collection<Integer> artifactIds) throws OseeCoreException {
+   public Criteria<QueryOptions> createArtifactIdCriteria(Collection<Integer> artifactIds) throws OseeCoreException {
       return new CriteriaArtifactIds(artifactIds);
    }
 
-   public Criteria createArtifactGuidCriteria(Set<String> guids) throws OseeCoreException {
+   public Criteria<QueryOptions> createArtifactGuidCriteria(Set<String> guids) throws OseeCoreException {
       return new CriteriaArtifactGuids(guids);
    }
 
-   public Criteria createArtifactHridCriteria(Set<String> hrids) throws OseeCoreException {
+   public Criteria<QueryOptions> createArtifactHridCriteria(Set<String> hrids) throws OseeCoreException {
       return new CriteriaArtifactHrids(hrids);
    }
 

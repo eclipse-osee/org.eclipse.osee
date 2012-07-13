@@ -15,12 +15,9 @@ import java.util.List;
 /**
  * @author Roberto E. Escobar
  */
-public interface QueryContext {
+public interface QueryContext extends DataStoreContext<QueryOptions, QueryPostProcessor> {
 
-   public List<QueryPostProcessor> getPostProcessors();
-
-   QueryOptions getOptions();
-
-   String getSessionId();
+   @Override
+   List<QueryPostProcessor> getPostProcessors();
 
 }

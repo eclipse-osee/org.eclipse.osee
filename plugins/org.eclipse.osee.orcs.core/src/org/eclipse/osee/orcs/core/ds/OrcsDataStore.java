@@ -21,7 +21,7 @@ public interface OrcsDataStore {
 
    DataFactory getDataFactory();
 
-   DataLoader getDataLoader();
+   DataLoaderFactory getDataLoaderFactory();
 
    QueryEngine getQueryEngine();
 

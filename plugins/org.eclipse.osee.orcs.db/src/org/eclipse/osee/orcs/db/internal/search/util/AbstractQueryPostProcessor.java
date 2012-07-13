@@ -39,16 +39,13 @@ import org.eclipse.osee.orcs.search.Match;
  */
 public abstract class AbstractQueryPostProcessor extends QueryPostProcessor implements PartitionFactory<ArtifactReadable, Match<ArtifactReadable, AttributeReadable<?>>> {
 
-   private CriteriaAttributeKeyword criteria;
+   private final CriteriaAttributeKeyword criteria;
    private final ExecutorAdmin executorAdmin;
    private List<Future<Collection<Match<ArtifactReadable, AttributeReadable<?>>>>> futures;
 
-   protected AbstractQueryPostProcessor(Log logger, ExecutorAdmin executorAdmin) {
+   protected AbstractQueryPostProcessor(Log logger, ExecutorAdmin executorAdmin, CriteriaAttributeKeyword criteria) {
       super(logger);
       this.executorAdmin = executorAdmin;
-   }
-
-   public void setCriteria(CriteriaAttributeKeyword criteria) {
       this.criteria = criteria;
    }
 

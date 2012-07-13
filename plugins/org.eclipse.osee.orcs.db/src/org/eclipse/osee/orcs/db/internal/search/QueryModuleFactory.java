@@ -10,18 +10,38 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.DataStoreTypeCache;
+import org.eclipse.osee.orcs.core.ds.Criteria;
+import org.eclipse.osee.orcs.core.ds.DataPostProcessorFactory;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactHrids;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeyword;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
-import org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryImpl;
+import org.eclipse.osee.orcs.db.internal.search.handlers.ArtifactGuidSqlHandler;
+import org.eclipse.osee.orcs.db.internal.search.handlers.ArtifactHridsSqlHandler;
+import org.eclipse.osee.orcs.db.internal.search.handlers.ArtifactIdsSqlHandler;
+import org.eclipse.osee.orcs.db.internal.search.handlers.ArtifactTypeSqlHandler;
+import org.eclipse.osee.orcs.db.internal.search.handlers.AttributeOtherSqlHandler;
+import org.eclipse.osee.orcs.db.internal.search.handlers.AttributeTokenSqlHandler;
+import org.eclipse.osee.orcs.db.internal.search.handlers.AttributeTypeExistsSqlHandler;
+import org.eclipse.osee.orcs.db.internal.search.handlers.RelationTypeExistsSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexerCallableFactory;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexerCallableFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumer;
@@ -33,6 +53,10 @@ import org.eclipse.osee.orcs.db.internal.search.language.EnglishLanguage;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagEncoder;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
+import org.eclipse.osee.orcs.db.internal.search.util.DataPostProcessorFactoryImpl;
+import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
+import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
+import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactoryImpl;
 
 /**
  * @author Roberto E. Escobar
@@ -40,36 +64,82 @@ import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
 public class QueryModuleFactory {
 
    private final Log logger;
-   private final IOseeDatabaseService dbService;
-   private final IdentityService identityService;
-   private final ExecutorAdmin executorAdmin;
+   private QueryEngine queryEngine;
+   private QueryEngineIndexer queryIndexer;
 
-   public QueryModuleFactory(Log logger, IOseeDatabaseService dbService, IdentityService identityService, ExecutorAdmin executorAdmin) {
+   public QueryModuleFactory(Log logger) {
       super();
       this.logger = logger;
-      this.dbService = dbService;
-      this.identityService = identityService;
-      this.executorAdmin = executorAdmin;
    }
 
-   public TaggingEngine createTaggingEngine(AttributeTypeCache attributeTypeCache) {
+   public void create(ExecutorAdmin executorAdmin, IOseeDatabaseService dbService, IdentityService identityService, SqlProvider sqlProvider, IOseeCachingService cacheService, DataStoreTypeCache cache, IResourceManager resourceManager) {
+      TaggingEngine taggingEngine = createTaggingEngine(cacheService.getAttributeTypeCache());
+
+      DataPostProcessorFactory<CriteriaAttributeKeyword> postProcessor =
+         createAttributeKeywordPostProcessor(executorAdmin, taggingEngine);
+      SqlHandlerFactory handlerFactory =
+         createHandlerFactory(identityService, cache, postProcessor, taggingEngine.getTagProcessor());
+
+      queryEngine = createQueryEngine(dbService, handlerFactory, sqlProvider, cacheService.getBranchCache());
+      queryIndexer =
+         createQueryEngineIndexer(dbService, executorAdmin, taggingEngine, resourceManager,
+            cacheService.getAttributeTypeCache());
+   }
+
+   public void stop() {
+      queryIndexer = null;
+      queryEngine = null;
+   }
+
+   public QueryEngine getQueryEngine() {
+      return queryEngine;
+   }
+
+   public QueryEngineIndexer getQueryIndexer() {
+      return queryIndexer;
+   }
+
+   protected TaggingEngine createTaggingEngine(AttributeTypeCache attributeTypeCache) {
       TagProcessor tagProcessor = new TagProcessor(new EnglishLanguage(logger), new TagEncoder());
       return new TaggingEngine(tagProcessor, attributeTypeCache);
    }
 
-   public QueryEngine createQueryEngine(TaggingEngine taggingEngine, SqlProvider sqlProvider, DataStoreTypeCache cache, BranchCache branchCache) {
-      SqlHandlerFactory handlerFactory =
-         new SqlHandlerFactoryImpl(logger, executorAdmin, identityService, taggingEngine, cache);
-      SqlBuilder sqlBuilder = new SqlBuilder(sqlProvider, dbService);
-      return new QueryEngineImpl(logger, branchCache, handlerFactory, sqlBuilder);
+   protected QueryEngineImpl createQueryEngine(IOseeDatabaseService dbService, SqlHandlerFactory handlerFactory, SqlProvider sqlProvider, BranchCache branchCache) {
+      return new QueryEngineImpl(logger, dbService, sqlProvider, branchCache, handlerFactory);
    }
 
-   public QueryEngineIndexer createQueryEngineIndexer(TaggingEngine taggingEngine, IResourceManager resourceManager, AttributeTypeCache attributeTypeCache) {
+   protected QueryEngineIndexer createQueryEngineIndexer(IOseeDatabaseService dbService, ExecutorAdmin executorAdmin, TaggingEngine taggingEngine, IResourceManager resourceManager, AttributeTypeCache attributeTypeCache) {
       QueueToAttributeLoader attributeLoader =
          new QueueToAttributeLoaderImpl(logger, dbService, attributeTypeCache, resourceManager);
       IndexerCallableFactory callableFactory =
          new IndexerCallableFactoryImpl(logger, dbService, taggingEngine, attributeLoader);
       IndexingTaskConsumer indexConsumer = new IndexingTaskConsumerImpl(executorAdmin, callableFactory);
       return new QueryEngineIndexerImpl(logger, dbService, attributeTypeCache, indexConsumer);
+   }
+
+   protected SqlHandlerFactory createHandlerFactory(IdentityService identityService, DataStoreTypeCache cache, DataPostProcessorFactory<CriteriaAttributeKeyword> postProcessorFactory, TagProcessor tagProcessor) {
+      Map<Class<? extends Criteria<?>>, Class<? extends SqlHandler<?, ?>>> handleMap =
+         new HashMap<Class<? extends Criteria<?>>, Class<? extends SqlHandler<?, ?>>>();
+
+      Map<Class<? extends SqlHandler<?, ?>>, DataPostProcessorFactory<?>> factoryMap =
+         new HashMap<Class<? extends SqlHandler<?, ?>>, DataPostProcessorFactory<?>>();
+
+      // Query
+      handleMap.put(CriteriaArtifactGuids.class, ArtifactGuidSqlHandler.class);
+      handleMap.put(CriteriaArtifactHrids.class, ArtifactHridsSqlHandler.class);
+      handleMap.put(CriteriaArtifactIds.class, ArtifactIdsSqlHandler.class);
+      handleMap.put(CriteriaArtifactType.class, ArtifactTypeSqlHandler.class);
+      handleMap.put(CriteriaRelationTypeExists.class, RelationTypeExistsSqlHandler.class);
+      handleMap.put(CriteriaAttributeTypeExists.class, AttributeTypeExistsSqlHandler.class);
+      handleMap.put(CriteriaAttributeOther.class, AttributeOtherSqlHandler.class);
+      handleMap.put(CriteriaAttributeKeyword.class, AttributeTokenSqlHandler.class);
+
+      factoryMap.put(AttributeTokenSqlHandler.class, postProcessorFactory);
+
+      return new SqlHandlerFactoryImpl(logger, identityService, cache, tagProcessor, handleMap, factoryMap);
+   }
+
+   protected DataPostProcessorFactory<CriteriaAttributeKeyword> createAttributeKeywordPostProcessor(ExecutorAdmin executorAdmin, TaggingEngine taggingEngine) {
+      return new DataPostProcessorFactoryImpl(logger, taggingEngine, executorAdmin);
    }
 }

@@ -20,7 +20,7 @@ import org.eclipse.osee.orcs.core.ds.QueryOptions;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaAttributeTypeExists extends Criteria {
+public class CriteriaAttributeTypeExists extends Criteria<QueryOptions> {
 
    private final Collection<? extends IAttributeType> attributeTypes;
 

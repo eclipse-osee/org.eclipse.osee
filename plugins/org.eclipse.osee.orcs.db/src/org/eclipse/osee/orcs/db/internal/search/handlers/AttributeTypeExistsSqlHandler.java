@@ -17,17 +17,16 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
-import org.eclipse.osee.orcs.core.ds.Criteria;
+import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
-import org.eclipse.osee.orcs.db.internal.search.SqlConstants.CriteriaPriority;
-import org.eclipse.osee.orcs.db.internal.search.SqlConstants.TableEnum;
-import org.eclipse.osee.orcs.db.internal.search.SqlHandler;
-import org.eclipse.osee.orcs.db.internal.search.SqlWriter;
+import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
+import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
+import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeTypeExistsSqlHandler extends SqlHandler {
+public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeTypeExists, QueryOptions> {
 
    private CriteriaAttributeTypeExists criteria;
 
@@ -38,21 +37,21 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler {
    private AbstractJoinQuery joinQuery;
 
    @Override
-   public void setData(Criteria criteria) {
-      this.criteria = (CriteriaAttributeTypeExists) criteria;
+   public void setData(CriteriaAttributeTypeExists criteria) {
+      this.criteria = criteria;
    }
 
    @Override
-   public void addTables(SqlWriter writer) throws OseeCoreException {
+   public void addTables(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
       if (criteria.getTypes().size() > 1) {
-         jIdAlias = writer.writeTable(TableEnum.ID_JOIN_TABLE);
+         jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
-      attrAlias = writer.writeTable(TableEnum.ATTRIBUTE_TABLE);
-      txsAlias = writer.writeTable(TableEnum.TXS_TABLE);
+      attrAlias = writer.addTable(TableEnum.ATTRIBUTE_TABLE);
+      txsAlias = writer.addTable(TableEnum.TXS_TABLE);
    }
 
    @Override
-   public void addPredicates(SqlWriter writer) throws OseeCoreException {
+   public void addPredicates(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
       Collection<? extends IAttributeType> types = criteria.getTypes();
       if (types.size() > 1) {
          Set<Integer> typeIds = new HashSet<Integer>();
@@ -103,6 +102,6 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler {
 
    @Override
    public int getPriority() {
-      return CriteriaPriority.ATTRIBUTE_TYPE_EXISTS.ordinal();
+      return SqlHandlerPriority.ATTRIBUTE_TYPE_EXISTS.ordinal();
    }
 }

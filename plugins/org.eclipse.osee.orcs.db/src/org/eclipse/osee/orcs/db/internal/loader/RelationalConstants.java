@@ -36,4 +36,8 @@ public final class RelationalConstants {
 
    public static final String DEFAULT_GUID = null;
    public static final String HUMAN_READABLE_ID = null;
+
+   public static final int MIN_FETCH_SIZE = 10;
+   public static final int MAX_FETCH_SIZE = 10000;
+
 }

@@ -38,6 +38,7 @@ public class CollectAndCopyDirtyData implements ArtifactVisitor {
       this.data = data;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public void visit(ArtifactImpl artifact) throws OseeCoreException {
       if (artifact.isDirty()) {

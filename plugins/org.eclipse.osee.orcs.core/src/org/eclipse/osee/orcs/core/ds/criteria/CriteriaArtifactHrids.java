@@ -22,7 +22,7 @@ import org.eclipse.osee.orcs.core.ds.QueryOptions;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaArtifactHrids extends Criteria {
+public class CriteriaArtifactHrids extends Criteria<QueryOptions> {
    private final Collection<String> hrids;
 
    public CriteriaArtifactHrids(Collection<String> hrids) {

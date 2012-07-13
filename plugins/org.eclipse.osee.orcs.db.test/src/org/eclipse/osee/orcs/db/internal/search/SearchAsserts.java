@@ -12,14 +12,8 @@ package org.eclipse.osee.orcs.db.internal.search;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.executor.admin.ExecutorAdmin;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.DataStoreTypeCache;
-import org.eclipse.osee.orcs.db.internal.search.SqlConstants.CriteriaPriority;
-import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
 import org.junit.Assert;
 
 /**
@@ -80,14 +74,4 @@ public final class SearchAsserts {
       return locations;
    }
 
-   public static void assertHandler(SqlHandler actual, Class<?> type, CriteriaPriority priority, Log logger, IdentityService idService, TaggingEngine taggingEngine, DataStoreTypeCache caches, ExecutorAdmin executorAdmin) {
-      Assert.assertNotNull(actual);
-      Assert.assertEquals(type, actual.getClass());
-      Assert.assertEquals(logger, actual.getLogger());
-      Assert.assertEquals(idService, actual.getIdentityService());
-      Assert.assertEquals(taggingEngine, actual.getTaggingEngine());
-      Assert.assertEquals(caches, actual.getTypeCaches());
-      Assert.assertEquals(priority.ordinal(), actual.getPriority());
-      Assert.assertEquals(executorAdmin, actual.getExecutorAdmin());
-   }
 }

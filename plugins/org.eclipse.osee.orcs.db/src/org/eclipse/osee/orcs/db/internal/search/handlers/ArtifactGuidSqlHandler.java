@@ -13,17 +13,16 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
-import org.eclipse.osee.orcs.core.ds.Criteria;
+import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
-import org.eclipse.osee.orcs.db.internal.search.SqlConstants.CriteriaPriority;
-import org.eclipse.osee.orcs.db.internal.search.SqlConstants.TableEnum;
-import org.eclipse.osee.orcs.db.internal.search.SqlHandler;
-import org.eclipse.osee.orcs.db.internal.search.SqlWriter;
+import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
+import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
+import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactGuidSqlHandler extends SqlHandler {
+public class ArtifactGuidSqlHandler extends SqlHandler<CriteriaArtifactGuids, QueryOptions> {
 
    private CriteriaArtifactGuids criteria;
 
@@ -33,21 +32,21 @@ public class ArtifactGuidSqlHandler extends SqlHandler {
    private AbstractJoinQuery joinQuery;
 
    @Override
-   public void setData(Criteria criteria) {
-      this.criteria = (CriteriaArtifactGuids) criteria;
+   public void setData(CriteriaArtifactGuids criteria) {
+      this.criteria = criteria;
    }
 
    @Override
-   public void addTables(SqlWriter writer) throws OseeCoreException {
+   public void addTables(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
       if (criteria.getIds().size() > 1) {
-         jguidAlias = writer.writeTable(TableEnum.CHAR_JOIN_TABLE);
+         jguidAlias = writer.addTable(TableEnum.CHAR_JOIN_TABLE);
       }
-      artAlias = writer.writeTable(TableEnum.ARTIFACT_TABLE);
-      txsAlias = writer.writeTable(TableEnum.TXS_TABLE);
+      artAlias = writer.addTable(TableEnum.ARTIFACT_TABLE);
+      txsAlias = writer.addTable(TableEnum.TXS_TABLE);
    }
 
    @Override
-   public void addPredicates(SqlWriter writer) throws OseeCoreException {
+   public void addPredicates(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
       Collection<String> ids = criteria.getIds();
       if (ids.size() > 1) {
          joinQuery = writer.writeCharJoin(ids);
@@ -73,6 +72,6 @@ public class ArtifactGuidSqlHandler extends SqlHandler {
 
    @Override
    public int getPriority() {
-      return CriteriaPriority.ARTIFACT_GUID.ordinal();
+      return SqlHandlerPriority.ARTIFACT_GUID.ordinal();
    }
 }

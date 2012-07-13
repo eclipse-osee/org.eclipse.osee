@@ -18,17 +18,16 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
-import org.eclipse.osee.orcs.core.ds.Criteria;
+import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
-import org.eclipse.osee.orcs.db.internal.search.SqlConstants.CriteriaPriority;
-import org.eclipse.osee.orcs.db.internal.search.SqlConstants.TableEnum;
-import org.eclipse.osee.orcs.db.internal.search.SqlHandler;
-import org.eclipse.osee.orcs.db.internal.search.SqlWriter;
+import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
+import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
+import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactTypeSqlHandler extends SqlHandler {
+public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType, QueryOptions> {
 
    private CriteriaArtifactType criteria;
 
@@ -42,25 +41,25 @@ public class ArtifactTypeSqlHandler extends SqlHandler {
    private List<String> txsAliases;
 
    @Override
-   public void setData(Criteria criteria) {
-      this.criteria = (CriteriaArtifactType) criteria;
+   public void setData(CriteriaArtifactType criteria) {
+      this.criteria = criteria;
    }
 
    @Override
-   public void addTables(SqlWriter writer) throws OseeCoreException {
+   public void addTables(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
       typeIds = getLocalTypeIds(writer.getOptions().isTypeInheritanceIncluded());
       if (typeIds.size() > 1) {
-         jIdAlias = writer.writeTable(TableEnum.ID_JOIN_TABLE);
+         jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
 
       artAliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       txsAliases = writer.getAliases(TableEnum.TXS_TABLE);
 
       if (artAliases.isEmpty()) {
-         artAlias = writer.writeTable(TableEnum.ARTIFACT_TABLE);
+         artAlias = writer.addTable(TableEnum.ARTIFACT_TABLE);
       }
       if (txsAliases.isEmpty()) {
-         txsAlias = writer.writeTable(TableEnum.TXS_TABLE);
+         txsAlias = writer.addTable(TableEnum.TXS_TABLE);
       }
       artAliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       txsAliases = writer.getAliases(TableEnum.TXS_TABLE);
@@ -82,7 +81,7 @@ public class ArtifactTypeSqlHandler extends SqlHandler {
    }
 
    @Override
-   public void addPredicates(SqlWriter writer) throws OseeCoreException {
+   public void addPredicates(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
       if (typeIds.size() > 1) {
          joinQuery = writer.writeIdJoin(typeIds);
          writer.write(jIdAlias);
@@ -130,6 +129,6 @@ public class ArtifactTypeSqlHandler extends SqlHandler {
 
    @Override
    public int getPriority() {
-      return CriteriaPriority.ARTIFACT_TYPE.ordinal();
+      return SqlHandlerPriority.ARTIFACT_TYPE.ordinal();
    }
 }

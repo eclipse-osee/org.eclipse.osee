@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
+import org.eclipse.osee.orcs.db.internal.search.QuerySqlHandlerFactoryImplTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -17,7 +18,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({SqlHandlerFactoryImplTest.class})
+@Suite.SuiteClasses({QuerySqlHandlerFactoryImplTest.class})
 public class HandlersTestSuite {
    // Test Suite
 }

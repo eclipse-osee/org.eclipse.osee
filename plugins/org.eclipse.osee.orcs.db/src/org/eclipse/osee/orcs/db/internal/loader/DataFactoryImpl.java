@@ -27,6 +27,7 @@ import org.eclipse.osee.orcs.core.ds.DataFactory;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.data.HasLocalId;
+import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 
 /**
  * @author Roberto E. Escobar

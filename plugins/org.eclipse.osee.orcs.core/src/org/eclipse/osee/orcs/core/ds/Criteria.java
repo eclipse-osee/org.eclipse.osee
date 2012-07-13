@@ -15,10 +15,10 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 /**
  * @author Roberto E. Escobar
  */
-public class Criteria {
+public class Criteria<T extends Options> {
 
    @SuppressWarnings("unused")
-   public void checkValid(QueryOptions options) throws OseeCoreException {
+   public void checkValid(T options) throws OseeCoreException {
       // For subclasses to implement
    }
 

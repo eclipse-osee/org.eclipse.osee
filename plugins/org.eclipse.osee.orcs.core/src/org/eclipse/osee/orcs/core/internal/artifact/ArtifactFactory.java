@@ -51,6 +51,7 @@ public class ArtifactFactory {
       this.branchCache = branchCache;
    }
 
+   @SuppressWarnings("unused")
    public ArtifactImpl createArtifact(ArtifactData artifactData) throws OseeCoreException {
       //TODO implement an artifact class resolver for specific artifact types
       RelationContainer relationContainer = relationFactory.createRelationContainer(artifactData.getLocalId());

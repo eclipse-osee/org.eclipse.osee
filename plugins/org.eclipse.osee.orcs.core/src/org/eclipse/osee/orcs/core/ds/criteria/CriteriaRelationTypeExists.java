@@ -19,7 +19,7 @@ import org.eclipse.osee.orcs.core.ds.QueryOptions;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaRelationTypeExists extends Criteria {
+public class CriteriaRelationTypeExists extends Criteria<QueryOptions> {
    private final IRelationTypeSide relationType;
 
    public CriteriaRelationTypeExists(IRelationTypeSide relationType) {

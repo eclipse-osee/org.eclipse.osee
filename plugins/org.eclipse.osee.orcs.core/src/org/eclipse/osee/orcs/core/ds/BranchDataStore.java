@@ -39,11 +39,11 @@ public interface BranchDataStore {
 
    Callable<List<ChangeItem>> compareBranch(String sessionId, Branch branch) throws OseeCoreException;
 
-   Callable<URI> exportBranch(List<IOseeBranch> branches, PropertyStore options, String exportName);
+   Callable<URI> exportBranch(String sessionId, List<IOseeBranch> branches, PropertyStore options, String exportName);
 
-   Callable<URI> importBranch(URI fileToImport, List<IOseeBranch> branches, PropertyStore options);
+   Callable<URI> importBranch(String sessionId, URI fileToImport, List<IOseeBranch> branches, PropertyStore options);
 
-   Callable<URI> checkBranchExchangeIntegrity(URI fileToCheck);
+   Callable<URI> checkBranchExchangeIntegrity(String sessionId, URI fileToCheck);
 
-   Callable<TransactionResult> commitTransaction(TransactionData transaction);
+   Callable<TransactionResult> commitTransaction(String sessionId, TransactionData transaction);
 }

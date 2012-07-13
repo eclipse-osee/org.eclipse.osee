@@ -42,6 +42,7 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
 
    @SuppressWarnings("unused")
    private final Log logger;
+   private final SessionContext sessionContext;
    private final BranchDataStore dataStore;
    private final ArtifactProxyFactory factory;
 
@@ -56,6 +57,7 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
    public OrcsTransactionImpl(Log logger, SessionContext sessionContext, BranchDataStore dataStore, ArtifactProxyFactory factory, TxDataManager manager, IOseeBranch branch) {
       super();
       this.logger = logger;
+      this.sessionContext = sessionContext;
       this.dataStore = dataStore;
       this.factory = factory;
       this.manager = manager;
@@ -115,7 +117,7 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
       TransactionRecord transaction = null;
       try {
          startCommit();
-         Callable<TransactionResult> callable = dataStore.commitTransaction(this);
+         Callable<TransactionResult> callable = dataStore.commitTransaction(sessionContext.getSessionId(), this);
          TransactionResult result = callable.call();
          commitSuccess(result);
          transaction = result.getTransaction();
@@ -193,12 +195,14 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
       return duplicateArtifact(sourceArtifact, sourceArtifact.getExistingAttributeTypes());
    }
 
+   @SuppressWarnings("unused")
    @Override
    public GraphWriteable asWriteableGraph(GraphReadable readableGraph) throws OseeCoreException {
       //TX_TODO Relation Stuff?
       throw new UnsupportedOperationException();
    }
 
+   @SuppressWarnings("unused")
    @Override
    public void deleteArtifact(ArtifactWriteable artifact) throws OseeCoreException {
       //TX_TODO Delete artifact and relation stuff

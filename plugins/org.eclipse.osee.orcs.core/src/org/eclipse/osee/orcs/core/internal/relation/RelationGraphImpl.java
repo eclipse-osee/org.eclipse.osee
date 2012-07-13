@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
@@ -28,8 +27,7 @@ import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
-import org.eclipse.osee.orcs.core.ds.LoadOptions;
-import org.eclipse.osee.orcs.core.internal.OrcsObjectLoader;
+import org.eclipse.osee.orcs.core.internal.ArtifactLoaderFactory;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.proxy.HasProxiedObject;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -44,14 +42,14 @@ import org.eclipse.osee.orcs.data.RelationsWriteable;
 public class RelationGraphImpl implements GraphWriteable, Cloneable {
 
    private final SessionContext sessionContext;
-   private final OrcsObjectLoader objectLoader;
+   private final ArtifactLoaderFactory loader;
    private final ArtifactTypeCache artifactTypeCache;
    private final RelationTypeCache relationTypeCache;
 
-   public RelationGraphImpl(SessionContext sessionContext, OrcsObjectLoader objectLoader, ArtifactTypeCache artifactTypeCache, RelationTypeCache relationTypeCache) {
+   public RelationGraphImpl(SessionContext sessionContext, ArtifactLoaderFactory loader, ArtifactTypeCache artifactTypeCache, RelationTypeCache relationTypeCache) {
       super();
       this.sessionContext = sessionContext;
-      this.objectLoader = objectLoader;
+      this.loader = loader;
       this.artifactTypeCache = artifactTypeCache;
       this.relationTypeCache = relationTypeCache;
    }
@@ -60,7 +58,7 @@ public class RelationGraphImpl implements GraphWriteable, Cloneable {
       RelationContainer toReturn = null;
       Object object = readable;
       if (object instanceof HasProxiedObject) {
-         object = ((HasProxiedObject) readable).getProxiedObject();
+         object = ((HasProxiedObject<?>) readable).getProxiedObject();
       }
       if (object instanceof HasRelationContainer) {
          HasRelationContainer proxy = (HasRelationContainer) object;
@@ -69,10 +67,8 @@ public class RelationGraphImpl implements GraphWriteable, Cloneable {
       return toReturn;
    }
 
-   private List<ArtifactReadable> loadRelated(IOseeBranch branch, Collection<Integer> artIds) throws OseeCoreException {
-      LoadOptions loadOptions = new LoadOptions(false, false, LoadLevel.FULL);
-      HasCancellation cancellation = null;
-      return objectLoader.load(cancellation, branch, artIds, loadOptions, sessionContext);
+   private List<ArtifactReadable> loadRelated(IOseeBranch branch, Collection<Integer> artifactIds) throws OseeCoreException {
+      return loader.fromBranchAndArtifactIds(sessionContext, branch, artifactIds).setLoadLevel(LoadLevel.FULL).load();
    }
 
    private void loadRelatedArtifactIds(ArtifactReadable art, IRelationTypeSide relationTypeSide, Collection<Integer> results) {
@@ -141,39 +137,55 @@ public class RelationGraphImpl implements GraphWriteable, Cloneable {
       return relationTypeCache.get(relationTypeSide);
    }
 
+   @SuppressWarnings("unused")
    @Override
    public ArtifactWriteable getWriteableParent(ArtifactReadable otherArtifact) throws OseeCoreException {
+      // TX_TODO
       return null;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public RelationsWriteable getWriteableChildren(ArtifactReadable otherArtifact) throws OseeCoreException {
+      // TX_TODO
       return null;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public RelationsWriteable getWriteableRelatedArtifacts(IRelationTypeSide relationTypeSide) throws OseeCoreException {
+      // TX_TODO
       return null;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public void createRelation(ArtifactReadable aArtifact, IRelationTypeSide relationTypeSide, ArtifactReadable otherArtifact) throws OseeCoreException {
+      // TX_TODO
    }
 
+   @SuppressWarnings("unused")
    @Override
    public void createRelation(ArtifactReadable aArtifact, IRelationSorterId sorterId, IRelationTypeSide relationTypeSide, ArtifactReadable otherArtifact) throws OseeCoreException {
+      // TX_TODO
    }
 
+   @SuppressWarnings("unused")
    @Override
    public void deleteRelation(ArtifactReadable aArtifact, IRelationType relationTypeSide, ArtifactReadable otherArtifact) throws OseeCoreException {
+      // TX_TODO
    }
 
+   @SuppressWarnings("unused")
    @Override
    public void deleteRelations(ArtifactReadable aArtifact, IRelationTypeSide relationTypeSide) throws OseeCoreException {
+      // TX_TODO
    }
 
+   @SuppressWarnings("unused")
    @Override
    public RelationGraphImpl clone() throws CloneNotSupportedException {
+      // TX_TODO
       return null;
    }
 }

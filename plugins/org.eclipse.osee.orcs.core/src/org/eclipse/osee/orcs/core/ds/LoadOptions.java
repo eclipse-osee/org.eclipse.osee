@@ -10,107 +10,55 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import java.util.Collection;
-import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 
 /**
  * @author Roberto E. Escobar
  */
-public class LoadOptions {
+public class LoadOptions extends Options {
 
-   private boolean historical;
-   private DeletionFlag includeDeleted;
    private LoadLevel loadLevel;
-   private Collection<Integer> attributeIds;
-   private Collection<Integer> relationIds;
-   private Collection<IAttributeType> attributeTypes;
-   private Collection<IRelationType> relationTypes;
 
    public LoadOptions() {
-      this(false, DeletionFlag.EXCLUDE_DELETED, LoadLevel.SHALLOW);
+      this(DeletionFlag.EXCLUDE_DELETED, LoadLevel.SHALLOW);
    }
 
-   public LoadOptions(boolean historical, boolean includeDeleted, LoadLevel loadLevel) {
-      this(historical, DeletionFlag.allowDeleted(includeDeleted), loadLevel);
+   public LoadOptions(boolean includeDeleted, LoadLevel loadLevel) {
+      this(DeletionFlag.allowDeleted(includeDeleted), loadLevel);
    }
 
-   public LoadOptions(boolean historical, DeletionFlag includeDeleted, LoadLevel loadLevel) {
-      super();
-      this.historical = historical;
-      this.includeDeleted = includeDeleted;
+   public LoadOptions(DeletionFlag includeDeleted, LoadLevel loadLevel) {
+      super(includeDeleted);
       this.loadLevel = loadLevel;
-   }
-
-   public boolean isHistorical() {
-      return historical;
-   }
-
-   public boolean areDeletedIncluded() {
-      return includeDeleted.areDeletedAllowed();
-   }
-
-   public void setIncludeDeleted(boolean enabled) {
-      includeDeleted = DeletionFlag.allowDeleted(enabled);
    }
 
    public LoadLevel getLoadLevel() {
       return loadLevel;
    }
 
-   public void setHistorical(boolean historical) {
-      this.historical = historical;
-   }
-
    public void setLoadLevel(LoadLevel loadLevel) {
       this.loadLevel = loadLevel;
    }
 
-   public boolean isSelectiveLoadingByType() {
-      return (attributeTypes != null && !attributeTypes.isEmpty()) || (relationTypes != null && !relationTypes.isEmpty());
+   @Override
+   public void reset() {
+      super.reset();
+      loadLevel = LoadLevel.SHALLOW;
    }
 
-   public boolean isSelectiveLoadingById() {
-      return (attributeIds != null && !attributeIds.isEmpty()) || (relationIds != null && !relationIds.isEmpty());
-   }
-
-   public Collection<Integer> getAttributeIds() {
-      return attributeIds;
-   }
-
-   public void setAttributeIds(Collection<Integer> attributeIds) {
-      this.attributeIds = attributeIds;
-   }
-
-   public Collection<Integer> getRelationIds() {
-      return relationIds;
-   }
-
-   public void setRelationIds(Collection<Integer> relationIds) {
-      this.relationIds = relationIds;
-   }
-
-   public Collection<IAttributeType> getAttributeTypes() {
-      return attributeTypes;
-   }
-
-   public void setAttributeTypes(Collection<IAttributeType> attributeTypes) {
-      this.attributeTypes = attributeTypes;
-   }
-
-   public Collection<IRelationType> getRelationTypes() {
-      return relationTypes;
-   }
-
-   public void setRelationTypes(Collection<IRelationType> relationTypes) {
-      this.relationTypes = relationTypes;
+   @Override
+   public LoadOptions clone() {
+      LoadOptions clone = new LoadOptions();
+      clone.setIncludeDeleted(this.areDeletedIncluded());
+      clone.setFromTransaction(getFromTransaction());
+      clone.loadLevel = this.loadLevel;
+      return clone;
    }
 
    @Override
    public String toString() {
-      return "LoadOptions [historical=" + historical + ", includeDeleted=" + includeDeleted + ", loadLevel=" + loadLevel + "]";
+      return "LoadOptions [loadLevel=" + loadLevel + "]";
    }
 
 }

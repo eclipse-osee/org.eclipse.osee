@@ -20,7 +20,7 @@ import org.eclipse.osee.orcs.core.ds.QueryOptions;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaArtifactType extends Criteria {
+public class CriteriaArtifactType extends Criteria<QueryOptions> {
 
    private final Collection<? extends IArtifactType> artifactTypes;
 

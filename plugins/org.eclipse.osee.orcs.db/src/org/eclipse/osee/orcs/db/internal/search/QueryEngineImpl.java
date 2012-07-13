@@ -14,12 +14,18 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.QueryContext;
+import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
-import org.eclipse.osee.orcs.db.internal.search.SqlBuilder.QueryType;
+import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
+import org.eclipse.osee.orcs.db.internal.SqlProvider;
+import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
+import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
+import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
+import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -29,43 +35,46 @@ public class QueryEngineImpl implements QueryEngine {
    private final Log logger;
    private final BranchCache branchCache;
    private final SqlHandlerFactory handlerFactory;
-   private final SqlBuilder builder;
+   private final SqlProvider sqlProvider;
+   private final IOseeDatabaseService dbService;
 
-   public QueryEngineImpl(Log logger, BranchCache branchCache, SqlHandlerFactory handlerFactory, SqlBuilder builder) {
+   public QueryEngineImpl(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, BranchCache branchCache, SqlHandlerFactory handlerFactory) {
       super();
       this.logger = logger;
+      this.dbService = dbService;
+      this.sqlProvider = sqlProvider;
       this.branchCache = branchCache;
       this.handlerFactory = handlerFactory;
-      this.builder = builder;
-   }
-
-   public SqlContext createContext(String sessionId, QueryOptions options) {
-      return new SqlContext(sessionId, options);
    }
 
    @Override
-   public QueryContext createCount(String sessionId, QueryData queryData) throws OseeCoreException {
+   public QuerySqlContext createCount(String sessionId, QueryData queryData) throws OseeCoreException {
       return createQuery(sessionId, queryData, QueryType.COUNT_ARTIFACTS);
    }
 
    @Override
-   public QueryContext create(String sessionId, QueryData queryData) throws OseeCoreException {
+   public QuerySqlContext create(String sessionId, QueryData queryData) throws OseeCoreException {
       return createQuery(sessionId, queryData, QueryType.SELECT_ARTIFACTS);
    }
 
-   private SqlContext createQuery(String sessionId, QueryData queryData, QueryType queryType) throws OseeCoreException {
-      IOseeBranch branch = queryData.getCriteriaSet().getBranch();
-      int branchId = branchCache.getLocalId(branch);
+   private QuerySqlContext createQuery(String sessionId, QueryData queryData, QueryType queryType) throws OseeCoreException {
+      QuerySqlContext context = createContext(sessionId, queryData.getOptions());
+      CriteriaSet criteriaSet = queryData.getCriteriaSet();
 
-      List<SqlHandler> handlers = handlerFactory.createHandlers(queryData.getCriteriaSet());
-      SqlContext context = createContext(sessionId, queryData.getOptions());
-      builder.generateSql(context, branchId, handlers, queryType);
+      AbstractSqlWriter<QueryOptions> writer = createQueryWriter(context, queryType, criteriaSet.getBranch());
 
-      if (logger.isTraceEnabled()) {
-         logger.trace("SessionId:[%s] Query:[%s] Parameters:[%s]", sessionId, context.getSql(), context.getParameters());
-      }
-
+      List<SqlHandler<?, QueryOptions>> handlers = handlerFactory.createHandlers(criteriaSet);
+      writer.build(handlers);
       return context;
+   }
+
+   private QuerySqlContext createContext(String sessionId, QueryOptions options) {
+      return new QuerySqlContext(sessionId, options);
+   }
+
+   private AbstractSqlWriter<QueryOptions> createQueryWriter(SqlContext<QueryOptions, QueryPostProcessor> context, QueryType queryType, IOseeBranch branch) throws OseeCoreException {
+      int branchId = branchCache.getLocalId(branch);
+      return new QuerySqlWriter(logger, dbService, sqlProvider, context, queryType, branchId);
    }
 
 }

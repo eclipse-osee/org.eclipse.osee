@@ -13,17 +13,16 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.core.ds.Criteria;
+import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
-import org.eclipse.osee.orcs.db.internal.search.SqlConstants.CriteriaPriority;
-import org.eclipse.osee.orcs.db.internal.search.SqlConstants.TableEnum;
-import org.eclipse.osee.orcs.db.internal.search.SqlHandler;
-import org.eclipse.osee.orcs.db.internal.search.SqlWriter;
+import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
+import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
+import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 
 /**
  * @author Roberto E. Escobar
  */
-public class RelationTypeExistsSqlHandler extends SqlHandler {
+public class RelationTypeExistsSqlHandler extends SqlHandler<CriteriaRelationTypeExists, QueryOptions> {
 
    private CriteriaRelationTypeExists criteria;
 
@@ -31,18 +30,18 @@ public class RelationTypeExistsSqlHandler extends SqlHandler {
    private String txsAlias;
 
    @Override
-   public void setData(Criteria criteria) {
-      this.criteria = (CriteriaRelationTypeExists) criteria;
+   public void setData(CriteriaRelationTypeExists criteria) {
+      this.criteria = criteria;
    }
 
    @Override
-   public void addTables(SqlWriter writer) throws OseeCoreException {
-      relAlias = writer.writeTable(TableEnum.RELATION_TABLE);
-      txsAlias = writer.writeTable(TableEnum.TXS_TABLE);
+   public void addTables(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
+      relAlias = writer.addTable(TableEnum.RELATION_TABLE);
+      txsAlias = writer.addTable(TableEnum.TXS_TABLE);
    }
 
    @Override
-   public void addPredicates(SqlWriter writer) throws OseeCoreException {
+   public void addPredicates(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
       IRelationTypeSide typeSide = criteria.getType();
       writer.write(relAlias);
       writer.write(".rel_link_type_id = ?");
@@ -83,6 +82,6 @@ public class RelationTypeExistsSqlHandler extends SqlHandler {
 
    @Override
    public int getPriority() {
-      return CriteriaPriority.RELATION_TYPE_EXISTS.ordinal();
+      return SqlHandlerPriority.RELATION_TYPE_EXISTS.ordinal();
    }
 }

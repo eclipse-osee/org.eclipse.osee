@@ -23,7 +23,7 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaAttributeOther extends Criteria {
+public class CriteriaAttributeOther extends Criteria<QueryOptions> {
 
    private final IAttributeType attributeType;
    private final Collection<String> values;

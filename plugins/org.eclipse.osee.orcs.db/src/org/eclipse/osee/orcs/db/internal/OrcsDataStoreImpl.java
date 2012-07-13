@@ -22,7 +22,7 @@ import org.eclipse.osee.orcs.DataStoreTypeCache;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.DataFactory;
-import org.eclipse.osee.orcs.core.ds.DataLoader;
+import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
@@ -31,10 +31,8 @@ import org.eclipse.osee.orcs.db.internal.branch.BranchDataStoreImpl;
 import org.eclipse.osee.orcs.db.internal.loader.DataModuleFactory;
 import org.eclipse.osee.orcs.db.internal.loader.DataProxyFactoryProvider;
 import org.eclipse.osee.orcs.db.internal.loader.IdFactory;
-import org.eclipse.osee.orcs.db.internal.loader.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.data.IdFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.search.QueryModuleFactory;
-import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
 
 /**
@@ -56,10 +54,8 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
 
    private DataStoreAdmin dataStoreAdmin;
    private BranchDataStore branchStore;
-   private DataFactory dataFactory;
-   private DataLoader dataLoader;
-   private QueryEngine queryEngine;
-   private QueryEngineIndexer queryIndexer;
+   private DataModuleFactory dataModuleFactory;
+   private QueryModuleFactory queryModule;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -114,31 +110,26 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
 
       IdFactory idFactory = new IdFactoryImpl(dbService, cacheService.getBranchCache());
 
-      DataModuleFactory dataModuleFactory = new DataModuleFactory(logger, dbService, identityService);
-      OrcsObjectFactory rowDataFactory =
-         dataModuleFactory.createOrcsObjectFactory(proxyProvider, cacheService.getAttributeTypeCache());
-      dataFactory = dataModuleFactory.createDataFactory(rowDataFactory, idFactory, cacheService.getArtifactTypeCache());
-      dataLoader = dataModuleFactory.createDataLoader(sqlProvider, idFactory, rowDataFactory);
+      dataModuleFactory = new DataModuleFactory(logger);
+      dataModuleFactory.create(dbService, idFactory, identityService, sqlProvider, cacheService, cache, proxyProvider);
 
       branchStore =
          new BranchDataStoreImpl(logger, dbService, identityService, cacheService, preferences, executorAdmin,
-            resourceManager, modelFactory, typeModelService, sqlProvider, idFactory, dataLoader);
+            resourceManager, modelFactory, typeModelService, sqlProvider, idFactory,
+            dataModuleFactory.getDataLoaderFactory());
 
       dataStoreAdmin = new DataStoreAdminImpl(logger, dbService, identityService, branchStore, preferences);
 
-      QueryModuleFactory factory = new QueryModuleFactory(logger, dbService, identityService, executorAdmin);
-      TaggingEngine taggingEngine = factory.createTaggingEngine(cacheService.getAttributeTypeCache());
-
-      queryEngine = factory.createQueryEngine(taggingEngine, sqlProvider, cache, cacheService.getBranchCache());
-      queryIndexer =
-         factory.createQueryEngineIndexer(taggingEngine, resourceManager, cacheService.getAttributeTypeCache());
+      queryModule.create(executorAdmin, dbService, identityService, sqlProvider, cacheService, cache, resourceManager);
    }
 
    public void stop() {
-      queryIndexer = null;
-      queryEngine = null;
-      dataFactory = null;
-      dataLoader = null;
+      queryModule.stop();
+      queryModule = null;
+
+      dataModuleFactory.stop();
+      dataModuleFactory = null;
+
       branchStore = null;
       dataStoreAdmin = null;
    }
@@ -155,21 +146,21 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
 
    @Override
    public DataFactory getDataFactory() {
-      return dataFactory;
+      return dataModuleFactory.getDataFactory();
    }
 
    @Override
-   public DataLoader getDataLoader() {
-      return dataLoader;
+   public DataLoaderFactory getDataLoaderFactory() {
+      return dataModuleFactory.getDataLoaderFactory();
    }
 
    @Override
    public QueryEngine getQueryEngine() {
-      return queryEngine;
+      return queryModule.getQueryEngine();
    }
 
    @Override
    public QueryEngineIndexer getQueryEngineIndexer() {
-      return queryIndexer;
+      return queryModule.getQueryIndexer();
    }
 }

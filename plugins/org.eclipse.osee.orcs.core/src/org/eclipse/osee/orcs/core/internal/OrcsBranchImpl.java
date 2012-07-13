@@ -36,8 +36,8 @@ import org.eclipse.osee.orcs.core.internal.branch.CreateBranchCallable;
 import org.eclipse.osee.orcs.core.internal.branch.DeleteBranchCallable;
 import org.eclipse.osee.orcs.core.internal.branch.PurgeBranchCallable;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
-import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.CreateBranchData;
 
 /**
  * @author Roberto E. Escobar
@@ -111,16 +111,16 @@ public class OrcsBranchImpl implements OrcsBranch {
 
    @Override
    public Callable<URI> exportBranch(List<IOseeBranch> branches, PropertyStore options, String exportName) {
-      return branchStore.exportBranch(branches, options, exportName);
+      return branchStore.exportBranch(sessionContext.toString(), branches, options, exportName);
    }
 
    @Override
    public Callable<URI> importBranch(URI fileToImport, List<IOseeBranch> branches, PropertyStore options) {
-      return branchStore.importBranch(fileToImport, branches, options);
+      return branchStore.importBranch(sessionContext.toString(), fileToImport, branches, options);
    }
 
    @Override
    public Callable<URI> checkBranchExchangeIntegrity(URI fileToCheck) {
-      return branchStore.checkBranchExchangeIntegrity(fileToCheck);
+      return branchStore.checkBranchExchangeIntegrity(sessionContext.toString(), fileToCheck);
    }
 }

@@ -48,7 +48,6 @@ public final class BranchCopyTxCallable extends DatabaseTxCallable<Branch> {
    private final BranchFactory branchFactory;
    private final TransactionRecordFactory txFactory;
    private final CreateBranchData branchData;
-   private boolean wasSuccessful;
    private Branch internalBranch;
 
    private static final String INSERT_TX_DETAILS =
@@ -67,7 +66,6 @@ public final class BranchCopyTxCallable extends DatabaseTxCallable<Branch> {
       this.branchFactory = branchFactory;
       this.txFactory = txFactory;
       this.branchData = branchData;
-      this.wasSuccessful = false;
       //this.systemUserId = -1;
    }
 
@@ -79,6 +77,7 @@ public final class BranchCopyTxCallable extends DatabaseTxCallable<Branch> {
       return branchCache;
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    public Branch handleTxWork(OseeConnection connection) throws OseeCoreException {
       // get the previous transaction, if there is one
@@ -123,8 +122,6 @@ public final class BranchCopyTxCallable extends DatabaseTxCallable<Branch> {
          txCache.cache(record);
 
          populateTransaction(0.30, connection, record.getId(), internalBranch, savedTx);
-
-         wasSuccessful = true;
 
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);

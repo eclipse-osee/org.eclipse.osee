@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
-import org.eclipse.osee.orcs.core.internal.OrcsObjectLoader;
+import org.eclipse.osee.orcs.core.internal.ArtifactLoaderFactory;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.search.callable.SearchCallable;
 import org.eclipse.osee.orcs.core.internal.search.callable.SearchCountCallable;
@@ -32,10 +32,10 @@ public class CallableQueryFactory {
 
    private final Log logger;
    private final QueryEngine queryEngine;
-   private final OrcsObjectLoader objectLoader;
+   private final ArtifactLoaderFactory objectLoader;
    private final QueryCollector collector;
 
-   public CallableQueryFactory(Log logger, QueryEngine queryEngine, QueryCollector collector, OrcsObjectLoader objectLoader) {
+   public CallableQueryFactory(Log logger, QueryEngine queryEngine, QueryCollector collector, ArtifactLoaderFactory objectLoader) {
       super();
       this.logger = logger;
       this.queryEngine = queryEngine;

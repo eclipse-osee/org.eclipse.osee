@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
-import org.eclipse.osee.orcs.core.ds.DataLoader;
+import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -64,11 +64,11 @@ public final class CommitTransactionDatabaseTxCallable extends DatabaseTxCallabl
    private final TransactionRecordFactory factory;
    private final TransactionCache transactionCache;
    private final TransactionData transactionData;
-   private final DataLoader dataLoader;
-
+   private final DataLoaderFactory dataLoader;
+   private final String sessionId;
    private List<DaoToSql> binaryStores;
 
-   public CommitTransactionDatabaseTxCallable(Log logger, IOseeDatabaseService dbService, IdentityService identityService, SqlProvider sqlProvider, IdFactory idFactory, BranchCache branchCache, TransactionCache transactionCache, TransactionRecordFactory factory, TransactionData transactionData, DataLoader dataLoader) {
+   public CommitTransactionDatabaseTxCallable(Log logger, IOseeDatabaseService dbService, IdentityService identityService, SqlProvider sqlProvider, IdFactory idFactory, BranchCache branchCache, TransactionCache transactionCache, TransactionRecordFactory factory, TransactionData transactionData, DataLoaderFactory dataLoader, String sessionId) {
       super(logger, dbService, String.format("Committing Transaction: [%s] for branch [%s]",
          transactionData.getComment(), transactionData.getBranch()));
       this.sqlProvider = sqlProvider;
@@ -78,6 +78,7 @@ public final class CommitTransactionDatabaseTxCallable extends DatabaseTxCallabl
       this.factory = factory;
       this.transactionCache = transactionCache;
       this.transactionData = transactionData;
+      this.sessionId = sessionId;
       this.dataLoader = dataLoader;
    }
 
@@ -86,7 +87,7 @@ public final class CommitTransactionDatabaseTxCallable extends DatabaseTxCallabl
    }
 
    public static interface TransactionCheck {
-      void verify(HasCancellation cancellation, TransactionData txData) throws OseeCoreException;
+      void verify(HasCancellation cancellation, String sessionId, TransactionData txData) throws OseeCoreException;
    }
 
    private int getNextTransactionId() throws OseeDataStoreException, OseeCoreException {
@@ -98,8 +99,6 @@ public final class CommitTransactionDatabaseTxCallable extends DatabaseTxCallabl
       ///// 
       // TODO:
       // 1. Make this whole method a critical region on a per branch basis - can only write to a branch on one thread at time
-      // 2. This is where we will eventually check that the gammaIds have not changed from under us for: attributes, artifacts and relations
-      ////
       List<ArtifactTransactionData> txData = transactionData.getTxData();
       String comment = transactionData.getComment();
       Branch branch = branchCache.get(transactionData.getBranch());
@@ -112,7 +111,7 @@ public final class CommitTransactionDatabaseTxCallable extends DatabaseTxCallabl
 
       Collection<TransactionCheck> checks = getOnTransactionChecks();
       for (TransactionCheck check : checks) {
-         check.verify(this, transactionData);
+         check.verify(this, sessionId, transactionData);
       }
 
       TransactionRecord txRecord = createTransactionRecord(branch, author, comment, getNextTransactionId());

@@ -21,7 +21,7 @@ import org.eclipse.osee.orcs.search.Match;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class QueryPostProcessor extends CancellableCallable<List<Match<ArtifactReadable, AttributeReadable<?>>>> {
+public abstract class QueryPostProcessor extends CancellableCallable<List<Match<ArtifactReadable, AttributeReadable<?>>>> implements DataPostProcessor<List<Match<ArtifactReadable, AttributeReadable<?>>>> {
 
    private final Log logger;
    private List<ArtifactReadable> artifacts;

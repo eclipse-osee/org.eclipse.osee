@@ -57,7 +57,7 @@ public class OrcsApiImpl implements OrcsApi {
    private SystemPreferences preferences;
 
    private ArtifactProxyFactory proxyFactory;
-   private OrcsObjectLoader objectLoader;
+   private ArtifactLoaderFactory loaderFactory;
    private QueryModule queryModule;
    private IndexerModule indexerModule;
    private TxDataHandlerFactoryImpl txUpdateFactory;
@@ -102,15 +102,15 @@ public class OrcsApiImpl implements OrcsApi {
 
       proxyFactory = new ArtifactProxyFactory(artifactFactory);
 
-      txUpdateFactory = new TxDataHandlerFactoryImpl(dataStore.getDataFactory(), proxyFactory);
+      txUpdateFactory = new TxDataHandlerFactoryImpl(dataStore.getDataFactory());
 
       ArtifactBuilderFactory builderFactory =
          new ArtifactBuilderFactoryImpl(logger, proxyFactory, artifactFactory, attributeFactory);
 
-      objectLoader = new OrcsObjectLoader(logger, dataStore.getDataLoader(), builderFactory);
+      loaderFactory = new ArtifactLoaderFactoryImpl(dataStore.getDataLoaderFactory(), builderFactory);
 
       queryModule =
-         new QueryModule(logger, dataStore.getQueryEngine(), objectLoader, dataStoreTypeCache.getAttributeTypeCache());
+         new QueryModule(logger, dataStore.getQueryEngine(), loaderFactory, dataStoreTypeCache.getAttributeTypeCache());
 
       indexerModule = new IndexerModule(logger, preferences, executorAdmin, dataStore.getQueryEngineIndexer());
       indexerModule.start();
@@ -121,7 +121,7 @@ public class OrcsApiImpl implements OrcsApi {
          indexerModule.stop();
       }
       queryModule = null;
-      objectLoader = null;
+      loaderFactory = null;
       txUpdateFactory = null;
       proxyFactory = null;
    }
@@ -150,7 +150,7 @@ public class OrcsApiImpl implements OrcsApi {
    @Override
    public GraphReadable getGraph(ApplicationContext context) {
       SessionContext sessionContext = getSessionContext(context);
-      return new RelationGraphImpl(sessionContext, objectLoader, dataStoreTypeCache.getArtifactTypeCache(),
+      return new RelationGraphImpl(sessionContext, loaderFactory, dataStoreTypeCache.getArtifactTypeCache(),
          dataStoreTypeCache.getRelationTypeCache());
    }
 

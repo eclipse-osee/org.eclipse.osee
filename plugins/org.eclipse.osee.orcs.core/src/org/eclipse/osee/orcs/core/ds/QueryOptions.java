@@ -13,43 +13,21 @@ package org.eclipse.osee.orcs.core.ds;
 /**
  * @author Roberto E. Escobar
  */
-public class QueryOptions implements Cloneable {
-
-   private static final int TRANSACTION_SENTINEL = -1;
+public class QueryOptions extends Options {
 
    private boolean includeCache;
-   private boolean includeDeleted;
    private boolean includeTypeInheritance;
-   private int transactionId;
 
    public QueryOptions() {
+      super();
       reset();
    }
 
+   @Override
    public void reset() {
+      super.reset();
       includeCache = true;
-      includeDeleted = false;
       includeTypeInheritance = false;
-      transactionId = TRANSACTION_SENTINEL;
-   }
-
-   public void setFromTransaction(int transactionId) {
-      this.transactionId = transactionId;
-      if (transactionId < -1) {
-         this.transactionId = TRANSACTION_SENTINEL;
-      }
-   }
-
-   public int getFromTransaction() {
-      return transactionId;
-   }
-
-   public void setHeadTransaction() {
-      transactionId = TRANSACTION_SENTINEL;
-   }
-
-   public boolean isHeadTransaction() {
-      return TRANSACTION_SENTINEL == getFromTransaction();
    }
 
    public boolean isCacheIncluded() {
@@ -60,38 +38,27 @@ public class QueryOptions implements Cloneable {
       return includeTypeInheritance;
    }
 
-   public boolean areDeletedIncluded() {
-      return includeDeleted;
-   }
-
    public void setIncludeCache(boolean enabled) {
       includeCache = enabled;
-   }
-
-   public void setIncludeDeleted(boolean enabled) {
-      includeDeleted = enabled;
    }
 
    public void setIncludeTypeInheritance(boolean enabled) {
       includeTypeInheritance = enabled;
    }
 
-   public boolean isHistorical() {
-      return !isHeadTransaction();
+   @Override
+   public QueryOptions clone() {
+      QueryOptions clone = new QueryOptions();
+      clone.setIncludeDeleted(this.areDeletedIncluded());
+      clone.setFromTransaction(getFromTransaction());
+      clone.includeCache = this.includeCache;
+      clone.includeTypeInheritance = this.includeTypeInheritance;
+      return clone;
    }
 
    @Override
    public String toString() {
-      return "QueryOptions [includeCache=" + includeCache + ", includeDeleted=" + includeDeleted + ", includeTypeInheritance=" + includeTypeInheritance + ", transactionId=" + transactionId + "]";
+      return "QueryOptions [includeCache=" + includeCache + ", includeTypeInheritance=" + includeTypeInheritance + "]";
    }
 
-   @Override
-   public QueryOptions clone() {
-      QueryOptions clone = new QueryOptions();
-      clone.includeCache = this.includeCache;
-      clone.includeDeleted = this.includeDeleted;
-      clone.includeTypeInheritance = this.includeTypeInheritance;
-      clone.transactionId = this.transactionId;
-      return clone;
-   }
 }

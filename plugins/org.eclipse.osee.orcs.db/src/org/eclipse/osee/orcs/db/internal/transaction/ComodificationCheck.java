@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.executor.admin.HasCancellation;
-import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.orcs.core.ds.ArtifactBuilder;
@@ -25,7 +24,7 @@ import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
-import org.eclipse.osee.orcs.core.ds.LoadOptions;
+import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.OrcsVisitor;
 import org.eclipse.osee.orcs.core.ds.RelationData;
@@ -39,25 +38,25 @@ import org.eclipse.osee.orcs.db.internal.transaction.CommitTransactionDatabaseTx
  */
 public class ComodificationCheck implements TransactionCheck {
 
-   private final DataLoader loader;
+   private final DataLoaderFactory dataLoader;
 
-   public ComodificationCheck(DataLoader loader) {
-      this.loader = loader;
+   public ComodificationCheck(DataLoaderFactory dataLoader) {
+      this.dataLoader = dataLoader;
    }
 
    @Override
-   public void verify(HasCancellation cancellation, TransactionData txData) throws OseeCoreException {
+   public void verify(HasCancellation cancellation, String sessionId, TransactionData txData) throws OseeCoreException {
       OnLoadChecker checker = new OnLoadChecker();
 
       for (ArtifactTransactionData data : txData.getTxData()) {
          data.accept(checker);
       }
 
-      LoadOptions options = new LoadOptions(false, false, LoadLevel.ALL_CURRENT);
-      options.setAttributeIds(checker.getAttributeIds());
-      options.setRelationIds(checker.getRelationIds());
+      DataLoader loader = dataLoader.fromBranchAndArtifactIds(sessionId, txData.getBranch(), checker.getArtifactIds());
+      loader.loadAttributeLocalIds(checker.getAttributeIds());
+      loader.loadRelationLocalIds(checker.getRelationIds());
 
-      loader.loadArtifacts(cancellation, checker, txData.getBranch(), checker.getArtifactIds(), options);
+      loader.load(cancellation, checker);
    }
 
    private final class OnLoadChecker implements ArtifactBuilder, OrcsVisitor {

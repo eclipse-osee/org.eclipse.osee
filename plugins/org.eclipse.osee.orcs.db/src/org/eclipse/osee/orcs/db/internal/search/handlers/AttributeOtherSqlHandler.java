@@ -15,18 +15,17 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
-import org.eclipse.osee.orcs.core.ds.Criteria;
+import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
-import org.eclipse.osee.orcs.db.internal.search.SqlConstants.CriteriaPriority;
-import org.eclipse.osee.orcs.db.internal.search.SqlConstants.TableEnum;
-import org.eclipse.osee.orcs.db.internal.search.SqlHandler;
-import org.eclipse.osee.orcs.db.internal.search.SqlWriter;
+import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
+import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
+import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 import org.eclipse.osee.orcs.search.Operator;
 
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeOtherSqlHandler extends SqlHandler {
+public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther, QueryOptions> {
 
    private CriteriaAttributeOther criteria;
 
@@ -42,12 +41,12 @@ public class AttributeOtherSqlHandler extends SqlHandler {
    private AbstractJoinQuery joinQuery;
 
    @Override
-   public void setData(Criteria criteria) {
-      this.criteria = (CriteriaAttributeOther) criteria;
+   public void setData(CriteriaAttributeOther criteria) {
+      this.criteria = criteria;
    }
 
    @Override
-   public void addTables(SqlWriter writer) throws OseeCoreException {
+   public void addTables(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
       Collection<String> values = criteria.getValues();
       if (values.size() == 1) {
          this.value = values.iterator().next();
@@ -55,24 +54,24 @@ public class AttributeOtherSqlHandler extends SqlHandler {
          joinQuery = writer.writeCharJoin(values);
       }
       if (joinQuery != null && criteria.getOperator().isEquals()) {
-         joinAlias = writer.writeTable(TableEnum.CHAR_JOIN_TABLE);
+         joinAlias = writer.addTable(TableEnum.CHAR_JOIN_TABLE);
       }
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       List<String> txs = writer.getAliases(TableEnum.TXS_TABLE);
 
-      attrAlias = writer.writeTable(TableEnum.ATTRIBUTE_TABLE);
-      txsAlias1 = writer.writeTable(TableEnum.TXS_TABLE);
+      attrAlias = writer.addTable(TableEnum.ATTRIBUTE_TABLE);
+      txsAlias1 = writer.addTable(TableEnum.TXS_TABLE);
 
       if (aliases.isEmpty()) {
-         artAlias2 = writer.writeTable(TableEnum.ARTIFACT_TABLE);
+         artAlias2 = writer.addTable(TableEnum.ARTIFACT_TABLE);
       }
       if (txs.isEmpty()) {
-         txs2Alias2 = writer.writeTable(TableEnum.TXS_TABLE);
+         txs2Alias2 = writer.addTable(TableEnum.TXS_TABLE);
       }
    }
 
    @Override
-   public void addPredicates(SqlWriter writer) throws OseeCoreException {
+   public void addPredicates(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
       IAttributeType attributeType = criteria.getAttributeType();
       Operator operator = criteria.getOperator();
 
@@ -151,6 +150,6 @@ public class AttributeOtherSqlHandler extends SqlHandler {
 
    @Override
    public int getPriority() {
-      return CriteriaPriority.ATTRIBUTE_VALUE.ordinal();
+      return SqlHandlerPriority.ATTRIBUTE_VALUE.ordinal();
    }
 }

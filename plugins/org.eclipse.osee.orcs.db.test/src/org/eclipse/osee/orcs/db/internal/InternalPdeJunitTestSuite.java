@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal;
 
 import org.eclipse.osee.orcs.db.internal.accessor.AccessorTestSuite;
-import org.eclipse.osee.orcs.db.internal.loader.PdeUnitLoaderTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -19,7 +18,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AccessorTestSuite.class, PdeUnitLoaderTestSuite.class})
+@Suite.SuiteClasses({AccessorTestSuite.class})
 public class InternalPdeJunitTestSuite {
    // Test Suite
 }

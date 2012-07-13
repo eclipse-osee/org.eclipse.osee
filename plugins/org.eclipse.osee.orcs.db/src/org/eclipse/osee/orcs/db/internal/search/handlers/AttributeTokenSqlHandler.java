@@ -18,24 +18,22 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
-import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
+import org.eclipse.osee.orcs.core.ds.DataPostProcessor;
+import org.eclipse.osee.orcs.core.ds.DataPostProcessorFactory;
+import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeyword;
-import org.eclipse.osee.orcs.db.internal.search.SqlConstants.CriteriaPriority;
-import org.eclipse.osee.orcs.db.internal.search.SqlConstants.TableEnum;
-import org.eclipse.osee.orcs.db.internal.search.SqlHandler;
-import org.eclipse.osee.orcs.db.internal.search.SqlWriter;
+import org.eclipse.osee.orcs.db.internal.search.tagger.HasTagProcessor;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagCollector;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
-import org.eclipse.osee.orcs.db.internal.search.util.AbstractQueryPostProcessor;
-import org.eclipse.osee.orcs.db.internal.search.util.AttributeQueryPostProcessor;
-import org.eclipse.osee.orcs.db.internal.search.util.TokenQueryPostProcessor;
-import org.eclipse.osee.orcs.search.StringOperator;
+import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
+import org.eclipse.osee.orcs.db.internal.sql.HasDataPostProcessorFactory;
+import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
+import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeTokenSqlHandler extends SqlHandler {
+public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeyword, QueryOptions> implements HasTagProcessor, HasDataPostProcessorFactory<CriteriaAttributeKeyword> {
 
    private CriteriaAttributeKeyword criteria;
 
@@ -52,46 +50,68 @@ public class AttributeTokenSqlHandler extends SqlHandler {
 
    private Collection<? extends IAttributeType> types;
 
+   private DataPostProcessorFactory<CriteriaAttributeKeyword> factory;
+   private TagProcessor tagProcessor;
+
    @Override
-   public void setData(Criteria criteria) {
-      this.criteria = (CriteriaAttributeKeyword) criteria;
+   public void setDataPostProcessorFactory(DataPostProcessorFactory<CriteriaAttributeKeyword> factory) {
+      this.factory = factory;
    }
 
    @Override
-   public void addTables(SqlWriter writer) throws OseeCoreException {
+   public DataPostProcessorFactory<CriteriaAttributeKeyword> getDataPostProcessorFactory() {
+      return factory;
+   }
+
+   @Override
+   public void setTagProcessor(TagProcessor tagProcessor) {
+      this.tagProcessor = tagProcessor;
+   }
+
+   @Override
+   public TagProcessor getTagProcessor() {
+      return tagProcessor;
+   }
+
+   @Override
+   public void setData(CriteriaAttributeKeyword criteria) {
+      this.criteria = criteria;
+   }
+
+   @Override
+   public void addTables(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
       types = criteria.getTypes();
 
       if (types.size() > 1) {
-         jIdAlias = writer.writeTable(TableEnum.ID_JOIN_TABLE);
+         jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
 
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       List<String> txs = writer.getAliases(TableEnum.TXS_TABLE);
 
-      attrAlias = writer.writeTable(TableEnum.ATTRIBUTE_TABLE);
-      txsAlias1 = writer.writeTable(TableEnum.TXS_TABLE);
+      attrAlias = writer.addTable(TableEnum.ATTRIBUTE_TABLE);
+      txsAlias1 = writer.addTable(TableEnum.TXS_TABLE);
 
-      StringOperator operator = criteria.getStringOp();
-      if (requiresTokenizing(operator)) {
+      if (criteria.getStringOp().isTokenized()) {
          codedTags = new ArrayList<Long>();
          tokenize(criteria.getValue(), codedTags);
 
          tagAliases = new ArrayList<String>();
          for (int index = 0; index < codedTags.size(); index++) {
-            tagAliases.add(writer.writeTable(TableEnum.SEARCH_TAGS_TABLE));
+            tagAliases.add(writer.addTable(TableEnum.SEARCH_TAGS_TABLE));
          }
       }
 
       if (aliases.isEmpty()) {
-         artAlias2 = writer.writeTable(TableEnum.ARTIFACT_TABLE);
+         artAlias2 = writer.addTable(TableEnum.ARTIFACT_TABLE);
       }
       if (txs.isEmpty()) {
-         txs2Alias2 = writer.writeTable(TableEnum.TXS_TABLE);
+         txs2Alias2 = writer.addTable(TableEnum.TXS_TABLE);
       }
    }
 
    @Override
-   public void addPredicates(SqlWriter writer) throws OseeCoreException {
+   public void addPredicates(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
       if (types.size() > 1) {
          Set<Integer> typeIds = new HashSet<Integer>();
          for (IAttributeType type : types) {
@@ -114,12 +134,10 @@ public class AttributeTokenSqlHandler extends SqlHandler {
          writer.addParameter(localId);
       }
 
-      StringOperator operator = criteria.getStringOp();
-      boolean tokenize = requiresTokenizing(operator);
-      QueryPostProcessor processor = createPostProcessor(tokenize);
+      DataPostProcessor<?> processor = getDataPostProcessorFactory().createPostProcessor(criteria);
       writer.addPostProcessor(processor);
 
-      if (tokenize) {
+      if (criteria.getStringOp().isTokenized()) {
          writer.write("\n AND \n");
 
          int size = tagAliases.size();
@@ -201,18 +219,7 @@ public class AttributeTokenSqlHandler extends SqlHandler {
 
    @Override
    public int getPriority() {
-      return CriteriaPriority.ATTRIBUTE_TOKENIZED_VALUE.ordinal();
-   }
-
-   private QueryPostProcessor createPostProcessor(boolean isTokenized) {
-      AbstractQueryPostProcessor processor;
-      if (isTokenized) {
-         processor = new TokenQueryPostProcessor(getLogger(), getExecutorAdmin(), getTaggingEngine());
-      } else {
-         processor = new AttributeQueryPostProcessor(getLogger(), getExecutorAdmin(), getTaggingEngine());
-      }
-      processor.setCriteria(criteria);
-      return processor;
+      return SqlHandlerPriority.ATTRIBUTE_TOKENIZED_VALUE.ordinal();
    }
 
    private void tokenize(String value, final Collection<Long> codedTags) {
@@ -222,11 +229,7 @@ public class AttributeTokenSqlHandler extends SqlHandler {
             codedTags.add(codedTag);
          }
       };
-      TagProcessor processor = getTaggingEngine().getTagProcessor();
-      processor.collectFromString(value, collector);
+      getTagProcessor().collectFromString(value, collector);
    }
 
-   private boolean requiresTokenizing(StringOperator op) {
-      return StringOperator.TOKENIZED_ANY_ORDER == op || StringOperator.TOKENIZED_MATCH_ORDER == op;
-   }
 }

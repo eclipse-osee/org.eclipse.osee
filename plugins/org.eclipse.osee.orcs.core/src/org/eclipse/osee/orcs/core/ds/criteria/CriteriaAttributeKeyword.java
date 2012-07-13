@@ -22,7 +22,7 @@ import org.eclipse.osee.orcs.search.StringOperator;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaAttributeKeyword extends Criteria {
+public class CriteriaAttributeKeyword extends Criteria<QueryOptions> {
 
    private final Collection<? extends IAttributeType> attributeType;
    private final String value;

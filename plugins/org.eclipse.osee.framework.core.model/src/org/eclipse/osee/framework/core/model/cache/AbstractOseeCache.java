@@ -329,7 +329,7 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
       }
    }
 
-   public final int getLocalId(Identity<K> token) throws OseeCoreException {
+   public int getLocalId(Identity<K> token) throws OseeCoreException {
       T type = get(token);
       return type != null ? type.getId() : IOseeStorable.UNPERSISTED_VALUE;
    }

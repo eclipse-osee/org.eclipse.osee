@@ -21,7 +21,7 @@ import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
-import org.eclipse.osee.orcs.db.internal.loader.OrcsObjectFactory;
+import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.ProxyDataFactory;
 import org.eclipse.osee.orcs.db.internal.loader.RelationalConstants;
 

@@ -27,11 +27,13 @@ public class QueryData implements Cloneable {
       return options;
    }
 
-   public void addCriteria(Criteria criteria) {
-      criteriaSet.add(criteria);
+   public void addCriteria(Criteria<?>... criterias) {
+      for (Criteria<?> criteria : criterias) {
+         criteriaSet.add(criteria);
+      }
    }
 
-   public boolean hasCriteriaType(Class<? extends Criteria> type) {
+   public boolean hasCriteriaType(Class<? extends Criteria<?>> type) {
       return criteriaSet.hasCriteriaType(type);
    }
 

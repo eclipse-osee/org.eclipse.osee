@@ -21,4 +21,8 @@ public enum StringOperator {
    TOKENIZED_ANY_ORDER,
    TOKENIZED_MATCH_ORDER;
 
+   public boolean isTokenized() {
+      return StringOperator.TOKENIZED_ANY_ORDER == this || StringOperator.TOKENIZED_MATCH_ORDER == this;
+   }
+
 }

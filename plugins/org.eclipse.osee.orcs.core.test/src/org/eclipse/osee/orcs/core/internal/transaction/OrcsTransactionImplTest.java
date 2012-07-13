@@ -70,12 +70,14 @@ public class OrcsTransactionImplTest {
    private OrcsTransactionImpl tx;
    private String guid;
    private final IArtifactType artType = CoreArtifactTypes.Artifact;
+   private String sessionId;
 
    @Before
    public void init() {
       MockitoAnnotations.initMocks(this);
       tx = new OrcsTransactionImpl(logger, sessionContext, dataStore, artifactFactory, txManager, branch);
 
+      sessionId = GUID.create();
       guid = GUID.create();
       when(expected.getGuid()).thenReturn(guid);
    }
@@ -227,7 +229,7 @@ public class OrcsTransactionImplTest {
    @Test
    public void testCommitErrorDuringExecution() throws Exception {
       final Callable<TransactionResult> callable = mock(Callable.class);
-      when(dataStore.commitTransaction(tx)).thenAnswer(new Answer<Callable<TransactionResult>>() {
+      when(dataStore.commitTransaction(sessionId, tx)).thenAnswer(new Answer<Callable<TransactionResult>>() {
 
          @Override
          public Callable<TransactionResult> answer(InvocationOnMock invocation) throws Throwable {
@@ -256,7 +258,7 @@ public class OrcsTransactionImplTest {
    @Test
    public void testCommitErrorDuringRollback() throws Exception {
       final Callable<TransactionResult> callable = mock(Callable.class);
-      when(dataStore.commitTransaction(tx)).thenAnswer(new Answer<Callable<TransactionResult>>() {
+      when(dataStore.commitTransaction(sessionId, tx)).thenAnswer(new Answer<Callable<TransactionResult>>() {
 
          @Override
          public Callable<TransactionResult> answer(InvocationOnMock invocation) throws Throwable {
@@ -285,7 +287,7 @@ public class OrcsTransactionImplTest {
    @Test
    public void testCommit() throws Exception {
       final Callable<TransactionResult> callable = mock(Callable.class);
-      when(dataStore.commitTransaction(tx)).thenAnswer(new Answer<Callable<TransactionResult>>() {
+      when(dataStore.commitTransaction(sessionId, tx)).thenAnswer(new Answer<Callable<TransactionResult>>() {
 
          @Override
          public Callable<TransactionResult> answer(InvocationOnMock invocation) throws Throwable {

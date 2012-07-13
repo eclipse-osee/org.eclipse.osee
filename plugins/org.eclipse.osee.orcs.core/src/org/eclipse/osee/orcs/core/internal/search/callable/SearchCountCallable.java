@@ -14,13 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeyword;
-import org.eclipse.osee.orcs.core.internal.OrcsObjectLoader;
+import org.eclipse.osee.orcs.core.internal.ArtifactLoader;
+import org.eclipse.osee.orcs.core.internal.ArtifactLoaderFactory;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.search.QueryCollector;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -34,21 +34,24 @@ public class SearchCountCallable extends AbstractSearchCallable<Integer> {
 
    private QueryContext queryContext;
 
-   public SearchCountCallable(Log logger, QueryEngine queryEngine, QueryCollector collector, OrcsObjectLoader objectLoader, SessionContext sessionContext, LoadLevel loadLevel, QueryData queryData) {
+   public SearchCountCallable(Log logger, QueryEngine queryEngine, QueryCollector collector, ArtifactLoaderFactory objectLoader, SessionContext sessionContext, LoadLevel loadLevel, QueryData queryData) {
       super(logger, queryEngine, collector, objectLoader, sessionContext, loadLevel, queryData);
    }
 
    @Override
    protected Integer innerCall() throws Exception {
       int count = -1;
+      ArtifactLoader loader = objectLoader.fromQueryContext(sessionContext, queryContext);
+
       if (queryData.hasCriteriaType(CriteriaAttributeKeyword.class)) {
          queryContext = queryEngine.create(sessionContext.getSessionId(), queryData);
-         LoadOptions loadOptions =
-            new LoadOptions(queryData.getOptions().isHistorical(), queryData.getOptions().areDeletedIncluded(),
-               loadLevel);
 
          checkForCancelled();
-         List<ArtifactReadable> artifacts = objectLoader.load(this, queryContext, loadOptions, sessionContext);
+
+         loader.includeDeleted(queryData.getOptions().areDeletedIncluded());
+         loader.fromTransaction(queryData.getOptions().getFromTransaction());
+
+         List<ArtifactReadable> artifacts = loader.setLoadLevel(loadLevel).load();
 
          List<ArtifactReadable> results;
          if (!queryContext.getPostProcessors().isEmpty()) {
@@ -69,7 +72,7 @@ public class SearchCountCallable extends AbstractSearchCallable<Integer> {
       } else {
          queryContext = queryEngine.createCount(sessionContext.getSessionId(), queryData);
          checkForCancelled();
-         count = objectLoader.countObjects(this, queryContext);
+         count = loader.getCount(this);
       }
       return count;
    }

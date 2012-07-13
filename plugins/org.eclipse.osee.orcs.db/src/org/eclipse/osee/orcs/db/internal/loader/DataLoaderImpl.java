@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2012 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,209 +10,208 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.CancellationException;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.osee.executor.admin.HasCancellation;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
-import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.JoinUtility;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.ArtifactBuilder;
-import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
-import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
-import org.eclipse.osee.orcs.core.ds.QueryContext;
-import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
-import org.eclipse.osee.orcs.db.internal.search.SqlContext;
+import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaArtifact;
+import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaAttribute;
+import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
+import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaRelation;
+import org.eclipse.osee.orcs.db.internal.loader.executors.AbstractLoadExecutor;
 
 /**
- * @author Andrew M. Finkbeiner
+ * @author Roberto E. Escobar
  */
 public class DataLoaderImpl implements DataLoader {
 
-   private static final int MAX_FETCH_SIZE = 10000;
+   private final LoadOptions loadOptions = new LoadOptions();
 
-   private final IOseeDatabaseService oseeDatabaseService;
-   private final ArtifactLoader artifactLoader;
-   private final AttributeLoader attributeLoader;
-   private final RelationLoader relationLoader;
-   private final IdFactory idFactory;
+   private final Collection<Integer> attributeIds = new HashSet<Integer>();
+   private final Collection<IAttributeType> attributeTypes = new HashSet<IAttributeType>();
 
-   public DataLoaderImpl(IOseeDatabaseService oseeDatabaseService, IdFactory idFactory, ArtifactLoader artifactLoader, AttributeLoader attributeLoader, RelationLoader relationLoader) {
-      super();
-      this.oseeDatabaseService = oseeDatabaseService;
-      this.idFactory = idFactory;
-      this.artifactLoader = artifactLoader;
-      this.attributeLoader = attributeLoader;
-      this.relationLoader = relationLoader;
-   }
+   private final Collection<Integer> relationIds = new HashSet<Integer>();
+   private final Collection<IRelationType> relationTypes = new HashSet<IRelationType>();
 
-   private SqlContext toSqlContext(QueryContext queryContext) throws OseeCoreException {
-      SqlContext sqlContext = null;
-      if (queryContext instanceof SqlContext) {
-         sqlContext = (SqlContext) queryContext;
-      } else {
-         throw new OseeCoreException("Invalid query context type [%s] - expected SqlContext",
-            queryContext.getClass().getName());
-      }
-      return sqlContext;
+   private final Log logger;
+   private final AbstractLoadExecutor loadExecutor;
+
+   public DataLoaderImpl(Log logger, AbstractLoadExecutor loadExecutor) {
+      this.logger = logger;
+      this.loadExecutor = loadExecutor;
    }
 
    @Override
-   public int countArtifacts(HasCancellation cancellation, QueryContext queryContext) throws OseeCoreException {
-      SqlContext sqlContext = toSqlContext(queryContext);
-      for (AbstractJoinQuery join : sqlContext.getJoins()) {
-         join.store();
-      }
-      String query = sqlContext.getSql();
-      List<Object> params = sqlContext.getParameters();
-      try {
-         checkCancelled(cancellation);
+   public DataLoader resetToDefaults() {
+      loadOptions.reset();
 
-         return oseeDatabaseService.runPreparedQueryFetchObject(-1, query, params.toArray());
-      } finally {
-         for (AbstractJoinQuery join : sqlContext.getJoins()) {
-            join.delete();
-         }
-      }
-   }
+      attributeIds.clear();
+      attributeTypes.clear();
 
-   private void checkCancelled(HasCancellation cancellation) throws CancellationException {
-      if (cancellation != null) {
-         cancellation.checkForCancelled();
-      }
+      relationIds.clear();
+      relationTypes.clear();
+      return this;
    }
 
    @Override
-   public void loadArtifacts(HasCancellation cancellation, ArtifactBuilder builder, IOseeBranch branch, Collection<Integer> artIds, LoadOptions loadOptions) throws OseeCoreException {
-      if (!artIds.isEmpty()) {
-         int branchId = idFactory.getBranchId(branch);
-         int fetchSize = computeFetchSize(artIds.size());
-
-         ArtifactJoinQuery join = JoinUtility.createArtifactJoinQuery(oseeDatabaseService);
-         Integer transactionId = -1;
-         for (Integer artId : artIds) {
-            join.add(artId, branchId, transactionId);
-         }
-
-         try {
-            join.store();
-            loadArtifacts(cancellation, builder, join, fetchSize, loadOptions);
-         } finally {
-            join.delete();
-         }
-      }
+   public DataLoader includeDeleted() {
+      includeDeleted(true);
+      return this;
    }
 
    @Override
-   public void loadArtifacts(HasCancellation cancellation, ArtifactBuilder builder, QueryContext queryContext, LoadOptions loadOptions) throws OseeCoreException {
-      SqlContext sqlContext = toSqlContext(queryContext);
-      int fetchSize = computeFetchSize(sqlContext);
+   public DataLoader includeDeleted(boolean enabled) {
+      loadOptions.setIncludeDeleted(enabled);
+      return this;
+   }
 
-      AbstractJoinQuery join = createArtifactIdJoin(cancellation, sqlContext, fetchSize);
+   @Override
+   public boolean areDeletedIncluded() {
+      return loadOptions.areDeletedIncluded();
+   }
 
-      try {
-         join.store();
-         loadArtifacts(cancellation, builder, join, fetchSize, loadOptions);
-      } finally {
-         join.delete();
+   @Override
+   public DataLoader fromTransaction(int transactionId) {
+      loadOptions.setFromTransaction(transactionId);
+      return this;
+   }
+
+   @Override
+   public int getFromTransaction() {
+      return loadOptions.getFromTransaction();
+   }
+
+   @Override
+   public DataLoader headTransaction() {
+      loadOptions.setHeadTransaction();
+      return this;
+   }
+
+   @Override
+   public boolean isHeadTransaction() {
+      return !loadOptions.isHistorical();
+   }
+
+   @Override
+   public LoadLevel getLoadLevel() {
+      return loadOptions.getLoadLevel();
+   }
+
+   @Override
+   public DataLoader setLoadLevel(LoadLevel loadLevel) {
+      loadOptions.setLoadLevel(loadLevel);
+      return this;
+   }
+
+   @Override
+   public DataLoader loadAttributeType(IAttributeType... attributeType) throws OseeCoreException {
+      return loadAttributeTypes(Arrays.asList(attributeType));
+   }
+
+   @SuppressWarnings("unused")
+   @Override
+   public DataLoader loadAttributeTypes(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
+      this.attributeTypes.addAll(attributeTypes);
+      return this;
+   }
+
+   @Override
+   public DataLoader loadRelationType(IRelationType... relationType) throws OseeCoreException {
+      return loadRelationTypes(Arrays.asList(relationType));
+   }
+
+   @SuppressWarnings("unused")
+   @Override
+   public DataLoader loadRelationTypes(Collection<? extends IRelationType> relationTypes) throws OseeCoreException {
+      this.relationTypes.addAll(relationTypes);
+      return this;
+   }
+
+   @Override
+   public DataLoader loadAttributeLocalId(int... attributeIds) throws OseeCoreException {
+      return loadAttributeLocalIds(toCollection(attributeIds));
+   }
+
+   @SuppressWarnings("unused")
+   @Override
+   public DataLoader loadAttributeLocalIds(Collection<Integer> attributeIds) throws OseeCoreException {
+      this.attributeIds.addAll(attributeIds);
+      return this;
+   }
+
+   @Override
+   public DataLoader loadRelationLocalId(int... relationIds) throws OseeCoreException {
+      return loadRelationLocalIds(toCollection(relationIds));
+   }
+
+   @SuppressWarnings("unused")
+   @Override
+   public DataLoader loadRelationLocalIds(Collection<Integer> relationIds) throws OseeCoreException {
+      this.relationIds.addAll(relationIds);
+      return this;
+   }
+
+   private Collection<Integer> toCollection(int... ids) {
+      Set<Integer> toReturn = new HashSet<Integer>();
+      for (Integer id : ids) {
+         toReturn.add(id);
+      }
+      return toReturn;
+   }
+
+   private <T> Collection<T> copy(Collection<T> source) {
+      Collection<T> toReturn = new HashSet<T>();
+      for (T item : source) {
+         toReturn.add(item);
+      }
+      return toReturn;
+   }
+
+   ////////////////////// EXECUTE METHODS
+
+   @Override
+   public int getCount(HasCancellation cancellation) throws OseeCoreException {
+      int count = -1;
+      long startTime = 0;
+      if (logger.isTraceEnabled()) {
+         startTime = System.currentTimeMillis();
+      }
+      count = loadExecutor.count(cancellation);
+
+      if (logger.isTraceEnabled()) {
+         logger.trace("Counted objects in [%s]", Lib.getElapseString(startTime));
+      }
+      return count;
+   }
+
+   @Override
+   public void load(HasCancellation cancellation, ArtifactBuilder builder) throws OseeCoreException {
+      long startTime = 0;
+      if (logger.isTraceEnabled()) {
+         startTime = System.currentTimeMillis();
+      }
+
+      loadExecutor.load(cancellation, builder, createCriteria(), loadOptions.clone());
+
+      if (logger.isTraceEnabled()) {
+         logger.trace("Objects from ids loaded in [%s]", Lib.getElapseString(startTime));
       }
    }
 
-   private void loadArtifacts(HasCancellation cancellation, ArtifactBuilder builder, AbstractJoinQuery join, int fetchSize, LoadOptions loadOptions) throws OseeCoreException {
-      int queryId = join.getQueryId();
-
-      checkCancelled(cancellation);
-
-      ArtifactDataHandler artHandler = builder.createArtifactDataHandler();
-      artifactLoader.loadFromQueryId(artHandler, loadOptions, fetchSize, queryId);
-
-      checkCancelled(cancellation);
-
-      if (isAttributeLoadingAllowed(loadOptions.getLoadLevel())) {
-         AttributeDataHandler attrHandler = builder.createAttributeDataHandler();
-         attributeLoader.loadFromQueryId(attrHandler, loadOptions, fetchSize, queryId);
-      }
-
-      checkCancelled(cancellation);
-
-      if (isRelationLoadingAllowed(loadOptions.getLoadLevel())) {
-         RelationDataHandler relHandler = builder.createRelationDataHandler();
-         relationLoader.loadFromQueryId(relHandler, loadOptions, fetchSize, queryId);
-      }
+   private CriteriaOrcsLoad createCriteria() {
+      CriteriaArtifact artifactCriteria = new CriteriaArtifact();
+      CriteriaAttribute attributeCriteria = new CriteriaAttribute(copy(attributeIds), copy(attributeTypes));
+      CriteriaRelation relationCriteria = new CriteriaRelation(copy(relationIds), copy(relationTypes));
+      return new CriteriaOrcsLoad(artifactCriteria, attributeCriteria, relationCriteria);
    }
-
-   private boolean isAttributeLoadingAllowed(LoadLevel level) {
-      return level != LoadLevel.SHALLOW && level != LoadLevel.RELATION;
-   }
-
-   private boolean isRelationLoadingAllowed(LoadLevel level) {
-      return level != LoadLevel.SHALLOW && level != LoadLevel.ATTRIBUTE;
-   }
-
-   private int computeFetchSize(int initialSize) {
-      int fetchSize = initialSize;
-
-      if (fetchSize < 10) {
-         fetchSize = 10;
-      }
-
-      // Account for attribute and relation loading
-      fetchSize *= 20;
-
-      if (fetchSize < 0 || fetchSize > MAX_FETCH_SIZE) {
-         fetchSize = MAX_FETCH_SIZE;
-      }
-      return fetchSize;
-   }
-
-   private int computeFetchSize(SqlContext sqlContext) {
-      int fetchSize = 10;//Integer.MIN_VALUE;
-      for (AbstractJoinQuery join : sqlContext.getJoins()) {
-         fetchSize = Math.max(fetchSize, join.size());
-      }
-      return computeFetchSize(fetchSize);
-   }
-
-   private AbstractJoinQuery createArtifactIdJoin(HasCancellation cancellation, SqlContext sqlContext, int fetchSize) throws OseeCoreException {
-      ArtifactJoinQuery artifactJoin = JoinUtility.createArtifactJoinQuery(oseeDatabaseService);
-      for (AbstractJoinQuery join : sqlContext.getJoins()) {
-         join.store();
-      }
-      String query = sqlContext.getSql();
-      List<Object> params = sqlContext.getParameters();
-      try {
-         checkCancelled(cancellation);
-
-         Integer transactionId = -1;
-         IOseeStatement chStmt = oseeDatabaseService.getStatement();
-         try {
-            chStmt.runPreparedQuery(fetchSize, query, params.toArray());
-            while (chStmt.next()) {
-               Integer artId = chStmt.getInt("art_id");
-               Integer branchId = chStmt.getInt("branch_id");
-               if (sqlContext.getOptions().isHistorical()) {
-                  transactionId = chStmt.getInt("transaction_id");
-               }
-               artifactJoin.add(artId, branchId, transactionId);
-
-               checkCancelled(cancellation);
-            }
-         } finally {
-            chStmt.close();
-         }
-      } finally {
-         for (AbstractJoinQuery join : sqlContext.getJoins()) {
-            join.delete();
-         }
-      }
-      return artifactJoin;
-   }
-
 }

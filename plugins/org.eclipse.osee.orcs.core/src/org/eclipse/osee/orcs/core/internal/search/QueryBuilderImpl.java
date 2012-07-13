@@ -178,7 +178,7 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public QueryBuilder andLocalIds(Collection<Integer> artifactIds) throws OseeCoreException {
-      Criteria criteria = criteriaFactory.createArtifactIdCriteria(artifactIds);
+      Criteria<QueryOptions> criteria = criteriaFactory.createArtifactIdCriteria(artifactIds);
       return addAndCheck(criteria);
    }
 
@@ -198,12 +198,12 @@ public class QueryBuilderImpl implements QueryBuilder {
       }
       Conditions.checkExpressionFailOnTrue(!invalids.isEmpty(), "Invalid guids or hrids detected - %s", invalids);
       if (!guids.isEmpty()) {
-         Criteria guidCriteria = criteriaFactory.createArtifactGuidCriteria(guids);
+         Criteria<QueryOptions> guidCriteria = criteriaFactory.createArtifactGuidCriteria(guids);
          addAndCheck(guidCriteria);
       }
 
       if (!hrids.isEmpty()) {
-         Criteria hridCriteria = criteriaFactory.createArtifactHridCriteria(hrids);
+         Criteria<QueryOptions> hridCriteria = criteriaFactory.createArtifactHridCriteria(hrids);
          addAndCheck(hridCriteria);
       }
       return this;
@@ -211,13 +211,13 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public QueryBuilder andIsOfType(IArtifactType... artifactType) throws OseeCoreException {
-      Criteria criteria = criteriaFactory.createArtifactTypeCriteria(Arrays.asList(artifactType));
+      Criteria<QueryOptions> criteria = criteriaFactory.createArtifactTypeCriteria(Arrays.asList(artifactType));
       return addAndCheck(criteria);
    }
 
    @Override
    public QueryBuilder andIsOfType(Collection<? extends IArtifactType> artifactType) throws OseeCoreException {
-      Criteria criteria = criteriaFactory.createArtifactTypeCriteria(artifactType);
+      Criteria<QueryOptions> criteria = criteriaFactory.createArtifactTypeCriteria(artifactType);
       return addAndCheck(criteria);
    }
 
@@ -228,43 +228,43 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public QueryBuilder andExists(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
-      Criteria criteria = criteriaFactory.createExistsCriteria(attributeTypes);
+      Criteria<QueryOptions> criteria = criteriaFactory.createExistsCriteria(attributeTypes);
       return addAndCheck(criteria);
    }
 
    @Override
    public QueryBuilder andExists(IRelationTypeSide relationType) throws OseeCoreException {
-      Criteria criteria = criteriaFactory.createExistsCriteria(relationType);
+      Criteria<QueryOptions> criteria = criteriaFactory.createExistsCriteria(relationType);
       return addAndCheck(criteria);
    }
 
    @Override
    public QueryBuilder and(IAttributeType attributeType, Operator operator, String value) throws OseeCoreException {
-      Criteria criteria =
+      Criteria<QueryOptions> criteria =
          criteriaFactory.createAttributeCriteria(attributeType, operator, Collections.singleton(value));
       return addAndCheck(criteria);
    }
 
    @Override
    public QueryBuilder and(IAttributeType attributeType, Operator operator, Collection<String> values) throws OseeCoreException {
-      Criteria criteria = criteriaFactory.createAttributeCriteria(attributeType, operator, values);
+      Criteria<QueryOptions> criteria = criteriaFactory.createAttributeCriteria(attributeType, operator, values);
       return addAndCheck(criteria);
    }
 
    @Override
    public QueryBuilder and(IAttributeType attributeType, StringOperator operator, CaseType match, String value) throws OseeCoreException {
-      Criteria criteria =
+      Criteria<QueryOptions> criteria =
          criteriaFactory.createAttributeCriteria(Collections.singleton(attributeType), operator, match, value);
       return addAndCheck(criteria);
    }
 
    @Override
    public QueryBuilder and(Collection<? extends IAttributeType> attributeTypes, StringOperator operator, CaseType match, String value) throws OseeCoreException {
-      Criteria criteria = criteriaFactory.createAttributeCriteria(attributeTypes, operator, match, value);
+      Criteria<QueryOptions> criteria = criteriaFactory.createAttributeCriteria(attributeTypes, operator, match, value);
       return addAndCheck(criteria);
    }
 
-   private QueryBuilder addAndCheck(Criteria criteria) throws OseeCoreException {
+   private QueryBuilder addAndCheck(Criteria<QueryOptions> criteria) throws OseeCoreException {
       criteria.checkValid(getOptions());
       getQueryData().addCriteria(criteria);
       return this;

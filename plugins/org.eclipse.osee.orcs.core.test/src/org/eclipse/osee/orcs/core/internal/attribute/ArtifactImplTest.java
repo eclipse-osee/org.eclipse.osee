@@ -10,8 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -30,8 +35,6 @@ import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
 import org.eclipse.osee.orcs.core.internal.artifact.AttributeManager;
 import org.eclipse.osee.orcs.core.internal.artifact.ValueProvider;
-import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
-import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.relation.RelationContainer;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.junit.Before;
@@ -60,8 +63,12 @@ public class ArtifactImplTest {
    @Mock private AttributeType attributeType;
    @Mock private VersionData version;
    @Mock private Branch branch;
+   
+   @SuppressWarnings("rawtypes")
    @Mock private Attribute notDeleted;
+   @SuppressWarnings("rawtypes")
    @Mock private Attribute deleted;
+   @SuppressWarnings("rawtypes")
    @Mock private Attribute differentType;
    // @formatter:on
 
