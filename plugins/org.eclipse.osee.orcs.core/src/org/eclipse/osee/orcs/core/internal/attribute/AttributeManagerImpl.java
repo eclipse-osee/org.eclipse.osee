@@ -62,7 +62,7 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
    }
 
    @Override
-   public void add(IAttributeType type, Attribute<? extends Object> attribute) {
+   public synchronized void add(IAttributeType type, Attribute<? extends Object> attribute) {
       attributes.addAttribute(type, attribute);
    }
 
@@ -295,35 +295,35 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
    private void deleteAttribute(Attribute<?> attribute) throws OseeCoreException {
       IAttributeType attributeType = attribute.getAttributeType();
       checkMultiplicityCanDelete(attributeType);
-      if (attribute.isInDb()) {
-         attribute.delete();
-      } else {
-         attributes.removeAttribute(attributeType, attribute);
-      }
+      attribute.delete();
    }
 
    @Override
-   public void createAttribute(IAttributeType attributeType) throws OseeCoreException {
-      internalCreateAttributeHelper(attributeType);
+   public <T> AttributeWriteable<T> createAttribute(IAttributeType attributeType) throws OseeCoreException {
+      return internalCreateAttributeHelper(attributeType);
    }
 
    @Override
-   public <T> void createAttribute(IAttributeType attributeType, T value) throws OseeCoreException {
+   public <T> AttributeWriteable<T> createAttribute(IAttributeType attributeType, T value) throws OseeCoreException {
       Attribute<T> attribute = internalCreateAttributeHelper(attributeType);
       attribute.setValue(value);
+      return attribute;
    }
 
    @Override
-   public void createAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException {
-      Attribute<Object> attribute = internalCreateAttributeHelper(attributeType);
+   public <T> AttributeWriteable<T> createAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException {
+      Attribute<T> attribute = internalCreateAttributeHelper(attributeType);
       attribute.setFromString(value);
+      return attribute;
    }
 
    //////////////////////////////////////////////////////////////
-   public <T> Attribute<T> internalCreateAttributeHelper(IAttributeType attributeType) throws OseeCoreException {
+   private <T> Attribute<T> internalCreateAttributeHelper(IAttributeType attributeType) throws OseeCoreException {
       checkTypeValid(attributeType);
       checkMultiplicityCanAdd(attributeType);
-      return attributeFactory.createAttribute(this, getOrcsData(), attributeType);
+      Attribute<T> attr = attributeFactory.createAttribute(this, getOrcsData(), attributeType);
+      add(attributeType, attr);
+      return attr;
    }
 
    private <T> Attribute<T> getOrCreateSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
@@ -528,6 +528,7 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
          int missingCount = getRemainingAttributeCount(attributeType);
          for (int i = 0; i < missingCount; i++) {
             Attribute<Object> attr = attributeFactory.createAttribute(this, getOrcsData(), attributeType);
+            add(attributeType, attr);
             attr.clearDirty();
          }
       }

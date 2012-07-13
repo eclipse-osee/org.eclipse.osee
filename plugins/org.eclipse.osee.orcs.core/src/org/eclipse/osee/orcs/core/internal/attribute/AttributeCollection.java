@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -33,7 +34,7 @@ public class AttributeCollection {
    private static final AttributeFilter EXCLUDE_DELETED = new AttributeDeletedFilter(DeletionFlag.EXCLUDE_DELETED);
 
    private final HashCollection<IAttributeType, Attribute<?>> attributes =
-      new HashCollection<IAttributeType, Attribute<?>>(false, LinkedList.class, 12);
+      new HashCollection<IAttributeType, Attribute<?>>(false, LinkedHashSet.class, 12);
 
    private final AttributeExceptionFactory exceptionFactory;
 

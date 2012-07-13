@@ -1,0 +1,435 @@
+/*******************************************************************************
+ * Copyright (c) 2012 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.orcs.core.internal.attribute;
+
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+import java.util.List;
+import junit.framework.Assert;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.orcs.core.ds.ArtifactData;
+import org.eclipse.osee.orcs.core.ds.VersionData;
+import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
+import org.eclipse.osee.orcs.core.internal.artifact.AttributeManager;
+import org.eclipse.osee.orcs.core.internal.artifact.ValueProvider;
+import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
+import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
+import org.eclipse.osee.orcs.core.internal.relation.RelationContainer;
+import org.eclipse.osee.orcs.data.AttributeReadable;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+/**
+ * @author John Misinco
+ */
+public class ArtifactImplTest {
+
+   @Rule
+   public ExpectedException thrown = ExpectedException.none();
+
+   // @formatter:off
+   @Mock private ArtifactImpl artifactImpl;
+   @Mock private ArtifactData artifactData;
+   @Mock private AttributeFactory attributeFactory;
+   @Mock private RelationContainer relationContainer;
+   @Mock private ValueProvider<Branch, ArtifactData> branchProvider;
+   @Mock private ValueProvider<ArtifactType, ArtifactData> artifactTypeProvider;
+   @Mock private ArtifactType artifactType;
+   @Mock private AttributeType attributeType;
+   @Mock private VersionData version;
+   @Mock private Branch branch;
+   @Mock private Attribute notDeleted;
+   @Mock private Attribute deleted;
+   @Mock private Attribute differentType;
+   // @formatter:on
+
+   private final String guid = GUID.create();
+
+   @Before
+   public void init() throws OseeCoreException {
+      MockitoAnnotations.initMocks(this);
+      artifactImpl =
+         new ArtifactImpl(artifactData, attributeFactory, relationContainer, branchProvider, artifactTypeProvider);
+      when(artifactTypeProvider.get()).thenReturn(artifactType);
+      when(artifactType.isValidAttributeType(any(IAttributeType.class), any(Branch.class))).thenReturn(true);
+      when(attributeFactory.getAttribeType(any(IAttributeType.class))).thenReturn(attributeType);
+      when(attributeType.getMaxOccurrences()).thenReturn(1);
+      when(artifactData.getGuid()).thenReturn(guid);
+      when(artifactData.getVersion()).thenReturn(version);
+      when(branchProvider.get()).thenReturn(branch);
+      when(deleted.isDeleted()).thenReturn(true);
+   }
+
+   @Test
+   @SuppressWarnings("unchecked")
+   public void testAddAndGet() {
+      Attribute<Object> attribute = mock(Attribute.class);
+      Assert.assertEquals(0, artifactImpl.getAllAttributes().size());
+      artifactImpl.add(CoreAttributeTypes.City, attribute);
+      Assert.assertTrue(artifactImpl.getAllAttributes().contains(attribute));
+      Assert.assertEquals(1, artifactImpl.getAllAttributes().size());
+   }
+
+   @Test
+   @SuppressWarnings({"rawtypes", "unchecked"})
+   public void testAddException() throws OseeCoreException {
+      Attribute one = mock(Attribute.class);
+      Attribute two = mock(Attribute.class);
+      when(attributeType.getMaxOccurrences()).thenReturn(1);
+      artifactImpl.add(attributeType, one);
+      artifactImpl.add(attributeType, two);
+      Assert.assertEquals(2, artifactImpl.getAttributes(attributeType).size());
+   }
+
+   @Test
+   @SuppressWarnings("unchecked")
+   public void testAreAttributesDirty() {
+      Attribute<Object> attribute = mock(Attribute.class);
+      artifactImpl.add(CoreAttributeTypes.City, attribute);
+      Assert.assertFalse(artifactImpl.areAttributesDirty());
+      when(attribute.isDirty()).thenReturn(true);
+      Assert.assertTrue(artifactImpl.areAttributesDirty());
+   }
+
+   @Test
+   public void testCreateAttribute() throws OseeCoreException {
+      artifactImpl.createAttribute(CoreAttributeTypes.City);
+      verify(attributeFactory).createAttribute(artifactImpl, artifactData, CoreAttributeTypes.City);
+   }
+
+   @Test
+   public void testSetOrcsData() {
+      ArtifactData newOrcsData = mock(ArtifactData.class);
+      artifactImpl.setOrcsData(newOrcsData);
+      verify(branchProvider).setOrcsData(newOrcsData);
+      verify(artifactTypeProvider).setOrcsData(newOrcsData);
+   }
+
+   @Test
+   public void testGetModificationType() {
+      artifactImpl.getModificationType();
+      verify(artifactData).getModType();
+   }
+
+   @Test
+   public void testGetLocalId() {
+      artifactImpl.getLocalId();
+      verify(artifactData).getLocalId();
+   }
+
+   @Test
+   public void testGetGuid() {
+      artifactImpl.getGuid();
+      verify(artifactData).getGuid();
+   }
+
+   @Test
+   public void testGetHumanReadableId() {
+      artifactImpl.getHumanReadableId();
+      verify(artifactData).getHumanReadableId();
+   }
+
+   @Test
+   public void testGetTransactionId() {
+      artifactImpl.getTransactionId();
+      verify(version).getTransactionId();
+   }
+
+   @Test
+   public void testGetBranch() throws OseeCoreException {
+      artifactImpl.getBranch();
+      verify(branchProvider).get();
+   }
+
+   @Test
+   public void testArtifactType() throws OseeCoreException {
+      artifactImpl.getArtifactType();
+      verify(artifactTypeProvider).get();
+   }
+
+   @Test
+   @SuppressWarnings({"rawtypes", "unchecked"})
+   public void testSetName() throws OseeCoreException {
+      Attribute attr = mock(Attribute.class);
+      when(
+         attributeFactory.createAttribute(any(AttributeManager.class), any(ArtifactData.class),
+            eq(CoreAttributeTypes.Name))).thenReturn(attr);
+      artifactImpl.setName("test");
+      verify(attr).setFromString("test");
+   }
+
+   @Test
+   public void testSetArtifactType() throws OseeCoreException {
+      when(version.isInStorage()).thenReturn(true);
+      artifactImpl.setArtifactType(CoreArtifactTypes.CodeUnit);
+      verify(artifactData).setTypeUuid(CoreArtifactTypes.CodeUnit.getGuid());
+      verify(artifactData).setModType(ModificationType.MODIFIED);
+
+      reset(version);
+      reset(artifactData);
+      when(artifactData.getVersion()).thenReturn(version);
+      artifactImpl.setArtifactType(CoreArtifactTypes.CodeUnit);
+      verify(artifactData, never()).setModType(ModificationType.MODIFIED);
+   }
+
+   @Test
+   public void testIsOfType() throws OseeCoreException {
+      artifactImpl.isOfType(CoreArtifactTypes.CodeUnit);
+      verify(artifactType).inheritsFrom(CoreArtifactTypes.CodeUnit);
+   }
+
+   @Test
+   @SuppressWarnings({"rawtypes", "unchecked"})
+   public void testIsDirty() throws OseeCoreException {
+      Assert.assertFalse(artifactImpl.isDirty());
+
+      // add dirty attribute
+      Attribute dirty = mock(Attribute.class);
+      when(dirty.isDirty()).thenReturn(true);
+      artifactImpl.add(CoreAttributeTypes.Active, dirty);
+      Assert.assertTrue(artifactImpl.isDirty());
+
+      // change artifactType
+      reset(dirty);
+      Assert.assertFalse(artifactImpl.isDirty());
+      artifactImpl.setArtifactType(CoreArtifactTypes.CodeUnit);
+      Assert.assertTrue(artifactImpl.isDirty());
+
+      // set mod type to replace with version
+      artifactImpl.setOrcsData(artifactData);
+      Assert.assertFalse(artifactImpl.isDirty());
+      when(artifactData.getModType()).thenReturn(ModificationType.REPLACED_WITH_VERSION);
+      Assert.assertTrue(artifactImpl.isDirty());
+   }
+
+   @Test
+   public void testIsDeleted() {
+      for (ModificationType modType : ModificationType.values()) {
+         reset(artifactData);
+         when(artifactData.getModType()).thenReturn(modType);
+         Assert.assertEquals(modType.isDeleted(), artifactImpl.isDeleted());
+      }
+   }
+
+   @Test
+   public void testIsAttributeTypeValid() throws OseeCoreException {
+      artifactImpl.isAttributeTypeValid(CoreAttributeTypes.Afha);
+      verify(artifactType).isValidAttributeType(CoreAttributeTypes.Afha, branch);
+   }
+
+   @Test
+   public void testGetValidAttributeTypes() throws OseeCoreException {
+      artifactImpl.getValidAttributeTypes();
+      verify(artifactType).getAttributeTypes(branch);
+   }
+
+   @Test
+   @SuppressWarnings({"rawtypes", "unchecked"})
+   public void testSetAttributesNotDirty() {
+      Attribute one = mock(Attribute.class);
+      Attribute two = mock(Attribute.class);
+      artifactImpl.add(CoreAttributeTypes.AccessContextId, one);
+      artifactImpl.add(CoreAttributeTypes.AccessContextId, two);
+      artifactImpl.setAttributesNotDirty();
+      verify(one).clearDirty();
+      verify(two).clearDirty();
+   }
+
+   @Test
+   @SuppressWarnings({"rawtypes", "unchecked"})
+   public void testGetName() throws OseeCoreException {
+      String name = artifactImpl.getName();
+      Assert.assertTrue(name.contains("AttributeDoesNotExist"));
+
+      Attribute attr = mock(Attribute.class);
+      when(
+         attributeFactory.createAttribute(any(AttributeManager.class), any(ArtifactData.class),
+            eq(CoreAttributeTypes.Name))).thenReturn(attr);
+      when(attr.getValue()).thenReturn("test");
+      artifactImpl.add(CoreAttributeTypes.Name, attr);
+      artifactImpl.setName("test");
+      name = artifactImpl.getName();
+      Assert.assertEquals("test", name);
+   }
+
+   @Test
+   public void testGetMaximumAttributeTypeAllowed() throws OseeCoreException {
+      reset(attributeType);
+      int expected = 5;
+      when(attributeType.getMaxOccurrences()).thenReturn(expected);
+      int result = artifactImpl.getMaximumAttributeTypeAllowed(CoreAttributeTypes.AccessContextId);
+      Assert.assertEquals(expected, result);
+
+      reset(artifactType);
+      result = artifactImpl.getMaximumAttributeTypeAllowed(CoreAttributeTypes.AccessContextId);
+      Assert.assertEquals(-1, result);
+   }
+
+   @Test
+   public void testGetMinimumAttributeTypeAllowed() throws OseeCoreException {
+      reset(attributeType);
+      int expected = 5;
+      when(attributeType.getMinOccurrences()).thenReturn(expected);
+      int result = artifactImpl.getMinimumAttributeTypeAllowed(CoreAttributeTypes.AccessContextId);
+      Assert.assertEquals(expected, result);
+
+      reset(artifactType);
+      result = artifactImpl.getMaximumAttributeTypeAllowed(CoreAttributeTypes.AccessContextId);
+      Assert.assertEquals(-1, result);
+   }
+
+   @Test
+   @SuppressWarnings("unchecked")
+   public void testGetAttributeCount() throws OseeCoreException {
+      artifactImpl.add(CoreAttributeTypes.AccessContextId, notDeleted);
+      artifactImpl.add(CoreAttributeTypes.AccessContextId, deleted);
+      artifactImpl.add(CoreAttributeTypes.Name, differentType);
+      int result = artifactImpl.getAttributeCount(CoreAttributeTypes.AccessContextId);
+      Assert.assertEquals(1, result);
+      result = artifactImpl.getAttributeCount(CoreAttributeTypes.Name);
+      Assert.assertEquals(1, result);
+   }
+
+   @Test
+   @SuppressWarnings("unchecked")
+   public void testGetAttributes() throws OseeCoreException {
+      artifactImpl.add(CoreAttributeTypes.AccessContextId, notDeleted);
+      artifactImpl.add(CoreAttributeTypes.AccessContextId, deleted);
+      artifactImpl.add(CoreAttributeTypes.Name, differentType);
+      List<AttributeReadable<Object>> attributes = artifactImpl.getAttributes();
+      Assert.assertTrue(attributes.contains(notDeleted));
+      Assert.assertTrue(attributes.contains(differentType));
+      Assert.assertFalse(attributes.contains(deleted));
+
+      attributes = artifactImpl.getAttributes(CoreAttributeTypes.AccessContextId);
+      Assert.assertEquals(1, attributes.size());
+      Assert.assertTrue(attributes.contains(notDeleted));
+   }
+
+   @Test
+   @SuppressWarnings("unchecked")
+   public void testGetAttributeValues() throws OseeCoreException {
+      artifactImpl.add(CoreAttributeTypes.AccessContextId, notDeleted);
+      artifactImpl.add(CoreAttributeTypes.AccessContextId, deleted);
+      when(notDeleted.getValue()).thenReturn("notDeleted");
+      when(deleted.getValue()).thenReturn("deleted");
+      List<Object> values = artifactImpl.getAttributeValues(CoreAttributeTypes.AccessContextId);
+      Assert.assertEquals(1, values.size());
+      Assert.assertTrue(values.contains("notDeleted"));
+   }
+
+   @Test
+   @SuppressWarnings("unchecked")
+   public void testGetSoleAttributeAsString() throws OseeCoreException {
+      when(notDeleted.getValue()).thenReturn(new Integer(5));
+      artifactImpl.add(CoreAttributeTypes.AccessContextId, notDeleted);
+      String attribute = artifactImpl.getSoleAttributeAsString(CoreAttributeTypes.AccessContextId);
+      Assert.assertEquals("5", attribute);
+
+      attribute = artifactImpl.getSoleAttributeAsString(CoreAttributeTypes.Category, "default");
+      Assert.assertEquals("default", attribute);
+   }
+
+   @Test
+   @SuppressWarnings({"rawtypes", "unchecked"})
+   public void testGetSoleAttributeAsStringException() throws OseeCoreException {
+      Attribute one = mock(Attribute.class);
+      Attribute two = mock(Attribute.class);
+      artifactImpl.add(CoreAttributeTypes.AccessContextId, one);
+      artifactImpl.add(CoreAttributeTypes.AccessContextId, two);
+      thrown.expect(MultipleAttributesExist.class);
+      artifactImpl.getSoleAttributeAsString(CoreAttributeTypes.AccessContextId);
+   }
+
+   @Test
+   @SuppressWarnings("unchecked")
+   public void testDeleteAttributesByArtifact() throws OseeCoreException {
+      artifactImpl.add(CoreAttributeTypes.AccessContextId, notDeleted);
+      artifactImpl.add(CoreAttributeTypes.AccessContextId, deleted);
+      artifactImpl.add(CoreAttributeTypes.Active, differentType);
+      artifactImpl.deleteAttributesByArtifact();
+      verify(notDeleted).setArtifactDeleted();
+      verify(deleted).setArtifactDeleted();
+      verify(differentType).setArtifactDeleted();
+   }
+
+   @Test
+   @SuppressWarnings("unchecked")
+   public void testDeleteSoleAttribute() throws OseeCoreException {
+      when(attributeType.getMinOccurrences()).thenReturn(0);
+      when(notDeleted.getAttributeType()).thenReturn(attributeType);
+      when(notDeleted.getContainer()).thenReturn(artifactImpl);
+      artifactImpl.add(attributeType, notDeleted);
+      artifactImpl.deleteSoleAttribute(attributeType);
+      verify(notDeleted).delete();
+   }
+
+   @Test
+   @SuppressWarnings("unchecked")
+   public void testDeleteSoleAttributeException() throws OseeCoreException {
+      when(attributeType.getMinOccurrences()).thenReturn(1);
+      when(notDeleted.getAttributeType()).thenReturn(attributeType);
+      artifactImpl.add(attributeType, notDeleted);
+
+      thrown.expect(OseeStateException.class);
+      artifactImpl.deleteSoleAttribute(attributeType);
+   }
+
+   @Test
+   @SuppressWarnings({"rawtypes", "unchecked"})
+   public void testSetAttributesFromStringsCreateAll() throws OseeCoreException {
+      Attribute one = mock(Attribute.class);
+      Attribute two = mock(Attribute.class);
+      Attribute three = mock(Attribute.class);
+      when(attributeType.getMaxOccurrences()).thenReturn(3);
+      when(attributeFactory.createAttribute(eq(artifactImpl), any(ArtifactData.class), eq(attributeType))).thenReturn(
+         one, two, three);
+      artifactImpl.setAttributesFromStrings(attributeType, "one", "two", "three");
+      verify(one).setFromString("one");
+      verify(two).setFromString("two");
+      verify(three).setFromString("three");
+   }
+
+   @Test
+   @SuppressWarnings({"rawtypes", "unchecked"})
+   public void testSetAttributesFromStringsCreateOne() throws OseeCoreException {
+      Attribute one = mock(Attribute.class);
+      Attribute two = mock(Attribute.class);
+      when(attributeType.getMaxOccurrences()).thenReturn(3);
+      when(attributeFactory.createAttribute(eq(artifactImpl), any(ArtifactData.class), eq(attributeType))).thenReturn(
+         two);
+      artifactImpl.add(attributeType, one);
+      artifactImpl.setAttributesFromStrings(attributeType, "1", "2");
+      verify(one).setFromString("1");
+      verify(two).setFromString("2");
+
+      reset(one, two);
+      when(one.getValue()).thenReturn("1");
+      artifactImpl.setAttributesFromStrings(attributeType, "1", "2");
+      verify(one, never()).setFromString("1");
+      verify(two).setFromString("2");
+   }
+
+}

@@ -282,7 +282,7 @@ public class OrcsQueryTest {
       Assert.assertEquals(0, builder1.getCount());
    }
 
-   private static void checkContainsTypes(Collection<ArtifactReadable> arts, IArtifactType... types) {
+   private static void checkContainsTypes(Collection<ArtifactReadable> arts, IArtifactType... types) throws OseeCoreException {
       List<IArtifactType> expected = Arrays.asList(types);
       for (ArtifactReadable art : arts) {
          Assert.assertTrue(String.format("artifact type [%s] not found", art.getArtifactType()),

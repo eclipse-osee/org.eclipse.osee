@@ -13,13 +13,13 @@ package org.eclipse.osee.orcs.core.internal.artifact;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.EditState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
@@ -31,16 +31,16 @@ import org.eclipse.osee.orcs.data.ArtifactWriteable;
 public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWriteable, HasRelationContainer, ArtifactVisitable {
 
    private final RelationContainer relationContainer;
-   private final ArtifactType artifactType;
-   private final Branch branch;
    private EditState objectEditState;
    private ArtifactData artifactData;
+   private final ValueProvider<Branch, ArtifactData> branchProvider;
+   private final ValueProvider<ArtifactType, ArtifactData> artifactTypeProvider;
 
-   public ArtifactImpl(ArtifactType artifactType, Branch branch, ArtifactData artifactData, AttributeFactory attributeFactory, RelationContainer relationContainer) {
+   public ArtifactImpl(ArtifactData artifactData, AttributeFactory attributeFactory, RelationContainer relationContainer, ValueProvider<Branch, ArtifactData> branchProvider, ValueProvider<ArtifactType, ArtifactData> artifactTypeProvider) {
       super(attributeFactory);
       this.artifactData = artifactData;
-      this.artifactType = artifactType;
-      this.branch = branch;
+      this.artifactTypeProvider = artifactTypeProvider;
+      this.branchProvider = branchProvider;
       this.relationContainer = relationContainer;
       this.objectEditState = EditState.NO_CHANGE;
    }
@@ -59,6 +59,8 @@ public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWritea
    public void setOrcsData(ArtifactData data) {
       this.artifactData = data;
       objectEditState = EditState.NO_CHANGE;
+      branchProvider.setOrcsData(data);
+      artifactTypeProvider.setOrcsData(data);
    }
 
    public ModificationType getModificationType() {
@@ -86,13 +88,13 @@ public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWritea
    }
 
    @Override
-   public IOseeBranch getBranch() {
-      return branch;
+   public Branch getBranch() throws OseeCoreException {
+      return branchProvider.get();
    }
 
    @Override
-   public ArtifactType getArtifactType() {
-      return artifactType;
+   public ArtifactType getArtifactType() throws OseeCoreException {
+      return artifactTypeProvider.get();
    }
 
    @Override
@@ -101,7 +103,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWritea
    }
 
    @Override
-   public void setArtifactType(IArtifactType artifactType) {
+   public void setArtifactType(IArtifactType artifactType) throws OseeCoreException {
       if (!getArtifactType().equals(artifactType)) {
          getOrcsData().setTypeUuid(artifactType.getGuid());
 
@@ -114,7 +116,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWritea
    }
 
    @Override
-   public boolean isOfType(IArtifactType... otherTypes) {
+   public boolean isOfType(IArtifactType... otherTypes) throws OseeCoreException {
       return getArtifactType().inheritsFrom(otherTypes);
    }
 
@@ -138,17 +140,21 @@ public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWritea
 
    @Override
    public boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException {
-      return getArtifactType().isValidAttributeType(attributeType, branch);
+      return getArtifactType().isValidAttributeType(attributeType, getBranch());
    }
 
    @Override
    public Collection<? extends IAttributeType> getValidAttributeTypes() throws OseeCoreException {
-      return getArtifactType().getAttributeTypes(branch);
+      return getArtifactType().getAttributeTypes(getBranch());
    }
 
    @Override
    public String getExceptionString() {
-      return String.format("artifact type [%s] guid[%s] on branch[%s]", getArtifactType(), getGuid(), getBranch());
+      try {
+         return String.format("artifact type [%s] guid[%s] on branch[%s]", getArtifactType(), getGuid(), getBranch());
+      } catch (OseeCoreException ex) {
+         return Lib.exceptionToString(ex);
+      }
    }
 
    public boolean hasDirtyRelations() {

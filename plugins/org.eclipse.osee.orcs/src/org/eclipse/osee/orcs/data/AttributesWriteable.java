@@ -30,11 +30,11 @@ public interface AttributesWriteable extends Writeable, AttributesReadable {
    @WriteAttributes
    <T> List<AttributeWriteable<T>> getWriteableAttributes(IAttributeType attributeType) throws OseeCoreException;
 
-   void createAttribute(IAttributeType attributeType) throws OseeCoreException;
+   <T> AttributeWriteable<T> createAttribute(IAttributeType attributeType) throws OseeCoreException;
 
-   <T> void createAttribute(IAttributeType attributeType, T value) throws OseeCoreException;
+   <T> AttributeWriteable<T> createAttribute(IAttributeType attributeType, T value) throws OseeCoreException;
 
-   void createAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException;
+   <T> AttributeWriteable<T> createAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException;
 
    <T> void setSoleAttributeValue(IAttributeType attributeType, T value) throws OseeCoreException;
 

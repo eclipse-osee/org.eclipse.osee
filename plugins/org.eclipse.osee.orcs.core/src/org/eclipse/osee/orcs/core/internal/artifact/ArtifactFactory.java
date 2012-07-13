@@ -18,10 +18,8 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataFactory;
@@ -57,10 +55,8 @@ public class ArtifactFactory {
       //TODO implement an artifact class resolver for specific artifact types
       RelationContainer relationContainer = relationFactory.createRelationContainer(artifactData.getLocalId());
 
-      ArtifactType type = artifactTypeCache.getByGuid(artifactData.getTypeUuid());
-      Branch branch = branchCache.getById(artifactData.getVersion().getBranchId());
-
-      return new ArtifactImpl(type, branch, artifactData, attributeFactory, relationContainer);
+      return new ArtifactImpl(artifactData, attributeFactory, relationContainer, new BranchProvider(branchCache,
+         artifactData), new ArtifactTypeProvider(artifactTypeCache, artifactData));
    }
 
    public ArtifactImpl createArtifact(IOseeBranch branch, IArtifactType artifactType, String guid) throws OseeCoreException {
@@ -93,7 +89,8 @@ public class ArtifactFactory {
 
       ArtifactData artifactData = factory.introduce(ontoBranch, source.getOrcsData());
       ArtifactImpl introducedArt = createArtifact(artifactData);
-      Collection<? extends IAttributeType> typeToCopy = getAllowedTypes(introducedArt, source.getExistingAttributeTypes());
+      Collection<? extends IAttributeType> typeToCopy =
+         getAllowedTypes(introducedArt, source.getExistingAttributeTypes());
       for (IAttributeType attributeType : typeToCopy) {
          for (AttributeReadable<?> attributeSource : source.getAttributes(attributeType)) {
             AttributeData data = getAttributeData(attributeSource);
