@@ -15,6 +15,7 @@ import java.net.BindException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ClosedByInterruptException;
@@ -79,7 +80,7 @@ public class AbstractMessageToolService implements IRemoteMessageService {
 
    private final IMessageRequestor messageRequestor;
    private MessageRecorder recorder;
-   private final DatagramChannel recorderOutputChannel;
+   private DatagramChannel recorderOutputChannel;
    private volatile boolean terminated = false;
    private final AtomicInteger idCounter = new AtomicInteger(0x0DEF0000);
 
@@ -341,13 +342,7 @@ public class AbstractMessageToolService implements IRemoteMessageService {
     */
    public AbstractMessageToolService(IMessageManager messageManager) throws IOException {
       openXmitChannel();
-      recorderOutputChannel = DatagramChannel.open();
-      InetSocketAddress address = new InetSocketAddress(InetAddress.getLocalHost(), 0);
-      try {
-		recorderOutputChannel.socket().bind(address);
-	} catch (BindException e) {
-		throw new IOException("could not bind to address " + address.toString());
-	}
+      
       messageRequestor = messageManager.createMessageRequestor(getClass().getName());
    }
 
@@ -737,6 +732,7 @@ public class AbstractMessageToolService implements IRemoteMessageService {
                   elementsToRecord.toArray(new Element[elementsToRecord.size()]));
             msgsToRecord.add(config);
          }
+         setupRecorderOutputChannel();
          recorderOutputChannel.connect(cmd.getDestAddress());
          recorder.startRecording(msgsToRecord, recorderOutputChannel);
          OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO,
@@ -750,11 +746,39 @@ public class AbstractMessageToolService implements IRemoteMessageService {
 
    }
 
+   /**
+    * @throws IOException
+    * @throws UnknownHostException
+    * @throws SocketException
+    */
+   private void setupRecorderOutputChannel() throws IOException, UnknownHostException, SocketException {
+      if( recorderOutputChannel != null )
+         return;
+      
+      recorderOutputChannel = DatagramChannel.open();
+      InetSocketAddress address = new InetSocketAddress(InetAddress.getLocalHost(), 0);
+      try {
+         recorderOutputChannel.socket().bind(address);
+      } catch (BindException e) {
+         throw new IOException("could not bind to address " + address.toString());
+      }
+   }
+
    @Override
    public synchronized InetSocketAddress getRecorderSocketAddress() throws RemoteException {
       if (terminated) {
          throw new IllegalStateException("tool service has been terminated");
       }
+      
+      if( recorderOutputChannel == null ) {
+         try {
+            setupRecorderOutputChannel();
+         }
+         catch (Exception ex) {
+            throw new RemoteException("Exception initializing recorder channel");
+         }
+      }
+      
       if (!recorderOutputChannel.isOpen()) {
          throw new RemoteException("Recorder output channel is closed");
       }
@@ -786,6 +810,8 @@ public class AbstractMessageToolService implements IRemoteMessageService {
          }
          try {
             recorderOutputChannel.disconnect();
+            recorderOutputChannel.close();
+            recorderOutputChannel = null;
          } catch (IOException e) {
             throw new RemoteException("could not disconnect recorder output channel", e);
          }
