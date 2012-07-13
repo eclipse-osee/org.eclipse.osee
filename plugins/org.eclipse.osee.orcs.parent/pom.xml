@@ -26,6 +26,8 @@
 		<module>../../plugins/org.eclipse.osee.database.schema</module>
 
 		<module>../../plugins/org.eclipse.osee.orcs</module>
+		<module>../../plugins/org.eclipse.osee.orcs.test</module>
+		
 		<module>../../plugins/org.eclipse.osee.orcs.core</module>
 		<module>../../plugins/org.eclipse.osee.orcs.core.test</module>
 		<module>../../plugins/org.eclipse.osee.orcs.db</module>
@@ -34,8 +36,6 @@
 		<module>../../plugins/org.eclipse.osee.orcs.rest.test</module>
 		<module>../../plugins/org.eclipse.osee.framework.h2</module>
 		<module>../../plugins/org.eclipse.osee.orcs.db.test</module>
-
-		<module>../../plugins/org.eclipse.osee.orcs.core.integration.test</module>
 
 		<module>../../features/org.eclipse.osee.orcs.feature</module>
 		<module>../../features/org.eclipse.osee.orcs.feature.source</module>

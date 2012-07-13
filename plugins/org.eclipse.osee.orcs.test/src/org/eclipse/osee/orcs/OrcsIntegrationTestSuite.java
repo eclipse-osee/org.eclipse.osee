@@ -8,14 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core;
+package org.eclipse.osee.orcs;
 
-import org.eclipse.osee.orcs.core.internal.OrcsAttributeLoadingTest;
-import org.eclipse.osee.orcs.core.internal.OrcsAttributeSearchTest;
-import org.eclipse.osee.orcs.core.internal.OrcsBranchTest;
-import org.eclipse.osee.orcs.core.internal.OrcsQueryTest;
-import org.eclipse.osee.orcs.core.internal.OrcsRelationLoadingTest;
-import org.eclipse.osee.orcs.core.internal.OrcsTransactionTest;
+import org.eclipse.osee.orcs.api.OrcsAttributeLoadingTest;
+import org.eclipse.osee.orcs.api.OrcsAttributeSearchTest;
+import org.eclipse.osee.orcs.api.OrcsBranchTest;
+import org.eclipse.osee.orcs.api.OrcsQueryTest;
+import org.eclipse.osee.orcs.api.OrcsRelationLoadingTest;
+import org.eclipse.osee.orcs.api.OrcsTransactionTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

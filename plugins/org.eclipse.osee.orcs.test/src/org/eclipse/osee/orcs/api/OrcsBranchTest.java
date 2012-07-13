@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.orcs.core.internal;
+package org.eclipse.osee.orcs.api;
 
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
-import org.eclipse.osee.orcs.core.OrcsIntegrationRule;
+import org.eclipse.osee.orcs.OrcsIntegrationRule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;

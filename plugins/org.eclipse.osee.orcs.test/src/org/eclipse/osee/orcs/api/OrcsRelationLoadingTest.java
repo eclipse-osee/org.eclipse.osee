@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.internal;
+package org.eclipse.osee.orcs.api;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.core.OrcsIntegrationRule;
+import org.eclipse.osee.orcs.OrcsIntegrationRule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.GraphReadable;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core;
+package org.eclipse.osee.orcs;
 
 import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
@@ -18,10 +18,8 @@ import org.eclipse.osee.framework.core.services.IOseeModelingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.DataStoreTypeCache;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
-import org.eclipse.osee.orcs.core.internal.attribute.AttributeClassResolver;
 import org.eclipse.osee.orcs.db.mock.OsgiRule;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.osgi.service.event.EventAdmin;
@@ -49,7 +47,6 @@ public class OrcsIntegrationRule extends OsgiRule {
       @OsgiService public IOseeCachingService cachingService;
       @OsgiService public OrcsDataStore dataStore;
       @OsgiService public DataStoreTypeCache typeCache;
-      @OsgiService public AttributeClassResolver resolver;
       // @formatter:on
    }
 
