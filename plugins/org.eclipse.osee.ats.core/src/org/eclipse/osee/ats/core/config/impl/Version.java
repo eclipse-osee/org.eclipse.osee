@@ -261,4 +261,9 @@ public class Version extends AtsObject implements IAtsVersion {
       return createBranchAllowed;
    }
 
+   @Override
+   public String getTypeName() {
+      return "Version";
+   }
+
 }

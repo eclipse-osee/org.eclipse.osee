@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -134,9 +133,9 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       return "unhandled column";
    }
 
-   private String handleVersionColumn(Object element) {
+   private String handleVersionColumn(Object element) throws OseeCoreException {
       if (element instanceof ICommitConfigArtifact) {
-         return ((Artifact) element).getName();
+         return ((ICommitConfigArtifact) element).getName();
       } else {
          return "";
       }
@@ -144,7 +143,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
 
    private String handleArtifactTypeNameColumn(Object element) {
       if (element instanceof ICommitConfigArtifact) {
-         return ((Artifact) element).getArtifactTypeName();
+         return ((ICommitConfigArtifact) element).getTypeName();
       } else {
          return "";
       }

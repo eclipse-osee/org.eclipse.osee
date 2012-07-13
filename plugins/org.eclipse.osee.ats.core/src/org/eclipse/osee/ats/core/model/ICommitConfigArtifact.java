@@ -18,6 +18,8 @@ import org.eclipse.osee.framework.core.util.Result;
  */
 public interface ICommitConfigArtifact {
 
+   public String getName() throws OseeCoreException;
+
    public String getBaslineBranchGuid() throws OseeCoreException;
 
    public Result isAllowCommitBranchInherited() throws OseeCoreException;
@@ -25,5 +27,7 @@ public interface ICommitConfigArtifact {
    public Result isAllowCreateBranchInherited() throws OseeCoreException;
 
    public String getCommitFullDisplayName() throws OseeCoreException;
+
+   public String getTypeName();
 
 }

@@ -424,4 +424,9 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
       return ruleMgr.hasRule(rule);
    }
 
+   @Override
+   public String getTypeName() {
+      return "Team Definition";
+   }
+
 }
