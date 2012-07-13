@@ -219,4 +219,9 @@ public class MockArtifact implements ArtifactReadable {
    public Collection<? extends IAttributeType> getValidAttributeTypes() throws OseeCoreException {
       return null;
    }
+
+   @Override
+   public boolean isDeleted() {
+      return false;
+   }
 }

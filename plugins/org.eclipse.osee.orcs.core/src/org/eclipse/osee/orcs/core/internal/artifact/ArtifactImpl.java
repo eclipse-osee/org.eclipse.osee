@@ -171,4 +171,52 @@ public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWritea
       // TX_TODO loop through relations
 
    }
+
+   @Override
+   public void delete() throws OseeCoreException {
+      getOrcsData().setModType(ModificationType.DELETED);
+      deleteAttributesByArtifact();
+      //TX_TODO Delete artifact and relation stuff
+      //      public static void deleteArtifact(SkynetTransaction transaction, boolean overrideDeleteCheck, final Artifact... artifacts) throws OseeCoreException {
+      //         deleteArtifactCollection(transaction, overrideDeleteCheck, Arrays.asList(artifacts));
+      //      }
+      //
+      //      public static void deleteArtifactCollection(SkynetTransaction transaction, boolean overrideDeleteCheck, final Collection<Artifact> artifacts) throws OseeCoreException {
+      //         if (artifacts.isEmpty()) {
+      //            return;
+      //         }
+      //
+      //         if (!overrideDeleteCheck) {
+      //            performDeleteChecks(artifacts);
+      //         }
+      //
+      //         bulkLoadRelatives(artifacts);
+      //
+      //         boolean reorderRelations = true;
+      //         for (Artifact artifact : artifacts) {
+      //            deleteTrace(artifact, transaction, reorderRelations);
+      //         }
+      //      }
+      //      private static void deleteTrace(Artifact artifact, SkynetTransaction transaction, boolean reorderRelations) throws OseeCoreException {
+      //         if (!artifact.isDeleted()) {
+      //            // This must be done first since the the actual deletion of an
+      //            // artifact clears out the link manager
+      //            for (Artifact childArtifact : artifact.getChildren()) {
+      //               deleteTrace(childArtifact, transaction, false);
+      //            }
+      //            try {
+      //               // calling deCache here creates a race condition when the handleRelationModifiedEvent listeners fire - RS
+      //               //          ArtifactCache.deCache(artifact);
+      //               artifact.internalSetDeleted();
+      //               RelationManager.deleteRelationsAll(artifact, reorderRelations, transaction);
+      //               if (transaction != null) {
+      //                  artifact.persist(transaction);
+      //               }
+      //            } catch (OseeCoreException ex) {
+      //               artifact.resetToPreviousModType();
+      //               throw ex;
+      //            }
+      //         }
+      //      }
+   }
 }

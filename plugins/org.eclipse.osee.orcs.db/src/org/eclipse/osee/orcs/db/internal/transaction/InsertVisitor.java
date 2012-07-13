@@ -72,21 +72,24 @@ public class InsertVisitor implements OrcsVisitor {
 
    @Override
    public void visit(ArtifactData data) throws OseeCoreException {
-      if (data.isStorageAllowed()) {
-         updateTxValues(data);
+      boolean willGammaBeCreated = isGammaCreationAllowed(data);
 
+      updateTxValues(data);
+
+      if (willGammaBeCreated) {
          int localTypeId = getLocalTypeId(data.getTypeUuid());
          addRow(1, INSERT_ARTIFACT, data.getLocalId(), localTypeId, data.getVersion().getGammaId(), data.getGuid(),
             data.getHumanReadableId());
-         addTxs(data, OseeSql.TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS);
       }
+      addTxs(data, OseeSql.TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS);
    }
 
    @Override
    public void visit(AttributeData data) throws OseeCoreException {
-      if (data.isStorageAllowed()) {
-         updateTxValues(data);
+      boolean willGammaBeCreated = isGammaCreationAllowed(data);
+      updateTxValues(data);
 
+      if (willGammaBeCreated) {
          DataProxy dataProxy = data.getDataProxy();
 
          DaoToSql daoToSql = new DaoToSql(data.getVersion().getGammaId(), dataProxy, !useExistingBackingData(data));
@@ -99,15 +102,16 @@ public class InsertVisitor implements OrcsVisitor {
          int localTypeId = getLocalTypeId(data.getTypeUuid());
          addRow(2, INSERT_ATTRIBUTE, data.getLocalId(), localTypeId, data.getVersion().getGammaId(),
             data.getArtifactId(), daoToSql.getValue(), daoToSql.getUri());
-         addTxs(data, OseeSql.TX_GET_PREVIOUS_TX_NOT_CURRENT_ATTRIBUTES);
       }
+      addTxs(data, OseeSql.TX_GET_PREVIOUS_TX_NOT_CURRENT_ATTRIBUTES);
    }
 
    @Override
    public void visit(RelationData data) throws OseeCoreException {
-      if (data.isStorageAllowed()) {
-         updateTxValues(data);
+      boolean willGammaBeCreated = isGammaCreationAllowed(data);
+      updateTxValues(data);
 
+      if (willGammaBeCreated) {
          if (RelationalConstants.DEFAULT_ITEM_ID == data.getLocalId()) {
             int localId = idFactory.getNextRelationId();
             data.setLocalId(localId);
@@ -115,8 +119,8 @@ public class InsertVisitor implements OrcsVisitor {
          int localTypeId = getLocalTypeId(data.getTypeUuid());
          addRow(3, INSERT_RELATION_TABLE, data.getLocalId(), localTypeId, data.getVersion().getGammaId(),
             data.getArtIdA(), data.getArtIdB(), data.getRationale());
-         addTxs(data, OseeSql.TX_GET_PREVIOUS_TX_NOT_CURRENT_RELATIONS);
       }
+      addTxs(data, OseeSql.TX_GET_PREVIOUS_TX_NOT_CURRENT_RELATIONS);
    }
 
    private void addTxs(OrcsData orcsData, OseeSql selectTxNotCurrent) {
@@ -174,5 +178,13 @@ public class InsertVisitor implements OrcsVisitor {
 
    private void addBinaryStore(DaoToSql binaryTx) {
       binaryStores.add(binaryTx);
+   }
+
+   private boolean isStorageAllowed(OrcsData data) {
+      boolean persist = true;
+      if (data.getModType().isDeleted() && !data.getVersion().isInStorage()) {
+         persist = false;
+      }
+      return persist;
    }
 }

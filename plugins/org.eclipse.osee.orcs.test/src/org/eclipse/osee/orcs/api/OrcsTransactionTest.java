@@ -17,11 +17,15 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
+import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.ReadableBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.OrcsIntegrationRule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
@@ -33,11 +37,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * @author Roberto E. Escobar
  */
 public class OrcsTransactionTest {
+
+   @Rule
+   public ExpectedException thrown = ExpectedException.none();
 
    @Rule
    public OrcsIntegrationRule osgi = new OrcsIntegrationRule(this);
@@ -51,10 +59,12 @@ public class OrcsTransactionTest {
    private final ApplicationContext context = null; // TODO use real application context
    private TransactionFactory txFactory;
    private ArtifactReadable userArtifact;
+   private OrcsBranch orcsBranch;
 
    @Before
    public void setUp() throws Exception {
       txFactory = orcsApi.getTransactionFactory(context);
+      orcsBranch = orcsApi.getBranchOps(context);
       userArtifact = getSystemUser();
    }
 
@@ -100,6 +110,120 @@ public class OrcsTransactionTest {
       Assert.assertEquals(writeable.getLocalId(), artifact.getLocalId());
 
       Assert.assertTrue(Proxy.isProxyClass(artifact.getClass()));
+   }
+
+   @Test
+   public void testDuplicateAritfact() throws OseeCoreException {
+      ArtifactReadable guestUser =
+         orcsApi.getQueryFactory(context).fromBranch(CoreBranches.COMMON).andIds(SystemUser.Guest).getResults().getExactlyOne();
+
+      // duplicate on same branch
+      OrcsTransaction transaction1 =
+         txFactory.createTransaction(CoreBranches.COMMON, userArtifact, "testDuplicateArtifactSameBranch");
+      ArtifactWriteable duplicate = transaction1.duplicateArtifact(guestUser);
+      transaction1.commit();
+      ArtifactReadable guestUserDup =
+         orcsApi.getQueryFactory(context).fromBranch(CoreBranches.COMMON).andGuidsOrHrids(duplicate.getGuid()).getResults().getExactlyOne();
+
+      Assert.assertNotSame(SystemUser.Guest.getGuid(), guestUserDup.getGuid());
+      Assert.assertEquals(SystemUser.Guest.getName(), guestUserDup.getName());
+
+      // duplicate on different branch
+      ReadableBranch topLevelBranch = orcsBranch.createTopLevelBranch(userArtifact, "DuplicateArtifact tests");
+      OrcsTransaction transaction2 =
+         txFactory.createTransaction(topLevelBranch, userArtifact, "testDuplicateArtifactDifferentBranch");
+      duplicate = transaction2.duplicateArtifact(guestUser);
+      transaction2.commit();
+      guestUserDup =
+         orcsApi.getQueryFactory(context).fromBranch(topLevelBranch).andGuidsOrHrids(duplicate.getGuid()).getResults().getExactlyOne();
+
+      Assert.assertNotSame(SystemUser.Guest.getGuid(), guestUserDup.getGuid());
+      Assert.assertEquals(SystemUser.Guest.getName(), guestUserDup.getName());
+   }
+
+   @Test
+   public void testIntroduceArtifact() throws OseeCoreException {
+      ArtifactReadable guestUser =
+         orcsApi.getQueryFactory(context).fromBranch(CoreBranches.COMMON).andIds(SystemUser.Guest).getResults().getExactlyOne();
+
+      ReadableBranch topLevelBranch = orcsBranch.createTopLevelBranch(userArtifact, "IntroduceArtifact tests");
+      OrcsTransaction transaction = txFactory.createTransaction(topLevelBranch, userArtifact, "testIntroduceArtifact");
+      transaction.introduceArtifact(guestUser);
+      transaction.commit();
+
+      ArtifactReadable introduced =
+         orcsApi.getQueryFactory(context).fromBranch(topLevelBranch).andGuidsOrHrids(SystemUser.Guest.getGuid()).getResults().getExactlyOne();
+      Assert.assertEquals(guestUser.getLocalId(), introduced.getLocalId());
+   }
+
+   @Test
+   public void testIntroduceOnSameBranch() throws OseeCoreException {
+      ArtifactReadable guestUser =
+         orcsApi.getQueryFactory(context).fromBranch(CoreBranches.COMMON).andIds(SystemUser.Guest).getResults().getExactlyOne();
+
+      OrcsTransaction transaction =
+         txFactory.createTransaction(CoreBranches.COMMON, userArtifact, "testIntroduceOnSameBranch");
+
+      thrown.expect(OseeArgumentException.class);
+      transaction.introduceArtifact(guestUser);
+   }
+
+   @Test
+   public void testAsWritable() throws OseeCoreException {
+      ArtifactReadable guestUser =
+         orcsApi.getQueryFactory(context).fromBranch(CoreBranches.COMMON).andIds(SystemUser.Guest).getResults().getExactlyOne();
+      OrcsTransaction transaction = txFactory.createTransaction(CoreBranches.COMMON, userArtifact, "testAsWritable");
+      ArtifactWriteable writeable = transaction.asWriteable(guestUser);
+      writeable.setName("Test");
+
+      // make sure readables have not been updated
+      Assert.assertEquals("Guest", guestUser.getName());
+
+      transaction.commit();
+
+      // make sure readables have not been updated
+      Assert.assertEquals("Guest", guestUser.getName());
+
+      guestUser =
+         orcsApi.getQueryFactory(context).fromBranch(CoreBranches.COMMON).andIds(SystemUser.Guest).getResults().getExactlyOne();
+
+      Assert.assertEquals("Test", guestUser.getName());
+   }
+
+   @Test
+   public void testAsWritableException() throws OseeCoreException {
+      ArtifactReadable guestUser =
+         orcsApi.getQueryFactory(context).fromBranch(CoreBranches.COMMON).andIds(SystemUser.Guest).getResults().getExactlyOne();
+      OrcsTransaction transaction =
+         txFactory.createTransaction(CoreBranches.COMMON, userArtifact, "testAsWritableException");
+      ArtifactWriteable writeable = transaction.asWriteable(guestUser);
+      writeable.setName("Test2");
+      transaction.commit();
+
+      // calls to sets should exception out after commit
+      thrown.expect(OseeAccessDeniedException.class);
+      writeable.setName("exception");
+   }
+
+   @Test
+   public void testDeleteArtifact() throws OseeCoreException {
+      OrcsTransaction transaction =
+         txFactory.createTransaction(CoreBranches.COMMON, userArtifact, "testDeleteArtifact");
+      ArtifactWriteable artifact = transaction.createArtifact(CoreArtifactTypes.AccessControlModel, "deleteMe");
+      transaction.commit();
+
+      transaction = txFactory.createTransaction(CoreBranches.COMMON, userArtifact, "testDeleteArtifact");
+      ArtifactReadable toDelete =
+         orcsApi.getQueryFactory(context).fromBranch(CoreBranches.COMMON).andGuidsOrHrids(artifact.getGuid()).getResults().getExactlyOne();
+      ArtifactWriteable writeable = transaction.asWriteable(toDelete);
+      writeable.delete();
+      transaction.commit();
+
+      toDelete =
+         orcsApi.getQueryFactory(context).fromBranch(CoreBranches.COMMON).andGuidsOrHrids(writeable.getGuid()).includeDeleted().getResults().getOneOrNull();
+      Assert.assertNotNull(toDelete);
+      Assert.assertTrue(toDelete.isDeleted());
+
    }
 
    private ArtifactReadable getSystemUser() throws OseeCoreException {

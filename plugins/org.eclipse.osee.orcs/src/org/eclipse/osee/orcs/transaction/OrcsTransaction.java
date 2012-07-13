@@ -38,9 +38,9 @@ public interface OrcsTransaction {
 
    ////////////////////////
 
-   ArtifactWriteable asWritable(ArtifactReadable artifact) throws OseeCoreException;
+   ArtifactWriteable asWriteable(ArtifactReadable artifact) throws OseeCoreException;
 
-   List<ArtifactWriteable> asWritable(Collection<? extends ArtifactReadable> artifact) throws OseeCoreException;
+   List<ArtifactWriteable> asWriteable(Collection<? extends ArtifactReadable> artifact) throws OseeCoreException;
 
    ////////////////////////
 
@@ -55,8 +55,6 @@ public interface OrcsTransaction {
    ArtifactWriteable duplicateArtifact(ArtifactReadable sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException;
 
    ArtifactWriteable introduceArtifact(ArtifactReadable sourceArtifact) throws OseeCoreException;
-
-   void deleteArtifact(ArtifactWriteable artifact) throws OseeCoreException;
 
    ////////////////////////
 

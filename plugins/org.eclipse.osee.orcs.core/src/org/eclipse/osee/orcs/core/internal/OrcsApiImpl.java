@@ -11,6 +11,10 @@
 package org.eclipse.osee.orcs.core.internal;
 
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
+import org.eclipse.osee.framework.core.data.LazyObject;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
@@ -36,6 +40,7 @@ import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.core.internal.session.SessionContextImpl;
 import org.eclipse.osee.orcs.core.internal.transaction.TransactionFactoryImpl;
 import org.eclipse.osee.orcs.core.internal.transaction.handler.TxDataHandlerFactoryImpl;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.GraphReadable;
 import org.eclipse.osee.orcs.search.QueryFacade;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -155,10 +160,17 @@ public class OrcsApiImpl implements OrcsApi {
    }
 
    @Override
-   public OrcsBranch getBranchOps(ApplicationContext context) {
+   public OrcsBranch getBranchOps(final ApplicationContext context) {
       SessionContext sessionContext = getSessionContext(context);
+      LazyObject<ArtifactReadable> systemUser = new LazyObject<ArtifactReadable>() {
+
+         @Override
+         protected ArtifactReadable instance() throws OseeCoreException {
+            return getQueryFactory(context).fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+         }
+      };
       return new OrcsBranchImpl(logger, sessionContext, dataStore.getBranchDataStore(), cacheService.getBranchCache(),
-         cacheService.getTransactionCache());
+         cacheService.getTransactionCache(), systemUser);
    }
 
    @Override

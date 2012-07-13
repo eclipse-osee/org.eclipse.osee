@@ -15,15 +15,21 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.data.LazyObject;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.ReadableBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
@@ -50,13 +56,15 @@ public class OrcsBranchImpl implements OrcsBranch {
    private final BranchDataStore branchStore;
    private final BranchCache branchCache;
    private final TransactionCache txCache;
+   private final LazyObject<ArtifactReadable> systemUser;
 
-   public OrcsBranchImpl(Log logger, SessionContext sessionContext, BranchDataStore branchStore, BranchCache branchCache, TransactionCache txCache) {
+   public OrcsBranchImpl(Log logger, SessionContext sessionContext, BranchDataStore branchStore, BranchCache branchCache, TransactionCache txCache, LazyObject<ArtifactReadable> systemUser) {
       this.logger = logger;
       this.sessionContext = sessionContext;
       this.branchStore = branchStore;
       this.branchCache = branchCache;
       this.txCache = txCache;
+      this.systemUser = systemUser;
    }
 
    @Override
@@ -123,4 +131,35 @@ public class OrcsBranchImpl implements OrcsBranch {
    public Callable<URI> checkBranchExchangeIntegrity(URI fileToCheck) {
       return branchStore.checkBranchExchangeIntegrity(sessionContext.toString(), fileToCheck);
    }
+
+   @Override
+   public ReadableBranch createTopLevelBranch(ArtifactReadable author, String branchName) throws OseeCoreException {
+      CreateBranchData createData = new CreateBranchData();
+      String creationComment = String.format("Branch Creation for %s", branchName);
+      TransactionRecord headTransaction = txCache.getHeadTransaction(branchCache.getSystemRootBranch());
+      createData.setGuid(GUID.create());
+      createData.setName(branchName);
+      createData.setBranchType(BranchType.BASELINE);
+      createData.setCreationComment(creationComment);
+      createData.setFromTransaction(TokenFactory.createTransaction(headTransaction.getId()));
+      createData.setUserArtifact(author);
+      createData.setAssociatedArtifact(systemUser.get());
+      createData.setMergeDestinationBranchId(-1);
+      createData.setMergeAddressingQueryId(-1);
+      createData.setTxCopyBranchType(false);
+      Callable<ReadableBranch> callable = createBranch(createData);
+      ReadableBranch branch = null;
+      try {
+         branch = callable.call();
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      }
+      return branch;
+   }
+
+   @Override
+   public ReadableBranch createChildBranch(ArtifactReadable author, IOseeBranch parent, String childBranchName) {
+      return null;
+   }
+
 }

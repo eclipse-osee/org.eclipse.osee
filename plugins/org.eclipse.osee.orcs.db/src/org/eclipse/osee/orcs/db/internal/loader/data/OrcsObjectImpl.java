@@ -78,15 +78,6 @@ public abstract class OrcsObjectImpl implements OrcsData {
    }
 
    @Override
-   public boolean isStorageAllowed() {
-      boolean persist = true;
-      if (getModType().isDeleted() && !getVersion().isInStorage()) {
-         persist = false;
-      }
-      return persist;
-   }
-
-   @Override
    public int hashCode() {
       final int prime = 31;
       int result = 1;

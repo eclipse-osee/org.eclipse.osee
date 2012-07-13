@@ -23,8 +23,8 @@ public interface ArtifactWriteable extends ArtifactReadable, AttributesWriteable
 
    boolean isDirty() throws OseeCoreException;
 
-   boolean isDeleted() throws OseeCoreException;
-
    void setName(String name) throws OseeCoreException;
+
+   void delete() throws OseeCoreException;
 
 }

@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
-import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.CreateBranchData;
 
 /**
  * @author Roberto E. Escobar
@@ -51,6 +51,10 @@ public interface OrcsBranch {
    Callable<ReadableBranch> changeBranchType(IOseeBranch branch, BranchType branchType);
 
    Callable<ReadableBranch> deleteBranch(IOseeBranch branch);
+
+   ReadableBranch createTopLevelBranch(ArtifactReadable author, String branchName) throws OseeCoreException;
+
+   ReadableBranch createChildBranch(ArtifactReadable author, IOseeBranch parent, String childBranchName);
 
    /////////////////////////////////////////////////////////////////////////
 

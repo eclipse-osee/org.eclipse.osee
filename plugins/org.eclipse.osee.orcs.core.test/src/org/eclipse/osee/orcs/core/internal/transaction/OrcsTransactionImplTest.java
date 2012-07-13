@@ -109,7 +109,7 @@ public class OrcsTransactionImplTest {
       ArtifactReadable source = mock(ArtifactReadable.class);
       when(txManager.getOrAddWrite(source)).thenReturn(expected);
 
-      ArtifactWriteable actual = tx.asWritable(source);
+      ArtifactWriteable actual = tx.asWriteable(source);
 
       Assert.assertEquals(actual, expected);
       verify(txManager).getOrAddWrite(source);
@@ -127,7 +127,7 @@ public class OrcsTransactionImplTest {
 
       List<ArtifactReadable> readables = Arrays.asList(sourceA, sourceB);
 
-      List<ArtifactWriteable> actuals = tx.asWritable(readables);
+      List<ArtifactWriteable> actuals = tx.asWriteable(readables);
 
       Assert.assertEquals(readables.size(), actuals.size());
       verify(txManager).getOrAddWrite(sourceA);

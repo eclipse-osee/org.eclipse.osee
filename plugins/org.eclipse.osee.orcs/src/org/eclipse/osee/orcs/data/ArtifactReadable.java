@@ -25,6 +25,8 @@ public interface ArtifactReadable extends Identifiable, HasLocalId, AttributesRe
 
    String getHumanReadableId();
 
+   boolean isDeleted();
+
    int getTransactionId();
 
    IArtifactType getArtifactType() throws OseeCoreException;
