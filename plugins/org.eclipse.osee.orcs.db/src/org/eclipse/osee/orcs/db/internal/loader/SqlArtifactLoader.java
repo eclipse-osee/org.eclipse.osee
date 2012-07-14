@@ -93,12 +93,18 @@ public class SqlArtifactLoader {
    }
 
    public void loadArtifacts(HasCancellation cancellation, ArtifactBuilder builder, ArtifactJoinQuery join, CriteriaOrcsLoad criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
-      try {
-         join.store();
-         criteria.setQueryId(join.getQueryId());
-         loadArtifacts(cancellation, builder, criteria, loadContext, fetchSize);
-      } finally {
-         join.delete();
+      logger.trace("Sql Artifact Load - artifactJoinQuery[%s] loadSqlContext[%s]", join, loadContext);
+      if (!join.isEmpty()) {
+         try {
+            join.store();
+            criteria.setQueryId(join.getQueryId());
+            loadArtifacts(cancellation, builder, criteria, loadContext, fetchSize);
+         } finally {
+            join.delete();
+         }
+      } else {
+         logger.trace("Sql Artifact Load - artifactJoinQuery was empty - skipping load - loadSqlContext[%s]",
+            loadContext);
       }
    }
 

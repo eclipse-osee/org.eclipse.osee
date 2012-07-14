@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.sql;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.ds.DataPostProcessor;
 import org.eclipse.osee.orcs.core.ds.Options;
 
@@ -79,7 +80,7 @@ public class SqlContextImpl<T extends Options, P extends DataPostProcessor<?>> i
 
    @Override
    public String toString() {
-      return "SqlContextImpl [sessionId=" + sessionId + ", sql=" + sql != null ? sql.replaceAll("\n", "") : "" + ", parameters=" + parameters + ", joinTables=" + joinTables + ", processors=" + processors + ", options=" + options + "]";
+      return "SqlContextImpl [sessionId=" + sessionId + ", sql=" + (Strings.isValid(sql) ? sql.replaceAll("\n", "") : "") + ", parameters=" + parameters + ", joinTables=" + joinTables + ", processors=" + processors + ", options=" + options + "]";
    }
 
 }

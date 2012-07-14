@@ -52,11 +52,14 @@ public class ComodificationCheck implements TransactionCheck {
          data.accept(checker);
       }
 
-      DataLoader loader = dataLoader.fromBranchAndArtifactIds(sessionId, txData.getBranch(), checker.getArtifactIds());
-      loader.loadAttributeLocalIds(checker.getAttributeIds());
-      loader.loadRelationLocalIds(checker.getRelationIds());
+      if (!checker.getArtifactIds().isEmpty()) {
+         DataLoader loader =
+            dataLoader.fromBranchAndArtifactIds(sessionId, txData.getBranch(), checker.getArtifactIds());
+         loader.loadAttributeLocalIds(checker.getAttributeIds());
+         loader.loadRelationLocalIds(checker.getRelationIds());
 
-      loader.load(cancellation, checker);
+         loader.load(cancellation, checker);
+      }
    }
 
    private final class OnLoadChecker implements ArtifactBuilder, OrcsVisitor {

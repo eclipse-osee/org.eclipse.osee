@@ -48,6 +48,6 @@ public class LoadOptions extends Options {
 
    @Override
    public String toString() {
-      return "LoadOptions [loadLevel=" + loadLevel + "[" + super.toString() + "]]";
+      return "LoadOptions [loadLevel=" + loadLevel + " [" + super.toString() + "]]";
    }
 }

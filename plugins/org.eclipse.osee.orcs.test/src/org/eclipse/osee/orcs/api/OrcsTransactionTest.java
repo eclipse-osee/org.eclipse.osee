@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.api;
 
 import java.lang.reflect.Proxy;
+import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -88,8 +89,9 @@ public class OrcsTransactionTest {
 
       checkTransaction(previousTx, newTx, branch, comment, userArtifact);
 
-      ArtifactReadable artifact =
-         orcsApi.getQueryFactory(context).fromBranch(CoreBranches.COMMON).andGuidsOrHrids(id).getResults().getExactlyOne();
+      ResultSet<ArtifactReadable> result =
+         orcsApi.getQueryFactory(context).fromBranch(CoreBranches.COMMON).andGuidsOrHrids(id).getResults();
+      ArtifactReadable artifact = result.getExactlyOne();
 
       Assert.assertEquals(expectedName, artifact.getName());
       Assert.assertEquals(expectedAnnotation,

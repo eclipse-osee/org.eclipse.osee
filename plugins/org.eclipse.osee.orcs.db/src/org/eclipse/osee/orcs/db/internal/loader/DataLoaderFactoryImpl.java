@@ -17,6 +17,7 @@ import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -88,6 +89,8 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
 
    @Override
    public DataLoader fromBranchAndArtifactIds(String sessionId, IOseeBranch branch, Collection<Integer> artifactIds) throws OseeCoreException {
+      Conditions.checkNotNullOrEmpty(artifactIds, "artifactIds");
+
       int branchId = branchCache.getLocalId(branch);
       AbstractLoadExecutor executor = new LoadExecutor(loader, dbService, sessionId, branchId, artifactIds);
       return new DataLoaderImpl(logger, executor);
