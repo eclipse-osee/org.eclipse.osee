@@ -321,7 +321,7 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
    private <T> Attribute<T> internalCreateAttributeHelper(IAttributeType attributeType) throws OseeCoreException {
       checkTypeValid(attributeType);
       checkMultiplicityCanAdd(attributeType);
-      Attribute<T> attr = attributeFactory.createAttribute(this, getOrcsData(), attributeType);
+      Attribute<T> attr = attributeFactory.createAttributeWithDefaults(this, getOrcsData(), attributeType);
       add(attributeType, attr);
       return attr;
    }
@@ -527,7 +527,7 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
       for (IAttributeType attributeType : getValidAttributeTypes()) {
          int missingCount = getRemainingAttributeCount(attributeType);
          for (int i = 0; i < missingCount; i++) {
-            Attribute<Object> attr = attributeFactory.createAttribute(this, getOrcsData(), attributeType);
+            Attribute<Object> attr = attributeFactory.createAttributeWithDefaults(this, getOrcsData(), attributeType);
             add(attributeType, attr);
             attr.clearDirty();
          }

@@ -97,7 +97,7 @@ public class OrcsTransactionTest {
       Assert.assertEquals(expectedName, artifact.getName());
       Assert.assertEquals(expectedAnnotation,
          artifact.getAttributeValues(CoreAttributeTypes.Annotation).iterator().next());
-      Assert.assertEquals(writeable, artifact);
+      Assert.assertEquals(writeable.getLocalId(), artifact.getLocalId());
 
       Assert.assertTrue(Proxy.isProxyClass(artifact.getClass()));
    }

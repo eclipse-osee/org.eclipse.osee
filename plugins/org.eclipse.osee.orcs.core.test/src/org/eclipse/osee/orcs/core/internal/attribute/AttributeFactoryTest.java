@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -100,13 +104,13 @@ public class AttributeFactoryTest {
 
       Attribute<Object> actual = factory.createAttribute(container, attributeData);
 
-      Assert.assertTrue(attribute == actual);
+      assertTrue(attribute == actual);
 
       verify(proxy).setResolver(resolverCapture.capture());
       verify(attribute).internalInitialize(refCapture.capture(), eq(attributeData), eq(attributeType), eq(false),
          eq(false));
       verify(container).add(attributeType, attribute);
-      Assert.assertEquals(container, refCapture.getValue().get());
+      assertEquals(container, refCapture.getValue().get());
 
    }
 
@@ -124,17 +128,17 @@ public class AttributeFactoryTest {
       ArgumentCaptor<ResourceNameResolver> resolverCapture = ArgumentCaptor.forClass(ResourceNameResolver.class);
       ArgumentCaptor<WeakReference> refCapture = ArgumentCaptor.forClass(WeakReference.class);
 
-      Attribute<Object> actual = factory.createAttribute(container, artifactData, attributeType);
+      Attribute<Object> actual = factory.createAttributeWithDefaults(container, artifactData, attributeType);
 
       verify(dataFactory).create(artifactData, attributeType);
       verify(attrVersionData).setBranchId(45);
-      Assert.assertTrue(attribute == actual);
+      assertTrue(attribute == actual);
 
       verify(proxy).setResolver(resolverCapture.capture());
-      verify(attribute).internalInitialize(refCapture.capture(), eq(attributeData), eq(attributeType), eq(false),
-         eq(false));
+      verify(attribute).internalInitialize(refCapture.capture(), eq(attributeData), eq(attributeType), eq(true),
+         eq(true));
       verify(container).add(attributeType, attribute);
-      Assert.assertEquals(container, refCapture.getValue().get());
+      assertEquals(container, refCapture.getValue().get());
 
    }
 
@@ -152,15 +156,15 @@ public class AttributeFactoryTest {
 
       Attribute<Object> actual = factory.copyAttribute(attributeData, branch, container);
 
-      Assert.assertTrue(attribute == actual);
+      assertTrue(attribute == actual);
 
       verify(dataFactory).copy(branch, attributeData);
 
       verify(proxy).setResolver(resolverCapture.capture());
-      verify(attribute).internalInitialize(refCapture.capture(), eq(copiedAttributeData), eq(attributeType), eq(false),
+      verify(attribute).internalInitialize(refCapture.capture(), eq(copiedAttributeData), eq(attributeType), eq(true),
          eq(false));
       verify(container).add(attributeType, attribute);
-      Assert.assertEquals(container, refCapture.getValue().get());
+      assertEquals(container, refCapture.getValue().get());
    }
 
    @Test
@@ -168,8 +172,8 @@ public class AttributeFactoryTest {
       when(attributeData.getVersion()).thenReturn(attrVersionData);
       when(attrVersionData.isInStorage()).thenReturn(false);
 
-      boolean actual = factory.introduceAttribute(attributeData, branch, container);
-      Assert.assertFalse(actual);
+      Attribute<Object> actual = factory.introduceAttribute(attributeData, branch, container);
+      assertNull(actual);
    }
 
    @SuppressWarnings({"rawtypes", "unchecked"})
@@ -187,16 +191,16 @@ public class AttributeFactoryTest {
       ArgumentCaptor<ResourceNameResolver> resolverCapture = ArgumentCaptor.forClass(ResourceNameResolver.class);
       ArgumentCaptor<WeakReference> refCapture = ArgumentCaptor.forClass(WeakReference.class);
 
-      boolean actual = factory.introduceAttribute(attributeData, branch, container);
-      Assert.assertTrue(actual);
+      Attribute<Object> actual = factory.introduceAttribute(attributeData, branch, container);
+      assertNotNull(actual);
 
       verify(dataFactory).introduce(branch, attributeData);
 
       verify(proxy).setResolver(resolverCapture.capture());
       verify(attribute).internalInitialize(refCapture.capture(), eq(introducedAttributeData), eq(attributeType),
-         eq(false), eq(false));
+         eq(true), eq(false));
       verify(container).add(attributeType, attribute);
-      Assert.assertEquals(container, refCapture.getValue().get());
+      assertEquals(container, refCapture.getValue().get());
    }
 
    @Test
@@ -212,7 +216,7 @@ public class AttributeFactoryTest {
 
       AttributeType actual1 = factory.getAttribeType(token);
 
-      Assert.assertTrue(actual1 == attributeType);
+      assertTrue(actual1 == attributeType);
       verify(cache).get(token);
    }
 }

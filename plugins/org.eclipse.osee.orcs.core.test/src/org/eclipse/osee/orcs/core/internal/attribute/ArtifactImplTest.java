@@ -123,7 +123,7 @@ public class ArtifactImplTest {
    @Test
    public void testCreateAttribute() throws OseeCoreException {
       artifactImpl.createAttribute(CoreAttributeTypes.City);
-      verify(attributeFactory).createAttribute(artifactImpl, artifactData, CoreAttributeTypes.City);
+      verify(attributeFactory).createAttributeWithDefaults(artifactImpl, artifactData, CoreAttributeTypes.City);
    }
 
    @Test
@@ -181,7 +181,7 @@ public class ArtifactImplTest {
    public void testSetName() throws OseeCoreException {
       Attribute attr = mock(Attribute.class);
       when(
-         attributeFactory.createAttribute(any(AttributeManager.class), any(ArtifactData.class),
+         attributeFactory.createAttributeWithDefaults(any(AttributeManager.class), any(ArtifactData.class),
             eq(CoreAttributeTypes.Name))).thenReturn(attr);
       artifactImpl.setName("test");
       verify(attr).setFromString("test");
@@ -272,7 +272,7 @@ public class ArtifactImplTest {
 
       Attribute attr = mock(Attribute.class);
       when(
-         attributeFactory.createAttribute(any(AttributeManager.class), any(ArtifactData.class),
+         attributeFactory.createAttributeWithDefaults(any(AttributeManager.class), any(ArtifactData.class),
             eq(CoreAttributeTypes.Name))).thenReturn(attr);
       when(attr.getValue()).thenReturn("test");
       artifactImpl.add(CoreAttributeTypes.Name, attr);
@@ -411,7 +411,7 @@ public class ArtifactImplTest {
       Attribute two = mock(Attribute.class);
       Attribute three = mock(Attribute.class);
       when(attributeType.getMaxOccurrences()).thenReturn(3);
-      when(attributeFactory.createAttribute(eq(artifactImpl), any(ArtifactData.class), eq(attributeType))).thenReturn(
+      when(attributeFactory.createAttributeWithDefaults(eq(artifactImpl), any(ArtifactData.class), eq(attributeType))).thenReturn(
          one, two, three);
       artifactImpl.setAttributesFromStrings(attributeType, "one", "two", "three");
       verify(one).setFromString("one");
@@ -425,7 +425,7 @@ public class ArtifactImplTest {
       Attribute one = mock(Attribute.class);
       Attribute two = mock(Attribute.class);
       when(attributeType.getMaxOccurrences()).thenReturn(3);
-      when(attributeFactory.createAttribute(eq(artifactImpl), any(ArtifactData.class), eq(attributeType))).thenReturn(
+      when(attributeFactory.createAttributeWithDefaults(eq(artifactImpl), any(ArtifactData.class), eq(attributeType))).thenReturn(
          two);
       artifactImpl.add(attributeType, one);
       artifactImpl.setAttributesFromStrings(attributeType, "1", "2");
