@@ -109,16 +109,15 @@ public class RelationSqlHandler extends SqlHandler<CriteriaRelation, LoadOptions
          writer.write(" AND ");
          if (typeIds.size() > 1) {
             joinTypeQuery = writer.writeIdJoin(typeIds);
-            writer.write(jTypeIdAlias);
-            writer.write(".query_id = ?");
-            writer.addParameter(joinTypeQuery.getQueryId());
-            writer.write(" AND ");
             writer.write(relationAlias);
             writer.write(".rel_link_type_id = ");
             writer.write(jTypeIdAlias);
-            writer.write(".id");
-         } else {
+            writer.write(".id AND ");
             writer.write(jTypeIdAlias);
+            writer.write(".query_id = ?");
+            writer.addParameter(joinTypeQuery.getQueryId());
+         } else {
+            writer.write(relationAlias);
             writer.write(".rel_link_type_id = ?");
             writer.addParameter(typeIds.iterator().next());
          }
@@ -128,7 +127,8 @@ public class RelationSqlHandler extends SqlHandler<CriteriaRelation, LoadOptions
       writer.write(relationAlias);
       writer.write(".gamma_id = ");
       writer.write(txsAlias);
-      writer.write(".gamma_id AND ");
+      writer.write(".gamma_id");
+      writer.write("\n AND ");
       writer.writeTxBranchFilter(txsAlias);
    }
 }

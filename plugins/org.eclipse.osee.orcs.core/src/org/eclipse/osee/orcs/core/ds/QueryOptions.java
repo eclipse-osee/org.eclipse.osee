@@ -58,7 +58,6 @@ public class QueryOptions extends Options {
 
    @Override
    public String toString() {
-      return "QueryOptions [includeCache=" + includeCache + ", includeTypeInheritance=" + includeTypeInheritance + "]";
+      return "QueryOptions [includeCache=" + includeCache + ", includeTypeInheritance=" + includeTypeInheritance + super.toString() + "]";
    }
-
 }

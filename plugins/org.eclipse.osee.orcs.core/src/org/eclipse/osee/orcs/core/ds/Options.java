@@ -23,12 +23,13 @@ public class Options implements Cloneable {
 
    public Options() {
       super();
-      this.includeDeleted = DeletionFlag.EXCLUDE_DELETED;
+      reset();
    }
 
    public Options(DeletionFlag includeDeleted) {
       super();
       this.includeDeleted = includeDeleted;
+      this.transactionId = TRANSACTION_SENTINEL;
    }
 
    public void reset() {

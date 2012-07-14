@@ -59,7 +59,7 @@ public class QueryContextLoadExecutor extends AbstractLoadExecutor {
    public void load(HasCancellation cancellation, ArtifactBuilder builder, CriteriaOrcsLoad criteria, LoadOptions options) throws OseeCoreException {
       int fetchSize = computeFetchSize(queryContext);
 
-      AbstractJoinQuery join = createArtifactIdJoin(getDatabaseService(), cancellation, fetchSize);
+      ArtifactJoinQuery join = createArtifactIdJoin(getDatabaseService(), cancellation, fetchSize);
       LoadSqlContext loadContext = new LoadSqlContext(queryContext.getSessionId(), options);
       loadFromJoin(join, cancellation, builder, criteria, loadContext, fetchSize);
    }
@@ -72,7 +72,7 @@ public class QueryContextLoadExecutor extends AbstractLoadExecutor {
       return computeFetchSize(fetchSize);
    }
 
-   private AbstractJoinQuery createArtifactIdJoin(IOseeDatabaseService dbService, HasCancellation cancellation, int fetchSize) throws OseeCoreException {
+   private ArtifactJoinQuery createArtifactIdJoin(IOseeDatabaseService dbService, HasCancellation cancellation, int fetchSize) throws OseeCoreException {
       ArtifactJoinQuery artifactJoin = JoinUtility.createArtifactJoinQuery(dbService);
       for (AbstractJoinQuery join : queryContext.getJoins()) {
          join.store();

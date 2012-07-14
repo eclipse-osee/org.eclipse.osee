@@ -17,7 +17,10 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AttributeDataProxyFactoryTest.class, LoaderSqlHandlerFactoryImplTest.class})
+@Suite.SuiteClasses({
+   AttributeDataProxyFactoryTest.class,
+   DataLoaderImplTest.class,
+   LoaderSqlHandlerFactoryImplTest.class})
 public class LoaderTestSuite {
    // Test Suite
 }
