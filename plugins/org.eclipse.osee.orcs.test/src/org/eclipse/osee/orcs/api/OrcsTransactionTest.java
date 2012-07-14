@@ -91,6 +91,7 @@ public class OrcsTransactionTest {
 
       ResultSet<ArtifactReadable> result =
          orcsApi.getQueryFactory(context).fromBranch(CoreBranches.COMMON).andGuidsOrHrids(id).getResults();
+
       ArtifactReadable artifact = result.getExactlyOne();
 
       Assert.assertEquals(expectedName, artifact.getName());

@@ -12,6 +12,8 @@ package org.eclipse.osee.orcs.db.internal.transaction;
 
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -21,6 +23,7 @@ import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.OrcsVisitor;
 import org.eclipse.osee.orcs.core.ds.RelationData;
+import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.db.internal.loader.IdFactory;
 import org.eclipse.osee.orcs.db.internal.loader.RelationalConstants;
 import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
@@ -31,13 +34,16 @@ import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
 public class InsertVisitor implements OrcsVisitor {
 
    private static final String INSERT_ARTIFACT =
-      "INSERT INTO osee_artifact (gamma_id, art_id, art_type_id, guid, human_readable_id) VALUES (?,?,?,?,?)";
+      "INSERT INTO osee_artifact (art_id, art_type_id, gamma_id, guid, human_readable_id) VALUES (?,?,?,?,?)";
 
    private static final String INSERT_ATTRIBUTE =
-      "INSERT INTO osee_attribute (art_id, attr_id, attr_type_id, value, gamma_id, uri) VALUES (?, ?, ?, ?, ?, ?)";
+      "INSERT INTO osee_attribute (attr_id, attr_type_id, gamma_id, art_id, value, uri) VALUES (?, ?, ?, ?, ?, ?)";
 
    private static final String INSERT_RELATION_TABLE =
-      "INSERT INTO osee_relation_link (rel_link_id, rel_link_type_id, a_art_id, b_art_id, rationale, gamma_id) VALUES (?,?,?,?,?,?)";
+      "INSERT INTO osee_relation_link (rel_link_id, rel_link_type_id, gamma_id, a_art_id, b_art_id, rationale) VALUES (?,?,?,?,?,?)";
+
+   private static final String INSERT_INTO_TRANSACTION_TABLE =
+      "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) VALUES (?, ?, ?, ?, ?)";
 
    private final IdFactory idFactory;
    private final IdentityService identityService;
@@ -47,9 +53,11 @@ public class InsertVisitor implements OrcsVisitor {
    private final List<DaoToSql> binaryStores;
 
    private final Map<Integer, String> dataInsertOrder;
+   private final int txId;
 
-   public InsertVisitor(IdFactory idFactory, IdentityService identityService, HashCollection<String, Object[]> dataItemInserts, HashCollection<OseeSql, Object[]> txNotCurrents, List<DaoToSql> binaryStores, Map<Integer, String> dataInsertOrder) {
+   public InsertVisitor(int txId, IdFactory idFactory, IdentityService identityService, HashCollection<String, Object[]> dataItemInserts, HashCollection<OseeSql, Object[]> txNotCurrents, List<DaoToSql> binaryStores, Map<Integer, String> dataInsertOrder) {
       super();
+      this.txId = txId;
       this.idFactory = idFactory;
       this.identityService = identityService;
       this.dataItemInserts = dataItemInserts;
@@ -65,46 +73,76 @@ public class InsertVisitor implements OrcsVisitor {
    @Override
    public void visit(ArtifactData data) throws OseeCoreException {
       if (data.isStorageAllowed()) {
+         updateTxValues(data);
+
          int localTypeId = getLocalTypeId(data.getTypeUuid());
-         addInsertToBatch(1, INSERT_ARTIFACT, getGammaId(data), data.getLocalId(), localTypeId, data.getGuid(),
+         addRow(1, INSERT_ARTIFACT, data.getLocalId(), localTypeId, data.getVersion().getGammaId(), data.getGuid(),
             data.getHumanReadableId());
-         addTxNotCurrentToBatch(OseeSql.TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS, data.getLocalId(), data.getModType());
+         addTxs(data, OseeSql.TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS);
       }
    }
 
    @Override
    public void visit(AttributeData data) throws OseeCoreException {
       if (data.isStorageAllowed()) {
-         long gammaId = getGammaId(data);
-         int localTypeId = getLocalTypeId(data.getTypeUuid());
+         updateTxValues(data);
+
          DataProxy dataProxy = data.getDataProxy();
 
-         DaoToSql daoToSql = new DaoToSql(gammaId, dataProxy, !useExistingBackingData(data));
+         DaoToSql daoToSql = new DaoToSql(data.getVersion().getGammaId(), dataProxy, !useExistingBackingData(data));
          addBinaryStore(daoToSql);
+
          if (RelationalConstants.DEFAULT_ITEM_ID == data.getLocalId()) {
             int localId = idFactory.getNextAttributeId();
             data.setLocalId(localId);
          }
-         addInsertToBatch(2, INSERT_ATTRIBUTE, data.getArtifactId(), data.getLocalId(), localTypeId,
-            daoToSql.getValue(), gammaId, daoToSql.getUri());
-
-         addTxNotCurrentToBatch(OseeSql.TX_GET_PREVIOUS_TX_NOT_CURRENT_ATTRIBUTES, data.getLocalId(), data.getModType());
+         int localTypeId = getLocalTypeId(data.getTypeUuid());
+         addRow(2, INSERT_ATTRIBUTE, data.getLocalId(), localTypeId, data.getVersion().getGammaId(),
+            data.getArtifactId(), daoToSql.getValue(), daoToSql.getUri());
+         addTxs(data, OseeSql.TX_GET_PREVIOUS_TX_NOT_CURRENT_ATTRIBUTES);
       }
    }
 
    @Override
    public void visit(RelationData data) throws OseeCoreException {
       if (data.isStorageAllowed()) {
-         int localTypeId = getLocalTypeId(data.getTypeUuid());
+         updateTxValues(data);
+
          if (RelationalConstants.DEFAULT_ITEM_ID == data.getLocalId()) {
             int localId = idFactory.getNextRelationId();
             data.setLocalId(localId);
          }
-         addInsertToBatch(3, INSERT_RELATION_TABLE, data.getLocalId(), localTypeId, data.getArtIdA(), data.getArtIdB(),
-            data.getRationale(), getGammaId(data));
-
-         addTxNotCurrentToBatch(OseeSql.TX_GET_PREVIOUS_TX_NOT_CURRENT_RELATIONS, data.getLocalId(), data.getModType());
+         int localTypeId = getLocalTypeId(data.getTypeUuid());
+         addRow(3, INSERT_RELATION_TABLE, data.getLocalId(), localTypeId, data.getVersion().getGammaId(),
+            data.getArtIdA(), data.getArtIdB(), data.getRationale());
+         addTxs(data, OseeSql.TX_GET_PREVIOUS_TX_NOT_CURRENT_RELATIONS);
       }
+   }
+
+   private void addTxs(OrcsData orcsData, OseeSql selectTxNotCurrent) {
+      VersionData data = orcsData.getVersion();
+      ModificationType modType = orcsData.getModType();
+
+      addRow(Integer.MAX_VALUE, INSERT_INTO_TRANSACTION_TABLE, data.getTransactionId(), data.getGammaId(),
+         modType.getValue(), TxChange.getCurrent(modType).getValue(), data.getBranchId());
+
+      txNotCurrents.put(selectTxNotCurrent, params(orcsData.getLocalId(), data.getBranchId()));
+   }
+
+   private void updateTxValues(OrcsData orcsData) throws OseeCoreException {
+      VersionData data = orcsData.getVersion();
+
+      orcsData.setModType(computeModType(orcsData.getModType()));
+      data.setGammaId(getGammaId(orcsData));
+      data.setTransactionId(txId);
+   }
+
+   private ModificationType computeModType(ModificationType original) {
+      ModificationType toReturn = original;
+      if (ModificationType.REPLACED_WITH_VERSION == toReturn) {
+         toReturn = ModificationType.MODIFIED;
+      }
+      return toReturn;
    }
 
    private long getGammaId(OrcsData data) throws OseeCoreException {
@@ -125,13 +163,13 @@ public class InsertVisitor implements OrcsVisitor {
       return data.getModType().isExistingVersionUsed();
    }
 
-   private void addInsertToBatch(int insertPriority, String insertSql, Object... data) {
+   private void addRow(int insertPriority, String insertSql, Object... data) {
       dataItemInserts.put(insertSql, data);
       dataInsertOrder.put(insertPriority, insertSql);
    }
 
-   private void addTxNotCurrentToBatch(OseeSql insertSql, Object... data) {
-      txNotCurrents.put(insertSql, data);
+   private Object[] params(Object... data) {
+      return data;
    }
 
    private void addBinaryStore(DaoToSql binaryTx) {

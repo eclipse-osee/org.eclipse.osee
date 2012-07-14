@@ -119,7 +119,7 @@ public final class CommitTransactionDatabaseTxCallable extends DatabaseTxCallabl
 
       transactionCache.cache(txRecord);
 
-      executeTransactionDataItems(txData, connection, branch);
+      executeTransactionDataItems(txData, connection, txRecord);
 
       if (branch.getBranchState() == BranchState.CREATED) {
          branch.setBranchState(BranchState.MODIFIED);
@@ -140,15 +140,16 @@ public final class CommitTransactionDatabaseTxCallable extends DatabaseTxCallabl
       }
    }
 
-   private void executeTransactionDataItems(Collection<ArtifactTransactionData> txData, OseeConnection connection, Branch branch) throws OseeCoreException {
+   private void executeTransactionDataItems(Collection<ArtifactTransactionData> txData, OseeConnection connection, TransactionRecord txRecord) throws OseeCoreException {
       TxSqlBuilder builder = new TxSqlBuilder(idFactory, identityService, txData);
-      builder.build();
+      builder.build(txRecord.getId());
 
       binaryStores = builder.getBinaryTxs();
       for (DaoToSql tx : binaryStores) {
          tx.persist();
       }
 
+      Branch branch = txRecord.getBranch();
       List<Object[]> txNotCurrentData = new ArrayList<Object[]>();
       for (OseeSql sql : builder.getTxSql()) {
          for (Object[] params : builder.getTxParameters(sql)) {

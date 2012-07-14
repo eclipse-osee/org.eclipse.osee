@@ -65,9 +65,10 @@ public class TxSqlBuilder {
       return binaryStores;
    }
 
-   public void build() throws OseeCoreException {
+   public void build(int txNumber) throws OseeCoreException {
       InsertVisitor visitor =
-         new InsertVisitor(idFactory, identityService, dataItemInserts, txNotCurrents, binaryStores, dataInsertOrder);
+         new InsertVisitor(txNumber, idFactory, identityService, dataItemInserts, txNotCurrents, binaryStores,
+            dataInsertOrder);
       for (ArtifactTransactionData txData : artifactTransactionData) {
          txData.accept(visitor);
       }
