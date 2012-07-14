@@ -47,10 +47,10 @@ public final class OsgiUtil {
       Assert.assertNotNull(context);
 
       ServiceReference<T> reference = context.getServiceReference(clazz);
-      Assert.assertNotNull(reference);
+      Assert.assertNotNull(String.format("Unable to find service [%s]", clazz), reference);
 
       T service = context.getService(reference);
-      Assert.assertNotNull(service);
+      Assert.assertNotNull(String.format("Unable to find service instance for [%s]", clazz), service);
 
       return service;
    }

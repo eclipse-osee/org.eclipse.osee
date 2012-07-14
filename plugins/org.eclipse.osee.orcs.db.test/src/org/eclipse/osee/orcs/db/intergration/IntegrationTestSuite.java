@@ -8,9 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal;
+package org.eclipse.osee.orcs.db.intergration;
 
-import org.eclipse.osee.orcs.db.internal.accessor.AccessorTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -18,7 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AccessorTestSuite.class})
-public class InternalPdeJunitTestSuite {
+@Suite.SuiteClasses({LoaderTest.class, OseeInfoDataAccessorTest.class})
+public class IntegrationTestSuite {
    // Test Suite
 }

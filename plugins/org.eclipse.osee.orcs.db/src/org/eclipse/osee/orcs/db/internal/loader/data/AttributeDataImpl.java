@@ -84,7 +84,6 @@ public class AttributeDataImpl extends OrcsObjectImpl implements AttributeData {
 
    @Override
    public String toString() {
-      return "AttributeData [artifactId=" + artifactId + ", proxy=" + proxy + "]";
+      return "AttributeData [artifactId=" + artifactId + ", proxy=" + proxy + " " + super.toString() + "]";
    }
-
 }

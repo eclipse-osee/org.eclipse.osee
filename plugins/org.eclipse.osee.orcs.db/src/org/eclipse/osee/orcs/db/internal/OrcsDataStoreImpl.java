@@ -120,6 +120,7 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
 
       dataStoreAdmin = new DataStoreAdminImpl(logger, dbService, identityService, branchStore, preferences);
 
+      queryModule = new QueryModuleFactory(logger);
       queryModule.create(executorAdmin, dbService, identityService, sqlProvider, cacheService, cache, resourceManager);
    }
 

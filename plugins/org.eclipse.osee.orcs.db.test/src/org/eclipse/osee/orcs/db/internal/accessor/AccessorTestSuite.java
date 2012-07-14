@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({OseeInfoDataAccessorTest.class})
+@Suite.SuiteClasses({})
 public class AccessorTestSuite {
    // Test Suite
 }

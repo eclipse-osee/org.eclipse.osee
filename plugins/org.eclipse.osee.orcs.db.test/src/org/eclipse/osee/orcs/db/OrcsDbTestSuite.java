@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db;
 
-import org.eclipse.osee.orcs.db.internal.InternalJunitTestSuite;
-import org.eclipse.osee.orcs.db.internal.InternalPdeJunitTestSuite;
+import org.eclipse.osee.orcs.db.intergration.IntegrationTestSuite;
+import org.eclipse.osee.orcs.db.internal.InternalTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -19,7 +19,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({InternalJunitTestSuite.class, InternalPdeJunitTestSuite.class})
+@Suite.SuiteClasses({InternalTestSuite.class, IntegrationTestSuite.class})
 public class OrcsDbTestSuite {
    // Test Suite
 }

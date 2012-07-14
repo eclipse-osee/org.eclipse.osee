@@ -126,7 +126,7 @@ public class RelationDataImpl extends OrcsObjectImpl implements RelationData {
 
    @Override
    public String toString() {
-      return "RelationData [parentId=" + parentId + ", artIdA=" + artIdA + ", artIdB=" + artIdB + ", rationale=" + rationale + "]";
+      return "RelationData [parentId=" + parentId + ", artIdA=" + artIdA + ", artIdB=" + artIdB + ", rationale=" + rationale + " " + super.toString() + "]";
    }
 
 }

@@ -86,7 +86,7 @@ public class ArtifactDataImpl extends OrcsObjectImpl implements ArtifactData {
 
    @Override
    public String toString() {
-      return "ArtifactDataImpl [guid=" + guid + ", humanReadableId=" + humanReadableId + "]";
+      return "ArtifactDataImpl [guid=" + guid + ", humanReadableId=" + humanReadableId + " " + super.toString() + "]";
    }
 
 }

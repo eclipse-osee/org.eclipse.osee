@@ -64,7 +64,7 @@ public class OsgiRule extends TestWatchman {
       try {
          Object service = OsgiUtil.getService(field.getType());
          field.set(object, service);
-      } catch (IllegalAccessException e) {
+      } catch (Error e) {
          throw new Exception("Problems injecting dependencies in " + field.getName(), e);
       } finally {
          field.setAccessible(wasAccessible);

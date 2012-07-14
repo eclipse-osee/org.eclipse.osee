@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.accessor;
+package org.eclipse.osee.orcs.db.intergration;
 
 import java.sql.DatabaseMetaData;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
+import org.eclipse.osee.orcs.db.internal.accessor.OseeInfoDataAccessor;
 import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiRule;
