@@ -64,7 +64,7 @@ public class OrcsTransactionTest {
       String expectedAnnotation = "Annotate It";
 
       Branch branch = orcsApi.getBranchCache().get(CoreBranches.COMMON);
-      TransactionRecord currentTx = orcsApi.getTxsCache().getHeadTransaction(branch);
+      TransactionRecord previousTx = orcsApi.getTxsCache().getHeadTransaction(branch);
 
       OrcsTransaction tx = txFactory.createTransaction(branch, userArtifact, comment);
 
@@ -84,11 +84,13 @@ public class OrcsTransactionTest {
 
       TransactionRecord newHeadTx = orcsApi.getTxsCache().getHeadTransaction(branch);
 
-      checkTransaction(currentTx, newTx, branch, comment, userArtifact);
       Assert.assertEquals(newTx, newHeadTx);
+
+      checkTransaction(previousTx, newTx, branch, comment, userArtifact);
 
       ArtifactReadable artifact =
          orcsApi.getQueryFactory(context).fromBranch(CoreBranches.COMMON).andGuidsOrHrids(id).getResults().getExactlyOne();
+
       Assert.assertEquals(expectedName, artifact.getName());
       Assert.assertEquals(expectedAnnotation,
          artifact.getAttributeValues(CoreAttributeTypes.Annotation).iterator().next());

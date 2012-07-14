@@ -55,6 +55,9 @@ public abstract class AbstractSearchCallable<T> extends CancellableCallable<T> {
       long endTime = startTime;
       T result = null;
       try {
+         if (logger.isTraceEnabled()) {
+            logger.trace("%s [start] - [%s]", getClass().getSimpleName(), queryData);
+         }
          result = innerCall();
       } finally {
          endTime = System.currentTimeMillis() - startTime;
@@ -63,8 +66,7 @@ public abstract class AbstractSearchCallable<T> extends CancellableCallable<T> {
          notifyStats(result, endTime);
       }
       if (logger.isTraceEnabled()) {
-         logger.trace("Search [%s] completed in [%s]\n\t[%s]", getClass().getSimpleName(), Lib.asTimeString(endTime),
-            queryData);
+         logger.trace("%s [%s] - completed [%s]", getClass().getSimpleName(), Lib.asTimeString(endTime), queryData);
       }
       return result;
    }

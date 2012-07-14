@@ -98,8 +98,6 @@ public class LoaderTest {
       DataLoader loader = loaderFactory.fromBranchAndArtifactIds(sessionId, CoreBranches.COMMON, 6, 7, 8);
       loader.setLoadLevel(LoadLevel.FULL);
 
-      assertEquals(3, loader.getCount(cancellation));
-
       loader.load(cancellation, builder);
 
       verify(builder).createArtifactDataHandler();
@@ -154,8 +152,6 @@ public class LoaderTest {
       loader.loadAttributeType(Name);
       loader.loadRelationType(Default_Hierarchical__Parent);
 
-      assertEquals(3, loader.getCount(cancellation));
-
       loader.load(cancellation, builder);
 
       verify(builder).createArtifactDataHandler();
@@ -203,8 +199,6 @@ public class LoaderTest {
 
       loader.loadAttributeLocalId(14, 17);
       loader.loadRelationLocalId(2, 173);
-
-      assertEquals(3, loader.getCount(cancellation));
 
       loader.load(cancellation, builder);
 

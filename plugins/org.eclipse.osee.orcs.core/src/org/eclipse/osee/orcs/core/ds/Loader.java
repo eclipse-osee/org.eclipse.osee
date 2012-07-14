@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import java.util.Collection;
-import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -49,7 +48,4 @@ public interface Loader {
    Loader loadRelationType(IRelationType... relationType) throws OseeCoreException;
 
    Loader loadRelationTypes(Collection<? extends IRelationType> relationType) throws OseeCoreException;
-
-   int getCount(HasCancellation cancellation) throws OseeCoreException;
-
 }

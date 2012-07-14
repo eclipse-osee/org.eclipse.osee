@@ -39,23 +39,6 @@ public class QueryContextLoadExecutor extends AbstractLoadExecutor {
    }
 
    @Override
-   public int count(HasCancellation cancellation) throws OseeCoreException {
-      for (AbstractJoinQuery join : queryContext.getJoins()) {
-         join.store();
-      }
-      String query = queryContext.getSql();
-      List<Object> params = queryContext.getParameters();
-      try {
-         checkCancelled(cancellation);
-         return getDatabaseService().runPreparedQueryFetchObject(-1, query, params.toArray());
-      } finally {
-         for (AbstractJoinQuery join : queryContext.getJoins()) {
-            join.delete();
-         }
-      }
-   }
-
-   @Override
    public void load(HasCancellation cancellation, ArtifactBuilder builder, CriteriaOrcsLoad criteria, LoadOptions options) throws OseeCoreException {
       int fetchSize = computeFetchSize(queryContext);
 

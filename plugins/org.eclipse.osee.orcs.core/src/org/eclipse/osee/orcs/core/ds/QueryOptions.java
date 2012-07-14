@@ -15,12 +15,11 @@ package org.eclipse.osee.orcs.core.ds;
  */
 public class QueryOptions extends Options {
 
-   private boolean includeCache;
-   private boolean includeTypeInheritance;
+   private boolean includeCache = true;
+   private boolean includeTypeInheritance = false;
 
    public QueryOptions() {
       super();
-      reset();
    }
 
    @Override
@@ -50,7 +49,7 @@ public class QueryOptions extends Options {
    public QueryOptions clone() {
       QueryOptions clone = new QueryOptions();
       clone.setIncludeDeleted(this.areDeletedIncluded());
-      clone.setFromTransaction(getFromTransaction());
+      clone.setFromTransaction(this.getFromTransaction());
       clone.includeCache = this.includeCache;
       clone.includeTypeInheritance = this.includeTypeInheritance;
       return clone;
@@ -58,6 +57,6 @@ public class QueryOptions extends Options {
 
    @Override
    public String toString() {
-      return "QueryOptions [includeCache=" + includeCache + ", includeTypeInheritance=" + includeTypeInheritance + " " + super.toString() + "]";
+      return "QueryOptions [includeCache=" + includeCache + ", includeTypeInheritance=" + includeTypeInheritance + "[" + super.toString() + "]]";
    }
 }

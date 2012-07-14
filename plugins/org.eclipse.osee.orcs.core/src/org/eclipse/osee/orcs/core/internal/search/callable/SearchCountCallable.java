@@ -41,17 +41,20 @@ public class SearchCountCallable extends AbstractSearchCallable<Integer> {
    @Override
    protected Integer innerCall() throws Exception {
       int count = -1;
-      ArtifactLoader loader = objectLoader.fromQueryContext(sessionContext, queryContext);
 
       if (queryData.hasCriteriaType(CriteriaAttributeKeyword.class)) {
          queryContext = queryEngine.create(sessionContext.getSessionId(), queryData);
-
          checkForCancelled();
 
+         ArtifactLoader loader = objectLoader.fromQueryContext(sessionContext, queryContext);
+         loader.setLoadLevel(loadLevel);
          loader.includeDeleted(queryData.getOptions().areDeletedIncluded());
          loader.fromTransaction(queryData.getOptions().getFromTransaction());
+         checkForCancelled();
 
-         List<ArtifactReadable> artifacts = loader.setLoadLevel(loadLevel).load();
+         List<ArtifactReadable> artifacts = loader.load(this);
+
+         checkForCancelled();
 
          List<ArtifactReadable> results;
          if (!queryContext.getPostProcessors().isEmpty()) {
@@ -72,7 +75,9 @@ public class SearchCountCallable extends AbstractSearchCallable<Integer> {
       } else {
          queryContext = queryEngine.createCount(sessionContext.getSessionId(), queryData);
          checkForCancelled();
-         count = loader.getCount(this);
+
+         count = objectLoader.getCount(this, queryContext);
+         checkForCancelled();
       }
       return count;
    }

@@ -79,7 +79,7 @@ public class SqlContextImpl<T extends Options, P extends DataPostProcessor<?>> i
 
    @Override
    public String toString() {
-      return "SqlContextImpl [sql=" + sql + ", parameters=" + parameters + ", joinTables=" + joinTables + ", processors=" + processors + ", sessionId=" + sessionId + ", options=" + options + "]";
+      return "SqlContextImpl [sessionId=" + sessionId + ", sql=" + sql != null ? sql.replaceAll("\n", "") : "" + ", parameters=" + parameters + ", joinTables=" + joinTables + ", processors=" + processors + ", options=" + options + "]";
    }
 
 }

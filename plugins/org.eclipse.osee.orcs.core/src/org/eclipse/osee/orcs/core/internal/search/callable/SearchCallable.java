@@ -42,16 +42,17 @@ public class SearchCallable extends AbstractSearchCallable<ResultSet<ArtifactRea
    @Override
    protected ResultSet<ArtifactReadable> innerCall() throws Exception {
       QueryContext queryContext = queryEngine.create(sessionContext.getSessionId(), queryData);
-      //      LoadOptions loadOptions =
-      //         new LoadOptions(queryData.getOptions().isHistorical(), queryData.getOptions().areDeletedIncluded(), loadLevel);
 
       checkForCancelled();
 
       ArtifactLoader loader = objectLoader.fromQueryContext(sessionContext, queryContext);
+      loader.setLoadLevel(loadLevel);
       loader.includeDeleted(queryData.getOptions().areDeletedIncluded());
       loader.fromTransaction(queryData.getOptions().getFromTransaction());
 
-      List<ArtifactReadable> artifacts = loader.setLoadLevel(loadLevel).load();
+      List<ArtifactReadable> artifacts = loader.load(this);
+
+      checkForCancelled();
 
       List<ArtifactReadable> results;
       if (!queryContext.getPostProcessors().isEmpty()) {

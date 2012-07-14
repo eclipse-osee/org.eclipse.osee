@@ -178,33 +178,22 @@ public class DataLoaderImpl implements DataLoader {
    }
 
    ////////////////////// EXECUTE METHODS
-
-   @Override
-   public int getCount(HasCancellation cancellation) throws OseeCoreException {
-      int count = -1;
-      long startTime = 0;
-      if (logger.isTraceEnabled()) {
-         startTime = System.currentTimeMillis();
-      }
-      count = loadExecutor.count(cancellation);
-
-      if (logger.isTraceEnabled()) {
-         logger.trace("Counted objects in [%s]", Lib.getElapseString(startTime));
-      }
-      return count;
-   }
-
    @Override
    public void load(HasCancellation cancellation, ArtifactBuilder builder) throws OseeCoreException {
       long startTime = 0;
+
+      final LoadOptions options = loadOptions.clone();
+      final CriteriaOrcsLoad criteria = createCriteria();
       if (logger.isTraceEnabled()) {
          startTime = System.currentTimeMillis();
+         logger.trace("%s [start] - [%s] [%s]", getClass().getSimpleName(), criteria, options);
       }
 
-      loadExecutor.load(cancellation, builder, createCriteria(), loadOptions.clone());
+      loadExecutor.load(cancellation, builder, criteria, options);
 
       if (logger.isTraceEnabled()) {
-         logger.trace("Objects from ids loaded in [%s]", Lib.getElapseString(startTime));
+         logger.trace("%s [%s] - loaded [%s] [%s]", getClass().getSimpleName(), Lib.getElapseString(startTime),
+            criteria, options);
       }
    }
 

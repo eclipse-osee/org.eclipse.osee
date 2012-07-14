@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import java.util.Collection;
+import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
@@ -18,6 +19,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  * @author Roberto E. Escobar
  */
 public interface DataLoaderFactory {
+
+   int getCount(HasCancellation cancellation, QueryContext queryContext) throws OseeCoreException;
 
    DataLoader fromQueryContext(QueryContext queryContext) throws OseeCoreException;
 

@@ -47,10 +47,13 @@ public class SearchMatchesCallable extends AbstractSearchCallable<ResultSet<Matc
       checkForCancelled();
 
       ArtifactLoader loader = objectLoader.fromQueryContext(sessionContext, queryContext);
+      loader.setLoadLevel(loadLevel);
       loader.includeDeleted(queryData.getOptions().areDeletedIncluded());
       loader.fromTransaction(queryData.getOptions().getFromTransaction());
 
-      List<ArtifactReadable> artifacts = loader.setLoadLevel(loadLevel).load();
+      List<ArtifactReadable> artifacts = loader.load(this);
+
+      checkForCancelled();
 
       List<Match<ArtifactReadable, AttributeReadable<?>>> results =
          new ArrayList<Match<ArtifactReadable, AttributeReadable<?>>>();

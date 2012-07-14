@@ -13,10 +13,13 @@ package org.eclipse.osee.orcs.db.internal.loader;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
@@ -42,6 +45,38 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
       this.dbService = dbService;
       this.loader = loader;
       this.branchCache = branchCache;
+   }
+
+   @Override
+   public int getCount(HasCancellation cancellation, QueryContext queryContext) throws OseeCoreException {
+      QuerySqlContext context = toSqlContext(queryContext);
+
+      int count = -1;
+      long startTime = 0;
+      if (logger.isTraceEnabled()) {
+         startTime = System.currentTimeMillis();
+         logger.trace("%s Count - queryContext[%s]", getClass().getSimpleName(), queryContext);
+      }
+
+      for (AbstractJoinQuery join : context.getJoins()) {
+         join.store();
+      }
+      try {
+         if (cancellation != null) {
+            cancellation.checkForCancelled();
+         }
+         count = dbService.runPreparedQueryFetchObject(-1, context.getSql(), context.getParameters().toArray());
+      } finally {
+         for (AbstractJoinQuery join : context.getJoins()) {
+            join.delete();
+         }
+      }
+
+      if (logger.isTraceEnabled()) {
+         logger.trace("%s Count [%s] - count[%s] queryContext[%s]", getClass().getSimpleName(),
+            Lib.getElapseString(startTime), count, queryContext);
+      }
+      return count;
    }
 
    @Override

@@ -46,4 +46,9 @@ public class CriteriaOrcsLoad extends Criteria<LoadOptions> {
    public Criteria<LoadOptions> getRelationCriteria() {
       return relationCriteria;
    }
+
+   @Override
+   public String toString() {
+      return "CriteriaOrcsLoad [artifactCriteria=" + artifactCriteria + ", attributeCriteria=" + attributeCriteria + ", relationCriteria=" + relationCriteria + "]";
+   }
 }

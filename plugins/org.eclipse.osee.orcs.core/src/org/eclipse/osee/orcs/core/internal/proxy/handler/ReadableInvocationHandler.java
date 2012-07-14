@@ -55,4 +55,9 @@ public class ReadableInvocationHandler<T> implements InvocationHandler, HasProxi
       }
       return toReturn;
    }
+
+   @Override
+   public String toString() {
+      return "Handler [proxied=" + proxied + "]";
+   }
 }

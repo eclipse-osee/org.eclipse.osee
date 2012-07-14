@@ -136,7 +136,6 @@ public class DataLoaderImplTest {
       dataLoader.fromTransaction(EXPECTED_TX_ID);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
-      assertEquals(3, dataLoader.getCount(cancellation));
 
       dataLoader.load(cancellation, builder);
 
@@ -163,7 +162,6 @@ public class DataLoaderImplTest {
       dataLoader.setLoadLevel(expectedLoadLevel);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
-      assertEquals(3, dataLoader.getCount(cancellation));
 
       dataLoader.load(cancellation, builder);
 
@@ -187,7 +185,6 @@ public class DataLoaderImplTest {
       dataLoader.includeDeleted();
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
-      assertEquals(3, dataLoader.getCount(cancellation));
 
       dataLoader.load(cancellation, builder);
 
@@ -212,7 +209,6 @@ public class DataLoaderImplTest {
       dataLoader.fromTransaction(EXPECTED_TX_ID);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
-      assertEquals(3, dataLoader.getCount(cancellation));
 
       dataLoader.load(cancellation, builder);
 
@@ -238,7 +234,6 @@ public class DataLoaderImplTest {
       dataLoader.includeDeleted();
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
-      assertEquals(3, dataLoader.getCount(cancellation));
 
       dataLoader.load(cancellation, builder);
 
@@ -263,7 +258,6 @@ public class DataLoaderImplTest {
       dataLoader.setLoadLevel(expectedLoadLevel);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
-      assertEquals(3, dataLoader.getCount(cancellation));
 
       dataLoader.load(cancellation, builder);
 
@@ -289,7 +283,6 @@ public class DataLoaderImplTest {
       dataLoader.loadAttributeType(CoreAttributeTypes.Annotation);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
-      assertEquals(3, dataLoader.getCount(cancellation));
 
       dataLoader.load(cancellation, builder);
 
@@ -315,7 +308,6 @@ public class DataLoaderImplTest {
       dataLoader.loadAttributeType(CoreAttributeTypes.Annotation, CoreAttributeTypes.Category);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
-      assertEquals(3, dataLoader.getCount(cancellation));
 
       dataLoader.load(cancellation, builder);
 
@@ -343,7 +335,6 @@ public class DataLoaderImplTest {
       dataLoader.loadAttributeLocalId(45);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
-      assertEquals(3, dataLoader.getCount(cancellation));
 
       dataLoader.load(cancellation, builder);
 
@@ -369,7 +360,6 @@ public class DataLoaderImplTest {
       dataLoader.loadAttributeLocalId(45, 55);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
-      assertEquals(3, dataLoader.getCount(cancellation));
 
       dataLoader.load(cancellation, builder);
 
@@ -396,7 +386,6 @@ public class DataLoaderImplTest {
       dataLoader.loadAttributeType(CoreAttributeTypes.Annotation, CoreAttributeTypes.Category);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
-      assertEquals(3, dataLoader.getCount(cancellation));
 
       dataLoader.load(cancellation, builder);
 
@@ -427,7 +416,6 @@ public class DataLoaderImplTest {
       dataLoader.loadAttributeType(CoreAttributeTypes.Annotation);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
-      assertEquals(3, dataLoader.getCount(cancellation));
 
       dataLoader.load(cancellation, builder);
 
@@ -452,7 +440,6 @@ public class DataLoaderImplTest {
       dataLoader.includeDeleted();
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
-      assertEquals(3, dataLoader.getCount(cancellation));
 
       dataLoader.load(cancellation, builder);
 
@@ -478,7 +465,6 @@ public class DataLoaderImplTest {
       dataLoader.fromTransaction(EXPECTED_TX_ID);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
-      assertEquals(3, dataLoader.getCount(cancellation));
 
       dataLoader.load(cancellation, builder);
 
@@ -505,7 +491,6 @@ public class DataLoaderImplTest {
       dataLoader.includeDeleted();
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
-      assertEquals(3, dataLoader.getCount(cancellation));
 
       dataLoader.load(cancellation, builder);
 
@@ -532,7 +517,6 @@ public class DataLoaderImplTest {
       dataLoader.setLoadLevel(expectedLoadLevel);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
-      assertEquals(3, dataLoader.getCount(cancellation));
 
       dataLoader.load(cancellation, builder);
 
@@ -558,7 +542,6 @@ public class DataLoaderImplTest {
       dataLoader.includeDeleted();
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
-      assertEquals(3, dataLoader.getCount(cancellation));
 
       dataLoader.load(cancellation, builder);
 
@@ -584,7 +567,6 @@ public class DataLoaderImplTest {
       dataLoader.loadRelationType(CoreRelationTypes.Default_Hierarchical__Child);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
-      assertEquals(3, dataLoader.getCount(cancellation));
 
       dataLoader.load(cancellation, builder);
 
@@ -610,7 +592,6 @@ public class DataLoaderImplTest {
       dataLoader.loadRelationType(CoreRelationTypes.Default_Hierarchical__Child, CoreRelationTypes.Dependency__Artifact);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
-      assertEquals(3, dataLoader.getCount(cancellation));
 
       dataLoader.load(cancellation, builder);
 
@@ -640,7 +621,6 @@ public class DataLoaderImplTest {
       dataLoader.loadRelationLocalId(45);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
-      assertEquals(3, dataLoader.getCount(cancellation));
 
       dataLoader.load(cancellation, builder);
 
@@ -666,7 +646,6 @@ public class DataLoaderImplTest {
       dataLoader.loadRelationLocalId(45, 55);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
-      assertEquals(3, dataLoader.getCount(cancellation));
 
       dataLoader.load(cancellation, builder);
 
@@ -693,7 +672,6 @@ public class DataLoaderImplTest {
       dataLoader.loadRelationType(CoreRelationTypes.Default_Hierarchical__Child, CoreRelationTypes.Dependency__Artifact);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
-      assertEquals(3, dataLoader.getCount(cancellation));
 
       dataLoader.load(cancellation, builder);
 
@@ -726,7 +704,6 @@ public class DataLoaderImplTest {
       dataLoader.loadRelationType(CoreRelationTypes.Default_Hierarchical__Child);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
-      assertEquals(3, dataLoader.getCount(cancellation));
 
       dataLoader.load(cancellation, builder);
 
@@ -742,7 +719,6 @@ public class DataLoaderImplTest {
       dataLoader.fromTransaction(EXPECTED_TX_ID);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
-      assertEquals(3, dataLoader.getCount(cancellation));
 
       dataLoader.load(cancellation, builder);
 

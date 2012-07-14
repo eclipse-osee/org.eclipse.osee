@@ -39,6 +39,11 @@ public class ArtifactLoaderFactoryImpl implements ArtifactLoaderFactory {
    }
 
    @Override
+   public int getCount(HasCancellation cancellation, QueryContext queryContext) throws OseeCoreException {
+      return dataLoaderFactory.getCount(cancellation, queryContext);
+   }
+
+   @Override
    public ArtifactLoader fromQueryContext(SessionContext sessionContext, QueryContext queryContext) throws OseeCoreException {
       DataLoader loader = dataLoaderFactory.fromQueryContext(queryContext);
       return create(sessionContext, loader);
@@ -65,15 +70,15 @@ public class ArtifactLoaderFactoryImpl implements ArtifactLoaderFactory {
       return (T) Proxy.newProxyInstance(ArtifactLoader.class.getClassLoader(), types, handler);
    }
 
-   private static class LoaderInvocationHandler implements InvocationHandler {
+   private static final class LoaderInvocationHandler implements InvocationHandler {
       private final SessionContext sessionContext;
-      private final DataLoader loader;
+      private final DataLoader proxied;
       private final ArtifactBuilderFactory builderFactory;
 
-      public LoaderInvocationHandler(SessionContext sessionContext, DataLoader loader, ArtifactBuilderFactory builderFactory) {
+      public LoaderInvocationHandler(SessionContext sessionContext, DataLoader proxied, ArtifactBuilderFactory builderFactory) {
          super();
          this.sessionContext = sessionContext;
-         this.loader = loader;
+         this.proxied = proxied;
          this.builderFactory = builderFactory;
       }
 
@@ -81,9 +86,14 @@ public class ArtifactLoaderFactoryImpl implements ArtifactLoaderFactory {
       public Object invoke(Object object, Method method, Object[] args) throws Throwable {
          Object toReturn = null;
          if (isLoad(method)) {
-            toReturn = load((HasCancellation) args[0]);
+            HasCancellation cancellation = null;
+            if (args != null && args.length > 0) {
+               cancellation = (HasCancellation) args[0];
+            }
+            toReturn = load(cancellation);
          } else {
-            toReturn = method.invoke(loader, args);
+            Method delegateMethod = getMethodFor(proxied.getClass(), method);
+            toReturn = delegateMethod.invoke(proxied, args);
             if (toReturn instanceof DataLoader) {
                toReturn = object;
             }
@@ -95,10 +105,20 @@ public class ArtifactLoaderFactoryImpl implements ArtifactLoaderFactory {
          return "load".equals(method.getName());
       }
 
-      @SuppressWarnings("unused")
       private List<ArtifactReadable> load(HasCancellation cancellation) throws OseeCoreException {
          ArtifactBuilder builder = builderFactory.createArtifactBuilder(sessionContext);
+         proxied.load(cancellation, builder);
          return builder.getArtifacts();
+      }
+
+      private Method getMethodFor(Class<?> clazz, Method method) {
+         Method toReturn = null;
+         try {
+            toReturn = clazz.getMethod(method.getName(), method.getParameterTypes());
+         } catch (Exception ex) {
+            // Do Nothing;
+         }
+         return toReturn;
       }
 
    }

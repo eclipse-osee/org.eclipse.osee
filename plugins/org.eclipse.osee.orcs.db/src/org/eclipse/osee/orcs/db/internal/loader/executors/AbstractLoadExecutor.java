@@ -36,8 +36,6 @@ public abstract class AbstractLoadExecutor {
       this.dbService = dbService;
    }
 
-   public abstract int count(HasCancellation cancellation) throws OseeCoreException;
-
    public abstract void load(HasCancellation cancellation, ArtifactBuilder builder, CriteriaOrcsLoad criteria, LoadOptions options) throws OseeCoreException;
 
    protected IOseeDatabaseService getDatabaseService() {
@@ -45,11 +43,7 @@ public abstract class AbstractLoadExecutor {
    }
 
    protected void loadFromJoin(ArtifactJoinQuery join, HasCancellation cancellation, ArtifactBuilder builder, CriteriaOrcsLoad criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
-      getLoader().loadArtifacts(cancellation, builder, join, criteria, loadContext, fetchSize);
-   }
-
-   private SqlArtifactLoader getLoader() {
-      return loader;
+      loader.loadArtifacts(cancellation, builder, join, criteria, loadContext, fetchSize);
    }
 
    protected void checkCancelled(HasCancellation cancellation) throws CancellationException {

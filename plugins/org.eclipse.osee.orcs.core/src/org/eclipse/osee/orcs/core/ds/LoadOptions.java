@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 
 /**
@@ -18,19 +17,10 @@ import org.eclipse.osee.framework.core.enums.LoadLevel;
  */
 public class LoadOptions extends Options {
 
-   private LoadLevel loadLevel;
+   private LoadLevel loadLevel = LoadLevel.SHALLOW;
 
    public LoadOptions() {
-      this(DeletionFlag.EXCLUDE_DELETED, LoadLevel.SHALLOW);
-   }
-
-   public LoadOptions(boolean includeDeleted, LoadLevel loadLevel) {
-      this(DeletionFlag.allowDeleted(includeDeleted), loadLevel);
-   }
-
-   public LoadOptions(DeletionFlag includeDeleted, LoadLevel loadLevel) {
-      super(includeDeleted);
-      this.loadLevel = loadLevel;
+      super();
    }
 
    public LoadLevel getLoadLevel() {
@@ -58,7 +48,6 @@ public class LoadOptions extends Options {
 
    @Override
    public String toString() {
-      return "LoadOptions [loadLevel=" + loadLevel + " " + super.toString() + "]";
+      return "LoadOptions [loadLevel=" + loadLevel + "[" + super.toString() + "]]";
    }
-
 }

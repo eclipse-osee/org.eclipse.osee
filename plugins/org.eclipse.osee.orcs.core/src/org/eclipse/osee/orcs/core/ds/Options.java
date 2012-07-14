@@ -26,12 +26,6 @@ public class Options implements Cloneable {
       reset();
    }
 
-   public Options(DeletionFlag includeDeleted) {
-      super();
-      this.includeDeleted = includeDeleted;
-      this.transactionId = TRANSACTION_SENTINEL;
-   }
-
    public void reset() {
       includeDeleted = DeletionFlag.EXCLUDE_DELETED;
       transactionId = TRANSACTION_SENTINEL;
@@ -70,7 +64,8 @@ public class Options implements Cloneable {
 
    @Override
    public Options clone() {
-      Options clone = new Options(this.includeDeleted);
+      Options clone = new Options();
+      clone.includeDeleted = this.includeDeleted;
       clone.transactionId = this.transactionId;
       return clone;
    }

@@ -68,8 +68,7 @@ public abstract class AbstractSqlWriter<O extends Options> {
       context.setSql(toString());
 
       if (logger.isTraceEnabled()) {
-         logger.trace("SessionId:[%s] Query:[%s] Parameters:[%s]", context.getSessionId(), context.getSql(),
-            context.getParameters());
+         logger.trace("Sql Writer - [%s]", context);
       }
    }
 

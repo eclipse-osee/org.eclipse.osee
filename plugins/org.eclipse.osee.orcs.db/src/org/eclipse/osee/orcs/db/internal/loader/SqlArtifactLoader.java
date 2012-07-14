@@ -149,16 +149,19 @@ public class SqlArtifactLoader {
          try {
             chStmt.runPreparedQuery(fetchSize, loadContext.getSql(), loadContext.getParameters().toArray());
 
+            String processorName = null;
             if (logger.isTraceEnabled()) {
-               logger.trace("[%s] - fetchSize[%s] - context[%s] ", Lib.getElapseString(startTime), loadContext,
-                  fetchSize);
+               processorName = processor.getClass().getSimpleName();
+               logger.trace("Sql Artifact Load [%s] - [%s] fetchSize[%s] context[%s] ", Lib.getElapseString(startTime),
+                  processorName, fetchSize, loadContext);
                startTime = System.currentTimeMillis();
             }
 
             int rowCount = processor.processResultSet(handler, chStmt, loadContext.getOptions());
 
             if (logger.isTraceEnabled()) {
-               logger.trace("[%s] - to iterate over [%d] rows", Lib.getElapseString(startTime), rowCount);
+               logger.trace("Sql Artifact Load [%s] - [%s] processed [%d] rows", Lib.getElapseString(startTime),
+                  processorName, rowCount);
             }
          } finally {
             chStmt.close();

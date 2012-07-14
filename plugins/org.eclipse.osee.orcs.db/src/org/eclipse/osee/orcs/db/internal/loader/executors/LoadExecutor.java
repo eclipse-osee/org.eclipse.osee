@@ -38,13 +38,6 @@ public class LoadExecutor extends AbstractLoadExecutor {
       this.artifactIds = artifactIds;
    }
 
-   @SuppressWarnings("unused")
-   @Override
-   public int count(HasCancellation cancellation) throws OseeCoreException {
-      checkCancelled(cancellation);
-      return artifactIds.size();
-   }
-
    @Override
    public void load(HasCancellation cancellation, ArtifactBuilder builder, CriteriaOrcsLoad criteria, LoadOptions options) throws OseeCoreException {
       checkCancelled(cancellation);

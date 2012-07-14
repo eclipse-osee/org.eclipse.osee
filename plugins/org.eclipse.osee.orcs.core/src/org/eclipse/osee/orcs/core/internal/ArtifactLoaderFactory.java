@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.internal;
 
 import java.util.Collection;
+import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
@@ -19,6 +20,8 @@ import org.eclipse.osee.orcs.core.ds.QueryContext;
  * @author Roberto E. Escobar
  */
 public interface ArtifactLoaderFactory {
+
+   int getCount(HasCancellation cancellation, QueryContext queryContext) throws OseeCoreException;
 
    ArtifactLoader fromQueryContext(SessionContext sessionContext, QueryContext queryContext) throws OseeCoreException;
 

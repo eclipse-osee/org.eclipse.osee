@@ -117,6 +117,8 @@ public final class CommitTransactionDatabaseTxCallable extends DatabaseTxCallabl
       TransactionRecord txRecord = createTransactionRecord(branch, author, comment, getNextTransactionId());
       persistTx(connection, txRecord);
 
+      transactionCache.cache(txRecord);
+
       executeTransactionDataItems(txData, connection, branch);
 
       if (branch.getBranchState() == BranchState.CREATED) {
@@ -164,10 +166,10 @@ public final class CommitTransactionDatabaseTxCallable extends DatabaseTxCallabl
    }
 
    @SuppressWarnings("unchecked")
-   private void persistTx(OseeConnection connection, TransactionRecord transactionRecord) throws OseeCoreException {
-      getDatabaseService().runPreparedUpdate(connection, INSERT_INTO_TRANSACTION_DETAIL, transactionRecord.getId(),
-         transactionRecord.getComment(), transactionRecord.getTimeStamp(), transactionRecord.getAuthor(),
-         transactionRecord.getBranchId(), transactionRecord.getTxType().getId());
+   private void persistTx(OseeConnection connection, TransactionRecord tx) throws OseeCoreException {
+      getDatabaseService().runPreparedUpdate(connection, INSERT_INTO_TRANSACTION_DETAIL, tx.getId(), tx.getComment(),
+         tx.getTimeStamp(), tx.getAuthor(), tx.getBranchId(), tx.getTxType().getId());
+      tx.clearDirty();
    }
 
    private TransactionRecord createTransactionRecord(Branch branch, ArtifactReadable author, String comment, int transactionNumber) throws OseeCoreException {
@@ -175,9 +177,9 @@ public final class CommitTransactionDatabaseTxCallable extends DatabaseTxCallabl
       TransactionDetailsType txType = TransactionDetailsType.NonBaselined;
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();
 
-      int branchId = branch.getId();
-      return factory.createOrUpdate(transactionCache, transactionNumber, branchId, comment, transactionTime,
-         authorArtId, RelationalConstants.ART_ID_SENTINEL, txType, branchCache);
+      int branchId = branchCache.getLocalId(branch);
+      return factory.create(transactionNumber, branchId, comment, transactionTime, authorArtId,
+         RelationalConstants.ART_ID_SENTINEL, txType, branchCache);
    }
 
    private void fetchTxNotCurrent(OseeConnection connection, Branch branch, List<Object[]> results, OseeSql sql, Object[] params) throws OseeCoreException {

@@ -34,7 +34,7 @@ public class QuerySqlWriter extends AbstractSqlWriter<QueryOptions> {
       this.branchId = branchId;
    }
 
-   private void writePlainSelect() throws OseeCoreException {
+   private void writeSelectHelper() throws OseeCoreException {
       String txAlias = getAliasManager().getFirstAlias(TableEnum.TXS_TABLE);
       String artAlias = getAliasManager().getFirstAlias(TableEnum.ARTIFACT_TABLE);
 
@@ -46,24 +46,18 @@ public class QuerySqlWriter extends AbstractSqlWriter<QueryOptions> {
       }
    }
 
-   private void writeCountSelect() throws OseeCoreException {
-      if (getOptions().isHistorical()) {
-         write("SELECT count(xTable.art_id) FROM (\n ");
-         writePlainSelect();
-      } else {
-         String artAlias = getAliasManager().getFirstAlias(TableEnum.ARTIFACT_TABLE);
-
-         write("SELECT%s ", getSqlHint());
-         write("count(%s.art_id)", artAlias);
-      }
-   }
-
    @Override
    public void writeSelect(List<SqlHandler<?, QueryOptions>> handlers) throws OseeCoreException {
       if (queryType == QueryType.COUNT_ARTIFACTS) {
-         writeCountSelect();
+         if (getOptions().isHistorical()) {
+            write("SELECT count(xTable.art_id) FROM (\n ");
+            writeSelectHelper();
+         } else {
+            String artAlias = getAliasManager().getFirstAlias(TableEnum.ARTIFACT_TABLE);
+            write("SELECT%s count(%s.art_id)", getSqlHint(), artAlias);
+         }
       } else {
-         writePlainSelect();
+         writeSelectHelper();
       }
    }
 
