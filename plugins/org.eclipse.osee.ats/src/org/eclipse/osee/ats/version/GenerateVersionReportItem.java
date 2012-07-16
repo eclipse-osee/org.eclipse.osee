@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.version;
 
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ats.core.model.IAtsVersion;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamVersionListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;

@@ -6,21 +6,22 @@
 package org.eclipse.osee.ats.core.client.config.store;
 
 import java.util.List;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.config.AtsObjectsClient;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.config.ActionableItemFactory;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitionFactory;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.config.VersionFactory;
-import org.eclipse.osee.ats.core.model.IAtsActionableItem;
-import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.model.IAtsUser;
-import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -214,7 +215,7 @@ public class TeamDefinitionArtifactStore extends ArtifactAtsObjectStore {
          for (Artifact verArt : teamDefArt.getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version)) {
             IAtsVersion version = VersionFactory.getOrCreate(verArt.getGuid(), verArt.getName());
             teamDef.getVersions().add(version);
-            version.setTeamDefinition(teamDef);
+            AtsVersionService.get().setTeamDefinition(version, teamDef);
          }
          for (Artifact userArt : teamDefArt.getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User)) {
             IAtsUser user = AtsUsersClient.getUserFromOseeUser((User) userArt);

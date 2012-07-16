@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import junit.framework.Assert;
-import org.eclipse.osee.ats.core.model.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.core.users.Guest;
 import org.eclipse.osee.ats.core.users.SystemUser;
 import org.eclipse.osee.ats.core.users.UnAssigned;

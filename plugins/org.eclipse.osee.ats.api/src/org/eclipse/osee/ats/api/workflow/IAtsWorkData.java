@@ -3,9 +3,10 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.ats.core.model;
+package org.eclipse.osee.ats.api.workflow;
 
 import java.util.Date;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 

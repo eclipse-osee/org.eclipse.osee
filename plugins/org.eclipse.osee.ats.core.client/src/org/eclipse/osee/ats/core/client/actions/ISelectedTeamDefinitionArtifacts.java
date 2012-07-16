@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.client.actions;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**

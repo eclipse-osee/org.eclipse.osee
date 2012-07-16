@@ -3,9 +3,12 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.ats.core.model;
+package org.eclipse.osee.ats.api.ai;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -18,7 +21,7 @@ public interface IAtsActionableItem extends IAtsConfigObject {
     ******************************/
    void setHumanReadableId(String humanReadableId);
 
-   void setName(String name);
+   void setName(String name) throws OseeCoreException;
 
    void setDescription(String description);
 

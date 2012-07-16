@@ -18,7 +18,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
@@ -40,6 +44,7 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.version.AtsVersionStore;
 import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
@@ -48,12 +53,9 @@ import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.config.ActionableItemFactory;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitionFactory;
 import org.eclipse.osee.ats.core.config.VersionFactory;
-import org.eclipse.osee.ats.core.model.IAtsActionableItem;
-import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.model.IAtsUser;
-import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.core.workdef.SimpleDecisionReviewOption;
 import org.eclipse.osee.ats.core.workflow.StateTypeAdapter;
 import org.eclipse.osee.ats.mocks.MockStateDefinition;
@@ -634,7 +636,7 @@ public class AtsTestUtil {
                "1", false, null, Arrays.asList(testAi4), new Date(), AtsUsersClient.getUser(), null, transaction);
 
          teamArt4 = actionArt4.getFirstTeam();
-         teamArt4.setTargetedVersion(verArt4);
+         AtsVersionStore.setTargetedVersionLink(teamArt, verArt4);
          transaction.execute();
       }
       return teamArt4;
@@ -709,9 +711,8 @@ public class AtsTestUtil {
       verArt.setAllowCreateBranch(true);
       verArt.setAllowCommitBranch(true);
       verArt.setBaselineBranchGuid(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1).getGuid());
-      if (getTeamWf().getTargetedVersion() == null) {
-         getTeamWf().setTargetedVersion(getVerArt1());
-         getTeamWf().setTargetedVersionLink(getVerArt1());
+      if (!AtsVersionService.get().hasTargetedVersion(getTeamWf())) {
+         AtsVersionStore.setTargetedVersionLink(getTeamWf(), getVerArt1());
          getTeamWf().persist(AtsTestUtil.class.getSimpleName() + "-SetTeamWfTargetedVer1");
       }
    }

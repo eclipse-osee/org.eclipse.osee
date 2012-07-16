@@ -11,11 +11,12 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.version.VersionLockedType;
+import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.column.TargetedVersionColumn;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.model.VersionLockedType;
-import org.eclipse.osee.ats.core.model.VersionReleaseType;
+import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -97,11 +98,11 @@ public class SMATargetedVersionHeader extends Composite {
 
    }
 
-   private void updateLabel(AbstractWorkflowArtifact sma) throws OseeCoreException {
+   private void updateLabel(AbstractWorkflowArtifact sma) {
       if (Widgets.isAccessible(valueLabel)) {
          String value = "Not Set";
-         if (sma.getTargetedVersion() != null) {
-            value = sma.getTargetedVersion().getName();
+         if (AtsVersionService.get().hasTargetedVersion(sma)) {
+            value = AtsVersionService.get().getTargetedVersion(sma).getName();
          }
          valueLabel.setText(value);
          valueLabel.getParent().layout();

@@ -3,18 +3,20 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.ats.core.model;
+package org.eclipse.osee.ats.api.version;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.commit.ICommitConfigArtifact;
 import org.eclipse.osee.framework.core.util.Result;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsVersion extends IAtsConfigObject, ICommitConfigArtifact {
+public interface IAtsVersion extends ICommitConfigArtifact, IAtsConfigObject {
 
    /*****************************
     * Name, Full Name, Description
@@ -106,13 +108,5 @@ public interface IAtsVersion extends IAtsConfigObject, ICommitConfigArtifact {
    Boolean isNextVersion();
 
    void setNextVersion(boolean nextVersion);
-
-   /*****************************
-    * Related Team Definition
-    ******************************/
-
-   IAtsTeamDefinition getTeamDefinition();
-
-   void setTeamDefinition(IAtsTeamDefinition teamDefinition);
 
 }

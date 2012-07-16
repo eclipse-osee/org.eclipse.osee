@@ -19,17 +19,18 @@ import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.version.VersionLockedType;
+import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.core.client.config.VersionsClient;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
+import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.Versions;
-import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.model.IAtsUser;
-import org.eclipse.osee.ats.core.model.IAtsVersion;
-import org.eclipse.osee.ats.core.model.VersionLockedType;
-import org.eclipse.osee.ats.core.model.VersionReleaseType;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.task.ITaskEditorProvider;
 import org.eclipse.osee.ats.task.TaskEditor;
@@ -123,7 +124,8 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
          }
          Set<TaskArtifact> removeTaskArts = new HashSet<TaskArtifact>();
          for (TaskArtifact taskArt : userTaskArts) {
-            if (verArt != null && !verArt.equals(taskArt.getParentTeamWorkflow().getTargetedVersion())) {
+            if (verArt != null && !verArt.equals(AtsVersionService.get().getTargetedVersion(
+               taskArt.getParentTeamWorkflow()))) {
                removeTaskArts.add(taskArt);
             }
             if (!teamDefs.isEmpty() && !teamDefs.contains(taskArt.getParentTeamWorkflow().getTeamDefinition())) {

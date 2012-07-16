@@ -7,7 +7,8 @@ package org.eclipse.osee.ats.core.users;
 
 import java.util.HashMap;
 import junit.framework.Assert;
-import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.junit.Test;
@@ -232,6 +233,11 @@ public class SystemUsersTest {
       @Override
       public boolean isActive() {
          return true;
+      }
+
+      @Override
+      public boolean matches(Identity<?>... identities) {
+         return false;
       }
    };
 }

@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.config.Versions;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
@@ -380,7 +381,7 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
    private String getTargetedVersion(Artifact artifact) {
       try {
          if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-            String str = ((TeamWorkFlowArtifact) artifact).getTargetedVersionStr();
+            String str = Versions.getTargetedVersionStr(artifact);
             return str.isEmpty() ? "" : str;
          }
       } catch (OseeCoreException ex) {

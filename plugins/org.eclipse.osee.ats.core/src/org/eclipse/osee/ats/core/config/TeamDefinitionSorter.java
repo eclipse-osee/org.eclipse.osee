@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.config;
 
 import java.io.Serializable;
 import java.util.Comparator;
-import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 
 /**
  * @author Donald G. Dunne

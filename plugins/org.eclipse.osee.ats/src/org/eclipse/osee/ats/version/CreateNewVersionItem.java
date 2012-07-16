@@ -17,12 +17,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.config.AtsObjectsClient;
 import org.eclipse.osee.ats.core.client.config.store.VersionArtifactStore;
+import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.config.VersionFactory;
-import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
@@ -122,7 +123,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
          try {
             for (String newVer : newVersionNames) {
                IAtsVersion version = VersionFactory.createVersion(newVer);
-               version.setTeamDefinition(teamDefHoldingVersions);
+               AtsVersionService.get().setTeamDefinition(version, teamDefHoldingVersions);
                new VersionArtifactStore(version).saveToArtifact(transaction);
             }
          } catch (Exception ex) {
@@ -132,7 +133,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
       return verArts;
    }
 
-   public IAtsTeamDefinition getReleaseableTeamDefinition() throws OseeCoreException {
+   public IAtsTeamDefinition getReleaseableTeamDefinition() {
       if (teamDefHoldingVersions != null) {
          return teamDefHoldingVersions;
       }

@@ -6,6 +6,8 @@
 package org.eclipse.osee.ats.core.model;
 
 import java.util.List;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.workflow.WorkState;
 
 /**
  * @author Donald G. Dunne

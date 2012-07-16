@@ -13,16 +13,17 @@ package org.eclipse.osee.ats.version;
 
 import java.util.Date;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.version.VersionLockedType;
+import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.core.client.config.VersionsClient;
 import org.eclipse.osee.ats.core.client.config.store.VersionArtifactStore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
-import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.model.IAtsVersion;
-import org.eclipse.osee.ats.core.model.VersionLockedType;
-import org.eclipse.osee.ats.core.model.VersionReleaseType;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
@@ -69,7 +70,8 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             IAtsVersion verArt = (IAtsVersion) ld.getResult()[0];
 
             // Validate team lead status
-            if (!AtsUtilCore.isAtsAdmin() && !verArt.getTeamDefinition().getLeads().contains(AtsUsersClient.getUser())) {
+            if (!AtsUtilCore.isAtsAdmin() && !AtsVersionService.get().getTeamDefinition(verArt).getLeads().contains(
+               AtsUsersClient.getUser())) {
                AWorkbench.popup("ERROR", "Only lead can release version.");
                return;
             }

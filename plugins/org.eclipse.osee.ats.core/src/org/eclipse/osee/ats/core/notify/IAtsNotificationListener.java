@@ -6,7 +6,7 @@
 package org.eclipse.osee.ats.core.notify;
 
 import java.util.List;
-import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**

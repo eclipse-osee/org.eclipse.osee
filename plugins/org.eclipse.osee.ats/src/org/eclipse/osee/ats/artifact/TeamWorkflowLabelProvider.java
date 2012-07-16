@@ -11,6 +11,8 @@
 package org.eclipse.osee.ats.artifact;
 
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.config.AtsVersionService;
+import org.eclipse.osee.ats.core.config.Versions;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -26,10 +28,10 @@ public class TeamWorkflowLabelProvider extends ArtifactLabelProvider {
    public String getText(Object element) {
       TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) element;
       try {
-         if (teamWf.getTargetedVersion() == null) {
+         if (!AtsVersionService.get().hasTargetedVersion(teamWf)) {
             return "[" + teamWf.getTeamName() + "] - " + teamWf.getName();
          } else {
-            return "[" + teamWf.getTeamName() + "][" + teamWf.getTargetedVersionStr() + "] - " + teamWf.getName();
+            return "[" + teamWf.getTeamName() + "][" + Versions.getTargetedVersionStr(teamWf) + "] - " + teamWf.getName();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

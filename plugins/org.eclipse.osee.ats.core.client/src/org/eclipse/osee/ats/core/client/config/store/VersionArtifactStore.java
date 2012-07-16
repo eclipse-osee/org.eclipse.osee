@@ -10,12 +10,13 @@ import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitionFactory;
 import org.eclipse.osee.ats.core.config.VersionFactory;
-import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -78,8 +79,9 @@ public class VersionArtifactStore extends ArtifactAtsObjectStore {
       }
 
       // set parent artifact to top team def
-      if (version.getTeamDefinition() != null) {
-         Artifact teamDefArt = new TeamDefinitionArtifactStore(version.getTeamDefinition()).getArtifact();
+      IAtsTeamDefinition teamDefinition = AtsVersionService.get().getTeamDefinition(version);
+      if (teamDefinition != null) {
+         Artifact teamDefArt = new TeamDefinitionArtifactStore(teamDefinition).getArtifact();
          if (teamDefArt != null) {
             if (!teamDefArt.getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version).contains(verArt)) {
                teamDefArt.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, verArt);
@@ -120,7 +122,7 @@ public class VersionArtifactStore extends ArtifactAtsObjectStore {
          if (!teamDefArts.isEmpty()) {
             Artifact teamDefArt = teamDefArts.iterator().next();
             IAtsTeamDefinition teamDef = TeamDefinitionFactory.getOrCreate(teamDefArt.getGuid(), teamDefArt.getName());
-            version.setTeamDefinition(teamDef);
+            AtsVersionService.get().setTeamDefinition(version, teamDef);
          }
          for (String staticId : artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)) {
             version.getStaticIds().add(staticId);

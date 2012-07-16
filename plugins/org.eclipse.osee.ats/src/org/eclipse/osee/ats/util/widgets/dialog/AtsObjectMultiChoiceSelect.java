@@ -2,7 +2,7 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.Collections;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.osee.ats.core.model.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.MinMaxOSEECheckedFilteredTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.SimpleCheckFilteredTreeDialog;

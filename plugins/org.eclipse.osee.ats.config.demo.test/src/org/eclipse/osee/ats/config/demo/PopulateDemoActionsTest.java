@@ -15,6 +15,8 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.config.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
@@ -28,7 +30,7 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskStates;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
+import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DemoTestUtil;
@@ -475,8 +477,9 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(priority, teamArt.getSoleAttributeValue(AtsAttributeTypes.PriorityType, ""));
       // want targeted version, not error/exception
       String targetedVerStr = "";
-      if (teamArt.getTargetedVersion() != null) {
-         targetedVerStr = teamArt.getTargetedVersion().getName();
+      IAtsVersion version = AtsVersionService.get().getTargetedVersion(teamArt);
+      if (version != null) {
+         targetedVerStr = version.getName();
       }
       Assert.assertEquals(versionName, targetedVerStr);
       Assert.assertEquals(artifactType, teamArt.getArtifactType());

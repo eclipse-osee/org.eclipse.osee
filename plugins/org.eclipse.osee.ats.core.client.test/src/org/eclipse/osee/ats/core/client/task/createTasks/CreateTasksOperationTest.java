@@ -17,8 +17,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
@@ -30,8 +32,7 @@ import org.eclipse.osee.ats.core.client.task.createtasks.TaskMetadata;
 import org.eclipse.osee.ats.core.client.task.createtasks.TaskOpModify;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.model.IAtsActionableItem;
-import org.eclipse.osee.ats.core.model.IAtsVersion;
+import org.eclipse.osee.ats.core.client.version.AtsVersionStore;
 import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
@@ -241,12 +242,9 @@ public class CreateTasksOperationTest {
          ver2_ChangesWithoutTasks.setName(ver2_ChangesWithoutTasks.getName() + " ChangesWithoutTasks");
          ver3_TasksWithoutChanges.setName(ver3_TasksWithoutChanges.getName() + " TasksWithoutChanges");
 
-         destTeamWf1_Proper.setTargetedVersion(ver1_Proper);
-         destTeamWf1_Proper.setTargetedVersionLink(ver1_Proper);
-         destTeamWf2_ChangesWithoutTasks.setTargetedVersion(ver2_ChangesWithoutTasks);
-         destTeamWf2_ChangesWithoutTasks.setTargetedVersionLink(ver2_ChangesWithoutTasks);
-         destTeamWf3_TasksWithoutChanges.setTargetedVersion(ver3_TasksWithoutChanges);
-         destTeamWf3_TasksWithoutChanges.setTargetedVersionLink(ver3_TasksWithoutChanges);
+         AtsVersionStore.setTargetedVersionLink(destTeamWf1_Proper, ver1_Proper);
+         AtsVersionStore.setTargetedVersionLink(destTeamWf2_ChangesWithoutTasks, ver2_ChangesWithoutTasks);
+         AtsVersionStore.setTargetedVersionLink(destTeamWf3_TasksWithoutChanges, ver3_TasksWithoutChanges);
 
          IAtsVersion verArt4 = AtsTestUtil.getVerArt4();
          verArt4.setBaselineBranchGuid(DemoSawBuilds.SAW_Bld_1.getGuid());

@@ -6,10 +6,12 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.model.IAtsVersion;
-import org.eclipse.osee.ats.core.model.ICommitConfigArtifact;
+import org.eclipse.osee.ats.api.commit.ICommitConfigArtifact;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -36,7 +38,7 @@ public class Version extends AtsObject implements IAtsVersion {
    private List<IAtsVersion> parallelVersions = new ArrayList<IAtsVersion>();
    private final Set<String> staticIds = new HashSet<String>();
 
-   private IAtsTeamDefinition teamDefinition = null;
+   private final IAtsTeamDefinition teamDefinition = null;
 
    public Version(String name, String guid, String humanReadableId) {
       super(name, guid, humanReadableId);
@@ -80,11 +82,6 @@ public class Version extends AtsObject implements IAtsVersion {
       this.released = released;
    }
 
-   @Override
-   public IAtsTeamDefinition getTeamDefinition() {
-      return teamDefinition;
-   }
-
    public void setEstimatedReleaseDate(Date estimatedReleaseDate) {
       this.estimatedReleaseDate = estimatedReleaseDate;
    }
@@ -126,7 +123,7 @@ public class Version extends AtsObject implements IAtsVersion {
       if (Strings.isValid(baselineBranchGuid)) {
          return baselineBranchGuid;
       } else {
-         return getTeamDefinition().getTeamBranchGuid();
+         return AtsVersionService.get().getTeamDefinition(this).getTeamBranchGuid();
       }
    }
 
@@ -156,11 +153,6 @@ public class Version extends AtsObject implements IAtsVersion {
    @Override
    public void setLocked(boolean locked) {
       this.locked = locked;
-   }
-
-   @Override
-   public void setTeamDefinition(IAtsTeamDefinition teamDefinition) {
-      this.teamDefinition = teamDefinition;
    }
 
    @Override
@@ -235,7 +227,11 @@ public class Version extends AtsObject implements IAtsVersion {
 
    @Override
    public void setName(String name) {
-      super.setName(name);
+      try {
+         super.setName(name);
+      } catch (OseeCoreException ex) {
+         throw new IllegalArgumentException("error setting name", ex);
+      }
    }
 
    @Override

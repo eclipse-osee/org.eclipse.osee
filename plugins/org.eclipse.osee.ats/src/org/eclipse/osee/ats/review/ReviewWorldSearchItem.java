@@ -18,8 +18,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.column.ReviewFormalTypeColumn;
@@ -30,9 +33,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
-import org.eclipse.osee.ats.core.model.IAtsActionableItem;
-import org.eclipse.osee.ats.core.model.IAtsUser;
-import org.eclipse.osee.ats.core.model.IAtsVersion;
+import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.WorldUISearchItem;
@@ -202,7 +203,8 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
       // don't include if version specified and workflow's not targeted for version
       if (versionArt != null) {
          TeamWorkFlowArtifact team = awa.getParentTeamWorkflow();
-         if (team != null && (team.getTargetedVersion() == null || !team.getTargetedVersion().equals(versionArt))) {
+         IAtsVersion version = AtsVersionService.get().getTargetedVersion(team);
+         if (team != null && (version == null || !version.equals(versionArt))) {
             return false;
          }
       }

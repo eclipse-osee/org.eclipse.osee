@@ -5,7 +5,8 @@
  */
 package org.eclipse.osee.ats.core.users;
 
-import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -95,6 +96,16 @@ public abstract class AbstractAtsUser implements IAtsUser {
    @Override
    public boolean isActive() {
       return true;
+   }
+
+   @Override
+   public boolean matches(Identity<?>... identities) {
+      for (Identity<?> identity : identities) {
+         if (equals(identity)) {
+            return true;
+         }
+      }
+      return false;
    }
 
 }

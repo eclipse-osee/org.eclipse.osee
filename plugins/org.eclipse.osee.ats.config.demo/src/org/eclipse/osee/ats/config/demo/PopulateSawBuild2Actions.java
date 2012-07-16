@@ -14,7 +14,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.config.demo.config.DemoDbAIs;
 import org.eclipse.osee.ats.config.demo.config.DemoDbUtil;
@@ -29,12 +32,11 @@ import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
+import org.eclipse.osee.ats.core.client.version.AtsVersionStore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
-import org.eclipse.osee.ats.core.model.IAtsActionableItem;
-import org.eclipse.osee.ats.core.model.IAtsUser;
-import org.eclipse.osee.ats.core.model.IAtsVersion;
+import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -126,8 +128,7 @@ public class PopulateSawBuild2Actions {
          teamWf.persist(transaction);
 
          IAtsVersion version = AtsConfigCache.getSoleByName(versionStr, IAtsVersion.class);
-         teamWf.setTargetedVersion(version);
-         teamWf.setTargetedVersionLink(version);
+         AtsVersionStore.setTargetedVersionLink(teamWf, version);
          teamWf.persist(transaction);
       }
       return actionArt;
@@ -203,8 +204,7 @@ public class PopulateSawBuild2Actions {
          teamWf.persist(transaction);
 
          IAtsVersion version = AtsConfigCache.getSoleByName(versionStr, IAtsVersion.class);
-         teamWf.setTargetedVersion(version);
-         teamWf.setTargetedVersionLink(version);
+         AtsVersionStore.setTargetedVersionLink(teamWf, version);
          teamWf.persist(transaction);
       }
       return actionArt;
@@ -282,8 +282,7 @@ public class PopulateSawBuild2Actions {
          teamWf.persist(transaction);
 
          IAtsVersion version = AtsConfigCache.getSoleByName(versionStr, IAtsVersion.class);
-         teamWf.setTargetedVersion(version);
-         teamWf.setTargetedVersionLink(version);
+         AtsVersionStore.setTargetedVersionLink(teamWf, version);
          teamWf.persist(transaction);
       }
       return actionArt;
@@ -341,8 +340,7 @@ public class PopulateSawBuild2Actions {
 
          teamWf.persist(transaction);
          IAtsVersion version = AtsConfigCache.getSoleByName(versionStr, IAtsVersion.class);
-         teamWf.setTargetedVersion(version);
-         teamWf.setTargetedVersionLink(version);
+         AtsVersionStore.setTargetedVersionLink(teamWf, version);
          teamWf.persist(transaction);
       }
       return actionArt;
@@ -432,7 +430,8 @@ public class PopulateSawBuild2Actions {
       }
       Job job =
          AtsBranchManager.commitWorkingBranch(reqTeam, false, true,
-            BranchManager.getBranchByGuid(reqTeam.getTargetedVersion().getBaslineBranchGuid()), true);
+            BranchManager.getBranchByGuid(AtsVersionService.get().getTargetedVersion(reqTeam).getBaslineBranchGuid()),
+            true);
       try {
          job.join();
       } catch (InterruptedException ex) {

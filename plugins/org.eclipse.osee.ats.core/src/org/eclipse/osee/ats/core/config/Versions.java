@@ -7,12 +7,22 @@ package org.eclipse.osee.ats.core.config;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eclipse.osee.ats.core.model.IAtsVersion;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.logging.Level;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.internal.Activator;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
  */
 public class Versions {
+
+   private static Set<String> targetErrorLoggedForId = new HashSet<String>(10);
 
    public static Collection<String> getNames(Collection<? extends IAtsVersion> versions) {
       ArrayList<String> names = new ArrayList<String>();
@@ -22,4 +32,25 @@ public class Versions {
       return names;
    }
 
+   public static String getTargetedVersionStr(Object object) throws OseeCoreException {
+      if (object instanceof IAtsWorkItem) {
+         IAtsTeamWorkflow teamWf = ((IAtsWorkItem) object).getParentTeamWorkflow();
+         if (teamWf != null) {
+            IAtsVersion version = AtsVersionService.get().getTargetedVersion(object);
+            if (!(teamWf.getWorkData().isCompleted() && !teamWf.getWorkData().isCancelled() && AtsVersionService.get().isReleased(
+               teamWf))) {
+               String errStr =
+                  "Workflow " + teamWf.getHumanReadableId() + " targeted for released version, but not completed: " + version;
+               // only log error once
+               if (!targetErrorLoggedForId.contains(teamWf.getGuid())) {
+                  OseeLog.log(Activator.class, Level.SEVERE, errStr, null);
+                  targetErrorLoggedForId.add(teamWf.getGuid());
+               }
+               return "!Error " + errStr;
+            }
+            return version.getName();
+         }
+      }
+      return "";
+   }
 }

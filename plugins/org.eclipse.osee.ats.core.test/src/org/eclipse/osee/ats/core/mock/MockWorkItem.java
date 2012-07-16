@@ -6,14 +6,16 @@
 package org.eclipse.osee.ats.core.mock;
 
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.core.model.IAtsUser;
-import org.eclipse.osee.ats.core.model.IAtsWorkData;
-import org.eclipse.osee.ats.core.model.IAtsWorkItem;
-import org.eclipse.osee.ats.core.model.WorkStateProvider;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
+import org.eclipse.osee.ats.api.workflow.WorkStateProvider;
 import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.ats.core.model.impl.WorkStateProviderImpl;
 import org.eclipse.osee.ats.core.util.AtsUserGroup;
+import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -98,6 +100,21 @@ public class MockWorkItem implements IAtsWorkItem {
 
    public void addImplementer(IAtsUser joe) {
       implementers.addUser(joe);
+   }
+
+   @Override
+   public boolean matches(Identity<?>... identities) {
+      for (Identity<?> identity : identities) {
+         if (equals(identity)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   @Override
+   public IAtsTeamWorkflow getParentTeamWorkflow() throws OseeCoreException {
+      return null;
    }
 
 }

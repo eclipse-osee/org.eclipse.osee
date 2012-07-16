@@ -5,7 +5,8 @@
  */
 package org.eclipse.osee.ats.core.client.util;
 
-import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 
@@ -126,5 +127,15 @@ public class AtsUser implements IAtsUser {
       } catch (Exception ex) {
          return "Exception: " + ex.getLocalizedMessage();
       }
+   }
+
+   @Override
+   public boolean matches(Identity<?>... identities) {
+      for (Identity<?> identity : identities) {
+         if (equals(identity)) {
+            return true;
+         }
+      }
+      return false;
    }
 }

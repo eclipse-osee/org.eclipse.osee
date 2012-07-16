@@ -5,8 +5,8 @@
  */
 package org.eclipse.osee.ats.core.config;
 
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.core.config.impl.ActionableItem;
-import org.eclipse.osee.ats.core.model.IAtsActionableItem;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 
 /**

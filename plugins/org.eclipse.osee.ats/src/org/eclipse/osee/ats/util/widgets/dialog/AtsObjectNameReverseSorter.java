@@ -2,7 +2,7 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.ats.core.model.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**

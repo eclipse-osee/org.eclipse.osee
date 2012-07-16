@@ -8,13 +8,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.model;
+package org.eclipse.osee.ats.api.team;
 
-/**
- * @author Donald G. Dunne
- */
-public enum VersionLockedType {
-   Locked,
-   UnLocked,
-   Both
+public enum TeamDefinitionOptions {
+   TeamUsesVersions,
+   RequireTargetedVersion
 };

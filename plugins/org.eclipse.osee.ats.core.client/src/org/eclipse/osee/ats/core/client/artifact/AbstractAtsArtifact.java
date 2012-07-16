@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.artifact;
 
-import org.eclipse.osee.ats.core.model.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;

@@ -19,13 +19,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
+import org.eclipse.osee.ats.api.workflow.WorkStateProvider;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.artifact.AbstractAtsArtifact;
 import org.eclipse.osee.ats.core.client.internal.Activator;
@@ -37,7 +42,6 @@ import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.client.version.TargetedVersionUtil;
 import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.client.workflow.log.ArtifactLog;
 import org.eclipse.osee.ats.core.client.workflow.log.AtsLog;
@@ -46,12 +50,6 @@ import org.eclipse.osee.ats.core.client.workflow.log.LogType;
 import org.eclipse.osee.ats.core.client.workflow.note.ArtifactNote;
 import org.eclipse.osee.ats.core.client.workflow.note.AtsNote;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
-import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.model.IAtsUser;
-import org.eclipse.osee.ats.core.model.IAtsVersion;
-import org.eclipse.osee.ats.core.model.IAtsWorkData;
-import org.eclipse.osee.ats.core.model.IAtsWorkItem;
-import org.eclipse.osee.ats.core.model.WorkStateProvider;
 import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
@@ -93,7 +91,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    private final AtsLog atsLog;
    private final AtsNote atsNote;
    private boolean inTransition = false;
-   private boolean targetedErrorLogged = false;
    private IAtsWorkData atsWorkData;
 
    public AbstractWorkflowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
@@ -174,6 +171,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return parentAction;
    }
 
+   @Override
    @SuppressWarnings("unused")
    public TeamWorkFlowArtifact getParentTeamWorkflow() throws OseeCoreException {
       return parentTeamArt;
@@ -503,41 +501,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       }
    }
 
-   /**
-    * @return true if this is a TeamWorkflow and the version it's been targeted for has been released
-    */
-   public boolean isReleased() {
-      try {
-         IAtsVersion verArt = getTargetedVersion();
-         if (verArt != null) {
-            return verArt.isReleased();
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      return false;
-   }
-
-   public boolean isVersionLocked() {
-      try {
-         IAtsVersion verArt = getTargetedVersion();
-         if (verArt != null) {
-            return verArt.isVersionLocked();
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      return false;
-   }
-
-   public IAtsVersion getTargetedVersion() throws OseeCoreException {
-      return TargetedVersionUtil.getTargetedVersion(this);
-   }
-
-   public String getTargetedVersionStr() throws OseeCoreException {
-      return TargetedVersionUtil.getTargetedVersionStr(this);
-   }
-
    public void setCreatedBy(IAtsUser user, boolean logChange, Date date) throws OseeCoreException {
       if (logChange) {
          if (getSoleAttributeValue(AtsAttributeTypes.CreatedBy, null) == null) {
@@ -744,14 +707,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       BundleContext context = bundle.getBundleContext();
       ServiceReference<?> reference = context.getServiceReference(CmAccessControl.class.getName());
       return (CmAccessControl) context.getService(reference);
-   }
-
-   public boolean isTargetedErrorLogged() {
-      return targetedErrorLogged;
-   }
-
-   public void setTargetedErrorLogged(boolean targetedErrorLogged) {
-      this.targetedErrorLogged = targetedErrorLogged;
    }
 
    public List<IAtsStateDefinition> getToStatesWithCompleteCancelReturnStates() throws OseeCoreException {

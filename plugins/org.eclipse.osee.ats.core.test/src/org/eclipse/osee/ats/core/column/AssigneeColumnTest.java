@@ -8,12 +8,12 @@ package org.eclipse.osee.ats.core.column;
 import java.util.Arrays;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workflow.HasWorkData;
+import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
 import org.eclipse.osee.ats.core.mock.MockActionGroup;
 import org.eclipse.osee.ats.core.mock.MockAtsUser;
 import org.eclipse.osee.ats.core.mock.MockWorkData;
 import org.eclipse.osee.ats.core.mock.MockWorkItem;
-import org.eclipse.osee.ats.core.model.HasWorkData;
-import org.eclipse.osee.ats.core.model.IAtsWorkData;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**

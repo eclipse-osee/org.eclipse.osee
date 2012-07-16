@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.config;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.core.model.IAtsRules;
+import org.eclipse.osee.ats.api.rule.IAtsRules;
 
 /**
  * @author Donald G. Dunne

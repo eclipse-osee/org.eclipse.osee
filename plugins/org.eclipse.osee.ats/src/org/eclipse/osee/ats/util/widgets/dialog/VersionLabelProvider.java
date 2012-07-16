@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.core.model.IAtsVersion;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;

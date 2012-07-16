@@ -8,8 +8,8 @@ package org.eclipse.osee.ats.core.model.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.core.model.IActionGroup;
-import org.eclipse.osee.ats.core.model.IAtsWorkItem;
 
 /**
  * @author Donald G. Dunne

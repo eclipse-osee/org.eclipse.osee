@@ -10,7 +10,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link AtsObject}
- *
+ * 
  * @author Donald G. Dunne
  */
 public class AtsObjectTest {
@@ -46,13 +46,11 @@ public class AtsObjectTest {
       Assert.assertFalse(obj.equals(null));
       Assert.assertFalse(obj.equals("str"));
 
-      AtsObject obj3 = new AtsObject("hello", "GUID", "HRID");
-      obj3.setGuid(null);
+      AtsObject obj3 = new AtsObject("hello", null, "HRID");
       Assert.assertFalse(obj.equals(obj3));
       Assert.assertFalse(obj3.equals(obj));
 
-      AtsObject obj4 = new AtsObject("hello", "GUID", "HRID");
-      obj4.setGuid(null);
+      AtsObject obj4 = new AtsObject("hello", null, "HRID");
       Assert.assertFalse(obj3.equals(obj4));
    }
 
@@ -61,8 +59,7 @@ public class AtsObjectTest {
       AtsObject obj = new AtsObject("hello", "GUID", "HRID");
       Assert.assertEquals(2199208, obj.hashCode());
 
-      obj = new AtsObject("hello");
-      obj.setGuid(null);
+      obj = new AtsObject("hello", null, "HRID");
       Assert.assertEquals(31, obj.hashCode());
    }
 

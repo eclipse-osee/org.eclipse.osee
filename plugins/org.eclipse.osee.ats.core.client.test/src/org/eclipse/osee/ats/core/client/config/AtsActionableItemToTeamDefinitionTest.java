@@ -13,10 +13,10 @@ package org.eclipse.osee.ats.core.client.config;
 import static org.junit.Assert.assertFalse;
 import java.util.Arrays;
 import java.util.Collection;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
-import org.eclipse.osee.ats.core.model.IAtsActionableItem;
-import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 
 /**
  * @author Donald G. Dunne

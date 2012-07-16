@@ -5,6 +5,9 @@
  */
 package org.eclipse.osee.ats.core.model;
 
+import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.workflow.HasActions;
+
 /**
  * @author Donald G. Dunne
  */

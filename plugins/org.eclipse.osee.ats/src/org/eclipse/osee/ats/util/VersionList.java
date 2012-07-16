@@ -3,7 +3,7 @@ package org.eclipse.osee.ats.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.osee.ats.core.model.IAtsVersion;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListViewer;
 

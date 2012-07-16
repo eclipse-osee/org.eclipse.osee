@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.actions.wizard;
 import java.util.Locale;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.osee.ats.core.model.IAtsActionableItem;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.framework.ui.swt.OSEEFilteredTree;
 
 /**

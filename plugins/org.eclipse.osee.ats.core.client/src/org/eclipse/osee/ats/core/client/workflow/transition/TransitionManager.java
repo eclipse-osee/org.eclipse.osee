@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
@@ -31,7 +32,7 @@ import org.eclipse.osee.ats.core.client.util.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.client.validator.AtsXWidgetValidateManagerClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.log.LogType;
-import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionResult;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -366,7 +367,7 @@ public class TransitionManager {
 
          // Only check this if TeamWorkflow, not for reviews
          if (awa.isOfType(AtsArtifactTypes.TeamWorkflow) && (teamDefRequiresTargetedVersion || pageRequiresTargetedVersion) && //
-         awa.getTargetedVersion() == null && //
+         AtsVersionService.get().hasTargetedVersion(awa) && //
          !toStateDef.getStateType().isCancelledState()) {
             results.addResult(awa, TransitionResult.MUST_BE_TARGETED_FOR_VERSION);
          }

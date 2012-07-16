@@ -18,10 +18,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
-import org.eclipse.osee.ats.core.model.IAtsUser;
-import org.eclipse.osee.ats.core.model.IAtsVersion;
+import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.WorkflowMetrics;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -163,7 +164,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
       // Try to find an estimated release date from one of the workflows
       for (Artifact art : iAtsMetricsProvider.getMetricsArtifacts()) {
          if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-            IAtsVersion verArt = ((TeamWorkFlowArtifact) art).getTargetedVersion();
+            IAtsVersion verArt = AtsVersionService.get().getTargetedVersion(art);
             if (verArt != null) {
                Date estRelDate = verArt.getEstimatedReleaseDate();
                if (estRelDate != null) {

@@ -7,7 +7,7 @@ package org.eclipse.osee.ats.core.mock;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 
 /**
  * @author Donald G. Dunne

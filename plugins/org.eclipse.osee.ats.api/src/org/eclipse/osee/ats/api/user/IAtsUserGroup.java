@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.ats.core.model;
+package org.eclipse.osee.ats.api.user;
 
 import java.util.List;
 

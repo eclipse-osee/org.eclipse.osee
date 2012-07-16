@@ -5,8 +5,8 @@
  */
 package org.eclipse.osee.ats.core.config;
 
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.config.impl.Version;
-import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 

@@ -7,8 +7,8 @@ package org.eclipse.osee.ats.core.model.impl;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.core.model.IAtsUser;
-import org.eclipse.osee.ats.core.model.WorkState;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.workflow.WorkState;
 
 /**
  * @author Donald G. Dunne

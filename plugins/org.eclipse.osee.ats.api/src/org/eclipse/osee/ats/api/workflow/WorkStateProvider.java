@@ -1,7 +1,8 @@
-package org.eclipse.osee.ats.core.model;
+package org.eclipse.osee.ats.api.workflow;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**

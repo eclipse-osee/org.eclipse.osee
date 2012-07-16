@@ -8,7 +8,7 @@ package org.eclipse.osee.ats.core.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.core.model.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsObject;
 
 /**
  * @author Donald G. Dunne

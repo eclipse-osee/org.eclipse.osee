@@ -12,29 +12,29 @@
 package org.eclipse.osee.ats.core.client.team;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionArtifactRollup;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.config.ActionableItemManager;
 import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
-import org.eclipse.osee.ats.core.client.config.store.VersionArtifactStore;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.client.version.TargetedVersionUtil;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
-import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.model.IAtsVersion;
+import org.eclipse.osee.ats.core.config.AtsVersionService;
+import org.eclipse.osee.ats.core.config.Versions;
 import org.eclipse.osee.ats.core.util.AtsUtilCoreCore;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -52,13 +52,12 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 /**
  * @author Donald G. Dunne
  */
-public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IATSStateMachineArtifact {
+public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IAtsTeamWorkflow, IATSStateMachineArtifact {
 
    private static final Set<Integer> teamArtsWithNoAction = new HashSet<Integer>();
    private final ActionableItemManager actionableItemsDam;
    private boolean creatingWorkingBranch = false;
    private boolean committingWorkingBranch = false;
-   private IAtsVersion targetedVersion;
 
    public TeamWorkFlowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
@@ -111,8 +110,9 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
    @Override
    public String getEditorTitle() throws OseeCoreException {
       try {
-         if (getTargetedVersion() != null) {
-            return String.format("%s: [%s] - %s", getType(), getTargetedVersionStr(), getName());
+         IAtsVersion version = AtsVersionService.get().getTargetedVersion(this);
+         if (version != null) {
+            return String.format("%s: [%s] - %s", getType(), Versions.getTargetedVersionStr(version), getName());
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -273,31 +273,6 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
 
    public void setWorkingBranchCommitInProgress(boolean inProgress) {
       this.committingWorkingBranch = inProgress;
-   }
-
-   public void setTargetedVersion(IAtsVersion targetedVersion) {
-      this.targetedVersion = targetedVersion;
-   }
-
-   public void setTargetedVersionLink(IAtsVersion targetedVersion) throws OseeCoreException {
-      VersionArtifactStore store = new VersionArtifactStore(targetedVersion);
-      Artifact versionArt = store.getArtifact();
-      if (versionArt != null) {
-         setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, Collections.singleton(versionArt));
-      }
-   }
-
-   @Override
-   public IAtsVersion getTargetedVersion() {
-      return targetedVersion;
-   }
-
-   public IAtsVersion getTargetedVersionLinkAndUpdate() throws OseeCoreException {
-      IAtsVersion targetVersion = TargetedVersionUtil.getTargetedVersion(this);
-      if (targetedVersion != targetVersion) {
-         targetedVersion = targetVersion;
-      }
-      return targetedVersion;
    }
 
 }

@@ -11,6 +11,7 @@ import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
@@ -29,7 +30,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.mocks.MockStateDefinition;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -382,7 +383,7 @@ public class TransitionManagerTest {
 
       // set targeted version; transition validation should succeed
       results.clear();
-      teamArt.setTargetedVersion(AtsTestUtil.getVerArt1());
+      AtsVersionService.get().setTargetedVersion(teamArt, AtsTestUtil.getVerArt1());
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.isEmpty());
    }
@@ -410,7 +411,7 @@ public class TransitionManagerTest {
 
       // set targeted version; transition validation should succeed
       results.clear();
-      teamArt.setTargetedVersion(AtsTestUtil.getVerArt1());
+      AtsVersionService.get().setTargetedVersion(teamArt, AtsTestUtil.getVerArt1());
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.isEmpty());
    }

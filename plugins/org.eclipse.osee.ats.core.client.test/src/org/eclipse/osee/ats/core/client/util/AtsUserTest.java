@@ -9,7 +9,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import junit.framework.Assert;
-import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -57,11 +58,14 @@ public class AtsUserTest {
       Collection<IAtsUser> assignees = new HashSet<IAtsUser>();
       assignees.add(AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay));
       assignees.add(AtsUsersClient.getUserFromToken(DemoUsers.Joe_Smith));
-      Assert.assertTrue(Collections.isEqual(assignees,
-         Arrays.asList(AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay), AtsUsersClient.getUserFromToken(DemoUsers.Joe_Smith))));
+      Assert.assertTrue(Collections.isEqual(
+         assignees,
+         Arrays.asList(AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay),
+            AtsUsersClient.getUserFromToken(DemoUsers.Joe_Smith))));
 
       assignees.remove(AtsUsersClient.getUser());
-      Assert.assertTrue(Collections.isEqual(assignees, Arrays.asList(AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay))));
+      Assert.assertTrue(Collections.isEqual(assignees,
+         Arrays.asList(AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay))));
    }
 
    public IAtsUser getAtsUser(final String name, final String userId) {
@@ -105,6 +109,11 @@ public class AtsUserTest {
          @Override
          public String getEmail() {
             return null;
+         }
+
+         @Override
+         public boolean matches(Identity<?>... identities) {
+            return false;
          }
       };
    }

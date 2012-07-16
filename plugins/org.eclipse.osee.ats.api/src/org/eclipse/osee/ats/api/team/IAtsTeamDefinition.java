@@ -3,9 +3,17 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.ats.core.model;
+package org.eclipse.osee.ats.api.team;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.commit.ICommitConfigArtifact;
+import org.eclipse.osee.ats.api.rule.IAtsRules;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.version.VersionLockedType;
+import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 
@@ -18,7 +26,7 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
     * Name, Full Name, Description
     ******************************/
 
-   void setName(String name);
+   void setName(String name) throws OseeCoreException;
 
    void setDescription(String description);
 

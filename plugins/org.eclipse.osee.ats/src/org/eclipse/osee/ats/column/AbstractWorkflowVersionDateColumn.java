@@ -16,11 +16,11 @@ import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.version.TargetedVersionUtil;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.model.IAtsVersion;
+import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -77,7 +77,7 @@ public abstract class AbstractWorkflowVersionDateColumn extends XViewerAtsAttrib
    public static Date getDateFromTargetedVersion(IAttributeType attributeType, Object object) throws OseeCoreException {
       if (Artifacts.isOfType(object, AtsArtifactTypes.TeamWorkflow)) {
          TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) object;
-         IAtsVersion verArt = TargetedVersionUtil.getTargetedVersion(teamArt);
+         IAtsVersion verArt = AtsVersionService.get().getTargetedVersion(teamArt);
          if (verArt != null) {
             if (attributeType == AtsAttributeTypes.ReleaseDate) {
                return verArt.getReleaseDate();
@@ -106,8 +106,8 @@ public abstract class AbstractWorkflowVersionDateColumn extends XViewerAtsAttrib
       String workflowDate = getDateStrFromWorkflow(attributeType, artifact);
       String versionDate = getDateStrFromTargetedVersion(attributeType, artifact);
       if (Strings.isValid(workflowDate) && Strings.isValid(versionDate)) {
-         return String.format("%s; [%s - %s]", workflowDate, TargetedVersionUtil.getTargetedVersion(artifact),
-            versionDate);
+         return String.format("%s; [%s - %s]", workflowDate,
+            AtsVersionService.get().getTargetedVersion(artifact), versionDate);
       } else if (Strings.isValid(workflowDate)) {
          return workflowDate;
       } else if (Strings.isValid(versionDate)) {

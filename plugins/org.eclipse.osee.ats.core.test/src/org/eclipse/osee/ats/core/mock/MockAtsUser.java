@@ -5,7 +5,8 @@
  */
 package org.eclipse.osee.ats.core.mock;
 
-import org.eclipse.osee.ats.core.model.IAtsUser;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.framework.core.data.Identity;
 
 /**
  * @author Donald G. Dunne
@@ -109,6 +110,16 @@ public class MockAtsUser implements IAtsUser {
    @Override
    public boolean isActive() {
       return active;
+   }
+
+   @Override
+   public boolean matches(Identity<?>... identities) {
+      for (Identity<?> identity : identities) {
+         if (equals(identity)) {
+            return true;
+         }
+      }
+      return false;
    }
 
 }

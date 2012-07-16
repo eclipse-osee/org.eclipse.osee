@@ -15,6 +15,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.column.CancelledDateColumn;
@@ -31,8 +33,7 @@ import org.eclipse.osee.ats.core.client.workflow.HoursSpentUtil;
 import org.eclipse.osee.ats.core.client.workflow.PriorityUtil;
 import org.eclipse.osee.ats.core.client.workflow.StateManager;
 import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
-import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.model.IAtsVersion;
+import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -280,10 +281,10 @@ public class WorkflowManager {
          if (awa.getParentTeamWorkflow() == null) {
             continue;
          }
-         if (awa.getTargetedVersion() == null) {
+         if (!AtsVersionService.get().hasTargetedVersion(awa)) {
             continue;
          }
-         if (versionArts.contains(awa.getTargetedVersion())) {
+         if (versionArts.contains(AtsVersionService.get().getTargetedVersion(awa))) {
             returnawas.add(awa);
          }
       }

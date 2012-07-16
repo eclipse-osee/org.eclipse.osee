@@ -5,8 +5,8 @@
  */
 package org.eclipse.osee.ats.core.config;
 
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.config.impl.TeamDefinition;
-import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 
 /**

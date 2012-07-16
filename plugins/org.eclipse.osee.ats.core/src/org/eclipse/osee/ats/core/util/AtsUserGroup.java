@@ -7,8 +7,8 @@ package org.eclipse.osee.ats.core.util;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.core.model.IAtsUser;
-import org.eclipse.osee.ats.core.model.IAtsUserGroup;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.IAtsUserGroup;
 
 /**
  * @author Donald G. Dunne

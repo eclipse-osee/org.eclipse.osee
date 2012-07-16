@@ -20,7 +20,11 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.config.ActionableItemManager;
 import org.eclipse.osee.ats.core.client.internal.Activator;
@@ -28,11 +32,9 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.CreateTeamOption;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
+import org.eclipse.osee.ats.core.client.version.AtsVersionStore;
+import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
-import org.eclipse.osee.ats.core.model.IAtsActionableItem;
-import org.eclipse.osee.ats.core.model.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.model.IAtsUser;
-import org.eclipse.osee.ats.core.model.IAtsVersion;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
@@ -151,7 +153,7 @@ public class CreateTasksOperation extends AbstractOperation {
          if (derivedArt instanceof TeamWorkFlowArtifact) {
             derivedTeamWfArt = (TeamWorkFlowArtifact) derivedArt;
 
-            IAtsVersion derivedArtVersion = derivedTeamWfArt.getTargetedVersion();
+            IAtsVersion derivedArtVersion = AtsVersionService.get().getTargetedVersion(derivedTeamWfArt);
             boolean isDestVersion = destVersion.equals(derivedArtVersion);
 
             ActionableItemManager actionableItemsDamFromArt = derivedTeamWfArt.getActionableItemsDam();
@@ -194,8 +196,7 @@ public class CreateTasksOperation extends AbstractOperation {
                Arrays.asList(AtsUsersClient.getUser()), transaction, createdDate, createdBy, null,
                CreateTeamOption.Duplicate_If_Exists);
          if (destTeamWf != null) {
-            destTeamWf.setTargetedVersion(destVersion);
-            destTeamWf.setTargetedVersionLink(destVersion);
+            AtsVersionStore.setTargetedVersionLink(destTeamWf, destVersion);
          }
       }
       return destTeamWf;
