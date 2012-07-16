@@ -42,7 +42,7 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
    }
 
    public static boolean useMultiLineWidget(IAttributeType attributeType) throws OseeCoreException {
-      return AttributeTypeManager.isBaseTypeCompatible(WordAttribute.class, attributeType) || attributeType.equals(CoreAttributeTypes.RelationOrder);
+      return AttributeTypeManager.isBaseTypeCompatible(WordAttribute.class, attributeType) || attributeType.equals(CoreAttributeTypes.RelationOrder) || attributeType.equals(CoreAttributeTypes.PlainTextContent);
    }
 
    @Override

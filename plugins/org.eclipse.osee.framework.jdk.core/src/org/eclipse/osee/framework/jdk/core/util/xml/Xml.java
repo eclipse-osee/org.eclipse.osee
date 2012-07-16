@@ -16,14 +16,12 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -104,6 +102,8 @@ public class Xml {
       for (int x = 0; x < XML_CHARS.length; x++) {
          textString = textString.replaceAll(XML_CHARS[x], XML_ESCAPES[x]);
       }
+      textString = textString.replace("\r", "");
+      textString = textString.replace("\n", "<w:br/>");
 
       return textString;
    }

@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.ui.skynet.util.IVbaDiffGenerator;
 public class WordTemplateCompare extends AbstractWordCompare {
 
    public WordTemplateCompare(FileSystemRenderer renderer) {
-      super(renderer, CoreAttributeTypes.WordTemplateContent);
+      super(renderer, CoreAttributeTypes.WordTemplateContent, CoreAttributeTypes.PlainTextContent);
    }
 
    /**

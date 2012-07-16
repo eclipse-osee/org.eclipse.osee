@@ -186,6 +186,9 @@
 	<extension id="native" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
 		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.NativeRenderer"/>
 	</extension>
+	<extension id="ascii" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
+		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.PlainTextRenderer"/>
+	</extension>
 	<extension id="word" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
 		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer"/>
 	</extension>
@@ -340,6 +343,9 @@
        </command>
        <command
              commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReportWasIs.command">
+       </command>
+       <command
+             commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.plainTextDiff.command">
        </command>
        <separator
              name="xChngSeparator3"
@@ -602,6 +608,16 @@
         </with>
      </enabledWhen>
       </handler>
+      <handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.change.PlainTextDiffHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.plainTextDiff.command">
+     <enabledWhen>
+        <with
+              variable="selection">
+           <count
+                 value="+">
+           </count>
+        </with>
+     </enabledWhen>
+      </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.change.ViewChangeReportWasIsHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReportWasIs.command">
      <enabledWhen>
         <with
@@ -806,6 +822,18 @@
       </enabledWhen>
    </handler>
    <handler
+         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.PlainTextEditorHandler"
+         commandId="org.eclipse.osee.framework.ui.skynet.plaintexteditor.command">
+      <enabledWhen>
+         <with
+               variable="selection">
+            <count
+                  value="+">
+            </count>
+         </with>
+      </enabledWhen>
+   </handler>
+   <handler
          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.NativeEditorHandler"
          commandId="org.eclipse.osee.framework.ui.skynet.nativeeditor.command">
       <enabledWhen>
@@ -880,6 +908,18 @@
    <handler
          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.PreviewWholeWordHandler"
          commandId="org.eclipse.osee.framework.ui.skynet.wholewordpreview.command">
+      <enabledWhen>
+         <with
+               variable="selection">
+            <count
+                  value="+">
+            </count>
+         </with>
+      </enabledWhen>
+   </handler>
+   <handler
+         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.PlainTextPreviewEditorHandler"
+         commandId="org.eclipse.osee.framework.ui.skynet.previewplaintexteditor.command">
       <enabledWhen>
          <with
                variable="selection">
@@ -1147,6 +1187,10 @@
          name="MS Word Edit">
    </command>
    <command
+         id="org.eclipse.osee.framework.ui.skynet.plaintexteditor.command"
+         name="Plain Text Editor">
+   </command>
+   <command
          id="org.eclipse.osee.framework.ui.skynet.nativeeditor.command"
          name="Native Editor">
    </command>
@@ -1169,6 +1213,10 @@
    <command
          id="org.eclipse.osee.framework.ui.skynet.tispreview.command"
          name="MS Word TIS Preview">
+   </command>
+   <command
+         id="org.eclipse.osee.framework.ui.skynet.previewplaintexteditor.command"
+         name="Preview Plain Text Editor">
    </command>
    <command
          id="org.eclipse.osee.framework.ui.skynet.nativeprevieweditor.command"
@@ -1316,6 +1364,8 @@
 	</extension>
 	<extension name="Commands of ChangeReportView" point="org.eclipse.ui.commands">
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command" name="Replace with Baseline Version...">
+         </command>
+      <command id="org.eclipse.osee.framework.ui.skynet.changeReportView.plainTextDiff.command" name="View Plain Text Diff">
          </command>
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command" name="View Word Change Report - F5">
          </command>

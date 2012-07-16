@@ -482,6 +482,16 @@ attributeType "Native Content" extends CompressedContentAttribute {
 	fileExtension "bin"
 }
 
+attributeType "Plain Text Content" extends StringAttribute {
+	guid "ALCoFaWDHHVgdAf2vOgA"
+	uuid 0x100000000000037A
+	dataProvider UriAttributeDataProvider
+	min 0
+	max 1
+	description "plain text file"
+	fileExtension "txt"
+}
+
 attributeType "Word Template Content" extends WordAttribute {
 	guid "AAMFEcfcGS2V3SqQN2wA"
 	uuid 0x100000000000007A
@@ -640,6 +650,18 @@ abstract artifactType "Abstract Software Requirement" extends "Requirement" {
 artifactType "Software Requirement" extends "MS Word Template" , "Direct Software Requirement" {
 	guid "AAMFDiAwhRFXwIyapJAA"
 	uuid 0x0000000000000018
+}
+
+artifactType "Plain Text" extends "Artifact" {
+	guid "ALjYFRdiGBfZs5lz7zwA"
+	uuid 0x0000000000000310
+	attribute "Imported Paragraph Number"
+	attribute "Plain Text Content"
+}
+
+artifactType "Software Requirement Plain Text" extends "Plain Text", "Direct Software Requirement" {
+	guid "ALWS_Of11CxazjE71pgA"
+	uuid 0x000000000000318
 }
 
 artifactType "Indirect Software Requirement" extends "Abstract Software Requirement" , "MS Word Template" {

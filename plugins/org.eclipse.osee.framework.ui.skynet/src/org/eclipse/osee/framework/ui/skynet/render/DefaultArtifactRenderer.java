@@ -134,7 +134,11 @@ public class DefaultArtifactRenderer implements IRenderer {
       wordMl.startParagraph();
 
       if (allAttrs) {
-         wordMl.addWordMl("<w:r><w:t> " + Xml.escape(attributeType.getName()) + ": </w:t></w:r>");
+         if (!attributeType.matches(CoreAttributeTypes.PlainTextContent)) {
+            wordMl.addWordMl("<w:r><w:t> " + Xml.escape(attributeType.getName()) + ": </w:t></w:r>");
+         } else {
+            wordMl.addWordMl("<w:r><w:t> </w:t></w:r>");
+         }
       } else {
          // assumption: the label is of the form <w:r><w:t> text </w:t></w:r>
          wordMl.addWordMl(attributeElement.getLabel());
@@ -215,7 +219,8 @@ public class DefaultArtifactRenderer implements IRenderer {
       IAttributeType contentType = null;
 
       for (IAttributeType attributeType : attributeTypes) {
-         if (attributeType.equals(CoreAttributeTypes.WholeWordContent) || attributeType.equals(CoreAttributeTypes.WordTemplateContent)) {
+         if (attributeType.matches(CoreAttributeTypes.WholeWordContent, CoreAttributeTypes.WordTemplateContent,
+            CoreAttributeTypes.PlainTextContent)) {
             contentType = attributeType;
          } else {
             orderedAttributeTypes.add(attributeType);

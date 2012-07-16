@@ -1,0 +1,13 @@
+###REPLACE_THIS_TEXT###
+This text is for testing purposes.
+
+It is meant to test the PlainTextEditTest class.
+
+###REPLACE_THIS_TEXT###
+
+Testing
+1
+2
+3
+4
+###REPLACE_THIS_TEXT###

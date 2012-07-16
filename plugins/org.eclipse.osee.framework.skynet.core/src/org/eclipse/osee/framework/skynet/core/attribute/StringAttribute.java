@@ -30,4 +30,9 @@ public class StringAttribute extends CharacterBackedAttribute<String> {
    protected String convertStringToValue(String value) {
       return value;
    }
+
+   @Override
+   public String getDisplayableString() throws OseeCoreException {
+      return getValue();
+   }
 }

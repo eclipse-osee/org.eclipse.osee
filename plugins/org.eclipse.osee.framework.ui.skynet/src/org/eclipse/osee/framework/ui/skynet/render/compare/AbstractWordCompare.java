@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render.compare;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
@@ -37,11 +39,11 @@ import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 public abstract class AbstractWordCompare implements IComparator {
    private final FileSystemRenderer renderer;
    private final ArtifactDeltaToFileConverter converter;
-   private final IAttributeType wordAttributeType;
+   private final List<IAttributeType> wordAttributeType = new ArrayList<IAttributeType>();
 
-   public AbstractWordCompare(FileSystemRenderer renderer, IAttributeType wordAttributeType) {
+   public AbstractWordCompare(FileSystemRenderer renderer, IAttributeType... wordAttributeType) {
       this.renderer = renderer;
-      this.wordAttributeType = wordAttributeType;
+      this.wordAttributeType.addAll(Arrays.asList(wordAttributeType));
       converter = new ArtifactDeltaToFileConverter(renderer);
    }
 
@@ -113,8 +115,8 @@ public abstract class AbstractWordCompare implements IComparator {
       Artifact baseArtifact = artifactDelta.getStartArtifact();
       Artifact newerArtifact = artifactDelta.getEndArtifact();
 
-      Attribute<String> baseContent = getWordContent(baseArtifact, wordAttributeType);
-      Attribute<String> newerContent = getWordContent(newerArtifact, wordAttributeType);
+      Attribute<String> baseContent = getWordContent(baseArtifact);
+      Attribute<String> newerContent = getWordContent(newerArtifact);
 
       if (!UserManager.getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
          originalValue = WordImageChecker.checkForImageDiffs(baseContent, newerContent);
@@ -126,10 +128,15 @@ public abstract class AbstractWordCompare implements IComparator {
       data.add(compareFiles.getFirst().getLocation().toOSString(), compareFiles.getSecond().getLocation().toOSString());
    }
 
-   private Attribute<String> getWordContent(Artifact artifact, IAttributeType attributeType) throws OseeCoreException {
+   private Attribute<String> getWordContent(Artifact artifact) throws OseeCoreException {
       Attribute<String> toReturn = null;
       if (artifact != null && !artifact.isDeleted()) {
-         toReturn = artifact.getSoleAttribute(attributeType);
+         for (IAttributeType wordAttr : wordAttributeType) {
+            toReturn = artifact.getSoleAttribute(wordAttr);
+            if (toReturn != null) {
+               break;
+            }
+         }
       }
       return toReturn;
    }

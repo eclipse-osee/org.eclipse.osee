@@ -58,8 +58,7 @@ public final class RendererManager {
     */
    public static List<IRenderer> getCommonRenderers(Collection<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
       Map<String, Long> elapsedTime = new HashMap<String, Long>();
-      List<IRenderer> commonRenders =
-         getApplicableRenderers(presentationType, artifacts.iterator().next());
+      List<IRenderer> commonRenders = getApplicableRenderers(presentationType, artifacts.iterator().next());
 
       for (Artifact artifact : artifacts) {
          List<IRenderer> applicableRenders = getApplicableRenderers(presentationType, artifact);
@@ -227,10 +226,14 @@ public final class RendererManager {
       Operations.executeWork(operation);
    }
 
-   public static void diffInJob(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, Object... options) {
+   public static void diffInJobWithPreferedRenderer(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, IRenderer preferedRenderer, Object... options) {
       CompareDataCollector collector = new NoOpCompareDataCollector();
-      IOperation operation = new DiffUsingRenderer(collector, artifactDeltas, pathPrefix, options);
+      IOperation operation = new DiffUsingRenderer(collector, artifactDeltas, pathPrefix, preferedRenderer, options);
       Operations.executeAsJob(operation, true);
+   }
+
+   public static void diffInJob(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, Object... options) {
+      diffInJobWithPreferedRenderer(artifactDeltas, pathPrefix, null, options);
    }
 
    public static void diff(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, Object... options) {

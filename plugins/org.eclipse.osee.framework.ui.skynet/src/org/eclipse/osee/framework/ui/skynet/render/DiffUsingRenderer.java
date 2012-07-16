@@ -30,13 +30,19 @@ public final class DiffUsingRenderer extends AbstractOperation {
    private final Collection<ArtifactDelta> artifactDeltas;
    private final String pathPrefix;
    private final CompareDataCollector collector;
+   private final IRenderer preferedRenderer;
 
-   public DiffUsingRenderer(CompareDataCollector collector, Collection<ArtifactDelta> artifactDeltas, String pathPrefix, Object... options) {
+   public DiffUsingRenderer(CompareDataCollector collector, Collection<ArtifactDelta> artifactDeltas, String pathPrefix, IRenderer preferedRenderer, Object... options) {
       super(generateOperationName(artifactDeltas), Activator.PLUGIN_ID);
       this.artifactDeltas = artifactDeltas;
       this.pathPrefix = pathPrefix;
       this.options = options;
       this.collector = collector;
+      this.preferedRenderer = preferedRenderer;
+   }
+
+   public DiffUsingRenderer(CompareDataCollector collector, Collection<ArtifactDelta> artifactDeltas, String pathPrefix, Object... options) {
+      this(collector, artifactDeltas, pathPrefix, null, options);
    }
 
    public DiffUsingRenderer(CompareDataCollector collector, ArtifactDelta artifactDelta, String diffPrefix, Object... options) {
@@ -61,7 +67,10 @@ public final class DiffUsingRenderer extends AbstractOperation {
       Artifact sampleArtifact =
          firstDelta.getStartArtifact() != null ? firstDelta.getStartArtifact() : firstDelta.getEndArtifact();
 
-      IRenderer renderer = RendererManager.getBestRenderer(DIFF, sampleArtifact, options);
+      IRenderer renderer = preferedRenderer;
+      if (preferedRenderer == null) {
+         renderer = RendererManager.getBestRenderer(DIFF, sampleArtifact, options);
+      }
       IComparator comparator = renderer.getComparator();
       if (artifactDeltas.size() == 1) {
          comparator.compare(monitor, collector, DIFF, firstDelta, pathPrefix);

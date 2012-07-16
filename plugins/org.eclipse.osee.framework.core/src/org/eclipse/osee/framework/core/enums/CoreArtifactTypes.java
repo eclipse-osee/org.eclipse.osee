@@ -44,6 +44,7 @@ public final class CoreArtifactTypes {
    public static final IArtifactType SoftwareRequirement = TokenFactory.createArtifactType(0x0000000000000018L, "Software Requirement");
    public static final IArtifactType SoftwareRequirementDrawing = TokenFactory.createArtifactType(0x000000000000001DL, "Software Requirement Drawing");
    public static final IArtifactType SoftwareRequirementFunction = TokenFactory.createArtifactType(0x000000000000001CL, "Software Requirement Function");
+   public static final IArtifactType SoftwareRequirementPlainText = TokenFactory.createArtifactType(0x000000000000318L, "Software Requirement Plain Text");
    public static final IArtifactType SoftwareRequirementProcedure = TokenFactory.createArtifactType(0x000000000000001BL, "Software Requirement Procedure");
    public static final IArtifactType SubsystemDesign = TokenFactory.createArtifactType(0x000000000000002BL, "Subsystem Design");
    public static final IArtifactType SubsystemFunction = TokenFactory.createArtifactType(0x0000000000000024L, "Subsystem Function");

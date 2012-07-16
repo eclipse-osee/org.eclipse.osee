@@ -17,6 +17,7 @@ import static org.eclipse.osee.ats.render.RendererManagerTest.DefaultOption.On;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GeneralDocument;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirement;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirementPlainText;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestCase;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestInformationSheet;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestProcedureWML;
@@ -41,6 +42,7 @@ import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.JavaRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.NativeRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.PlainTextRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.TisRenderer;
@@ -182,6 +184,11 @@ public class RendererManagerTest {
       addTest(data, TestCase, DEFAULT_OPEN, JavaRenderer.class, Off);
       addTest(data, TestCase, DEFAULT_OPEN, DefaultArtifactRenderer.class, On);
       addTest(data, TestCase, PRODUCE_ATTRIBUTE, DefaultArtifactRenderer.class, Both);
+
+      addTest(data, SoftwareRequirementPlainText, SPECIALIZED_EDIT, PlainTextRenderer.class, Both);
+      addTest(data, SoftwareRequirementPlainText, PREVIEW, PlainTextRenderer.class, Both);
+      //      addTest(data, SoftwareRequirementPlainText, DEFAULT_OPEN, PlainTextRenderer.class, Both);
+      addTest(data, SoftwareRequirementPlainText, PRODUCE_ATTRIBUTE, PlainTextRenderer.class, Both);
 
       return data;
    }
