@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.model.ICommitConfigArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -37,6 +38,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
+import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
@@ -70,6 +72,17 @@ public final class AtsBranchManager {
                return;
             }
             Branch workBranch = AtsBranchManagerCore.getWorkingBranch(teamArt);
+            if (workBranch.getBranchState() == BranchState.REBASELINE_IN_PROGRESS) {
+               Collection<Integer> destBranches =
+                  ConflictManagerInternal.getDestinationBranchesMerged(workBranch.getId());
+               for (Integer destBranchId : destBranches) {
+                  Branch dest = BranchManager.getBranch(destBranchId);
+                  if (!dest.equals(branch)) {
+                     branch = dest;
+                     break;
+                  }
+               }
+            }
             MergeView.openView(workBranch, branch, workBranch.getBaseTransaction());
 
          } else if (AtsBranchManagerCore.isCommittedBranchExists(teamArt)) {
