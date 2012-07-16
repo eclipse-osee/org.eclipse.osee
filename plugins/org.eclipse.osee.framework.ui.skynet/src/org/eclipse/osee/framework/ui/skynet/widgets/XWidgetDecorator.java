@@ -147,7 +147,9 @@ public class XWidgetDecorator {
 
          if (isVisible()) {
             if (image != null) {
-               decoration.setImage(image);
+               if (decoration.getControl() != null) {
+                  decoration.setImage(image);
+               }
             }
             decoration.setDescriptionText(description);
             decoration.show();

@@ -90,9 +90,24 @@ public class AttributeFormPart extends AbstractFormPart {
 
    @Override
    public void refresh() {
-      super.refresh();
+      super.refresh();//<--This method resets the dirty bits on all widgets, but does not implicitly revert their values. (see below)
       decorator.refresh();
       getManagedForm().getForm().getBody().layout(true);
+
+      //Revert any unsaved changes in the widgets.
+      List<XWidget> widgets = XWidgetUtility.findXWidgetsInControl(composite);
+      for (XWidget xWidget : widgets) {
+         if (xWidget.isEditable()) {
+            if (xWidget instanceof IArtifactStoredWidget) {
+               IArtifactStoredWidget aWidget = (IArtifactStoredWidget) xWidget;
+               try {
+                  aWidget.revert();
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               }
+            }
+         }
+      }
    }
 
    public void createContents(Composite composite) {
@@ -132,7 +147,9 @@ public class AttributeFormPart extends AbstractFormPart {
          HelpUtil.setHelp(internalComposite, OseeHelpContext.ARTIFACT_EDITOR__ATTRIBUTES);
          xWidgetsMap.put(attributeType, internalComposite);
       }
-      refresh();
+      //refresh(); <-- This call reverts unsaved changes to all widgets.  Not the behavior we want here.
+      decorator.refresh();
+      getManagedForm().getForm().getBody().layout(true);
    }
 
    @Override
@@ -271,8 +288,14 @@ public class AttributeFormPart extends AbstractFormPart {
    public void removeWidgetForAttributeType(Collection<? extends IAttributeType> attributeTypes) {
       for (IAttributeType attributeType : attributeTypes) {
          xWidgetsMap.remove(attributeType).dispose();
+         //decorator.addWidget(xWidget)
       }
-      refresh();
+      if (attributeTypes.size() > 0) {
+         markDirty();
+      }
+      //refresh(); <-- This call reverts unsaved changes to all widgets.  Not the behavior we want here.
+      decorator.refresh();
+      getManagedForm().getForm().getBody().layout(true);
    }
 
    private final class XWidgetValidationListener implements XModifiedListener {
