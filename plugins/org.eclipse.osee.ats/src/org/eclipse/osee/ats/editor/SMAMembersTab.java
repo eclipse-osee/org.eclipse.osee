@@ -140,15 +140,17 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
       @Override
       public void done(IJobChangeEvent event) {
          super.done(event);
-         Job job = new UIJob("Draw Workflow Tab") {
+         Job job = new UIJob("Draw Members Tab") {
 
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
                try {
                   updateTitleBar();
                   setLoading(false);
-                  createMembersBody();
-                  smaGoalMembersSection.reload();
+                  boolean createdAndLoaded = createMembersBody();
+                  if (!createdAndLoaded) {
+                     smaGoalMembersSection.reload();
+                  }
                   jumptoScrollLocation();
                   FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
                   editor.onDirtied();
@@ -186,7 +188,10 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
       showBusy(set);
    }
 
-   private void createMembersBody() {
+   /**
+    * @return true if created; false if skipped
+    */
+   private boolean createMembersBody() {
       if (!Widgets.isAccessible(smaGoalMembersSection)) {
 
          smaGoalMembersSection =
@@ -205,7 +210,9 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
                   sc.setOrigin(origin);
                }
             });
+         return true;
       }
+      return false;
    }
 
    private void jumptoScrollLocation() {

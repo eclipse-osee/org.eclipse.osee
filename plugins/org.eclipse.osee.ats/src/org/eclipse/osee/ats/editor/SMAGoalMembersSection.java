@@ -17,6 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.MenuManager;
@@ -42,6 +46,7 @@ import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
@@ -145,13 +150,28 @@ public class SMAGoalMembersSection extends Composite implements ISelectedAtsArti
    }
 
    public void reload() {
-      try {
-         worldComposite.load("Members", editor.getAwa().getRelatedArtifacts(AtsRelationTypes.Goal_Member),
-            (CustomizeData) null, TableLoadOption.None);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
+      Job job = new Job("Load Goal Members") {
 
+         @Override
+         protected IStatus run(IProgressMonitor monitor) {
+            try {
+               final List<Artifact> artifacts =
+                  editor.getAwa().getRelatedArtifactsUnSorted(AtsRelationTypes.Goal_Member);
+               Displays.ensureInDisplayThread(new Runnable() {
+                  @Override
+                  public void run() {
+                     worldComposite.load("Members", artifacts, (CustomizeData) null, TableLoadOption.None);
+                  }
+
+               });
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+               return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Exception loading Goal Members", ex);
+            }
+            return Status.OK_STATUS;
+         }
+      };
+      Jobs.startJob(job, true);
    }
 
    private String getTableExpandKey() {
