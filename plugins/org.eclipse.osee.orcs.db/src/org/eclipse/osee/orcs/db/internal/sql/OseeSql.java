@@ -21,9 +21,6 @@ public enum OseeSql {
 
    TX_GET_ALL_TRANSACTIONS("SELECT * FROM osee_tx_details WHERE transaction_id = ?"),
    TX_GET_MAX_AS_LARGEST_TX("SELECT max(transaction_id) as largest_transaction_id FROM osee_tx_details WHERE branch_id = ?"),
-   TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS("SELECT txs.transaction_id, txs.gamma_id FROM osee_artifact art, osee_txs txs WHERE art.art_id = ? AND art.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxChange.NOT_CURRENT.getValue()),
-   TX_GET_PREVIOUS_TX_NOT_CURRENT_ATTRIBUTES("SELECT txs.transaction_id, txs.gamma_id FROM osee_attribute atr, osee_txs txs WHERE atr.attr_id = ? AND atr.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxChange.NOT_CURRENT.getValue()),
-   TX_GET_PREVIOUS_TX_NOT_CURRENT_RELATIONS("SELECT txs.transaction_id, txs.gamma_id FROM osee_relation_link rel, osee_txs txs WHERE rel.rel_link_id = ? AND rel.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxChange.NOT_CURRENT.getValue()),
 
    MERGE_GET_ARTIFACTS_FOR_BRANCH("SELECT art.art_id FROM osee_txs txs, osee_artifact art WHERE txs.branch_id = ? and txs.gamma_id = art.gamma_id"),
    MERGE_GET_ATTRIBUTES_FOR_BRANCH("SELECT atr.art_id, atr.attr_id FROM osee_txs txs, osee_attribute atr WHERE txs.branch_id = ? and txs.gamma_id = atr.gamma_id"),

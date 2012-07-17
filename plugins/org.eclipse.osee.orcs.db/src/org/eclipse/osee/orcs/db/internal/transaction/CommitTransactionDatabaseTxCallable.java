@@ -10,16 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.transaction;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.database.schema.DatabaseTxCallable;
-import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -27,22 +23,16 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
-import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.db.internal.SqlProvider;
-import org.eclipse.osee.orcs.db.internal.loader.IdFactory;
 import org.eclipse.osee.orcs.db.internal.loader.RelationalConstants;
-import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
 
 /**
  * @author Roberto E. Escobar
@@ -51,43 +41,26 @@ import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
  */
 public final class CommitTransactionDatabaseTxCallable extends DatabaseTxCallable<TransactionResult> {
 
-   private static final String INSERT_INTO_TRANSACTION_DETAIL =
-      "INSERT INTO osee_tx_details (transaction_id, osee_comment, time, author, branch_id, tx_type) VALUES (?, ?, ?, ?, ?, ?)";
-
-   private static final String UPDATE_TXS_NOT_CURRENT =
-      "UPDATE osee_txs SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " WHERE branch_id = ? AND transaction_id = ? AND gamma_id = ?";
-
-   private final SqlProvider sqlProvider;
-   private final IdFactory idFactory;
-   private final IdentityService identityService;
    private final BranchCache branchCache;
    private final TransactionRecordFactory factory;
    private final TransactionCache transactionCache;
    private final TransactionData transactionData;
-   private final DataLoaderFactory dataLoader;
-   private final String sessionId;
-   private List<DaoToSql> binaryStores;
 
-   public CommitTransactionDatabaseTxCallable(Log logger, IOseeDatabaseService dbService, IdentityService identityService, SqlProvider sqlProvider, IdFactory idFactory, BranchCache branchCache, TransactionCache transactionCache, TransactionRecordFactory factory, TransactionData transactionData, DataLoaderFactory dataLoader, String sessionId) {
+   private final CheckProvider checksProvider;
+   private final String sessionId;
+   private final TransactionWriter writer;
+
+   public CommitTransactionDatabaseTxCallable(Log logger, IOseeDatabaseService dbService, BranchCache branchCache, TransactionCache transactionCache, TransactionRecordFactory factory, CheckProvider checksProvider, TransactionWriter writer, String sessionId, TransactionData transactionData) {
       super(logger, dbService, String.format("Committing Transaction: [%s] for branch [%s]",
          transactionData.getComment(), transactionData.getBranch()));
-      this.sqlProvider = sqlProvider;
-      this.idFactory = idFactory;
-      this.identityService = identityService;
       this.branchCache = branchCache;
       this.factory = factory;
       this.transactionCache = transactionCache;
-      this.transactionData = transactionData;
+      this.checksProvider = checksProvider;
+
+      this.writer = writer;
       this.sessionId = sessionId;
-      this.dataLoader = dataLoader;
-   }
-
-   private Collection<TransactionCheck> getOnTransactionChecks() {
-      return Collections.<TransactionCheck> singletonList(new ComodificationCheck(dataLoader));
-   }
-
-   public static interface TransactionCheck {
-      void verify(HasCancellation cancellation, String sessionId, TransactionData txData) throws OseeCoreException;
+      this.transactionData = transactionData;
    }
 
    private int getNextTransactionId() throws OseeDataStoreException, OseeCoreException {
@@ -109,68 +82,26 @@ public final class CommitTransactionDatabaseTxCallable extends DatabaseTxCallabl
       Conditions.checkNotNullOrEmpty(comment, "transaction comment");
       Conditions.checkNotNullOrEmpty(txData, "artifacts modified");
 
-      Collection<TransactionCheck> checks = getOnTransactionChecks();
+      Collection<TransactionCheck> checks = checksProvider.getTransactionChecks();
       for (TransactionCheck check : checks) {
          check.verify(this, sessionId, transactionData);
       }
 
       TransactionRecord txRecord = createTransactionRecord(branch, author, comment, getNextTransactionId());
-      persistTx(connection, txRecord);
-
-      transactionCache.cache(txRecord);
-
-      executeTransactionDataItems(txData, connection, txRecord);
+      writer.write(connection, txRecord, txData);
 
       if (branch.getBranchState() == BranchState.CREATED) {
          branch.setBranchState(BranchState.MODIFIED);
          branchCache.storeItems(branch);
       }
+      transactionCache.cache(txRecord);
       return new TransactionResultImpl(txRecord, txData);
    }
 
    @Override
    protected void handleTxException(Exception ex) {
       super.handleTxException(ex);
-      for (DaoToSql tx : binaryStores) {
-         try {
-            tx.rollBack();
-         } catch (OseeCoreException ex1) {
-            getLogger().error(ex1, "Error during binary rollback [%s]", tx);
-         }
-      }
-   }
-
-   private void executeTransactionDataItems(Collection<ArtifactTransactionData> txData, OseeConnection connection, TransactionRecord txRecord) throws OseeCoreException {
-      TxSqlBuilder builder = new TxSqlBuilder(idFactory, identityService, txData);
-      builder.build(txRecord.getId());
-
-      binaryStores = builder.getBinaryTxs();
-      for (DaoToSql tx : binaryStores) {
-         tx.persist();
-      }
-
-      Branch branch = txRecord.getBranch();
-      List<Object[]> txNotCurrentData = new ArrayList<Object[]>();
-      for (OseeSql sql : builder.getTxSql()) {
-         for (Object[] params : builder.getTxParameters(sql)) {
-            fetchTxNotCurrent(connection, branch, txNotCurrentData, sql, params);
-         }
-      }
-
-      // Insert into data tables - i.e. attribute, relation and artifact version tables
-      for (String sql : builder.getObjectSql()) {
-         getDatabaseService().runBatchUpdate(connection, sql, builder.getObjectParameters(sql));
-      }
-
-      // Set stale tx currents in txs table
-      getDatabaseService().runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, txNotCurrentData);
-   }
-
-   @SuppressWarnings("unchecked")
-   private void persistTx(OseeConnection connection, TransactionRecord tx) throws OseeCoreException {
-      getDatabaseService().runPreparedUpdate(connection, INSERT_INTO_TRANSACTION_DETAIL, tx.getId(), tx.getComment(),
-         tx.getTimeStamp(), tx.getAuthor(), tx.getBranchId(), tx.getTxType().getId());
-      tx.clearDirty();
+      writer.rollback();
    }
 
    private TransactionRecord createTransactionRecord(Branch branch, ArtifactReadable author, String comment, int transactionNumber) throws OseeCoreException {
@@ -181,19 +112,6 @@ public final class CommitTransactionDatabaseTxCallable extends DatabaseTxCallabl
       int branchId = branchCache.getLocalId(branch);
       return factory.create(transactionNumber, branchId, comment, transactionTime, authorArtId,
          RelationalConstants.ART_ID_SENTINEL, txType, branchCache);
-   }
-
-   private void fetchTxNotCurrent(OseeConnection connection, Branch branch, List<Object[]> results, OseeSql sql, Object[] params) throws OseeCoreException {
-      IOseeStatement chStmt = getDatabaseService().getStatement(connection);
-      try {
-         String query = sqlProvider.getSql(sql);
-         chStmt.runPreparedQuery(query, params);
-         while (chStmt.next()) {
-            results.add(new Object[] {branch.getId(), chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
-         }
-      } finally {
-         chStmt.close();
-      }
    }
 
    private final class TransactionResultImpl implements TransactionResult {

@@ -10,14 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.transaction;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.eclipse.osee.executor.admin.HasCancellation;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.core.ds.TransactionData;
 
 /**
  * @author Roberto E. Escobar
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({DaoToSqlTest.class, TransactionWriterTest.class, TxSqlBuilderTest.class})
-public class TransactionTestSuite {
-   // Test Suite
+public interface TransactionCheck {
+
+   void verify(HasCancellation cancellation, String sessionId, TransactionData txData) throws OseeCoreException;
+
 }

@@ -101,17 +101,17 @@ public abstract class AbstractOseeType<KEY> extends NamedIdentity<KEY> implement
    }
 
    @Override
-   public final int getId() {
+   public int getId() {
       return getFieldValueLogException(IOseeStorable.UNPERSISTED_VALUE, UNIQUE_ID_FIELD_KEY);
    }
 
    @Override
-   public final String getName() {
+   public String getName() {
       return getFieldValueLogException("", NAME_FIELD_KEY);
    }
 
    @Override
-   public final void setId(int uniqueId) throws OseeCoreException {
+   public void setId(int uniqueId) throws OseeCoreException {
       setField(UNIQUE_ID_FIELD_KEY, uniqueId);
    }
 

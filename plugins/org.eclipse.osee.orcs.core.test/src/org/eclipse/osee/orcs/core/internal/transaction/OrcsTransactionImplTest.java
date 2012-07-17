@@ -10,11 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.transaction;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -30,7 +36,9 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
+import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.proxy.ArtifactProxyFactory;
@@ -41,6 +49,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -65,6 +75,9 @@ public class OrcsTransactionImplTest {
    @Mock private TxDataManager txManager;
    @Mock private IOseeBranch branch;
    @Mock private ArtifactWriteable expected;
+   
+   @Mock private ArtifactReadable author;
+   @Captor ArgumentCaptor<TransactionData> txData;
    // @formatter:on
 
    private OrcsTransactionImpl tx;
@@ -80,28 +93,20 @@ public class OrcsTransactionImplTest {
       sessionId = GUID.create();
       guid = GUID.create();
       when(expected.getGuid()).thenReturn(guid);
+      when(sessionContext.getSessionId()).thenReturn(sessionId);
    }
 
    @Test
    public void testSetGetAuthor() {
-      ArtifactReadable source = mock(ArtifactReadable.class);
-      tx.setAuthor(source);
-
-      Assert.assertEquals(source, tx.getAuthor());
+      tx.setAuthor(author);
+      assertEquals(author, tx.getAuthor());
    }
 
    @Test
    public void testSetGetComment() {
       String comment = "This is my comment";
       tx.setComment(comment);
-
-      Assert.assertEquals(comment, tx.getComment());
-   }
-
-   @Test
-   public void testGetTxData() throws OseeCoreException {
-      tx.getTxData();
-      verify(txManager).getChanges();
+      assertEquals(comment, tx.getComment());
    }
 
    @Test
@@ -111,7 +116,7 @@ public class OrcsTransactionImplTest {
 
       ArtifactWriteable actual = tx.asWriteable(source);
 
-      Assert.assertEquals(actual, expected);
+      assertEquals(actual, expected);
       verify(txManager).getOrAddWrite(source);
    }
 
@@ -129,13 +134,13 @@ public class OrcsTransactionImplTest {
 
       List<ArtifactWriteable> actuals = tx.asWriteable(readables);
 
-      Assert.assertEquals(readables.size(), actuals.size());
+      assertEquals(readables.size(), actuals.size());
       verify(txManager).getOrAddWrite(sourceA);
       verify(txManager).getOrAddWrite(sourceB);
 
       Iterator<ArtifactWriteable> iterator = actuals.iterator();
-      Assert.assertEquals(expectedA, iterator.next());
-      Assert.assertEquals(expectedB, iterator.next());
+      assertEquals(expectedA, iterator.next());
+      assertEquals(expectedB, iterator.next());
    }
 
    @Test
@@ -197,7 +202,7 @@ public class OrcsTransactionImplTest {
 
       ArtifactWriteable actual = tx.duplicateArtifact(source);
 
-      Assert.assertTrue(actual != source);
+      assertTrue(actual != source);
       verify(artifactFactory).copy(source, types, branch);
       verify(txManager).addWrite(actual);
    }
@@ -209,7 +214,7 @@ public class OrcsTransactionImplTest {
 
       ArtifactWriteable actual = tx.introduceArtifact(source);
 
-      Assert.assertTrue(actual != source);
+      assertTrue(actual != source);
       verify(artifactFactory).introduce(source, branch);
       verify(txManager).addWrite(actual);
    }
@@ -229,72 +234,83 @@ public class OrcsTransactionImplTest {
    @Test
    public void testCommitErrorDuringExecution() throws Exception {
       final Callable<TransactionResult> callable = mock(Callable.class);
-      when(dataStore.commitTransaction(sessionId, tx)).thenAnswer(new Answer<Callable<TransactionResult>>() {
+      when(dataStore.commitTransaction(eq(sessionId), any(TransactionData.class))).thenAnswer(
+         new Answer<Callable<TransactionResult>>() {
 
-         @Override
-         public Callable<TransactionResult> answer(InvocationOnMock invocation) throws Throwable {
-            Assert.assertTrue(tx.isCommitInProgress());
-            return callable;
-         }
-      });
+            @Override
+            public Callable<TransactionResult> answer(InvocationOnMock invocation) throws Throwable {
+               Assert.assertTrue(tx.isCommitInProgress());
+               return callable;
+            }
+         });
 
       OseeCoreException exception = new OseeCoreException("Execution error");
       when(callable.call()).thenThrow(exception);
 
-      Assert.assertFalse(tx.isCommitInProgress());
+      assertFalse(tx.isCommitInProgress());
 
       thrown.expect(OseeCoreException.class);
       thrown.expectMessage(exception.getMessage());
       tx.commit();
 
       verify(txManager).onCommitStart();
+      verify(txManager).getChanges();
       verify(txManager).onCommitRollback();
       verify(txManager).onCommitEnd();
 
-      Assert.assertFalse(tx.isCommitInProgress());
+      assertFalse(tx.isCommitInProgress());
    }
 
    @SuppressWarnings("unchecked")
    @Test
    public void testCommitErrorDuringRollback() throws Exception {
       final Callable<TransactionResult> callable = mock(Callable.class);
-      when(dataStore.commitTransaction(sessionId, tx)).thenAnswer(new Answer<Callable<TransactionResult>>() {
+      when(dataStore.commitTransaction(eq(sessionId), any(TransactionData.class))).thenAnswer(
+         new Answer<Callable<TransactionResult>>() {
 
-         @Override
-         public Callable<TransactionResult> answer(InvocationOnMock invocation) throws Throwable {
-            Assert.assertTrue(tx.isCommitInProgress());
-            return callable;
-         }
-      });
+            @Override
+            public Callable<TransactionResult> answer(InvocationOnMock invocation) throws Throwable {
+               Assert.assertTrue(tx.isCommitInProgress());
+               return callable;
+            }
+         });
 
       OseeCoreException exception = new OseeCoreException("Execution error");
       doThrow(exception).when(txManager).onCommitRollback();
 
-      Assert.assertFalse(tx.isCommitInProgress());
+      assertFalse(tx.isCommitInProgress());
 
       thrown.expect(OseeCoreException.class);
       thrown.expectMessage("Exception during rollback and commit");
       tx.commit();
 
       verify(txManager).onCommitStart();
+      verify(txManager).getChanges();
       verify(txManager).onCommitRollback();
       verify(txManager).onCommitEnd();
 
-      Assert.assertFalse(tx.isCommitInProgress());
+      assertFalse(tx.isCommitInProgress());
    }
 
    @SuppressWarnings("unchecked")
    @Test
    public void testCommit() throws Exception {
       final Callable<TransactionResult> callable = mock(Callable.class);
-      when(dataStore.commitTransaction(sessionId, tx)).thenAnswer(new Answer<Callable<TransactionResult>>() {
+      List<ArtifactTransactionData> changes = Mockito.mock(ArrayList.class);
 
-         @Override
-         public Callable<TransactionResult> answer(InvocationOnMock invocation) throws Throwable {
-            Assert.assertTrue(tx.isCommitInProgress());
-            return callable;
-         }
-      });
+      tx.setAuthor(author);
+      tx.setComment("My Comment");
+
+      when(txManager.getChanges()).thenReturn(changes);
+      when(dataStore.commitTransaction(eq(sessionId), txData.capture())).thenAnswer(
+         new Answer<Callable<TransactionResult>>() {
+
+            @Override
+            public Callable<TransactionResult> answer(InvocationOnMock invocation) throws Throwable {
+               Assert.assertTrue(tx.isCommitInProgress());
+               return callable;
+            }
+         });
       TransactionResult txResult = mock(TransactionResult.class);
       TransactionRecord newTx = mock(TransactionRecord.class);
 
@@ -305,12 +321,20 @@ public class OrcsTransactionImplTest {
 
       TransactionRecord actual = tx.commit();
 
-      Assert.assertEquals(newTx, actual);
+      assertEquals(newTx, actual);
 
       verify(txManager).onCommitStart();
+      verify(txManager).getChanges();
       verify(txManager).onCommitSuccess(txResult);
       verify(txManager).onCommitEnd();
 
       Assert.assertFalse(tx.isCommitInProgress());
+
+      TransactionData data = txData.getValue();
+      assertEquals(branch, data.getBranch());
+      assertEquals(author, data.getAuthor());
+      assertEquals("My Comment", data.getComment());
+      assertEquals(changes, data.getTxData());
+
    }
 }

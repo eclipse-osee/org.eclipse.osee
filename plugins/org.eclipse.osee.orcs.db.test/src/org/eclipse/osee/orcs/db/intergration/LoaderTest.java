@@ -10,17 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.intergration;
 
-import static junit.framework.Assert.assertEquals;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.OseeTypeDefinition;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Active;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.UriGeneralStringData;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Parent;
+import static org.eclipse.osee.orcs.db.intergration.IntegrationUtil.sort;
+import static org.eclipse.osee.orcs.db.intergration.IntegrationUtil.verifyData;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import java.util.Collections;
-import java.util.Comparator;
+import static org.mockito.Mockito.when;
 import java.util.Iterator;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -35,11 +35,9 @@ import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
-import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
-import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiRule;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
@@ -48,15 +46,12 @@ import org.junit.Rule;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 /**
  * @author Roberto E. Escobar
  */
 public class LoaderTest {
-
-   private static final Comparator<OrcsData> SORT_BY_LOCAL_ID = new IdComparator();
 
    @Rule
    public OsgiRule osgi = new OsgiRule(this);
@@ -87,9 +82,9 @@ public class LoaderTest {
 
       sessionId = GUID.create();
 
-      Mockito.when(builder.createArtifactDataHandler()).thenReturn(artifactHandler);
-      Mockito.when(builder.createAttributeDataHandler()).thenReturn(attributeHandler);
-      Mockito.when(builder.createRelationDataHandler()).thenReturn(relationHandler);
+      when(builder.createArtifactDataHandler()).thenReturn(artifactHandler);
+      when(builder.createAttributeDataHandler()).thenReturn(attributeHandler);
+      when(builder.createRelationDataHandler()).thenReturn(relationHandler);
    }
 
    @org.junit.Test
@@ -108,7 +103,7 @@ public class LoaderTest {
       verify(attributeHandler, times(7)).onData(attributeCaptor.capture());
       verify(relationHandler, times(4)).onData(relationCaptor.capture());
 
-      Collections.sort(artifactCaptor.getAllValues(), SORT_BY_LOCAL_ID);
+      sort(artifactCaptor.getAllValues());
       Iterator<ArtifactData> arts = artifactCaptor.getAllValues().iterator();
 
       //@formatter:off
@@ -117,7 +112,7 @@ public class LoaderTest {
       verifyData(arts.next(), 8, "AEmK_YNYKmA66ynLWVgA", "QHXXC", ModificationType.NEW, Folder.getGuid(), 2, -1, -1, 33L);
       //@formatter:on
 
-      Collections.sort(attributeCaptor.getAllValues(), SORT_BY_LOCAL_ID);
+      sort(attributeCaptor.getAllValues());
       Iterator<AttributeData> attrs = attributeCaptor.getAllValues().iterator();
 
       //@formatter:off
@@ -132,7 +127,7 @@ public class LoaderTest {
       verifyData(attrs.next(), 20, 8, ModificationType.NEW, Name.getGuid(), 2, 6, -1, 48L, "User Groups", "");
       //@formatter:on
 
-      Collections.sort(relationCaptor.getAllValues(), SORT_BY_LOCAL_ID);
+      sort(relationCaptor.getAllValues());
       Iterator<RelationData> rels = relationCaptor.getAllValues().iterator();
 
       //@formatter:off
@@ -162,7 +157,7 @@ public class LoaderTest {
       verify(attributeHandler, times(3)).onData(attributeCaptor.capture());
       verify(relationHandler, times(4)).onData(relationCaptor.capture());
 
-      Collections.sort(artifactCaptor.getAllValues(), SORT_BY_LOCAL_ID);
+      sort(artifactCaptor.getAllValues());
       Iterator<ArtifactData> arts = artifactCaptor.getAllValues().iterator();
 
       //@formatter:off
@@ -171,7 +166,7 @@ public class LoaderTest {
       verifyData(arts.next(), 8, "AEmK_YNYKmA66ynLWVgA", "QHXXC", ModificationType.NEW, Folder.getGuid(), 2, -1, -1, 33L);
       //@formatter:on
 
-      Collections.sort(attributeCaptor.getAllValues(), SORT_BY_LOCAL_ID);
+      sort(attributeCaptor.getAllValues());
       Iterator<AttributeData> attrs = attributeCaptor.getAllValues().iterator();
 
       //@formatter:off
@@ -180,7 +175,7 @@ public class LoaderTest {
       verifyData(attrs.next(), 20, 8, ModificationType.NEW, Name.getGuid(), 2, 6, -1, 48L, "User Groups", "");
       //@formatter:on
 
-      Collections.sort(relationCaptor.getAllValues(), SORT_BY_LOCAL_ID);
+      sort(relationCaptor.getAllValues());
       Iterator<RelationData> rels = relationCaptor.getAllValues().iterator();
 
       //@formatter:off
@@ -210,7 +205,7 @@ public class LoaderTest {
       verify(attributeHandler, times(2)).onData(attributeCaptor.capture());
       verify(relationHandler, times(2)).onData(relationCaptor.capture());
 
-      Collections.sort(artifactCaptor.getAllValues(), SORT_BY_LOCAL_ID);
+      sort(artifactCaptor.getAllValues());
       Iterator<ArtifactData> arts = artifactCaptor.getAllValues().iterator();
 
       //@formatter:off
@@ -219,7 +214,7 @@ public class LoaderTest {
       verifyData(arts.next(), 8, "AEmK_YNYKmA66ynLWVgA", "QHXXC", ModificationType.NEW, Folder.getGuid(), 2, -1, -1, 33L);
       //@formatter:on
 
-      Collections.sort(attributeCaptor.getAllValues(), SORT_BY_LOCAL_ID);
+      sort(attributeCaptor.getAllValues());
       Iterator<AttributeData> attrs = attributeCaptor.getAllValues().iterator();
 
       //@formatter:off
@@ -227,7 +222,7 @@ public class LoaderTest {
       verifyData(attrs.next(), 17, 7, ModificationType.NEW, Active.getGuid(), 2, 5, -1, 12L, "yes", "");
       //@formatter:on
 
-      Collections.sort(relationCaptor.getAllValues(), SORT_BY_LOCAL_ID);
+      sort(relationCaptor.getAllValues());
       Iterator<RelationData> rels = relationCaptor.getAllValues().iterator();
 
       //@formatter:off
@@ -235,61 +230,5 @@ public class LoaderTest {
       verifyData(rels.next(), 173, 8, 8, 121, "", ModificationType.NEW, Default_Hierarchical__Parent.getGuid(), 2, 16, -1, 699L);
       //@formatter:on
    }
-
-   private void verifyData(ArtifactData data, Object... values) {
-      int index = 0;
-      assertEquals(data.getLocalId(), values[index++]);
-      assertEquals(data.getGuid(), values[index++]);
-      assertEquals(data.getHumanReadableId(), values[index++]);
-      assertEquals(data.getModType(), values[index++]);
-      assertEquals(data.getTypeUuid(), values[index++]);
-
-      verifyData(data.getVersion(), index, values);
-   }
-
-   private void verifyData(AttributeData data, Object... values) throws OseeCoreException {
-      int index = 0;
-      assertEquals(data.getLocalId(), values[index++]);
-      assertEquals(data.getArtifactId(), values[index++]);
-      assertEquals(data.getModType(), values[index++]);
-      assertEquals(data.getTypeUuid(), values[index++]);
-
-      index = verifyData(data.getVersion(), index, values);
-
-      Object[] proxied = data.getDataProxy().getData();
-      assertEquals(proxied[0], values[index++]); // value
-      assertEquals(proxied[1], values[index++]); // uri
-   }
-
-   private void verifyData(RelationData data, Object... values) {
-      int index = 0;
-      assertEquals(data.getLocalId(), values[index++]);
-
-      assertEquals(data.getParentId(), values[index++]);
-      assertEquals(data.getArtIdA(), values[index++]);
-      assertEquals(data.getArtIdB(), values[index++]);
-      assertEquals(data.getRationale(), values[index++]);
-
-      assertEquals(data.getModType(), values[index++]);
-      assertEquals(data.getTypeUuid(), values[index++]);
-
-      verifyData(data.getVersion(), index, values);
-   }
-
-   private int verifyData(VersionData version, int index, Object... values) {
-      assertEquals(version.getBranchId(), values[index++]);
-      assertEquals(version.getTransactionId(), values[index++]);
-      assertEquals(version.getStripeId(), values[index++]);
-      assertEquals(version.getGammaId(), values[index++]);
-      return index;
-   }
-
-   private static final class IdComparator implements Comparator<OrcsData> {
-
-      @Override
-      public int compare(OrcsData arg0, OrcsData arg1) {
-         return arg0.getLocalId() - arg1.getLocalId();
-      }
-   };
 
 }

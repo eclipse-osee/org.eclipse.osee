@@ -115,8 +115,7 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
 
       branchStore =
          new BranchDataStoreImpl(logger, dbService, identityService, cacheService, preferences, executorAdmin,
-            resourceManager, modelFactory, typeModelService, sqlProvider, idFactory,
-            dataModuleFactory.getDataLoaderFactory());
+            resourceManager, modelFactory, typeModelService, idFactory, dataModuleFactory.getDataLoaderFactory());
 
       dataStoreAdmin = new DataStoreAdminImpl(logger, dbService, identityService, branchStore, preferences);
 

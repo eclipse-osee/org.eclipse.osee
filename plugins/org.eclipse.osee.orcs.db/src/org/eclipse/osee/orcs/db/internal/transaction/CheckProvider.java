@@ -10,14 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.transaction;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.util.Collection;
 
 /**
  * @author Roberto E. Escobar
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({DaoToSqlTest.class, TransactionWriterTest.class, TxSqlBuilderTest.class})
-public class TransactionTestSuite {
-   // Test Suite
+public interface CheckProvider {
+
+   Collection<TransactionCheck> getTransactionChecks();
+
 }

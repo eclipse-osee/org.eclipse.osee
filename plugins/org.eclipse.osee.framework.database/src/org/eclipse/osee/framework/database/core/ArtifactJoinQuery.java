@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.database.core.DatabaseJoinAccessor.JoinItem;
 /**
  * @author Roberto E. Escobar
  */
-public final class ArtifactJoinQuery extends AbstractJoinQuery {
+public class ArtifactJoinQuery extends AbstractJoinQuery {
 
    private final class Entry implements IJoinRow {
       private final Integer artId;

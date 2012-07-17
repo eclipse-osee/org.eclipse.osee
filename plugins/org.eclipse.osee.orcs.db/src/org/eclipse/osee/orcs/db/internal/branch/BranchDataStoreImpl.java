@@ -11,6 +11,8 @@
 package org.eclipse.osee.orcs.db.internal.branch;
 
 import java.net.URI;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
@@ -35,7 +37,6 @@ import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
-import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.callable.BranchCopyTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CheckBranchExchangeIntegrityCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CommitBranchDatabaseCallable;
@@ -46,13 +47,19 @@ import org.eclipse.osee.orcs.db.internal.callable.ImportBranchDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeBranchDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportItemFactory;
 import org.eclipse.osee.orcs.db.internal.loader.IdFactory;
+import org.eclipse.osee.orcs.db.internal.transaction.CheckProvider;
 import org.eclipse.osee.orcs.db.internal.transaction.CommitTransactionDatabaseTxCallable;
+import org.eclipse.osee.orcs.db.internal.transaction.ComodificationCheck;
+import org.eclipse.osee.orcs.db.internal.transaction.TransactionCheck;
+import org.eclipse.osee.orcs.db.internal.transaction.TransactionWriter;
+import org.eclipse.osee.orcs.db.internal.transaction.TxSqlBuilderImpl;
 
 /**
  * @author Roberto E. Escobar
  */
 public class BranchDataStoreImpl implements BranchDataStore {
 
+   private final CheckProviderImpl checkProvider = new CheckProviderImpl();
    private final Log logger;
    private final IOseeDatabaseService dbService;
    private final IdentityService identityService;
@@ -64,11 +71,10 @@ public class BranchDataStoreImpl implements BranchDataStore {
    private final IOseeModelFactoryService modelFactory;
    private final IOseeModelingService typeModelService;
 
-   private final SqlProvider sqlProvider;
    private final IdFactory idFactory;
    private final DataLoaderFactory dataLoader;
 
-   public BranchDataStoreImpl(Log logger, IOseeDatabaseService dbService, IdentityService identityService, IOseeCachingService cachingService, SystemPreferences preferences, ExecutorAdmin executorAdmin, IResourceManager resourceManager, IOseeModelFactoryService modelFactory, IOseeModelingService typeModelService, SqlProvider sqlProvider, IdFactory idFactory, DataLoaderFactory dataLoader) {
+   public BranchDataStoreImpl(Log logger, IOseeDatabaseService dbService, IdentityService identityService, IOseeCachingService cachingService, SystemPreferences preferences, ExecutorAdmin executorAdmin, IResourceManager resourceManager, IOseeModelFactoryService modelFactory, IOseeModelingService typeModelService, IdFactory idFactory, DataLoaderFactory dataLoader) {
       super();
       this.logger = logger;
       this.dbService = dbService;
@@ -79,7 +85,6 @@ public class BranchDataStoreImpl implements BranchDataStore {
       this.resourceManager = resourceManager;
       this.modelFactory = modelFactory;
       this.typeModelService = typeModelService;
-      this.sqlProvider = sqlProvider;
       this.idFactory = idFactory;
       this.dataLoader = dataLoader;
    }
@@ -144,9 +149,19 @@ public class BranchDataStoreImpl implements BranchDataStore {
 
    @Override
    public Callable<TransactionResult> commitTransaction(String sessionId, TransactionData data) {
-      return new CommitTransactionDatabaseTxCallable(logger, dbService, identityService, sqlProvider, idFactory,
-         cachingService.getBranchCache(), cachingService.getTransactionCache(), modelFactory.getTransactionFactory(),
-         data, dataLoader, sessionId);
+      TxSqlBuilderImpl builder = new TxSqlBuilderImpl(dbService, idFactory, identityService);
+      TransactionWriter writer = new TransactionWriter(logger, dbService, builder);
+      return new CommitTransactionDatabaseTxCallable(logger, dbService, cachingService.getBranchCache(),
+         cachingService.getTransactionCache(), modelFactory.getTransactionFactory(), checkProvider, writer, sessionId,
+         data);
+   }
+
+   private final class CheckProviderImpl implements CheckProvider {
+
+      @Override
+      public Collection<TransactionCheck> getTransactionChecks() {
+         return Collections.<TransactionCheck> singletonList(new ComodificationCheck(dataLoader));
+      }
    }
 
 }

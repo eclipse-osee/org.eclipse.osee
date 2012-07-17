@@ -8,17 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.ds.data;
+package org.eclipse.osee.orcs.core.ds;
 
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AbstractIdentity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.core.ds.ArtifactData;
-import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
-import org.eclipse.osee.orcs.core.ds.AttributeData;
-import org.eclipse.osee.orcs.core.ds.OrcsVisitor;
-import org.eclipse.osee.orcs.core.ds.RelationData;
 
 /**
  * @author John Misinco

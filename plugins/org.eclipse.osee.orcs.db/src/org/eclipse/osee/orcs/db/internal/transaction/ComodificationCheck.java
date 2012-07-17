@@ -31,7 +31,6 @@ import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.db.internal.transaction.CommitTransactionDatabaseTxCallable.TransactionCheck;
 
 /**
  * @author Roberto E. Escobar

@@ -38,7 +38,7 @@ import org.eclipse.osee.orcs.transaction.OrcsTransaction;
 /**
  * @author Roberto E. Escobar
  */
-public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
+public class OrcsTransactionImpl implements OrcsTransaction {
 
    @SuppressWarnings("unused")
    private final Log logger;
@@ -83,11 +83,6 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
       return comment;
    }
 
-   @Override
-   public List<ArtifactTransactionData> getTxData() throws OseeCoreException {
-      return manager.getChanges();
-   }
-
    protected void startCommit() throws OseeCoreException {
       isCommitInProgress = true;
       manager.onCommitStart();
@@ -111,13 +106,19 @@ public class OrcsTransactionImpl implements OrcsTransaction, TransactionData {
       return isCommitInProgress;
    }
 
+   private Callable<TransactionResult> createCommit() throws OseeCoreException {
+      List<ArtifactTransactionData> changes = manager.getChanges();
+      TransactionData data = new TransactionDataImpl(getBranch(), getAuthor(), getComment(), changes);
+      return dataStore.commitTransaction(sessionContext.getSessionId(), data);
+   }
+
    @Override
    public TransactionRecord commit() throws OseeCoreException {
       Conditions.checkExpressionFailOnTrue(isCommitInProgress(), "Commit is already in progress");
       TransactionRecord transaction = null;
       try {
          startCommit();
-         Callable<TransactionResult> callable = dataStore.commitTransaction(sessionContext.getSessionId(), this);
+         Callable<TransactionResult> callable = createCommit();
          TransactionResult result = callable.call();
          commitSuccess(result);
          transaction = result.getTransaction();
