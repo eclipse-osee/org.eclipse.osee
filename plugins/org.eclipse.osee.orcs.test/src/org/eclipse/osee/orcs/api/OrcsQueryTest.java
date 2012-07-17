@@ -61,7 +61,7 @@ public class OrcsQueryTest {
    @Test
    public void testQueries() throws OseeCoreException {
       ApplicationContext context = null; // TODO use real application context
-      QueryFactory factory = orcsApi.getQueryFactory(null);
+      QueryFactory factory = orcsApi.getQueryFactory(context);
 
       checkQueryByIds(factory);
 
