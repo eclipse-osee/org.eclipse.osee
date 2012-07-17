@@ -25,16 +25,18 @@ public final class ConnectionPoolProviderImpl implements ConnectionPoolProvider 
    }
 
    @Override
-   public void disposeConnectionPool(IDatabaseInfo databaseInfo) {
-      String key = databaseInfo.getId();
-      OseeConnectionPoolImpl pool = dbInfoToPools.remove(key);
-      if (pool != null) {
-         //         pool.
+   public void dispose() {
+      for (Timer timer : timers.values()) {
+         if (timer != null) {
+            timer.cancel();
+         }
       }
-      Timer timer = timers.remove(key);
-      if (timer != null) {
-         timer.cancel();
+      timers.clear();
+
+      for (OseeConnectionPoolImpl pool : dbInfoToPools.values()) {
+         pool.releaseAll();
       }
+      dbInfoToPools.clear();
    }
 
    @Override

@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.server.ISession;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.internal.BuildTypeDataProvider;
 import org.eclipse.osee.framework.core.server.internal.BuildTypeIdentifier;
+import org.eclipse.osee.framework.database.DatabaseInfoRegistry;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
 
@@ -30,6 +31,7 @@ import org.eclipse.osee.logger.Log;
 public final class SessionManagerService implements ISessionManager {
 
    private Log logger;
+   private DatabaseInfoRegistry registry;
    private IOseeDatabaseService dbService;
    private IApplicationServerManager serverManager;
    private IAuthenticationManager authenticationManager;
@@ -39,6 +41,10 @@ public final class SessionManagerService implements ISessionManager {
 
    public void setLogger(Log logger) {
       this.logger = logger;
+   }
+
+   public void setDbInfoRegistry(DatabaseInfoRegistry registry) {
+      this.registry = registry;
    }
 
    public void setDbService(IOseeDatabaseService dbService) {
@@ -69,7 +75,7 @@ public final class SessionManagerService implements ISessionManager {
       String serverId = getServerManager().getId();
       BuildTypeIdentifier identifier = new BuildTypeIdentifier(new BuildTypeDataProvider());
 
-      SessionFactory sessionFactory = new SessionFactory(logger, dbService, identifier);
+      SessionFactory sessionFactory = new SessionFactory(logger, registry, dbService, identifier);
 
       ISessionQuery sessionQuery = new DatabaseSessionQuery(serverId, getDbService());
       IOseeDataAccessor<String, Session> accessor =

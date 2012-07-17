@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.database.internal.core;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -24,9 +23,7 @@ import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.internal.DatabaseHelper;
 import org.eclipse.osee.framework.database.internal.core.OseeDatabaseServiceImpl.ConnectionPoolProvider;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
@@ -41,16 +38,16 @@ public class OseeDatabaseServiceProxy implements IOseeDatabaseService {
 
    private IDatabaseInfoProvider databaseInfoProvider;
 
-   public void setDatabaseInfoProvider(IDatabaseInfoProvider databaseInfoProvider) {
-      this.databaseInfoProvider = databaseInfoProvider;
-   }
-
    public void addConnectionFactory(IConnectionFactory connectionFactory) {
       factories.put(connectionFactory.getDriver(), connectionFactory);
    }
 
    public void removeConnectionFactory(IConnectionFactory connectionFactory) {
       factories.remove(connectionFactory.getDriver());
+   }
+
+   public void setDatabaseInfoProvider(IDatabaseInfoProvider provider) {
+      databaseInfoProvider = provider;
    }
 
    public void start() {
@@ -60,21 +57,12 @@ public class OseeDatabaseServiceProxy implements IOseeDatabaseService {
    }
 
    public void stop() {
+      if (poolProvider != null) {
+         poolProvider.dispose();
+         poolProvider = null;
+      }
       oseeSequence = null;
       databaseService = null;
-
-      if (databaseInfoProvider != null && poolProvider != null) {
-         IDatabaseInfo databaseInfo = null;
-         try {
-            databaseInfo = databaseInfoProvider.getDatabaseInfo();
-         } catch (OseeDataStoreException ex) {
-            OseeLog.log(DatabaseHelper.class, Level.WARNING, ex);
-         }
-         if (databaseInfo != null) {
-            poolProvider.disposeConnectionPool(databaseInfo);
-         }
-      }
-      poolProvider = null;
    }
 
    private DatabaseService getDatabaseService() {

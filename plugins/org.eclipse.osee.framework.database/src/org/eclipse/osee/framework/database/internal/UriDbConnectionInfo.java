@@ -14,8 +14,7 @@ import java.io.File;
 import java.net.URI;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
-import org.eclipse.osee.framework.database.core.DatabaseInfoManager;
-import org.eclipse.osee.framework.database.core.IDbConnectionInformationContributor;
+import org.eclipse.osee.framework.database.AbstractDatabaseInfoContributor;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -23,20 +22,20 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * @author Roberto E. Escobar
  */
-public class UriDbConnectionInfo implements IDbConnectionInformationContributor {
+public class UriDbConnectionInfo extends AbstractDatabaseInfoContributor {
 
    @Override
    public IDatabaseInfo[] getDbInformation() throws Exception {
       String uri = OseeProperties.getOseeConnectionInfoUri();
       if (Strings.isValid(uri)) {
-         OseeLog.logf(DatabaseHelper.class, Level.INFO, "Loading connection info from: [%s]", uri);
+         OseeLog.logf(UriDbConnectionInfo.class, Level.INFO, "Loading connection info from: [%s]", uri);
          URI connectionFile = null;
          if (!uri.contains("://")) {
             connectionFile = new File(uri).toURI();
          } else {
             connectionFile = new URI(uri);
          }
-         return DatabaseInfoManager.readFromXml(connectionFile.toURL().openStream());
+         return readFromXml(connectionFile.toURL().openStream());
       }
       return new IDatabaseInfo[0];
    }

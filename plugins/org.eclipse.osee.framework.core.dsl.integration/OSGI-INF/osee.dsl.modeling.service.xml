@@ -5,6 +5,4 @@
       <provide interface="org.eclipse.osee.framework.core.services.IOseeModelingService"/>
    </service>
    <reference bind="setFactoryService" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IOseeModelFactoryService" name="IOseeModelFactoryService" policy="static"/>
-   <reference bind="setCacheService" cardinality="0..1" interface="org.eclipse.osee.framework.core.services.IOseeCachingService" name="IOseeCachingService" policy="dynamic" unbind="unsetCacheService"/>
-   <reference bind="unsetCacheFactory" cardinality="0..1" interface="org.eclipse.osee.framework.core.services.IOseeCachingServiceFactory" name="IOseeCachingServiceFactory" policy="dynamic"/>
 </scr:component>

@@ -21,8 +21,8 @@ import org.eclipse.osee.database.schema.internal.data.SchemaData;
 import org.eclipse.osee.database.schema.internal.data.TableElement;
 import org.eclipse.osee.database.schema.internal.util.FileUtility;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
+import org.eclipse.osee.framework.database.DatabaseInfoRegistry;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.DatabaseInfoManager;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 
@@ -35,9 +35,11 @@ public class ImportDataFromDbCallable extends DatabaseCallable<Object> {
 
    private final Map<String, SchemaData> userSpecifiedConfig;
    private final String tableImportSource;
+   private final DatabaseInfoRegistry registry;
 
-   public ImportDataFromDbCallable(Log logger, IOseeDatabaseService databaseService, Map<String, SchemaData> userSpecifiedConfig, String tableImportSource) {
+   public ImportDataFromDbCallable(Log logger, DatabaseInfoRegistry registry, IOseeDatabaseService databaseService, Map<String, SchemaData> userSpecifiedConfig, String tableImportSource) {
       super(logger, databaseService);
+      this.registry = registry;
       this.userSpecifiedConfig = userSpecifiedConfig;
       this.tableImportSource = tableImportSource;
    }
@@ -48,7 +50,7 @@ public class ImportDataFromDbCallable extends DatabaseCallable<Object> {
       for (String importFromDbService : importConnections) {
          getLogger().info("Import Table Data from Db: [%s]", importFromDbService);
 
-         IDatabaseInfo dbInfo = DatabaseInfoManager.getDataStoreById(importFromDbService);
+         IDatabaseInfo dbInfo = registry.getDatabaseInfo(importFromDbService);
          getLogger().info("Gathering information from ... [%s]", importFromDbService);
 
          String userName = dbInfo.getDatabaseLoginName();

@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.internal.DatabaseHelper;
+import org.eclipse.osee.framework.database.internal.ServiceUtil;
 
 /**
  * @author Ryan D. Brooks
@@ -71,7 +71,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
    private Collection<TransactionRecord> changedTransactions = new ArrayList<TransactionRecord>();
 
    public PurgeTransactionOperation(IOseeDatabaseService databaseService, TransactionCache transactionCache, OperationLogger logger, List<Integer> txIdsToDelete) {
-      super(databaseService, "Purge transactions " + txIdsToDelete, DatabaseHelper.PLUGIN_ID, logger);
+      super(databaseService, "Purge transactions " + txIdsToDelete, ServiceUtil.PLUGIN_ID, logger);
       this.success = false;
       this.transactionCache = transactionCache;
       this.txIdsToDelete = txIdsToDelete;

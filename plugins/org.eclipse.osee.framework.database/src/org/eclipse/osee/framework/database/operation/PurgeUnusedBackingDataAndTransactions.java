@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.internal.DatabaseHelper;
+import org.eclipse.osee.framework.database.internal.ServiceUtil;
 
 /**
  * Purge artifact, attribute, and relation versions that are not addressed or nonexistent and purge empty transactions
@@ -47,11 +47,11 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractOperation {
    private final IOseeDatabaseService dbService;
 
    public PurgeUnusedBackingDataAndTransactions(OperationLogger logger) throws OseeDataStoreException {
-      this(DatabaseHelper.getOseeDatabaseService(), logger);
+      this(ServiceUtil.getDatabaseService(), logger);
    }
 
    public PurgeUnusedBackingDataAndTransactions(IOseeDatabaseService dbService, OperationLogger logger) {
-      super("Data with no TXS Addressing and empty transactions", DatabaseHelper.PLUGIN_ID, logger);
+      super("Data with no TXS Addressing and empty transactions", ServiceUtil.PLUGIN_ID, logger);
       this.dbService = dbService;
    }
 

@@ -12,18 +12,17 @@ package org.eclipse.osee.demo.db.connection;
 
 import java.net.URL;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
-import org.eclipse.osee.framework.database.core.DatabaseInfoManager;
-import org.eclipse.osee.framework.database.core.IDbConnectionInformationContributor;
+import org.eclipse.osee.framework.database.AbstractDatabaseInfoContributor;
 
 /**
  * @author Andrew M. Finkbeiner
  */
-public class DemoDbConnectionInfo implements IDbConnectionInformationContributor {
+public class DemoDbConnectionInfo extends AbstractDatabaseInfoContributor {
 
    @Override
    public IDatabaseInfo[] getDbInformation() throws Exception {
       URL url = getClass().getResource("osee.demo.db.connection.xml");
-      return DatabaseInfoManager.readFromXml(url.openStream());
+      return readFromXml(url.openStream());
    }
 
 }

@@ -36,15 +36,15 @@ public class OrcsIntegrationRule extends OsgiRule {
    public static class CheckServices {
       // @formatter:off
       @OsgiService public Log log;
-      @OsgiService public SystemPreferences preferences;
-      @OsgiService public IdentityService idService;
-      @OsgiService public IOseeDatabaseService dbService;
-      @OsgiService public IOseeModelFactoryService modelFactory;
-      @OsgiService public IOseeModelingService modelService;
       @OsgiService public EventAdmin eventAdmin;
       @OsgiService public EventService eventService;
       @OsgiService public ExecutorAdmin executorAdmin;
+      @OsgiService public IdentityService idService;
+      @OsgiService public IOseeDatabaseService dbService;
+      @OsgiService public IOseeModelFactoryService modelFactory;
       @OsgiService public IOseeCachingService cachingService;
+      @OsgiService public IOseeModelingService modelService;
+      @OsgiService public SystemPreferences preferences;
       @OsgiService public OrcsDataStore dataStore;
       // @formatter:on
    }

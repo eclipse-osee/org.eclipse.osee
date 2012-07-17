@@ -27,7 +27,6 @@ import org.junit.Assert;
 import org.junit.runners.model.FrameworkMethod;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
 
@@ -61,6 +60,10 @@ public class TestDatabase {
    public void initialize() throws Exception {
       Bundle bundle = FrameworkUtil.getBundle(OseeDatabase.class);
       Assert.assertNotNull("Bundle cannot be null", bundle);
+      int state = bundle.getState();
+      if (state != Bundle.STARTING || state != Bundle.ACTIVE) {
+         bundle.start();
+      }
 
       tempFolder = createTempFolder(method, target);
       Assert.assertNotNull("TempFolder cannot be null", tempFolder);
@@ -79,8 +82,7 @@ public class TestDatabase {
 
       System.setProperty("osee.db.embedded.server", "");
       System.setProperty("osee.application.server.data", tempFolder.getAbsolutePath());
-      BundleContext context = getContext(bundle);
-      registration = context.registerService(IDatabaseInfoProvider.class, provider, null);
+      registerProvider(provider);
 
       IOseeDatabaseService dbService = OsgiUtil.getService(IOseeDatabaseService.class);
       Assert.assertNotNull(dbService);
@@ -95,16 +97,13 @@ public class TestDatabase {
       }
    }
 
-   private String getDbHomePath(File tempFolder, String dbFolder) {
-      return String.format("~/%s/%s", tempFolder.getName(), dbFolder);
+   private void registerProvider(IDatabaseInfoProvider service) {
+      BundleContext context = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
+      registration = context.registerService(IDatabaseInfoProvider.class, service, null);
    }
 
-   private BundleContext getContext(Bundle bundle) throws BundleException {
-      int state = bundle.getState();
-      if (state != Bundle.STARTING || state != Bundle.ACTIVE) {
-         bundle.start();
-      }
-      return bundle.getBundleContext();
+   private String getDbHomePath(File tempFolder, String dbFolder) {
+      return String.format("~/%s/%s", tempFolder.getName(), dbFolder);
    }
 
    private void checkExist(File tempFolder, String name) {
@@ -125,7 +124,6 @@ public class TestDatabase {
 
    public void cleanup() {
       //TODO issue shutdown command to server;
-
       if (registration != null) {
          registration.unregister();
       }

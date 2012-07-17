@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.database.DatabaseService;
 import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.internal.DatabaseHelper;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -33,7 +32,7 @@ public class OseeDatabaseServiceImpl implements DatabaseService {
 
    public static interface ConnectionPoolProvider {
 
-      void disposeConnectionPool(IDatabaseInfo databaseInfo);
+      void dispose();
 
       OseeConnectionPoolImpl getConnectionPool(IDatabaseInfo databaseInfo) throws OseeDataStoreException;
    }
@@ -141,7 +140,7 @@ public class OseeDatabaseServiceImpl implements DatabaseService {
       } catch (SQLException ex) {
          SQLException exlist;
          if ((exlist = ex.getNextException()) != null) {
-            OseeLog.log(DatabaseHelper.class, Level.SEVERE, "This is the nested exception", exlist);
+            OseeLog.log(OseeDatabaseServiceImpl.class, Level.SEVERE, "This is the nested exception", exlist);
          }
          throw new OseeCoreException("sql update failed: \n%s\n%s", query,
             StatementUtil.getBatchErrorMessage(dataList), ex);

@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Core Model
 Bundle-SymbolicName: org.eclipse.osee.framework.core.model;singleton:=true
 Bundle-Version: 0.10.1.qualifier
-Bundle-Activator: org.eclipse.osee.framework.core.model.internal.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.core.runtime,
@@ -30,3 +29,4 @@ Export-Package: org.eclipse.osee.framework.core.model,
  org.eclipse.osee.framework.core.model.tabledataframework,
  org.eclipse.osee.framework.core.model.type,
  org.eclipse.osee.framework.core.services
+Service-Component: OSGI-INF/*.xml

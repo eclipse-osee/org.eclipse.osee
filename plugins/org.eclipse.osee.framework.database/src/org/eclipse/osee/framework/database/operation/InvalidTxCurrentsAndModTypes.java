@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.internal.DatabaseHelper;
+import org.eclipse.osee.framework.database.internal.ServiceUtil;
 
 /**
  * @author Ryan D. Brooks
@@ -47,14 +47,14 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
    private final IOseeDatabaseService dbService;
 
    public InvalidTxCurrentsAndModTypes(String operationName, String tableName, String columnName, OperationLogger logger, boolean isFixOperationEnabled, boolean archived) throws OseeDataStoreException {
-      this(DatabaseHelper.getOseeDatabaseService(), operationName, tableName, columnName, logger, isFixOperationEnabled,
+      this(ServiceUtil.getDatabaseService(), operationName, tableName, columnName, logger, isFixOperationEnabled,
          archived);
    }
 
    public InvalidTxCurrentsAndModTypes(IOseeDatabaseService dbService, String operationName, String tableName, String columnName, OperationLogger logger, boolean isFixOperationEnabled, boolean archived) {
       super(
          "InvalidTxCurrentsAndModTypes " + operationName + tableName + " fix:" + isFixOperationEnabled + " archived:" + archived,
-         DatabaseHelper.PLUGIN_ID, logger);
+         ServiceUtil.PLUGIN_ID, logger);
       this.dbService = dbService;
       this.tableName = tableName;
       this.columnName = columnName;

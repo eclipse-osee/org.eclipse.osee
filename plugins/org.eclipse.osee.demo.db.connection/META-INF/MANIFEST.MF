@@ -6,7 +6,8 @@ Bundle-Version: 0.10.1.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.database,
  org.eclipse.osee.framework.database.core,
  org.osgi.framework
-Service-Component: OSGI-INF/component.xml
+Service-Component: OSGI-INF/*.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

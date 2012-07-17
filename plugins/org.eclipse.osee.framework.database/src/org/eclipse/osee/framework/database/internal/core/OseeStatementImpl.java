@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
-import org.eclipse.osee.framework.database.internal.DatabaseHelper;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -141,7 +140,7 @@ public final class OseeStatementImpl implements IOseeStatement {
             connection = null;// this allows for multiple calls to runPreparedQuery to have an open connection
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(DatabaseHelper.class, Level.SEVERE, ex);
+         OseeLog.log(OseeStatementImpl.class, Level.SEVERE, ex);
       }
    }
 

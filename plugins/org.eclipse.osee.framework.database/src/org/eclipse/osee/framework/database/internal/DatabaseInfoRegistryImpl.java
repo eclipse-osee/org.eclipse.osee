@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.DatabaseInfoRegistry;
 import org.eclipse.osee.framework.database.core.IDbConnectionInformationContributor;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -28,18 +28,12 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * @author Roberto E. Escobar
  */
-public class DatabaseHelper {
-   public static final String PLUGIN_ID = "org.eclipse.osee.framework.database";
+public class DatabaseInfoRegistryImpl implements DatabaseInfoRegistry {
 
-   private final static List<IDbConnectionInformationContributor> contributors =
+   private final List<IDbConnectionInformationContributor> contributors =
       new CopyOnWriteArrayList<IDbConnectionInformationContributor>();
 
-   private static IDatabaseInfo selectedDbInfo;
-   private static IOseeDatabaseService databaseService;
-
-   public void setDatabaseService(IOseeDatabaseService databaseService) {
-      DatabaseHelper.databaseService = databaseService;
-   }
+   private IDatabaseInfo selectedDbInfo;
 
    public void addConnectionInfo(IDbConnectionInformationContributor contributor) {
       contributors.add(contributor);
@@ -49,19 +43,14 @@ public class DatabaseHelper {
       contributors.remove(contributor);
    }
 
-   public static IOseeDatabaseService getOseeDatabaseService() throws OseeDataStoreException {
-      if (databaseService == null) {
-         throw new OseeDataStoreException("OseeDatabaseService not found");
-      }
-      return databaseService;
-   }
-
-   public static IDatabaseInfo getDatabaseInfo(String serviceId) throws OseeCoreException {
+   @Override
+   public IDatabaseInfo getDatabaseInfo(String serviceId) throws OseeCoreException {
       Conditions.checkNotNull(serviceId, "Service Id to find");
       return findDatabaseInfo(serviceId);
    }
 
-   public static IDatabaseInfo getSelectedDatabaseInfo() throws OseeDataStoreException {
+   @Override
+   public IDatabaseInfo getSelectedDatabaseInfo() throws OseeDataStoreException {
       if (selectedDbInfo == null) {
          String dbConnectionId = OseeProperties.getOseeDbConnectionId();
          if (Strings.isValid(dbConnectionId)) {
@@ -73,7 +62,7 @@ public class DatabaseHelper {
       return selectedDbInfo;
    }
 
-   private static IDatabaseInfo findDatabaseInfo(String serverIdToFind) throws OseeDataStoreException {
+   private IDatabaseInfo findDatabaseInfo(String serverIdToFind) throws OseeDataStoreException {
       Set<String> infoKeys = new HashSet<String>();
       for (IDbConnectionInformationContributor contributor : contributors) {
          try {
@@ -85,7 +74,7 @@ public class DatabaseHelper {
                }
             }
          } catch (Exception ex) {
-            OseeLog.log(DatabaseHelper.class, Level.SEVERE, ex);
+            OseeLog.log(DatabaseInfoRegistryImpl.class, Level.SEVERE, ex);
          }
       }
       throw new OseeDataStoreException(

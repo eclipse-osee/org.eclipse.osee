@@ -17,7 +17,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.internal.Activator;
 import org.eclipse.osee.framework.core.model.internal.fields.UniqueIdField;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -76,7 +75,7 @@ public abstract class AbstractOseeType<KEY> extends NamedIdentity<KEY> implement
       try {
          value = getFieldValue(key);
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(AbstractOseeType.class, Level.SEVERE, ex);
       }
       return value;
    }
@@ -96,7 +95,7 @@ public abstract class AbstractOseeType<KEY> extends NamedIdentity<KEY> implement
       try {
          setField(key, value);
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(AbstractOseeType.class, Level.SEVERE, ex);
       }
    }
 

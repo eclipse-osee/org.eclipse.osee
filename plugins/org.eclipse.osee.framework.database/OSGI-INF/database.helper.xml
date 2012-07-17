@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.eclipse.osee.framework.database.internal.DatabaseHelper">
-   <implementation class="org.eclipse.osee.framework.database.internal.DatabaseHelper"/>
-   <reference bind="setDatabaseService" cardinality="1..1" interface="org.eclipse.osee.framework.database.IOseeDatabaseService" name="IOseeDatabaseService" policy="static"/>
-   <reference bind="addConnectionInfo" cardinality="1..n" interface="org.eclipse.osee.framework.database.core.IDbConnectionInformationContributor" name="IDbConnectionInformationContributor" policy="dynamic" unbind="removeConnectionInfo"/>
-</scr:component>

@@ -38,7 +38,12 @@ import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceFactory;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelingService;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 
 /**
  * @author Roberto E. Escobar
@@ -46,30 +51,11 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 public class OseeModelingServiceImpl implements IOseeModelingService {
 
    private IOseeModelFactoryService modelFactoryService;
-   private IOseeCachingService systemCachingService;
-   private IOseeCachingServiceFactory cachingFactoryService;
+
    private OseeDslFactory modelFactory;
 
    public void setFactoryService(IOseeModelFactoryService modelFactoryService) {
       this.modelFactoryService = modelFactoryService;
-   }
-
-   // This needs to be dynamic since there is a cycle
-   public void setCacheService(IOseeCachingService systemCachingService) {
-      this.systemCachingService = systemCachingService;
-   }
-
-   public void unsetCacheService(IOseeCachingService systemCachingService) {
-      this.systemCachingService = systemCachingService;
-   }
-
-   // This needs to be dynamic since there is a cycle
-   public void setCacheFactory(IOseeCachingServiceFactory cachingFactoryService) {
-      this.cachingFactoryService = cachingFactoryService;
-   }
-
-   public void unsetCacheFactory(IOseeCachingServiceFactory cachingFactoryService) {
-      this.cachingFactoryService = cachingFactoryService;
    }
 
    public void start() {
@@ -80,11 +66,28 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
       modelFactory = null;
    }
 
+   private static BundleContext getBundleContext() throws OseeCoreException {
+      Bundle bundle = FrameworkUtil.getBundle(OseeModelingServiceImpl.class);
+      Conditions.checkNotNull(bundle, "bundle");
+      return bundle.getBundleContext();
+   }
+
+   private static <T> T getService(Class<T> clazz) throws OseeCoreException {
+      BundleContext context = getBundleContext();
+      Conditions.checkNotNull(context, "bundleContext");
+      ServiceReference<T> reference = context.getServiceReference(clazz);
+      Conditions.checkNotNull(reference, "serviceReference");
+      T service = context.getService(reference);
+      Conditions.checkNotNull(service, "service");
+      return service;
+   }
+
    @Override
    public void exportOseeTypes(IProgressMonitor monitor, OutputStream outputStream) throws OseeCoreException {
+      IOseeCachingService caches = getService(IOseeCachingService.class);
       OseeTypeCache cache =
-         new OseeTypeCache(systemCachingService.getArtifactTypeCache(), systemCachingService.getAttributeTypeCache(),
-            systemCachingService.getRelationTypeCache(), systemCachingService.getEnumTypeCache());
+         new OseeTypeCache(caches.getArtifactTypeCache(), caches.getAttributeTypeCache(),
+            caches.getRelationTypeCache(), caches.getEnumTypeCache());
 
       OseeDsl model = modelFactory.createOseeDsl();
 
@@ -105,7 +108,7 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
       }
       OseeDsl inputModel = ModelUtil.loadModel("osee:/" + modelName, request.getModel());
 
-      IOseeCachingService tempCacheService = cachingFactoryService.createCachingService(false);
+      IOseeCachingService tempCacheService = getService(IOseeCachingServiceFactory.class).createCachingService(false);
       OseeTypeCache tempCache =
          new OseeTypeCache(tempCacheService.getArtifactTypeCache(), tempCacheService.getAttributeTypeCache(),
             tempCacheService.getRelationTypeCache(), tempCacheService.getEnumTypeCache());
@@ -134,18 +137,21 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
       Operations.executeWorkAndCheckStatus(operation, monitor);
 
       if (request.isPersistAllowed()) {
+         IOseeCachingService caches = getService(IOseeCachingService.class);
+         ;
+
          // TODO Make this call transaction based
          tempCache.storeAllModified();
          response.setPersisted(true);
          if (isInitializing) {
-            systemCachingService.clearAll();
+            caches.clearAll();
          }
-         systemCachingService.getEnumTypeCache().cacheFrom(tempCache.getEnumTypeCache());
-         systemCachingService.getAttributeTypeCache().cacheFrom(tempCache.getAttributeTypeCache());
-         systemCachingService.getArtifactTypeCache().cacheFrom(tempCache.getArtifactTypeCache());
-         systemCachingService.getRelationTypeCache().cacheFrom(tempCache.getRelationTypeCache());
+         caches.getEnumTypeCache().cacheFrom(tempCache.getEnumTypeCache());
+         caches.getAttributeTypeCache().cacheFrom(tempCache.getAttributeTypeCache());
+         caches.getArtifactTypeCache().cacheFrom(tempCache.getArtifactTypeCache());
+         caches.getRelationTypeCache().cacheFrom(tempCache.getRelationTypeCache());
 
-         systemCachingService.reloadAll();
+         caches.reloadAll();
       } else {
          response.setPersisted(false);
       }

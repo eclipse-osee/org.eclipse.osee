@@ -19,3 +19,4 @@ Import-Package: org.eclipse.osee.framework.core.data,
  org.osgi.util.tracker;version="1.5.0"
 Export-Package: org.eclipse.osee.orcs.db.mock
 Require-Bundle: org.eclipse.core.runtime
+Bundle-ActivationPolicy: lazy

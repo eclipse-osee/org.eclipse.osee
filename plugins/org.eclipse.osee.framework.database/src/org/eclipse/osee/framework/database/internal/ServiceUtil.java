@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2012 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,25 +8,31 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.database.core;
+package org.eclipse.osee.framework.database.internal;
 
-import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.util.Conditions;
-import org.eclipse.osee.framework.database.DatabaseInfoRegistry;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 
-public final class DatabaseInfoManager {
+/**
+ * @author Roberto E. Escobar
+ */
+public final class ServiceUtil {
 
-   private DatabaseInfoManager() {
-      //Utility Class
+   public static final String PLUGIN_ID = "org.eclipse.osee.framework.database";
+
+   private ServiceUtil() {
+      // Utility class
    }
 
    private static BundleContext getBundleContext() throws OseeCoreException {
-      Bundle bundle = FrameworkUtil.getBundle(DatabaseInfoManager.class);
+      Bundle bundle = FrameworkUtil.getBundle(ServiceUtil.class);
       Conditions.checkNotNull(bundle, "bundle");
       return bundle.getBundleContext();
    }
@@ -41,8 +47,20 @@ public final class DatabaseInfoManager {
       return service;
    }
 
-   public static IDatabaseInfo getDataStoreById(String id) throws OseeCoreException {
-      DatabaseInfoRegistry service = getService(DatabaseInfoRegistry.class);
-      return service.getDatabaseInfo(id);
+   public static IOseeDatabaseService getDatabaseService() throws OseeDataStoreException {
+      try {
+         return getService(IOseeDatabaseService.class);
+      } catch (OseeCoreException ex) {
+         throw new OseeDataStoreException(ex);
+      }
    }
+
+   public static IdentityService getIdentityService() throws OseeDataStoreException {
+      try {
+         return getService(IdentityService.class);
+      } catch (OseeCoreException ex) {
+         throw new OseeDataStoreException(ex);
+      }
+   }
+
 }

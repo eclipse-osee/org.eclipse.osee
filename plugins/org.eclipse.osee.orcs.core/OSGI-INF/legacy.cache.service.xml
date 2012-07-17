@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" name="org.eclipse.osee.orcs.core.internal.CachingService">
-   <implementation class="org.eclipse.osee.orcs.core.internal.CachingService"/>
-   <service>
-      <provide interface="org.eclipse.osee.framework.core.services.IOseeCachingService"/>
-   </service>
-   <reference bind="setFactoryService" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IOseeCachingServiceFactory" name="IOseeCachingServiceFactory" policy="static"/>
-   <reference interface="org.eclipse.osee.logger.Log" name="Log" cardinality="1..1" policy="static" bind="setLogger" />
-</scr:component>

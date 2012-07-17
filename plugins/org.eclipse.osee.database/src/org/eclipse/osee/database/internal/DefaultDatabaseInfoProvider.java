@@ -12,7 +12,7 @@ package org.eclipse.osee.database.internal;
 
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.core.DatabaseInfoManager;
+import org.eclipse.osee.framework.database.DatabaseInfoRegistry;
 import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
 import org.eclipse.osee.logger.Log;
 
@@ -22,9 +22,18 @@ import org.eclipse.osee.logger.Log;
 public class DefaultDatabaseInfoProvider implements IDatabaseInfoProvider {
 
    private Log logger;
+   private DatabaseInfoRegistry registry;
 
    public void setLogger(Log logger) {
       this.logger = logger;
+   }
+
+   public void setDatabaseInfoRegistry(DatabaseInfoRegistry registry) {
+      this.registry = registry;
+   }
+
+   private DatabaseInfoRegistry getDatabaseInfoRegistry() {
+      return registry;
    }
 
    private Log getLogger() {
@@ -33,8 +42,7 @@ public class DefaultDatabaseInfoProvider implements IDatabaseInfoProvider {
 
    @Override
    public IDatabaseInfo getDatabaseInfo() throws OseeDataStoreException {
-      IDatabaseInfo databaseInfo = null;
-      databaseInfo = DatabaseInfoManager.getDefault();
+      IDatabaseInfo databaseInfo = getDatabaseInfoRegistry().getSelectedDatabaseInfo();
       getLogger().info("%s [%s as %s]", databaseInfo.getDriver(), databaseInfo.getDatabaseName(),
          databaseInfo.getDatabaseLoginName());
       return databaseInfo;

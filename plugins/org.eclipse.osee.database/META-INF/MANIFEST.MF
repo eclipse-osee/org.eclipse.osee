@@ -10,4 +10,6 @@ Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.database.core,
  org.eclipse.osee.logger
-Require-Bundle: org.eclipse.core.runtime
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.osee.framework.database
+Bundle-ActivationPolicy: lazy

@@ -4,9 +4,9 @@ Bundle-Name: ORCS Integration Test
 Bundle-SymbolicName: org.eclipse.osee.orcs.test
 Bundle-Version: 0.10.1.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
+Fragment-Host: org.eclipse.osee.orcs;bundle-version="0.10.1.qualifier"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: junit.framework;version="4.8.2",
- org.eclipse.osee.console.admin,
+Import-Package: org.eclipse.osee.console.admin,
  org.eclipse.osee.event,
  org.eclipse.osee.executor.admin,
  org.eclipse.osee.framework.core.data,
@@ -26,14 +26,11 @@ Import-Package: junit.framework;version="4.8.2",
  org.eclipse.osee.orcs.search,
  org.eclipse.osee.orcs.transaction,
  org.eclipse.osee.orcs.utility,
- org.junit;version="4.8.2",
- org.junit.runner;version="4.8.2",
- org.junit.runners;version="4.8.2",
- org.osgi.service.event;version="1.3.0"
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.osee.event.osgi,
+ org.osgi.service.event
+Require-Bundle: org.junit,
+ org.eclipse.core.runtime,
+ org.eclipse.osee.framework.database,
+ org.eclipse.osee.framework.core.model,
  org.eclipse.equinox.event,
- org.junit,
  org.eclipse.osee.logger,
- org.eclipse.osee.framework.core.model
-Export-Package: org.eclipse.osee.orcs
+ org.eclipse.osee.event.osgi

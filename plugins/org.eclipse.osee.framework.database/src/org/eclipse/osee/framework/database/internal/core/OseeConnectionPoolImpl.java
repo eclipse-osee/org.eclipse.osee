@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.database.core.IConnectionFactory;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.internal.DatabaseHelper;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -67,7 +66,8 @@ public class OseeConnectionPoolImpl {
                throw ex;
             }
             connections.add(connection);
-            OseeLog.logf(DatabaseHelper.class, Level.INFO, "DbConnection: [%s] - [%d]", dbUrl, connections.size());
+            OseeLog.logf(OseeConnectionPoolImpl.class, Level.INFO, "DbConnection: [%s] - [%d]", dbUrl,
+               connections.size());
             toReturn = connection;
          }
       }
@@ -94,7 +94,7 @@ public class OseeConnectionPoolImpl {
             connection.expireLease();
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(DatabaseHelper.class, Level.SEVERE, ex);
+         OseeLog.log(OseeConnectionPoolImpl.class, Level.SEVERE, ex);
          removeConnection(connection);
       }
       //System.out.println("releasing.  num available: " + connectionsSemaphore.availablePermits());
@@ -109,6 +109,20 @@ public class OseeConnectionPoolImpl {
       for (OseeConnectionImpl connection : copy) {
          if (connection.isStale()) {
             connection.destroy();
+         }
+      }
+   }
+
+   public void releaseAll() {
+      List<OseeConnectionImpl> copy;
+      synchronized (connections) {
+         copy = new LinkedList<OseeConnectionImpl>(connections);
+      }
+      for (OseeConnectionImpl connection : copy) {
+         try {
+            connection.destroy();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(OseeConnectionPoolImpl.class, Level.SEVERE, ex);
          }
       }
    }

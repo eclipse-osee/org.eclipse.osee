@@ -6,4 +6,5 @@
    </service>
    <reference bind="setApplicationServerManager" cardinality="1..1" interface="org.eclipse.osee.framework.core.server.IApplicationServerManager" name="IApplicationServerManager" policy="static"/>
    <reference bind="setSessionManager" cardinality="1..1" interface="org.eclipse.osee.framework.core.server.ISessionManager" name="ISessionManager" policy="static"/>
+   <reference bind="setDbInfoRegistry" cardinality="1..1" interface="org.eclipse.osee.framework.database.DatabaseInfoRegistry" name="DatabaseInfoRegistry" policy="static"/>
 </scr:component>

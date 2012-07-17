@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.core.server.internal.BuildTypeIdentifier;
 import org.eclipse.osee.framework.core.server.internal.compatibility.OseeSql_0_9_1;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.database.DatabaseInfoRegistry;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.DatabaseInfoManager;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -36,11 +36,13 @@ import org.eclipse.osee.logger.Log;
 public final class SessionFactory implements IOseeTypeFactory {
    private final BuildTypeIdentifier typeIdentifier;
    private final Log logger;
+   private final DatabaseInfoRegistry registry;
    private final IOseeDatabaseService dbService;
 
-   public SessionFactory(Log logger, IOseeDatabaseService dbService, BuildTypeIdentifier typeIdentifier) {
+   public SessionFactory(Log logger, DatabaseInfoRegistry registry, IOseeDatabaseService dbService, BuildTypeIdentifier typeIdentifier) {
       this.typeIdentifier = typeIdentifier;
       this.logger = logger;
+      this.registry = registry;
       this.dbService = dbService;
    }
 
@@ -77,7 +79,7 @@ public final class SessionFactory implements IOseeTypeFactory {
       OseeSessionGrant sessionGrant = new OseeSessionGrant(session.getGuid());
       sessionGrant.setCreationRequired(userToken.isCreationRequired());
       sessionGrant.setUserToken(userToken);
-      sessionGrant.setDatabaseInfo(DatabaseInfoManager.getDefault());
+      sessionGrant.setDatabaseInfo(registry.getSelectedDatabaseInfo());
 
       Properties properties = getSQLProperties(dbService, session.getClientVersion());
       sessionGrant.setSqlProperties(properties);

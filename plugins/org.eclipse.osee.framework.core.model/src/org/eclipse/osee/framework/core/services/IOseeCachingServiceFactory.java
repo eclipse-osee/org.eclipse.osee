@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.services;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+
 /**
  * @author Roberto E. Escobar
  */
 public interface IOseeCachingServiceFactory {
 
-   IOseeCachingService createCachingService(boolean needsPriming);
+   IOseeCachingService createCachingService(boolean needsPriming) throws OseeCoreException;
 }

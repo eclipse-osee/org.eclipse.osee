@@ -8,7 +8,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-
 package org.eclipse.osee.framework.database.core;
 
 import java.sql.DatabaseMetaData;
@@ -19,7 +18,7 @@ import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.internal.DatabaseHelper;
+import org.eclipse.osee.framework.database.internal.ServiceUtil;
 
 /**
  * Handles connection recovery in the event of database connection being lost
@@ -29,7 +28,7 @@ import org.eclipse.osee.framework.database.internal.DatabaseHelper;
 public final class ConnectionHandler {
 
    protected static IOseeDatabaseService getDatabase() throws OseeDataStoreException {
-      return DatabaseHelper.getOseeDatabaseService();
+      return ServiceUtil.getDatabaseService();
    }
 
    public static IOseeSequence getSequence() throws OseeDataStoreException {

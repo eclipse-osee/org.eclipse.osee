@@ -24,7 +24,7 @@ import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
-import org.eclipse.osee.framework.database.core.DatabaseInfoManager;
+import org.eclipse.osee.framework.database.DatabaseInfoRegistry;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
@@ -34,6 +34,11 @@ public class ServerStatsCommand implements ConsoleCommand {
 
    private IApplicationServerManager appManager;
    private ISessionManager sessionManager;
+   private DatabaseInfoRegistry registry;
+
+   public void setDbInfoRegistry(DatabaseInfoRegistry registry) {
+      this.registry = registry;
+   }
 
    public void setApplicationServerManager(IApplicationServerManager appManager) {
       this.appManager = appManager;
@@ -41,6 +46,10 @@ public class ServerStatsCommand implements ConsoleCommand {
 
    public void setSessionManager(ISessionManager sessionManager) {
       this.sessionManager = sessionManager;
+   }
+
+   private DatabaseInfoRegistry getDbInfoRegistry() {
+      return registry;
    }
 
    private IApplicationServerManager getApplicationServerManager() {
@@ -68,16 +77,18 @@ public class ServerStatsCommand implements ConsoleCommand {
 
    @Override
    public Callable<?> createCallable(Console console, ConsoleParameters params) {
-      return new ServerStatsCallable(getApplicationServerManager(), getSessionManager(), console);
+      return new ServerStatsCallable(getDbInfoRegistry(), getApplicationServerManager(), getSessionManager(), console);
    }
 
    private static final class ServerStatsCallable implements Callable<Boolean> {
+      private final DatabaseInfoRegistry registry;
       private final IApplicationServerManager manager;
       private final ISessionManager sessionManager;
       private final Console console;
 
-      public ServerStatsCallable(IApplicationServerManager manager, ISessionManager sessionManager, Console console) {
+      public ServerStatsCallable(DatabaseInfoRegistry registry, IApplicationServerManager manager, ISessionManager sessionManager, Console console) {
          super();
+         this.registry = registry;
          this.manager = manager;
          this.sessionManager = sessionManager;
          this.console = console;
@@ -96,7 +107,7 @@ public class ServerStatsCommand implements ConsoleCommand {
             DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(manager.getDateStarted()));
 
          console.writeln("Code Base Location: [%s]", System.getProperty("user.dir"));
-         console.writeln("Datastore: [%s]", DatabaseInfoManager.getDefault().toString());
+         console.writeln("Datastore: [%s]", registry.getSelectedDatabaseInfo().toString());
          console.writeln("Binary Data Path: [%s]", OseeServerProperties.getOseeApplicationServerData(null));
          console.writeln();
 

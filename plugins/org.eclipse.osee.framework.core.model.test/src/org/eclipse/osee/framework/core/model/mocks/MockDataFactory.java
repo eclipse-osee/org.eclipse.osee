@@ -26,24 +26,16 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
-import org.eclipse.osee.framework.core.model.OseeCachingService;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.access.Scope;
-import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
-import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
-import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
-import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 import org.eclipse.osee.framework.core.model.type.OseeEnumTypeFactory;
 import org.eclipse.osee.framework.core.model.type.RelationType;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
-import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
 
@@ -138,20 +130,6 @@ public final class MockDataFactory {
       String order = RelationOrderBaseTypes.values[index % RelationTypeMultiplicity.values().length].getGuid();
       return new RelationType(random.nextLong(), "relType_" + index, "sideA_" + index, "sideB_" + index, artTypeA,
          artTypeB, multiplicity, order);
-   }
-
-   public static IOseeCachingServiceProvider createCachingProvider() {
-      BranchCache brCache = new BranchCache(new MockOseeDataAccessor<String, Branch>());
-      TransactionCache txCache = new TransactionCache();
-      txCache.setAccessor(new MockOseeTransactionDataAccessor());
-      ArtifactTypeCache artCache = new ArtifactTypeCache(new MockOseeDataAccessor<Long, ArtifactType>());
-      AttributeTypeCache attrCache = new AttributeTypeCache(new MockOseeDataAccessor<Long, AttributeType>());
-      RelationTypeCache relCache = new RelationTypeCache(new MockOseeDataAccessor<Long, RelationType>());
-      OseeEnumTypeCache enumCache = new OseeEnumTypeCache(new MockOseeDataAccessor<Long, OseeEnumType>());
-
-      IOseeCachingService service =
-         new OseeCachingService(brCache, txCache, artCache, attrCache, relCache, enumCache, null);
-      return new MockOseeCachingServiceProvider(service);
    }
 
 }

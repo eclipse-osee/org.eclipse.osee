@@ -6,6 +6,6 @@
       <provide interface="org.eclipse.osee.framework.database.HasSequence"/>
       <provide interface="org.eclipse.osee.framework.database.DatabaseService"/>
    </service>
-   <reference bind="setDatabaseInfoProvider" cardinality="1..1" interface="org.eclipse.osee.framework.database.core.IDatabaseInfoProvider" name="IDatabaseInfoProvider" policy="static" />
    <reference bind="addConnectionFactory" unbind="removeConnectionFactory" cardinality="0..n" interface="org.eclipse.osee.framework.database.core.IConnectionFactory" name="IConnectionFactory" policy="dynamic"/>
+   <reference bind="setDatabaseInfoProvider" cardinality="1..1" interface="org.eclipse.osee.framework.database.core.IDatabaseInfoProvider" name="IDatabaseInfoProvider" policy="static"/>
 </scr:component>
