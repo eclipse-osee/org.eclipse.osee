@@ -46,7 +46,6 @@ public class OrcsIntegrationRule extends OsgiRule {
       @OsgiService public ExecutorAdmin executorAdmin;
       @OsgiService public IOseeCachingService cachingService;
       @OsgiService public OrcsDataStore dataStore;
-      @OsgiService public DataStoreTypeCache typeCache;
       // @formatter:on
    }
 

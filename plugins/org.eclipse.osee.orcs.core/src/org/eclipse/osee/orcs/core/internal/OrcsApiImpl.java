@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ApplicationContext;
-import org.eclipse.osee.orcs.DataStoreTypeCache;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
@@ -56,7 +55,6 @@ public class OrcsApiImpl implements OrcsApi {
    private OrcsDataStore dataStore;
    private AttributeClassResolver resolver;
    private IOseeCachingService cacheService;
-   private DataStoreTypeCache dataStoreTypeCache;
 
    private ExecutorAdmin executorAdmin;
    private SystemPreferences preferences;
@@ -83,10 +81,6 @@ public class OrcsApiImpl implements OrcsApi {
       this.cacheService = cacheService;
    }
 
-   public void setDataStoreTypeCache(DataStoreTypeCache dataStoreTypeCache) {
-      this.dataStoreTypeCache = dataStoreTypeCache;
-   }
-
    public void setExecutorAdmin(ExecutorAdmin executorAdmin) {
       this.executorAdmin = executorAdmin;
    }
@@ -96,10 +90,10 @@ public class OrcsApiImpl implements OrcsApi {
    }
 
    public void start() {
-      RelationFactory relationFactory = new RelationFactory(dataStoreTypeCache.getRelationTypeCache());
+      RelationFactory relationFactory = new RelationFactory(cacheService.getRelationTypeCache());
 
       AttributeFactory attributeFactory =
-         new AttributeFactory(resolver, dataStoreTypeCache.getAttributeTypeCache(), dataStore.getDataFactory());
+         new AttributeFactory(resolver, cacheService.getAttributeTypeCache(), dataStore.getDataFactory());
 
       ArtifactFactory artifactFactory =
          new ArtifactFactory(dataStore.getDataFactory(), attributeFactory, relationFactory,
@@ -115,7 +109,7 @@ public class OrcsApiImpl implements OrcsApi {
       loaderFactory = new ArtifactLoaderFactoryImpl(dataStore.getDataLoaderFactory(), builderFactory);
 
       queryModule =
-         new QueryModule(logger, dataStore.getQueryEngine(), loaderFactory, dataStoreTypeCache.getAttributeTypeCache());
+         new QueryModule(logger, dataStore.getQueryEngine(), loaderFactory, cacheService.getAttributeTypeCache());
 
       indexerModule = new IndexerModule(logger, preferences, executorAdmin, dataStore.getQueryEngineIndexer());
       indexerModule.start();
@@ -155,8 +149,8 @@ public class OrcsApiImpl implements OrcsApi {
    @Override
    public GraphReadable getGraph(ApplicationContext context) {
       SessionContext sessionContext = getSessionContext(context);
-      return new RelationGraphImpl(sessionContext, loaderFactory, dataStoreTypeCache.getArtifactTypeCache(),
-         dataStoreTypeCache.getRelationTypeCache());
+      return new RelationGraphImpl(sessionContext, loaderFactory, cacheService.getArtifactTypeCache(),
+         cacheService.getRelationTypeCache());
    }
 
    @Override

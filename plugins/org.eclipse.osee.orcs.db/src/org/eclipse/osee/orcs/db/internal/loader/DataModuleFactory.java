@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.DataStoreTypeCache;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.DataFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
@@ -51,13 +50,13 @@ public class DataModuleFactory {
       this.logger = logger;
    }
 
-   public void create(IOseeDatabaseService dbService, IdFactory idFactory, IdentityService identityService, SqlProvider sqlProvider, IOseeCachingService cacheService, DataStoreTypeCache cache, DataProxyFactoryProvider proxyProvider) {
+   public void create(IOseeDatabaseService dbService, IdFactory idFactory, IdentityService identityService, SqlProvider sqlProvider, IOseeCachingService cacheService, DataProxyFactoryProvider proxyProvider) {
       ProxyDataFactory proxyDataFactory = createDataFactory(proxyProvider, cacheService.getAttributeTypeCache());
       OrcsObjectFactory rowDataFactory = createOrcsObjectFactory(identityService, proxyDataFactory);
 
       dataFactory = createDataFactory(rowDataFactory, idFactory, cacheService.getArtifactTypeCache());
 
-      SqlHandlerFactory handlerFactory = createHandlerFactory(identityService, cache);
+      SqlHandlerFactory handlerFactory = createHandlerFactory(identityService, cacheService);
       SqlArtifactLoader loader = createArtifactLoader(dbService, handlerFactory, sqlProvider, rowDataFactory);
       dataLoaderFactory = createDataLoader(dbService, loader, cacheService.getBranchCache());
    }
@@ -87,7 +86,7 @@ public class DataModuleFactory {
       return new DataFactoryImpl(idFactory, factory, artifactTypeCache);
    }
 
-   protected SqlHandlerFactory createHandlerFactory(IdentityService identityService, DataStoreTypeCache cache) {
+   protected SqlHandlerFactory createHandlerFactory(IdentityService identityService, IOseeCachingService cache) {
       Map<Class<? extends Criteria<?>>, Class<? extends SqlHandler<?, ?>>> handleMap =
          new HashMap<Class<? extends Criteria<?>>, Class<? extends SqlHandler<?, ?>>>();
 

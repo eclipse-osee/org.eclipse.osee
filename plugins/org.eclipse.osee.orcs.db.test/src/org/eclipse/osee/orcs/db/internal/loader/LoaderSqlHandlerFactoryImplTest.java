@@ -17,9 +17,9 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.DataStoreTypeCache;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
@@ -49,7 +49,7 @@ public class LoaderSqlHandlerFactoryImplTest {
    // @formatter:off
    @Mock private Log logger;
    @Mock private IdentityService identityService;
-   @Mock private DataStoreTypeCache cache;
+   @Mock private IOseeCachingService cache;
    // @formatter:on
 
    private SqlHandlerFactory factory;
@@ -87,7 +87,7 @@ public class LoaderSqlHandlerFactoryImplTest {
       assertHandler(handler, clazz, priority, logger, identityService, cache);
    }
 
-   private static void assertHandler(SqlHandler<?, ?> actual, Class<?> type, SqlHandlerPriority priority, Log logger, IdentityService idService, DataStoreTypeCache caches) {
+   private static void assertHandler(SqlHandler<?, ?> actual, Class<?> type, SqlHandlerPriority priority, Log logger, IdentityService idService, IOseeCachingService caches) {
       Assert.assertNotNull(actual);
       Assert.assertEquals(type, actual.getClass());
       Assert.assertEquals(logger, actual.getLogger());

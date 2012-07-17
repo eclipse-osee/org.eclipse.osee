@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.DataStoreTypeCache;
 import org.eclipse.osee.orcs.core.ds.ArtifactBuilder;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
@@ -71,7 +70,6 @@ public class DataLoaderImplTest {
     @Mock private IdentityService identityService;
     @Mock private SqlProvider sqlProvider;
     @Mock private IOseeCachingService cacheService;
-    @Mock private DataStoreTypeCache cache;
    
     @Mock private ArtifactBuilder builder;
     
@@ -103,7 +101,7 @@ public class DataLoaderImplTest {
 
       when(cacheService.getBranchCache()).thenReturn(branchCache);
 
-      SqlHandlerFactory handlerFactory = module.createHandlerFactory(identityService, cache);
+      SqlHandlerFactory handlerFactory = module.createHandlerFactory(identityService, cacheService);
       SqlArtifactLoader loader = module.createArtifactLoader(dbService, handlerFactory, sqlProvider, rowDataFactory);
 
       spyLoader = spy(loader);

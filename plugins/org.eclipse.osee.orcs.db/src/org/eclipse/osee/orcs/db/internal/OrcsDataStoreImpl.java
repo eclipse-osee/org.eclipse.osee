@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.DataStoreTypeCache;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.DataFactory;
@@ -44,7 +43,6 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
    private IOseeDatabaseService dbService;
    private IdentityService identityService;
    private IOseeCachingService cacheService;
-   private DataStoreTypeCache cache;
    private SystemPreferences preferences;
    private ExecutorAdmin executorAdmin;
    private IResourceManager resourceManager;
@@ -69,14 +67,8 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
       this.dbService = dbService;
    }
 
-   //TODO fix these two services
    public void setCachingService(IOseeCachingService cacheService) {
       this.cacheService = cacheService;
-   }
-
-   //TODO other
-   public void setDataStoreTypeCache(DataStoreTypeCache cache) {
-      this.cache = cache;
    }
 
    public void setExecutorAdmin(ExecutorAdmin executorAdmin) {
@@ -111,7 +103,7 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
       IdFactory idFactory = new IdFactoryImpl(dbService, cacheService.getBranchCache());
 
       dataModuleFactory = new DataModuleFactory(logger);
-      dataModuleFactory.create(dbService, idFactory, identityService, sqlProvider, cacheService, cache, proxyProvider);
+      dataModuleFactory.create(dbService, idFactory, identityService, sqlProvider, cacheService, proxyProvider);
 
       branchStore =
          new BranchDataStoreImpl(logger, dbService, identityService, cacheService, preferences, executorAdmin,
@@ -120,7 +112,7 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
       dataStoreAdmin = new DataStoreAdminImpl(logger, dbService, identityService, branchStore, preferences);
 
       queryModule = new QueryModuleFactory(logger);
-      queryModule.create(executorAdmin, dbService, identityService, sqlProvider, cacheService, cache, resourceManager);
+      queryModule.create(executorAdmin, dbService, identityService, sqlProvider, cacheService, resourceManager);
    }
 
    public void stop() {

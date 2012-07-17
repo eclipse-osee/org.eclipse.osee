@@ -16,10 +16,10 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.jdk.core.util.PriorityComparator;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.DataStoreTypeCache;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.DataPostProcessorFactory;
@@ -39,14 +39,14 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
 
    private final Log logger;
    private final IdentityService idService;
-   private final DataStoreTypeCache caches;
+   private final IOseeCachingService caches;
    private final TagProcessor tagProcessor;
 
-   public SqlHandlerFactoryImpl(Log logger, IdentityService idService, DataStoreTypeCache caches, Map<Class<? extends Criteria<?>>, Class<? extends SqlHandler<?, ?>>> handleMap) {
+   public SqlHandlerFactoryImpl(Log logger, IdentityService idService, IOseeCachingService caches, Map<Class<? extends Criteria<?>>, Class<? extends SqlHandler<?, ?>>> handleMap) {
       this(logger, idService, caches, null, handleMap, null);
    }
 
-   public SqlHandlerFactoryImpl(Log logger, IdentityService idService, DataStoreTypeCache caches, TagProcessor tagProcessor, Map<Class<? extends Criteria<?>>, Class<? extends SqlHandler<?, ?>>> handleMap, Map<Class<? extends SqlHandler<?, ?>>, DataPostProcessorFactory<?>> factoryMap) {
+   public SqlHandlerFactoryImpl(Log logger, IdentityService idService, IOseeCachingService caches, TagProcessor tagProcessor, Map<Class<? extends Criteria<?>>, Class<? extends SqlHandler<?, ?>>> handleMap, Map<Class<? extends SqlHandler<?, ?>>, DataPostProcessorFactory<?>> factoryMap) {
       this.logger = logger;
       this.idService = idService;
       this.caches = caches;
