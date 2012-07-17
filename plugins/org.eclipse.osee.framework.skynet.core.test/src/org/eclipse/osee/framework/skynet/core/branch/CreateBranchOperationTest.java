@@ -51,9 +51,11 @@ public class CreateBranchOperationTest {
       workingBranch.setBranchState(BranchState.DELETED);
       BranchManager.persist(workingBranch);
 
-      BranchManager.createWorkingBranch(workingBranch, workingBranch.getName() + " child", folder);
+      Branch workingBranch2 =
+         BranchManager.createWorkingBranch(workingBranch, workingBranch.getName() + " child", folder);
 
       Operations.executeWorkAndCheckStatus(new DeleteBranchOperation(workingBranch));
+      Operations.executeWorkAndCheckStatus(new DeleteBranchOperation(workingBranch2));
 
       folder.deleteAndPersist();
    }
@@ -69,9 +71,11 @@ public class CreateBranchOperationTest {
       workingBranch.setBranchState(BranchState.REBASELINED);
       BranchManager.persist(workingBranch);
 
-      BranchManager.createWorkingBranch(workingBranch, workingBranch.getName() + " child", folder);
+      Branch workingBranch2 =
+         BranchManager.createWorkingBranch(workingBranch, workingBranch.getName() + " child", folder);
 
       Operations.executeWorkAndCheckStatus(new DeleteBranchOperation(workingBranch));
+      Operations.executeWorkAndCheckStatus(new DeleteBranchOperation(workingBranch2));
 
       folder.deleteAndPersist();
 

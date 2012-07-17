@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.dsl.integration.AccessModelInterpreter;
-import org.eclipse.osee.framework.core.dsl.integration.OseeDslAccessModel;
 import org.eclipse.osee.framework.core.dsl.integration.RoleContextProvider;
 import org.eclipse.osee.framework.core.dsl.ui.integration.operations.OseeDslRoleContextProvider;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -88,7 +87,7 @@ public class FrameworkAccessControlProxy implements CmAccessControl, HasAccessMo
          FrameworkDslProvider frameworkDslProvider = new FrameworkDslProvider("osee:/xtext/framework.access.osee");
          RoleContextProvider roleProvider = new OseeDslRoleContextProvider(frameworkDslProvider);
 
-         accessModel = new OseeDslAccessModel(interpreter, frameworkDslProvider);
+         accessModel = new FrameworkAccessModel(interpreter, frameworkDslProvider);
          frameworkAccessControl = new FrameworkAccessControl(roleProvider);
 
          listener = new DslUpdateListener(frameworkDslProvider);

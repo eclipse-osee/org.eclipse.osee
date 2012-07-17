@@ -119,7 +119,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, "Error determining access applicibility", ex);
+         OseeLog.log(Activator.class, Level.INFO, "Error determining access applicibility", ex);
       }
       return result;
    }
