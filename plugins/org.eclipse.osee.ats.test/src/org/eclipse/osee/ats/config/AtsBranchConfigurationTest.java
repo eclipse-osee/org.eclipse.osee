@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
-import org.eclipse.osee.ats.core.client.version.AtsVersionStore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
@@ -169,8 +168,7 @@ public class AtsBranchConfigurationTest {
             ChangeType.Problem, "1", false, null, selectedActionableItems, new Date(), AtsUsersClient.getUser(), null,
             transaction);
       TeamWorkFlowArtifact teamWf = ActionManager.getTeams(actionArt).iterator().next();
-      AtsVersionService.get().setTargetedVersion(teamWf, versionToTarget);
-      AtsVersionStore.setTargetedVersionLink(teamWf, versionToTarget);
+      AtsVersionService.get().setTargetedVersionAndStore(teamWf, versionToTarget);
       teamWf.persist(transaction);
       transaction.execute();
 

@@ -79,15 +79,15 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
 
    public static boolean promptChangeType(final Collection<? extends TeamWorkFlowArtifact> teams, boolean persist) {
 
-      for (TeamWorkFlowArtifact team : teams) {
-         if (AtsVersionService.get().isReleased(team) || AtsVersionService.get().isVersionLocked(team)) {
-            AWorkbench.popup("ERROR",
-               "Team Workflow\n \"" + team.getName() + "\"\n version is locked or already released.");
-            return false;
-         }
-      }
-      final ChangeTypeDialog dialog = new ChangeTypeDialog(Displays.getActiveShell());
       try {
+         for (TeamWorkFlowArtifact team : teams) {
+            if (AtsVersionService.get().isReleased(team) || AtsVersionService.get().isVersionLocked(team)) {
+               AWorkbench.popup("ERROR",
+                  "Team Workflow\n \"" + team.getName() + "\"\n version is locked or already released.");
+               return false;
+            }
+         }
+         final ChangeTypeDialog dialog = new ChangeTypeDialog(Displays.getActiveShell());
          if (teams.size() == 1) {
             ChangeType changeType = ChangeTypeUtil.getChangeType(teams.iterator().next());
             if (changeType != null) {

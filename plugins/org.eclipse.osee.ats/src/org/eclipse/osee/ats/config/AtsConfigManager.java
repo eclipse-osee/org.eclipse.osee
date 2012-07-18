@@ -179,11 +179,11 @@ public class AtsConfigManager extends AbstractOperation {
       if (versionNames != null) {
          for (String name : versionNames) {
             IAtsVersion version = VersionFactory.createVersion(name);
-            AtsVersionService.get().setTeamDefinition(version, teamDef);
             teamDef.getVersions().add(version);
             VersionArtifactStore verStore = new VersionArtifactStore(version);
             verStore.getArtifactOrCreate(transaction);
             verStore.saveToArtifact(transaction);
+            AtsVersionService.get().setTeamDefinition(version, teamDef);
          }
       }
    }

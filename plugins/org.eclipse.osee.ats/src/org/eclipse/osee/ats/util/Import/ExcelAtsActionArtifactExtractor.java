@@ -38,10 +38,10 @@ import org.eclipse.osee.ats.core.client.team.CreateTeamOption;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.client.version.AtsVersionStore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -196,7 +196,7 @@ public class ExcelAtsActionArtifactExtractor {
                      throw new OseeArgumentException("No version [%s] configured for Team Definition [%s]",
                         aData.version, team.getTeamDefinition());
                   }
-                  AtsVersionStore.setTargetedVersionLink(team, version);
+                  AtsVersionService.get().setTargetedVersionAndStore(team, version);
                }
             }
             if (aData.estimatedHours != null) {

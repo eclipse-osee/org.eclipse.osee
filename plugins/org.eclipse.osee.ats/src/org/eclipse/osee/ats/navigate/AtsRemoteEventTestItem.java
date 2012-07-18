@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
-import org.eclipse.osee.ats.core.client.version.AtsVersionStore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
@@ -182,7 +181,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
    private void makeChanges6(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       // Make changes and transition
-      AtsVersionStore.setTargetedVersionLink(teamArt, getVersion257());
+      AtsVersionService.get().setTargetedVersionAndStore(teamArt, getVersion257());
       teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "no");
       teamArt.persist("Remote Event Test");
    }
@@ -200,13 +199,13 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       teamArt.setSoleAttributeFromString(AtsAttributeTypes.Description, "description 4");
       ChangeTypeUtil.setChangeType(teamArt, ChangeType.Support);
       teamArt.setSoleAttributeFromString(AtsAttributeTypes.PriorityType, "3");
-      AtsVersionStore.setTargetedVersionLink(teamArt, getVersion258());
+      AtsVersionService.get().setTargetedVersionAndStore(teamArt, getVersion258());
       teamArt.persist("Remote Event Test");
    }
 
    private void makeChanges3(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       // Make changes and persist
-      AtsVersionStore.setTargetedVersionLink(teamArt, getVersion257());
+      AtsVersionService.get().setTargetedVersionAndStore(teamArt, getVersion257());
       teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "no");
       teamArt.persist(getClass().getSimpleName());
    }
@@ -224,7 +223,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       ChangeTypeUtil.setChangeType(teamArt, ChangeType.Problem);
       teamArt.setSoleAttributeFromString(AtsAttributeTypes.PriorityType, "2");
       teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "yes");
-      AtsVersionStore.setTargetedVersionLink(teamArt, getVersion256());
+      AtsVersionService.get().setTargetedVersionAndStore(teamArt, getVersion256());
       teamArt.persist("Remote Event Test");
    }
 

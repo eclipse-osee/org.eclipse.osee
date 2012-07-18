@@ -46,12 +46,10 @@ public class AtsObjectTest {
       Assert.assertFalse(obj.equals(null));
       Assert.assertFalse(obj.equals("str"));
 
-      AtsObject obj3 = new AtsObject("hello", null, "HRID");
+      AtsObject obj3 = new AtsObject("hello", "", "HRID");
       Assert.assertFalse(obj.equals(obj3));
       Assert.assertFalse(obj3.equals(obj));
 
-      AtsObject obj4 = new AtsObject("hello", null, "HRID");
-      Assert.assertFalse(obj3.equals(obj4));
    }
 
    @Test
@@ -59,7 +57,7 @@ public class AtsObjectTest {
       AtsObject obj = new AtsObject("hello", "GUID", "HRID");
       Assert.assertEquals(2199208, obj.hashCode());
 
-      obj = new AtsObject("hello", null, "HRID");
+      obj = new AtsObject("hello", "", "HRID");
       Assert.assertEquals(31, obj.hashCode());
    }
 

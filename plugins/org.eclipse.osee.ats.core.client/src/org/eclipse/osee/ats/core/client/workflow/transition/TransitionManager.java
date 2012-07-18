@@ -367,7 +367,7 @@ public class TransitionManager {
 
          // Only check this if TeamWorkflow, not for reviews
          if (awa.isOfType(AtsArtifactTypes.TeamWorkflow) && (teamDefRequiresTargetedVersion || pageRequiresTargetedVersion) && //
-         AtsVersionService.get().hasTargetedVersion(awa) && //
+         !AtsVersionService.get().hasTargetedVersion(awa) && //
          !toStateDef.getStateType().isCancelledState()) {
             results.addResult(awa, TransitionResult.MUST_BE_TARGETED_FOR_VERSION);
          }

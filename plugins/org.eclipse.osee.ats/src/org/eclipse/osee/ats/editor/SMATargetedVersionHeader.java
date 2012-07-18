@@ -98,7 +98,7 @@ public class SMATargetedVersionHeader extends Composite {
 
    }
 
-   private void updateLabel(AbstractWorkflowArtifact sma) {
+   private void updateLabel(AbstractWorkflowArtifact sma) throws OseeCoreException {
       if (Widgets.isAccessible(valueLabel)) {
          String value = "Not Set";
          if (AtsVersionService.get().hasTargetedVersion(sma)) {

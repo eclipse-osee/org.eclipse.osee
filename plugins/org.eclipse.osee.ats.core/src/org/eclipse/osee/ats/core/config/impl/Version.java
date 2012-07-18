@@ -6,15 +6,18 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.api.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
+import org.eclipse.osee.ats.core.internal.Activator;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
@@ -123,7 +126,12 @@ public class Version extends AtsObject implements IAtsVersion {
       if (Strings.isValid(baselineBranchGuid)) {
          return baselineBranchGuid;
       } else {
-         return AtsVersionService.get().getTeamDefinition(this).getTeamBranchGuid();
+         try {
+            return AtsVersionService.get().getTeamDefinition(this).getTeamBranchGuid();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            return null;
+         }
       }
    }
 

@@ -326,7 +326,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IAtsMetricsPro
    }
 
    @Override
-   public IAtsVersion getMetricsVersionArtifact() {
+   public IAtsVersion getMetricsVersionArtifact() throws OseeCoreException {
       for (TaskArtifact taskArt : tasks) {
          if (AtsVersionService.get().hasTargetedVersion(taskArt)) {
             return AtsVersionService.get().getTargetedVersion(taskArt);

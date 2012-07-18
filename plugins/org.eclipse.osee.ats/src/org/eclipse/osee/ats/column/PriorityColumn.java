@@ -62,14 +62,14 @@ public class PriorityColumn extends XViewerAtsAttributeValueColumn {
 
    public static boolean promptChangePriority(final Collection<? extends TeamWorkFlowArtifact> teams, boolean persist) {
 
-      for (TeamWorkFlowArtifact team : teams) {
-         if (AtsVersionService.get().isReleased(team) || AtsVersionService.get().isVersionLocked(team)) {
-            AWorkbench.popup("ERROR",
-               "Team Workflow\n \"" + team.getName() + "\"\n version is locked or already released.");
-            return false;
-         }
-      }
       try {
+         for (TeamWorkFlowArtifact team : teams) {
+            if (AtsVersionService.get().isReleased(team) || AtsVersionService.get().isVersionLocked(team)) {
+               AWorkbench.popup("ERROR",
+                  "Team Workflow\n \"" + team.getName() + "\"\n version is locked or already released.");
+               return false;
+            }
+         }
          PromptChangeUtil.promptChangeAttribute(teams, AtsAttributeTypes.PriorityType, persist, false);
          return true;
       } catch (Exception ex) {

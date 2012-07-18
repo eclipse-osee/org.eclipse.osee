@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.CreateTeamOption;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
-import org.eclipse.osee.ats.core.client.version.AtsVersionStore;
+import org.eclipse.osee.ats.core.client.version.AtsVersionStoreImpl;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -196,7 +196,7 @@ public class CreateTasksOperation extends AbstractOperation {
                Arrays.asList(AtsUsersClient.getUser()), transaction, createdDate, createdBy, null,
                CreateTeamOption.Duplicate_If_Exists);
          if (destTeamWf != null) {
-            AtsVersionStore.setTargetedVersionLink(destTeamWf, destVersion);
+            AtsVersionService.get().setTargetedVersionAndStore(destTeamWf, destVersion);
          }
       }
       return destTeamWf;

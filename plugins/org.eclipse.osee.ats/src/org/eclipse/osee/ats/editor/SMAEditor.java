@@ -617,7 +617,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
    }
 
    @Override
-   public IAtsVersion getMetricsVersionArtifact() {
+   public IAtsVersion getMetricsVersionArtifact() throws OseeCoreException {
       return AtsVersionService.get().getTargetedVersion(awa);
    }
 

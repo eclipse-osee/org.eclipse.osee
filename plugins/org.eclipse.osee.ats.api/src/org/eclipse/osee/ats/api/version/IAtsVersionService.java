@@ -5,28 +5,26 @@
  */
 package org.eclipse.osee.ats.api.version;
 
-import java.util.Collection;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 public interface IAtsVersionService {
 
-   boolean hasTargetedVersion(Object object);
+   boolean hasTargetedVersion(Object object) throws OseeCoreException;
 
-   IAtsVersion getTargetedVersion(Object object);
+   IAtsVersion getTargetedVersion(Object object) throws OseeCoreException;
 
-   IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, IAtsVersion version);
+   IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, IAtsVersion version) throws OseeCoreException;
 
-   Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef);
+   IAtsVersion setTargetedVersionAndStore(IAtsTeamWorkflow teamWf, IAtsVersion build) throws OseeCoreException;
 
-   void addVersion(IAtsTeamDefinition teamDef, IAtsVersion version);
+   IAtsTeamDefinition getTeamDefinition(IAtsVersion version) throws OseeCoreException;
 
-   public IAtsTeamDefinition getTeamDefinition(IAtsVersion version);
+   void setTeamDefinition(IAtsVersion version, IAtsTeamDefinition teamDef) throws OseeCoreException;
 
-   void setTeamDefinition(IAtsVersion version, IAtsTeamDefinition teamDef);
+   boolean isReleased(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
-   public boolean isReleased(IAtsTeamWorkflow teamWf);
-
-   public boolean isVersionLocked(IAtsTeamWorkflow teamWf);
+   boolean isVersionLocked(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
 }

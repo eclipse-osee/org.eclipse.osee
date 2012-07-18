@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -26,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * Test unit for {@link AtsTestUtil}
- *
+ * 
  * @author Donald G. Dunne
  */
 public class AtsTestUtilTest extends AtsTestUtil {
@@ -83,6 +84,26 @@ public class AtsTestUtilTest extends AtsTestUtil {
       Assert.assertNotSame(AtsTestUtil.getActionArt(), AtsTestUtil.getActionArt2());
       Assert.assertNotSame(AtsTestUtil.getTeamWf().getActionableItemsDam().getActionableItems().iterator().next(),
          AtsTestUtil.getTeamWf2().getActionableItemsDam().getActionableItems().iterator().next());
+
+      AtsTestUtil.cleanup();
+
+      AtsTestUtil.validateArtifactCache();
+   }
+
+   @org.junit.Test
+   public void testGetTeamWf4() throws OseeCoreException {
+
+      AtsTestUtil.cleanupAndReset("AtsTestUtilTest.testGetTeamWf2");
+      AtsTestUtil.validateArtifactCache();
+
+      Assert.assertNotNull(AtsTestUtil.getTeamWf4());
+      Assert.assertNotNull(AtsTestUtil.getTeamWf4().getStateDefinition());
+      Assert.assertNotSame(AtsTestUtil.getTeamWf(), AtsTestUtil.getTeamWf4());
+      Assert.assertNotSame(AtsTestUtil.getActionArt(), AtsTestUtil.getActionArt4());
+      Assert.assertNotSame(AtsTestUtil.getTeamWf().getActionableItemsDam().getActionableItems().iterator().next(),
+         AtsTestUtil.getTeamWf4().getActionableItemsDam().getActionableItems().iterator().next());
+      Assert.assertEquals(AtsVersionService.get().getTargetedVersion(AtsTestUtil.getTeamWf4()),
+         AtsTestUtil.getVerArt4());
 
       AtsTestUtil.cleanup();
 

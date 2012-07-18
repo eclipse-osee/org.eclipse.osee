@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.version.AtsVersionStore;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -66,7 +65,6 @@ public class AtsBranchManagerCoreTest {
       IAtsVersion verArt2 = AtsTestUtil.getVerArt2();
       verArt1.getParallelVersions().add(verArt2);
       AtsVersionService.get().setTargetedVersion(teamArt, verArt1);
-      AtsVersionStore.setTargetedVersionLink(teamArt, verArt1);
       Collection<Object> commitObjs = AtsBranchManagerCore.getCommitTransactionsAndConfigItemsForTeamWf(teamArt);
       assertTrue("commitObjs has wrong size", commitObjs.size() == 2);
       assertTrue("commitObjs is missing verArt1", commitObjs.contains(verArt1));

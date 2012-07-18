@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
-import org.eclipse.osee.ats.core.client.version.AtsVersionStore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
@@ -128,7 +127,7 @@ public class PopulateSawBuild2Actions {
          teamWf.persist(transaction);
 
          IAtsVersion version = AtsConfigCache.getSoleByName(versionStr, IAtsVersion.class);
-         AtsVersionStore.setTargetedVersionLink(teamWf, version);
+         AtsVersionService.get().setTargetedVersionAndStore(teamWf, version);
          teamWf.persist(transaction);
       }
       return actionArt;
@@ -204,7 +203,7 @@ public class PopulateSawBuild2Actions {
          teamWf.persist(transaction);
 
          IAtsVersion version = AtsConfigCache.getSoleByName(versionStr, IAtsVersion.class);
-         AtsVersionStore.setTargetedVersionLink(teamWf, version);
+         AtsVersionService.get().setTargetedVersionAndStore(teamWf, version);
          teamWf.persist(transaction);
       }
       return actionArt;
@@ -282,7 +281,7 @@ public class PopulateSawBuild2Actions {
          teamWf.persist(transaction);
 
          IAtsVersion version = AtsConfigCache.getSoleByName(versionStr, IAtsVersion.class);
-         AtsVersionStore.setTargetedVersionLink(teamWf, version);
+         AtsVersionService.get().setTargetedVersionAndStore(teamWf, version);
          teamWf.persist(transaction);
       }
       return actionArt;
@@ -340,7 +339,7 @@ public class PopulateSawBuild2Actions {
 
          teamWf.persist(transaction);
          IAtsVersion version = AtsConfigCache.getSoleByName(versionStr, IAtsVersion.class);
-         AtsVersionStore.setTargetedVersionLink(teamWf, version);
+         AtsVersionService.get().setTargetedVersionAndStore(teamWf, version);
          teamWf.persist(transaction);
       }
       return actionArt;

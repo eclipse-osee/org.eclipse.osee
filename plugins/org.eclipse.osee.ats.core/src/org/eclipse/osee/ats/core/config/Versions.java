@@ -37,18 +37,19 @@ public class Versions {
          IAtsTeamWorkflow teamWf = ((IAtsWorkItem) object).getParentTeamWorkflow();
          if (teamWf != null) {
             IAtsVersion version = AtsVersionService.get().getTargetedVersion(object);
-            if (!(teamWf.getWorkData().isCompleted() && !teamWf.getWorkData().isCancelled() && AtsVersionService.get().isReleased(
-               teamWf))) {
-               String errStr =
-                  "Workflow " + teamWf.getHumanReadableId() + " targeted for released version, but not completed: " + version;
-               // only log error once
-               if (!targetErrorLoggedForId.contains(teamWf.getGuid())) {
-                  OseeLog.log(Activator.class, Level.SEVERE, errStr, null);
-                  targetErrorLoggedForId.add(teamWf.getGuid());
+            if (version != null) {
+               if (!teamWf.getWorkData().isCompletedOrCancelled() && AtsVersionService.get().isReleased(teamWf)) {
+                  String errStr =
+                     "Workflow " + teamWf.getHumanReadableId() + " targeted for released version, but not completed: " + version;
+                  // only log error once
+                  if (!targetErrorLoggedForId.contains(teamWf.getGuid())) {
+                     OseeLog.log(Activator.class, Level.SEVERE, errStr, null);
+                     targetErrorLoggedForId.add(teamWf.getGuid());
+                  }
+                  return "!Error " + errStr;
                }
-               return "!Error " + errStr;
+               return version.getName();
             }
-            return version.getName();
          }
       }
       return "";

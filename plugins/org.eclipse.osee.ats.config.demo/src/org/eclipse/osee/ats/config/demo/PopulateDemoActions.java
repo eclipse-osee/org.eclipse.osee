@@ -40,11 +40,11 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.client.version.AtsVersionStore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.ats.util.SubscribeManagerUI;
@@ -336,7 +336,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                teamWf.persist(transaction);
                if (Strings.isValid(versionStr)) {
                   IAtsVersion version = AtsConfigCache.getSoleByName(versionStr, IAtsVersion.class);
-                  AtsVersionStore.setTargetedVersionLink(teamWf, version);
+                  AtsVersionService.get().setTargetedVersionAndStore(teamWf, version);
                   teamWf.persist(transaction);
                }
             }

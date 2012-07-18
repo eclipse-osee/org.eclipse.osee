@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.core.client.task.createtasks.TaskMetadata;
 import org.eclipse.osee.ats.core.client.task.createtasks.TaskOpModify;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.client.version.AtsVersionStore;
+import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
@@ -242,9 +242,9 @@ public class CreateTasksOperationTest {
          ver2_ChangesWithoutTasks.setName(ver2_ChangesWithoutTasks.getName() + " ChangesWithoutTasks");
          ver3_TasksWithoutChanges.setName(ver3_TasksWithoutChanges.getName() + " TasksWithoutChanges");
 
-         AtsVersionStore.setTargetedVersionLink(destTeamWf1_Proper, ver1_Proper);
-         AtsVersionStore.setTargetedVersionLink(destTeamWf2_ChangesWithoutTasks, ver2_ChangesWithoutTasks);
-         AtsVersionStore.setTargetedVersionLink(destTeamWf3_TasksWithoutChanges, ver3_TasksWithoutChanges);
+         AtsVersionService.get().setTargetedVersion(destTeamWf1_Proper, ver1_Proper);
+         AtsVersionService.get().setTargetedVersion(destTeamWf2_ChangesWithoutTasks, ver2_ChangesWithoutTasks);
+         AtsVersionService.get().setTargetedVersion(destTeamWf3_TasksWithoutChanges, ver3_TasksWithoutChanges);
 
          IAtsVersion verArt4 = AtsTestUtil.getVerArt4();
          verArt4.setBaselineBranchGuid(DemoSawBuilds.SAW_Bld_1.getGuid());

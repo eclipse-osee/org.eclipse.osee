@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.client.version.AtsVersionStore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.Versions;
@@ -179,8 +178,7 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
       }
 
       for (TeamWorkFlowArtifact teamArt1 : awas) {
-         AtsVersionService.get().setTargetedVersion(teamArt1, newVersion);
-         AtsVersionStore.setTargetedVersionLink(teamArt1, newVersion);
+         AtsVersionService.get().setTargetedVersionAndStore(teamArt1, newVersion);
       }
       Artifacts.persistInTransaction("ATS Prompt Change Version", awas);
       return true;

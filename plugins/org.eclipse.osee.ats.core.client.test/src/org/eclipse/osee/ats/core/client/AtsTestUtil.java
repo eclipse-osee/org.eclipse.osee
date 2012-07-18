@@ -44,7 +44,6 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.client.version.AtsVersionStore;
 import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
@@ -636,7 +635,7 @@ public class AtsTestUtil {
                "1", false, null, Arrays.asList(testAi4), new Date(), AtsUsersClient.getUser(), null, transaction);
 
          teamArt4 = actionArt4.getFirstTeam();
-         AtsVersionStore.setTargetedVersionLink(teamArt, verArt4);
+         AtsVersionService.get().setTargetedVersion(teamArt4, verArt4);
          transaction.execute();
       }
       return teamArt4;
@@ -667,6 +666,17 @@ public class AtsTestUtil {
          getTeamWf3();
       }
       return actionArt3;
+   }
+
+   /**
+    * @return 4rd Action with single Team Workflow not tied to other ActionArt or TeamWf
+    */
+   public static ActionArtifact getActionArt4() throws OseeCoreException {
+      ensureLoaded();
+      if (actionArt4 == null) {
+         getTeamWf4();
+      }
+      return actionArt4;
    }
 
    public static ActionArtifact getActionArt() throws OseeCoreException {
@@ -712,7 +722,7 @@ public class AtsTestUtil {
       verArt.setAllowCommitBranch(true);
       verArt.setBaselineBranchGuid(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1).getGuid());
       if (!AtsVersionService.get().hasTargetedVersion(getTeamWf())) {
-         AtsVersionStore.setTargetedVersionLink(getTeamWf(), getVerArt1());
+         AtsVersionService.get().setTargetedVersion(getTeamWf(), getVerArt1());
          getTeamWf().persist(AtsTestUtil.class.getSimpleName() + "-SetTeamWfTargetedVer1");
       }
    }
