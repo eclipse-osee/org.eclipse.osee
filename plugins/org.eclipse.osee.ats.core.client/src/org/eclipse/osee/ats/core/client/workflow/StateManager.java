@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
@@ -45,7 +46,9 @@ import org.eclipse.osee.ats.core.model.impl.WorkStateProviderImpl;
 import org.eclipse.osee.ats.core.notify.IAtsNotificationListener;
 import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.util.Result;
@@ -62,7 +65,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class StateManager implements IAtsNotificationListener, WorkStateProvider, WorkStateFactory {
 
    private final AbstractWorkflowArtifact awa;
-   private static List<String> allValidtateNames = null;
+   private static List<String> allValidStateNames = null;
    private WorkStateProvider stateProvider = null;
    private int loadTransactionNumber;
 
@@ -326,22 +329,43 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
     * Returns all valid state names for all work definitions in the system
     */
    public synchronized static Collection<? extends String> getAllValidStateNames() {
-      if (allValidtateNames == null) {
-         allValidtateNames = new ArrayList<String>();
+      if (allValidStateNames == null) {
+         allValidStateNames = new ArrayList<String>();
          try {
-            for (IAtsWorkDefinition workDef : WorkDefinitionFactory.loadAllDefinitions()) {
-               for (String stateName : AtsWorkDefinitionService.getService().getStateNames(workDef)) {
-                  if (!allValidtateNames.contains(stateName)) {
-                     allValidtateNames.add(stateName);
+            Artifact artifact = null;
+            try {
+               artifact =
+                  ArtifactQuery.getArtifactFromToken(AtsArtifactToken.WorkDef_State_Names,
+                     AtsUtilCore.getAtsBranchToken());
+            } catch (ArtifactDoesNotExist ex) {
+               // do nothing
+            }
+            if (artifact != null) {
+               for (String value : artifact.getSoleAttributeValue(CoreAttributeTypes.GeneralStringData, "").split(",")) {
+                  allValidStateNames.add(value);
+               }
+            } else {
+               OseeLog.logf(Activator.class, Level.INFO,
+                  "ATS Valid State Names: Missing [%s] Artifact; Falling back to loadAddDefinitions",
+                  AtsArtifactToken.WorkDef_State_Names.getName());
+               try {
+                  for (IAtsWorkDefinition workDef : WorkDefinitionFactory.loadAllDefinitions()) {
+                     for (String stateName : AtsWorkDefinitionService.getService().getStateNames(workDef)) {
+                        if (!allValidStateNames.contains(stateName)) {
+                           allValidStateNames.add(stateName);
+                        }
+                     }
                   }
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
+            Collections.sort(allValidStateNames);
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
-         Collections.sort(allValidtateNames);
       }
-      return allValidtateNames;
+      return allValidStateNames;
    }
 
    public static String getCompletedDateByState(AbstractWorkflowArtifact awa, IAtsStateDefinition state) throws OseeCoreException {

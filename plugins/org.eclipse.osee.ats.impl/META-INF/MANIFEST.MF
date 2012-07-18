@@ -25,3 +25,4 @@ Import-Package: com.google.inject,
 Service-Component: OSGI-INF/*.xml
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0"

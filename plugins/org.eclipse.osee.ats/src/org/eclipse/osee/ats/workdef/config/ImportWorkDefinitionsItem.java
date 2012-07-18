@@ -11,7 +11,9 @@
 package org.eclipse.osee.ats.workdef.config;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.client.config.AtsArtifactToken;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
@@ -52,9 +54,9 @@ public class ImportWorkDefinitionsItem extends XNavigateItemAction {
          SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), getName());
          Artifact folder =
             OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.WorkDefinitionsFolder, AtsUtil.getAtsBranch());
+         Set<String> stateNames = new HashSet<String>();
          AtsWorkDefinitionSheetProviders.importWorkDefinitionSheets(resultData, transaction, folder,
-            dialog.getSelection());
-
+            dialog.getSelection(), stateNames);
          if (!resultData.isErrors()) {
             transaction.execute();
          }

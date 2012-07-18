@@ -10,11 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.config;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.EmptyOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -28,19 +32,28 @@ public class AtsBulkLoad {
 
    private static boolean atsTypeDataLoadedStarted = false;
 
-   public synchronized static IOperation getConfigLoadingOperation() {
+   public synchronized static List<IOperation> getConfigLoadingOperations() {
+      List<IOperation> ops = new ArrayList<IOperation>();
       if (atsTypeDataLoadedStarted == false) {
          atsTypeDataLoadedStarted = true;
-         return new AtsLoadConfigArtifactsOperation();
+         ops.add(new AtsLoadConfigArtifactsOperation());
+         ops.add(new AtsLoadWorkDefinitionsOperation());
+         ops.add(new AtsLoadDictionaryOperation());
+      } else {
+         ops.add(new EmptyOperation("ATS Bulk Loading", Activator.PLUGIN_ID));
       }
-      return new EmptyOperation("ATS Bulk Loading", Activator.PLUGIN_ID);
+      return ops;
    }
 
    public static void reloadConfig(boolean pend) {
+      List<IOperation> ops = new ArrayList<IOperation>();
+      ops.add(new AtsLoadConfigArtifactsOperation(true));
+      ops.add(new AtsLoadWorkDefinitionsOperation(true));
+      IOperation operation = new CompositeOperation("Re-load ATS Config", Activator.PLUGIN_ID, ops);
       if (pend) {
-         Operations.executeWork(new AtsLoadConfigArtifactsOperation(true));
+         Operations.executeWork(operation);
       } else {
-         Operations.executeAsJob(new AtsLoadConfigArtifactsOperation(true), false);
+         Operations.executeAsJob(operation, false, Job.LONG, null);
       }
    }
 

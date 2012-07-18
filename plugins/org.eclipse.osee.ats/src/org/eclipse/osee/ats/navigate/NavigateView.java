@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.utility.ElapsedTime;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateEventListener;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateEventManager;
@@ -98,7 +99,7 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
 
    public void refreshData() {
       List<IOperation> ops = new ArrayList<IOperation>();
-      ops.add(AtsBulkLoad.getConfigLoadingOperation());
+      ops.addAll(AtsBulkLoad.getConfigLoadingOperations());
       ops.add(new AtsNavigateViewItemsOperation());
       IOperation operation = new CompositeOperation("Load ATS Navigator", Activator.PLUGIN_ID, ops);
       Operations.executeAsJob(operation, false, Job.LONG, new ReloadJobChangeAdapter(this));
@@ -121,6 +122,8 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
                try {
+                  ElapsedTime time = new ElapsedTime(getName());
+
                   showBusy(false);
                   if (Widgets.isAccessible(loadingComposite)) {
                      loadingComposite.dispose();
@@ -176,6 +179,8 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
 
                      OseeStatusContributionItemFactory.addTo(navView, false);
                      addExtensionPointListenerBecauseOfWorkspaceLoading();
+
+                     time.end();
                   }
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);

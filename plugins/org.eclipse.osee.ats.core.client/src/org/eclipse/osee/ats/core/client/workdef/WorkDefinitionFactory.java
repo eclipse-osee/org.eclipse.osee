@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.utility.ElapsedTime;
 
 /**
  * @author Donald G. Dunne
@@ -292,6 +293,8 @@ public class WorkDefinitionFactory {
    public static Set<String> errorDisplayed = new HashSet<String>();
 
    public static Set<IAtsWorkDefinition> loadAllDefinitions() throws OseeCoreException {
+      ElapsedTime time = new ElapsedTime("  - Load All Work Definitions");
+
       Set<IAtsWorkDefinition> workDefs = new HashSet<IAtsWorkDefinition>();
       // This load is faster than loading each by artifact type
       for (Artifact art : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.WorkDefinition,
@@ -313,6 +316,7 @@ public class WorkDefinitionFactory {
                "Error loading WorkDefinition from artifact " + art.toStringWithId(), ex);
          }
       }
+      time.end();
       return workDefs;
    }
 

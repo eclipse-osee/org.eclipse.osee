@@ -10,4 +10,6 @@ Export-Package: org.eclipse.osee.ats.api.data,
 Require-Bundle: org.eclipse.core.runtime
 Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
- org.eclipse.osee.framework.core.util
+ org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.core.util,
+ org.eclipse.osee.framework.jdk.core.type

@@ -24,10 +24,12 @@ public class AtsUsersClient {
    public static IAtsUser currentUser;
 
    public static void start() throws OseeCoreException {
+      //      ElapsedTime time = new ElapsedTime("Loading ATS Users");
       AtsUsers.clearCache();
       for (User user : UserManager.getUsersAll()) {
          AtsUsers.addUser(getUserFromOseeUser(user));
       }
+      //      time.end();
    }
 
    public static Collection<? extends User> toOseeUsers(Collection<? extends IAtsUser> users) throws OseeCoreException {

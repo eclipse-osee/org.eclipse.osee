@@ -57,6 +57,8 @@ import org.eclipse.osee.ats.world.IWorldViewerEventHandler;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.WorldXViewerEventManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.CompositeOperation;
+import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -75,7 +77,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AttributeAnnotat
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummaryNote;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
-import org.eclipse.osee.framework.ui.skynet.util.OseeDictionary;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -189,10 +190,10 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    }
 
    public void refreshData() {
-      Operations.executeAsJob(AtsBulkLoad.getConfigLoadingOperation(), true, Job.LONG, new ReloadJobChangeAdapter(
-         editor));
-      // Don't put in operation cause doesn't have to be loaded before editor displays
-      OseeDictionary.load();
+      List<IOperation> ops = new ArrayList<IOperation>();
+      ops.addAll(AtsBulkLoad.getConfigLoadingOperations());
+      IOperation operation = new CompositeOperation("Load Workflow Tab", Activator.PLUGIN_ID, ops);
+      Operations.executeAsJob(operation, false, Job.LONG, new ReloadJobChangeAdapter(editor));
    }
    private final class ReloadJobChangeAdapter extends JobChangeAdapter {
 

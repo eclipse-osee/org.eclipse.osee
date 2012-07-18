@@ -32,13 +32,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  */
 public class AtsLoadConfigArtifactsOperation extends AbstractOperation {
    private static boolean loaded = false;
+   private static String NAME = "Loading ATS Configuration";
 
    public AtsLoadConfigArtifactsOperation() {
       this(false);
    }
 
    public AtsLoadConfigArtifactsOperation(boolean reload) {
-      super("ATS Loading Configuration", Activator.PLUGIN_ID);
+      super(NAME, Activator.PLUGIN_ID);
       if (reload) {
          loaded = false;
       }
@@ -51,43 +52,29 @@ public class AtsLoadConfigArtifactsOperation extends AbstractOperation {
 
    public synchronized void ensureLoaded() throws OseeCoreException {
       if (!loaded) {
-         //         ElapsedTime loadConfigTime = new ElapsedTime(getName());
+         //         ElapsedTime time = new ElapsedTime(NAME);
          loaded = true;
-         OseeLog.log(Activator.class, Level.INFO, "Loading ATS Configuration");
-         //         ElapsedTime time = new ElapsedTime("  - QueryListFromType");
+         OseeLog.log(Activator.class, Level.INFO, NAME);
          AtsUsersClient.start();
-         AtsConfigCache.clearCaches();
-         List<Artifact> artifactListFromType =
-            ArtifactQuery.getArtifactListFromType(Arrays.asList(AtsArtifactTypes.TeamDefinition,
-               AtsArtifactTypes.ActionableItem, AtsArtifactTypes.Version, AtsArtifactTypes.WorkDefinition),
-               AtsUtilCore.getAtsBranchToken(), DeletionFlag.EXCLUDE_DELETED);
-         //         time.end();
-         //         time = new ElapsedTime("  - CacheStaticIds");
-
-         for (Artifact artifact : artifactListFromType) {
-            AtsConfigManagerClient.cacheConfigArtifact(artifact);
-         }
-
+         loadAtsConfig();
          AtsCacheManagerUpdateListener.start();
-
-         //         for (IAtsActionableItem aia : AtsConfigCache.get(IAtsActionableItem.class)) {
-         //            System.out.println("AI: " + aia + " - " + aia.getGuid());
-         //            for (IAtsActionableItem child : aia.getChildrenActionableItems()) {
-         //               System.out.println("--- " + child + " - " + child.getGuid());
-         //            }
-         //         }
-         //
-         //         for (IAtsTeamDefinition teamDef : AtsConfigCache.get(IAtsTeamDefinition.class)) {
-         //            System.out.println("Teams: " + teamDef + " - " + teamDef.getGuid());
-         //            for (IAtsTeamDefinition child : teamDef.getChildrenTeamDefinitions()) {
-         //               System.out.println("--- " + child + " - " + child.getGuid());
-         //            }
-         //         }
-
-         //         time.end();
          loaded = true;
-         //         loadConfigTime.end();
+         //         time.end();
       }
+   }
+
+   private void loadAtsConfig() throws OseeCoreException {
+      //      ElapsedTime time = new ElapsedTime("Loading ATS Teams, AIs and Versions");
+      AtsConfigCache.clearCaches();
+      List<Artifact> artifactListFromType =
+         ArtifactQuery.getArtifactListFromType(
+            Arrays.asList(AtsArtifactTypes.TeamDefinition, AtsArtifactTypes.ActionableItem, AtsArtifactTypes.Version),
+            AtsUtilCore.getAtsBranchToken(), DeletionFlag.EXCLUDE_DELETED);
+
+      for (Artifact artifact : artifactListFromType) {
+         AtsConfigManagerClient.cacheConfigArtifact(artifact);
+      }
+      //      time.end();
    }
 
    @Override

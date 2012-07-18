@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.workdef.provider;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -23,6 +24,7 @@ import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.dsl.ModelUtil;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
+import org.eclipse.osee.ats.dsl.atsDsl.StateDef;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.workdef.AtsDslUtil;
 import org.eclipse.osee.ats.workdef.config.ImportAIsAndTeamDefinitionsToDb;
@@ -32,6 +34,7 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -64,8 +67,10 @@ public class AtsWorkDefinitionImporter {
 
    /**
     * If sheet has WorkDef defined, create artifact and import string. Return artifact, else return null.
+    * 
+    * @param stateNames
     */
-   public Artifact importWorkDefinitionSheetToDb(WorkDefinitionSheet sheet, XResultData resultData, SkynetTransaction transaction) throws OseeCoreException {
+   public Artifact importWorkDefinitionSheetToDb(WorkDefinitionSheet sheet, XResultData resultData, Set<String> stateNames, SkynetTransaction transaction) throws OseeCoreException {
       String modelName = sheet.getFile().getName();
       // Prove that can convert to atsDsl
       AtsDsl atsDsl = AtsDslUtil.getFromSheet(modelName, sheet);
@@ -77,6 +82,9 @@ public class AtsWorkDefinitionImporter {
          if (resultData.getNumErrors() > 0) {
             throw new OseeStateException("Error importing WorkDefinitionSheet [%s] into database [%s]",
                sheet.getName(), resultData.toString());
+         }
+         for (StateDef state : atsDsl.getWorkDef().getStates()) {
+            stateNames.add(Strings.unquote(state.getName()));
          }
          return artifact;
       }

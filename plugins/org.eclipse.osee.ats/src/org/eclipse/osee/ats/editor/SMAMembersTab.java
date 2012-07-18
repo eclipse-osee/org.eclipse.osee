@@ -11,8 +11,10 @@
 
 package org.eclipse.osee.ats.editor;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -28,6 +30,8 @@ import org.eclipse.osee.ats.world.IWorldViewerEventHandler;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.WorldXViewerEventManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.CompositeOperation;
+import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -37,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
-import org.eclipse.osee.framework.ui.skynet.util.OseeDictionary;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -122,10 +125,10 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
 
    public void refreshData() {
       if (Widgets.isAccessible(bodyComp)) {
-         Operations.executeAsJob(AtsBulkLoad.getConfigLoadingOperation(), true, Job.LONG, new ReloadJobChangeAdapter(
-            editor));
-         // Don't put in operation cause doesn't have to be loaded before editor displays
-         OseeDictionary.load();
+         List<IOperation> ops = new ArrayList<IOperation>();
+         ops.addAll(AtsBulkLoad.getConfigLoadingOperations());
+         IOperation operation = new CompositeOperation("Load Members Tab", Activator.PLUGIN_ID, ops);
+         Operations.executeAsJob(operation, false, Job.LONG, new ReloadJobChangeAdapter(editor));
       }
    }
    private final class ReloadJobChangeAdapter extends JobChangeAdapter {

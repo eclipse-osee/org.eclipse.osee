@@ -8,7 +8,9 @@ package org.eclipse.osee.ats.impl.internal;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -22,6 +24,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.impl.internal.convert.ConvertAtsDslToWorkDefinition;
 import org.eclipse.osee.ats.impl.internal.convert.ConvertWorkDefinitionToAtsDsl;
 import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -31,6 +34,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Donald G. Dunne
  */
 public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
+
+   Map<String, IAtsWorkDefinition> workDefIdToWorkDef;
 
    @Override
    public IAtsWorkDefinition copyWorkDefinition(String newName, IAtsWorkDefinition workDef, XResultData resultData, IAttributeResolver attrResolver, IUserResolver userResolver) {
@@ -67,8 +72,26 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       }
    };
 
+   private void ensureLoaded(XResultData resultData) throws Exception {
+      if (workDefIdToWorkDef == null) {
+         workDefIdToWorkDef = new HashMap<String, IAtsWorkDefinition>(15);
+         for (Pair<String, String> entry : AtsWorkDefinitionStore.getService().getWorkDefinitionStrings()) {
+            String name = entry.getFirst();
+            String workDefStr = entry.getSecond();
+            AtsDsl atsDsl = ModelUtil.loadModel(name + ".ats", workDefStr);
+            ConvertAtsDslToWorkDefinition convert =
+               new ConvertAtsDslToWorkDefinition(name, atsDsl, resultData,
+                  AtsWorkDefinitionStore.getService().getAttributeResolver(),
+                  AtsWorkDefinitionStore.getService().getUserResolver());
+            IAtsWorkDefinition workDef = convert.convert();
+            workDefIdToWorkDef.put(name, workDef);
+         }
+      }
+   }
+
    @Override
    public IAtsWorkDefinition getWorkDef(String workDefId, XResultData resultData) throws Exception {
+      ensureLoaded(resultData);
       String workDefStr = AtsWorkDefinitionStore.getService().loadWorkDefinitionString(workDefId);
       AtsDsl atsDsl = ModelUtil.loadModel(workDefId + ".ats", workDefStr);
       ConvertAtsDslToWorkDefinition convert =

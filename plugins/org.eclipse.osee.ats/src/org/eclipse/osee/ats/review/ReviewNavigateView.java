@@ -91,7 +91,7 @@ public class ReviewNavigateView extends ViewPart implements IXNavigateEventListe
 
    public void refreshData() {
       List<IOperation> ops = new ArrayList<IOperation>();
-      ops.add(AtsBulkLoad.getConfigLoadingOperation());
+      ops.addAll(AtsBulkLoad.getConfigLoadingOperations());
       ops.add(new ReviewNavigateViewItemsOperation());
       IOperation operation = new CompositeOperation("Load Review Navigator", Activator.PLUGIN_ID, ops);
       Operations.executeAsJob(operation, false, Job.LONG, new ReloadJobChangeAdapter(this));

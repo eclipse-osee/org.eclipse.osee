@@ -60,6 +60,7 @@ Import-Package: com.google.inject,
  org.eclipse.osee.framework.ui.skynet.results,
  org.eclipse.osee.framework.ui.skynet.results.table,
  org.eclipse.osee.framework.ui.skynet.results.table.xresults,
+ org.eclipse.osee.framework.ui.skynet.util,
  org.eclipse.xtext.resource,
  org.osgi.framework
 Export-Package: org.eclipse.osee.ats.core.client.access,
