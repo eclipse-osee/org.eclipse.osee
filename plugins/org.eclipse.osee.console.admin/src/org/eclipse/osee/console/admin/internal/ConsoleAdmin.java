@@ -114,7 +114,7 @@ public class ConsoleAdmin {
       String contextName = ConsoleAdminUtils.getContextName(props);
 
       getDispatcher().unregister(componentName);
-      getLogger().debug("De-registering command for '%s' with alias '%s'\n", componentName, contextName);
+      getLogger().debug("De-registering command for [%s] with alias [%s]", componentName, contextName);
 
       notifyDeRegistration(componentName, contextName);
    }
@@ -125,7 +125,7 @@ public class ConsoleAdmin {
       try {
          getDispatcher().register(componentName, consoleCommand);
          notifyRegistration(componentName, contextName);
-         getLogger().debug("Registered command for '%s' with alias '%s'\n", componentName, contextName);
+         getLogger().debug("Registered command for [%s] with alias [%s]", componentName, contextName);
       } catch (Exception ex) {
          throw new RuntimeException(ex);
       }

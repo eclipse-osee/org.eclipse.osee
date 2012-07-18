@@ -70,7 +70,7 @@ public final class IndexingTaskDatabaseTxCallable extends DatabaseTxCallable<Lon
 
    @Override
    protected Long handleTxWork(OseeConnection connection) throws OseeCoreException {
-      getLogger().debug("Tagging: [%s]\n", getTagQueueQueryId());
+      getLogger().debug("Tagging: [%s]", getTagQueueQueryId());
       long totalTags = -1;
       try {
          Collection<AttributeReadable<?>> attributes = new HashSet<AttributeReadable<?>>();
@@ -88,7 +88,7 @@ public final class IndexingTaskDatabaseTxCallable extends DatabaseTxCallable<Lon
             getLogger().warn("Empty gamma query id: %s", getTagQueueQueryId());
          }
       } finally {
-         getLogger().debug("End Tagging: [%s] totalTags[%s]\n", getTagQueueQueryId(), totalTags);
+         getLogger().debug("End Tagging: [%s] totalTags[%s]", getTagQueueQueryId(), totalTags);
       }
       return totalTags;
    }
@@ -111,7 +111,7 @@ public final class IndexingTaskDatabaseTxCallable extends DatabaseTxCallable<Lon
                tagger.tagIt(attributeData, tagCollector);
                if (isStorageAllowed(toStore)) {
                   if (getLogger().isDebugEnabled()) {
-                     getLogger().debug("Stored a - [%s] - connectionId[%s] - [%s]\n", getTagQueueQueryId(), connection,
+                     getLogger().debug("Stored a - [%s] - connectionId[%s] - [%s]", getTagQueueQueryId(), connection,
                         toStore);
                   }
                   storeTags(connection, toStore);
@@ -127,7 +127,7 @@ public final class IndexingTaskDatabaseTxCallable extends DatabaseTxCallable<Lon
 
       if (!toStore.isEmpty()) {
          if (getLogger().isDebugEnabled()) {
-            getLogger().debug("Stored b - [%s] - connectionId[%s] - [%s]\n", getTagQueueQueryId(), connection, toStore);
+            getLogger().debug("Stored b - [%s] - connectionId[%s] - [%s]", getTagQueueQueryId(), connection, toStore);
          }
          storeTags(connection, toStore);
       }
@@ -194,7 +194,7 @@ public final class IndexingTaskDatabaseTxCallable extends DatabaseTxCallable<Lon
             Long gammaId = entry.getKey();
             for (Long codedTag : entry.getValue()) {
                data.add(new Object[] {gammaId, codedTag});
-               getLogger().debug("Storing: gamma:[%s] tag:[%s]\n", gammaId, codedTag);
+               getLogger().debug("Storing: gamma:[%s] tag:[%s]", gammaId, codedTag);
             }
          }
          toStore.clear();
