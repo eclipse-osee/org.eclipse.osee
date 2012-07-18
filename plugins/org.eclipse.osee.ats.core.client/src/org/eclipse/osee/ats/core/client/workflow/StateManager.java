@@ -142,10 +142,29 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
    }
 
    public void updateMetrics(IStateToken state, double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException {
-      getStateProvider().setHoursSpent(state.getName(),
-         getStateProvider().getHoursSpent(state.getName()) + additionalHours);
+      WorkStateProvider provider = getStateProvider();
+
+      // get hours in current state, if additional hours + current hours < 0, walk other states subtracting difference
+      double hoursInCurrentState = provider.getHoursSpent(state.getName());
+      double remaining = hoursInCurrentState + additionalHours;
+      if (remaining < 0.0) {
+         provider.setHoursSpent(state.getName(), 0.0);
+         for (String stateName : provider.getVisitedStateNames()) {
+            hoursInCurrentState = provider.getHoursSpent(stateName);
+            remaining += hoursInCurrentState;
+            if (remaining < 0.0) {
+               provider.setHoursSpent(stateName, 0.0);
+            } else {
+               provider.setHoursSpent(stateName, remaining);
+               break;
+            }
+         }
+      } else {
+         provider.setHoursSpent(state.getName(), remaining);
+      }
+
       if (AtsWorkDefinitionService.getService().isStateWeightingEnabled(awa.getWorkDefinition())) {
-         getStateProvider().setPercentComplete(state.getName(), percentComplete);
+         provider.setPercentComplete(state.getName(), percentComplete);
       } else {
          awa.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, percentComplete);
       }

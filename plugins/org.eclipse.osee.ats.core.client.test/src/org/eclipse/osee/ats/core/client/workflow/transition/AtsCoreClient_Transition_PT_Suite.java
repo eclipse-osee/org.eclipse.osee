@@ -17,7 +17,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({TransitionManagerTest.class})
+@Suite.SuiteClasses({TransitionManagerTest.class, StateManagerTest.class})
 /**
  * This test suite contains tests that must be run against demo database as Plugin JUnit (PT)
  *
