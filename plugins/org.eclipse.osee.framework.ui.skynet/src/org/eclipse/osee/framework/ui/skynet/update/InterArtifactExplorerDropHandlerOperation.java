@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.update;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,7 +24,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -52,23 +54,25 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
    private static final String ACCESS_ERROR_MSG =
       "Access control has restricted this action. The current user does not have sufficient permission to drag and drop artifacts on this branch from the selected source branch.";
    private final Artifact destinationParentArtifact;
-   private final Artifact[] sourceArtifacts;
+   private final Collection<Artifact> sourceArtifacts;
    private final boolean prompt, recurseChildren;
+   private final boolean parentToDestinationArtifact;
 
-   public InterArtifactExplorerDropHandlerOperation(Artifact destinationParentArtifact, Artifact[] sourceArtifacts, boolean prompt, boolean recurseChildren) {
+   public InterArtifactExplorerDropHandlerOperation(Artifact destinationParentArtifact, Artifact[] sourceArtifacts, boolean prompt, boolean recurseChildren, boolean parentToDestinationArtifact) {
       super("Introduce Artifact(s)", Activator.PLUGIN_ID);
       this.destinationParentArtifact = destinationParentArtifact;
-      this.sourceArtifacts = sourceArtifacts;
+      this.sourceArtifacts = Arrays.asList(sourceArtifacts);
       this.prompt = prompt;
       this.recurseChildren = recurseChildren;
+      this.parentToDestinationArtifact = parentToDestinationArtifact;
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      if (destinationParentArtifact == null || sourceArtifacts == null || sourceArtifacts.length < 1) {
+      if (destinationParentArtifact == null || sourceArtifacts == null || sourceArtifacts.isEmpty()) {
          throw new OseeArgumentException("Invalid arguments");
       }
-      Branch sourceBranch = sourceArtifacts[0].getFullBranch();
+      Branch sourceBranch = sourceArtifacts.iterator().next().getFullBranch();
       Branch destinationBranch = destinationParentArtifact.getFullBranch();
 
       if (isUpdateFromParent(sourceBranch, destinationBranch)) {
@@ -81,11 +85,11 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
       } else if (isAccessAllowed(sourceBranch, destinationBranch)) {
          Set<Artifact> transferArtifacts = getArtifactSetToTransfer();
          monitor.beginTask("Processing Artifact(s)", 2 + (transferArtifacts.size() * 4));
+         final List<TransferObject> convertedArtifacts =
+            convertToTransferObjects(transferArtifacts, destinationParentArtifact.getBranch());
          if (prompt) {
             final MutableBoolean userConfirmed = new MutableBoolean(false);
             //convert to TransferObject so that the user can see which are introduced and which are updated
-            final List<TransferObject> convertedArtifacts =
-               convertToTransferObjects(transferArtifacts, destinationParentArtifact.getBranch());
             Displays.ensureInDisplayThread(new Runnable() {
                @Override
                public void run() {
@@ -96,7 +100,7 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
                return;
             }
          }
-         addArtifactsToNewTransaction(destinationParentArtifact, transferArtifacts, sourceBranch, monitor);
+         addArtifactsToNewTransaction(destinationParentArtifact, convertedArtifacts, sourceBranch, monitor);
       } else {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
@@ -157,9 +161,9 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
       return updateArtifactStatusDialog.open() == Window.OK;
    }
 
-   private void addArtifactsToNewTransaction(Artifact destinationArtifact, Set<Artifact> transferObjects, Branch sourceBranch, IProgressMonitor monitor) throws OseeCoreException {
-      loadArtifactsIntoCache(transferObjects, sourceBranch, monitor);
-      handleTransfers(transferObjects, destinationArtifact, monitor);
+   private void addArtifactsToNewTransaction(Artifact destinationArtifact, List<TransferObject> convertedArtifacts, Branch sourceBranch, IProgressMonitor monitor) throws OseeCoreException {
+      loadArtifactsIntoCache(convertedArtifacts, sourceBranch, monitor);
+      handleTransfers(convertedArtifacts, destinationArtifact, monitor);
    }
 
    private void reloadCachedArtifacts(Set<Artifact> reloadArtifacts) throws OseeCoreException {
@@ -168,8 +172,9 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
       }
    }
 
-   private void handleTransfers(Set<Artifact> transferArtifacts, Artifact destinationArtifact, IProgressMonitor monitor) throws OseeCoreException {
+   private void handleTransfers(List<TransferObject> convertedArtifacts, Artifact destinationArtifact, IProgressMonitor monitor) throws OseeCoreException {
       IOseeBranch destinationBranch = destinationArtifact.getBranch();
+      IOseeBranch sourceBranch = convertedArtifacts.iterator().next().getArtifact().getBranch();
 
       SkynetTransaction transaction = TransactionManager.createTransaction(destinationBranch, Strings.EMPTY_STRING);
 
@@ -177,35 +182,39 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
       Set<Artifact> introduced = new LinkedHashSet<Artifact>();
 
       //make sure all transfer artifacts are on the destination branch
-      for (Artifact sourceArtifact : transferArtifacts) {
-         Artifact onDestinationBranch =
-            ArtifactQuery.checkArtifactFromId(sourceArtifact.getArtId(), destinationBranch,
-               DeletionFlag.EXCLUDE_DELETED);
-         if (onDestinationBranch == null) {
-            handleIntroduceCase(sourceArtifact, destinationArtifact, introduced, transaction);
+      for (TransferObject sourceArtifact : convertedArtifacts) {
+         if (sourceArtifact.getStatus() == TransferStatus.INTRODUCE) {
+            handleIntroduceCase(sourceArtifact.getArtifact(), destinationBranch, introduced, transaction);
+            monitor.worked(1);
          }
-         monitor.worked(1);
       }
 
-      //all artifacts should be on the destination branch with matching attributes now
-      for (Artifact sourceArtifact : transferArtifacts) {
-         Artifact onDestinationBranch =
-            ArtifactQuery.checkArtifactFromId(sourceArtifact.getArtId(), destinationBranch,
-               DeletionFlag.EXCLUDE_DELETED);
-         handleUpdateCase(sourceArtifact, onDestinationBranch, updated, transaction);
-         monitor.worked(1);
+      for (TransferObject sourceArtifact : convertedArtifacts) {
+         if (sourceArtifact.getStatus() == TransferStatus.UPDATE) {
+            Artifact toUpdate =
+               ArtifactQuery.getArtifactFromId(sourceArtifact.getArtifact().getArtId(), destinationBranch);
+            handleUpdateCase(sourceArtifact.getArtifact(), toUpdate, updated, transaction);
+            monitor.worked(1);
+         }
       }
 
-      //now check to make sure all the transfer artifacts have a parent, if not, set it to destination artifact
-      for (Artifact sourceArtifact : transferArtifacts) {
-         Artifact onDestinationBranch =
-            ArtifactQuery.checkArtifactFromId(sourceArtifact.getArtId(), destinationBranch,
-               DeletionFlag.EXCLUDE_DELETED);
-         Artifact parent = onDestinationBranch.getParent();
-         if (CoreArtifactTokens.DefaultHierarchyRoot.equals(parent) && !destinationArtifact.equals(onDestinationBranch)) {
-            destinationArtifact.addChild(onDestinationBranch);
-            destinationArtifact.persist(transaction);
+      Set<Integer> sourceArtIds = getSourceArtIds();
+
+      // updated arts should already have a parent on destination, leave them as is
+      for (Artifact art : introduced) {
+         Artifact onSourceBranch = ArtifactQuery.getArtifactFromId(art.getArtId(), sourceBranch);
+         Artifact parentOnDestination = null;
+         if (onSourceBranch.getParent() != null) {
+            int parentId = onSourceBranch.getParent().getArtId();
+            parentOnDestination =
+               ArtifactQuery.checkArtifactFromId(parentId, destinationBranch, DeletionFlag.EXCLUDE_DELETED);
          }
+         if ((sourceArtIds.contains(art.getArtId()) && parentToDestinationArtifact) || parentOnDestination == null) {
+            setParent(art, destinationArtifact);
+         } else {
+            setParent(art, parentOnDestination);
+         }
+         art.persist(transaction);
          monitor.worked(1);
       }
 
@@ -220,18 +229,33 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
       monitor.worked(1);
    }
 
-   private void loadArtifactsIntoCache(Set<Artifact> transferObjects, Branch sourceBranch, IProgressMonitor monitor) throws OseeCoreException {
-      ArrayList<Integer> sourceArtIds = new ArrayList<Integer>(transferObjects.size());
+   private Set<Integer> getSourceArtIds() {
+      Set<Integer> toReturn = new HashSet<Integer>(sourceArtifacts.size());
+      for (Artifact art : sourceArtifacts) {
+         toReturn.add(art.getArtId());
+      }
+      return toReturn;
+   }
 
-      for (Artifact transferObject : transferObjects) {
+   private void setParent(Artifact child, Artifact parent) throws OseeCoreException {
+      if (child.getParent() != null && !child.getParent().equals(parent)) {
+         child.deleteRelations(CoreRelationTypes.Default_Hierarchical__Parent);
+      }
+      parent.addChild(child);
+   }
+
+   private void loadArtifactsIntoCache(List<TransferObject> convertedArtifacts, Branch sourceBranch, IProgressMonitor monitor) throws OseeCoreException {
+      ArrayList<Integer> sourceArtIds = new ArrayList<Integer>(convertedArtifacts.size());
+
+      for (TransferObject transferObject : convertedArtifacts) {
          monitor.worked(1);
-         sourceArtIds.add(transferObject.getArtId());
+         sourceArtIds.add(transferObject.getArtifact().getArtId());
       }
       ArtifactQuery.getArtifactListFromIds(sourceArtIds, sourceBranch);
    }
 
-   private void handleIntroduceCase(Artifact sourceArtifact, Artifact destinationParent, Set<Artifact> reloadArtifacts, SkynetTransaction transaction) throws OseeCoreException {
-      Artifact updatedArtifact = sourceArtifact.reflect(destinationParent.getBranch());
+   private void handleIntroduceCase(Artifact sourceArtifact, IOseeBranch destinationBranch, Set<Artifact> reloadArtifacts, SkynetTransaction transaction) throws OseeCoreException {
+      Artifact updatedArtifact = sourceArtifact.reflect(destinationBranch);
       updatedArtifact.persist(transaction);
       reloadArtifacts.add(updatedArtifact);
    }

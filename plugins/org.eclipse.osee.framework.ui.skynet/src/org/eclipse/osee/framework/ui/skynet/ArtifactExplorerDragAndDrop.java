@@ -14,7 +14,9 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -164,12 +166,13 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
             final Artifact[] artifactsToBeRelated = artData.getArtifacts();
             if (artifactsToBeRelated != null && artifactsToBeRelated.length > 0 && !artifactsToBeRelated[0].getBranch().equals(
                parentArtifact.getBranch())) {
-               boolean recurseChildren =
-                  MessageDialog.openQuestion(viewPart.getViewSite().getShell(), "Recurse Children",
-                     "Do you want to include the children of the selected artifact(s)?");
+               MessageDialogWithToggle result =
+                  MessageDialogWithToggle.openYesNoQuestion(viewPart.getViewSite().getShell(), "Recurse Children",
+                     "Do you want to include the children of the selected artifact(s)?",
+                     "Parent introduced artifacts to destination artifact (default: checked)", true, null, null);
                InterArtifactExplorerDropHandlerOperation interDropHandler =
                   new InterArtifactExplorerDropHandlerOperation(parentArtifact, artifactsToBeRelated, true,
-                     recurseChildren);
+                     result.getReturnCode() == IDialogConstants.YES_ID, result.getToggleState());
                Operations.executeAsJob(interDropHandler, true);
             } else if (isValidForArtifactDrop(event) && MessageDialog.openQuestion(
                viewPart.getViewSite().getShell(),

@@ -10,8 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.test.cases;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -72,7 +71,7 @@ public class InterArtifactDropTest {
       InterArtifactExplorerDropHandlerOperation dropHandler =
          new InterArtifactExplorerDropHandlerOperation(
             OseeSystemArtifacts.getDefaultHierarchyRootArtifact(destinationBranch), new Artifact[] {sourceArtifact},
-            false, false);
+            false, false, false);
       Operations.executeWork(dropHandler);
       sleep(5000);
       //Acquire the introduced artifact
@@ -94,7 +93,7 @@ public class InterArtifactDropTest {
 
       InterArtifactExplorerDropHandlerOperation dropHandler =
          new InterArtifactExplorerDropHandlerOperation(sourceArtifact, new Artifact[] {updateTestArtifact}, false,
-            false);
+            false, false);
       Operations.executeWork(dropHandler);
 
       sleep(5000);
