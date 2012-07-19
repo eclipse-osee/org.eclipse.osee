@@ -34,12 +34,12 @@
 							<artifactId>org.eclipse.osee.database.schema</artifactId>
 							<version>0.0.0</version>
 						</dependency>
-						<dependency>
+						<!-- 		<dependency>
 							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.osee.event.osgi</artifactId>
-							<version>0.0.0</version>
-						</dependency>
-						<dependency>
+							<version>0.0.0</version> 
+						</dependency>-->
+					<!-- 	<dependency>
 							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.osee.event</artifactId>
 							<version>0.0.0</version>
@@ -48,7 +48,7 @@
 							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.osee.executor.admin</artifactId>
 							<version>0.0.0</version>
-						</dependency>
+						</dependency> -->
 						<dependency>
 							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.osee.framework.core.dsl.integration</artifactId>
@@ -59,7 +59,7 @@
 							<artifactId>org.eclipse.osee.framework.core.dsl</artifactId>
 							<version>0.0.0</version>
 						</dependency>
-						<dependency>
+						<!-- 		<dependency>
 							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.osee.framework.core.model</artifactId>
 							<version>0.0.0</version>
@@ -73,17 +73,17 @@
 							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.osee.framework.database</artifactId>
 							<version>0.0.0</version>
-						</dependency>
+						</dependency> -->
 						<dependency>
 							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.osee.framework.h2</artifactId>
 							<version>0.0.0</version>
 						</dependency>
-						<dependency>
+							<!-- 	<dependency>
 							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.osee.framework.jdk.core</artifactId>
 							<version>0.0.0</version>
-						</dependency>
+						</dependency> -->
 						<dependency>
 							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.osee.framework.logging</artifactId>
@@ -99,12 +99,12 @@
 							<artifactId>org.eclipse.osee.logger.slf4j</artifactId>
 							<version>0.0.0</version>
 						</dependency>
-						<dependency>
+						<!-- 		<dependency>
 							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.osee.logger</artifactId>
 							<version>0.0.0</version>
-						</dependency>
-						<dependency>
+						</dependency> -->
+<!-- 						<dependency>
 							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.osee.orcs.core</artifactId>
 							<version>0.0.0</version>
@@ -113,17 +113,17 @@
 							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.osee.orcs.db.mock</artifactId>
 							<version>0.0.0</version>
-						</dependency>
+						</dependency> -->
 						<dependency>
 							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.osee.orcs.db</artifactId>
 							<version>0.0.0</version>
 						</dependency>
-						<dependency>
+						<!-- <dependency>
 							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.osee.orcs</artifactId>
 							<version>0.0.0</version>
-						</dependency>
+						</dependency> -->
 						<dependency>
 							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.equinox.app</artifactId>
@@ -144,11 +144,11 @@
 							<artifactId>org.eclipse.equinox.ds</artifactId>
 							<version>0.0.0</version>
 						</dependency>
-						<dependency>
+							<!-- 	<dependency>
 							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.equinox.event</artifactId>
 							<version>0.0.0</version>
-						</dependency>
+						</dependency> -->
 						<dependency>
 							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.equinox.preferences</artifactId>

@@ -516,7 +516,7 @@
 		<profile>
 			<id>osee-local-sites</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
 				<eclipse-ip-site-path>file:../../../org.eclipse.ip</eclipse-ip-site-path>

@@ -26,8 +26,6 @@
 		<module>../../plugins/org.eclipse.osee.database.schema</module>
 
 		<module>../../plugins/org.eclipse.osee.orcs</module>
-		<module>../../plugins/org.eclipse.osee.orcs.test</module>
-		
 		<module>../../plugins/org.eclipse.osee.orcs.core</module>
 		<module>../../plugins/org.eclipse.osee.orcs.core.test</module>
 		<module>../../plugins/org.eclipse.osee.orcs.db</module>
@@ -36,6 +34,7 @@
 		<module>../../plugins/org.eclipse.osee.orcs.rest.test</module>
 		<module>../../plugins/org.eclipse.osee.framework.h2</module>
 		<module>../../plugins/org.eclipse.osee.orcs.db.test</module>
+		<module>../../plugins/org.eclipse.osee.orcs.test</module>
 
 		<module>../../features/org.eclipse.osee.orcs.feature</module>
 		<module>../../features/org.eclipse.osee.orcs.feature.source</module>
@@ -68,6 +67,8 @@
 		<osee-xcore-site-path>file:../../../org.eclipse.osee/plugins</osee-xcore-site-path>
 		<osee-xcore-site>${osee-xcore-site-path}/org.eclipse.osee.x.core.p2/target/repository</osee-xcore-site>
 
+		<eclipse-ip-site-path>file:../../../org.eclipse.ip</eclipse-ip-site-path>
+		<eclipse-ip-site>${eclipse-ip-site-path}/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
 	</properties>
 
 	<licenses>
@@ -105,7 +106,11 @@
 			<layout>p2</layout>
 			<url>${itemis-site}</url>
 		</repository>
-		
+		<repository>
+			<id>eclipse-ip</id>
+			<layout>p2</layout>
+			<url>${eclipse-ip-site}</url>
+		</repository>
 	</repositories>
 
 	<build>
@@ -460,6 +465,9 @@
 			<properties>
 				<osee-xcore-site-path>file:../../../org.eclipse.osee/plugins</osee-xcore-site-path>
 				<osee-xcore-site>${osee-xcore-site-path}/org.eclipse.osee.x.core.p2/target/repository</osee-xcore-site>
+
+				<eclipse-ip-site-path>file:../../../org.eclipse.ip</eclipse-ip-site-path>
+				<eclipse-ip-site>${eclipse-ip-site-path}/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
 			</properties>
 			<repositories>
 				<repository>
@@ -479,6 +487,10 @@
 				<osee-xcore-site-path>http://msa-linux-adm.msc.az.boeing.com/osee/sites</osee-xcore-site-path>
 				<osee-xcore-site-version>DEV/org.eclipse.osee</osee-xcore-site-version>
 				<osee-xcore-site>${osee-xcore-site-path}/org.eclipse.osee.x.core.p2</osee-xcore-site>
+
+				<eclipse-ip-site-path>http://msa-linux-adm.msc.az.boeing.com/osee/sites</eclipse-ip-site-path>
+				<eclipse-ip-site-version>DEV</eclipse-ip-site-version>
+				<eclipse-ip-site>${eclipse-ip-site-path}/${eclipse-ip-site-version}/org.eclipse.ip/org.eclipse.ip.p2</eclipse-ip-site>
 			</properties>
 			<repositories>
 				<repository>

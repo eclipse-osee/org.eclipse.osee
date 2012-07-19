@@ -14,10 +14,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -41,7 +43,7 @@ public class MockArtifact implements ArtifactReadable {
 
    private final Map<IRelationTypeSide, List<ArtifactReadable>> relationMap =
       new HashMap<IRelationTypeSide, List<ArtifactReadable>>();
-   private final List<RelationType> validRelationTypes = new LinkedList<RelationType>();
+   private final Set<RelationType> validRelationTypes = new LinkedHashSet<RelationType>();
 
    private final HashCollection<IAttributeType, String> attributes = new HashCollection<IAttributeType, String>();
 
@@ -75,9 +77,7 @@ public class MockArtifact implements ArtifactReadable {
    }
 
    public void addRelationType(RelationType relationType) {
-      if (!validRelationTypes.contains(relationType)) {
-         validRelationTypes.add(relationType);
-      }
+      validRelationTypes.add(relationType);
    }
 
    public RelationsReadable getRelatedArtifacts(IRelationTypeSide side) {

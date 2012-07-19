@@ -9,9 +9,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.model.cache,
- org.eclipse.osee.framework.core.model.mocks,
- org.junit;version="4.8.2",
- org.junit.runner;version="4.8.2",
- org.junit.runners;version="4.8.2"
+ org.eclipse.osee.framework.core.model.mocks
 Require-Bundle: org.junit,
- org.mockito
+ org.mockito;bundle-version="1.9.0",
+ org.hamcrest.core,
+ org.objenesis

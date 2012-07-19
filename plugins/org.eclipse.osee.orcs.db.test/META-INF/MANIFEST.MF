@@ -14,10 +14,8 @@ Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.resource.management,
  org.eclipse.osee.framework.resource.management.exception,
  org.eclipse.osee.framework.resource.management.util,
- org.eclipse.osee.orcs.db.mock,
- org.junit;version="4.8.2",
- org.junit.rules;version="4.8.2",
- org.junit.runner;version="4.8.2",
- org.junit.runners;version="4.8.2"
+ org.eclipse.osee.orcs.db.mock
 Require-Bundle: org.eclipse.osee.framework.core,
- org.mockito
+ org.junit,
+ org.mockito;bundle-version="1.9.0",
+ org.hamcrest.core

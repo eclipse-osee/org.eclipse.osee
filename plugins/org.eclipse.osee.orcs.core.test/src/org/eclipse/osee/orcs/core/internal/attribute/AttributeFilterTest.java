@@ -83,7 +83,7 @@ public class AttributeFilterTest {
       Assert.assertFalse(orFilter.accept(attribute));
    }
 
-   private class FilterMock extends AttributeFilter {
+   public class FilterMock extends AttributeFilter {
       @Override
       public boolean accept(Attribute<?> attribute) {
          return false;
