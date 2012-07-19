@@ -85,7 +85,7 @@ public class CopyActionDetails {
       if (teamDef != null) {
          Artifact artifact = new TeamDefinitionArtifactStore(teamDef).getArtifact();
          if (artifact != null) {
-            String formatStr = artifact.getSoleAttributeValue(AtsAttributeTypes.ActionDetailsFormat);
+            String formatStr = artifact.getSoleAttributeValue(AtsAttributeTypes.ActionDetailsFormat, "");
             if (Strings.isValid(formatStr)) {
                return formatStr;
             }
