@@ -43,7 +43,7 @@ public class OrcsAttributeLoadingTest {
    public OseeDatabase db = new OseeDatabase("osee.demo.h2");
 
    @OsgiService
-   OrcsApi orcsApi;
+   private OrcsApi orcsApi;
 
    @org.junit.Test
    public void testAttributeLoading() throws Exception {

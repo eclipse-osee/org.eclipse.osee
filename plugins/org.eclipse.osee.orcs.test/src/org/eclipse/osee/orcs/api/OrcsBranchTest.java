@@ -51,7 +51,7 @@ public class OrcsBranchTest {
    private final static String ARTIFACT_NAME = "Joe Smith";
 
    @OsgiService
-   OrcsApi orcsApi;
+   private OrcsApi orcsApi;
 
    /**
     * @throws java.lang.Exception

@@ -56,7 +56,7 @@ public class OrcsQueryTest {
    private final boolean includeMatchLocationTests = false;
 
    @OsgiService
-   OrcsApi orcsApi;
+   private OrcsApi orcsApi;
 
    @Test
    public void testQueries() throws OseeCoreException {

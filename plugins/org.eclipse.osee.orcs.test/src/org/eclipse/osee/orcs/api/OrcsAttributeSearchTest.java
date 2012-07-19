@@ -45,7 +45,7 @@ public class OrcsAttributeSearchTest {
    public OseeDatabase db1 = new OseeDatabase("osee.demo.h2");
 
    @OsgiService
-   OrcsApi orcsApi;
+   private OrcsApi orcsApi;
 
    @org.junit.Test
    public void runGodMethod() throws OseeCoreException {
