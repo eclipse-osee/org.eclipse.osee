@@ -528,6 +528,7 @@ public class Jaxp {
       Properties format = new Properties();
       format.put(OutputKeys.METHOD, "xml");
       format.put(OutputKeys.INDENT, "yes");
+      format.put(OutputKeys.ENCODING, "UTF-8");
       format.put("{http://xml.apache.org/xslt}indent-amount", "2");
       return format;
    }
@@ -539,6 +540,7 @@ public class Jaxp {
       Properties format = new Properties();
       format.put(OutputKeys.METHOD, "xml");
       format.put(OutputKeys.INDENT, "no"); //minimized
+      format.put(OutputKeys.ENCODING, "UTF-8");
       return format;
    }
 
