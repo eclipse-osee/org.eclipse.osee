@@ -48,6 +48,7 @@ public enum XResultBrowserHyperCmd {
    }
 
    public static XResultBrowserHyperCmd getHyperCmd(String str) {
+      str = str.replaceFirst("about:", "");
       for (XResultBrowserHyperCmd xResultBrowserHyperCmd : XResultBrowserHyperCmd.values()) {
          if (xResultBrowserHyperCmd.toString().equals(str)) {
             return xResultBrowserHyperCmd;
