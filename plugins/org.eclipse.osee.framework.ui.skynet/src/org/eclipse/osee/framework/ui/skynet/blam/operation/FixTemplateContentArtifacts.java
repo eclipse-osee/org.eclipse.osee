@@ -17,16 +17,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
@@ -47,19 +44,18 @@ import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.w3c.dom.Element;
 
 /**
- *
  * Looking for bad sequence:
+ *
  * <pre>
  * 0xEF 0xBF 0xBD
  * </pre>
  *
  * @author Jeff C. Phillips
  * @author Theron Virgin
- *
  */
 public class FixTemplateContentArtifacts extends AbstractBlam {
 
-	//@formatter:off
+   //@formatter:off
 	private static final String GET_TRANS_DETAILS =
 			"SELECT attr.gamma_id, attr.uri, tx_d.* " +
 			"FROM osee_txs txs, osee_tx_details tx_d, osee_attribute attr " +
@@ -70,220 +66,217 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
 			"AND attr.uri IS NOT NULL";
 	//@formatter:on
 
-	private final Collection<String> badData = new LinkedList<String>();
+   @Override
+   public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
+      IOseeStatement chStmt = ServiceUtil.getOseeDatabaseService().getStatement();
+      try {
+         monitor.setTaskName("Performing query");
+         chStmt.runPreparedQuery(GET_TRANS_DETAILS,
+            ServiceUtil.getIdentityService().getLocalId(CoreAttributeTypes.WordTemplateContent));
 
-	@Override
-	public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-		ArrayList<AttrData> attrDatas = loadAttrData();
-		int totalAttrs = attrDatas.size();
+         monitor.setTaskName("Processing results");
+         while (chStmt.next() && !monitor.isCanceled()) {
+            AttrData attrData = new AttrData(chStmt.getString("gamma_id"), chStmt.getString("uri"));
+            Resource resource = getResource(attrData.uri);
 
-		monitor.beginTask("Fix word template content", totalAttrs);
+            try {
+               boolean foundOffenderByteSeq = false;
+               for (int byteIndex = 0; byteIndex < resource.backingBytes.length; byteIndex++) {
 
-		for (int i = 0; !monitor.isCanceled() && i < attrDatas.size(); i++) {
-			AttrData attrData = attrDatas.get(i);
+                  //problem - dont be short or at the end
+                  foundOffenderByteSeq = //
+                     (resource.backingBytes[byteIndex] == (byte) 0xEF) && //
+                     (resource.backingBytes[byteIndex + 1] == (byte) 0xBF) && //
+                     (resource.backingBytes[byteIndex + 2] == (byte) 0xBD);
 
-			Resource resource = getResource(attrData.getUri());
+                  if (foundOffenderByteSeq) {
 
-			try {
-				boolean foundOffenderByteSeq = false;
-				for (int byteIndex = 0; byteIndex < resource.backingBytes.length; byteIndex++) {
+                     String comment =
+                        String.format("author: %s, time: %s, osee_comment: %s, branch_id: %s, transaction_id %s",
+                           chStmt.getString("author"), chStmt.getString("time"), chStmt.getString("osee_comment"),
+                           chStmt.getString("branch_id"), chStmt.getString("transaction_id"));
+                     attrData.setComment(comment);
 
-					//problem - dont be short or at the end
-					foundOffenderByteSeq = //
-							(resource.backingBytes[byteIndex] == (byte) 0xEF) && //
-							(resource.backingBytes[byteIndex+1] == (byte) 0xBF) && //
-							(resource.backingBytes[byteIndex+2] == (byte) 0xBD);
+                     String offender =
+                        new String(new byte[] {
+                           resource.backingBytes[byteIndex],
+                           resource.backingBytes[byteIndex + 1],
+                           resource.backingBytes[byteIndex + 2]}, "UTF-8");
+                     log("Offender: " + offender);
+                     log("Found a hit: " + resource.resourceName);
 
-					if (foundOffenderByteSeq) {
-						String offender = new String( new byte[] { resource.backingBytes[byteIndex], resource.backingBytes[byteIndex+1], resource.backingBytes[byteIndex+2] }, "UTF-8");
-						log("Offender: " + offender);
-						log("Found a hit: " + resource.resourceName);
+                     int beginIndex = resource.data.indexOf(offender);
+                     int maxIndex =
+                        beginIndex + 10 < resource.data.length() ? beginIndex + 10 : resource.data.length() - 1;
+                     beginIndex = beginIndex < 10 ? 0 : beginIndex - 10;
 
-						int beginIndex = resource.data.indexOf(offender);
-						int maxIndex = beginIndex + 10 < resource.data.length() ? beginIndex + 10 : resource.data.length()-1;
-						beginIndex = beginIndex < 10 ? 0 : beginIndex-10;
+                     log("Reduced Chunk:\n " + resource.data.substring(beginIndex, maxIndex));
 
-						log("Reduced Chunk:\n " + resource.data.substring(beginIndex, maxIndex));
+                     log("\nIntroducing transaction:");
+                     log(attrData.comment);
+                     break;
+                  }
+               }
+            } catch (Exception ex) {
+               OseeLog.logf(Activator.class, Level.SEVERE, "Skiping File %s, %s because of exception %s",
+                  attrData.gammaId, attrData.uri, ex);
+            }
+         }
+      } finally {
+         chStmt.close();
+      }
+   }
 
-						log("\nIntroducing transaction:");
-						log(attrData.comment);
-						break;
-					}
-				}
+   private static void uploadResource(String gammaId, Resource resource) throws Exception {
+      String fileName = resource.resourceName;
+      Map<String, String> parameterMap = new HashMap<String, String>();
+      parameterMap.put("sessionId", ClientSessionManager.getSessionId());
+      parameterMap.put("is.overwrite.allowed", String.valueOf(true));
+      parameterMap.put("protocol", "attr");
+      parameterMap.put("seed", gammaId);
 
-			} catch (Exception ex) {
-				badData.add(attrData.gammaId);
-				OseeLog.logf(Activator.class, Level.SEVERE, "Skiping File %s, %s because of exception %s", attrData.getGammaId(), attrData.getUri(),
-						ex);
-			}
+      String extension = Lib.getExtension(fileName);
+      if (Strings.isValid(extension)) {
+         parameterMap.put("extension", extension);
+         int charToRemove = extension.length() + 1;
+         fileName = fileName.substring(0, fileName.length() - charToRemove);
+      }
+      parameterMap.put("name", fileName);
 
-		}
-	}
+      byte[] toUpload = resource.data.getBytes(resource.encoding);
+      if (resource.wasZipped) {
+         toUpload = Lib.compressStream(new ByteArrayInputStream(toUpload), resource.entryName);
+      }
 
-	private ArrayList<AttrData> loadAttrData() throws OseeCoreException {
-		ArrayList<AttrData> attrData = new ArrayList<AttrData>();
+      String urlString =
+         HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameterMap);
+      HttpProcessor.put(new URL(urlString), new ByteArrayInputStream(toUpload), resource.result.getContentType(),
+         resource.result.getEncoding());
+   }
 
-		IOseeStatement chStmt = ServiceUtil.getOseeDatabaseService().getStatement();
-		try {
-			chStmt.runPreparedQuery(GET_TRANS_DETAILS, ServiceUtil.getIdentityService().getLocalId(CoreAttributeTypes.WordTemplateContent));
-			while (chStmt.next()) {
-				String comment = String.format("author: %s, time: %s, osee_comment: %s, branch_id: %s, transaction_id %s",
-						chStmt.getString("author"), chStmt.getString("time"), chStmt.getString("osee_comment"), chStmt.getString("branch_id"), chStmt.getString("transaction_id"));
-				attrData.add(new AttrData(chStmt.getString("gamma_id"), chStmt.getString("uri"), comment));
-			}
-		} finally {
-			chStmt.close();
-		}
-		return attrData;
-	}
+   private Resource getResource(String resourcePath) throws OseeCoreException {
+      Resource toReturn = null;
+      ByteArrayOutputStream sourceOutputStream = new ByteArrayOutputStream();
+      try {
+         Map<String, String> parameterMap = new HashMap<String, String>();
+         parameterMap.put("sessionId", ClientSessionManager.getSessionId());
+         parameterMap.put("uri", resourcePath);
+         String urlString =
+            HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT,
+               parameterMap);
 
-	private static void uploadResource(String gammaId, Resource resource) throws Exception {
-		String fileName = resource.resourceName;
-		Map<String, String> parameterMap = new HashMap<String, String>();
-		parameterMap.put("sessionId", ClientSessionManager.getSessionId());
-		parameterMap.put("is.overwrite.allowed", String.valueOf(true));
-		parameterMap.put("protocol", "attr");
-		parameterMap.put("seed", gammaId);
+         AcquireResult result = HttpProcessor.acquire(new URL(urlString), sourceOutputStream);
+         if (result.getCode() == HttpURLConnection.HTTP_OK) {
+            toReturn = new Resource(resourcePath, result, sourceOutputStream.toByteArray());
+         }
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      } finally {
+         try {
+            sourceOutputStream.close();
+         } catch (IOException ex) {
+            OseeExceptions.wrapAndThrow(ex);
+         }
+      }
+      return toReturn;
+   }
 
-		String extension = Lib.getExtension(fileName);
-		if (Strings.isValid(extension)) {
-			parameterMap.put("extension", extension);
-			int charToRemove = extension.length() + 1;
-			fileName = fileName.substring(0, fileName.length() - charToRemove);
-		}
-		parameterMap.put("name", fileName);
+   private final class Resource {
+      private final String entryName;
+      private final String resourceName;
+      private final AcquireResult result;
+      private final byte[] rawBytes;
+      private final boolean wasZipped;
+      private final String sourcePath;
 
-		byte[] toUpload = resource.data.getBytes(resource.encoding);
-		if (resource.wasZipped) {
-			toUpload = Lib.compressStream(new ByteArrayInputStream(toUpload), resource.entryName);
-		}
+      public byte[] backingBytes;
+      private String data;
+      private String encoding;
 
-		String urlString =
-				HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameterMap);
-		HttpProcessor.put(new URL(urlString), new ByteArrayInputStream(toUpload), resource.result.getContentType(),
-				resource.result.getEncoding());
-	}
+      private Resource(String sourcePath, AcquireResult result, byte[] rawBytes) throws IOException {
+         this.rawBytes = rawBytes;
+         this.result = result;
+         int index = sourcePath.lastIndexOf('/');
+         this.sourcePath = sourcePath;
+         this.resourceName = sourcePath.substring(index + 1, sourcePath.length());
+         this.wasZipped = result.getContentType().contains("zip");
+         if (wasZipped) {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            this.entryName = decompressStream(new ByteArrayInputStream(rawBytes), outputStream);
+            this.encoding = "UTF-8";
+            this.backingBytes = outputStream.toByteArray();
+            this.data = new String(backingBytes, encoding);
+         } else {
+            this.backingBytes = rawBytes;
+            this.data = new String(rawBytes, result.getEncoding());
+            this.entryName = null;
+            this.encoding = result.getEncoding();
+         }
+      }
+   }
 
-	private Resource getResource(String resourcePath) throws OseeCoreException {
-		Resource toReturn = null;
-		ByteArrayOutputStream sourceOutputStream = new ByteArrayOutputStream();
-		try {
-			Map<String, String> parameterMap = new HashMap<String, String>();
-			parameterMap.put("sessionId", ClientSessionManager.getSessionId());
-			parameterMap.put("uri", resourcePath);
-			String urlString =
-					HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT,
-							parameterMap);
+   private static String decompressStream(InputStream inputStream, OutputStream outputStream) throws IOException {
+      String zipEntryName = null;
+      ZipInputStream zipInputStream = null;
+      try {
+         zipInputStream = new ZipInputStream(inputStream);
+         ZipEntry entry = zipInputStream.getNextEntry();
+         zipEntryName = entry.getName();
+         // Transfer bytes from the ZIP file to the output file
+         byte[] buf = new byte[1024];
+         int len;
+         while ((len = zipInputStream.read(buf)) > 0) {
+            outputStream.write(buf, 0, len);
+         }
+      } finally {
+         if (zipInputStream != null) {
+            zipInputStream.close();
+         }
+      }
+      return zipEntryName;
+   }
 
-			AcquireResult result = HttpProcessor.acquire(new URL(urlString), sourceOutputStream);
-			if (result.getCode() == HttpURLConnection.HTTP_OK) {
-				toReturn = new Resource(resourcePath, result, sourceOutputStream.toByteArray());
-			}
-		} catch (Exception ex) {
-			OseeExceptions.wrapAndThrow(ex);
-		} finally {
-			try {
-				sourceOutputStream.close();
-			} catch (IOException ex) {
-				OseeExceptions.wrapAndThrow(ex);
-			}
-		}
-		return toReturn;
-	}
+   //To handle the case of sub-sections
+   private boolean isBadParagraph(Element paragraph) {
+      boolean badParagraph = false;
+      String content = paragraph.getTextContent();
+      if (content != null && content.contains("LISTNUM \"listreset\"")) {
+         badParagraph = true;
+      }
 
-	private final class Resource {
-		private final String entryName;
-		private final String resourceName;
-		private final AcquireResult result;
-		private final byte[] rawBytes;
-		private final boolean wasZipped;
-		private final String sourcePath;
+      return badParagraph;
+   }
 
-		public byte[] backingBytes;
-		private String data;
-		private String encoding;
+   @Override
+   public String getXWidgetsXml() {
+      return AbstractBlam.emptyXWidgetsXml;
+   }
 
-		private Resource(String sourcePath, AcquireResult result, byte[] rawBytes) throws IOException {
-			this.rawBytes = rawBytes;
-			this.result = result;
-			int index = sourcePath.lastIndexOf('/');
-			this.sourcePath = sourcePath;
-			this.resourceName = sourcePath.substring(index + 1, sourcePath.length());
-			this.wasZipped = result.getContentType().contains("zip");
-			if (wasZipped) {
-				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-				this.entryName = decompressStream(new ByteArrayInputStream(rawBytes), outputStream);
-				this.encoding = "UTF-8";
-				this.backingBytes = outputStream.toByteArray();
-				this.data = new String(backingBytes, encoding);
-			} else {
-				this.backingBytes = rawBytes;
-				this.data = new String(rawBytes, result.getEncoding());
-				this.entryName = null;
-				this.encoding = result.getEncoding();
-			}
-		}
-	}
+   class AttrData {
+      private final String gammaId;
+      private final String uri;
+      private String comment;
 
-	private static String decompressStream(InputStream inputStream, OutputStream outputStream) throws IOException {
-		String zipEntryName = null;
-		ZipInputStream zipInputStream = null;
-		try {
-			zipInputStream = new ZipInputStream(inputStream);
-			ZipEntry entry = zipInputStream.getNextEntry();
-			zipEntryName = entry.getName();
-			// Transfer bytes from the ZIP file to the output file
-			byte[] buf = new byte[1024];
-			int len;
-			while ((len = zipInputStream.read(buf)) > 0) {
-				outputStream.write(buf, 0, len);
-			}
-		} finally {
-			if (zipInputStream != null) {
-				zipInputStream.close();
-			}
-		}
-		return zipEntryName;
-	}
+      public AttrData(String gammaId, String uri) {
+         this.gammaId = gammaId;
+         this.uri = uri;
+      }
 
-	//To handle the case of sub-sections
-	private boolean isBadParagraph(Element paragraph) {
-		boolean badParagraph = false;
-		String content = paragraph.getTextContent();
-		if (content != null && content.contains("LISTNUM \"listreset\"")) {
-			badParagraph = true;
-		}
+      public String getGammaId() {
+         return gammaId;
+      }
 
-		return badParagraph;
-	}
+      public String getUri() {
+         return uri;
+      }
 
-	@Override
-	public String getXWidgetsXml() {
-		return AbstractBlam.emptyXWidgetsXml;
-	}
+      private void setComment(String comment) {
+         this.comment = comment;
+      }
+   }
 
-	class AttrData {
-		private final String gammaId;
-		private final String uri;
-		private final String comment;
-
-		public AttrData(String gammaId, String uri, String comment) {
-			this.gammaId = gammaId;
-			this.uri = uri;
-			this.comment = comment;
-		}
-
-		public String getGammaId() {
-			return gammaId;
-		}
-
-		public String getUri() {
-			return uri;
-		}
-	}
-
-	@Override
-	public Collection<String> getCategories() {
-		return Arrays.asList("Admin.Health");
-	}
+   @Override
+   public Collection<String> getCategories() {
+      return Arrays.asList("Admin.Health");
+   }
 }

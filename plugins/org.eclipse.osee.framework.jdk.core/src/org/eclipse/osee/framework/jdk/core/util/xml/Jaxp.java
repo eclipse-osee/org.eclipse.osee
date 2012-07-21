@@ -561,8 +561,9 @@ public class Jaxp {
       StringBuffer buffer = new StringBuffer();
       NodeList childNodes = startingNode.getChildNodes();
       for (int i = 0; i < childNodes.getLength(); i++) {
-         if (childNodes.item(i).getNodeType() == Node.CDATA_SECTION_NODE || childNodes.item(i).getNodeType() == Node.TEXT_NODE) {
-            buffer.append(childNodes.item(i).getNodeValue().trim());
+         Node node = childNodes.item(i);
+         if (node.getNodeType() == Node.CDATA_SECTION_NODE || node.getNodeType() == Node.TEXT_NODE) {
+            buffer.append(node.getNodeValue().trim());
          }
       }
       return buffer.toString();
