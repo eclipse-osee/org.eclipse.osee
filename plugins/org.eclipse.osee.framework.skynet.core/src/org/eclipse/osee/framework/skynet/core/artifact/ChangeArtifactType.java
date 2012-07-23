@@ -138,7 +138,7 @@ public class ChangeArtifactType {
             deleteInvalidRelations(artifact, newArtifactType);
             addTransaction(artifact, txMap);
             artifactChanges.add(new EventChangeTypeBasicGuidArtifact(artifact.getBranch().getGuid(),
-               newArtifactType.getGuid(), newArtifactType.getGuid(), artifact.getGuid()));
+               artifact.getArtTypeGuid(), newArtifactType.getGuid(), artifact.getGuid()));
          }
       } finally {
          chStmt.close();
