@@ -39,8 +39,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.AttributeXWidgetManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultAttributeXWidgetProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultXWidgetOptionResolver;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayout;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayoutData;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IAttributeXWidgetProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -196,15 +196,15 @@ public class AttributeFormPart extends AbstractFormPart {
 
       try {
          IAttributeXWidgetProvider xWidgetProvider = AttributeXWidgetManager.getAttributeXWidgetProvider(attributeType);
-         List<DynamicXWidgetLayoutData> concreteWidgets = xWidgetProvider.getDynamicXWidgetLayoutData(attributeType);
+         List<XWidgetRendererItem> concreteWidgets = xWidgetProvider.getDynamicXWidgetLayoutData(attributeType);
          if (isExpandable) {
-            for (DynamicXWidgetLayoutData data : concreteWidgets) {
+            for (XWidgetRendererItem data : concreteWidgets) {
                data.getXOptionHandler().add(XOption.NO_LABEL);
             }
          }
          XWidgetPage workPage = new XWidgetPage(concreteWidgets, new DefaultXWidgetOptionResolver());
 
-         DynamicXWidgetLayout xWidgetLayout =
+         SwtXWidgetRenderer xWidgetLayout =
             workPage.createBody(getManagedForm(), internalComposite, artifact, widgetModifiedListener, isEditable);
          Collection<XWidget> xWidgets = xWidgetLayout.getXWidgets();
 

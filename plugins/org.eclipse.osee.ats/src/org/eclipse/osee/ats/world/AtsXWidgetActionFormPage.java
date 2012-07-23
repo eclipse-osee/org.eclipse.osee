@@ -24,8 +24,8 @@ import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.AttributeFormPart;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultXWidgetOptionResolver;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayout;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayoutData;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -51,7 +51,7 @@ import org.eclipse.ui.forms.widgets.Section;
  * @author Donald G. Dunne
  */
 public abstract class AtsXWidgetActionFormPage extends FormPage {
-   protected DynamicXWidgetLayout dynamicXWidgetLayout;
+   protected SwtXWidgetRenderer dynamicXWidgetLayout;
    protected final XFormToolkit toolkit;
    private Composite parametersContainer;
    private Section parameterSection;
@@ -139,8 +139,8 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       paramComp.setLayout(ALayout.getZeroMarginLayout(1, false));
       paramComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      List<DynamicXWidgetLayoutData> layoutDatas = null;
-      dynamicXWidgetLayout = new DynamicXWidgetLayout(getDynamicWidgetLayoutListener(), getXWidgetOptionResolver());
+      List<XWidgetRendererItem> layoutDatas = null;
+      dynamicXWidgetLayout = new SwtXWidgetRenderer(getDynamicWidgetLayoutListener(), getXWidgetOptionResolver());
       try {
          layoutDatas = XWidgetParser.extractWorkAttributes(dynamicXWidgetLayout, getXWidgetsXml());
          if (layoutDatas != null && !layoutDatas.isEmpty()) {

@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.EmailGroupsBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.EmailGroupsData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayoutData;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -68,7 +68,7 @@ public class EmailGroupsBlamTest extends EmailGroupsBlam {
    @org.junit.Test
    public void testXWidgetsResolved() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      for (DynamicXWidgetLayoutData xWidgetLayoutData : getLayoutDatas()) {
+      for (XWidgetRendererItem xWidgetLayoutData : getLayoutDatas()) {
          XWidget xWidget = xWidgetLayoutData.getXWidget();
          Assert.assertNotNull(xWidget);
          /**

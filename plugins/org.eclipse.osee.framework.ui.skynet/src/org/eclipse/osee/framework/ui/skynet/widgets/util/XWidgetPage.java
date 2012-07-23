@@ -35,13 +35,13 @@ import org.w3c.dom.Element;
  */
 public class XWidgetPage implements IDynamicWidgetLayoutListener {
 
-   protected DynamicXWidgetLayout dynamicXWidgetLayout;
+   protected SwtXWidgetRenderer dynamicXWidgetLayout;
 
    private XWidgetPage(IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
       if (dynamicWidgetLayoutListener == null) {
-         dynamicXWidgetLayout = new DynamicXWidgetLayout(this, optionResolver);
+         dynamicXWidgetLayout = new SwtXWidgetRenderer(this, optionResolver);
       } else {
-         dynamicXWidgetLayout = new DynamicXWidgetLayout(dynamicWidgetLayoutListener, optionResolver);
+         dynamicXWidgetLayout = new SwtXWidgetRenderer(dynamicWidgetLayoutListener, optionResolver);
       }
    }
 
@@ -59,12 +59,12 @@ public class XWidgetPage implements IDynamicWidgetLayoutListener {
       }
    }
 
-   public XWidgetPage(List<DynamicXWidgetLayoutData> datas, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
+   public XWidgetPage(List<XWidgetRendererItem> datas, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
       this(optionResolver, dynamicWidgetLayoutListener);
       dynamicXWidgetLayout.setLayoutDatas(datas);
    }
 
-   public XWidgetPage(List<DynamicXWidgetLayoutData> datas, IXWidgetOptionResolver optionResolver) {
+   public XWidgetPage(List<XWidgetRendererItem> datas, IXWidgetOptionResolver optionResolver) {
       this(datas, optionResolver, null);
    }
 
@@ -88,23 +88,23 @@ public class XWidgetPage implements IDynamicWidgetLayoutListener {
 
    @SuppressWarnings("unused")
    @Override
-   public void createXWidgetLayoutData(DynamicXWidgetLayoutData workAttr, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+   public void createXWidgetLayoutData(XWidgetRendererItem workAttr, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       // provided for subclass implementation
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       widgetCreated(xWidget, toolkit, art, this, xModListener, isEditable);
    }
 
    @Override
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       widgetCreating(xWidget, toolkit, art, this, xModListener, isEditable);
    }
 
    public void dispose() {
       try {
-         for (DynamicXWidgetLayoutData layoutData : getlayoutDatas()) {
+         for (XWidgetRendererItem layoutData : getlayoutDatas()) {
             layoutData.getXWidget().dispose();
          }
       } catch (OseeCoreException ex) {
@@ -112,14 +112,14 @@ public class XWidgetPage implements IDynamicWidgetLayoutListener {
       }
    }
 
-   public DynamicXWidgetLayout createBody(IManagedForm managedForm, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+   public SwtXWidgetRenderer createBody(IManagedForm managedForm, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       dynamicXWidgetLayout.createBody(managedForm, parent, artifact, xModListener, isEditable);
       return dynamicXWidgetLayout;
    }
 
    public Result isPageComplete() {
       try {
-         for (DynamicXWidgetLayoutData layoutData : dynamicXWidgetLayout.getLayoutDatas()) {
+         for (XWidgetRendererItem layoutData : dynamicXWidgetLayout.getLayoutDatas()) {
             if (!layoutData.getXWidget().isValid().isOK()) {
                // Check to see if widget is part of a completed OR or XOR group
                if (!dynamicXWidgetLayout.isOrGroupFromAttrNameComplete(layoutData.getStoreName()) && !dynamicXWidgetLayout.isXOrGroupFromAttrNameComplete(layoutData.getStoreName())) {
@@ -133,19 +133,19 @@ public class XWidgetPage implements IDynamicWidgetLayoutListener {
       return Result.TrueResult;
    }
 
-   public Set<DynamicXWidgetLayoutData> getlayoutDatas() {
+   public Set<XWidgetRendererItem> getlayoutDatas() {
       return dynamicXWidgetLayout.getLayoutDatas();
    }
 
-   public void addLayoutDatas(List<DynamicXWidgetLayoutData> datas) {
+   public void addLayoutDatas(List<XWidgetRendererItem> datas) {
       dynamicXWidgetLayout.addWorkLayoutDatas(datas);
    }
 
-   public void addLayoutData(DynamicXWidgetLayoutData data) {
+   public void addLayoutData(XWidgetRendererItem data) {
       dynamicXWidgetLayout.addWorkLayoutData(data);
    }
 
-   public DynamicXWidgetLayoutData getLayoutData(String layoutName) {
+   public XWidgetRendererItem getLayoutData(String layoutName) {
       return dynamicXWidgetLayout.getLayoutData(layoutName);
    }
 
@@ -161,7 +161,7 @@ public class XWidgetPage implements IDynamicWidgetLayoutListener {
       dynamicXWidgetLayout.processLayoutDatas(element);
    }
 
-   public DynamicXWidgetLayout getDynamicXWidgetLayout() {
+   public SwtXWidgetRenderer getDynamicXWidgetLayout() {
       return dynamicXWidgetLayout;
    }
 

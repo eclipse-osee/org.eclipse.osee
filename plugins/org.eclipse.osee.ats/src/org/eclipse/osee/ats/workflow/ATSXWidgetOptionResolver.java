@@ -16,7 +16,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultXWidgetOptionResolver;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayoutData;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 
 /**
  * @author Donald G. Dunne
@@ -31,7 +31,7 @@ public final class ATSXWidgetOptionResolver extends DefaultXWidgetOptionResolver
    }
 
    @Override
-   public String[] getWidgetOptions(DynamicXWidgetLayoutData xWidgetData) {
+   public String[] getWidgetOptions(XWidgetRendererItem xWidgetData) {
 
       if (xWidgetData.getXWidgetName().contains(OPTIONS_FROM_ATTRIBUTE_VALIDITY) || xWidgetData.getXWidgetName().contains(
          "ACTIVE_USER_COMMUNITIES")) {

@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamContributionManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayoutData;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Assert;
 
@@ -32,7 +32,7 @@ public class BlamXWidgetTest {
    public void testXWidgetsResolved() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
       for (AbstractBlam blam : BlamContributionManager.getBlamOperations()) {
-         for (DynamicXWidgetLayoutData xWidgetLayoutData : blam.getLayoutDatas()) {
+         for (XWidgetRendererItem xWidgetLayoutData : blam.getLayoutDatas()) {
             XWidget xWidget = xWidgetLayoutData.getXWidget();
             Assert.assertNotNull(xWidget);
             /**

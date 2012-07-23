@@ -11,7 +11,7 @@
 package org.eclipse.osee.coverage.util.widget;
 
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayoutData;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IXWidgetProvider;
 
 /**
@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.util.IXWidgetProvider;
 public class CoverageXWidgetFactory implements IXWidgetProvider {
 
    @Override
-   public XWidget createXWidget(String widgetName, String name, DynamicXWidgetLayoutData widgetLayoutData) {
+   public XWidget createXWidget(String widgetName, String name, XWidgetRendererItem widgetLayoutData) {
       if (widgetName.equals("XHyperlabelCoverageMethodSelection")) {
          return new XHyperlabelCoverageMethodSelection();
       }

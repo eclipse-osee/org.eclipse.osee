@@ -40,7 +40,7 @@ public class AttributeXWidgetManager {
 
    public static IAttributeXWidgetProvider getAttributeXWidgetProvider(IAttributeType attributeType) throws OseeCoreException {
       for (IAttributeXWidgetProvider provider : instance.getProviders()) {
-         List<DynamicXWidgetLayoutData> datas = provider.getDynamicXWidgetLayoutData(attributeType);
+         List<XWidgetRendererItem> datas = provider.getDynamicXWidgetLayoutData(attributeType);
          if (!datas.isEmpty()) {
             return provider;
          }

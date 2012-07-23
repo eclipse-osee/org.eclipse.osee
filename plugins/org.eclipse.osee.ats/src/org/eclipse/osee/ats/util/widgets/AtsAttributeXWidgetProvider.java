@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultAttributeXWidgetProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayoutData;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 
 /**
  * Provides XFlatDam as default widget for specified attribute types
@@ -38,19 +38,19 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
    }
 
    @Override
-   public List<DynamicXWidgetLayoutData> getDynamicXWidgetLayoutData(IAttributeType attributeType) throws OseeCoreException {
-      List<DynamicXWidgetLayoutData> layouts = new ArrayList<DynamicXWidgetLayoutData>();
+   public List<XWidgetRendererItem> getDynamicXWidgetLayoutData(IAttributeType attributeType) throws OseeCoreException {
+      List<XWidgetRendererItem> layouts = new ArrayList<XWidgetRendererItem>();
       if (attributeType.equals(AtsAttributeTypes.BaselineBranchGuid)) {
          layouts = super.getDynamicXWidgetLayoutData(attributeType);
-         DynamicXWidgetLayoutData layoutData = layouts.get(0);
+         XWidgetRendererItem layoutData = layouts.get(0);
          layoutData.setXWidgetName("XBranchSelectWidget");
       } else if (XFLAT_ATTRIBUTE_TYPES.contains(attributeType)) {
          layouts = super.getDynamicXWidgetLayoutData(attributeType);
-         DynamicXWidgetLayoutData layoutData = layouts.get(0);
+         XWidgetRendererItem layoutData = layouts.get(0);
          layoutData.setXWidgetName("XTextFlatDam");
       } else if (attributeType.getName().equals(AtsAttributeTypes.DslSheet.getName())) {
          layouts = super.getDynamicXWidgetLayoutData(attributeType);
-         DynamicXWidgetLayoutData layoutData = layouts.get(0);
+         XWidgetRendererItem layoutData = layouts.get(0);
          layoutData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
       }
       return layouts;

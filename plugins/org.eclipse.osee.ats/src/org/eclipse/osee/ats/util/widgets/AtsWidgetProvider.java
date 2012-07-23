@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelGroupSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayoutData;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IXWidgetProvider;
 
 /**
@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.util.IXWidgetProvider;
 public class AtsWidgetProvider implements IXWidgetProvider {
 
    @Override
-   public XWidget createXWidget(String widgetName, String name, DynamicXWidgetLayoutData widgetLayoutData) {
+   public XWidget createXWidget(String widgetName, String name, XWidgetRendererItem widgetLayoutData) {
       XWidget toReturn = null;
       if (widgetName.equals(XHyperlabelTeamDefinitionSelection.WIDGET_ID)) {
          XHyperlabelTeamDefinitionSelection widget = new XHyperlabelTeamDefinitionSelection(name);

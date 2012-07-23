@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultXWidgetOptionResolver;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayoutData;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -38,7 +38,7 @@ import org.eclipse.ui.forms.widgets.Section;
  * @author Roberto E. Escobar
  */
 public class BlamInputSection extends BaseBlamSection {
-   private final Collection<DynamicXWidgetLayoutData> dynamicInputLayouts = new ArrayList<DynamicXWidgetLayoutData>();
+   private final Collection<XWidgetRendererItem> dynamicInputLayouts = new ArrayList<XWidgetRendererItem>();
 
    public BlamInputSection(FormEditor editor, AbstractBlam abstractBlam, Composite parent, FormToolkit toolkit, int style) {
       super(editor, abstractBlam, parent, toolkit, style);
@@ -88,7 +88,7 @@ public class BlamInputSection extends BaseBlamSection {
 
    private void createWidgets(Composite parent) {
       try {
-         List<DynamicXWidgetLayoutData> layoutDatas = getDynamicXWidgetLayouts();
+         List<XWidgetRendererItem> layoutDatas = getDynamicXWidgetLayouts();
          XWidgetPage workPage = new XWidgetPage(layoutDatas, new DefaultXWidgetOptionResolver(), getAbstractBlam());
          workPage.createBody(getManagedForm(), parent, null, null, true);
       } catch (Exception ex) {
@@ -96,8 +96,8 @@ public class BlamInputSection extends BaseBlamSection {
       }
    }
 
-   private List<DynamicXWidgetLayoutData> getDynamicXWidgetLayouts() throws Exception {
-      List<DynamicXWidgetLayoutData> itemsToReturn = new ArrayList<DynamicXWidgetLayoutData>();
+   private List<XWidgetRendererItem> getDynamicXWidgetLayouts() throws Exception {
+      List<XWidgetRendererItem> itemsToReturn = new ArrayList<XWidgetRendererItem>();
       itemsToReturn.addAll(getAbstractBlam().getLayoutDatas());
       itemsToReturn.addAll(dynamicInputLayouts);
       return itemsToReturn;

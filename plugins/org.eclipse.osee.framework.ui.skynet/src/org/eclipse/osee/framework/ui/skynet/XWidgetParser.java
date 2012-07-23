@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayout;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayoutData;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -39,8 +39,8 @@ public class XWidgetParser {
    public static final String EMPTY_WIDGETS =
       "<xWidgets><XWidget xwidgetType=\"XLabel\" displayName=\" \" /></xWidgets>";
 
-   public static List<DynamicXWidgetLayoutData> extractWorkAttributes(DynamicXWidgetLayout dynamicXWidgetLayout, String xml) throws OseeCoreException {
-      List<DynamicXWidgetLayoutData> data = Collections.emptyList();
+   public static List<XWidgetRendererItem> extractWorkAttributes(SwtXWidgetRenderer dynamicXWidgetLayout, String xml) throws OseeCoreException {
+      List<XWidgetRendererItem> data = Collections.emptyList();
       try {
          Document document = Jaxp.readXmlDocument(xml);
          Element rootElement = document.getDocumentElement();
@@ -51,8 +51,8 @@ public class XWidgetParser {
       return data;
    }
 
-   public static DynamicXWidgetLayoutData extractlayoutData(DynamicXWidgetLayout dynamicXWidgetLayout, String xml) throws OseeCoreException {
-      DynamicXWidgetLayoutData data = null;
+   public static XWidgetRendererItem extractlayoutData(SwtXWidgetRenderer dynamicXWidgetLayout, String xml) throws OseeCoreException {
+      XWidgetRendererItem data = null;
       try {
          Document document = Jaxp.readXmlDocument(xml);
          Element rootElement = document.getDocumentElement();
@@ -63,9 +63,9 @@ public class XWidgetParser {
       return data;
    }
 
-   public static List<DynamicXWidgetLayoutData> extractlayoutDatas(DynamicXWidgetLayout dynamicXWidgetLayout, Element xWidgets) {
-      NodeList widgets = xWidgets.getElementsByTagName(DynamicXWidgetLayout.XWIDGET);
-      List<DynamicXWidgetLayoutData> layoutDatas = new ArrayList<DynamicXWidgetLayoutData>(widgets.getLength());
+   public static List<XWidgetRendererItem> extractlayoutDatas(SwtXWidgetRenderer dynamicXWidgetLayout, Element xWidgets) {
+      NodeList widgets = xWidgets.getElementsByTagName(SwtXWidgetRenderer.XWIDGET);
+      List<XWidgetRendererItem> layoutDatas = new ArrayList<XWidgetRendererItem>(widgets.getLength());
 
       for (int i = 0; i < widgets.getLength(); i++) {
          layoutDatas.add(extractWorkAttribute(dynamicXWidgetLayout, (Element) widgets.item(i)));
@@ -73,11 +73,11 @@ public class XWidgetParser {
       return layoutDatas;
    }
 
-   public static String toXml(DynamicXWidgetLayoutData data) throws OseeCoreException {
+   public static String toXml(XWidgetRendererItem data) throws OseeCoreException {
       String xmlData = null;
       try {
          Document doc = Jaxp.newDocumentNamespaceAware();
-         Element element = doc.createElement(DynamicXWidgetLayout.XWIDGET);
+         Element element = doc.createElement(SwtXWidgetRenderer.XWIDGET);
          element.setAttribute("displayName", data.getName());
          element.setAttribute("storageName", data.getStoreName());
          element.setAttribute("toolTip", data.getToolTip());
@@ -98,8 +98,8 @@ public class XWidgetParser {
       return xmlData;
    }
 
-   private static DynamicXWidgetLayoutData extractWorkAttribute(DynamicXWidgetLayout dynamicXWidgetLayout, Element widget) {
-      DynamicXWidgetLayoutData dynamicXWidgetLayoutData = new DynamicXWidgetLayoutData(dynamicXWidgetLayout);
+   private static XWidgetRendererItem extractWorkAttribute(SwtXWidgetRenderer dynamicXWidgetLayout, Element widget) {
+      XWidgetRendererItem dynamicXWidgetLayoutData = new XWidgetRendererItem(dynamicXWidgetLayout);
 
       // Loop through attributes to ensure all are valid and processed
       NamedNodeMap attributes = widget.getAttributes();

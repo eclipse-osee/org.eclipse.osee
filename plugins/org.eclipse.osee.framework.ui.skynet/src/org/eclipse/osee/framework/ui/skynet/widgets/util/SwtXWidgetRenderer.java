@@ -53,12 +53,12 @@ import org.w3c.dom.Element;
 /**
  * @author Jeff C. Phillips
  */
-public class DynamicXWidgetLayout {
+public class SwtXWidgetRenderer {
    public static final String XWIDGET = "XWidget";
 
-   private final Set<DynamicXWidgetLayoutData> datas = new LinkedHashSet<DynamicXWidgetLayoutData>();
-   private final Map<String, DynamicXWidgetLayoutData> nameToLayoutData =
-      new HashMap<String, DynamicXWidgetLayoutData>();
+   private final Set<XWidgetRendererItem> datas = new LinkedHashSet<XWidgetRendererItem>();
+   private final Map<String, XWidgetRendererItem> nameToLayoutData =
+      new HashMap<String, XWidgetRendererItem>();
 
    private final Collection<ArrayList<String>> orRequired = new ArrayList<ArrayList<String>>();
    private final Collection<ArrayList<String>> xorRequired = new ArrayList<ArrayList<String>>();
@@ -67,11 +67,11 @@ public class DynamicXWidgetLayout {
    private final IXWidgetOptionResolver optionResolver;
    private final Collection<XWidget> xWidgets = new ArrayList<XWidget>();
 
-   public DynamicXWidgetLayout() {
+   public SwtXWidgetRenderer() {
       this(null, new DefaultXWidgetOptionResolver());
    }
 
-   public DynamicXWidgetLayout(IDynamicWidgetLayoutListener dynamicWidgetLayoutListener, IXWidgetOptionResolver optionResolver) {
+   public SwtXWidgetRenderer(IDynamicWidgetLayoutListener dynamicWidgetLayoutListener, IXWidgetOptionResolver optionResolver) {
       this.dynamicWidgetLayoutListener = dynamicWidgetLayoutListener;
       this.optionResolver = optionResolver;
    }
@@ -99,7 +99,7 @@ public class DynamicXWidgetLayout {
       Composite childComp = null;
       Group groupComp = null;
       // Create Attributes
-      for (DynamicXWidgetLayoutData xWidgetLayoutData : getLayoutDatas()) {
+      for (XWidgetRendererItem xWidgetLayoutData : getLayoutDatas()) {
          Composite useComp = attrComp;
 
          GridData gd = new GridData();
@@ -253,7 +253,7 @@ public class DynamicXWidgetLayout {
          @Override
          public void run() {
             try {
-               for (DynamicXWidgetLayoutData xWidgetLayoutData : getLayoutDatas()) {
+               for (XWidgetRendererItem xWidgetLayoutData : getLayoutDatas()) {
                   xWidgetLayoutData.getXWidget().validate();
                }
                refreshOrAndXOrRequiredFlags();
@@ -285,7 +285,7 @@ public class DynamicXWidgetLayout {
          // If group is complete, change all to black, else all red
          boolean isComplete = isOrGroupFromAttrNameComplete(orReq.iterator().next());
          for (String aName : orReq) {
-            DynamicXWidgetLayoutData layoutData = getLayoutData(aName);
+            XWidgetRendererItem layoutData = getLayoutData(aName);
             Label label = layoutData.getXWidget().getLabelWidget();
             if (label != null && !label.isDisposed()) {
                label.setForeground(isComplete ? null : Displays.getSystemColor(SWT.COLOR_RED));
@@ -297,7 +297,7 @@ public class DynamicXWidgetLayout {
          // If group is complete, change all to black, else all red
          boolean isComplete = isXOrGroupFromAttrNameComplete(xorReq.iterator().next());
          for (String aName : xorReq) {
-            DynamicXWidgetLayoutData layoutData = getLayoutData(aName);
+            XWidgetRendererItem layoutData = getLayoutData(aName);
             Label label = layoutData.getXWidget().getLabelWidget();
             if (label != null && !label.isDisposed()) {
                label.setForeground(isComplete ? null : Displays.getSystemColor(SWT.COLOR_RED));
@@ -308,7 +308,7 @@ public class DynamicXWidgetLayout {
 
    public IStatus isPageComplete() {
       try {
-         for (DynamicXWidgetLayoutData data : datas) {
+         for (XWidgetRendererItem data : datas) {
             IStatus valid = data.getXWidget().isValid();
             if (!valid.isOK()) {
                // Check to see if widget is part of a completed OR or XOR group
@@ -323,28 +323,28 @@ public class DynamicXWidgetLayout {
       return Status.OK_STATUS;
    }
 
-   public Set<DynamicXWidgetLayoutData> getLayoutDatas() {
+   public Set<XWidgetRendererItem> getLayoutDatas() {
       return datas;
    }
 
-   public void setLayoutDatas(List<DynamicXWidgetLayoutData> datas) {
+   public void setLayoutDatas(List<XWidgetRendererItem> datas) {
       this.datas.clear();
-      for (DynamicXWidgetLayoutData data : datas) {
+      for (XWidgetRendererItem data : datas) {
          data.setDynamicXWidgetLayout(this);
          this.datas.add(data);
       }
    }
 
-   public void addWorkLayoutDatas(List<DynamicXWidgetLayoutData> datas) {
+   public void addWorkLayoutDatas(List<XWidgetRendererItem> datas) {
       this.datas.addAll(datas);
    }
 
-   public void addWorkLayoutData(DynamicXWidgetLayoutData data) {
+   public void addWorkLayoutData(XWidgetRendererItem data) {
       this.datas.add(data);
    }
 
-   public DynamicXWidgetLayoutData getLayoutData(String attrName) {
-      for (DynamicXWidgetLayoutData layoutData : datas) {
+   public XWidgetRendererItem getLayoutData(String attrName) {
+      for (XWidgetRendererItem layoutData : datas) {
          if (layoutData.getStoreName().equals(attrName)) {
             return layoutData;
          }
@@ -384,7 +384,7 @@ public class DynamicXWidgetLayout {
     */
    public boolean isOrGroupFromAttrNameComplete(String name) throws OseeCoreException {
       for (String aName : getOrRequiredGroup(name)) {
-         DynamicXWidgetLayoutData layoutData = getLayoutData(aName);
+         XWidgetRendererItem layoutData = getLayoutData(aName);
          if (layoutData.getXWidget() != null && layoutData.getXWidget().isValid().isOK()) {
             return true;
          }
@@ -398,7 +398,7 @@ public class DynamicXWidgetLayout {
    public boolean isXOrGroupFromAttrNameComplete(String attrName) throws OseeCoreException {
       boolean oneFound = false;
       for (String aName : getXOrRequiredGroup(attrName)) {
-         DynamicXWidgetLayoutData layoutData = getLayoutData(aName);
+         XWidgetRendererItem layoutData = getLayoutData(aName);
          if (layoutData.getXWidget() != null && layoutData.getXWidget().isValid().isOK()) {
             // If already found one, return false
             if (oneFound) {
@@ -436,8 +436,8 @@ public class DynamicXWidgetLayout {
          Document document = Jaxp.readXmlDocument(xWidgetXml);
          Element rootElement = document.getDocumentElement();
 
-         List<DynamicXWidgetLayoutData> attrs = XWidgetParser.extractlayoutDatas(this, rootElement);
-         for (DynamicXWidgetLayoutData attr : attrs) {
+         List<XWidgetRendererItem> attrs = XWidgetParser.extractlayoutDatas(this, rootElement);
+         for (XWidgetRendererItem attr : attrs) {
             nameToLayoutData.put(attr.getName(), attr);
             datas.add(attr);
          }
@@ -447,8 +447,8 @@ public class DynamicXWidgetLayout {
    }
 
    public void processLayoutDatas(Element element) {
-      List<DynamicXWidgetLayoutData> layoutDatas = XWidgetParser.extractlayoutDatas(this, element);
-      for (DynamicXWidgetLayoutData layoutData : layoutDatas) {
+      List<XWidgetRendererItem> layoutDatas = XWidgetParser.extractlayoutDatas(this, element);
+      for (XWidgetRendererItem layoutData : layoutDatas) {
          nameToLayoutData.put(layoutData.getName(), layoutData);
          datas.add(layoutData);
       }

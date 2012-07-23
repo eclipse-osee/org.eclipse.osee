@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.world;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayoutData;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
 
 /**
@@ -23,7 +23,7 @@ public interface IWorldEditorParameterProvider extends IWorldEditorProvider {
 
    public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener();
 
-   public String[] getWidgetOptions(DynamicXWidgetLayoutData xWidgetData);
+   public String[] getWidgetOptions(XWidgetRendererItem xWidgetData);
 
    public boolean isSaveButtonAvailable();
 

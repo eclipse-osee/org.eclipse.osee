@@ -29,8 +29,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
  */
 public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvider {
 
-   private DynamicXWidgetLayoutData createDynamicXWidgetLayout(IAttributeType attributeType, int minOccurrence) {
-      DynamicXWidgetLayoutData defaultData = new DynamicXWidgetLayoutData(null);
+   private XWidgetRendererItem createDynamicXWidgetLayout(IAttributeType attributeType, int minOccurrence) {
+      XWidgetRendererItem defaultData = new XWidgetRendererItem(null);
       defaultData.setName(attributeType.getName());
       defaultData.setStoreName(attributeType.getName());
       defaultData.setToolTip(attributeType.getDescription());
@@ -46,10 +46,10 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
    }
 
    @Override
-   public List<DynamicXWidgetLayoutData> getDynamicXWidgetLayoutData(IAttributeType attributeType) throws OseeCoreException {
-      List<DynamicXWidgetLayoutData> xWidgetLayoutData = new ArrayList<DynamicXWidgetLayoutData>();
+   public List<XWidgetRendererItem> getDynamicXWidgetLayoutData(IAttributeType attributeType) throws OseeCoreException {
+      List<XWidgetRendererItem> xWidgetLayoutData = new ArrayList<XWidgetRendererItem>();
 
-      DynamicXWidgetLayoutData defaultData =
+      XWidgetRendererItem defaultData =
          createDynamicXWidgetLayout(attributeType, AttributeTypeManager.getMinOccurrences(attributeType));
       xWidgetLayoutData.add(defaultData);
 

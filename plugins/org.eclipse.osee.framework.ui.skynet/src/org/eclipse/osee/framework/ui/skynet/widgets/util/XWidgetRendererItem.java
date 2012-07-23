@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 /**
  * @author Donald G. Dunne
  */
-public class DynamicXWidgetLayoutData implements Cloneable {
+public class XWidgetRendererItem implements Cloneable {
 
    private static final FrameworkXWidgetProvider xWidgetFactory = FrameworkXWidgetProvider.getInstance();
    private static final String UNKNOWN = "Unknown";
@@ -36,14 +36,14 @@ public class DynamicXWidgetLayoutData implements Cloneable {
    private boolean endComposite, endGroupComposite; // indicated end of child composite
    private int height = DEFAULT_HEIGHT;
    private String toolTip;
-   private DynamicXWidgetLayout dynamicXWidgetLayout;
+   private SwtXWidgetRenderer dynamicXWidgetLayout;
    private String defaultValue;
    private String keyedBranchName;
    private final XOptionHandler xOptionHandler = new XOptionHandler();
    private Artifact artifact;
    private Object object;
 
-   public DynamicXWidgetLayoutData(DynamicXWidgetLayout dynamicXWidgetLayout, XOption... xOption) {
+   public XWidgetRendererItem(SwtXWidgetRenderer dynamicXWidgetLayout, XOption... xOption) {
       this.dynamicXWidgetLayout = dynamicXWidgetLayout;
       xOptionHandler.add(XOption.EDITABLE);
       xOptionHandler.add(XOption.ALIGN_LEFT);
@@ -190,7 +190,7 @@ public class DynamicXWidgetLayoutData implements Cloneable {
       this.toolTip = toolTip;
    }
 
-   public DynamicXWidgetLayout getDynamicXWidgetLayout() {
+   public SwtXWidgetRenderer getDynamicXWidgetLayout() {
       return dynamicXWidgetLayout;
    }
 
@@ -206,7 +206,7 @@ public class DynamicXWidgetLayoutData implements Cloneable {
       return keyedBranchName;
    }
 
-   public void setDynamicXWidgetLayout(DynamicXWidgetLayout dynamicXWidgetLayout) {
+   public void setDynamicXWidgetLayout(SwtXWidgetRenderer dynamicXWidgetLayout) {
       this.dynamicXWidgetLayout = dynamicXWidgetLayout;
    }
 

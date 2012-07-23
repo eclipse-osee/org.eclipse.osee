@@ -23,5 +23,5 @@ public interface IAttributeXWidgetProvider {
    /**
     * Return widget layout data or empty list if this provider doesn't provide for this attribute type
     */
-   public List<DynamicXWidgetLayoutData> getDynamicXWidgetLayoutData(IAttributeType attributeType) throws OseeCoreException;
+   public List<XWidgetRendererItem> getDynamicXWidgetLayoutData(IAttributeType attributeType) throws OseeCoreException;
 }

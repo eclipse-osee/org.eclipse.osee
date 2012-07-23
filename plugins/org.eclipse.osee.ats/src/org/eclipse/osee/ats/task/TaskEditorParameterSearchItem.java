@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayoutData;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IXWidgetOptionResolver;
 
@@ -48,7 +48,7 @@ public abstract class TaskEditorParameterSearchItem extends WorldSearchItem impl
    public abstract Collection<? extends Artifact> getTaskEditorTaskArtifacts() throws OseeCoreException;
 
    @Override
-   public String[] getWidgetOptions(DynamicXWidgetLayoutData widgetData) {
+   public String[] getWidgetOptions(XWidgetRendererItem widgetData) {
       return null;
    }
 

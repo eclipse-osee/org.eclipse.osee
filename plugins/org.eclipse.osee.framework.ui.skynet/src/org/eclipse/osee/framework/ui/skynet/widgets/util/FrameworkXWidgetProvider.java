@@ -100,13 +100,13 @@ public final class FrameworkXWidgetProvider {
       IAttributeType attributeType = AttributeTypeManager.getType(attributeTypeName);
       if (attributeType != null) {
          IAttributeXWidgetProvider xWidgetProvider = AttributeXWidgetManager.getAttributeXWidgetProvider(attributeType);
-         List<DynamicXWidgetLayoutData> concreteWidgets = xWidgetProvider.getDynamicXWidgetLayoutData(attributeType);
+         List<XWidgetRendererItem> concreteWidgets = xWidgetProvider.getDynamicXWidgetLayoutData(attributeType);
          return concreteWidgets.iterator().next().getXWidgetName();
       }
       return null;
    }
 
-   public XWidget createXWidget(DynamicXWidgetLayoutData xWidgetLayoutData) throws OseeCoreException {
+   public XWidget createXWidget(XWidgetRendererItem xWidgetLayoutData) throws OseeCoreException {
       String xWidgetName = xWidgetLayoutData.getXWidgetName();
       String name = xWidgetLayoutData.getName();
       XWidget xWidget = null;
