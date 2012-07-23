@@ -102,6 +102,18 @@ public class DynamicXWidgetLayout {
       for (DynamicXWidgetLayoutData xWidgetLayoutData : getLayoutDatas()) {
          Composite useComp = attrComp;
 
+         GridData gd = new GridData();
+         useComp.setLayoutData(gd);
+         gd.horizontalAlignment = SWT.FILL;
+         gd.verticalAlignment = SWT.FILL;
+
+         // defaults to grab horizontal, causes scrollbars on items that extend past the provided window space
+         gd.grabExcessHorizontalSpace = true;
+
+         if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_VERTICALLY)) {
+            gd.grabExcessVerticalSpace = true;
+         }
+
          if (xWidgetLayoutData.getBeginGroupComposite() > 0) {
             groupComp = new Group(attrComp, SWT.None);
             if (Strings.isValid(xWidgetLayoutData.getName())) {
@@ -201,38 +213,28 @@ public class DynamicXWidgetLayout {
             XText xText = (XText) xWidget;
             if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY) && xWidgetLayoutData.getXOptionHandler().contains(
                XOption.FILL_VERTICALLY)) {
-               GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-               gd.minimumWidth = 60;
-               gd.minimumHeight = 60;
-               useComp.setLayoutData(gd);
 
-               gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-               gd.minimumWidth = 60;
-               gd.minimumHeight = 60;
-               xText.getStyledText().setLayoutData(gd);
+               GridData gdi = new GridData(SWT.FILL, SWT.FILL, true, true);
+               //gdi.minimumWidth = 60;
+               //gdi.minimumHeight = 60;
+               xText.getStyledText().setLayoutData(gdi);
             } else if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY)) {
-               GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
-               gd.minimumWidth = 60;
-               useComp.setLayoutData(gd);
 
-               gd = new GridData(SWT.FILL, SWT.FILL, true, false);
-               gd.minimumWidth = 60;
-               xText.getStyledText().setLayoutData(gd);
+               GridData gdi = new GridData(SWT.FILL, SWT.FILL, true, false);
+               //gdi.minimumWidth = 60;
+               xText.getStyledText().setLayoutData(gdi);
             } else if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_VERTICALLY)) {
-               GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-               gd.minimumHeight = 60;
-               useComp.setLayoutData(gd);
 
-               gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-               gd.minimumHeight = 60;
-               xText.getStyledText().setLayoutData(gd);
+               GridData gdi = new GridData(SWT.FILL, SWT.FILL, true, true);
+               //gdi.minimumHeight = 60;
+               xText.getStyledText().setLayoutData(gdi);
             }
 
             if (xWidgetLayoutData.isHeightSet()) {
                xText.setHeight(xWidgetLayoutData.getHeight());
             }
          }
-         useComp.layout();
+         //useComp.layout();
 
          if (xModListener != null) {
             xWidget.addXModifiedListener(xModListener);
