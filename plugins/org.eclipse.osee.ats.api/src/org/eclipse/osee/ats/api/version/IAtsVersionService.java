@@ -27,4 +27,8 @@ public interface IAtsVersionService {
 
    boolean isVersionLocked(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
+   void removeTargetedVersion(IAtsTeamWorkflow teamWf) throws OseeCoreException;
+
+   void removeTargetedVersionAndStore(IAtsTeamWorkflow teamWf) throws OseeCoreException;
+
 }

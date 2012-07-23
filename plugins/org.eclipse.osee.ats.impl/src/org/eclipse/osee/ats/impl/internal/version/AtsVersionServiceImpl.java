@@ -37,6 +37,23 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    }
 
    @Override
+   public void removeTargetedVersion(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+      removeTargetedVersion(teamWf, false);
+   }
+
+   @Override
+   public void removeTargetedVersionAndStore(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+      removeTargetedVersion(teamWf, true);
+   }
+
+   public void removeTargetedVersion(IAtsTeamWorkflow teamWf, boolean store) throws OseeCoreException {
+      if (store) {
+         AtsVersionStore.getService().removeTargetedVersionLink(teamWf);
+      }
+      AtsVersionCache.instance.deCache(teamWf);
+   }
+
+   @Override
    public IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, IAtsVersion version) throws OseeCoreException {
       return setTargetedVersion(teamWf, version, false);
    }
@@ -48,10 +65,18 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
 
    private IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, IAtsVersion version, boolean store) throws OseeCoreException {
       if (store) {
-         AtsVersionStore.getService().setTargetedVersionLink(teamWf, version);
+         if (version == null) {
+            AtsVersionStore.getService().setTargetedVersionLink(teamWf, version);
+         } else {
+            AtsVersionStore.getService().setTargetedVersionLink(teamWf, version);
+         }
       }
-      return AtsVersionCache.instance.cache(teamWf, version);
-
+      if (version == null) {
+         AtsVersionCache.instance.deCache(teamWf);
+      } else {
+         return AtsVersionCache.instance.cache(teamWf, version);
+      }
+      return null;
    }
 
    @Override

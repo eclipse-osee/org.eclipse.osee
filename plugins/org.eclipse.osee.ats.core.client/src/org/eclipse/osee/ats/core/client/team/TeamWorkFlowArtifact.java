@@ -34,7 +34,6 @@ import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
-import org.eclipse.osee.ats.core.config.Versions;
 import org.eclipse.osee.ats.core.util.AtsUtilCoreCore;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -110,9 +109,9 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
    @Override
    public String getEditorTitle() throws OseeCoreException {
       try {
-         IAtsVersion version = AtsVersionService.get().getTargetedVersion(this);
-         if (version != null) {
-            return String.format("%s: [%s] - %s", getType(), Versions.getTargetedVersionStr(version), getName());
+         if (getTeamDefinition().isTeamUsesVersions()) {
+            IAtsVersion version = AtsVersionService.get().getTargetedVersion(this);
+            return String.format("%s: [%s] - %s", getType(), version != null ? version : "Un-Targeted", getName());
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

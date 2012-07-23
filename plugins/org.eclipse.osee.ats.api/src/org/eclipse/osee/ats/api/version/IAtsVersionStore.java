@@ -12,6 +12,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 public interface IAtsVersionStore {
 
+   public IAtsTeamWorkflow removeTargetedVersionLink(IAtsTeamWorkflow teamWf) throws OseeCoreException;
+
    public IAtsTeamWorkflow setTargetedVersionLink(IAtsTeamWorkflow teamWf, IAtsVersion version) throws OseeCoreException;
 
    public IAtsVersion getTargetedVersion(Object object) throws OseeCoreException;

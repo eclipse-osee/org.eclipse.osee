@@ -35,6 +35,14 @@ public class AtsVersionStoreImpl implements IAtsVersionStore {
    }
 
    @Override
+   public IAtsTeamWorkflow removeTargetedVersionLink(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+      TeamWorkFlowArtifact teamArt = TeamWorkFlowManager.getTeamWorkflowArt(teamWf);
+      teamArt.deleteRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
+      AtsVersionService.get().removeTargetedVersion(teamWf);
+      return teamWf;
+   }
+
+   @Override
    public IAtsTeamWorkflow setTargetedVersionLink(IAtsTeamWorkflow teamWf, IAtsVersion version) throws OseeCoreException {
       VersionArtifactStore store = new VersionArtifactStore(version);
       Artifact versionArt = store.getArtifact();

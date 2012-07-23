@@ -15,10 +15,15 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.config.AtsVersionService;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -65,6 +70,22 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
       // TODO AtsBulkLoad.reloadConfig(false) if config relation modified
       for (EventBasicGuidRelation guidRel : artifactEvent.getRelations()) {
          try {
+            if (guidRel.is(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow)) {
+               for (TeamWorkFlowArtifact teamArt : ArtifactCache.getActive(guidRel, TeamWorkFlowArtifact.class)) {
+                  Artifact verArt = null;
+                  try {
+                     verArt = teamArt.getRelatedArtifact(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
+                  } catch (ArtifactDoesNotExist ex) {
+                     // do nothing
+                  }
+                  if (verArt == null) {
+                     AtsVersionService.get().removeTargetedVersion(teamArt);
+                  } else {
+                     IAtsVersion version = AtsConfigCache.getSoleByGuid(verArt.getGuid(), IAtsVersion.class);
+                     AtsVersionService.get().setTargetedVersion(teamArt, version);
+                  }
+               }
+            }
             if (guidRel.is(AtsRelationTypes.SmaToTask_Task)) {
                for (TaskArtifact taskArt : ArtifactCache.getActive(guidRel, TaskArtifact.class)) {
                   AtsTaskCache.decache(taskArt.getParent());
