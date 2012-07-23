@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -50,22 +49,20 @@ public class VersionListDialog extends org.eclipse.ui.dialogs.ListDialog {
       Control control = super.createDialogArea(container);
       getTableViewer().setSorter(new AtsObjectNameReverseSorter());
 
-      if (AtsUtilCore.isAtsAdmin()) {
-         Composite comp = new Composite(control.getParent(), SWT.NONE);
-         comp.setLayout(new GridLayout(2, false));
-         comp.setLayoutData(new GridData(GridData.FILL_BOTH));
+      Composite comp = new Composite(control.getParent(), SWT.NONE);
+      comp.setLayout(new GridLayout(2, false));
+      comp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-         showReleased.createWidgets(comp, 2);
-         showReleased.set(false);
-         showReleased.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-               versionContentProvider.setShowReleased(!versionContentProvider.getShowReleased());
-               setInput(verArts);
-               getTableViewer().refresh();
-            };
-         });
-      }
+      showReleased.createWidgets(comp, 2);
+      showReleased.set(false);
+      showReleased.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            versionContentProvider.setShowReleased(!versionContentProvider.getShowReleased());
+            setInput(verArts);
+            getTableViewer().refresh();
+         };
+      });
 
       return control;
    }
