@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
@@ -141,7 +142,7 @@ public class SystemSubsystemReport extends AbstractBlam {
    }
 
    private void generateMetrics(Artifact productComponent, Artifact subsysTopFolder) throws IOException, OseeCoreException {
-      excelWriter.startSheet("Metrics", 7);
+      excelWriter.startSheet("Metrics", 8);
 
       String[] row =
          new String[] {
@@ -151,7 +152,8 @@ public class SystemSubsystemReport extends AbstractBlam {
             "# of Subsys Req Marked",
             "# of Subsys Req Traceable to Sys Req",
             "# of Subsys Req with Qual Method Defined",
-            "# of Subsys Req allocated to HW/SW Components"};
+            "# of Subsys Req allocated to HW/SW Components",
+            "Req GUID not allocated"};
       excelWriter.writeRow(row);
 
       CountingMap<Artifact> allocatedSysReqCounter = new CountingMap<Artifact>(sysReqs.size());
@@ -166,8 +168,9 @@ public class SystemSubsystemReport extends AbstractBlam {
          List<Artifact> sysReqByComp = component.getRelatedArtifacts(CoreRelationTypes.Allocation__Requirement);
          storeInHierarchyOrderBySubsystem(subSysName, sysReqByComp);
          allocatedSysReqCounter.put(sysReqByComp);
+         Set<String> missingAllocationGuids = new LinkedHashSet<String>();
 
-         recurseWholeSubsystem(subSysName, subsysFolder);
+         recurseWholeSubsystem(subSysName, subsysFolder, missingAllocationGuids);
 
          row[1] = String.valueOf(sysReqByComp.size());
          row[2] = String.valueOf(subsysDescendantCount);
@@ -175,6 +178,7 @@ public class SystemSubsystemReport extends AbstractBlam {
          row[4] = String.valueOf(subsysMarkedAndTracedCount);
          row[5] = String.valueOf(subsysMarkedAndQualifiedCount);
          row[6] = String.valueOf(subsysMarkedAndAllocatedToComponentCount);
+         row[7] = Collections.toString(", ", missingAllocationGuids);
 
          excelWriter.writeRow(row);
       }
@@ -308,10 +312,10 @@ public class SystemSubsystemReport extends AbstractBlam {
       excelWriter.endSheet();
    }
 
-   private void recurseWholeSubsystem(String subSysName, Artifact subsysFolder) throws OseeCoreException {
+   private void recurseWholeSubsystem(String subSysName, Artifact subsysFolder, Set<String> missingAllocationGuids) throws OseeCoreException {
       Set<Artifact> subsysReqs = new LinkedHashSet<Artifact>();
       subsysToSubsysReqsMap.put(subSysName, subsysReqs);
-      countDescendants(subSysName, subsysReqs, subsysFolder);
+      countDescendants(subSysName, subsysReqs, subsysFolder, missingAllocationGuids);
    }
 
    private void resetCounters() {
@@ -322,32 +326,35 @@ public class SystemSubsystemReport extends AbstractBlam {
       subsysMarkedAndAllocatedToComponentCount = 0;
    }
 
-   private void countDescendants(String subSysName, Set<Artifact> subsysReqs, Artifact artifact) throws OseeCoreException {
+   private void countDescendants(String subSysName, Set<Artifact> subsysReqs, Artifact artifact, Set<String> missingAllocationGuids) throws OseeCoreException {
       for (Artifact child : artifact.getChildren()) {
-         subsysDescendantCount++;
-         String selectedSubSystem = child.getSoleAttributeValue(CoreAttributeTypes.Subsystem, "");
+         if (child.isOfType(CoreArtifactTypes.SubsystemRequirement)) {
+            subsysDescendantCount++;
+            String selectedSubSystem = child.getSoleAttributeValue(CoreAttributeTypes.Subsystem, "");
 
-         if (selectedSubSystem.equals(subSysName)) {
-            subsysMarkedCount++;
+            if (selectedSubSystem.equals(subSysName)) {
+               subsysMarkedCount++;
 
-            String qualMethod = child.getAttributesToStringSorted(CoreAttributeTypes.QualificationMethod);
-            if (!qualMethod.equals(EnumeratedAttribute.UNSPECIFIED_VALUE)) {
-               subsysMarkedAndQualifiedCount++;
+               String qualMethod = child.getAttributesToStringSorted(CoreAttributeTypes.QualificationMethod);
+               if (!qualMethod.equals(EnumeratedAttribute.UNSPECIFIED_VALUE)) {
+                  subsysMarkedAndQualifiedCount++;
+               }
+
+               int higherTraceCount = child.getRelatedArtifactsCount(CoreRelationTypes.Requirement_Trace__Higher_Level);
+               if (higherTraceCount > 0) {
+                  subsysMarkedAndTracedCount++;
+               }
+
+               int allocationCount = child.getRelatedArtifactsCount(CoreRelationTypes.Allocation__Component);
+               if (allocationCount > 0) {
+                  subsysMarkedAndAllocatedToComponentCount++;
+               } else {
+                  missingAllocationGuids.add(child.getGuid());
+               }
             }
-
-            int higherTraceCount = child.getRelatedArtifactsCount(CoreRelationTypes.Requirement_Trace__Higher_Level);
-            if (higherTraceCount > 0) {
-               subsysMarkedAndTracedCount++;
-            }
-
-            int allocationCount = child.getRelatedArtifactsCount(CoreRelationTypes.Allocation__Component);
-            if (allocationCount > 0) {
-               subsysMarkedAndAllocatedToComponentCount++;
-            }
+            subsysReqs.add(child);
          }
-         subsysReqs.add(child);
-
-         countDescendants(subSysName, subsysReqs, child);
+         countDescendants(subSysName, subsysReqs, child, missingAllocationGuids);
       }
    }
 
