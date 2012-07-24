@@ -11,10 +11,10 @@
 
 package org.eclipse.osee.framework.ui.skynet.render.word;
 
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WordTemplateContent;
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVIEW;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.*;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.*;
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.*;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.*;
 import java.io.InputStream;
 import java.nio.charset.CharacterCodingException;
 import java.util.ArrayList;
@@ -110,6 +110,7 @@ public class WordTemplateProcessor {
    private final WordTemplateRenderer renderer;
    private boolean isDiff;
    private boolean excludeFolders;
+   private CharSequence paragraphNumber = null;
 
    public WordTemplateProcessor(WordTemplateRenderer renderer) {
       this.renderer = renderer;
@@ -339,33 +340,36 @@ public class WordTemplateProcessor {
          if (!processedArtifacts.contains(artifact)) {
 
             boolean ignoreArtifact = excludeFolders && artifact.isOfType(CoreArtifactTypes.Folder);
+            boolean publishInline = artifact.getSoleAttributeValue(CoreAttributeTypes.PublishInline, false);
+            boolean startedSection = false;
 
             if (!ignoreArtifact) {
                handleLandscapeArtifactSectionBreak(artifact, wordMl, multipleArtifacts);
-               boolean publishInline = artifact.getSoleAttributeValue(CoreAttributeTypes.PublishInline, false);
 
                if (outlining) {
                   String headingText = artifact.getSoleAttributeValue(headingAttributeType, "");
 
-                  CharSequence paragraphNumber = null;
-
-                  if (publishInline) {
-                     paragraphNumber = wordMl.startOutlineSubSection();
-                  } else {
+                  if (!publishInline) {
                      paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
+                     startedSection = true;
                   }
 
-                  if (renderer.getBooleanOption(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION)) {
+                  if (paragraphNumber == null) {
+                     paragraphNumber = wordMl.startOutlineSubSection();
+                     startedSection = true;
+                  }
+
+                  if (renderer.getBooleanOption(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION) && !publishInline) {
                      if (artifact.isAttributeTypeValid(CoreAttributeTypes.ParagraphNumber)) {
                         artifact.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, paragraphNumber.toString());
 
-                     SkynetTransaction transaction =
-                        (SkynetTransaction) renderer.getOption(ITemplateRenderer.TRANSACTION_OPTION);
-                     if (transaction != null) {
-                        artifact.persist(transaction);
-                     } else {
-                        artifact.persist(getClass().getSimpleName());
-                     }
+                        SkynetTransaction transaction =
+                           (SkynetTransaction) renderer.getOption(ITemplateRenderer.TRANSACTION_OPTION);
+                        if (transaction != null) {
+                           artifact.persist(transaction);
+                        } else {
+                           artifact.persist(getClass().getSimpleName());
+                        }
                      }
                   }
                }
@@ -378,7 +382,7 @@ public class WordTemplateProcessor {
                }
             }
 
-            if (outlining && !ignoreArtifact) {
+            if (startedSection) {
                wordMl.endOutlineSubSection();
             }
             processedArtifacts.add(artifact);
