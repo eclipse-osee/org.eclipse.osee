@@ -27,29 +27,37 @@ import java.util.zip.ZipInputStream;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
+import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayout;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.w3c.dom.Element;
 
 /**
  * Looking for bad sequence:
- *
+ * 
  * <pre>
  * 0xEF 0xBF 0xBD
  * </pre>
- *
+ * 
  * @author Jeff C. Phillips
  * @author Theron Virgin
  */
@@ -60,19 +68,43 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
 			"SELECT attr.gamma_id, attr.uri, tx_d.* " +
 			"FROM osee_txs txs, osee_tx_details tx_d, osee_attribute attr " +
 			"WHERE txs.gamma_id = attr.gamma_id " +
-			"AND txs.branch_id = tx_d.branch_id " +
 			"AND tx_d.transaction_id = txs.transaction_id " +
 			"AND attr.attr_type_id = ? " +
 			"AND attr.uri IS NOT NULL";
+
+	private static final String AND_ALL_BRANCHES = " AND txs.branch_id = tx_d.branch_id ";
+	private static final String AND_SPECIFIC_BRANCHES = " AND txs.branch_id = ? AND tx_d.tx_type = ?";
 	//@formatter:on
+
+   private int branchId;
+
+   public FixTemplateContentArtifacts() {
+      super(null,
+         "If branch not selected, this will scan through all NOT archived instances of WordTemplateContent attribute",
+         BlamUiSource.FILE);
+      branchId = -1;
+   }
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       IOseeStatement chStmt = ServiceUtil.getOseeDatabaseService().getStatement();
       try {
          monitor.setTaskName("Performing query");
-         chStmt.runPreparedQuery(GET_TRANS_DETAILS,
-            ServiceUtil.getIdentityService().getLocalId(CoreAttributeTypes.WordTemplateContent));
+
+         boolean allBranches = branchId == -1;
+
+         StringBuilder query = new StringBuilder();
+         query.append(GET_TRANS_DETAILS);
+         query.append(allBranches ? AND_ALL_BRANCHES : AND_SPECIFIC_BRANCHES);
+
+         Object[] params = new Object[allBranches ? 1 : 3];
+         params[0] = ServiceUtil.getIdentityService().getLocalId(CoreAttributeTypes.WordTemplateContent);
+         if (!allBranches) {
+            params[1] = branchId;
+            params[2] = TransactionDetailsType.NonBaselined.getId();
+         }
+
+         chStmt.runPreparedQuery(query.toString(), params);
 
          monitor.setTaskName("Processing results");
          while (chStmt.next() && !monitor.isCanceled()) {
@@ -124,6 +156,23 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
          }
       } finally {
          chStmt.close();
+      }
+   }
+
+   @Override
+   public void widgetCreated(final XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
+      String widgetLabel = xWidget.getLabel();
+      if ("Specific branch".equals(widgetLabel)) {
+         xWidget.addXModifiedListener(new XModifiedListener() {
+            @Override
+            public void widgetModified(XWidget widget) {
+               Object data = xWidget.getData();
+               if (data instanceof IOseeBranch) {
+                  Branch branch = (Branch) data;
+                  branchId = branch.getId();
+               }
+            }
+         });
       }
    }
 
@@ -245,11 +294,6 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
       }
 
       return badParagraph;
-   }
-
-   @Override
-   public String getXWidgetsXml() {
-      return AbstractBlam.emptyXWidgetsXml;
    }
 
    class AttrData {
