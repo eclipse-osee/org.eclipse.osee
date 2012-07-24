@@ -150,16 +150,25 @@ public class SMAGoalMembersSection extends Composite implements ISelectedAtsArti
    }
 
    public void reload() {
+      if (isTableDisposed()) {
+         return;
+      }
       Job job = new Job("Load Goal Members") {
 
          @Override
          protected IStatus run(IProgressMonitor monitor) {
+            if (isTableDisposed()) {
+               return Status.OK_STATUS;
+            }
             try {
                final List<Artifact> artifacts =
                   editor.getAwa().getRelatedArtifactsUnSorted(AtsRelationTypes.Goal_Member);
                Displays.ensureInDisplayThread(new Runnable() {
                   @Override
                   public void run() {
+                     if (isTableDisposed()) {
+                        return;
+                     }
                      worldComposite.load("Members", artifacts, (CustomizeData) null, TableLoadOption.None);
                   }
 
@@ -171,7 +180,11 @@ public class SMAGoalMembersSection extends Composite implements ISelectedAtsArti
             return Status.OK_STATUS;
          }
       };
-      Jobs.startJob(job, true);
+      Jobs.startJob(job, false);
+   }
+
+   private boolean isTableDisposed() {
+      return worldComposite == null || worldComposite.getXViewer() == null || worldComposite.getXViewer().getTree() == null || worldComposite.getXViewer().getTree().isDisposed();
    }
 
    private String getTableExpandKey() {
