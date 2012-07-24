@@ -57,7 +57,7 @@ public class ActionableItemArtifactStore extends ArtifactAtsObjectStore {
       IAtsActionableItem aia = getActionableItem();
       aiArt.setName(aia.getName());
       aiArt.setSoleAttributeValue(AtsAttributeTypes.Active, aia.isActive());
-      boolean actionable = aiArt.getSoleAttributeValue(AtsAttributeTypes.Actionable, true);
+      boolean actionable = aiArt.getSoleAttributeValue(AtsAttributeTypes.Actionable, false);
       if (actionable != aia.isActionable()) {
          aiArt.setSoleAttributeValue(AtsAttributeTypes.Actionable, aia.isActionable());
       }
@@ -144,8 +144,8 @@ public class ActionableItemArtifactStore extends ArtifactAtsObjectStore {
          aia.setHumanReadableId(aiArt.getHumanReadableId());
          aia.setName(aiArt.getName());
          atsObject = aia;
-         aia.setActive(aiArt.getSoleAttributeValue(AtsAttributeTypes.Active, true));
-         aia.setActionable(aiArt.getSoleAttributeValue(AtsAttributeTypes.Actionable, true));
+         aia.setActive(aiArt.getSoleAttributeValue(AtsAttributeTypes.Active, false));
+         aia.setActionable(aiArt.getSoleAttributeValue(AtsAttributeTypes.Actionable, false));
          aia.setDescription(aiArt.getSoleAttributeValue(AtsAttributeTypes.Description, ""));
          Collection<Artifact> teamDefArts = aiArt.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_Team);
          if (!teamDefArts.isEmpty()) {

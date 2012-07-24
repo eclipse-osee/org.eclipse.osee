@@ -59,18 +59,18 @@ public class TeamDefinitionArtifactStore extends ArtifactAtsObjectStore {
       IAtsTeamDefinition teamDef = getTeamDefinition();
       teamDefArt.setName(teamDef.getName());
       teamDefArt.setSoleAttributeValue(AtsAttributeTypes.Active, teamDef.isActive());
-      boolean actionable = teamDefArt.getSoleAttributeValue(AtsAttributeTypes.Actionable, true);
+      boolean actionable = teamDefArt.getSoleAttributeValue(AtsAttributeTypes.Actionable, false);
       if (actionable != teamDef.isActionable()) {
          teamDefArt.setSoleAttributeValue(AtsAttributeTypes.Actionable, teamDef.isActionable());
       }
       teamDefArt.setSoleAttributeValue(AtsAttributeTypes.TeamUsesVersions, teamDef.isTeamUsesVersions());
 
-      boolean allowCommitBranch = teamDefArt.getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, true);
+      boolean allowCommitBranch = teamDefArt.getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, false);
       if (allowCommitBranch != teamDef.isAllowCommitBranch()) {
          teamDefArt.setSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, teamDef.isAllowCommitBranch());
       }
 
-      boolean allowCreateBranch = teamDefArt.getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, true);
+      boolean allowCreateBranch = teamDefArt.getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, false);
       if (allowCreateBranch != teamDef.isAllowCreateBranch()) {
          teamDefArt.setSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, teamDef.isAllowCreateBranch());
       }
@@ -180,11 +180,11 @@ public class TeamDefinitionArtifactStore extends ArtifactAtsObjectStore {
          teamDef.setHumanReadableId(teamDefArt.getHumanReadableId());
          teamDef.setName(teamDefArt.getName());
          atsObject = teamDef;
-         teamDef.setActive(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.Active, true));
-         teamDef.setActionable(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.Actionable, true));
-         teamDef.setTeamUsesVersions(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.TeamUsesVersions, true));
-         teamDef.setAllowCommitBranch(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, true));
-         teamDef.setAllowCreateBranch(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, true));
+         teamDef.setActive(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.Active, false));
+         teamDef.setActionable(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.Actionable, false));
+         teamDef.setTeamUsesVersions(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.TeamUsesVersions, false));
+         teamDef.setAllowCommitBranch(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, false));
+         teamDef.setAllowCreateBranch(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, false));
          String baselineBranchGuid = teamDefArt.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchGuid, "");
          if (Strings.isValid(baselineBranchGuid)) {
             teamDef.setBaselineBranchGuid(baselineBranchGuid);
