@@ -18,19 +18,11 @@ import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
  */
 public class RoughArtifactTest {
 
-   //TODO: due to issues with the MasterTestSuite_DemoDbTests
-
    private static RoughArtifact ra;
 
    @org.junit.BeforeClass
    public static void setUpBeforeClass() {
       ra = new RoughArtifact(RoughArtifactKind.PRIMARY);
-   }
-
-   //TODO: Not sure what this is testing
-   @org.junit.Test(expected = NullPointerException.class)
-   public void testAddAttributeWithNulls() throws OseeCoreException {
-      ra.addAttribute((String) null, "");
    }
 
    @org.junit.Test(expected = OseeTypeDoesNotExist.class)
