@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -47,7 +46,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
 public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
 
    private static final Pattern guidPattern = Pattern.compile("(\\d*);(.*)");
-   private static final Pattern paragraphNumberPattern = Pattern.compile("\\d{1}+");
 
    @Override
    public String getDescription() {
@@ -199,9 +197,6 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
                   if (Strings.isValid(rowValue)) {
                      switch (rowType) {
                         case PARAGRAPH_NO:
-                           if (paragraphNumberPattern.matcher(rowValue).matches()) {
-                              rowValue = String.format("%s.0", rowValue); //forcing \\d.0 format
-                           }
                            roughArtifact.setSectionNumber(rowValue);
                            roughArtifact.addAttribute(CoreAttributeTypes.ParagraphNumber, rowValue);
                            break;

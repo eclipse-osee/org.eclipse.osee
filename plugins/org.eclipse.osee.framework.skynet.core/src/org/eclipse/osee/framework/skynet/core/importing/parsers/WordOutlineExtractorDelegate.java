@@ -29,8 +29,8 @@ import org.eclipse.osee.framework.skynet.core.word.WordUtil;
  */
 public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate {
    private static final String WORD_OUTLINE_PARSER_NAME = "Word Outline";
-   // Node: <w:t>1.1.1 or Text</w:t>
-   private static final Pattern WT_ELEMENT_REGEX = Pattern.compile("<w:t>(.*?)</w:t>");
+   // Node: <w:t>1.1.1 or Text</w:t> or <w:t xml:preserve="x">1.1.1 or Text</w:t>
+   private static final Pattern WT_ELEMENT_REGEX = Pattern.compile("<w:t.*?>(.*?)</w:t>", Pattern.DOTALL);
    // Node: <wx:t wx:val="1.1.1 "/>
    private static final Pattern LIST_ITEM_REGEX = Pattern.compile("<wx:t wx:val=\"([0-9.]+\\s*)\".*/>");
    private static final Pattern OUTLINE_NUMBER_REGEX = Pattern.compile("((?>\\d+\\.)+\\d*(?>-\\d+)*)\\s*");
@@ -107,6 +107,9 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
       possibleTableOfContents = false;
    }
 
+   /**
+    * Core of processing different WordML content "chunks".
+    */
    @Override
    public final void processContent(OperationLogger logger, RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) throws OseeCoreException {
       if (Strings.isValid(content) && initalized) {
@@ -246,8 +249,6 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    /**
     * Specializes in extraction of "1.0 scope" type of outline number and names. Outline name can also be spread out
     * over multiple {@code <w:t> } elements.<br/>
-    * 
-    * @note Paragraph numbering must be zero based. "1.0 SCOPE" instead of "1. SCOPE"
     */
    private void specializedOutlineNumberTitleExtract(String paragraph, StringBuilder outlineNumberStorage, StringBuilder outlineTitleStorage, String paragraphStyle) {
       StringBuilder wtStorage = new StringBuilder(paragraph.length());

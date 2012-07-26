@@ -61,7 +61,8 @@ public final class OutlineResolution {
       if (invalid) {
          switch (last.compareTo(current)) {
             case -1: //just test upper bound of last, assuming last is last correct paragraph no
-               invalid = !generateNextSet(last).contains(current.getNumberString());
+               Set<String> nextUp = generateNextSet(last);
+               invalid = !nextUp.contains(current.getNumberString());
                //and if the current is generally larger but has not been generated, due to sequence of from:
                // $current.n.k, st "n -> oo, k -> oo", "n, k in Z", "oo is infinity"
                if (invalid) {
@@ -105,7 +106,7 @@ public final class OutlineResolution {
 
          if (i == 0) {
             nextParagraphs.add(incDigit + ".0");
-            nextParagraphs.add(incDigit + ".");
+            nextParagraphs.add(Integer.toString(incDigit));
          } else {
             StringBuilder nextNew = new StringBuilder(digits.length * 2);
             for (int j = 0; j < i; j++) {
@@ -115,6 +116,13 @@ public final class OutlineResolution {
          }
 
       }
+
+      Set<String> dotEnding = new HashSet<String>(nextParagraphs.size());
+      for (String next : nextParagraphs) {
+         dotEnding.add(next + ".");
+      }
+      nextParagraphs.addAll(dotEnding);
+
       return nextParagraphs;
    }
 

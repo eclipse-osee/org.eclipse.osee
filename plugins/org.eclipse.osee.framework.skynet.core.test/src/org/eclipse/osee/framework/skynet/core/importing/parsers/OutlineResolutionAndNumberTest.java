@@ -18,8 +18,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Asserting true in general means GUI should be called for user to make decision; false - opposite
- *
  * @author Karol M. Wilk
  */
 public final class OutlineResolutionAndNumberTest {
@@ -77,44 +75,68 @@ public final class OutlineResolutionAndNumberTest {
    public void testNextSetGeneration() {
       Set<String> nextPossibleSet = outlineResolution.generateNextSet(new ReqNumbering(LAST_OUTLINE_NUMBER));
       Set<String> expected =
-         new HashSet<String>(Arrays.asList("3.2", "3.1.2", "3.1.1.3", "3.1.1.2.2", "3.1.1.2.1.8", "4.", "4.0",
+         new HashSet<String>(Arrays.asList("3.2", "3.1.2", "3.1.1.3", "3.1.1.2.2", "3.1.1.2.1.8", "4.0",
             "3.1.1.2.1.7.1", "3.1.1.2.1.7.0.1"));
-      Assert.assertEquals(expected, nextPossibleSet);
+      addDotEndingSet(expected);
+      expected.removeAll(nextPossibleSet);
+      Assert.assertTrue(expected.isEmpty());
    }
 
+   /**
+    * <p>
+    * Generate next numbers with ending "." by default.
+    *
+    * <pre>
+    * input(current number)         output(generated set)
+    * 1.                      ->    [1.1, 1.1., 1.0.1., 1.0.1, 2.0, 2.0.]
+    * 3.                      ->    [3.0.1, 3.0.1., 3.1, 3.1., 4.0, 4.0.]
+    * </pre>
+    *
+    * </p>
+    */
    @Test
    public void testNextSetGeneration_NonZeroBased() {
       Set<String> nextPossibleSet = outlineResolution.generateNextSet(new ReqNumbering("1."));
-      Set<String> expected = new HashSet<String>(Arrays.asList("2.", "2.0", "1.1", "1.0.1"));
-      Assert.assertEquals(expected, nextPossibleSet);
+      Set<String> expected = new HashSet<String>(Arrays.asList("2.0", "1.1", "1.0.1"));
+      addDotEndingSet(expected);
+      expected.removeAll(nextPossibleSet);
+      Assert.assertTrue(expected.isEmpty());
    }
 
    @Test
    public void testNextSetGeneration_ZeroBased() {
       Set<String> nextPossibleSet = outlineResolution.generateNextSet(new ReqNumbering("1.0"));
-      Set<String> expected = new HashSet<String>(Arrays.asList("2.", "2.0", "1.1", "1.0.1"));
-      Assert.assertEquals(expected, nextPossibleSet);
+      Set<String> expected = new HashSet<String>(Arrays.asList("2.0", "1.1", "1.0.1"));
+      addDotEndingSet(expected);
+      expected.removeAll(nextPossibleSet);
+      Assert.assertTrue(expected.isEmpty());
    }
 
    @Test
    public void testNextSetGeneration_ZeroExtendedBased() {
       Set<String> nextPossibleSet = outlineResolution.generateNextSet(new ReqNumbering("1.0.1"));
-      Set<String> expected = new HashSet<String>(Arrays.asList("2.", "2.0", "1.1", "1.0.2"));
-      Assert.assertEquals(expected, nextPossibleSet);
+      Set<String> expected = new HashSet<String>(Arrays.asList("2.0", "1.1", "1.0.2"));
+      addDotEndingSet(expected);
+      expected.removeAll(nextPossibleSet);
+      Assert.assertTrue(expected.isEmpty());
    }
 
    @Test
    public void testNextSetGeneration_DoubleDigitZeroBased() {
       Set<String> nextPossibleSet = outlineResolution.generateNextSet(new ReqNumbering("1.0.10"));
-      Set<String> expected = new HashSet<String>(Arrays.asList("2.", "2.0", "1.1", "1.0.11", "1.0.10.1", "1.0.10.0.1"));
-      Assert.assertEquals(expected, nextPossibleSet);
+      Set<String> expected = new HashSet<String>(Arrays.asList("2.0", "1.1", "1.0.11", "1.0.10.1", "1.0.10.0.1"));
+      addDotEndingSet(expected);
+      expected.removeAll(nextPossibleSet);
+      Assert.assertTrue(expected.isEmpty());
    }
 
    @Test
    public void testNextSetGeneration_DoubleDigitHigherBased() {
       Set<String> nextPossibleSet = outlineResolution.generateNextSet(new ReqNumbering("1.23"));
-      Set<String> expected = new HashSet<String>(Arrays.asList("2.", "2.0", "1.24", "1.23.1", "1.23.0.1"));
-      Assert.assertEquals(expected, nextPossibleSet);
+      Set<String> expected = new HashSet<String>(Arrays.asList("2.0", "1.24", "1.23.1", "1.23.0.1"));
+      addDotEndingSet(expected);
+      expected.removeAll(nextPossibleSet);
+      Assert.assertTrue(expected.isEmpty());
    }
 
    @Test
@@ -131,5 +153,13 @@ public final class OutlineResolutionAndNumberTest {
 
       larger_NotGenerated_CorrectInvalid = outlineResolution.isInvalidOutlineNumber("1.23.1.0.0.0.1", "1.23");
       Assert.assertFalse(larger_NotGenerated_CorrectInvalid);
+   }
+
+   private void addDotEndingSet(Set<String> inputSet) {
+      Set<String> dotEnding = new HashSet<String>(inputSet.size());
+      for (String item : inputSet) {
+         dotEnding.add(item + ".");
+      }
+      inputSet.addAll(dotEnding);
    }
 }

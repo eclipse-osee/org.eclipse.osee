@@ -86,8 +86,8 @@ public final class ArtifactImportWizardTest {
 
       // copy imported paragraph over... because they will be matched on guid...
       Map<String, String> answerParagraphNumbers = new HashMap<String, String>();
-      answerParagraphNumbers.put("B", "3.0");
-      answerParagraphNumbers.put("D", "2.0");
+      answerParagraphNumbers.put("B", "3");
+      answerParagraphNumbers.put("D", "2");
 
       int numberOfDescendants = myRootArtifact.getDescendants().size();
 
