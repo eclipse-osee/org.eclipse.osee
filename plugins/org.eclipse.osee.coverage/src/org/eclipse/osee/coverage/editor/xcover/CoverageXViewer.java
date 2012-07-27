@@ -21,7 +21,6 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.action.CreateWorkProductTaskAction;
-import org.eclipse.osee.coverage.action.DeleteCoverUnitAction;
 import org.eclipse.osee.coverage.action.EditAssigneesAction;
 import org.eclipse.osee.coverage.action.EditCoverageMethodAction;
 import org.eclipse.osee.coverage.action.EditCoverageNotesAction;
@@ -82,7 +81,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
          editAssigneesAction = new EditAssigneesAction(this, this, this);
          editCoverageStatusAction = new EditCoverageNotesAction(this, this, this);
          editRationaleAction = new EditRationaleAction(this, this, this);
-         deleteCoverUnitAction = new DeleteCoverUnitAction(this, this, this);
+         //         deleteCoverUnitAction = new DeleteCoverUnitAction(this, this, this);
          createWorkProductTaskAction = new CreateWorkProductTaskAction(this, this, this);
          removeWorkProductTaskAction = new RemoveWorkProductTaskAction(this, this, this);
          openWorkProductTaskAction = new OpenWorkProductTaskAction(this);
@@ -168,8 +167,8 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
          mm.insertBefore(MENU_GROUP_PRE, editCoverageStatusAction);
          editCoverageStatusAction.setEnabled(isEditMetricsEnabled());
 
-         mm.insertBefore(MENU_GROUP_PRE, deleteCoverUnitAction);
-         editCoverageStatusAction.setEnabled(isDeleteCoverageUnitEnabled());
+         //         mm.insertBefore(MENU_GROUP_PRE, deleteCoverUnitAction);
+         //         deleteCoverUnitAction.setEnabled(isDeleteCoverageUnitEnabled());
 
          mm.insertBefore(MENU_GROUP_PRE, new Separator());
 
