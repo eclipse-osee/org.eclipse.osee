@@ -57,8 +57,7 @@ public class SwtXWidgetRenderer {
    public static final String XWIDGET = "XWidget";
 
    private final Set<XWidgetRendererItem> datas = new LinkedHashSet<XWidgetRendererItem>();
-   private final Map<String, XWidgetRendererItem> nameToLayoutData =
-      new HashMap<String, XWidgetRendererItem>();
+   private final Map<String, XWidgetRendererItem> nameToLayoutData = new HashMap<String, XWidgetRendererItem>();
 
    private final Collection<ArrayList<String>> orRequired = new ArrayList<ArrayList<String>>();
    private final Collection<ArrayList<String>> xorRequired = new ArrayList<ArrayList<String>>();
@@ -80,122 +79,135 @@ public class SwtXWidgetRenderer {
       return toolkit != null ? toolkit.createComposite(parent, SWT.WRAP) : new Composite(parent, SWT.NONE);
    }
 
+   private Group buildGroupComposite(Composite given, String name, int numColumns, FormToolkit toolkit) {
+      Group groupComp = new Group(given, SWT.None);
+      if (Strings.isValid(name)) {
+         groupComp.setText(name);
+      }
+      groupComp.setLayout(ALayout.getZeroMarginLayout(numColumns, false));
+      groupComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      if (toolkit != null) {
+         toolkit.adapt(groupComp);
+      }
+      return groupComp;
+   }
+
+   private Composite buildChildComposite(Composite given, int numColumns, FormToolkit toolkit) {
+      Composite outComp = createComposite(given, toolkit);
+      GridLayout zeroMarginLayout = ALayout.getZeroMarginLayout(numColumns, false);
+      zeroMarginLayout.marginWidth = 4;
+      zeroMarginLayout.horizontalSpacing = 8;
+      outComp.setLayout(zeroMarginLayout);
+      outComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      if (toolkit != null) {
+         toolkit.adapt(outComp);
+      }
+      return outComp;
+   }
+
+   private XWidget setupXWidget(XWidgetRendererItem xWidgetLayoutData, boolean isEditable) throws OseeCoreException {
+      XWidget xWidget = xWidgetLayoutData.getXWidget();
+      xWidgets.add(xWidget);
+
+      if (Strings.isValid(xWidgetLayoutData.getName())) {
+         xWidget.setLabel(xWidgetLayoutData.getName().replaceFirst("^.*?\\.", ""));
+      }
+
+      if (Strings.isValid(xWidgetLayoutData.getToolTip())) {
+         xWidget.setToolTip(xWidgetLayoutData.getToolTip());
+      }
+
+      xWidget.setRequiredEntry(xWidgetLayoutData.isRequired());
+      xWidget.setEditable(xWidgetLayoutData.getXOptionHandler().contains(XOption.EDITABLE) && isEditable);
+
+      return xWidget;
+   }
+
    public void createBody(IManagedForm managedForm, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       final FormToolkit toolkit = managedForm != null ? managedForm.getToolkit() : null;
 
-      Composite attrComp = createComposite(parent, toolkit);
+      Composite topLevelComp = createComposite(parent, toolkit);
 
       GridLayout layout = new GridLayout(1, false);
       layout.marginWidth = 2;
       layout.marginHeight = 2;
-      attrComp.setLayout(layout);
-      attrComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      topLevelComp.setLayout(layout);
+      topLevelComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
       if (toolkit != null) {
-         toolkit.adapt(attrComp);
+         toolkit.adapt(topLevelComp);
       }
 
-      boolean inChildComposite = false, inGroupComposite = false;
+      boolean inChildComposite = false;
+      boolean inGroupComposite = false;
       Composite childComp = null;
       Group groupComp = null;
       // Create Attributes
       for (XWidgetRendererItem xWidgetLayoutData : getLayoutDatas()) {
-         Composite useComp = attrComp;
+         Composite currentComp = null;
 
-         GridData gd = new GridData();
-         useComp.setLayoutData(gd);
-         gd.horizontalAlignment = SWT.FILL;
-         gd.verticalAlignment = SWT.FILL;
+         // first, check if this one is a group, if so, we set the group up and are done with this loop iteration
 
-         // defaults to grab horizontal, causes scrollbars on items that extend past the provided window space
-         gd.grabExcessHorizontalSpace = true;
-
-         if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_VERTICALLY)) {
-            gd.grabExcessVerticalSpace = true;
-         }
-
-         if (xWidgetLayoutData.getBeginGroupComposite() > 0) {
-            groupComp = new Group(attrComp, SWT.None);
-            if (Strings.isValid(xWidgetLayoutData.getName())) {
-               groupComp.setText(xWidgetLayoutData.getName());
-            }
-            groupComp.setLayout(ALayout.getZeroMarginLayout(xWidgetLayoutData.getBeginGroupComposite(), false));
-            groupComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-            if (toolkit != null) {
-               toolkit.adapt(groupComp);
-            }
+         int i = xWidgetLayoutData.getBeginGroupComposite();
+         if (i > 0) {
             inGroupComposite = true;
-            // No XWidget associated, so go to next one
+            groupComp = buildGroupComposite(topLevelComp, xWidgetLayoutData.getName(), i, toolkit);
             continue;
          }
-         if (xWidgetLayoutData.getBeginComposite() > 0) {
-            childComp = createComposite((inGroupComposite ? groupComp : attrComp), toolkit);
-            GridLayout zeroMarginLayout = ALayout.getZeroMarginLayout(xWidgetLayoutData.getBeginComposite(), false);
-            zeroMarginLayout.marginWidth = 4;
-            zeroMarginLayout.horizontalSpacing = 8;
-            childComp.setLayout(zeroMarginLayout);
-            childComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-            if (toolkit != null) {
-               toolkit.adapt(childComp);
-            }
-            inChildComposite = true;
-         }
          if (inGroupComposite) {
-            useComp = groupComp;
+            System.out.println("debug: groupcomp is " + groupComp);
+            currentComp = groupComp;
             if (xWidgetLayoutData.isEndGroupComposite()) {
                inGroupComposite = false;
                // No XWidget associated, so go to next one
                continue;
             }
+
+         } else {
+            currentComp = topLevelComp;
          }
+
+         if (currentComp == null) {
+            System.out.println("debug: got null composite");
+         }
+
+         // defaults to grab horizontal, causes scrollbars on items that extend past the provided window space
+         GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+         currentComp.setLayoutData(gd);
+
+         if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_VERTICALLY)) {
+            gd.grabExcessVerticalSpace = true;
+         }
+
+         int j = xWidgetLayoutData.getBeginComposite();
+         if (j > 0) {
+            inChildComposite = true;
+            childComp = buildChildComposite(currentComp, j, toolkit);
+         }
+
          if (inChildComposite) {
-            useComp = childComp;
+            System.out.println("debug: childcomp is " + childComp);
+
+            currentComp = childComp;
             if (xWidgetLayoutData.isEndComposite()) {
                inChildComposite = false;
             }
          } else if (xWidgetLayoutData.getXOptionHandler().contains(XOption.HORIZONTAL_LABEL)) {
-            useComp = createComposite(attrComp, toolkit);
-            useComp.setLayout(ALayout.getZeroMarginLayout(2, false));
-            useComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            currentComp = createComposite(topLevelComp, toolkit);
+            currentComp.setLayout(ALayout.getZeroMarginLayout(2, false));
+            currentComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             if (toolkit != null) {
-               toolkit.adapt(useComp);
+               toolkit.adapt(currentComp);
             }
          }
 
-         XWidget xWidget = xWidgetLayoutData.getXWidget();
-         xWidgets.add(xWidget);
-
-         if (Strings.isValid(xWidgetLayoutData.getName())) {
-            xWidget.setLabel(xWidgetLayoutData.getName().replaceFirst("^.*?\\.", ""));
-         }
-
-         if (Strings.isValid(xWidgetLayoutData.getToolTip())) {
-            xWidget.setToolTip(xWidgetLayoutData.getToolTip());
-         }
-
-         xWidget.setRequiredEntry(xWidgetLayoutData.isRequired());
-         xWidget.setEditable(xWidgetLayoutData.getXOptionHandler().contains(XOption.EDITABLE) && isEditable);
+         XWidget xWidget = setupXWidget(xWidgetLayoutData, isEditable);
 
          if (dynamicWidgetLayoutListener != null) {
             dynamicWidgetLayoutListener.widgetCreating(xWidget, toolkit, artifact, this, xModListener, isEditable);
          }
 
-         if (artifact != null) {
-            if (xWidget instanceof IAttributeWidget) {
-               try {
-                  IAttributeType attributeType = AttributeTypeManager.getType(xWidgetLayoutData.getStoreName());
-                  ((IAttributeWidget) xWidget).setAttributeType(artifact, attributeType);
-               } catch (Exception ex) {
-                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-               }
-            } else if (xWidget instanceof IArtifactWidget) {
-               try {
-                  ((IArtifactWidget) xWidget).setArtifact(artifact);
-               } catch (Exception ex) {
-                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-               }
-            }
-         }
+         setupArtifactInfo(artifact, xWidgetLayoutData, xWidget);
 
          if (xWidget instanceof XText) {
             XText xText = (XText) xWidget;
@@ -207,34 +219,15 @@ public class SwtXWidgetRenderer {
             }
          }
 
-         xWidget.createWidgets(managedForm, useComp, 2);
+         xWidget.createWidgets(managedForm, currentComp, 2);
 
          if (xWidget instanceof XText) {
             XText xText = (XText) xWidget;
-            if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY) && xWidgetLayoutData.getXOptionHandler().contains(
-               XOption.FILL_VERTICALLY)) {
-
-               GridData gdi = new GridData(SWT.FILL, SWT.FILL, true, true);
-               //gdi.minimumWidth = 60;
-               //gdi.minimumHeight = 60;
-               xText.getStyledText().setLayoutData(gdi);
-            } else if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY)) {
-
-               GridData gdi = new GridData(SWT.FILL, SWT.FILL, true, false);
-               //gdi.minimumWidth = 60;
-               xText.getStyledText().setLayoutData(gdi);
-            } else if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_VERTICALLY)) {
-
-               GridData gdi = new GridData(SWT.FILL, SWT.FILL, true, true);
-               //gdi.minimumHeight = 60;
-               xText.getStyledText().setLayoutData(gdi);
-            }
 
             if (xWidgetLayoutData.isHeightSet()) {
                xText.setHeight(xWidgetLayoutData.getHeight());
             }
          }
-         //useComp.layout();
 
          if (xModListener != null) {
             xWidget.addXModifiedListener(xModListener);
@@ -247,6 +240,14 @@ public class SwtXWidgetRenderer {
             dynamicWidgetLayoutListener.createXWidgetLayoutData(xWidgetLayoutData, xWidget, toolkit, artifact,
                xModListener, isEditable);
          }
+      }
+      topLevelComp.layout();
+
+      if (inChildComposite) {
+         System.out.println("debug: unclosed child");
+      }
+      if (inGroupComposite) {
+         System.out.println("debug: unclosed group");
       }
 
       Displays.ensureInDisplayThread(new Runnable() {
@@ -262,6 +263,26 @@ public class SwtXWidgetRenderer {
             }
          }
       });
+   }
+
+   private void setupArtifactInfo(Artifact artifact, XWidgetRendererItem xWidgetLayoutData, XWidget xWidget) {
+      if (artifact == null) {
+         return;
+      }
+      if (xWidget instanceof IAttributeWidget) {
+         try {
+            IAttributeType attributeType = AttributeTypeManager.getType(xWidgetLayoutData.getStoreName());
+            ((IAttributeWidget) xWidget).setAttributeType(artifact, attributeType);
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         }
+      } else if (xWidget instanceof IArtifactWidget) {
+         try {
+            ((IArtifactWidget) xWidget).setArtifact(artifact);
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         }
+      }
    }
    private final XModifiedListener refreshRequiredModListener = new XModifiedListener() {
       @Override

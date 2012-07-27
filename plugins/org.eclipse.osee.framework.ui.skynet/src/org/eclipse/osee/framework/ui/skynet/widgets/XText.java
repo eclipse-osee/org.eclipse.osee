@@ -154,19 +154,16 @@ public class XText extends XWidget {
 
          sText = new StyledText(composite, getTextStyle());
 
-         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+         GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
          if (verticalLabel) {
             gd.horizontalSpan = horizontalSpan;
          } else {
             gd.horizontalSpan = horizontalSpan - 1;
          }
-         gd.grabExcessHorizontalSpace = true;
-         gd.horizontalAlignment = GridData.FILL;
-         if (fillVertically) {
-            gd.grabExcessVerticalSpace = true;
-            gd.verticalAlignment = GridData.FILL;
-         }
-         if (fillVertically) {
+
+         if (!fillVertically) {
+            gd.grabExcessVerticalSpace = false;
+         } else {
             if (height > 0) {
                gd.heightHint = height;
             }
