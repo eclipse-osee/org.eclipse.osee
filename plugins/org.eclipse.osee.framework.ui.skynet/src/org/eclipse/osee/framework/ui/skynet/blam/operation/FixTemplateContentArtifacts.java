@@ -48,7 +48,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayout;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.w3c.dom.Element;
 
@@ -171,7 +171,7 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(final XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
+   public void widgetCreated(final XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer widgetRenderer, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
       String widgetLabel = xWidget.getLabel();
       if ("Specific branch".equals(widgetLabel)) {
          xWidget.addXModifiedListener(new XModifiedListener() {
