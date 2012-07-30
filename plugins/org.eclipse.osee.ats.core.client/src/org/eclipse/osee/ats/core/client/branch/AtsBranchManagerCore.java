@@ -41,6 +41,7 @@ import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
@@ -350,8 +351,20 @@ public class AtsBranchManagerCore {
       return null;
    }
 
+   /**
+    * @return false if any object in parallel configuration is not configured with a valid branch
+    */
    public static boolean isAllObjectsToCommitToConfigured(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      return getConfigArtifactsConfiguredToCommitTo(teamArt).size() == getBranchesToCommitTo(teamArt).size();
+      Collection<ICommitConfigArtifact> configs = getConfigArtifactsConfiguredToCommitTo(teamArt);
+      for (ICommitConfigArtifact config : configs) {
+         String guid = config.getBaslineBranchGuid();
+         if (!Strings.isValid(guid)) {
+            return false;
+         } else if (!BranchManager.branchExists(TokenFactory.createBranch(guid, Strings.EMPTY_STRING))) {
+            return false;
+         }
+      }
+      return true;
    }
 
    public static Collection<Branch> getBranchesLeftToCommit(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
@@ -386,7 +399,7 @@ public class AtsBranchManagerCore {
    }
 
    /**
-    * @return true if there is at least one destination branch committed to
+    * @return true if configuration is valid and there is at least one destination branch committed to
     */
    public static boolean isCommittedBranchExists(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       return isAllObjectsToCommitToConfigured(teamArt) && !getBranchesCommittedTo(teamArt).isEmpty();
