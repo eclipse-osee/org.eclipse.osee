@@ -484,11 +484,11 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
-				<osee-xcore-site-path>http://msa-linux-adm.msc.az.boeing.com/osee/sites</osee-xcore-site-path>
+				<osee-xcore-site-path>http://osee-build.msc.az.boeing.com/osee/sites</osee-xcore-site-path>
 				<osee-xcore-site-version>DEV/org.eclipse.osee</osee-xcore-site-version>
 				<osee-xcore-site>${osee-xcore-site-path}/org.eclipse.osee.x.core.p2</osee-xcore-site>
 
-				<eclipse-ip-site-path>http://msa-linux-adm.msc.az.boeing.com/osee/sites</eclipse-ip-site-path>
+				<eclipse-ip-site-path>http://osee-build.msc.az.boeing.com/osee/sites</eclipse-ip-site-path>
 				<eclipse-ip-site-version>DEV</eclipse-ip-site-version>
 				<eclipse-ip-site>${eclipse-ip-site-path}/${eclipse-ip-site-version}/org.eclipse.ip/org.eclipse.ip.p2</eclipse-ip-site>
 			</properties>

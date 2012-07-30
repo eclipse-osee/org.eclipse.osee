@@ -513,7 +513,7 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
-				<osee-xserver-site-path>http://msa-linux-adm.msc.az.boeing.com/osee/sites</osee-xserver-site-path>
+				<osee-xserver-site-path>http://osee-build.msc.az.boeing.com/osee/sites</osee-xserver-site-path>
 				<osee-xserver-site-version>DEV</osee-xserver-site-version>
 				<osee-xserver-site>${osee-xserver-site-path}/${osee-xserver-site-version}/org.eclipse.osee/org.eclipse.osee.x.server.p2</osee-xserver-site>
 			</properties>

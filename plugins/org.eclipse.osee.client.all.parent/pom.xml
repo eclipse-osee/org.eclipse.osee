@@ -538,7 +538,7 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
-				<osee-runtime-site-path>http://msa-linux-adm.msc.az.boeing.com/osee/sites</osee-runtime-site-path>
+				<osee-runtime-site-path>http://osee-build.msc.az.boeing.com/osee/sites</osee-runtime-site-path>
 				<osee-runtime-site-version>DEV</osee-runtime-site-version>
 				<osee-runtime-site>${osee-runtime-site-path}/${osee-runtime-site-version}/org.eclipse.osee/org.eclipse.osee.runtime.p2</osee-runtime-site>
 

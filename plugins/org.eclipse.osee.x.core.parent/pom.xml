@@ -530,7 +530,7 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
-				<eclipse-ip-site-path>http://msa-linux-adm.msc.az.boeing.com/osee/sites</eclipse-ip-site-path>
+				<eclipse-ip-site-path>http://osee-build.msc.az.boeing.com/osee/sites</eclipse-ip-site-path>
 				<eclipse-ip-site-version>DEV</eclipse-ip-site-version>
 				<eclipse-ip-site>${eclipse-ip-site-path}/${eclipse-ip-site-version}/org.eclipse.ip/org.eclipse.ip.p2</eclipse-ip-site>
 			</properties>
