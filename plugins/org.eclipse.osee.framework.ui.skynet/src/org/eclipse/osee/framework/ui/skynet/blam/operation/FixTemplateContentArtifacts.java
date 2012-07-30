@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
+import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -65,15 +66,18 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
 
    //@formatter:off
 	private static final String GET_TRANS_DETAILS =
-			"SELECT attr.gamma_id, attr.uri, tx_d.* " +
-			"FROM osee_txs txs, osee_tx_details tx_d, osee_attribute attr " +
-			"WHERE txs.gamma_id = attr.gamma_id " +
+			"SELECT attr.gamma_id, attr.uri, tx_d.author, tx_d.branch_id, tx_d.transaction_id, tx_d.time, tx_d.osee_comment " +
+			"FROM osee_txs txs, osee_tx_details tx_d, osee_attribute attr, osee_branch branch " +
+			"WHERE txs.tx_current = ? " +
+			"AND tx_d.tx_type = ? " +
 			"AND tx_d.transaction_id = txs.transaction_id " +
+			"AND tx_d.branch_id = txs.branch_id  " +
 			"AND attr.attr_type_id = ? " +
-			"AND attr.uri IS NOT NULL";
+			"AND txs.gamma_id = attr.gamma_id " +
+			"AND branch.branch_id = txs.branch_id ";
 
-	private static final String AND_ALL_BRANCHES = " AND txs.branch_id = tx_d.branch_id ";
-	private static final String AND_SPECIFIC_BRANCHES = " AND txs.branch_id = ? AND tx_d.tx_type = ?";
+//	private static final String AND_ALL_BRANCHES = " AND txs.branch_id = tx_d.branch_id ";
+	private static final String AND_SPECIFIC_BRANCHES = " AND txs.branch_id = ?";
 	//@formatter:on
 
    private int branchId;
@@ -95,22 +99,29 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
 
          StringBuilder query = new StringBuilder();
          query.append(GET_TRANS_DETAILS);
-         query.append(allBranches ? AND_ALL_BRANCHES : AND_SPECIFIC_BRANCHES);
+         query.append(allBranches ? Strings.EMPTY_STRING : AND_SPECIFIC_BRANCHES);
 
-         Object[] params = new Object[allBranches ? 1 : 3];
-         params[0] = ServiceUtil.getIdentityService().getLocalId(CoreAttributeTypes.WordTemplateContent);
+         Object[] params = new Object[allBranches ? 3 : 4];
+         params[0] = TxChange.CURRENT.getValue();
+         params[1] = TransactionDetailsType.NonBaselined.getId();
+         params[2] = ServiceUtil.getIdentityService().getLocalId(CoreAttributeTypes.WordTemplateContent);
          if (!allBranches) {
-            params[1] = branchId;
-            params[2] = TransactionDetailsType.NonBaselined.getId();
+            params[3] = branchId;
          }
 
          chStmt.runPreparedQuery(query.toString(), params);
 
          monitor.setTaskName("Processing results");
+         int count = 0;
          while (chStmt.next() && !monitor.isCanceled()) {
+            if (!Strings.isValid(chStmt.getString("uri"))) {
+               continue;
+            }
             AttrData attrData = new AttrData(chStmt.getString("gamma_id"), chStmt.getString("uri"));
             Resource resource = getResource(attrData.uri);
-
+            if (++count % 2000 == 0) {
+               log("processed " + count + " rows");
+            }
             try {
                boolean foundOffenderByteSeq = false;
                for (int byteIndex = 0; byteIndex < resource.backingBytes.length; byteIndex++) {
@@ -127,15 +138,14 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
                         String.format("author: %s, time: %s, osee_comment: %s, branch_id: %s, transaction_id %s",
                            chStmt.getString("author"), chStmt.getString("time"), chStmt.getString("osee_comment"),
                            chStmt.getString("branch_id"), chStmt.getString("transaction_id"));
-                     attrData.setComment(comment);
 
                      String offender =
                         new String(new byte[] {
                            resource.backingBytes[byteIndex],
                            resource.backingBytes[byteIndex + 1],
                            resource.backingBytes[byteIndex + 2]}, "UTF-8");
-                     log("Offender: " + offender);
-                     log("Found a hit: " + resource.resourceName);
+                     log("\nOffender: " + offender);
+                     log("Found a hit: " + attrData.uri);
 
                      int beginIndex = resource.data.indexOf(offender);
                      int maxIndex =
@@ -144,8 +154,8 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
 
                      log("Reduced Chunk:\n " + resource.data.substring(beginIndex, maxIndex));
 
-                     log("\nIntroducing transaction:");
-                     log(attrData.comment);
+                     log("Introducing transaction:");
+                     log(comment + "\n");
                      break;
                   }
                }
@@ -154,6 +164,7 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
                   attrData.gammaId, attrData.uri, ex);
             }
          }
+         log("processed " + count + " rows");
       } finally {
          chStmt.close();
       }
