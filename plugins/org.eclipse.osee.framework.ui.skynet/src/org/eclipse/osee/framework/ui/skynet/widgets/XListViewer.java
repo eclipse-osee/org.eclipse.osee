@@ -110,8 +110,13 @@ public class XListViewer extends GenericXWidget {
       setInput(arts);
    }
 
+   @SuppressWarnings({"unchecked", "rawtypes"})
    public void setInput(Object input) {
-      setInput(Arrays.asList(input));
+      if (input instanceof Collection) {
+         setInput((Collection) input);
+      } else {
+         setInput(Arrays.asList(input));
+      }
    }
 
    public void setInput(Collection<Object> input) {
