@@ -94,6 +94,13 @@ public final class Conditions {
       }
    }
 
+   public static void checkNotNullOrEmpty(Object[] array, String objectName) throws OseeCoreException {
+      checkNotNull(array, objectName);
+      if (array.length <= 0) {
+         throw new OseeArgumentException("%s cannot be empty", objectName);
+      }
+   }
+
    public static void checkNotNullOrEmpty(Collection<? extends Object> collection, String objectName) throws OseeCoreException {
       checkNotNull(collection, objectName);
       if (collection.isEmpty()) {
