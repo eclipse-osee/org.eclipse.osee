@@ -57,6 +57,7 @@ public class XText extends XWidget {
    private XTextSpellModifyDictionary modDict;
    private Font font;
    Composite composite = null;
+   private boolean dynamicallyCreated = false;
 
    public XText() {
       this("XText");
@@ -68,6 +69,10 @@ public class XText extends XWidget {
 
    public void setEnabled(boolean enabled) {
       sText.setEnabled(enabled);
+   }
+
+   public void setDynamicallyCreated(boolean value) {
+      dynamicallyCreated = value;
    }
 
    public void setSize(int width, int height) {
@@ -154,21 +159,33 @@ public class XText extends XWidget {
 
          sText = new StyledText(composite, getTextStyle());
 
-         GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
          if (verticalLabel) {
             gd.horizontalSpan = horizontalSpan;
          } else {
             gd.horizontalSpan = horizontalSpan - 1;
          }
-
-         if (!fillVertically) {
-            gd.grabExcessVerticalSpace = false;
-         } else {
+         gd.grabExcessHorizontalSpace = true;
+         gd.horizontalAlignment = GridData.FILL;
+         if (fillVertically) {
+            gd.grabExcessVerticalSpace = true;
+            gd.verticalAlignment = GridData.FILL;
             if (height > 0) {
                gd.heightHint = height;
             }
+            if (dynamicallyCreated) {
+               if (height > 0) {
+                  gd.minimumHeight = height;
+               } else {
+                  gd.minimumHeight = 60;
+               }
+            }
          }
-         //      gd.widthHint = 200;
+         if (fillHorizontally && dynamicallyCreated) {
+            gd.grabExcessHorizontalSpace = true;
+            gd.minimumWidth = 60;
+         }
+
          sText.setLayoutData(gd);
          sText.setMenu(getDefaultMenu());
          sText.addModifyListener(textListener);

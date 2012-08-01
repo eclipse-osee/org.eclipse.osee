@@ -155,7 +155,6 @@ public class SwtXWidgetRenderer {
             continue;
          }
          if (inGroupComposite) {
-            System.out.println("debug: groupcomp is " + groupComp);
             currentComp = groupComp;
             if (xWidgetLayoutData.isEndGroupComposite()) {
                inGroupComposite = false;
@@ -186,8 +185,6 @@ public class SwtXWidgetRenderer {
          }
 
          if (inChildComposite) {
-            System.out.println("debug: childcomp is " + childComp);
-
             currentComp = childComp;
             if (xWidgetLayoutData.isEndComposite()) {
                inChildComposite = false;
@@ -217,17 +214,13 @@ public class SwtXWidgetRenderer {
             if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_VERTICALLY)) {
                xText.setFillVertically(true);
             }
-         }
-
-         xWidget.createWidgets(managedForm, currentComp, 2);
-
-         if (xWidget instanceof XText) {
-            XText xText = (XText) xWidget;
-
             if (xWidgetLayoutData.isHeightSet()) {
                xText.setHeight(xWidgetLayoutData.getHeight());
             }
+            xText.setDynamicallyCreated(true);
          }
+
+         xWidget.createWidgets(managedForm, currentComp, 2);
 
          if (xModListener != null) {
             xWidget.addXModifiedListener(xModListener);
@@ -242,13 +235,6 @@ public class SwtXWidgetRenderer {
          }
       }
       topLevelComp.layout();
-
-      if (inChildComposite) {
-         System.out.println("debug: unclosed child");
-      }
-      if (inGroupComposite) {
-         System.out.println("debug: unclosed group");
-      }
 
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
