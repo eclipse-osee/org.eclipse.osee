@@ -67,11 +67,9 @@ public class XHistoryWidget extends GenericXWidget {
    private Artifact artifact;
    private ToolBar toolBar;
    private Composite rightComp;
-   private final HistoryView historyView;
 
-   public XHistoryWidget(HistoryView historyView) {
+   public XHistoryWidget() {
       super("History");
-      this.historyView = historyView;
    }
 
    @Override
@@ -142,16 +140,15 @@ public class XHistoryWidget extends GenericXWidget {
       toolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       toolBar.setLayoutData(gd);
-      ToolItem item = null;
 
-      item = new ToolItem(toolBar, SWT.PUSH);
+      ToolItem item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(ImageManager.getImage(PluginUiImage.REFRESH));
       item.setToolTipText("Refresh");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
             setInputData(artifact, true);
-            refreshTitle();
+            onRefresh();
          }
       });
 
@@ -161,8 +158,8 @@ public class XHistoryWidget extends GenericXWidget {
       rightComp.getParent().layout();
    }
 
-   protected void refreshTitle() {
-      historyView.refreshTitle();
+   protected void onRefresh() {
+      // Can be overridden by clients 
    }
 
    public void loadTable() {
@@ -192,7 +189,10 @@ public class XHistoryWidget extends GenericXWidget {
 
    @Override
    public void dispose() {
-      xHistoryViewer.dispose();
+      super.dispose();
+      if (xHistoryViewer != null) {
+         xHistoryViewer.dispose();
+      }
    }
 
    @Override

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.action;
 
-import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -47,7 +47,7 @@ public class EditTransactionComment extends Action {
          AWorkbench.popup("Transaction Record must be selected.");
          return;
       }
-      ArrayList<TransactionRecord> records = provider.getSelectedTransactionRecords();
+      List<TransactionRecord> records = provider.getSelectedTransactionRecords();
       EntryDialog ed = new EntryDialog("Edit Transaction Record Comment", "Enter Transaction Record comment");
       if (ed.open() == 0) {
          for (TransactionRecord record : records) {

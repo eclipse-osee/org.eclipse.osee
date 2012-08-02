@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.action;
 
-import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 
 public interface ITransactionRecordSelectionProvider {
 
-   public ArrayList<TransactionRecord> getSelectedTransactionRecords();
+   public List<TransactionRecord> getSelectedTransactionRecords();
 
-   public void refreshUI(ArrayList<TransactionRecord> records);
+   public void refreshUI(List<TransactionRecord> records);
 }

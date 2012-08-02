@@ -12,7 +12,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -64,21 +64,26 @@ import org.osgi.service.prefs.Preferences;
  */
 public class BranchView extends GenericViewPart implements IBranchEventListener, ITransactionEventListener, ITransactionRecordSelectionProvider {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView";
-   private BranchViewPresentationPreferences branchViewPresentationPreferences;
    public static final String BRANCH_ID = "branchId";
-   private XBranchWidget xBranchWidget;
+
    private final Clipboard clipboard = new Clipboard(null);
 
+   private BranchViewPresentationPreferences branchViewPresentationPreferences;
+   private XBranchWidget xBranchWidget;
+
    public BranchView() {
-      OseeEventManager.addListener(this);
+      super();
    }
 
    @Override
    public void dispose() {
       super.dispose();
-      branchViewPresentationPreferences.setDisposed(true);
       OseeEventManager.removeListener(this);
+      branchViewPresentationPreferences.setDisposed(true);
       clipboard.dispose();
+      if (xBranchWidget != null) {
+         xBranchWidget.dispose();
+      }
    }
 
    @Override
@@ -136,6 +141,8 @@ public class BranchView extends GenericViewPart implements IBranchEventListener,
       getViewSite().getActionBars().updateActionBars();
 
       setFocusWidget(xBranchWidget.getControl());
+
+      OseeEventManager.addListener(this);
    }
 
    public static void revealBranch(Branch branch) throws OseeCoreException {
@@ -148,35 +155,23 @@ public class BranchView extends GenericViewPart implements IBranchEventListener,
    }
 
    private void reveal(Branch branch) {
-      xBranchWidget.reveal(branch);
+      if (isInitialized()) {
+         xBranchWidget.reveal(branch);
+      }
    }
 
    @Override
    public void handleBranchEvent(Sender sender, final BranchEvent branchEvent) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            try {
-               if (branchEvent.getEventType() == BranchEventType.Renamed) {
-                  xBranchWidget.refresh();
-               } else {
-                  xBranchWidget.loadData();
-               }
-            } catch (Exception ex) {
-               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      });
-   }
-
-   @Override
-   public void handleTransactionEvent(Sender sender, TransactionEvent transEvent) {
-      if (transEvent.getEventType() == TransactionEventType.Purged) {
+      if (isInitialized()) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
                try {
-                  xBranchWidget.refresh();
+                  if (branchEvent.getEventType() == BranchEventType.Renamed) {
+                     xBranchWidget.refresh();
+                  } else {
+                     xBranchWidget.loadData();
+                  }
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
@@ -185,8 +180,26 @@ public class BranchView extends GenericViewPart implements IBranchEventListener,
       }
    }
 
+   @Override
+   public void handleTransactionEvent(Sender sender, TransactionEvent transEvent) {
+      if (isInitialized()) {
+         if (transEvent.getEventType() == TransactionEventType.Purged) {
+            Displays.ensureInDisplayThread(new Runnable() {
+               @Override
+               public void run() {
+                  try {
+                     xBranchWidget.refresh();
+                  } catch (Exception ex) {
+                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+                  }
+               }
+            });
+         }
+      }
+   }
+
    public void changePresentation(BranchOptionsEnum branchViewPresKey, boolean state) {
-      if (branchViewPresentationPreferences != null) {
+      if (isInitialized()) {
          Preferences pref = branchViewPresentationPreferences.getViewPreference();
          pref.putBoolean(branchViewPresKey.origKeyName, state);
       }
@@ -196,19 +209,25 @@ public class BranchView extends GenericViewPart implements IBranchEventListener,
       return xBranchWidget;
    }
 
+   private boolean isInitialized() {
+      return xBranchWidget != null && branchViewPresentationPreferences != null;
+   }
+
    @Override
    public List<? extends IEventFilter> getEventFilters() {
       return null;
    }
 
    @Override
-   public ArrayList<TransactionRecord> getSelectedTransactionRecords() {
-      return xBranchWidget.getSelectedTransactionRecords();
+   public List<TransactionRecord> getSelectedTransactionRecords() {
+      return isInitialized() ? xBranchWidget.getSelectedTransactionRecords() : Collections.<TransactionRecord> emptyList();
    }
 
    @Override
-   public void refreshUI(ArrayList<TransactionRecord> records) {
-      xBranchWidget.getXViewer().update(records.toArray(new TransactionRecord[records.size()]), null);
+   public void refreshUI(List<TransactionRecord> records) {
+      if (isInitialized()) {
+         xBranchWidget.getXViewer().update(records.toArray(new TransactionRecord[records.size()]), null);
+      }
    }
 
 }

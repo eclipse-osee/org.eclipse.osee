@@ -12,7 +12,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xHistory;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -29,9 +29,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -78,8 +78,8 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.progress.UIJob;
 
 /**
  * Displays persisted changes made to an artifact.
@@ -89,52 +89,28 @@ import org.eclipse.ui.PartInitException;
 public class HistoryView extends GenericViewPart implements IBranchEventListener, ITransactionRecordSelectionProvider, IRebuildMenuListener {
 
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView";
+   private static final String INPUT = "input";
+   private static final String ART_GUID = "artifactGuid";
+   private static final String BRANCH_ID = "branchId";
+
    private XHistoryWidget xHistoryWidget;
    private Artifact artifact;
 
-   public static void open(Artifact artifact) throws OseeArgumentException {
-      if (artifact == null) {
-         throw new OseeArgumentException("Artifact can't be null");
+   public HistoryView() {
+      super();
+   }
+
+   @Override
+   public void dispose() {
+      super.dispose();
+      OseeEventManager.removeListener(this);
+      if (xHistoryWidget != null) {
+         xHistoryWidget.dispose();
       }
-      HistoryView.openViewUpon(artifact, true);
    }
 
-   private static void openViewUpon(final Artifact artifact, final Boolean loadHistory) {
-      Job job = new Job("Open History: " + artifact.getName()) {
-
-         @Override
-         protected IStatus run(final IProgressMonitor monitor) {
-            Displays.ensureInDisplayThread(new Runnable() {
-               @Override
-               public void run() {
-                  try {
-                     IWorkbenchPage page = AWorkbench.getActivePage();
-                     HistoryView historyView =
-                        (HistoryView) page.showView(VIEW_ID, artifact.getGuid() + artifact.getBranch().getGuid(),
-                           IWorkbenchPage.VIEW_ACTIVATE);
-
-                     historyView.explore(artifact, loadHistory);
-                  } catch (Exception ex) {
-                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-                  }
-               }
-            });
-            monitor.done();
-            return Status.OK_STATUS;
-         }
-      };
-
-      Jobs.startJob(job);
-   }
-
-   /**
-    * @see IWorkbenchPart#createPartControl(Composite)
-    */
    @Override
    public void createPartControl(Composite parent) {
-      /*
-       * Create a grid layout object so the text and treeviewer are layed out the way I want.
-       */
       GridLayout layout = new GridLayout();
       layout.numColumns = 1;
       layout.verticalSpacing = 0;
@@ -143,7 +119,13 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
       parent.setLayout(layout);
       parent.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      xHistoryWidget = new XHistoryWidget(this);
+      xHistoryWidget = new XHistoryWidget() {
+
+         @Override
+         protected void onRefresh() {
+            refreshTitle();
+         }
+      };
       xHistoryWidget.setDisplayLabel(false);
       xHistoryWidget.createWidgets(parent, 1);
 
@@ -172,6 +154,8 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
       setupMenus();
 
       setFocusWidget(xHistoryWidget.getXViewer().getControl());
+
+      OseeEventManager.addListener(this);
    }
 
    private void setupMenus() {
@@ -192,7 +176,6 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
       (new ActionContributionItem(new EditTransactionComment(this))).fill(popupMenu, 3);
       (new ActionContributionItem(new WasIsCompareEditorAction())).fill(popupMenu, 3);
 
-      // Setup generic xviewer menu items
       XViewerCustomMenu xMenu = new XViewerCustomMenu(xHistoryWidget.getXViewer());
       new MenuItem(popupMenu, SWT.SEPARATOR);
       xMenu.createTableCustomizationMenuItem(popupMenu);
@@ -289,17 +272,13 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
    }
 
    private void explore(final Artifact artifact, boolean loadHistory) {
-      if (xHistoryWidget != null) {
-         this.artifact = artifact;
+      this.artifact = artifact;
 
+      if (isInitialized()) {
          setPartName("History: " + artifact.getName());
          xHistoryWidget.setInputData(artifact, loadHistory);
       }
    }
-
-   private static final String INPUT = "input";
-   private static final String ART_GUID = "artifactGuid";
-   private static final String BRANCH_ID = "branchId";
 
    @Override
    public void saveState(IMemento memento) {
@@ -334,7 +313,18 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
       }
    }
 
-   private void handleBranchEvent(BranchEventType branchModType) {
+   private void closeView() {
+      SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
+   }
+
+   @Override
+   public void rebuildMenu() {
+      setupMenus();
+   }
+
+   @Override
+   public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
+      BranchEventType branchModType = branchEvent.getEventType();
       if (branchModType == BranchEventType.Deleting || branchModType == BranchEventType.Deleted || branchModType == BranchEventType.Purging || branchModType == BranchEventType.Purged) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
@@ -358,40 +348,58 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
       }
    }
 
-   private void closeView() {
-      SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
-   }
-
-   @Override
-   public void rebuildMenu() {
-      setupMenus();
-   }
-
-   @Override
-   public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
-      handleBranchEvent(branchEvent.getEventType());
-   }
-
    @Override
    public List<? extends IEventFilter> getEventFilters() {
-      if (artifact != null) {
-         return OseeEventManager.getEventFiltersForBranch(artifact.getBranch());
+      return artifact != null ? OseeEventManager.getEventFiltersForBranch(artifact.getBranch()) : Collections.<IEventFilter> emptyList();
+   }
+
+   @Override
+   public List<TransactionRecord> getSelectedTransactionRecords() {
+      return isInitialized() ? xHistoryWidget.getSelectedTransactionRecords() : Collections.<TransactionRecord> emptyList();
+   }
+
+   @Override
+   public void refreshUI(List<TransactionRecord> records) {
+      if (isInitialized()) {
+         setPartName("History: " + artifact.getName());
+         xHistoryWidget.refresh();
       }
-      return null;
    }
 
-   @Override
-   public ArrayList<TransactionRecord> getSelectedTransactionRecords() {
-      return xHistoryWidget.getSelectedTransactionRecords();
+   private void refreshTitle() {
+      if (isInitialized()) {
+         setPartName("History: " + artifact.getName());
+      }
    }
 
-   @Override
-   public void refreshUI(ArrayList<TransactionRecord> records) {
-      setPartName("History: " + artifact.getName());
-      xHistoryWidget.refresh();
+   private boolean isInitialized() {
+      return xHistoryWidget != null && artifact != null;
    }
 
-   public void refreshTitle() {
-      setPartName("History: " + artifact.getName());
+   public static void open(Artifact artifact) throws OseeCoreException {
+      Conditions.checkNotNull(artifact, "artifact");
+      HistoryView.openViewUpon(artifact, true);
+   }
+
+   private static void openViewUpon(final Artifact artifact, final boolean loadHistory) throws OseeCoreException {
+      Conditions.checkNotNull(artifact, "artifact");
+      Job job = new UIJob("Open History: " + artifact.getName()) {
+
+         @Override
+         public IStatus runInUIThread(IProgressMonitor monitor) {
+            try {
+               IWorkbenchPage page = AWorkbench.getActivePage();
+               HistoryView historyView =
+                  (HistoryView) page.showView(VIEW_ID, artifact.getGuid() + artifact.getBranch().getGuid(),
+                     IWorkbenchPage.VIEW_ACTIVATE);
+
+               historyView.explore(artifact, loadHistory);
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+            return Status.OK_STATUS;
+         }
+      };
+      Jobs.startJob(job);
    }
 }

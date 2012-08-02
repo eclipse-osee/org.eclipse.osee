@@ -239,7 +239,9 @@ public class XBranchWidget extends GenericXWidget {
    @Override
    public void dispose() {
       super.dispose();
-      branchXViewer.dispose();
+      if (branchXViewer != null) {
+         branchXViewer.dispose();
+      }
    }
 
    @Override
