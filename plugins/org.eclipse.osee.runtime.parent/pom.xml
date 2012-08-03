@@ -30,7 +30,7 @@
 		<module>../../features/org.eclipse.osee.core.ui.feature</module>
 		<module>../../features/org.eclipse.osee.core.ui.feature.source</module>
 		<module>../../plugins/org.eclipse.osee.framework.svn</module>
-		<module>../../plugins/org.eclipse.osee.framework.ui.jdk</module>
+
 		<module>../../plugins/org.eclipse.osee.framework.ui.plugin</module>
 		<module>../../plugins/org.eclipse.osee.framework.ui.service.control</module>
 		<module>../../plugins/org.eclipse.osee.framework.ui.swt</module>
