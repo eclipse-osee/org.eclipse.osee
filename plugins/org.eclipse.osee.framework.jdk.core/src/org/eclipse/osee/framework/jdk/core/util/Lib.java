@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.util;
 
-import java.awt.Image;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -64,9 +63,6 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-
-import javax.swing.ImageIcon;
-
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.util.io.IOInputThread;
 import org.eclipse.osee.framework.jdk.core.util.io.IOOutputThread;
@@ -256,29 +252,6 @@ public final class Lib {
             }
          }
       }
-   }
-
-   @Deprecated
-   public static Image createImage(String path) {
-      return createImageIcon(path).getImage();
-   }
-
-   @Deprecated
-   public static ImageIcon createImageIcon(Class<?> clasaRef, String path) {
-      ImageIcon toReturn = null;
-      URL imgURL = clasaRef.getResource(path);
-      if (imgURL != null) {
-         toReturn = new ImageIcon(imgURL);
-      } else {
-         System.err.println("Couldn't find the resource: " + path);
-      }
-      return toReturn;
-   }
-
-   /** Returns an ImageIcon, or null if the path was invalid. */
-   @Deprecated
-   public static ImageIcon createImageIcon(String path) {
-      return createImageIcon(Lib.class, path);
    }
 
    public static void deleteDir(File directory) {
@@ -863,12 +836,12 @@ public final class Lib {
    }
 
    public static List<File> recursivelyListFiles(File rootPath, Pattern fileNameP) {
-	      return recursivelyListFiles(new ArrayList<File>(400), rootPath, fileNameP);
-	   }
-   
+      return recursivelyListFiles(new ArrayList<File>(400), rootPath, fileNameP);
+   }
+
    public static List<File> recursivelyListFiles(File rootPath) {
-	      return recursivelyListFiles(new ArrayList<File>(400), rootPath, null);
-	   }
+      return recursivelyListFiles(new ArrayList<File>(400), rootPath, null);
+   }
 
    /**
     * Assumptions: block comments are not nested and comment blocks have an ending Note: may be fooled by string
