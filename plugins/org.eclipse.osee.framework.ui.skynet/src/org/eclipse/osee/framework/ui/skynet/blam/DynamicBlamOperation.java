@@ -12,16 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.blam;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
-import org.eclipse.update.core.IFeature;
-import org.eclipse.update.core.ISite;
-import org.eclipse.update.core.ISiteFeatureReference;
-import org.eclipse.update.core.SiteManager;
-import org.eclipse.update.operations.IOperationFactory;
-import org.eclipse.update.operations.OperationsManager;
 
 /**
  * @author Ryan D. Brooks
@@ -29,14 +20,6 @@ import org.eclipse.update.operations.OperationsManager;
 public abstract class DynamicBlamOperation {
    private Method mainMethod;
    private BlamParameter[] parameters;
-
-   public void installAssociatedPlugin() throws MalformedURLException, CoreException {
-      IOperationFactory operationFactory = OperationsManager.getOperationFactory();
-      ISite site = SiteManager.getSite(new URL("http://www.eclipse.org/osee/"), null);
-      ISiteFeatureReference[] refs = site.getFeatureReferences();
-      IFeature feature = refs[0].getFeature(null);
-      operationFactory.createInstallOperation(site.getCurrentConfiguredSite(), feature, null, null, null);
-   }
 
    public void init() throws IllegalArgumentException, NoSuchMethodException, OseeArgumentException {
       mainMethod = findMainMethod(getMainMethodName());

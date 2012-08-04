@@ -48,7 +48,6 @@
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.eclipse.update.core"/>
       <import plugin="org.eclipse.zest.core"/>
       <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="com.lowagie.text"/>
