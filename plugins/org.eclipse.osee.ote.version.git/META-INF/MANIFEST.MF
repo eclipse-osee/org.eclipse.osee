@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Git
+Bundle-SymbolicName: org.eclipse.osee.ote.version.git
+Bundle-Version: 0.10.1.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.jgit.api,
+ org.eclipse.jgit.api.errors,
+ org.eclipse.jgit.errors,
+ org.eclipse.jgit.lib,
+ org.eclipse.jgit.revwalk,
+ org.eclipse.jgit.storage.file,
+ org.eclipse.osee.ote.version
+Service-Component: OSGI-INF/*.xml
+Bundle-ActivationPolicy: lazy

@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Svn
+Bundle-SymbolicName: org.eclipse.osee.ote.version.svn
+Bundle-Version: 0.10.1.qualifier
+Require-Bundle: org.eclipse.core.runtime
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.osee.framework.logging,
+ org.eclipse.osee.ote.version,
+ org.eclipse.team.svn.core.connector,
+ org.eclipse.team.svn.core.utility
+Service-Component: OSGI-INF/*.xml
