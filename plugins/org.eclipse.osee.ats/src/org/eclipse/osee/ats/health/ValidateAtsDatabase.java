@@ -35,8 +35,10 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
@@ -265,7 +267,12 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             if (artifact instanceof AbstractWorkflowArtifact) {
                AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
                if (awa.isCompleted()) {
-                  if (awa.getCompletedBy() == null || awa.getCompletedDate() == null || !Strings.isValid(awa.getCompletedFromState())) {
+                  IAtsStateDefinition stateDef = awa.getStateDefinition();
+                  if (stateDef.getStateType() != StateType.Completed) {
+                     testNameToResultsMap.put("testCompletedCancelledStateAttributesSet", String.format(
+                        "Error: awa.isCompleted()==true but State [%s] not Completed state for [%s]",
+                        stateDef.getName(), XResultDataUI.getHyperlink(artifact)));
+                  } else if (awa.getCompletedBy() == null || awa.getCompletedDate() == null || !Strings.isValid(awa.getCompletedFromState())) {
                      testNameToResultsMap.put(
                         "testCompletedCancelledStateAttributesSet",
                         String.format("Error: Completed [%s] missing one or more Completed attributes for [%s]",
@@ -274,7 +281,12 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   }
                }
                if (awa.isCancelled()) {
-                  if (awa.getCancelledBy() == null || awa.getCancelledDate() == null || !Strings.isValid(awa.getCancelledFromState())) {
+                  IAtsStateDefinition stateDef = awa.getStateDefinition();
+                  if (stateDef.getStateType() != StateType.Cancelled) {
+                     testNameToResultsMap.put("testCompletedCancelledStateAttributesSet", String.format(
+                        "Error: awa.isCancelled()==true but State [%s] not Cancelled state for [%s]",
+                        stateDef.getName(), XResultDataUI.getHyperlink(artifact)));
+                  } else if (awa.getCancelledBy() == null || awa.getCancelledDate() == null || !Strings.isValid(awa.getCancelledFromState())) {
                      testNameToResultsMap.put(
                         "testCompletedCancelledStateAttributesSet",
                         String.format("Error: Cancelled missing Cancelled By attribute for [%s]",
