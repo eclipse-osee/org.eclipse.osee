@@ -127,12 +127,11 @@ public class SwtXWidgetRenderer {
       final FormToolkit toolkit = managedForm != null ? managedForm.getToolkit() : null;
 
       Composite topLevelComp = createComposite(parent, toolkit);
-
       GridLayout layout = new GridLayout(1, false);
       layout.marginWidth = 2;
       layout.marginHeight = 2;
       topLevelComp.setLayout(layout);
-      topLevelComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      topLevelComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       if (toolkit != null) {
          toolkit.adapt(topLevelComp);

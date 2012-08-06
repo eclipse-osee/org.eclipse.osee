@@ -96,7 +96,7 @@ public class NewActionPage1 extends WizardPage {
          String xWidgetXml = getWidgetXml();
          Composite comp = new Composite(parent, SWT.NONE);
          comp.setLayout(new GridLayout(1, false));
-         comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+         comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
          page = new XWidgetPage(xWidgetXml, ATSXWidgetOptionResolver.getInstance());
          page.createBody(null, comp, null, xModListener, true);

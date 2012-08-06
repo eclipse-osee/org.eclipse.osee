@@ -80,7 +80,7 @@ public class NewActionPage2 extends WizardPage {
       stringBuffer.append("<XWidget displayName=\"Change Type\" storageName=\"ats.Change Type\" xwidgetType=\"XCombo(" + ATSXWidgetOptionResolver.OPTIONS_FROM_ATTRIBUTE_VALIDITY + ")\" required=\"true\" horizontalLabel=\"true\" toolTip=\"" + AtsAttributeTypes.ChangeType.getDescription() + "\"/>");
       stringBuffer.append("<XWidget displayName=\"Priority\" storageName=\"ats.Priority\" xwidgetType=\"XCombo(" + ATSXWidgetOptionResolver.OPTIONS_FROM_ATTRIBUTE_VALIDITY + ")\" required=\"true\" horizontalLabel=\"true\"/>");
       stringBuffer.append("<XWidget displayName=\"Deadline\" xwidgetType=\"XDate\" horizontalLabel=\"true\" toolTip=\"" + AtsAttributeTypes.NeedBy.getDescription() + "\"/>");
-      stringBuffer.append("<XWidget displayName=\"Validation Required\" xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" toolTip=\"" + AtsAttributeTypes.ValidationRequired.getDescription() + "\"/>");
+      stringBuffer.append("<XWidget displayName=\"Validation Required\" xwidgetType=\"XCheckBox\" fill=\"Vertically\" horizontalLabel=\"true\" labelAfter=\"true\" toolTip=\"" + AtsAttributeTypes.ValidationRequired.getDescription() + "\"/>");
       stringBuffer.append("</WorkPage>");
       return stringBuffer.toString();
    }
@@ -96,8 +96,8 @@ public class NewActionPage2 extends WizardPage {
          String widgetXml = getWidgetXml();
 
          Composite comp = new Composite(parent, SWT.NONE);
-         comp.setLayout(new GridLayout(2, false));
-         comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+         comp.setLayout(new GridLayout(1, false));
+         comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
          page = new XWidgetPage(widgetXml, ATSXWidgetOptionResolver.getInstance());
          page.createBody(null, comp, null, xModListener, true);
