@@ -67,7 +67,7 @@
 		<build-alias>-DEV</build-alias>
 		<platform-version-name>indigo</platform-version-name>
 
-		<orbit-version>R20110523182458</orbit-version>
+		<orbit-version>R20120119162704</orbit-version>
 
 		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
