@@ -85,7 +85,7 @@ public class ModelUtilTest {
       ModelUtil.saveModel(model1, "osee:/text.osee", outputStream, false);
       outputStream.flush();
       String value = outputStream.toString("UTF-8");
-      Assert.assertEquals(rawXTextData, value);
+      modelEquals(rawXTextData, value);
 
       OseeDsl model2 = ModelUtil.loadModel("osee:/text2.osee", value);
       DslAsserts.assertEquals(model1, model2);
@@ -161,9 +161,14 @@ public class ModelUtilTest {
       ModelUtil.saveModel(model1, "osee:/text.osee", outputStream, false);
       outputStream.flush();
       String value = outputStream.toString("UTF-8");
-      Assert.assertEquals(rawXTextData, value);
+      modelEquals(rawXTextData, value);
 
       OseeDsl model2 = ModelUtil.loadModel("osee:/text2.osee", value);
       DslAsserts.assertEquals(model1, model2);
+   }
+   
+   private static void modelEquals(String rawExpected, String actual){
+      String expected = rawExpected.replaceAll("\n", System.getProperty("line.separator"));
+      Assert.assertEquals(expected, actual);
    }
 }
