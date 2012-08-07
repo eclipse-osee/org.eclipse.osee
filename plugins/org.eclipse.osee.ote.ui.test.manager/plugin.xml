@@ -64,57 +64,7 @@
                 id="org.eclipse.osee.ote.ui.test.manager.actions.AddToTestManagerEditorAction"
                 class="org.eclipse.osee.ote.ui.test.manager.actions.AddToTestManagerEditorAction"/>
       </viewerContribution>
-         <objectContribution
-               adaptable="true"
-               id="org.eclipse.osee.ote.ui.test.manager.TestManagerMenu"
-               objectClass="org.eclipse.jdt.core.IJavaProject">
-            <menu
-                  id="org.eclipse.osee.ote.ui.test.manager.menu1"
-                  label="Test Batch"
-                  path="additions">
-               <separator
-                     name="separator1">
-               </separator>
-            </menu>
-         </objectContribution>
-         <objectContribution
-               id="org.eclipse.osee.ote.ui.test.manager.TestBatchActions"
-               objectClass="org.eclipse.jdt.core.IJavaProject">
-            <visibility>
-               <not>
-                  <objectState
-                        name="nature"
-                        value="org.eclipse.osee.ote.ui.test.manager.TestBatchProjectNature">
-                  </objectState>
-               </not>
-            </visibility>
-            <action
-                  class="org.eclipse.osee.ote.ui.test.manager.batches.actions.AddTestBatchProjectNature"
-                  enablesFor="1"
-                  icon="images/add.gif"
-                  id="org.eclipse.osee.ote.ui.test.manager.action1"
-                  label="Add Test Batch Nature"
-                  menubarPath="org.eclipse.osee.ote.ui.test.manager.menu1/separator1">
-            </action>
-         </objectContribution>
-                  <objectContribution
-               id="org.eclipse.osee.ote.ui.test.manager.TestBatchProjects"
-               objectClass="org.eclipse.jdt.core.IJavaProject">
-            <visibility>
-                  <objectState
-                        name="nature"
-                        value="org.eclipse.osee.ote.ui.test.manager.TestBatchProjectNature">
-                  </objectState>
-            </visibility>
-            <action
-                  class="org.eclipse.osee.ote.ui.test.manager.batches.actions.RemoveTestBatchProjectNature"
-                  enablesFor="1"
-                  icon="images/delete.gif"
-                  id="org.eclipse.osee.ote.ui.test.manager.action2"
-                  label="Remove Test Batch Nature"
-                  menubarPath="org.eclipse.osee.ote.ui.test.manager.menu1/separator1">
-            </action>
-         </objectContribution>
+         
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
@@ -130,55 +80,5 @@
             classname="org.eclipse.osee.ote.ui.test.manager.pages.contributions.ScriptExecutionContribution"
             viewId="org.eclipse.osee.ote.ui.test.manager">
       </PropertyStoreControl>
-   </extension>
-   
-   <extension
-         id="TestBatchProjectNature"
-         name="Test Batch Nature"
-         point="org.eclipse.core.resources.natures">
-      <runtime>
-         <run
-               class="org.eclipse.osee.ote.ui.test.manager.batches.TestBatchProjectNature">
-         </run>
-      </runtime>
-   </extension>
-   <extension
-         point="org.eclipse.ui.decorators">
-      <decorator
-            adaptable="true"
-            class="org.eclipse.osee.ote.ui.test.manager.batches.TestBatchDecorator"
-            icon="images/test.gif"
-            id="org.eclipse.osee.ote.ui.test.manager.decorator"
-            label="Test Batch Project"
-            lightweight="true"
-            location="TOP_RIGHT"
-            state="true">
-         <description>
-            A Test Batch Project contains project set files and test manager batch config files which allow users to quickly setup their test manager and workspace.
-         </description>
-         <enablement>
-            <or>
-               <and>
-                  <objectClass name="org.eclipse.jdt.core.IJavaProject"/>
-                  <objectState
-                        value="org.eclipse.osee.ote.ui.test.manager.TestBatchProjectNature"
-                        name="nature"/>
-               </and>
-               <and>
-                  <objectClass name="org.eclipse.core.resources.IProject"/>
-                  <objectState
-                        value="org.eclipse.osee.ote.ui.test.manager.TestBatchProjectNature"
-                        name="nature"/>
-               </and>
-            </or>
-         </enablement>
-      </decorator>
-   </extension>
-   <extension
-         point="org.eclipse.osee.framework.ui.plugin.XNavigateItem">
-      <XNavigateItem
-            classname="org.eclipse.osee.ote.ui.test.manager.batches.navigate.TestBatchSetupViewItems"
-            viewId="org.eclipse.osee.ote.ui.navigate.OteNavigateView">
-      </XNavigateItem>
    </extension>
 </plugin>

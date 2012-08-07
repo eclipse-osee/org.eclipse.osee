@@ -34,6 +34,11 @@
 		<module>../../plugins/org.eclipse.osee.ote.ui.message</module>
 		<module>../../plugins/org.eclipse.osee.ote.ui.message.util</module>
 		<module>../../plugins/org.eclipse.osee.ote.ui.mux</module>
+		
+		<module>../../plugins/org.eclipse.osee.ote.version</module>
+  		<module>../../plugins/org.eclipse.osee.ote.version.git</module>
+		<module>../../plugins/org.eclipse.osee.ote.version.svn</module>
+
 		<module>../../plugins/org.eclipse.osee.ote.ui.test.manager</module>
 
 		<module>../../features/org.eclipse.osee.client.ote.feature</module>
@@ -60,10 +65,14 @@
 		<orbit-version>R20110523182458</orbit-version>
 		<xtext-version>2.0.0</xtext-version>
 
+
+
 		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
-
 		<wikitext-site>http://download.eclipse.org/tools/mylyn/update/weekly</wikitext-site>
+
+		<egit-site>http://download.eclipse.org/egit/updates</egit-site>
+
 
 		<subversive-site>http://download.eclipse.org/technology/subversive/0.7/update-site</subversive-site>
 		<polarion-site>http://community.polarion.com/projects/subversive/download/eclipse/2.0/update-site</polarion-site>
@@ -99,6 +108,11 @@
 			<id>eclipse</id>
 			<layout>p2</layout>
 			<url>${eclipse-site}</url>
+		</repository>
+		<repository>
+			<id>egit</id>
+			<layout>p2</layout>
+			<url>${egit-site}</url>
 		</repository>
 		<repository>
 			<id>wikitext</id>

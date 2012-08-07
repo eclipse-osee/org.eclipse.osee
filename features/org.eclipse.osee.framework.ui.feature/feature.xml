@@ -62,7 +62,6 @@
       <import plugin="org.eclipse.osee.support.test.util"/>
       <import plugin="org.eclipse.gef"/>
       <import plugin="org.eclipse.osee.ote.define"/>
-      <import plugin="org.eclipse.osee.framework.svn"/>
       <import plugin="org.eclipse.osee.framework.core.dsl"/>
       <import plugin="org.eclipse.xtext.ui"/>
       <import plugin="org.eclipse.ui.editors" version="3.5.0" match="greaterOrEqual"/>

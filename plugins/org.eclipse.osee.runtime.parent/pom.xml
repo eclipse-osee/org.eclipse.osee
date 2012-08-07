@@ -29,10 +29,8 @@
 
 		<module>../../features/org.eclipse.osee.core.ui.feature</module>
 		<module>../../features/org.eclipse.osee.core.ui.feature.source</module>
-		<module>../../plugins/org.eclipse.osee.framework.svn</module>
 
 		<module>../../plugins/org.eclipse.osee.framework.ui.plugin</module>
-		<module>../../plugins/org.eclipse.osee.framework.ui.service.control</module>
 		<module>../../plugins/org.eclipse.osee.framework.ui.swt</module>
 		<module>../../plugins/org.eclipse.osee.framework.ui.ws</module>
 
@@ -59,11 +57,14 @@
 		<build-alias>-DEV</build-alias>
 		<platform-version-name>indigo</platform-version-name>
 
+
 		<orbit-version>R20110523182458</orbit-version>
 		<xtext-version>2.0.0</xtext-version>
 
 		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
+
+		<egit-site>http://download.eclipse.org/egit/updates</egit-site>
 
 		<subversive-site>http://download.eclipse.org/technology/subversive/0.7/update-site</subversive-site>
 		<polarion-site>http://community.polarion.com/projects/subversive/download/eclipse/2.0/update-site</polarion-site>
@@ -99,6 +100,11 @@
 			<id>eclipse</id>
 			<layout>p2</layout>
 			<url>${eclipse-site}</url>
+		</repository>
+		<repository>
+			<id>egit</id>
+			<layout>p2</layout>
+			<url>${egit-site}</url>
 		</repository>
 		<repository>
 			<id>orbit</id>

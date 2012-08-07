@@ -11,12 +11,12 @@
 package org.eclipse.osee.ote.ui.define.viewers.actions;
 
 import java.net.URL;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.svn.VersionControl;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
@@ -66,8 +66,6 @@ public class OpenAssociatedScript extends AbstractActionHandler {
 
    private void openRemoteScript(String scriptUrl, String revision) {
       try {
-         VersionControl.getInstance().getLocalFileMatchingRepositoryUrl(scriptUrl, revision);
-
          URL urlToOpen = new URL(scriptUrl);
          if (urlToOpen != null) {
             IWorkbenchBrowserSupport browserSupport = PlatformUI.getWorkbench().getBrowserSupport();
