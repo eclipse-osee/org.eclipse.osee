@@ -21,6 +21,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -115,6 +116,7 @@ public abstract class ScriptManager implements Runnable {
       connectedEnv = null;
       sessionKey = null;
       guidToScriptTask.clear();
+      statusListenerImpl.unregisterEventListener();
       return false;
    }
 

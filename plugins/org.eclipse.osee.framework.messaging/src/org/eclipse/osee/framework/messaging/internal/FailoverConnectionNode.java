@@ -17,7 +17,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+
 import javax.jms.JMSException;
+
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.ConnectionListener;
@@ -227,9 +229,7 @@ public class FailoverConnectionNode implements ConnectionNode, Runnable {
             if (other.statusCallback != null) {
                return false;
             }
-         } else if (!statusCallback.equals(other.statusCallback)) {
-            return false;
-         }
+         } 
          return true;
       }
 
