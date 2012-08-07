@@ -11,17 +11,19 @@
 package org.eclipse.osee.ote.ui.test.manager.models;
 
 import java.io.File;
+
 import org.eclipse.core.filebuffers.manipulation.ContainerCreator;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.svn.VersionControl;
-import org.eclipse.osee.framework.svn.entry.IRepositoryEntry;
 import org.eclipse.osee.framework.ui.ws.AJavaProject;
 import org.eclipse.osee.ote.core.TestScript;
 import org.eclipse.osee.ote.core.environment.config.ScriptVersionConfig;
+import org.eclipse.osee.ote.ui.test.manager.internal.ServiceUtility;
+import org.eclipse.osee.ote.version.FileVersion;
+import org.eclipse.osee.ote.version.FileVersionInformation;
 
 public class ScriptModel extends FileModel {
 
@@ -44,14 +46,15 @@ public class ScriptModel extends FileModel {
          ScriptVersionConfig scriptVersion = new ScriptVersionConfig();
          File javaFile = new File(rawFileName);
          if (javaFile != null && javaFile.exists() && javaFile.canRead()) {
-            IRepositoryEntry entry = VersionControl.getInstance().getRepositoryEntry(javaFile);
-            if (entry != null) {
-               scriptVersion.setRevision(entry.getVersion());
-               scriptVersion.setLocation(entry.getURL());
-               scriptVersion.setRepositoryType(entry.getVersionControlSystem());
-               scriptVersion.setLastAuthor(entry.getLastAuthor());
-               scriptVersion.setLastModificationDate(entry.getLastModificationDate());
-               scriptVersion.setModifiedFlag(entry.getModifiedFlag());
+        	FileVersionInformation fileVersionInformation= ServiceUtility.getFileVersionInformation();
+        	FileVersion version = fileVersionInformation.getFileVersion(javaFile);
+            if (version != null) {
+               scriptVersion.setRevision(version.getVersion());
+               scriptVersion.setLocation(version.getURL());
+               scriptVersion.setRepositoryType(version.getVersionControlSystem());
+               scriptVersion.setLastAuthor(version.getLastAuthor());
+               scriptVersion.setLastModificationDate(version.getLastModificationDate());
+               scriptVersion.setModifiedFlag(version.getModifiedFlag());
             }
          }
          return scriptVersion;
