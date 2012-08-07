@@ -53,7 +53,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      if (!AtsUtil.isProductionDb()) {
+      if (AtsUtil.isProductionDb()) {
          AWorkbench.popup("Can't be run on production");
          return;
       }

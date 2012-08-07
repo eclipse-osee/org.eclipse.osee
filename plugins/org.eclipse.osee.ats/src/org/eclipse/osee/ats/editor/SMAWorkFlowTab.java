@@ -41,6 +41,7 @@ import org.eclipse.osee.ats.actions.ShowMergeManagerAction;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
+import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -346,7 +347,8 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    private void createGoalSection() {
       try {
          if (awa.isOfType(AtsArtifactTypes.Goal)) {
-            smaGoalMembersSection = new SMAGoalMembersSection("sec", editor, atsBody, SWT.NONE, 400);
+            smaGoalMembersSection =
+               new SMAGoalMembersSection("sec", editor, atsBody, SWT.NONE, 400, (GoalArtifact) awa);
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

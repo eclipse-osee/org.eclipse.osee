@@ -183,7 +183,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
 
    private void createMembersTab() throws PartInitException {
       if (awa instanceof GoalArtifact) {
-         membersTab = new SMAMembersTab(this, awa);
+         membersTab = new SMAMembersTab(this, (GoalArtifact) awa);
          addPage(membersTab);
       }
    }

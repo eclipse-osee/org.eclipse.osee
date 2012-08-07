@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.editor;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -23,8 +22,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.IWorldViewerEventHandler;
 import org.eclipse.osee.ats.world.WorldXViewer;
@@ -63,7 +62,7 @@ import org.eclipse.ui.progress.UIJob;
  * @author Donald G. Dunne
  */
 public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler {
-   private final AbstractWorkflowArtifact awa;
+   private final GoalArtifact goalArtifact;
    private IManagedForm managedForm;
    private Composite bodyComp;
    private SMAGoalMembersSection smaGoalMembersSection;
@@ -71,11 +70,13 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
    public final static String ID = "ats.members.tab";
    private final SMAEditor editor;
    private static Map<String, Integer> guidToScrollLocation = new HashMap<String, Integer>();
+   private final ReloadJobChangeAdapter reloadAdapter;
 
-   public SMAMembersTab(SMAEditor editor, AbstractWorkflowArtifact awa) {
+   public SMAMembersTab(SMAEditor editor, GoalArtifact goalArtifact) {
       super(editor, ID, "Members");
       this.editor = editor;
-      this.awa = awa;
+      this.goalArtifact = goalArtifact;
+      reloadAdapter = new ReloadJobChangeAdapter(editor);
    }
 
    @Override
@@ -110,8 +111,12 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
       if (managedForm != null && Widgets.isAccessible(managedForm.getForm())) {
          String titleString = editor.getTitleStr();
          String displayableTitle = Strings.escapeAmpersands(titleString);
-         managedForm.getForm().setText(displayableTitle);
-         managedForm.getForm().setImage(ArtifactImageManager.getImage(awa));
+         if (!managedForm.getForm().getText().equals(displayableTitle)) {
+            managedForm.getForm().getForm().setText(displayableTitle);
+         }
+         if (!ArtifactImageManager.getImage(goalArtifact).equals(managedForm.getForm().getImage())) {
+            managedForm.getForm().setImage(ArtifactImageManager.getImage(goalArtifact));
+         }
       }
    }
 
@@ -125,15 +130,15 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
 
    public void refreshData() {
       if (Widgets.isAccessible(bodyComp)) {
-         List<IOperation> ops = new ArrayList<IOperation>();
-         ops.addAll(AtsBulkLoad.getConfigLoadingOperations());
+         List<IOperation> ops = AtsBulkLoad.getConfigLoadingOperations();
          IOperation operation = new CompositeOperation("Load Members Tab", Activator.PLUGIN_ID, ops);
-         Operations.executeAsJob(operation, false, Job.LONG, new ReloadJobChangeAdapter(editor));
+         Operations.executeAsJob(operation, false, Job.LONG, reloadAdapter);
       }
    }
    private final class ReloadJobChangeAdapter extends JobChangeAdapter {
 
       private final SMAEditor editor;
+      boolean firstTime = true;
 
       private ReloadJobChangeAdapter(SMAEditor editor) {
          this.editor = editor;
@@ -147,20 +152,30 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
 
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
-               try {
-                  updateTitleBar();
-                  setLoading(false);
-                  boolean createdAndLoaded = createMembersBody();
-                  if (!createdAndLoaded) {
-                     smaGoalMembersSection.reload();
+               if (firstTime) {
+                  try {
+                     updateTitleBar();
+                     setLoading(false);
+                     boolean createdAndLoaded = createMembersBody();
+                     if (!createdAndLoaded) {
+                        smaGoalMembersSection.reload();
+                     }
+                     jumptoScrollLocation();
+                     FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
+                     editor.onDirtied();
+                  } catch (OseeCoreException ex) {
+                     handleException(ex);
+                  } finally {
+                     showBusy(false);
                   }
-                  jumptoScrollLocation();
-                  FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
-                  editor.onDirtied();
-               } catch (OseeCoreException ex) {
-                  handleException(ex);
-               } finally {
-                  showBusy(false);
+                  firstTime = false;
+               } else {
+                  try {
+                     updateTitleBar();
+                  } catch (OseeCoreException ex) {
+                     handleException(ex);
+                  }
+                  smaGoalMembersSection.refresh();
                }
                return Status.OK_STATUS;
             }
@@ -198,7 +213,7 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
       if (!Widgets.isAccessible(smaGoalMembersSection)) {
 
          smaGoalMembersSection =
-            new SMAGoalMembersSection("workflow.edtor.members.tab", editor, bodyComp, SWT.NONE, null);
+            new SMAGoalMembersSection("workflow.edtor.members.tab", editor, bodyComp, SWT.NONE, null, goalArtifact);
          smaGoalMembersSection.layout();
          smaGoalMembersSection.setFocus();
 
@@ -219,8 +234,8 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
    }
 
    private void jumptoScrollLocation() {
-      // Jump to scroll location if set
-      Integer selection = guidToScrollLocation.get(awa.getGuid());
+      //       Jump to scroll location if set
+      Integer selection = guidToScrollLocation.get(goalArtifact.getGuid());
       if (selection != null) {
          JumpScrollbarJob job = new JumpScrollbarJob("");
          job.schedule(500);
@@ -243,7 +258,7 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
       if (managedForm != null && managedForm.getForm() != null) {
          Integer selection = managedForm.getForm().getVerticalBar().getSelection();
          // System.out.println("Storing selection => " + selection);
-         guidToScrollLocation.put(awa.getGuid(), selection);
+         guidToScrollLocation.put(goalArtifact.getGuid(), selection);
       }
    }
 
@@ -257,7 +272,7 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
-               Integer selection = guidToScrollLocation.get(awa.getGuid());
+               Integer selection = guidToScrollLocation.get(goalArtifact.getGuid());
                // System.out.println("Restoring selection => " + selection);
 
                // Find the ScrolledComposite operating on the control.
@@ -285,7 +300,7 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
    }
 
    public void refresh() {
-      if (editor != null && !awa.isInTransition()) {
+      if (editor != null && !goalArtifact.isInTransition()) {
          // add pages back
          refreshData();
       }
@@ -315,7 +330,7 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
 
    @Override
    public void relationsModifed(Collection<Artifact> relModifiedArts) {
-      if (relModifiedArts.contains(awa)) {
+      if (relModifiedArts.contains(goalArtifact)) {
          refresh();
       }
    }

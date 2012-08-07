@@ -11,6 +11,8 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -42,15 +44,19 @@ import org.eclipse.osee.ats.world.IWorldEditor;
 import org.eclipse.osee.ats.world.IWorldEditorProvider;
 import org.eclipse.osee.ats.world.WorldComposite;
 import org.eclipse.osee.ats.world.WorldLabelProvider;
+import org.eclipse.osee.ats.world.WorldViewDragAndDrop;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
+import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactDragAndDrop;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -58,6 +64,8 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
@@ -78,11 +86,13 @@ public class SMAGoalMembersSection extends Composite implements ISelectedAtsArti
    private WorldComposite worldComposite;
    private static final Map<String, CustomizeData> editorToCustDataMap = new HashMap<String, CustomizeData>(20);
    private final String id;
+   private final GoalArtifact goalArtifact;
 
-   public SMAGoalMembersSection(String id, SMAEditor editor, Composite parent, int style, Integer defaultTableWidth) {
+   public SMAGoalMembersSection(String id, SMAEditor editor, Composite parent, int style, Integer defaultTableWidth, GoalArtifact goalArtifact) {
       super(parent, style);
       this.id = id;
       this.editor = editor;
+      this.goalArtifact = goalArtifact;
 
       setLayout(new GridLayout(2, true));
       setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -122,7 +132,9 @@ public class SMAGoalMembersSection extends Composite implements ISelectedAtsArti
 
    private void createWorldComposite(Integer defaultTableWidth) {
       worldComposite =
-         new WorldComposite(id, this, new GoalXViewerFactory((GoalArtifact) editor.getAwa()), this, SWT.BORDER);
+         new WorldComposite(id, this, new GoalXViewerFactory((GoalArtifact) editor.getAwa()), this, SWT.BORDER, false);
+
+      new GoalDragAndDrop(worldComposite, SMAEditor.EDITOR_ID);
 
       CustomizeData customizeData = editorToCustDataMap.get(getTableExpandKey());
       if (customizeData == null) {
@@ -391,6 +403,59 @@ public class SMAGoalMembersSection extends Composite implements ISelectedAtsArti
    @Override
    public void refreshActionHandler() {
       refresh();
+   }
+
+   private class GoalDragAndDrop extends WorldViewDragAndDrop {
+
+      public GoalDragAndDrop(WorldComposite worldComposite, String viewId) {
+         super(worldComposite, viewId);
+      }
+
+      private Artifact getSelectedArtifact(DropTargetEvent event) {
+         if (event.item != null && event.item.getData() instanceof Artifact) {
+            return (Artifact) event.item.getData();
+         }
+         return null;
+      }
+
+      @Override
+      public void performDragOver(DropTargetEvent event) {
+         if (isValidForArtifactDrop(event)) {
+            event.detail = DND.DROP_MOVE;
+            if (getSelectedArtifact(event) != null) {
+               event.feedback = DND.FEEDBACK_INSERT_AFTER | DND.FEEDBACK_SCROLL;
+            } else {
+               event.feedback = DND.FEEDBACK_INSERT_BEFORE | DND.FEEDBACK_SCROLL;
+            }
+         } else {
+            event.detail = DND.DROP_COPY;
+         }
+      }
+
+      @Override
+      public void performDrop(final DropTargetEvent event) {
+         final ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
+         final List<Artifact> droppedArtifacts = Arrays.asList(artData.getArtifacts());
+         final Artifact dropTarget = getSelectedArtifact(event);
+         if (ArtifactTransfer.getInstance().isSupportedType(event.currentDataType)) {
+            if (dropTarget == null) {
+               super.performDrop(event);
+            } else {
+               try {
+                  Collections.reverse(droppedArtifacts);
+                  for (Artifact dropped : droppedArtifacts) {
+                     goalArtifact.setRelationOrder(AtsRelationTypes.Goal_Member, dropTarget, true, dropped);
+                  }
+                  goalArtifact.persist(SMAGoalMembersSection.class.getSimpleName());
+                  worldComposite.getXViewer().refresh(goalArtifact);
+                  worldComposite.getXViewer().update(dropTarget, null);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(Activator.class, Level.WARNING, Lib.exceptionToString(ex));
+               }
+            }
+         }
+      }
+
    }
 
 }

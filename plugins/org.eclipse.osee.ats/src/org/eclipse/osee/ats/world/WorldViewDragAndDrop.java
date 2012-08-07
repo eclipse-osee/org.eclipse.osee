@@ -62,7 +62,7 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
       return artifacts.toArray(new Artifact[artifacts.size()]);
    }
 
-   private boolean isValidForArtifactDrop(DropTargetEvent event) {
+   protected boolean isValidForArtifactDrop(DropTargetEvent event) {
       if (ArtifactTransfer.getInstance().isSupportedType(event.currentDataType)) {
          ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
 

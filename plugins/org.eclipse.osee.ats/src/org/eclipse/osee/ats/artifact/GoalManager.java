@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.window.Window;
@@ -110,26 +111,27 @@ public final class GoalManager {
 
       List<Artifact> members = goalArtifact.getMembers();
       EntryDialog ed =
-         new EntryDialog(
-            "Change Goal Order",
-            String.format(
-               "Goal: %s\n\n%s\n\nEnter New Order Number from 1..%d or %d for last\n\nNote: Goal will be placed before number entered.",
-               goalArtifact, currentOrder.toString().replaceFirst(", $", ""), members.size(), members.size() + 1));
+         new EntryDialog("Change Goal Order", String.format(
+            "Goal: %s\n\n%s\n\nEnter New Order Number from 1..%d or %d for last.", goalArtifact,
+            currentOrder.toString().replaceFirst(", $", ""), members.size(), members.size() + 1));
       ed.setNumberFormat(NumberFormat.getIntegerInstance());
 
       if (ed.open() == Window.OK) {
          String newIndexStr = ed.getEntry();
          Integer enteredIndex = Integer.valueOf(newIndexStr);
-         boolean insertLast = enteredIndex == members.size() + 1;
+         boolean insertLast = enteredIndex > members.size();
          Integer membersIndex = insertLast ? members.size() - 1 : enteredIndex - 1;
          if (membersIndex > members.size()) {
             AWorkbench.popup(String.format("New Order Number [%s] out of range 1..%d", newIndexStr, members.size()));
             return null;
          }
-         for (Artifact artifact : artifacts) {
+         List<Artifact> reversed = new LinkedList<Artifact>(artifacts);
+         Collections.reverse(reversed);
+         for (Artifact artifact : reversed) {
+            int currentIdx = members.indexOf(artifact);
             Artifact insertTarget = members.get(membersIndex);
-            goalArtifact.setRelationOrder(AtsRelationTypes.Goal_Member, insertTarget, insertLast ? true : false,
-               artifact);
+            boolean insertAfter = membersIndex > currentIdx;
+            goalArtifact.setRelationOrder(AtsRelationTypes.Goal_Member, insertTarget, insertAfter, artifact);
          }
          goalArtifact.persist(GoalManager.class.getSimpleName());
          return goalArtifact;
