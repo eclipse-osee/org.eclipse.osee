@@ -12,6 +12,8 @@ public class OteEventMessageUtil {
 	public final static String BYTE_KEY = "oteeventbytes";
 	
 	public static void sendEvent(OteEventMessage message, EventAdmin eventAdmin) {
+	    message.getHeader().UUID_HIGH.setNoLog((long)0x0);
+	    message.getHeader().UUID_LOW.setNoLog((long)0x0);
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put(BYTE_KEY, message.getData());
 		Event newevent = new Event(message.getHeader().TOPIC.getValue(), data);

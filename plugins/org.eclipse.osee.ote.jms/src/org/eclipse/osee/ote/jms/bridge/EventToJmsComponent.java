@@ -1,5 +1,6 @@
 package org.eclipse.osee.ote.jms.bridge;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -90,7 +91,10 @@ public class EventToJmsComponent extends OseeMessagingListener implements EventH
 			UUID id = OteEventMessageUtil.getUUID(msg);
 			if(!id.equals(MYID)){
 				OteEventMessageUtil.setUUID(msg, MYID);
-				OteEventMessageUtil.sendEvent(msg, eventAdmin);
+				Map<String, Object> data = new HashMap<String, Object>();
+				data.put(OteEventMessageUtil.BYTE_KEY, msg.getData());
+				Event newevent = new Event(msg.getHeader().TOPIC.getValue(), data);
+				eventAdmin.sendEvent(newevent);
 			}
 		} else {
 			OseeLog.log(EventToJmsComponent.class, Level.SEVERE, "not a recognized message" + message.getClass());
