@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.client.msg.core.db;
 
+import java.rmi.RemoteException;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.commands.SubscribeToMessage;
 import org.eclipse.osee.ote.message.commands.UnSubscribeToMessage;
@@ -32,8 +34,8 @@ public class MessageInstance {
    private final Message msg;
    private SubscriptionKey serverSubscriptionKey = null;
    private int refcount = 0;
-   private final Set<DataType> availableTypes = new HashSet<DataType>();
    private boolean supported = true;
+   private IRemoteMessageService service;
 
    public MessageInstance(Message msg, MessageMode mode, DataType type) {
       this.msg = msg;
@@ -66,8 +68,7 @@ public class MessageInstance {
       }
       supported = true;
       msg.setData(details.getCurrentData());
-      availableTypes.clear();
-      availableTypes.addAll(details.getAvailableMemTypes());
+      this.service = service;
       serverSubscriptionKey = details.getKey();
       return serverSubscriptionKey.getId();
    }
@@ -77,7 +78,7 @@ public class MessageInstance {
          service.unsubscribeToMessage(new UnSubscribeToMessage(msg.getClass().getName(), mode, type,
             client.getAddressByType(msg.getClass().getName(), type)));
       }
-      availableTypes.clear();
+      this.service = null;
       serverSubscriptionKey = null;
    }
 
@@ -106,7 +107,20 @@ public class MessageInstance {
    }
 
    public Set<DataType> getAvailableTypes() {
-      return availableTypes;
+	  HashSet<DataType> set = new HashSet<DataType>();
+	  if(service != null){
+		  try {
+			  Set<? extends DataType> envSet = service.getAvailablePhysicalTypes();
+			  Set<DataType> available = msg.getAvailableMemTypes();
+			  for(DataType type : available.toArray(new DataType[available.size()])){
+				  if(envSet.contains(type)){
+					  set.add(type);
+				  }
+			  }
+		  } catch (RemoteException e) {
+		  }
+	  } 
+      return set;
    }
 
    public boolean isSupported() {
