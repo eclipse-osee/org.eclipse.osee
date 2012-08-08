@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
 
@@ -80,7 +81,6 @@ public class UdpFileTransferHandler {
             //selector.wakeup();
             OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO, "stopping transfer for " + config.getFileName());
             key.channel().close();
-            lock.release();
             lock.channel().close();
             for (IUdpTransferListener listener : listeners) {
                listener.onTransferComplete(config);
@@ -134,14 +134,17 @@ public class UdpFileTransferHandler {
    private synchronized IFileTransferHandle addTransfer(final TransferConfig config) throws IOException, FileNotFoundException {
       File file = new File(config.getFileName());
       final FileChannel fileChannel;
+      final FileLock lock;
       if (config.getDirection() == TransferConfig.Direction.SOCKET_TO_FILE) {
          FileOutputStream fos = new FileOutputStream(file);
          fileChannel = fos.getChannel();
+         lock = fileChannel.tryLock(0l, Long.MAX_VALUE, false);
       } else {
          FileInputStream fis = new FileInputStream(file);
          fileChannel = fis.getChannel();
+         lock = fileChannel.tryLock(0l, Long.MAX_VALUE, true);
       }
-      final FileLock lock = fileChannel.tryLock();
+      
       if (lock == null) {
          return null;
       }
@@ -188,7 +191,6 @@ public class UdpFileTransferHandler {
             final DatagramChannel channel = (DatagramChannel) key.channel();
             final long pos = fileChannel.position();
             try {
-               channel.socket().getReceiveBufferSize();
                if ((key.interestOps() & SelectionKey.OP_READ) > 0) {
                   final long count = fileChannel.transferFrom(channel, pos, handle.config.getBlockCount());
                   fileChannel.position(pos + count);
