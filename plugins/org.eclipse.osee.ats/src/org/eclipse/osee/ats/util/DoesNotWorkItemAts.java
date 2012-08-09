@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class DoesNotWorkItemAts extends XNavigateItemAction {
 
    public DoesNotWorkItemAts(XNavigateItem parent) {
-      super(parent, "Does Not Work - ATS - Fix Completed Cancelled attributes", PluginUiImage.ADMIN);
+      super(parent, "Does Not Work - ATS - Fix Working attributes", PluginUiImage.ADMIN);
    }
 
    @Override
@@ -49,10 +49,18 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
 
       List<String> hrids =
          Arrays.asList("ZW43T", "LQ4GH", "F090B", "1BN39", "FF7LC", "JXJ7G", "SP4TF", "37SWW", "Y3TRT", "UF9Z8",
-            "E9QPQ", "FP0ML", "K0QXZ", "RNPLG", "W9ZML", "N0QSC", "A496H", "SMS0Q", "4KNWK", "UNNPV", "4BSXM", "HDWS9",
-            "ALPTS", "W9S49", "L0WRL", "AHZHZ", "R3V4K", "VTC09", "1NN86", "SQ7WN", "R3JJA", "UKQ09", "R0GRX", "V1KNA",
-            "7JP0L", "VN31S", "EHMF7", "Q6QJM", "0SFYF", "NZKL6", "FB4J0", "FN9XF", "80W10", "6XPT8", "MPM7R", "T2WJ2",
-            "T6P5V", "LH29W", "S2J26", "HNV7D");
+            "XQ0GL", "H9MKB", "SML1L", "J27TH", "S192U", "UZSGK", "RMLXB", "KPY74", "2BQZM", "2LXD8", "SH9P9", "D25LM",
+            "KS57V", "R4Z07", "VHKFM", "7SK10", "AKF8Y", "W37FQ", "AR47S", "8S42M", "V588M", "59TJZ", "NPFH7", "DVT59",
+            "8RBCN", "X3YX0", "0NVB8", "37T1Q", "LJ43A", "KCM0M", "QB69W", "R9WH4", "U3DM2", "XK7XZ", "H6KK9", "SLHHC",
+            "2J78V", "AMGR8", "ABZ4Y", "EYGZ1", "94NJT", "CWTFT", "9J4F9", "XDT9J", "75L5S", "YPYFZ", "MYC7Z", "H1MLN",
+            "B1Y4G", "ZLDGF", "03G1A", "62VXP", "FZNF5", "82KPQ", "F1DHN", "X0RME", "GWB6V", "DTN1W", "DBBGL", "W258D",
+            "KXMB8", "M26QT", "66QZY", "LB74L", "NDGMB", "XCHJ9", "72PTX", "SV3L9", "TN0RA", "XK66N", "7PPB2", "Q540H",
+            "9C084", "5ZWF1", "U7Q7S", "KD07Q", "WYDFX", "AGS5Y", "4XDN4", "HLR25", "3ZC5D", "DR6HC", "2TGJE", "5DNQN",
+            "AZ0SL", "YWV4E", "DPYL1", "44TSE", "H9DQU", "TP6NH", "64DGV", "JRF5C", "LQGN1", "LB7LM", "PFK3K", "2J4BV",
+            "N4JK9", "M39JC", "5H7Y1", "YY6FM", "9ND31", "RLGD3", "ZLNVL", "2FTZN", "U1PB8", "DGK7V", "SWWR4", "H9ZGD",
+            "18JBF", "T6PXC", "NVGXG", "2910L", "Q7X5S", "T2MB4", "WV9RH", "AGY4Z", "HFQ33", "N1Y2K", "CYSGQ", "9W3D4",
+            "5GRJF", "CTVRS", "PYJRJ", "612WQ", "GYTZ6", "YPFGW", "PHQGK", "ULB5K", "16KTW", "QHTKB", "QRNTJ", "HS1CR",
+            "UTN8A", "QP3RQ", "8QPCY", "BZ0LK", "5RT4C", "LYFPD", "88KQV", "ACGJV", "U0M9B");
 
       try {
          List<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(hrids, AtsUtil.getAtsBranchToken());
@@ -65,7 +73,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
          testNameToResultsMap = new HashCollection<String, String>();
 
          SkynetTransaction transaction =
-            TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Fix Cancelled/Completed attributes.");
+            TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Fix Working attributes.");
          ValidateAtsDatabase.testCompletedCancelledStateAttributesSet(artifacts, transaction, testNameToResultsMap);
 
          XResultData xResultData = new XResultData();

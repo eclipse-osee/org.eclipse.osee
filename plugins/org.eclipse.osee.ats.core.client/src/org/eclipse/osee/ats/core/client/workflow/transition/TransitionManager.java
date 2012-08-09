@@ -430,7 +430,7 @@ public class TransitionManager {
       }
    }
 
-   private void logWorkflowUnCancelledEvent(AbstractWorkflowArtifact awa) throws OseeCoreException {
+   public static void logWorkflowUnCancelledEvent(AbstractWorkflowArtifact awa) throws OseeCoreException {
       if (awa.isAttributeTypeValid(AtsAttributeTypes.CreatedBy)) {
          awa.deleteSoleAttribute(AtsAttributeTypes.CancelledBy);
          awa.deleteSoleAttribute(AtsAttributeTypes.CancelledDate);
@@ -449,7 +449,7 @@ public class TransitionManager {
       }
    }
 
-   private void logWorkflowUnCompletedEvent(AbstractWorkflowArtifact awa) throws OseeCoreException {
+   public static void logWorkflowUnCompletedEvent(AbstractWorkflowArtifact awa) throws OseeCoreException {
       if (awa.isAttributeTypeValid(AtsAttributeTypes.CreatedBy)) {
          awa.deleteSoleAttribute(AtsAttributeTypes.CompletedBy);
          awa.deleteSoleAttribute(AtsAttributeTypes.CompletedDate);

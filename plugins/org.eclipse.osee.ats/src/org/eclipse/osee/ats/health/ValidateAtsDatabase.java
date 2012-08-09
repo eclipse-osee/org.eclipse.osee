@@ -53,6 +53,7 @@ import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.log.AtsLog;
 import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
 import org.eclipse.osee.ats.core.client.workflow.log.LogType;
+import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
@@ -198,6 +199,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             Collection<Artifact> allArtifacts = ArtifactQuery.getArtifactListFromIds(artIdList, AtsUtil.getAtsBranch());
             //            elapsedTime.end();
 
+            // NOTE: Use DoesNotWorkItemAts to process list of HRIDs
+
             // remove all deleted/purged artifacts first
             List<Artifact> artifacts = new ArrayList<Artifact>(allArtifacts.size());
             for (Artifact artifact : allArtifacts) {
@@ -272,6 +275,15 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      testNameToResultsMap.put("testCompletedCancelledStateAttributesSet", String.format(
                         "Error: awa.isCompleted()==true but State [%s] not Completed state for [%s]",
                         stateDef.getName(), XResultDataUI.getHyperlink(artifact)));
+                     if (stateDef.getStateType() == StateType.Working) {
+                        awa.setSoleAttributeFromString(AtsAttributeTypes.CurrentStateType, StateType.Working.name());
+                        TransitionManager.logWorkflowUnCompletedEvent(awa);
+                        TransitionManager.logWorkflowUnCancelledEvent(awa);
+                        awa.persist(transaction);
+                        testNameToResultsMap.put("testCompletedCancelledStateAttributesSet", "FIXED");
+                     } else {
+                        testNameToResultsMap.put("testCompletedCancelledStateAttributesSet", "MANUAL FIX REQUIRED");
+                     }
                   } else if (awa.getCompletedBy() == null || awa.getCompletedDate() == null || !Strings.isValid(awa.getCompletedFromState())) {
                      testNameToResultsMap.put(
                         "testCompletedCancelledStateAttributesSet",
@@ -286,6 +298,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      testNameToResultsMap.put("testCompletedCancelledStateAttributesSet", String.format(
                         "Error: awa.isCancelled()==true but State [%s] not Cancelled state for [%s]",
                         stateDef.getName(), XResultDataUI.getHyperlink(artifact)));
+                     testNameToResultsMap.put("testCompletedCancelledStateAttributesSet", "MANUAL FIX REQUIRED");
                   } else if (awa.getCancelledBy() == null || awa.getCancelledDate() == null || !Strings.isValid(awa.getCancelledFromState())) {
                      testNameToResultsMap.put(
                         "testCompletedCancelledStateAttributesSet",
