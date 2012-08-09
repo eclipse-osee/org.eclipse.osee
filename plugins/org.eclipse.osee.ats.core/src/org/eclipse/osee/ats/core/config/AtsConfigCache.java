@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -36,8 +37,9 @@ public class AtsConfigCache {
    @SuppressWarnings("unchecked")
    public static final <A extends IAtsConfigObject> List<A> getByTag(String tag, Class<A> clazz) {
       List<A> objs = new ArrayList<A>();
-      Collection<IAtsConfigObject> values = tagToConfigObject.getValues(tag);
-      if (values != null) {
+      if (tagToConfigObject.getValues(tag) != null) {
+         Collection<IAtsConfigObject> values =
+            new CopyOnWriteArrayList<IAtsConfigObject>(tagToConfigObject.getValues(tag));
          for (IAtsConfigObject obj : values) {
             if (clazz.isInstance(obj)) {
                objs.add((A) obj);
@@ -49,8 +51,9 @@ public class AtsConfigCache {
 
    @SuppressWarnings("unchecked")
    public static final <A extends IAtsConfigObject> A getSoleByTag(String tag, Class<A> clazz) {
-      Collection<IAtsConfigObject> values = tagToConfigObject.getValues(tag);
-      if (values != null) {
+      if (tagToConfigObject.getValues(tag) != null) {
+         Collection<IAtsConfigObject> values =
+            new CopyOnWriteArrayList<IAtsConfigObject>(tagToConfigObject.getValues(tag));
          for (IAtsConfigObject obj : values) {
             if (clazz.isInstance(obj)) {
                return (A) obj;
