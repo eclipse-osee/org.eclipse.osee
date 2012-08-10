@@ -34,6 +34,8 @@ import org.eclipse.nebula.widgets.xviewer.action.ColumnMultiEditAction;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
 import org.eclipse.osee.ats.actions.ConvertActionableItemsAction;
 import org.eclipse.osee.ats.actions.DeletePurgeAtsArtifactsAction;
+import org.eclipse.osee.ats.actions.DeleteTasksAction;
+import org.eclipse.osee.ats.actions.DeleteTasksAction.TaskArtifactProvider;
 import org.eclipse.osee.ats.actions.EditAssigneeAction;
 import org.eclipse.osee.ats.actions.EditStatusAction;
 import org.eclipse.osee.ats.actions.EmailActionAction;
@@ -127,6 +129,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    DeletePurgeAtsArtifactsAction deletePurgeAtsObjectAction;
    EmailActionAction emailAction;
    Action resetActionArtifactAction;
+   DeleteTasksAction deleteTasksAction;
 
    public void createMenuActions() {
 
@@ -137,6 +140,16 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       emailAction = new EmailActionAction(this);
       editStatusAction = new EditStatusAction(this, this, this);
       editAssigneeAction = new EditAssigneeAction(this, this);
+      TaskArtifactProvider taskProvider = new TaskArtifactProvider() {
+
+         @Override
+         public List<TaskArtifact> getSelectedArtifacts() {
+            return getSelectedTaskArtifacts();
+         }
+
+      };
+
+      deleteTasksAction = new DeleteTasksAction(taskProvider);
 
       new Action("Edit", IAction.AS_PUSH_BUTTON) {
          @Override
@@ -376,6 +389,9 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          mm.insertBefore(XViewer.MENU_GROUP_PRE, deletePurgeAtsObjectAction);
          deletePurgeAtsObjectAction.setEnabled(getSelectedAtsArtifacts().size() > 0);
       }
+
+      mm.insertBefore(XViewer.MENU_GROUP_PRE, deleteTasksAction);
+      deleteTasksAction.updateEnablement(getSelectedArtifacts());
 
       mm.insertBefore(XViewer.MENU_GROUP_PRE, new GroupMarker(MENU_GROUP_ATS_WORLD_OPEN));
       mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());

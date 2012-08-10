@@ -57,8 +57,7 @@ import org.junit.runners.Suite;
    ShowMergeManagerActionTest.class,
    ShowWorkDefinitionActionTest.class,
    SubscribedActionTest.class,
-   TaskAddActionTest.class,
-   TaskDeleteActionTest.class,})
+   TaskAddActionTest.class,})
 /**
  * @author Donald G. Dunne
  */

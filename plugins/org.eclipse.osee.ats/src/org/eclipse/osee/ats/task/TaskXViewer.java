@@ -13,12 +13,15 @@ package org.eclipse.osee.ats.task;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.ats.actions.DeleteTasksAction;
+import org.eclipse.osee.ats.actions.DeleteTasksAction.TaskArtifactProvider;
 import org.eclipse.osee.ats.actions.EditAssigneeAction;
 import org.eclipse.osee.ats.actions.EditStatusAction;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -117,16 +120,15 @@ public class TaskXViewer extends WorldXViewer {
          }
       };
 
-      deleteTasksAction = new Action("Delete Task", IAction.AS_PUSH_BUTTON) {
+      TaskArtifactProvider taskProvider = new TaskArtifactProvider() {
+
          @Override
-         public void run() {
-            try {
-               taskComposite.handleDeleteTask();
-            } catch (Exception ex) {
-               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-            }
+         public List<TaskArtifact> getSelectedArtifacts() {
+            return taskComposite.getSelectedTaskArtifactItems();
          }
       };
+
+      deleteTasksAction = new DeleteTasksAction(taskProvider);
 
    }
 

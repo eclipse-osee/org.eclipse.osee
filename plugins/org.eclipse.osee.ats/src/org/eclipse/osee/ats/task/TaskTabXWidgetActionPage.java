@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.task;
 
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
@@ -17,14 +18,16 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.osee.ats.actions.DeleteTasksAction;
+import org.eclipse.osee.ats.actions.DeleteTasksAction.TaskArtifactProvider;
 import org.eclipse.osee.ats.actions.ImportTasksViaSimpleList;
 import org.eclipse.osee.ats.actions.ImportTasksViaSpreadsheet;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected;
 import org.eclipse.osee.ats.actions.TaskAddAction;
-import org.eclipse.osee.ats.actions.TaskDeleteAction;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
+import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.export.AtsExportManager;
@@ -144,7 +147,14 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage {
       try {
          if (taskComposite.getIXTaskViewer().isTasksEditable()) {
             toolBarManager.add(new TaskAddAction(taskComposite));
-            toolBarManager.add(new TaskDeleteAction(taskComposite));
+            TaskArtifactProvider taskProvider = new TaskArtifactProvider() {
+
+               @Override
+               public List<TaskArtifact> getSelectedArtifacts() {
+                  return taskComposite.getSelectedTaskArtifactItems();
+               }
+            };
+            toolBarManager.add(new DeleteTasksAction(taskProvider));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

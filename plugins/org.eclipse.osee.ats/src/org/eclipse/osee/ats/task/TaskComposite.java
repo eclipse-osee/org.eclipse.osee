@@ -27,7 +27,6 @@ import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction.IOpenNewAtsTaskEditorHandler;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected.IOpenNewAtsTaskEditorSelectedHandler;
 import org.eclipse.osee.ats.actions.TaskAddAction.ITaskAddActionHandler;
-import org.eclipse.osee.ats.actions.TaskDeleteAction.ITaskDeleteActionHandler;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
@@ -81,7 +80,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Donald G. Dunne
  */
-public class TaskComposite extends Composite implements IWorldViewerEventHandler, IOpenNewAtsTaskEditorSelectedHandler, ITaskDeleteActionHandler, ITaskAddActionHandler, IOpenNewAtsTaskEditorHandler, IRefreshActionHandler {
+public class TaskComposite extends Composite implements IWorldViewerEventHandler, IOpenNewAtsTaskEditorSelectedHandler, ITaskAddActionHandler, IOpenNewAtsTaskEditorHandler, IRefreshActionHandler {
 
    private TaskXViewer taskXViewer;
    private final IXTaskViewer iXTaskViewer;
@@ -362,11 +361,6 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
    }
 
    @Override
-   public void taskDeleteActionHandler() {
-      handleDeleteTask();
-   }
-
-   @Override
    public WorldXViewer getWorldXViewer() {
       return taskXViewer;
    }
@@ -382,6 +376,14 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
          loadTable();
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+   }
+
+   public void onTasksDeleted() {
+      try {
+         AtsTaskCache.decache((AbstractTaskableArtifact) iXTaskViewer.getAwa());
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.WARNING, ex);
       }
    }
 }
