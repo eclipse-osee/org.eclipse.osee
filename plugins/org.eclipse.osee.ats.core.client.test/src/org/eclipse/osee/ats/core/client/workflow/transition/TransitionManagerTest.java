@@ -11,6 +11,7 @@ import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
@@ -58,7 +59,7 @@ public class TransitionManagerTest {
 
    @org.junit.Test
    public void testHandleTransitionValidation__NoAwas() throws OseeCoreException {
-      AtsTestUtil.cleanupAndReset("TransitionManagerTest");
+      AtsTestUtil.cleanupAndReset("TransitionManagerTest-A");
       TransitionHelper helper =
          new TransitionHelper(getClass().getSimpleName(), EMPTY_AWAS, AtsTestUtil.getImplementStateDef().getName(),
             Arrays.asList(AtsUsersClient.getUser()), null, TransitionOption.None);
@@ -92,7 +93,11 @@ public class TransitionManagerTest {
 
    @org.junit.Test
    public void testHandleTransitionValidation__MustBeAssigned() throws OseeCoreException {
+      AtsTestUtil.cleanupAndReset("TransitionManagerTest-B");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
+      IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
+      Assert.assertNotNull(teamDef);
+
       TransitionHelper helper =
          new TransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
             AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsUsersClient.getUser()), null,
@@ -146,6 +151,7 @@ public class TransitionManagerTest {
 
    @org.junit.Test
    public void testHandleTransitionValidation__WorkingBranchTransitionable() throws OseeCoreException {
+      AtsTestUtil.cleanupAndReset("TransitionManagerTest-C");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       MockTransitionHelper helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
@@ -183,6 +189,7 @@ public class TransitionManagerTest {
 
    @org.junit.Test
    public void testHandleTransitionValidation__NoSystemUser() throws OseeCoreException {
+      AtsTestUtil.cleanupAndReset("TransitionManagerTest-D");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       MockTransitionHelper helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
