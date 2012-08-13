@@ -207,7 +207,7 @@ public class ReviewNavigateView extends ViewPart implements IXNavigateEventListe
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(new CollapseAllAction(xNavComp.getFilteredTree().getViewer()));
       toolbarManager.add(new ExpandAllAction(xNavComp.getFilteredTree().getViewer()));
-      toolbarManager.add(new OpenWorkflowByIdAction());
+      toolbarManager.add(new OpenWorkflowByIdAction("Open Review by ID"));
       getViewSite().getActionBars().updateActionBars();
       toolbarManager.update(true);
    }

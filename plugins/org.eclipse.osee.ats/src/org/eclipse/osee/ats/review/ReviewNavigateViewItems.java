@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.actions.OpenWorkflowByIdAction;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
@@ -30,6 +31,7 @@ import org.eclipse.osee.framework.ui.plugin.util.OpenPerspectiveNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateCommonItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateCommonItems;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateViewItems;
 
 /**
@@ -77,6 +79,7 @@ public class ReviewNavigateViewItems implements XNavigateViewItems, IXNavigateCo
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       items.add(new SearchNavigateItem(item, new ReviewSearchWorkflowSearchItem()));
+      items.add(new XNavigateItemAction(item, new OpenWorkflowByIdAction("Open Review by HRID"), AtsImage.REVIEW));
       items.add(new SearchNavigateItem(item, new ShowOpenWorkflowsByArtifactType(
          "Show Open " + AtsArtifactTypes.DecisionReview.getName() + "s", AtsArtifactTypes.DecisionReview, false, false,
          AtsImage.DECISION_REVIEW)));

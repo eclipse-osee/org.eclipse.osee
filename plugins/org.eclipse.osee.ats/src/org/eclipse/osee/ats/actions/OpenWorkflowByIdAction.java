@@ -28,7 +28,11 @@ public class OpenWorkflowByIdAction extends Action {
    private String overrideId = null;
 
    public OpenWorkflowByIdAction() {
-      super("Open Workflow Editor by ID(s)");
+      this("Open Workflow Editor by ID(s)");
+   }
+
+   public OpenWorkflowByIdAction(String name) {
+      super(name);
       setToolTipText(getText());
    }
 

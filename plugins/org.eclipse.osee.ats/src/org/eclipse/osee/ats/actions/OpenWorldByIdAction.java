@@ -28,7 +28,11 @@ public class OpenWorldByIdAction extends Action {
    public String overrideId = null;
 
    public OpenWorldByIdAction() {
-      super("Open World Editor by ID(s)");
+      this("Open World Editor by ID(s)");
+   }
+
+   public OpenWorldByIdAction(String name) {
+      super(name);
       setToolTipText(getText());
    }
 
