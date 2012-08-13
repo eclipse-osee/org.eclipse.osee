@@ -130,10 +130,12 @@ public class UpdateArtifactOperation extends AbstractOperation {
                // Only update if editing a single artifact or if in
                // multi-edit mode only update if the artifact has at least one textual change (if
                // the MUTI_EDIT_SAVE_ALL_CHANGES preference is not set).
+               String originalContent =
+                  artifact.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent).toString();
                boolean multiSave =
                   UserManager.getBooleanSetting(MsWordPreferencePage.MUTI_EDIT_SAVE_ALL_CHANGES) || !WordUtil.textOnly(
-                     artifact.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent).toString()).equals(
-                     WordUtil.textOnly(content));
+                     originalContent).equals(WordUtil.textOnly(content)) || !WordUtil.referencesOnly(originalContent).equals(
+                     WordUtil.referencesOnly(content));
 
                if (singleArtifact || multiSave) {
                   // TODO Do we need this?

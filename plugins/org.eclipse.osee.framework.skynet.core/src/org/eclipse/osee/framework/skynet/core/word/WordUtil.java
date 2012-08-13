@@ -17,6 +17,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -69,6 +70,7 @@ public class WordUtil {
    private static final Matcher binIdMatcher = Pattern.compile("wordml://(.+?)[.]").matcher("");
    private static final Pattern tagKiller = Pattern.compile("<.*?>", Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern paragraphPattern = Pattern.compile("<w:p( .*?)?>");
+   private static final Pattern referencePattern = Pattern.compile("(_Ref[0-9]{9}|Word.Bookmark.End)");
    private static int bookMarkId = 1000;
    private static UpdateBookmarkIds updateBookmarkIds = new UpdateBookmarkIds(bookMarkId);
 
@@ -213,6 +215,26 @@ public class WordUtil {
       str = paragraphPattern.matcher(str).replaceAll(" ");
       str = tagKiller.matcher(str).replaceAll("").trim();
       return Xml.unescape(str).toString();
+   }
+
+   public static String referencesOnly(String content) {
+      List<String> references = new ArrayList<String>();
+
+      Matcher referenceMatcher = referencePattern.matcher(content);
+      while (referenceMatcher.find()) {
+         referenceMatcher.toString();
+         String reference = referenceMatcher.group(1);
+         references.add(reference);
+      }
+
+      //Collections.sort(references);
+      StringBuilder sb = new StringBuilder();
+      for (String reference : references) {
+         sb.append(reference);
+         sb.append("\n");
+      }
+
+      return sb.toString();
    }
 
    public static boolean isHeadingStyle(String paragraphStyle) {

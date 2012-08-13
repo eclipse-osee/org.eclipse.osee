@@ -12,13 +12,12 @@ package org.eclipse.osee.framework.skynet.core.word;
 
 import java.io.StringWriter;
 import java.util.Collection;
-import java.util.Stack;
-
+import java.util.HashMap;
+import java.util.Map;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.xpath.XPath;
-
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -83,6 +82,11 @@ public class UpdateBookmarkIds {
       return original.substring(startIndex, stopIndex);
    }
 
+   /**
+    * Update the aml:annotation (i.e. "Bookmark") tags with updated aml:id attribute values. The tricky part is
+    * maintaining the strange order of the start and end tags that Word seems to produce. Not doing so, or resequencing
+    * this order can and will produce strange results in the behavior of the document's references.
+    */
    public String fixTags(String content) throws OseeCoreException {
       String toReturn = content;
       boolean changesMade = false;
@@ -92,27 +96,30 @@ public class UpdateBookmarkIds {
             Jaxp.readXmlDocumentNamespaceAware(WORD_PREFIX + WORD_BODY_START + content + WORD_BODY_END + WORD_DOC_END);
          Element element = document.getDocumentElement();
 
-         Stack<Element> nodeStack = new Stack<Element>();
-
          XPath xPath = Jaxp.createXPath();
          SimpleNamespaceContext context = new SimpleNamespaceContext();
          Xml.addNamespacesForWordMarkupLanguage(xPath, context);
          Collection<Node> nodes = Jaxp.selectNodesViaXPath(xPath, element, XPATH_EXPRESSION);
 
-         for (Node currentNode : nodes) {
-            if (isStartNode(currentNode)) {
-               nodeStack.push((Element) currentNode);
-            } else if (isEndNode(currentNode)) {
-               if (!nodeStack.isEmpty()) {
-                  changesMade = true;
-                  Element startNode = nodeStack.pop();
-                  Element endNode = (Element) currentNode;
-                  int newId = incrementBookmarkId();
-                  startNode.setAttribute(WORD_AML_ID_ATTRIBUTE, String.valueOf(newId));
-                  endNode.setAttribute(WORD_AML_ID_ATTRIBUTE, String.valueOf(newId));
+         //Get a new value for each aml.id (maintaining the order of the start/end Bookmark tags
+         Map<Integer, Integer> oldToNewAmlIds = new HashMap<Integer, Integer>();
+         for (Node node : nodes) {
+            if (isStartNode(node) || isEndNode(node)) {
+               changesMade = true;
+               Node amlIdNode = node.getAttributes().getNamedItem(WORD_AML_ID_ATTRIBUTE);
+               if (amlIdNode != null) {
+                  String amlIdStr = amlIdNode.getNodeValue();
+                  Integer oldAmlId = new Integer(amlIdStr);
+                  Integer newAmlId = oldToNewAmlIds.get(oldAmlId);
+                  if (newAmlId == null) {
+                     newAmlId = incrementBookmarkId();
+                     oldToNewAmlIds.put(oldAmlId, newAmlId);
+                  }
+                  ((Element) node).setAttribute(WORD_AML_ID_ATTRIBUTE, String.valueOf(newAmlId));
                }
             }
          }
+
          if (changesMade) {
             //This technique is necessary because Word does not support start and ending empty tags.
             toReturn = stripOffBodyTag(Jaxp.xmlToString(document, false));
