@@ -68,7 +68,9 @@ public class AttributeLoader {
          chStmt.close();
       }
       for (Artifact art : tempCache.values()) {
-         ArtifactCache.cache(art);
+         synchronized (ArtifactCache.class) {
+            ArtifactCache.cache(art);
+         }
       }
    }
 
