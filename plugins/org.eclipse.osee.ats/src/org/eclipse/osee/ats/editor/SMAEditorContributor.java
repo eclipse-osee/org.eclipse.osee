@@ -21,8 +21,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
  * @author Donald G. Dunne
  */
 public class SMAEditorContributor extends MultiPageEditorActionBarContributor {
-   private IEditorPart activeEditorPart;
-
    public SMAEditorContributor() {
       super();
    }
@@ -33,19 +31,12 @@ public class SMAEditorContributor extends MultiPageEditorActionBarContributor {
 
    @Override
    public void setActivePage(IEditorPart part) {
-      if (part == null || activeEditorPart == null || activeEditorPart.equals(part)) {
-         return;
-      }
+      if (part != null && part instanceof SMAEditor) {
+         IActionBars actionBars = getActionBars();
+         if (actionBars != null) {
 
-      activeEditorPart = part;
-
-      IActionBars actionBars = getActionBars();
-      if (actionBars != null) {
-
-         SMAEditor editor = part instanceof SMAEditor ? (SMAEditor) part : null;
-
-         if (editor != null) {
-            actionBars.setGlobalActionHandler(ActionFactory.PRINT.getId(), editor.getPrintAction());
+            SMAEditor editor = (SMAEditor) part;
+            actionBars.setGlobalActionHandler(ActionFactory.PRINT.getId(), new SMAPrint(editor.getAwa()));
             actionBars.updateActionBars();
          }
       }

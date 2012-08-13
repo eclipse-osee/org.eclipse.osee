@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.osee.ats.actions.AccessControlAction;
@@ -84,7 +83,6 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
@@ -99,7 +97,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
    int attributesPageIndex;
    private AttributesComposite attributesComposite;
    private boolean privilegedEditModeEnabled = false;
-   private Action printAction;
    private TaskTabXWidgetActionPage taskTabXWidgetActionPage;
    private final List<ISMAEditorListener> editorListeners = new ArrayList<ISMAEditorListener>();
    SMAEditorOutlinePage outlinePage;
@@ -147,8 +144,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
-
-      enableGlobalPrint();
    }
 
    @SuppressWarnings("rawtypes")
@@ -249,11 +244,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
          }
          container.layout();
       }
-   }
-
-   void enableGlobalPrint() {
-      printAction = new SMAPrint(awa);
-      getEditorSite().getActionBars().setGlobalActionHandler(ActionFactory.PRINT.getId(), printAction);
    }
 
    @Override
@@ -649,10 +639,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
       return Collections.singleton(awa);
    }
 
-   public Action getPrintAction() {
-      return printAction;
-   }
-
    @Override
    public IEditorPart getActiveEditor() {
       return this;
@@ -717,4 +703,5 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
       }
       return java.util.Collections.emptyList();
    }
+
 }
