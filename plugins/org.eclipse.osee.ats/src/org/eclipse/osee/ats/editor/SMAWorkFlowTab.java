@@ -41,7 +41,6 @@ import org.eclipse.osee.ats.actions.ShowMergeManagerAction;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
-import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -185,7 +184,8 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    @Override
    public void showBusy(boolean busy) {
       super.showBusy(busy);
-      if (Widgets.isAccessible(getManagedForm().getForm())) {
+      IManagedForm managedForm = getManagedForm();
+      if (managedForm != null && Widgets.isAccessible(getManagedForm().getForm())) {
          getManagedForm().getForm().getForm().setBusy(busy);
       }
    }
@@ -272,7 +272,6 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
             awa.getWorkDefinition().getName());
       }
       createHeaderSection(WorkflowManager.getCurrentAtsWorkPage(awa));
-      createGoalSection();
       createPageSections();
       createUndefinedStateSections();
       createHistorySection();
@@ -339,17 +338,6 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       try {
          smaHistorySection = new SMAHistorySection(editor, atsBody, editor.getToolkit(), SWT.NONE);
          managedForm.addPart(smaHistorySection);
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-   }
-
-   private void createGoalSection() {
-      try {
-         if (awa.isOfType(AtsArtifactTypes.Goal)) {
-            smaGoalMembersSection =
-               new SMAGoalMembersSection("sec", editor, atsBody, SWT.NONE, 400, (GoalArtifact) awa);
-         }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

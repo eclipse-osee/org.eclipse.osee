@@ -163,12 +163,12 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
                      jumptoScrollLocation();
                      FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
                      editor.onDirtied();
+                     firstTime = false;
                   } catch (OseeCoreException ex) {
                      handleException(ex);
                   } finally {
                      showBusy(false);
                   }
-                  firstTime = false;
                } else {
                   try {
                      updateTitleBar();

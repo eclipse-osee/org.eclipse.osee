@@ -137,13 +137,13 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
          updatePartName();
          setContentDescription(privilegedEditModeEnabled ? " PRIVILEGED EDIT MODE ENABLED" : "");
 
-         createWorkflowTab();
          createMembersTab();
+         createWorkflowTab();
          createTaskTab();
          createAttributesTab();
          createMetricsTab();
 
-         setActivePage(SMAWorkFlowTab.ID);
+         setActivePage(0);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
