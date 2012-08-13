@@ -64,6 +64,9 @@ public class SMAOriginatorHeader extends Composite {
                @Override
                public void linkActivated(HyperlinkEvent e) {
                   try {
+                     if (editor.isDirty()) {
+                        editor.doSave(null);
+                     }
                      if (OriginatorColumn.promptChangeOriginator(sma, true)) {
                         origLabel.setText(sma.getCreatedBy().getName());
                         origLabel.getParent().layout();

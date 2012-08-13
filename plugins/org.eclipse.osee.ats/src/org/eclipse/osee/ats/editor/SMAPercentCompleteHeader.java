@@ -64,6 +64,9 @@ public class SMAPercentCompleteHeader extends Composite {
                @Override
                public void linkActivated(HyperlinkEvent e) {
                   try {
+                     if (editor.isDirty()) {
+                        editor.doSave(null);
+                     }
                      IntegerDialog dialog =
                         new IntegerDialog("Enter Percent Complete",
                            "Enter Percent Complete (0 to 99)\n\n(use Transition to mark complete.)", 0, 99);

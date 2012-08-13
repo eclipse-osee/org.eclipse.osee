@@ -41,7 +41,7 @@ public class SMAActionableItemHeader extends Composite {
    private Label label;
    private final AbstractWorkflowArtifact sma;
 
-   public SMAActionableItemHeader(Composite parent, XFormToolkit toolkit, AbstractWorkflowArtifact sma) {
+   public SMAActionableItemHeader(Composite parent, XFormToolkit toolkit, AbstractWorkflowArtifact sma, final SMAEditor editor) {
       super(parent, SWT.NONE);
       this.sma = sma;
       try {
@@ -70,6 +70,10 @@ public class SMAActionableItemHeader extends Composite {
             @Override
             public void linkActivated(HyperlinkEvent e) {
                try {
+                  if (editor.isDirty()) {
+                     editor.doSave(null);
+                  }
+
                   ActionArtifact parentAction = teamWf.getParentActionArtifact();
                   if (parentAction == null) {
                      AWorkbench.popup("No Parent Action; Aborting");

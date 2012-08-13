@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.review.NewDecisionReviewJob;
 import org.eclipse.osee.ats.review.NewPeerToPeerReviewJob;
@@ -75,10 +76,12 @@ public class ReviewInfoXWidget extends XLabelValueBase {
    private final int horizontalSpan;
    private final XFormToolkit toolkit;
    private final TeamWorkFlowArtifact teamArt;
+   private final SMAWorkFlowSection smaWorkflowSection;
 
-   public ReviewInfoXWidget(IManagedForm managedForm, XFormToolkit toolkit, final TeamWorkFlowArtifact teamArt, final IStateToken forState, Composite composite, int horizontalSpan) {
+   public ReviewInfoXWidget(SMAWorkFlowSection smaWorkflowSection, XFormToolkit toolkit, final TeamWorkFlowArtifact teamArt, final IStateToken forState, Composite composite, int horizontalSpan) {
       super("\"" + forState.getName() + "\" State Reviews");
-      this.managedForm = managedForm;
+      this.smaWorkflowSection = smaWorkflowSection;
+      this.managedForm = smaWorkflowSection.getManagedForm();
       this.toolkit = toolkit;
       this.teamArt = teamArt;
       this.forState = forState;
@@ -123,6 +126,9 @@ public class ReviewInfoXWidget extends XLabelValueBase {
             @Override
             public void linkActivated(HyperlinkEvent e) {
                try {
+                  if (smaWorkflowSection.getEditor().isDirty()) {
+                     smaWorkflowSection.getEditor().doSave(null);
+                  }
                   StateListAndTitleDialog dialog =
                      new StateListAndTitleDialog("Create Decision Review",
                         "Select state to that review will be associated with.",
@@ -163,6 +169,9 @@ public class ReviewInfoXWidget extends XLabelValueBase {
             @Override
             public void linkActivated(HyperlinkEvent e) {
                try {
+                  if (smaWorkflowSection.getEditor().isDirty()) {
+                     smaWorkflowSection.getEditor().doSave(null);
+                  }
                   StateListAndTitleDialog dialog =
                      new StateListAndTitleDialog("Add Peer to Peer Review",
                         "Select state to that review will be associated with.",
@@ -303,8 +312,8 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                         }
                      }
                      TransitionHelper helper =
-                        new TransitionHelper("ATS Auto Complete Reviews", awas, TeamState.Completed.getName(),
-                           null, null, TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
+                        new TransitionHelper("ATS Auto Complete Reviews", awas, TeamState.Completed.getName(), null,
+                           null, TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
                      TransitionManager transitionMgr = new TransitionManager(helper);
                      TransitionResults results = transitionMgr.handleAll();
                      if (!results.isEmpty()) {

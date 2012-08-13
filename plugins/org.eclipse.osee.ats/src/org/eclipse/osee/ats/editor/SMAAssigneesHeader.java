@@ -62,6 +62,9 @@ public class SMAAssigneesHeader extends Composite {
                @Override
                public void linkActivated(HyperlinkEvent e) {
                   try {
+                     if (editor.isDirty()) {
+                        editor.doSave(null);
+                     }
                      if (!isEditable && !sma.getStateMgr().getAssignees().contains(AtsUsers.getUnAssigned()) && !sma.getStateMgr().getAssignees().contains(
                         AtsUsersClient.getUser())) {
                         AWorkbench.popup(

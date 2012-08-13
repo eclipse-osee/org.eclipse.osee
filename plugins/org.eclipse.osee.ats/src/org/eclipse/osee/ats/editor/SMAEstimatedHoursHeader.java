@@ -63,6 +63,9 @@ public class SMAEstimatedHoursHeader extends Composite {
                @Override
                public void linkActivated(HyperlinkEvent e) {
                   try {
+                     if (editor.isDirty()) {
+                        editor.doSave(null);
+                     }
                      PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.EstimatedHours, true, false);
                   } catch (Exception ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

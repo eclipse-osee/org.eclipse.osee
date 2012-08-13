@@ -279,8 +279,7 @@ public class SMAWorkFlowSection extends SectionPart {
          GridLayout layout = new GridLayout(1, false);
          comp.setLayout(layout);
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         allXWidgets.add(new ReviewInfoXWidget(getManagedForm(), editor.getToolkit(), (TeamWorkFlowArtifact) sma,
-            forState, comp, 1));
+         allXWidgets.add(new ReviewInfoXWidget(this, editor.getToolkit(), (TeamWorkFlowArtifact) sma, forState, comp, 1));
       }
    }
 
@@ -496,4 +495,9 @@ public class SMAWorkFlowSection extends SectionPart {
    public StateXWidgetPage getStatePage() {
       return statePage;
    }
+
+   public SMAEditor getEditor() {
+      return editor;
+   }
+
 }

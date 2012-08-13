@@ -379,7 +379,7 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
 
          createLatestHeader(headerComp, editor.getToolkit());
          if (awa.isTeamWorkflow()) {
-            actionableItemHeader = new SMAActionableItemHeader(headerComp, editor.getToolkit(), awa);
+            actionableItemHeader = new SMAActionableItemHeader(headerComp, editor.getToolkit(), awa, editor);
          }
          workflowMetricsHeader =
             new SMAWorkflowMetricsHeader(headerComp, editor.getToolkit(), awa, editor, managedForm);
