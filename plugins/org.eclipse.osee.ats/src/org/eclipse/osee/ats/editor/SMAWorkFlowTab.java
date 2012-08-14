@@ -84,8 +84,8 @@ import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -139,11 +139,13 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
 
       this.managedForm = managedForm;
       try {
-         managedForm.getForm().addDisposeListener(new DisposeListener() {
+         managedForm.getForm().getVerticalBar().addSelectionListener(new SelectionAdapter() {
+
             @Override
-            public void widgetDisposed(DisposeEvent e) {
+            public void widgetSelected(SelectionEvent e) {
                storeScrollLocation();
             }
+
          });
          updateTitleBar();
 
@@ -560,7 +562,6 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    private void storeScrollLocation() {
       if (managedForm != null && managedForm.getForm() != null) {
          Integer selection = managedForm.getForm().getVerticalBar().getSelection();
-         // System.out.println("Storing selection => " + selection);
          guidToScrollLocation.put(awa.getGuid(), selection);
       }
    }
