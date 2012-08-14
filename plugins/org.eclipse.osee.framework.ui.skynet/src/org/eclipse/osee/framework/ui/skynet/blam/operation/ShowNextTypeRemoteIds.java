@@ -76,7 +76,7 @@ public class ShowNextTypeRemoteIds extends AbstractBlam {
 
    @Override
    public String getName() {
-      return "Show Next OseeType Remote_Ids";
+      return "Show Next Osee Type Remote_Ids";
    }
 
    @Override
