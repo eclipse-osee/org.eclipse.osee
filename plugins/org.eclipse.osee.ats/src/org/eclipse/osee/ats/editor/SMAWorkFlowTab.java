@@ -259,6 +259,9 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
 
    private void createAtsBody() {
       if (Widgets.isAccessible(atsBody)) {
+         if (getManagedForm() != null && getManagedForm().getMessageManager() != null) {
+            getManagedForm().getMessageManager().removeAllMessages();
+         }
          atsBody.dispose();
       }
       atsBody = editor.getToolkit().createComposite(bodyComp);

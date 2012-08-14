@@ -320,6 +320,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                         AWorkbench.popup(String.format("Transition Error %s", results.toString()));
                      }
                      transitionMgr.getTransaction().execute();
+                     smaWorkflowSection.getEditor().refreshPages();
                   } catch (OseeCoreException ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   }
