@@ -273,9 +273,9 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
    @Override
    public boolean isDirty() {
       Result result = isDirtyResult();
-      if (result.isTrue()) {
-         System.out.println(result.getText());
-      }
+      //      if (result.isTrue()) {
+      //         System.out.println(result.getText());
+      //      }
       return result.isTrue();
    }
 
