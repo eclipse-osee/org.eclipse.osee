@@ -27,18 +27,58 @@ public class MessageServiceConsole implements CommandProvider {
       this.messageService = messageService;
    }
 
-   public void _printSummary(CommandInterpreter ci) throws Exception {
+   public void _msgPrintSummary(CommandInterpreter ci) throws Exception {
       for (NodeInfo info : messageService.getAvailableConnections()) {
          ConnectionNode node = messageService.get(info);
          ci.println(node.getSummary());
       }
+   }
+   
+   public void _msgPrintSend(CommandInterpreter ci) throws Exception {
+	   ConsoleDebugSupport support = ServiceUtility.getConsoleDebugSupport();
+	   if(support != null){
+		   support.setPrintSends(!support.getPrintSends());
+		   ci.println("printSends " + support.getPrintSends());
+	   } else {
+		   ci.println("ConsoleDebugSupport service not found, unable to show sends.");
+	   }
+   }
+   
+   public void _msgPrintReceive(CommandInterpreter ci) throws Exception {
+	   ConsoleDebugSupport support = ServiceUtility.getConsoleDebugSupport();
+	   if(support != null){
+		   support.setPrintReceives(!support.getPrintReceives());
+		   ci.println("printReceives " + support.getPrintReceives());
+	   } else {
+		   ci.println("ConsoleDebugSupport service not found, unable to show receives.");
+	   }
+   }
+   
+   public void _msgPrintStats(CommandInterpreter ci) throws Exception {
+	   ConsoleDebugSupport support = ServiceUtility.getConsoleDebugSupport();
+	   if(support != null){
+		   String arg = ci.nextArgument();
+		   if(arg == null){
+			   support.printAllStats(ci);
+		   } else if (arg.equals("tx")){
+			   support.printTxStats(ci);
+		   } else if (arg.equals("rx")){
+			   support.printRxStats(ci);
+		   }
+	   } else {
+		   ci.println("ConsoleDebugSupport service not found, unable to show receives.");
+	   }
+	   
    }
 
    @Override
    public String getHelp() {
       StringBuilder sb = new StringBuilder();
       sb.append("---Message Service Commands---\n");
-      sb.append("\tprintSummary - prints a Summary of all ConnectionNodes.\n");
+      sb.append("\tmsgPrintSummary - prints a Summary of all ConnectionNodes.\n");
+      sb.append("\tmsgPrintReceive - print out a receive when it happens to std.out.\n");
+      sb.append("\tmsgPrintSend - print out a receive when it happens.to std.out.\n");
+      sb.append("\tmsgPrintStats [tx|rx]- print out a stats collected on sends and/or receives.\n");
       return sb.toString();
    }
 

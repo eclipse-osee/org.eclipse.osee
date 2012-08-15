@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.internal.activemq;
 
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +31,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.ReplyConnection;
 import org.eclipse.osee.framework.messaging.internal.Activator;
+import org.eclipse.osee.framework.messaging.internal.ConsoleDebugSupport;
+import org.eclipse.osee.framework.messaging.internal.ServiceUtility;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -53,6 +56,16 @@ class ActiveMqMessageListenerWrapper implements MessageListener {
    @Override
    public void onMessage(javax.jms.Message jmsMessage) {
       try {
+    	 ConsoleDebugSupport support = ServiceUtility.getConsoleDebugSupport();
+    	 if(support != null){
+    		 if(support.getPrintReceives()){
+    			 System.out.println(new Date() + " : " + jmsMessage.getJMSMessageID());
+    			 System.out.println("MESSAGE:");
+    			 System.out.println(jmsMessage.toString());
+    			 System.out.println("-----------------------------------------------------------------------------");
+    		 }
+    		 support.addReceive(jmsMessage);
+    	 } 
          Destination destReply = jmsMessage.getJMSReplyTo();
          if (destReply != null) {
             ActiveMQDestination dest = (ActiveMQDestination) jmsMessage.getJMSDestination();

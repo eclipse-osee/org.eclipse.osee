@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.messaging.internal.activemq;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +46,8 @@ import org.eclipse.osee.framework.messaging.NodeInfo;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 import org.eclipse.osee.framework.messaging.internal.Activator;
+import org.eclipse.osee.framework.messaging.internal.ConsoleDebugSupport;
+import org.eclipse.osee.framework.messaging.internal.ServiceUtility;
 import org.eclipse.osee.framework.messaging.services.internal.OseeMessagingStatusImpl;
 
 /**
@@ -133,7 +136,27 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
    }
 
    private synchronized void sendInternal(MessageID messageId, Object message, Properties properties, OseeMessagingStatusCallback statusCallback) throws JMSException, OseeCoreException {
-      Topic destination = getOrCreateTopic(messageId);
+      ConsoleDebugSupport support = ServiceUtility.getConsoleDebugSupport();
+	   if(support != null){
+		  if(support.getPrintSends()){
+			  System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++");
+			  System.out.println(messageId.getName() + " ==> " + new Date());
+			  if(properties != null){
+				 System.out.println("PROPERTIES:");
+				 System.out.println(properties.toString());
+			  }
+			  System.out.println("MESSAGE:");
+			  System.out.println(message.toString());
+			  System.out.println("STACK:");
+			  StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+			  for(StackTraceElement el:stack){
+				  System.out.println("   " + el.toString());
+			  }
+			  System.out.println("-----------------------------------------------------------------------------");
+		  }
+    	  support.addSend(messageId);
+      }
+	  Topic destination = getOrCreateTopic(messageId);
       MessageProducer producer = getOrCreateProducer(destination);
       Message msg = activeMqUtil.createMessage(session, messageId.getSerializationClass(), message);
       if (messageId.isReplyRequired()) {
