@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.data;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.Identifiable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
@@ -19,15 +18,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  * @author Roberto E. Escobar
  * @author Andrew M. Finkbeiner
  */
-public interface ArtifactReadable extends Identifiable, HasLocalId, AttributesReadable {
-
-   IOseeBranch getBranch() throws OseeCoreException;
+public interface ArtifactReadable extends Identifiable, HasLocalId, HasBranch, HasTransaction, AttributesReadable, HasDeleteState {
 
    String getHumanReadableId();
-
-   boolean isDeleted();
-
-   int getTransactionId();
 
    IArtifactType getArtifactType() throws OseeCoreException;
 

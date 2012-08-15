@@ -82,7 +82,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWritea
    }
 
    @Override
-   public int getTransactionId() {
+   public int getTransaction() {
       return getOrcsData().getVersion().getTransactionId();
    }
 

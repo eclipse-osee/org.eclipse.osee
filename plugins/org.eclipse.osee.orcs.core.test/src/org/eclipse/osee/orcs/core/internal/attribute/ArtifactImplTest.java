@@ -185,7 +185,7 @@ public class ArtifactImplTest {
 
    @Test
    public void testGetTransactionId() {
-      artifactImpl.getTransactionId();
+      artifactImpl.getTransaction();
       verify(version).getTransactionId();
    }
 

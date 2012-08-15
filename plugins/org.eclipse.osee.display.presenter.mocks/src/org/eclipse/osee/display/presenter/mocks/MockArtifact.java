@@ -119,7 +119,7 @@ public class MockArtifact implements ArtifactReadable {
    }
 
    @Override
-   public int getTransactionId() {
+   public int getTransaction() {
       return 0;
    }
 

@@ -22,7 +22,7 @@ import org.eclipse.osee.orcs.annotations.WriteAttributes;
  * @author Roberto E. Escobar
  * @author Andrew M. Finkbeiner
  */
-public interface AttributesWriteable extends Writeable, AttributesReadable {
+public interface AttributesWriteable extends Writeable, AttributesReadable, Modifiable {
 
    @WriteAttributes
    <T> List<AttributeWriteable<T>> getWriteableAttributes() throws OseeCoreException;
