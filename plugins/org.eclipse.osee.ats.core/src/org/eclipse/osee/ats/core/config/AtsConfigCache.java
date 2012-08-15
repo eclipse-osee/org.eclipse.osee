@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -20,10 +19,10 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
  */
 public class AtsConfigCache {
 
-   private static final List<IAtsConfigObject> configObjects = new ArrayList<IAtsConfigObject>();
    // cache by guid and any other cachgeByTag item (like static id)
+   private static final List<IAtsConfigObject> configObjects = new CopyOnWriteArrayList<IAtsConfigObject>();
    private static final HashCollection<String, IAtsConfigObject> tagToConfigObject =
-      new HashCollection<String, IAtsConfigObject>();
+      new HashCollection<String, IAtsConfigObject>(true, CopyOnWriteArrayList.class);
 
    public static void cache(IAtsConfigObject configObject) {
       configObjects.add(configObject);
@@ -37,9 +36,8 @@ public class AtsConfigCache {
    @SuppressWarnings("unchecked")
    public static final <A extends IAtsConfigObject> List<A> getByTag(String tag, Class<A> clazz) {
       List<A> objs = new ArrayList<A>();
-      if (tagToConfigObject.getValues(tag) != null) {
-         Collection<IAtsConfigObject> values =
-            new CopyOnWriteArrayList<IAtsConfigObject>(tagToConfigObject.getValues(tag));
+      Collection<IAtsConfigObject> values = tagToConfigObject.getValues(tag);
+      if (values != null) {
          for (IAtsConfigObject obj : values) {
             if (clazz.isInstance(obj)) {
                objs.add((A) obj);
@@ -51,9 +49,8 @@ public class AtsConfigCache {
 
    @SuppressWarnings("unchecked")
    public static final <A extends IAtsConfigObject> A getSoleByTag(String tag, Class<A> clazz) {
-      if (tagToConfigObject.getValues(tag) != null) {
-         Collection<IAtsConfigObject> values =
-            new CopyOnWriteArrayList<IAtsConfigObject>(tagToConfigObject.getValues(tag));
+      Collection<IAtsConfigObject> values = tagToConfigObject.getValues(tag);
+      if (values != null) {
          for (IAtsConfigObject obj : values) {
             if (clazz.isInstance(obj)) {
                return (A) obj;
@@ -117,8 +114,7 @@ public class AtsConfigCache {
    public static void decache(IAtsConfigObject atsObject) {
       configObjects.remove(atsObject);
       List<String> keysToRemove = new ArrayList<String>();
-      Set<Entry<String, Collection<IAtsConfigObject>>> entrySet = tagToConfigObject.entrySet();
-      for (Entry<String, Collection<IAtsConfigObject>> entry : entrySet) {
+      for (Entry<String, Collection<IAtsConfigObject>> entry : tagToConfigObject.entrySet()) {
          if (entry.getValue().contains(atsObject)) {
             keysToRemove.add(entry.getKey());
          }
