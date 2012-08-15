@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,7 +29,6 @@ import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
-import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.goal.GoalXViewerFactory;
 import org.eclipse.osee.ats.goal.RemoveFromGoalAction;
+import org.eclipse.osee.ats.goal.RemoveFromGoalAction.RemovedFromGoalHandler;
 import org.eclipse.osee.ats.goal.SetGoalOrderAction;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.IMenuActionProvider;
@@ -48,7 +49,6 @@ import org.eclipse.osee.ats.world.WorldViewDragAndDrop;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -57,11 +57,8 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
-import org.eclipse.osee.framework.ui.skynet.util.ArtifactDragAndDrop;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -71,10 +68,8 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * @author Roberto E. Escobar
@@ -98,8 +93,6 @@ public class SMAGoalMembersSection extends Composite implements ISelectedAtsArti
       setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       ToolBar toolBar = createToolBar();
-      addDropToAddLabel(editor.getToolkit());
-      addDropToRemoveLabel(editor.getToolkit());
 
       createWorldComposite(defaultTableWidth);
       createActions();
@@ -220,83 +213,6 @@ public class SMAGoalMembersSection extends Composite implements ISelectedAtsArti
       });
    }
 
-   protected void addDropToAddLabel(FormToolkit toolkit) {
-      Label dropToAddLabel = new Label(this, SWT.BORDER);
-      dropToAddLabel.setText(" Drop New Members Here");
-      dropToAddLabel.setBackgroundImage(ImageManager.getImage(AtsImage.DROP_HERE_TO_ADD_BACKGROUND));
-      GridData gd = new GridData(SWT.FILL, SWT.NONE, true, false);
-      gd.heightHint = 25;
-      dropToAddLabel.setLayoutData(gd);
-      toolkit.adapt(dropToAddLabel, true, true);
-
-      new ArtifactDragAndDrop(dropToAddLabel, editor.getAwa(), ArtifactEditor.EDITOR_ID) {
-         @Override
-         public void performArtifactDrop(Artifact[] dropArtifacts) {
-            super.performArtifactDrop(dropArtifacts);
-            try {
-               List<Artifact> members = new ArrayList<Artifact>();
-               members.addAll(((GoalArtifact) editor.getAwa()).getMembers());
-               for (Artifact art : dropArtifacts) {
-                  if (!members.contains(art)) {
-                     members.add(art);
-                     editor.getAwa().addRelation(AtsRelationTypes.Goal_Member, art);
-                  }
-               }
-               editor.getAwa().setRelationOrder(AtsRelationTypes.Goal_Member, members);
-               editor.doSave(null);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      };
-   }
-
-   protected void addDropToRemoveLabel(FormToolkit toolkit) {
-      Label dropToAddLabel = new Label(this, SWT.BORDER);
-      dropToAddLabel.setText(" Drop Members to Remove");
-      dropToAddLabel.setBackgroundImage(ImageManager.getImage(AtsImage.DROP_HERE_TO_REMOVE_BACKGROUND));
-      GridData gd = new GridData(SWT.FILL, SWT.NONE, true, false);
-      gd.heightHint = 25;
-      dropToAddLabel.setLayoutData(gd);
-      toolkit.adapt(dropToAddLabel, true, true);
-
-      new ArtifactDragAndDrop(dropToAddLabel, editor.getAwa(), ArtifactEditor.EDITOR_ID) {
-         @Override
-         public void performArtifactDrop(Artifact[] dropArtifacts) {
-            super.performArtifactDrop(dropArtifacts);
-            final Set<Artifact> artifacts = new HashSet<Artifact>();
-            final List<TaskArtifact> tasks = new ArrayList<TaskArtifact>();
-            final List<Artifact> artList = new ArrayList<Artifact>();
-            for (Artifact artifact : dropArtifacts) {
-               artifacts.add(artifact);
-               artList.add(artifact);
-               if (artifact instanceof TaskArtifact) {
-                  tasks.add((TaskArtifact) artifact);
-               }
-            }
-            RemoveFromGoalAction remove =
-               new RemoveFromGoalAction((GoalArtifact) editor.getAwa(), new ISelectedAtsArtifacts() {
-
-                  @Override
-                  public Set<? extends Artifact> getSelectedSMAArtifacts() {
-                     return artifacts;
-                  }
-
-                  @Override
-                  public List<Artifact> getSelectedAtsArtifacts() {
-                     return artList;
-                  }
-
-                  @Override
-                  public List<TaskArtifact> getSelectedTaskArtifacts() {
-                     return tasks;
-                  }
-               });
-            remove.run();
-         }
-      };
-   }
-
    public void refresh() {
       Displays.ensureInDisplayThread(new Runnable() {
 
@@ -351,7 +267,16 @@ public class SMAGoalMembersSection extends Composite implements ISelectedAtsArti
 
    public void createActions() {
       setGoalOrderAction = new SetGoalOrderAction((GoalArtifact) editor.getAwa(), this);
-      removeFromGoalAction = new RemoveFromGoalAction((GoalArtifact) editor.getAwa(), this);
+      RemovedFromGoalHandler handler = new RemovedFromGoalHandler() {
+
+         @Override
+         public void removedFromGoal(Collection<? extends Artifact> removed) {
+            worldComposite.removeItems(removed);
+            worldComposite.update();
+         }
+
+      };
+      removeFromGoalAction = new RemoveFromGoalAction((GoalArtifact) editor.getAwa(), this, handler);
    }
 
    @Override
@@ -443,7 +368,12 @@ public class SMAGoalMembersSection extends Composite implements ISelectedAtsArti
             } else {
                try {
                   Collections.reverse(droppedArtifacts);
+                  List<Artifact> members = goalArtifact.getMembers();
                   for (Artifact dropped : droppedArtifacts) {
+                     if (!members.contains(dropped)) {
+                        goalArtifact.addMember(dropped);
+                        reload();
+                     }
                      goalArtifact.setRelationOrder(AtsRelationTypes.Goal_Member, dropTarget, true, dropped);
                   }
                   goalArtifact.persist(SMAGoalMembersSection.class.getSimpleName());

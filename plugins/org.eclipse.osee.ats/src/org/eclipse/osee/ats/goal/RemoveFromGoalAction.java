@@ -34,11 +34,17 @@ public class RemoveFromGoalAction extends Action {
 
    private final GoalArtifact goalArt;
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
+   private final RemovedFromGoalHandler handler;
 
-   public RemoveFromGoalAction(GoalArtifact goalArt, ISelectedAtsArtifacts selectedAtsArtifacts) {
+   public static interface RemovedFromGoalHandler {
+      void removedFromGoal(Collection<? extends Artifact> removed);
+   }
+
+   public RemoveFromGoalAction(GoalArtifact goalArt, ISelectedAtsArtifacts selectedAtsArtifacts, RemovedFromGoalHandler handler) {
       super("Remove from Goal");
       this.goalArt = goalArt;
       this.selectedAtsArtifacts = selectedAtsArtifacts;
+      this.handler = handler;
    }
 
    @Override
@@ -60,6 +66,7 @@ public class RemoveFromGoalAction extends Action {
                goalArt.deleteRelation(AtsRelationTypes.Goal_Member, art);
             }
             goalArt.persist("Remove from Goal");
+            handler.removedFromGoal(selected);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
