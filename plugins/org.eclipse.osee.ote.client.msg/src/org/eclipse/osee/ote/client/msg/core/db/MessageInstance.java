@@ -74,7 +74,7 @@ public class MessageInstance {
    }
 
    public void detachService(IRemoteMessageService service, IMsgToolServiceClient client) throws Exception {
-      if (service != null) {
+      if (service != null && supported) {
          service.unsubscribeToMessage(new UnSubscribeToMessage(msg.getClass().getName(), mode, type,
             client.getAddressByType(msg.getClass().getName(), type)));
       }
