@@ -293,12 +293,17 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
       }
    }
 
+   protected void postProcessContent(StringBuilder wordFormattedContent, RoughArtifact roughArtifact) {
+      //Override with inheriting class if needed
+   }
+
    /**
     * Sets up storage (word formatted storage) for new artifact.
     */
    private void setContent() {
       if (roughArtifact != null) {
          roughArtifact.addAttribute(CoreAttributeTypes.WordTemplateContent, wordFormattedContent.toString());
+         postProcessContent(wordFormattedContent, roughArtifact);
          wordFormattedContent.setLength(0);
       }
    }
