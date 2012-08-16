@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -103,15 +104,22 @@ public class OteMarkerHelper {
       Map<String, IResource> resources = new HashMap<String, IResource>();
 
       for (MarkerInfo marker : markerInfo) {
+    	  if (!fileAlreadyLookedFor.contains(marker.getFile())) {
+    		  fileAlreadyLookedFor.add(marker.getFile());
+    		  IResource resource = AWorkspace.findWorkspaceFile(marker.getFile());
+    		  if (resource != null) {
+    			  resources.put(marker.getFile(), resource);
+    		  }
+    	  }
+      }
+      
+      for (MarkerInfo marker : markerInfo) {
+    	  IResource resourceToMark = resources.get(marker.getFile());
+    	  MarkerPlugin.findAndRemoveOteMarkers(resourceToMark);
+       }
+      
+      for (MarkerInfo marker : markerInfo) {
          try {
-            if (!fileAlreadyLookedFor.contains(marker.getFile())) {
-               fileAlreadyLookedFor.add(marker.getFile());
-               IResource resource = AWorkspace.findWorkspaceFile(marker.getFile());
-               if (resource != null) {
-                  resources.put(marker.getFile(), resource);
-               }
-            }
-
             IResource resourceToMark = resources.get(marker.getFile());
             if (resourceToMark != null) {
                Map<String, Object> scriptMarkerMap = new HashMap<String, Object>();

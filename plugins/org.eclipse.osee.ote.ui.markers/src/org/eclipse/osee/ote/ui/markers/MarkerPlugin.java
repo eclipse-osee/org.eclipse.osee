@@ -15,6 +15,7 @@ import java.util.logging.Level;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
@@ -108,9 +109,21 @@ public class MarkerPlugin implements BundleActivator {
             }
          }
       }
+      findAndRemoveOteMarkers(file);
    }
 
    static synchronized void updateMarkerInfo(IFile file, List<IMarker> markers) {
       filesToWatch.put(file, markers);
+   }
+   
+   public static void findAndRemoveOteMarkers(IResource resource){
+	   try {
+		   IMarker[] markersToRemove = resource.findMarkers("org.eclipse.osee.ote.ui.output.errorMarker", false, IResource.DEPTH_INFINITE);
+		   for(IMarker localMarker:markersToRemove){
+			   localMarker.delete();
+		   }
+	   } catch (CoreException e) {
+		   OseeLog.log(MarkerPlugin.class, Level.SEVERE, e);
+	   }
    }
 }
