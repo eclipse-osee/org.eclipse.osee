@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -166,8 +167,7 @@ public class SMAGoalMembersSection extends Composite implements ISelectedAtsArti
                return Status.OK_STATUS;
             }
             try {
-               final List<Artifact> artifacts =
-                  editor.getAwa().getRelatedArtifactsUnSorted(AtsRelationTypes.Goal_Member);
+               final List<Artifact> artifacts = goalArtifact.getMembers();
                Displays.ensureInDisplayThread(new Runnable() {
                   @Override
                   public void run() {
@@ -219,10 +219,30 @@ public class SMAGoalMembersSection extends Composite implements ISelectedAtsArti
          @Override
          public void run() {
             if (Widgets.isAccessible(worldComposite)) {
+               updateShown();
+               worldComposite.update();
                worldComposite.getXViewer().refresh();
             }
          }
       });
+   }
+
+   private void updateShown() {
+      List<Artifact> members;
+      try {
+         members = goalArtifact.getMembers();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         return;
+      }
+      List<Artifact> loadedArtifacts = worldComposite.getLoadedArtifacts();
+      List<Artifact> toRemoveFromLoaded = new LinkedList<Artifact>(members);
+      members.removeAll(loadedArtifacts);
+      for (Artifact art : members) {
+         worldComposite.insert(art, -1);
+      }
+      loadedArtifacts.removeAll(toRemoveFromLoaded);
+      worldComposite.getXViewer().remove(loadedArtifacts);
    }
 
    @Override
@@ -372,7 +392,8 @@ public class SMAGoalMembersSection extends Composite implements ISelectedAtsArti
                   for (Artifact dropped : droppedArtifacts) {
                      if (!members.contains(dropped)) {
                         goalArtifact.addMember(dropped);
-                        reload();
+                        worldComposite.insert(dropped, members.indexOf(dropTarget));
+                        worldComposite.update();
                      }
                      goalArtifact.setRelationOrder(AtsRelationTypes.Goal_Member, dropTarget, true, dropped);
                   }

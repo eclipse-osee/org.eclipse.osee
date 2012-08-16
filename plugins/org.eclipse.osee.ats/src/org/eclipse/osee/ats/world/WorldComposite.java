@@ -237,6 +237,11 @@ public class WorldComposite extends ScrolledComposite implements ISelectedAtsArt
       return getXViewer().getLoadedArtifacts();
    }
 
+   public void insert(Artifact toInsert, int position) {
+      worldArts.add(toInsert);
+      getXViewer().insert(toInsert, position);
+   }
+
    public void disposeComposite() {
       if (worldXViewer != null && !worldXViewer.getTree().isDisposed()) {
          worldXViewer.dispose();

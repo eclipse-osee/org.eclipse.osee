@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.client.util;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -76,7 +77,7 @@ public class GoalArtifactMembersCache {
          toReturn = artifact.getRelatedArtifacts(AtsRelationTypes.Goal_Member, DeletionFlag.EXCLUDE_DELETED);
          cache.put(artifact, toReturn);
       }
-      return toReturn;
+      return new LinkedList<Artifact>(toReturn);
    }
 
 }

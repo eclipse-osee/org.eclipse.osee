@@ -438,6 +438,10 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       ((WorldContentProvider) getContentProvider()).clear(forcePend);
    }
 
+   public void insert(Artifact toInsert, int position) {
+      insert(getRoot(), toInsert, position);
+   }
+
    /**
     * Release resources
     */
