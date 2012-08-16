@@ -26,19 +26,16 @@ import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFiltere
 import org.eclipse.osee.framework.ui.skynet.widgets.AttributeContentProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.dialogs.PatternFilter;
 
 /**
  * @author Donald G. Dunne
  */
 public class AttributeTypeFilteredCheckTreeDialog extends OSEECheckedFilteredTreeDialog {
 
-   private static PatternFilter patternFilter = new PatternFilter();
    private Collection<IAttributeType> selectableTypes;
 
    public AttributeTypeFilteredCheckTreeDialog(String title, String message) {
-      super(title, message, patternFilter, new AttributeContentProvider(), new AttributeTypeLabelProvider(),
-         new ArtifactNameSorter());
+      super(title, message, new AttributeContentProvider(), new AttributeTypeLabelProvider(), new ArtifactNameSorter());
    }
 
    public Collection<AttributeType> getChecked() {

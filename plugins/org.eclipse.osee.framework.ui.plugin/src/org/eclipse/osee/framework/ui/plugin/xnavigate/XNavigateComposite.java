@@ -47,7 +47,7 @@ import org.eclipse.ui.dialogs.PatternFilter;
  * @author Donald G. Dunne
  */
 public class XNavigateComposite extends Composite {
-   private static PatternFilter patternFilter = new PatternFilter();
+   private static PatternFilter patternFilter;
 
    public static enum TableLoadOption {
       None,
@@ -74,8 +74,15 @@ public class XNavigateComposite extends Composite {
       createControl();
    }
 
+   private PatternFilter getPatternFilter() {
+      if (patternFilter == null) {
+         patternFilter = new XNavigateViewFilter();
+      }
+      return patternFilter;
+   }
+
    private void createControl() {
-      filteredTree = new OSEEFilteredTree(this, SWT.SINGLE | SWT.BORDER, patternFilter);
+      filteredTree = new OSEEFilteredTree(this, SWT.SINGLE | SWT.BORDER);
       filteredTree.getViewer().setContentProvider(new XNavigateContentProvider());
       filteredTree.getViewer().setLabelProvider(new XNavigateLabelProvider());
       filteredTree.getViewer().getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -153,13 +160,6 @@ public class XNavigateComposite extends Composite {
     */
    public FilteredTree getFilteredTree() {
       return filteredTree;
-   }
-
-   /**
-    * @return the patternFilter
-    */
-   public PatternFilter getPatternFilter() {
-      return patternFilter;
    }
 
    /**

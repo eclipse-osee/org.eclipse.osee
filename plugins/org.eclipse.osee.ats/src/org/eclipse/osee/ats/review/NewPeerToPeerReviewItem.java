@@ -41,14 +41,17 @@ public class NewPeerToPeerReviewItem extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
-      final ActionableItemListDialog ld = new ActionableItemListDialog(Active.Active);
-      ld.setMessage("Select Actionable Items to Review\n\nNOTE: To create a review against " + "an Action and Team Workflow\nopen the object in ATS and select the " + "review to create from the editor.");
+      final ActionableItemListDialog ld =
+         new ActionableItemListDialog(
+            Active.Active,
+            "Select Actionable Items to Review\n\nNOTE: To create a review against " + "an Action and Team Workflow\nopen the object in ATS and select the " + "review to create from the editor.");
       int result = ld.open();
       if (result == 0) {
          final EntryDialog ed = new EntryDialog("Peer Review Title", "Enter Peer Review Title");
          if (ed.open() == 0) {
             try {
-               SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "New Peer To Peer Review");
+               SkynetTransaction transaction =
+                  TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "New Peer To Peer Review");
                PeerToPeerReviewArtifact peerArt =
                   PeerToPeerReviewManager.createNewPeerToPeerReview(null, ed.getEntry(), null, new Date(),
                      AtsUsersClient.getUser(), transaction);

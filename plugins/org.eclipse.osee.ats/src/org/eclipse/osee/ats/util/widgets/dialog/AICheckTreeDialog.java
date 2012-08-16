@@ -30,20 +30,17 @@ import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFilteredTreeDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.dialogs.PatternFilter;
 
 /**
  * @author Donald G. Dunne
  */
 public class AICheckTreeDialog extends OSEECheckedFilteredTreeDialog {
 
-   private static PatternFilter patternFilter = new PatternFilter();
    private final Active active;
    private Collection<IAtsActionableItem> initialAias;
 
    public AICheckTreeDialog(String title, String message, Active active) {
-      super(title, message, patternFilter, new AITreeContentProvider(active), new AtsObjectLabelProvider(),
-         new ArtifactNameSorter());
+      super(title, message, new AITreeContentProvider(active), new AtsObjectLabelProvider(), new ArtifactNameSorter());
       this.active = active;
    }
 

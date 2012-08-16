@@ -14,18 +14,14 @@ package org.eclipse.osee.framework.ui.skynet.util.filteredTree;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.ui.dialogs.PatternFilter;
 
 /**
  * @author Donald G. Dunne
  */
 public class SimpleCheckFilteredTreeDialog extends MinMaxOSEECheckedFilteredTreeDialog {
 
-   private static PatternFilter patternFilter = new PatternFilter();
-
    public SimpleCheckFilteredTreeDialog(String title, String message, ITreeContentProvider contentProvider, LabelProvider labelProvider, ViewerSorter viewerSorter, int minSelectionRequired, int maxSelectionRequired) {
-      super(title, message, patternFilter, contentProvider, labelProvider, viewerSorter, minSelectionRequired,
-         maxSelectionRequired);
+      super(title, message, contentProvider, labelProvider, viewerSorter, minSelectionRequired, maxSelectionRequired);
    }
 
 }

@@ -27,25 +27,22 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.dialogs.PatternFilter;
 
 public abstract class OSEECheckedFilteredTreeDialog extends MessageDialog {
 
    protected Label statusLabel;
    protected Button okButton;
    private OSEECheckedFilteredTree treeViewer;
-   private final PatternFilter patternFilter;
    private Object input;
    private final IContentProvider contentProvider;
    private final IBaseLabelProvider labelProvider;
    private Collection<? extends Object> initialSelections;
    private final ViewerSorter viewerSorter;
 
-   public OSEECheckedFilteredTreeDialog(String dialogTitle, String dialogMessage, PatternFilter patternFilter, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerSorter viewerSorter) {
+   public OSEECheckedFilteredTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerSorter viewerSorter) {
       super(new Shell(), dialogTitle, null, dialogMessage, MessageDialog.NONE, new String[] {"OK", "Cancel"}, 0);
       this.contentProvider = contentProvider;
       this.labelProvider = labelProvider;
-      this.patternFilter = patternFilter;
       this.viewerSorter = viewerSorter;
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
@@ -98,13 +95,15 @@ public abstract class OSEECheckedFilteredTreeDialog extends MessageDialog {
 
       treeViewer =
          new OSEECheckedFilteredTree(aiComp,
-            SWT.MULTI | SWT.CHECK | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter);
+            SWT.MULTI | SWT.CHECK | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
       GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
       gd.heightHint = 500;
       treeViewer.getViewer().getTree().setLayoutData(gd);
       treeViewer.getViewer().setContentProvider(contentProvider);
       treeViewer.getViewer().setLabelProvider(labelProvider);
-      treeViewer.getViewer().setSorter(viewerSorter);
+      if (viewerSorter != null) {
+         treeViewer.getViewer().setSorter(viewerSorter);
+      }
       treeViewer.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
          @Override
          public void selectionChanged(SelectionChangedEvent event) {

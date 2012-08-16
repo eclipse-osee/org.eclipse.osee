@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.dialogs.PatternFilter;
 
 /**
  * @author Donald G. Dunne
@@ -29,8 +28,8 @@ public class MinMaxOSEECheckedFilteredTreeDialog extends OSEECheckedFilteredTree
    private final int maxSelectionRequired;
    private final int minSelectionRequired;
 
-   public MinMaxOSEECheckedFilteredTreeDialog(String dialogTitle, String dialogMessage, PatternFilter patternFilter, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerSorter viewerSorter, int minSelectionRequired, int maxSelectionRequired) {
-      super(dialogTitle, dialogMessage, patternFilter, contentProvider, labelProvider, viewerSorter);
+   public MinMaxOSEECheckedFilteredTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerSorter viewerSorter, int minSelectionRequired, int maxSelectionRequired) {
+      super(dialogTitle, dialogMessage, contentProvider, labelProvider, viewerSorter);
       this.minSelectionRequired = minSelectionRequired;
       this.maxSelectionRequired = maxSelectionRequired;
    }

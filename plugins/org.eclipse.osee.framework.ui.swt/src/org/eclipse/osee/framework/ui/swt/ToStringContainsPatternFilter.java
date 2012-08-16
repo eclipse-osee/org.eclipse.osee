@@ -8,17 +8,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.plugin.xnavigate;
+package org.eclipse.osee.framework.ui.swt;
 
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.swt.internal.Activator;
 import org.eclipse.ui.dialogs.PatternFilter;
 
-public class XNavigateViewFilter extends PatternFilter {
+public class ToStringContainsPatternFilter extends PatternFilter {
 
    private String text;
 
-   public XNavigateViewFilter() {
+   public ToStringContainsPatternFilter() {
       // do nothing
    }
 
@@ -30,7 +32,9 @@ public class XNavigateViewFilter extends PatternFilter {
    @Override
    public void setPattern(String patternString) {
       super.setPattern(patternString);
-      if (Strings.isValid(patternString)) {
+      if (patternString == null || patternString.isEmpty()) {
+         text = null;
+      } else {
          text = patternString.toLowerCase();
       }
    }
@@ -40,10 +44,15 @@ public class XNavigateViewFilter extends PatternFilter {
       if (element == null) {
          return true;
       }
-      if (!Strings.isValid(text)) {
+      if (text == null || text.isEmpty()) {
          return true;
       }
-      return element.toString().toLowerCase().contains(text);
+      try {
+         return element.toString().toLowerCase().contains(text);
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return true;
    }
 
 }

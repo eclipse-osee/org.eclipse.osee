@@ -20,19 +20,16 @@ import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
-import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
+import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFilteredTreeDialog;
 
 /**
  * @author Donald G. Dunne
  */
-public class ActionableItemListDialog extends CheckedTreeSelectionDialog {
+public class ActionableItemListDialog extends OSEECheckedFilteredTreeDialog {
 
-   public ActionableItemListDialog(Active active) {
-      super(Displays.getActiveShell(), new AtsObjectLabelProvider(), new AITreeContentProvider(active));
-      setTitle("Select Actionable Item(s)");
-      setMessage("Select Actionable Item(s)");
-      setComparator(new ArtifactNameSorter());
+   public ActionableItemListDialog(Active active, String message) {
+      super("Select Actionable Item(s)", "Select Actionable Item(s)", new AITreeContentProvider(active),
+         new AtsObjectLabelProvider(), new ArtifactNameSorter());
       try {
          setInput(ActionableItems.getTopLevelActionableItems(active));
       } catch (Exception ex) {

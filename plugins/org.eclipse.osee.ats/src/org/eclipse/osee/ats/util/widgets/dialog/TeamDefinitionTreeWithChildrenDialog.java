@@ -19,8 +19,8 @@ import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFilteredTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
-import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -28,12 +28,11 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 
 /**
  * @author Donald G. Dunne
  */
-public class TeamDefinitionTreeWithChildrenDialog extends CheckedTreeSelectionDialog {
+public class TeamDefinitionTreeWithChildrenDialog extends OSEECheckedFilteredTreeDialog {
 
    XCheckBox recurseChildrenCheck = new XCheckBox("Include all children Team Definition Actions");
    boolean recurseChildren = false;
@@ -44,10 +43,8 @@ public class TeamDefinitionTreeWithChildrenDialog extends CheckedTreeSelectionDi
    }
 
    public TeamDefinitionTreeWithChildrenDialog(Active active, Collection<IAtsTeamDefinition> TeamDefinitions) {
-      super(Displays.getActiveShell(), new AtsObjectLabelProvider(), new TeamDefinitionTreeContentProvider(active));
-      setTitle("Select Team Definition");
-      setMessage("Select Team Definition");
-      setComparator(new AtsObjectNameSorter());
+      super("Select Team Defintion", "Select Team Definition", new TeamDefinitionTreeContentProvider(active),
+         new AtsObjectLabelProvider(), new AtsObjectNameSorter());
       setInput(TeamDefinitions);
    }
 
@@ -86,16 +83,10 @@ public class TeamDefinitionTreeWithChildrenDialog extends CheckedTreeSelectionDi
       return container;
    }
 
-   /**
-    * @return the recurseChildren
-    */
    public boolean isRecurseChildren() {
       return recurseChildren;
    }
 
-   /**
-    * @param recurseChildren the recurseChildren to set
-    */
    public void setRecurseChildren(boolean recurseChildren) {
       this.recurseChildren = recurseChildren;
    }

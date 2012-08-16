@@ -36,7 +36,6 @@ public abstract class OSEEFilteredTreeDialog<T> extends MessageDialog {
    protected Label statusLabel;
    private Button okButton;
    private OSEEFilteredTree treeViewer;
-   private final PatternFilter patternFilter;
    private boolean checkTree = true;
    private boolean multiSelect = true;
    private T input;
@@ -50,7 +49,6 @@ public abstract class OSEEFilteredTreeDialog<T> extends MessageDialog {
          "Cancel"}, 0);
       this.contentProvider = contentProvider;
       this.labelProvider = labelProvider;
-      this.patternFilter = patternFilter;
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
 
@@ -117,8 +115,7 @@ public abstract class OSEEFilteredTreeDialog<T> extends MessageDialog {
       treeViewer =
          new OSEECheckedFilteredTree(
             comp,
-            (multiSelect ? SWT.MULTI : SWT.SINGLE) | (isCheckTree() ? SWT.CHECK : SWT.NONE) | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER,
-            patternFilter);
+            (multiSelect ? SWT.MULTI : SWT.SINGLE) | (isCheckTree() ? SWT.CHECK : SWT.NONE) | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
       TreeViewer viewer = treeViewer.getViewer();
       viewer.setContentProvider(contentProvider);
       viewer.setLabelProvider(labelProvider);

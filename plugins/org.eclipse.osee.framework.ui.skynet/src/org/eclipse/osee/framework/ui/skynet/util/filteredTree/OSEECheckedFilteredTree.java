@@ -23,7 +23,6 @@ import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.dialogs.PatternFilter;
 
 /**
  * @author Donald G. Dunne
@@ -32,8 +31,8 @@ public class OSEECheckedFilteredTree extends OSEEFilteredTree {
 
    private final Set<Object> checked = new HashSet<Object>();
 
-   public OSEECheckedFilteredTree(Composite parent, int treeStyle, PatternFilter filter) {
-      super(parent, treeStyle, filter);
+   public OSEECheckedFilteredTree(Composite parent, int treeStyle) {
+      super(parent, treeStyle);
    }
 
    @Override

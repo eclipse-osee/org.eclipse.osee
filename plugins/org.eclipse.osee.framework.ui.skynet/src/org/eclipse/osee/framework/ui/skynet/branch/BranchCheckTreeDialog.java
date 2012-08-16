@@ -30,19 +30,17 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchViewImageHandl
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.dialogs.PatternFilter;
 
 /**
  * @author Donald G. Dunne
  */
 public class BranchCheckTreeDialog extends MinMaxOSEECheckedFilteredTreeDialog {
 
-   private static PatternFilter patternFilter = new PatternFilter();
    private Collection<Branch> initialBranches;
 
    public BranchCheckTreeDialog(String title, String message, int minSelectionRequired, int maxSelectionRequired) {
-      super(title, message, patternFilter, new ArrayTreeContentProvider(), new BranchLabelProvider(),
-         new BranchNameSorter(), minSelectionRequired, maxSelectionRequired);
+      super(title, message, new ArrayTreeContentProvider(), new BranchLabelProvider(), new BranchNameSorter(),
+         minSelectionRequired, maxSelectionRequired);
    }
 
    public Collection<Branch> getChecked() {

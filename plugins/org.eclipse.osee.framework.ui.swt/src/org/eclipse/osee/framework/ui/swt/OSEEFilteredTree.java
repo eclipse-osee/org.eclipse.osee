@@ -25,7 +25,12 @@ import org.eclipse.ui.dialogs.PatternFilter;
 public class OSEEFilteredTree extends FilteredTree {
 
    public OSEEFilteredTree(Composite parent) {
-      this(parent, SWT.BORDER | SWT.MULTI, new PatternFilter());
+      this(parent, SWT.BORDER | SWT.MULTI, new ToStringContainsPatternFilter());
+   }
+
+   public OSEEFilteredTree(Composite parent, int treeStyle) {
+      super(parent, treeStyle, new ToStringContainsPatternFilter(), false);
+      setInitialText("");
    }
 
    public OSEEFilteredTree(Composite parent, int treeStyle, PatternFilter filter) {

@@ -20,8 +20,8 @@ import org.eclipse.osee.ats.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
+import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFilteredTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
-import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -29,12 +29,11 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 
 /**
  * @author Donald G. Dunne
  */
-public class ActionableItemTreeWithChildrenDialog extends CheckedTreeSelectionDialog {
+public class ActionableItemTreeWithChildrenDialog extends OSEECheckedFilteredTreeDialog {
 
    XCheckBox recurseChildrenCheck = new XCheckBox("Include all children Actionable Item Actions");
    boolean recurseChildren = false;
@@ -45,10 +44,8 @@ public class ActionableItemTreeWithChildrenDialog extends CheckedTreeSelectionDi
    }
 
    public ActionableItemTreeWithChildrenDialog(Active active, Collection<IAtsActionableItem> actionableItems) {
-      super(Displays.getActiveShell(), new AtsObjectLabelProvider(), new ActionableItemTreeContentProvider(active));
-      setTitle("Select Actionable Item");
-      setMessage("Select Actionable Item");
-      setComparator(new ArtifactNameSorter());
+      super("Select Actionable Item", "Select Actionable Item", new ActionableItemTreeContentProvider(active),
+         new AtsObjectLabelProvider(), new ArtifactNameSorter());
       setInput(actionableItems);
    }
 

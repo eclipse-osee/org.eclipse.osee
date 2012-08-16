@@ -56,7 +56,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.dialogs.PatternFilter;
 
 /**
  * @author Donald G. Dunne
@@ -65,7 +64,6 @@ public class NewActionPage1 extends WizardPage {
    private final NewActionWizard wizard;
    private XWidgetPage page;
    protected OSEECheckedFilteredTree treeViewer;
-   private static PatternFilter patternFilter = new PatternFilter();
    private Text descriptionLabel;
    private boolean debugPopulated = false;
    private static IAtsActionableItem atsAi;
@@ -117,7 +115,7 @@ public class NewActionPage1 extends WizardPage {
          new Label(aiComp, SWT.NONE).setText("Select Actionable Items:");
          treeViewer =
             new OSEECheckedFilteredTree(aiComp,
-               SWT.CHECK | SWT.MULTI | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter);
+               SWT.CHECK | SWT.MULTI | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
          treeViewer.getViewer().getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
          treeViewer.getViewer().setContentProvider(new AITreeContentProvider(Active.Active));
          treeViewer.getViewer().setLabelProvider(new AtsObjectLabelProvider());
