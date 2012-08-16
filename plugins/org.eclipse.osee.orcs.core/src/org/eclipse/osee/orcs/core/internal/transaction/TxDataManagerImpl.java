@@ -17,9 +17,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
+import org.eclipse.osee.orcs.core.ds.OrcsVisitable;
 import org.eclipse.osee.orcs.core.ds.OrcsVisitor;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
+import org.eclipse.osee.orcs.core.internal.artifact.ArtifactVisitable;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactVisitor;
 import org.eclipse.osee.orcs.core.internal.proxy.ArtifactProxyFactory;
 import org.eclipse.osee.orcs.core.internal.proxy.ProxyWriteable;
@@ -92,8 +93,8 @@ public class TxDataManagerImpl implements TxDataManager {
    @Override
    public void onCommitSuccess(TransactionResult result) throws OseeCoreException {
       OrcsVisitor visitor = handler.createOnSuccessHandler(writeableArtifacts);
-      for (ArtifactTransactionData txData : result.getData()) {
-         txData.accept(visitor);
+      for (OrcsVisitable visitable : result.getData()) {
+         visitable.accept(visitor);
       }
    }
 
@@ -103,8 +104,8 @@ public class TxDataManagerImpl implements TxDataManager {
       ArtifactVisitor visitor = handler.createOnDirtyHandler(data);
       for (ArtifactWriteable writeable : writeableArtifacts.values()) {
          if (writeable.isDirty()) {
-            ArtifactImpl impl = proxyFactory.getProxiedObject(writeable);
-            impl.accept(visitor);
+            ArtifactVisitable visitable = proxyFactory.getProxiedObject(writeable);
+            visitable.accept(visitor);
          }
       }
       return data;
