@@ -94,6 +94,7 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       registerAllAttributeColumns();
+      WorldXViewerFactory.registerStateColumns(this);
    }
 
    @Override

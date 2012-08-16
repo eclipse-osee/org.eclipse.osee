@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.world;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.osee.ats.column.ActionableItemOwner;
 import org.eclipse.osee.ats.column.ActionableItemsColumn;
@@ -240,11 +241,15 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
+      registerStateColumns(this);
+   }
+
+   public static void registerStateColumns(XViewerFactory factory) {
       for (String stateName : StateManager.getAllValidStateNames()) {
-         registerColumns(new StateAssigneesColumn(stateName));
+         factory.registerColumns(new StateAssigneesColumn(stateName));
       }
       for (String stateName : StateManager.getAllValidStateNames()) {
-         registerColumns(new StateCompletedColumn(stateName));
+         factory.registerColumns(new StateCompletedColumn(stateName));
       }
    }
 
