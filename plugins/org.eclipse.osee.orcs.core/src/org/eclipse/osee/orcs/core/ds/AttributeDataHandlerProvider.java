@@ -8,16 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.internal.artifact;
-
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
+package org.eclipse.osee.orcs.core.ds;
 
 /**
- * @author Andrew M. Finkbeiner
+ * @author Roberto E. Escobar
  */
-public interface ArtifactCollector {
+public interface AttributeDataHandlerProvider {
 
-   void onArtifact(ArtifactReadable artifact) throws OseeCoreException;
+   AttributeDataHandler getAttributeDataHandler();
 
 }

@@ -60,6 +60,6 @@ public interface DataLoader extends Loader {
 
    DataLoader loadRelationLocalIds(Collection<Integer> relationIds) throws OseeCoreException;
 
-   void load(HasCancellation cancellation, ArtifactBuilder builder) throws OseeCoreException;
+   void load(HasCancellation cancellation, LoadDataHandler handler) throws OseeCoreException;
 
 }

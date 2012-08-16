@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.internal.relation;
+package org.eclipse.osee.orcs.core.internal.loader;
 
 import java.io.BufferedReader;
 import java.io.IOException;

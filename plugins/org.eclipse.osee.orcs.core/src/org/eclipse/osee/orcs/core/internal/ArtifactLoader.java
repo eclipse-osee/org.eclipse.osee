@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.Loader;
@@ -58,5 +59,9 @@ public interface ArtifactLoader extends Loader {
    List<ArtifactReadable> load() throws OseeCoreException;
 
    List<ArtifactReadable> load(HasCancellation cancellation) throws OseeCoreException;
+
+   ResultSet<ArtifactReadable> getResults() throws OseeCoreException;
+
+   ResultSet<ArtifactReadable> getResults(HasCancellation cancellation) throws OseeCoreException;
 
 }

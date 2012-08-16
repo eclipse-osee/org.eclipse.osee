@@ -20,10 +20,10 @@ import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.ArtifactBuilder;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
 import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
 import org.eclipse.osee.orcs.core.ds.Criteria;
+import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
@@ -92,7 +92,7 @@ public class SqlArtifactLoader {
       writer.build(handler);
    }
 
-   public void loadArtifacts(HasCancellation cancellation, ArtifactBuilder builder, ArtifactJoinQuery join, CriteriaOrcsLoad criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
+   public void loadArtifacts(HasCancellation cancellation, LoadDataHandler builder, ArtifactJoinQuery join, CriteriaOrcsLoad criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
       logger.trace("Sql Artifact Load - artifactJoinQuery[%s] loadSqlContext[%s]", join, loadContext);
       if (!join.isEmpty()) {
          try {
@@ -108,7 +108,7 @@ public class SqlArtifactLoader {
       }
    }
 
-   public void loadArtifacts(HasCancellation cancellation, ArtifactBuilder builder, CriteriaOrcsLoad criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
+   public void loadArtifacts(HasCancellation cancellation, LoadDataHandler builder, CriteriaOrcsLoad criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
       checkCancelled(cancellation);
       loadArtifacts(builder, criteria.getArtifactCriteria(), loadContext, fetchSize);
 
@@ -119,26 +119,26 @@ public class SqlArtifactLoader {
       loadRelations(builder, criteria.getRelationCriteria(), loadContext, fetchSize);
    }
 
-   protected void loadArtifacts(ArtifactBuilder builder, Criteria<LoadOptions> criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
-      ArtifactDataHandler artHandler = builder.createArtifactDataHandler();
+   protected void loadArtifacts(LoadDataHandler builder, Criteria<LoadOptions> criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
+      ArtifactDataHandler artHandler = builder.getArtifactDataHandler();
       writeSql(criteria, loadContext);
       load(artifactProcessor, artHandler, loadContext, fetchSize);
    }
 
-   protected void loadAttributes(ArtifactBuilder builder, Criteria<LoadOptions> criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
+   protected void loadAttributes(LoadDataHandler builder, Criteria<LoadOptions> criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
       LoadLevel loadLevel = loadContext.getOptions().getLoadLevel();
       if (isAttributeLoadingAllowed(loadLevel)) {
-         AttributeDataHandler attrHandler = builder.createAttributeDataHandler();
+         AttributeDataHandler attrHandler = builder.getAttributeDataHandler();
          writeSql(criteria, loadContext);
          load(attributeProcessor, attrHandler, loadContext, fetchSize);
       }
    }
 
-   protected void loadRelations(ArtifactBuilder builder, Criteria<LoadOptions> criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
+   protected void loadRelations(LoadDataHandler builder, Criteria<LoadOptions> criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
       //      if (!loadContext.getOptions().isHistorical()) { // Don't load historical relations
       LoadLevel loadLevel = loadContext.getOptions().getLoadLevel();
       if (isRelationLoadingAllowed(loadLevel)) {
-         RelationDataHandler relHandler = builder.createRelationDataHandler();
+         RelationDataHandler relHandler = builder.getRelationDataHandler();
          writeSql(criteria, loadContext);
          load(relationProcessor, relHandler, loadContext, fetchSize);
       }

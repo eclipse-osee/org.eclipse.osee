@@ -21,8 +21,8 @@ import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.ArtifactBuilder;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
+import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaArtifact;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaAttribute;
@@ -30,9 +30,6 @@ import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaRelation;
 import org.eclipse.osee.orcs.db.internal.loader.executors.AbstractLoadExecutor;
 
-/**
- * @author Roberto E. Escobar
- */
 public class DataLoaderImpl implements DataLoader {
 
    private final LoadOptions loadOptions = new LoadOptions();
@@ -179,7 +176,7 @@ public class DataLoaderImpl implements DataLoader {
 
    ////////////////////// EXECUTE METHODS
    @Override
-   public void load(HasCancellation cancellation, ArtifactBuilder builder) throws OseeCoreException {
+   public void load(HasCancellation cancellation, LoadDataHandler handler) throws OseeCoreException {
       long startTime = 0;
 
       final LoadOptions options = loadOptions.clone();
@@ -188,9 +185,12 @@ public class DataLoaderImpl implements DataLoader {
          startTime = System.currentTimeMillis();
          logger.trace("%s [start] - [%s] [%s]", getClass().getSimpleName(), criteria, options);
       }
-
-      loadExecutor.load(cancellation, builder, criteria, options);
-
+      handler.onLoadStart();
+      try {
+         loadExecutor.load(cancellation, handler, criteria, options);
+      } finally {
+         handler.onLoadEnd();
+      }
       if (logger.isTraceEnabled()) {
          logger.trace("%s [%s] - loaded [%s] [%s]", getClass().getSimpleName(), Lib.getElapseString(startTime),
             criteria, options);

@@ -17,19 +17,15 @@ import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.data.ResultSetList;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.ArtifactBuilder;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
-import org.eclipse.osee.orcs.core.ds.AttributeData;
-import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
+import org.eclipse.osee.orcs.core.ds.LoadDataHandlerAdapter;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
-import org.eclipse.osee.orcs.core.ds.RelationData;
-import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.core.internal.ArtifactLoader;
 import org.eclipse.osee.orcs.core.internal.ArtifactLoaderFactory;
@@ -105,7 +101,7 @@ public class LocalIdSearchCallable extends AbstractSearchCallable<ResultSet<HasL
       checkForCancelled();
       return new ResultSetList<HasLocalId>(results);
    }
-   private static final class AdapterBuidler implements ArtifactBuilder {
+   private static final class AdapterBuidler extends LoadDataHandlerAdapter {
 
       private final Collection<HasLocalId> results;
 
@@ -115,7 +111,7 @@ public class LocalIdSearchCallable extends AbstractSearchCallable<ResultSet<HasL
       }
 
       @Override
-      public ArtifactDataHandler createArtifactDataHandler() {
+      public ArtifactDataHandler getArtifactDataHandler() {
          return new ArtifactDataHandler() {
 
             @Override
@@ -124,34 +120,6 @@ public class LocalIdSearchCallable extends AbstractSearchCallable<ResultSet<HasL
             }
          };
       }
-
-      @Override
-      public RelationDataHandler createRelationDataHandler() {
-         return new RelationDataHandler() {
-
-            @Override
-            public void onData(RelationData data) {
-               //
-            }
-         };
-      }
-
-      @Override
-      public AttributeDataHandler createAttributeDataHandler() {
-         return new AttributeDataHandler() {
-
-            @Override
-            public void onData(AttributeData data) {
-               //
-            }
-         };
-      }
-
-      @Override
-      public List<ArtifactReadable> getArtifacts() {
-         return null;
-      }
-
    }
 
 }

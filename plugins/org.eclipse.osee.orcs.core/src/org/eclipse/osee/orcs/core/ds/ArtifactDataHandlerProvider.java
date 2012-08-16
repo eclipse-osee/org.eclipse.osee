@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Boeing.
+ * Copyright (c) 2004, 2007 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,14 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import java.util.List;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
-
 /**
- * @author Andrew M. Finkbeiner
+ * @author Roberto E. Escobar
  */
-public interface ArtifactBuilder extends ArtifactDataHandlerFactory, RelationDataHandlerFactory, AttributeDataHandlerFactory {
+public interface ArtifactDataHandlerProvider {
 
-   List<ArtifactReadable> getArtifacts();
+   ArtifactDataHandler getArtifactDataHandler();
 
 }

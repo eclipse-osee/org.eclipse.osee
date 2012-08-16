@@ -15,7 +15,7 @@ import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
-import org.eclipse.osee.orcs.core.ds.ArtifactBuilder;
+import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.db.internal.loader.LoadSqlContext;
 import org.eclipse.osee.orcs.db.internal.loader.RelationalConstants;
@@ -36,13 +36,13 @@ public abstract class AbstractLoadExecutor {
       this.dbService = dbService;
    }
 
-   public abstract void load(HasCancellation cancellation, ArtifactBuilder builder, CriteriaOrcsLoad criteria, LoadOptions options) throws OseeCoreException;
+   public abstract void load(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, LoadOptions options) throws OseeCoreException;
 
    protected IOseeDatabaseService getDatabaseService() {
       return dbService;
    }
 
-   protected void loadFromJoin(ArtifactJoinQuery join, HasCancellation cancellation, ArtifactBuilder builder, CriteriaOrcsLoad criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
+   protected void loadFromJoin(ArtifactJoinQuery join, HasCancellation cancellation, LoadDataHandler builder, CriteriaOrcsLoad criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
       loader.loadArtifacts(cancellation, builder, join, criteria, loadContext, fetchSize);
    }
 

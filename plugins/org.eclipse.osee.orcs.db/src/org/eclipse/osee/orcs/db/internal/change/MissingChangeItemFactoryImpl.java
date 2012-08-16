@@ -25,17 +25,16 @@ import org.eclipse.osee.framework.core.model.change.AttributeChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.RelationChangeItem;
 import org.eclipse.osee.framework.core.services.IdentityService;
-import org.eclipse.osee.orcs.core.ds.ArtifactBuilder;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
+import org.eclipse.osee.orcs.core.ds.LoadDataHandlerAdapter;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.db.internal.loader.DataModuleFactory;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
@@ -95,10 +94,10 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       loader.includeDeleted();
       loader.fromTransaction(destTx.getId());
 
-      loader.load(null, new ArtifactBuilder() {
+      loader.load(null, new LoadDataHandlerAdapter() {
 
          @Override
-         public ArtifactDataHandler createArtifactDataHandler() {
+         public ArtifactDataHandler getArtifactDataHandler() {
             return new ArtifactDataHandler() {
 
                @Override
@@ -107,23 +106,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
                }
             };
          }
-
-         @Override
-         public RelationDataHandler createRelationDataHandler() {
-            return null;
-         }
-
-         @Override
-         public AttributeDataHandler createAttributeDataHandler() {
-            return null;
-         }
-
-         @Override
-         public List<ArtifactReadable> getArtifacts() {
-            return null;
-         }
       });
-
       return missingArtIds;
    }
 
@@ -138,10 +121,10 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       loader.includeDeleted();
       loader.fromTransaction(sourceTx.getId());
 
-      loader.load(null, new ArtifactBuilder() {
+      loader.load(null, new LoadDataHandlerAdapter() {
 
          @Override
-         public ArtifactDataHandler createArtifactDataHandler() {
+         public ArtifactDataHandler getArtifactDataHandler() {
             return new ArtifactDataHandler() {
 
                @Override
@@ -155,7 +138,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
          }
 
          @Override
-         public RelationDataHandler createRelationDataHandler() {
+         public RelationDataHandler getRelationDataHandler() {
             return new RelationDataHandler() {
 
                @Override
@@ -170,7 +153,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
          }
 
          @Override
-         public AttributeDataHandler createAttributeDataHandler() {
+         public AttributeDataHandler getAttributeDataHandler() {
             return new AttributeDataHandler() {
 
                @Override
@@ -182,10 +165,6 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
             };
          }
 
-         @Override
-         public List<ArtifactReadable> getArtifacts() {
-            return null;
-         }
       });
 
       if (!relations.isEmpty()) {
@@ -215,10 +194,10 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
          dataLoaderFactory.getDataLoaderFactory().fromBranchAndArtifactIds(sessionId, destTx.getBranch(),
             relationChangesToAdd.keySet());
       loader.fromTransaction(destTx.getId());
-      loader.load(null, new ArtifactBuilder() {
+      loader.load(null, new LoadDataHandlerAdapter() {
 
          @Override
-         public ArtifactDataHandler createArtifactDataHandler() {
+         public ArtifactDataHandler getArtifactDataHandler() {
             return new ArtifactDataHandler() {
 
                @Override
@@ -229,23 +208,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
                }
             };
          }
-
-         @Override
-         public RelationDataHandler createRelationDataHandler() {
-            return null;
-         }
-
-         @Override
-         public AttributeDataHandler createAttributeDataHandler() {
-            return null;
-         }
-
-         @Override
-         public List<ArtifactReadable> getArtifacts() {
-            return null;
-         }
       });
-
       return toReturn;
    }
 

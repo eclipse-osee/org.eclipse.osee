@@ -31,12 +31,12 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.OrcsTypes;
-import org.eclipse.osee.orcs.core.ds.ArtifactBuilder;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
+import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
 import org.eclipse.osee.orcs.core.ds.RelationData;
@@ -63,7 +63,7 @@ public class LoaderTest {
    // @formatter:off
 	@OsgiService private IOseeDatabaseService dbService;
 	@OsgiService private OrcsDataStore dataStore;
-	@Mock private ArtifactBuilder builder;
+        @Mock private LoadDataHandler builder;
 	@Mock private ArtifactDataHandler artifactHandler;
 	@Mock private AttributeDataHandler attributeHandler;
 	@Mock private RelationDataHandler relationHandler;
@@ -87,9 +87,9 @@ public class LoaderTest {
 
       sessionId = GUID.create();
 
-      when(builder.createArtifactDataHandler()).thenReturn(artifactHandler);
-      when(builder.createAttributeDataHandler()).thenReturn(attributeHandler);
-      when(builder.createRelationDataHandler()).thenReturn(relationHandler);
+      when(builder.getArtifactDataHandler()).thenReturn(artifactHandler);
+      when(builder.getAttributeDataHandler()).thenReturn(attributeHandler);
+      when(builder.getRelationDataHandler()).thenReturn(relationHandler);
 
       when(artTypes.getByUuid(OseeTypeDefinition.getGuid())).thenReturn(OseeTypeDefinition);
       when(artTypes.getByUuid(Folder.getGuid())).thenReturn(Folder);
@@ -110,9 +110,9 @@ public class LoaderTest {
 
       loader.load(cancellation, builder);
 
-      verify(builder).createArtifactDataHandler();
-      verify(builder).createAttributeDataHandler();
-      verify(builder).createRelationDataHandler();
+      verify(builder).getArtifactDataHandler();
+      verify(builder).getAttributeDataHandler();
+      verify(builder).getRelationDataHandler();
 
       verify(artifactHandler, times(3)).onData(artifactCaptor.capture());
       verify(attributeHandler, times(7)).onData(attributeCaptor.capture());
@@ -161,9 +161,9 @@ public class LoaderTest {
 
       loader.load(cancellation, builder);
 
-      verify(builder).createArtifactDataHandler();
-      verify(builder).createAttributeDataHandler();
-      verify(builder).createRelationDataHandler();
+      verify(builder).getArtifactDataHandler();
+      verify(builder).getAttributeDataHandler();
+      verify(builder).getRelationDataHandler();
 
       verify(artifactHandler, times(3)).onData(artifactCaptor.capture());
       verify(attributeHandler, times(3)).onData(attributeCaptor.capture());
@@ -207,9 +207,9 @@ public class LoaderTest {
 
       loader.load(cancellation, builder);
 
-      verify(builder).createArtifactDataHandler();
-      verify(builder).createAttributeDataHandler();
-      verify(builder).createRelationDataHandler();
+      verify(builder).getArtifactDataHandler();
+      verify(builder).getAttributeDataHandler();
+      verify(builder).getRelationDataHandler();
 
       verify(artifactHandler, times(3)).onData(artifactCaptor.capture());
       verify(attributeHandler, times(2)).onData(attributeCaptor.capture());

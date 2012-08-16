@@ -8,13 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.internal.relation;
+package org.eclipse.osee.orcs.core.internal.loader;
+
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
- * @author Andrew M. Finkbeiner
+ * @author Roberto E. Escobar
  */
-public interface CsvRowHandler {
-
-   void onRow(String... row);
-
+@RunWith(Suite.class)
+@Suite.SuiteClasses({ArtifactBuilderImplTest.class, ArtifactLoaderFactoryImplTest.class})
+public class LoaderTestSuite {
+   // Test Suite
 }

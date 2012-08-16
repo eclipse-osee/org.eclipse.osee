@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.RelationChangeItem;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.core.ds.ArtifactBuilder;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
@@ -38,6 +37,7 @@ import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
+import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
@@ -119,23 +119,23 @@ public class MissingChangeItemFactoryTest {
 
          @Override
          public Object answer(InvocationOnMock invocation) throws Throwable {
-            ArtifactBuilder builder = (ArtifactBuilder) invocation.getArguments()[1];
+            LoadDataHandler handler = (LoadDataHandler) invocation.getArguments()[1];
 
-            AttributeDataHandler attributeDataHandler = builder.createAttributeDataHandler();
+            AttributeDataHandler attributeDataHandler = handler.getAttributeDataHandler();
             if (attributeDataHandler != null && attributeData != null) {
                for (AttributeData data : attributeData) {
                   attributeDataHandler.onData(data);
                }
             }
 
-            ArtifactDataHandler artifactDataHandler = builder.createArtifactDataHandler();
+            ArtifactDataHandler artifactDataHandler = handler.getArtifactDataHandler();
             if (artifactDataHandler != null && artifactData != null) {
                for (ArtifactData data : artifactData) {
                   artifactDataHandler.onData(data);
                }
             }
 
-            RelationDataHandler relationDataHandler = builder.createRelationDataHandler();
+            RelationDataHandler relationDataHandler = handler.getRelationDataHandler();
             if (relationDataHandler != null && relationData != null) {
                for (RelationData data : relationData) {
                   relationDataHandler.onData(data);
@@ -144,15 +144,15 @@ public class MissingChangeItemFactoryTest {
 
             return null;
          }
-      }).when(sourceDataLoader).load(any(HasCancellation.class), any(ArtifactBuilder.class));
+      }).when(sourceDataLoader).load(any(HasCancellation.class), any(LoadDataHandler.class));
 
       doAnswer(new Answer<Object>() {
 
          @Override
          public Object answer(InvocationOnMock invocation) throws Throwable {
-            ArtifactBuilder builder = (ArtifactBuilder) invocation.getArguments()[1];
+            LoadDataHandler handler = (LoadDataHandler) invocation.getArguments()[1];
 
-            ArtifactDataHandler artifactDataHandler = builder.createArtifactDataHandler();
+            ArtifactDataHandler artifactDataHandler = handler.getArtifactDataHandler();
             if (artifactDataHandler != null && destArtifactData != null) {
                for (ArtifactData data : destArtifactData) {
                   artifactDataHandler.onData(data);
@@ -161,7 +161,7 @@ public class MissingChangeItemFactoryTest {
 
             return null;
          }
-      }).when(destDataLoader).load(any(HasCancellation.class), any(ArtifactBuilder.class));
+      }).when(destDataLoader).load(any(HasCancellation.class), any(LoadDataHandler.class));
 
       Collection<ChangeItem> results = changeItemFactory.createMissingChanges(changes, sourceTx, destTx, null);
       if (expectedMissingChanges == null) {

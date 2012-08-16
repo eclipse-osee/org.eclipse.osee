@@ -13,8 +13,8 @@ package org.eclipse.osee.orcs.core.ds;
 /**
  * @author Andrew M. Finkbeiner
  */
-public interface RelationDataHandlerFactory {
+public interface RelationDataHandlerProvider {
 
-   RelationDataHandler createRelationDataHandler();
+   RelationDataHandler getRelationDataHandler();
 
 }

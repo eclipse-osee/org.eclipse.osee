@@ -12,25 +12,23 @@ package org.eclipse.osee.orcs.db.internal.transaction;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.orcs.core.ds.ArtifactBuilder;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
 import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
+import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.OrcsVisitor;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -61,7 +59,7 @@ public class ComodificationCheck implements TransactionCheck {
       }
    }
 
-   private final class OnLoadChecker implements ArtifactBuilder, OrcsVisitor {
+   private final class OnLoadChecker implements LoadDataHandler, OrcsVisitor {
 
       private final Map<Integer, ArtifactData> artifacts = new HashMap<Integer, ArtifactData>();
       private final Map<Integer, AttributeData> attributes = new HashMap<Integer, AttributeData>();
@@ -89,12 +87,6 @@ public class ComodificationCheck implements TransactionCheck {
       }
 
       @Override
-      public List<ArtifactReadable> getArtifacts() {
-         // Do Nothing
-         return null;
-      }
-
-      @Override
       public void visit(ArtifactData data) {
          if (data.getVersion().isInStorage()) {
             artifacts.put(data.getLocalId(), data);
@@ -116,7 +108,7 @@ public class ComodificationCheck implements TransactionCheck {
       }
 
       @Override
-      public ArtifactDataHandler createArtifactDataHandler() {
+      public ArtifactDataHandler getArtifactDataHandler() {
          return new ArtifactDataHandler() {
 
             @Override
@@ -128,7 +120,7 @@ public class ComodificationCheck implements TransactionCheck {
       }
 
       @Override
-      public RelationDataHandler createRelationDataHandler() {
+      public RelationDataHandler getRelationDataHandler() {
          return new RelationDataHandler() {
 
             @Override
@@ -140,7 +132,7 @@ public class ComodificationCheck implements TransactionCheck {
       }
 
       @Override
-      public AttributeDataHandler createAttributeDataHandler() {
+      public AttributeDataHandler getAttributeDataHandler() {
          return new AttributeDataHandler() {
 
             @Override
@@ -149,6 +141,16 @@ public class ComodificationCheck implements TransactionCheck {
                checkCoModified(data, modified);
             }
          };
+      }
+
+      @Override
+      public void onLoadStart() {
+         // Do Nothing
+      }
+
+      @Override
+      public void onLoadEnd() {
+         // Do Nothing
       }
 
    }

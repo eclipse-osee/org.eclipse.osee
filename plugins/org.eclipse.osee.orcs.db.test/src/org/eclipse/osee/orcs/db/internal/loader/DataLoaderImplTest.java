@@ -37,8 +37,8 @@ import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.ArtifactBuilder;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
+import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
@@ -68,7 +68,7 @@ public class DataLoaderImplTest {
     @Mock private IdentityService identityService;
     @Mock private SqlProvider sqlProvider;
    
-    @Mock private ArtifactBuilder builder;
+    @Mock private LoadDataHandler builder;
     
     @Mock private OrcsObjectFactory rowDataFactory;
     @Mock private BranchCache branchCache;
