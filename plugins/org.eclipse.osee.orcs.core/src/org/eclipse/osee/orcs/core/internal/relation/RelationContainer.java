@@ -27,4 +27,5 @@ public interface RelationContainer {
    void getArtifactIds(Collection<Integer> results, IRelationTypeSide relationTypeSide);
 
    int getRelationCount(IRelationTypeSide relationTypeSide);
+
 }

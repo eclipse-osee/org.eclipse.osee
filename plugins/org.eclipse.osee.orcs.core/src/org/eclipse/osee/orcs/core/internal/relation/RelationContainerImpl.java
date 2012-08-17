@@ -11,8 +11,16 @@
 package org.eclipse.osee.orcs.core.internal.relation;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.data.RelationTypes;
 
@@ -21,29 +29,74 @@ import org.eclipse.osee.orcs.data.RelationTypes;
  */
 public class RelationContainerImpl implements RelationContainer {
 
-   private final RelationRowCollection rows;
+   private final Map<IRelationTypeSide, List<RelationData>> relations =
+      new ConcurrentHashMap<IRelationTypeSide, List<RelationData>>();
+
+   private final int parentId;
+   private final RelationTypes relationTypeCache;
 
    public RelationContainerImpl(int parentId, RelationTypes relationTypeCache) {
-      this.rows = new RelationRowCollection(parentId, relationTypeCache);
+      this.parentId = parentId;
+      this.relationTypeCache = relationTypeCache;
    }
 
    @Override
    public void add(RelationData nextRelation) throws OseeCoreException {
+      IRelationTypeSide relationTypeSide = getRelationTypeSide(nextRelation);
+      List<RelationData> rows = relations.get(relationTypeSide);
+      if (rows == null) {
+         rows = new CopyOnWriteArrayList<RelationData>();
+         relations.put(relationTypeSide, rows);
+      }
       rows.add(nextRelation);
    }
 
    @Override
    public void getArtifactIds(Collection<Integer> results, IRelationTypeSide relationTypeSide) {
-      rows.getArtifactIds(results, relationTypeSide);
-   }
-
-   @Override
-   public int getRelationCount(IRelationTypeSide relationTypeSide) {
-      return rows.getArtifactCount(relationTypeSide);
+      List<RelationData> rows = relations.get(relationTypeSide);
+      if (rows != null) {
+         for (RelationData row : rows) {
+            Integer artId = row.getArtIdOn(relationTypeSide.getSide());
+            results.add(artId);
+         }
+      }
    }
 
    @Override
    public Collection<IRelationTypeSide> getExistingRelationTypes() {
-      return rows.getRelationTypes();
+      return relations.keySet();
    }
+
+   @Override
+   public int getRelationCount(IRelationTypeSide relationTypeSide) {
+      List<RelationData> rows = relations.get(relationTypeSide);
+      return rows != null ? rows.size() : 0;
+   }
+
+   private IRelationType getRelationType(RelationData relationRow) throws OseeCoreException {
+      long uuid = relationRow.getTypeUuid();
+      IRelationType type = relationTypeCache.getByUuid(uuid);
+      Conditions.checkNotNull(type, "RelationType", "Unknown relation type.  UUID[%d]", uuid);
+      return type;
+   }
+
+   private RelationSide getRelationSide(RelationData row) {
+      if (row.getArtIdA() == parentId) {
+         return RelationSide.SIDE_B;
+      } else { //row.getArtIdB() == parentId
+         return RelationSide.SIDE_A;
+      }
+   }
+
+   private IRelationTypeSide getRelationTypeSide(RelationData relationRow) throws OseeCoreException {
+      IRelationType type = getRelationType(relationRow);
+      RelationSide side = getRelationSide(relationRow);
+      IRelationTypeSide relationTypeSide = TokenFactory.createRelationTypeSide(side, type.getGuid(), type.getName());
+      return relationTypeSide;
+   }
+
+   public Collection<List<RelationData>> getRelationData() {
+      return relations.values();
+   }
+
 }
