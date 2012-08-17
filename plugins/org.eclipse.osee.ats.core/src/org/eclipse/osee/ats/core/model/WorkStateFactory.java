@@ -20,4 +20,6 @@ public interface WorkStateFactory {
 
    WorkState createStateData(String name, List<? extends IAtsUser> assignees, double hoursSpent, int percentComplete);
 
+   String getId();
+
 }

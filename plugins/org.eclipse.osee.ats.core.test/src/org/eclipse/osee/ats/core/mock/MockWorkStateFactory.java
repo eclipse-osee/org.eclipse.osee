@@ -31,4 +31,9 @@ public class MockWorkStateFactory implements WorkStateFactory {
       return new WorkStateImpl(name, assignees, hoursSpent, percentComplete);
    }
 
+   @Override
+   public String getId() {
+      return "Mock ID";
+   }
+
 }

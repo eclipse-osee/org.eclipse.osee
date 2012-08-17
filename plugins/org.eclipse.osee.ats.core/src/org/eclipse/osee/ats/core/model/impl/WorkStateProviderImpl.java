@@ -17,9 +17,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.WorkState;
 import org.eclipse.osee.ats.api.workflow.WorkStateProvider;
+import org.eclipse.osee.ats.core.internal.Activator;
 import org.eclipse.osee.ats.core.model.WorkStateFactory;
 import org.eclipse.osee.ats.core.notify.IAtsNotificationListener;
 import org.eclipse.osee.ats.core.users.AtsUsers;
@@ -27,6 +29,7 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
@@ -218,9 +221,12 @@ public class WorkStateProviderImpl implements WorkStateProvider {
    @Override
    public void addState(String name, List<? extends IAtsUser> assignees, double hoursSpent, int percentComplete) throws OseeArgumentException {
       if (getVisitedStateNames().contains(name)) {
-         throw new OseeArgumentException("State [%s] already exists", name);
+         String errorStr = String.format("Error: Duplicate state [%s] for [%s]", name, factory.getId());
+         OseeLog.log(Activator.class, Level.SEVERE, errorStr);
+         return;
+      } else {
+         addState(factory.createStateData(name, assignees, hoursSpent, percentComplete));
       }
-      addState(factory.createStateData(name, assignees, hoursSpent, percentComplete));
    }
 
    @Override

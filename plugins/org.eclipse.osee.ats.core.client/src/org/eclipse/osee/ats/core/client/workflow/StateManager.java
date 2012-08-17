@@ -677,4 +677,9 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
       return getStateProvider().isSame(workState);
    }
 
+   @Override
+   public String getId() {
+      return awa.getHumanReadableId();
+   }
+
 }
