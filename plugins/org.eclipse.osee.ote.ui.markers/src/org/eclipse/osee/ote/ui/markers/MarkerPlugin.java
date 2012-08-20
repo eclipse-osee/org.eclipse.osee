@@ -118,6 +118,9 @@ public class MarkerPlugin implements BundleActivator {
    
    public static void findAndRemoveOteMarkers(IResource resource){
 	   try {
+		   if(resource == null){
+			   return;
+		   }
 		   IMarker[] markersToRemove = resource.findMarkers("org.eclipse.osee.ote.ui.output.errorMarker", false, IResource.DEPTH_INFINITE);
 		   for(IMarker localMarker:markersToRemove){
 			   localMarker.delete();
