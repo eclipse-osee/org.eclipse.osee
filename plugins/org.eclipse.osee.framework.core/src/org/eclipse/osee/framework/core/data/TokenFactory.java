@@ -169,6 +169,7 @@ public final class TokenFactory {
 
    private final static class RelationTypeSideToken extends NamedIdentity<Long> implements IRelationTypeSide {
       private final RelationSide relationSide;
+      private RelationTypeSideToken opposite;
 
       private RelationTypeSideToken(Long guid, String name, RelationSide relationSide) {
          super(guid, name);
@@ -198,6 +199,14 @@ public final class TokenFactory {
             return super.equals(obj);
          }
          return false;
+      }
+
+      @Override
+      public synchronized IRelationTypeSide getOpposite() {
+         if (opposite == null) {
+            opposite = new RelationTypeSideToken(getGuid(), getName(), getSide().oppositeSide());
+         }
+         return opposite;
       }
    }
 

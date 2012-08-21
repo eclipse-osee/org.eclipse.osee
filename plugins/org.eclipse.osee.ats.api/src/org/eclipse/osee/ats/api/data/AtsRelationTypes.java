@@ -19,74 +19,58 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
  */
 public final class AtsRelationTypes {
 
-   public static final IRelationTypeSide ActionToWorkflow_Action = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_A, 0x200000000000016DL, "ActionToWorkflow");
-   public static final IRelationTypeSide ActionToWorkflow_WorkFlow = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_B, 0x200000000000016DL, "ActionToWorkflow");
-   public static final IRelationTypeSide Port_From = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A,
-      0x200000000000017AL, "Port");
-   public static final IRelationTypeSide Port_To = TokenFactory.createRelationTypeSide(RelationSide.SIDE_B,
-      0x200000000000017AL, "Port");
-   public static final IRelationTypeSide Derive_From = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A,
-      0x200000000000017BL, "Derive");
-   public static final IRelationTypeSide Derive_To = TokenFactory.createRelationTypeSide(RelationSide.SIDE_B,
-      0x200000000000017BL, "Derive");
-   public static final IRelationTypeSide FavoriteUser_Artifact = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_A, 0x2000000000000173L, "FavoriteUser");
-   public static final IRelationTypeSide FavoriteUser_User = TokenFactory.createRelationTypeSide(RelationSide.SIDE_B,
-      0x2000000000000173L, "FavoriteUser");
-   public static final IRelationTypeSide Goal_Goal = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A,
-      0x2000000000000175L, "Goal");
-   public static final IRelationTypeSide Goal_Member = TokenFactory.createRelationTypeSide(RelationSide.SIDE_B,
-      0x2000000000000175L, "Goal");
-   public static final IRelationTypeSide ParallelVersion_Child = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_B, 0x2000000000000174L, "ParallelVersion");
-   public static final IRelationTypeSide ParallelVersion_Parent = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_A, 0x2000000000000174L, "ParallelVersion");
-   public static final IRelationTypeSide PrivilegedMember_Member = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_B, 0x200000000000016BL, "PrivilegedMember");
-   public static final IRelationTypeSide PrivilegedMember_Team = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_A, 0x200000000000016BL, "PrivilegedMember");
-   public static final IRelationTypeSide SmaToTask_Sma = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A,
-      0x200000000000016EL, "SmaToTask");
-   public static final IRelationTypeSide SmaToTask_Task = TokenFactory.createRelationTypeSide(RelationSide.SIDE_B,
-      0x200000000000016EL, "SmaToTask");
-   public static final IRelationTypeSide SubscribedUser_Artifact = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_A, 0x2000000000000172L, "SubscribedUser");
-   public static final IRelationTypeSide SubscribedUser_User = TokenFactory.createRelationTypeSide(RelationSide.SIDE_B,
-      0x2000000000000172L, "SubscribedUser");
-   public static final IRelationTypeSide TeamActionableItem_ActionableItem = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_B, 0x200000000000016CL, "TeamActionableItem");
-   public static final IRelationTypeSide TeamActionableItem_Team = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_A, 0x200000000000016CL, "TeamActionableItem");
-   public static final IRelationTypeSide TeamDefinitionToVersion_TeamDefinition = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_A, 0x2000000000000170L, "TeamDefinitionToVersion");
-   public static final IRelationTypeSide TeamDefinitionToVersion_Version = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_B, 0x2000000000000170L, "TeamDefinitionToVersion");
-   public static final IRelationTypeSide TeamLead_Lead = TokenFactory.createRelationTypeSide(RelationSide.SIDE_B,
-      0x2000000000000169L, "TeamLead");
-   public static final IRelationTypeSide TeamLead_Team = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A,
-      0x2000000000000169L, "TeamLead");
-   public static final IRelationTypeSide TeamMember_Member = TokenFactory.createRelationTypeSide(RelationSide.SIDE_B,
-      0x200000000000016AL, "TeamMember");
-   public static final IRelationTypeSide TeamMember_Team = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A,
-      0x200000000000016AL, "TeamMember");
-   public static final IRelationTypeSide TeamWorkflowTargetedForVersion_Version = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_B, 0x200000000000016FL, "TeamWorkflowTargetedForVersion");
-   public static final IRelationTypeSide TeamWorkflowTargetedForVersion_Workflow = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_A, 0x200000000000016FL, "TeamWorkflowTargetedForVersion");
-   public static final IRelationTypeSide TeamWorkflowToReview_Review = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_B, 0x2000000000000171L, "TeamWorkflowToReview");
-   public static final IRelationTypeSide TeamWorkflowToReview_Team = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_A, 0x2000000000000171L, "TeamWorkflowToReview");
-   public static final IRelationTypeSide ActionableItemLead_AI = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_A, 0x2000000000000179L, "ActionableItemLead");
-   public static final IRelationTypeSide ActionableItemLead_Lead = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_B, 0x2000000000000179L, "ActionableItemLead");
-   public static final IRelationTypeSide ActionableItem_User = TokenFactory.createRelationTypeSide(RelationSide.SIDE_B,
-      0x2000000000000178L, "ActionableItem Owner");
-   public static final IRelationTypeSide ActionableItem_Artifact = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_A, 0x2000000000000178L, "ActionableItem Owner");
+   //@formatter:off
+   public static final IRelationTypeSide ActionToWorkflow_Action = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x200000000000016DL, "ActionToWorkflow");
+   public static final IRelationTypeSide ActionToWorkflow_WorkFlow = ActionToWorkflow_Action.getOpposite();
+   
+   public static final IRelationTypeSide Port_From = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x200000000000017AL, "Port");
+   public static final IRelationTypeSide Port_To = Port_From.getOpposite();
+   
+   public static final IRelationTypeSide Derive_From = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x200000000000017BL, "Derive");
+   public static final IRelationTypeSide Derive_To = Derive_From.getOpposite();
+   
+   public static final IRelationTypeSide FavoriteUser_Artifact = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x2000000000000173L, "FavoriteUser");
+   public static final IRelationTypeSide FavoriteUser_User = FavoriteUser_Artifact.getOpposite();
+   
+   public static final IRelationTypeSide Goal_Goal = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x2000000000000175L, "Goal");
+   public static final IRelationTypeSide Goal_Member = Goal_Goal.getOpposite();
+  
+   public static final IRelationTypeSide ParallelVersion_Parent = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x2000000000000174L, "ParallelVersion");   
+   public static final IRelationTypeSide ParallelVersion_Child = ParallelVersion_Parent.getOpposite();
+   
+   public static final IRelationTypeSide PrivilegedMember_Team = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x200000000000016BL, "PrivilegedMember");
+   public static final IRelationTypeSide PrivilegedMember_Member = PrivilegedMember_Team.getOpposite();
+   
+   public static final IRelationTypeSide SmaToTask_Sma = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x200000000000016EL, "SmaToTask");
+   public static final IRelationTypeSide SmaToTask_Task = SmaToTask_Sma.getOpposite();
+   
+   public static final IRelationTypeSide SubscribedUser_Artifact = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x2000000000000172L, "SubscribedUser");
+   public static final IRelationTypeSide SubscribedUser_User = SubscribedUser_Artifact.getOpposite();
+
+   public static final IRelationTypeSide TeamActionableItem_Team = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x200000000000016CL, "TeamActionableItem");
+   public static final IRelationTypeSide TeamActionableItem_ActionableItem = TeamActionableItem_Team.getOpposite();
+   
+   public static final IRelationTypeSide TeamDefinitionToVersion_TeamDefinition = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x2000000000000170L, "TeamDefinitionToVersion");
+   public static final IRelationTypeSide TeamDefinitionToVersion_Version = TeamDefinitionToVersion_TeamDefinition.getOpposite();
+   
+   public static final IRelationTypeSide TeamLead_Team = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x2000000000000169L, "TeamLead");
+   public static final IRelationTypeSide TeamLead_Lead = TeamLead_Team.getOpposite();
+   
+   public static final IRelationTypeSide TeamMember_Team = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x200000000000016AL, "TeamMember");
+   public static final IRelationTypeSide TeamMember_Member = TeamMember_Team.getOpposite();
+
+   public static final IRelationTypeSide TeamWorkflowTargetedForVersion_Workflow = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x200000000000016FL, "TeamWorkflowTargetedForVersion");
+   public static final IRelationTypeSide TeamWorkflowTargetedForVersion_Version = TeamWorkflowTargetedForVersion_Workflow.getOpposite();
+
+   public static final IRelationTypeSide TeamWorkflowToReview_Team = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x2000000000000171L, "TeamWorkflowToReview");
+   public static final IRelationTypeSide TeamWorkflowToReview_Review = TeamWorkflowToReview_Team.getOpposite();
+ 
+   public static final IRelationTypeSide ActionableItemLead_AI = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x2000000000000179L, "ActionableItemLead");
+   public static final IRelationTypeSide ActionableItemLead_Lead = ActionableItemLead_AI.getOpposite();
+   
+   public static final IRelationTypeSide ActionableItem_Artifact = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x2000000000000178L, "ActionableItem Owner");
+   public static final IRelationTypeSide ActionableItem_User = ActionableItem_Artifact.getOpposite();
+   //@formatter:on
 
    private AtsRelationTypes() {
       // Constants

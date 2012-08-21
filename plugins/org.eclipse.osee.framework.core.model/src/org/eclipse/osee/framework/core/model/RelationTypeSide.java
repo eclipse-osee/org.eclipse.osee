@@ -23,11 +23,20 @@ public class RelationTypeSide extends NamedIdentity<Long> implements IRelationTy
 
    private final IRelationType type;
    private final RelationSide side;
+   private RelationTypeSide opposite;
 
    public RelationTypeSide(IRelationType type, RelationSide side) {
       super(type.getGuid(), type.getName());
       this.type = type;
       this.side = side;
+   }
+
+   @Override
+   public synchronized RelationTypeSide getOpposite() {
+      if (opposite == null) {
+         opposite = new RelationTypeSide(type, side.oppositeSide());
+      }
+      return opposite;
    }
 
    public IRelationType getRelationType() {
@@ -60,4 +69,5 @@ public class RelationTypeSide extends NamedIdentity<Long> implements IRelationTy
    public String toString() {
       return "RelationTypeSide [type=" + type + ", side=" + side + "]";
    }
+
 }

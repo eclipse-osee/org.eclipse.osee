@@ -13,5 +13,7 @@ package org.eclipse.osee.framework.core.data;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 
 public interface IRelationTypeSide extends IRelationType {
-   public RelationSide getSide();
+   RelationSide getSide();
+
+   IRelationTypeSide getOpposite();
 }
