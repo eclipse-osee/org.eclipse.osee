@@ -1743,7 +1743,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
 
    public final User getLastModifiedBy() throws OseeCoreException {
       TransactionRecord transactionRecord = getTransactionRecord();
-      if (transactionRecord == null) {
+      if (transactionRecord == null || transactionRecord.getAuthor() == 0) {
          return UserManager.getUser(SystemUser.OseeSystem);
       }
       return UserManager.getUserByArtId(transactionRecord.getAuthor());
