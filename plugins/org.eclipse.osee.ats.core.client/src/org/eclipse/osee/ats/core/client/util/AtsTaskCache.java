@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.internal.AtsCacheManagerUpdateListener;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -35,21 +34,18 @@ public class AtsTaskCache {
    }
 
    public static void decache(Artifact sma) {
-      AtsCacheManagerUpdateListener.start();
       if (sma != null) {
          teamTasksCache.remove(sma);
       }
    }
 
    public static void decache(AbstractTaskableArtifact sma) {
-      AtsCacheManagerUpdateListener.start();
       if (sma != null) {
          teamTasksCache.remove(sma);
       }
    }
 
    public static Collection<TaskArtifact> getTaskArtifacts(AbstractTaskableArtifact sma) throws OseeCoreException {
-      AtsCacheManagerUpdateListener.start();
       Collection<TaskArtifact> tasks = teamTasksCache.get(sma);
       if (tasks == null || containsDeleted(tasks)) {
          // Get and cache tasks

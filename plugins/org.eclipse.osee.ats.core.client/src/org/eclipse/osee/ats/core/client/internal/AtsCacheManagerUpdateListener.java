@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.event.EventUtil;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
@@ -40,18 +39,11 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 
 /**
+ * Updates ATS Cache based on Artifact Events. Registers for service via ats.cache.update.listener osgi registration.
+ * 
  * @author Donald G. Dunne
  */
 public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
-
-   public static AtsCacheManagerUpdateListener updateListener = null;
-
-   public static void start() {
-      if (updateListener == null) {
-         updateListener = new AtsCacheManagerUpdateListener();
-         OseeEventManager.addPriorityListener(updateListener);
-      }
-   }
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
@@ -106,7 +98,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
       for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {
          if (isConfigArtifactType(guidArt)) {
             AtsBulkLoad.reloadConfig(false);
-            continue;
+            break;
          }
       }
       for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {

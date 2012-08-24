@@ -16,7 +16,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.internal.Activator;
-import org.eclipse.osee.ats.core.client.internal.AtsCacheManagerUpdateListener;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
@@ -57,7 +56,6 @@ public class AtsLoadConfigArtifactsOperation extends AbstractOperation {
          OseeLog.log(Activator.class, Level.INFO, NAME);
          AtsUsersClient.start();
          loadAtsConfig();
-         AtsCacheManagerUpdateListener.start();
          loaded = true;
          //         time.end();
       }

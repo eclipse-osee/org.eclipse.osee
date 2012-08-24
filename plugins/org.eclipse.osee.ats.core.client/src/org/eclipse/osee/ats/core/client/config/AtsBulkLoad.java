@@ -46,6 +46,7 @@ public class AtsBulkLoad {
    }
 
    public static void reloadConfig(boolean pend) {
+      System.err.println("ATS Reload Config...");
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(new AtsLoadConfigArtifactsOperation(true));
       ops.add(new AtsLoadWorkDefinitionsOperation(true));
