@@ -327,7 +327,6 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
    }
 
    private <T> Attribute<T> getOrCreateSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
-      checkTypeValid(attributeType);
       ResultSet<Attribute<T>> result = attributes.getAttributeSet(attributeType, DeletionFlag.EXCLUDE_DELETED);
       Attribute<T> attribute = result.getAtMostOneOrNull();
       if (attribute == null) {
@@ -338,7 +337,6 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
 
    private <T> Attribute<T> getSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
       ensureAttributesLoaded();
-      checkTypeValid(attributeType);
       ResultSet<Attribute<T>> result = attributes.getAttributeSet(attributeType, DeletionFlag.EXCLUDE_DELETED);
       return result.getExactlyOne();
    }
@@ -350,7 +348,6 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
 
    private <T> List<Attribute<T>> getAttributesExcludeDeleted(IAttributeType attributeType) throws OseeCoreException {
       ensureAttributesLoaded();
-      checkTypeValid(attributeType);
       return attributes.getAttributeList(attributeType, DeletionFlag.EXCLUDE_DELETED);
    }
 
@@ -361,7 +358,6 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
 
    private <T> List<Attribute<T>> getAttributesIncludeDeleted(IAttributeType attributeType) throws OseeCoreException {
       ensureAttributesLoaded();
-      checkTypeValid(attributeType);
       return attributes.getAttributeList(attributeType, DeletionFlag.INCLUDE_DELETED);
    }
 
