@@ -71,6 +71,9 @@ public class AtsArtifactFactory extends ArtifactFactory {
    public Collection<IArtifactType> getEternalArtifactTypes() {
       List<IArtifactType> artifactTypes = new ArrayList<IArtifactType>();
       artifactTypes.add(AtsArtifactTypes.WorkDefinition);
+      artifactTypes.add(AtsArtifactTypes.Version);
+      artifactTypes.add(AtsArtifactTypes.TeamDefinition);
+      artifactTypes.add(AtsArtifactTypes.ActionableItem);
       return artifactTypes;
    }
 
