@@ -145,6 +145,7 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
 
    @Override
    public List<AttributeReadable<Object>> getAttributes() throws OseeCoreException {
+
       List<Attribute<Object>> items = getAttributesExcludeDeleted();
       return Collections.castAll(items);
    }
@@ -167,6 +168,23 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
          }
       }
       return values;
+   }
+
+   @Override
+   public int getAttributeCount(IAttributeType attributeType, DeletionFlag includeDeleted) throws OseeCoreException {
+      return getAttributesHelper(attributeType, includeDeleted).size();
+   }
+
+   @Override
+   public List<AttributeReadable<Object>> getAttributes(DeletionFlag includeDeleted) throws OseeCoreException {
+      List<Attribute<Object>> items = getAttributesHelper(includeDeleted);
+      return Collections.castAll(items);
+   }
+
+   @Override
+   public <T> List<AttributeReadable<T>> getAttributes(IAttributeType attributeType, DeletionFlag includeDeleted) throws OseeCoreException {
+      List<Attribute<T>> items = getAttributesHelper(attributeType, includeDeleted);
+      return Collections.castAll(items);
    }
 
    @Override
@@ -341,25 +359,34 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
       return result.getExactlyOne();
    }
 
+   //////////////////////////////////////////////////////////////
+
    private <T> List<Attribute<T>> getAttributesExcludeDeleted() throws OseeCoreException {
-      ensureAttributesLoaded();
-      return attributes.getAttributeList(DeletionFlag.EXCLUDE_DELETED);
+      return getAttributesHelper(DeletionFlag.EXCLUDE_DELETED);
    }
 
    private <T> List<Attribute<T>> getAttributesExcludeDeleted(IAttributeType attributeType) throws OseeCoreException {
-      ensureAttributesLoaded();
-      return attributes.getAttributeList(attributeType, DeletionFlag.EXCLUDE_DELETED);
+      return getAttributesHelper(attributeType, DeletionFlag.EXCLUDE_DELETED);
    }
 
    private <T> List<Attribute<T>> getAttributesIncludeDeleted() throws OseeCoreException {
-      ensureAttributesLoaded();
-      return attributes.getAttributeList(DeletionFlag.INCLUDE_DELETED);
+      return getAttributesHelper(DeletionFlag.INCLUDE_DELETED);
    }
 
    private <T> List<Attribute<T>> getAttributesIncludeDeleted(IAttributeType attributeType) throws OseeCoreException {
-      ensureAttributesLoaded();
-      return attributes.getAttributeList(attributeType, DeletionFlag.INCLUDE_DELETED);
+      return getAttributesHelper(attributeType, DeletionFlag.INCLUDE_DELETED);
    }
+
+   private <T> List<Attribute<T>> getAttributesHelper(DeletionFlag includeDeleted) throws OseeCoreException {
+      ensureAttributesLoaded();
+      return attributes.getAttributeList(includeDeleted);
+   }
+
+   private <T> List<Attribute<T>> getAttributesHelper(IAttributeType attributeType, DeletionFlag includeDeleted) throws OseeCoreException {
+      ensureAttributesLoaded();
+      return attributes.getAttributeList(attributeType, includeDeleted);
+   }
+   //////////////////////////////////////////////////////////////
 
    private interface AttributeSetHelper<A, V> {
 

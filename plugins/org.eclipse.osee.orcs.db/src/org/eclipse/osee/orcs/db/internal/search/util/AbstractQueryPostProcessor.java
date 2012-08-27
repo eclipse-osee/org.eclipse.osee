@@ -22,10 +22,12 @@ import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.executor.admin.WorkUtility;
 import org.eclipse.osee.executor.admin.WorkUtility.PartitionFactory;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeyword;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -39,14 +41,16 @@ import org.eclipse.osee.orcs.search.Match;
  */
 public abstract class AbstractQueryPostProcessor extends QueryPostProcessor implements PartitionFactory<ArtifactReadable, Match<ArtifactReadable, AttributeReadable<?>>> {
 
+   private final QueryOptions options;
    private final CriteriaAttributeKeyword criteria;
    private final ExecutorAdmin executorAdmin;
    private List<Future<Collection<Match<ArtifactReadable, AttributeReadable<?>>>>> futures;
 
-   protected AbstractQueryPostProcessor(Log logger, ExecutorAdmin executorAdmin, CriteriaAttributeKeyword criteria) {
+   protected AbstractQueryPostProcessor(Log logger, ExecutorAdmin executorAdmin, CriteriaAttributeKeyword criteria, QueryOptions options) {
       super(logger);
       this.executorAdmin = executorAdmin;
       this.criteria = criteria;
+      this.options = options;
    }
 
    protected CaseType getCaseType() {
@@ -59,6 +63,10 @@ public abstract class AbstractQueryPostProcessor extends QueryPostProcessor impl
 
    protected String getQuery() {
       return criteria.getValue();
+   }
+
+   protected QueryOptions getOptions() {
+      return options;
    }
 
    @Override
@@ -108,10 +116,11 @@ public abstract class AbstractQueryPostProcessor extends QueryPostProcessor impl
          List<Match<ArtifactReadable, AttributeReadable<?>>> results =
             new ArrayList<Match<ArtifactReadable, AttributeReadable<?>>>();
 
+         DeletionFlag includeDeleted = getOptions().getIncludeDeleted();
          Map<AttributeReadable<?>, List<MatchLocation>> matchedAttributes = null;
          for (ArtifactReadable artifact : artifacts) {
             checkForCancelled();
-            for (AttributeReadable<Object> attribute : getAttributes(artifact)) {
+            for (AttributeReadable<Object> attribute : getAttributes(artifact, includeDeleted)) {
                checkForCancelled();
                try {
                   if (getTypes().contains(attribute.getAttributeType())) {
@@ -140,20 +149,20 @@ public abstract class AbstractQueryPostProcessor extends QueryPostProcessor impl
          return results;
       }
 
-      private List<AttributeReadable<Object>> getAttributes(ArtifactReadable artifact) throws OseeCoreException {
+      private List<AttributeReadable<Object>> getAttributes(ArtifactReadable artifact, DeletionFlag includeDeleted) throws OseeCoreException {
          List<AttributeReadable<Object>> toReturn;
 
          Collection<? extends IAttributeType> toCheck = getTypes();
          if (toCheck != null && !toCheck.isEmpty()) {
             toReturn = new ArrayList<AttributeReadable<Object>>();
             for (IAttributeType attributeType : toCheck) {
-               for (AttributeReadable<Object> attr : artifact.getAttributes(attributeType)) {
+               for (AttributeReadable<Object> attr : artifact.getAttributes(attributeType, includeDeleted)) {
                   toReturn.add(attr);
                   checkForCancelled();
                }
             }
          } else {
-            toReturn = artifact.getAttributes();
+            toReturn = artifact.getAttributes(includeDeleted);
          }
          return toReturn;
       }

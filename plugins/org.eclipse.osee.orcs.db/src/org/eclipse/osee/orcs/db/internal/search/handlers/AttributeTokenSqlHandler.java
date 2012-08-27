@@ -134,7 +134,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
          writer.addParameter(localId);
       }
 
-      DataPostProcessor<?> processor = getDataPostProcessorFactory().createPostProcessor(criteria);
+      DataPostProcessor<?> processor = getDataPostProcessorFactory().createPostProcessor(criteria, writer.getOptions());
       writer.addPostProcessor(processor);
 
       if (criteria.getStringOp().isTokenized()) {

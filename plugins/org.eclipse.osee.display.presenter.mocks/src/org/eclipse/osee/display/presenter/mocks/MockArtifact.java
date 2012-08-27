@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -223,5 +224,20 @@ public class MockArtifact implements ArtifactReadable {
    @Override
    public boolean isDeleted() {
       return false;
+   }
+
+   @Override
+   public int getAttributeCount(IAttributeType type, DeletionFlag deletionFlag) throws OseeCoreException {
+      return 0;
+   }
+
+   @Override
+   public List<AttributeReadable<Object>> getAttributes(DeletionFlag deletionFlag) throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public <T> List<AttributeReadable<T>> getAttributes(IAttributeType attributeType, DeletionFlag deletionFlag) throws OseeCoreException {
+      return null;
    }
 }

@@ -10,12 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-
 /**
  * @author Roberto E. Escobar
  */
 public interface DataPostProcessorFactory<C extends Criteria<?>> {
 
-   DataPostProcessor<?> createPostProcessor(C criteria);
+   DataPostProcessor<?> createPostProcessor(C criteria, QueryOptions options);
 
 }

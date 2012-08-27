@@ -39,6 +39,10 @@ public class Options implements Cloneable {
       includeDeleted = DeletionFlag.allowDeleted(enabled);
    }
 
+   public DeletionFlag getIncludeDeleted() {
+      return includeDeleted;
+   }
+
    public void setFromTransaction(int transactionId) {
       this.transactionId = transactionId;
       if (transactionId < -1) {
