@@ -23,6 +23,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -104,6 +105,47 @@ public class JAXPTest {
    "</C>" +
    "   </A>";
    // @formatter:on
+
+// @formatter:off
+   private static final String ATTR_EMPTY_VALUE =
+      "<node1>" +
+      "<w:a w:id=\"one\" w:id2=\"two\" w:thisisempty=\"\">A Text</w:a>" +
+      "</node1>";
+   // @formatter:on
+
+   @Test
+   public void testReadWriteAttributeWithEmptyValue() throws ParserConfigurationException, SAXException, IOException, XMLStreamException {
+      Document document = Jaxp.readXmlDocument(ATTR_EMPTY_VALUE);
+      Element startElement = document.getDocumentElement();
+
+      String expectedAText = Jaxp.getChildText(startElement, "w:a");
+      Assert.assertEquals("A Text", expectedAText);
+
+      Element child = Jaxp.getChild(startElement, "w:a");
+      String one = child.getAttribute("w:id");
+      String two = child.getAttribute("w:id2");
+      String empty = child.getAttribute("w:thisisempty");
+
+      Assert.assertEquals("one", one);
+      Assert.assertEquals("two", two);
+      Assert.assertEquals("", empty);
+
+      NamedNodeMap attrs = child.getAttributes();
+      int manyAttrs = attrs.getLength();
+      boolean emptyAttrPresent = false;
+      for (int i = 0; i < manyAttrs; i++) {
+         Node attr = attrs.item(i);
+         if (attr.getNodeName().equals("w:thisisempty")) {
+            emptyAttrPresent = true;
+         }
+      }
+      Assert.assertTrue(emptyAttrPresent);
+
+      StringWriter writer = new StringWriter();
+      writeToAppendable(writer, startElement, false);
+      Assert.assertEquals(ATTR_EMPTY_VALUE, writer.toString());
+   }
+
    @Test
    public void testReadWriteTrailingTextSpaces() throws ParserConfigurationException, SAXException, IOException, XMLStreamException {
       Document document = Jaxp.readXmlDocument(SIMPLE_TRAILING_SPACES_DOC);

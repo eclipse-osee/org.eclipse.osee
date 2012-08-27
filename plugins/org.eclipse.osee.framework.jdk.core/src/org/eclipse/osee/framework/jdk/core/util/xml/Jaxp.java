@@ -607,7 +607,7 @@ public class Jaxp {
             if (node.hasAttributes()) {
                NamedNodeMap nodeMap = node.getAttributes();
                for (int index = 0; index < nodeMap.getLength(); index++) {
-                  writeAttrNode(writer, nodeMap.item(index));
+                  writeAttrNode(writer, nodeMap.item(index), true);
                }
             }
 
@@ -649,7 +649,7 @@ public class Jaxp {
     * @param useAttrLocalName calls <code>getLocalName()</code> vs <code>getName()</code> on node.
     * @throws XMLStreamException
     */
-   public static void writeAttrNode(XMLStreamWriter writer, Node node) throws XMLStreamException {
+   public static void writeAttrNode(XMLStreamWriter writer, Node node, boolean isEmptyValueValid) throws XMLStreamException {
       if (node.getNodeType() == Node.ATTRIBUTE_NODE) {
          Attr attrNode = (Attr) node;
 
@@ -662,7 +662,7 @@ public class Jaxp {
          }
          String value = attrNode.getValue();
 
-         if (Strings.isValid(name, value)) {
+         if (Strings.isValid(name, value) || (Strings.isValid(name) && value != null && value.isEmpty() && isEmptyValueValid)) {
             if (prefix != null && namespace != null) {
                writer.writeAttribute(prefix, namespace, name, value);
             } else if (namespace != null) {
@@ -693,7 +693,7 @@ public class Jaxp {
             if (node.hasAttributes()) {
                NamedNodeMap nodeMap = node.getAttributes();
                for (int index = 0; index < nodeMap.getLength(); index++) {
-                  writeAttrNode(writer, nodeMap.item(index));
+                  writeAttrNode(writer, nodeMap.item(index), false);
                }
             }
 
