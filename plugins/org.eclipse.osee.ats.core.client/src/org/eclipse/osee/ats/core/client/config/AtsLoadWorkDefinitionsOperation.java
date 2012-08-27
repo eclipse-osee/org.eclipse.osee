@@ -49,6 +49,7 @@ public class AtsLoadWorkDefinitionsOperation extends AbstractOperation {
       if (!loaded) {
          loaded = true;
          OseeLog.log(Activator.class, Level.INFO, NAME);
+         AtsWorkDefinitionService.getService().clearCaches();
          loadWorkDefinitions();
          loaded = true;
       }

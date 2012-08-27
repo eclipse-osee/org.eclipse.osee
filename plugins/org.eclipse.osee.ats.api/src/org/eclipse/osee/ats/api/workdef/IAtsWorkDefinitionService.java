@@ -41,4 +41,6 @@ public interface IAtsWorkDefinitionService {
 
    String getStorageString(IAtsWorkDefinition workDef, XResultData resultData) throws Exception;
 
+   void clearCaches();
+
 }

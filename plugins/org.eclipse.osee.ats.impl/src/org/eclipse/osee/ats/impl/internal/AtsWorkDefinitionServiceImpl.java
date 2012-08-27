@@ -226,4 +226,9 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       }
       return convert.convert();
    }
+
+   @Override
+   public void clearCaches() {
+      workDefIdToWorkDef = null;
+   }
 }
