@@ -172,7 +172,7 @@ public class NewActionPage1 extends WizardPage {
       try {
          ((XText) getXWidget("Title")).set("tt");
          if (atsAi == null) {
-            atsAi = AtsConfigCache.getSoleByName("ATS", IAtsActionableItem.class);
+            atsAi = AtsConfigCache.instance.getSoleByName("ATS", IAtsActionableItem.class);
          }
          treeViewer.getViewer().setSelection(new StructuredSelection(Arrays.asList(atsAi)));
          treeViewer.setInitalChecked(Arrays.asList(atsAi));

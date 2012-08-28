@@ -503,7 +503,7 @@ public class AtsNavigateItemsToWorldViewTest {
       // First one is the global one
       XNavigateItem item = items.iterator().next();
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof VersionTargetedForTeamSearchItem);
-      IAtsVersion version = AtsConfigCache.getSoleByName(DemoSawBuilds.SAW_Bld_2.getName(), IAtsVersion.class);
+      IAtsVersion version = AtsConfigCache.instance.getSoleByName(DemoSawBuilds.SAW_Bld_2.getName(), IAtsVersion.class);
       ((VersionTargetedForTeamSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedVersionArt(version);
       runGeneralLoadingTest(item, AtsArtifactTypes.TeamWorkflow, 14, null, TableLoadOption.DontCopySearchItem);
       TestUtil.severeLoggingEnd(monitor);

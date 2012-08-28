@@ -73,9 +73,9 @@ public class AtsVersionStoreImpl implements IAtsVersionStore {
                if (verArts.size() > 1) {
                   OseeLog.log(Activator.class, Level.SEVERE,
                      "Multiple targeted versions for artifact " + teamArt.toStringWithId());
-                  version = AtsConfigCache.getSoleByGuid(verArts.iterator().next().getGuid(), IAtsVersion.class);
+                  version = AtsConfigCache.instance.getSoleByGuid(verArts.iterator().next().getGuid(), IAtsVersion.class);
                } else {
-                  version = AtsConfigCache.getSoleByGuid(verArts.iterator().next().getGuid(), IAtsVersion.class);
+                  version = AtsConfigCache.instance.getSoleByGuid(verArts.iterator().next().getGuid(), IAtsVersion.class);
                }
             }
          }
@@ -109,7 +109,7 @@ public class AtsVersionStoreImpl implements IAtsVersionStore {
          throw new OseeStateException("Team Definition [%s] does not exist.", teamDef);
       }
       for (Artifact verArt : teamDefArt.getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version)) {
-         IAtsVersion version = AtsConfigCache.getSoleByGuid(verArt.getGuid(), IAtsVersion.class);
+         IAtsVersion version = AtsConfigCache.instance.getSoleByGuid(verArt.getGuid(), IAtsVersion.class);
          versions.add(version);
       }
       return versions;
@@ -128,7 +128,7 @@ public class AtsVersionStoreImpl implements IAtsVersionStore {
             // do nothing
          }
          if (teamDefArt != null) {
-            result = AtsConfigCache.getSoleByGuid(teamDefArt.getGuid(), IAtsTeamDefinition.class);
+            result = AtsConfigCache.instance.getSoleByGuid(teamDefArt.getGuid(), IAtsTeamDefinition.class);
          }
       }
       return result;

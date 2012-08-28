@@ -12,6 +12,10 @@ import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.core.config.internal.ActionableItemFactory;
+import org.eclipse.osee.ats.core.config.internal.TeamDefinitionFactory;
+import org.eclipse.osee.ats.core.config.internal.VersionFactory;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 
 /**
@@ -19,22 +23,31 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
  */
 public class AtsConfigCache {
 
+   public static AtsConfigCache instance = new AtsConfigCache();
+
+   /***
+    * Allows cache to be loaded and quick swapped
+    */
+   public static synchronized void setCurrent(AtsConfigCache newInstance) {
+      instance = newInstance;
+   }
+
    // cache by guid and any other cachgeByTag item (like static id)
-   private static final List<IAtsConfigObject> configObjects = new CopyOnWriteArrayList<IAtsConfigObject>();
-   private static final HashCollection<String, IAtsConfigObject> tagToConfigObject =
+   private final List<IAtsConfigObject> configObjects = new CopyOnWriteArrayList<IAtsConfigObject>();
+   private final HashCollection<String, IAtsConfigObject> tagToConfigObject =
       new HashCollection<String, IAtsConfigObject>(true, CopyOnWriteArrayList.class);
 
-   public static void cache(IAtsConfigObject configObject) {
+   public void cache(IAtsConfigObject configObject) {
       configObjects.add(configObject);
       cacheByTag(configObject.getGuid(), configObject);
    }
 
-   public static void cacheByTag(String tag, IAtsConfigObject configObject) {
+   public void cacheByTag(String tag, IAtsConfigObject configObject) {
       tagToConfigObject.put(tag, configObject);
    }
 
    @SuppressWarnings("unchecked")
-   public static final <A extends IAtsConfigObject> List<A> getByTag(String tag, Class<A> clazz) {
+   public final <A extends IAtsConfigObject> List<A> getByTag(String tag, Class<A> clazz) {
       List<A> objs = new ArrayList<A>();
       Collection<IAtsConfigObject> values = tagToConfigObject.getValues(tag);
       if (values != null) {
@@ -48,7 +61,7 @@ public class AtsConfigCache {
    }
 
    @SuppressWarnings("unchecked")
-   public static final <A extends IAtsConfigObject> A getSoleByTag(String tag, Class<A> clazz) {
+   public final <A extends IAtsConfigObject> A getSoleByTag(String tag, Class<A> clazz) {
       Collection<IAtsConfigObject> values = tagToConfigObject.getValues(tag);
       if (values != null) {
          for (IAtsConfigObject obj : values) {
@@ -61,7 +74,7 @@ public class AtsConfigCache {
    }
 
    @SuppressWarnings("unchecked")
-   public static final <A extends IAtsConfigObject> A getSoleByName(String name, Class<A> clazz) {
+   public final <A extends IAtsConfigObject> A getSoleByName(String name, Class<A> clazz) {
       for (IAtsConfigObject obj : get(clazz)) {
          if (obj.getName().equals(name)) {
             return (A) obj;
@@ -71,7 +84,7 @@ public class AtsConfigCache {
    }
 
    @SuppressWarnings("unchecked")
-   public static final <A extends IAtsConfigObject> List<A> get(Class<A> clazz) {
+   public final <A extends IAtsConfigObject> List<A> get(Class<A> clazz) {
       List<A> objs = new ArrayList<A>();
       for (IAtsConfigObject obj : configObjects) {
          if (clazz.isInstance(obj)) {
@@ -81,7 +94,7 @@ public class AtsConfigCache {
       return objs;
    }
 
-   public static final <A extends IAtsConfigObject> A getSoleByGuid(String guid, Class<A> clazz) {
+   public final <A extends IAtsConfigObject> A getSoleByGuid(String guid, Class<A> clazz) {
       if (guid.equals("BKbckZfNIkcx2wIVGkAA")) {
          System.out.println("where");
       }
@@ -92,16 +105,16 @@ public class AtsConfigCache {
       return list.iterator().next();
    }
 
-   public static final IAtsConfigObject getSoleByGuid(String guid) {
+   public final IAtsConfigObject getSoleByGuid(String guid) {
       return getSoleByGuid(guid, IAtsConfigObject.class);
    }
 
-   public static IAtsTeamDefinition getSoleByName(String teamDefName) {
+   public IAtsTeamDefinition getSoleByName(String teamDefName) {
       return null;
    }
 
    @SuppressWarnings("unchecked")
-   public static final <A extends IAtsConfigObject> List<A> getByName(String name, Class<A> clazz) {
+   public final <A extends IAtsConfigObject> List<A> getByName(String name, Class<A> clazz) {
       List<A> objs = new ArrayList<A>();
       for (IAtsConfigObject obj : configObjects) {
          if (clazz.isInstance(obj) && obj.getName().equals(name)) {
@@ -111,7 +124,7 @@ public class AtsConfigCache {
       return objs;
    }
 
-   public static void decache(IAtsConfigObject atsObject) {
+   public void decache(IAtsConfigObject atsObject) {
       configObjects.remove(atsObject);
       List<String> keysToRemove = new ArrayList<String>();
       for (Entry<String, Collection<IAtsConfigObject>> entry : tagToConfigObject.entrySet()) {
@@ -124,9 +137,26 @@ public class AtsConfigCache {
       }
    }
 
-   public static void clearCaches() {
+   public void clearCaches() {
       tagToConfigObject.clear();
       configObjects.clear();
    }
 
+   public IActionableItemFactory getActionableItemFactory() {
+      return new ActionableItemFactory(this);
+   }
+
+   public ITeamDefinitionFactory getTeamDefinitionFactory() {
+      return new TeamDefinitionFactory(this);
+   }
+
+   public IVersionFactory getVersionFactory() {
+      return new VersionFactory(this);
+   }
+
+   public void getReport(XResultData rd) {
+      rd.logWithFormat("AtsConfigCache id %s\n", AtsConfigCache.instance);
+      rd.logWithFormat("TagToConfigObject size %d\n", tagToConfigObject.keySet().size());
+      rd.logWithFormat("ConfigObjects size %d\n", configObjects.size());
+   }
 }

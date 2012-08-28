@@ -36,7 +36,7 @@ public class ActionableItemManager {
    public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException {
       Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
       for (String guid : getActionableItemGuids()) {
-         IAtsActionableItem aia = AtsConfigCache.getSoleByGuid(guid, IAtsActionableItem.class);
+         IAtsActionableItem aia = AtsConfigCache.instance.getSoleByGuid(guid, IAtsActionableItem.class);
          ais.add(aia);
       }
       return ais;

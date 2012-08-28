@@ -335,7 +335,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
                teamWf.persist(transaction);
                if (Strings.isValid(versionStr)) {
-                  IAtsVersion version = AtsConfigCache.getSoleByName(versionStr, IAtsVersion.class);
+                  IAtsVersion version = AtsConfigCache.instance.getSoleByName(versionStr, IAtsVersion.class);
                   AtsVersionService.get().setTargetedVersionAndStore(teamWf, version);
                   teamWf.persist(transaction);
                }

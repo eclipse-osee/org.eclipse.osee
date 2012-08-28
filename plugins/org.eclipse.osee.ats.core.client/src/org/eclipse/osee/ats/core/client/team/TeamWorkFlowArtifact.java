@@ -133,7 +133,7 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
          throw new OseeArgumentException("TeamWorkflow [%s] has no IAtsTeamDefinition associated.",
             getHumanReadableId());
       }
-      return AtsConfigCache.getSoleByGuid(guid, IAtsTeamDefinition.class);
+      return AtsConfigCache.instance.getSoleByGuid(guid, IAtsTeamDefinition.class);
    }
 
    public String getTeamName() {

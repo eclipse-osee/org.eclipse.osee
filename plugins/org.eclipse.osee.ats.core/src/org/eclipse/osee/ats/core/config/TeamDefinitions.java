@@ -76,7 +76,7 @@ public class TeamDefinitions {
    }
 
    public static List<IAtsTeamDefinition> getTeamDefinitions(Active active) {
-      return Collections.castAll(getActive(AtsConfigCache.get(IAtsTeamDefinition.class), active));
+      return Collections.castAll(getActive(AtsConfigCache.instance.get(IAtsTeamDefinition.class), active));
    }
 
    public static List<IAtsTeamDefinition> getTeamTopLevelDefinitions(Active active) throws OseeCoreException {
@@ -88,7 +88,7 @@ public class TeamDefinitions {
    }
 
    public static IAtsTeamDefinition getTopTeamDefinition() {
-      return AtsConfigCache.getSoleByGuid(TopTeamDefinitionGuid, IAtsTeamDefinition.class);
+      return AtsConfigCache.instance.getSoleByGuid(TopTeamDefinitionGuid, IAtsTeamDefinition.class);
    }
 
    public static Set<IAtsTeamDefinition> getTeamReleaseableDefinitions(Active active) {
@@ -126,7 +126,7 @@ public class TeamDefinitions {
 
    public static Set<IAtsTeamDefinition> getTeamDefinitions(Collection<String> teamDefNames) {
       Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>();
-      for (IAtsTeamDefinition teamDef : AtsConfigCache.get(IAtsTeamDefinition.class)) {
+      for (IAtsTeamDefinition teamDef : AtsConfigCache.instance.get(IAtsTeamDefinition.class)) {
          if (teamDefNames.contains(teamDef.getName())) {
             teamDefs.add(teamDef);
          }
@@ -136,7 +136,7 @@ public class TeamDefinitions {
 
    public static Set<IAtsTeamDefinition> getTeamDefinitionsNameStartsWith(String prefix) {
       Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>();
-      for (IAtsTeamDefinition teamDef : AtsConfigCache.get(IAtsTeamDefinition.class)) {
+      for (IAtsTeamDefinition teamDef : AtsConfigCache.instance.get(IAtsTeamDefinition.class)) {
          if (teamDef.getName().startsWith(prefix)) {
             teamDefs.add(teamDef);
          }

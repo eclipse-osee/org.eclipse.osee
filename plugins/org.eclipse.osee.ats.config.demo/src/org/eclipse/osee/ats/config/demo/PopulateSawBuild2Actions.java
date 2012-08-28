@@ -126,7 +126,7 @@ public class PopulateSawBuild2Actions {
 
          teamWf.persist(transaction);
 
-         IAtsVersion version = AtsConfigCache.getSoleByName(versionStr, IAtsVersion.class);
+         IAtsVersion version = AtsConfigCache.instance.getSoleByName(versionStr, IAtsVersion.class);
          AtsVersionService.get().setTargetedVersionAndStore(teamWf, version);
          teamWf.persist(transaction);
       }
@@ -202,7 +202,7 @@ public class PopulateSawBuild2Actions {
 
          teamWf.persist(transaction);
 
-         IAtsVersion version = AtsConfigCache.getSoleByName(versionStr, IAtsVersion.class);
+         IAtsVersion version = AtsConfigCache.instance.getSoleByName(versionStr, IAtsVersion.class);
          AtsVersionService.get().setTargetedVersionAndStore(teamWf, version);
          teamWf.persist(transaction);
       }
@@ -280,7 +280,7 @@ public class PopulateSawBuild2Actions {
 
          teamWf.persist(transaction);
 
-         IAtsVersion version = AtsConfigCache.getSoleByName(versionStr, IAtsVersion.class);
+         IAtsVersion version = AtsConfigCache.instance.getSoleByName(versionStr, IAtsVersion.class);
          AtsVersionService.get().setTargetedVersionAndStore(teamWf, version);
          teamWf.persist(transaction);
       }
@@ -338,7 +338,7 @@ public class PopulateSawBuild2Actions {
          }
 
          teamWf.persist(transaction);
-         IAtsVersion version = AtsConfigCache.getSoleByName(versionStr, IAtsVersion.class);
+         IAtsVersion version = AtsConfigCache.instance.getSoleByName(versionStr, IAtsVersion.class);
          AtsVersionService.get().setTargetedVersionAndStore(teamWf, version);
          teamWf.persist(transaction);
       }

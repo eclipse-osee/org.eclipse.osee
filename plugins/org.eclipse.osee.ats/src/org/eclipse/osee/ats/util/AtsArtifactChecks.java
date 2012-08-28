@@ -72,7 +72,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
       Set<IAtsActionableItem> aias = new HashSet<IAtsActionableItem>();
       for (Artifact art : artifacts) {
          if (art.isOfType(AtsArtifactTypes.ActionableItem)) {
-            IAtsActionableItem aia = AtsConfigCache.getSoleByGuid(art.getGuid(), IAtsActionableItem.class);
+            IAtsActionableItem aia = AtsConfigCache.instance.getSoleByGuid(art.getGuid(), IAtsActionableItem.class);
             if (aia != null) {
                aias.add(aia);
             }

@@ -16,12 +16,9 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.config.AtsObjectsClient;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.config.ActionableItemFactory;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
-import org.eclipse.osee.ats.core.config.TeamDefinitionFactory;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
-import org.eclipse.osee.ats.core.config.VersionFactory;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -40,13 +37,18 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
  */
 public class TeamDefinitionArtifactStore extends ArtifactAtsObjectStore {
 
+   AtsConfigCache cache = AtsConfigCache.instance;
+
    public TeamDefinitionArtifactStore(IAtsTeamDefinition teamDef) {
       super(teamDef, AtsArtifactTypes.TeamDefinition, AtsUtilCore.getAtsBranchToken());
    }
 
-   public TeamDefinitionArtifactStore(Artifact artifact) throws OseeCoreException {
+   public TeamDefinitionArtifactStore(Artifact artifact, AtsConfigCache atsConfigCache) throws OseeCoreException {
       super(null, AtsArtifactTypes.TeamDefinition, AtsUtilCore.getAtsBranchToken());
       this.artifact = artifact;
+      if (atsConfigCache != null) {
+         cache = atsConfigCache;
+      }
       load();
    }
 
@@ -114,7 +116,7 @@ public class TeamDefinitionArtifactStore extends ArtifactAtsObjectStore {
       for (String newGuid : newGuids) {
          if (!currGuids.contains(newGuid)) {
             Artifact newArt = null;
-            IAtsTeamDefinition newTeamDef = AtsConfigCache.getSoleByGuid(newGuid, IAtsTeamDefinition.class);
+            IAtsTeamDefinition newTeamDef = cache.getSoleByGuid(newGuid, IAtsTeamDefinition.class);
             if (newTeamDef != null) {
                newArt = AtsObjectsClient.getSoleArtifact(newTeamDef);
             }
@@ -176,7 +178,8 @@ public class TeamDefinitionArtifactStore extends ArtifactAtsObjectStore {
    public void load() throws OseeCoreException {
       Artifact teamDefArt = getArtifact();
       if (teamDefArt != null) {
-         IAtsTeamDefinition teamDef = TeamDefinitionFactory.getOrCreate(teamDefArt.getGuid(), teamDefArt.getName());
+         IAtsTeamDefinition teamDef =
+            cache.getTeamDefinitionFactory().getOrCreate(teamDefArt.getGuid(), teamDefArt.getName());
          teamDef.setHumanReadableId(teamDefArt.getHumanReadableId());
          teamDef.setName(teamDefArt.getName());
          atsObject = teamDef;
@@ -201,19 +204,20 @@ public class TeamDefinitionArtifactStore extends ArtifactAtsObjectStore {
          teamDef.setDescription(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.Description, ""));
          teamDef.setFullName(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.FullName, ""));
          for (Artifact aiArt : teamDefArt.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_ActionableItem)) {
-            IAtsActionableItem ai = ActionableItemFactory.getOrCreate(aiArt.getGuid(), aiArt.getName());
+            IAtsActionableItem ai = cache.getActionableItemFactory().getOrCreate(aiArt.getGuid(), aiArt.getName());
             teamDef.getActionableItems().add(ai);
             ai.setTeamDefinition(teamDef);
          }
          for (Artifact child : teamDefArt.getChildren()) {
             if (child.isOfType(AtsArtifactTypes.TeamDefinition)) {
-               IAtsTeamDefinition childTeamDef = TeamDefinitionFactory.getOrCreate(child.getGuid(), child.getName());
+               IAtsTeamDefinition childTeamDef =
+                  cache.getTeamDefinitionFactory().getOrCreate(child.getGuid(), child.getName());
                teamDef.getChildrenTeamDefinitions().add(childTeamDef);
                childTeamDef.setParentTeamDef(teamDef);
             }
          }
          for (Artifact verArt : teamDefArt.getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version)) {
-            IAtsVersion version = VersionFactory.getOrCreate(verArt.getGuid(), verArt.getName());
+            IAtsVersion version = cache.getVersionFactory().getOrCreate(verArt.getGuid(), verArt.getName());
             teamDef.getVersions().add(version);
             AtsVersionService.get().setTeamDefinition(version, teamDef);
          }
@@ -242,7 +246,7 @@ public class TeamDefinitionArtifactStore extends ArtifactAtsObjectStore {
          Artifact parentTeamDefArt = teamDefArt.getParent();
          if (parentTeamDefArt != null && parentTeamDefArt.isOfType(AtsArtifactTypes.TeamDefinition)) {
             IAtsTeamDefinition parentTeamDef =
-               TeamDefinitionFactory.getOrCreate(parentTeamDefArt.getGuid(), parentTeamDefArt.getName());
+               cache.getTeamDefinitionFactory().getOrCreate(parentTeamDefArt.getGuid(), parentTeamDefArt.getName());
             teamDef.setParentTeamDef(parentTeamDef);
             parentTeamDef.getChildrenTeamDefinitions().add(teamDef);
          }

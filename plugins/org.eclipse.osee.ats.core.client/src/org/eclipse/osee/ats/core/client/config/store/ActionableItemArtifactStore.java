@@ -16,10 +16,8 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.config.AtsObjectsClient;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.config.ActionableItemFactory;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
-import org.eclipse.osee.ats.core.config.TeamDefinitionFactory;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -37,14 +35,18 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
  * @author Donald G. Dunne
  */
 public class ActionableItemArtifactStore extends ArtifactAtsObjectStore {
+   AtsConfigCache cache = AtsConfigCache.instance;
 
    public ActionableItemArtifactStore(IAtsActionableItem teamDef) {
       super(teamDef, AtsArtifactTypes.ActionableItem, AtsUtilCore.getAtsBranchToken());
    }
 
-   public ActionableItemArtifactStore(Artifact artifact) throws OseeCoreException {
+   public ActionableItemArtifactStore(Artifact artifact, AtsConfigCache atsConfigCache) throws OseeCoreException {
       super(null, AtsArtifactTypes.ActionableItem, AtsUtilCore.getAtsBranchToken());
       this.artifact = artifact;
+      if (atsConfigCache != null) {
+         cache = atsConfigCache;
+      }
       load();
    }
 
@@ -91,7 +93,7 @@ public class ActionableItemArtifactStore extends ArtifactAtsObjectStore {
       for (String newGuid : newGuids) {
          if (!currGuids.contains(newGuid)) {
             Artifact newArt = null;
-            IAtsActionableItem newAi = AtsConfigCache.getSoleByGuid(newGuid, IAtsActionableItem.class);
+            IAtsActionableItem newAi = cache.getSoleByGuid(newGuid, IAtsActionableItem.class);
             if (newAi != null) {
                newArt = AtsObjectsClient.getSoleArtifact(newAi);
             }
@@ -140,7 +142,7 @@ public class ActionableItemArtifactStore extends ArtifactAtsObjectStore {
    public void load() throws OseeCoreException {
       Artifact aiArt = getArtifact();
       if (aiArt != null) {
-         IAtsActionableItem aia = ActionableItemFactory.getOrCreate(aiArt.getGuid(), aiArt.getName());
+         IAtsActionableItem aia = cache.getActionableItemFactory().getOrCreate(aiArt.getGuid(), aiArt.getName());
          aia.setHumanReadableId(aiArt.getHumanReadableId());
          aia.setName(aiArt.getName());
          atsObject = aia;
@@ -150,7 +152,8 @@ public class ActionableItemArtifactStore extends ArtifactAtsObjectStore {
          Collection<Artifact> teamDefArts = aiArt.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_Team);
          if (!teamDefArts.isEmpty()) {
             Artifact teamDefArt = teamDefArts.iterator().next();
-            IAtsTeamDefinition teamDef = TeamDefinitionFactory.getOrCreate(teamDefArt.getGuid(), teamDefArt.getName());
+            IAtsTeamDefinition teamDef =
+               cache.getTeamDefinitionFactory().getOrCreate(teamDefArt.getGuid(), teamDefArt.getName());
             aia.setTeamDefinition(teamDef);
             if (!teamDef.getActionableItems().contains(aia)) {
                teamDef.getActionableItems().add(aia);
@@ -162,7 +165,7 @@ public class ActionableItemArtifactStore extends ArtifactAtsObjectStore {
          Artifact parentAiArt = aiArt.getParent();
          if (parentAiArt != null && parentAiArt.isOfType(AtsArtifactTypes.ActionableItem)) {
             IAtsActionableItem parentAi =
-               ActionableItemFactory.getOrCreate(parentAiArt.getGuid(), parentAiArt.getName());
+               cache.getActionableItemFactory().getOrCreate(parentAiArt.getGuid(), parentAiArt.getName());
             aia.setParentActionableItem(parentAi);
             parentAi.getChildrenActionableItems().add(aia);
          }
@@ -177,7 +180,7 @@ public class ActionableItemArtifactStore extends ArtifactAtsObjectStore {
          for (Artifact childAiArt : aiArt.getChildren()) {
             if (childAiArt.isOfType(AtsArtifactTypes.ActionableItem)) {
                IAtsActionableItem childAi =
-                  ActionableItemFactory.getOrCreate(childAiArt.getGuid(), childAiArt.getName());
+                  cache.getActionableItemFactory().getOrCreate(childAiArt.getGuid(), childAiArt.getName());
                aia.getChildrenActionableItems().add(childAi);
                childAi.setParentActionableItem(aia);
             }

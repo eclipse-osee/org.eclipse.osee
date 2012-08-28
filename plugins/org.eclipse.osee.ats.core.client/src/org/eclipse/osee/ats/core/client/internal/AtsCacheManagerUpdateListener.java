@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -36,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 
 /**
@@ -45,6 +47,13 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
  */
 public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
 
+   private static List<Long> configReloadRelationTypeGuids = Arrays.asList(
+      AtsRelationTypes.ActionableItemLead_Lead.getGuid(), AtsRelationTypes.TeamDefinitionToVersion_Version.getGuid(),
+      AtsRelationTypes.TeamActionableItem_Team.getGuid(), AtsRelationTypes.PrivilegedMember_Team.getGuid(),
+      AtsRelationTypes.TeamLead_Team.getGuid());
+   private static List<Long> configReloadArtifactTypeGuids = Arrays.asList(AtsArtifactTypes.Version.getGuid(),
+      AtsArtifactTypes.TeamDefinition.getGuid(), AtsArtifactTypes.ActionableItem.getGuid());
+
    @Override
    public List<? extends IEventFilter> getEventFilters() {
       return Arrays.asList(EventUtil.getCommonBranchFilter());
@@ -53,13 +62,27 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
       if (!DbUtil.isDbInit()) {
-         processArtifacts(artifactEvent);
-         processRelations(artifactEvent);
+         boolean handledConfigReload = processArtifacts(artifactEvent);
+         processRelations(artifactEvent, handledConfigReload);
       }
    }
 
-   private void processRelations(ArtifactEvent artifactEvent) {
-      // TODO AtsBulkLoad.reloadConfig(false) if config relation modified
+   private void processRelations(ArtifactEvent artifactEvent, boolean handledConfigReload) {
+      if (!handledConfigReload) {
+         // update cache
+         for (EventBasicGuidRelation guidRel : artifactEvent.getRelations()) {
+            try {
+               RelationType typeByGuid = RelationTypeManager.getTypeByGuid(guidRel.getRelTypeGuid());
+               if (configReloadRelationTypeGuids.contains(typeByGuid.getGuid())) {
+                  AtsBulkLoad.reloadConfig(false);
+                  break;
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+
+         }
+      }
       for (EventBasicGuidRelation guidRel : artifactEvent.getRelations()) {
          try {
             if (guidRel.is(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow)) {
@@ -73,7 +96,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
                   if (verArt == null) {
                      AtsVersionService.get().removeTargetedVersion(teamArt);
                   } else {
-                     IAtsVersion version = AtsConfigCache.getSoleByGuid(verArt.getGuid(), IAtsVersion.class);
+                     IAtsVersion version = AtsConfigCache.instance.getSoleByGuid(verArt.getGuid(), IAtsVersion.class);
                      AtsVersionService.get().setTargetedVersion(teamArt, version);
                   }
                }
@@ -94,10 +117,12 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
       }
    }
 
-   private void processArtifacts(ArtifactEvent artifactEvent) {
+   private boolean processArtifacts(ArtifactEvent artifactEvent) {
+      boolean handledConfigReload = false;
       for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {
-         if (isConfigArtifactType(guidArt)) {
+         if (configReloadArtifactTypeGuids.contains(guidArt.getArtTypeGuid())) {
             AtsBulkLoad.reloadConfig(false);
+            handledConfigReload = true;
             break;
          }
       }
@@ -113,12 +138,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
-   }
-
-   private boolean isConfigArtifactType(EventBasicGuidArtifact guidArt) {
-      return guidArt.getArtTypeGuid().equals(AtsArtifactTypes.Version.getGuid()) || guidArt.getArtTypeGuid().equals(
-         AtsArtifactTypes.TeamDefinition.getGuid()) || guidArt.getArtTypeGuid().equals(
-         AtsArtifactTypes.ActionableItem.getGuid());
+      return handledConfigReload;
    }
 
    private void handleTaskCacheForAddedModified(EventBasicGuidArtifact guidArt) throws OseeCoreException {

@@ -578,7 +578,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             continue;
          }
          if (artifact.isOfType(AtsArtifactTypes.Version)) {
-            IAtsVersion version = AtsConfigCache.getSoleByGuid(artifact.getGuid(), IAtsVersion.class);
+            IAtsVersion version = AtsConfigCache.instance.getSoleByGuid(artifact.getGuid(), IAtsVersion.class);
             if (version != null) {
                try {
                   String parentBranchGuid = version.getBaslineBranchGuid();
@@ -603,7 +603,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             continue;
          }
          if (art.isOfType(AtsArtifactTypes.TeamDefinition)) {
-            IAtsTeamDefinition teamDef = AtsConfigCache.getSoleByGuid(art.getGuid(), IAtsTeamDefinition.class);
+            IAtsTeamDefinition teamDef = AtsConfigCache.instance.getSoleByGuid(art.getGuid(), IAtsTeamDefinition.class);
             try {
                String parentBranchGuid = teamDef.getBaslineBranchGuid();
                if (Strings.isValid(parentBranchGuid)) {
@@ -933,7 +933,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
          try {
             if (artifact.isOfType(AtsArtifactTypes.ActionableItem)) {
-               IAtsActionableItem aia = AtsConfigCache.getSoleByGuid(artifact.getGuid(), IAtsActionableItem.class);
+               IAtsActionableItem aia = AtsConfigCache.instance.getSoleByGuid(artifact.getGuid(), IAtsActionableItem.class);
                if (aia.isActionable() && TeamDefinitions.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {
                   testNameToResultsMap.put(
                      "testActionableItemToTeamDefinition",

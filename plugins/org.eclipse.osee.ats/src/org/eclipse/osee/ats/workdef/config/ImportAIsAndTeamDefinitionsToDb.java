@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.core.client.config.store.ActionableItemArtifactStore
 import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
 import org.eclipse.osee.ats.core.client.workdef.UserRefUtilClient;
 import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.dsl.BooleanDefUtil;
 import org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef;
@@ -155,7 +156,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
          // System.out.println("   - Importing Version " + dslVerName);
          Artifact newVer =
             ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), dslVerName);
-         Artifact teamDefArt = new TeamDefinitionArtifactStore(teamDef).getArtifact();
+         Artifact teamDefArt = new TeamDefinitionArtifactStore(teamDef, AtsConfigCache.instance).getArtifact();
 
          teamDefArt.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, newVer);
          nameToVerArt.put(newVer.getName(), newVer);

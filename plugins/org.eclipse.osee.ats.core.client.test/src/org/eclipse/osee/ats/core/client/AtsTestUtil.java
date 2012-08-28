@@ -50,11 +50,8 @@ import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.config.ActionableItemFactory;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
-import org.eclipse.osee.ats.core.config.TeamDefinitionFactory;
-import org.eclipse.osee.ats.core.config.VersionFactory;
 import org.eclipse.osee.ats.core.workdef.SimpleDecisionReviewOption;
 import org.eclipse.osee.ats.core.workflow.StateTypeAdapter;
 import org.eclipse.osee.ats.mocks.MockStateDefinition;
@@ -221,19 +218,19 @@ public class AtsTestUtil {
       verArt4 = null;
       decRevArt = null;
       peerRevArt = null;
-      for (IAtsActionableItem aia : AtsConfigCache.get(IAtsActionableItem.class)) {
+      for (IAtsActionableItem aia : AtsConfigCache.instance.get(IAtsActionableItem.class)) {
          if (aia.getName().contains("AtsTestUtil")) {
-            AtsConfigCache.decache(aia);
+            AtsConfigCache.instance.decache(aia);
          }
       }
-      for (IAtsTeamDefinition aia : AtsConfigCache.get(IAtsTeamDefinition.class)) {
+      for (IAtsTeamDefinition aia : AtsConfigCache.instance.get(IAtsTeamDefinition.class)) {
          if (aia.getName().contains("AtsTestUtil")) {
-            AtsConfigCache.decache(aia);
+            AtsConfigCache.instance.decache(aia);
          }
       }
-      for (IAtsVersion ver : AtsConfigCache.get(IAtsVersion.class)) {
+      for (IAtsVersion ver : AtsConfigCache.instance.get(IAtsVersion.class)) {
          if (ver.getName().contains("AtsTestUtil")) {
-            AtsConfigCache.decache(ver);
+            AtsConfigCache.instance.decache(ver);
          }
       }
    }
@@ -302,23 +299,33 @@ public class AtsTestUtil {
 
       WorkDefinitionFactory.addWorkDefinition(workDef);
 
-      testAi = ActionableItemFactory.createActionableItem(GUID.create(), getTitle("AI", postFixName));
+      testAi =
+         AtsConfigCache.instance.getActionableItemFactory().createActionableItem(GUID.create(),
+            getTitle("AI", postFixName));
       testAi.setActive(true);
       testAi.setActionable(true);
 
-      testAi2 = ActionableItemFactory.createActionableItem(GUID.create(), getTitle("AI2", postFixName));
+      testAi2 =
+         AtsConfigCache.instance.getActionableItemFactory().createActionableItem(GUID.create(),
+            getTitle("AI2", postFixName));
       testAi2.setActive(true);
       testAi2.setActionable(true);
 
-      testAi3 = ActionableItemFactory.createActionableItem(GUID.create(), getTitle("AI3", postFixName));
+      testAi3 =
+         AtsConfigCache.instance.getActionableItemFactory().createActionableItem(GUID.create(),
+            getTitle("AI3", postFixName));
       testAi3.setActive(true);
       testAi3.setActionable(true);
 
-      testAi4 = ActionableItemFactory.createActionableItem(GUID.create(), getTitle("AI4", postFixName));
+      testAi4 =
+         AtsConfigCache.instance.getActionableItemFactory().createActionableItem(GUID.create(),
+            getTitle("AI4", postFixName));
       testAi4.setActive(true);
       testAi4.setActionable(true);
 
-      teamDef = TeamDefinitionFactory.createTeamDefinition(GUID.create(), getTitle("Team Def", postFixName));
+      teamDef =
+         AtsConfigCache.instance.getTeamDefinitionFactory().createTeamDefinition(GUID.create(),
+            getTitle("Team Def", postFixName));
       teamDef.setWorkflowDefinition(WORK_DEF_NAME);
       teamDef.setActive(true);
       teamDef.setTeamUsesVersions(true);
@@ -330,16 +337,17 @@ public class AtsTestUtil {
       testAi4.setTeamDefinition(teamDef);
 
       verArt1 =
-         VersionFactory.createVersion(getTitle("ver 1.0", postFixName), GUID.create(), HumanReadableId.generate());
+         AtsConfigCache.instance.getVersionFactory().createVersion(getTitle("ver 1.0", postFixName), GUID.create(),
+            HumanReadableId.generate());
       teamDef.getVersions().add(verArt1);
 
-      verArt2 = VersionFactory.createVersion(getTitle("ver 2.0", postFixName));
+      verArt2 = AtsConfigCache.instance.getVersionFactory().createVersion(getTitle("ver 2.0", postFixName));
       teamDef.getVersions().add(verArt2);
 
-      verArt3 = VersionFactory.createVersion(getTitle("ver 3.0", postFixName));
+      verArt3 = AtsConfigCache.instance.getVersionFactory().createVersion(getTitle("ver 3.0", postFixName));
       teamDef.getVersions().add(verArt3);
 
-      verArt4 = VersionFactory.createVersion(getTitle("ver 4.0", postFixName));
+      verArt4 = AtsConfigCache.instance.getVersionFactory().createVersion(getTitle("ver 4.0", postFixName));
       teamDef.getVersions().add(verArt4);
 
       actionArt =

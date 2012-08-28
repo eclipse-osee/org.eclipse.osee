@@ -228,15 +228,15 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
    }
 
    private IAtsVersion getVersion256() {
-      return AtsConfigCache.getSoleByName("2.5.6", IAtsVersion.class);
+      return AtsConfigCache.instance.getSoleByName("2.5.6", IAtsVersion.class);
    }
 
    private IAtsVersion getVersion257() {
-      return AtsConfigCache.getSoleByName("2.5.7", IAtsVersion.class);
+      return AtsConfigCache.instance.getSoleByName("2.5.7", IAtsVersion.class);
    }
 
    private IAtsVersion getVersion258() {
-      return AtsConfigCache.getSoleByName("2.5.8", IAtsVersion.class);
+      return AtsConfigCache.instance.getSoleByName("2.5.8", IAtsVersion.class);
    }
 
    private void validateActionAtStart(Artifact actionArt) throws OseeCoreException {

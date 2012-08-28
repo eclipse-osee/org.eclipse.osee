@@ -129,7 +129,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
 
       // Get or create new team definition
       Artifact newAiArt = duplicateTeamDefinitionOrActionableItem(fromAiArt);
-      IAtsActionableItem newAi = new ActionableItemArtifactStore(newAiArt).getActionableItem();
+      IAtsActionableItem newAi = new ActionableItemArtifactStore(newAiArt, AtsConfigCache.instance).getActionableItem();
       newAi.setParentActionableItem(parentAi);
       parentAi.getChildrenActionableItems().add(newAi);
 
@@ -140,7 +140,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       for (Artifact fromTeamDefArt : fromAiArt.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_Team,
          Artifact.class)) {
          IAtsConfigObject fromTeamDef =
-            AtsConfigCache.getSoleByGuid(fromTeamDefArt.getGuid(), IAtsTeamDefinition.class);
+            AtsConfigCache.instance.getSoleByGuid(fromTeamDefArt.getGuid(), IAtsTeamDefinition.class);
          IAtsTeamDefinition newTeamDef = fromTeamDefToNewTeamDefMap.get(fromTeamDef);
          Artifact newTeamDefArt = new TeamDefinitionArtifactStore(newTeamDef).getArtifact();
 
@@ -155,10 +155,10 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
          }
       }
       // Handle all children
-      ActionableItemArtifactStore newAiArtStore = new ActionableItemArtifactStore(newAiArt);
+      ActionableItemArtifactStore newAiArtStore = new ActionableItemArtifactStore(newAiArt, AtsConfigCache.instance);
       for (Artifact childFromAiArt : fromAiArt.getChildren()) {
          if (childFromAiArt.isOfType(AtsArtifactTypes.ActionableItem)) {
-            ActionableItemArtifactStore childFromAiArtStore = new ActionableItemArtifactStore(childFromAiArt);
+            ActionableItemArtifactStore childFromAiArtStore = new ActionableItemArtifactStore(childFromAiArt, AtsConfigCache.instance);
             createActionableItems(transaction, childFromAiArtStore.getActionableItem(),
                newAiArtStore.getActionableItem());
          }
@@ -172,7 +172,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       Artifact fromTeamDefArt = new TeamDefinitionArtifactStore(fromTeamDef).getArtifact();
 
       Artifact newTeamDefArt = duplicateTeamDefinitionOrActionableItem(fromTeamDefArt);
-      TeamDefinitionArtifactStore newTeamDefStore = new TeamDefinitionArtifactStore(newTeamDefArt);
+      TeamDefinitionArtifactStore newTeamDefStore = new TeamDefinitionArtifactStore(newTeamDefArt, AtsConfigCache.instance);
       IAtsTeamDefinition newTeamDef = newTeamDefStore.getTeamDefinition();
 
       parentTeamDefArt.addChild(newTeamDefArt);
@@ -186,8 +186,8 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       for (Artifact childFromTeamDefArt : fromTeamDefArt.getChildren()) {
          if (childFromTeamDefArt.isOfType(AtsArtifactTypes.TeamDefinition)) {
             IAtsTeamDefinition childFromTeamDef =
-               new TeamDefinitionArtifactStore(childFromTeamDefArt).getTeamDefinition();
-            AtsConfigCache.getSoleByGuid(childFromTeamDefArt.getGuid(), IAtsTeamDefinition.class);
+               new TeamDefinitionArtifactStore(childFromTeamDefArt, AtsConfigCache.instance).getTeamDefinition();
+            AtsConfigCache.instance.getSoleByGuid(childFromTeamDefArt.getGuid(), IAtsTeamDefinition.class);
             createTeamDefinitions(transaction, childFromTeamDef, newTeamDef);
          }
       }

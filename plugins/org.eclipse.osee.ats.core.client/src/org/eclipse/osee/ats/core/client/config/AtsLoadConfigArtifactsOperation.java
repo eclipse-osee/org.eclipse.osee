@@ -63,15 +63,17 @@ public class AtsLoadConfigArtifactsOperation extends AbstractOperation {
 
    private void loadAtsConfig() throws OseeCoreException {
       //      ElapsedTime time = new ElapsedTime("Loading ATS Teams, AIs and Versions");
-      AtsConfigCache.clearCaches();
+      AtsConfigCache newInstance = new AtsConfigCache();
+      AtsConfigCacheLoaderClient loader = new AtsConfigCacheLoaderClient(newInstance);
       List<Artifact> artifactListFromType =
          ArtifactQuery.getArtifactListFromType(
             Arrays.asList(AtsArtifactTypes.TeamDefinition, AtsArtifactTypes.ActionableItem, AtsArtifactTypes.Version),
             AtsUtilCore.getAtsBranchToken(), DeletionFlag.EXCLUDE_DELETED);
 
       for (Artifact artifact : artifactListFromType) {
-         AtsConfigManagerClient.cacheConfigArtifact(artifact);
+         loader.cacheConfigArtifact(artifact);
       }
+      AtsConfigCache.setCurrent(newInstance);
       //      time.end();
    }
 

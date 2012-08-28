@@ -31,12 +31,9 @@ import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workdef.AtsWorkDefinitionStore;
 import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
-import org.eclipse.osee.ats.core.config.ActionableItemFactory;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
-import org.eclipse.osee.ats.core.config.TeamDefinitionFactory;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
-import org.eclipse.osee.ats.core.config.VersionFactory;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.ats.internal.Activator;
@@ -130,7 +127,8 @@ public class AtsConfigManager extends AbstractOperation {
    }
 
    private IAtsTeamDefinition createTeamDefinition(SkynetTransaction transaction) throws OseeCoreException {
-      IAtsTeamDefinition teamDef = TeamDefinitionFactory.createTeamDefinition(GUID.create(), teamDefName);
+      IAtsTeamDefinition teamDef =
+         AtsConfigCache.instance.getTeamDefinitionFactory().createTeamDefinition(GUID.create(), teamDefName);
       if (versionNames == null || versionNames.size() > 0) {
          teamDef.setTeamUsesVersions(true);
       }
@@ -140,7 +138,7 @@ public class AtsConfigManager extends AbstractOperation {
       TeamDefinitionArtifactStore teamDefStore = new TeamDefinitionArtifactStore(teamDef);
       teamDefStore.getArtifactOrCreate(transaction);
       teamDefStore.saveToArtifact(transaction);
-      AtsConfigCache.cache(teamDef);
+      AtsConfigCache.instance.cache(teamDef);
       return teamDef;
    }
 
@@ -148,7 +146,8 @@ public class AtsConfigManager extends AbstractOperation {
       Collection<IAtsActionableItem> aias = new ArrayList<IAtsActionableItem>();
 
       // Create top actionable item
-      IAtsActionableItem topAia = ActionableItemFactory.createActionableItem(GUID.create(), teamDefName);
+      IAtsActionableItem topAia =
+         AtsConfigCache.instance.getActionableItemFactory().createActionableItem(GUID.create(), teamDefName);
       topAia.setActionable(false);
       topAia.setTeamDefinition(teamDef);
       ActionableItemArtifactStore topAiaStore = new ActionableItemArtifactStore(topAia);
@@ -162,7 +161,8 @@ public class AtsConfigManager extends AbstractOperation {
 
       // Create children actionable item
       for (String name : actionableItems) {
-         IAtsActionableItem childAi = ActionableItemFactory.createActionableItem(GUID.create(), name);
+         IAtsActionableItem childAi =
+            AtsConfigCache.instance.getActionableItemFactory().createActionableItem(GUID.create(), name);
          childAi.setActionable(true);
          topAia.getChildrenActionableItems().add(childAi);
          childAi.setParentActionableItem(topAia);
@@ -178,7 +178,7 @@ public class AtsConfigManager extends AbstractOperation {
    private void createVersions(SkynetTransaction transaction, IAtsTeamDefinition teamDef) throws OseeCoreException {
       if (versionNames != null) {
          for (String name : versionNames) {
-            IAtsVersion version = VersionFactory.createVersion(name);
+            IAtsVersion version = AtsConfigCache.instance.getVersionFactory().createVersion(name);
             teamDef.getVersions().add(version);
             VersionArtifactStore verStore = new VersionArtifactStore(version);
             verStore.getArtifactOrCreate(transaction);

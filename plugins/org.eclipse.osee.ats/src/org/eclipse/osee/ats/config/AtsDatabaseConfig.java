@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.core.client.config.store.ActionableItemArtifactStore
 import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
 import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
@@ -43,7 +44,8 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       // load top team into cache
       Artifact topTeamDefArt =
          ArtifactQuery.getArtifactFromToken(AtsArtifactToken.TopTeamDefinition, AtsUtil.getAtsBranchToken());
-      TeamDefinitionArtifactStore teamDefStore = new TeamDefinitionArtifactStore(topTeamDefArt);
+      TeamDefinitionArtifactStore teamDefStore =
+         new TeamDefinitionArtifactStore(topTeamDefArt, AtsConfigCache.instance);
       IAtsTeamDefinition teamDef = teamDefStore.getTeamDefinition();
       teamDef.setWorkflowDefinition(WorkDefinitionFactory.TeamWorkflowDefaultDefinitionId);
       teamDefStore.save("Set Top Team Work Definition");
@@ -51,7 +53,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       // load top ai into cache
       Artifact topAiArt =
          ArtifactQuery.getArtifactFromToken(AtsArtifactToken.TopActionableItem, AtsUtil.getAtsBranchToken());
-      ActionableItemArtifactStore aiStore = new ActionableItemArtifactStore(topAiArt);
+      ActionableItemArtifactStore aiStore = new ActionableItemArtifactStore(topAiArt, AtsConfigCache.instance);
       IAtsActionableItem aia = aiStore.getActionableItem();
       aia.setActionable(false);
       aiStore.save("Set Top AI to Non Actionable");

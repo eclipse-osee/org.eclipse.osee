@@ -136,7 +136,7 @@ public class AtsBranchConfigurationTest {
          OseeLog.log(Activator.class, Level.INFO, "Configuring version to use branch and allow create/commit");
       }
       IAtsTeamDefinition teamDef =
-         AtsConfigCache.getSoleByName(BRANCH_VIA_VERSIONS.getName(), IAtsTeamDefinition.class);
+         AtsConfigCache.instance.getSoleByName(BRANCH_VIA_VERSIONS.getName(), IAtsTeamDefinition.class);
       IAtsVersion versionToTarget = null;
       for (IAtsVersion vArt : teamDef.getVersions()) {
          if (vArt.getName().contains("Ver1")) {
@@ -252,7 +252,7 @@ public class AtsBranchConfigurationTest {
          OseeLog.log(Activator.class, Level.INFO, "Configuring team def to use branch and allow create/commit");
       }
       IAtsTeamDefinition teamDef =
-         AtsConfigCache.getSoleByName(BRANCH_VIA_TEAM_DEFINITION.getName(), IAtsTeamDefinition.class);
+         AtsConfigCache.instance.getSoleByName(BRANCH_VIA_TEAM_DEFINITION.getName(), IAtsTeamDefinition.class);
       teamDef.setBaselineBranchGuid(viaTeamDefBranch.getGuid());
       // setup team def to allow create/commit of branch
       teamDef.setAllowCommitBranch(true);
@@ -337,19 +337,19 @@ public class AtsBranchConfigurationTest {
       // Delete VersionArtifacts
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
-      for (IAtsVersion version : AtsConfigCache.get(IAtsVersion.class)) {
+      for (IAtsVersion version : AtsConfigCache.instance.get(IAtsVersion.class)) {
          if (version.getName().contains(branch.getName())) {
             Artifact artifact = new VersionArtifactStore(version).getArtifact();
             if (artifact != null) {
                artifact.deleteAndPersist(transaction);
             }
          }
-         AtsConfigCache.decache(version);
+         AtsConfigCache.instance.decache(version);
       }
       transaction.execute();
 
       // Delete Team Definitions
-      IAtsTeamDefinition teamDef = AtsConfigCache.getSoleByName(branch.getName(), IAtsTeamDefinition.class);
+      IAtsTeamDefinition teamDef = AtsConfigCache.instance.getSoleByName(branch.getName(), IAtsTeamDefinition.class);
       if (teamDef != null) {
          TeamDefinitionArtifactStore teamDefStore = new TeamDefinitionArtifactStore(teamDef);
          if (teamDefStore.getArtifact() != null && teamDefStore.getArtifact().isInDb()) {
@@ -357,19 +357,19 @@ public class AtsBranchConfigurationTest {
             teamDefStore.getArtifact().deleteAndPersist(transaction, false);
             transaction.execute();
          }
-         AtsConfigCache.decache(teamDef);
+         AtsConfigCache.instance.decache(teamDef);
       }
 
       // Delete AIs
-      IAtsActionableItem aia = AtsConfigCache.getSoleByName(branch.getName(), IAtsActionableItem.class);
+      IAtsActionableItem aia = AtsConfigCache.instance.getSoleByName(branch.getName(), IAtsActionableItem.class);
       if (aia != null) {
          transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
          for (IAtsActionableItem childAi : aia.getChildrenActionableItems()) {
             new ActionableItemArtifactStore(childAi).getArtifact().deleteAndPersist(transaction, false);
-            AtsConfigCache.decache(childAi);
+            AtsConfigCache.instance.decache(childAi);
          }
          new ActionableItemArtifactStore(aia).getArtifact().deleteAndPersist(transaction, false);
-         AtsConfigCache.decache(aia);
+         AtsConfigCache.instance.decache(aia);
          transaction.execute();
       }
 

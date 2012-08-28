@@ -70,7 +70,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       IAtsTeamDefinition useTeamDef = teamDef;
       if (useTeamDef == null && teamDefName != null) {
-         useTeamDef = AtsConfigCache.getSoleByName(teamDefName, IAtsTeamDefinition.class);
+         useTeamDef = AtsConfigCache.instance.getSoleByName(teamDefName, IAtsTeamDefinition.class);
       }
       if (useTeamDef == null) {
          TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");

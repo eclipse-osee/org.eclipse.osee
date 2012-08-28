@@ -15,8 +15,6 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
-import org.eclipse.osee.ats.core.config.TeamDefinitionFactory;
-import org.eclipse.osee.ats.core.config.VersionFactory;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -30,13 +28,18 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public class VersionArtifactStore extends ArtifactAtsObjectStore {
 
+   AtsConfigCache cache = AtsConfigCache.instance;
+
    public VersionArtifactStore(IAtsVersion version) {
       super(version, AtsArtifactTypes.Version, AtsUtilCore.getAtsBranchToken());
    }
 
-   public VersionArtifactStore(Artifact artifact) throws OseeCoreException {
+   public VersionArtifactStore(Artifact artifact, AtsConfigCache atsConfigCache) throws OseeCoreException {
       super(null, AtsArtifactTypes.Version, AtsUtilCore.getAtsBranchToken());
       this.artifact = artifact;
+      if (atsConfigCache != null) {
+         cache = atsConfigCache;
+      }
       loadFromArtifact();
    }
 
@@ -96,10 +99,11 @@ public class VersionArtifactStore extends ArtifactAtsObjectStore {
    public void loadFromArtifact() throws OseeCoreException {
       Artifact artifact = getArtifact();
       if (artifact != null) {
-         IAtsVersion version = AtsConfigCache.getSoleByGuid(artifact.getGuid(), IAtsVersion.class);
+         IAtsVersion version = cache.getSoleByGuid(artifact.getGuid(), IAtsVersion.class);
          if (version == null) {
             version =
-               VersionFactory.createVersion(artifact.getName(), artifact.getGuid(), artifact.getHumanReadableId());
+               cache.getVersionFactory().createVersion(artifact.getName(), artifact.getGuid(),
+                  artifact.getHumanReadableId());
          } else {
             version.setHumanReadableId(artifact.getHumanReadableId());
             version.setName(artifact.getName());
@@ -121,14 +125,16 @@ public class VersionArtifactStore extends ArtifactAtsObjectStore {
             artifact.getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition);
          if (!teamDefArts.isEmpty()) {
             Artifact teamDefArt = teamDefArts.iterator().next();
-            IAtsTeamDefinition teamDef = TeamDefinitionFactory.getOrCreate(teamDefArt.getGuid(), teamDefArt.getName());
+            IAtsTeamDefinition teamDef =
+               cache.getTeamDefinitionFactory().getOrCreate(teamDefArt.getGuid(), teamDefArt.getName());
             AtsVersionService.get().setTeamDefinition(version, teamDef);
          }
          for (String staticId : artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)) {
             version.getStaticIds().add(staticId);
          }
          for (Artifact parallelVerArt : artifact.getRelatedArtifacts(AtsRelationTypes.ParallelVersion_Child)) {
-            IAtsVersion parallelVer = VersionFactory.getOrCreate(parallelVerArt.getGuid(), parallelVerArt.getName());
+            IAtsVersion parallelVer =
+               cache.getVersionFactory().getOrCreate(parallelVerArt.getGuid(), parallelVerArt.getName());
             version.getParallelVersions().add(parallelVer);
          }
 

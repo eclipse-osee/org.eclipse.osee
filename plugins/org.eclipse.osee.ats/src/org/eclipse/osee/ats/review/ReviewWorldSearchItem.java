@@ -124,7 +124,7 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
       if (aiNames != null && aias == null) {
          aias = new HashSet<IAtsActionableItem>();
          for (String teamDefName : aiNames) {
-            IAtsActionableItem aia = AtsConfigCache.getSoleByName(teamDefName, IAtsActionableItem.class);
+            IAtsActionableItem aia = AtsConfigCache.instance.getSoleByName(teamDefName, IAtsActionableItem.class);
             if (aia != null) {
                aias.add(aia);
             }

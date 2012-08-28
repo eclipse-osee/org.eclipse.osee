@@ -32,7 +32,7 @@ public class AtsObjectsClient {
    public static <A extends IAtsConfigObject> Collection<A> getConfigObjects(Collection<? extends Artifact> artifacts, Class<A> clazz) {
       List<A> objects = new ArrayList<A>();
       for (Artifact art : artifacts) {
-         objects.addAll(AtsConfigCache.getByTag(art.getGuid(), clazz));
+         objects.addAll(AtsConfigCache.instance.getByTag(art.getGuid(), clazz));
       }
       return objects;
    }

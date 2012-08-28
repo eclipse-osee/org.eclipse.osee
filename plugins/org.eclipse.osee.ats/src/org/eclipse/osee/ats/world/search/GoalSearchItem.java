@@ -91,7 +91,7 @@ public class GoalSearchItem extends WorldUISearchItem {
       if (teamDefNames != null && teamDefs == null) {
          teamDefs = new HashSet<IAtsTeamDefinition>();
          for (String teamDefName : teamDefNames) {
-            IAtsTeamDefinition aia = AtsConfigCache.getSoleByName(teamDefName, IAtsTeamDefinition.class);
+            IAtsTeamDefinition aia = AtsConfigCache.instance.getSoleByName(teamDefName, IAtsTeamDefinition.class);
             if (aia != null) {
                teamDefs.add(aia);
             }

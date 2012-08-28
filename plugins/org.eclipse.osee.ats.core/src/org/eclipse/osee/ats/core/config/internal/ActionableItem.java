@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.ats.core.config.impl;
+package org.eclipse.osee.ats.core.config.internal;
 
 import java.util.Collection;
 import java.util.HashSet;

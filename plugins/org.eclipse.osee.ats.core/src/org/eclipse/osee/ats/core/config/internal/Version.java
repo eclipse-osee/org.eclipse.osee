@@ -1,4 +1,4 @@
-package org.eclipse.osee.ats.core.config.impl;
+package org.eclipse.osee.ats.core.config.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,8 +40,6 @@ public class Version extends AtsObject implements IAtsVersion {
 
    private List<IAtsVersion> parallelVersions = new ArrayList<IAtsVersion>();
    private final Set<String> staticIds = new HashSet<String>();
-
-   private final IAtsTeamDefinition teamDefinition = null;
 
    public Version(String name, String guid, String humanReadableId) {
       super(name, guid, humanReadableId);

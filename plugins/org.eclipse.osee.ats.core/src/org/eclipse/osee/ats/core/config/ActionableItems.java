@@ -86,7 +86,7 @@ public class ActionableItems {
    public static Set<IAtsActionableItem> getActionableItems(Collection<String> actionableItemNames) {
       Set<IAtsActionableItem> aias = new HashSet<IAtsActionableItem>();
       for (String actionableItemName : actionableItemNames) {
-         for (IAtsActionableItem aia : AtsConfigCache.get(IAtsActionableItem.class)) {
+         for (IAtsActionableItem aia : AtsConfigCache.instance.get(IAtsActionableItem.class)) {
             if (aia.getName().equals(actionableItemName)) {
                aias.add(aia);
             }
@@ -100,7 +100,7 @@ public class ActionableItems {
    }
 
    public static List<IAtsActionableItem> getActionableItems(Active active) {
-      return Collections.castAll(getActive(AtsConfigCache.get(IAtsActionableItem.class), active));
+      return Collections.castAll(getActive(AtsConfigCache.instance.get(IAtsActionableItem.class), active));
    }
 
    public static String getNotActionableItemError(IAtsConfigObject configObject) {
@@ -108,7 +108,7 @@ public class ActionableItems {
    }
 
    public static IAtsActionableItem getTopActionableItem() {
-      return AtsConfigCache.getSoleByGuid(TopActionableItemGuid, IAtsActionableItem.class);
+      return AtsConfigCache.instance.getSoleByGuid(TopActionableItemGuid, IAtsActionableItem.class);
    }
 
    public static List<IAtsActionableItem> getActionableItemsAll() {

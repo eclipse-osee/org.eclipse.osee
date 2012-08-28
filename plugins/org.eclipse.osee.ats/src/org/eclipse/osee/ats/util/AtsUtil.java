@@ -232,7 +232,7 @@ public final class AtsUtil {
    public static void createATSAction(String initialDescription, String actionableItemName) {
       // Ensure actionable item is configured for ATS before continuing
       try {
-         IAtsActionableItem aia = AtsConfigCache.getSoleByName(actionableItemName, IAtsActionableItem.class);
+         IAtsActionableItem aia = AtsConfigCache.instance.getSoleByName(actionableItemName, IAtsActionableItem.class);
          if (aia == null) {
             AWorkbench.popup(
                "Configuration Error",

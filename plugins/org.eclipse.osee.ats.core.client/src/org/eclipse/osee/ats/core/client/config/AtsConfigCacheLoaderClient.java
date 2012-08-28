@@ -20,32 +20,38 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Donald G. Dunne
  */
-public class AtsConfigManagerClient {
+public class AtsConfigCacheLoaderClient {
 
-   public static void cacheConfigArtifact(Artifact artifact) throws OseeCoreException {
+   private final AtsConfigCache cache;
+
+   public AtsConfigCacheLoaderClient(AtsConfigCache cache) {
+      this.cache = cache;
+   }
+
+   public void cacheConfigArtifact(Artifact artifact) throws OseeCoreException {
       // cache
       if (artifact.isOfType(AtsArtifactTypes.TeamDefinition)) {
-         TeamDefinitionArtifactStore store = new TeamDefinitionArtifactStore(artifact);
+         TeamDefinitionArtifactStore store = new TeamDefinitionArtifactStore(artifact, cache);
          IAtsTeamDefinition teamDef = store.getTeamDefinition();
 
          for (String staticId : artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)) {
-            AtsConfigCache.cacheByTag(staticId, teamDef);
+            cache.cacheByTag(staticId, teamDef);
          }
       }
       if (artifact.isOfType(AtsArtifactTypes.ActionableItem)) {
-         ActionableItemArtifactStore store = new ActionableItemArtifactStore(artifact);
+         ActionableItemArtifactStore store = new ActionableItemArtifactStore(artifact, cache);
          IAtsActionableItem ai = store.getActionableItem();
 
          for (String staticId : artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)) {
-            AtsConfigCache.cacheByTag(staticId, ai);
+            cache.cacheByTag(staticId, ai);
          }
       }
       if (artifact.isOfType(AtsArtifactTypes.Version)) {
-         VersionArtifactStore store = new VersionArtifactStore(artifact);
+         VersionArtifactStore store = new VersionArtifactStore(artifact, cache);
          IAtsVersion version = store.getVersion();
 
          for (String staticId : artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)) {
-            AtsConfigCache.cacheByTag(staticId, version);
+            cache.cacheByTag(staticId, version);
          }
       }
    }

@@ -96,7 +96,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
       if (actionItemNames != null && actionItems == null) {
          actionItems = new HashSet<IAtsActionableItem>();
          for (String actionItemName : actionItemNames) {
-            IAtsActionableItem aia = AtsConfigCache.getSoleByName(actionItemName, IAtsActionableItem.class);
+            IAtsActionableItem aia = AtsConfigCache.instance.getSoleByName(actionItemName, IAtsActionableItem.class);
             if (aia != null) {
                actionItems.add(aia);
             }

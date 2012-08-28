@@ -21,9 +21,9 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.config.AtsObjectsClient;
 import org.eclipse.osee.ats.core.client.config.store.VersionArtifactStore;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
-import org.eclipse.osee.ats.core.config.VersionFactory;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
@@ -122,7 +122,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
       if (!resultData.isErrors()) {
          try {
             for (String newVer : newVersionNames) {
-               IAtsVersion version = VersionFactory.createVersion(newVer);
+               IAtsVersion version = AtsConfigCache.instance.getVersionFactory().createVersion(newVer);
                AtsVersionService.get().setTeamDefinition(version, teamDefHoldingVersions);
                new VersionArtifactStore(version).saveToArtifact(transaction);
             }

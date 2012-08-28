@@ -66,7 +66,7 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
          return teamDef;
       }
       if (Strings.isValid(teamDefName)) {
-         IAtsTeamDefinition teamDef = AtsConfigCache.getSoleByName(teamDefName, IAtsTeamDefinition.class);
+         IAtsTeamDefinition teamDef = AtsConfigCache.instance.getSoleByName(teamDefName, IAtsTeamDefinition.class);
          if (teamDef != null) {
             return teamDef;
          }

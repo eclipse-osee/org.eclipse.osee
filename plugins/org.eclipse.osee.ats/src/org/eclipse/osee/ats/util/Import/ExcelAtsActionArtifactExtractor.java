@@ -96,7 +96,7 @@ public class ExcelAtsActionArtifactExtractor {
             for (String actionableItemName : aData.actionableItems) {
                try {
                   Collection<IAtsActionableItem> aias =
-                     AtsConfigCache.getByName(actionableItemName, IAtsActionableItem.class);
+                     AtsConfigCache.instance.getByName(actionableItemName, IAtsActionableItem.class);
                   if (aias.isEmpty()) {
                      rd.logError("Row " + rowNum + ": Couldn't find actionable item for \"" + actionableItemName + "\"");
                   } else if (aias.size() > 1) {

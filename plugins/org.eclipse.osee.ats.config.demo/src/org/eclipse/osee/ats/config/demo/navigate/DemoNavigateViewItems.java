@@ -61,7 +61,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       }
       try {
          String name = team.name().replaceAll("_", " ");
-         return AtsConfigCache.getSoleByName(name, IAtsTeamDefinition.class);
+         return AtsConfigCache.instance.getSoleByName(name, IAtsTeamDefinition.class);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

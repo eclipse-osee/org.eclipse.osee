@@ -73,7 +73,7 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
       }
       IAtsTeamDefinition useTeamDef = teamDef;
       if (useTeamDef == null && teamDefName != null) {
-         useTeamDef = AtsConfigCache.getSoleByName(teamDefName, IAtsTeamDefinition.class);
+         useTeamDef = AtsConfigCache.instance.getSoleByName(teamDefName, IAtsTeamDefinition.class);
       }
       if (useTeamDef == null) {
          TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");

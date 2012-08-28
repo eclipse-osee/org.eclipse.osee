@@ -1,4 +1,4 @@
-package org.eclipse.osee.ats.core.config.impl;
+package org.eclipse.osee.ats.core.config.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;

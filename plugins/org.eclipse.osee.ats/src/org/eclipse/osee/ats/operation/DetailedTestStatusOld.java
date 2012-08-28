@@ -43,6 +43,7 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
+import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.VersionList;
@@ -230,7 +231,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
       File scriptDir = new File(variableMap.getString("Script Root Directory"));
       versions = new ArrayList<IAtsVersion>();
       for (Artifact art : variableMap.getCollection(Artifact.class, "Versions")) {
-         VersionArtifactStore store = new VersionArtifactStore(art);
+         VersionArtifactStore store = new VersionArtifactStore(art, AtsConfigCache.instance);
          versions.add(store.getVersion());
       }
       init();

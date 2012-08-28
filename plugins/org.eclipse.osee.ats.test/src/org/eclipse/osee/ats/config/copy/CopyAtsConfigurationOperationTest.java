@@ -64,7 +64,7 @@ public class CopyAtsConfigurationOperationTest {
 
    public static Set<IAtsActionableItem> getActionableItemsNameStartsWith(String prefix) {
       Set<IAtsActionableItem> artifacts = new HashSet<IAtsActionableItem>();
-      for (IAtsActionableItem aia : AtsConfigCache.get(IAtsActionableItem.class)) {
+      for (IAtsActionableItem aia : AtsConfigCache.instance.get(IAtsActionableItem.class)) {
          if (aia.getName().startsWith(prefix)) {
             artifacts.add(aia);
          }
