@@ -57,17 +57,17 @@ public class QueryContextLoadExecutor extends AbstractLoadExecutor {
 
    private ArtifactJoinQuery createArtifactIdJoin(IOseeDatabaseService dbService, HasCancellation cancellation, int fetchSize) throws OseeCoreException {
       ArtifactJoinQuery artifactJoin = JoinUtility.createArtifactJoinQuery(dbService);
-      for (AbstractJoinQuery join : queryContext.getJoins()) {
-         join.store();
-      }
-      String query = queryContext.getSql();
-      List<Object> params = queryContext.getParameters();
       try {
-         checkCancelled(cancellation);
-
+         for (AbstractJoinQuery join : queryContext.getJoins()) {
+            join.store();
+            checkCancelled(cancellation);
+         }
          Integer transactionId = -1;
          IOseeStatement chStmt = dbService.getStatement();
          try {
+            checkCancelled(cancellation);
+            String query = queryContext.getSql();
+            List<Object> params = queryContext.getParameters();
             chStmt.runPreparedQuery(fetchSize, query, params.toArray());
             while (chStmt.next()) {
                checkCancelled(cancellation);
@@ -77,13 +77,18 @@ public class QueryContextLoadExecutor extends AbstractLoadExecutor {
                   transactionId = chStmt.getInt("transaction_id");
                }
                artifactJoin.add(artId, branchId, transactionId);
+               checkCancelled(cancellation);
             }
          } finally {
             chStmt.close();
          }
       } finally {
          for (AbstractJoinQuery join : queryContext.getJoins()) {
-            join.delete();
+            try {
+               join.delete();
+            } catch (OseeCoreException ex) {
+               // Ensure we try to delete all
+            }
          }
       }
       return artifactJoin;
