@@ -210,7 +210,7 @@ public class WorkStateProviderImpl implements WorkStateProvider {
    }
 
    @Override
-   public void createState(String stateName) throws OseeArgumentException {
+   public void createState(String stateName) {
       WorkState state = getState(stateName);
       if (state == null) {
          state = factory.createStateData(stateName);
@@ -219,7 +219,7 @@ public class WorkStateProviderImpl implements WorkStateProvider {
    }
 
    @Override
-   public void addState(String name, List<? extends IAtsUser> assignees, double hoursSpent, int percentComplete) throws OseeArgumentException {
+   public void addState(String name, List<? extends IAtsUser> assignees, double hoursSpent, int percentComplete) {
       if (getVisitedStateNames().contains(name)) {
          String errorStr = String.format("Error: Duplicate state [%s] for [%s]", name, factory.getId());
          OseeLog.log(Activator.class, Level.SEVERE, errorStr);
@@ -273,15 +273,18 @@ public class WorkStateProviderImpl implements WorkStateProvider {
    }
 
    @Override
-   public void addState(WorkState state) throws OseeArgumentException {
+   public void addState(WorkState state) {
       if (getVisitedStateNames().contains(state.getName())) {
-         throw new OseeArgumentException("State [%s] already exists", state.getName());
+         String errorStr = String.format("Error: Duplicate state [%s] for [%s]", state.getName(), factory.getId());
+         OseeLog.log(Activator.class, Level.SEVERE, errorStr);
+         return;
+      } else {
+         states.add(state);
       }
-      states.add(state);
    }
 
    @Override
-   public void addState(String name, List<? extends IAtsUser> assignees) throws OseeArgumentException {
+   public void addState(String name, List<? extends IAtsUser> assignees) {
       addState(name, assignees, 0, 0);
    }
 

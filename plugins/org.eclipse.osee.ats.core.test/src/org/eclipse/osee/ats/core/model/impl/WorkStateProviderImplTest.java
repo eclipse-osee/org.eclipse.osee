@@ -128,7 +128,7 @@ public class WorkStateProviderImplTest {
       Assert.assertEquals(joe, provider.getAssignees().iterator().next());
    }
 
-   @Test(expected = OseeArgumentException.class)
+   @Test
    public void testAddState_exception() throws OseeCoreException {
       WorkStateProviderImpl provider = new WorkStateProviderImpl(new MockWorkStateFactory());
       provider.addState(new WorkStateImpl("endorse"));
@@ -136,7 +136,7 @@ public class WorkStateProviderImplTest {
       provider.addState(new WorkStateImpl("endorse"));
    }
 
-   @Test(expected = OseeArgumentException.class)
+   @Test
    public void testAddState_exception2() throws OseeCoreException {
       WorkStateProviderImpl provider = new WorkStateProviderImpl(new MockWorkStateFactory());
       provider.addState(new WorkStateImpl("endorse"));
