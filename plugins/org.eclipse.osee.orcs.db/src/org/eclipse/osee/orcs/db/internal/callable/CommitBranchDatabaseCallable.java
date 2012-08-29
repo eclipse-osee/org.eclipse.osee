@@ -28,6 +28,7 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.db.internal.change.ComputeNetChangeCallable;
 import org.eclipse.osee.orcs.db.internal.change.LoadDeltasBetweenBranches;
+import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -40,8 +41,10 @@ public class CommitBranchDatabaseCallable extends DatabaseCallable<TransactionRe
    private final ArtifactReadable committer;
    private final Branch source;
    private final Branch destination;
+   private final MissingChangeItemFactory missingChangeItemFactory;
+   private final String sessionId;
 
-   public CommitBranchDatabaseCallable(Log logger, IOseeDatabaseService service, BranchCache branchCache, TransactionCache txCache, TransactionRecordFactory txFactory, ArtifactReadable committer, Branch source, Branch destination) {
+   public CommitBranchDatabaseCallable(Log logger, IOseeDatabaseService service, BranchCache branchCache, TransactionCache txCache, TransactionRecordFactory txFactory, ArtifactReadable committer, Branch source, Branch destination, MissingChangeItemFactory missingChangeItemFactory, String sessionId) {
       super(logger, service);
       this.branchCache = branchCache;
       this.txCache = txCache;
@@ -49,6 +52,8 @@ public class CommitBranchDatabaseCallable extends DatabaseCallable<TransactionRe
       this.committer = committer;
       this.source = source;
       this.destination = destination;
+      this.missingChangeItemFactory = missingChangeItemFactory;
+      this.sessionId = sessionId;
    }
 
    private TransactionCache getTxCache() {
@@ -84,6 +89,11 @@ public class CommitBranchDatabaseCallable extends DatabaseCallable<TransactionRe
          new LoadDeltasBetweenBranches(getLogger(), getDatabaseService(), txDelta, mergeTx);
       List<ChangeItem> changes = callAndCheckForCancel(loadChanges);
 
+      TransactionRecord sourceTx = getHeadTx(source);
+      TransactionRecord destTx = getHeadTx(destination);
+
+      changes.addAll(missingChangeItemFactory.createMissingChanges(changes, sourceTx, destTx, sessionId));
+
       Callable<List<ChangeItem>> computeChanges = new ComputeNetChangeCallable(changes);
       return callAndCheckForCancel(computeChanges);
    }
@@ -109,4 +119,5 @@ public class CommitBranchDatabaseCallable extends DatabaseCallable<TransactionRe
 
       return commitTransaction;
    }
+
 }

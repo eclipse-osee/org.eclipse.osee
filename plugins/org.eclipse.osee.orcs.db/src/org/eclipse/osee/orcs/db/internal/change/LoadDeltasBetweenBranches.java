@@ -204,9 +204,9 @@ public class LoadDeltasBetweenBranches extends DatabaseCallable<List<ChangeItem>
                isFirstSet = false;
             }
             if (baselineTransactionId == transactionId) {
-               loadVersionData(change.getBaselineVersion(), gammaId, modType, value);
+               setVersionData(change.getBaselineVersion(), gammaId, modType, value);
             } else if (!isFirstSet) {
-               loadVersionData(change.getFirstNonCurrentChange(), gammaId, modType, value);
+               setVersionData(change.getFirstNonCurrentChange(), gammaId, modType, value);
                isFirstSet = true;
             }
 
@@ -217,7 +217,7 @@ public class LoadDeltasBetweenBranches extends DatabaseCallable<List<ChangeItem>
       }
    }
 
-   private void loadVersionData(ChangeVersion versionedChange, Long gammaId, ModificationType modType, String value) {
+   private void setVersionData(ChangeVersion versionedChange, Long gammaId, ModificationType modType, String value) {
       // Tolerates the case of having more than one version of an item on a
       // baseline transaction by picking the most recent one
       if (versionedChange.getGammaId() == null || versionedChange.getGammaId().compareTo(gammaId) < 0) {

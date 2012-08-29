@@ -45,6 +45,7 @@ import org.eclipse.osee.orcs.db.internal.callable.CreateBranchDatabaseTxCallable
 import org.eclipse.osee.orcs.db.internal.callable.ExportBranchDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.callable.ImportBranchDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeBranchDatabaseCallable;
+import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactory;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportItemFactory;
 import org.eclipse.osee.orcs.db.internal.loader.IdFactory;
 import org.eclipse.osee.orcs.db.internal.transaction.CheckProvider;
@@ -74,8 +75,9 @@ public class BranchDataStoreImpl implements BranchDataStore {
 
    private final IdFactory idFactory;
    private final DataLoaderFactory dataLoader;
+   private final MissingChangeItemFactory missingChangeItemFactory;
 
-   public BranchDataStoreImpl(Log logger, IOseeDatabaseService dbService, IdentityService identityService, IOseeCachingService cachingService, SystemPreferences preferences, ExecutorAdmin executorAdmin, IResourceManager resourceManager, IOseeModelFactoryService modelFactory, IOseeModelingService typeModelService, IdFactory idFactory, DataLoaderFactory dataLoader) {
+   public BranchDataStoreImpl(Log logger, IOseeDatabaseService dbService, IdentityService identityService, IOseeCachingService cachingService, SystemPreferences preferences, ExecutorAdmin executorAdmin, IResourceManager resourceManager, IOseeModelFactoryService modelFactory, IOseeModelingService typeModelService, IdFactory idFactory, DataLoaderFactory dataLoader, MissingChangeItemFactory missingChangeItemFactory) {
       super();
       this.logger = logger;
       this.dbService = dbService;
@@ -88,6 +90,7 @@ public class BranchDataStoreImpl implements BranchDataStore {
       this.typeModelService = typeModelService;
       this.idFactory = idFactory;
       this.dataLoader = dataLoader;
+      this.missingChangeItemFactory = missingChangeItemFactory;
    }
 
    @Override
@@ -107,7 +110,8 @@ public class BranchDataStoreImpl implements BranchDataStore {
    @Override
    public Callable<TransactionRecord> commitBranch(String sessionId, ArtifactReadable committer, Branch source, Branch destination) {
       return new CommitBranchDatabaseCallable(logger, dbService, cachingService.getBranchCache(),
-         cachingService.getTransactionCache(), modelFactory.getTransactionFactory(), committer, source, destination);
+         cachingService.getTransactionCache(), modelFactory.getTransactionFactory(), committer, source, destination,
+         missingChangeItemFactory, sessionId);
    }
 
    @Override
@@ -118,14 +122,14 @@ public class BranchDataStoreImpl implements BranchDataStore {
    @Override
    public Callable<List<ChangeItem>> compareBranch(String sessionId, TransactionRecord sourceTx, TransactionRecord destinationTx) {
       return new CompareDatabaseCallable(logger, dbService, cachingService.getBranchCache(),
-         cachingService.getTransactionCache(), sourceTx, destinationTx);
+         cachingService.getTransactionCache(), sourceTx, destinationTx, missingChangeItemFactory, sessionId);
    }
 
    @Override
    public Callable<List<ChangeItem>> compareBranch(String sessionId, Branch branch) throws OseeCoreException {
       TransactionCache txCache = cachingService.getTransactionCache();
       return new CompareDatabaseCallable(logger, dbService, cachingService.getBranchCache(), txCache,
-         branch.getBaseTransaction(), txCache.getHeadTransaction(branch));
+         branch.getBaseTransaction(), txCache.getHeadTransaction(branch), missingChangeItemFactory, sessionId);
    }
 
    @Override

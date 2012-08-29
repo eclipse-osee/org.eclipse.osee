@@ -57,23 +57,25 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
 
    @Override
    public boolean equals(Object obj) {
-      if (obj instanceof Change) {
-         Change change = (Change) obj;
-         boolean areDeltasEqual = false;
-         if (change.getDelta() != null && getDelta() != null) {
-            areDeltasEqual = change.getDelta().equals(getDelta());
-         } else if (change.getDelta() == null && getDelta() == null) {
-            areDeltasEqual = true;
+      if (getChangeArtifact() != null) {
+         if (obj instanceof Change) {
+            Change change = (Change) obj;
+            boolean areDeltasEqual = false;
+            if (change.getDelta() != null && getDelta() != null) {
+               areDeltasEqual = change.getDelta().equals(getDelta());
+            } else if (change.getDelta() == null && getDelta() == null) {
+               areDeltasEqual = true;
+            }
+            return areDeltasEqual && change.getArtId() == getArtId() &&
+            //
+            change.getGamma() == getGamma() &&
+            //
+            change.getChangeArtifact().equals(getChangeArtifact()) &&
+            //
+            change.getModificationType() == getModificationType() &&
+            //
+            change.getTxDelta().equals(getTxDelta());
          }
-         return areDeltasEqual && change.getArtId() == getArtId() &&
-         //
-         change.getGamma() == getGamma() &&
-         //
-         change.getChangeArtifact().equals(getChangeArtifact()) &&
-         //
-         change.getModificationType() == getModificationType() &&
-         //
-         change.getTxDelta().equals(getTxDelta());
       }
       return false;
    }

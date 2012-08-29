@@ -27,6 +27,7 @@ import org.eclipse.osee.orcs.db.internal.change.AddArtifactChangeDataCallable;
 import org.eclipse.osee.orcs.db.internal.change.ComputeNetChangeCallable;
 import org.eclipse.osee.orcs.db.internal.change.LoadDeltasBetweenBranches;
 import org.eclipse.osee.orcs.db.internal.change.LoadDeltasBetweenTxsOnTheSameBranch;
+import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactory;
 
 public class CompareDatabaseCallable extends DatabaseCallable<List<ChangeItem>> {
 
@@ -34,13 +35,17 @@ public class CompareDatabaseCallable extends DatabaseCallable<List<ChangeItem>> 
    private final BranchCache branchCache;
    private final TransactionRecord sourceTx;
    private final TransactionRecord destinationTx;
+   private final MissingChangeItemFactory missingChangeItemFactory;
+   private final String sessionId;
 
-   public CompareDatabaseCallable(Log logger, IOseeDatabaseService service, BranchCache branchCache, TransactionCache txCache, TransactionRecord sourceTx, TransactionRecord destinationTx) {
+   public CompareDatabaseCallable(Log logger, IOseeDatabaseService service, BranchCache branchCache, TransactionCache txCache, TransactionRecord sourceTx, TransactionRecord destinationTx, MissingChangeItemFactory missingChangeItemFactory, String sessionId) {
       super(logger, service);
       this.branchCache = branchCache;
       this.txCache = txCache;
       this.sourceTx = sourceTx;
       this.destinationTx = destinationTx;
+      this.missingChangeItemFactory = missingChangeItemFactory;
+      this.sessionId = sessionId;
    }
 
    private TransactionCache getTxCache() {
@@ -64,6 +69,7 @@ public class CompareDatabaseCallable extends DatabaseCallable<List<ChangeItem>> 
       }
       List<ChangeItem> changes = callAndCheckForCancel(callable);
 
+      changes.addAll(missingChangeItemFactory.createMissingChanges(changes, sourceTx, destinationTx, sessionId));
       Callable<List<ChangeItem>> computeChanges = new ComputeNetChangeCallable(changes);
       changes = callAndCheckForCancel(computeChanges);
 

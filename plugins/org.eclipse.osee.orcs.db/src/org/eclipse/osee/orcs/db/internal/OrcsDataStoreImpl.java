@@ -27,6 +27,8 @@ import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.db.internal.branch.BranchDataStoreImpl;
+import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactory;
+import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.loader.DataModuleFactory;
 import org.eclipse.osee.orcs.db.internal.loader.DataProxyFactoryProvider;
 import org.eclipse.osee.orcs.db.internal.loader.IdFactory;
@@ -105,9 +107,13 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
       dataModuleFactory = new DataModuleFactory(logger);
       dataModuleFactory.create(dbService, idFactory, identityService, sqlProvider, cacheService, proxyProvider);
 
+      MissingChangeItemFactory missingChangeItemFactory =
+         new MissingChangeItemFactoryImpl(dataModuleFactory.getDataLoaderFactory(), identityService);
+
       branchStore =
          new BranchDataStoreImpl(logger, dbService, identityService, cacheService, preferences, executorAdmin,
-            resourceManager, modelFactory, typeModelService, idFactory, dataModuleFactory.getDataLoaderFactory());
+            resourceManager, modelFactory, typeModelService, idFactory, dataModuleFactory.getDataLoaderFactory(),
+            missingChangeItemFactory);
 
       dataStoreAdmin = new DataStoreAdminImpl(logger, dbService, identityService, branchStore, preferences);
 

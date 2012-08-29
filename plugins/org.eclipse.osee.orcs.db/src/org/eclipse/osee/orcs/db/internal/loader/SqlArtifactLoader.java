@@ -135,14 +135,14 @@ public class SqlArtifactLoader {
    }
 
    protected void loadRelations(ArtifactBuilder builder, Criteria<LoadOptions> criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
-      if (!loadContext.getOptions().isHistorical()) { // Don't load historical relations
-         LoadLevel loadLevel = loadContext.getOptions().getLoadLevel();
-         if (isRelationLoadingAllowed(loadLevel)) {
-            RelationDataHandler relHandler = builder.createRelationDataHandler();
-            writeSql(criteria, loadContext);
-            load(relationProcessor, relHandler, loadContext, fetchSize);
-         }
+      //      if (!loadContext.getOptions().isHistorical()) { // Don't load historical relations
+      LoadLevel loadLevel = loadContext.getOptions().getLoadLevel();
+      if (isRelationLoadingAllowed(loadLevel)) {
+         RelationDataHandler relHandler = builder.createRelationDataHandler();
+         writeSql(criteria, loadContext);
+         load(relationProcessor, relHandler, loadContext, fetchSize);
       }
+      //      }
    }
 
    protected <D extends OrcsData, F extends VersionObjectFactory, H extends OrcsDataHandler<D>> void load(LoadProcessor<D, F, H> processor, H handler, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {

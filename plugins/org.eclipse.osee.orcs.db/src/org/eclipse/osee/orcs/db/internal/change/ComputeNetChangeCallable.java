@@ -85,12 +85,6 @@ public class ComputeNetChangeCallable extends CancellableCallable<List<ChangeIte
    }
 
    private void checkForInvalidStates(ChangeItem change) throws OseeCoreException {
-      // check for case where destination branch is missing an artifact that was modified (not new) on the source branch
-      if (!change.getDestinationVersion().isValid() && change.getBaselineVersion().isValid()) {
-         throw new OseeStateException(
-            "Attemping to change an artifact that is not on the destination.  Check for an uncommitted branch in the source hierarchy that is not in the destination hierarchy. [%s]",
-            change);
-      }
 
       if (change.getDestinationVersion().isValid() && ChangeItemUtil.isDeleted(change.getDestinationVersion())) {
          throw new OseeStateException("Destination was deleted - source should not modify [%s] ", change);

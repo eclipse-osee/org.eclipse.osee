@@ -43,7 +43,7 @@ public class LoadExecutor extends AbstractLoadExecutor {
       checkCancelled(cancellation);
 
       ArtifactJoinQuery join = JoinUtility.createArtifactJoinQuery(getDatabaseService());
-      Integer transactionId = -1;
+      Integer transactionId = options.getFromTransaction();
       for (Integer artId : artifactIds) {
          join.add(artId, branchId, transactionId);
       }
