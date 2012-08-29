@@ -10,9 +10,15 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XListViewer;
 /**
  * @author Donald G. Dunne
  */
-public class VersionList extends XListViewer {
+public class XVersionList extends XListViewer {
 
-   public VersionList(String displayLabel) {
+   public static final String WIDGET_ID = "XVersionList";
+
+   public XVersionList() {
+      this("Versions");
+   }
+
+   public XVersionList(String displayLabel) {
       super(displayLabel);
       setLabelProvider(new AtsObjectLabelProvider());
       setContentProvider(new ArrayContentProvider());

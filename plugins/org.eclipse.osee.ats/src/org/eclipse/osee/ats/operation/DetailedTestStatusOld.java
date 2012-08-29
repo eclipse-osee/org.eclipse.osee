@@ -46,7 +46,7 @@ import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.util.VersionList;
+import org.eclipse.osee.ats.util.XVersionList;
 import org.eclipse.osee.ats.util.widgets.XAtsProgramComboWidget;
 import org.eclipse.osee.define.traceability.BranchTraceabilityOperation;
 import org.eclipse.osee.define.traceability.RequirementTraceabilityData;
@@ -112,7 +112,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
    private XBranchSelectWidget requirementsBranchWidget;
    private XBranchSelectWidget scriptsBranchWidget;
    private XBranchSelectWidget testProcedureBranchWidget;
-   private VersionList versionsListViewer;
+   private XVersionList versionsListViewer;
 
    private IOseeBranch selectedBranch;
    private IAtsProgram selectedProgram;
@@ -535,7 +535,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
       String widgetLabel = xWidget.getLabel();
 
       if (widgetLabel.equals("Versions")) {
-         versionsListViewer = (VersionList) xWidget;
+         versionsListViewer = (XVersionList) xWidget;
       } else if (widgetLabel.equals("Requirements Branch")) {
          requirementsBranchWidget = (XBranchSelectWidget) xWidget;
       } else if (widgetLabel.equals("Test Results Branch")) {
@@ -598,7 +598,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
       StringBuilder sb = new StringBuilder();
       sb.append("<xWidgets>");
       sb.append("<XWidget xwidgetType=\"XAtsProgramComboWidget\" horizontalLabel=\"true\" displayName=\"Program\" />");
-      sb.append("<XWidget xwidgetType=\"XArtifactList\" displayName=\"Versions\" multiSelect=\"true\" />");
+      sb.append("<XWidget xwidgetType=\"XVersionList\" displayName=\"Versions\" multiSelect=\"true\" />");
       sb.append("<XWidget xwidgetType=\"XText\" displayName=\"Script Root Directory\" defaultValue=\"C:/UserData/workspaceScripts\" />");
       sb.append("<XWidget xwidgetType=\"XLabel\" displayName=\"or (Note: If traceability branch is selected, requirements branch is not used as they will be pulled from the traceability branch)\"/>");
       sb.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Traceability Branch\" toolTip=\"Select a requirements branch.\" />");

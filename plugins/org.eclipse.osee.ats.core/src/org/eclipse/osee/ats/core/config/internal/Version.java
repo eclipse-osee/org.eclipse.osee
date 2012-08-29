@@ -125,7 +125,12 @@ public class Version extends AtsObject implements IAtsVersion {
          return baselineBranchGuid;
       } else {
          try {
-            return AtsVersionService.get().getTeamDefinition(this).getTeamBranchGuid();
+            IAtsTeamDefinition teamDef = AtsVersionService.get().getTeamDefinition(this);
+            if (teamDef != null) {
+               return teamDef.getTeamBranchGuid();
+            } else {
+               return null;
+            }
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             return null;

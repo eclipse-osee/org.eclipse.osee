@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.core.client.review.role.AtsXUserRoleValidator;
 import org.eclipse.osee.ats.core.client.validator.AtsOperationalImpactValidator;
 import org.eclipse.osee.ats.core.client.validator.AtsOperationalImpactWithWorkaroundValidator;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.util.XVersionList;
 import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.ats.util.widgets.defect.XDefectViewer;
 import org.eclipse.osee.ats.util.widgets.role.XUserRoleViewer;
@@ -26,8 +27,8 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelGroupSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IXWidgetProvider;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 
 /**
  * @author Donald G. Dunne
@@ -77,6 +78,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
+      } else if (widgetName.equals(XVersionList.WIDGET_ID)) {
+         return new XVersionList();
       }
       return toReturn;
    }

@@ -46,7 +46,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.util.VersionList;
+import org.eclipse.osee.ats.util.XVersionList;
 import org.eclipse.osee.ats.util.widgets.XAtsProgramComboWidget;
 import org.eclipse.osee.define.traceability.report.RequirementStatus;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -105,7 +105,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    private HashCollection<String, Artifact> requirementNameToTestProcedures;
 
    private XBranchSelectWidget reportBranchWidget;
-   private VersionList versionsListViewer;
+   private XVersionList versionsListViewer;
 
    private IOseeBranch selectedBranch;
    private IAtsProgram selectedProgram;
@@ -590,7 +590,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       String widgetLabel = xWidget.getLabel();
 
       if (widgetLabel.equals("Versions")) {
-         versionsListViewer = (VersionList) xWidget;
+         versionsListViewer = (XVersionList) xWidget;
       } else if (widgetLabel.equals("Requirements Branch")) {
          reportBranchWidget = (XBranchSelectWidget) xWidget;
       }
@@ -647,7 +647,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       StringBuilder sb = new StringBuilder();
       sb.append("<xWidgets>");
       sb.append("<XWidget xwidgetType=\"XAtsProgramComboWidget\" horizontalLabel=\"true\" displayName=\"Program\" />");
-      sb.append("<XWidget xwidgetType=\"XArtifactList\" displayName=\"Versions\" multiSelect=\"true\" />");
+      sb.append("<XWidget xwidgetType=\"XVersionList\" displayName=\"Versions\" multiSelect=\"true\" />");
       sb.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Requirements Branch\" toolTip=\"Select a requirements branch.\" />");
       sb.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Test Results Branch\" toolTip=\"Select a scripts results branch.\" />");
       sb.append("</xWidgets>");
