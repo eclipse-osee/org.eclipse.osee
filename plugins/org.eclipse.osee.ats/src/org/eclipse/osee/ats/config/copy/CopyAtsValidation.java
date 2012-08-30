@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -53,11 +54,12 @@ public class CopyAtsValidation {
 
    private void performValidateAtsDatabaseChecks() throws OseeCoreException {
       HashCollection<String, String> testNameToResultsMap = new HashCollection<String, String>();
+      CountingMap<String> testNameToTimeSpentMap = new CountingMap<String>();
 
       // Validate AIs to TeamDefs
       Set<Artifact> aias = new HashSet<Artifact>();
       aias.addAll(AtsObjectsClient.getArtifacts(ActionableItems.getActionableItemsFromItemAndChildren(configData.getActionableItem())));
-      ValidateAtsDatabase.testActionableItemToTeamDefinition(testNameToResultsMap, aias);
+      ValidateAtsDatabase.testActionableItemToTeamDefinition(aias, testNameToResultsMap, testNameToTimeSpentMap);
 
       // Validate TeamDefs have Workflow Definitions
       Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>();

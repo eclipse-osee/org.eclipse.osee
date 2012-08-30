@@ -225,11 +225,12 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             testReviewsHaveValidDefectAndRoleXml(artifacts);
             testTeamWorkflows(artifacts);
             testAtsBranchManager(artifacts);
-            testTeamDefinitions(artifacts);
-            testVersionArtifacts(artifacts);
+            testTeamDefinitions(artifacts, testNameToResultsMap, testNameToTimeSpentMap);
+            testVersionArtifacts(artifacts, testNameToResultsMap, testNameToTimeSpentMap);
+            testParallelConfig(artifacts, testNameToResultsMap, testNameToTimeSpentMap);
             testStateMachineAssignees(artifacts);
             testAtsLogs(artifacts);
-            testActionableItemToTeamDefinition(artifacts);
+            testActionableItemToTeamDefinition(artifacts, testNameToResultsMap, testNameToTimeSpentMap);
 
             for (IAtsHealthCheck atsHealthCheck : AtsHealthCheck.getAtsHealthCheckItems()) {
                atsHealthCheck.validateAtsDatabase(artifacts, testNameToResultsMap, testNameToTimeSpentMap);
@@ -241,7 +242,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
          // Log resultMap data into xResultData
          addResultsMapToResultData(xResultData, testNameToResultsMap);
-         addTestTimeMapToResultData(xResultData);
+         addTestTimeMapToResultData(xResultData, testNameToTimeSpentMap);
       } finally {
          OseeEventManager.setDisableEvents(false);
       }
@@ -460,7 +461,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
    }
 
-   private void addTestTimeMapToResultData(XResultData xResultData) {
+   public static void addTestTimeMapToResultData(XResultData xResultData, CountingMap<String> testNameToTimeSpentMap) {
       xResultData.log("\n\nTime Spent in Tests");
       long totalTime = 0;
       for (Entry<String, MutableInteger> entry : testNameToTimeSpentMap.getCounts()) {
@@ -571,7 +572,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       testNameToTimeSpentMap.put(testName, spent);
    }
 
-   private void testVersionArtifacts(Collection<Artifact> artifacts) {
+   public static void testVersionArtifacts(Collection<Artifact> artifacts, HashCollection<String, String> testNameToResultsMap, CountingMap<String> testNameToTimeSpentMap) {
       Date date = new Date();
       for (Artifact artifact : artifacts) {
          if (artifact.isDeleted()) {
@@ -583,8 +584,14 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                try {
                   String parentBranchGuid = version.getBaslineBranchGuid();
                   if (Strings.isValid(parentBranchGuid)) {
-                     validateBranchGuid(version, parentBranchGuid);
+                     validateBranchGuid(version, parentBranchGuid, testNameToResultsMap, testNameToTimeSpentMap);
                   }
+
+                  if (AtsVersionService.get().getTeamDefinition(version) == null) {
+                     testNameToResultsMap.put("testVersionArtifacts",
+                        "Error: " + version.toStringWithId() + " not related to Team Definition");
+                  }
+
                } catch (Exception ex) {
                   testNameToResultsMap.put(
                      "testVersionArtifacts",
@@ -596,7 +603,36 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       logTestTimeSpent(date, "testVersionArtifacts", testNameToTimeSpentMap);
    }
 
-   private void testTeamDefinitions(Collection<Artifact> artifacts) {
+   public static void testParallelConfig(List<Artifact> artifacts, HashCollection<String, String> testNameToResultsMap, CountingMap<String> testNameToTimeSpentMap) {
+      Date date = new Date();
+      for (Artifact artifact : artifacts) {
+         if (artifact.isDeleted()) {
+            continue;
+         }
+         if (artifact.isOfType(AtsArtifactTypes.Version)) {
+            IAtsVersion version = AtsConfigCache.instance.getSoleByGuid(artifact.getGuid(), IAtsVersion.class);
+            for (IAtsVersion parallelVersion : version.getParallelVersions()) {
+               if (parallelVersion != null) {
+                  try {
+                     String parentBranchGuid = parallelVersion.getBaslineBranchGuid();
+                     if (!Strings.isValid(parentBranchGuid)) {
+                        testNameToResultsMap.put(
+                           "testParallelConfig",
+                           "Error: [" + parallelVersion.toStringWithId() + "] in parallel config without parent branch guid");
+                     }
+                  } catch (Exception ex) {
+                     testNameToResultsMap.put(
+                        "testParallelConfig",
+                        "Error: " + version.getName() + " exception testing testVersionArtifacts: " + ex.getLocalizedMessage());
+                  }
+               }
+            }
+         }
+      }
+      logTestTimeSpent(date, "testParallelConfig", testNameToTimeSpentMap);
+   }
+
+   public static void testTeamDefinitions(Collection<Artifact> artifacts, HashCollection<String, String> testNameToResultsMap, CountingMap<String> testNameToTimeSpentMap) {
       Date date = new Date();
       for (Artifact art : artifacts) {
          if (art.isDeleted()) {
@@ -607,7 +643,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             try {
                String parentBranchGuid = teamDef.getBaslineBranchGuid();
                if (Strings.isValid(parentBranchGuid)) {
-                  validateBranchGuid(teamDef, parentBranchGuid);
+                  validateBranchGuid(teamDef, parentBranchGuid, testNameToResultsMap, testNameToTimeSpentMap);
                }
             } catch (Exception ex) {
                testNameToResultsMap.put("testTeamDefinitionss",
@@ -671,7 +707,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       logTestTimeSpent(date, "testAtsBranchManager", testNameToTimeSpentMap);
    }
 
-   private void validateBranchGuid(IAtsConfigObject name, String parentBranchGuid) {
+   public static void validateBranchGuid(IAtsConfigObject name, String parentBranchGuid, HashCollection<String, String> testNameToResultsMap, CountingMap<String> testNameToTimeSpentMap) {
       Date date = new Date();
       try {
          Branch branch = BranchManager.getBranchByGuid(parentBranchGuid);
@@ -920,13 +956,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       logTestTimeSpent(date, "testTasksHaveParentWorkflow", testNameToTimeSpentMap);
    }
 
-   public void testActionableItemToTeamDefinition(Collection<Artifact> artifacts) {
+   public static void testActionableItemToTeamDefinition(Collection<Artifact> artifacts, HashCollection<String, String> testNameToResultsMap, CountingMap<String> testNameToTimeSpentMap) {
       Date date = new Date();
-      testActionableItemToTeamDefinition(testNameToResultsMap, artifacts);
-      logTestTimeSpent(date, "testActionableItemToTeamDefinition", testNameToTimeSpentMap);
-   }
-
-   public static void testActionableItemToTeamDefinition(HashCollection<String, String> testNameToResultsMap, Collection<Artifact> artifacts) {
       for (Artifact artifact : artifacts) {
          if (artifact.isDeleted()) {
             continue;
@@ -947,6 +978,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                "Error: Exception: " + ex.getLocalizedMessage());
          }
       }
+      logTestTimeSpent(date, "testActionableItemToTeamDefinition", testNameToTimeSpentMap);
+
    }
 
    private void testReviewsHaveValidDefectAndRoleXml(Collection<Artifact> artifacts) {

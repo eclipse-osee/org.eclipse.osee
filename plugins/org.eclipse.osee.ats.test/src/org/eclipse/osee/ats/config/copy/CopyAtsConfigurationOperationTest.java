@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.junit.AfterClass;
@@ -57,8 +58,9 @@ public class CopyAtsConfigurationOperationTest {
       Assert.assertEquals(5, ais.size());
 
       HashCollection<String, String> testNameToResultsMap = new HashCollection<String, String>();
+      CountingMap<String> testNameToTimeSpentMap = new CountingMap<String>();
       Collection<Artifact> aiaArts = AtsObjectsClient.getArtifacts(ais);
-      ValidateAtsDatabase.testActionableItemToTeamDefinition(testNameToResultsMap, aiaArts);
+      ValidateAtsDatabase.testActionableItemToTeamDefinition(aiaArts, testNameToResultsMap, testNameToTimeSpentMap);
       Assert.assertEquals(0, testNameToResultsMap.size());
    }
 

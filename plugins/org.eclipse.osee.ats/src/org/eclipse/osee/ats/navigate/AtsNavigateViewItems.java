@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.actions.NewGoal;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.config.ValidateAtsConfiguration;
 import org.eclipse.osee.ats.config.editor.AtsConfigResultsEditorNavigateItem;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
@@ -213,6 +214,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
 
          XNavigateItem healthItems = new XNavigateItemFolder(adminItems, "Health");
          new ValidateAtsDatabase(healthItems);
+         new ValidateAtsConfiguration(healthItems);
          new ValidateWorkspaceToDatabaseWorkDefinitions(healthItems);
 
          // new ActionNavigateItem(adminItems, new XViewerViewAction());

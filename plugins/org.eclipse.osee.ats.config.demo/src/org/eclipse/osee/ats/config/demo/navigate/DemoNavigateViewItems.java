@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.config.ValidateAtsConfiguration;
 import org.eclipse.osee.ats.config.demo.PopulateDemoActions;
 import org.eclipse.osee.ats.config.demo.internal.Activator;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
@@ -137,6 +138,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
 
       XNavigateItem healthItems = new XNavigateItem(adminItems, "Health", FrameworkImage.LASER);
       new ValidateAtsDatabase(healthItems);
+      new ValidateAtsConfiguration(healthItems);
       new CreateGoalTestDemoArtifacts(healthItems);
 
       XNavigateItem demoItems = new XNavigateItem(adminItems, "Demo Data", PluginUiImage.ADMIN);
