@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactTypeMultiChoiceSele
 import org.eclipse.osee.framework.ui.skynet.widgets.XAttributeTypeComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XAttributeTypeMultiChoiceSelect;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidgetDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidgetWithSave;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButton;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPush;
@@ -330,6 +331,8 @@ public final class FrameworkXWidgetProvider {
             XArtifactList artifactList = new XArtifactList(name);
             artifactList.setMultiSelect(xWidgetLayoutData.getXOptionHandler().contains(XOption.MULTI_SELECT));
             xWidget = artifactList;
+         } else if (xWidgetName.equals(XBranchSelectWidgetDam.WIDGET_ID)) {
+            xWidget = new XBranchSelectWidgetDam();
          } else if (xWidgetName.startsWith(XBranchSelectWidget.WIDGET_ID)) {
             XBranchSelectWidget widget = null;
 

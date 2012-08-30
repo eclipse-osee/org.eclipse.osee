@@ -43,7 +43,7 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
       if (attributeType.equals(AtsAttributeTypes.BaselineBranchGuid)) {
          layouts = super.getDynamicXWidgetLayoutData(attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
-         layoutData.setXWidgetName("XBranchSelectWidget");
+         layoutData.setXWidgetName("XBranchSelectWidgetDam");
       } else if (XFLAT_ATTRIBUTE_TYPES.contains(attributeType)) {
          layouts = super.getDynamicXWidgetLayoutData(attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
