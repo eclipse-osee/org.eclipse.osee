@@ -34,7 +34,9 @@ public abstract class LoadProcessor<D extends OrcsData, F extends VersionObjectF
       while (chStmt.next()) {
          rowCount++;
          D data = createData(conditions, factory, chStmt, options);
-         handler.onData(data);
+         if (data != null) {
+            handler.onData(data);
+         }
       }
       return rowCount;
    }
