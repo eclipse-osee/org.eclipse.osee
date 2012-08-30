@@ -211,29 +211,29 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             count += artifacts.size();
 
             testAtsAttributevaluesWithPersist(artifacts);
-            //            testCompletedCancelledStateAttributesSetWithPersist(artifacts);
-            //            testStateAttributeDuplications(artifacts);
-            //            testArtifactIds(artifacts);
-            //            testStateInWorkDefinition(artifacts);
-            //            testAttributeSetWorkDefinitionsExist(artifacts);
-            //            testAtsActionsHaveTeamWorkflow(artifacts);
-            //            testAtsWorkflowsHaveAction(artifacts);
-            //            testAtsWorkflowsHaveZeroOrOneVersion(artifacts);
-            //            testAtsWorkflowsValidVersion(artifacts);
-            //            testTasksHaveParentWorkflow(artifacts);
-            //            testReviewsHaveParentWorkflowOrActionableItems(artifacts);
-            //            testReviewsHaveValidDefectAndRoleXml(artifacts);
-            //            testTeamWorkflows(artifacts);
-            //            testAtsBranchManager(artifacts);
-            //            testTeamDefinitions(artifacts);
-            //            testVersionArtifacts(artifacts);
-            //            testStateMachineAssignees(artifacts);
-            //            testAtsLogs(artifacts);
-            //            testActionableItemToTeamDefinition(artifacts);
-            //
-            //            for (IAtsHealthCheck atsHealthCheck : AtsHealthCheck.getAtsHealthCheckItems()) {
-            //               atsHealthCheck.validateAtsDatabase(artifacts, testNameToResultsMap, testNameToTimeSpentMap);
-            //            }
+            testCompletedCancelledStateAttributesSetWithPersist(artifacts);
+            testStateAttributeDuplications(artifacts);
+            testArtifactIds(artifacts);
+            testStateInWorkDefinition(artifacts);
+            testAttributeSetWorkDefinitionsExist(artifacts);
+            testAtsActionsHaveTeamWorkflow(artifacts);
+            testAtsWorkflowsHaveAction(artifacts);
+            testAtsWorkflowsHaveZeroOrOneVersion(artifacts);
+            testAtsWorkflowsValidVersion(artifacts);
+            testTasksHaveParentWorkflow(artifacts);
+            testReviewsHaveParentWorkflowOrActionableItems(artifacts);
+            testReviewsHaveValidDefectAndRoleXml(artifacts);
+            testTeamWorkflows(artifacts);
+            testAtsBranchManager(artifacts);
+            testTeamDefinitions(artifacts);
+            testVersionArtifacts(artifacts);
+            testStateMachineAssignees(artifacts);
+            testAtsLogs(artifacts);
+            testActionableItemToTeamDefinition(artifacts);
+
+            for (IAtsHealthCheck atsHealthCheck : AtsHealthCheck.getAtsHealthCheckItems()) {
+               atsHealthCheck.validateAtsDatabase(artifacts, testNameToResultsMap, testNameToTimeSpentMap);
+            }
 
             if (monitor != null) {
                monitor.worked(1);
@@ -933,7 +933,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
          try {
             if (artifact.isOfType(AtsArtifactTypes.ActionableItem)) {
-               IAtsActionableItem aia = AtsConfigCache.instance.getSoleByGuid(artifact.getGuid(), IAtsActionableItem.class);
+               IAtsActionableItem aia =
+                  AtsConfigCache.instance.getSoleByGuid(artifact.getGuid(), IAtsActionableItem.class);
                if (aia.isActionable() && TeamDefinitions.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {
                   testNameToResultsMap.put(
                      "testActionableItemToTeamDefinition",
