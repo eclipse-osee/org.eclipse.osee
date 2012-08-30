@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
@@ -37,14 +38,14 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implements IOseeCache<K, T> {
    private final HashCollection<String, T> nameToTypeMap = new HashCollection<String, T>(true,
-      HashCollection.DEFAULT_COLLECTION_TYPE);
+      CopyOnWriteArrayList.class);
    private final Map<Integer, T> idToTypeMap = new ConcurrentHashMap<Integer, T>();
    private final Map<K, T> guidToTypeMap = new ConcurrentHashMap<K, T>();
 
    private final IOseeDataAccessor<K, T> dataAccessor;
    private final OseeCacheEnum cacheId;
    private final boolean uniqueName;
-   private boolean ensurePopulatedRanOnce;
+   private volatile boolean ensurePopulatedRanOnce;
    private long lastLoaded;
    private boolean ignoreEnsurePopulateException;
 
@@ -263,7 +264,7 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
    }
 
    @Override
-   public synchronized void ensurePopulated() throws OseeCoreException {
+   public void ensurePopulated() throws OseeCoreException {
       if (!ensurePopulatedRanOnce) {
          ensurePopulatedRanOnce = true;
          try {
@@ -295,7 +296,7 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
       return lastLoaded;
    }
 
-   private synchronized void setLastLoaded(long lastLoaded) {
+   private void setLastLoaded(long lastLoaded) {
       this.lastLoaded = lastLoaded;
    }
 
