@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -108,7 +109,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
    }
 
    public static Collection<IAtsVersion> createVersions(XResultData resultData, SkynetTransaction transaction, IAtsTeamDefinition teamDefHoldingVersions, Collection<String> newVersionNames) {
-      List<IAtsVersion> verArts = new ArrayList<IAtsVersion>();
+      List<IAtsVersion> versions = new ArrayList<IAtsVersion>();
       for (String newVer : newVersionNames) {
          if (!Strings.isValid(newVer)) {
             resultData.logError("Version name can't be blank");
@@ -123,14 +124,16 @@ public class CreateNewVersionItem extends XNavigateItemAction {
          try {
             for (String newVer : newVersionNames) {
                IAtsVersion version = AtsConfigCache.instance.getVersionFactory().createVersion(newVer);
+               versions.add(version);
+               Artifact verArt = new VersionArtifactStore(version).getArtifactOrCreate(transaction);
                AtsVersionService.get().setTeamDefinition(version, teamDefHoldingVersions);
-               new VersionArtifactStore(version).saveToArtifact(transaction);
+               verArt.persist(transaction);
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
-      return verArts;
+      return versions;
    }
 
    public IAtsTeamDefinition getReleaseableTeamDefinition() {
