@@ -46,7 +46,7 @@ public class ActionableItems {
    @SuppressWarnings("unchecked")
    public static <A extends IAtsActionableItem> void getChildrenOfType(IAtsActionableItem parentArtifact, Collection<A> children, Class<A> clazz, boolean recurse) throws OseeCoreException {
       for (IAtsActionableItem child : parentArtifact.getChildrenActionableItems()) {
-         if (child.getClass().equals(clazz)) {
+         if (clazz.isInstance(child)) {
             children.add((A) child);
             if (recurse) {
                getChildrenOfType(child, children, clazz, recurse);
