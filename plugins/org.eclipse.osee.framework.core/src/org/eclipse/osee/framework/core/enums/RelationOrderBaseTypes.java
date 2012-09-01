@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.core.enums;
 
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
@@ -19,36 +19,33 @@ import org.eclipse.osee.framework.core.util.Conditions;
 /**
  * @author Andrew M. Finkbeiner
  */
-public class RelationOrderBaseTypes extends NamedIdentity<String> implements IRelationSorterId {
-   public static final RelationOrderBaseTypes USER_DEFINED = new RelationOrderBaseTypes("AAT0xogoMjMBhARkBZQA",
-      "User Defined");
-   public static final RelationOrderBaseTypes LEXICOGRAPHICAL_ASC = new RelationOrderBaseTypes("AAT1QW4eVE+YuzsoHFAA",
-      "Lexicographical Ascending");
-   public static final RelationOrderBaseTypes LEXICOGRAPHICAL_DESC = new RelationOrderBaseTypes("AAmATn6R9m7VCXQQwuQA",
-      "Lexicographical Descending");
-   public static final RelationOrderBaseTypes UNORDERED = new RelationOrderBaseTypes("AAT1uKZpeDQExlygoIAA",
-      "Unordered");
-   public static final RelationOrderBaseTypes PREEXISTING = new RelationOrderBaseTypes("AE2ypryqoVzNl6EjpgAA",
-      "Preexisting");
+public class RelationOrderBaseTypes {
 
-   public static final RelationOrderBaseTypes[] values = new RelationOrderBaseTypes[] {
+   //@formatter:off
+   public static final IRelationSorterId USER_DEFINED = TokenFactory.createSorterId("AAT0xogoMjMBhARkBZQA", "User Defined");
+   public static final IRelationSorterId LEXICOGRAPHICAL_ASC = TokenFactory.createSorterId("AAT1QW4eVE+YuzsoHFAA", "Lexicographical Ascending");
+   public static final IRelationSorterId LEXICOGRAPHICAL_DESC = TokenFactory.createSorterId("AAmATn6R9m7VCXQQwuQA", "Lexicographical Descending");
+   public static final IRelationSorterId UNORDERED = TokenFactory.createSorterId("AAT1uKZpeDQExlygoIAA", "Unordered");
+   public static final IRelationSorterId PREEXISTING = TokenFactory.createSorterId("AE2ypryqoVzNl6EjpgAA", "Preexisting");
+   //@formatter:on
+
+   private static final IRelationSorterId[] values = new IRelationSorterId[] {
       USER_DEFINED,
       LEXICOGRAPHICAL_ASC,
       LEXICOGRAPHICAL_DESC,
       UNORDERED};
 
-   RelationOrderBaseTypes(String guid, String name) {
-      super(guid, name);
+   private RelationOrderBaseTypes() {
+      // Constants
    }
 
-   @Override
-   public String toString() {
-      return String.format("[%s,%s]", getName(), getGuid());
+   public static IRelationSorterId[] values() {
+      return values;
    }
 
-   public static RelationOrderBaseTypes getFromGuid(String guid) throws OseeCoreException {
+   public static IRelationSorterId getFromGuid(String guid) throws OseeCoreException {
       Conditions.checkNotNullOrEmpty(guid, "guid");
-      for (RelationOrderBaseTypes type : values) {
+      for (IRelationSorterId type : values()) {
          if (type.getGuid().equals(guid)) {
             return type;
          }
@@ -56,9 +53,9 @@ public class RelationOrderBaseTypes extends NamedIdentity<String> implements IRe
       throw new OseeArgumentException("Order type guid does not map to an enum");
    }
 
-   public static RelationOrderBaseTypes getFromOrderTypeName(String orderTypeName) throws OseeCoreException {
+   public static IRelationSorterId getFromOrderTypeName(String orderTypeName) throws OseeCoreException {
       Conditions.checkNotNullOrEmpty(orderTypeName, "orderTypeName");
-      for (RelationOrderBaseTypes type : values) {
+      for (IRelationSorterId type : values()) {
          if (type.getName().equals(orderTypeName)) {
             return type;
          }

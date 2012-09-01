@@ -127,7 +127,7 @@ public final class MockDataFactory {
    public static RelationType createRelationType(int index, IArtifactType artTypeA, IArtifactType artTypeB) {
       RelationTypeMultiplicity multiplicity =
          RelationTypeMultiplicity.values()[Math.abs(index % RelationTypeMultiplicity.values().length)];
-      String order = RelationOrderBaseTypes.values[index % RelationTypeMultiplicity.values().length].getGuid();
+      String order = RelationOrderBaseTypes.values()[index % RelationTypeMultiplicity.values().length].getGuid();
       return new RelationType(random.nextLong(), "relType_" + index, "sideA_" + index, "sideB_" + index, artTypeA,
          artTypeB, multiplicity, order);
    }

@@ -14,10 +14,8 @@ import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.LEXIC
 import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
 import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.UNORDERED;
 import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.USER_DEFINED;
-
 import java.util.Arrays;
 import java.util.List;
-
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -41,14 +39,14 @@ public class RelationSorterProviderTest {
       List<IRelationSorterId> actual = provider.getAllRelationOrderIds();
 
       List<IRelationSorterId> expected =
-         Collections.castAll(IRelationSorterId.class, Arrays.asList(RelationOrderBaseTypes.values));
+         Collections.castAll(IRelationSorterId.class, Arrays.asList(RelationOrderBaseTypes.values()));
       Assert.assertTrue(Collections.isEqual(expected, actual));
    }
 
    @Test
    public void testGetRelationOrder() throws OseeCoreException {
       RelationSorterProvider provider = new RelationSorterProvider();
-      for (RelationOrderBaseTypes baseType : RelationOrderBaseTypes.values) {
+      for (IRelationSorterId baseType : RelationOrderBaseTypes.values()) {
          IRelationSorter actual = provider.getRelationOrder(baseType.getGuid());
          Assert.assertEquals(baseType, actual.getSorterId());
          boolean matches = false;
