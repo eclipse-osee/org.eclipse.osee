@@ -90,7 +90,9 @@ public class OteNavigateView extends ViewPart {
 
          @Override
          public void run() {
-            xNavComp.refresh();
+        	 if(!xNavComp.isDisposed()){ 
+        		 xNavComp.refresh();
+        	 }
          }
       };
       refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(PluginUiImage.REFRESH));
@@ -99,6 +101,8 @@ public class OteNavigateView extends ViewPart {
    }
 
    public void refresh() {
-	  xNavComp.refresh();
+	  if(!xNavComp.isDisposed()){
+		  xNavComp.refresh();
+	  }
    }
 }
