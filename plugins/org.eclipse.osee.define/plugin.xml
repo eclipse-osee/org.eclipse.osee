@@ -250,4 +250,12 @@
           className="org.eclipse.osee.define.traceability.blam.AddTraceMarksToTraceUnits">
     </Operation>
  </extension>
+ <extension
+       id="FixDuplicateEnumeratedAttributes"
+       name="FixDuplicateEnumeratedAttributes"
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.blam.operation.FixDuplicateEnumeratedAttributes">
+    </Operation>
+ </extension>
 </plugin>

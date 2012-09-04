@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({TestPlanComplianceReportTest.class})
+@Suite.SuiteClasses({FixAttributeOperationTest.class, TestPlanComplianceReportTest.class})
 public class BlamTestSuite {
    //
 }

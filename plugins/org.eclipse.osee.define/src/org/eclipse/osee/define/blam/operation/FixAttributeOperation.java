@@ -1,0 +1,161 @@
+/*******************************************************************************
+ * Copyright (c) 2012 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.define.blam.operation;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.nebula.widgets.xviewer.Activator;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.LoadLevel;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+
+/**
+ * @author Angel Avila
+ */
+
+public class FixAttributeOperation extends AbstractOperation {
+
+   public interface Display {
+
+      void displayReport(String reportName, List<String[]> values);
+
+   }
+
+   private final Branch branch;
+   private final boolean commitChangesBool;
+   private final Display display;
+
+   public FixAttributeOperation(OperationLogger logger, Display display, Branch branch, boolean commitChangesBool) {
+      super("FixAttributes", Activator.PLUGIN_ID, logger);
+      this.branch = branch;
+      this.commitChangesBool = commitChangesBool;
+      this.display = display;
+   }
+
+   private void checkPreConditions() throws OseeCoreException {
+      Conditions.checkNotNull(branch, "branch");
+      // only allow working branches
+      Conditions.checkExpressionFailOnTrue(!branch.getBranchType().isWorkingBranch(),
+         "Invalid branch selected [%s]. Only working branches are allowed.", branch);
+   }
+
+   @Override
+   protected void doWork(IProgressMonitor monitor) throws Exception {
+      checkPreConditions();
+
+      monitor.subTask("Aquiring Artifacts");
+      HashCollection<Artifact, IAttributeType> artifactAttributeMap = getArtifactsWithDuplicates(monitor);
+
+      SkynetTransaction transaction = null;
+      if (commitChangesBool) {
+         transaction = TransactionManager.createTransaction(branch, "Fixing Duplicate Enumerated Types");
+      }
+      List<String[]> rowData = new ArrayList<String[]>();
+
+      for (Entry<Artifact, Collection<IAttributeType>> entry : artifactAttributeMap.entrySet()) {
+         Artifact artifact = entry.getKey();
+         for (IAttributeType attributeType : entry.getValue()) {
+            List<Object> attributeValues = artifact.getAttributeValues(attributeType);
+            if (hasDuplicates(attributeValues)) {
+               logf("duplicates found art[%s] attrType[%s] values[%s]", artifact, attributeType, attributeValues);
+
+               artifact.setAttributeFromValues(attributeType, attributeValues);
+               List<Object> attributeValuesFixed = artifact.getAttributeValues(attributeType);
+               if (transaction != null) {
+                  transaction.addArtifact(artifact);
+               }
+
+               rowData.add(new String[] {
+                  branch.getName(),
+                  artifact.getGuid(),
+                  artifact.getName(),
+                  attributeType.getName(),
+                  Collections.toString(", ", attributeValues),
+                  Collections.toString(", ", attributeValuesFixed)});
+            }
+         }
+      }
+
+      if (rowData.isEmpty()) {
+         rowData.add(new String[] {
+            "-- no duplicates found --",
+            "-- no duplicates found --",
+            "-- no duplicates found --",
+            "-- no duplicates found --",
+            "-- no duplicates found --",
+            "-- no duplicates found --"});
+      }
+
+      display.displayReport("Fix Duplicate Report", rowData);
+
+      if (transaction != null) {
+         transaction.execute();
+      } else {
+         // Remove dirty artifacts from Cache so we can perform operation again and still get latest artifacts from database
+         for (Artifact artifact : artifactAttributeMap.keySet()) {
+            ArtifactCache.deCache(artifact);
+         }
+      }
+   }
+
+   private HashCollection<Artifact, IAttributeType> getArtifactsWithDuplicates(IProgressMonitor monitor) throws OseeCoreException {
+      HashCollection<Artifact, IAttributeType> artifactAttributeMap =
+         new HashCollection<Artifact, IAttributeType>(false, HashSet.class);
+
+      List<Artifact> artifacts =
+         ArtifactQuery.getArtifactListFromBranch(branch, LoadLevel.FULL, DeletionFlag.EXCLUDE_DELETED);
+      checkForCancelledStatus(monitor);
+      monitor.subTask("Mapping Enumerated Attributes");
+
+      for (Artifact artifact : artifacts) {
+         List<Attribute<?>> attributes = artifact.getAttributes();
+         for (Attribute<?> attribute : attributes) {
+            checkForCancelledStatus(monitor);
+            AttributeType attributeType = attribute.getAttributeType();
+            if (attributeType.isEnumerated()) {
+               artifactAttributeMap.put(artifact, attributeType);
+            }
+         }
+      }
+      return artifactAttributeMap;
+   }
+
+   private boolean hasDuplicates(List<Object> attributeValues) {
+      boolean result = false;
+      Set<Object> set = new HashSet<Object>();
+      for (Object object : attributeValues) {
+         if (!set.add(object)) {
+            result = true;
+            break;
+         }
+      }
+      return result;
+   }
+}

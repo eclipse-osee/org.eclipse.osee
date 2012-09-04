@@ -8,7 +8,6 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.ats,
- 
  org.eclipse.osee.ats.config.demo,
  org.eclipse.osee.ats.config.demo.config,
  org.eclipse.osee.ats.core,
@@ -28,6 +27,7 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.coverage.model,
  org.eclipse.osee.coverage.navigate,
  org.eclipse.osee.define,
+ org.eclipse.osee.define.blam.operation,
  org.eclipse.osee.framework.access.test,
  org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.data,
