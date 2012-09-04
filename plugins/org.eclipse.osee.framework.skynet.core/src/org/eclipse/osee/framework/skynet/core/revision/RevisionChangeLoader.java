@@ -10,25 +10,36 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.revision;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeSql;
+import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
+import org.eclipse.osee.framework.skynet.core.change.ArtifactChangeBuilder;
+import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
+import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
+import org.eclipse.osee.framework.skynet.core.change.AttributeChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.ChangeBuilder;
+import org.eclipse.osee.framework.skynet.core.change.RelationChange;
+import org.eclipse.osee.framework.skynet.core.change.RelationChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.revision.acquirer.ArtifactChangeAcquirer;
 import org.eclipse.osee.framework.skynet.core.revision.acquirer.AttributeChangeAcquirer;
 import org.eclipse.osee.framework.skynet.core.revision.acquirer.RelationChangeAcquirer;
@@ -56,24 +67,10 @@ public final class RevisionChangeLoader {
    /**
     * @return Returns artifact, relation and attribute changes from a specific artifact
     */
-   public Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor, LoadChangeType... loadChangeTypes) throws OseeCoreException {
-      return getChangesPerArtifact(artifact, monitor, true, loadChangeTypes);
-   }
-
-   /**
-    * @return Returns artifact, relation and attribute changes from a specific artifact made on the current branch only
-    */
-   public Collection<Change> getChangesMadeOnCurrentBranch(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
-      return getChangesPerArtifact(artifact, monitor, false, LoadChangeType.artifact, LoadChangeType.attribute,
-         LoadChangeType.relation);
-   }
-
-   /**
-    * @return Returns artifact, relation and attribute changes from a specific artifact
-    */
-   private Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor, boolean recurseThroughBranchHierarchy, LoadChangeType... loadChangeTypes) throws OseeCoreException {
+   private Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor, LoadChangeType... loadChangeTypes) throws OseeCoreException {
       Branch branch = artifact.getFullBranch();
       Set<TransactionRecord> transactionIds = new LinkedHashSet<TransactionRecord>();
+      boolean recurseThroughBranchHierarchy = true;
       loadBranchTransactions(branch, artifact, transactionIds, TransactionManager.getHeadTransaction(branch),
          recurseThroughBranchHierarchy);
 
@@ -122,23 +119,24 @@ public final class RevisionChangeLoader {
     * creation.
     */
    private void loadChanges(Branch sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor, Artifact specificArtifact, Collection<Change> changes, LoadChangeType... loadChangeTypes) throws OseeCoreException {
-      @SuppressWarnings("unused")
-      //This is so weak references do not get collected from bulk loading
-      Collection<Artifact> bulkLoadedArtifacts;
-      ArrayList<ChangeBuilder> changeBuilders = new ArrayList<ChangeBuilder>();
-
-      Set<Integer> artIds = new HashSet<Integer>();
-      Set<Integer> newAndDeletedArtifactIds = new HashSet<Integer>();
-      boolean historical = sourceBranch == null;
-
       if (monitor == null) {
          monitor = new NullProgressMonitor();
       }
-
       monitor.beginTask("Find Changes", 100);
 
+      Set<Integer> artIds = new HashSet<Integer>();
+      Set<Integer> newAndDeletedArtifactIds = new HashSet<Integer>();
+      boolean isHistorical = sourceBranch == null;
+
+      ArrayList<ChangeBuilder> changeBuilders = new ArrayList<ChangeBuilder>();
       for (LoadChangeType changeType : loadChangeTypes) {
          switch (changeType) {
+            case artifact:
+               ArtifactChangeAcquirer artifactChangeAcquirer =
+                  new ArtifactChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds,
+                     changeBuilders, newAndDeletedArtifactIds);
+               changeBuilders = artifactChangeAcquirer.acquireChanges();
+               break;
             case attribute:
                AttributeChangeAcquirer attributeChangeAcquirer =
                   new AttributeChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds,
@@ -149,13 +147,8 @@ public final class RevisionChangeLoader {
                RelationChangeAcquirer relationChangeAcquirer =
                   new RelationChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds,
                      changeBuilders, newAndDeletedArtifactIds);
+
                changeBuilders = relationChangeAcquirer.acquireChanges();
-               break;
-            case artifact:
-               ArtifactChangeAcquirer artifactChangeAcquirer =
-                  new ArtifactChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds,
-                     changeBuilders, newAndDeletedArtifactIds);
-               changeBuilders = artifactChangeAcquirer.acquireChanges();
                break;
             default:
                break;
@@ -163,19 +156,76 @@ public final class RevisionChangeLoader {
       }
       monitor.subTask("Loading Artifacts from the Database");
 
-      Branch branch = historical ? transactionId.getBranch() : sourceBranch;
+      Branch branch = isHistorical ? transactionId.getBranch() : sourceBranch;
 
-      if (historical) {
-         bulkLoadedArtifacts = ArtifactQuery.getHistoricalArtifactListFromIds(artIds, transactionId, INCLUDE_DELETED);
-      } else {
-         bulkLoadedArtifacts = ArtifactQuery.getArtifactListFromIds(artIds, branch, INCLUDE_DELETED);
-      }
-
-      //We build the changes after the artifact loader has been run so we can take advantage of bulk loading.
-      for (ChangeBuilder builder : changeBuilders) {
-         changes.add(builder.build(branch));
-      }
+      Collection<Change> changesLoaded = getChanges(branch, isHistorical, changeBuilders);
+      changes.addAll(changesLoaded);
 
       monitor.done();
+   }
+
+   private CompositeKeyHashMap<TransactionRecord, Integer, Artifact> getBulkLoadedArtifacts(Branch branch, boolean isHistorical, List<ChangeBuilder> changeBuilders) throws OseeCoreException {
+      HashCollection<TransactionRecord, Integer> loadMap =
+         new HashCollection<TransactionRecord, Integer>(false, HashSet.class);
+      for (ChangeBuilder builder : changeBuilders) {
+         TransactionRecord endTx = builder.getTxDelta().getEndTx();
+         loadMap.put(endTx, builder.getArtId());
+         if (builder instanceof RelationChangeBuilder) {
+            RelationChangeBuilder relBuilder = (RelationChangeBuilder) builder;
+            loadMap.put(endTx, relBuilder.getbArtId());
+         }
+      }
+
+      CompositeKeyHashMap<TransactionRecord, Integer, Artifact> loadedMap =
+         new CompositeKeyHashMap<TransactionRecord, Integer, Artifact>();
+
+      for (Entry<TransactionRecord, Collection<Integer>> entry : loadMap.entrySet()) {
+         Collection<Artifact> artifacts;
+         if (isHistorical) {
+            artifacts =
+               ArtifactQuery.getHistoricalArtifactListFromIds(entry.getValue(), entry.getKey(),
+                  DeletionFlag.INCLUDE_DELETED);
+         } else {
+            artifacts = ArtifactQuery.getArtifactListFromIds(entry.getValue(), branch, DeletionFlag.INCLUDE_DELETED);
+         }
+         for (Artifact artifact : artifacts) {
+            loadedMap.put(entry.getKey(), artifact.getArtId(), artifact);
+         }
+      }
+      return loadedMap;
+   }
+
+   private Collection<Change> getChanges(Branch branch, boolean isHistorical, List<ChangeBuilder> changeBuilders) throws OseeCoreException {
+      CompositeKeyHashMap<TransactionRecord, Integer, Artifact> loadedMap =
+         getBulkLoadedArtifacts(branch, isHistorical, changeBuilders);
+
+      Collection<Change> changes = new ArrayList<Change>();
+      for (ChangeBuilder builder : changeBuilders) {
+         Change toReturn = null;
+         Artifact changeArtifact = loadedMap.get(builder.getTxDelta().getEndTx(), builder.getArtId());
+
+         ArtifactDelta delta = new ArtifactDelta(builder.getTxDelta(), changeArtifact, null);
+         if (builder instanceof ArtifactChangeBuilder) {
+            toReturn =
+               new ArtifactChange(branch, builder.getSourceGamma(), builder.getArtId(), builder.getTxDelta(),
+                  builder.getModType(), isHistorical, changeArtifact, delta);
+         } else if (builder instanceof AttributeChangeBuilder) {
+            AttributeChangeBuilder attrBuilder = (AttributeChangeBuilder) builder;
+            toReturn =
+               new AttributeChange(branch, attrBuilder.getSourceGamma(), attrBuilder.getArtId(),
+                  attrBuilder.getTxDelta(), attrBuilder.getModType(), attrBuilder.getIsValue(),
+                  attrBuilder.getWasValue(), attrBuilder.getAttrId(), attrBuilder.getAttributeType(),
+                  attrBuilder.getArtModType(), isHistorical, changeArtifact, delta);
+         } else if (builder instanceof RelationChangeBuilder) {
+            RelationChangeBuilder relBuilder = (RelationChangeBuilder) builder;
+            Artifact bArtifact = loadedMap.get(builder.getTxDelta().getEndTx(), relBuilder.getbArtId());
+            toReturn =
+               new RelationChange(branch, builder.getSourceGamma(), builder.getArtId(), builder.getTxDelta(),
+                  builder.getModType(), relBuilder.getbArtId(), relBuilder.getRelLinkId(), relBuilder.getRationale(),
+                  relBuilder.getRelationType(), isHistorical, changeArtifact, delta, bArtifact);
+         }
+         changes.add(toReturn);
+      }
+      return changes;
    }
 }

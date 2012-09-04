@@ -11,10 +11,10 @@
 package org.eclipse.osee.framework.skynet.core.revision;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.core.model.change.RelationChangeItem;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -79,7 +80,10 @@ public class ChangeDataLoader extends AbstractOperation {
          monitor.worked(calculateWork(0.80));
       } else {
          monitor.setTaskName("Bulk load changed artifacts");
-         Collection<Artifact> bulkLoaded = new ArrayList<Artifact>();
+
+         CompositeKeyHashMap<TransactionRecord, Integer, Artifact> bulkLoaded =
+            new CompositeKeyHashMap<TransactionRecord, Integer, Artifact>();
+
          bulkLoadArtifactDeltas(monitor, bulkLoaded, changeItems);
          monitor.worked(calculateWork(0.20));
 
@@ -88,44 +92,32 @@ public class ChangeDataLoader extends AbstractOperation {
          IOseeBranch startTxBranch = txDelta.getStartTx().getBranch();
          for (ChangeItem item : changeItems) {
             checkForCancelledStatus(monitor);
-            Change change = computeChange(startTxBranch, item);
+            Change change = computeChange(bulkLoaded, startTxBranch, item);
             changes.add(change);
             monitor.worked(calculateWork(workAmount));
          }
       }
    }
 
-   private Artifact getArtifactAtTx(int artId, TransactionRecord transaction) throws OseeCoreException {
-      Artifact artifactAtTransaction = null;
-      if (txDelta.areOnTheSameBranch()) {
-         artifactAtTransaction = ArtifactQuery.checkHistoricalArtifactFromId(artId, transaction, INCLUDE_DELETED);
-      } else {
-         artifactAtTransaction = ArtifactQuery.checkArtifactFromId(artId, transaction.getBranch(), INCLUDE_DELETED);
-      }
-      return artifactAtTransaction;
-   }
-
-   private Change computeChange(IOseeBranch startTxBranch, ChangeItem item) {
+   private Change computeChange(CompositeKeyHashMap<TransactionRecord, Integer, Artifact> bulkLoaded, IOseeBranch startTxBranch, ChangeItem item) {
       Change change = null;
       try {
          int artId = item.getArtId();
          Artifact startTxArtifact;
          if (txDelta.areOnTheSameBranch()) {
-            startTxArtifact = getArtifactAtTx(artId, txDelta.getStartTx());
+            startTxArtifact = bulkLoaded.get(txDelta.getStartTx(), artId);
          } else {
-            startTxArtifact =
-               ArtifactQuery.checkHistoricalArtifactFromId(artId,
-                  txDelta.getStartTx().getBranch().getBaseTransaction(), INCLUDE_DELETED);
+            startTxArtifact = bulkLoaded.get(txDelta.getStartTx().getBranch().getBaseTransaction(), artId);
          }
          Artifact endTxArtifact;
          if (txDelta.areOnTheSameBranch()) {
-            endTxArtifact = getArtifactAtTx(artId, txDelta.getEndTx());
+            endTxArtifact = bulkLoaded.get(txDelta.getEndTx(), artId);
          } else {
-            endTxArtifact = getArtifactAtTx(artId, txDelta.getStartTx());
+            endTxArtifact = bulkLoaded.get(txDelta.getStartTx(), artId);
          }
 
          ArtifactDelta artifactDelta = new ArtifactDelta(txDelta, startTxArtifact, endTxArtifact);
-         change = createChangeObject(item, txDelta, startTxBranch, artifactDelta);
+         change = createChangeObject(bulkLoaded, item, txDelta, startTxBranch, artifactDelta);
          change.setChangeItem(item);
 
       } catch (Exception ex) {
@@ -135,7 +127,7 @@ public class ChangeDataLoader extends AbstractOperation {
       return change;
    }
 
-   private Change createChangeObject(ChangeItem item, TransactionDelta txDelta, IOseeBranch startTxBranch, ArtifactDelta artifactDelta) throws OseeCoreException {
+   private Change createChangeObject(CompositeKeyHashMap<TransactionRecord, Integer, Artifact> bulkLoaded, ChangeItem item, TransactionDelta txDelta, IOseeBranch startTxBranch, ArtifactDelta artifactDelta) throws OseeCoreException {
       Change change = null;
 
       int itemId = item.getItemId();
@@ -178,7 +170,7 @@ public class ChangeDataLoader extends AbstractOperation {
          if (txDelta.areOnTheSameBranch()) {
             transaction = txDelta.getEndTx();
          }
-         Artifact endTxBArtifact = getArtifactAtTx(relationItem.getBArtId(), transaction);
+         Artifact endTxBArtifact = bulkLoaded.get(transaction, relationItem.getBArtId());
 
          change =
             new RelationChange(startTxBranch, itemGammaId, artId, txDelta, netModType, endTxBArtifact.getArtId(),
@@ -190,24 +182,29 @@ public class ChangeDataLoader extends AbstractOperation {
       return change;
    }
 
-   private void bulkLoadArtifactDeltas(IProgressMonitor monitor, Collection<Artifact> bulkLoaded, Collection<ChangeItem> changeItems) throws OseeCoreException {
+   private void bulkLoadArtifactDeltas(IProgressMonitor monitor, CompositeKeyHashMap<TransactionRecord, Integer, Artifact> bulkLoaded, Collection<ChangeItem> changeItems) throws OseeCoreException {
       checkForCancelledStatus(monitor);
       Set<Integer> artIds = asArtIds(changeItems);
-      if (txDelta.areOnTheSameBranch()) {
-         preloadArtifacts(bulkLoaded, artIds, txDelta.getStartTx(), false);
-      } else {
-         // Load current artifacts by id for each branch
-         preloadArtifacts(bulkLoaded, artIds, txDelta.getStartTx(), false);
+      preloadArtifacts(bulkLoaded, artIds, txDelta.getStartTx(), false);
+      if (!txDelta.getStartTx().equals(txDelta.getEndTx())) {
          preloadArtifacts(bulkLoaded, artIds, txDelta.getEndTx(), false);
+      }
+
+      if (!txDelta.areOnTheSameBranch()) {
+         preloadArtifacts(bulkLoaded, artIds, txDelta.getStartTx().getBranch().getBaseTransaction(), true);
       }
    }
 
-   private static void preloadArtifacts(Collection<Artifact> bulkLoaded, Collection<Integer> artIds, TransactionRecord tx, boolean isHistorical) throws OseeCoreException {
+   private static void preloadArtifacts(CompositeKeyHashMap<TransactionRecord, Integer, Artifact> bulkLoaded, Collection<Integer> artIds, TransactionRecord tx, boolean isHistorical) throws OseeCoreException {
       Branch branch = BranchManager.getBranch(tx.getBranchId());
+      List<Artifact> artifacts;
       if (isHistorical) {
-         bulkLoaded.addAll(ArtifactQuery.getHistoricalArtifactListFromIds(artIds, tx, INCLUDE_DELETED));
+         artifacts = ArtifactQuery.getHistoricalArtifactListFromIds(artIds, tx, INCLUDE_DELETED);
       } else {
-         bulkLoaded.addAll(ArtifactQuery.getArtifactListFromIds(artIds, branch, INCLUDE_DELETED));
+         artifacts = ArtifactQuery.getArtifactListFromIds(artIds, branch, INCLUDE_DELETED);
+      }
+      for (Artifact artifact : artifacts) {
+         bulkLoaded.put(tx, artifact.getArtId(), artifact);
       }
    }
 

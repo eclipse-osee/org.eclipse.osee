@@ -11,14 +11,10 @@
 package org.eclipse.osee.framework.skynet.core.change;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.type.RelationType;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Jeff C. Phillips
@@ -37,20 +33,20 @@ public class RelationChangeBuilder extends ChangeBuilder {
       this.relationType = relationType;
    }
 
-   @Override
-   public Change build(Branch branch) throws OseeCoreException {
-      Artifact bArtifact;
+   public int getbArtId() {
+      return bArtId;
+   }
 
-      if (isHistorical()) {
-         bArtifact =
-            ArtifactQuery.getHistoricalArtifactFromId(bArtId, getTxDelta().getEndTx(), DeletionFlag.INCLUDE_DELETED);
-      } else {
-         bArtifact = ArtifactQuery.getArtifactFromId(bArtId, getBranch());
-      }
+   public int getRelLinkId() {
+      return relLinkId;
+   }
 
-      return new RelationChange(branch, getSourceGamma(), getArtId(), getTxDelta(), getModType(), bArtId, relLinkId,
-         rationale, relationType, isHistorical(), loadArtifact(),
-         new ArtifactDelta(getTxDelta(), loadArtifact(), null), bArtifact);
+   public String getRationale() {
+      return rationale;
+   }
+
+   public RelationType getRelationType() {
+      return relationType;
    }
 
 }

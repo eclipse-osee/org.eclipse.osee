@@ -61,13 +61,6 @@ public final class ChangeManager {
    }
 
    /**
-    * Acquires changes for a particular artifact without recursing through branch hierarchy
-    */
-   public static Collection<Change> getChangesMadeOnCurrentBranch(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
-      return revsionChangeLoader.getChangesMadeOnCurrentBranch(artifact, monitor);
-   }
-
-   /**
     * Acquires changes for a particular artifact
     */
    public static Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {

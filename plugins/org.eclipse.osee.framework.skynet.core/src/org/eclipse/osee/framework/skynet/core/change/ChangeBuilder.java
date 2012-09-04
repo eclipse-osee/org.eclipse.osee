@@ -11,13 +11,9 @@
 package org.eclipse.osee.framework.skynet.core.change;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Jeff C. Phillips
@@ -73,19 +69,5 @@ public abstract class ChangeBuilder {
    public boolean isHistorical() {
       return isHistorical;
    }
-
-   protected Artifact loadArtifact() throws OseeCoreException {
-      Artifact artifact;
-
-      if (isHistorical()) {
-         artifact =
-            ArtifactQuery.getHistoricalArtifactFromId(getArtId(), getTxDelta().getEndTx(), DeletionFlag.INCLUDE_DELETED);
-      } else {
-         artifact = ArtifactQuery.getArtifactFromId(getArtId(), getBranch());
-      }
-      return artifact;
-   }
-
-   public abstract Change build(Branch branch) throws OseeCoreException;
 
 }

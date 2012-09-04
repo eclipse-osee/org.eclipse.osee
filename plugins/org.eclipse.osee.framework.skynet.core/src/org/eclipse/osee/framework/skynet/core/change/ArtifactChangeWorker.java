@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Jeff C. Phillips
- * @author Wilik Karol
+ * @author Wilk Karol
  */
 public class ArtifactChangeWorker implements IChangeWorker {
 
