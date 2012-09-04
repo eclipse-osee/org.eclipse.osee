@@ -82,16 +82,6 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
    public void addTables(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
       types = criteria.getTypes();
 
-      if (types.size() > 1) {
-         jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
-      }
-
-      List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
-      List<String> txs = writer.getAliases(TableEnum.TXS_TABLE);
-
-      attrAlias = writer.addTable(TableEnum.ATTRIBUTE_TABLE);
-      txsAlias1 = writer.addTable(TableEnum.TXS_TABLE);
-
       if (criteria.getStringOp().isTokenized()) {
          codedTags = new ArrayList<Long>();
          tokenize(criteria.getValue(), codedTags);
@@ -101,6 +91,15 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
             tagAliases.add(writer.addTable(TableEnum.SEARCH_TAGS_TABLE));
          }
       }
+      attrAlias = writer.addTable(TableEnum.ATTRIBUTE_TABLE);
+      if (types.size() > 1) {
+         jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
+      }
+
+      List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
+      List<String> txs = writer.getAliases(TableEnum.TXS_TABLE);
+
+      txsAlias1 = writer.addTable(TableEnum.TXS_TABLE);
 
       if (aliases.isEmpty()) {
          artAlias2 = writer.addTable(TableEnum.ARTIFACT_TABLE);

@@ -416,7 +416,7 @@ public class QueryEngineImplTest {
       String expected =
          "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + // 
          " FROM \n" + //
-         "osee_join_id jid1, osee_attribute att1, osee_txs txs1, osee_search_tags tag1, osee_search_tags tag2, osee_search_tags tag3, osee_artifact art1, osee_txs txs2\n" + //
+         "osee_search_tags tag1, osee_search_tags tag2, osee_search_tags tag3, osee_attribute att1, osee_join_id jid1, osee_txs txs1, osee_artifact art1, osee_txs txs2\n" + //
          " WHERE \n" + //
          "att1.attr_type_id = jid1.id AND jid1.query_id = ?\n" + //
          " AND \n" + //
@@ -456,7 +456,7 @@ public class QueryEngineImplTest {
       String expected =
          "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + // 
          " FROM \n" + //
-         "osee_attribute att1, osee_txs txs1, osee_artifact art1, osee_txs txs2, osee_join_id jid1, osee_attribute att2, osee_txs txs3, osee_search_tags tag1, osee_search_tags tag2, osee_search_tags tag3\n" + //
+         "osee_attribute att1, osee_txs txs1, osee_artifact art1, osee_txs txs2, osee_search_tags tag1, osee_search_tags tag2, osee_search_tags tag3, osee_attribute att2, osee_join_id jid1, osee_txs txs3\n" + //
          " WHERE \n" + //
          "att1.attr_type_id = ? AND att1.value = ?\n" + //
          " AND \n" + //
