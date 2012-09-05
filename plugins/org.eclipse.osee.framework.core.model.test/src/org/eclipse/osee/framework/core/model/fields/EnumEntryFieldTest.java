@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.fields;
 
-import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
@@ -150,22 +148,4 @@ public class EnumEntryFieldTest {
       field.set(Collections.singleton(eX));
    }
 
-   @Test
-   public void testPerformance() throws OseeCoreException {
-      long startTime = System.currentTimeMillis();
-      EnumEntryField field = new EnumEntryField(new ArrayList<OseeEnumEntry>());
-      for (int x = 0; x < 160; x++) {
-         /**
-          * Although in-efficient, this is how framework is adding enum entries, so base test and results off that
-          **/
-         List<OseeEnumEntry> entries = new ArrayList<OseeEnumEntry>();
-         entries.addAll(field.get());
-         entries.add(new OseeEnumEntry(GUID.create(), "name " + x, x));
-         field.set(entries);
-      }
-      long elapsedTime = System.currentTimeMillis() - startTime;
-      System.out.println(String.format("testPerformance took %dms", elapsedTime));
-      assertTrue("Loading EnumEntryField should take less than 500ms currently " + elapsedTime + "ms",
-         elapsedTime < 500);
-   }
 }
