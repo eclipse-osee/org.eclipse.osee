@@ -84,15 +84,21 @@ public class DataFactoryImpl implements DataFactory {
    public ArtifactData copy(IOseeBranch destination, ArtifactData source) throws OseeCoreException {
       ArtifactData copy = objectFactory.createCopy(source);
       copy.getVersion().setBranchId(idFactory.getBranchId(destination));
+      copy.getVersion().setTransactionId(RelationalConstants.TRANSACTION_SENTINEL);
       copy.setModType(ModificationType.NEW);
+      copy.getVersion().setHistorical(false);
+      copy.setLocalId(idFactory.getNextArtifactId());
+      copy.setGuid(GUID.create());
       return copy;
    }
 
    @Override
    public AttributeData introduce(IOseeBranch destination, AttributeData source) throws OseeCoreException {
-      AttributeData newVersion = copy(destination, source);
-      newVersion.getVersion().setHistorical(false);
+      AttributeData newVersion = objectFactory.createCopy(source);
+      newVersion.getVersion().setBranchId(idFactory.getBranchId(destination));
+      newVersion.getVersion().setTransactionId(RelationalConstants.TRANSACTION_SENTINEL);
       newVersion.setModType(ModificationType.INTRODUCED);
+      newVersion.getVersion().setHistorical(false);
       return newVersion;
    }
 
@@ -109,15 +115,20 @@ public class DataFactoryImpl implements DataFactory {
       int branchId = idFactory.getBranchId(destination);
       AttributeData copy = objectFactory.createCopy(orcsData);
       copy.getVersion().setBranchId(branchId);
+      copy.getVersion().setTransactionId(RelationalConstants.TRANSACTION_SENTINEL);
       copy.setModType(ModificationType.NEW);
+      copy.getVersion().setHistorical(false);
+      copy.setLocalId(RelationalConstants.DEFAULT_ITEM_ID);
       return copy;
    }
 
    @Override
    public ArtifactData introduce(IOseeBranch destination, ArtifactData source) throws OseeCoreException {
-      ArtifactData newVersion = copy(destination, source);
-      newVersion.getVersion().setHistorical(false);
+      ArtifactData newVersion = objectFactory.createCopy(source);
+      newVersion.getVersion().setBranchId(idFactory.getBranchId(destination));
+      newVersion.getVersion().setTransactionId(RelationalConstants.TRANSACTION_SENTINEL);
       newVersion.setModType(ModificationType.INTRODUCED);
+      newVersion.getVersion().setHistorical(false);
       return newVersion;
    }
 

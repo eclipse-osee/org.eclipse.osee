@@ -77,7 +77,8 @@ public class ArtifactFactory {
       for (IAttributeType attributeType : typeToCopy) {
          for (AttributeReadable<?> attributeSource : source.getAttributes(attributeType)) {
             AttributeData data = getAttributeData(attributeSource);
-            attributeFactory.copyAttribute(data, ontoBranch, copy);
+            Attribute<Object> copyAttribute = attributeFactory.copyAttribute(data, ontoBranch, copy);
+            copyAttribute.getOrcsData().setArtifactId(copy.getLocalId());
          }
       }
       copy.setLoaded(true);
@@ -103,12 +104,12 @@ public class ArtifactFactory {
    }
 
    public ArtifactImpl clone(ArtifactImpl source) throws OseeCoreException {
-      ArtifactData artifactData = factory.copy(source.getBranch(), source.getOrcsData());
+      ArtifactData artifactData = factory.clone(source.getOrcsData());
       ArtifactImpl copy = createArtifact(artifactData);
       for (IAttributeType attributeType : source.getExistingAttributeTypes()) {
          for (AttributeReadable<?> attributeSource : source.getAttributes(attributeType)) {
             AttributeData data = getAttributeData(attributeSource);
-            attributeFactory.copyAttribute(data, source.getBranch(), copy);
+            attributeFactory.cloneAttribute(data, copy);
          }
       }
       copy.setLoaded(true);

@@ -17,7 +17,6 @@ import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.VersionData;
-import org.eclipse.osee.orcs.db.internal.loader.RelationalConstants;
 import org.eclipse.osee.orcs.db.internal.loader.data.ArtifactObjectFactory;
 
 /**
@@ -43,9 +42,9 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
          // assumption: SQL is returning unwanted deleted artifacts only in the historical case
          if (!options.isHistorical() || options.areDeletedIncluded() || modType != ModificationType.DELETED) {
             long gamma = chStmt.getInt("gamma_id");
+            int txId = chStmt.getInt("transaction_id");
 
-            VersionData version =
-               factory.createVersion(branchId, RelationalConstants.TRANSACTION_SENTINEL, gamma, options.isHistorical());
+            VersionData version = factory.createVersion(branchId, txId, gamma, options.isHistorical());
 
             if (options.isHistorical()) {
                version.setStripeId(chStmt.getInt("stripe_transaction_id"));

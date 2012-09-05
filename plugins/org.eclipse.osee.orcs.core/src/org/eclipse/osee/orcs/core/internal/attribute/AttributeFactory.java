@@ -77,6 +77,12 @@ public class AttributeFactory {
       return destinationAttribute;
    }
 
+   public <T> Attribute<T> cloneAttribute(AttributeData source, AttributeManager destinationContainer) throws OseeCoreException {
+      AttributeData attributeData = dataFactory.clone(source);
+      Attribute<T> destinationAttribute = createAttribute(destinationContainer, attributeData, true, false);
+      return destinationAttribute;
+   }
+
    public <T> Attribute<T> introduceAttribute(AttributeData source, IOseeBranch ontoBranch, AttributeManager destination) throws OseeCoreException {
       Attribute<T> introducedAttribute = null;
       // In order to reflect attributes they must exist in the data store

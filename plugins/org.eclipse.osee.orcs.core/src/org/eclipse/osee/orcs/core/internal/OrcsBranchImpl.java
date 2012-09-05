@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.ReadableBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
@@ -132,12 +133,21 @@ public class OrcsBranchImpl implements OrcsBranch {
 
    @Override
    public ReadableBranch createTopLevelBranch(ArtifactReadable author, String branchName) throws OseeCoreException {
+      return createBranch(author, branchCache.getSystemRootBranch(), branchName, BranchType.BASELINE);
+   }
+
+   @Override
+   public ReadableBranch createChildBranch(ArtifactReadable author, IOseeBranch parent, String childBranchName) throws OseeCoreException {
+      return createBranch(author, branchCache.get(parent), childBranchName, BranchType.WORKING);
+   }
+
+   private ReadableBranch createBranch(ArtifactReadable author, Branch parent, String branchName, BranchType branchType) throws OseeCoreException {
       CreateBranchData createData = new CreateBranchData();
       String creationComment = String.format("Branch Creation for %s", branchName);
-      TransactionRecord headTransaction = txCache.getHeadTransaction(branchCache.getSystemRootBranch());
+      TransactionRecord headTransaction = txCache.getHeadTransaction(parent);
       createData.setGuid(GUID.create());
       createData.setName(branchName);
-      createData.setBranchType(BranchType.BASELINE);
+      createData.setBranchType(branchType);
       createData.setCreationComment(creationComment);
       createData.setFromTransaction(TokenFactory.createTransaction(headTransaction.getId()));
       createData.setUserArtifact(author);
@@ -153,11 +163,6 @@ public class OrcsBranchImpl implements OrcsBranch {
          OseeExceptions.wrapAndThrow(ex);
       }
       return branch;
-   }
-
-   @Override
-   public ReadableBranch createChildBranch(ArtifactReadable author, IOseeBranch parent, String childBranchName) {
-      return null;
    }
 
 }

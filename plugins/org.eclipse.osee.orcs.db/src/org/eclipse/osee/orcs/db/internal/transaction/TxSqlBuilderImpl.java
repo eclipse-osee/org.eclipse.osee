@@ -104,37 +104,41 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
 
    @Override
    public void visit(ArtifactData data) throws OseeCoreException {
-      boolean isRowAllowed = isGammaCreationAllowed(data);
-      updateTxValues(data);
-      if (isRowAllowed) {
-         updateGamma(data);
-         int localTypeId = getLocalTypeId(data.getTypeUuid());
-         addRow(SqlOrderEnum.ARTIFACTS, data.getLocalId(), localTypeId, data.getVersion().getGammaId(), data.getGuid(),
-            data.getHumanReadableId());
+      if (!isNewAndDeleted(data) && (!data.getVersion().isInStorage() || data.getLoadedTypeUuid() != data.getTypeUuid() || data.getModType() != data.getLoadedModType() || data.getModType() == ModificationType.REPLACED_WITH_VERSION)) {
+         boolean isRowAllowed = isGammaCreationAllowed(data);
+         updateTxValues(data);
+         if (isRowAllowed) {
+            updateGamma(data);
+            int localTypeId = getLocalTypeId(data.getTypeUuid());
+            addRow(SqlOrderEnum.ARTIFACTS, data.getLocalId(), localTypeId, data.getVersion().getGammaId(),
+               data.getGuid(), data.getHumanReadableId());
+         }
+         addTxs(SqlOrderEnum.ARTIFACTS, data);
       }
-      addTxs(SqlOrderEnum.ARTIFACTS, data);
    }
 
    @Override
    public void visit(AttributeData data) throws OseeCoreException {
-      boolean isRowAllowed = isGammaCreationAllowed(data);
-      updateTxValues(data);
-      if (isRowAllowed) {
-         updateGamma(data);
+      if (!isNewAndDeleted(data)) {
+         boolean isRowAllowed = isGammaCreationAllowed(data);
+         updateTxValues(data);
+         if (isRowAllowed) {
+            updateGamma(data);
 
-         DataProxy dataProxy = data.getDataProxy();
-         DaoToSql daoToSql = new DaoToSql(data.getVersion().getGammaId(), dataProxy, isGammaCreationAllowed(data));
-         addBinaryStore(daoToSql);
+            DataProxy dataProxy = data.getDataProxy();
+            DaoToSql daoToSql = new DaoToSql(data.getVersion().getGammaId(), dataProxy, isGammaCreationAllowed(data));
+            addBinaryStore(daoToSql);
 
-         if (RelationalConstants.DEFAULT_ITEM_ID == data.getLocalId()) {
-            int localId = idFactory.getNextAttributeId();
-            data.setLocalId(localId);
+            if (RelationalConstants.DEFAULT_ITEM_ID == data.getLocalId()) {
+               int localId = idFactory.getNextAttributeId();
+               data.setLocalId(localId);
+            }
+            int localTypeId = getLocalTypeId(data.getTypeUuid());
+            addRow(SqlOrderEnum.ATTRIBUTES, data.getLocalId(), localTypeId, data.getVersion().getGammaId(),
+               data.getArtifactId(), daoToSql.getValue(), daoToSql.getUri());
          }
-         int localTypeId = getLocalTypeId(data.getTypeUuid());
-         addRow(SqlOrderEnum.ATTRIBUTES, data.getLocalId(), localTypeId, data.getVersion().getGammaId(),
-            data.getArtifactId(), daoToSql.getValue(), daoToSql.getUri());
+         addTxs(SqlOrderEnum.ATTRIBUTES, data);
       }
-      addTxs(SqlOrderEnum.ATTRIBUTES, data);
    }
 
    @Override
@@ -169,6 +173,10 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
          }
          join.add(orcsData.getLocalId(), data.getBranchId(), RelationalConstants.TRANSACTION_SENTINEL);
       }
+   }
+
+   private boolean isNewAndDeleted(OrcsData data) {
+      return (!data.getVersion().isInStorage() && data.getModType().isDeleted());
    }
 
    private void updateTxValues(OrcsData orcsData) {

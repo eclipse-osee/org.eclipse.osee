@@ -54,7 +54,7 @@ public interface OrcsBranch {
 
    ReadableBranch createTopLevelBranch(ArtifactReadable author, String branchName) throws OseeCoreException;
 
-   ReadableBranch createChildBranch(ArtifactReadable author, IOseeBranch parent, String childBranchName);
+   ReadableBranch createChildBranch(ArtifactReadable author, IOseeBranch parent, String childBranchName) throws OseeCoreException;
 
    /////////////////////////////////////////////////////////////////////////
 

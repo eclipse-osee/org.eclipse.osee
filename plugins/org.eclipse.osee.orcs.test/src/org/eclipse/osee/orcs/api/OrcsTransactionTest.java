@@ -231,7 +231,7 @@ public class OrcsTransactionTest {
    }
 
    private void checkTransaction(TransactionRecord previousTx, TransactionRecord newTx, Branch branch, String comment, ArtifactReadable user) throws OseeCoreException {
-      Assert.assertEquals(previousTx.getId() + 1, newTx.getId());
+      Assert.assertTrue(previousTx.getId() < newTx.getId());
       Assert.assertEquals(comment, newTx.getComment());
       Assert.assertEquals(branch, newTx.getBranch());
       Assert.assertEquals(TransactionDetailsType.NonBaselined, newTx.getTxType());

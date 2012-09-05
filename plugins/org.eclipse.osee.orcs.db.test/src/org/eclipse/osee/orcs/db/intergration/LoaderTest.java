@@ -10,17 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.intergration;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.OseeTypeDefinition;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Active;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.UriGeneralStringData;
-import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Parent;
-import static org.eclipse.osee.orcs.db.intergration.IntegrationUtil.sort;
-import static org.eclipse.osee.orcs.db.intergration.IntegrationUtil.verifyData;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.*;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.*;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.*;
+import static org.eclipse.osee.orcs.db.intergration.IntegrationUtil.*;
+import static org.mockito.Mockito.*;
 import java.util.Iterator;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -107,9 +101,9 @@ public class LoaderTest {
       Iterator<ArtifactData> arts = artifactCaptor.getAllValues().iterator();
 
       //@formatter:off
-      verifyData(arts.next(), 6, "AEmKsTkcwh02JspUtYQA", "NYN46", ModificationType.NEW, OseeTypeDefinition.getGuid(), 2, -1, -1,  7L);
-      verifyData(arts.next(), 7, "AEmKsWXLBwVrvjcQvPwA", "7NPJR", ModificationType.NEW, OseeTypeDefinition.getGuid(), 2, -1, -1,  9L);
-      verifyData(arts.next(), 8, "AEmK_YNYKmA66ynLWVgA", "QHXXC", ModificationType.NEW, Folder.getGuid(), 2, -1, -1, 33L);
+      verifyData(arts.next(), 6, "AEmKsTkcwh02JspUtYQA", "NYN46", ModificationType.NEW, OseeTypeDefinition.getGuid(), 2, 5, -1,  7L);
+      verifyData(arts.next(), 7, "AEmKsWXLBwVrvjcQvPwA", "7NPJR", ModificationType.NEW, OseeTypeDefinition.getGuid(), 2, 5, -1,  9L);
+      verifyData(arts.next(), 8, "AEmK_YNYKmA66ynLWVgA", "QHXXC", ModificationType.NEW, Folder.getGuid(), 2, 6, -1, 33L);
       //@formatter:on
 
       sort(attributeCaptor.getAllValues());
@@ -161,9 +155,9 @@ public class LoaderTest {
       Iterator<ArtifactData> arts = artifactCaptor.getAllValues().iterator();
 
       //@formatter:off
-      verifyData(arts.next(), 6, "AEmKsTkcwh02JspUtYQA", "NYN46", ModificationType.NEW, OseeTypeDefinition.getGuid(), 2, -1, -1,  7L);
-      verifyData(arts.next(), 7, "AEmKsWXLBwVrvjcQvPwA", "7NPJR", ModificationType.NEW, OseeTypeDefinition.getGuid(), 2, -1, -1,  9L);
-      verifyData(arts.next(), 8, "AEmK_YNYKmA66ynLWVgA", "QHXXC", ModificationType.NEW, Folder.getGuid(), 2, -1, -1, 33L);
+      verifyData(arts.next(), 6, "AEmKsTkcwh02JspUtYQA", "NYN46", ModificationType.NEW, OseeTypeDefinition.getGuid(), 2, 5, -1,  7L);
+      verifyData(arts.next(), 7, "AEmKsWXLBwVrvjcQvPwA", "7NPJR", ModificationType.NEW, OseeTypeDefinition.getGuid(), 2, 5, -1,  9L);
+      verifyData(arts.next(), 8, "AEmK_YNYKmA66ynLWVgA", "QHXXC", ModificationType.NEW, Folder.getGuid(), 2, 6, -1, 33L);
       //@formatter:on
 
       sort(attributeCaptor.getAllValues());
@@ -209,9 +203,9 @@ public class LoaderTest {
       Iterator<ArtifactData> arts = artifactCaptor.getAllValues().iterator();
 
       //@formatter:off
-      verifyData(arts.next(), 6, "AEmKsTkcwh02JspUtYQA", "NYN46", ModificationType.NEW, OseeTypeDefinition.getGuid(), 2, -1, -1,  7L);
-      verifyData(arts.next(), 7, "AEmKsWXLBwVrvjcQvPwA", "7NPJR", ModificationType.NEW, OseeTypeDefinition.getGuid(), 2, -1, -1,  9L);
-      verifyData(arts.next(), 8, "AEmK_YNYKmA66ynLWVgA", "QHXXC", ModificationType.NEW, Folder.getGuid(), 2, -1, -1, 33L);
+      verifyData(arts.next(), 6, "AEmKsTkcwh02JspUtYQA", "NYN46", ModificationType.NEW, OseeTypeDefinition.getGuid(), 2, 5, -1,  7L);
+      verifyData(arts.next(), 7, "AEmKsWXLBwVrvjcQvPwA", "7NPJR", ModificationType.NEW, OseeTypeDefinition.getGuid(), 2, 5, -1,  9L);
+      verifyData(arts.next(), 8, "AEmK_YNYKmA66ynLWVgA", "QHXXC", ModificationType.NEW, Folder.getGuid(), 2, 6, -1, 33L);
       //@formatter:on
 
       sort(attributeCaptor.getAllValues());

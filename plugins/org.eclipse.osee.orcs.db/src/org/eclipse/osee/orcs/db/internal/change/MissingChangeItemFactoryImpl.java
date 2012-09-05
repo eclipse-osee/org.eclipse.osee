@@ -63,7 +63,9 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
          if (change instanceof AttributeChangeItem) {
             modifiedAttrIds.put(change.getArtId(), change.getItemId());
          } else if (change instanceof ArtifactChangeItem) {
-            modifiedArtIds.add(change.getArtId());
+            if (!change.isSynthetic()) {
+               modifiedArtIds.add(change.getArtId());
+            }
          } else if (change instanceof RelationChangeItem) {
             modifiedRels.put(change.getArtId(), change.getItemId());
          }

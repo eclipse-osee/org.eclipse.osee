@@ -22,6 +22,7 @@ public abstract class OrcsObjectImpl implements OrcsData {
 
    private int localId = RelationalConstants.DEFAULT_ITEM_ID;
    private long typeUuid = RelationalConstants.DEFAULT_TYPE_UUID;
+   private long loadedTypeUuid = RelationalConstants.DEFAULT_TYPE_UUID;
    private ModificationType originalModType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
    private ModificationType updatedModType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
 
@@ -75,6 +76,16 @@ public abstract class OrcsObjectImpl implements OrcsData {
    @Override
    public ModificationType getLoadedModType() {
       return originalModType;
+   }
+
+   @Override
+   public long getLoadedTypeUuid() {
+      return loadedTypeUuid;
+   }
+
+   @Override
+   public void setLoadedTypeUuid(long loadedTypeUuid) {
+      this.loadedTypeUuid = loadedTypeUuid;
    }
 
    @Override

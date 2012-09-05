@@ -10,19 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.transaction;
 
-import static junit.framework.Assert.assertEquals;
-import static org.eclipse.osee.framework.core.enums.ModificationType.ARTIFACT_DELETED;
-import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
-import static org.eclipse.osee.framework.core.enums.ModificationType.INTRODUCED;
-import static org.eclipse.osee.framework.core.enums.ModificationType.MERGED;
-import static org.eclipse.osee.framework.core.enums.ModificationType.MODIFIED;
-import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
-import static org.eclipse.osee.framework.core.enums.ModificationType.REPLACED_WITH_VERSION;
-import static org.eclipse.osee.framework.core.enums.ModificationType.UNDELETED;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static junit.framework.Assert.*;
+import static org.eclipse.osee.framework.core.enums.ModificationType.*;
+import static org.mockito.Mockito.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -70,6 +60,7 @@ public class TxSqlBuilderTest {
       REPLACED_WITH_VERSION);
 
    private static final int EXPECTED_TX_ID = 10000;
+   private static final int LOADED_TX_ID = 567;
    private static final int EXPECTED_COMMIT_ID = 46;
    private static final int EXPECTED_BRANCH_ID = 65;
    private static final int EXPECTED_AUTHOR_ID = 89;
@@ -119,6 +110,7 @@ public class TxSqlBuilderTest {
 
       versionData = new VersionDataImpl();
       versionData.setBranchId(EXPECTED_BRANCH_ID);
+      versionData.setTransactionId(LOADED_TX_ID);
 
       builder = Mockito.spy(new TxSqlBuilderImpl(dbService, idFactory, identityService));
       txData = new ArrayList<ArtifactTransactionData>();
@@ -176,7 +168,7 @@ public class TxSqlBuilderTest {
       assertTrue(builder.getBinaryStores().isEmpty());
       assertTrue(builder.getTxNotCurrents().isEmpty());
 
-      verifyEmpty(allExpect(SqlOrderEnum.TXS_DETAIL));
+      verifyEmpty(allExcept(SqlOrderEnum.TXS_DETAIL));
       List<Object[]> datas = builder.getInsertData(SqlOrderEnum.TXS_DETAIL);
 
       assertEquals(1, datas.size());
@@ -199,7 +191,7 @@ public class TxSqlBuilderTest {
          builder.visit(artData);
 
          assertTrue(builder.getBinaryStores().isEmpty());
-         verifyEmpty(allExpect(SqlOrderEnum.TXS_DETAIL, SqlOrderEnum.TXS, SqlOrderEnum.ARTIFACTS));
+         verifyEmpty(allExcept(SqlOrderEnum.TXS_DETAIL, SqlOrderEnum.TXS, SqlOrderEnum.ARTIFACTS));
 
          // @formatter:off
          verifyRow(SqlOrderEnum.ARTIFACTS, ITEM_ID, TYPE_ID, NEXT_GAMMA_ID, EXP_GUID, HRID);
@@ -220,7 +212,7 @@ public class TxSqlBuilderTest {
          builder.visit(artData);
 
          assertTrue(builder.getBinaryStores().isEmpty());
-         verifyEmpty(allExpect(SqlOrderEnum.TXS_DETAIL, SqlOrderEnum.TXS));
+         verifyEmpty(allExcept(SqlOrderEnum.TXS_DETAIL, SqlOrderEnum.TXS));
 
          ModificationType expectedType = modType != REPLACED_WITH_VERSION ? modType : MODIFIED;
 
@@ -234,6 +226,33 @@ public class TxSqlBuilderTest {
    }
 
    @Test
+   public void testAcceptArtifactDataNoRows() throws OseeCoreException {
+      builder.accept(tx, txData);
+
+      // test new artData that is deleted adds no rows
+      artData.setModType(ModificationType.DELETED);
+      artData.getVersion().setTransactionId(RelationalConstants.TRANSACTION_SENTINEL);
+
+      builder.visit(artData);
+
+      assertTrue(builder.getBinaryStores().isEmpty());
+      verifyEmpty(allExcept(SqlOrderEnum.TXS_DETAIL));
+
+      reset(artData);
+
+      // test existing artifact with no changes
+      artData.setLoadedModType(ModificationType.DELETED);
+      artData.setLoadedTypeUuid(0);
+      artData.setTypeUuid(0);
+      builder.visit(artData);
+
+      assertTrue(builder.getBinaryStores().isEmpty());
+      verifyEmpty(allExcept(SqlOrderEnum.TXS_DETAIL));
+
+      reset(artData);
+   }
+
+   @Test
    public void testAcceptRelationData() throws OseeCoreException {
       for (ModificationType modType : MODS_ITEMS_ROW) {
          builder.accept(tx, txData);
@@ -242,7 +261,7 @@ public class TxSqlBuilderTest {
          builder.visit(relData);
 
          assertTrue(builder.getBinaryStores().isEmpty());
-         verifyEmpty(allExpect(SqlOrderEnum.TXS_DETAIL, SqlOrderEnum.TXS, SqlOrderEnum.RELATIONS));
+         verifyEmpty(allExcept(SqlOrderEnum.TXS_DETAIL, SqlOrderEnum.TXS, SqlOrderEnum.RELATIONS));
 
          // @formatter:off
          verifyRow(SqlOrderEnum.RELATIONS, ITEM_ID, TYPE_ID, NEXT_GAMMA_ID, A_ART_ID, B_ART_ID, RATIONALE);
@@ -263,7 +282,7 @@ public class TxSqlBuilderTest {
          builder.visit(relData);
 
          assertTrue(builder.getBinaryStores().isEmpty());
-         verifyEmpty(allExpect(SqlOrderEnum.TXS_DETAIL, SqlOrderEnum.TXS));
+         verifyEmpty(allExcept(SqlOrderEnum.TXS_DETAIL, SqlOrderEnum.TXS));
 
          ModificationType expectedType = modType != REPLACED_WITH_VERSION ? modType : MODIFIED;
 
@@ -284,7 +303,7 @@ public class TxSqlBuilderTest {
 
          builder.visit(attrData);
 
-         verifyEmpty(allExpect(SqlOrderEnum.TXS_DETAIL, SqlOrderEnum.TXS, SqlOrderEnum.ATTRIBUTES));
+         verifyEmpty(allExcept(SqlOrderEnum.TXS_DETAIL, SqlOrderEnum.TXS, SqlOrderEnum.ATTRIBUTES));
 
          // @formatter:off
          verifyRow(SqlOrderEnum.ATTRIBUTES, ITEM_ID, TYPE_ID, NEXT_GAMMA_ID, ATTR_ARTIFACT_ID, ATTR_VALUE, ATTR_URI);
@@ -312,7 +331,7 @@ public class TxSqlBuilderTest {
          builder.visit(attrData);
 
          assertTrue(builder.getBinaryStores().isEmpty());
-         verifyEmpty(allExpect(SqlOrderEnum.TXS_DETAIL, SqlOrderEnum.TXS));
+         verifyEmpty(allExcept(SqlOrderEnum.TXS_DETAIL, SqlOrderEnum.TXS));
 
          ModificationType expectedType = modType != REPLACED_WITH_VERSION ? modType : MODIFIED;
 
@@ -327,7 +346,7 @@ public class TxSqlBuilderTest {
 
    private void reset(OrcsData data) {
       Mockito.reset(join);
-      data.getVersion().setTransactionId(RelationalConstants.TRANSACTION_SENTINEL);
+      data.getVersion().setTransactionId(LOADED_TX_ID);
       data.getVersion().setGammaId(RelationalConstants.GAMMA_SENTINEL);
    }
 
@@ -350,7 +369,7 @@ public class TxSqlBuilderTest {
       }
    }
 
-   private SqlOrderEnum[] allExpect(SqlOrderEnum... keys) {
+   private SqlOrderEnum[] allExcept(SqlOrderEnum... keys) {
       SqlOrderEnum[] all = SqlOrderEnum.values();
       SqlOrderEnum[] toReturn = new SqlOrderEnum[all.length - keys.length];
       List<SqlOrderEnum> values = Arrays.asList(keys);

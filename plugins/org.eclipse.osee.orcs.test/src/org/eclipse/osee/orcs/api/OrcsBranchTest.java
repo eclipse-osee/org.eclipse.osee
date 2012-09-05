@@ -15,7 +15,10 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.ReadableBranch;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -24,10 +27,12 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.OrcsIntegrationRule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.ArtifactWriteable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.QueryFactory;
+import org.eclipse.osee.orcs.transaction.OrcsTransaction;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -74,7 +79,7 @@ public class OrcsBranchTest {
          qf.fromBranch(CoreBranches.COMMON).andNameEquals("OSEE System").getResults().getExactlyOne();
 
       CreateBranchData createData =
-         makeBranchData(qf, "PriorBranch", "Creation of initial working branch for test", SOURCE_TX_ID, createdBy, true);
+         makeBranchData("PriorBranch", "Creation of initial working branch for test", SOURCE_TX_ID, createdBy, true);
       Callable<ReadableBranch> callable = branchInterface.createBranch(createData);
       Assert.assertNotNull(callable);
       ReadableBranch priorBranch = callable.call();
@@ -96,8 +101,8 @@ public class OrcsBranchTest {
       // transaction, then this will produce the same result as the query of the common branch
 
       CreateBranchData createDataNew =
-         makeBranchData(qf, "PostBranch", "Creation of branch with transaction ID equal to the change test",
-            CHANGED_TX_ID, createdBy, true);
+         makeBranchData("PostBranch", "Creation of branch with transaction ID equal to the change test", CHANGED_TX_ID,
+            createdBy, true);
       Callable<ReadableBranch> postCallable = branchInterface.createBranch(createDataNew);
       Assert.assertNotNull(postCallable);
       ReadableBranch postBranch = postCallable.call();
@@ -126,7 +131,7 @@ public class OrcsBranchTest {
          qf.fromBranch(CoreBranches.COMMON).andNameEquals("OSEE System").getResults().getExactlyOne();
 
       CreateBranchData createData =
-         makeBranchData(qf, "CopiedBranch", "Creation of branch with copied tx for test", SOURCE_TX_ID, createdBy, true);
+         makeBranchData("CopiedBranch", "Creation of branch with copied tx for test", SOURCE_TX_ID, createdBy, true);
       Callable<ReadableBranch> callableBranch = branchInterface.createBranch(createData);
 
       // the new branch will contain two transactions - these should have the same change report as the original branch
@@ -137,7 +142,63 @@ public class OrcsBranchTest {
       compareBranchChanges(priorItems, newItems);
    }
 
-   private CreateBranchData makeBranchData(QueryFactory qf, String name, String creationComment, int fromTransaction, ArtifactReadable userArtifact, boolean copyTx) {
+   @Test
+   public void testCommitBranchMissingArtifactsOnDestination() throws Exception {
+      // create the branch with the copied transaction
+      QueryFactory qf = orcsApi.getQueryFactory(context);
+      ArtifactReadable author =
+         qf.fromBranch(CoreBranches.COMMON).andNameEquals("OSEE System").getResults().getExactlyOne();
+      ReadableBranch base = branchInterface.createTopLevelBranch(author, "Base branch");
+
+      // put some changes on the base branch
+      OrcsTransaction tx = orcsApi.getTransactionFactory(context).createTransaction(base, author, "add some changes");
+      ArtifactWriteable folder = tx.createArtifact(CoreArtifactTypes.Folder, "BaseFolder");
+      tx.commit();
+
+      // create working branch off of base to make some changes
+      ReadableBranch childBranch = branchInterface.createChildBranch(author, base, "Child branch");
+      OrcsTransaction tx2 =
+         orcsApi.getTransactionFactory(context).createTransaction(childBranch, author, "modify and make new arts");
+      ArtifactReadable readableFolder =
+         qf.fromBranch(childBranch).andGuidsOrHrids(folder.getGuid()).getResults().getExactlyOne();
+
+      // modifying this artifact should cause it to get introduced
+      ArtifactWriteable writeableFolder = tx2.asWriteable(readableFolder);
+      writeableFolder.setName("New Folder Name");
+      writeableFolder.setSoleAttributeFromString(CoreAttributeTypes.StaticId, "test id");
+
+      // new artifacts should come across as new
+      ArtifactWriteable folder2 = tx2.createArtifact(CoreArtifactTypes.Folder, "childBranch folder");
+      tx2.commit();
+
+      List<ChangeItem> expectedChanges = branchInterface.compareBranch(childBranch).call();
+
+      // create a disjoint working branch from common
+      ReadableBranch commonChildBranch =
+         branchInterface.createChildBranch(author, CoreBranches.COMMON, "child from common");
+      branchInterface.commitBranch(author, childBranch, commonChildBranch).call();
+      List<ChangeItem> actualChanges = branchInterface.compareBranch(commonChildBranch).call();
+      ensureExpectedAreInActual(expectedChanges, actualChanges);
+   }
+
+   private void ensureExpectedAreInActual(List<ChangeItem> expected, List<ChangeItem> actual) {
+      for (ChangeItem expect : expected) {
+         boolean contains = actual.contains(expect);
+         if (!contains) {
+            for (ChangeItem act : actual) {
+               if (act.getItemId() == expect.getItemId() && act.getArtId() == expect.getArtId() && act.getCurrentVersion().getModType().matches(
+                  ModificationType.INTRODUCED)) {
+                  contains = true;
+                  break;
+               }
+
+            }
+            Assert.assertTrue(contains);
+         }
+      }
+   }
+
+   private CreateBranchData makeBranchData(String name, String creationComment, int fromTransaction, ArtifactReadable userArtifact, boolean copyTx) {
       int MERGE_DESTINATION_BRANCH_ID = -1; // only used on merge branches
       int MERGE_ADDRESSING_QUERY_ID = -1; // only used on merge branches
       CreateBranchData createData = new CreateBranchData();

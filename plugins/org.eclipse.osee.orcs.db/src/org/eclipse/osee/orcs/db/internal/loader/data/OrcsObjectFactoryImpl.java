@@ -140,6 +140,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    private ArtifactData createArtifactFromRow(VersionData version, int localId, long type, ModificationType modType, String guid, String humanReadableId) {
       ArtifactData data = new ArtifactDataImpl(version);
       data.setLocalId(localId);
+      data.setLoadedTypeUuid(type);
       data.setTypeUuid(type);
       data.setModType(modType);
       data.setLoadedModType(modType);
@@ -152,6 +153,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       AttributeData data = new AttributeDataImpl(version);
       data.setLocalId(localId);
       data.setTypeUuid(localTypeID);
+      data.setLoadedTypeUuid(localTypeID);
       data.setModType(modType);
       data.setLoadedModType(modType);
       data.setArtifactId(artifactId);
@@ -163,6 +165,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       RelationData data = new RelationDataImpl(version);
       data.setLocalId(localId);
       data.setTypeUuid(localTypeID);
+      data.setLoadedTypeUuid(localTypeID);
       data.setModType(modType);
       data.setLoadedModType(modType);
       data.setParentId(parentId);
