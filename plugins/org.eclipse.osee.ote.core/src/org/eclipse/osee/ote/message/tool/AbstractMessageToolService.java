@@ -73,12 +73,13 @@ public class AbstractMessageToolService implements IRemoteMessageService {
 
    private static final boolean debugEnabled = false;
 
+   private IMessageManager messageManager;
    private final HashMap<String, Throwable> cancelledSubscriptions = new HashMap<String, Throwable>(40);
    private DatagramChannel channel;
    private final HashMap<String, Map<DataType, EnumMap<MessageMode, SubscriptionRecord>>> messageMap =
       new HashMap<String, Map<DataType, EnumMap<MessageMode, SubscriptionRecord>>>(100);
 
-   private final IMessageRequestor messageRequestor;
+   private IMessageRequestor messageRequestor;
    private MessageRecorder recorder;
    private DatagramChannel recorderOutputChannel;
    private volatile boolean terminated = false;
@@ -340,12 +341,34 @@ public class AbstractMessageToolService implements IRemoteMessageService {
    /**
     * Constructs a new message manager service
     */
-   public AbstractMessageToolService(IMessageManager messageManager) throws IOException {
-      openXmitChannel();
+   public AbstractMessageToolService() {
       
-      messageRequestor = messageManager.createMessageRequestor(getClass().getName());
    }
 
+	
+	public void start(){
+		try {
+			openXmitChannel();
+			messageRequestor = messageManager.createMessageRequestor(getClass().getName());
+		} catch (IOException e) {
+			OseeLog.log(getClass(), Level.SEVERE, e);
+		}
+	      
+	}
+	
+	public void stop(){
+		terminateService();
+	}
+	
+	public void bindMessageManager(IMessageManager messageManager){
+		this.messageManager = messageManager;
+	}
+	
+	public void unbindMessageManager(IMessageManager messageManager){
+		this.messageManager = null;
+	}
+   
+   
    private void openXmitChannel() throws IOException {
       channel = DatagramChannel.open();
       if (channel.socket().getSendBufferSize() < SEND_BUFFER_SIZE) {
@@ -859,7 +882,9 @@ public class AbstractMessageToolService implements IRemoteMessageService {
          }
 
          try {
-            recorderOutputChannel.close();
+        	if(recorderOutputChannel != null){
+        		recorderOutputChannel.close();
+        	}
          } catch (IOException ex) {
             OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, ex.getMessage(), ex);
          }

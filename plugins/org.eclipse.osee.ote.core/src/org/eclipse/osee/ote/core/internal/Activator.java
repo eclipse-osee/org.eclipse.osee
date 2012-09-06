@@ -25,7 +25,6 @@ import org.eclipse.osee.ote.core.environment.TestEnvironmentInterface;
 import org.eclipse.osee.ote.core.environment.console.ConsoleCommandManager;
 import org.eclipse.osee.ote.core.environment.console.ICommandManager;
 import org.eclipse.osee.ote.message.internal.MessageIoManagementStarter;
-import org.eclipse.osee.ote.message.internal.MessageWatchActivator;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -49,7 +48,6 @@ public class Activator implements BundleActivator {
    private ServiceRegistration consoleCommandRegistration;
    private ServiceRegistration commandDistributerRegistration;
    private ServiceDependencyTracker serviceDependencyTracker;
-   private MessageWatchActivator messageWatchActivator;
    private MessageIoManagementStarter messageIoManagementStarter;
    private ServiceTracker testEnvTracker;
 
@@ -77,9 +75,6 @@ public class Activator implements BundleActivator {
       testEnvTracker = new ServiceTracker(context, TestEnvironmentInterface.class.getName(), null);
       testEnvTracker.open(true);
       
-      messageWatchActivator = new MessageWatchActivator(context);
-      messageWatchActivator.open(true);
-
       messageIoManagementStarter = new MessageIoManagementStarter(context);
       messageIoManagementStarter.open(true);
    }
@@ -97,7 +92,6 @@ public class Activator implements BundleActivator {
       consoleCommandRegistration.unregister();
       commandDistributerRegistration.unregister();
       
-      messageWatchActivator.close();
       messageIoManagementStarter.close();
       testEnvTracker.close();
    }
