@@ -16,11 +16,12 @@ import org.eclipse.osee.framework.core.data.Identifiable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.data.AttributesWriteable;
+import org.eclipse.osee.orcs.data.HasLocalId;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface AttributeManager extends Identifiable, AttributesWriteable {
+public interface AttributeManager extends Identifiable, AttributesWriteable, HasLocalId {
 
    void add(IAttributeType type, Attribute<? extends Object> attribute);
 

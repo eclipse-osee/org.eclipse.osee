@@ -10,13 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -31,6 +26,7 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
+import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
 import org.eclipse.osee.orcs.core.internal.artifact.AttributeManager;
@@ -62,8 +58,11 @@ public class ArtifactImplTest {
    @Mock private ArtifactType artifactType;
    @Mock private AttributeType attributeType;
    @Mock private VersionData version;
+   @Mock private AttributeData attributeData;
    @Mock private Branch branch;
    
+   @SuppressWarnings("rawtypes")
+   @Mock private Attribute attribute;
    @SuppressWarnings("rawtypes")
    @Mock private Attribute notDeleted;
    @SuppressWarnings("rawtypes")
@@ -82,17 +81,27 @@ public class ArtifactImplTest {
       when(artifactTypeProvider.get()).thenReturn(artifactType);
       when(artifactType.isValidAttributeType(any(IAttributeType.class), any(Branch.class))).thenReturn(true);
       when(attributeFactory.getAttribeType(any(IAttributeType.class))).thenReturn(attributeType);
+      when(attributeFactory.createAttribute(any(AttributeManager.class), any(AttributeData.class))).thenReturn(
+         attribute);
+      when(
+         attributeFactory.createAttributeWithDefaults(any(AttributeManager.class), any(ArtifactData.class),
+            any(IAttributeType.class))).thenReturn(attribute);
+      when(attribute.getOrcsData()).thenReturn(attributeData);
       when(attributeType.getMaxOccurrences()).thenReturn(1);
       when(artifactData.getGuid()).thenReturn(guid);
       when(artifactData.getVersion()).thenReturn(version);
       when(branchProvider.get()).thenReturn(branch);
       when(deleted.isDeleted()).thenReturn(true);
+      when(notDeleted.getOrcsData()).thenReturn(attributeData);
+      when(deleted.getOrcsData()).thenReturn(attributeData);
+      when(differentType.getOrcsData()).thenReturn(attributeData);
    }
 
    @Test
    @SuppressWarnings("unchecked")
    public void testAddAndGet() {
       Attribute<Object> attribute = mock(Attribute.class);
+      when(attribute.getOrcsData()).thenReturn(attributeData);
       Assert.assertEquals(0, artifactImpl.getAllAttributes().size());
       artifactImpl.add(CoreAttributeTypes.City, attribute);
       Assert.assertTrue(artifactImpl.getAllAttributes().contains(attribute));
@@ -104,6 +113,8 @@ public class ArtifactImplTest {
    public void testAddException() throws OseeCoreException {
       Attribute one = mock(Attribute.class);
       Attribute two = mock(Attribute.class);
+      when(one.getOrcsData()).thenReturn(attributeData);
+      when(two.getOrcsData()).thenReturn(attributeData);
       when(attributeType.getMaxOccurrences()).thenReturn(1);
       artifactImpl.add(attributeType, one);
       artifactImpl.add(attributeType, two);
@@ -114,6 +125,7 @@ public class ArtifactImplTest {
    @SuppressWarnings("unchecked")
    public void testAreAttributesDirty() {
       Attribute<Object> attribute = mock(Attribute.class);
+      when(attribute.getOrcsData()).thenReturn(attributeData);
       artifactImpl.add(CoreAttributeTypes.City, attribute);
       Assert.assertFalse(artifactImpl.areAttributesDirty());
       when(attribute.isDirty()).thenReturn(true);
@@ -180,6 +192,7 @@ public class ArtifactImplTest {
    @SuppressWarnings({"rawtypes", "unchecked"})
    public void testSetName() throws OseeCoreException {
       Attribute attr = mock(Attribute.class);
+      when(attr.getOrcsData()).thenReturn(attributeData);
       when(
          attributeFactory.createAttributeWithDefaults(any(AttributeManager.class), any(ArtifactData.class),
             eq(CoreAttributeTypes.Name))).thenReturn(attr);
@@ -214,6 +227,7 @@ public class ArtifactImplTest {
 
       // add dirty attribute
       Attribute dirty = mock(Attribute.class);
+      when(dirty.getOrcsData()).thenReturn(attributeData);
       when(dirty.isDirty()).thenReturn(true);
       artifactImpl.add(CoreAttributeTypes.Active, dirty);
       Assert.assertTrue(artifactImpl.isDirty());
@@ -257,6 +271,8 @@ public class ArtifactImplTest {
    public void testSetAttributesNotDirty() {
       Attribute one = mock(Attribute.class);
       Attribute two = mock(Attribute.class);
+      when(one.getOrcsData()).thenReturn(attributeData);
+      when(two.getOrcsData()).thenReturn(attributeData);
       artifactImpl.add(CoreAttributeTypes.AccessContextId, one);
       artifactImpl.add(CoreAttributeTypes.AccessContextId, two);
       artifactImpl.setAttributesNotDirty();
@@ -271,6 +287,7 @@ public class ArtifactImplTest {
       Assert.assertTrue(name.contains("AttributeDoesNotExist"));
 
       Attribute attr = mock(Attribute.class);
+      when(attr.getOrcsData()).thenReturn(attributeData);
       when(
          attributeFactory.createAttributeWithDefaults(any(AttributeManager.class), any(ArtifactData.class),
             eq(CoreAttributeTypes.Name))).thenReturn(attr);
@@ -364,6 +381,8 @@ public class ArtifactImplTest {
    public void testGetSoleAttributeAsStringException() throws OseeCoreException {
       Attribute one = mock(Attribute.class);
       Attribute two = mock(Attribute.class);
+      when(one.getOrcsData()).thenReturn(attributeData);
+      when(two.getOrcsData()).thenReturn(attributeData);
       artifactImpl.add(CoreAttributeTypes.AccessContextId, one);
       artifactImpl.add(CoreAttributeTypes.AccessContextId, two);
       thrown.expect(MultipleAttributesExist.class);
@@ -410,6 +429,9 @@ public class ArtifactImplTest {
       Attribute one = mock(Attribute.class);
       Attribute two = mock(Attribute.class);
       Attribute three = mock(Attribute.class);
+      when(one.getOrcsData()).thenReturn(attributeData);
+      when(two.getOrcsData()).thenReturn(attributeData);
+      when(three.getOrcsData()).thenReturn(attributeData);
       when(attributeType.getMaxOccurrences()).thenReturn(3);
       when(attributeFactory.createAttributeWithDefaults(eq(artifactImpl), any(ArtifactData.class), eq(attributeType))).thenReturn(
          one, two, three);
@@ -424,6 +446,8 @@ public class ArtifactImplTest {
    public void testSetAttributesFromStringsCreateOne() throws OseeCoreException {
       Attribute one = mock(Attribute.class);
       Attribute two = mock(Attribute.class);
+      when(one.getOrcsData()).thenReturn(attributeData);
+      when(two.getOrcsData()).thenReturn(attributeData);
       when(attributeType.getMaxOccurrences()).thenReturn(3);
       when(attributeFactory.createAttributeWithDefaults(eq(artifactImpl), any(ArtifactData.class), eq(attributeType))).thenReturn(
          two);

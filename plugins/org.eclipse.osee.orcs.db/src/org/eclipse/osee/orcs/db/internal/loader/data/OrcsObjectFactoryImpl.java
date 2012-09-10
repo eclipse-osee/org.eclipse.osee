@@ -85,27 +85,27 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    @Override
    public ArtifactData createArtifactData(VersionData version, int localId, int localTypeID, ModificationType modType, String guid, String humanReadableId) throws OseeCoreException {
       long typeUuid = toUuid(localTypeID);
-      return createArtifactFromRow(version, localId, typeUuid, modType, guid, humanReadableId);
+      return createArtifactFromRow(version, localId, typeUuid, modType, typeUuid, modType, guid, humanReadableId);
    }
 
    @Override
    public ArtifactData createArtifactData(VersionData version, int localId, IArtifactType type, ModificationType modType, String guid, String humanReadableId) {
       long typeUuid = type.getGuid();
-      return createArtifactFromRow(version, localId, typeUuid, modType, guid, humanReadableId);
+      return createArtifactFromRow(version, localId, typeUuid, modType, typeUuid, modType, guid, humanReadableId);
    }
 
    @Override
    public ArtifactData createCopy(ArtifactData source) {
       VersionData newVersion = createCopy(source.getVersion());
       return createArtifactFromRow(newVersion, source.getLocalId(), source.getTypeUuid(), source.getModType(),
-         source.getGuid(), source.getHumanReadableId());
+         source.getLoadedTypeUuid(), source.getLoadedModType(), source.getGuid(), source.getHumanReadableId());
    }
 
    @Override
    public AttributeData createAttributeData(VersionData version, int localId, int localTypeID, ModificationType modType, int artifactId, String value, String uri) throws OseeCoreException {
       long typeId = toUuid(localTypeID);
       DataProxy proxy = proxyFactory.createProxy(typeId, value, uri);
-      return createAttributeFromRow(version, localId, typeId, modType, artifactId, proxy);
+      return createAttributeFromRow(version, localId, typeId, modType, typeId, modType, artifactId, proxy);
    }
 
    @Override
@@ -115,59 +115,59 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       DataProxy sourceProxy = source.getDataProxy();
       DataProxy newProxy = proxyFactory.createProxy(typeId, sourceProxy.getData());
       return createAttributeFromRow(newVersion, source.getLocalId(), typeId, source.getModType(),
-         source.getArtifactId(), newProxy);
+         source.getLoadedTypeUuid(), source.getLoadedModType(), source.getArtifactId(), newProxy);
    }
 
    @Override
    public AttributeData createAttributeData(VersionData version, int localId, IAttributeType type, ModificationType modType, int artId) throws OseeCoreException {
       long typeId = type.getGuid();
       DataProxy proxy = proxyFactory.createProxy(typeId, "", "");
-      return createAttributeFromRow(version, localId, typeId, modType, artId, proxy);
+      return createAttributeFromRow(version, localId, typeId, modType, typeId, modType, artId, proxy);
    }
 
    @Override
    public RelationData createRelationData(VersionData version, int localId, int localTypeID, ModificationType modType, int parentId, int aArtId, int bArtId, String rationale) throws OseeCoreException {
       long typeId = toUuid(localTypeID);
-      return createRelationData(version, localId, typeId, modType, parentId, aArtId, bArtId, rationale);
+      return createRelationData(version, localId, typeId, modType, typeId, modType, parentId, aArtId, bArtId, rationale);
    }
 
    @Override
    public RelationData createRelationData(VersionData version, int localId, IRelationType type, ModificationType modType, int parentId, int aArtId, int bArtId, String rationale) {
       long typeId = type.getGuid();
-      return createRelationData(version, localId, typeId, modType, parentId, aArtId, bArtId, rationale);
+      return createRelationData(version, localId, typeId, modType, typeId, modType, parentId, aArtId, bArtId, rationale);
    }
 
-   private ArtifactData createArtifactFromRow(VersionData version, int localId, long type, ModificationType modType, String guid, String humanReadableId) {
+   private ArtifactData createArtifactFromRow(VersionData version, int localId, long localTypeID, ModificationType modType, long loadedLocalTypeID, ModificationType loadedModType, String guid, String humanReadableId) {
       ArtifactData data = new ArtifactDataImpl(version);
       data.setLocalId(localId);
-      data.setLoadedTypeUuid(type);
-      data.setTypeUuid(type);
+      data.setTypeUuid(localTypeID);
+      data.setLoadedTypeUuid(loadedLocalTypeID);
       data.setModType(modType);
-      data.setLoadedModType(modType);
+      data.setLoadedModType(loadedModType);
       data.setGuid(guid);
       data.setHumanReadableId(humanReadableId);
       return data;
    }
 
-   private AttributeData createAttributeFromRow(VersionData version, int localId, long localTypeID, ModificationType modType, int artifactId, DataProxy proxy) {
+   private AttributeData createAttributeFromRow(VersionData version, int localId, long localTypeID, ModificationType modType, long loadedLocalTypeID, ModificationType loadedModType, int artifactId, DataProxy proxy) {
       AttributeData data = new AttributeDataImpl(version);
       data.setLocalId(localId);
       data.setTypeUuid(localTypeID);
-      data.setLoadedTypeUuid(localTypeID);
+      data.setLoadedTypeUuid(loadedLocalTypeID);
       data.setModType(modType);
-      data.setLoadedModType(modType);
+      data.setLoadedModType(loadedModType);
       data.setArtifactId(artifactId);
       data.setDataProxy(proxy);
       return data;
    }
 
-   private RelationData createRelationData(VersionData version, int localId, long localTypeID, ModificationType modType, int parentId, int aArtId, int bArtId, String rationale) {
+   private RelationData createRelationData(VersionData version, int localId, long localTypeID, ModificationType modType, long loadedLocalTypeID, ModificationType loadedModType, int parentId, int aArtId, int bArtId, String rationale) {
       RelationData data = new RelationDataImpl(version);
       data.setLocalId(localId);
       data.setTypeUuid(localTypeID);
-      data.setLoadedTypeUuid(localTypeID);
+      data.setLoadedTypeUuid(loadedLocalTypeID);
       data.setModType(modType);
-      data.setLoadedModType(modType);
+      data.setLoadedModType(loadedModType);
       data.setParentId(parentId);
       data.setArtIdA(aArtId);
       data.setArtIdB(bArtId);
@@ -179,7 +179,8 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    public RelationData createCopy(RelationData source) {
       VersionData newVersion = createCopy(source.getVersion());
       return createRelationData(newVersion, source.getLocalId(), source.getTypeUuid(), source.getModType(),
-         source.getParentId(), source.getArtIdA(), source.getArtIdB(), source.getRationale());
+         source.getLoadedTypeUuid(), source.getLoadedModType(), source.getParentId(), source.getArtIdA(),
+         source.getArtIdB(), source.getRationale());
    }
 
 }

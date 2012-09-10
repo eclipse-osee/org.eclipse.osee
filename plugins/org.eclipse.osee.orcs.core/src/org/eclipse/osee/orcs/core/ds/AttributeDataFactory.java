@@ -13,14 +13,13 @@ package org.eclipse.osee.orcs.core.ds;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.data.HasLocalId;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface AttributeDataFactory {
 
-   AttributeData create(HasLocalId parent, IAttributeType attributeType) throws OseeCoreException;
+   AttributeData create(ArtifactData parent, IAttributeType attributeType) throws OseeCoreException;
 
    AttributeData copy(IOseeBranch destination, AttributeData orcsData) throws OseeCoreException;
 

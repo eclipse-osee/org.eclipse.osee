@@ -10,12 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.proxy;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -76,15 +72,18 @@ public class ArtifactProxyFactoryTest {
       String expectedName = "NAME";
 
       when(artifactFactory.createArtifact(branch, artifactType, guid)).thenReturn(artifact);
+      when(artifactFactory.clone(artifact)).thenReturn(otherArtifact);
 
       ArtifactWriteable actual = factory.create(branch, artifactType, guid, expectedName);
 
       verify(artifactFactory).createArtifact(branch, artifactType, guid);
-      verify(artifact).setName(expectedName);
+      verify(otherArtifact).setName(expectedName);
+      verify(artifact, times(0)).setName(expectedName);
 
       assertTrue(actual instanceof ProxyWriteable);
       assertTrue(ProxyUtil.isProxy(actual));
-      assertEquals(artifact, factory.getProxiedObject(actual));
+      assertEquals(otherArtifact, factory.getProxiedObject(actual));
+      assertEquals(artifact, factory.getOriginalObject(actual));
    }
 
    @SuppressWarnings("unchecked")

@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.DataFactory;
+import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.data.HasLocalId;
@@ -55,6 +56,8 @@ public class DataFactoryImpl implements DataFactory {
       Conditions.checkNotNull(branch, "branch");
 
       ArtifactType artifactType = artifactCache.get(token);
+      Conditions.checkNotNull(artifactType, "artifactType", "Unable to find artifactType matching [%s]", token);
+
       Conditions.checkExpressionFailOnTrue(artifactType.isAbstract(),
          "Cannot create an instance of abstract type [%s]", artifactType);
 
@@ -83,28 +86,24 @@ public class DataFactoryImpl implements DataFactory {
    @Override
    public ArtifactData copy(IOseeBranch destination, ArtifactData source) throws OseeCoreException {
       ArtifactData copy = objectFactory.createCopy(source);
-      copy.getVersion().setBranchId(idFactory.getBranchId(destination));
-      copy.getVersion().setTransactionId(RelationalConstants.TRANSACTION_SENTINEL);
-      copy.setModType(ModificationType.NEW);
-      copy.getVersion().setHistorical(false);
+      updateDataForCopy(destination, copy);
+      copy.setGuid(idFactory.getUniqueGuid(null));
+      copy.setHumanReadableId(idFactory.getUniqueHumanReadableId(null));
       copy.setLocalId(idFactory.getNextArtifactId());
-      copy.setGuid(GUID.create());
       return copy;
    }
 
    @Override
    public AttributeData introduce(IOseeBranch destination, AttributeData source) throws OseeCoreException {
       AttributeData newVersion = objectFactory.createCopy(source);
-      newVersion.getVersion().setBranchId(idFactory.getBranchId(destination));
-      newVersion.getVersion().setTransactionId(RelationalConstants.TRANSACTION_SENTINEL);
-      newVersion.setModType(ModificationType.INTRODUCED);
-      newVersion.getVersion().setHistorical(false);
+      updateDataForIntroduce(destination, newVersion);
       return newVersion;
    }
 
    @Override
-   public AttributeData create(HasLocalId parent, IAttributeType attributeType) throws OseeCoreException {
+   public AttributeData create(ArtifactData parent, IAttributeType attributeType) throws OseeCoreException {
       VersionData version = objectFactory.createDefaultVersionData();
+      version.setBranchId(parent.getVersion().getBranchId());
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
       int attributeId = RelationalConstants.DEFAULT_ITEM_ID;
       return objectFactory.createAttributeData(version, attributeId, attributeType, modType, parent.getLocalId());
@@ -112,12 +111,8 @@ public class DataFactoryImpl implements DataFactory {
 
    @Override
    public AttributeData copy(IOseeBranch destination, AttributeData orcsData) throws OseeCoreException {
-      int branchId = idFactory.getBranchId(destination);
       AttributeData copy = objectFactory.createCopy(orcsData);
-      copy.getVersion().setBranchId(branchId);
-      copy.getVersion().setTransactionId(RelationalConstants.TRANSACTION_SENTINEL);
-      copy.setModType(ModificationType.NEW);
-      copy.getVersion().setHistorical(false);
+      updateDataForCopy(destination, copy);
       copy.setLocalId(RelationalConstants.DEFAULT_ITEM_ID);
       return copy;
    }
@@ -125,16 +120,14 @@ public class DataFactoryImpl implements DataFactory {
    @Override
    public ArtifactData introduce(IOseeBranch destination, ArtifactData source) throws OseeCoreException {
       ArtifactData newVersion = objectFactory.createCopy(source);
-      newVersion.getVersion().setBranchId(idFactory.getBranchId(destination));
-      newVersion.getVersion().setTransactionId(RelationalConstants.TRANSACTION_SENTINEL);
-      newVersion.setModType(ModificationType.INTRODUCED);
-      newVersion.getVersion().setHistorical(false);
+      updateDataForIntroduce(destination, newVersion);
       return newVersion;
    }
 
    @Override
-   public RelationData createRelationData(IRelationType relationType, HasLocalId parent, HasLocalId aArt, HasLocalId bArt, String rationale) throws OseeCoreException {
+   public RelationData createRelationData(IRelationType relationType, ArtifactData parent, HasLocalId aArt, HasLocalId bArt, String rationale) throws OseeCoreException {
       VersionData version = objectFactory.createDefaultVersionData();
+      version.setBranchId(parent.getVersion().getBranchId());
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
       int relationId = RelationalConstants.DEFAULT_ITEM_ID;
       return objectFactory.createRelationData(version, relationId, relationType, modType, parent.getLocalId(),
@@ -156,4 +149,24 @@ public class DataFactoryImpl implements DataFactory {
       return objectFactory.createCopy(source);
    }
 
+   private void updateDataForCopy(IOseeBranch destination, OrcsData data) throws OseeCoreException {
+      VersionData version = data.getVersion();
+      version.setBranchId(idFactory.getBranchId(destination));
+      version.setTransactionId(RelationalConstants.TRANSACTION_SENTINEL);
+      version.setStripeId(RelationalConstants.TRANSACTION_SENTINEL);
+      version.setHistorical(false);
+      version.setGammaId(RelationalConstants.GAMMA_SENTINEL);
+
+      data.setModType(ModificationType.NEW);
+   }
+
+   private void updateDataForIntroduce(IOseeBranch destination, OrcsData data) throws OseeCoreException {
+      VersionData version = data.getVersion();
+      version.setBranchId(idFactory.getBranchId(destination));
+      version.setTransactionId(RelationalConstants.TRANSACTION_SENTINEL);
+      version.setStripeId(RelationalConstants.TRANSACTION_SENTINEL);
+      version.setHistorical(false);
+      // do not clear gammaId for introduce case so we reuse the same version
+      data.setModType(ModificationType.INTRODUCED);
+   }
 }

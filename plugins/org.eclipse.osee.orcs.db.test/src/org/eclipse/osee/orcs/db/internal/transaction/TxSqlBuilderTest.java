@@ -10,9 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.transaction;
 
-import static junit.framework.Assert.*;
-import static org.eclipse.osee.framework.core.enums.ModificationType.*;
-import static org.mockito.Mockito.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
+import static org.eclipse.osee.framework.core.enums.ModificationType.ARTIFACT_DELETED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.INTRODUCED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.MERGED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.MODIFIED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
+import static org.eclipse.osee.framework.core.enums.ModificationType.REPLACED_WITH_VERSION;
+import static org.eclipse.osee.framework.core.enums.ModificationType.UNDELETED;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;

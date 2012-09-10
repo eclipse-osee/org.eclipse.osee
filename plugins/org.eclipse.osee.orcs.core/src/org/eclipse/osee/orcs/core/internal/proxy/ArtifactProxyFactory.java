@@ -37,10 +37,11 @@ public class ArtifactProxyFactory extends ProxyFactory<ArtifactImpl, ArtifactRea
 
    public ArtifactWriteable create(IOseeBranch branch, IArtifactType artifactType, String guid, String name) throws OseeCoreException {
       ArtifactImpl toProxy = factory.createArtifact(branch, artifactType, guid);
+      ArtifactWriteable writeable = createWriteable(toProxy);
       if (name != null) {
-         toProxy.setName(name);
+         writeable.setName(name);
       }
-      return createWriteable(toProxy);
+      return writeable;
    }
 
    public ArtifactWriteable introduce(ArtifactReadable readable, IOseeBranch ontoBranch) throws OseeCoreException {

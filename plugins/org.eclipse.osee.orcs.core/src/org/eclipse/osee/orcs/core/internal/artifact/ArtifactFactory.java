@@ -77,8 +77,7 @@ public class ArtifactFactory {
       for (IAttributeType attributeType : typeToCopy) {
          for (AttributeReadable<?> attributeSource : source.getAttributes(attributeType)) {
             AttributeData data = getAttributeData(attributeSource);
-            Attribute<Object> copyAttribute = attributeFactory.copyAttribute(data, ontoBranch, copy);
-            copyAttribute.getOrcsData().setArtifactId(copy.getLocalId());
+            attributeFactory.copyAttribute(data, ontoBranch, copy);
          }
       }
       copy.setLoaded(true);

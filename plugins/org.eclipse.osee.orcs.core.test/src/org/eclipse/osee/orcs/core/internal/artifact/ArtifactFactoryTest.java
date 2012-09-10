@@ -10,16 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.artifact;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -100,6 +98,10 @@ public class ArtifactFactoryTest {
       when(artifactData.getTypeUuid()).thenReturn(65L);
       when(artifactData.getVersion()).thenReturn(artifactVersion);
       when(artifactVersion.getBranchId()).thenReturn(23);
+
+      when(
+         attributeFactory.copyAttribute(any(AttributeData.class), any(IOseeBranch.class), any(AttributeManager.class))).thenReturn(
+         attribute);
 
       when(otherArtifactData.getLocalId()).thenReturn(45);
       when(otherArtifactData.getGuid()).thenReturn(guid);

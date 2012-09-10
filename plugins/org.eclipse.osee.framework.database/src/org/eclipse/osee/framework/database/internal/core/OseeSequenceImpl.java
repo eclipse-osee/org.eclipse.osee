@@ -26,7 +26,7 @@ public class OseeSequenceImpl implements IOseeSequence {
    private static final String UPDATE_SEQUENCE =
       "UPDATE osee_sequence SET last_sequence = ? WHERE sequence_name = ? AND last_sequence = ?";
 
-   private final static HashMap<String, SequenceRange> sequences = new HashMap<String, SequenceRange>(30);
+   private final HashMap<String, SequenceRange> sequences = new HashMap<String, SequenceRange>(30);
 
    private final DatabaseService service;
 

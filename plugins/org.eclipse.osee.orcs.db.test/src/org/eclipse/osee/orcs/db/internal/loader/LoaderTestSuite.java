@@ -19,6 +19,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    AttributeDataProxyFactoryTest.class,
+   DataFactoryImplTest.class,
    DataLoaderImplTest.class,
    LoaderSqlHandlerFactoryImplTest.class})
 public class LoaderTestSuite {

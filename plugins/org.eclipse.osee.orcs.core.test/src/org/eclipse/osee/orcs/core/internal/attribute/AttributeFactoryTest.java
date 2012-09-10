@@ -10,15 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static junit.framework.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 import java.lang.ref.WeakReference;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -131,7 +125,6 @@ public class AttributeFactoryTest {
       Attribute<Object> actual = factory.createAttributeWithDefaults(container, artifactData, attributeType);
 
       verify(dataFactory).create(artifactData, attributeType);
-      verify(attrVersionData).setBranchId(45);
       assertTrue(attribute == actual);
 
       verify(proxy).setResolver(resolverCapture.capture());

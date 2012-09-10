@@ -23,7 +23,6 @@ import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.AttributeDataFactory;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
-import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.core.internal.artifact.AttributeManager;
 
 /**
@@ -43,8 +42,6 @@ public class AttributeFactory {
 
    public <T> Attribute<T> createAttributeWithDefaults(AttributeManager container, ArtifactData artifactData, IAttributeType attributeType) throws OseeCoreException {
       AttributeData data = dataFactory.create(artifactData, attributeType);
-      VersionData versionData = data.getVersion();
-      versionData.setBranchId(artifactData.getVersion().getBranchId());
       return createAttribute(container, data, true, true);
    }
 
@@ -63,11 +60,10 @@ public class AttributeFactory {
       proxy.setResolver(resolver);
 
       Reference<AttributeManager> artifactRef = new WeakReference<AttributeManager>(container);
-      attribute.internalInitialize(artifactRef, data, type, isDirty, createWithDefaults);
 
-      synchronized (container) {
-         container.add(type, attribute);
-      }
+      attribute.internalInitialize(artifactRef, data, type, isDirty, createWithDefaults);
+      container.add(type, attribute);
+
       return attribute;
    }
 
@@ -79,7 +75,7 @@ public class AttributeFactory {
 
    public <T> Attribute<T> cloneAttribute(AttributeData source, AttributeManager destinationContainer) throws OseeCoreException {
       AttributeData attributeData = dataFactory.clone(source);
-      Attribute<T> destinationAttribute = createAttribute(destinationContainer, attributeData, true, false);
+      Attribute<T> destinationAttribute = createAttribute(destinationContainer, attributeData, false, false);
       return destinationAttribute;
    }
 

@@ -64,11 +64,13 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
    @Override
    public synchronized void add(IAttributeType type, Attribute<? extends Object> attribute) {
       attributes.addAttribute(type, attribute);
+      attribute.getOrcsData().setArtifactId(getLocalId());
    }
 
    @Override
    public void remove(IAttributeType type, Attribute<? extends Object> attribute) {
       attributes.removeAttribute(type, attribute);
+      attribute.getOrcsData().setArtifactId(-1);
    }
 
    @Override

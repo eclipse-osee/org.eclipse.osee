@@ -104,16 +104,18 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
 
    @Override
    public void visit(ArtifactData data) throws OseeCoreException {
-      if (!isNewAndDeleted(data) && (!data.getVersion().isInStorage() || data.getLoadedTypeUuid() != data.getTypeUuid() || data.getModType() != data.getLoadedModType() || data.getModType() == ModificationType.REPLACED_WITH_VERSION)) {
-         boolean isRowAllowed = isGammaCreationAllowed(data);
-         updateTxValues(data);
-         if (isRowAllowed) {
-            updateGamma(data);
-            int localTypeId = getLocalTypeId(data.getTypeUuid());
-            addRow(SqlOrderEnum.ARTIFACTS, data.getLocalId(), localTypeId, data.getVersion().getGammaId(),
-               data.getGuid(), data.getHumanReadableId());
+      if (!isNewAndDeleted(data)) {
+         if (!data.getVersion().isInStorage() || data.getLoadedTypeUuid() != data.getTypeUuid() || data.getModType() != data.getLoadedModType() || data.getModType() == ModificationType.REPLACED_WITH_VERSION) {
+            boolean isRowAllowed = isGammaCreationAllowed(data);
+            updateTxValues(data);
+            if (isRowAllowed) {
+               updateGamma(data);
+               int localTypeId = getLocalTypeId(data.getTypeUuid());
+               addRow(SqlOrderEnum.ARTIFACTS, data.getLocalId(), localTypeId, data.getVersion().getGammaId(),
+                  data.getGuid(), data.getHumanReadableId());
+            }
+            addTxs(SqlOrderEnum.ARTIFACTS, data);
          }
-         addTxs(SqlOrderEnum.ARTIFACTS, data);
       }
    }
 
@@ -143,19 +145,21 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
 
    @Override
    public void visit(RelationData data) throws OseeCoreException {
-      boolean isRowAllowed = isGammaCreationAllowed(data);
-      updateTxValues(data);
-      if (isRowAllowed) {
-         updateGamma(data);
-         if (RelationalConstants.DEFAULT_ITEM_ID == data.getLocalId()) {
-            int localId = idFactory.getNextRelationId();
-            data.setLocalId(localId);
+      if (!isNewAndDeleted(data)) {
+         boolean isRowAllowed = isGammaCreationAllowed(data);
+         updateTxValues(data);
+         if (isRowAllowed) {
+            updateGamma(data);
+            if (RelationalConstants.DEFAULT_ITEM_ID == data.getLocalId()) {
+               int localId = idFactory.getNextRelationId();
+               data.setLocalId(localId);
+            }
+            int localTypeId = getLocalTypeId(data.getTypeUuid());
+            addRow(SqlOrderEnum.RELATIONS, data.getLocalId(), localTypeId, data.getVersion().getGammaId(),
+               data.getArtIdA(), data.getArtIdB(), data.getRationale());
          }
-         int localTypeId = getLocalTypeId(data.getTypeUuid());
-         addRow(SqlOrderEnum.RELATIONS, data.getLocalId(), localTypeId, data.getVersion().getGammaId(),
-            data.getArtIdA(), data.getArtIdB(), data.getRationale());
+         addTxs(SqlOrderEnum.RELATIONS, data);
       }
-      addTxs(SqlOrderEnum.RELATIONS, data);
    }
 
    private void addTxs(SqlOrderEnum key, OrcsData orcsData) {
