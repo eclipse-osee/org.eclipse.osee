@@ -56,8 +56,7 @@ public class UpdateBranchStateHttpRequestOperation extends AbstractOperation {
 
       if (response.wasSuccessful()) {
          BranchManager.refreshBranches();
-         OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.StateUpdated, branchGuid),
-            branchId);
+         OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.StateUpdated, branchGuid));
       }
    }
 }

@@ -56,8 +56,7 @@ public final class UpdateBranchArchivedStateHttpRequestOperation extends Abstrac
 
       if (response.wasSuccessful()) {
          BranchManager.refreshBranches();
-         OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.ArchiveStateUpdated, branchGuid),
-            branchId);
+         OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.ArchiveStateUpdated, branchGuid));
       }
    }
 }

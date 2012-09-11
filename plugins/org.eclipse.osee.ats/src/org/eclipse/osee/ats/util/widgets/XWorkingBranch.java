@@ -275,8 +275,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
                isFavorite ? "Favorite" : "NOT Favorite");
          if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Toggle Branch as Favorite", message)) {
             user.toggleFavoriteBranch(branch);
-            OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.FavoritesUpdated, branch.getGuid()),
-               branch.getId());
+            OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.FavoritesUpdated, branch.getGuid()));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

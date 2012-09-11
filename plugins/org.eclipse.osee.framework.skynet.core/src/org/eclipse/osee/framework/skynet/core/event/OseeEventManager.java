@@ -115,7 +115,7 @@ public final class OseeEventManager {
    }
 
    //Kick LOCAL and REMOTE branch events
-   public static void kickBranchEvent(Object source, BranchEvent branchEvent, int branchId) throws OseeCoreException {
+   public static void kickBranchEvent(Object source, BranchEvent branchEvent) throws OseeCoreException {
       getEventService().send(source, branchEvent);
    }
 

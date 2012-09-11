@@ -70,8 +70,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       BranchState currentState = sourceBranch.getBranchState();
       sourceBranch.setBranchState(BranchState.COMMIT_IN_PROGRESS);
 
-      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Committing, sourceBranch.getGuid()),
-         sourceBranch.getId());
+      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Committing, sourceBranch.getGuid()));
 
       BranchCommitRequest requestData =
          new BranchCommitRequest(user.getArtId(), sourceBranch.getId(), destinationBranch.getId(), isArchiveAllowed);
@@ -84,7 +83,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       } catch (OseeCoreException ex) {
          sourceBranch.setBranchState(currentState);
          OseeEventManager.kickBranchEvent(getClass(),
-            new BranchEvent(BranchEventType.CommitFailed, sourceBranch.getGuid()), sourceBranch.getId());
+            new BranchEvent(BranchEventType.CommitFailed, sourceBranch.getGuid()));
          throw ex;
       }
 
@@ -106,8 +105,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
 
       reloadCommittedArtifacts(newTransaction);
 
-      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Committed, sourceBranch.getGuid()),
-         sourceBranch.getId());
+      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Committed, sourceBranch.getGuid()));
    }
 
    private void reloadCommittedArtifacts(TransactionRecord newTransaction) throws OseeCoreException {

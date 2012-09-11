@@ -48,8 +48,7 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
-      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Purging, branch.getGuid()),
-         branch.getId());
+      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Purging, branch.getGuid()));
 
       PurgeBranchRequest requestData = new PurgeBranchRequest(branch.getId(), recursive);
       Map<String, String> parameters = new HashMap<String, String>();
@@ -68,8 +67,7 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
          //The access control list could be updated here
 
          BranchManager.decache(branch);
-         OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Purged, branch.getGuid()),
-            branch.getId());
+         OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Purged, branch.getGuid()));
       }
    }
 }
