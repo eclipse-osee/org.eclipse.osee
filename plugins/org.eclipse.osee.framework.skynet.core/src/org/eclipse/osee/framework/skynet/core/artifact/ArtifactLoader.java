@@ -93,6 +93,7 @@ public final class ArtifactLoader {
 
    private static void loadActiveArtifacts(List<Pair<Integer, Integer>> toLoad, Set<Artifact> artifacts, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted) throws OseeCoreException {
       if (!toLoad.isEmpty()) {
+         int numRequested = toLoad.size();
          Iterator<Pair<Integer, Integer>> iterator = toLoad.iterator();
          CompositeKeyHashMap<Integer, Integer, ReentrantLock> locks =
             new CompositeKeyHashMap<Integer, Integer, ReentrantLock>();
@@ -118,8 +119,30 @@ public final class ArtifactLoader {
          }
 
          // load arts that are not in the cache
-         loadArtifacts(toLoad, loadLevel, null, reload, allowDeleted, artifacts);
+         try {
+            loadArtifacts(toLoad, loadLevel, null, reload, allowDeleted, artifacts);
+         } finally {
+            // remove and unlock locks this thread created but didn't load
+            if (artifacts.size() != numRequested) {
+               for (Pair<Integer, Integer> loadPair : toLoad) {
+                  Integer artId = loadPair.getFirst();
+                  Integer branchId = loadPair.getSecond();
+                  removeAndUnlock(artId, branchId);
+                  locks.remove(artId, branchId);
+               }
+            }
+         }
          processLocks(locks, artifacts);
+      }
+   }
+
+   private static void removeAndUnlock(Integer artId, Integer branchId) {
+      ReentrantLock lock = null;
+      synchronized (loadingActiveMap) {
+         lock = loadingActiveMap.remove(artId, branchId);
+      }
+      if (lock != null && lock.isLocked()) {
+         lock.unlock();
       }
    }
 
@@ -158,7 +181,10 @@ public final class ArtifactLoader {
          Integer branchId = entry.getKey().getSecond();
          entry.getValue().lock();
          entry.getValue().unlock();
-         artifacts.add(ArtifactCache.getActive(artId, branchId));
+         Artifact active = ArtifactCache.getActive(artId, branchId);
+         if (active != null) {
+            artifacts.add(active);
+         }
       }
    }
 
@@ -398,17 +424,8 @@ public final class ArtifactLoader {
 
       if (!historical) {
          for (Artifact artifact : artifacts) {
-            key2 = BranchManager.getBranchId(artifact.getBranch());
-
-            ReentrantLock lock = null;
-            synchronized (loadingActiveMap) {
-               lock = loadingActiveMap.remove(artifact.getArtId(), key2);
-            }
-            if (lock != null) {
-               if (lock.isLocked()) {
-                  lock.unlock();
-               }
-            }
+            key2 = artifact.getFullBranch().getId();
+            removeAndUnlock(artifact.getArtId(), key2);
          }
       }
    }
