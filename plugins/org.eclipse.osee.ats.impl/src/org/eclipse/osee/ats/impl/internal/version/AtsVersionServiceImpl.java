@@ -65,11 +65,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
 
    private IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, IAtsVersion version, boolean store) throws OseeCoreException {
       if (store) {
-         if (version == null) {
-            AtsVersionStore.getService().setTargetedVersionLink(teamWf, version);
-         } else {
-            AtsVersionStore.getService().setTargetedVersionLink(teamWf, version);
-         }
+         AtsVersionStore.getService().setTargetedVersionLink(teamWf, version);
       }
       if (version == null) {
          AtsVersionCache.instance.deCache(teamWf);
