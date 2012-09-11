@@ -90,23 +90,6 @@ public class TestUtil {
       return monitorLog;
    }
 
-   public static int getNumberOfLogsAtLevel(SevereLoggingMonitor monitorLog, Level level) {
-      int count = 0;
-      for (IHealthStatus hStatus : monitorLog.getLogsAtLevel(level)) {
-         // do not count the valid ignored logs
-         for (String str : ignoreLogging) {
-            if (hStatus.getMessage().startsWith(str) == false) {
-               count++;
-            }
-         }
-      }
-      return count++;
-   }
-
-   public static void severeLoggingStop(SevereLoggingMonitor monitorLog) {
-      OseeLog.unregisterLoggerListener(monitorLog);
-   }
-
    public static void severeLoggingEnd(SevereLoggingMonitor monitorLog) throws Exception {
       severeLoggingEnd(monitorLog, ignoreLogging);
    }
@@ -115,7 +98,8 @@ public class TestUtil {
       OseeLog.unregisterLoggerListener(monitorLog);
       Collection<IHealthStatus> healthStatuses = monitorLog.getAllLogs();
       int numExceptions = 0;
-      if (healthStatuses.size() > 0) {
+      StringBuilder builder = new StringBuilder();
+      if (!healthStatuses.isEmpty()) {
          for (IHealthStatus status : healthStatuses) {
             if (status.getLevel() != Level.INFO) {
                boolean ignoreIt = false;
@@ -126,18 +110,21 @@ public class TestUtil {
                   }
                }
                if (!ignoreIt) {
+                  builder.append("\nSevereLoggingException [");
+                  builder.append(numExceptions);
+                  builder.append("]: ");
                   if (status.getException() != null) {
-                     System.err.println("SevereLogging Exception: " + Lib.exceptionToString(status.getException()));
+                     builder.append(Lib.exceptionToString(status.getException()));
                   } else {
-                     System.err.println("SevereLogging Exception: " + status.getMessage());
+                     builder.append(status.getMessage());
                   }
                   numExceptions++;
                }
             }
          }
          if (numExceptions > 0) {
-            throw new OseeStateException("SevereLoggingMonitor found [%d] exceptions (see console for details)!",
-               numExceptions);
+            throw new OseeStateException("SevereLoggingMonitor found [%d] exceptions - [%s]", numExceptions,
+               builder.toString());
          }
       }
    }
