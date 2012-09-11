@@ -46,4 +46,7 @@ public interface BranchDataStore {
    Callable<URI> checkBranchExchangeIntegrity(String sessionId, URI fileToCheck);
 
    Callable<TransactionResult> commitTransaction(String sessionId, TransactionData transaction);
+
+   // Temp
+   Callable<String> createUnsubscribeTx(ArtifactReadable userArtifact, ArtifactReadable groupArtifact);
 }

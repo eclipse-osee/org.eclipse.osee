@@ -13,20 +13,17 @@ package org.eclipse.osee.framework.manager.servlet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.concurrent.Callable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.GraphReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
-import org.eclipse.osee.orcs.transaction.OrcsTransaction;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 import org.osgi.framework.BundleContext;
 
@@ -54,7 +51,7 @@ public class UnsubscribeServlet extends UnsecuredOseeHttpServlet {
       try {
          String requestUri = request.getRequestURL().toString();
          requestUri = requestUri.replace(request.getPathInfo(), "");
-         UnsubscribeRequest data = UnsubscribeRequest.createFromURI(request);
+         UnsubscribeData data = UnsubscribeParser.createFromURI(request);
 
          String page = createConfirmationPage(requestUri, data);
          response.setStatus(HttpServletResponse.SC_OK);
@@ -74,7 +71,7 @@ public class UnsubscribeServlet extends UnsecuredOseeHttpServlet {
       response.getWriter().write(ex.toString());
    }
 
-   private String createConfirmationPage(String uri, UnsubscribeRequest data) throws IOException {
+   private String createConfirmationPage(String uri, UnsubscribeData data) throws IOException {
       URL url = bundleContext.getBundle().getResource("templates/unsubscribeTemplate.html");
       InputStream inputStream = null;
       try {
@@ -89,27 +86,29 @@ public class UnsubscribeServlet extends UnsecuredOseeHttpServlet {
    @Override
    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
       try {
-         UnsubscribeRequest data = UnsubscribeRequest.createFromXML(request);
+         UnsubscribeData data = UnsubscribeParser.createFromXML(request);
 
          QueryFactory queryFactory = getOrcsApi().getQueryFactory(null);
 
-         ArtifactReadable authorArtifact = getArtifactById(queryFactory, data.getUserId());
+         ArtifactReadable userArtifact = getArtifactById(queryFactory, data.getUserId());
          ArtifactReadable groupArtifact = getArtifactById(queryFactory, data.getGroupId());
 
-         String comment =
-            String.format("UserId [%s] requested unsubscribe from group [%s]",
-               authorArtifact.getSoleAttributeAsString(CoreAttributeTypes.UserId), groupArtifact.getName());
+         //         String comment =
+         //            String.format("UserId [%s] requested unsubscribe from group [%s]",
+         //               authorArtifact.getSoleAttributeAsString(CoreAttributeTypes.UserId), groupArtifact.getName());
 
-         GraphReadable readableGraph = orcsApi.getGraph(null);
+         //         GraphReadable readableGraph = orcsApi.getGraph(null);
 
          TransactionFactory factory = orcsApi.getTransactionFactory(null);
-         OrcsTransaction txn = factory.createTransaction(CoreBranches.COMMON, authorArtifact, comment);
+         Callable<String> callable = factory.createUnsubscribeTx(userArtifact, groupArtifact);
+         String message = callable.call();
+         //         OrcsTransaction txn = factory.createTransaction(CoreBranches.COMMON, authorArtifact, comment);
 
-         txn.asWriteableGraph(readableGraph).deleteRelation(groupArtifact, CoreRelationTypes.Users_Artifact,
-            authorArtifact);
-         txn.commit();
+         //         txn.asWriteableGraph(readableGraph).deleteRelation(groupArtifact, CoreRelationTypes.Users_Artifact,
+         //            authorArtifact);
+         //         txn.commit();
 
-         String message = String.format("<br/>You have been successfully unsubscribed.");
+         //         String message = String.format("<br/>You have been successfully unsubscribed.");
 
          response.setStatus(HttpServletResponse.SC_OK);
          response.setContentType("text/plain");

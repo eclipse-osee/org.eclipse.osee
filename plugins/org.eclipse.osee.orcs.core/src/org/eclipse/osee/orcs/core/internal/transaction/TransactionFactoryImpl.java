@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.transaction;
 
+import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
@@ -53,5 +54,10 @@ public class TransactionFactoryImpl implements TransactionFactory {
       orcsTxn.setComment(comment);
       orcsTxn.setAuthor(author);
       return orcsTxn;
+   }
+
+   @Override
+   public Callable<String> createUnsubscribeTx(ArtifactReadable userArtifact, ArtifactReadable groupArtifact) {
+      return branchDataStore.createUnsubscribeTx(userArtifact, groupArtifact);
    }
 }

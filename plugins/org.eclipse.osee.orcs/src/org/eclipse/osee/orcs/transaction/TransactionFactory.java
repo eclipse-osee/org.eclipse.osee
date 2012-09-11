@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.transaction;
 
+import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -21,4 +22,6 @@ public interface TransactionFactory {
 
    OrcsTransaction createTransaction(IOseeBranch branch, ArtifactReadable userArtifact, String comment) throws OseeCoreException;
 
+   // Temp method
+   Callable<String> createUnsubscribeTx(ArtifactReadable userArtifact, ArtifactReadable groupArtifact);
 }

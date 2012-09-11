@@ -20,35 +20,23 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.manager.servlet.ats.XmlUtil;
 import org.w3c.dom.Element;
 
-public final class UnsubscribeRequest {
+public final class UnsubscribeParser {
    private static final Matcher URI_PATTERN_MATCHER = Pattern.compile("group/(\\d+)?/user/(\\d+)").matcher("");
-   private final String groupId;
-   private final String userId;
 
-   public UnsubscribeRequest(String groupId, String userId) {
-      super();
-      this.groupId = groupId;
-      this.userId = userId;
+   private UnsubscribeParser() {
+      // Utility class
    }
 
-   public int getGroupId() {
-      return Integer.parseInt(groupId);
-   }
-
-   public int getUserId() {
-      return Integer.parseInt(userId);
-   }
-
-   public static UnsubscribeRequest createFromXML(HttpServletRequest request) throws IOException, Exception {
+   public static UnsubscribeData createFromXML(HttpServletRequest request) throws IOException, Exception {
       Element rootElement = XmlUtil.readXML(request.getInputStream());
       String groupId = Jaxp.getChildText(rootElement, "groupId");
       String userId = Jaxp.getChildText(rootElement, "userId");
       Conditions.checkNotNullOrEmpty(groupId, "groupId");
       Conditions.checkNotNullOrEmpty(userId, "userId");
-      return new UnsubscribeRequest(groupId, userId);
+      return new UnsubscribeData(groupId, userId);
    }
 
-   public static UnsubscribeRequest createFromURI(HttpServletRequest request) throws OseeCoreException {
+   public static UnsubscribeData createFromURI(HttpServletRequest request) throws OseeCoreException {
       String uri = request.getRequestURI();
       String groupId = null;
       String userId = null;
@@ -59,6 +47,6 @@ public final class UnsubscribeRequest {
       }
       Conditions.checkNotNullOrEmpty(groupId, "groupId");
       Conditions.checkNotNullOrEmpty(userId, "userId");
-      return new UnsubscribeRequest(groupId, userId);
+      return new UnsubscribeData(groupId, userId);
    }
 }

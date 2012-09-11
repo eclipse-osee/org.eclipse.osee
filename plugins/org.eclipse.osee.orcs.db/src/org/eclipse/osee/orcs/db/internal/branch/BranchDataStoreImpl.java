@@ -53,6 +53,7 @@ import org.eclipse.osee.orcs.db.internal.transaction.ComodificationCheck;
 import org.eclipse.osee.orcs.db.internal.transaction.TransactionCheck;
 import org.eclipse.osee.orcs.db.internal.transaction.TransactionWriter;
 import org.eclipse.osee.orcs.db.internal.transaction.TxSqlBuilderImpl;
+import org.eclipse.osee.orcs.db.internal.transaction.UnsubscribeTransaction;
 
 /**
  * @author Roberto E. Escobar
@@ -164,4 +165,8 @@ public class BranchDataStoreImpl implements BranchDataStore {
       }
    }
 
+   @Override
+   public Callable<String> createUnsubscribeTx(ArtifactReadable userArtifact, ArtifactReadable groupArtifact) {
+      return new UnsubscribeTransaction(logger, dbService, cachingService, identityService, userArtifact, groupArtifact);
+   }
 }
