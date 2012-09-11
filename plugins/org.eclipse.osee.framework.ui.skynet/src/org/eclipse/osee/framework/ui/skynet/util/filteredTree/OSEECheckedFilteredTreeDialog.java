@@ -21,7 +21,10 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -38,6 +41,7 @@ public abstract class OSEECheckedFilteredTreeDialog extends MessageDialog {
    private final IBaseLabelProvider labelProvider;
    private Collection<? extends Object> initialSelections;
    private final ViewerSorter viewerSorter;
+   private boolean showSelectButtons = false;
 
    public OSEECheckedFilteredTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerSorter viewerSorter) {
       super(new Shell(), dialogTitle, null, dialogMessage, MessageDialog.NONE, new String[] {"OK", "Cancel"}, 0);
@@ -45,6 +49,10 @@ public abstract class OSEECheckedFilteredTreeDialog extends MessageDialog {
       this.labelProvider = labelProvider;
       this.viewerSorter = viewerSorter;
       setShellStyle(getShellStyle() | SWT.RESIZE);
+   }
+
+   public void setShowSelectButtons(boolean showSelectButtons) {
+      this.showSelectButtons = showSelectButtons;
    }
 
    protected void createPreCustomArea(Composite parent) {
@@ -117,6 +125,30 @@ public abstract class OSEECheckedFilteredTreeDialog extends MessageDialog {
          treeViewer.setInitalChecked(initialSelections);
       }
       updateStatusLabel();
+
+      if (showSelectButtons) {
+         Composite comp = new Composite(parent, SWT.NONE);
+         comp.setLayout(new GridLayout(2, false));
+         comp.setLayoutData(new GridData());
+
+         Button selectAllButton = new Button(comp, SWT.PUSH);
+         selectAllButton.setText("Select All");
+         selectAllButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               getTreeViewer().setInitalChecked(((Collection<?>) getTreeViewer().getViewer().getInput()));
+            }
+         });
+
+         Button deSelectAllButton = new Button(comp, SWT.PUSH);
+         deSelectAllButton.setText("De-Select All");
+         deSelectAllButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               getTreeViewer().clearChecked();
+            }
+         });
+      }
 
       return parent;
    }
