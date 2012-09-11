@@ -67,7 +67,12 @@ public class BranchEventTest {
 
    @AfterClass
    public static void cleanUp() throws OseeCoreException {
-      Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(topLevel, true));
+      try {
+         OseeEventManager.getPreferences().setPendRunning(true);
+         Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(topLevel, true));
+      } finally {
+         OseeEventManager.getPreferences().setPendRunning(false);
+      }
    }
 
    @org.junit.Test
