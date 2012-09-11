@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -138,9 +139,13 @@ public class AtsBranchConfigurationTest {
       IAtsTeamDefinition teamDef =
          AtsConfigCache.instance.getSoleByName(BRANCH_VIA_VERSIONS.getName(), IAtsTeamDefinition.class);
       IAtsVersion versionToTarget = null;
+      String version1Hrid = "", version2Hrid = "";
       for (IAtsVersion vArt : teamDef.getVersions()) {
          if (vArt.getName().contains("Ver1")) {
             versionToTarget = vArt;
+            version1Hrid = vArt.getHumanReadableId();
+         } else {
+            version2Hrid = vArt.getHumanReadableId();
          }
       }
       versionToTarget.setBaselineBranchGuid(viaTeamDefBranch.getGuid());
@@ -213,7 +218,9 @@ public class AtsBranchConfigurationTest {
       Collection<Artifact> newArts = changeData.getArtifacts(KindType.Artifact, ModificationType.NEW);
       Assert.assertTrue("Should be 1 new artifact in change report, found " + newArts.size(), newArts.size() == 1);
 
-      TestUtil.severeLoggingEnd(monitor);
+      TestUtil.severeLoggingEnd(monitor, Arrays.asList(
+         "Version [[" + version1Hrid + "][BranchViaVersions - Ver1]] has no related team defininition",
+         "Version [[" + version2Hrid + "][BranchViaVersions - Ver2]] has no related team defininition"));
    }
 
    @org.junit.Test
