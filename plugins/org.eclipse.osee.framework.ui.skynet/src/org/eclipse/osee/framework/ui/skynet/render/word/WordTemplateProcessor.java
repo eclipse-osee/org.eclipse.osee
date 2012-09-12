@@ -125,10 +125,10 @@ public class WordTemplateProcessor {
       String masterTemplate = masterTemplateArtifact.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent, "");
       slaveTemplate = "";
       isDiff = renderer.getBooleanOption("Publish As Diff");
-      renderer.setOption(ITemplateRenderer.TEMPLATE_OPTION, masterTemplateArtifact.getName());
+      renderer.setOption(ITemplateRenderer.TEMPLATE_OPTION, masterTemplateArtifact);
 
       if (slaveTemplateArtifact != null) {
-         renderer.setOption(ITemplateRenderer.TEMPLATE_OPTION, slaveTemplateArtifact.getSafeName());
+         renderer.setOption(ITemplateRenderer.TEMPLATE_OPTION, slaveTemplateArtifact);
          slaveTemplate = slaveTemplateArtifact.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent, "");
       }
 

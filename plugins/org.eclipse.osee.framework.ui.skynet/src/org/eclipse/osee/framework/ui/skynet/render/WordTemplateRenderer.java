@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -220,9 +221,15 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    }
 
    protected String getTemplate(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
-      Artifact templateArtifact =
-         TemplateManager.getTemplate(this, artifact, presentationType, getStringOption(TEMPLATE_OPTION));
-      return templateArtifact.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent);
+      Object option = getOption(TEMPLATE_OPTION);
+      if (option instanceof Artifact) {
+         Artifact template = (Artifact) option;
+         return template.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent);
+      } else if (option == null || option instanceof String) {
+         Artifact templateArtifact = TemplateManager.getTemplate(this, artifact, presentationType, (String) option);
+         return templateArtifact.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent);
+      }
+      return Strings.EMPTY_STRING;
    }
 
    @Override

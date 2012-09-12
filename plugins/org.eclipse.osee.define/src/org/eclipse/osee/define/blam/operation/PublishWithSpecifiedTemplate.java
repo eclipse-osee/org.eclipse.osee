@@ -72,7 +72,8 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       }
 
       WordTemplateRenderer renderer = new WordTemplateRenderer();
-      SkynetTransaction transaction = TransactionManager.createTransaction(branch, "BLAM: Publish with specified template");
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(branch, "BLAM: Publish with specified template");
       Object[] options =
          new Object[] {
             "Branch",
@@ -92,9 +93,6 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
             "Exclude Folders",
             variableMap.getBoolean("Exclude Folders")};
 
-      if (variableMap.getBoolean("Exclude Folders")) {
-
-      }
       renderer.publish(master, slave, artifacts, options);
 
       transaction.execute();
@@ -102,7 +100,9 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
 
    @Override
    public String getDescriptionUsage() {
-      return "Select a Master or Master/Slave template and click the play button at the top right.";
+      StringBuilder sb = new StringBuilder();
+      sb.append("Select a Master or Master/Slave template and click the play button at the top right.\n");
+      return sb.toString();
    }
 
    @Override
@@ -114,7 +114,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Document Link Format:\"/>");
       builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Use Artifact Names\" />");
       builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Use Paragraph Numbers\" />");
-      builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Exclude Folders\" />");
+      builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Exclude Folders\" defaultValue=\"true\"/>");
 
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \" /><XWidget xwidgetType=\"XCombo(");
       for (Artifact art : templates) {
@@ -131,6 +131,8 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       builder.append(")\" displayName=\"Slave Template\" horizontalLabel=\"true\"/><XWidget xwidgetType=\"XLabel\" displayName=\" \" />");
       builder.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch (If Template specifies Artifacts)\" defaultValue=\"" + BranchManager.getLastBranch().getGuid() + "\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Artifacts (If Not Specified in Template)\" />");
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Generate Differences:\"/>");
+      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Note: If a Compare Against branch is selected, diffs will be between selected artifacts and current version on compare branch\"/>");
+      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"If a Compare Against branch is NOT selected, diffs will be between selected artifacts and baseline version on same branch\"/>");
       builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Publish As Diff\" />");
       //      builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Diff from Baseline\" />");
       builder.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Compare Against Another Branch\"/>");
