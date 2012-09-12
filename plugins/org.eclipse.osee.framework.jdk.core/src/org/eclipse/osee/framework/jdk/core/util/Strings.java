@@ -228,4 +228,8 @@ public class Strings {
       return new StringBuffer(strLen).append(Character.toTitleCase(str.charAt(0))).append(str.substring(1)).toString();
    }
 
+   public static boolean isNumeric(String str) {
+      return str.matches("-?\\d+(\\.\\d+)?"); //match a number with optional '-' and decimal.
+   }
+
 }
