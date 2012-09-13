@@ -137,6 +137,7 @@ public abstract class OSEECheckedFilteredTreeDialog extends MessageDialog {
             @Override
             public void widgetSelected(SelectionEvent e) {
                getTreeViewer().setInitalChecked(((Collection<?>) getTreeViewer().getViewer().getInput()));
+               updateStatusLabel();
             }
          });
 
@@ -146,6 +147,7 @@ public abstract class OSEECheckedFilteredTreeDialog extends MessageDialog {
             @Override
             public void widgetSelected(SelectionEvent e) {
                getTreeViewer().clearChecked();
+               updateStatusLabel();
             }
          });
       }
