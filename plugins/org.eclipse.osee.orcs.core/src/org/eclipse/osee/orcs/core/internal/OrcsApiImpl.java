@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsAdmin;
@@ -193,8 +194,14 @@ public class OrcsApiImpl implements OrcsApi {
    }
 
    private SessionContext getSessionContext(ApplicationContext context) {
-      // TODO get sessions from a session context cache
-      String sessionId = GUID.create(); // TODO context.getSessionId() attach to application context
+      // TODO get sessions from a session context cache - improve this
+      String sessionId = null;
+      if (context != null) {
+         sessionId = context.getSessionId();
+      }
+      if (!Strings.isValid(sessionId)) {
+         sessionId = GUID.create();
+      }
       return new SessionContextImpl(sessionId);
    }
 

@@ -34,16 +34,21 @@ public class SecureOseeHttpServlet extends OseeHttpServlet {
 
    @Override
    protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
-      String sessionId = request.getParameter("sessionId");
+      String sessionId = getSessionId(request);
       String interaction =
          String.format("%s %s %s", request.getMethod(), request.getRequestURI(), request.getQueryString());
       sessionManager.updateSessionActivity(sessionId, interaction);
    }
 
    public boolean isInitializing(HttpServletRequest request) throws OseeCoreException {
-      String sessionId = request.getParameter("sessionId");
+      String sessionId = getSessionId(request);
       ISession session = sessionManager.getSessionById(sessionId);
       String userId = session.getUserId();
       return SystemUser.BootStrap.getUserId().equals(userId);
    }
+
+   protected String getSessionId(HttpServletRequest request) {
+      return request.getParameter("sessionId");
+   }
+
 }

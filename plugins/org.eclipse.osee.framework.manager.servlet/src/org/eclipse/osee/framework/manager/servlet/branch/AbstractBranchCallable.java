@@ -100,7 +100,7 @@ public abstract class AbstractBranchCallable<REQ_TYPE, RESP_TYPE> extends Cancel
       }
    }
 
-   protected OrcsApi getOrcsApi() {
+   private OrcsApi getOrcsApi() {
       return orcsApi;
    }
 
@@ -115,7 +115,7 @@ public abstract class AbstractBranchCallable<REQ_TYPE, RESP_TYPE> extends Cancel
    protected ArtifactReadable getArtifactById(int id) throws OseeCoreException {
       ArtifactReadable artifact = null;
       if (id > 0) {
-         QueryFactory factory = getOrcsApi().getQueryFactory(null);
+         QueryFactory factory = getOrcsApi().getQueryFactory(getContext());
          artifact = factory.fromBranch(CoreBranches.COMMON).andLocalId(id).getResults().getExactlyOne();
       }
       return artifact;

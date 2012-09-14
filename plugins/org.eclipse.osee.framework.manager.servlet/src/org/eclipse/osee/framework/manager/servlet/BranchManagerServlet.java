@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.manager.servlet.branch.CommitBranchCallable;
 import org.eclipse.osee.framework.manager.servlet.branch.CompareBranchCallable;
 import org.eclipse.osee.framework.manager.servlet.branch.CreateBranchCallable;
 import org.eclipse.osee.framework.manager.servlet.branch.PurgeBranchCallable;
+import org.eclipse.osee.framework.manager.servlet.internal.ApplicationContextFactory;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -64,16 +65,15 @@ public class BranchManagerServlet extends SecureOseeHttpServlet {
       }
    }
 
-   private ApplicationContext getContext() {
-      // TODO Do Something;
-      return null;
+   private ApplicationContext getContext(HttpServletRequest req) {
+      return ApplicationContextFactory.createContext(getSessionId(req));
    }
 
    private AbstractBranchCallable<?, ?> createCallable(HttpServletRequest req, HttpServletResponse resp) throws Exception {
       String rawFunction = req.getParameter("function");
       Function function = Function.fromString(rawFunction);
 
-      ApplicationContext applicationContext = getContext();
+      ApplicationContext applicationContext = getContext(req);
 
       AbstractBranchCallable<?, ?> callable = null;
       switch (function) {

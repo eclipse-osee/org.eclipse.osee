@@ -25,10 +25,12 @@ import org.eclipse.osee.framework.core.server.SecureOseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.manager.servlet.data.HttpBranchExchangeInfo;
+import org.eclipse.osee.framework.manager.servlet.internal.ApplicationContextFactory;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 
@@ -48,8 +50,12 @@ public class BranchExchangeServlet extends SecureOseeHttpServlet {
       this.resourceManager = resourceManager;
    }
 
-   private OrcsBranch getBranchOps() {
-      return orcsApi.getBranchOps(null);
+   private ApplicationContext getContext(HttpServletRequest req) {
+      return ApplicationContextFactory.createContext(getSessionId(req));
+   }
+
+   private OrcsBranch getBranchOps(HttpServletRequest req) {
+      return orcsApi.getBranchOps(getContext(req));
    }
 
    @Override
@@ -58,13 +64,13 @@ public class BranchExchangeServlet extends SecureOseeHttpServlet {
          HttpBranchExchangeInfo exchangeInfo = new HttpBranchExchangeInfo(req);
          switch (exchangeInfo.getFunction()) {
             case exportBranch:
-               executeExport(exchangeInfo, response);
+               executeExport(getBranchOps(req), exchangeInfo, response);
                break;
             case importBranch:
-               executeImport(exchangeInfo, response);
+               executeImport(getBranchOps(req), exchangeInfo, response);
                break;
             case checkExchange:
-               executeCheckExchange(exchangeInfo, response);
+               executeCheckExchange(getBranchOps(req), exchangeInfo, response);
             default:
                break;
          }
@@ -78,13 +84,13 @@ public class BranchExchangeServlet extends SecureOseeHttpServlet {
       response.getWriter().close();
    }
 
-   private void executeCheckExchange(HttpBranchExchangeInfo exchangeInfo, HttpServletResponse response) throws Exception {
+   private void executeCheckExchange(OrcsBranch orcsBranch, HttpBranchExchangeInfo exchangeInfo, HttpServletResponse response) throws Exception {
       int status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
       StringBuffer message = new StringBuffer();
 
       String path = exchangeInfo.getPath();
       IResourceLocator exchangeLocator = resourceManager.getResourceLocator(path);
-      Callable<URI> callable = getBranchOps().checkBranchExchangeIntegrity(exchangeLocator.getLocation());
+      Callable<URI> callable = orcsBranch.checkBranchExchangeIntegrity(exchangeLocator.getLocation());
       URI verifyUri = callable.call();
       status = HttpServletResponse.SC_ACCEPTED;
       message.append(String.format("Verification at: [%s]", verifyUri.toASCIIString()));
@@ -94,11 +100,9 @@ public class BranchExchangeServlet extends SecureOseeHttpServlet {
       response.getWriter().write(message.toString());
    }
 
-   private void executeExport(HttpBranchExchangeInfo exchangeInfo, HttpServletResponse response) throws Exception {
+   private void executeExport(OrcsBranch orcsBranch, HttpBranchExchangeInfo exchangeInfo, HttpServletResponse response) throws Exception {
       int status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
       StringBuffer message = new StringBuffer();
-
-      OrcsBranch orcsBranch = getBranchOps();
 
       List<IOseeBranch> branches = new ArrayList<IOseeBranch>();
       for (Integer branchIds : exchangeInfo.getSelectedBranchIds()) {
@@ -106,7 +110,7 @@ public class BranchExchangeServlet extends SecureOseeHttpServlet {
       }
 
       Callable<URI> callable =
-         getBranchOps().exportBranch(branches, exchangeInfo.getOptions(), exchangeInfo.getExchangeFileName());
+         orcsBranch.exportBranch(branches, exchangeInfo.getOptions(), exchangeInfo.getExchangeFileName());
       URI exportURI = callable.call();
 
       IResourceLocator exchangeLocator = resourceManager.getResourceLocator(exportURI.toASCIIString());
@@ -146,9 +150,7 @@ public class BranchExchangeServlet extends SecureOseeHttpServlet {
       response.getWriter().write(message.toString());
    }
 
-   private void executeImport(HttpBranchExchangeInfo exchangeInfo, HttpServletResponse response) throws Exception {
-
-      OrcsBranch orcsBranch = getBranchOps();
+   private void executeImport(OrcsBranch orcsBranch, HttpBranchExchangeInfo exchangeInfo, HttpServletResponse response) throws Exception {
 
       List<IOseeBranch> branches = new ArrayList<IOseeBranch>();
       for (Integer branchIds : exchangeInfo.getSelectedBranchIds()) {

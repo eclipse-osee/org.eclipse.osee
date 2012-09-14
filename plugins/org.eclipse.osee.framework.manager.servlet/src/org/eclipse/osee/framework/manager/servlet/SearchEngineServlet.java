@@ -27,7 +27,9 @@ import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.SecureOseeHttpServlet;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.manager.servlet.internal.ApplicationContextFactory;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -53,6 +55,10 @@ public class SearchEngineServlet extends SecureOseeHttpServlet {
       this.orcsApi = orcsApi;
    }
 
+   private ApplicationContext getContext(HttpServletRequest req) {
+      return ApplicationContextFactory.createContext(getSessionId(req));
+   }
+
    @Override
    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
       try {
@@ -64,7 +70,7 @@ public class SearchEngineServlet extends SecureOseeHttpServlet {
             options.isMatchWordOrder() ? StringOperator.TOKENIZED_MATCH_ORDER : StringOperator.TOKENIZED_ANY_ORDER;
          CaseType caseType = options.isCaseSensitive() ? CaseType.MATCH_CASE : CaseType.IGNORE_CASE;
 
-         QueryFactory factory = orcsApi.getQueryFactory(null);
+         QueryFactory factory = orcsApi.getQueryFactory(getContext(request));
          QueryBuilder builder = factory.fromBranch(searchRequest.getBranch());
          builder.includeDeleted(options.getDeletionFlag().areDeletedAllowed());
 

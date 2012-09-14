@@ -18,7 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.SecureOseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.manager.servlet.internal.ApplicationContextFactory;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 
@@ -35,8 +37,12 @@ public class SearchEngineTaggerServlet extends SecureOseeHttpServlet {
       this.orcsApi = orcsApi;
    }
 
+   private ApplicationContext getContext(HttpServletRequest req) {
+      return ApplicationContextFactory.createContext(getSessionId(req));
+   }
+
    private QueryIndexer getQueryIndexer(HttpServletRequest request) {
-      return orcsApi.getQueryIndexer(null);
+      return orcsApi.getQueryIndexer(getContext(request));
    }
 
    @Override
