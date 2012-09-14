@@ -12,6 +12,8 @@
 package org.eclipse.osee.framework.jdk.core.util;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * {@link StringsTest}
@@ -22,6 +24,7 @@ import java.util.List;
  */
 public class Strings {
 
+   private static final Pattern NUMERIC_PATTERN = Pattern.compile("-?\\d+(\\.\\d+)?"); //match a number with optional '-' and decimal.
    private static final String AMP = "&";
    private static final String DBL_AMP = AMP + AMP;
 
@@ -228,8 +231,13 @@ public class Strings {
       return new StringBuffer(strLen).append(Character.toTitleCase(str.charAt(0))).append(str.substring(1)).toString();
    }
 
-   public static boolean isNumeric(String str) {
-      return str.matches("-?\\d+(\\.\\d+)?"); //match a number with optional '-' and decimal.
+   public static boolean isNumeric(String value) {
+      boolean result = false;
+      if (Strings.isValid(value)) {
+         Matcher matcher = NUMERIC_PATTERN.matcher(value);
+         result = matcher.matches();
+      }
+      return result;
    }
 
 }
