@@ -145,8 +145,8 @@ public class TransactionWriter {
    }
 
    private void fetchTxNotCurrent(OseeConnection connection, int branchId, List<Object[]> results, String query, ArtifactJoinQuery join) throws OseeCoreException {
-      join.store();
       try {
+         join.store();
          IOseeStatement chStmt = dbService.getStatement(connection);
          try {
             chStmt.runPreparedQuery(query, join.getQueryId());

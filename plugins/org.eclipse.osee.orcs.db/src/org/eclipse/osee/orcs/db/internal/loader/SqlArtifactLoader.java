@@ -146,10 +146,10 @@ public class SqlArtifactLoader {
    }
 
    protected <D extends OrcsData, F extends VersionObjectFactory, H extends OrcsDataHandler<D>> void load(LoadProcessor<D, F, H> processor, H handler, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
-      for (AbstractJoinQuery join : loadContext.getJoins()) {
-         join.store();
-      }
       try {
+         for (AbstractJoinQuery join : loadContext.getJoins()) {
+            join.store();
+         }
          IOseeStatement chStmt = getDatabaseService().getStatement();
          long startTime = System.currentTimeMillis();
          try {
@@ -174,7 +174,11 @@ public class SqlArtifactLoader {
          }
       } finally {
          for (AbstractJoinQuery join : loadContext.getJoins()) {
-            join.delete();
+            try {
+               join.delete();
+            } catch (Exception ex) {
+               // Do nothing
+            }
          }
       }
    }

@@ -59,17 +59,21 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
          logger.trace("%s Count - queryContext[%s]", getClass().getSimpleName(), queryContext);
       }
 
-      for (AbstractJoinQuery join : context.getJoins()) {
-         join.store();
-      }
       try {
+         for (AbstractJoinQuery join : context.getJoins()) {
+            join.store();
+         }
          if (cancellation != null) {
             cancellation.checkForCancelled();
          }
          count = dbService.runPreparedQueryFetchObject(-1, context.getSql(), context.getParameters().toArray());
       } finally {
          for (AbstractJoinQuery join : context.getJoins()) {
-            join.delete();
+            try {
+               join.delete();
+            } catch (Exception ex) {
+               // Do nothing
+            }
          }
       }
 
