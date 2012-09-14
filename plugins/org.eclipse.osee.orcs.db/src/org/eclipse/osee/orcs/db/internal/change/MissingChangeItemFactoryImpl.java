@@ -55,35 +55,35 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
 
    @Override
    public Collection<ChangeItem> createMissingChanges(List<ChangeItem> changes, TransactionRecord sourceTx, TransactionRecord destTx, String sessionId) throws OseeCoreException {
-      Set<Integer> modifiedArtIds = new HashSet<Integer>();
-      Multimap<Integer, Integer> modifiedAttrIds = LinkedListMultimap.create();
-      Multimap<Integer, Integer> modifiedRels = LinkedListMultimap.create();
+      if (changes != null && !changes.isEmpty()) {
+         Set<Integer> modifiedArtIds = new HashSet<Integer>();
+         Multimap<Integer, Integer> modifiedAttrIds = LinkedListMultimap.create();
+         Multimap<Integer, Integer> modifiedRels = LinkedListMultimap.create();
 
-      for (ChangeItem change : changes) {
-         if (change instanceof AttributeChangeItem) {
-            modifiedAttrIds.put(change.getArtId(), change.getItemId());
-         } else if (change instanceof ArtifactChangeItem) {
-            if (!change.isSynthetic()) {
-               modifiedArtIds.add(change.getArtId());
+         for (ChangeItem change : changes) {
+            if (change instanceof AttributeChangeItem) {
+               modifiedAttrIds.put(change.getArtId(), change.getItemId());
+            } else if (change instanceof ArtifactChangeItem) {
+               if (!change.isSynthetic()) {
+                  modifiedArtIds.add(change.getArtId());
+               }
+            } else if (change instanceof RelationChangeItem) {
+               modifiedRels.put(change.getArtId(), change.getItemId());
             }
-         } else if (change instanceof RelationChangeItem) {
-            modifiedRels.put(change.getArtId(), change.getItemId());
+         }
+
+         Set<Integer> allArtIds = new HashSet<Integer>(modifiedArtIds);
+         allArtIds.addAll(modifiedAttrIds.keySet());
+         allArtIds.addAll(modifiedRels.keySet());
+
+         Set<Integer> missingArtIds = determineWhichArtifactsNotOnDestination(allArtIds, destTx, sessionId);
+
+         if (!missingArtIds.isEmpty()) {
+            return createMissingChangeItems(sourceTx, destTx, sessionId, modifiedArtIds, modifiedAttrIds, modifiedRels,
+               missingArtIds, allArtIds);
          }
       }
-
-      Set<Integer> allArtIds = new HashSet<Integer>(modifiedArtIds);
-      allArtIds.addAll(modifiedAttrIds.keySet());
-      allArtIds.addAll(modifiedRels.keySet());
-
-      Set<Integer> missingArtIds = determineWhichArtifactsNotOnDestination(allArtIds, destTx, sessionId);
-
-      if (!missingArtIds.isEmpty()) {
-         return createMissingChangeItems(sourceTx, destTx, sessionId, modifiedArtIds, modifiedAttrIds, modifiedRels,
-            missingArtIds, allArtIds);
-      } else {
-         return Collections.emptyList();
-      }
-
+      return Collections.emptyList();
    }
 
    private Set<Integer> determineWhichArtifactsNotOnDestination(Set<Integer> artIds, TransactionRecord destTx, String sessionId) throws OseeCoreException {

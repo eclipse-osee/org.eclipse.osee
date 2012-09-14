@@ -37,8 +37,8 @@ import org.eclipse.osee.orcs.db.internal.change.ChangeItemLoader.ChangeItemFacto
  */
 public class LoadDeltasBetweenTxsOnTheSameBranch extends DatabaseCallable<List<ChangeItem>> {
 
-   private static final String SELECT_CHANGES_AT_TRANSACTION =
-      "select gamma_id, mod_type from osee_txs where branch_id = ? and transaction_id = ?";
+   private static final String SELECT_CHANGES_BETWEEN_TRANSACTIONS =
+      "select gamma_id, mod_type from osee_txs where branch_id = ? and transaction_id > ? and transaction_id <= ?";
 
    private final HashMap<Long, ModificationType> changeByGammaId = new HashMap<Long, ModificationType>();
 
@@ -92,7 +92,8 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends DatabaseCallable<List<C
    private void loadChangesAtEndTx(TransactionJoinQuery txJoin) throws OseeCoreException {
       IOseeStatement chStmt = getDatabaseService().getStatement();
       try {
-         chStmt.runPreparedQuery(10000, SELECT_CHANGES_AT_TRANSACTION, getBranchId(), getEndTx().getId());
+         chStmt.runPreparedQuery(10000, SELECT_CHANGES_BETWEEN_TRANSACTIONS, getBranchId(), getStartTx().getId(),
+            getEndTx().getId());
          while (chStmt.next()) {
             checkForCancelled();
             Long gammaId = chStmt.getLong("gamma_id");
