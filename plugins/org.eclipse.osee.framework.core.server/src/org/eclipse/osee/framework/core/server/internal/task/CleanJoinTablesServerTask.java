@@ -13,7 +13,12 @@ package org.eclipse.osee.framework.core.server.internal.task;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.server.IServerTask;
 import org.eclipse.osee.framework.core.server.ISession;
@@ -22,6 +27,9 @@ import org.eclipse.osee.framework.core.server.SchedulingScheme;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -49,6 +57,11 @@ public class CleanJoinTablesServerTask implements IServerTask {
    private IOseeDatabaseService dbService;
    private Log logger;
    private ISessionManager sessionManager;
+   private IStatus lastStatus = Status.OK_STATUS;
+   private final Map<String, Integer> deletedByTime = new ConcurrentHashMap<String, Integer>();
+   private final CompositeKeyHashMap<String, String, Integer> sessionDeletes =
+      new CompositeKeyHashMap<String, String, Integer>(10, true);
+   private long lastRan = 0;
 
    public void setDbService(IOseeDatabaseService dbService) {
       this.dbService = dbService;
@@ -70,13 +83,21 @@ public class CleanJoinTablesServerTask implements IServerTask {
    @Override
    public void run() {
       try {
-         Timestamp time = new Timestamp(System.currentTimeMillis() - THREE_HOURS);
+         lastRan = System.currentTimeMillis();
+         deletedByTime.clear();
+         sessionDeletes.clear();
+
+         Timestamp time = new Timestamp(lastRan - THREE_HOURS);
          for (String table : TABLES) {
-            ConnectionHandler.runPreparedUpdate(String.format(DELETE_JOIN_TIME, table), time);
+            int rows = ConnectionHandler.runPreparedUpdate(String.format(DELETE_JOIN_TIME, table), time);
+            deletedByTime.put(table, rows);
          }
          deleteFromJoinCleanup();
+         lastStatus = Status.OK_STATUS;
       } catch (OseeCoreException ex) {
-         logger.warn(ex, "Error cleaning up tables");
+         String message = "Error cleaning up tables";
+         logger.warn(ex, message);
+         lastStatus = new Status(IStatus.ERROR, CleanJoinTablesServerTask.class.getName(), message, ex);
       }
    }
 
@@ -99,7 +120,9 @@ public class CleanJoinTablesServerTask implements IServerTask {
             }
             if (!isAlive) {
                queryIds.add(new Integer[] {queryId});
-               ConnectionHandler.runPreparedUpdate(String.format(DELETE_JOIN_TABLE_SESSION, tableName), queryId);
+               int rows =
+                  ConnectionHandler.runPreparedUpdate(String.format(DELETE_JOIN_TABLE_SESSION, tableName), queryId);
+               sessionDeletes.put(sessionId, tableName, rows);
             }
             prevSessionId = sessionId;
          }
@@ -127,5 +150,37 @@ public class CleanJoinTablesServerTask implements IServerTask {
    @Override
    public TimeUnit getTimeUnit() {
       return TimeUnit.MINUTES;
+   }
+
+   @Override
+   public IStatus getLastStatus() {
+      IStatus toReturn = lastStatus;
+      if (toReturn.isOK()) {
+         String message = buildMessage();
+         toReturn = new Status(IStatus.OK, CleanJoinTablesServerTask.class.getName(), message.toString());
+      }
+      return toReturn;
+   }
+
+   private String buildMessage() {
+      StringBuilder message = new StringBuilder();
+      message.append(String.format("[%s] - Last ran: [", getName()));
+      if (lastRan != 0) {
+         message.append(Lib.getElapseString(lastRan));
+         message.append(" ago]\n");
+      } else {
+         message.append("Never]\n");
+      }
+      for (Entry<String, Integer> entry : deletedByTime.entrySet()) {
+         message.append(String.format("Deleted [%s] from table [%s]\n", entry.getValue(), entry.getKey()));
+      }
+
+      for (Entry<Pair<String, String>, Integer> entry : sessionDeletes.entrySet()) {
+         String sessionId = entry.getKey().getFirst();
+         String tableName = entry.getKey().getSecond();
+         Integer rows = entry.getValue();
+         message.append(String.format("Deleted [%s] from table [%s] for sessionId [%s]\n", rows, tableName, sessionId));
+      }
+      return message.toString();
    }
 }

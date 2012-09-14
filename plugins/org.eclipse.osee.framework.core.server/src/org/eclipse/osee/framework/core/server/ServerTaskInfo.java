@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2012 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,15 @@ import org.eclipse.core.runtime.IStatus;
 /**
  * @author Roberto E. Escobar
  */
-public interface IServerTask extends Runnable {
+public interface ServerTaskInfo {
+
+   public static enum TaskState {
+      SCHEDULED,
+      RUNNING,
+      CANCELLED,
+      WAITING,
+      DONE;
+   }
 
    String getName();
 
@@ -29,4 +37,8 @@ public interface IServerTask extends Runnable {
    TimeUnit getTimeUnit();
 
    IStatus getLastStatus();
+
+   long getTimeUntilNextRun();
+
+   TaskState getTaskState();
 }

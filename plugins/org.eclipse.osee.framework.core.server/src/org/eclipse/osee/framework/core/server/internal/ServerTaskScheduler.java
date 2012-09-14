@@ -10,16 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.internal;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IServerTask;
 import org.eclipse.osee.framework.core.server.IServerTaskScheduler;
+import org.eclipse.osee.framework.core.server.SchedulingScheme;
+import org.eclipse.osee.framework.core.server.ServerTaskInfo;
+import org.eclipse.osee.framework.core.server.ServerTaskInfo.TaskState;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -29,7 +36,8 @@ public class ServerTaskScheduler implements IServerTaskScheduler {
 
    private Log logger;
 
-   private final Map<Runnable, ScheduledFuture<?>> futures = new ConcurrentHashMap<Runnable, ScheduledFuture<?>>();
+   private final Map<IServerTask, ScheduledFuture<?>> futures =
+      new ConcurrentHashMap<IServerTask, ScheduledFuture<?>>();
 
    private ScheduledExecutorService executor;
    private IApplicationServerManager serverManager;
@@ -88,18 +96,99 @@ public class ServerTaskScheduler implements IServerTaskScheduler {
       }
    }
 
-   private void scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit) {
+   private void scheduleAtFixedRate(IServerTask command, long initialDelay, long period, TimeUnit unit) {
       ScheduledFuture<?> futureTask = executor.scheduleAtFixedRate(command, initialDelay, period, unit);
       futures.put(command, futureTask);
    }
 
-   private void scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
+   private void scheduleWithFixedDelay(IServerTask command, long initialDelay, long delay, TimeUnit unit) {
       ScheduledFuture<?> futureTask = executor.scheduleWithFixedDelay(command, initialDelay, delay, unit);
       futures.put(command, futureTask);
    }
 
-   private void scheduleOneShot(Runnable command, long initialDelay, TimeUnit unit) {
+   private void scheduleOneShot(IServerTask command, long initialDelay, TimeUnit unit) {
       ScheduledFuture<?> futureTask = executor.schedule(command, initialDelay, unit);
       futures.put(command, futureTask);
+   }
+
+   @Override
+   public List<ServerTaskInfo> getServerTaskInfo() {
+      List<ServerTaskInfo> infos = new ArrayList<ServerTaskInfo>();
+
+      for (Entry<IServerTask, ScheduledFuture<?>> entry : futures.entrySet()) {
+         IServerTask task = entry.getKey();
+
+         ScheduledFuture<?> future = entry.getValue();
+         long waitTimeForNextRun = future.getDelay(TimeUnit.MILLISECONDS);
+
+         TaskState state = TaskState.SCHEDULED;
+         if (waitTimeForNextRun == 0 && (!future.isDone() || !future.isCancelled())) {
+            state = TaskState.RUNNING;
+         } else if (future.isCancelled()) {
+            state = TaskState.CANCELLED;
+         } else if (waitTimeForNextRun > 0) {
+            state = TaskState.WAITING;
+         } else if (future.isDone()) {
+            state = TaskState.DONE;
+         }
+
+         ServerTaskInfo info = new ServerTaskInfoImpl(task, state, waitTimeForNextRun);
+         infos.add(info);
+      }
+      return infos;
+   }
+   private final static class ServerTaskInfoImpl implements ServerTaskInfo {
+
+      private final IServerTask task;
+      private final TaskState state;
+      private final long timeTilNextRun;
+
+      public ServerTaskInfoImpl(IServerTask task, TaskState state, long timeTilNextRun) {
+         super();
+         this.task = task;
+         this.state = state;
+         this.timeTilNextRun = timeTilNextRun;
+      }
+
+      @Override
+      public String getName() {
+         return task.getName();
+      }
+
+      @Override
+      public SchedulingScheme getSchedulingScheme() {
+         return task.getSchedulingScheme();
+      }
+
+      @Override
+      public long getInitialDelay() {
+         return task.getInitialDelay();
+      }
+
+      @Override
+      public long getPeriod() {
+         return task.getPeriod();
+      }
+
+      @Override
+      public long getTimeUntilNextRun() {
+         return timeTilNextRun;
+      }
+
+      @Override
+      public TimeUnit getTimeUnit() {
+         return task.getTimeUnit();
+      }
+
+      @Override
+      public IStatus getLastStatus() {
+         return task.getLastStatus();
+      }
+
+      @Override
+      public TaskState getTaskState() {
+         return state;
+      }
+
    }
 }

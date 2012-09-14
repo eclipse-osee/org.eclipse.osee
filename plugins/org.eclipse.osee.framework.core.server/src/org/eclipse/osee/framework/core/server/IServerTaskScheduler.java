@@ -10,13 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server;
 
+import java.util.List;
+
 /**
  * @author Roberto E. Escobar
  */
 public interface IServerTaskScheduler {
 
-   public void addServerTask(IServerTask taskProvider);
+   void addServerTask(IServerTask taskProvider);
 
-   public void removeServerTask(IServerTask taskProvider);
+   void removeServerTask(IServerTask taskProvider);
+
+   List<ServerTaskInfo> getServerTaskInfo();
 
 }
