@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -38,9 +39,12 @@ public class ServerTaskScheduler implements IServerTaskScheduler {
 
    private final Map<IServerTask, ScheduledFuture<?>> futures =
       new ConcurrentHashMap<IServerTask, ScheduledFuture<?>>();
+   private final List<IServerTask> pending = new CopyOnWriteArrayList<IServerTask>();
 
    private ScheduledExecutorService executor;
    private IApplicationServerManager serverManager;
+
+   private Thread thread;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -53,19 +57,52 @@ public class ServerTaskScheduler implements IServerTaskScheduler {
    public void start() {
       ThreadFactory factory = serverManager.createNewThreadFactory("Osee Task Scheduler", Thread.NORM_PRIORITY);
       executor = Executors.newSingleThreadScheduledExecutor(factory);
+
+      thread = new Thread("Register Pending IServerTasks") {
+         @Override
+         public void run() {
+            for (IServerTask task : pending) {
+               register(task);
+            }
+            pending.clear();
+         }
+      };
+      thread.start();
    }
 
    public void stop() {
       if (executor != null) {
          executor.shutdown();
       }
+      executor = null;
       futures.clear();
+   }
+
+   private boolean isReady() {
+      return executor != null && logger != null && serverManager != null;
    }
 
    @Override
    public void addServerTask(IServerTask taskProvider) {
+      if (isReady()) {
+         register(taskProvider);
+      } else {
+         pending.add(taskProvider);
+      }
+   }
+
+   @Override
+   public void removeServerTask(IServerTask taskProvider) {
+      if (isReady()) {
+         unregister(taskProvider);
+      } else {
+         pending.remove(taskProvider);
+      }
+   }
+
+   private void register(IServerTask taskProvider) {
       if (taskProvider != null) {
-         logger.info("Adding task: [%s]", taskProvider.getName());
+         logger.info("Registering task: [%s]", taskProvider.getName());
          switch (taskProvider.getSchedulingScheme()) {
             case ONE_SHOT:
                scheduleOneShot(taskProvider, taskProvider.getInitialDelay(), taskProvider.getTimeUnit());
@@ -84,10 +121,9 @@ public class ServerTaskScheduler implements IServerTaskScheduler {
       }
    }
 
-   @Override
-   public void removeServerTask(IServerTask taskProvider) {
+   private void unregister(IServerTask taskProvider) {
       if (taskProvider != null) {
-         logger.info("Removing task: [%s]", taskProvider.getName());
+         logger.info("De-registering task: [%s]", taskProvider.getName());
          ScheduledFuture<?> future = futures.get(taskProvider);
          if (future != null) {
             future.cancel(true);
@@ -137,6 +173,7 @@ public class ServerTaskScheduler implements IServerTaskScheduler {
       }
       return infos;
    }
+
    private final static class ServerTaskInfoImpl implements ServerTaskInfo {
 
       private final IServerTask task;
