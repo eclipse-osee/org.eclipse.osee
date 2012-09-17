@@ -115,7 +115,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
          if (!AtsUtil.getAtsBranchToken().equals(objectBranch)) {
             ArtifactType assocArtType = getAssociatedArtifact(objectBranch).getArtifactType();
             if (assocArtType != null) {
-               result = assocArtType.inheritsFrom(AtsArtifactTypes.TeamWorkflow);
+               result = assocArtType.inheritsFrom(AtsArtifactTypes.AtsArtifact);
             }
          }
       } catch (OseeCoreException ex) {
@@ -145,10 +145,8 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
                ArtifactType assocArtType = assocArtifact.getArtifactType();
                if (assocArtType.inheritsFrom(AtsArtifactTypes.TeamWorkflow)) {
                   contextIds.addAll(internalGetFromWorkflow((TeamWorkFlowArtifact) assocArtifact));
-               } else if (assocArtifact.isOfType(AtsArtifactTypes.AtsArtifact)) {
-                  contextIds.add(AtsBranchAccessContextId.DENY_CONTEXT);
                } else {
-                  contextIds.add(AtsBranchAccessContextId.DEFAULT_BRANCH_CONTEXT);
+                  contextIds.add(AtsBranchAccessContextId.DENY_CONTEXT);
                }
             }
          }
