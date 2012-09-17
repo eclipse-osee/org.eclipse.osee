@@ -292,7 +292,8 @@ public class SMAGoalMembersSection extends Composite implements ISelectedAtsArti
          @Override
          public void removedFromGoal(Collection<? extends Artifact> removed) {
             worldComposite.removeItems(removed);
-            worldComposite.update();
+            worldComposite.getXViewer().remove(removed);
+            worldComposite.getXViewer().refresh(goalArtifact);
          }
 
       };
@@ -352,6 +353,8 @@ public class SMAGoalMembersSection extends Composite implements ISelectedAtsArti
 
    private class GoalDragAndDrop extends WorldViewDragAndDrop {
 
+      private boolean isFeedbackAfter = false;
+
       public GoalDragAndDrop(WorldComposite worldComposite, String viewId) {
          super(worldComposite, viewId);
       }
@@ -364,16 +367,26 @@ public class SMAGoalMembersSection extends Composite implements ISelectedAtsArti
       }
 
       @Override
+      public void operationChanged(DropTargetEvent event) {
+         if (!(event.detail == 1)) {
+            isFeedbackAfter = false;
+         } else {
+            isFeedbackAfter = true;
+         }
+      }
+
+      @Override
       public void performDragOver(DropTargetEvent event) {
          if (isValidForArtifactDrop(event)) {
             event.detail = DND.DROP_MOVE;
-            if (getSelectedArtifact(event) != null) {
-               event.feedback = DND.FEEDBACK_INSERT_AFTER | DND.FEEDBACK_SCROLL;
-            } else {
-               event.feedback = DND.FEEDBACK_INSERT_BEFORE | DND.FEEDBACK_SCROLL;
+            Artifact selectedArtifact = getSelectedArtifact(event);
+            if (selectedArtifact != null) {
+               if (isFeedbackAfter) {
+                  event.feedback = DND.FEEDBACK_INSERT_AFTER | DND.FEEDBACK_SCROLL;
+               } else {
+                  event.feedback = DND.FEEDBACK_INSERT_BEFORE | DND.FEEDBACK_SCROLL;
+               }
             }
-         } else {
-            event.detail = DND.DROP_COPY;
          }
       }
 
@@ -383,26 +396,25 @@ public class SMAGoalMembersSection extends Composite implements ISelectedAtsArti
          final List<Artifact> droppedArtifacts = Arrays.asList(artData.getArtifacts());
          final Artifact dropTarget = getSelectedArtifact(event);
          if (ArtifactTransfer.getInstance().isSupportedType(event.currentDataType)) {
-            if (dropTarget == null) {
-               super.performDrop(event);
-            } else {
-               try {
-                  Collections.reverse(droppedArtifacts);
-                  List<Artifact> members = goalArtifact.getMembers();
-                  for (Artifact dropped : droppedArtifacts) {
-                     if (!members.contains(dropped)) {
-                        goalArtifact.addMember(dropped);
-                        worldComposite.insert(dropped, members.indexOf(dropTarget));
-                        worldComposite.update();
-                     }
-                     goalArtifact.setRelationOrder(AtsRelationTypes.Goal_Member, dropTarget, true, dropped);
+            try {
+               Collections.reverse(droppedArtifacts);
+               List<Artifact> members = goalArtifact.getMembers();
+               for (Artifact dropped : droppedArtifacts) {
+                  if (!members.contains(dropped)) {
+                     goalArtifact.addMember(dropped);
+                     int index = isFeedbackAfter ? members.indexOf(dropTarget) + 1 : members.indexOf(dropTarget);
+                     worldComposite.insert(dropped, index);
+                     worldComposite.update();
                   }
-                  goalArtifact.persist(SMAGoalMembersSection.class.getSimpleName());
-                  worldComposite.getXViewer().refresh(goalArtifact);
-                  worldComposite.getXViewer().update(dropTarget, null);
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(Activator.class, Level.WARNING, Lib.exceptionToString(ex));
+                  if (dropTarget != null) {
+                     goalArtifact.setRelationOrder(AtsRelationTypes.Goal_Member, dropTarget, isFeedbackAfter, dropped);
+                  }
                }
+               goalArtifact.persist(SMAGoalMembersSection.class.getSimpleName());
+               worldComposite.getXViewer().refresh(goalArtifact);
+               worldComposite.getXViewer().update(dropTarget, null);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.WARNING, Lib.exceptionToString(ex));
             }
          }
       }

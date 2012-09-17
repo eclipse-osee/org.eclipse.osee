@@ -60,8 +60,9 @@ public class RemoveFromGoalAction extends Action {
             AWorkbench.popup("No items selected");
             return;
          }
-         if (MessageDialog.openConfirm(Displays.getActiveShell(), "Remove from Goal",
-            String.format("Remove [%s] from Goal [%s]?", selected, goalArt))) {
+         if (MessageDialog.openConfirm(Displays.getActiveShell(), "Remove from Goal", String.format(
+            "Remove the selected %d artifact%s from the Goal [%s]?", selected.size(), selected.size() > 1 ? "s" : "",
+            goalArt))) {
             for (Artifact art : selected) {
                goalArt.deleteRelation(AtsRelationTypes.Goal_Member, art);
             }

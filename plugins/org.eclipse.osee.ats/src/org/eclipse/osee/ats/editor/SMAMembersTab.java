@@ -228,6 +228,7 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
                   sc.setOrigin(origin);
                }
             });
+         getSite().setSelectionProvider(smaGoalMembersSection.getWorldComposite().getWorldXViewer());
          return true;
       }
       return false;
