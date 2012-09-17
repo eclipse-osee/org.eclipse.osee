@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.httpRequests;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -24,21 +26,31 @@ import org.eclipse.osee.framework.core.message.BranchCommitRequest;
 import org.eclipse.osee.framework.core.message.BranchCommitResponse;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelation;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
+import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
+import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
+import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
+import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
+import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
+import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -50,9 +62,6 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
    private final Branch sourceBranch;
    private final Branch destinationBranch;
    private final boolean isArchiveAllowed;
-
-   private static final String ARTIFACT_CHANGES =
-      "SELECT av.art_id, txs1.branch_id FROM osee_txs txs1, osee_artifact av WHERE txs1.branch_id = ? AND txs1.transaction_id = ? AND txs1.gamma_id = av.gamma_id " + "UNION ALL " + "SELECT art.art_id, txs2.branch_id FROM osee_txs txs2, osee_relation_link rel, osee_artifact art WHERE txs2.branch_id = ? and txs2.transaction_id = ? AND txs2.gamma_id = rel.gamma_id AND (rel.a_art_id = art.art_id OR rel.b_art_id = art.art_id) " + "UNION ALL " + "SELECT att.art_id, txs3.branch_id FROM osee_txs txs3, osee_attribute att WHERE txs3.branch_id = ? AND txs3.transaction_id = ? AND txs3.gamma_id = att.gamma_id";
 
    public CommitBranchHttpRequestOperation(User user, Branch sourceBranch, Branch destinationBranch, boolean isArchiveAllowed) {
       super("Commit " + sourceBranch, Activator.PLUGIN_ID);
@@ -70,7 +79,9 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       BranchState currentState = sourceBranch.getBranchState();
       sourceBranch.setBranchState(BranchState.COMMIT_IN_PROGRESS);
 
-      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Committing, sourceBranch.getGuid()));
+      BranchEvent branchEvent =
+         new BranchEvent(BranchEventType.Committing, sourceBranch.getGuid(), destinationBranch.getGuid());
+      OseeEventManager.kickBranchEvent(getClass(), branchEvent);
 
       BranchCommitRequest requestData =
          new BranchCommitRequest(user.getArtId(), sourceBranch.getId(), destinationBranch.getId(), isArchiveAllowed);
@@ -88,14 +99,15 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       }
 
       if (response != null) {
-         handleResponse(response, sourceBranch);
+         handleResponse(response, monitor, sourceBranch, destinationBranch);
       }
    }
 
-   private void handleResponse(BranchCommitResponse response, Branch sourceBranch) throws OseeCoreException {
+   private void handleResponse(BranchCommitResponse response, IProgressMonitor monitor, Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
       TransactionRecord newTransaction = response.getTransaction();
       AccessPolicy accessPolicy = ServiceUtil.getAccessPolicy();
       accessPolicy.removePermissions(sourceBranch);
+
       // Update commit artifact cache with new information
       if (sourceBranch.getAssociatedArtifactId() > 0) {
          TransactionManager.cacheCommittedArtifactTransaction(BranchManager.getAssociatedArtifact(sourceBranch),
@@ -103,35 +115,75 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       }
       BranchManager.getCache().reloadCache();
 
-      reloadCommittedArtifacts(newTransaction);
+      Collection<Change> changes = new ArrayList<Change>();
+      IOperation operation = ChangeManager.comparedToPreviousTx(newTransaction, changes);
+      doSubWork(operation, monitor, 1.0);
+      handleArtifactEvents(newTransaction, changes);
 
-      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Committed, sourceBranch.getGuid()));
+      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Committed, sourceBranch.getGuid(),
+         destinationBranch.getGuid()));
    }
 
-   private void reloadCommittedArtifacts(TransactionRecord newTransaction) throws OseeCoreException {
-      Branch txBranch = BranchManager.getBranch(newTransaction.getBranchId());
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
-      try {
-         Set<Artifact> artifacts = new HashSet<Artifact>();
-         Object[] queryData =
-            new Object[] {
-               newTransaction.getBranchId(),
-               newTransaction.getId(),
-               newTransaction.getBranchId(),
-               newTransaction.getId(),
-               newTransaction.getBranchId(),
-               newTransaction.getId()};
-         chStmt.runPreparedQuery(ARTIFACT_CHANGES, queryData);
-         while (chStmt.next()) {
-            int artId = chStmt.getInt("art_id");
-            Artifact artifact = ArtifactCache.getActive(artId, txBranch);
-            if (artifact != null) {
-               artifacts.add(artifact);
-            }
+   private void handleArtifactEvents(TransactionRecord newTransaction, Collection<Change> changes) throws OseeCoreException {
+      ArtifactEvent artifactEvent = new ArtifactEvent(newTransaction.getBranch());
+      artifactEvent.setTransactionId(newTransaction.getId());
+
+      Map<String, EventModifiedBasicGuidArtifact> artEventMap = new HashMap<String, EventModifiedBasicGuidArtifact>();
+      Set<Artifact> artifacts = new HashSet<Artifact>();
+
+      for (Change change : changes) {
+         LoadChangeType changeType = change.getChangeType();
+         switch (changeType) {
+            case artifact:
+               // Don't do anything.  When kicking Persist event to all clients we need only to create the artifact changed based on the Changed Attributes
+               break;
+            case relation:
+               RelationChange relChange = ((RelationChange) change);
+               RelationEventType relationEventType =
+                  change.getModificationType().isDeleted() ? RelationEventType.Deleted : change.getModificationType().isUnDeleted() ? RelationEventType.Undeleted : RelationEventType.Added;
+
+               DefaultBasicGuidRelation defaultBasicGuidRelation =
+                  new DefaultBasicGuidRelation(relChange.getBranch().getGuid(), relChange.getRelationType().getGuid(),
+                     relChange.getItemId(), (int) relChange.getGamma(),
+                     relChange.getChangeArtifact().getBasicGuidArtifact(),
+                     relChange.getEndTxBArtifact().getBasicGuidArtifact());
+               EventBasicGuidRelation event =
+                  new EventBasicGuidRelation(relationEventType, relChange.getArtId(), relChange.getBArtId(),
+                     defaultBasicGuidRelation);
+               event.setRationale(relChange.getRationale());
+               artifactEvent.getRelations().add(event);
+               break;
+            case attribute:
+               Artifact changedArtifact = change.getChangeArtifact();
+               if (changedArtifact != null) {
+
+                  // Only reload items that were already in the active cache
+                  Artifact artifact = ArtifactCache.getActive(changedArtifact.getArtId(), newTransaction.getBranch());
+                  if (artifact != null) {
+                     artifacts.add(artifact);
+                  }
+
+                  String artifactId = changedArtifact.getGuid();
+                  EventModifiedBasicGuidArtifact artEvent = artEventMap.get(artifactId);
+                  if (artEvent == null) {
+                     artEvent =
+                        new EventModifiedBasicGuidArtifact(newTransaction.getBranch().getGuid(),
+                           changedArtifact.getArtTypeGuid(), artifactId,
+                           new ArrayList<org.eclipse.osee.framework.skynet.core.event.model.AttributeChange>());
+                     artifactEvent.getArtifacts().add(artEvent);
+                  }
+                  AttributeChange attributeChange = (AttributeChange) change;
+                  Attribute<?> attribute = attributeChange.getAttribute();
+                  artEvent.getAttributeChanges().add(attribute.createAttributeChangeFromSelf());
+               }
+               break;
+            default:
+               break;
          }
-         ArtifactQuery.reloadArtifacts(artifacts);
-      } finally {
-         chStmt.close();
       }
+
+      ArtifactQuery.reloadArtifacts(artifacts);
+      OseeEventManager.kickPersistEvent(getClass(), artifactEvent);
    }
+
 }

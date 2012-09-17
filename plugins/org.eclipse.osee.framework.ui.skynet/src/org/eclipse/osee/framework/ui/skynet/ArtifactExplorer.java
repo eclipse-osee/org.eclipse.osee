@@ -1401,10 +1401,19 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
          return;
       }
       if (branch.getGuid().equals(branchEvent.getBranchGuid())) {
-         if ((branchEvent.getEventType() == BranchEventType.Committing || branchEvent.getEventType() == BranchEventType.Committed) && branch != null) {
+         if ((branchEvent.getEventType() == BranchEventType.Committing || branchEvent.getEventType() == BranchEventType.Committed)) {
             SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
          } else {
             refreshBranchWarning();
+         }
+      } else if (branch.getGuid().equals(branchEvent.getDestinationBranchGuid())) {
+         if ((branchEvent.getEventType() == BranchEventType.Committed)) {
+            Displays.ensureInDisplayThread(new Runnable() {
+               @Override
+               public void run() {
+                  getTreeViewer().refresh();
+               }
+            });
          }
       }
    }

@@ -34,9 +34,11 @@
 
 <xsd:complexType name="RemoteBranchEvent1">
   <xsd:sequence>
-    <xsd:element name="eventTypeGuid" type="xsd:string"/>
-    <xsd:element name="branchGuid" type="xsd:string"/>
-    <xsd:element name="networkSender" type="RemoteNetworkSender1" maxOccurs="1" minOccurs="1"/>
+  	<xsd:element name="eventTypeGuid" type="xsd:string" />
+  	<xsd:element name="branchGuid" type="xsd:string"></xsd:element>
+  	<xsd:element name="destinationBranchGuid" type="xsd:string" maxOccurs="1" minOccurs="0"></xsd:element>
+  	<xsd:element name="networkSender" type="RemoteNetworkSender1"
+  		maxOccurs="1" minOccurs="1" />
   </xsd:sequence>
 </xsd:complexType>
 

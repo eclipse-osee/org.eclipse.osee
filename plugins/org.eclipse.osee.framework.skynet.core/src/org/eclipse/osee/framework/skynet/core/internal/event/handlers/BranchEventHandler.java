@@ -32,7 +32,7 @@ public class BranchEventHandler implements EventHandlerLocal<IBranchEventListene
       List<? extends IEventFilter> filters = ((IEventFilteredListener) listener).getEventFilters();
       if (filters != null) {
          for (IEventFilter eventFilter : filters) {
-            if (!eventFilter.isMatch(event.getBranchGuid())) {
+            if (!eventFilter.isMatch(event.getBranchGuid()) && !eventFilter.isMatch(event.getDestinationBranchGuid())) {
                return;
             }
          }

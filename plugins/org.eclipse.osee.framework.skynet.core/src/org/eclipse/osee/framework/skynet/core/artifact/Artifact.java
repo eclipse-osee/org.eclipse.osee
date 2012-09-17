@@ -68,7 +68,6 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -1531,20 +1530,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
 
       for (Attribute<?> attribute : internalGetAttributes()) {
          if (attribute.isDirty()) {
-            AttributeChange change = new AttributeChange();
-            change.setAttrTypeGuid(attribute.getAttributeType().getGuid());
-            change.setGammaId(attribute.getGammaId());
-            change.setAttributeId(attribute.getId());
-            change.setModTypeGuid(AttributeEventModificationType.getType(attribute.getModificationType()).getGuid());
-            for (Object obj : attribute.getAttributeDataProvider().getData()) {
-               if (obj == null) {
-                  change.getData().add("");
-               } else if (obj instanceof String) {
-                  change.getData().add((String) obj);
-               } else {
-                  OseeLog.log(Activator.class, Level.SEVERE, "Unhandled data type " + obj.getClass().getSimpleName());
-               }
-            }
+            AttributeChange change = attribute.createAttributeChangeFromSelf();
             dirtyAttributes.add(change);
          }
       }

@@ -10,15 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event.model;
 
-
 public class BranchEvent implements FrameworkEvent, HasNetworkSender {
 
    private String branchGuid;
+   private String destinationBranchGuid;
    private BranchEventType eventType;
    private NetworkSender networkSender;
 
    public BranchEvent(BranchEventType branchEventType, String branchGuid) {
       this.branchGuid = branchGuid;
+      this.eventType = branchEventType;
+   }
+
+   public BranchEvent(BranchEventType branchEventType, String sourceBranchGuid, String destinationBranchGuid) {
+      this.branchGuid = sourceBranchGuid;
+      this.destinationBranchGuid = destinationBranchGuid;
       this.eventType = branchEventType;
    }
 
@@ -31,13 +37,32 @@ public class BranchEvent implements FrameworkEvent, HasNetworkSender {
       return branchGuid;
    }
 
+   // TODO: add comment to describe purpose of destinationBranch
    /**
-    * Sets the value of the branchGuid property.
+    * Gets the value of the destinationBranchGuid property.
+    * 
+    * @return possible object is {@link String }
+    */
+   public String getDestinationBranchGuid() {
+      return destinationBranchGuid;
+   }
+
+   /**
+    * Sets the value of the BranchGuid property.
     * 
     * @param value allowed object is {@link String }
     */
    public void setBranchGuid(String value) {
       this.branchGuid = value;
+   }
+
+   /**
+    * Sets the value of the destinationBranchGuid property.
+    * 
+    * @param value allowed object is {@link String }
+    */
+   public void setDestinationBranchGuid(String value) {
+      this.destinationBranchGuid = value;
    }
 
    /**

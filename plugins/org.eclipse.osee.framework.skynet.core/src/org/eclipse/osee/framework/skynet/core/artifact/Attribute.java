@@ -21,13 +21,16 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.event.model.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
@@ -71,6 +74,26 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
    @SuppressWarnings("unused")
    protected void uponInitialize() throws OseeCoreException {
       // provided for subclass implementation
+   }
+
+   public AttributeChange createAttributeChangeFromSelf() throws OseeDataStoreException {
+      AttributeChange attributeChange = new AttributeChange();
+
+      attributeChange.setAttrTypeGuid(attributeType.getGuid());
+      attributeChange.setGammaId(gammaId);
+      attributeChange.setAttributeId(attrId);
+      attributeChange.setModTypeGuid(AttributeEventModificationType.getType(modificationType).getGuid());
+      for (Object obj : attributeDataProvider.getData()) {
+         if (obj == null) {
+            attributeChange.getData().add("");
+         } else if (obj instanceof String) {
+            attributeChange.getData().add((String) obj);
+         } else {
+            OseeLog.log(Activator.class, Level.SEVERE, "Unhandled data type " + obj.getClass().getSimpleName());
+         }
+      }
+
+      return attributeChange;
    }
 
    public void internalInitialize(IAttributeType attributeType, Artifact artifact, ModificationType modificationType, int attributeId, int gammaId, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
