@@ -58,7 +58,7 @@ public final class CoreAttributeTypes {
    public static final IAttributeType NativeContent = TokenFactory.createAttributeType(0x1000000000000079L, "Native Content");
    public static final IAttributeType Notes = TokenFactory.createAttributeType(0x100000000000006DL, "Notes");
    public static final IAttributeType PageType = TokenFactory.createAttributeType(0x1000000000000073L, "Page Type");
-   public static final IAttributeType ParagraphNumber = TokenFactory.createAttributeType(0x100000000000007DL, "Imported Paragraph Number");
+   public static final IAttributeType ParagraphNumber = TokenFactory.createAttributeType(0x100000000000007DL, "Paragraph Number");
    public static final IAttributeType Partition = TokenFactory.createAttributeType(0x1000000000000087L, "Partition");
    public static final IAttributeType Phone = TokenFactory.createAttributeType(0x1000000000000067L, "Phone");
    public static final IAttributeType PublishInline = TokenFactory.createAttributeType(0x1000000000000092L, "PublishInline");

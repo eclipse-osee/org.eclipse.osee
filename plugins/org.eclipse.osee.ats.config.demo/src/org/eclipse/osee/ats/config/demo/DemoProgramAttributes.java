@@ -22,7 +22,7 @@ public enum DemoProgramAttributes {
    //
    Weight,
    Content_URL,
-   Imported_Paragraph_Number,
+   Paragraph_Number,
    Legacy_Id,
    Level_2_IPT,
    Level_3_IPT,

@@ -542,7 +542,7 @@ relationType "Universal Grouping" {
 abstract artifactType "MS Word" extends "Artifact" {
 	guid "ABM8Rd_GKRGZWlU1JHAA"
 	uuid 0x0000000000000010
-	attribute "Imported Paragraph Number"
+	attribute "Paragraph Number"
 }
 
 abstract artifactType "Abstract Access Controlled" extends "Artifact" {
@@ -582,7 +582,7 @@ attributeType "Content URL" extends StringAttribute {
 	max 1
 }
 
-attributeType "Imported Paragraph Number" extends OutlineNumberAttribute {
+attributeType "Paragraph Number" extends OutlineNumberAttribute {
 	guid "AAMFEQ3boD3sp6VfArAA"
 	uuid 0x100000000000007D
 	dataProvider DefaultAttributeDataProvider
@@ -655,7 +655,7 @@ artifactType "Software Requirement" extends "MS Word Template" , "Direct Softwar
 artifactType "Plain Text" extends "Artifact" {
 	guid "ALjYFRdiGBfZs5lz7zwA"
 	uuid 0x0000000000000310
-	attribute "Imported Paragraph Number"
+	attribute "Paragraph Number"
 	attribute "Plain Text Content"
 }
 

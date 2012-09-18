@@ -120,7 +120,7 @@
    <Column ss:StyleID="s23" ss:AutoFitWidth="0" ss:Width="70.5"/>
    <Column ss:StyleID="s23" ss:Width="78.75"/>
    <Row ss:AutoFitHeight="0" ss:Height="38.25" ss:StyleID="s25">
-    <Cell ss:StyleID="s26"><Data ss:Type="String">Imported Paragraph Number</Data><NamedCell
+    <Cell ss:StyleID="s26"><Data ss:Type="String">Paragraph Number</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell ss:StyleID="s27"><Data ss:Type="String">GUID</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>

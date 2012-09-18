@@ -18,9 +18,9 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactTypeColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.GuidColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedByColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.HierarchyIndexColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.HridColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedByColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedDateColumn;
 import org.eclipse.swt.SWT;
 
@@ -41,7 +41,7 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
       SWT.LEFT, true, SortDataType.String, false, null);
    public final static XViewerColumn Was_Value = new XViewerColumn("framework.change.wasValue", "Was Value", 150,
       SWT.LEFT, true, SortDataType.String, false, null);
-   public final static XViewerColumn paraNumber = new XViewerColumn("attribute.Imported Paragraph Number",
+   public final static XViewerColumn paraNumber = new XViewerColumn("attribute.Paragraph Number",
       CoreAttributeTypes.ParagraphNumber.getName(), 50, SWT.LEFT, false, SortDataType.Paragraph_Number, false, null);
 
    public final static String NAMESPACE = "osee.skynet.gui.ChangeXViewer";

@@ -111,7 +111,7 @@ public class PublishSystemLevelSSDD extends AbstractBlam {
    private void writeSystemRequirementAllocationToSubsystems() throws IOException, OseeCoreException {
       excelWriter.startSheet("5.2", 200);
 
-      excelWriter.writeCell("Paragraph Number");
+      excelWriter.writeCell(CoreAttributeTypes.ParagraphNumber.getName());
       excelWriter.writeCell(CoreArtifactTypes.Component.getName());
       for (Artifact subsystem : allSubsystems) {
          excelWriter.writeCell(subsystem.getName());
@@ -128,7 +128,8 @@ public class PublishSystemLevelSSDD extends AbstractBlam {
    private void writeSystemRequirementAllocationBySubsystem(Artifact subsystem) throws IOException, OseeCoreException {
       excelWriter.startSheet(subsystem.getName(), 200);
       excelWriter.writeRow("System Requirements Allocated to the " + subsystem.getName());
-      excelWriter.writeRow("Paragraph Number", CoreArtifactTypes.SystemRequirement.getName(), "Notes <rationale>");
+      excelWriter.writeRow(CoreAttributeTypes.ParagraphNumber.getName(), CoreArtifactTypes.SystemRequirement.getName(),
+         "Notes <rationale>");
 
       for (Artifact systemRequirement : subsystemToRequirements.getValues(subsystem)) {
          for (Artifact component : systemRequirement.getRelatedArtifacts(CoreRelationTypes.Allocation__Component)) {

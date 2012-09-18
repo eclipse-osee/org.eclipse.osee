@@ -87,7 +87,8 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
       excelWriter.writeRow(subsystem.getName() + " Subsystem To Design Traceability");
 
       excelWriter.writeRow("Subsystem Requirement", null, "Subsystem Design");
-      excelWriter.writeRow("Paragraph Number", "Paragraph Title", "Paragraph Number", "Paragraph Title");
+      excelWriter.writeRow(CoreAttributeTypes.ParagraphNumber.getName(), "Paragraph Title",
+         CoreAttributeTypes.ParagraphNumber.getName(), "Paragraph Title");
 
       for (Artifact subsystemRequirement : subsystem.getDescendants()) {
          excelWriter.writeCell(subsystemRequirement.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
