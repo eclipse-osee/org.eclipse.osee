@@ -50,6 +50,7 @@ import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.client.actions.ISelectedTeamWorkflowArtifacts;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
+import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -593,7 +594,11 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             arts.add((Artifact) obj);
          }
       }
-
+      try {
+         AtsBulkLoad.bulkLoadArtifacts(arts);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
       setInput(arts);
    }
 

@@ -48,11 +48,9 @@ public class AtsTaskCache {
    public static Collection<TaskArtifact> getTaskArtifacts(AbstractTaskableArtifact sma) throws OseeCoreException {
       Collection<TaskArtifact> tasks = teamTasksCache.get(sma);
       if (tasks == null || containsDeleted(tasks)) {
+         //         System.out.println("caching tasks for " + sma.toStringWithId());
          // Get and cache tasks
          tasks = sma.getRelatedArtifacts(AtsRelationTypes.SmaToTask_Task, TaskArtifact.class);
-         if (tasks.isEmpty()) {
-            return tasks;
-         }
          teamTasksCache.put(sma, tasks);
       }
       return tasks;

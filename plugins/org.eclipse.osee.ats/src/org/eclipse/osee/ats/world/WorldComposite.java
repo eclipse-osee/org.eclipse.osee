@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -27,6 +28,7 @@ import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorSelectedAction.IOpenNew
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
+import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -154,6 +156,11 @@ public class WorldComposite extends ScrolledComposite implements ISelectedAtsArt
                setTableTitle("No Results Found - " + name, true);
             } else {
                setTableTitle(name, false);
+            }
+            try {
+               AtsBulkLoad.bulkLoadArtifacts(worldArts);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
             worldXViewer.setInput(worldArts);
             worldXViewer.updateStatusLabel();

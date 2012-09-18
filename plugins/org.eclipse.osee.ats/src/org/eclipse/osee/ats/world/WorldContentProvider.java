@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.artifact.GoalManager;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
+import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
@@ -91,6 +92,7 @@ public class WorldContentProvider implements ITreeContentProvider {
                List<Artifact> arts =
                   artifact.getRelatedArtifacts(AtsRelationTypes.Goal_Member, DeletionFlag.EXCLUDE_DELETED);
                relatedArts.addAll(arts);
+               AtsBulkLoad.bulkLoadArtifacts(relatedArts);
                return arts.toArray(new Artifact[artifact.getRelatedArtifactsCount(AtsRelationTypes.Goal_Member)]);
             }
             if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {

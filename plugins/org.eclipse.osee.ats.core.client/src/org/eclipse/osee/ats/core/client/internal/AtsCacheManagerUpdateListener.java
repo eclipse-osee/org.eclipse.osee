@@ -17,6 +17,8 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
+import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
+import org.eclipse.osee.ats.core.client.review.AtsReviewCache;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -103,11 +105,21 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
             }
             if (guidRel.is(AtsRelationTypes.SmaToTask_Task)) {
                for (TaskArtifact taskArt : ArtifactCache.getActive(guidRel, TaskArtifact.class)) {
-                  AtsTaskCache.decache(taskArt.getParent());
+                  AtsTaskCache.decache(taskArt.getParentAWA());
                }
                for (Artifact artifact : ArtifactCache.getActive(guidRel)) {
                   if (artifact instanceof AbstractTaskableArtifact) {
                      AtsTaskCache.decache(artifact);
+                  }
+               }
+            }
+            if (guidRel.is(AtsRelationTypes.TeamWorkflowToReview_Review)) {
+               for (AbstractReviewArtifact review : ArtifactCache.getActive(guidRel, AbstractReviewArtifact.class)) {
+                  AtsReviewCache.decache(review.getParentAWA());
+               }
+               for (Artifact artifact : ArtifactCache.getActive(guidRel)) {
+                  if (artifact instanceof AbstractReviewArtifact) {
+                     AtsReviewCache.decache(artifact);
                   }
                }
             }
@@ -129,10 +141,10 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
       for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {
          try {
             if (guidArt.is(EventModType.Deleted, EventModType.Purged)) {
-               handleTaskCacheForDeletedPurged(guidArt);
+               handleCachesForDeletedPurged(guidArt);
             }
             if (guidArt.is(EventModType.Added, EventModType.Modified)) {
-               handleTaskCacheForAddedModified(guidArt);
+               handleCachesForAddedModified(guidArt);
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -141,29 +153,44 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
       return handledConfigReload;
    }
 
-   private void handleTaskCacheForAddedModified(EventBasicGuidArtifact guidArt) throws OseeCoreException {
+   private void handleCachesForAddedModified(EventBasicGuidArtifact guidArt) throws OseeCoreException {
       // Only process if in cache
       Artifact artifact = ArtifactCache.getActive(guidArt);
       if (artifact != null && guidArt.is(EventModType.Added)) {
          if (artifact.isOfType(AtsArtifactTypes.Task)) {
-            AtsTaskCache.decache(artifact.getParent());
+            AtsTaskCache.decache(((TaskArtifact) artifact).getParentAWA());
          }
          if (artifact instanceof AbstractTaskableArtifact) {
             AtsTaskCache.decache(artifact);
          }
+         if (artifact.isOfType(AtsArtifactTypes.ReviewArtifact)) {
+            AtsReviewCache.decache(((AbstractReviewArtifact) artifact).getParentAWA());
+         }
+         if (artifact instanceof AbstractReviewArtifact) {
+            AtsReviewCache.decache(artifact);
+         }
       }
    }
 
-   private void handleTaskCacheForDeletedPurged(EventBasicGuidArtifact guidArt) throws OseeCoreException {
+   private void handleCachesForDeletedPurged(EventBasicGuidArtifact guidArt) throws OseeCoreException {
       if (guidArt.is(AtsArtifactTypes.Task) && guidArt.is(EventModType.Deleted)) {
          Artifact artifact = ArtifactCache.getActive(guidArt);
          if (artifact != null) {
-            AtsTaskCache.decache(artifact.getParent());
+            AtsTaskCache.decache(((TaskArtifact) artifact).getParentAWA());
+         }
+      }
+      if (guidArt.is(AtsArtifactTypes.ReviewArtifact) && guidArt.is(EventModType.Deleted)) {
+         Artifact artifact = ArtifactCache.getActive(guidArt);
+         if (artifact != null) {
+            AtsReviewCache.decache(((AbstractReviewArtifact) artifact).getParentAWA());
          }
       }
       Artifact artifact = ArtifactCache.getActive(guidArt);
       if (artifact instanceof AbstractTaskableArtifact) {
          AtsTaskCache.decache(artifact);
+      }
+      if (artifact instanceof AbstractReviewArtifact) {
+         AtsReviewCache.decache(artifact);
       }
    }
 
