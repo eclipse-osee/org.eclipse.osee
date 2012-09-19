@@ -51,7 +51,6 @@ public class DemoDbInitTest {
       //      }
    }
 
-   @SuppressWarnings("unchecked")
    @org.junit.Test
    public void testDemoDbInit() throws Exception {
       System.out.println("\nBegin database initialization...");
@@ -85,7 +84,8 @@ public class DemoDbInitTest {
          //Clean up transactions author value changing from Bootstrap to the OSEE System user
          final String BOOTSTRAP_ART_ID = "0";
          User oseeUser = UserManager.getUser(SystemUser.OseeSystem);
-         ConnectionHandler.runPreparedUpdate("update osee.osee_tx_details txd set txd.author='" + oseeUser.getArtId() + "' where txd.author='" + BOOTSTRAP_ART_ID + "'");
+         ConnectionHandler.runPreparedUpdate(String.format("update osee_tx_details set author='%s' where author='%s'",
+            oseeUser.getArtId(), BOOTSTRAP_ART_ID));
 
       }
 
