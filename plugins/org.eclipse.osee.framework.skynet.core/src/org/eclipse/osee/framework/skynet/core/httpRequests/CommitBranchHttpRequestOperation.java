@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -29,6 +30,8 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelation;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -128,7 +131,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       ArtifactEvent artifactEvent = new ArtifactEvent(newTransaction.getBranch());
       artifactEvent.setTransactionId(newTransaction.getId());
 
-      Map<String, EventModifiedBasicGuidArtifact> artEventMap = new HashMap<String, EventModifiedBasicGuidArtifact>();
+      Map<Integer, EventModifiedBasicGuidArtifact> artEventMap = new HashMap<Integer, EventModifiedBasicGuidArtifact>();
       Set<Artifact> artifacts = new HashSet<Artifact>();
 
       for (Change change : changes) {
@@ -154,27 +157,48 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
                artifactEvent.getRelations().add(event);
                break;
             case attribute:
+               // Only reload items that were already in the active cache
+               int artifactId = change.getArtId();
+               Artifact artifact = ArtifactCache.getActive(change.getArtId(), newTransaction.getBranch());
+               if (artifact != null) {
+                  artifacts.add(artifact);
+               }
+
                Artifact changedArtifact = change.getChangeArtifact();
                if (changedArtifact != null) {
 
-                  // Only reload items that were already in the active cache
-                  Artifact artifact = ArtifactCache.getActive(changedArtifact.getArtId(), newTransaction.getBranch());
-                  if (artifact != null) {
-                     artifacts.add(artifact);
-                  }
-
-                  String artifactId = changedArtifact.getGuid();
                   EventModifiedBasicGuidArtifact artEvent = artEventMap.get(artifactId);
                   if (artEvent == null) {
                      artEvent =
                         new EventModifiedBasicGuidArtifact(newTransaction.getBranch().getGuid(),
-                           changedArtifact.getArtTypeGuid(), artifactId,
+                           change.getArtifactType().getGuid(), changedArtifact.getGuid(),
                            new ArrayList<org.eclipse.osee.framework.skynet.core.event.model.AttributeChange>());
                      artifactEvent.getArtifacts().add(artEvent);
                   }
+
                   AttributeChange attributeChange = (AttributeChange) change;
-                  Attribute<?> attribute = attributeChange.getAttribute();
-                  artEvent.getAttributeChanges().add(attribute.createAttributeChangeFromSelf());
+                  org.eclipse.osee.framework.skynet.core.event.model.AttributeChange attrChangeEvent =
+                     new org.eclipse.osee.framework.skynet.core.event.model.AttributeChange();
+                  attrChangeEvent.setAttrTypeGuid(attributeChange.getAttributeType().getGuid());
+                  attrChangeEvent.setGammaId((int) attributeChange.getGamma());
+                  attrChangeEvent.setAttributeId(attributeChange.getAttrId());
+                  attrChangeEvent.setModTypeGuid(AttributeEventModificationType.getType(
+                     attributeChange.getModificationType()).getGuid());
+
+                  Attribute<?> attribute = changedArtifact.getAttributeById(attributeChange.getAttrId(), true);
+                  if (attribute != null) {
+                     for (Object obj : attribute.getAttributeDataProvider().getData()) {
+                        if (obj == null) {
+                           attrChangeEvent.getData().add("");
+                        } else if (obj instanceof String) {
+                           attrChangeEvent.getData().add((String) obj);
+                        } else {
+                           OseeLog.log(Activator.class, Level.SEVERE,
+                              "Unhandled data type " + obj.getClass().getSimpleName());
+                        }
+                     }
+                  }
+                  artEvent.getAttributeChanges().add(attrChangeEvent);
                }
                break;
             default:
