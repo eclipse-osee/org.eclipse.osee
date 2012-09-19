@@ -46,15 +46,21 @@ public interface OrcsBranch {
    // branch state
    // assoc art id
 
+   Callable<ReadableBranch> createTopLevelBranch(IOseeBranch branch, ArtifactReadable author) throws OseeCoreException;
+
+   Callable<ReadableBranch> createBaselineBranch(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException;
+
+   Callable<ReadableBranch> createWorkingBranch(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException;
+
+   Callable<ReadableBranch> createCopyTxBranch(IOseeBranch branch, ArtifactReadable author, int fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException;
+
+   /////////////////////////////////////////////////////////////////////////
+
    Callable<ReadableBranch> changeBranchState(IOseeBranch branch, BranchState newState);
 
    Callable<ReadableBranch> changeBranchType(IOseeBranch branch, BranchType branchType);
 
    Callable<ReadableBranch> deleteBranch(IOseeBranch branch);
-
-   ReadableBranch createTopLevelBranch(ArtifactReadable author, String branchName) throws OseeCoreException;
-
-   ReadableBranch createChildBranch(ArtifactReadable author, IOseeBranch parent, String childBranchName) throws OseeCoreException;
 
    /////////////////////////////////////////////////////////////////////////
 

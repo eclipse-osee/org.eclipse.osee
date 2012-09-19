@@ -11,7 +11,10 @@
 package org.eclipse.osee.orcs.api;
 
 import java.lang.reflect.Proxy;
+import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ResultSet;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -23,6 +26,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.ReadableBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
@@ -113,7 +117,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testDuplicateAritfact() throws OseeCoreException {
+   public void testDuplicateAritfact() throws Exception {
       ArtifactReadable guestUser =
          orcsApi.getQueryFactory(context).fromBranch(CoreBranches.COMMON).andIds(SystemUser.Guest).getResults().getExactlyOne();
 
@@ -129,7 +133,11 @@ public class OrcsTransactionTest {
       Assert.assertEquals(SystemUser.Guest.getName(), guestUserDup.getName());
 
       // duplicate on different branch
-      ReadableBranch topLevelBranch = orcsBranch.createTopLevelBranch(userArtifact, "DuplicateArtifact tests");
+      IOseeBranch branchToken = TokenFactory.createBranch(GUID.create(), "DuplicateArtifact tests");
+      Callable<ReadableBranch> callableBranch = orcsBranch.createTopLevelBranch(branchToken, userArtifact);
+
+      ReadableBranch topLevelBranch = callableBranch.call();
+
       OrcsTransaction transaction2 =
          txFactory.createTransaction(topLevelBranch, userArtifact, "testDuplicateArtifactDifferentBranch");
       duplicate = transaction2.duplicateArtifact(guestUser);
@@ -142,11 +150,14 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testIntroduceArtifact() throws OseeCoreException {
+   public void testIntroduceArtifact() throws Exception {
       ArtifactReadable guestUser =
          orcsApi.getQueryFactory(context).fromBranch(CoreBranches.COMMON).andIds(SystemUser.Guest).getResults().getExactlyOne();
 
-      ReadableBranch topLevelBranch = orcsBranch.createTopLevelBranch(userArtifact, "IntroduceArtifact tests");
+      IOseeBranch branchToken = TokenFactory.createBranch(GUID.create(), "IntroduceArtifact tests");
+      Callable<ReadableBranch> callableBranch = orcsBranch.createTopLevelBranch(branchToken, userArtifact);
+
+      ReadableBranch topLevelBranch = callableBranch.call();
       OrcsTransaction transaction = txFactory.createTransaction(topLevelBranch, userArtifact, "testIntroduceArtifact");
       transaction.introduceArtifact(guestUser);
       transaction.commit();
