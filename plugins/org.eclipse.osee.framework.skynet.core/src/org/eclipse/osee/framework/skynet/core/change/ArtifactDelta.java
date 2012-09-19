@@ -26,7 +26,7 @@ public class ArtifactDelta {
 
    public ArtifactDelta(TransactionDelta txDelta, Artifact startArt, Artifact endArt) throws OseeArgumentException {
       if (startArt == null && endArt == null) {
-         throw new OseeArgumentException("the start and end artiafcts can not both be null.");
+         throw new OseeArgumentException("the start and end artifacts can not both be null.");
       }
       this.startArt = startArt;
       this.endArt = endArt;
