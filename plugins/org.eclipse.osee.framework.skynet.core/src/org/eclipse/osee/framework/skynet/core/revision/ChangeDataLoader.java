@@ -185,9 +185,10 @@ public class ChangeDataLoader extends AbstractOperation {
    private void bulkLoadArtifactDeltas(IProgressMonitor monitor, CompositeKeyHashMap<TransactionRecord, Integer, Artifact> bulkLoaded, Collection<ChangeItem> changeItems) throws OseeCoreException {
       checkForCancelledStatus(monitor);
       Set<Integer> artIds = asArtIds(changeItems);
-      preloadArtifacts(bulkLoaded, artIds, txDelta.getStartTx(), false);
+
+      preloadArtifacts(bulkLoaded, artIds, txDelta.getStartTx(), txDelta.areOnTheSameBranch());
       if (!txDelta.getStartTx().equals(txDelta.getEndTx())) {
-         preloadArtifacts(bulkLoaded, artIds, txDelta.getEndTx(), false);
+         preloadArtifacts(bulkLoaded, artIds, txDelta.getEndTx(), txDelta.areOnTheSameBranch());
       }
 
       if (!txDelta.areOnTheSameBranch()) {
