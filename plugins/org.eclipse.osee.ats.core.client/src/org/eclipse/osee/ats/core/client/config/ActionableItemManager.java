@@ -14,12 +14,15 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -34,10 +37,17 @@ public class ActionableItemManager {
    }
 
    public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException {
+      AtsBulkLoad.loadConfig(true);
       Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
       for (String guid : getActionableItemGuids()) {
          IAtsActionableItem aia = AtsConfigCache.instance.getSoleByGuid(guid, IAtsActionableItem.class);
-         ais.add(aia);
+         if (aia == null) {
+            OseeLog.logf(Activator.class, Level.SEVERE,
+               "Actionable Item Guid [%s] from [%s] doesn't match item in AtsConfigCache", guid,
+               artifact.toStringWithId());
+         } else {
+            ais.add(aia);
+         }
       }
       return ais;
    }
