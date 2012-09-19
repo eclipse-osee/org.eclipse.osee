@@ -198,6 +198,7 @@ public class DecisionReviewManager {
       if (reviewBlockType != null) {
          decRev.setSoleAttributeFromString(AtsAttributeTypes.ReviewBlocks, reviewBlockType.name());
       }
+      AtsReviewCache.decache(teamArt);
 
       return decRev;
    }

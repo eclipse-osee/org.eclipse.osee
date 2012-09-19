@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 /**
  * Methods in support of programatically transitioning the Peer Review Workflow through it's states. Only to be used for
  * the DefaultReviewWorkflow of Prepare->Review->Complete
- *
+ * 
  * @author Donald G. Dunne
  */
 public class PeerToPeerReviewManager {
@@ -56,7 +56,7 @@ public class PeerToPeerReviewManager {
    /**
     * Quickly transition to a state with minimal metrics and data entered. Should only be used for automated transition
     * for things such as developmental testing and demos.
-    *
+    * 
     * @param user User to transition to OR null if should use user of current state
     */
    public static Result transitionTo(PeerToPeerReviewArtifact reviewArt, PeerToPeerReviewState toState, Collection<UserRole> roles, Collection<ReviewDefectItem> defects, IAtsUser user, boolean popup, SkynetTransaction transaction) throws OseeCoreException {
@@ -65,8 +65,8 @@ public class PeerToPeerReviewManager {
          return result;
       }
       result =
-         transitionToState(PeerToPeerReviewState.Review.getStateType(), popup, reviewArt,
-            PeerToPeerReviewState.Review, transaction);
+         transitionToState(PeerToPeerReviewState.Review.getStateType(), popup, reviewArt, PeerToPeerReviewState.Review,
+            transaction);
       if (result.isFalse()) {
          return result;
       }
@@ -90,8 +90,8 @@ public class PeerToPeerReviewManager {
 
    private static Result transitionToState(StateType StateType, boolean popup, PeerToPeerReviewArtifact reviewArt, IStateToken toState, SkynetTransaction transaction) throws OseeCoreException {
       TransitionHelper helper =
-         new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(reviewArt),
-            toState.getName(), Arrays.asList(reviewArt.getStateMgr().getAssignees().iterator().next()), null,
+         new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(reviewArt), toState.getName(),
+            Arrays.asList(reviewArt.getStateMgr().getAssignees().iterator().next()), null,
             TransitionOption.OverrideAssigneeCheck);
       TransitionManager transitionMgr = new TransitionManager(helper, transaction);
       TransitionResults results = transitionMgr.handleAll();
@@ -163,6 +163,7 @@ public class PeerToPeerReviewManager {
       if (transaction != null) {
          peerToPeerRev.persist(transaction);
       }
+      AtsReviewCache.decache(teamArt);
       return peerToPeerRev;
    }
 
