@@ -62,7 +62,9 @@ public class PurgeBranchDatabaseCallable extends DatabaseTxCallable<Branch> {
 
          purgeFromTable(connection, DELETE_FROM_TX_DETAILS, 0.09, branchId);
          purgeFromTable(connection, DELETE_FROM_CONFLICT, 0.01, branchId);
-         purgeFromTable(connection, DELETE_FROM_MERGE, 0.01, branchId, branch.getParentBranch().getId());
+         if (branch.hasParentBranch()) {
+            purgeFromTable(connection, DELETE_FROM_MERGE, 0.01, branchId, branch.getParentBranch().getId());
+         }
          purgeFromTable(connection, DELETE_FROM_BRANCH_TABLE, 0.01, branchId);
 
          purgeAccessControlTables(branchId);

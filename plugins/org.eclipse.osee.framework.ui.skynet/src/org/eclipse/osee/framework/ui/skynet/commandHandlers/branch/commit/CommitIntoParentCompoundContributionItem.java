@@ -72,10 +72,12 @@ public class CommitIntoParentCompoundContributionItem extends CompoundContributi
                   Command command = configCommandParameter(commandId);
                   CommandContributionItem contributionItem = null;
 
-                  contributionItem = createCommand(selectedBranch, commandId);
+                  if (selectedBranch.hasParentBranch()) {
+                     contributionItem = createCommand(selectedBranch, commandId);
 
-                  if (command != null && command.isEnabled()) {
-                     contributionItems.add(contributionItem);
+                     if (command != null && command.isEnabled()) {
+                        contributionItems.add(contributionItem);
+                     }
                   }
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
