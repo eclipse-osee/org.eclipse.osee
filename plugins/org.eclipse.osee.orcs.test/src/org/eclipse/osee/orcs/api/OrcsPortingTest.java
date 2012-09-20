@@ -183,18 +183,18 @@ public class OrcsPortingTest {
       // the attribute for the SecondRequirement should not be named "test changed again" (on the branch after the copy from)
       // we should have a folder named "childBranch folder", but no folder named "folder after transaction"
 
-      for (ArtifactReadable art : qf.fromBranch(indepToBranch).andIsOfType(CoreArtifactTypes.SoftwareRequirement,
-         CoreArtifactTypes.Folder).getResults()) {
-         String s = art.getArtifactType().toString();
-         if (s.equals("Software Requirement")) {
+      for (ArtifactReadable art : qf.fromBranch(indepToBranch).andIsOfType(CoreArtifactTypes.Artifact).getResults()) {
+         if (art.getArtifactType().equals(CoreArtifactTypes.SoftwareRequirement)) {
             Assert.assertEquals("SecondRequirement", art.getName());
             List<AttributeReadable<Object>> attrs = art.getAttributes();
             AttributeReadable<Object> attr = attrs.get(0);
             Assert.assertEquals("test changed", attr.toString());
             // if there is a requirement with an attribute other than "test changed" then the above should fail
-         } else if (s.equals("Folder")) {
+         } else if (art.getArtifactType().equals(CoreArtifactTypes.Folder)) {
             Assert.assertEquals("childBranch folder", art.getName());
             // if there is any other folder like "folder after transaction" then the above should fail
+         } else {
+            Assert.assertTrue(false);
          }
       }
    }
