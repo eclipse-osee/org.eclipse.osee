@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.preferences;
 
+import java.util.logging.Level;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
@@ -98,25 +99,51 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
          wasSuccessful = true;
       } catch (OseeCoreException ex) {
          // Do Nothing;
+      } catch (NullPointerException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
-      builder.append("<tr><td><b>OSEE Client Installation</b></td><td colspan=2>" + System.getProperty("user.dir") + "</td></tr>");
+      try {
+         builder.append("<tr><td><b>OSEE Client Installation</b></td><td colspan=2>" + System.getProperty("user.dir") + "</td></tr>");
+      } catch (NullPointerException ex) {
+         builder.append("<tr><td><b>OSEE Client Installation</b></td><td colspan=2><font color=\"red\"><b>WARNING: System property 'user.dir' is missing.</b></font></td></tr>");
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
 
-      builder.append("<tr><td><b>OSEE Client Version</b></td><td colspan=2>" + OseeCodeVersion.getVersion() + "</td></tr>");
+      try {
+         builder.append("<tr><td><b>OSEE Client Version</b></td><td colspan=2>" + OseeCodeVersion.getVersion() + "</td></tr>");
+      } catch (NullPointerException ex) {
+         builder.append("<tr><td><b>OSEE Client Installation</b></td><td colspan=2><font color=\"red\"><b>WARNING: OseeCodeVersion.getVersion() produced a null pointer exception.</b></font></td></tr>");
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
 
       builder.append(AHTML.addRowMultiColumnTable("<b>OSEE Client Build Type</b>", buildType,
          wasSuccessful ? "<font color=\"green\"><b>Ok</b></font>" : "<font color=\"red\"><b>Unavailable</b></font>"));
 
-      for (IHealthStatus status : OseeLog.getStatus()) {
-         builder.append(AHTML.addRowMultiColumnTable("<b>" + status.getSourceName() + "</b>",
-            status.getMessage().replaceAll("]", "]<br/>"),
-            status.isOk() ? "<font color=\"green\"><b>Ok</b></font>" : "<font color=\"red\"><b>Unavailable</b></font>"));
+      try {
+         for (IHealthStatus status : OseeLog.getStatus()) {
+            builder.append(AHTML.addRowMultiColumnTable(
+               "<b>" + status.getSourceName() + "</b>",
+               status.getMessage().replaceAll("]", "]<br/>"),
+               status.isOk() ? "<font color=\"green\"><b>Ok</b></font>" : "<font color=\"red\"><b>Unavailable</b></font>"));
+
+         }
+      } catch (NullPointerException ex) {
+         builder.append(AHTML.addRowMultiColumnTable("<b></b>", "",
+            "<font color=\"red\"><b>WARNING: OseeLog.getStatus() produced a null pointer exception.</b></font>"));
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
-      builder.append(AHTML.addRowMultiColumnTable(
-         "<b>Remote Event Service</b>",
-         OseeEventManager.getConnectionDetails().replaceAll("]", "]<br/>"),
-         OseeEventManager.isEventManagerConnected() ? "<font color=\"green\"><b>Ok</b></font>" : "<font color=\"red\"><b>Unavailable - " + getEventServiceDetails() + "</b></font>"));
+      try {
+         builder.append(AHTML.addRowMultiColumnTable(
+            "<b>Remote Event Service</b>",
+            OseeEventManager.getConnectionDetails().replaceAll("]", "]<br/>"),
+            OseeEventManager.isEventManagerConnected() ? "<font color=\"green\"><b>Ok</b></font>" : "<font color=\"red\"><b>Unavailable - " + getEventServiceDetails() + "</b></font>"));
+      } catch (NullPointerException ex) {
+         builder.append(AHTML.addRowMultiColumnTable("<b></b>", "",
+            "<font color=\"red\"><b>WARNING: Null pointer exception while getting Remote Event Service</b></font>"));
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
 
       builder.append(AHTML.endMultiColumnTable());
       browser.setText(String.format(PAGE_TEMPLATE, builder.toString()));
