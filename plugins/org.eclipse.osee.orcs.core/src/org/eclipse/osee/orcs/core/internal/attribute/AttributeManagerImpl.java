@@ -43,8 +43,6 @@ import org.eclipse.osee.orcs.data.AttributeWriteable;
  */
 public abstract class AttributeManagerImpl extends AbstractIdentity<String> implements HasOrcsData<ArtifactData>, AttributeManager, AttributeExceptionFactory {
 
-   private final AttributeSetHelper<Object, String> ATTRIBUTE_STRING_SETTER = new FromStringAttributeSetHelper();
-
    private final AttributeCollection attributes;
    private boolean isLoaded;
 
@@ -263,7 +261,8 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
 
    @Override
    public void setAttributesFromStrings(IAttributeType attributeType, Collection<String> values) throws OseeCoreException {
-      setAttributesFromValuesHelper(ATTRIBUTE_STRING_SETTER, attributeType, values);
+      AttributeSetHelper<Object, String> attributeStringSetter = new FromStringAttributeSetHelper(attributes, this);
+      setAttributesFromValuesHelper(attributeStringSetter, attributeType, values);
    }
 
    @Override
@@ -273,7 +272,7 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
 
    @Override
    public <T> void setAttributesFromValues(IAttributeType attributeType, Collection<T> values) throws OseeCoreException {
-      AttributeSetHelper<T, T> setter = new TypedValueAttributeSetHelper<T>();
+      AttributeSetHelper<T, T> setter = new TypedValueAttributeSetHelper<T>(attributes, this);
       setAttributesFromValuesHelper(setter, attributeType, values);
    }
 
@@ -385,16 +384,8 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
       ensureAttributesLoaded();
       return attributes.getAttributeList(attributeType, includeDeleted);
    }
+
    //////////////////////////////////////////////////////////////
-
-   private interface AttributeSetHelper<A, V> {
-
-      boolean matches(Attribute<A> attribute, V value) throws OseeCoreException;
-
-      void setAttributeValue(Attribute<A> attribute, V value) throws OseeCoreException;
-
-      void createAttribute(IAttributeType attributeType, V value) throws OseeCoreException;
-   }
 
    private <A, T> void setAttributesFromValuesHelper(AttributeSetHelper<A, T> helper, IAttributeType attributeType, Collection<T> values) throws OseeCoreException {
       ensureAttributesLoaded();
@@ -432,55 +423,6 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
 
       for (Attribute<A> attribute : remainingAttributes) {
          attribute.delete();
-      }
-   }
-
-   private final class TypedValueAttributeSetHelper<T> implements AttributeSetHelper<T, T> {
-
-      @Override
-      public boolean matches(Attribute<T> attribute, T value) throws OseeCoreException {
-         return value.equals(attribute.getValue());
-      }
-
-      @Override
-      public void setAttributeValue(Attribute<T> attribute, T value) throws OseeCoreException {
-         attribute.setValue(value);
-      }
-
-      @Override
-      public void createAttribute(IAttributeType attributeType, T value) throws OseeCoreException {
-         ResultSet<Attribute<T>> result =
-            attributes.getAttributeSetFromValue(attributeType, DeletionFlag.EXCLUDE_DELETED, value);
-         if (result.getOneOrNull() == null) {
-            createAttribute(attributeType, value);
-         }
-      }
-   }
-
-   private final class FromStringAttributeSetHelper implements AttributeSetHelper<Object, String> {
-
-      private String asString(Object object) {
-         return String.valueOf(object);
-      }
-
-      @Override
-      public boolean matches(Attribute<Object> attribute, String value) throws OseeCoreException {
-         Object attrValue = attribute.getValue();
-         return value.equals(asString(attrValue));
-      }
-
-      @Override
-      public void setAttributeValue(Attribute<Object> attribute, java.lang.String value) throws OseeCoreException {
-         attribute.setFromString(value);
-      }
-
-      @Override
-      public void createAttribute(IAttributeType attributeType, String value) throws OseeCoreException {
-         ResultSet<Attribute<Object>> result =
-            attributes.getAttributeSetFromString(attributeType, DeletionFlag.EXCLUDE_DELETED, value);
-         if (result.getOneOrNull() == null) {
-            createAttributeFromString(attributeType, value);
-         }
       }
    }
 
