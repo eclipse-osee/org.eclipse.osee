@@ -41,7 +41,7 @@ public class DeleteCoveragePackageAction extends Action {
    public static KeyedImage OSEE_IMAGE = FrameworkImage.DELETE;
 
    public DeleteCoveragePackageAction() {
-      super("Delete/Purge Coverage Package");
+      super("Delete Coverage Package");
    }
 
    @Override
@@ -68,22 +68,17 @@ public class DeleteCoveragePackageAction extends Action {
             CoveragePackage coveragePackage = OseeCoveragePackageStore.get(coveragePackageArtifact);
             CheckBoxDialog cDialog =
                new CheckBoxDialog(
-                  "Delete/Purge Package",
+                  "Delete Package",
                   String.format(
-                     "This will delete Coverage Package and all realted Coverage Units and Test Units.\n\nDelete/Purge Package [%s]?",
-                     coveragePackage.getName()), "Purge");
+                     "This will delete Coverage Package and all realted Coverage Units and Test Units.\n\nDelete Package [%s]?",
+                     coveragePackage.getName()), null);
             if (cDialog.open() == 0) {
-               boolean purge = cDialog.isChecked();
-               SkynetTransaction transaction = null;
-               if (!purge) {
-                  transaction = TransactionManager.createTransaction(branch, "Delete Coverage Package - " + coveragePackage.getName());
-               }
+               SkynetTransaction transaction =
+                  TransactionManager.createTransaction(branch, "Delete Coverage Package - " + coveragePackage.getName());
                CoveragePackageEvent coverageEvent =
                   new CoveragePackageEvent(coveragePackage, CoverageEventType.Deleted);
-               OseeCoveragePackageStore.get(coveragePackage, branch).delete(transaction, coverageEvent, purge);
-               if (!purge) {
-                  transaction.execute();
-               }
+               OseeCoveragePackageStore.get(coveragePackage, branch).delete(transaction, coverageEvent, false);
+               transaction.execute();
                CoverageEventManager.instance.sendRemoteEvent(coverageEvent);
             }
          }

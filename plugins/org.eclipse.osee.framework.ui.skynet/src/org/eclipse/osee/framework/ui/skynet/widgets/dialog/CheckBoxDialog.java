@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -52,15 +53,17 @@ public class CheckBoxDialog extends MessageDialog {
       composite.setLayout(new GridLayout(2, false));
       composite.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
 
-      checkButton = new Button(composite, SWT.CHECK);
-      checkButton.setText(checkBoxMessage);
-      checkButton.addSelectionListener(new SelectionAdapter() {
+      if (Strings.isValid(checkBoxMessage)) {
+         checkButton = new Button(composite, SWT.CHECK);
+         checkButton.setText(checkBoxMessage);
+         checkButton.addSelectionListener(new SelectionAdapter() {
 
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            checked = checkButton.getSelection();
-         }
-      });
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               checked = checkButton.getSelection();
+            }
+         });
+      }
 
       return composite;
    }
