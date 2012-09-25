@@ -10,10 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.branch;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
+import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -21,6 +20,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.junit.Before;
@@ -30,6 +30,7 @@ import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+/**  */
 public class BranchDataFactoryTest {
 
    @Rule
@@ -38,6 +39,13 @@ public class BranchDataFactoryTest {
    // @formatter:off
    @Mock private BranchCache branchCache;
    @Mock private TransactionCache txCache;
+   
+   @Mock private IOseeBranch branch;
+   @Mock private IOseeBranch parentToken;
+   @Mock private Branch parent;
+   @Mock private ArtifactReadable author;
+   @Mock private ArtifactReadable associatedArtifact;
+   @Mock private TransactionRecord txRecord;
    // @formatter:on
 
    private BranchDataFactory factory;
@@ -51,81 +59,105 @@ public class BranchDataFactoryTest {
 
    @Test
    public void testDataForTopLevelBranch() throws OseeCoreException {
-      IOseeBranch branch = mock(IOseeBranch.class);
       String branchName = "testDataForTopLevelBranch";
+      String guid = GUID.create();
       when(branch.getName()).thenReturn(branchName);
-      ArtifactReadable author = mock(ArtifactReadable.class);
-      TransactionRecord txRecord = mock(TransactionRecord.class);
-      when(txCache.getHeadTransaction(any(Branch.class))).thenReturn(txRecord);
-      CreateBranchData result = factory.dataForTopLevelBranch(branch, author);
-      Assert.assertEquals("Branch Creation for " + branchName, result.getCreationComment());
-      Assert.assertEquals(author, result.getUserArtifact());
-      Assert.assertEquals(txRecord, result.getFromTransaction());
-      Assert.assertEquals(BranchType.BASELINE, result.getBranchType());
-      Assert.assertEquals(false, result.isTxCopyBranchType());
+      when(branch.getGuid()).thenReturn(guid);
+
+      when(branchCache.getSystemRootBranch()).thenReturn(parent);
+      when(txCache.getHeadTransaction(parent)).thenReturn(txRecord);
+
+      CreateBranchData result = factory.createTopLevelBranchData(branch, author);
+
+      verify(branchCache).getSystemRootBranch();
+      verify(txCache).getHeadTransaction(parent);
+
+      String comment = "Branch Creation for " + branchName;
+      assertData(result, branchName, guid, BranchType.BASELINE, comment, txRecord, author, null, false);
    }
 
    @Test
    public void testDataForBaselineBranch() throws OseeCoreException {
-      IOseeBranch branch = mock(IOseeBranch.class);
-      IOseeBranch parent = mock(IOseeBranch.class);
       String branchName = "testDataForBaselineBranch";
+      String guid = GUID.create();
       when(branch.getName()).thenReturn(branchName);
-      ArtifactReadable author = mock(ArtifactReadable.class);
-      ArtifactReadable associatedArtifact = mock(ArtifactReadable.class);
-      TransactionRecord txRecord = mock(TransactionRecord.class);
-      when(txCache.getHeadTransaction(any(Branch.class))).thenReturn(txRecord);
-      CreateBranchData result = factory.dataForBaselineBranch(branch, author, parent, associatedArtifact);
-      Assert.assertEquals("Branch Creation for " + branchName, result.getCreationComment());
-      Assert.assertEquals(author, result.getUserArtifact());
-      Assert.assertEquals(txRecord, result.getFromTransaction());
-      Assert.assertEquals(BranchType.BASELINE, result.getBranchType());
-      Assert.assertEquals(false, result.isTxCopyBranchType());
+      when(branch.getGuid()).thenReturn(guid);
+
+      when(branchCache.get(parentToken)).thenReturn(parent);
+      when(txCache.getHeadTransaction(parent)).thenReturn(txRecord);
+
+      CreateBranchData result = factory.createBaselineBranchData(branch, author, parentToken, associatedArtifact);
+
+      verify(branchCache).get(parentToken);
+      verify(txCache).getHeadTransaction(parent);
+
+      String comment = "Branch Creation for " + branchName;
+      assertData(result, branchName, guid, BranchType.BASELINE, comment, txRecord, author, associatedArtifact, false);
    }
 
    @Test
    public void testDataForWorkingBranch() throws OseeCoreException {
-      IOseeBranch branch = mock(IOseeBranch.class);
-      Branch parent = mock(Branch.class);
       String branchName = "testDataForWorkingBranch";
       String parentName = "testParentBranchName";
+      String guid = GUID.create();
       when(branch.getName()).thenReturn(branchName);
+      when(branch.getGuid()).thenReturn(guid);
+
       when(parent.getName()).thenReturn(parentName);
-      ArtifactReadable author = mock(ArtifactReadable.class);
-      ArtifactReadable associatedArtifact = mock(ArtifactReadable.class);
-      TransactionRecord txRecord = mock(TransactionRecord.class);
-      when(txCache.getHeadTransaction(any(Branch.class))).thenReturn(txRecord);
-      when(branchCache.getByGuid(any(String.class))).thenReturn(parent);
-      CreateBranchData result = factory.dataForWorkingBranch(branch, author, parent, associatedArtifact);
-      String creationComment = String.format("New Branch from %s (%s)", parentName, txRecord.getId());
-      Assert.assertEquals(creationComment, result.getCreationComment());
-      Assert.assertEquals(author, result.getUserArtifact());
-      Assert.assertEquals(txRecord, result.getFromTransaction());
-      Assert.assertEquals(associatedArtifact, result.getAssociatedArtifact());
-      Assert.assertEquals(BranchType.WORKING, result.getBranchType());
-      Assert.assertEquals(false, result.isTxCopyBranchType());
+
+      when(branchCache.get(parentToken)).thenReturn(parent);
+      when(txCache.getHeadTransaction(parent)).thenReturn(txRecord);
+
+      CreateBranchData result = factory.createWorkingBranchData(branch, author, parentToken, associatedArtifact);
+
+      verify(branchCache).get(parentToken);
+      verify(txCache).getHeadTransaction(parent);
+
+      String comment = String.format("New Branch from %s (%s)", parentName, txRecord.getId());
+      assertData(result, branchName, guid, BranchType.WORKING, comment, txRecord, author, associatedArtifact, false);
    }
 
    @Test
    public void testDataForCopyTxBranch() throws OseeCoreException {
-      IOseeBranch branch = mock(IOseeBranch.class);
-      Branch parent = mock(Branch.class);
       String branchName = "testDataForCopyTxBranch";
       String parentName = "testParentBranchName";
+      String guid = GUID.create();
       when(branch.getName()).thenReturn(branchName);
+      when(branch.getGuid()).thenReturn(guid);
+
       when(parent.getName()).thenReturn(parentName);
-      ArtifactReadable author = mock(ArtifactReadable.class);
-      TransactionRecord txRecord = mock(TransactionRecord.class);
-      when(txRecord.getBranch()).thenReturn(parent);
+
       when(txCache.getOrLoad(99)).thenReturn(txRecord);
-      CreateBranchData result = factory.dataForCopyTxBranch(branch, author, 99, null);
-      String creationComment =
-         String.format("Transaction %d copied from %s to create Branch %s", 99, parentName, branchName);
-      Assert.assertEquals(creationComment, result.getCreationComment());
-      Assert.assertEquals(author, result.getUserArtifact());
-      Assert.assertEquals(BranchType.WORKING, result.getBranchType());
-      Assert.assertEquals(txRecord, result.getFromTransaction());
-      Assert.assertEquals(true, result.isTxCopyBranchType());
+      when(txRecord.getBranch()).thenReturn(parent);
+
+      CreateBranchData result = factory.createCopyTxBranchData(branch, author, 99, null);
+
+      verify(txCache).getOrLoad(99);
+      verify(txRecord).getBranch();
+
+      String comment = String.format("Transaction %d copied from %s to create Branch %s", 99, parentName, branchName);
+      assertData(result, branchName, guid, BranchType.WORKING, comment, txRecord, author, null, true);
    }
 
+   private static void assertData(CreateBranchData actual, String branchName, String branchGuid, BranchType type, String comment, TransactionRecord fromTx, ArtifactReadable author, ArtifactReadable associatedArtifact, boolean isCopyFromTx) {
+      assertEquals(branchName, actual.getName());
+      assertEquals(branchGuid, actual.getGuid());
+
+      assertEquals(type, actual.getBranchType());
+      assertEquals(comment, actual.getCreationComment());
+      assertEquals(fromTx, actual.getFromTransaction());
+
+      assertEquals(-1, actual.getMergeAddressingQueryId());
+      assertEquals(-1, actual.getMergeDestinationBranchId());
+
+      assertEquals(author, actual.getUserArtifact());
+      assertEquals(author.getLocalId(), actual.getUserArtifactId());
+
+      assertEquals(associatedArtifact, actual.getAssociatedArtifact());
+
+      int assocArtId = associatedArtifact == null ? -1 : associatedArtifact.getLocalId();
+      assertEquals(assocArtId, actual.getAssociatedArtifactId());
+
+      assertEquals(isCopyFromTx, actual.isTxCopyBranchType());
+   }
 }

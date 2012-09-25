@@ -26,6 +26,8 @@ public class CreateBranchData implements Identifiable {
    private static final int NULL_PARENT_BRANCH_ID = -1;
    private static final int NULL_SOURCE_TRANSACTION_ID = -1;
    private static final int NULL_ARTIFACT_ID = -1;
+   private final int MERGE_DESTINATION_BRANCH_ID = -1; // only used on merge branches
+   private final int MERGE_ADDRESSING_QUERY_ID = -1; // only used on merge branches
 
    private String branchUuid;
    private String branchName;
@@ -36,10 +38,10 @@ public class CreateBranchData implements Identifiable {
    private ArtifactReadable userArtifact;
 
    // Merge Branch Legacy Support
-   private int mergeAddressingQueryId;
-   private int mergeDestinationBranchId;
+   private int mergeAddressingQueryId = MERGE_ADDRESSING_QUERY_ID;
+   private int mergeDestinationBranchId = MERGE_DESTINATION_BRANCH_ID;
 
-   private boolean txCopyBranchType;
+   private boolean txCopyBranchType = false;
 
    @Override
    public String getGuid() {
@@ -47,7 +49,6 @@ public class CreateBranchData implements Identifiable {
    }
 
    public int getAssociatedArtifactId() {
-
       int result = NULL_ARTIFACT_ID;
       if (associatedArtifact != null) {
          result = associatedArtifact.getLocalId();

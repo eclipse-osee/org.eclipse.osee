@@ -40,9 +40,8 @@ import org.junit.Rule;
 import org.junit.Test;
 
 /**
- * @author David Miller
+ * @author David W. Miller
  */
-
 public class OrcsBranchTest {
 
    @Rule
@@ -59,9 +58,6 @@ public class OrcsBranchTest {
    @OsgiService
    private OrcsApi orcsApi;
 
-   /**
-    * @throws java.lang.Exception
-    */
    @Before
    public void setUp() throws Exception {
       branchInterface = orcsApi.getBranchOps(context);
@@ -177,7 +173,7 @@ public class OrcsBranchTest {
       writeableFolder.setSoleAttributeFromString(CoreAttributeTypes.StaticId, "test id");
 
       // new artifacts should come across as new
-      ArtifactWriteable folder2 = tx2.createArtifact(CoreArtifactTypes.Folder, "childBranch folder");
+      tx2.createArtifact(CoreArtifactTypes.Folder, "childBranch folder");
       tx2.commit();
 
       List<ChangeItem> expectedChanges = branchInterface.compareBranch(childBranch).call();

@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.CreateBranchData;
@@ -137,9 +138,10 @@ public class CreateBranchDatabaseTxCallable extends DatabaseTxCallable<Branch> {
          guid = GUID.create();
       }
 
+      final String truncatedName = Strings.truncate(newBranchData.getName(), 195, true);
       branch =
-         branchFactory.create(guid, newBranchData.getName(), newBranchData.getBranchType(),
-            BranchState.CREATION_IN_PROGRESS, false);
+         branchFactory.create(guid, truncatedName, newBranchData.getBranchType(), BranchState.CREATION_IN_PROGRESS,
+            false);
 
       branch.setParentBranch(parentBranch);
       branch.setAssociatedArtifactId(newBranchData.getAssociatedArtifactId());

@@ -52,6 +52,7 @@ public class OrcsBranchImpl implements OrcsBranch {
    private final BranchDataStore branchStore;
    private final BranchCache branchCache;
    private final TransactionCache txCache;
+   private final BranchDataFactory branchDataFactory;
 
    public OrcsBranchImpl(Log logger, SessionContext sessionContext, BranchDataStore branchStore, BranchCache branchCache, TransactionCache txCache, LazyObject<ArtifactReadable> systemUser) {
       this.logger = logger;
@@ -59,6 +60,7 @@ public class OrcsBranchImpl implements OrcsBranch {
       this.branchStore = branchStore;
       this.branchCache = branchCache;
       this.txCache = txCache;
+      branchDataFactory = new BranchDataFactory(branchCache, txCache);
    }
 
    @Override
@@ -128,29 +130,28 @@ public class OrcsBranchImpl implements OrcsBranch {
 
    @Override
    public Callable<ReadableBranch> createTopLevelBranch(IOseeBranch branch, ArtifactReadable author) throws OseeCoreException {
-      BranchDataFactory bdf = new BranchDataFactory(branchCache, txCache);
-      CreateBranchData branchData = bdf.dataForTopLevelBranch(branch, author);
+      CreateBranchData branchData = branchDataFactory.createTopLevelBranchData(branch, author);
       return createBranch(branchData);
    }
 
    @Override
    public Callable<ReadableBranch> createBaselineBranch(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException {
-      BranchDataFactory bdf = new BranchDataFactory(branchCache, txCache);
-      CreateBranchData branchData = bdf.dataForBaselineBranch(branch, author, parent, associatedArtifact);
+      CreateBranchData branchData =
+         branchDataFactory.createBaselineBranchData(branch, author, parent, associatedArtifact);
       return createBranch(branchData);
    }
 
    @Override
    public Callable<ReadableBranch> createWorkingBranch(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException {
-      BranchDataFactory bdf = new BranchDataFactory(branchCache, txCache);
-      CreateBranchData branchData = bdf.dataForWorkingBranch(branch, author, parent, associatedArtifact);
+      CreateBranchData branchData =
+         branchDataFactory.createWorkingBranchData(branch, author, parent, associatedArtifact);
       return createBranch(branchData);
    }
 
    @Override
    public Callable<ReadableBranch> createCopyTxBranch(IOseeBranch branch, ArtifactReadable author, int fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
-      BranchDataFactory bdf = new BranchDataFactory(branchCache, txCache);
-      CreateBranchData branchData = bdf.dataForCopyTxBranch(branch, author, fromTransaction, associatedArtifact);
+      CreateBranchData branchData =
+         branchDataFactory.createCopyTxBranchData(branch, author, fromTransaction, associatedArtifact);
       return createBranch(branchData);
    }
 
