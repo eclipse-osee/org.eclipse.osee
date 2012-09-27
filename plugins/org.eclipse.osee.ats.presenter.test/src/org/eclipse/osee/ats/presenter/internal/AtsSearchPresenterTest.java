@@ -14,8 +14,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.Assert;
-import org.eclipse.osee.ats.mocks.MockAtsArtifactProvider;
-import org.eclipse.osee.ats.mocks.MockAtsSearchHeaderComponent;
 import org.eclipse.osee.ats.ui.api.data.AtsSearchParameters;
 import org.eclipse.osee.ats.ui.api.view.AtsSearchHeaderComponent;
 import org.eclipse.osee.display.api.data.ViewId;

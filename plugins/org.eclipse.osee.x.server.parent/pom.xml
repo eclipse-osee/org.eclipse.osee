@@ -26,7 +26,6 @@
 		<module>../../plugins/org.eclipse.osee.ats.api</module>
 		<module>../../plugins/org.eclipse.osee.ats.ui.api</module>
 		<module>../../plugins/org.eclipse.osee.ats.view.web</module>
-		<module>../../plugins/org.eclipse.osee.ats.mocks</module>
 		<module>../../plugins/org.eclipse.osee.ats.presenter</module>
 		<module>../../plugins/org.eclipse.osee.ats.presenter.test</module>
 

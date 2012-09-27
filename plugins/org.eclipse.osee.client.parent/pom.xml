@@ -45,6 +45,7 @@
 		<module>../../plugins/org.eclipse.osee.coverage</module>
 		<module>../../plugins/org.eclipse.osee.define</module>
 
+      <module>../../plugins/org.eclipse.osee.ats.mocks</module>
 		<module>../../plugins/org.eclipse.osee.ats.help.ui</module>
 		<module>../../plugins/org.eclipse.osee.ats</module>
 		<module>../../plugins/org.eclipse.osee.ats.core</module>

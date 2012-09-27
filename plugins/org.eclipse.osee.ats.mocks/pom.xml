@@ -5,9 +5,9 @@
 
 	<parent>
 		<groupId>org.eclipse.osee</groupId>
-		<artifactId>org.eclipse.osee.x.server.parent</artifactId>
+		<artifactId>org.eclipse.osee.client.parent</artifactId>
 		<version>0.10.3-SNAPSHOT</version>
-		<relativePath>../../plugins/org.eclipse.osee.x.server.parent</relativePath>
+		<relativePath>../../plugins/org.eclipse.osee.client.parent</relativePath>
 	</parent>
 
 	<artifactId>org.eclipse.osee.ats.mocks</artifactId>

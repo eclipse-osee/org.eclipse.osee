@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.mocks;
+package org.eclipse.osee.ats.presenter.internal;
 
 import java.util.Collection;
 import java.util.LinkedList;
