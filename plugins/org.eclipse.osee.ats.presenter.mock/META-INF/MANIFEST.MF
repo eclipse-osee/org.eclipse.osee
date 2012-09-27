@@ -15,4 +15,5 @@ Import-Package: org.eclipse.osee.ats.mocks,
  org.eclipse.osee.display.api.search,
  org.eclipse.osee.display.presenter.mocks,
  org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.orcs
