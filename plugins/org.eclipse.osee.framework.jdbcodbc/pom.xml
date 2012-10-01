@@ -5,8 +5,8 @@
 
 	<parent>
 		<groupId>org.eclipse.osee</groupId>
-		<artifactId>org.eclipse.osee.client.parent</artifactId>
-		<version>0.9.9-SNAPSHOT</version>
+		<artifactId>org.eclipse.osee.server.parent</artifactId>
+		<version>0.10.4-SNAPSHOT</version>
 		<relativePath>../../plugins/org.eclipse.osee.client.parent</relativePath>
 	</parent>
 
