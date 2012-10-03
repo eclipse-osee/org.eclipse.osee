@@ -5,6 +5,8 @@
  */
 package org.eclipse.osee.ats.column;
 
+import org.eclipse.osee.ats.world.WorldXViewerFactory;
+
 /**
  * @author Donald G. Dunne
  */
@@ -18,6 +20,7 @@ public class ActivityIdColumn extends WorkPackageColumn {
    public ActivityIdColumn() {
       super();
       setName("Activity Id");
+      setId(WorldXViewerFactory.COLUMN_NAMESPACE + ".activityId");
    }
 
    /**
