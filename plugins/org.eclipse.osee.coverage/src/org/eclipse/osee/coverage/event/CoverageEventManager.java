@@ -18,6 +18,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.coverage.editor.CoverageEditor;
@@ -51,6 +52,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
+import org.osgi.framework.BundleContext;
 
 /**
  * @author Donald G. Dunne
@@ -91,7 +93,8 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
 
    private void startListeningForRemoteCoverageEvents() {
       if (oseeMessagingTracker == null) {
-         oseeMessagingTracker = new OseeMessagingTracker();
+         BundleContext bundleContext = Platform.getBundle(Activator.PLUGIN_ID).getBundleContext();
+         oseeMessagingTracker = new OseeMessagingTracker(bundleContext);
          oseeMessagingTracker.open(true);
       }
    }

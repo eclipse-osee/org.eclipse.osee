@@ -39,7 +39,6 @@ public class ShowMergeDetailsAction extends Action {
    private CoveragePackage coveragePackage;
    private CoverageImport coverageImport;
    private XCoverageMergeViewer importXViewer;
-   private XCoverageMergeViewer packageXViewer;
 
    public ShowMergeDetailsAction() {
       super("Show Merge Details", IAction.AS_PUSH_BUTTON);
@@ -90,7 +89,6 @@ public class ShowMergeDetailsAction extends Action {
    }
 
    public void setPackageXViewer(XCoverageMergeViewer packageXViewer, CoveragePackage coveragePackage) {
-      this.packageXViewer = packageXViewer;
       this.coveragePackage = coveragePackage;
    }
 

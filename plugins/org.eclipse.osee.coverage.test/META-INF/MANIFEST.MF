@@ -7,7 +7,8 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.coverage
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit
-Import-Package: org.eclipse.osee.support.test.util
+Import-Package: org.eclipse.osee.framework.database.init,
+ org.eclipse.osee.support.test.util
 Export-Package: org.eclipse.osee.coverage,
  org.eclipse.osee.coverage.import01,
  org.eclipse.osee.coverage.import02,

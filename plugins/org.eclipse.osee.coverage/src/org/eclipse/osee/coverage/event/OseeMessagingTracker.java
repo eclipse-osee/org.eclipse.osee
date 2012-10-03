@@ -11,29 +11,28 @@
 package org.eclipse.osee.coverage.event;
 
 import java.util.logging.Level;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.messaging.MessageService;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * @author Donald G. Dunne
  */
-public class OseeMessagingTracker extends ServiceTracker {
+public class OseeMessagingTracker extends ServiceTracker<MessageService, MessageService> {
 
    private ConnectionNode connectionNode;
 
-   public OseeMessagingTracker() {
-      super(Platform.getBundle(Activator.PLUGIN_ID).getBundleContext(), MessageService.class.getName(), null);
+   public OseeMessagingTracker(BundleContext bundleContext) {
+      super(bundleContext, MessageService.class, null);
    }
 
    @Override
-   public Object addingService(ServiceReference reference) {
-      MessageService service = (MessageService) super.addingService(reference);
+   public MessageService addingService(ServiceReference<MessageService> reference) {
+      MessageService service = super.addingService(reference);
       try {
          connectionNode = service.getDefault();
          CoverageEventManager.instance.addingRemoteEventService(connectionNode);
@@ -44,13 +43,13 @@ public class OseeMessagingTracker extends ServiceTracker {
    }
 
    @Override
-   public void removedService(ServiceReference reference, Object service) {
+   public void removedService(ServiceReference<MessageService> reference, MessageService service) {
       super.removedService(reference, service);
    }
 
    @Override
    public MessageService getService() {
-      return (MessageService) super.getService();
+      return super.getService();
    }
 
 }

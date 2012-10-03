@@ -11,12 +11,15 @@
 package org.eclipse.osee.coverage;
 
 import static org.junit.Assert.assertTrue;
+import org.eclipse.osee.coverage.internal.vcast.datastore.VCastDataStoreTest;
 import org.eclipse.osee.coverage.model.CoverageItemPersistTest;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerStoreTest;
 import org.eclipse.osee.coverage.model.CoveragePreferencesTest;
 import org.eclipse.osee.coverage.model.CoverageUnitPersistTest;
 import org.eclipse.osee.coverage.test.store.ArtifactTestUnitStoreTest;
 import org.eclipse.osee.coverage.test.store.TestUnitCacheTest;
+import org.eclipse.osee.coverage.vcast.VCastAdaCoverage_V5_3_ImportOperationTest;
+import org.eclipse.osee.coverage.vcast.VCastAdaCoverage_V6_0_ImportOperationTest;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
@@ -33,12 +36,13 @@ import org.junit.runners.Suite;
    CoverageOptionManagerStoreTest.class,
    TestUnitCacheTest.class,
    ArtifactTestUnitStoreTest.class,
-   Coverage_Suite.class,
    CoverageParametersTest.class,
    CoverageItemPersistTest.class,
    CoverageUnitPersistTest.class,
    CoveragePackageImportTest.class,
-   VectorCastImportTest.class})
+   VCastDataStoreTest.class,
+   VCastAdaCoverage_V5_3_ImportOperationTest.class,
+   VCastAdaCoverage_V6_0_ImportOperationTest.class})
 /**
  * @author Donald G. Dunne
  */

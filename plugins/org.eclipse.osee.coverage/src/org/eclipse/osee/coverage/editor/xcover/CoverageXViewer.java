@@ -116,18 +116,6 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
       return true;
    }
 
-   private boolean isDeleteCoverageUnitEnabled() {
-      if (xCoverageViewer.getSelectedCoverageItems().isEmpty()) {
-         return false;
-      }
-      for (ICoverage item : xCoverageViewer.getSelectedCoverageItems()) {
-         if (!(item instanceof CoverageUnit)) {
-            return false;
-         }
-      }
-      return true;
-   }
-
    private boolean isCreateWorkProductTaskActionEnabled() {
       if (xCoverageViewer.getSelectedCoverageItems().isEmpty()) {
          return false;

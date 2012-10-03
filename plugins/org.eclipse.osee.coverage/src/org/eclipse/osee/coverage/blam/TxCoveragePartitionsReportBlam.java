@@ -93,24 +93,6 @@ public class TxCoveragePartitionsReportBlam extends AbstractBlam {
 
    }
 
-   private class TxPartitionData {
-      private final String txId;
-      private final String partition;
-
-      public TxPartitionData(String txId, String partition) {
-         this.txId = txId;
-         this.partition = partition;
-      }
-
-      public String getTxId() {
-         return txId;
-      }
-
-      public String getPartition() {
-         return partition;
-      }
-   }
-
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException, IOException {
       Collection<XListItem> txIds = variableMap.getCollection(XListItem.class, TXID_WIDGET_NAME);
@@ -132,11 +114,11 @@ public class TxCoveragePartitionsReportBlam extends AbstractBlam {
       for (XListItem txItem : txIds) {
          String txStr = txItem.toString();
          if (monitor.isCanceled()) {
-             return;
-          }
-          monitor.setTaskName(txStr);
-          monitor.worked(1);
-          
+            return;
+         }
+         monitor.setTaskName(txStr);
+         monitor.worked(1);
+
          if (Strings.isValid(txStr)) {
             String[] tokens = txStr.split(TASKITEMDELIM);
             String txId = "";
@@ -159,12 +141,12 @@ public class TxCoveragePartitionsReportBlam extends AbstractBlam {
 
                while (chStmt.next()) {
                   int artId = chStmt.getInt("art_id");
-                  monitor.setTaskName(txStr+" "+artId);
+                  monitor.setTaskName(txStr + " " + artId);
                   Artifact art = ArtifactQuery.getArtifactFromId(artId, branch);
                   String partition = getCoveragePartitionType(art);
                   if (partition == null) {
-//                     OseeLog.log(Activator.class, Level.INFO,
-//                        "NON-Coverage modification found in transaction:" + txId);
+                     //                     OseeLog.log(Activator.class, Level.INFO,
+                     //                        "NON-Coverage modification found in transaction:" + txId);
                      partition = "NON-Coverage modification.";
                   }
                   excelWriter.writeRow(txId, txComment, partition, txTime);
@@ -184,7 +166,7 @@ public class TxCoveragePartitionsReportBlam extends AbstractBlam {
 
       excelWriter.endSheet();
       excelWriter.endWorkbook();
-      
+
       IFile iFile = OseeData.getIFile("CoveragePartitionByTxID_" + Lib.getDateTimeString() + ".xml");
       AIFile.writeToFile(iFile, charBak);
       Program.launch(iFile.getLocation().toOSString());

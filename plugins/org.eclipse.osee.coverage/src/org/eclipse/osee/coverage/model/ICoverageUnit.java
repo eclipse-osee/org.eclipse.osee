@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  * 
  * @author Donald G. Dunne
  */
-public interface ICoverageUnit extends Named, Identity {
+public interface ICoverageUnit extends Named, Identity<String> {
 
    public void clearCoverageUnits();
 

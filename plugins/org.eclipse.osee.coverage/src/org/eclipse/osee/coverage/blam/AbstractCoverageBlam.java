@@ -12,7 +12,10 @@ package org.eclipse.osee.coverage.blam;
 
 import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.model.CoverageImport;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
  * @author Donald G. Dunne
@@ -21,10 +24,6 @@ public abstract class AbstractCoverageBlam extends AbstractBlam {
 
    CoverageImport coverageImport;
    CoverageEditor coverageEditor;
-
-   public CoverageImport getCoverageImport() {
-      return coverageImport;
-   }
 
    public void setCoverageImport(CoverageImport coverageImport) {
       this.coverageImport = coverageImport;
@@ -63,12 +62,12 @@ public abstract class AbstractCoverageBlam extends AbstractBlam {
       return true;
    }
 
-   public CoverageEditor getCoverageEditor() {
-      return coverageEditor;
-   }
-
    public void setCoverageEditor(CoverageEditor coverageEditor) {
       this.coverageEditor = coverageEditor;
    }
 
+   @Override
+   public IOperation createOperation(VariableMap variableMap, OperationLogger logger) throws Exception {
+      return super.createOperation(variableMap, logger);
+   }
 }

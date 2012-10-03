@@ -61,6 +61,7 @@ public abstract class MergeItemBase extends NamedIdentity<String> implements IMe
       return isCheckable;
    }
 
+   @Override
    public String getDetails() {
       return null;
    }

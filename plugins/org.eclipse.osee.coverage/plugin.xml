@@ -137,4 +137,12 @@
           className="org.eclipse.osee.coverage.blam.TxCoveragePartitionsReportBlam">
     </Operation>
  </extension>
+   <extension
+       id="SqliteToExcelBlam"
+       name="SqliteToExcelBlam"
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.coverage.internal.vcast.SqliteToExcelBlam">
+    </Operation>
+ </extension>
 </plugin>

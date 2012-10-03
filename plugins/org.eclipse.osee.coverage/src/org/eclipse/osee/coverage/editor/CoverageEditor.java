@@ -15,21 +15,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.coverage.action.ConfigureCoverageMethodsAction;
 import org.eclipse.osee.coverage.event.CoverageEventManager;
 import org.eclipse.osee.coverage.help.ui.CoverageHelpContext;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.ICoverage;
-import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -72,10 +70,12 @@ public class CoverageEditor extends FormEditor {
          setPartName("Loading " + getCoverageEditorInput().getPreLoadName());
          setTitleImage(ImageManager.getImage(CoverageImage.COVERAGE));
          setActivePage(startPage);
+
+         IOperation operation = new LoadCoverageEditorOperation(this, loadingStr);
          if (getCoverageEditorInput().isInTest()) {
-            new LoadCoverage(this, loadingStr).doWork(null);
+            Operations.executeWorkAndCheckStatus(operation);
          } else {
-            Operations.executeAsJob(new LoadCoverage(this, loadingStr), true);
+            Operations.executeAsJob(operation, true);
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -87,68 +87,20 @@ public class CoverageEditor extends FormEditor {
       }
    }
 
-   private class LoadCoverage extends AbstractOperation {
-
-      private final CoverageEditor editor;
-
-      public LoadCoverage(CoverageEditor editor, String operationName) {
-         super(operationName, Activator.PLUGIN_ID);
-         this.editor = editor;
+   public void onLoadComplete() throws OseeCoreException {
+      if (getCoverageEditorInput().isInTest()) {
+         addPagesAfterLoad();
+      } else {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               addPagesAfterLoad();
+            }
+         });
       }
+   }
 
-      @Override
-      protected void doWork(IProgressMonitor monitor) throws Exception {
-         if (monitor != null) {
-            monitor.beginTask("Load Coverage", 3);
-            monitor.worked(1);
-         }
-         @SuppressWarnings("unused")
-         Collection<Artifact> artifactLoadCache = null;
-         if (getCoverageEditorInput().getCoveragePackageArtifact() != null) {
-            //               ElapsedTime elapsedTime = new ElapsedTime("Coverage - bulk load");
-            artifactLoadCache =
-               ConfigureCoverageMethodsAction.bulkLoadCoveragePackage(getCoverageEditorInput().getCoveragePackageArtifact());
-            // TODO Need to bulk load binary attributes also; Some Coverage Items are binary attributes
-            // that are not bulk loaded with attributes.  This was mitigated by moving test units to separate table
-            // and only referencing their ids in Coverage Items.
-            //               elapsedTime.end();
-         }
-         if (getCoverageEditorInput().getCoveragePackageArtifact() != null) {
-            //            ElapsedTime elapsedTime = new ElapsedTime("Coverage - load model");
-            CoveragePackage coveragePackage =
-               OseeCoveragePackageStore.get(getCoverageEditorInput().getCoveragePackageArtifact());
-            if (monitor != null && monitor.isCanceled()) {
-               return;
-            }
-            if (monitor != null) {
-               monitor.worked(1);
-            }
-            getCoverageEditorInput().setCoveragePackageBase(coveragePackage);
-            if (monitor != null && monitor.isCanceled()) {
-               return;
-            }
-            if (monitor != null) {
-               monitor.worked(1);
-            }
-
-            CoverageEventManager.instance.register(editor);
-            //            elapsedTime.end();
-         }
-
-         if (getCoverageEditorInput().isInTest()) {
-            addPagesAfterLoad();
-         } else {
-            Displays.ensureInDisplayThread(new Runnable() {
-               @Override
-               public void run() {
-                  addPagesAfterLoad();
-               }
-            });
-         }
-      }
-   };
-
-   protected void addPagesAfterLoad() {
+   private void addPagesAfterLoad() {
       try {
          // remove loading page
          removePage(0);

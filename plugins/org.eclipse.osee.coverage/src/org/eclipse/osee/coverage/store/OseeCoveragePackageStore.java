@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.store;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.logging.Level;
 import org.eclipse.osee.coverage.action.ConfigureCoverageMethodsAction;
 import org.eclipse.osee.coverage.event.CoverageEventManager;
 import org.eclipse.osee.coverage.event.CoverageEventType;
@@ -38,12 +39,12 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -199,21 +200,28 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
          getArtifact(false).addChild(importRecordArt);
          getArtifact(false).persist(transaction);
       }
-      importRecordArt.setSoleAttributeFromStream(CoreAttributeTypes.NativeContent, getInputStream(coverageImport));
-      importRecordArt.persist(transaction);
-      return Result.TrueResult;
-   }
 
-   public static InputStream getInputStream(CoverageImport coverageImport) {
+      String home = System.getProperty("user.home");
+
+      File tempFolder = new File(home, "coverage_temp_" + Lib.getDateTimeString());
+      tempFolder.mkdirs();
+
+      File zipFile = new File(tempFolder, "coverage.zip");
+
+      InputStream inputStream = null;
       try {
-         File zipFile = OseeData.getFile("coverage.zip");
          Lib.compressFiles(coverageImport.getImportDirectory(), coverageImport.getImportRecordFiles(),
             zipFile.getAbsolutePath());
-         return new FileInputStream(zipFile);
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         inputStream = new BufferedInputStream(new FileInputStream(zipFile));
+         importRecordArt.setSoleAttributeFromStream(CoreAttributeTypes.NativeContent, inputStream);
+      } catch (IOException ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      } finally {
+         Lib.close(inputStream);
+         zipFile.delete();
       }
-      return null;
+      importRecordArt.persist(transaction);
+      return Result.TrueResult;
    }
 
    @Override
