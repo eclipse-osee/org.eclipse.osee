@@ -159,4 +159,9 @@ public class AtsConfigCache {
       rd.logWithFormat("TagToConfigObject size %d\n", tagToConfigObject.keySet().size());
       rd.logWithFormat("ConfigObjects size %d\n", configObjects.size());
    }
+
+   @Override
+   public String toString() {
+      return configObjects.toString();
+   }
 }

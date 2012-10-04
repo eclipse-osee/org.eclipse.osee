@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
@@ -243,6 +244,7 @@ public class AtsTestUtil {
     * Clear workDef from cache, clear all objects and create new objects with postFixName in titles
     */
    private static void reset(String postFixName) throws OseeCoreException {
+      AtsBulkLoad.reloadConfig(true);
       AtsTestUtil.postFixName = postFixName;
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName());
@@ -304,24 +306,28 @@ public class AtsTestUtil {
             getTitle("AI", postFixName));
       testAi.setActive(true);
       testAi.setActionable(true);
+      AtsConfigCache.instance.cache(testAi);
 
       testAi2 =
          AtsConfigCache.instance.getActionableItemFactory().createActionableItem(GUID.create(),
             getTitle("AI2", postFixName));
       testAi2.setActive(true);
       testAi2.setActionable(true);
+      AtsConfigCache.instance.cache(testAi2);
 
       testAi3 =
          AtsConfigCache.instance.getActionableItemFactory().createActionableItem(GUID.create(),
             getTitle("AI3", postFixName));
       testAi3.setActive(true);
       testAi3.setActionable(true);
+      AtsConfigCache.instance.cache(testAi3);
 
       testAi4 =
          AtsConfigCache.instance.getActionableItemFactory().createActionableItem(GUID.create(),
             getTitle("AI4", postFixName));
       testAi4.setActive(true);
       testAi4.setActionable(true);
+      AtsConfigCache.instance.cache(testAi4);
 
       teamDef =
          AtsConfigCache.instance.getTeamDefinitionFactory().createTeamDefinition(GUID.create(),
@@ -330,6 +336,7 @@ public class AtsTestUtil {
       teamDef.setActive(true);
       teamDef.setTeamUsesVersions(true);
       teamDef.getLeads().add(AtsUsersClient.getUser());
+      AtsConfigCache.instance.cache(teamDef);
 
       testAi.setTeamDefinition(teamDef);
       testAi2.setTeamDefinition(teamDef);
@@ -340,15 +347,19 @@ public class AtsTestUtil {
          AtsConfigCache.instance.getVersionFactory().createVersion(getTitle("ver 1.0", postFixName), GUID.create(),
             HumanReadableId.generate());
       teamDef.getVersions().add(verArt1);
+      AtsConfigCache.instance.cache(verArt1);
 
       verArt2 = AtsConfigCache.instance.getVersionFactory().createVersion(getTitle("ver 2.0", postFixName));
       teamDef.getVersions().add(verArt2);
+      AtsConfigCache.instance.cache(verArt2);
 
       verArt3 = AtsConfigCache.instance.getVersionFactory().createVersion(getTitle("ver 3.0", postFixName));
       teamDef.getVersions().add(verArt3);
+      AtsConfigCache.instance.cache(verArt3);
 
       verArt4 = AtsConfigCache.instance.getVersionFactory().createVersion(getTitle("ver 4.0", postFixName));
       teamDef.getVersions().add(verArt4);
+      AtsConfigCache.instance.cache(verArt4);
 
       actionArt =
          ActionManager.createAction(null, getTitle("Team WF", postFixName), "description", ChangeType.Improvement, "1",
