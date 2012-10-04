@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -60,14 +59,11 @@ public class RenameBranchHandler extends CommandHandler {
    }
 
    @Override
-   public Object executeWithException(ExecutionEvent event) {
-      ISelectionProvider selectionProvider =
-         AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
-
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
+      ISelectionProvider selectionProvider = getSelectionProvider();
       if (selectionProvider instanceof TreeViewer) {
          final TreeViewer treeViewer = (TreeViewer) selectionProvider;
          Tree tree = treeViewer.getTree();
-         IStructuredSelection selection = (IStructuredSelection) selectionProvider.getSelection();
 
          final Branch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
          TreeItem[] myTreeItemsSelected = tree.getSelection();

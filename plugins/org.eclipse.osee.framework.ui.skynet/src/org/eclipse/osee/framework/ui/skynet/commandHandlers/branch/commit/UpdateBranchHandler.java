@@ -52,13 +52,8 @@ public class UpdateBranchHandler extends CommandHandler {
       return result;
    }
 
-   private Branch getSelectedBranch() {
+   private Branch getSelectedBranch(IStructuredSelection selection) {
       Branch branch = null;
-      if (AWorkbench.getActivePage() == null) {
-         return null;
-      }
-      IStructuredSelection selection =
-         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 
       List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
       if (branches.size() == 1) {
@@ -70,7 +65,7 @@ public class UpdateBranchHandler extends CommandHandler {
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
       boolean enabled = false;
-      Branch branch = getSelectedBranch();
+      Branch branch = getSelectedBranch(structuredSelection);
       if (branch != null) {
          enabled = isValid(branch);
       }
@@ -78,8 +73,8 @@ public class UpdateBranchHandler extends CommandHandler {
    }
 
    @Override
-   public Object executeWithException(ExecutionEvent event) {
-      Branch branchToUpdate = getSelectedBranch();
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
+      Branch branchToUpdate = getSelectedBranch(selection);
       if (branchToUpdate != null) {
          boolean isUpdateAllowed =
             MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),

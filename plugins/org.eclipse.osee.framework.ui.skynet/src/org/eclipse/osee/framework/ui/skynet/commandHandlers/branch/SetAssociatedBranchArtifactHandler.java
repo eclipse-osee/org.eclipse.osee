@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
@@ -33,9 +32,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class SetAssociatedBranchArtifactHandler extends CommandHandler {
 
    @Override
-   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
-      IStructuredSelection selection =
-         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
       Branch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
 
       EntryDialog ed =

@@ -29,7 +29,7 @@ public class AccessControlHandler extends CommandHandler {
    private Object object;
 
    @Override
-   public Object executeWithException(ExecutionEvent event) {
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
       PolicyDialog pd = new PolicyDialog(Displays.getActiveShell(), object);
       pd.open();
       return null;

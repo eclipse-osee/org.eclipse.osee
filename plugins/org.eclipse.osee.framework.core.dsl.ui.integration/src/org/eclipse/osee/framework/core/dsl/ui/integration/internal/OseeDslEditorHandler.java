@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.dsl.ui.integration.internal;
 
 import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.AbstractEditorHandler;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -22,7 +23,7 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 public class OseeDslEditorHandler extends AbstractEditorHandler {
 
    @Override
-   public Object executeWithException(ExecutionEvent event) {
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
       RendererManager.openInJob(artifacts, PresentationType.SPECIALIZED_EDIT);
       return null;
    }

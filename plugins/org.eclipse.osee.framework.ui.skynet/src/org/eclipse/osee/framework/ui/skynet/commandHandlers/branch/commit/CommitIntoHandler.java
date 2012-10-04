@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.CheckBoxDialog;
@@ -42,9 +41,7 @@ public class CommitIntoHandler extends CommitHandler {
    }
 
    @Override
-   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
-      IStructuredSelection selection =
-         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
       Branch sourceBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
 
       BranchType[] allowedTypes;

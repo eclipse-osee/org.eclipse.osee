@@ -43,7 +43,7 @@ public class SingleNativeDiffHandler extends CommandHandler {
    }
 
    @Override
-   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
       Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
       String pathPrefix = RenderingUtil.getAssociatedArtifactName(changes);
       RendererManager.diffInJob(artifactDeltas, pathPrefix);

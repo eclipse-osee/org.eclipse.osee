@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperationWithListener;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -41,10 +40,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class PurgeTransactionHandler extends CommandHandler {
 
    @Override
-   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
-      IStructuredSelection selection =
-         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
-
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
       List<TransactionRecord> transactions = Handlers.getTransactionsFromStructuredSelection(selection);
 
       if (MessageDialog.openConfirm(Displays.getActiveShell(), "Purge Transaction",

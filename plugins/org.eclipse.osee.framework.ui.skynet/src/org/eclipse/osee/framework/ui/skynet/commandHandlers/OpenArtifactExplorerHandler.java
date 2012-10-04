@@ -10,43 +10,33 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
-import java.util.Collections;
 import java.util.List;
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OpenArtifactExplorerHandler extends AbstractHandler {
+public class OpenArtifactExplorerHandler extends CommandHandler {
 
-   private List<? extends IOseeBranch> getSelectedBranches() {
-      ISelectionProvider selectionProvider =
-         AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
-
-      if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
-         IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-         return Handlers.getBranchesFromStructuredSelection(structuredSelection);
-      }
-      return Collections.emptyList();
+   private List<? extends IOseeBranch> getSelectedBranches(IStructuredSelection selection) {
+      return Handlers.getBranchesFromStructuredSelection(selection);
    }
 
    @Override
-   public Object execute(ExecutionEvent arg0) {
-      List<? extends IOseeBranch> branches = getSelectedBranches();
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
+      return !getSelectedBranches(structuredSelection).isEmpty();
+   }
+
+   @Override
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
+      List<? extends IOseeBranch> branches = getSelectedBranches(selection);
       if (!branches.isEmpty()) {
          ArtifactExplorer.exploreBranch(branches.iterator().next());
       }
       return null;
-   }
-
-   @Override
-   public boolean isEnabled() {
-      return !getSelectedBranches().isEmpty();
    }
 }

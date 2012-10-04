@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -53,11 +52,8 @@ public abstract class GeneralBranchHandler extends CommandHandler {
    public abstract void performOperation(final List<Branch> branches);
 
    @Override
-   public Object executeWithException(ExecutionEvent arg0) throws OseeCoreException {
-      IStructuredSelection selections =
-         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
-
-      List<Branch> selectedBranches = Handlers.getBranchesFromStructuredSelection(selections);
+   public Object executeWithException(ExecutionEvent arg0, IStructuredSelection selection) throws OseeCoreException {
+      List<Branch> selectedBranches = Handlers.getBranchesFromStructuredSelection(selection);
 
       Iterator<Branch> iterator = selectedBranches.iterator();
       List<Branch> hasChildren = new LinkedList<Branch>();

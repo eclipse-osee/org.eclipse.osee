@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -35,7 +36,7 @@ import org.eclipse.ui.part.FileEditorInput;
 public class OtherEditorHandler extends AbstractEditorHandler {
 
    @Override
-   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
       if (!artifacts.isEmpty()) {
          EditorSelectionDialog dialog =
             new EditorSelectionDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());

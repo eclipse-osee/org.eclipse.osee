@@ -12,44 +12,33 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import java.util.Iterator;
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 
 /**
  * @author Theron Virgin
  */
-public class ExpandTreeHandler extends AbstractHandler {
+public class ExpandTreeHandler extends CommandHandler {
    private TreeViewer treeViewer;
-   private IStructuredSelection structuredSelection;
 
    @Override
-   public Object execute(ExecutionEvent arg0) {
-      Iterator<?> iter = structuredSelection.iterator();
+   protected boolean isEnabledWithException(IStructuredSelection structuredSelection) {
+      ISelectionProvider selectionProvider = getSelectionProvider();
+      treeViewer = selectionProvider instanceof TreeViewer ? (TreeViewer) selectionProvider : null;
+
+      return treeViewer != null && structuredSelection != null;
+   }
+
+   @Override
+   protected Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
+      Iterator<?> iter = selection.iterator();
       while (iter.hasNext()) {
          treeViewer.expandToLevel(iter.next(), AbstractTreeViewer.ALL_LEVELS);
       }
       return null;
-   }
-
-   @Override
-   public boolean isEnabled() {
-      if (PlatformUI.getWorkbench().isClosing()) {
-         return false;
-      }
-      structuredSelection = null;
-      ISelectionProvider selectionProvider =
-         AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
-      treeViewer = selectionProvider instanceof TreeViewer ? (TreeViewer) selectionProvider : null;
-
-      if (treeViewer != null && treeViewer.getSelection() instanceof IStructuredSelection) {
-         structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-      }
-      return treeViewer != null && structuredSelection != null;
    }
 }

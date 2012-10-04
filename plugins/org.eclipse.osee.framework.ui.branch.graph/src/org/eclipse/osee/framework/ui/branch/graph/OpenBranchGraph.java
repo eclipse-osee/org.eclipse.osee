@@ -12,45 +12,41 @@ package org.eclipse.osee.framework.ui.branch.graph;
 
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.ui.branch.graph.core.BranchGraphEditor;
 import org.eclipse.osee.framework.ui.branch.graph.core.BranchGraphEditorInput;
-import org.eclipse.osee.framework.ui.skynet.commandHandlers.AbstractSelectionChangedHandler;
+import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OpenBranchGraph extends AbstractSelectionChangedHandler {
+public class OpenBranchGraph extends CommandHandler {
 
    public OpenBranchGraph() {
       super();
    }
 
    @Override
-   public Object execute(ExecutionEvent event) throws ExecutionException {
-      try {
-         ISelection selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getSelection();
-         if (selection instanceof IStructuredSelection) {
-            List<? extends IOseeBranch> branches =
-               Handlers.getBranchesFromStructuredSelection((IStructuredSelection) selection);
-            if (!branches.isEmpty()) {
-               PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
-                  new BranchGraphEditorInput(branches.iterator().next()), BranchGraphEditor.EDITOR_ID);
-            }
-         }
-      } catch (Exception ex) {
-         throw new ExecutionException("Error opening Branch Graph Editor", ex);
-      }
-      return null;
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
+      return true;
    }
 
    @Override
-   public boolean isEnabled() {
-      return true;
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
+      try {
+         List<? extends IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(selection);
+         if (!branches.isEmpty()) {
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
+               new BranchGraphEditorInput(branches.iterator().next()), BranchGraphEditor.EDITOR_ID);
+         }
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      }
+      return null;
    }
 }

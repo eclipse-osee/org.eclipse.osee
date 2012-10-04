@@ -11,23 +11,20 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import java.util.List;
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.PlatformUI;
@@ -35,11 +32,23 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Paul K. Waldfogel
  */
-public class CompressWordAttributesHandler extends AbstractHandler {
+public class CompressWordAttributesHandler extends CommandHandler {
    private List<Artifact> artifacts;
 
    @Override
-   public Object execute(ExecutionEvent event) {
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
+      boolean enabled = false;
+      artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
+
+      if (!artifacts.isEmpty()) {
+         boolean writePermission = AccessControlManager.hasPermission(artifacts.get(0), PermissionEnum.WRITE);
+         enabled = writePermission && AccessControlManager.isOseeAdmin();
+      }
+      return enabled;
+   }
+
+   @Override
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
       Jobs.startJob(new Job("Compress Word Attributes") {
 
          @Override
@@ -80,31 +89,5 @@ public class CompressWordAttributesHandler extends AbstractHandler {
 
       });
       return null;
-   }
-
-   @Override
-   public boolean isEnabled() {
-      boolean enabled = false;
-      if (PlatformUI.getWorkbench().isClosing()) {
-         return false;
-      }
-      try {
-         ISelectionProvider selectionProvider =
-            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
-
-         if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
-            IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-            artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
-
-            if (!artifacts.isEmpty()) {
-               boolean writePermission = AccessControlManager.hasPermission(artifacts.get(0), PermissionEnum.WRITE);
-               enabled = writePermission && AccessControlManager.isOseeAdmin();
-            }
-         }
-      } catch (Exception ex) {
-         OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
-         enabled = false;
-      }
-      return enabled;
    }
 }

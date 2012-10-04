@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers;
 
 import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.render.PlainTextRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -21,7 +22,7 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 public class PlainTextPreviewEditorHandler extends AbstractEditorHandler {
 
    @Override
-   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
       if (!artifacts.isEmpty()) {
          PlainTextRenderer renderer = new PlainTextRenderer();
          renderer.open(artifacts, PresentationType.PREVIEW);

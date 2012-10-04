@@ -22,12 +22,11 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.CompoundContributionProvider;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.CompoundContributionItem;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
@@ -35,7 +34,7 @@ import org.eclipse.ui.menus.CommandContributionItemParameter;
 /**
  * @author Jeff C. Phillips
  */
-public class ToggleFavoriteBranchContributionItem extends CompoundContributionItem {
+public class ToggleFavoriteBranchContributionItem extends CompoundContributionProvider {
    private final ICommandService commandService;
 
    public ToggleFavoriteBranchContributionItem() {
@@ -44,8 +43,7 @@ public class ToggleFavoriteBranchContributionItem extends CompoundContributionIt
 
    @Override
    protected IContributionItem[] getContributionItems() {
-      ISelectionProvider selectionProvider =
-         AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+      ISelectionProvider selectionProvider = getSelectionProvider();
       ArrayList<IContributionItem> contributionItems = new ArrayList<IContributionItem>(40);
 
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {

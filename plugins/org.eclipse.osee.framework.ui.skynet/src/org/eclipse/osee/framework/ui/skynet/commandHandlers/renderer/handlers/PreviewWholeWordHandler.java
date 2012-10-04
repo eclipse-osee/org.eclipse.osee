@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers;
 
 import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.WholeWordRenderer;
@@ -21,7 +22,7 @@ import org.eclipse.osee.framework.ui.skynet.render.WholeWordRenderer;
 public class PreviewWholeWordHandler extends AbstractEditorHandler {
 
    @Override
-   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
       WholeWordRenderer renderer = new WholeWordRenderer();
       renderer.open(artifacts, PresentationType.PREVIEW);
       return null;

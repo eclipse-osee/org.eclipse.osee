@@ -18,7 +18,6 @@ import java.util.Set;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -35,29 +34,22 @@ import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 public class ViewWordChangeReportHandler extends CommandHandler {
 
    @Override
-   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
-      try {
-         IStructuredSelection selection = getCurrentSelection();
-         if (selection != null) {
-            List<Change> localChanges = Handlers.getArtifactChangesFromStructuredSelection(selection);
-            if (!localChanges.isEmpty()) {
-               Collection<Change> changes = new ArrayList<Change>(localChanges.size());
-               Set<Artifact> artifacts = new HashSet<Artifact>();
-               for (Change change : localChanges) {
-                  Artifact artifact = change.getChangeArtifact();
-                  if (!artifacts.contains(artifact)) {
-                     artifacts.add(artifact);
-                     changes.add(change);
-                  }
-               }
-               Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
-
-               String pathPrefix = RenderingUtil.getAssociatedArtifactName(localChanges);
-               RendererManager.diffInJob(artifactDeltas, pathPrefix);
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
+      List<Change> localChanges = Handlers.getArtifactChangesFromStructuredSelection(selection);
+      if (!localChanges.isEmpty()) {
+         Collection<Change> changes = new ArrayList<Change>(localChanges.size());
+         Set<Artifact> artifacts = new HashSet<Artifact>();
+         for (Change change : localChanges) {
+            Artifact artifact = change.getChangeArtifact();
+            if (!artifacts.contains(artifact)) {
+               artifacts.add(artifact);
+               changes.add(change);
             }
          }
-      } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
+
+         String pathPrefix = RenderingUtil.getAssociatedArtifactName(localChanges);
+         RendererManager.diffInJob(artifactDeltas, pathPrefix);
       }
       return null;
    }

@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.export;
 
 import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.AbstractEditorHandler;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -21,7 +22,7 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 public class AtsExportHandler extends AbstractEditorHandler {
 
    @Override
-   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
       if (!artifacts.isEmpty()) {
          AtsExportRenderer renderer = new AtsExportRenderer();
          renderer.open(artifacts, PresentationType.SPECIALIZED_EDIT);

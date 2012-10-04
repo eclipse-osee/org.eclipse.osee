@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCheckDialog;
@@ -42,9 +41,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class BranchCreationHandler extends CommandHandler {
 
    @Override
-   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
-      IStructuredSelection selection =
-         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
       Object backingData = selection.getFirstElement();
 
       final TransactionRecord parentTransactionId;

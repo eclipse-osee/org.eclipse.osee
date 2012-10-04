@@ -316,7 +316,7 @@ public class MergeCustomMenu extends XViewerCustomMenu {
          private AttributeConflict attributeConflict;
 
          @Override
-         public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
+         public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
             if (attributeConflict != null) {
                if (MergeUtility.okToOverwriteEditedValue(attributeConflict, Displays.getActiveShell().getShell(), false)) {
                   RendererManager.openInJob(attributeConflict.getArtifact(), PresentationType.SPECIALIZED_EDIT);
@@ -352,7 +352,7 @@ public class MergeCustomMenu extends XViewerCustomMenu {
          private AttributeConflict attributeConflict;
 
          @Override
-         public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
+         public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
             if (attributeConflict != null) {
                HistoryView.open(attributeConflict.getSourceArtifact());
             }
@@ -380,7 +380,7 @@ public class MergeCustomMenu extends XViewerCustomMenu {
          private AttributeConflict attributeConflict;
 
          @Override
-         public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
+         public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
             if (attributeConflict != null) {
                HistoryView.open(attributeConflict.getDestArtifact());
             }
@@ -409,7 +409,7 @@ public class MergeCustomMenu extends XViewerCustomMenu {
          private AttributeConflict attributeConflict;
 
          @Override
-         public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
+         public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
             if (attributeConflict != null) {
                ArtifactExplorer.revealArtifact(attributeConflict.getSourceArtifact());
             }
@@ -437,7 +437,7 @@ public class MergeCustomMenu extends XViewerCustomMenu {
          private AttributeConflict attributeConflict;
 
          @Override
-         public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
+         public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
             if (attributeConflict != null) {
                ArtifactExplorer.revealArtifact(attributeConflict.getDestArtifact());
             }
@@ -509,7 +509,7 @@ public class MergeCustomMenu extends XViewerCustomMenu {
          private AttributeConflict attributeConflict;
 
          @Override
-         public Object executeWithException(ExecutionEvent event) {
+         public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
             if (attributeConflict != null) {
                MergeUtility.launchMerge(attributeConflict, Displays.getActiveShell().getShell());
             }
@@ -545,7 +545,7 @@ public class MergeCustomMenu extends XViewerCustomMenu {
       }
 
       @Override
-      public Object executeWithException(ExecutionEvent event) {
+      public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
          boolean confirm =
             MessageDialog.openConfirm(Displays.getActiveShell().getShell(), "Confirm",
                String.format(dialogString, conflicts.size()));
@@ -583,7 +583,7 @@ public class MergeCustomMenu extends XViewerCustomMenu {
       }
 
       @Override
-      public Object executeWithException(ExecutionEvent event) {
+      public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
          RendererManager.openInJob(artifacts, PresentationType.PREVIEW);
          return null;
       }

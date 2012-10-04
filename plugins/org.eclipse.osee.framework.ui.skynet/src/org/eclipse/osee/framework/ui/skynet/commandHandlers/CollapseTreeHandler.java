@@ -11,34 +11,29 @@
 
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 
 /**
  * @author Theron Virgin
  */
-public class CollapseTreeHandler extends AbstractHandler {
+public class CollapseTreeHandler extends CommandHandler {
    private TreeViewer treeViewer;
 
    @Override
-   public Object execute(ExecutionEvent arg0) {
-      treeViewer.collapseAll();
-      return null;
-   }
-
-   @Override
-   public boolean isEnabled() {
-      if (PlatformUI.getWorkbench().isClosing()) {
-         return false;
-      }
-      ISelectionProvider selectionProvider =
-         AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+   protected boolean isEnabledWithException(IStructuredSelection structuredSelection) {
+      ISelectionProvider selectionProvider = getSelectionProvider();
       treeViewer = selectionProvider instanceof TreeViewer ? (TreeViewer) selectionProvider : null;
 
       return treeViewer != null;
+   }
+
+   @Override
+   protected Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
+      treeViewer.collapseAll();
+      return null;
    }
 }

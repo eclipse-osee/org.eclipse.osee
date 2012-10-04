@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.workdef.viewer;
 
 import java.util.Iterator;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.internal.Activator;
@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Donald G. Dunne
@@ -48,11 +49,9 @@ public class EditAction extends Action {
 
    @Override
    public void run() {
-      ISelectionProvider selectionProvider =
-         AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
-
-      if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
-         IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
+      ISelection selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
+      if (selection instanceof IStructuredSelection) {
+         IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 
          try {
             Iterator<?> i = structuredSelection.iterator();

@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.action;
 import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -24,8 +25,11 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.compare.CompareHandler;
 import org.eclipse.osee.framework.ui.skynet.compare.CompareItem;
-import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -45,11 +49,10 @@ public class WasIsCompareEditorAction extends Action {
    @Override
    public void run() {
       try {
-         ISelectionProvider selectionProvider =
-            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
-
-         if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
-            IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
+         ISelection selection =
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
+         if (selection instanceof IStructuredSelection) {
+            IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 
             List<Change> localChanges = Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
             if (localChanges.isEmpty() || localChanges.size() > 1) {
@@ -68,13 +71,31 @@ public class WasIsCompareEditorAction extends Action {
                return;
             }
             CompareHandler compareHandler =
-               new CompareHandler(null, new CompareItem("Was", was, System.currentTimeMillis()), new CompareItem("Is", is,
-                     System.currentTimeMillis()), null);
+               new CompareHandler(null, new CompareItem("Was", was, System.currentTimeMillis()), new CompareItem("Is",
+                  is, System.currentTimeMillis()), null);
             compareHandler.compare();
          }
       } catch (Exception ex) {
          OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
       }
+   }
+
+   private static ISelectionProvider getSelectionProvider() {
+      ISelectionProvider selectionProvider = null;
+      IWorkbench workbench = PlatformUI.getWorkbench();
+      if (!workbench.isStarting() && !workbench.isClosing()) {
+         IWorkbenchPage page = AWorkbench.getActivePage();
+         if (page != null) {
+            IWorkbenchPart part = page.getActivePart();
+            if (part != null) {
+               IWorkbenchSite site = part.getSite();
+               if (site != null) {
+                  selectionProvider = site.getSelectionProvider();
+               }
+            }
+         }
+      }
+      return selectionProvider;
    }
 
    public static boolean isEnabledStatic() {
@@ -83,16 +104,13 @@ public class WasIsCompareEditorAction extends Action {
       }
       boolean isEnabled = false;
 
-      try {
-         if (AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider() != null && AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection() instanceof IStructuredSelection) {
-            IStructuredSelection selectionProvider =
-               (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
-            isEnabled = selectionProvider.size() == 1;
+      ISelectionProvider selectionProvider = getSelectionProvider();
+      if (selectionProvider != null) {
+         ISelection selection = selectionProvider.getSelection();
+         if (selection instanceof IStructuredSelection) {
+            isEnabled = ((IStructuredSelection) selection).size() == 1;
          }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return isEnabled;
    }
-
 }

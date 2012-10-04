@@ -32,7 +32,7 @@ public class DeleteArtifactHandler extends CommandHandler {
    private List<Artifact> artifacts;
 
    @Override
-   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
       if (!artifacts.isEmpty()) {
          MessageDialog dialog =
             new MessageDialog(Displays.getActiveShell(), "Confirm Artifact Deletion", null,

@@ -20,13 +20,12 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.CompoundContributionProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.CompoundContributionItem;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
@@ -34,7 +33,7 @@ import org.eclipse.ui.menus.CommandContributionItemParameter;
 /**
  * @author Jeff C. Phillips
  */
-public class ArchiveBranchCompoundContributionItem extends CompoundContributionItem {
+public class ArchiveBranchCompoundContributionItem extends CompoundContributionProvider {
    private ICommandService commandService;
 
    public ArchiveBranchCompoundContributionItem() {
@@ -47,8 +46,7 @@ public class ArchiveBranchCompoundContributionItem extends CompoundContributionI
 
    @Override
    protected IContributionItem[] getContributionItems() {
-      ISelectionProvider selectionProvider =
-         AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+      ISelectionProvider selectionProvider = getSelectionProvider();
       ArrayList<IContributionItem> contributionItems = new ArrayList<IContributionItem>(40);
 
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {

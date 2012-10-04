@@ -11,37 +11,39 @@
 package org.eclipse.osee.framework.ui.data.model.editor;
 
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.ui.data.model.editor.core.ODMEditor;
 import org.eclipse.osee.framework.ui.data.model.editor.core.ODMEditorInput;
-import org.eclipse.osee.framework.ui.skynet.commandHandlers.AbstractSelectionChangedHandler;
+import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OpenODMEditor extends AbstractSelectionChangedHandler {
+public class OpenODMEditor extends CommandHandler {
 
    public OpenODMEditor() {
       super();
    }
 
    @Override
-   public Object execute(ExecutionEvent event) throws ExecutionException {
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
+      return true;
+   }
+
+   @Override
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
       IEditorPart editorPart = null;
       try {
          editorPart =
             PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(new ODMEditorInput(),
                ODMEditor.EDITOR_ID);
       } catch (Exception ex) {
-         throw new ExecutionException("Error opening Branch Editor", ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
       return editorPart;
-   }
-
-   @Override
-   public boolean isEnabled() {
-      return true;
    }
 }

@@ -27,13 +27,12 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.CompoundContributionProvider;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.CompoundContributionItem;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
@@ -44,7 +43,7 @@ import org.eclipse.ui.menus.CommandContributionItemParameter;
  * @author Jeff C. Phillips
  * @author Theron Virgin
  */
-public class MergeCompoundContributionItem extends CompoundContributionItem {
+public class MergeCompoundContributionItem extends CompoundContributionProvider {
    private static final IParameter[] BRANCH_PARAMETER_DEF = new IParameter[] {new BranchIdParameter()};
    private ICommandService commandService;
 
@@ -58,8 +57,7 @@ public class MergeCompoundContributionItem extends CompoundContributionItem {
 
    @Override
    protected IContributionItem[] getContributionItems() {
-      ISelectionProvider selectionProvider =
-         AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+      ISelectionProvider selectionProvider = getSelectionProvider();
       ArrayList<IContributionItem> contributionItems = new ArrayList<IContributionItem>(40);
 
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {

@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.editor.renderer;
 
 import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.AbstractEditorHandler;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 
@@ -20,7 +21,7 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 public class AtsWEHandler extends AbstractEditorHandler {
 
    @Override
-   public Object executeWithException(ExecutionEvent event) {
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
       if (!artifacts.isEmpty()) {
          AtsWERenderer renderer = new AtsWERenderer();
          renderer.open(artifacts, PresentationType.SPECIALIZED_EDIT);

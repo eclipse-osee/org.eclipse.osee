@@ -48,21 +48,26 @@ public abstract class CommandHandler extends AbstractHandler {
       return result;
    }
 
-   public abstract boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException;
+   protected abstract boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException;
 
    @Override
    public final Object execute(ExecutionEvent event) throws ExecutionException {
       try {
-         return executeWithException(event);
-      } catch (OseeCoreException ex) {
+         IStructuredSelection selection = getCurrentSelection();
+         Object result = null;
+         if (selection != null) {
+            result = executeWithException(event, selection);
+         }
+         return result;
+      } catch (Exception ex) {
          throw new ExecutionException("Error executing command handler: ", ex);
       }
    }
 
-   public abstract Object executeWithException(ExecutionEvent event) throws OseeCoreException;
+   protected abstract Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException;
 
-   public static IStructuredSelection getCurrentSelection() throws Exception {
-      IStructuredSelection structuredSelection = null;
+   protected ISelectionProvider getSelectionProvider() {
+      ISelectionProvider selectionProvider = null;
       IWorkbench workbench = PlatformUI.getWorkbench();
       if (!workbench.isStarting() && !workbench.isClosing()) {
          IWorkbenchPage page = AWorkbench.getActivePage();
@@ -71,17 +76,24 @@ public abstract class CommandHandler extends AbstractHandler {
             if (part != null) {
                IWorkbenchSite site = part.getSite();
                if (site != null) {
-                  ISelectionProvider selectionProvider = site.getSelectionProvider();
-                  if (selectionProvider != null) {
-                     ISelection selection = selectionProvider.getSelection();
-                     if (selection instanceof IStructuredSelection) {
-                        structuredSelection = (IStructuredSelection) selection;
-                     }
-                  }
+                  selectionProvider = site.getSelectionProvider();
                }
             }
          }
       }
+      return selectionProvider;
+   }
+
+   private IStructuredSelection getCurrentSelection() throws Exception {
+      IStructuredSelection structuredSelection = null;
+      ISelectionProvider selectionProvider = getSelectionProvider();
+      if (selectionProvider != null) {
+         ISelection selection = selectionProvider.getSelection();
+         if (selection instanceof IStructuredSelection) {
+            structuredSelection = (IStructuredSelection) selection;
+         }
+      }
+
       return structuredSelection;
    }
 }

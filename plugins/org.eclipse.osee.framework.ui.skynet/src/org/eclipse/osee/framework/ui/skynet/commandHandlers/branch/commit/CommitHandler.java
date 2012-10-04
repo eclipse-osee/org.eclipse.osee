@@ -131,25 +131,22 @@ public abstract class CommitHandler extends CommandHandler {
    }
 
    @Override
-   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
       try {
-         IStructuredSelection selection = getCurrentSelection();
-         if (selection != null) {
-            List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
-            Iterator<Branch> iterator = branches.iterator();
-            if (iterator.hasNext()) {
-               Branch sourceBranch = iterator.next();
+         List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
+         Iterator<Branch> iterator = branches.iterator();
+         if (iterator.hasNext()) {
+            Branch sourceBranch = iterator.next();
 
-               Branch destinationBranch = null;
-               if (useParentBranch) {
-                  destinationBranch = sourceBranch.getParentBranch();
-               } else {
-                  destinationBranch =
-                     BranchManager.getBranch(Integer.parseInt(event.getParameter(BranchOptionsEnum.BRANCH_ID.origKeyName)));
-               }
-               Jobs.startJob(new CommitJob(sourceBranch, destinationBranch,
-                  Boolean.parseBoolean(event.getParameter(CommitBranchParameter.ARCHIVE_PARENT_BRANCH))));
+            Branch destinationBranch = null;
+            if (useParentBranch) {
+               destinationBranch = sourceBranch.getParentBranch();
+            } else {
+               destinationBranch =
+                  BranchManager.getBranch(Integer.parseInt(event.getParameter(BranchOptionsEnum.BRANCH_ID.origKeyName)));
             }
+            Jobs.startJob(new CommitJob(sourceBranch, destinationBranch,
+               Boolean.parseBoolean(event.getParameter(CommitBranchParameter.ARCHIVE_PARENT_BRANCH))));
          }
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
