@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.goal.GoalCheckTreeDialog;
 import org.eclipse.osee.ats.internal.Activator;
@@ -80,10 +79,10 @@ public class GoalsColumn extends XViewerAtsColumn implements IXViewerValueColumn
                   return false;
                }
             }
-            if (!(useArt.isOfType(AtsArtifactTypes.TeamWorkflow))) {
+            if (!(useArt.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact))) {
                return false;
             }
-            boolean modified = promptChangeGoals(Arrays.asList((TeamWorkFlowArtifact) useArt), isPersistViewer());
+            boolean modified = promptChangeGoals(Arrays.asList(useArt), isPersistViewer());
             XViewer xViewer = ((XViewerColumn) treeColumn.getData()).getTreeViewer();
             if (modified && isPersistViewer(xViewer)) {
                useArt.persist("persist goals via alt-left-click");
