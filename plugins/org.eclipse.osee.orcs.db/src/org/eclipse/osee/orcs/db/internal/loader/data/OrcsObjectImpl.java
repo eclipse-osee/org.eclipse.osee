@@ -121,7 +121,7 @@ public abstract class OrcsObjectImpl implements OrcsData {
 
    @Override
    public String toString() {
-      return "OrcsObject [localId=" + localId + ", typeUuid=" + typeUuid + ", modType=" + originalModType + ", version=" + version + "]";
+      return "OrcsObject [localId=" + localId + ", typeUuid=" + typeUuid + ", modType=" + updatedModType + ", version=" + version + "]";
    }
 
 }
