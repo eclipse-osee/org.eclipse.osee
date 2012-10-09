@@ -26,6 +26,9 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeType;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactPredicate;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactTypePredicate;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypePredicate;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
@@ -249,12 +252,18 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
 
       @Override
       public Object caseRelationTypeRestriction(RelationTypeRestriction restriction) {
-         restriction.getRelationTypeRef();
+         XRelationType relationTypeRef = restriction.getRelationTypeRef();
 
-         String guid = restriction.getRelationTypeRef().getTypeGuid();
+         String guid = relationTypeRef.getTypeGuid();
+         RelationTypePredicate predicate = restriction.getPredicate();
+         if (predicate instanceof RelationTypeArtifactPredicate) {
+            guid += ((RelationTypeArtifactPredicate) predicate).getArtifactMatcherRef().getName();
+         } else if (predicate instanceof RelationTypeArtifactTypePredicate) {
+            guid += ((RelationTypeArtifactTypePredicate) predicate).getArtifactTypeRef().getName();
+         }
          XRelationType reference = relationTypeRetrictions.get(guid);
          if (reference == null) {
-            relationTypeRetrictions.put(guid, restriction.getRelationTypeRef());
+            relationTypeRetrictions.put(guid, relationTypeRef);
          } else {
             String message =
                String.format("Duplicate artifact type restriction [%s] in context[%s]", reference.toString(),
