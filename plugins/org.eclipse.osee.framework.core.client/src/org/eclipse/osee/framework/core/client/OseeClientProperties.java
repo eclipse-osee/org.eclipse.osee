@@ -32,7 +32,6 @@ public class OseeClientProperties extends OseeProperties {
 
    private static final String HEADER_TAG = "OSEE-Client-Property-Init";
 
-   private static final String OSEE_AUTHENTICATION_PROTOCOL = "osee.authentication.protocol";
    private static final String OSEE_APPLICATION_SERVER = "osee.application.server";
    private static final String OSEE_ARBITRATION_SERVER = "osee.arbitration.server";
 
@@ -167,24 +166,6 @@ public class OseeClientProperties extends OseeProperties {
     */
    public static String getLocalHttpWorkerPort() {
       return getProperty(OSEE_LOCAL_HTTP_WORKER_PORT);
-   }
-
-   /**
-    * Authentication Protocol to use
-    * 
-    * @return client/server authentication protocol.
-    */
-   public static String getAuthenticationProtocol() {
-      return getProperty(OSEE_AUTHENTICATION_PROTOCOL);
-   }
-
-   /**
-    * Authentication Protocol to use
-    * 
-    * @param client/server authentication protocol.
-    */
-   public static void setAuthenticationProtocol(String protocol) {
-      System.setProperty(OSEE_AUTHENTICATION_PROTOCOL, protocol);
    }
 
    /**

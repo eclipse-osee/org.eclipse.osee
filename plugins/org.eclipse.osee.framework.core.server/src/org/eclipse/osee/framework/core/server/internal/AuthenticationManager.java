@@ -10,16 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.internal;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationProvider;
+import org.eclipse.osee.framework.core.server.OseeServerProperties;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -29,37 +30,32 @@ public class AuthenticationManager implements IAuthenticationManager {
    private final Map<String, IAuthenticationProvider> authenticationProviders;
 
    public AuthenticationManager() {
-      this.authenticationProviders = Collections.synchronizedMap(new HashMap<String, IAuthenticationProvider>());
+      this.authenticationProviders = new ConcurrentHashMap<String, IAuthenticationProvider>();
    }
 
    @Override
    public void addAuthenticationProvider(IAuthenticationProvider authenticationProvider) {
-      synchronized (authenticationProviders) {
-         final String providerId = authenticationProvider.getProtocol();
-         if (!authenticationProviders.containsKey(providerId)) {
-            authenticationProviders.put(providerId, authenticationProvider);
-         }
-      }
-   }
-
-   @Override
-   public boolean authenticate(OseeCredential credential) throws OseeAuthenticationException {
-      if (isSafeUser(credential)) {
-         return true;
-      } else {
-         IAuthenticationProvider provider = authenticationProviders.get(credential.getAuthenticationProtocol());
-         if (provider != null) {
-            return provider.authenticate(credential);
-         }
-      }
-      throw new OseeAuthenticationException("Invalid protocol [%s]", credential.getAuthenticationProtocol());
+      final String providerId = authenticationProvider.getProtocol();
+      authenticationProviders.put(providerId, authenticationProvider);
    }
 
    @Override
    public void removeAuthenticationProvider(IAuthenticationProvider authenticationProvider) {
-      synchronized (authenticationProviders) {
-         authenticationProviders.remove(authenticationProvider);
+      authenticationProviders.remove(authenticationProvider);
+   }
+
+   @Override
+   public boolean authenticate(OseeCredential credential) throws OseeAuthenticationException {
+      boolean result = false;
+      if (isSafeUser(credential)) {
+         result = true;
+      } else {
+         IAuthenticationProvider provider = getAuthenticationProvider();
+         if (provider != null) {
+            result = provider.authenticate(credential);
+         }
       }
+      return result;
    }
 
    @Override
@@ -70,17 +66,29 @@ public class AuthenticationManager implements IAuthenticationManager {
 
    @Override
    public IUserToken asUserToken(OseeCredential credential) throws OseeAuthenticationException {
+      IUserToken toReturn = null;
       if (isGuestLogin(credential)) {
-         return SystemUser.Guest;
+         toReturn = SystemUser.Guest;
       } else if (isBootStrap(credential)) {
-         return SystemUser.BootStrap;
+         toReturn = SystemUser.BootStrap;
       } else {
-         IAuthenticationProvider provider = authenticationProviders.get(credential.getAuthenticationProtocol());
+         IAuthenticationProvider provider = getAuthenticationProvider();
          if (provider != null) {
-            return provider.asOseeUserId(credential);
+            toReturn = provider.asOseeUserId(credential);
          }
       }
-      throw new OseeAuthenticationException("Invalid protocol [%s]", credential.getAuthenticationProtocol());
+      return toReturn;
+   }
+
+   private IAuthenticationProvider getAuthenticationProvider() throws OseeAuthenticationException {
+      String key = getProtocol();
+      if (Strings.isValid(key)) {
+         IAuthenticationProvider provider = authenticationProviders.get(key);
+         if (provider != null) {
+            return provider;
+         }
+      }
+      throw new OseeAuthenticationException("Invalid authentication protocol [%s]", key);
    }
 
    private boolean isGuestLogin(OseeCredential credential) {
@@ -93,6 +101,11 @@ public class AuthenticationManager implements IAuthenticationManager {
 
    private boolean isSafeUser(OseeCredential credential) {
       return isGuestLogin(credential) || isBootStrap(credential);
+   }
+
+   @Override
+   public String getProtocol() {
+      return OseeServerProperties.getAuthenticationProtocol();
    }
 
 }

@@ -22,6 +22,7 @@ import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
+import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.database.DatabaseInfoRegistry;
@@ -35,6 +36,7 @@ public class ServerStatsCommand implements ConsoleCommand {
    private IApplicationServerManager appManager;
    private ISessionManager sessionManager;
    private DatabaseInfoRegistry registry;
+   private IAuthenticationManager authenticationManager;
 
    public void setDbInfoRegistry(DatabaseInfoRegistry registry) {
       this.registry = registry;
@@ -42,6 +44,10 @@ public class ServerStatsCommand implements ConsoleCommand {
 
    public void setApplicationServerManager(IApplicationServerManager appManager) {
       this.appManager = appManager;
+   }
+
+   public void setAuthenticationManager(IAuthenticationManager authenticationManager) {
+      this.authenticationManager = authenticationManager;
    }
 
    public void setSessionManager(ISessionManager sessionManager) {
@@ -54,6 +60,10 @@ public class ServerStatsCommand implements ConsoleCommand {
 
    private IApplicationServerManager getApplicationServerManager() {
       return appManager;
+   }
+
+   private IAuthenticationManager getAuthenticationManager() {
+      return authenticationManager;
    }
 
    private ISessionManager getSessionManager() {
@@ -77,19 +87,22 @@ public class ServerStatsCommand implements ConsoleCommand {
 
    @Override
    public Callable<?> createCallable(Console console, ConsoleParameters params) {
-      return new ServerStatsCallable(getDbInfoRegistry(), getApplicationServerManager(), getSessionManager(), console);
+      return new ServerStatsCallable(getDbInfoRegistry(), getApplicationServerManager(), getAuthenticationManager(),
+         getSessionManager(), console);
    }
 
    private static final class ServerStatsCallable implements Callable<Boolean> {
       private final DatabaseInfoRegistry registry;
       private final IApplicationServerManager manager;
+      private final IAuthenticationManager authManager;
       private final ISessionManager sessionManager;
       private final Console console;
 
-      public ServerStatsCallable(DatabaseInfoRegistry registry, IApplicationServerManager manager, ISessionManager sessionManager, Console console) {
+      public ServerStatsCallable(DatabaseInfoRegistry registry, IApplicationServerManager manager, IAuthenticationManager authenticationManager, ISessionManager sessionManager, Console console) {
          super();
          this.registry = registry;
          this.manager = manager;
+         this.authManager = authenticationManager;
          this.sessionManager = sessionManager;
          this.console = console;
       }
@@ -109,6 +122,10 @@ public class ServerStatsCommand implements ConsoleCommand {
          console.writeln("Code Base Location: [%s]", System.getProperty("user.dir"));
          console.writeln("Datastore: [%s]", registry.getSelectedDatabaseInfo().toString());
          console.writeln("Binary Data Path: [%s]", OseeServerProperties.getOseeApplicationServerData(null));
+         console.writeln();
+
+         console.writeln("Authentication Scheme: [%s]", authManager.getProtocol());
+         console.writeln("Supported Authentication Schemes: %s", Arrays.deepToString(authManager.getProtocols()));
          console.writeln();
 
          console.writeln("Supported Versions: %s", Arrays.deepToString(manager.getSupportedVersions()));

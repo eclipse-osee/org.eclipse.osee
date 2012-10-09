@@ -72,11 +72,12 @@ public final class SessionFactory implements IOseeTypeFactory {
          clientAddress, clientPort, lastInteractionDate, lastInteractionDetails);
    }
 
-   public OseeSessionGrant createSessionGrant(Session session, IUserToken userToken) throws OseeCoreException {
+   public OseeSessionGrant createSessionGrant(Session session, IUserToken userToken, String authenticationType) throws OseeCoreException {
       Conditions.checkNotNull(session, "Session");
       Conditions.checkNotNull(userToken, "IUserToken");
 
       OseeSessionGrant sessionGrant = new OseeSessionGrant(session.getGuid());
+      sessionGrant.setAuthenticationProtocol(authenticationType);
       sessionGrant.setCreationRequired(userToken.isCreationRequired());
       sessionGrant.setUserToken(userToken);
       sessionGrant.setDatabaseInfo(registry.getSelectedDatabaseInfo());

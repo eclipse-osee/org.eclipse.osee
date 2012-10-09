@@ -70,7 +70,7 @@ public final class SessionManagerImpl implements ISessionManager {
             sessionCache.setIgnoreEnsurePopulateException(false);
          }
          sessionCache.cache(session);
-         sessionGrant = sessionFactory.createSessionGrant(session, userToken);
+         sessionGrant = sessionFactory.createSessionGrant(session, userToken, authenticationManager.getProtocol());
       }
       return sessionGrant;
    }

@@ -108,20 +108,12 @@ public class AuthenticationDialog extends OseeMessageDialog {
       authenticationComposite.setGuestLogin(isGuestLogin);
    }
 
-   private void setProtocol(String protocol) {
-      authenticationComposite.setProtocol(protocol);
-   }
-
    private String getUserName() {
       return authenticationComposite.getUserName();
    }
 
    private String getDomain() {
       return authenticationComposite.getDomain();
-   }
-
-   private String getProtocol() {
-      return authenticationComposite.getProtocol();
    }
 
    private boolean isStorageAllowed() {
@@ -165,7 +157,6 @@ public class AuthenticationDialog extends OseeMessageDialog {
             String user = "";
             String domain = "";
             String message = "";
-            String protocol = "";
             boolean isStorageAllowed = false;
             boolean isGuestLogin = false;
             boolean shutdown = false;
@@ -177,14 +168,12 @@ public class AuthenticationDialog extends OseeMessageDialog {
                   dialog.setUserName(user);
                   dialog.setPassword("");
                   dialog.setDomain(domain);
-                  dialog.setProtocol(protocol);
                   dialog.setStorageAllowed(isStorageAllowed);
                   dialog.setGuestLogin(isGuestLogin);
                }
                int result = dialog.open();
 
                user = dialog.getUserName();
-               protocol = dialog.getProtocol();
                domain = dialog.getDomain();
                isStorageAllowed = dialog.isStorageAllowed();
                isGuestLogin = dialog.isGuestLogin();

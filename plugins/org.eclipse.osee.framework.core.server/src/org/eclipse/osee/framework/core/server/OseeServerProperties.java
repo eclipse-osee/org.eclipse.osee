@@ -23,6 +23,8 @@ public class OseeServerProperties {
    private static final String OSGI_PORT_PROPERTY = "org.osgi.service.http.port";
    private static final String OSEE_VERSION = "osee.version";
 
+   private static final String OSEE_AUTHENTICATION_PROTOCOL = "osee.authentication.protocol";
+
    private static boolean wasBinaryDataChecked = false;
 
    private OseeServerProperties() {
@@ -92,4 +94,23 @@ public class OseeServerProperties {
    public static String getOseeConnectionInfoUri() {
       return OseeProperties.getOseeConnectionInfoUri();
    }
+
+   /**
+    * Authentication Protocol to use
+    * 
+    * @return client/server authentication protocol.
+    */
+   public static String getAuthenticationProtocol() {
+      return System.getProperty(OSEE_AUTHENTICATION_PROTOCOL, "");
+   }
+
+   /**
+    * Authentication Protocol to use
+    * 
+    * @param client/server authentication protocol.
+    */
+   public static void setAuthenticationProtocol(String protocol) {
+      System.setProperty(OSEE_AUTHENTICATION_PROTOCOL, protocol);
+   }
+
 }

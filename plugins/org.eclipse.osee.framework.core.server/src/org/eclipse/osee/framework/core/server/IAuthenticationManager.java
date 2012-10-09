@@ -51,4 +51,6 @@ public interface IAuthenticationManager {
     * @return authentication protocols
     */
    public String[] getProtocols();
+
+   public String getProtocol();
 }

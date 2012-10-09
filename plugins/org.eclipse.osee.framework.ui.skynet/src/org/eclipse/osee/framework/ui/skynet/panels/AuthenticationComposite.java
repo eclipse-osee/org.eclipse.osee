@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.panels;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.BaseCredentialProvider;
@@ -56,7 +55,6 @@ public class AuthenticationComposite extends Composite {
       UserId("Enter user name"),
       Password(true, "Enter a valid password"),
       Domain("Enter a valid domain [sw, nw, etc...]"),
-      Protocol("Select authentication protocol"),
       Remember_My_Password(WARNING_MESSAGE);
 
       boolean isHidden;
@@ -207,33 +205,25 @@ public class AuthenticationComposite extends Composite {
 
             int style = SWT.BORDER | SWT.SINGLE;
             Control control = null;
-            if (labelEnum.equals(LabelEnum.Protocol)) {
-               Combo combo = new Combo(composite, style);
-               control = combo;
-               List<String> protocols = ClientSessionManager.getAuthenticationProtocols();
-               combo.setItems(protocols.toArray(new String[protocols.size()]));
-               dataMap.put(labelEnum, combo.getText());
-            } else {
-               Text field = new Text(composite, (labelEnum.isHidden() ? style |= SWT.PASSWORD : style));
-               field.setData(LABEL_KEY, labelEnum);
-               control = field;
-               dataMap.put(labelEnum, field.getText());
-               field.addModifyListener(new ModifyListener() {
+            Text field = new Text(composite, (labelEnum.isHidden() ? style |= SWT.PASSWORD : style));
+            field.setData(LABEL_KEY, labelEnum);
+            control = field;
+            dataMap.put(labelEnum, field.getText());
+            field.addModifyListener(new ModifyListener() {
 
-                  @Override
-                  public void modifyText(ModifyEvent e) {
-                     Object object = e.getSource();
-                     if (object instanceof Text) {
-                        Text field = (Text) object;
-                        LabelEnum labelKey = (LabelEnum) field.getData(LABEL_KEY);
+               @Override
+               public void modifyText(ModifyEvent e) {
+                  Object object = e.getSource();
+                  if (object instanceof Text) {
+                     Text field = (Text) object;
+                     LabelEnum labelKey = (LabelEnum) field.getData(LABEL_KEY);
 
-                        dataMap.put(labelKey, field.getText());
-                        updateFieldStatus(labelKey, field);
-                        updateDefaultButtonStatus();
-                     }
+                     dataMap.put(labelKey, field.getText());
+                     updateFieldStatus(labelKey, field);
+                     updateDefaultButtonStatus();
                   }
-               });
-            }
+               }
+            });
             control.setToolTipText(labelEnum.getToolTipText());
             control.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
@@ -275,7 +265,6 @@ public class AuthenticationComposite extends Composite {
                         credential.setUserName(dataMap.get(LabelEnum.UserId));
                         credential.setPassword(dataMap.get(LabelEnum.Password));
                         credential.setDomain(dataMap.get(LabelEnum.Domain));
-                        credential.setAuthenticationProtocol(dataMap.get(LabelEnum.Protocol));
                         return credential;
                      }
                   });
@@ -335,10 +324,6 @@ public class AuthenticationComposite extends Composite {
       setAndStoreField(LabelEnum.Remember_My_Password, Boolean.toString(isStorageAllowed));
    }
 
-   public void setProtocol(String protocol) {
-      setAndStoreField(LabelEnum.Protocol, protocol);
-   }
-
    private void setAndStoreField(LabelEnum fieldKey, String value) {
       if (fieldKey.equals(LabelEnum.Remember_My_Password)) {
          if (isWidgetAccessible(memoButton)) {
@@ -391,24 +376,16 @@ public class AuthenticationComposite extends Composite {
       return value != null ? Boolean.parseBoolean(value) : false;
    }
 
-   public String getProtocol() {
-      return dataMap.get(LabelEnum.Protocol);
-   }
-
    public boolean isValid() {
       return allValid;
    }
 
    private void updateFieldStatus(LabelEnum labelKey, Widget field) {
       switch (labelKey) {
-         case Protocol:
-            String temp = ((Combo) field).getText();
-            statusMap.get(labelKey).setVisible(!Strings.isValid(temp));
-            break;
          case Remember_My_Password:
             break;
          default:
-            temp = ((Text) field).getText();
+            String temp = ((Text) field).getText();
             statusMap.get(labelKey).setVisible(!Strings.isValid(temp));
             break;
       }

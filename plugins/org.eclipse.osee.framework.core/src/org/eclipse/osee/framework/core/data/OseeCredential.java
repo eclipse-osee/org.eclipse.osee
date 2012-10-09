@@ -21,7 +21,6 @@ public class OseeCredential extends OseeClientInfo {
    private static final String USERNAME = "userName";
    private static final String PASSWORD = "password";
    private static final String DOMAIN = "domain";
-   private static final String AUTHENTICATION_PROTOCOL = "authenticationProtocol";
 
    public OseeCredential() {
       super();
@@ -49,14 +48,6 @@ public class OseeCredential extends OseeClientInfo {
 
    public String getDomain() {
       return getString(DOMAIN);
-   }
-
-   public String getAuthenticationProtocol() {
-      return getString(AUTHENTICATION_PROTOCOL);
-   }
-
-   public void setAuthenticationProtocol(String protocol) {
-      this.backingData.put(AUTHENTICATION_PROTOCOL, protocol);
    }
 
    /**

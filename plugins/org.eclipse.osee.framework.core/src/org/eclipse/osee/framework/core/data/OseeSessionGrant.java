@@ -39,6 +39,7 @@ public class OseeSessionGrant extends BaseExchangeData {
    private static final String OSEE_IS_USER_ACTIVE = "isOseeUserActive";
    private static final String OSEE_APPLICATION_SERVER_DATA_PATH = "oseeApplicationServerDataPath";
    private static final String OSEE_CLIENT_BUILD_DESIGNATION = "oseeClientBuildDesignation";
+   private static final String AUTHENTICATION_PROTOCOL = "oseeAuthenticationProtocol";
 
    private IDatabaseInfo grantedDatabaseInfo;
 
@@ -113,6 +114,14 @@ public class OseeSessionGrant extends BaseExchangeData {
       this.backingData.put(OSEE_CLIENT_BUILD_DESIGNATION, designation);
    }
 
+   public String getAuthenticationProtocol() {
+      return getString(AUTHENTICATION_PROTOCOL);
+   }
+
+   public void setAuthenticationProtocol(String protocol) {
+      this.backingData.put(AUTHENTICATION_PROTOCOL, protocol);
+   }
+
    public static OseeSessionGrant fromXml(InputStream inputStream) throws OseeCoreException {
       OseeSessionGrant session = new OseeSessionGrant();
       session.loadfromXml(inputStream);
@@ -169,4 +178,5 @@ public class OseeSessionGrant extends BaseExchangeData {
       }
 
    }
+
 }
