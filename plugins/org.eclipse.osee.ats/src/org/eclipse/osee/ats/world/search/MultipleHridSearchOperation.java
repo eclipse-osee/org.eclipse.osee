@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.utility.ElapsedTime;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -201,9 +202,12 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
    }
 
    private void searchAndSplitResults() throws OseeCoreException {
+      ElapsedTime time = new ElapsedTime("LegacyPCRActions");
       resultAtsArts.addAll(LegacyPCRActions.getTeamsTeamWorkflowArtifacts(data.getIds(),
          (Collection<IAtsTeamDefinition>) null));
+      time.end();
 
+      time = new ElapsedTime("artId");
       // This does artId search
       if (data.isIncludeArtIds() && data.getBranchForIncludeArtIds() != null) {
          for (Artifact art : ArtifactQuery.getArtifactListFromIds(Lib.stringToIntegerList(data.getEnteredIds()),
@@ -211,10 +215,14 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
             artifacts.add(art);
          }
       }
+      time.end();
+
+      time = new ElapsedTime("hrid/guid");
       // This does hrid/guid search
       for (Artifact art : ArtifactQuery.getArtifactListFromIds(data.getIds(), AtsUtil.getAtsBranch())) {
          artifacts.add(art);
       }
+      time.end();
 
       for (Artifact art : artifacts) {
          if (art.isOfType(AtsArtifactTypes.AtsArtifact)) {

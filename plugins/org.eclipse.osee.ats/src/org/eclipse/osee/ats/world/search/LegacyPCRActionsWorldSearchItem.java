@@ -13,16 +13,18 @@ package org.eclipse.osee.ats.world.search;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.core.client.query.AtsQueryService;
+import org.eclipse.osee.ats.core.client.util.WorkItemUtil;
+import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
-import org.eclipse.osee.framework.skynet.core.artifact.search.RelationCriteria;
 
 /**
  * @author Donald G. Dunne
@@ -50,29 +52,61 @@ public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
       this.teamDefs = legacyPCRActionsWorldSearchItem.teamDefs;
    }
 
+   private boolean isPcrIdsSet() {
+      return pcrIds != null && !pcrIds.isEmpty();
+   }
+
+   private boolean isTeamDefsSet() {
+      return teamDefs != null && !teamDefs.isEmpty();
+   }
+
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
-      List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>(4);
 
-      if (teamDefs != null && teamDefs.size() > 0) {
-         List<String> teamDefGuids = new ArrayList<String>(teamDefs.size());
-         for ( IAtsTeamDefinition teamDef : teamDefs) {
-            teamDefGuids.add(teamDef.getGuid());
-         }
-         criteria.add(new AttributeCriteria(AtsAttributeTypes.TeamDefinition, teamDefGuids));
+      List<Artifact> pcrIdArts = new ArrayList<Artifact>();
+      List<Artifact> teamDefArts = new ArrayList<Artifact>();
+      List<String> teamDefGuids = new ArrayList<String>();
+
+      if (isPcrIdsSet()) {
+         LegacyPcrIdQuickSearch srch = new LegacyPcrIdQuickSearch(pcrIds);
+         pcrIdArts.addAll(srch.performSearch());
+      }
+      if (isTeamDefsSet()) {
+         TeamDefinitionQuickSearch srch = new TeamDefinitionQuickSearch(teamDefs);
+         teamDefArts.addAll(srch.performSearch());
+         teamDefGuids = AtsObjects.toGuids(teamDefs);
       }
 
-      if (pcrIds != null && pcrIds.size() > 0) {
-         criteria.add(new AttributeCriteria(AtsAttributeTypes.LegacyPcrId, pcrIds));
-      } else {
-         criteria.add(new AttributeCriteria(AtsAttributeTypes.LegacyPcrId));
+      // If both set, return intersection; else return just what was set
+      List<Artifact> arts = new ArrayList<Artifact>();
+      if (isPcrIdsSet() && isTeamDefsSet()) {
+         arts = Collections.setIntersection(pcrIdArts, teamDefArts);
+      } else if (isPcrIdsSet()) {
+         arts = pcrIdArts;
+      } else if (isTeamDefsSet()) {
+         arts = teamDefArts;
       }
 
+      IAtsQuery query =
+         AtsQueryService.getService().createQuery(WorkItemUtil.getWorkItems(arts)).withOrValue(
+            AtsAttributeTypes.LegacyPcrId, pcrIds).withOrValue(AtsAttributeTypes.TeamDefinition, teamDefGuids).isOfType(
+            AtsArtifactTypes.TeamWorkflow);
+
+      Collection<? extends IAtsWorkItem> workItems = query.getItems();
+      List<Artifact> artifacts = WorkItemUtil.get(workItems, Artifact.class);
       if (returnActions) {
-         criteria.add(new RelationCriteria(AtsRelationTypes.ActionToWorkflow_Action));
+         List<Artifact> actions = new ArrayList<Artifact>();
+         for (Artifact artifact : artifacts) {
+            if (artifact instanceof AbstractWorkflowArtifact) {
+               AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
+               actions.add(awa.getParentActionArtifact());
+            }
+         }
+         return actions;
+      } else {
+         return artifacts;
       }
 
-      return ArtifactQuery.getArtifactListFromCriteria(AtsUtil.getAtsBranch(), 200, criteria);
    }
 
    @Override
