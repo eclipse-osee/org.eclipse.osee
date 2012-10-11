@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 public class OpenWorldByIdAction extends Action {
 
    public String overrideId = null;
+   public boolean pend = false;
 
    public OpenWorldByIdAction() {
       this("Open World Editor by ID(s)");
@@ -42,7 +43,14 @@ public class OpenWorldByIdAction extends Action {
       if (Strings.isValid(overrideId)) {
          data.setEnteredIds(overrideId);
       }
-      Operations.executeAsJob(new MultipleHridSearchOperation(data), true);
+      MultipleHridSearchOperation operation = new MultipleHridSearchOperation(data);
+      Operations.executeAsJob(operation, true);
+      if (pend) {
+         operation.run(null);
+      } else {
+         Operations.executeAsJob(operation, true);
+      }
+
    }
 
    @Override
@@ -52,6 +60,10 @@ public class OpenWorldByIdAction extends Action {
 
    public void setOverrideIdString(String enteredIdString) {
       this.overrideId = enteredIdString;
+   }
+
+   public void setPend(boolean pend) {
+      this.pend = pend;
    }
 
 }

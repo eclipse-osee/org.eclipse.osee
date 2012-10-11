@@ -26,6 +26,11 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 public class OpenWorkflowByIdAction extends Action {
 
    private String overrideId = null;
+   private boolean pend = false;
+
+   public void setPend(boolean pend) {
+      this.pend = pend;
+   }
 
    public OpenWorkflowByIdAction() {
       this("Open Workflow Editor by ID(s)");
@@ -42,7 +47,12 @@ public class OpenWorkflowByIdAction extends Action {
       if (Strings.isValid(overrideId)) {
          data.setEnteredIds(overrideId);
       }
-      Operations.executeAsJob(new MultipleHridSearchOperation(data), true);
+      MultipleHridSearchOperation operation = new MultipleHridSearchOperation(data);
+      if (pend) {
+         operation.run(null);
+      } else {
+         Operations.executeAsJob(operation, true);
+      }
    }
 
    @Override

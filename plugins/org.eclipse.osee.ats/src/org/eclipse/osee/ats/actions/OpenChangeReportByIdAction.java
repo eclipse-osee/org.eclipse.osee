@@ -26,6 +26,11 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 public class OpenChangeReportByIdAction extends Action {
 
    private String overrideId = null;
+   private boolean pend;
+
+   public void setPend(boolean pend) {
+      this.pend = pend;
+   }
 
    public OpenChangeReportByIdAction() {
       this("Open Change Report by ID(s)");
@@ -42,7 +47,12 @@ public class OpenChangeReportByIdAction extends Action {
       if (Strings.isValid(overrideId)) {
          data.setEnteredIds(overrideId);
       }
-      Operations.executeAsJob(new MultipleHridSearchOperation(data), true);
+      MultipleHridSearchOperation srchOperation = new MultipleHridSearchOperation(data);
+      if (pend) {
+         srchOperation.run(null);
+      } else {
+         Operations.executeAsJob(srchOperation, true);
+      }
    }
 
    @Override

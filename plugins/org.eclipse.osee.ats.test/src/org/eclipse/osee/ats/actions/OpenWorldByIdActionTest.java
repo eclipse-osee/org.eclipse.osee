@@ -17,6 +17,7 @@ public class OpenWorldByIdActionTest extends AbstractAtsActionRunTest {
    public OpenWorldByIdAction createAction() throws OseeCoreException {
       OpenWorldByIdAction action = new OpenWorldByIdAction();
       action.setOverrideIdString(AtsTestUtil.getTeamWf().getHumanReadableId());
+      action.setPend(true);
       return action;
    }
 
