@@ -73,9 +73,11 @@ public class AtsVersionStoreImpl implements IAtsVersionStore {
                if (verArts.size() > 1) {
                   OseeLog.log(Activator.class, Level.SEVERE,
                      "Multiple targeted versions for artifact " + teamArt.toStringWithId());
-                  version = AtsConfigCache.instance.getSoleByGuid(verArts.iterator().next().getGuid(), IAtsVersion.class);
+                  version =
+                     AtsConfigCache.instance.getSoleByGuid(verArts.iterator().next().getGuid(), IAtsVersion.class);
                } else {
-                  version = AtsConfigCache.instance.getSoleByGuid(verArts.iterator().next().getGuid(), IAtsVersion.class);
+                  version =
+                     AtsConfigCache.instance.getSoleByGuid(verArts.iterator().next().getGuid(), IAtsVersion.class);
                }
             }
          }
@@ -125,8 +127,10 @@ public class AtsVersionStoreImpl implements IAtsVersionStore {
          try {
             teamDefArt = verArt.getRelatedArtifact(AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition);
          } catch (ArtifactDoesNotExist ex) {
-            OseeLog.logf(Activator.class, Level.SEVERE, "Version [%s] has no related team defininition",
-               verArt.toStringWithId());
+            if (!verArt.isDeleted()) {
+               OseeLog.logf(Activator.class, Level.SEVERE, "Version [%s] has no related team defininition",
+                  verArt.toStringWithId());
+            }
          }
          if (teamDefArt != null) {
             result = AtsConfigCache.instance.getSoleByGuid(teamDefArt.getGuid(), IAtsTeamDefinition.class);
