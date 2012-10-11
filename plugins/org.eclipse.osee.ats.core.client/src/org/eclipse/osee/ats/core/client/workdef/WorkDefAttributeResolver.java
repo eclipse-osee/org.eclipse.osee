@@ -22,8 +22,8 @@ import org.eclipse.osee.framework.skynet.core.utility.AttributeTypeToXWidgetName
 public class WorkDefAttributeResolver implements IAttributeResolver {
 
    @Override
-   public boolean isAttributeNamed(String attributeName) {
-      return getAttributeType(attributeName) != null;
+   public boolean isAttributeNamed(String attributeName) throws OseeCoreException {
+      return AttributeTypeManager.typeExists(attributeName);
    }
 
    @Override
