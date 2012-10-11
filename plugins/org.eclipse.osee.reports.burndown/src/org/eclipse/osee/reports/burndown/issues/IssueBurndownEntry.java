@@ -15,102 +15,101 @@ import java.util.Date;
  */
 public class IssueBurndownEntry {
 
-  private final Date date;
-  private int issuesClosed;
-  private int issuesRemaining;
-  private double idealIssuesRemaining;
-  private double burndownRate;
-  private boolean actualData;
+   private final Date date;
+   private int issuesClosed;
+   private int issuesRemaining;
+   private double idealIssuesRemaining;
+   private double burndownRate;
+   private boolean actualData;
 
-  /**
-   * @param date sets the current date
-   */
-  public IssueBurndownEntry(final Date date) {
-    this.date = date;
-    Date currentTime = Calendar.getInstance().getTime();
-    if (currentTime.after(date)) {
-      this.actualData = true;
-    }
-    else {
-      this.actualData = false;
-    }
-  }
+   /**
+    * @param date sets the current date
+    */
+   public IssueBurndownEntry(final Date date) {
+      this.date = date;
+      Date currentTime = Calendar.getInstance().getTime();
+      if (currentTime.after(date)) {
+         this.actualData = true;
+      } else {
+         this.actualData = false;
+      }
+   }
 
-  /**
-   * @return the number of issues closed
-   */
-  public int getIssuesClosed() {
-    return this.issuesClosed;
-  }
+   /**
+    * @return the number of issues closed
+    */
+   public int getIssuesClosed() {
+      return this.issuesClosed;
+   }
 
-  /**
-   * @param issuesClosed : sets the number of issues closed
-   */
-  public void setIssuesClosed(final int issuesClosed) {
-    this.issuesClosed = issuesClosed;
-  }
+   /**
+    * @param issuesClosed : sets the number of issues closed
+    */
+   public void setIssuesClosed(final int issuesClosed) {
+      this.issuesClosed = issuesClosed;
+   }
 
-  /**
-   * @return the number of issues remaining
-   */
-  public int getIssuesRemaining() {
-    return this.issuesRemaining;
-  }
+   /**
+    * @return the number of issues remaining
+    */
+   public int getIssuesRemaining() {
+      return this.issuesRemaining;
+   }
 
-  /**
-   * @param issuesRemaining : sets the number of issues remaining
-   */
-  public void setIssuesRemaining(final int issuesRemaining) {
-    this.issuesRemaining = issuesRemaining;
-  }
+   /**
+    * @param issuesRemaining : sets the number of issues remaining
+    */
+   public void setIssuesRemaining(final int issuesRemaining) {
+      this.issuesRemaining = issuesRemaining;
+   }
 
-  /**
-   * @return the number of ideal issues remaining
-   */
-  public double getIdealIssuesRemaining() {
-    return this.idealIssuesRemaining;
-  }
+   /**
+    * @return the number of ideal issues remaining
+    */
+   public double getIdealIssuesRemaining() {
+      return this.idealIssuesRemaining;
+   }
 
-  /**
-   * @param idealIssuesRemaining : sets the ideal number of issues remaining
-   */
-  public void setIdealIssuesRemaining(final double idealIssuesRemaining) {
-    this.idealIssuesRemaining = idealIssuesRemaining;
-  }
+   /**
+    * @param idealIssuesRemaining : sets the ideal number of issues remaining
+    */
+   public void setIdealIssuesRemaining(final double idealIssuesRemaining) {
+      this.idealIssuesRemaining = idealIssuesRemaining;
+   }
 
-  /**
-   * @return the burndownRate
-   */
-  public double getBurndownRate() {
-    return this.burndownRate;
-  }
+   /**
+    * @return the burndownRate
+    */
+   public double getBurndownRate() {
+      return this.burndownRate;
+   }
 
-  /**
-   * @param requiredBurndown : sets the Burndownrate
-   */
-  public void setBurndownRate(final double requiredBurndown) {
-    this.burndownRate = requiredBurndown;
-  }
+   /**
+    * @param requiredBurndown : sets the Burndownrate
+    */
+   public void setBurndownRate(final double requiredBurndown) {
+      this.burndownRate = requiredBurndown;
+   }
 
-  /**
-   * @return the actualData
-   */
-  public boolean isActualData() {
-    return this.actualData;
-  }
+   /**
+    * @return the actualData
+    */
+   public boolean isActualData() {
+      return this.actualData;
+   }
 
-  /**
-   * @param actualData : sets the actual data
-   */
-  public void setActualData(final boolean actualData) {
-    this.actualData = actualData;
-  }
+   /**
+    * @param actualData : sets the actual data
+    */
+   public void setActualData(final boolean actualData) {
+      this.actualData = actualData;
+   }
 
-  /**
-   * @return the current date
-   */
-  public Date getDate() {
-    return this.date;
-  }
+   /**
+    * @return the current date
+    */
+   public Date getDate() {
+      return this.date;
+   }
 
 }

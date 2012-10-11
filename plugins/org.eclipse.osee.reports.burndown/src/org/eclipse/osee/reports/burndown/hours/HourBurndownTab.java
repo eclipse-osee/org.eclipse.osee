@@ -14,14 +14,14 @@ import org.eclipse.osee.reports.burndown.ui.AbstractBurndownTab;
  */
 public class HourBurndownTab extends AbstractBurndownTab {
 
-  @Override
-  public String getTabName() {
-    return "Hour Burndown";
-  }
+   @Override
+   public String getTabName() {
+      return "Hour Burndown";
+   }
 
-  @Override
-  public String getReport() {
-    return "HourBurndown.rptdesign";
-  }
+   @Override
+   public String getReport() {
+      return "HourBurndown.rptdesign";
+   }
 
 }

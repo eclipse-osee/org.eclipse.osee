@@ -7,7 +7,6 @@ package org.eclipse.osee.reports.split.ui;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.config.store.VersionArtifactStore;
@@ -36,70 +35,69 @@ import org.eclipse.osee.reports.split.ui.team.TeamTab;
  */
 public class DistributionItem extends XNavigateItemAction {
 
-  /**
-   * Constructor that calls super
-   * 
-   * @param parent :
-   */
-  public DistributionItem(final XNavigateItem parent) {
-    super(parent, "Distribution Reports", AtsImage.REPORT);
-  }
+   /**
+    * Constructor that calls super
+    * 
+    * @param parent :
+    */
+   public DistributionItem(final XNavigateItem parent) {
+      super(parent, "Distribution Reports", AtsImage.REPORT);
+   }
 
-  @Override
-  public void run(final TableLoadOption... tableLoadOptions) throws Exception {
-    // Get input from the user.
-    TeamVersionListDialog dlg = new TeamVersionListDialog(Active.Both);
-    int open = dlg.open();
-    if (open == 0) {
-      populateModel(dlg);
-      ResultsEditor.open(new IResultsEditorProvider() {
+   @Override
+   public void run(final TableLoadOption... tableLoadOptions) throws Exception {
+      // Get input from the user.
+      TeamVersionListDialog dlg = new TeamVersionListDialog(Active.Both);
+      int open = dlg.open();
+      if (open == 0) {
+         populateModel(dlg);
+         ResultsEditor.open(new IResultsEditorProvider() {
 
-        @Override
-        public String getEditorName() {
-          return "Distribution Reports";
-        }
+            @Override
+            public String getEditorName() {
+               return "Distribution Reports";
+            }
 
-        @Override
-        public List<IResultsEditorTab> getResultsEditorTabs() {
-          List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
-          tabs.add(new AITab());
-          tabs.add(new TeamTab());
-          tabs.add(new StateTab());
-          return tabs;
-        }
+            @Override
+            public List<IResultsEditorTab> getResultsEditorTabs() {
+               List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
+               tabs.add(new AITab());
+               tabs.add(new TeamTab());
+               tabs.add(new StateTab());
+               return tabs;
+            }
 
-      });
-    }
-  }
+         });
+      }
+   }
 
-  private boolean populateModel(final TeamVersionListDialog dlg) {
-    try {
-      // AI Split
-    	IAtsVersion version = (IAtsVersion) dlg.getSelectedVersion();
-    	VersionArtifactStore artifactStore = new VersionArtifactStore(version);
-    	Artifact artifact = artifactStore.getArtifact();
-    	
-          AIDistributionEntry aiSplitEntry = new AIDistributionEntry(artifact);
-          aiSplitEntry.computeAISplit();
+   private boolean populateModel(final TeamVersionListDialog dlg) {
+      try {
+         // AI Split
+         IAtsVersion version = (IAtsVersion) dlg.getSelectedVersion();
+         VersionArtifactStore artifactStore = new VersionArtifactStore(version);
+         Artifact artifact = artifactStore.getArtifact();
 
-          TeamDistributionEntry teamSplitEntry = new TeamDistributionEntry(artifact);
-          teamSplitEntry.computeTeamSplit();
+         AIDistributionEntry aiSplitEntry = new AIDistributionEntry(artifact);
+         aiSplitEntry.computeAISplit();
 
-          StateDistributionEntry stateSplitEntry = new StateDistributionEntry(artifact);
-          stateSplitEntry.computeStateSplit();
+         TeamDistributionEntry teamSplitEntry = new TeamDistributionEntry(artifact);
+         teamSplitEntry.computeTeamSplit();
 
-          DistributionModel.setAiSplitEntry(aiSplitEntry);
-          DistributionModel.setTeamSplitEntry(teamSplitEntry);
-          DistributionModel.setStateSplitEntry(stateSplitEntry);
+         StateDistributionEntry stateSplitEntry = new StateDistributionEntry(artifact);
+         stateSplitEntry.computeStateSplit();
 
-    }
-    catch (OseeCoreException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      return false;
-    }
+         DistributionModel.setAiSplitEntry(aiSplitEntry);
+         DistributionModel.setTeamSplitEntry(teamSplitEntry);
+         DistributionModel.setStateSplitEntry(stateSplitEntry);
 
-    return true;
-  }
+      } catch (OseeCoreException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+         return false;
+      }
+
+      return true;
+   }
 
 }

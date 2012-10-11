@@ -8,7 +8,6 @@ package org.eclipse.osee.reports.split.ui.state;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import org.eclipse.birt.report.viewer.utilities.WebViewer;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
@@ -22,7 +21,6 @@ import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Composite;
 import org.osgi.framework.Bundle;
 
-
 /**
  * Class to create the tab in UI
  * 
@@ -30,57 +28,55 @@ import org.osgi.framework.Bundle;
  */
 public class StateTab implements IResultsEditorTab {
 
-  private Browser browser;
+   private Browser browser;
 
-  @SuppressWarnings("deprecation")
-  @Override
-  public Composite createTab(final Composite parent, final ResultsEditor resultsEditor) throws OseeCoreException {
+   @SuppressWarnings("deprecation")
+   @Override
+   public Composite createTab(final Composite parent, final ResultsEditor resultsEditor) throws OseeCoreException {
 
-    String path = getReportPath();
-    this.browser = new Browser(parent, SWT.NONE);
-    WebViewer.display(path, WebViewer.HTML, this.browser, "frameset");
-    this.browser.refresh();
-    return this.browser;
-  }
+      String path = getReportPath();
+      this.browser = new Browser(parent, SWT.NONE);
+      WebViewer.display(path, WebViewer.HTML, this.browser, "frameset");
+      this.browser.refresh();
+      return this.browser;
+   }
 
-  /**
-   * @return the report path
-   */
-  public String getReportPath() {
-    String path = null;
-    try {
-      Bundle bundle = Platform.getBundle(getPluginID());
-      URL url = FileLocator.find(bundle, new Path("reports/" + getReport()), null);
-      path = FileLocator.toFileURL(url).getPath();
-    }
-    catch (MalformedURLException me) {
-      System.out.println("Fehler bei URL " + me.getStackTrace());
-      return null;
-    }
-    catch (IOException e) {
-      e.printStackTrace();
-      return null;
-    }
-    return path;
-  }
+   /**
+    * @return the report path
+    */
+   public String getReportPath() {
+      String path = null;
+      try {
+         Bundle bundle = Platform.getBundle(getPluginID());
+         URL url = FileLocator.find(bundle, new Path("reports/" + getReport()), null);
+         path = FileLocator.toFileURL(url).getPath();
+      } catch (MalformedURLException me) {
+         System.out.println("Fehler bei URL " + me.getStackTrace());
+         return null;
+      } catch (IOException e) {
+         e.printStackTrace();
+         return null;
+      }
+      return path;
+   }
 
-  /**
-   * @return the plugin ID
-   */
-  public String getPluginID() {
-    return Activator.PLUGIN_ID;
-  }
+   /**
+    * @return the plugin ID
+    */
+   public String getPluginID() {
+      return Activator.PLUGIN_ID;
+   }
 
-  /**
-   * @return the report name
-   */
-  public String getReport() {
-    return "stateWorkDistribution.rptdesign";
-  }
+   /**
+    * @return the report name
+    */
+   public String getReport() {
+      return "stateWorkDistribution.rptdesign";
+   }
 
-  @Override
-  public String getTabName() {
-    return "Workflow State";
-  }
+   @Override
+   public String getTabName() {
+      return "Workflow State";
+   }
 
 }

@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -20,7 +19,6 @@ import org.eclipse.osee.ats.core.client.workflow.HoursSpentUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.reports.efficiency.Activator;
 
-
 /**
  * Class to collect the list of artifacts and compute work done
  * 
@@ -28,69 +26,68 @@ import org.eclipse.osee.reports.efficiency.Activator;
  */
 public class VersionEfficiency {
 
-	 private final IAtsVersion version;
-	 private final Map<String, Double> efficiency;
-  /**
-   * Constructor to set the version
-   * 
-   * @param version :
-   */
-  public VersionEfficiency(final IAtsVersion version) {
-	    this.version = version;
-	    this.efficiency = new HashMap<String, Double>();
-	  }
+   private final IAtsVersion version;
+   private final Map<String, Double> efficiency;
 
-  /**
-   * Method to collect the list of artifacts and compute work done
-   * 
-   * @throws OseeCoreException :
-   */
-  public void compute() throws OseeCoreException {
-	    final Map<String, List<TeamWorkFlowArtifact>> teams = new HashMap<String, List<TeamWorkFlowArtifact>>();
+   /**
+    * Constructor to set the version
+    * 
+    * @param version :
+    */
+   public VersionEfficiency(final IAtsVersion version) {
+      this.version = version;
+      this.efficiency = new HashMap<String, Double>();
+   }
 
-	    // 1. For each team, collect the list of artifacts.
-	    for (TeamWorkFlowArtifact teamWorkflow : VersionsClient.getTargetedForTeamWorkflows(this.version)) {
-	      if (teams.containsKey(teamWorkflow.getTeamName())) {
-	        teams.get(teamWorkflow.getTeamName()).add(teamWorkflow);
-	      }
-	      else {
-	        List<TeamWorkFlowArtifact> team = new ArrayList<TeamWorkFlowArtifact>();
-	        team.add(teamWorkflow);
-	        teams.put(teamWorkflow.getTeamName(), team);
-	      }
-	    }
-	    // 2. compute work done
-	    Iterator<String> teamNames = teams.keySet().iterator();
-	    while (teamNames.hasNext()) {
-	      String teamName = teamNames.next();
-	      double estimated = 0;
-	      double actual = 0;
-	      for (TeamWorkFlowArtifact twa : teams.get(teamName)) {
-	        estimated += twa.getEstimatedHoursTotal();
-	        actual += HoursSpentUtil.getHoursSpentTotal(twa);
-	      }
-	      if (actual != 0) {
-	        this.efficiency.put(teamName, estimated / actual);
-	      }
-	      else {
-	        Activator.getDefault().getLog()
-	            .log(new Status(IStatus.INFO, Activator.PLUGIN_ID, "Actual hours spent by team : " + teamName + " was 0"));
-	      }
-	    }
+   /**
+    * Method to collect the list of artifacts and compute work done
+    * 
+    * @throws OseeCoreException :
+    */
+   public void compute() throws OseeCoreException {
+      final Map<String, List<TeamWorkFlowArtifact>> teams = new HashMap<String, List<TeamWorkFlowArtifact>>();
 
-	  }
+      // 1. For each team, collect the list of artifacts.
+      for (TeamWorkFlowArtifact teamWorkflow : VersionsClient.getTargetedForTeamWorkflows(this.version)) {
+         if (teams.containsKey(teamWorkflow.getTeamName())) {
+            teams.get(teamWorkflow.getTeamName()).add(teamWorkflow);
+         } else {
+            List<TeamWorkFlowArtifact> team = new ArrayList<TeamWorkFlowArtifact>();
+            team.add(teamWorkflow);
+            teams.put(teamWorkflow.getTeamName(), team);
+         }
+      }
+      // 2. compute work done
+      Iterator<String> teamNames = teams.keySet().iterator();
+      while (teamNames.hasNext()) {
+         String teamName = teamNames.next();
+         double estimated = 0;
+         double actual = 0;
+         for (TeamWorkFlowArtifact twa : teams.get(teamName)) {
+            estimated += twa.getEstimatedHoursTotal();
+            actual += HoursSpentUtil.getHoursSpentTotal(twa);
+         }
+         if (actual != 0) {
+            this.efficiency.put(teamName, estimated / actual);
+         } else {
+            Activator.getDefault().getLog().log(
+               new Status(IStatus.INFO, Activator.PLUGIN_ID, "Actual hours spent by team : " + teamName + " was 0"));
+         }
+      }
 
-  /**
-   * @return the map
-   */
-  public Map<String, Double> getEfficiency() {
-    return this.efficiency;
-  }
+   }
 
-  /**
-   * @return the version artifact
-   */
-  public IAtsVersion getVersion() {
-    return this.version;
-  }
+   /**
+    * @return the map
+    */
+   public Map<String, Double> getEfficiency() {
+      return this.efficiency;
+   }
+
+   /**
+    * @return the version artifact
+    */
+   public IAtsVersion getVersion() {
+      return this.version;
+   }
 }

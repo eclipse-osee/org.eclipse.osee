@@ -12,20 +12,20 @@ package org.eclipse.osee.reports.burndown.hours;
  */
 public class HourBurndownModel {
 
-  private static HourBurndownLog log;
+   private static HourBurndownLog log;
 
-  /**
-   * @return the HourBurndownLog
-   */
-  public static HourBurndownLog getLog() {
-    return log;
-  }
+   /**
+    * @return the HourBurndownLog
+    */
+   public static HourBurndownLog getLog() {
+      return log;
+   }
 
-  /**
-   * @param log : sets the HourBurndownLog
-   */
-  public static void setLog(final HourBurndownLog log) {
-    HourBurndownModel.log = log;
-  }
+   /**
+    * @param log : sets the HourBurndownLog
+    */
+   public static void setLog(final HourBurndownLog log) {
+      HourBurndownModel.log = log;
+   }
 
 }

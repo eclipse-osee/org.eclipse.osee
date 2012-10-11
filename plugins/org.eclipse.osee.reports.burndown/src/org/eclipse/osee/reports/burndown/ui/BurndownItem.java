@@ -7,7 +7,6 @@ package org.eclipse.osee.reports.burndown.ui;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.config.VersionsClient;
@@ -29,7 +28,6 @@ import org.eclipse.osee.reports.burndown.issues.IssueBurndownLog;
 import org.eclipse.osee.reports.burndown.issues.IssueBurndownModel;
 import org.eclipse.osee.reports.burndown.issues.IssueBurndownTab;
 
-
 /**
  * Class to extract data from workflows and fills the HourBurndownModel and IssueBurndownModel
  * 
@@ -37,71 +35,70 @@ import org.eclipse.osee.reports.burndown.issues.IssueBurndownTab;
  */
 public class BurndownItem extends XNavigateItemAction {
 
-  /**
-   * Constructor which calls its parent constructor
-   * 
-   * @param parent :
-   */
-  public BurndownItem(final XNavigateItem parent) {
-    super(parent, "Burndown Reports", AtsImage.REPORT);
-  }
+   /**
+    * Constructor which calls its parent constructor
+    * 
+    * @param parent :
+    */
+   public BurndownItem(final XNavigateItem parent) {
+      super(parent, "Burndown Reports", AtsImage.REPORT);
+   }
 
-  @Override
-  public void run(final TableLoadOption... tableLoadOptions) throws Exception {
-    // Get input from the user.
-    BurndownSelectionDialog dlg = new BurndownSelectionDialog(Active.Both);
-    int open = dlg.open();
-    if (open == 0) {
-      populateModel(dlg);
-      ResultsEditor.open(new IResultsEditorProvider() {
+   @Override
+   public void run(final TableLoadOption... tableLoadOptions) throws Exception {
+      // Get input from the user.
+      BurndownSelectionDialog dlg = new BurndownSelectionDialog(Active.Both);
+      int open = dlg.open();
+      if (open == 0) {
+         populateModel(dlg);
+         ResultsEditor.open(new IResultsEditorProvider() {
 
-        @Override
-        public String getEditorName() {
-          return "Burndown Reports";
-        }
+            @Override
+            public String getEditorName() {
+               return "Burndown Reports";
+            }
 
-        @Override
-        public List<IResultsEditorTab> getResultsEditorTabs() {
-          List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
-          tabs.add(new HourBurndownTab());
-          tabs.add(new IssueBurndownTab());
-          return tabs;
-        }
+            @Override
+            public List<IResultsEditorTab> getResultsEditorTabs() {
+               List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
+               tabs.add(new HourBurndownTab());
+               tabs.add(new IssueBurndownTab());
+               return tabs;
+            }
 
-      });
-    }
-  }
+         });
+      }
+   }
 
-  private boolean populateModel(final BurndownSelectionDialog dlg) {
-    try {
-      Artifact art = (Artifact) dlg.getSelectedVersion();
-      AtsConfigCache atsConfigCache = new AtsConfigCache();
-      VersionArtifactStore artifactStore = new VersionArtifactStore(art, atsConfigCache);
-      IAtsVersion version = artifactStore.getVersion();
-    	
-    	// HourBurndown
-      HourBurndownLog log = new HourBurndownLog();
-      log.getArtifacts().addAll(VersionsClient.getTargetedForTeamWorkflows(version));
-      log.setStartDate(dlg.getStartDate());
-      log.setEndDate(dlg.getEndDate());
-      log.compute();
-      HourBurndownModel.setLog(log);
+   private boolean populateModel(final BurndownSelectionDialog dlg) {
+      try {
+         Artifact art = (Artifact) dlg.getSelectedVersion();
+         AtsConfigCache atsConfigCache = new AtsConfigCache();
+         VersionArtifactStore artifactStore = new VersionArtifactStore(art, atsConfigCache);
+         IAtsVersion version = artifactStore.getVersion();
 
-      // Issue Burndown
-      IssueBurndownLog issueLog = new IssueBurndownLog();
-      issueLog.getArtifacts().addAll(VersionsClient.getTargetedForTeamWorkflows(version));
-      issueLog.setStartDate(dlg.getStartDate());
-      issueLog.setEndDate(dlg.getEndDate());
-      issueLog.compute();
-      IssueBurndownModel.setLog(issueLog);
+         // HourBurndown
+         HourBurndownLog log = new HourBurndownLog();
+         log.getArtifacts().addAll(VersionsClient.getTargetedForTeamWorkflows(version));
+         log.setStartDate(dlg.getStartDate());
+         log.setEndDate(dlg.getEndDate());
+         log.compute();
+         HourBurndownModel.setLog(log);
 
-    }
-    catch (OseeCoreException e) {
-      e.printStackTrace();
-      return false;
-    }
+         // Issue Burndown
+         IssueBurndownLog issueLog = new IssueBurndownLog();
+         issueLog.getArtifacts().addAll(VersionsClient.getTargetedForTeamWorkflows(version));
+         issueLog.setStartDate(dlg.getStartDate());
+         issueLog.setEndDate(dlg.getEndDate());
+         issueLog.compute();
+         IssueBurndownModel.setLog(issueLog);
 
-    return true;
-  }
+      } catch (OseeCoreException e) {
+         e.printStackTrace();
+         return false;
+      }
+
+      return true;
+   }
 
 }

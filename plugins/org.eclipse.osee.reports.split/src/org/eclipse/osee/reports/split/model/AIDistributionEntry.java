@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -23,46 +22,46 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class AIDistributionEntry {
 
-	 private final Artifact versionArtifact;
-	  private final Map<IAtsActionableItem, Integer> aiSplitMap;
-  /**
-   * Constructor to set the version artifact and instantiate map
-   * 
-   * @param verArtifact : set version artifact
-   */
-	  public AIDistributionEntry(final Artifact verArtifact) {
-		    this.versionArtifact = verArtifact;
-		    this.aiSplitMap = new HashMap<IAtsActionableItem, Integer>();
-		  }
+   private final Artifact versionArtifact;
+   private final Map<IAtsActionableItem, Integer> aiSplitMap;
 
-  /**
-   * Method to compute the count on actionable items and fill the map
-   * 
-   * @throws OseeCoreException :
-   */
-  public void computeAISplit() throws OseeCoreException {
-	    Collection<TeamWorkFlowArtifact> teamWorkflows =
-	            this.versionArtifact.getRelatedArtifactsOfType(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow,
-	                TeamWorkFlowArtifact.class);
-	        for (TeamWorkFlowArtifact workflow : teamWorkflows) {
-	          Set<IAtsActionableItem> actionableItems = workflow.getActionableItemsDam().getActionableItems();
-	          for (IAtsActionableItem aiArtifact : actionableItems) {
-	            int count = 0;
-	            if (this.aiSplitMap.containsKey(aiArtifact)) {
-	              count = this.aiSplitMap.get(aiArtifact);
-	            }
-	            this.aiSplitMap.put(aiArtifact, count + 1);
-	          }
-	        }
+   /**
+    * Constructor to set the version artifact and instantiate map
+    * 
+    * @param verArtifact : set version artifact
+    */
+   public AIDistributionEntry(final Artifact verArtifact) {
+      this.versionArtifact = verArtifact;
+      this.aiSplitMap = new HashMap<IAtsActionableItem, Integer>();
+   }
 
-	      }
+   /**
+    * Method to compute the count on actionable items and fill the map
+    * 
+    * @throws OseeCoreException :
+    */
+   public void computeAISplit() throws OseeCoreException {
+      Collection<TeamWorkFlowArtifact> teamWorkflows =
+         this.versionArtifact.getRelatedArtifactsOfType(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow,
+            TeamWorkFlowArtifact.class);
+      for (TeamWorkFlowArtifact workflow : teamWorkflows) {
+         Set<IAtsActionableItem> actionableItems = workflow.getActionableItemsDam().getActionableItems();
+         for (IAtsActionableItem aiArtifact : actionableItems) {
+            int count = 0;
+            if (this.aiSplitMap.containsKey(aiArtifact)) {
+               count = this.aiSplitMap.get(aiArtifact);
+            }
+            this.aiSplitMap.put(aiArtifact, count + 1);
+         }
+      }
 
-  /**
-   * @return the map
-   */
-  public Map<IAtsActionableItem, Integer> getAiSplitMap() {
-	    return this.aiSplitMap;
-	  }
+   }
 
+   /**
+    * @return the map
+    */
+   public Map<IAtsActionableItem, Integer> getAiSplitMap() {
+      return this.aiSplitMap;
+   }
 
 }

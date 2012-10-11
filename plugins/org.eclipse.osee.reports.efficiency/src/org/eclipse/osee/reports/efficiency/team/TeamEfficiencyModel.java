@@ -14,19 +14,19 @@ import java.util.List;
  */
 public class TeamEfficiencyModel {
 
-  private static List<VersionEfficiency> versionEfficiency;
+   private static List<VersionEfficiency> versionEfficiency;
 
-  /**
-   * @param versionEfficiency sets the version efficiency list
-   */
-  public static void setVersionEfficiency(final List<VersionEfficiency> versionEfficiency) {
-    TeamEfficiencyModel.versionEfficiency = versionEfficiency;
-  }
+   /**
+    * @param versionEfficiency sets the version efficiency list
+    */
+   public static void setVersionEfficiency(final List<VersionEfficiency> versionEfficiency) {
+      TeamEfficiencyModel.versionEfficiency = versionEfficiency;
+   }
 
-  /**
-   * @return the version efficiency list
-   */
-  public static List<VersionEfficiency> getVersionEfficiency() {
-    return versionEfficiency;
-  }
+   /**
+    * @return the version efficiency list
+    */
+   public static List<VersionEfficiency> getVersionEfficiency() {
+      return versionEfficiency;
+   }
 }

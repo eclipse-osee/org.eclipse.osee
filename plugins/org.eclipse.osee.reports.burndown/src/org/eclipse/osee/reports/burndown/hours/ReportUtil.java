@@ -8,7 +8,6 @@ package org.eclipse.osee.reports.burndown.hours;
 import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
 import org.eclipse.osee.ats.core.client.workflow.log.LogType;
 
-
 /**
  * Utility Class used during the report data generation
  * 
@@ -16,20 +15,20 @@ import org.eclipse.osee.ats.core.client.workflow.log.LogType;
  */
 public class ReportUtil {
 
-  /**
-   * This method returns the amount of work with respect to a given work item
-   * 
-   * @param item The {@link LogItem} instance
-   * @return the work done
-   */
-  public static double getWork(final LogItem item) {
-    if (item.getType() == LogType.Metrics) {
-      String msg = item.getMsg();
-      String[] segments = msg.split(" ");
-      String workString = segments[segments.length - 1];
-      return Double.parseDouble(workString);
-    }
-    return 0;
-  }
+   /**
+    * This method returns the amount of work with respect to a given work item
+    * 
+    * @param item The {@link LogItem} instance
+    * @return the work done
+    */
+   public static double getWork(final LogItem item) {
+      if (item.getType() == LogType.Metrics) {
+         String msg = item.getMsg();
+         String[] segments = msg.split(" ");
+         String workString = segments[segments.length - 1];
+         return Double.parseDouble(workString);
+      }
+      return 0;
+   }
 
 }

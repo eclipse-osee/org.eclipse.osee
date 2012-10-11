@@ -8,7 +8,6 @@ package org.eclipse.osee.reports.split.model;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
@@ -24,49 +23,45 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class StateDistributionEntry {
 
-	private final Artifact versionArtifact;
-	private final Map<String, Double> stateSplitMap;
+   private final Artifact versionArtifact;
+   private final Map<String, Double> stateSplitMap;
 
-	/**
-	 * Constructor to set the version artifact and instantiate the map
-	 * 
-	 * @param ver
-	 *            : sets the version artifact
-	 */
-	public StateDistributionEntry(final Artifact ver) {
-		this.versionArtifact = ver;
-		this.stateSplitMap = new HashMap<String, Double>();
-	}
+   /**
+    * Constructor to set the version artifact and instantiate the map
+    * 
+    * @param ver : sets the version artifact
+    */
+   public StateDistributionEntry(final Artifact ver) {
+      this.versionArtifact = ver;
+      this.stateSplitMap = new HashMap<String, Double>();
+   }
 
-	/**
-	 * @return the map
-	 */
-	public Map<String, Double> getStateSplitMap() {
-		return this.stateSplitMap;
-	}
+   /**
+    * @return the map
+    */
+   public Map<String, Double> getStateSplitMap() {
+      return this.stateSplitMap;
+   }
 
-	/**
-	 * Method to compute the states of the workflow and fill the map
-	 * 
-	 * @throws OseeCoreException
-	 *             :
-	 */
-	public void computeStateSplit() throws OseeCoreException {
-		for (AbstractWorkflowArtifact art : this.versionArtifact
-				.getRelatedArtifactsOfType(
-						AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow,
-						TeamWorkFlowArtifact.class)) {
-			IAtsWorkDefinition workDefinition = art.getWorkDefinition();
-			List<IAtsStateDefinition> states = workDefinition.getStates();
-			for (IAtsStateDefinition state : states) {
-				double timeInState = 0;
-				if (this.stateSplitMap.containsKey(state.getName())) {
-					timeInState = getStateSplitMap().get(state.getName());
-				}
-				timeInState += art.getStateMgr().getHoursSpent(state.getName());
-				this.stateSplitMap.put(state.getName(), timeInState);
-			}
-		}
-	}
+   /**
+    * Method to compute the states of the workflow and fill the map
+    * 
+    * @throws OseeCoreException :
+    */
+   public void computeStateSplit() throws OseeCoreException {
+      for (AbstractWorkflowArtifact art : this.versionArtifact.getRelatedArtifactsOfType(
+         AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, TeamWorkFlowArtifact.class)) {
+         IAtsWorkDefinition workDefinition = art.getWorkDefinition();
+         List<IAtsStateDefinition> states = workDefinition.getStates();
+         for (IAtsStateDefinition state : states) {
+            double timeInState = 0;
+            if (this.stateSplitMap.containsKey(state.getName())) {
+               timeInState = getStateSplitMap().get(state.getName());
+            }
+            timeInState += art.getStateMgr().getHoursSpent(state.getName());
+            this.stateSplitMap.put(state.getName(), timeInState);
+         }
+      }
+   }
 
 }

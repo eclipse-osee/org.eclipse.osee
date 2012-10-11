@@ -12,20 +12,20 @@ package org.eclipse.osee.reports.burndown.issues;
  */
 public class IssueBurndownModel {
 
-  private static IssueBurndownLog log;
+   private static IssueBurndownLog log;
 
-  /**
-   * @return the IssueBurndownLog
-   */
-  public static IssueBurndownLog getLog() {
-    return log;
-  }
+   /**
+    * @return the IssueBurndownLog
+    */
+   public static IssueBurndownLog getLog() {
+      return log;
+   }
 
-  /**
-   * @param log sets the IssueBurndownLog
-   */
-  public static void setLog(final IssueBurndownLog log) {
-    IssueBurndownModel.log = log;
-  }
+   /**
+    * @param log sets the IssueBurndownLog
+    */
+   public static void setLog(final IssueBurndownLog log) {
+      IssueBurndownModel.log = log;
+   }
 
 }

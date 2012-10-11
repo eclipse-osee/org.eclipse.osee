@@ -14,14 +14,14 @@ import org.eclipse.osee.reports.burndown.ui.AbstractBurndownTab;
  */
 public class IssueBurndownTab extends AbstractBurndownTab {
 
-  @Override
-  public String getTabName() {
-    return "Issue Burndown";
-  }
+   @Override
+   public String getTabName() {
+      return "Issue Burndown";
+   }
 
-  @Override
-  public String getReport() {
-    return "IssueBurndown.rptdesign";
-  }
+   @Override
+   public String getReport() {
+      return "IssueBurndown.rptdesign";
+   }
 
 }
