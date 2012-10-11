@@ -468,7 +468,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
     * @return true if this is a TeamWorkflow and it uses versions
     */
    public boolean isTeamUsesVersions() {
-      if (!isTeamWorkflow()) {
+      if (isDeleted() || !isTeamWorkflow()) {
          return false;
       }
       try {
