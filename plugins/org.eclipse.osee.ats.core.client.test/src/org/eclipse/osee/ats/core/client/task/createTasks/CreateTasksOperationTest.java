@@ -134,7 +134,6 @@ public class CreateTasksOperationTest {
 
       transaction.execute();
 
-      System.out.println(resultData.toString());
    }
 
    @org.junit.Test
