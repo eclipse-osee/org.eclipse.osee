@@ -85,7 +85,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.utility.ElapsedTime;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -168,9 +167,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       List<Collection<Integer>> artIdLists = null;
 
       // Un-comment to process whole Common branch - Normal Mode
-      ElapsedTime elapsedTime = new ElapsedTime("ValidateAtsDatabase - load ArtIds");
+      //      ElapsedTime elapsedTime = new ElapsedTime("ValidateAtsDatabase - load ArtIds");
       artIdLists = loadAtsBranchArtifactIds(xResultData, monitor);
-      elapsedTime.end();
+      //      elapsedTime.end();
 
       // Un-comment to process specific artifact from common - Test Mode
       //      artIdLists = new ArrayList<Collection<Integer>>();

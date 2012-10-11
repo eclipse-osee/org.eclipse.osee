@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.utility.ElapsedTime;
 
 /**
  * Calculate differences between coveragePackage and coverageImport and return MergeItems
@@ -56,7 +55,7 @@ public class MergeManager {
    }
 
    public List<IMergeItem> getMergeItems(XResultData resultData) throws OseeCoreException {
-      ElapsedTime time = new ElapsedTime("MergeManage.getMergeItems");
+      //      ElapsedTime time = new ElapsedTime("MergeManage.getMergeItems");
       List<IMergeItem> mergeItems = new ArrayList<IMergeItem>();
       processedImportCoverages.clear();
       Collection<? extends ICoverage> children = coverageImport.getChildren();
@@ -66,7 +65,7 @@ public class MergeManager {
       if (mergeItems.isEmpty()) {
          mergeItems.add(new MessageMergeItem("Nothing to Import"));
       }
-      time.end();
+      //      time.end();
       return mergeItems;
    }
 

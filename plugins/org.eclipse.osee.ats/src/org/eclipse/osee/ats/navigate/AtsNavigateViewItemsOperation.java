@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.navigate;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.skynet.core.utility.ElapsedTime;
 
 /**
  * @author Donald G. Dunne
@@ -26,9 +25,7 @@ public class AtsNavigateViewItemsOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      ElapsedTime time = new ElapsedTime(getName());
       AtsNavigateViewItems.getInstance().getSearchNavigateItems();
-      time.end();
    }
 
 }
