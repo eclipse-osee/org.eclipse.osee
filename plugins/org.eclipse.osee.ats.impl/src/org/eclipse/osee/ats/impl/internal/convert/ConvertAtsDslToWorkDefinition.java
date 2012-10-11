@@ -264,8 +264,8 @@ public class ConvertAtsDslToWorkDefinition {
             String attributeName = attrWidget.getAttributeName();
             try {
                if (!attrResolver.isAttributeNamed(attributeName)) {
-                  resultData.logErrorWithFormat("Invalid attribute name [%s] in WorkDefinition [%s]", attributeName,
-                     SHEET_NAME);
+                  resultData.logErrorWithFormat("Invalid attribute name [%s] in WorkDefinition [%s] (1)",
+                     attributeName, SHEET_NAME);
                } else {
                   WidgetDefinition widgetDef = new WidgetDefinition(attrResolver.getUnqualifiedName(attributeName));
                   widgetDef.setAttributeName(attributeName);
@@ -383,8 +383,8 @@ public class ConvertAtsDslToWorkDefinition {
          if (Strings.isValid(attributeName)) {
             try {
                if (!attrResolver.isAttributeNamed(attributeName)) {
-                  resultData.logErrorWithFormat("Invalid attribute name [%s] in WorkDefinition [%s]", attributeName,
-                     SHEET_NAME);
+                  resultData.logErrorWithFormat("Invalid attribute name [%s] in WorkDefinition [%s] (2)",
+                     attributeName, SHEET_NAME);
                } else {
                   attrResolver.setXWidgetNameBasedOnAttributeName(attributeName, widgetDef);
                }
@@ -393,7 +393,7 @@ public class ConvertAtsDslToWorkDefinition {
                   attributeName, SHEET_NAME);
             }
          } else {
-            resultData.logErrorWithFormat("Invalid attribute name [%s] in WorkDefinition [%s]", attributeName,
+            resultData.logErrorWithFormat("Invalid attribute name [%s] in WorkDefinition [%s] (3)", attributeName,
                SHEET_NAME);
          }
       }
@@ -427,7 +427,7 @@ public class ConvertAtsDslToWorkDefinition {
             option = WidgetOption.valueOf(value);
             widgetDef.getOptions().add(option);
          } catch (IllegalArgumentException ex) {
-            resultData.logWarningWithFormat("Unexpected value [%s] in WorkDefinition [%s] ", value, SHEET_NAME);
+            resultData.logWarningWithFormat("Unexpected value [%s] in WorkDefinition [%s]", value, SHEET_NAME);
          }
       }
    }
