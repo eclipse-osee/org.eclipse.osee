@@ -133,7 +133,7 @@ public class WorkStateProviderImplTest {
       WorkStateProviderImpl provider = new WorkStateProviderImpl(new MockWorkStateFactory());
       provider.addState(new WorkStateImpl("endorse"));
 
-      provider.addState(new WorkStateImpl("endorse"));
+      provider.addState(new WorkStateImpl("endorse"), false);
    }
 
    @Test
@@ -141,7 +141,7 @@ public class WorkStateProviderImplTest {
       WorkStateProviderImpl provider = new WorkStateProviderImpl(new MockWorkStateFactory());
       provider.addState(new WorkStateImpl("endorse"));
 
-      provider.addState("endorse", new LinkedList<IAtsUser>(), 34, 23);
+      provider.addState("endorse", new LinkedList<IAtsUser>(), 34, 23, false);
    }
 
    @Test(expected = OseeArgumentException.class)

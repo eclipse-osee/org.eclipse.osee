@@ -220,9 +220,15 @@ public class WorkStateProviderImpl implements WorkStateProvider {
 
    @Override
    public void addState(String name, List<? extends IAtsUser> assignees, double hoursSpent, int percentComplete) {
+      addState(name, assignees, hoursSpent, percentComplete, true);
+   }
+
+   protected void addState(String name, List<? extends IAtsUser> assignees, double hoursSpent, int percentComplete, boolean logError) {
       if (getVisitedStateNames().contains(name)) {
          String errorStr = String.format("Error: Duplicate state [%s] for [%s]", name, factory.getId());
-         OseeLog.log(Activator.class, Level.SEVERE, errorStr);
+         if (logError) {
+            OseeLog.log(Activator.class, Level.SEVERE, errorStr);
+         }
          return;
       } else {
          addState(factory.createStateData(name, assignees, hoursSpent, percentComplete));
@@ -274,9 +280,15 @@ public class WorkStateProviderImpl implements WorkStateProvider {
 
    @Override
    public void addState(WorkState state) {
+      addState(state, true);
+   }
+
+   protected void addState(WorkState state, boolean logError) {
       if (getVisitedStateNames().contains(state.getName())) {
          String errorStr = String.format("Error: Duplicate state [%s] for [%s]", state.getName(), factory.getId());
-         OseeLog.log(Activator.class, Level.SEVERE, errorStr);
+         if (logError) {
+            OseeLog.log(Activator.class, Level.SEVERE, errorStr);
+         }
          return;
       } else {
          states.add(state);
