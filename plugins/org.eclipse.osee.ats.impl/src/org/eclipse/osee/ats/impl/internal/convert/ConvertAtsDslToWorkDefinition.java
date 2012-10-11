@@ -363,14 +363,19 @@ public class ConvertAtsDslToWorkDefinition {
    private IAtsWidgetDefinition convertDslWidgetDef(WidgetDef dslWidgetDef, String SHEET_NAME) {
       WidgetDefinition widgetDef = new WidgetDefinition(Strings.unquote(dslWidgetDef.getName()));
       widgetDef.setAttributeName(dslWidgetDef.getAttributeName());
-      // Set description if model defines it
-      if (Strings.isValid(dslWidgetDef.getDescription())) {
-         widgetDef.setDescription(dslWidgetDef.getDescription());
+      try {
+         // Set description if model defines it
+         if (Strings.isValid(dslWidgetDef.getDescription())) {
+            widgetDef.setDescription(dslWidgetDef.getDescription());
+         }
+         // Else, set if AtsAttributeTypes defines it
+         else if (Strings.isValid(dslWidgetDef.getAttributeName()) && attrResolver.isAttributeNamed(dslWidgetDef.getAttributeName()) && Strings.isValid(attrResolver.getDescription(dslWidgetDef.getAttributeName()))) {
+            widgetDef.setDescription(attrResolver.getDescription(dslWidgetDef.getAttributeName()));
+         }
+      } catch (Exception ex) {
+         resultData.logErrorWithFormat("Exception [%s] in WorkDefinition [%s]", ex.getLocalizedMessage(), SHEET_NAME);
       }
-      // Else, set if AtsAttributeTypes defines it
-      else if (Strings.isValid(dslWidgetDef.getAttributeName()) && attrResolver.isAttributeNamed(dslWidgetDef.getAttributeName()) && Strings.isValid(attrResolver.getDescription(dslWidgetDef.getAttributeName()))) {
-         widgetDef.setDescription(attrResolver.getDescription(dslWidgetDef.getAttributeName()));
-      }
+
       if (Strings.isValid(dslWidgetDef.getXWidgetName())) {
          widgetDef.setXWidgetName(dslWidgetDef.getXWidgetName());
       } else {
