@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionArtifactRollup;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.config.ActionableItemManager;
+import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
@@ -128,6 +129,7 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
    }
 
    public IAtsTeamDefinition getTeamDefinition() throws OseeCoreException, OseeCoreException {
+      AtsBulkLoad.loadConfig(true);
       String guid = this.getSoleAttributeValue(AtsAttributeTypes.TeamDefinition, "");
       if (!Strings.isValid(guid)) {
          throw new OseeArgumentException("TeamWorkflow [%s] has no IAtsTeamDefinition associated.",
