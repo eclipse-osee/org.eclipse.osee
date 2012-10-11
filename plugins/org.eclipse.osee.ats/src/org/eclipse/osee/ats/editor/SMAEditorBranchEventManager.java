@@ -16,7 +16,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -70,16 +69,14 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
       }
       for (final ISMAEditorEventHandler handler : handlers) {
          try {
-            safelyProcessHandler(branchEvent.getEventType(), BranchManager.getBranchByGuid(branchEvent.getBranchGuid()));
-         } catch (BranchDoesNotExist ex) {
-            // if branch doesn't exist (purged), don't need this event
+            safelyProcessHandler(branchEvent.getEventType(), branchEvent.getBranchGuid());
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, "Error processing event handler - " + handler, ex);
          }
       }
    }
 
-   private void safelyProcessHandler(BranchEventType branchModType, Branch branch) {
+   private void safelyProcessHandler(BranchEventType branchEventType, String branchGuid) {
       for (final ISMAEditorEventHandler handler : handlers) {
          if (handler.isDisposed()) {
             OseeLog.log(Activator.class, Level.SEVERE, "Unexpected handler disposed but not unregistered.");
@@ -92,7 +89,7 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
             if (awa.isInTransition()) {
                return;
             }
-            switch (branchModType) {
+            switch (branchEventType) {
                case Added:
                case Deleting:
                case Deleted:
@@ -100,8 +97,11 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
                case Purged:
                case Committing:
                case Committed:
-                  if (branch.getAssociatedArtifactId() != awa.getArtId()) {
-                     return;
+                  if (branchEventType != BranchEventType.Purged) {
+                     Branch branch = BranchManager.getBranchByGuid(branchGuid);
+                     if (branch.getAssociatedArtifactId() != awa.getArtId()) {
+                        return;
+                     }
                   }
                   Displays.ensureInDisplayThread(new Runnable() {
                      @Override
