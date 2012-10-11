@@ -39,14 +39,16 @@ public class ActionableItemManager {
    public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException {
       AtsBulkLoad.loadConfig(true);
       Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
-      for (String guid : getActionableItemGuids()) {
-         IAtsActionableItem aia = AtsConfigCache.instance.getSoleByGuid(guid, IAtsActionableItem.class);
-         if (aia == null) {
-            OseeLog.logf(Activator.class, Level.SEVERE,
-               "Actionable Item Guid [%s] from [%s] doesn't match item in AtsConfigCache", guid,
-               artifact.toStringWithId());
-         } else {
-            ais.add(aia);
+      if (!artifact.isDeleted()) {
+         for (String guid : getActionableItemGuids()) {
+            IAtsActionableItem aia = AtsConfigCache.instance.getSoleByGuid(guid, IAtsActionableItem.class);
+            if (aia == null && !artifact.isDeleted()) {
+               OseeLog.logf(Activator.class, Level.SEVERE,
+                  "Actionable Item Guid [%s] from [%s] doesn't match item in AtsConfigCache", guid,
+                  artifact.toStringWithId());
+            } else {
+               ais.add(aia);
+            }
          }
       }
       return ais;

@@ -84,7 +84,9 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
                   AtsWorkDefinitionStore.getService().getAttributeResolver(),
                   AtsWorkDefinitionStore.getService().getUserResolver());
             IAtsWorkDefinition workDef = convert.convert();
-            workDefIdToWorkDef.put(name, workDef);
+            if (workDefIdToWorkDef != null) {
+               workDefIdToWorkDef.put(name, workDef);
+            }
          }
       }
    }

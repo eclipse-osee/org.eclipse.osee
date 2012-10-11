@@ -127,7 +127,7 @@ public class AtsVersionStoreImpl implements IAtsVersionStore {
          try {
             teamDefArt = verArt.getRelatedArtifact(AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition);
          } catch (ArtifactDoesNotExist ex) {
-            if (!verArt.isDeleted()) {
+            if (!verArt.isDeleted() && verArt.isInDb()) {
                OseeLog.logf(Activator.class, Level.SEVERE, "Version [%s] has no related team defininition",
                   verArt.toStringWithId());
             }

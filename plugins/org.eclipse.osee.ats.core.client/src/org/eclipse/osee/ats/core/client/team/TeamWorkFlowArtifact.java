@@ -140,7 +140,10 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
 
    public String getTeamName() {
       try {
-         return getTeamDefinition().getName();
+         if (!isDeleted()) {
+            return getTeamDefinition().getName();
+         }
+         return "(Deleted)";
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return "!Error";

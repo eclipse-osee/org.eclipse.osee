@@ -128,7 +128,7 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
 
    @Override
    public TeamWorkFlowArtifact getParentTeamWorkflow() throws OseeCoreException {
-      if (isStandAloneReview()) {
+      if (isStandAloneReview() || isDeleted()) {
          return null;
       }
       if (parentTeamArt != null) {
@@ -140,8 +140,15 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
          OseeLog.log(Activator.class, Level.SEVERE,
             getArtifactTypeName() + " " + getHumanReadableId() + " has multiple parent workflows");
       } else if (!isStandAloneReview() && teams.isEmpty()) {
-         OseeLog.log(Activator.class, Level.SEVERE,
-            getArtifactTypeName() + " " + getHumanReadableId() + " has no parent workflow");
+         try {
+            Thread.sleep(2000);
+         } catch (InterruptedException ex) {
+            //
+         }
+         if (!isDeleted()) {
+            OseeLog.log(Activator.class, Level.SEVERE,
+               getArtifactTypeName() + " " + getHumanReadableId() + " has no parent workflow");
+         }
       }
       if (!teams.isEmpty()) {
          parentTeamArt = teams.iterator().next();
