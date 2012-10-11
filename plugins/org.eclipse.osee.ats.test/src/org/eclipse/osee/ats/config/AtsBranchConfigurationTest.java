@@ -402,7 +402,9 @@ public class AtsBranchConfigurationTest {
                TestUtil.sleep(2000);
             }
          }
-         BranchManager.purgeBranch(branch);
+         if (BranchManager.branchExists(branch)) {
+            BranchManager.purgeBranch(branch);
+         }
          TestUtil.sleep(2000);
 
       } catch (BranchDoesNotExist ex) {
