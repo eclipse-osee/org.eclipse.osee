@@ -60,6 +60,20 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          toReturn = new XCommitManager();
       } else if (widgetName.equals(XWorkingBranch.WIDGET_NAME)) {
          toReturn = new XWorkingBranch();
+      } else if (widgetName.equals(XWorkingBranchLabel.WIDGET_NAME)) {
+         toReturn = new XWorkingBranchLabel();
+      } else if (widgetName.equals(XWorkingBranchButtonCreate.WIDGET_NAME)) {
+         toReturn = new XWorkingBranchButtonCreate();
+      } else if (widgetName.equals(XWorkingBranchButtonArtifactExplorer.WIDGET_NAME)) {
+         toReturn = new XWorkingBranchButtonArtifactExplorer();
+      } else if (widgetName.equals(XWorkingBranchButtonChangeReport.WIDGET_NAME)) {
+         toReturn = new XWorkingBranchButtonChangeReport();
+      } else if (widgetName.equals(XWorkingBranchButtonDelete.WIDGET_NAME)) {
+         toReturn = new XWorkingBranchButtonDelete();
+      } else if (widgetName.equals(XWorkingBranchButtonFavorites.WIDGET_NAME)) {
+         toReturn = new XWorkingBranchButtonFavorites();
+      } else if (widgetName.equals(XWorkingBranchButtonLock.WIDGET_NAME)) {
+         toReturn = new XWorkingBranchButtonLock();
       } else if (widgetName.equals(AtsOperationalImpactValidator.WIDGET_NAME)) {
          toReturn = new OperationalImpactXWidget();
       } else if (widgetName.equals(XTeamDefinitionCombo.WIDGET_ID)) {
