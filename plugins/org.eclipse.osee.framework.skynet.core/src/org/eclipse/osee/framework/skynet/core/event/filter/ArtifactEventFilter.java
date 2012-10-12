@@ -21,22 +21,23 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class ArtifactEventFilter implements IEventFilter {
 
-   private final Artifact filterArtifact;
+   private final String filterArtifactGuid;
+   private final String filterBranchGuid;
 
    public ArtifactEventFilter(Artifact artifact) {
-      this.filterArtifact = artifact;
+      filterArtifactGuid = artifact.getGuid();
+      filterBranchGuid = artifact.getBranchGuid();
    }
 
    @Override
    public boolean isMatch(String branchGuid) {
-      return branchGuid.equals(filterArtifact.getBranchGuid());
+      return branchGuid.equals(filterBranchGuid);
    }
 
    @Override
    public boolean isMatchArtifacts(List<? extends IBasicGuidArtifact> guidArts) {
       for (IBasicGuidArtifact art : guidArts) {
-         if (art.getGuid().equals(filterArtifact.getGuid()) && art.getBranchGuid().equals(
-            filterArtifact.getBranchGuid())) {
+         if (art.getGuid().equals(filterArtifactGuid) && art.getBranchGuid().equals(filterBranchGuid)) {
             return true;
          }
       }

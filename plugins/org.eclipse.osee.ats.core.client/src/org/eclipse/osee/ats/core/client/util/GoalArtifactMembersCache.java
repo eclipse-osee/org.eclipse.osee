@@ -11,12 +11,12 @@
 package org.eclipse.osee.ats.core.client.util;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -34,14 +34,14 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
  */
 public class GoalArtifactMembersCache {
 
-   private static Map<GoalArtifact, List<Artifact>> cache;
+   private static Map<String, List<Artifact>> cache;
    private static Set<String> registered;
+   private static volatile boolean initialized = false;
 
    private static void initializeStructures() {
-      if (cache == null) {
-         cache = new WeakHashMap<GoalArtifact, List<Artifact>>();
-      }
-      if (registered == null) {
+      if (!initialized) {
+         initialized = true;
+         cache = new HashMap<String, List<Artifact>>();
          registered = new HashSet<String>();
       }
    }
@@ -57,25 +57,27 @@ public class GoalArtifactMembersCache {
 
             @Override
             public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
-               if (cache.remove(artifact) == null) {
-                  OseeEventManager.removeListener(this);
-                  registered.remove(artifact.getGuid());
+               synchronized (cache) {
+                  cache.remove(artifact.getGuid());
                }
             }
          };
          OseeEventManager.addListener(eventListener);
-
-         registered.add(artifact.getGuid());
+         synchronized (registered) {
+            registered.add(artifact.getGuid());
+         }
       }
    }
 
-   public static synchronized List<Artifact> getMembers(GoalArtifact artifact) throws OseeCoreException {
+   public static List<Artifact> getMembers(GoalArtifact artifact) throws OseeCoreException {
       initializeStructures();
       registerForEvents(artifact);
-      List<Artifact> toReturn = cache.get(artifact);
+      List<Artifact> toReturn = cache.get(artifact.getGuid());
       if (toReturn == null) {
          toReturn = artifact.getRelatedArtifacts(AtsRelationTypes.Goal_Member, DeletionFlag.EXCLUDE_DELETED);
-         cache.put(artifact, toReturn);
+         synchronized (cache) {
+            cache.put(artifact.getGuid(), toReturn);
+         }
       }
       return new LinkedList<Artifact>(toReturn);
    }
