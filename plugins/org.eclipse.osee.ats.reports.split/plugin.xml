@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.osee.ats.reports.AtsReportItem">
       <AtsReportItem
-            classname="org.eclipse.osee.ats.reports.burndown.ui.BurndownAtsReport">
+            classname="org.eclipse.osee.ats.reports.split.ui.DistributionAtsReport">
       </AtsReportItem>
    </extension>
 

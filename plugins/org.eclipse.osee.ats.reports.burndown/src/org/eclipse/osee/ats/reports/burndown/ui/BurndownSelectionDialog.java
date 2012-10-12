@@ -44,27 +44,24 @@ import org.eclipse.ui.dialogs.SelectionDialog;
  */
 public class BurndownSelectionDialog extends SelectionDialog {
 
-   XComboViewer teamCombo = new XComboViewer("Team", SWT.READ_ONLY);
-   XComboViewer versionCombo = new XComboViewer("Version", SWT.READ_ONLY);
-   XDate startDateCombo = new XDate("StartDate");
-   XDate endDateCombo = new XDate("End Date");
-   Artifact selectedVersion = null;
-   Artifact selectedTeamDef = null;
-   Date startDate;
-   Date endDate;
+   private final XComboViewer teamCombo = new XComboViewer("Team", SWT.READ_ONLY);
+   private final XComboViewer versionCombo = new XComboViewer("Version", SWT.READ_ONLY);
+   private final XDate startDateCombo = new XDate("StartDate");
+   private final XDate endDateCombo = new XDate("End Date");
+
    private final IAtsTeamDefinition teamDef;
-   Artifact project;
    private final Active active;
+
+   private Artifact selectedVersion;
+   private Artifact selectedTeamDef;
+   private Date startDate;
+   private Date endDate;
 
    /**
     * @param active :
     */
    public BurndownSelectionDialog(final Active active) {
-      super(Displays.getActiveShell());
-      this.active = active;
-      this.teamDef = null;
-      setTitle("Select Version");
-      setMessage("Select Version");
+      this(null, active);
    }
 
    /**
@@ -81,7 +78,6 @@ public class BurndownSelectionDialog extends SelectionDialog {
 
    @Override
    protected Control createDialogArea(final Composite container) {
-
       List<Object> objs = new ArrayList<Object>();
       try {
          Set<IAtsTeamDefinition> teamReleaseableDefinitions =
@@ -99,15 +95,15 @@ public class BurndownSelectionDialog extends SelectionDialog {
       comp.setLayout(new GridLayout(2, false));
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      if (this.teamDef == null) {
-         this.teamCombo.setInput(objs);
-         this.teamCombo.setLabelProvider(new ArtifactDescriptiveLabelProvider());
-         this.teamCombo.setContentProvider(new ArrayContentProvider());
-         this.teamCombo.setSorter(new ArtifactViewerSorter());
-         this.teamCombo.setGrabHorizontal(true);
-         this.teamCombo.createWidgets(comp, 2);
-         this.teamCombo.getCombo().setVisibleItemCount(20);
-         this.teamCombo.addSelectionListener(new SelectionListener() {
+      if (teamDef == null) {
+         teamCombo.setInput(objs);
+         teamCombo.setLabelProvider(new ArtifactDescriptiveLabelProvider());
+         teamCombo.setContentProvider(new ArrayContentProvider());
+         teamCombo.setSorter(new ArtifactViewerSorter());
+         teamCombo.setGrabHorizontal(true);
+         teamCombo.createWidgets(comp, 2);
+         teamCombo.getCombo().setVisibleItemCount(20);
+         teamCombo.addSelectionListener(new SelectionListener() {
 
             @Override
             public void widgetDefaultSelected(final SelectionEvent e) {
@@ -119,13 +115,12 @@ public class BurndownSelectionDialog extends SelectionDialog {
                ArrayList<Object> objs1 = new ArrayList<Object>();
                try {
 
-                  BurndownSelectionDialog.this.selectedTeamDef =
-                     (Artifact) BurndownSelectionDialog.this.teamCombo.getSelected();
+                  selectedTeamDef = (Artifact) teamCombo.getSelected();
 
-                  for (Artifact versionArtifact : BurndownSelectionDialog.this.selectedTeamDef.getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version)) {
+                  for (Artifact versionArtifact : selectedTeamDef.getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version)) {
                      objs1.add(versionArtifact);
                   }
-                  BurndownSelectionDialog.this.versionCombo.setInput(objs1);
+                  versionCombo.setInput(objs1);
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
@@ -133,24 +128,23 @@ public class BurndownSelectionDialog extends SelectionDialog {
             }
          });
       } else {
-         TeamDefinitionArtifactStore store = new TeamDefinitionArtifactStore(this.teamDef);
+         TeamDefinitionArtifactStore store = new TeamDefinitionArtifactStore(teamDef);
          Artifact teamArt = null;
          try {
             teamArt = store.getArtifact();
-         } catch (OseeCoreException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
-         this.selectedTeamDef = teamArt;
+         selectedTeamDef = teamArt;
       }
 
-      this.versionCombo.setLabelProvider(new ArtifactDescriptiveLabelProvider());
-      this.versionCombo.setContentProvider(new ArrayContentProvider());
-      this.versionCombo.setSorter(new ArtifactViewerSorter());
-      this.versionCombo.setGrabHorizontal(true);
-      this.versionCombo.createWidgets(comp, 2);
-      this.versionCombo.getCombo().setVisibleItemCount(20);
-      this.versionCombo.addSelectionListener(new SelectionListener() {
+      versionCombo.setLabelProvider(new ArtifactDescriptiveLabelProvider());
+      versionCombo.setContentProvider(new ArrayContentProvider());
+      versionCombo.setSorter(new ArtifactViewerSorter());
+      versionCombo.setGrabHorizontal(true);
+      versionCombo.createWidgets(comp, 2);
+      versionCombo.getCombo().setVisibleItemCount(20);
+      versionCombo.addSelectionListener(new SelectionListener() {
 
          @Override
          public void widgetDefaultSelected(final SelectionEvent e) {
@@ -159,48 +153,47 @@ public class BurndownSelectionDialog extends SelectionDialog {
 
          @Override
          public void widgetSelected(final SelectionEvent e) {
-            BurndownSelectionDialog.this.selectedVersion =
-               (Artifact) BurndownSelectionDialog.this.versionCombo.getSelected();
+            selectedVersion = (Artifact) versionCombo.getSelected();
             validatePage();
          }
       });
-      if (this.teamDef != null) {
+      if (teamDef != null) {
          objs = new ArrayList<Object>();
          try {
-            for (Artifact versionArtifact : this.selectedTeamDef.getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version)) {
+            for (Artifact versionArtifact : selectedTeamDef.getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version)) {
                IAtsVersion version =
                   AtsConfigCache.instance.getSoleByGuid(versionArtifact.getGuid(), IAtsVersion.class);
                VersionArtifactStore store = new VersionArtifactStore(version);
                Artifact verArt = store.getArtifact();
                objs.add(verArt);
             }
-            this.versionCombo.setInput(objs);
+            versionCombo.setInput(objs);
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
 
       // Date
-      this.startDateCombo.setFormat("MM/dd/yyyy");
-      this.startDateCombo.setRequiredEntry(true);
-      this.startDateCombo.createWidgets(comp, 2);
-      this.startDateCombo.addXModifiedListener(new XModifiedListener() {
+      startDateCombo.setFormat("MM/dd/yyyy");
+      startDateCombo.setRequiredEntry(true);
+      startDateCombo.createWidgets(comp, 2);
+      startDateCombo.addXModifiedListener(new XModifiedListener() {
 
          @Override
          public void widgetModified(final XWidget widget) {
-            BurndownSelectionDialog.this.startDate = BurndownSelectionDialog.this.startDateCombo.getDate();
+            startDate = startDateCombo.getDate();
             validatePage();
          }
       });
 
-      this.endDateCombo.setFormat("MM/dd/yyyy");
-      this.endDateCombo.setRequiredEntry(true);
-      this.endDateCombo.createWidgets(comp, 2);
-      this.endDateCombo.addXModifiedListener(new XModifiedListener() {
+      endDateCombo.setFormat("MM/dd/yyyy");
+      endDateCombo.setRequiredEntry(true);
+      endDateCombo.createWidgets(comp, 2);
+      endDateCombo.addXModifiedListener(new XModifiedListener() {
 
          @Override
          public void widgetModified(final XWidget widget) {
-            BurndownSelectionDialog.this.endDate = BurndownSelectionDialog.this.endDateCombo.getDate();
+            endDate = endDateCombo.getDate();
             validatePage();
          }
       });
@@ -211,27 +204,27 @@ public class BurndownSelectionDialog extends SelectionDialog {
     * Method for validations
     */
    public void validatePage() {
-      if (this.teamCombo.getSelected() == null) {
+      if (teamCombo.getSelected() == null) {
          setMessage("Please Select a Team");
          getOkButton().setEnabled(false);
          return;
       }
-      if (this.versionCombo.getSelected() == null) {
+      if (versionCombo.getSelected() == null) {
          setMessage("Please Select a Version");
          getOkButton().setEnabled(false);
          return;
       }
-      if (this.startDateCombo.getDate() == null) {
+      if (startDateCombo.getDate() == null) {
          setMessage("Please Select the Start Date");
          getOkButton().setEnabled(false);
          return;
       }
-      if (this.endDateCombo.getDate() == null) {
+      if (endDateCombo.getDate() == null) {
          setMessage("Please Select the End Date");
          getOkButton().setEnabled(false);
          return;
       }
-      if (!this.endDateCombo.getDate().after(this.startDateCombo.getDate())) {
+      if (!endDateCombo.getDate().after(startDateCombo.getDate())) {
          setMessage("End Date must occur after Start Date!!");
          getOkButton().setEnabled(false);
          return;
@@ -244,28 +237,28 @@ public class BurndownSelectionDialog extends SelectionDialog {
     * @return selected version
     */
    public Artifact getSelectedVersion() {
-      return this.selectedVersion;
+      return selectedVersion;
    }
 
    /**
     * @return the selectedTeamDef
     */
    public Artifact getSelectedTeamDef() {
-      return this.selectedTeamDef;
+      return selectedTeamDef;
    }
 
    /**
     * @return the start date
     */
    public Date getStartDate() {
-      return this.startDate;
+      return startDate;
    }
 
    /**
     * @return the end date
     */
    public Date getEndDate() {
-      return this.endDate;
+      return endDate;
    }
 
 }

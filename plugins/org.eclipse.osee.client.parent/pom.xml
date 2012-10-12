@@ -55,6 +55,7 @@
 		<module>../../plugins/org.eclipse.osee.ats.config.demo</module>
 		<module>../../plugins/org.eclipse.osee.ats.impl</module>
 
+      <module>../../plugins/org.eclipse.osee.ats.reports</module>
       <module>../../plugins/org.eclipse.osee.ats.reports.burndown</module>
       <module>../../plugins/org.eclipse.osee.ats.reports.efficiency</module>
       <module>../../plugins/org.eclipse.osee.ats.reports.split</module>
