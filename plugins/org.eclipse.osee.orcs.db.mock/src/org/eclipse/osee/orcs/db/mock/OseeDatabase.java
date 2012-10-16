@@ -34,9 +34,12 @@ public class OseeDatabase implements MethodRule {
          public void evaluate() throws Throwable {
             Assert.assertNotNull("Connection Id cannot be null", connectionId);
             TestDatabase db = new TestDatabase(connectionId, method, target);
-            db.initialize();
-            base.evaluate();
-            db.cleanup();
+            try {
+               db.initialize();
+               base.evaluate();
+            } finally {
+               db.cleanup();
+            }
          }
 
       };
