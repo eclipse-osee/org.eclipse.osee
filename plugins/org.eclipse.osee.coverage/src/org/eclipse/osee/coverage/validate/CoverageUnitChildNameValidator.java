@@ -10,17 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.validate;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
-import org.eclipse.osee.coverage.util.CoverageUtil;
+import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 
 /**
  * Validate that all children CoverageUnits have different names
- *
+ * 
  * @author Donald G. Dunne
  */
 public class CoverageUnitChildNameValidator {
@@ -55,26 +60,48 @@ public class CoverageUnitChildNameValidator {
 
    public static XResultData validate(Set<String> uniqueResults, XResultData rd, CoverageUnit coverageUnit, boolean recurse) {
 
-      Set<String> names = new HashSet<String>();
-      for (CoverageUnit childCoverageUnit : coverageUnit.getCoverageUnits()) {
-         if (names.contains(childCoverageUnit.getName())) {
-            String methodCount = CoverageUtil.getCoverageMethodCountStr("Method Count", coverageUnit);
-            String errorStr =
-               String.format("Coverage Unit children have same name [%s] for parent [%s]; [%s]",
-                  childCoverageUnit.getName(), coverageUnit.toString(), methodCount);
-            // Only handle error once
-            if (!uniqueResults.contains(errorStr)) {
-               rd.logError(errorStr);
-               uniqueResults.add(errorStr);
+      Map<String, List<CoverageUnit>> mapNameToCvgUnits = new HashMap<String, List<CoverageUnit>>();
+      populateMapNameToCvgUnits(mapNameToCvgUnits, coverageUnit);
+
+      List<String> errorStrs = new ArrayList<String>();
+      for (List<CoverageUnit> cvgUnits : mapNameToCvgUnits.values()) {
+         if (cvgUnits.size() > 1) {
+
+            for (CoverageUnit cvgUnit : cvgUnits) {
+               ICoverage parent = cvgUnit.getParent();
+               String errorStr =
+                  String.format(
+                     "Methods with same name - File:[%s] &nbsp;&nbsp;&nbsp;&nbsp; Method:[%s] &nbsp;&nbsp;&nbsp;&nbsp; MethodNumber:[%s]",
+                     (parent != null) ? parent.getName() : "", cvgUnit.getName(), cvgUnit.getOrderNumber());
+               errorStrs.add(errorStr);
             }
          }
-         names.add(childCoverageUnit.getName());
-
-         if (recurse) {
-            // process children coverage units
-            validate(rd, childCoverageUnit, recurse);
-         }
       }
+      Collections.sort(errorStrs);
+
+      for (String errorStr : errorStrs) {
+         uniqueResults.add(errorStr);
+         rd.logError(errorStr);
+      }
+
       return rd;
+   }
+
+   public static void populateMapNameToCvgUnits(Map<String, List<CoverageUnit>> mapNameToCvgUnits, CoverageUnit coverageUnit) {
+      String name = coverageUnit.getName();
+      ICoverage parent = coverageUnit.getParent();
+      String parentName = parent.getName();
+      String key = parentName + ":" + name;
+      List<CoverageUnit> cvgUnits = mapNameToCvgUnits.get(key);
+      if (cvgUnits == null) {
+         cvgUnits = new ArrayList<CoverageUnit>();
+         mapNameToCvgUnits.put(key, cvgUnits);
+      }
+      cvgUnits.add(coverageUnit);
+
+      // process children coverage units
+      for (CoverageUnit childCoverageUnit : coverageUnit.getCoverageUnits()) {
+         populateMapNameToCvgUnits(mapNameToCvgUnits, childCoverageUnit);
+      }
    }
 }
