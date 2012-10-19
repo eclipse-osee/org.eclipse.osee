@@ -44,7 +44,6 @@ public class OpenWorldByIdAction extends Action {
          data.setEnteredIds(overrideId);
       }
       MultipleHridSearchOperation operation = new MultipleHridSearchOperation(data);
-      Operations.executeAsJob(operation, true);
       if (pend) {
          operation.run(null);
       } else {
