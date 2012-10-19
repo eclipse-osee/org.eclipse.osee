@@ -22,7 +22,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Test Case for {@link DateIterator}
- *
+ * 
  * @author Shawn F. Cook
  */
 @RunWith(Parameterized.class)
@@ -78,17 +78,17 @@ public class DateIteratorTest {
       }
 
       //***  DEBUGGING OUTPUT ***
-      String start = DateUtil.get(startCal.getTime());
-      String end = DateUtil.get(endCal.getTime());
-      System.out.println("start:" + start + " end:" + end);
-      for (Calendar cal : calsExpected) {
-         String calStr = DateUtil.get(cal.getTime(), "MM/dd/yyyy hh:mm:ss:SS a");
-         //         System.out.println("Expected: " + calStr);
-      }
-      for (Calendar cal : calsFromIter) {
-         String calStr = DateUtil.get(cal.getTime(), "MM/dd/yyyy hh:mm:ss:SS a");
-         //         System.out.println("Actual: " + calStr);
-      }
+      //      String start = DateUtil.get(startCal.getTime());
+      //      String end = DateUtil.get(endCal.getTime());
+      //      System.out.println("start:" + start + " end:" + end);
+      //      for (Calendar cal : calsExpected) {
+      //         String calStr = DateUtil.get(cal.getTime(), "MM/dd/yyyy hh:mm:ss:SS a");
+      //         //         System.out.println("Expected: " + calStr);
+      //      }
+      //      for (Calendar cal : calsFromIter) {
+      //         String calStr = DateUtil.get(cal.getTime(), "MM/dd/yyyy hh:mm:ss:SS a");
+      //         //         System.out.println("Actual: " + calStr);
+      //      }
 
       //Asserts
       for (Calendar cal : calsExpected) {
