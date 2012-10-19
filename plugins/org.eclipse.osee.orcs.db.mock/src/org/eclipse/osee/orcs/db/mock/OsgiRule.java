@@ -10,14 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.mock;
 
-import java.lang.reflect.Field;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.db.mock.internal.OsgiUtil;
+import java.lang.annotation.Annotation;
+import java.util.HashMap;
+import java.util.Map;
+import org.eclipse.osee.framework.jdk.core.util.annotation.AnnotationProcessor;
+import org.eclipse.osee.framework.jdk.core.util.annotation.FieldAnnotationHandler;
+import org.eclipse.osee.orcs.db.mock.internal.OsgiServiceFieldAnnotationHandler;
 import org.junit.rules.TestWatchman;
 import org.junit.runners.model.FrameworkMethod;
 
 public class OsgiRule extends TestWatchman {
 
+   private static final AnnotationProcessor processor = createProcessor();
    private final Object[] objects;
 
    public OsgiRule(Object... objects) {
@@ -27,47 +31,17 @@ public class OsgiRule extends TestWatchman {
    @Override
    public void starting(FrameworkMethod method) {
       try {
-         for (Object object : objects) {
-            initAnnotations(object);
-         }
+         processor.initAnnotations(objects);
       } catch (Exception ex) {
          throw new RuntimeException(ex);
       }
    }
 
-   public static void initAnnotations(Object testClass) throws Exception {
-      if (testClass == null) {
-         throw new OseeCoreException(
-            "testClass cannot be null. For info how to use @OsgiService annotations see examples");
-      }
+   private static AnnotationProcessor createProcessor() {
+      Map<Class<? extends Annotation>, FieldAnnotationHandler<?>> annotationHandlers =
+         new HashMap<Class<? extends Annotation>, FieldAnnotationHandler<?>>();
 
-      Class<?> clazz = testClass.getClass();
-      while (clazz != Object.class) {
-         scan(testClass, clazz);
-         clazz = clazz.getSuperclass();
-      }
-   }
-
-   private static void scan(Object object, Class<?> clazz) throws Exception {
-      Field[] fields = clazz.getDeclaredFields();
-      for (Field field : fields) {
-         if (field.isAnnotationPresent(OsgiService.class)) {
-            OsgiService annotation = field.getAnnotation(OsgiService.class);
-            injectToFields(annotation, object, field);
-         }
-      }
-   }
-
-   private static void injectToFields(OsgiService annotation, Object object, Field field) throws Exception {
-      boolean wasAccessible = field.isAccessible();
-      field.setAccessible(true);
-      try {
-         Object service = OsgiUtil.getService(field.getType());
-         field.set(object, service);
-      } catch (Error e) {
-         throw new Exception("Problems injecting dependencies in " + field.getName(), e);
-      } finally {
-         field.setAccessible(wasAccessible);
-      }
+      annotationHandlers.put(OsgiService.class, new OsgiServiceFieldAnnotationHandler());
+      return new AnnotationProcessor(annotationHandlers);
    }
 }

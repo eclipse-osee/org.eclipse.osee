@@ -8,11 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.jdk.core.util;
+package org.eclipse.osee.framework.jdk.core.util.annotation;
 
-import org.eclipse.osee.framework.jdk.core.util.annotation.AnnotationTestSuite;
-import org.eclipse.osee.framework.jdk.core.util.io.IoTestSuite;
-import org.eclipse.osee.framework.jdk.core.util.xml.XmlTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -20,19 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-   AnnotationTestSuite.class,
-   DateIteratorTest.class,
-   IoTestSuite.class,
-   XmlTestSuite.class,
-   CollectionsTest.class,
-   CompareTest.class,
-   GUIDTest.class,
-   HashCollectionTest.class,
-   HumanReadableIdTest.class,
-   ReservedCharactersTest.class,
-   StringsTest.class,
-   UrlQueryTest.class})
-public class JdkCoreUtilTestSuite {
+@Suite.SuiteClasses({})
+public class AnnotationTestSuite {
    // Test Suite
 }

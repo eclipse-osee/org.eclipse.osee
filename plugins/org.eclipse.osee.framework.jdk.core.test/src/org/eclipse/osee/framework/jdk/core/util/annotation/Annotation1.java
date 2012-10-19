@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2010 Boeing.
+ * Copyright (c) 2012 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,16 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.jdk.core.rules;
+package org.eclipse.osee.framework.jdk.core.util.annotation;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-/**
- * @author Roberto E. Escobar
- */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({WordMLNewLineMakerRuleTest.class})
-public class JdkCoreRuleTestSuite {
-   // Test Suite
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface Annotation1 {
+   //
 }
