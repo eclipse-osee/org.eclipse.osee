@@ -345,7 +345,9 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
                         versionCombo.setDataStrings(new String[] {});
                         return;
                      }
-                     versionCombo.setDataStrings(names.toArray(new String[names.size()]));
+                     List<String> namesList = new ArrayList<String>(names);
+                     java.util.Collections.sort(namesList);
+                     versionCombo.setDataStrings(namesList.toArray(new String[namesList.size()]));
                   } catch (Exception ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   }
