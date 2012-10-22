@@ -84,25 +84,31 @@ public class HttpProcessor {
       if (!proxyBypass) {
          if (proxyService == null) {
             BundleContext context = Activator.getBundleContext();
-            ServiceReference reference = context.getServiceReference(IProxyService.class.getName());
-            proxyService = (IProxyService) context.getService(reference);
-            proxyService.addProxyChangeListener(new IProxyChangeListener() {
+            if (context != null) {
+               ServiceReference<IProxyService> reference = context.getServiceReference(IProxyService.class);
+               proxyService = context.getService(reference);
+            }
+            if (proxyService != null) {
+               proxyService.addProxyChangeListener(new IProxyChangeListener() {
 
-               @Override
-               public void proxyInfoChanged(IProxyChangeEvent event) {
-                  proxiedData.clear();
-               }
-            });
+                  @Override
+                  public void proxyInfoChanged(IProxyChangeEvent event) {
+                     proxiedData.clear();
+                  }
+               });
+            }
          }
 
          String key = String.format("%s_%s", uri.getScheme(), uri.getHost());
          IProxyData[] datas = proxiedData.get(key);
-         if (datas == null) {
+         if (datas == null && proxyService != null) {
             datas = proxyService.select(uri);
             proxiedData.put(key, datas);
          }
-         for (IProxyData data : datas) {
-            config.setProxy(data.getHost(), data.getPort());
+         if (datas != null) {
+            for (IProxyData data : datas) {
+               config.setProxy(data.getHost(), data.getPort());
+            }
          }
       }
       OseeLog.logf(Activator.class, Level.INFO, "Http-Request: [%s] [%s]", requests++, uri.toASCIIString());
@@ -163,7 +169,7 @@ public class HttpProcessor {
                params.setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(0, false));
                method.setParams(params);
                int responseCode = executeMethod(url, method);
-               if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
+               if (responseCode == HttpURLConnection.HTTP_NOT_FOUND || responseCode == HttpURLConnection.HTTP_ACCEPTED || responseCode == HttpURLConnection.HTTP_ACCEPTED || responseCode == HttpURLConnection.HTTP_OK) {
                   isAlive = true;
                }
             } finally {
