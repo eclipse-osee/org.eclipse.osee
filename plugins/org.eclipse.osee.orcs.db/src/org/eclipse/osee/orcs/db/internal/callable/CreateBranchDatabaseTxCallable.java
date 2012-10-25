@@ -48,9 +48,23 @@ public class CreateBranchDatabaseTxCallable extends DatabaseTxCallable<Branch> {
    private static final String INSERT_TX_DETAILS =
       "INSERT INTO osee_tx_details (branch_id, transaction_id, osee_comment, time, author, tx_type) VALUES (?,?,?,?,?,?)";
 
+   // @formatter:off
+   private static final String SELECT_ADDRESSING = "with\n"+
+"txs as (select transaction_id, gamma_id, mod_type from osee_txs where branch_id = ? and transaction_id <= ?),\n\n"+
+
+"txsI as (\n"+
+"   SELECT transaction_id, item.gamma_id, mod_type, 1 as item_type, attr_id as item_id FROM osee_attribute item, txs where txs.gamma_id = item.gamma_id\n"+
+"UNION ALL\n"+
+"   SELECT transaction_id, item.gamma_id, mod_type, 2 as item_type, art_id as item_id FROM osee_artifact item, txs where txs.gamma_id = item.gamma_id\n"+
+"UNION ALL\n"+
+"   SELECT transaction_id, item.gamma_id, mod_type, 3 as item_type, rel_link_id as item_id FROM osee_relation_link item, txs where txs.gamma_id = item.gamma_id),\n\n"+
+
+"txsM as (SELECT MAX(transaction_id) AS transaction_id, item_type, item_id FROM txsI GROUP BY item_type, item_id)\n\n"+
+
+"select gamma_id, mod_type from txsI, txsM where txsM.item_type = txsI.item_type and txsM.item_id = txsI.item_id and txsM.transaction_id = txsI.transaction_id order by txsM.transaction_id desc";
    // descending order is used so that the most recent entry will be used if there are multiple rows with the same gamma (an error case)
-   private static final String SELECT_ADDRESSING =
-      "SELECT gamma_id, mod_type FROM osee_txs txs WHERE txs.tx_current <> ? AND txs.branch_id = ? AND txs.transaction_id <= ? ORDER BY txs.transaction_id DESC";
+   // @formatter:on
+
    private static final String INSERT_ADDRESSING =
       "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) VALUES (?,?,?,?,?)";
    private static final String USER_ID_QUERY = "SELECT art_id FROM osee_artifact WHERE guid = ?";
@@ -232,8 +246,8 @@ public class CreateBranchDatabaseTxCallable extends DatabaseTxCallable<Branch> {
             populateAddressingToCopy(connection, data, baseTxId, gammas, SELECT_ARTIFACT_ADDRESSING_FROM_JOIN,
                parentBranchId, TxChange.NOT_CURRENT.getValue(), mergeAddressingQueryId);
          } else {
-            populateAddressingToCopy(connection, data, baseTxId, gammas, SELECT_ADDRESSING,
-               TxChange.NOT_CURRENT.getValue(), parentBranchId, branch.getSourceTransaction().getId());
+            populateAddressingToCopy(connection, data, baseTxId, gammas, SELECT_ADDRESSING, parentBranchId,
+               branch.getSourceTransaction().getId());
          }
          if (!data.isEmpty()) {
             getDatabaseService().runBatchUpdate(connection, INSERT_ADDRESSING, data);
