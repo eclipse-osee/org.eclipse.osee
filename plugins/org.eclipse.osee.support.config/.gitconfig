@@ -2,18 +2,24 @@
         autocrlf = false
         eol = lf
         askpass = userHomeDir/.managePasswords
-
+        pager = less -FRSX
 [color]
         ui = auto
-
 [http]
         sslcainfo = bin/curl-ca-bundle.crt
         sslverify = false
         postbuffer = 524288000
-
+[push]
+        default = tracking
+[rebase]
+        autosquash = false
+        stat = true
+[rerere]
+        enabled = true
+        autoupdate = true
 [merge]
         tool = kdiff3
-        
+                
 [mergetool]
         keepBackup = false
 
