@@ -40,6 +40,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeyword;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
@@ -76,6 +77,9 @@ public class QueryEngineImplTest {
    private static final Criteria<?> ATTRIBUTE_KEYWORD = new CriteriaAttributeKeyword(Arrays.asList(
       CoreAttributeTypes.Name, CoreAttributeTypes.WordTemplateContent), "hello1_two_three",
       StringOperator.TOKENIZED_MATCH_ORDER, CaseType.IGNORE_CASE);
+
+   private static final Criteria<?> RELATED_TO = new CriteriaRelatedTo(CoreRelationTypes.Default_Hierarchical__Child,
+      Arrays.asList(45, 61));
 
    //   private static final Criteria TWO_TYPES = new CriteriaArtifactType(Arrays.asList(CoreArtifactTypes.CodeUnit,
    //      CoreArtifactTypes.Artifact));
@@ -625,5 +629,53 @@ public class QueryEngineImplTest {
 
       Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid().intValue(), parameters.get(11));
       Assert.assertEquals(EXPECTED_BRANCH_ID, parameters.get(12));
+   }
+
+   @Test
+   public void testRelatedTo() throws OseeCoreException {
+      String expected =
+         "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + // 
+         " FROM \n" + //
+         "osee_join_id jid1, osee_artifact art1, osee_txs txs1, " + //
+         "osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, " + //
+         "osee_join_id jid2, osee_relation_link rel1, osee_txs txs3\n" + //
+         " WHERE \n" + //
+         "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+         " AND \n" + //
+         "art2.guid = jch1.id AND jch1.query_id = ? AND art2.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
+         " AND \n" + //
+         "art1.art_type_id = ? AND art2.art_type_id = ?\n" + //
+         " AND \n" + //
+         "rel1.rel_link_type_id = ? AND rel1.b_art_id = jid2.id AND jid2.query_id = ?\n" + //
+         " AND \n" + //
+         "rel1.a_art_id = art1.art_id\n" + //
+         " AND \n" + //
+         "rel1.a_art_id = art2.art_id\n" + //
+         " AND \n" + //
+         "rel1.gamma_id = txs3.gamma_id AND txs3.tx_current = 1 AND txs3.branch_id = ?\n" + //
+         " ORDER BY art1.art_id, txs1.branch_id";
+
+      queryData.addCriteria(GUIDS, TYPES, IDS, RELATED_TO);
+
+      QuerySqlContext context = queryEngine.create(sessionId, queryData);
+      Assert.assertEquals(expected, context.getSql());
+
+      List<Object> parameters = context.getParameters();
+      Assert.assertEquals(9, parameters.size());
+      List<AbstractJoinQuery> joins = context.getJoins();
+      Assert.assertEquals(3, joins.size());
+
+      Assert.assertEquals(joins.get(0).getQueryId(), parameters.get(0));
+      Assert.assertEquals(EXPECTED_BRANCH_ID, parameters.get(1));
+
+      Assert.assertEquals(joins.get(1).getQueryId(), parameters.get(2));
+      Assert.assertEquals(EXPECTED_BRANCH_ID, parameters.get(3));
+
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(4));
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(5));
+
+      Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid().intValue(), parameters.get(6));
+      Assert.assertEquals(joins.get(2).getQueryId(), parameters.get(7));
+      Assert.assertEquals(EXPECTED_BRANCH_ID, parameters.get(8));
    }
 }

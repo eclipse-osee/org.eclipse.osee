@@ -15,6 +15,7 @@ import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -121,9 +122,9 @@ public interface QueryBuilder {
    /**
     * Search criteria that follows the relation link ending on the given side
     * 
-    * @param relationType the type-side to start following the link from
+    * @param relationType the type to start following the link from
     */
-   QueryBuilder andExists(IRelationTypeSide relationType) throws OseeCoreException;
+   QueryBuilder andExists(IRelationType relationType) throws OseeCoreException;
 
    /**
     * Artifact name equals value
@@ -157,41 +158,69 @@ public interface QueryBuilder {
    QueryBuilder and(Collection<? extends IAttributeType> attributeTypes, StringOperator operator, CaseType match, String value) throws OseeCoreException;
 
    /**
+    * Search for related artifacts
+    * 
+    * @param relationTypeSide the type-side to search on
+    */
+   QueryBuilder andRelatedTo(IRelationTypeSide relationTypeSide, ArtifactReadable... artifacts) throws OseeCoreException;
+
+   /**
+    * Search for related artifacts
+    * 
+    * @param relationTypeSide the type-side to search on
+    */
+   QueryBuilder andRelatedTo(IRelationTypeSide relationTypeSide, Collection<? extends ArtifactReadable> artifacts) throws OseeCoreException;
+
+   /**
+    * Search for related artifacts
+    * 
+    * @param relationTypeSide the type-side to search on
+    */
+   QueryBuilder andRelatedToLocalIds(IRelationTypeSide relationTypeSide, int... artifactIds) throws OseeCoreException;
+
+   /**
+    * Search for related artifacts
+    * 
+    * @param relationTypeSide the type-side to search on
+    */
+   QueryBuilder andRelatedToLocalIds(IRelationTypeSide relationTypeSide, Collection<Integer> artifactIds) throws OseeCoreException;
+
+   /**
     * Executes query
     * 
     * @return artifact search results
     */
-   public ResultSet<ArtifactReadable> getResults() throws OseeCoreException;
+   ResultSet<ArtifactReadable> getResults() throws OseeCoreException;
 
    /**
     * Executes query
     * 
     * @return artifact search results with match locations
     */
-   public ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> getMatches() throws OseeCoreException;
+   ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> getMatches() throws OseeCoreException;
 
    /**
     * Count search results
     */
-   public int getCount() throws OseeCoreException;
+   int getCount() throws OseeCoreException;
 
    /**
     * Schedule a count search results
     */
-   public CancellableCallable<Integer> createCount() throws OseeCoreException;
+   CancellableCallable<Integer> createCount() throws OseeCoreException;
 
    /**
     * Schedule query
     * 
     * @return artifact search results
     */
-   public CancellableCallable<ResultSet<ArtifactReadable>> createSearch() throws OseeCoreException;
+   CancellableCallable<ResultSet<ArtifactReadable>> createSearch() throws OseeCoreException;
 
    /**
     * Schedule query and find matching locations
     * 
     * @return artifact search results with match locations
     */
-   public CancellableCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> createSearchWithMatches() throws OseeCoreException;
+   CancellableCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> createSearchWithMatches() throws OseeCoreException;
 
 }

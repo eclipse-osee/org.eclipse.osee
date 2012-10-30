@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
@@ -28,6 +29,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeyword;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.search.CaseType;
 import org.eclipse.osee.orcs.search.Operator;
@@ -62,7 +64,7 @@ public class CriteriaFactory {
       return new CriteriaAttributeTypeExists(attributeTypes);
    }
 
-   public Criteria<QueryOptions> createExistsCriteria(IRelationTypeSide relationType) throws OseeCoreException {
+   public Criteria<QueryOptions> createExistsCriteria(IRelationType relationType) throws OseeCoreException {
       return new CriteriaRelationTypeExists(relationType);
    }
 
@@ -89,6 +91,10 @@ public class CriteriaFactory {
 
    public Criteria<QueryOptions> createArtifactHridCriteria(Set<String> hrids) throws OseeCoreException {
       return new CriteriaArtifactHrids(hrids);
+   }
+
+   public Criteria<QueryOptions> createRelatedToCriteria(IRelationTypeSide relationType, Collection<Integer> artifactIds) throws OseeCoreException {
+      return new CriteriaRelatedTo(relationType, artifactIds);
    }
 
 }

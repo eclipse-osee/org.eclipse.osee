@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
+import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
@@ -22,20 +24,25 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 /**
  * @author Roberto E. Escobar
  */
-public class RelationTypeExistsSqlHandler extends SqlHandler<CriteriaRelationTypeExists, QueryOptions> {
+public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo, QueryOptions> {
 
-   private CriteriaRelationTypeExists criteria;
+   private CriteriaRelatedTo criteria;
 
+   private String jIdAlias;
    private String relAlias;
    private String txsAlias;
 
    @Override
-   public void setData(CriteriaRelationTypeExists criteria) {
+   public void setData(CriteriaRelatedTo criteria) {
       this.criteria = criteria;
    }
 
    @Override
    public void addTables(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
+      if (criteria.getIds().size() > 1) {
+         jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
+      }
+
       List<String> artAliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       if (artAliases.isEmpty()) {
          writer.addTable(TableEnum.ARTIFACT_TABLE);
@@ -46,30 +53,46 @@ public class RelationTypeExistsSqlHandler extends SqlHandler<CriteriaRelationTyp
 
    @Override
    public void addPredicates(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
-      IRelationType type = criteria.getType();
+      IRelationTypeSide typeSide = criteria.getType();
       writer.write(relAlias);
       writer.write(".rel_link_type_id = ?");
-      writer.addParameter(toLocalId(type));
+      writer.addParameter(toLocalId(typeSide));
+
+      Collection<Integer> ids = criteria.getIds();
+      if (!ids.isEmpty()) {
+         writer.write(" AND ");
+         String aOrbArtId = typeSide.getSide().isSideA() ? ".a_art_id" : ".b_art_id";
+         if (ids.size() > 1) {
+            AbstractJoinQuery joinQuery = writer.writeIdJoin(ids);
+            writer.write(relAlias);
+            writer.write(aOrbArtId);
+            writer.write(" = ");
+            writer.write(jIdAlias);
+            writer.write(".id AND ");
+            writer.write(jIdAlias);
+            writer.write(".query_id = ?");
+            writer.addParameter(joinQuery.getQueryId());
+         } else {
+            writer.write(relAlias);
+            writer.write(aOrbArtId);
+            writer.write(" = ?");
+            writer.addParameter(ids.iterator().next());
+         }
+      }
 
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       if (!aliases.isEmpty()) {
          writer.write("\n AND \n");
+         String oppositeAOrBartId = typeSide.getSide().isSideA() ? ".b_art_id" : ".a_art_id";
          int aSize = aliases.size();
          for (int index = 0; index < aSize; index++) {
             String artAlias = aliases.get(index);
 
-            writer.write("(");
             writer.write(relAlias);
-            writer.write(".a_art_id = ");
+            writer.write(oppositeAOrBartId);
+            writer.write(" = ");
             writer.write(artAlias);
             writer.write(".art_id");
-
-            writer.write(" OR ");
-
-            writer.write(relAlias);
-            writer.write(".b_art_id = ");
-            writer.write(artAlias);
-            writer.write(".art_id)");
 
             if (index + 1 < aSize) {
                writer.write("\n AND \n");
@@ -86,6 +109,6 @@ public class RelationTypeExistsSqlHandler extends SqlHandler<CriteriaRelationTyp
 
    @Override
    public int getPriority() {
-      return SqlHandlerPriority.RELATION_TYPE_EXISTS.ordinal();
+      return SqlHandlerPriority.RELATED_TO_ART_IDS.ordinal();
    }
 }

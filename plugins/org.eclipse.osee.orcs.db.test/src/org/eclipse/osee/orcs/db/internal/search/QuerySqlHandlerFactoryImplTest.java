@@ -32,6 +32,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeyword;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.db.internal.search.handlers.ArtifactGuidSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.ArtifactHridsSqlHandler;
@@ -40,6 +41,7 @@ import org.eclipse.osee.orcs.db.internal.search.handlers.ArtifactTypeSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.AttributeOtherSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.AttributeTokenSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.AttributeTypeExistsSqlHandler;
+import org.eclipse.osee.orcs.db.internal.search.handlers.RelatedToSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.RelationTypeExistsSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerPriority;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
@@ -94,13 +96,14 @@ public class QuerySqlHandlerFactoryImplTest {
       criteria.add(new CriteriaAttributeTypeExists(null));
       criteria.add(new CriteriaAttributeOther(null, null, null));
       criteria.add(new CriteriaAttributeKeyword(null, null, null, null));
+      criteria.add(new CriteriaRelatedTo(null, null));
 
       Collections.shuffle(criteria);
 
       CriteriaSet criteriaSet = createCriteria(CoreBranches.COMMON, criteria);
       List<SqlHandler<?, QueryOptions>> handlers = factory.createHandlers(criteriaSet);
 
-      Assert.assertEquals(8, handlers.size());
+      Assert.assertEquals(9, handlers.size());
 
       Iterator<SqlHandler<?, QueryOptions>> iterator = handlers.iterator();
       assertSqlHandler(iterator.next(), ArtifactIdsSqlHandler.class, SqlHandlerPriority.ARTIFACT_ID);
@@ -117,6 +120,7 @@ public class QuerySqlHandlerFactoryImplTest {
       assertSqlHandler(iterator.next(), ArtifactTypeSqlHandler.class, SqlHandlerPriority.ARTIFACT_TYPE);
       assertSqlHandler(iterator.next(), AttributeTypeExistsSqlHandler.class, SqlHandlerPriority.ATTRIBUTE_TYPE_EXISTS);
       assertSqlHandler(iterator.next(), RelationTypeExistsSqlHandler.class, SqlHandlerPriority.RELATION_TYPE_EXISTS);
+      assertSqlHandler(iterator.next(), RelatedToSqlHandler.class, SqlHandlerPriority.RELATED_TO_ART_IDS);
    }
 
    @SuppressWarnings("rawtypes")

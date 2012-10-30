@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds.criteria;
 
-import org.eclipse.osee.framework.core.data.IRelationType;
+import java.util.Collection;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
@@ -19,27 +20,33 @@ import org.eclipse.osee.orcs.core.ds.QueryOptions;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaRelationTypeExists extends Criteria<QueryOptions> {
-   private final IRelationType relationType;
+public class CriteriaRelatedTo extends Criteria<QueryOptions> {
+   private final IRelationTypeSide relationType;
+   private final Collection<Integer> artifactIds;
 
-   public CriteriaRelationTypeExists(IRelationType relationType) {
+   public CriteriaRelatedTo(IRelationTypeSide relationType, Collection<Integer> artifactIds) {
       super();
       this.relationType = relationType;
+      this.artifactIds = artifactIds;
    }
 
-   public IRelationType getType() {
+   public IRelationTypeSide getType() {
       return relationType;
+   }
+
+   public Collection<Integer> getIds() {
+      return artifactIds;
    }
 
    @Override
    public void checkValid(QueryOptions options) throws OseeCoreException {
       super.checkValid(options);
-      Conditions.checkNotNull(getType(), "relation type");
+      Conditions.checkNotNull(getType(), "relation type side");
    }
 
    @Override
    public String toString() {
-      return "CriteriaRelationTypeExists [relationType=" + relationType + "]";
+      return "CriteriaRelatedTo [relationType=" + relationType + ", artifactIds=" + artifactIds + "]";
    }
 
 }

@@ -46,6 +46,10 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
       if (criteria.getTypes().size() > 1) {
          jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
+      List<String> artAliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
+      if (artAliases.isEmpty()) {
+         writer.addTable(TableEnum.ARTIFACT_TABLE);
+      }
       attrAlias = writer.addTable(TableEnum.ATTRIBUTE_TABLE);
       txsAlias = writer.addTable(TableEnum.TXS_TABLE);
    }

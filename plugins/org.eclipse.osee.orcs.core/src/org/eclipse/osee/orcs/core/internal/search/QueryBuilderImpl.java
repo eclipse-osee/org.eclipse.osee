@@ -19,6 +19,7 @@ import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -33,6 +34,7 @@ import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
+import org.eclipse.osee.orcs.data.HasLocalId;
 import org.eclipse.osee.orcs.search.CaseType;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.Operator;
@@ -233,7 +235,7 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public QueryBuilder andExists(IRelationTypeSide relationType) throws OseeCoreException {
+   public QueryBuilder andExists(IRelationType relationType) throws OseeCoreException {
       Criteria<QueryOptions> criteria = criteriaFactory.createExistsCriteria(relationType);
       return addAndCheck(criteria);
    }
@@ -290,6 +292,35 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
+   public QueryBuilder andRelatedTo(IRelationTypeSide relationTypeSide, ArtifactReadable... artifacts) throws OseeCoreException {
+      return andRelatedTo(relationTypeSide, Arrays.asList(artifacts));
+   }
+
+   @Override
+   public QueryBuilder andRelatedTo(IRelationTypeSide relationTypeSide, Collection<? extends ArtifactReadable> artifacts) throws OseeCoreException {
+      Set<Integer> ids = new HashSet<Integer>();
+      for (HasLocalId token : artifacts) {
+         ids.add(token.getLocalId());
+      }
+      return andRelatedToLocalIds(relationTypeSide, ids);
+   }
+
+   @Override
+   public QueryBuilder andRelatedToLocalIds(IRelationTypeSide relationTypeSide, int... artifactIds) throws OseeCoreException {
+      Set<Integer> ids = new HashSet<Integer>();
+      for (Integer id : artifactIds) {
+         ids.add(id);
+      }
+      return andRelatedToLocalIds(relationTypeSide, ids);
+   }
+
+   @Override
+   public QueryBuilder andRelatedToLocalIds(IRelationTypeSide relationTypeSide, Collection<Integer> artifactIds) throws OseeCoreException {
+      Criteria<QueryOptions> criteria = criteriaFactory.createRelatedToCriteria(relationTypeSide, artifactIds);
+      return addAndCheck(criteria);
+   }
+
+   @Override
    public ResultSet<ArtifactReadable> getResults() throws OseeCoreException {
       ResultSet<ArtifactReadable> result = null;
       try {
@@ -336,4 +367,5 @@ public class QueryBuilderImpl implements QueryBuilder {
    public CancellableCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> createSearchWithMatches() {
       return queryFactory.createSearchWithMatches(sessionContext, getQueryData().clone());
    }
+
 }

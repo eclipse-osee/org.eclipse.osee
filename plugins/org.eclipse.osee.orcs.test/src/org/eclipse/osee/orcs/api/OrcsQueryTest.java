@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.orcs.ApplicationContext;
@@ -277,6 +278,21 @@ public class OrcsQueryTest {
       QueryBuilder builder1 = factory.fromBranch(TestBranches.SAW_Bld_1);
       builder1.and(CoreAttributeTypes.Name, StringOperator.TOKENIZED_ANY_ORDER, CaseType.MATCH_CASE, "REQUIREMENTS");
       Assert.assertEquals(0, builder1.getCount());
+   }
+
+   @Test
+   public void testRelatedToTest() throws OseeCoreException {
+      QueryBuilder builder1 = factory.fromBranch(TestBranches.SAW_Bld_1);
+      builder1.and(CoreAttributeTypes.Name, Operator.EQUAL, "Frame Synchronization");
+      Assert.assertEquals("Frame Synchronization", builder1.getResults().getExactlyOne().getName());
+
+      QueryBuilder builder2 = factory.fromBranch(TestBranches.SAW_Bld_1);
+      builder2.andRelatedTo(CoreRelationTypes.Default_Hierarchical__Child, builder1.getResults().getExactlyOne());
+      Assert.assertEquals("Video processing", builder2.getResults().getExactlyOne().getName());
+
+      QueryBuilder builder3 = factory.fromBranch(TestBranches.SAW_Bld_1);
+      builder3.andRelatedTo(CoreRelationTypes.Default_Hierarchical__Child, builder2.getResults().getExactlyOne());
+      Assert.assertEquals("Subsystem Requirements", builder3.getResults().getExactlyOne().getName());
    }
 
    private static void checkContainsTypes(Collection<ArtifactReadable> arts, IArtifactType... types) throws OseeCoreException {

@@ -29,7 +29,6 @@ public class ArtifactIdsSqlHandler extends SqlHandler<CriteriaArtifactIds, Query
    private String artAlias;
    private String jIdAlias;
    private String txsAlias;
-   private AbstractJoinQuery joinQuery;
 
    @Override
    public void setData(CriteriaArtifactIds criteria) {
@@ -49,7 +48,7 @@ public class ArtifactIdsSqlHandler extends SqlHandler<CriteriaArtifactIds, Query
    public void addPredicates(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
       Collection<Integer> ids = criteria.getIds();
       if (ids.size() > 1) {
-         joinQuery = writer.writeIdJoin(ids);
+         AbstractJoinQuery joinQuery = writer.writeIdJoin(ids);
          writer.write(artAlias);
          writer.write(".art_id = ");
          writer.write(jIdAlias);
