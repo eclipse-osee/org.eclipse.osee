@@ -49,15 +49,20 @@ public class Sender {
    }
 
    public static Sender createSender(Object sourceObject) throws OseeAuthenticationRequiredException {
-      OseeClientSession oseeSession = ClientSessionManager.getSession();
+      OseeClientSession oseeSession = ClientSessionManager.getSafeSession();
       return createSender(sourceObject, oseeSession);
    }
 
    public boolean isRemote() {
       try {
-         OseeClientSession session = ClientSessionManager.getSession();
-         //Don't add version check here - can't assume events come from clients using the same version - could be old clients;
-         return !oseeSession.getId().equals(session.getId());
+         String sessionId = oseeSession.getId();
+         if (!"Invalid".equalsIgnoreCase(sessionId)) {
+            OseeClientSession session = ClientSessionManager.getSession();
+            //Don't add version check here - can't assume events come from clients using the same version - could be old clients;
+            return !sessionId.equals(session.getId());
+         } else {
+            return false;
+         }
       } catch (OseeAuthenticationRequiredException ex) {
          return false;
       }

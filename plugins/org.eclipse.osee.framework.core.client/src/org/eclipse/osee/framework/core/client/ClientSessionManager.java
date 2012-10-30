@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.client;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.client.internal.InternalClientSessionManager;
+import org.eclipse.osee.framework.core.client.internal.OseeApplicationServer;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -110,10 +111,15 @@ public class ClientSessionManager {
 
    public static void releaseSession() throws OseeCoreException {
       InternalClientSessionManager.getInstance().releaseSession();
+      OseeApplicationServer.reset();
    }
 
    public static String getDatabaseInfo() throws OseeAuthenticationRequiredException {
       return getSessionGrant().getDatabaseInfo().toString();
+   }
+
+   public static OseeClientSession getSafeSession() {
+      return InternalClientSessionManager.getInstance().getSafeSession();
    }
 
 }

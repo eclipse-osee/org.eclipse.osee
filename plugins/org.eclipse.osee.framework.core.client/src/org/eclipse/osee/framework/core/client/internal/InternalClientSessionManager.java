@@ -102,6 +102,11 @@ public class InternalClientSessionManager {
       authenticate(new GuestCredentialProvider());
    }
 
+   public OseeClientSession getSafeSession() {
+      return new OseeClientSession("Invalid", clientInfo.getClientMachineName(), "N/A", clientInfo.getClientAddress(),
+         clientInfo.getPort(), clientInfo.getVersion(), "N/A");
+   }
+
    public synchronized OseeClientSession authenticate(ICredentialProvider credentialProvider) throws OseeCoreException {
       if (!OseeApplicationServer.isApplicationServerAlive()) {
          OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.SEVERE, "Application Server not Available"));
@@ -256,4 +261,5 @@ public class InternalClientSessionManager {
       }
       return session;
    }
+
 }

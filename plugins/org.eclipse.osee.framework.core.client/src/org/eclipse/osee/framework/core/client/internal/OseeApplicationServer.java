@@ -36,6 +36,13 @@ public class OseeApplicationServer {
       // private constructor
    }
 
+   public static void reset() {
+      arbitrationServer.resetStatus();
+      applicationServer.resetStatus();
+
+      applicationServer.setServerInfo(null);
+   }
+
    public static String getOseeApplicationServer() throws OseeCoreException {
       checkAndUpdateStatus();
       String serverAddress = applicationServer.getServerAddress();

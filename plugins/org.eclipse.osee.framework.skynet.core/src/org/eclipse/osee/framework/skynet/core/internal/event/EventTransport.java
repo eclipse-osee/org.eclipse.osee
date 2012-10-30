@@ -12,12 +12,12 @@ package org.eclipse.osee.framework.skynet.core.internal.event;
 
 import java.util.Collection;
 import java.util.concurrent.ExecutorService;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.client.OseeClientSession;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.FrameworkEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.HasEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.HasNetworkSender;
+import org.eclipse.osee.framework.skynet.core.event.model.RemoteEventServiceEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
@@ -82,14 +83,19 @@ public class EventTransport implements Transport, IFrameworkEventListener {
       return !preferences.isDisableEvents();
    }
 
-   private Sender createSender(Object sourceObject) throws OseeAuthenticationRequiredException {
+   private Sender createSender(Object sourceObject, Object event) throws OseeAuthenticationRequiredException {
       Sender sender = null;
-      // Sender came from Remote Event Manager if source == sender
-      if (sourceObject instanceof Sender && ((Sender) sourceObject).isRemote()) {
-         sender = (Sender) sourceObject;
+      if (RemoteEventServiceEventType.Rem_Connected.equals(event) || RemoteEventServiceEventType.Rem_DisConnected.equals(event)) {
+         sender = Sender.createSender(sourceObject);
       } else {
-         // create new sender based on sourceObject
-         sender = Sender.createSender(sourceObject, ClientSessionManager.getSession());
+         // Sender came from Remote Event Manager if source == sender
+         if (sourceObject instanceof Sender && ((Sender) sourceObject).isRemote()) {
+            sender = (Sender) sourceObject;
+         } else {
+            // create new sender based on sourceObject
+            OseeClientSession session = ClientSessionManager.getSession();
+            sender = Sender.createSender(sourceObject, session);
+         }
       }
       return sender;
    }
@@ -97,7 +103,7 @@ public class EventTransport implements Transport, IFrameworkEventListener {
    @Override
    public <E extends FrameworkEvent> void send(final Object object, final E event) throws OseeCoreException {
       if (areEventsAllowed()) {
-         Sender sender = createSender(object);
+         Sender sender = createSender(object, event);
          if (event instanceof HasNetworkSender) {
             HasNetworkSender netSender = (HasNetworkSender) event;
             netSender.setNetworkSender(sender.getNetworkSender());
