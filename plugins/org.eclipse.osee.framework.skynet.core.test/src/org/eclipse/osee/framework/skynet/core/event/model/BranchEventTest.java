@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.StorageState;
-import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -175,12 +174,7 @@ public class BranchEventTest {
       Assert.assertEquals(BranchState.CREATED, workingBranch.getBranchState());
       Assert.assertEquals(StorageState.PURGED, workingBranch.getStorageState());
       Assert.assertFalse(workingBranch.isEditable());
-      try {
-         BranchManager.getBranchByGuid(guid);
-         Assert.fail("Branch should not exist");
-      } catch (BranchDoesNotExist ex) {
-         // do nothing
-      }
+      Assert.assertFalse("Branch should not exist", BranchManager.branchExists(guid));
       return workingBranch;
    }
 
