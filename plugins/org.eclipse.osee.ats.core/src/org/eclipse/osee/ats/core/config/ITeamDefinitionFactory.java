@@ -9,7 +9,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 
 public interface ITeamDefinitionFactory {
 
-   IAtsTeamDefinition createTeamDefinition(String create, String title);
+   IAtsTeamDefinition createTeamDefinition(String guid, String title);
 
    IAtsTeamDefinition getOrCreate(String guid, String name);
 
