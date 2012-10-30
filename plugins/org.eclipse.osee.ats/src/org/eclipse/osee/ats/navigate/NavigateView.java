@@ -45,7 +45,6 @@ import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.utility.ElapsedTime;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateEventListener;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateEventManager;
@@ -122,8 +121,6 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
                try {
-                  ElapsedTime time = new ElapsedTime(getName());
-
                   showBusy(false);
                   if (Widgets.isAccessible(loadingComposite)) {
                      loadingComposite.dispose();
@@ -180,7 +177,6 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
                      OseeStatusContributionItemFactory.addTo(navView, false);
                      addExtensionPointListenerBecauseOfWorkspaceLoading();
 
-                     time.end();
                   }
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
