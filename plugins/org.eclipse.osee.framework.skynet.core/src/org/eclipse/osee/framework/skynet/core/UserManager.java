@@ -70,6 +70,7 @@ public final class UserManager {
    public static void clearCache() throws OseeCoreException {
       for (Artifact art : ArtifactCache.getArtifactsByType(CoreArtifactTypes.User)) {
          ArtifactCache.deCache(art);
+         ArtifactCache.deCacheByTextId(CACHE_PREFIX + ((User) art).getUserId(), BranchManager.getCommonBranch());
       }
       userCacheIsLoaded = false;
    }

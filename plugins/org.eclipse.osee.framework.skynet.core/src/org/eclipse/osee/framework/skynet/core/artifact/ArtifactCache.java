@@ -198,6 +198,12 @@ public final class ArtifactCache {
       return artifact;
    }
 
+   public static Artifact deCacheByTextId(String key, IOseeBranch branch) throws OseeCoreException {
+      Artifact artifact = ACTIVE_CACHE.getByText(key, BranchManager.getBranch(branch));
+      ACTIVE_CACHE.deCacheByText(key, branch, artifact);
+      return artifact;
+   }
+
    public static Collection<Artifact> getListByTextId(String key, IOseeBranch branch) throws OseeCoreException {
       List<Artifact> artifacts = new ArrayList<Artifact>();
       Collection<Artifact> cached = ACTIVE_CACHE.getListByText(key, BranchManager.getBranch(branch));
