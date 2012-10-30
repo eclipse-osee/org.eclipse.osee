@@ -45,6 +45,8 @@ public final class CmAccessProviderProxy implements IAccessProvider {
    private BundleContext bundleContext;
    private Thread thread;
 
+   private volatile boolean requiresReload = true;
+
    public void addCmAccessControl(ServiceReference<CmAccessControl> reference) {
       if (isReady()) {
          register(bundleContext, reference);
@@ -72,7 +74,7 @@ public final class CmAccessProviderProxy implements IAccessProvider {
       } else {
          cmServices.add(cmAccessControl);
       }
-      reloadCache();
+      requiresReload = true;
    }
 
    private void unregister(BundleContext bundleContext, ServiceReference<CmAccessControl> reference) {
@@ -82,7 +84,7 @@ public final class CmAccessProviderProxy implements IAccessProvider {
       } else {
          cmServices.remove(cmAccessControl);
       }
-      reloadCache();
+      requiresReload = true;
    }
 
    private boolean isDefault(ServiceReference<CmAccessControl> reference) {
@@ -96,6 +98,7 @@ public final class CmAccessProviderProxy implements IAccessProvider {
 
    public void start(BundleContext context) {
       this.bundleContext = context;
+      requiresReload = true;
 
       cmProvider = new CmAccessControlProviderImpl(cmServices);
       accessProvider = new CmAccessProvider(cmProvider);
@@ -144,6 +147,10 @@ public final class CmAccessProviderProxy implements IAccessProvider {
    private void checkInitialized() throws OseeCoreException {
       Conditions.checkNotNull(getAccessProvider(), "object access provider",
          "Object Access Provider not properly initialized");
+      if (requiresReload) {
+         requiresReload = false;
+         reloadCache();
+      }
    }
 
    @Override
