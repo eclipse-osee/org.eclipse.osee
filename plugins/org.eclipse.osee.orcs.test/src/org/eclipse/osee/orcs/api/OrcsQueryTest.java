@@ -39,6 +39,7 @@ import org.eclipse.osee.orcs.search.StringOperator;
 import org.eclipse.osee.orcs.utility.MatchComparator;
 import org.eclipse.osee.orcs.utility.NameComparator;
 import org.eclipse.osee.orcs.utility.SortOrder;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -58,24 +59,16 @@ public class OrcsQueryTest {
    @OsgiService
    private OrcsApi orcsApi;
 
-   @Test
-   public void testQueries() throws OseeCoreException {
+   private QueryFactory factory;
+
+   @Before
+   public void setup() {
       ApplicationContext context = null; // TODO use real application context
-      QueryFactory factory = orcsApi.getQueryFactory(context);
-
-      checkQueryByIds(factory);
-
-      checkQueryArtifactType(factory);
-      checkQueryArtifactTypeInheritance(factory);
-      checkQueryArtifactTypesNoInheritance(factory);
-
-      checkQueryAttributeValue(factory);
-      checkQueryArtifactTypeAndNameValue(factory);
-
-      checkQueryAttributeKeyword(factory);
+      factory = orcsApi.getQueryFactory(context);
    }
 
-   private void checkQueryByIds(QueryFactory factory) throws OseeCoreException {
+   @Test
+   public void testQueryByIds() throws OseeCoreException {
       QueryBuilder builder = factory.fromBranch(CoreBranches.COMMON).andGuidsOrHrids("AEmLGXnw0WaGLxcK5qwA");
       Assert.assertEquals(1, builder.getCount());
 
@@ -83,7 +76,8 @@ public class OrcsQueryTest {
       Assert.assertEquals("AEmLGXnw0WaGLxcK5qwA", artifact.getGuid());
    }
 
-   private void checkQueryArtifactType(QueryFactory factory) throws OseeCoreException {
+   @Test
+   public void testQueryArtifactType() throws OseeCoreException {
       QueryBuilder builder = factory.fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.Folder);
 
       Assert.assertEquals(5, builder.getCount());
@@ -115,7 +109,8 @@ public class OrcsQueryTest {
       }
    }
 
-   private void checkQueryArtifactTypeInheritance(QueryFactory factory) throws OseeCoreException {
+   @Test
+   public void testQueryArtifactTypeInheritance() throws OseeCoreException {
       QueryBuilder builder =
          factory.fromBranch(TestBranches.SAW_Bld_1).andIsOfType(CoreArtifactTypes.AbstractSoftwareRequirement);//
 
@@ -134,7 +129,8 @@ public class OrcsQueryTest {
       checkContainsTypes(artifacts, CoreArtifactTypes.SoftwareRequirement);
    }
 
-   private void checkQueryArtifactTypesNoInheritance(QueryFactory factory) throws OseeCoreException {
+   @Test
+   public void testQueryArtifactTypesNoInheritance() throws OseeCoreException {
       QueryBuilder builder = factory.fromBranch(CoreBranches.COMMON);
       builder.excludeTypeInheritance();
       builder.andIsOfType(CoreArtifactTypes.OseeTypeDefinition, CoreArtifactTypes.Folder);
@@ -162,7 +158,8 @@ public class OrcsQueryTest {
       Assert.assertEquals("org.eclipse.osee.ote.define.OseeTypesOTE", iterator.next().getName());
    }
 
-   private void checkQueryAttributeValue(QueryFactory factory) throws OseeCoreException {
+   @Test
+   public void testQueryAttributeValue() throws OseeCoreException {
       QueryBuilder builder = factory.fromBranch(CoreBranches.COMMON);
       builder.and(CoreAttributeTypes.Name, Operator.EQUAL, "Action Tracking System");
 
@@ -189,8 +186,8 @@ public class OrcsQueryTest {
       }
    }
 
-   private void checkQueryArtifactTypeAndNameValue(QueryFactory factory) throws OseeCoreException {
-      //////////////////////
+   @Test
+   public void testQueryArtifactTypeAndNameValue() throws OseeCoreException {
       QueryBuilder builder = factory.fromBranch(TestBranches.SAW_Bld_1);
       builder.and(CoreAttributeTypes.Name, Operator.EQUAL, "%Requirement%");
 
@@ -240,7 +237,8 @@ public class OrcsQueryTest {
       checkContainsTypes(subSystemReqs, CoreArtifactTypes.SubsystemRequirement, CoreArtifactTypes.SystemRequirement);
    }
 
-   private void checkQueryAttributeKeyword(QueryFactory factory) throws OseeCoreException {
+   @Test
+   public void testQueryAttributeKeyword() throws OseeCoreException {
       QueryBuilder builder = factory.fromBranch(TestBranches.SAW_Bld_1);
       builder.and(CoreAttributeTypes.Name, StringOperator.TOKENIZED_ANY_ORDER, CaseType.IGNORE_CASE, "REQUIREMENTS");
 

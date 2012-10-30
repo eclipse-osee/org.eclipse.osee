@@ -31,7 +31,9 @@ import org.eclipse.osee.orcs.search.Operator;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.StringOperator;
+import org.junit.Before;
 import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * @author Jeff C. Phillips
@@ -47,18 +49,16 @@ public class OrcsAttributeSearchTest {
    @OsgiService
    private OrcsApi orcsApi;
 
-   @org.junit.Test
-   public void runGodMethod() throws OseeCoreException {
-      ApplicationContext context = null; // TODO use real application context
-      QueryFactory queryFactory = orcsApi.getQueryFactory(context);
+   private QueryFactory queryFactory;
 
-      testNameAttributeNotEqualSearch(queryFactory);
-      testNameAttributeEqualSearch(queryFactory);
-      testBooleanAttributeSearch(queryFactory);
-      testWTCAttributeEqualSearch(queryFactory, orcsApi.getBranchCache());
+   @Before
+   public void setup() {
+      ApplicationContext context = null; // TODO use real application context
+      queryFactory = orcsApi.getQueryFactory(context);
    }
 
-   public void testNameAttributeNotEqualSearch(QueryFactory queryFactory) throws OseeCoreException {
+   @Test
+   public void testNameAttributeNotEqualSearch() throws OseeCoreException {
       QueryBuilder builder =
          queryFactory.fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.Name, Operator.NOT_EQUAL, "User Groups");
 
@@ -70,7 +70,8 @@ public class OrcsAttributeSearchTest {
       }
    }
 
-   public void testNameAttributeEqualSearch(QueryFactory queryFactory) throws OseeCoreException {
+   @Test
+   public void testNameAttributeEqualSearch() throws OseeCoreException {
       QueryBuilder builder =
          queryFactory.fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.Name, Operator.EQUAL, "User Groups");
 
@@ -87,7 +88,9 @@ public class OrcsAttributeSearchTest {
       Assert.assertEquals(art8.getSoleAttributeAsString(CoreAttributeTypes.Name), "User Groups");
    }
 
-   public void testWTCAttributeEqualSearch(QueryFactory queryFactory, BranchCache branchCache) throws OseeCoreException {
+   @Test
+   public void testWTCAttributeEqualSearch() throws OseeCoreException {
+      BranchCache branchCache = orcsApi.getBranchCache();
       Branch branch = branchCache.getBySoleName("SAW_Bld_1");
       QueryBuilder builder =
          queryFactory.fromBranch(branch).and(CoreAttributeTypes.WordTemplateContent,
@@ -101,7 +104,8 @@ public class OrcsAttributeSearchTest {
       Assert.assertEquals(3, builder.getCount());
    }
 
-   public void testBooleanAttributeSearch(QueryFactory queryFactory) throws OseeCoreException {
+   @Test
+   public void testBooleanAttributeSearch() throws OseeCoreException {
       QueryBuilder builder =
          queryFactory.fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.DefaultGroup, Operator.EQUAL, "yes");
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
@@ -115,7 +119,7 @@ public class OrcsAttributeSearchTest {
       Assert.assertEquals(art9.getSoleAttributeAsString(CoreAttributeTypes.Name), "Everyone");
    }
 
-   Map<Integer, ArtifactReadable> creatLookup(List<ArtifactReadable> arts) {
+   private Map<Integer, ArtifactReadable> creatLookup(List<ArtifactReadable> arts) {
       Map<Integer, ArtifactReadable> lookup = new HashMap<Integer, ArtifactReadable>();
       for (ArtifactReadable artifact : arts) {
          lookup.put(artifact.getLocalId(), artifact);
