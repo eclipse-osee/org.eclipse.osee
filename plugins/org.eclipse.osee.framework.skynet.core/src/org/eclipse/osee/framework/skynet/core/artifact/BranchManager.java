@@ -165,6 +165,10 @@ public class BranchManager {
       return getCache().get(branchToken) != null;
    }
 
+   public static boolean branchExists(String branchGuid) throws OseeCoreException {
+      return getCache().getByGuid(branchGuid) != null;
+   }
+
    /**
     * returns the merge branch for this source destination pair from the cache or null if not found
     */

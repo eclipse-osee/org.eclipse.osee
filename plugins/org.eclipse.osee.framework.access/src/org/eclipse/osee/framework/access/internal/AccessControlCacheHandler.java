@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.access.internal;
 
 import java.util.List;
-
 import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessObject;
 import org.eclipse.osee.framework.access.internal.data.BranchAccessObject;
@@ -24,7 +23,9 @@ public class AccessControlCacheHandler {
 
    public void updateAccessListForBranchObject(AccessControlService service, final String branchGuid) throws OseeCoreException {
       BranchAccessObject branchAccessObject = BranchAccessObject.getBranchAccessObject(branchGuid);
-      updateAccessList(service, branchAccessObject);
+      if (branchAccessObject != null) {
+         updateAccessList(service, branchAccessObject);
+      }
    }
 
    public void updateAccessList(AccessControlService service, AccessObject accessObject) throws OseeCoreException {
