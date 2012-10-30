@@ -21,12 +21,14 @@ import org.eclipse.osee.orcs.rest.internal.search.Predicate;
 import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchFlag;
 import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchMethod;
 import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchOp;
-import org.eclipse.osee.orcs.rest.mocks.MockQueryBuilder;
 import org.eclipse.osee.orcs.search.CaseType;
 import org.eclipse.osee.orcs.search.Operator;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.StringOperator;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 /**
  * @author John R. Misinco
@@ -54,6 +56,15 @@ public class AttributeTypePredicateHandlerTest {
 
    }
 
+   // @formatter:off
+   @Mock private QueryBuilder builder;
+   // @formatter:on
+
+   @Before
+   public void setup() {
+      MockitoAnnotations.initMocks(this);
+   }
+
    @Test
    public void testStringOperatorSelection() throws OseeCoreException {
       TestAttributeTypePredicateHandler handler = new TestAttributeTypePredicateHandler();
@@ -62,25 +73,25 @@ public class AttributeTypePredicateHandlerTest {
       List<String> values = Collections.singletonList("value");
       Predicate testPredicate =
          new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.EQUALS, flags, values);
-      handler.handle(new MockQueryBuilder(), testPredicate);
+      handler.handle(builder, testPredicate);
       Assert.assertEquals(StringOperator.TOKENIZED_ANY_ORDER, handler.stringOperator);
 
       flags = Arrays.asList(SearchFlag.TOKENIZED_ORDERED);
       testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.EQUALS, flags, values);
-      handler.handle(new MockQueryBuilder(), testPredicate);
+      handler.handle(builder, testPredicate);
       Assert.assertEquals(StringOperator.TOKENIZED_MATCH_ORDER, handler.stringOperator);
 
       flags = Arrays.asList(SearchFlag.IGNORE_CASE);
       testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.EQUALS, flags, values);
-      handler.handle(new MockQueryBuilder(), testPredicate);
+      handler.handle(builder, testPredicate);
       Assert.assertEquals(StringOperator.EQUALS, handler.stringOperator);
 
       testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.NOT_EQUALS, flags, values);
-      handler.handle(new MockQueryBuilder(), testPredicate);
+      handler.handle(builder, testPredicate);
       Assert.assertEquals(StringOperator.NOT_EQUALS, handler.stringOperator);
 
       testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.IN, flags, values);
-      handler.handle(new MockQueryBuilder(), testPredicate);
+      handler.handle(builder, testPredicate);
       Assert.assertEquals(StringOperator.CONTAINS, handler.stringOperator);
    }
 
@@ -92,17 +103,17 @@ public class AttributeTypePredicateHandlerTest {
       List<String> values = Collections.singletonList("value");
       Predicate testPredicate =
          new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.EQUALS, flags, values);
-      handler.handle(new MockQueryBuilder(), testPredicate);
+      handler.handle(builder, testPredicate);
       Assert.assertEquals(CaseType.IGNORE_CASE, handler.ct);
 
       flags = Arrays.asList(SearchFlag.TOKENIZED, SearchFlag.IGNORE_CASE);
       testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.EQUALS, flags, values);
-      handler.handle(new MockQueryBuilder(), testPredicate);
+      handler.handle(builder, testPredicate);
       Assert.assertEquals(CaseType.IGNORE_CASE, handler.ct);
 
       flags = Arrays.asList(SearchFlag.TOKENIZED, SearchFlag.MATCH_CASE);
       testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.EQUALS, flags, values);
-      handler.handle(new MockQueryBuilder(), testPredicate);
+      handler.handle(builder, testPredicate);
       Assert.assertEquals(CaseType.MATCH_CASE, handler.ct);
    }
 
@@ -114,19 +125,19 @@ public class AttributeTypePredicateHandlerTest {
       List<String> values = Collections.singletonList("value");
       Predicate testPredicate =
          new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.EQUALS, flags, values);
-      handler.handle(new MockQueryBuilder(), testPredicate);
+      handler.handle(builder, testPredicate);
       Assert.assertEquals(Operator.EQUAL, handler.operator);
 
       testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.GREATER_THAN, flags, values);
-      handler.handle(new MockQueryBuilder(), testPredicate);
+      handler.handle(builder, testPredicate);
       Assert.assertEquals(Operator.GREATER_THAN, handler.operator);
 
       testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.LESS_THAN, flags, values);
-      handler.handle(new MockQueryBuilder(), testPredicate);
+      handler.handle(builder, testPredicate);
       Assert.assertEquals(Operator.LESS_THAN, handler.operator);
 
       testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.NOT_EQUALS, flags, values);
-      handler.handle(new MockQueryBuilder(), testPredicate);
+      handler.handle(builder, testPredicate);
       Assert.assertEquals(Operator.NOT_EQUAL, handler.operator);
    }
 }

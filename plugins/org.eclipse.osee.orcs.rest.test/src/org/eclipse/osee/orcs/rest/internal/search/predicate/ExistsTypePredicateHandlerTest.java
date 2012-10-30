@@ -24,9 +24,11 @@ import org.eclipse.osee.orcs.rest.internal.search.Predicate;
 import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchFlag;
 import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchMethod;
 import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchOp;
-import org.eclipse.osee.orcs.rest.mocks.MockQueryBuilder;
 import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 /**
  * @author John R. Misinco
@@ -52,6 +54,15 @@ public class ExistsTypePredicateHandlerTest {
 
    }
 
+   // @formatter:off
+   @Mock private QueryBuilder builder;
+   // @formatter:on
+
+   @Before
+   public void setup() {
+      MockitoAnnotations.initMocks(this);
+   }
+
    @Test
    public void testHandleRelationTypeSides() throws OseeCoreException {
       TestExistsTypePredicateHandler handler = new TestExistsTypePredicateHandler();
@@ -62,7 +73,7 @@ public class ExistsTypePredicateHandlerTest {
       String relationValue = "A12345";
       List<String> values = Collections.singletonList(relationValue);
       Predicate testPredicate = new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, SearchOp.EQUALS, flags, values);
-      handler.handle(new MockQueryBuilder(), testPredicate);
+      handler.handle(builder, testPredicate);
 
       Assert.assertEquals(1, handler.relations.size());
       IRelationTypeSide side = handler.relations.iterator().next();
@@ -73,7 +84,7 @@ public class ExistsTypePredicateHandlerTest {
       relationValue = "B12345";
       values = Collections.singletonList(relationValue);
       testPredicate = new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, SearchOp.EQUALS, flags, values);
-      handler.handle(new MockQueryBuilder(), testPredicate);
+      handler.handle(builder, testPredicate);
 
       Assert.assertEquals(1, handler.relations.size());
       side = handler.relations.iterator().next();
@@ -85,7 +96,7 @@ public class ExistsTypePredicateHandlerTest {
       String relationValue2 = "B34567";
       values = Arrays.asList(relationValue1, relationValue2);
       testPredicate = new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, SearchOp.EQUALS, flags, values);
-      handler.handle(new MockQueryBuilder(), testPredicate);
+      handler.handle(builder, testPredicate);
 
       Assert.assertEquals(2, handler.relations.size());
       boolean sideAMatched = false, sideBMatched = false;
@@ -113,7 +124,7 @@ public class ExistsTypePredicateHandlerTest {
       String attrUuid = "12345";
       List<String> values = Collections.singletonList(attrUuid);
       Predicate testPredicate = new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, SearchOp.EQUALS, flags, values);
-      handler.handle(new MockQueryBuilder(), testPredicate);
+      handler.handle(builder, testPredicate);
 
       Assert.assertEquals(1, handler.attributeTypes.size());
       IAttributeType type = handler.attributeTypes.iterator().next();
@@ -124,7 +135,7 @@ public class ExistsTypePredicateHandlerTest {
       String attrType2 = "34567";
       values = Arrays.asList(attrType1, attrType2);
       testPredicate = new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, SearchOp.EQUALS, flags, values);
-      handler.handle(new MockQueryBuilder(), testPredicate);
+      handler.handle(builder, testPredicate);
 
       Assert.assertEquals(2, handler.attributeTypes.size());
       boolean attr1Matched = false, attr2Matched = false;
@@ -150,17 +161,17 @@ public class ExistsTypePredicateHandlerTest {
       String value = "12A4G";
       List<String> values = Collections.singletonList(value);
       Predicate testPredicate = new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, SearchOp.EQUALS, flags, values);
-      handler.handle(new MockQueryBuilder(), testPredicate);
+      handler.handle(builder, testPredicate);
       Assert.assertEquals(0, handler.attributeTypes.size());
 
       value = "A12A4G";
       typeParameters = Collections.singletonList("relType");
       values = Collections.singletonList(value);
       testPredicate = new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, SearchOp.EQUALS, flags, values);
-      handler.handle(new MockQueryBuilder(), testPredicate);
+      handler.handle(builder, testPredicate);
       Assert.assertEquals(0, handler.relations.size());
 
       testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.EQUALS, flags, values);
-      handler.handle(new MockQueryBuilder(), testPredicate);
+      handler.handle(builder, testPredicate);
    }
 }

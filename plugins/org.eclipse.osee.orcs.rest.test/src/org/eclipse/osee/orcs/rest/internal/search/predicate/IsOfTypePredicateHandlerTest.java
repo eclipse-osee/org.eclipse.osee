@@ -20,9 +20,11 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.rest.internal.search.Predicate;
 import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchMethod;
-import org.eclipse.osee.orcs.rest.mocks.MockQueryBuilder;
 import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 /**
  * @author John R. Misinco
@@ -41,6 +43,15 @@ public class IsOfTypePredicateHandlerTest {
 
    }
 
+   // @formatter:off
+   @Mock private QueryBuilder builder;
+   // @formatter:on
+
+   @Before
+   public void setup() {
+      MockitoAnnotations.initMocks(this);
+   }
+
    @Test
    public void testHandle() throws OseeCoreException {
       TestIsOfTypePredicateHandler handler = new TestIsOfTypePredicateHandler();
@@ -49,7 +60,7 @@ public class IsOfTypePredicateHandlerTest {
       String id1 = "12345";
       List<String> values = Collections.singletonList(id1);
       Predicate testPredicate = new Predicate(SearchMethod.IS_OF_TYPE, null, null, null, values);
-      handler.handle(new MockQueryBuilder(), testPredicate);
+      handler.handle(builder, testPredicate);
 
       Assert.assertEquals(1, handler.artTypes.size());
       Assert.assertEquals(id1, handler.artTypes.iterator().next().getGuid().toString());
@@ -58,7 +69,7 @@ public class IsOfTypePredicateHandlerTest {
       values = Arrays.asList(id1, id2);
 
       testPredicate = new Predicate(SearchMethod.IS_OF_TYPE, null, null, null, values);
-      handler.handle(new MockQueryBuilder(), testPredicate);
+      handler.handle(builder, testPredicate);
 
       Assert.assertEquals(2, handler.artTypes.size());
    }
@@ -67,7 +78,7 @@ public class IsOfTypePredicateHandlerTest {
    public void testHandleBadValues() throws OseeCoreException {
       TestIsOfTypePredicateHandler handler = new TestIsOfTypePredicateHandler();
       Predicate testPredicate = new Predicate(SearchMethod.IS_OF_TYPE, null, null, null, null);
-      handler.handle(new MockQueryBuilder(), testPredicate);
+      handler.handle(builder, testPredicate);
    }
 
    @Test(expected = OseeArgumentException.class)
@@ -76,6 +87,6 @@ public class IsOfTypePredicateHandlerTest {
       String id1 = "12345";
       List<String> values = Collections.singletonList(id1);
       Predicate testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, null, null, null, values);
-      handler.handle(new MockQueryBuilder(), testPredicate);
+      handler.handle(builder, testPredicate);
    }
 }
