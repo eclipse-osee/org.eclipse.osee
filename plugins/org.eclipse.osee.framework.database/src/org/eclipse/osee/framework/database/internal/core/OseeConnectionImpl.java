@@ -90,13 +90,14 @@ public class OseeConnectionImpl extends OseeConnection {
       }
    }
 
+   @SuppressWarnings("unused")
    @Override
    protected void destroy() throws OseeCoreException {
       pool.removeConnection(this);
       try {
          conn.close();
       } catch (SQLException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         // Do Nothing - OseeExceptions.wrapAndThrow(ex);
       }
    }
 
