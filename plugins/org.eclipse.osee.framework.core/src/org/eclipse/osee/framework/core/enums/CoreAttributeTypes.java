@@ -64,7 +64,6 @@ public final class CoreAttributeTypes {
    public static final IAttributeType PublishInline = TokenFactory.createAttributeType(0x1000000000000092L, "PublishInline");
    public static final IAttributeType QualificationMethod = TokenFactory.createAttributeType(0x1000000000000089L, "Qualification Method");
    public static final IAttributeType RelationOrder = TokenFactory.createAttributeType(0x1000000000000071L, "Relation Order");
-   public static final IAttributeType ReqType = TokenFactory.createAttributeType(0x1000000000000080L, "Req Type");
    public static final IAttributeType Sfha = TokenFactory.createAttributeType(0x10000000000000A4L, "SFHA");
    public static final IAttributeType SafetyCriticality = TokenFactory.createAttributeType(0x100000000000008AL, "Safety Criticality");
    public static final IAttributeType SafetyObjective = TokenFactory.createAttributeType(0x10000000000000A6L, "Safety Objective");

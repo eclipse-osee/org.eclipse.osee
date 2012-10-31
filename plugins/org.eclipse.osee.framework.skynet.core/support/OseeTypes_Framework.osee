@@ -693,49 +693,10 @@ artifactType "System Requirement" extends "Requirement" , "MS Word Template" {
 	guid "AAMFDiSTcDGdUd9+tHAA"
 	uuid 0x000000000000001E
 	attribute "Legacy Id"
-	attribute "Req Type"
 	attribute "Verification Level"
 	attribute "Effectivity"
 	attribute "Verification Acceptance Criteria"
 	attribute "Verification Event"
-}
-
-attributeType "Req Type" extends EnumeratedAttribute {
-	guid "AEQ9uyqjH3NpD0eThgAA"
-	uuid 0x1000000000000080
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max 1
-	taggerId DefaultAttributeTaggerProvider
-	enumType "Req Type Enum"
-	defaultValue "Unspecified"
-}
-
-oseeEnumType "Req Type Enum" {
-	guid "AEQpMgL+4CmkHXKP2_AA"
-	uuid 0x300000000000017B
-	entry "DesignConstraint"
-	entryGuid "AEUNGcq8_mdWzYbO9fwA"
-	entry "EnvironmentalReq"
-	entryGuid "AEUQtA+xYml92hqzaLwA"
-	entry "FunctionalReq"
-	entryGuid "AEUTBnJKsXq0_p2GUPgA"
-	entry "Info"
-	entryGuid "AEUUfCXnYg+iTEf1ldQA"
-	entry "InterfaceReq"
-	entryGuid "AEUXWYpm1nsYUIQb3dgA"
-	entry "ModeDef"
-	entryGuid "AEUZNPCyPGq2a0Iy11QA"
-	entry "PerformanceReq"
-	entryGuid "AEUbpIQJJBKjIWEkFGgA"
-	entry "PhysicalReq"
-	entryGuid "AEUeJcW9PQRmtPYk+JQA"
-	entry "Requirement"
-	entryGuid "ASbiRa9+fnprR9wb7bgA"
-	entry "VerificationReq"
-	entryGuid "AEUgQJN+rn32mrPoydgA"
-	entry "Unspecified"
-	entryGuid "AEUiMfEaQG4gCx6FsRwA"
 }
 
 artifactType "Subsystem Requirement" extends "Requirement" , "MS Word Template" {
@@ -876,21 +837,13 @@ attributeType "Legacy Id" extends StringAttribute {
 	description "SLATE unique identifier (caution: not guaranteed to be immutable)"
 }
 
-attributeType "Effectivity" extends EnumeratedAttribute {
+attributeType "Effectivity" extends StringAttribute {
 	guid "B1fqGH5hxBMylPX9VEQA"
 	uuid 0x1000000000000084
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
-	enumType "enum.effectivity"
 	defaultValue "Unspecified"
-}
-
-oseeEnumType "enum.effectivity" {
-	guid "B1gfpUSVrEvaDvqLeqQA"
-	uuid 0x300000000000017C
-	entry "Unspecified"
-	entryGuid "B1hxfljxnTDYqcYhlDAA"
 }
 
 attributeType "System Security Requirement" extends BooleanAttribute {
@@ -1053,6 +1006,8 @@ oseeEnumType "enum.req.verification.level" {
 	entryGuid "AHgseT6tBlXP7azH7LQA"
 	entry "Unspecified"
 	entryGuid "AHgseUA7nhAJY46rRDQA"
+	entry "N/A"
+	entryGuid "An1Vcw_+oEuNHkhfSAAA"
 }
 
 attributeType "Verification Level" extends EnumeratedAttribute {
