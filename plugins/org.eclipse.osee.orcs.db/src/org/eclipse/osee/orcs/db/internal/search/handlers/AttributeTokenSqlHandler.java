@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.orcs.core.ds.DataPostProcessor;
 import org.eclipse.osee.orcs.core.ds.DataPostProcessorFactory;
@@ -36,6 +37,7 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeyword, QueryOptions> implements HasTagProcessor, HasDataPostProcessorFactory<CriteriaAttributeKeyword> {
 
    private CriteriaAttributeKeyword criteria;
+   private static final int MAX_TOKEN_SIZE = 20;
 
    private String attrAlias;
    private String txsAlias1;
@@ -85,6 +87,9 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
       if (criteria.getStringOp().isTokenized()) {
          codedTags = new ArrayList<Long>();
          tokenize(criteria.getValue(), codedTags);
+
+      Conditions.checkExpressionFailOnTrue(codedTags.size() > MAX_TOKEN_SIZE,
+         "Parsed tokens for [%s] is greater than [%d]", criteria.getValue(), MAX_TOKEN_SIZE);
 
          tagAliases = new ArrayList<String>();
          for (int index = 0; index < codedTags.size(); index++) {
