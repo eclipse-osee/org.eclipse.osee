@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2012 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,17 +21,17 @@ import org.eclipse.osee.orcs.core.ds.QueryOptions;
  * @author Roberto E. Escobar
  */
 public class CriteriaRelatedTo extends Criteria<QueryOptions> {
-   private final IRelationTypeSide relationType;
+   private final IRelationTypeSide relationTypeSide;
    private final Collection<Integer> artifactIds;
 
-   public CriteriaRelatedTo(IRelationTypeSide relationType, Collection<Integer> artifactIds) {
+   public CriteriaRelatedTo(IRelationTypeSide relationTypeSide, Collection<Integer> artifactIds) {
       super();
-      this.relationType = relationType;
+      this.relationTypeSide = relationTypeSide;
       this.artifactIds = artifactIds;
    }
 
    public IRelationTypeSide getType() {
-      return relationType;
+      return relationTypeSide;
    }
 
    public Collection<Integer> getIds() {
@@ -46,7 +46,7 @@ public class CriteriaRelatedTo extends Criteria<QueryOptions> {
 
    @Override
    public String toString() {
-      return "CriteriaRelatedTo [relationType=" + relationType + ", artifactIds=" + artifactIds + "]";
+      return "CriteriaRelatedTo [relationTypeSide=" + relationTypeSide + ", artifactIds=" + artifactIds + "]";
    }
 
 }
