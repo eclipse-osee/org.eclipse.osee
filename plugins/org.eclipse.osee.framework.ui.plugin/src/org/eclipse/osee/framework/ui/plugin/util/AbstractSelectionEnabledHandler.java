@@ -27,6 +27,10 @@ public abstract class AbstractSelectionEnabledHandler extends CommandHandler imp
       menuManager.getMenu().addMenuListener(this);
    }
 
+   protected AbstractSelectionEnabledHandler() {
+      // for testing only
+   }
+
    @Override
    public final void menuHidden(MenuEvent e) {
       //Do nothing

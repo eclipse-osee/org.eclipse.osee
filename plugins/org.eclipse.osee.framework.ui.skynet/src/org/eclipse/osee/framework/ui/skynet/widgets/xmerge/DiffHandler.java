@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler;
+import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 class DiffHandler extends AbstractSelectionEnabledHandler {
@@ -88,7 +89,7 @@ class DiffHandler extends AbstractSelectionEnabledHandler {
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
       artifacts = new LinkedList<Artifact>();
-      List<Conflict> conflicts = mergeXWidget.getSelectedConflicts();
+      List<Conflict> conflicts = Handlers.getConflictsFromStructuredSelection(structuredSelection);
       if (conflicts.size() != 1) {
          return false;
       }

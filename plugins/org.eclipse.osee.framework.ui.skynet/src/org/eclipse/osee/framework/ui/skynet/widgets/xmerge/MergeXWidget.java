@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -26,7 +25,6 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -258,19 +256,6 @@ public class MergeXWidget extends GenericXWidget {
             refresh();
          }
       });
-   }
-
-   public ArrayList<Conflict> getSelectedConflicts() {
-      ArrayList<Conflict> items = new ArrayList<Conflict>();
-      if (mergeXViewer != null && !mergeXViewer.getSelection().isEmpty()) {
-         IStructuredSelection structuredSelection = (IStructuredSelection) mergeXViewer.getSelection();
-         Iterator<?> i = structuredSelection.iterator();
-         while (i.hasNext()) {
-            Object obj = i.next();
-            items.add((Conflict) obj);
-         }
-      }
-      return items;
    }
 
    @Override

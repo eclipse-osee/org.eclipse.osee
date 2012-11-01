@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.search.ui.text.Match;
 
 /**
@@ -56,6 +57,13 @@ public class Handlers {
     */
    public static List<Artifact> getArtifactsFromStructuredSelection(IStructuredSelection structuredSelection) {
       return processSelectionObjects(Artifact.class, structuredSelection);
+   }
+
+   /**
+    * Populates a list of artifacts from a IStructuredSelection. Returns an empty list if no artifacts were found.
+    */
+   public static List<Conflict> getConflictsFromStructuredSelection(IStructuredSelection structuredSelection) {
+      return processSelectionObjects(Conflict.class, structuredSelection);
    }
 
    /**

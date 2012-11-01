@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler
 import org.eclipse.osee.framework.ui.plugin.util.Commands;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -309,152 +310,61 @@ public class MergeCustomMenu extends XViewerCustomMenu {
    }
 
    private void createEditArtifactMenuItem(MenuManager menuManager, IHandlerService handlerService) {
-
-      handlerService.activateHandler(addEditArtifactMenuItem(menuManager),
-
-      new AbstractSelectionEnabledHandler(menuManager) {
-         private AttributeConflict attributeConflict;
-
+      MenuSelectionEnabledHandler handler = new MenuSelectionEnabledHandler(menuManager) {
          @Override
-         public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
-            if (attributeConflict != null) {
-               if (MergeUtility.okToOverwriteEditedValue(attributeConflict, Displays.getActiveShell().getShell(), false)) {
-                  RendererManager.openInJob(attributeConflict.getArtifact(), PresentationType.SPECIALIZED_EDIT);
+         public void executeWithException(AttributeConflict attributeConflict) throws OseeCoreException {
 
-                  attributeConflict.markStatusToReflectEdit();
-               }
-            }
-            return null;
-         }
+            if (MergeUtility.okToOverwriteEditedValue(attributeConflict, Displays.getActiveShell().getShell(), false)) {
+               RendererManager.openInJob(attributeConflict.getArtifact(), PresentationType.SPECIALIZED_EDIT);
 
-         @Override
-         public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
-            List<Conflict> conflicts = getMergeXWiget().getSelectedConflicts();
-            attributeConflict = null;
-            if (conflicts.size() == 1) {
-               Conflict conflict = conflicts.iterator().next();
-               if (conflict.getStatus().isEditable()) {
-                  if (conflict instanceof AttributeConflict) {
-                     attributeConflict = (AttributeConflict) conflict;
-                  }
-               }
+               attributeConflict.markStatusToReflectEdit();
+
             }
-            return attributeConflict != null;
          }
-      });
+      };
+
+      handlerService.activateHandler(addEditArtifactMenuItem(menuManager), handler);
    }
 
    private void createSourceResourceHistoryMenuItem(MenuManager menuManager, IHandlerService handlerService) {
-
-      handlerService.activateHandler(addSourceResourceHistoryMenuItem(menuManager),
-
-      new AbstractSelectionEnabledHandler(menuManager) {
-         private AttributeConflict attributeConflict;
-
+      MenuSelectionEnabledHandler handler = new MenuSelectionEnabledHandler(menuManager) {
          @Override
-         public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
-            if (attributeConflict != null) {
-               HistoryView.open(attributeConflict.getSourceArtifact());
-            }
-            return null;
+         public void executeWithException(AttributeConflict attributeConflict) throws OseeCoreException {
+            HistoryView.open(attributeConflict.getSourceArtifact());
          }
+      };
 
-         @Override
-         public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
-            List<Conflict> conflicts = getMergeXWiget().getSelectedConflicts();
-            attributeConflict = null;
-            if (conflicts == null || conflicts.size() != 1) {
-               return false;
-            }
-            attributeConflict = (AttributeConflict) conflicts.get(0);
-            return true;
-         }
-      });
+      handlerService.activateHandler(addSourceResourceHistoryMenuItem(menuManager), handler);
    }
 
    private void createDestinationResourceHistoryMenuItem(MenuManager menuManager, IHandlerService handlerService) {
-
-      handlerService.activateHandler(addDestResourceHistoryMenuItem(menuManager),
-
-      new AbstractSelectionEnabledHandler(menuManager) {
-         private AttributeConflict attributeConflict;
-
+      MenuSelectionEnabledHandler handler = new MenuSelectionEnabledHandler(menuManager) {
          @Override
-         public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
-            if (attributeConflict != null) {
-               HistoryView.open(attributeConflict.getDestArtifact());
-            }
-            return null;
+         public void executeWithException(AttributeConflict attributeConflict) throws OseeCoreException {
+            HistoryView.open(attributeConflict.getDestArtifact());
          }
-
-         @Override
-         public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
-            List<Conflict> conflicts = getMergeXWiget().getSelectedConflicts();
-            attributeConflict = null;
-            if (conflicts == null || conflicts.size() != 1) {
-               return false;
-            }
-            attributeConflict = (AttributeConflict) conflicts.get(0);
-            return true;
-         }
-
-      });
+      };
+      handlerService.activateHandler(addDestResourceHistoryMenuItem(menuManager), handler);
    }
 
    private void createSourceRevealMenuItem(MenuManager menuManager, IHandlerService handlerService) {
-
-      handlerService.activateHandler(addSourceRevealMenuItem(menuManager),
-
-      new AbstractSelectionEnabledHandler(menuManager) {
-         private AttributeConflict attributeConflict;
-
+      MenuSelectionEnabledHandler handler = new MenuSelectionEnabledHandler(menuManager) {
          @Override
-         public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
-            if (attributeConflict != null) {
-               ArtifactExplorer.revealArtifact(attributeConflict.getSourceArtifact());
-            }
-            return null;
+         public void executeWithException(AttributeConflict attributeConflict) throws OseeCoreException {
+            ArtifactExplorer.revealArtifact(attributeConflict.getSourceArtifact());
          }
-
-         @Override
-         public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
-            List<Conflict> conflicts = getMergeXWiget().getSelectedConflicts();
-            attributeConflict = null;
-            if (conflicts == null || conflicts.size() != 1) {
-               return false;
-            }
-            attributeConflict = (AttributeConflict) conflicts.get(0);
-            return true;
-         }
-      });
+      };
+      handlerService.activateHandler(addSourceRevealMenuItem(menuManager), handler);
    }
 
    private void createDestinationRevealMenuItem(MenuManager menuManager, IHandlerService handlerService) {
-
-      handlerService.activateHandler(addDestRevealMenuItem(menuManager),
-
-      new AbstractSelectionEnabledHandler(menuManager) {
-         private AttributeConflict attributeConflict;
-
+      MenuSelectionEnabledHandler handler = new MenuSelectionEnabledHandler(menuManager) {
          @Override
-         public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
-            if (attributeConflict != null) {
-               ArtifactExplorer.revealArtifact(attributeConflict.getDestArtifact());
-            }
-            return null;
+         public void executeWithException(AttributeConflict attributeConflict) throws OseeCoreException {
+            ArtifactExplorer.revealArtifact(attributeConflict.getDestArtifact());
          }
-
-         @Override
-         public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
-            List<Conflict> conflicts = getMergeXWiget().getSelectedConflicts();
-            attributeConflict = null;
-            if (conflicts == null || conflicts.size() != 1) {
-               return false;
-            }
-            attributeConflict = (AttributeConflict) conflicts.get(0);
-            return true;
-         }
-      });
+      };
+      handlerService.activateHandler(addDestRevealMenuItem(menuManager), handler);
    }
 
    private void createMarkResolvedMenuItem(MenuManager menuManager, IHandlerService handlerService) {
@@ -502,35 +412,18 @@ public class MergeCustomMenu extends XViewerCustomMenu {
    }
 
    private void createMergeMenuItem(MenuManager menuManager, IHandlerService handlerService) {
-
-      handlerService.activateHandler(addMergeMenuItem(menuManager),
-
-      new AbstractSelectionEnabledHandler(menuManager) {
-         private AttributeConflict attributeConflict;
-
+      MenuSelectionEnabledHandler handler = new MenuSelectionEnabledHandler(menuManager) {
          @Override
-         public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
-            if (attributeConflict != null) {
-               MergeUtility.launchMerge(attributeConflict, Displays.getActiveShell().getShell());
-            }
-            return null;
+         public void executeWithException(AttributeConflict attributeConflict) {
+            MergeUtility.launchMerge(attributeConflict, Displays.getActiveShell().getShell());
          }
 
          @Override
          public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
-            List<Conflict> conflicts = getMergeXWiget().getSelectedConflicts();
-            attributeConflict = null;
-            if (conflicts.size() == 1) {
-               Conflict conflict = conflicts.iterator().next();
-               if (conflict.getStatus().isEditable()) {
-                  if (conflict instanceof AttributeConflict) {
-                     attributeConflict = (AttributeConflict) conflict;
-                  }
-               }
-            }
-            return attributeConflict != null && attributeConflict.isWordAttribute();
+            return super.isEnabledWithException(structuredSelection) && getConflictFromSelection(structuredSelection).isWordAttribute();
          }
-      });
+      };
+      handlerService.activateHandler(addMergeMenuItem(menuManager), handler);
    }
 
    private final class MergeManagerConflictHandler extends AbstractSelectionEnabledHandler {
@@ -568,7 +461,7 @@ public class MergeCustomMenu extends XViewerCustomMenu {
 
       @Override
       public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
-         conflicts = getMergeXWiget().getSelectedConflicts();
+         conflicts = Handlers.getConflictsFromStructuredSelection(structuredSelection);
          return !conflicts.isEmpty();
       }
    }
@@ -591,7 +484,7 @@ public class MergeCustomMenu extends XViewerCustomMenu {
       @Override
       public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
          artifacts = new LinkedList<Artifact>();
-         List<Conflict> conflicts = getMergeXWiget().getSelectedConflicts();
+         List<Conflict> conflicts = Handlers.getConflictsFromStructuredSelection(structuredSelection);
          for (Conflict conflict : conflicts) {
 
             try {

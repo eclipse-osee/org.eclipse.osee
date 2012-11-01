@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2012 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -61,7 +62,6 @@ public class AttributeConflict extends Conflict {
    private Attribute<?> sourceAttribute = null;
    private Attribute<?> destAttribute = null;
    private AttributeType attributeType;
-   private final boolean isWordAttribute;
    private boolean mergeEqualsSource;
    private boolean mergeEqualsDest;
    private boolean sourceEqualsDest;
@@ -73,7 +73,6 @@ public class AttributeConflict extends Conflict {
       this.attrId = attrId;
       this.attrTypeId = attrTypeId;
       this.status = ConflictStatus.EDITED;
-      this.isWordAttribute = getAttributeType().equals(CoreAttributeTypes.WordTemplateContent);
       computeEqualsValues();
    }
 
@@ -82,7 +81,6 @@ public class AttributeConflict extends Conflict {
       this.attrId = attrId;
       this.attrTypeId = attrTypeId;
       this.status = ConflictStatus.EDITED;
-      this.isWordAttribute = getAttributeType().equals(CoreAttributeTypes.WordTemplateContent);
       computeEqualsValues();
    }
 
@@ -230,7 +228,7 @@ public class AttributeConflict extends Conflict {
    @Override
    public String getDestDisplayData() throws OseeCoreException {
       String displayValue =
-         isWordAttribute ? STREAM_DATA : getDestObject() == null ? "Null Value" : getDestObject().toString();
+         isWordAttribute() ? STREAM_DATA : getDestObject() == null ? "Null Value" : getDestObject().toString();
       try {
          getDestAttribute();
       } catch (AttributeDoesNotExist ex) {
@@ -242,7 +240,7 @@ public class AttributeConflict extends Conflict {
    @Override
    public String getSourceDisplayData() throws OseeCoreException {
       String displayValue =
-         isWordAttribute ? STREAM_DATA : getSourceObject() == null ? "Null Value" : getSourceObject().toString();
+         isWordAttribute() ? STREAM_DATA : getSourceObject() == null ? "Null Value" : getSourceObject().toString();
       try {
          getSourceAttribute(false);
       } catch (AttributeDoesNotExist ex) {
@@ -359,7 +357,7 @@ public class AttributeConflict extends Conflict {
          System.out.println(String.format("AttributeConflict: Cleared the Merge Value for attr_id %d", getAttrId()));
       }
       setStatus(ConflictStatus.UNTOUCHED);
-      if (isWordAttribute) {
+      if (isWordAttribute()) {
          getAttribute().resetToDefaultValue();
          getArtifact().persist(getClass().getSimpleName());
       } else {
@@ -434,7 +432,7 @@ public class AttributeConflict extends Conflict {
       if (status.isUntouched() && !(sourceEqualsDestination() && mergeEqualsSource()) || status.isInformational()) {
          return NO_VALUE;
       }
-      if (!isWordAttribute) {
+      if (!isWordAttribute()) {
          return getMergeObject() == null ? null : getMergeObject().toString();
       }
       return AttributeConflict.STREAM_DATA;
@@ -456,19 +454,25 @@ public class AttributeConflict extends Conflict {
    }
 
    public boolean isWordAttribute() {
-      return isWordAttribute;
+      boolean toReturn = false;
+      try {
+         toReturn = getAttributeType().equals(CoreAttributeTypes.WordTemplateContent);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
+      }
+      return toReturn;
    }
 
    @Override
    public void setStatus(ConflictStatus status) throws OseeCoreException {
-      if (status.equals(ConflictStatus.RESOLVED) && isWordAttribute && ((WordAttribute) getAttribute()).containsWordAnnotations()) {
+      if (status.equals(ConflictStatus.RESOLVED) && isWordAttribute() && ((WordAttribute) getAttribute()).containsWordAnnotations()) {
          throw new OseeStateException(RESOLVE_MERGE_MARKUP);
       }
       super.setStatus(status);
    }
 
    public boolean wordMarkupPresent() throws OseeCoreException {
-      if (isWordAttribute && ((WordAttribute) getAttribute()).containsWordAnnotations()) {
+      if (isWordAttribute() && ((WordAttribute) getAttribute()).containsWordAnnotations()) {
          return true;
       }
       return false;

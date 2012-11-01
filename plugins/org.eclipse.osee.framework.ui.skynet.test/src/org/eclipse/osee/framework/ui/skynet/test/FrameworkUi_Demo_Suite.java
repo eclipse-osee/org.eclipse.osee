@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.ui.skynet.test.render.word.WordTestSuite;
 import org.eclipse.osee.framework.ui.skynet.test.renderer.RendererTestSuite;
 import org.eclipse.osee.framework.ui.skynet.test.renderer.imageDetection.WordImageCompareTest;
 import org.eclipse.osee.framework.ui.skynet.test.util.enumeration.AbstractEnumerationTest;
+import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MenuSelectionEnabledHandlerTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -65,7 +66,8 @@ import org.junit.runners.Suite;
    AbstractEnumerationTest.class,
    ImportTestSuite.class,
    WordTestSuite.class,
-   RelationIntegrityCheckTest.class,})
+   RelationIntegrityCheckTest.class,
+   MenuSelectionEnabledHandlerTest.class})
 /**
  * @author Donald G. Dunne
  */
