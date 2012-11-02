@@ -69,6 +69,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
                }
             } else if (change instanceof RelationChangeItem) {
                modifiedRels.put(change.getArtId(), change.getItemId());
+               modifiedRels.put(((RelationChangeItem) change).getBArtId(), change.getItemId());
             }
          }
 
@@ -155,8 +156,9 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
 
                @Override
                public void onData(RelationData data) {
-                  if (!modifiedRels.get(data.getArtIdA()).contains(data.getLocalId()) && !modifiedRels.get(
-                     data.getArtIdB()).contains(data.getLocalId())) {
+                  int localId = data.getLocalId();
+                  if (!modifiedRels.get(data.getArtIdA()).contains(localId) && !modifiedRels.get(data.getArtIdB()).contains(
+                     localId)) {
                      relations.add(data);
                   }
                }
