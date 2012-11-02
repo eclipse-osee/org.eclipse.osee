@@ -461,6 +461,7 @@ attributeType "Static Id" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "General String Data" extends StringAttribute {

@@ -223,6 +223,7 @@ attributeType "ats.Current State Type" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
+   taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Workflow Definition Old" extends StringAttribute {
@@ -449,6 +450,7 @@ attributeType "ats.Created By" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
+   taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Release Date" extends DateAttribute {
