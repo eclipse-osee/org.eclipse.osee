@@ -19,8 +19,9 @@
 	<modules>
 		<module>../../plugins/org.eclipse.osee.framework.access</module>
 		<module>../../plugins/org.eclipse.osee.framework.access.test</module>
-		<module>../../plugins/org.eclipse.osee.framework.branch.gantt</module>
 		<module>../../plugins/org.eclipse.osee.framework.access.provider</module>
+
+		<module>../../plugins/org.eclipse.osee.framework.branch.gantt</module>
 		<module>../../plugins/org.eclipse.osee.framework.core.client</module>
 
 		<module>../../plugins/org.eclipse.osee.support.test.util</module>
@@ -31,7 +32,9 @@
 		<!--<module>../../plugins/org.eclipse.osee.framework.database</module> -->
 		<module>../../plugins/org.eclipse.osee.framework.database.init</module>
 		<!--<module>../../plugins/org.eclipse.osee.framework.h2</module> -->
+
 		<module>../../plugins/org.eclipse.osee.framework.messaging.event.res</module>
+		<module>../../plugins/org.eclipse.osee.framework.messaging.event.res.test</module>
 
 		<module>../../plugins/org.eclipse.osee.framework.dev.help.ui</module>
 		<module>../../plugins/org.eclipse.osee.framework.help.ui</module>
