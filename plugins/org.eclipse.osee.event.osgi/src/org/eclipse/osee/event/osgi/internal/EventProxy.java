@@ -29,11 +29,6 @@ public class EventProxy implements Event {
    }
 
    @Override
-   public boolean contains(String name) {
-      return proxiedObject.containsProperty(name);
-   }
-
-   @Override
    public String[] getKeys() {
       return proxiedObject.getPropertyNames();
    }

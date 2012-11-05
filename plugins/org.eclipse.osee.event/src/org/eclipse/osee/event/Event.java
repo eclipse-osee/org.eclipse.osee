@@ -17,8 +17,6 @@ public interface Event {
 
    Object getValue(String name);
 
-   boolean contains(String name);
-
    String[] getKeys();
 
    String getTopic();
