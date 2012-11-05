@@ -113,7 +113,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
 
       // Set parent state task is related to
       taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, getStateMgr().getCurrentStateName());
-
+      AtsTaskCache.decache(this);
       return taskArt;
    }
 
