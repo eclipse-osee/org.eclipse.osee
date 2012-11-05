@@ -112,11 +112,11 @@ public class LoaderTest {
       //@formatter:off
       verifyData(attrs.next(), 12, 6, ModificationType.NEW, Name.getGuid(), 2, 5, -1, 21L, "org.eclipse.osee.coverage.OseeTypes_Coverage", "");
       verifyData(attrs.next(), 13, 6, ModificationType.NEW, UriGeneralStringData.getGuid(), 2, 5, -1, 24L, "", "attr://24/AEmKsTkcwh02JspUtYQA.zip");
-      verifyData(attrs.next(), 14, 6, ModificationType.NEW, Active.getGuid(), 2, 5, -1, 23L, "yes", "");
+      verifyData(attrs.next(), 14, 6, ModificationType.NEW, Active.getGuid(), 2, 5, -1, 23L, "true", "");
       
       verifyData(attrs.next(), 15, 7, ModificationType.NEW, Name.getGuid(), 2, 5, -1, 10L, "org.eclipse.osee.ats.config.demo.OseeTypes_Demo", "");
       verifyData(attrs.next(), 16, 7, ModificationType.NEW, UriGeneralStringData.getGuid(), 2, 5, -1, 11L, "", "attr://11/AEmKsWXLBwVrvjcQvPwA.zip");
-      verifyData(attrs.next(), 17, 7, ModificationType.NEW, Active.getGuid(), 2, 5, -1, 12L, "yes", "");
+      verifyData(attrs.next(), 17, 7, ModificationType.NEW, Active.getGuid(), 2, 5, -1, 12L, "true", "");
       
       verifyData(attrs.next(), 20, 8, ModificationType.NEW, Name.getGuid(), 2, 6, -1, 48L, "User Groups", "");
       //@formatter:on
@@ -212,8 +212,8 @@ public class LoaderTest {
       Iterator<AttributeData> attrs = attributeCaptor.getAllValues().iterator();
 
       //@formatter:off
-      verifyData(attrs.next(), 14, 6, ModificationType.NEW, Active.getGuid(), 2, 5, -1, 23L, "yes", "");
-      verifyData(attrs.next(), 17, 7, ModificationType.NEW, Active.getGuid(), 2, 5, -1, 12L, "yes", "");
+      verifyData(attrs.next(), 14, 6, ModificationType.NEW, Active.getGuid(), 2, 5, -1, 23L, "true", "");
+      verifyData(attrs.next(), 17, 7, ModificationType.NEW, Active.getGuid(), 2, 5, -1, 12L, "true", "");
       //@formatter:on
 
       sort(relationCaptor.getAllValues());

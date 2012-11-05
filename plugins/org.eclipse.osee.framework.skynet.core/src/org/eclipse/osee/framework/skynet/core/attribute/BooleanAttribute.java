@@ -16,20 +16,20 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  * @author Ryan D. Brooks
  */
 public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
-   public static final String[] booleanChoices = new String[] {"yes", "no"};
+   public static final String[] booleanChoices = {"true", "false"};
 
    @Override
    public Boolean getValue() throws OseeCoreException {
-      return getAttributeDataProvider().getValueAsString().equals(booleanChoices[0]);
+      return Boolean.valueOf(getAttributeDataProvider().getValueAsString());
    }
 
    @Override
    public boolean subClassSetValue(Boolean value) throws OseeCoreException {
-      return getAttributeDataProvider().setValue(value ? booleanChoices[0] : booleanChoices[1]);
+      return getAttributeDataProvider().setValue(String.valueOf(value));
    }
 
    @Override
    protected Boolean convertStringToValue(String value) {
-      return value != null && value.equalsIgnoreCase(booleanChoices[0]);
+      return Boolean.parseBoolean(value);
    }
 }

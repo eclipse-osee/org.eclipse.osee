@@ -53,7 +53,7 @@ public class XComboBooleanDam extends XCombo implements IAttributeWidget {
       if (result == null) {
          super.set("");
       } else {
-         super.set(result ? "yes" : "no");
+         super.set(result ? "true" : "false");
       }
    }
 
@@ -64,7 +64,7 @@ public class XComboBooleanDam extends XCombo implements IAttributeWidget {
             artifact.deleteSoleAttribute(attributeType);
          } else {
             String enteredValue = get();
-            artifact.setSoleAttributeValue(attributeType, (enteredValue != null && enteredValue.equals("yes")));
+            artifact.setSoleAttributeValue(attributeType, (enteredValue != null && enteredValue.equals("true")));
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -77,7 +77,7 @@ public class XComboBooleanDam extends XCombo implements IAttributeWidget {
          try {
             String enteredValue = get();
             boolean storedValueBoolean = artifact.getSoleAttributeValue(attributeType);
-            String storedValue = storedValueBoolean ? "yes" : "no";
+            String storedValue = storedValueBoolean ? "true" : "false";
             if (!enteredValue.equals(storedValue)) {
                return new Result(true, attributeType + " is dirty");
             }

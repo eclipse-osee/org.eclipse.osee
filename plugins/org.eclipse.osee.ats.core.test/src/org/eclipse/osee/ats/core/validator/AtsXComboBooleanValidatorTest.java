@@ -55,13 +55,13 @@ public class AtsXComboBooleanValidatorTest {
       result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
 
-      // Check for "yes" value
-      MockValueProvider valueProvider = new MockValueProvider(Arrays.asList("yes"));
+      // Check for "true" value
+      MockValueProvider valueProvider = new MockValueProvider(Arrays.asList("true"));
       result = validator.validateTransition(valueProvider, widgetDef, fromStateDef, toStateDef);
       Assert.assertEquals(WidgetStatus.Valid, result.getStatus());
 
-      // Check for "no" value
-      valueProvider = new MockValueProvider(Arrays.asList("no"));
+      // Check for "false" value
+      valueProvider = new MockValueProvider(Arrays.asList("false"));
       result = validator.validateTransition(valueProvider, widgetDef, fromStateDef, toStateDef);
       Assert.assertEquals(WidgetStatus.Valid, result.getStatus());
 

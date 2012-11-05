@@ -30,8 +30,8 @@ public class AtsXComboBooleanValidator extends AtsXWidgetValidator {
             return result;
          }
          for (String value : provider.getValues()) {
-            if (!"yes".equals(value) && !"no".equals(value)) {
-               return new WidgetResult(WidgetStatus.Invalid_Range, widgetDef, "[%s] value [%s] must be yes or no",
+            if (!"true".equals(value) && !"false".equals(value)) {
+               return new WidgetResult(WidgetStatus.Invalid_Range, widgetDef, "[%s] value [%s] must be true or false",
                   provider.getName(), value);
             }
          }

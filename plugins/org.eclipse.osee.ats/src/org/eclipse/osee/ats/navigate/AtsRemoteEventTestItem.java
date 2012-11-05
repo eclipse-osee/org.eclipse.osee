@@ -182,13 +182,13 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
    private void makeChanges6(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       // Make changes and transition
       AtsVersionService.get().setTargetedVersionAndStore(teamArt, getVersion257());
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "no");
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "false");
       teamArt.persist("Remote Event Test");
    }
 
    private void makeChanges5(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       // Make changes and persist
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "yes");
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "true");
       teamArt.persist(getClass().getSimpleName());
    }
 
@@ -206,7 +206,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
    private void makeChanges3(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       // Make changes and persist
       AtsVersionService.get().setTargetedVersionAndStore(teamArt, getVersion257());
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "no");
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "false");
       teamArt.persist(getClass().getSimpleName());
    }
 
@@ -222,7 +222,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       teamArt.setSoleAttributeFromString(AtsAttributeTypes.Description, "description 2");
       ChangeTypeUtil.setChangeType(teamArt, ChangeType.Problem);
       teamArt.setSoleAttributeFromString(AtsAttributeTypes.PriorityType, "2");
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "yes");
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "true");
       AtsVersionService.get().setTargetedVersionAndStore(teamArt, getVersion256());
       teamArt.persist("Remote Event Test");
    }

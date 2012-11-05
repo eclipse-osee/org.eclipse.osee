@@ -93,7 +93,7 @@ attributeType "Active" extends BooleanAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
-	defaultValue "yes"
+	defaultValue "true"
 }
 
 attributeType "Company" extends StringAttribute {
@@ -301,7 +301,7 @@ attributeType "Default Group" extends BooleanAttribute {
 	max 1
 	taggerId DefaultAttributeTaggerProvider
 	description "Specifies whether to automatically add new users into this group"
-	defaultValue "no"
+	defaultValue "false"
 }
 
 artifactType "User Group" extends "Abstract Access Controlled" , "Group Artifact" {
@@ -816,7 +816,7 @@ attributeType "Common NAL Requirement" extends BooleanAttribute {
 	max 1
 	description
 	"Requirement that is common to all NCORE (Networked Common Operating Real-time Environment) Application Layers"
-	defaultValue "no"
+	defaultValue "false"
 }
 
 attributeType "Crew Interface Requirement" extends BooleanAttribute {
@@ -825,7 +825,7 @@ attributeType "Crew Interface Requirement" extends BooleanAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
-	defaultValue "no"
+	defaultValue "false"
 }
 
 attributeType "Legacy Id" extends StringAttribute {
@@ -852,7 +852,7 @@ attributeType "System Security Requirement" extends BooleanAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
-	defaultValue "no"
+	defaultValue "false"
 }
 
 attributeType "Training Effectivity" extends BooleanAttribute {
@@ -861,7 +861,7 @@ attributeType "Training Effectivity" extends BooleanAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
-	defaultValue "no"
+	defaultValue "false"
 }
 
 oseeEnumType "enum.req.partition" {
@@ -1129,7 +1129,7 @@ attributeType "Technical Performance Parameter" extends BooleanAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
-	defaultValue "no"
+	defaultValue "false"
 }
 
 oseeEnumType "enum.req.verification.event" {
@@ -1527,7 +1527,7 @@ attributeType "Developmental" extends BooleanAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
-	defaultValue "yes"
+	defaultValue "true"
 }
 
 attributeType "Hazard" extends StringAttribute {

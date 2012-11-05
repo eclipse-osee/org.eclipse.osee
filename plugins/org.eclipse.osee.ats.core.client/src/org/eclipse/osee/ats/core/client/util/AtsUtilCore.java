@@ -70,7 +70,7 @@ public class AtsUtilCore {
     * @param active state to validate against; Both will return all artifacts matching type
     * @param clazz type of artifacts to consider; null for all
     * @return set of Artifacts of type clazz that match the given active state of the "Active" or "ats.Active" attribute
-    * value. If no attribute exists, Active == true; If does exist then attribute value "yes" == true, "no" == false.
+    * value. If no attribute exists, Active == true;
     */
    @SuppressWarnings("unchecked")
    public static <A extends Artifact> List<A> getActive(Collection<A> artifacts, Active active, Class<? extends Artifact> clazz) throws OseeCoreException {

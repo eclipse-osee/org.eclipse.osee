@@ -19,20 +19,19 @@ import org.eclipse.osee.orcs.core.internal.attribute.CharacterBackedAttribute;
  */
 @OseeAttribute("BooleanAttribute")
 public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
-   public static final String[] booleanChoices = new String[] {"yes", "no"};
 
    @Override
    public Boolean getValue() throws OseeCoreException {
-      return getDataProxy().getValueAsString().equals(booleanChoices[0]);
+      return Boolean.valueOf(getDataProxy().getValueAsString());
    }
 
    @Override
    public boolean subClassSetValue(Boolean value) throws OseeCoreException {
-      return getDataProxy().setValue(value ? booleanChoices[0] : booleanChoices[1]);
+      return getDataProxy().setValue(String.valueOf(value));
    }
 
    @Override
    protected Boolean convertStringToValue(String value) {
-      return value != null && value.equalsIgnoreCase(booleanChoices[0]);
+      return Boolean.valueOf(value);
    }
 }

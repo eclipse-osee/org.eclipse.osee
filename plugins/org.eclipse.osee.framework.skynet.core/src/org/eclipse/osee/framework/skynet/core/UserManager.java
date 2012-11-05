@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -294,7 +294,7 @@ public final class UserManager {
    private static void addUserToUserGroups(Artifact user) throws OseeCoreException {
       Collection<Artifact> userGroups =
          ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.UserGroup,
-            CoreAttributeTypes.DefaultGroup, "yes", CoreBranches.COMMON);
+            CoreAttributeTypes.DefaultGroup, "true", CoreBranches.COMMON);
       for (Artifact userGroup : userGroups) {
          userGroup.addRelation(CoreRelationTypes.Users_User, user);
       }

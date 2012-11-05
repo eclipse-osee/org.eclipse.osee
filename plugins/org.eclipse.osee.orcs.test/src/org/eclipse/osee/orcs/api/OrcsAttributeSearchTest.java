@@ -107,7 +107,7 @@ public class OrcsAttributeSearchTest {
    @Test
    public void testBooleanAttributeSearch() throws OseeCoreException {
       QueryBuilder builder =
-         queryFactory.fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.DefaultGroup, Operator.EQUAL, "yes");
+         queryFactory.fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.DefaultGroup, Operator.EQUAL, "true");
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
       List<ArtifactReadable> moreArts = resultSet.getList();
 
