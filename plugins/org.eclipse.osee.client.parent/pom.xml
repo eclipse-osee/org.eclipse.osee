@@ -18,6 +18,7 @@
 
 	<modules>
 		<module>../../plugins/org.eclipse.osee.framework.access</module>
+		<module>../../plugins/org.eclipse.osee.framework.access.test</module>
 		<module>../../plugins/org.eclipse.osee.framework.branch.gantt</module>
 		<module>../../plugins/org.eclipse.osee.framework.access.provider</module>
 		<module>../../plugins/org.eclipse.osee.framework.core.client</module>
