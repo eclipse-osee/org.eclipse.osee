@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.config;
 
+import org.eclipse.osee.ats.core.client.config.store.VersionArtifactStoreTest;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -17,7 +18,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AtsActionableItemToTeamDefinitionTest.class})
+@Suite.SuiteClasses({AtsActionableItemToTeamDefinitionTest.class, VersionArtifactStoreTest.class})
 /**
  * This test suite contains tests that must be run against demo database as Plugin JUnit (PT)
  *

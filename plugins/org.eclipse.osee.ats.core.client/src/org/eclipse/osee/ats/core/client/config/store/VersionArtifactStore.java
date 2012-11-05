@@ -61,18 +61,22 @@ public class VersionArtifactStore extends ArtifactAtsObjectStore {
       }
       boolean next = verArt.getSoleAttributeValue(AtsAttributeTypes.NextVersion, false);
       if (next != version.isNextVersion()) {
-         verArt.setSoleAttributeValue(AtsAttributeTypes.NextVersion, next);
+         verArt.setSoleAttributeValue(AtsAttributeTypes.NextVersion, version.isNextVersion());
       }
       boolean released = verArt.getSoleAttributeValue(AtsAttributeTypes.Released, false);
       if (released != version.isReleased()) {
-         verArt.setSoleAttributeValue(AtsAttributeTypes.Released, released);
+         verArt.setSoleAttributeValue(AtsAttributeTypes.Released, version.isReleased());
       }
       boolean versionLocked = verArt.getSoleAttributeValue(AtsAttributeTypes.VersionLocked, false);
       if (versionLocked != version.isLocked()) {
-         verArt.setSoleAttributeValue(AtsAttributeTypes.VersionLocked, versionLocked);
+         verArt.setSoleAttributeValue(AtsAttributeTypes.VersionLocked, version.isLocked());
       }
       if (Strings.isValid(version.getBaslineBranchGuid())) {
          verArt.setSoleAttributeValue(AtsAttributeTypes.BaselineBranchGuid, version.getBaslineBranchGuid());
+      }
+      Date releaseDate = verArt.getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null);
+      if (releaseDate != version.getReleaseDate()) {
+         verArt.setSoleAttributeValue(AtsAttributeTypes.ReleaseDate, version.getReleaseDate());
       }
       if (Strings.isValid(version.getDescription())) {
          verArt.setSoleAttributeValue(AtsAttributeTypes.Description, version.getDescription());
@@ -116,8 +120,8 @@ public class VersionArtifactStore extends ArtifactAtsObjectStore {
          version.setReleased(artifact.getSoleAttributeValue(AtsAttributeTypes.Released, false));
          version.setLocked(artifact.getSoleAttributeValue(AtsAttributeTypes.VersionLocked, false));
          version.setNextVersion(artifact.getSoleAttributeValue(AtsAttributeTypes.NextVersion, false));
-         version.setAllowCommitBranch(artifact.getSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, true));
-         version.setAllowCreateBranch(artifact.getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, true));
+         version.setAllowCommitBranch(artifact.getSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, false));
+         version.setAllowCreateBranch(artifact.getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, false));
          version.setBaselineBranchGuid(artifact.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchGuid, ""));
          version.setDescription(artifact.getSoleAttributeValue(AtsAttributeTypes.Description, ""));
          version.setFullName(artifact.getSoleAttributeValue(AtsAttributeTypes.FullName, ""));
