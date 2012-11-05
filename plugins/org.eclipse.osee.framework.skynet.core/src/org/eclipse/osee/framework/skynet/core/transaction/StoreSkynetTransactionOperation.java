@@ -14,10 +14,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -25,6 +28,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DatabaseTransactions;
 import org.eclipse.osee.framework.database.core.IDbTransactionWork;
@@ -35,6 +39,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuidArtifact;
@@ -119,6 +124,23 @@ public final class StoreSkynetTransactionOperation extends AbstractOperation imp
    public void handleTxFinally() throws OseeCoreException {
       if (!executedWithException) {
          updateModifiedCachedObject();
+         tagGammas();
+      }
+   }
+
+   private void tagGammas() throws OseeCoreException {
+      Set<Integer> gammasToTag = new LinkedHashSet<Integer>();
+      for (BaseTransactionData transactionData : txDatas) {
+         if (!transactionData.getModificationType().isExistingVersionUsed() && transactionData instanceof AttributeTransactionData) {
+            Attribute<?> attr = ((AttributeTransactionData) transactionData).getAttribute();
+            if (attr.getAttributeType().isTaggable()) {
+               gammasToTag.add(transactionData.getGammaId());
+            }
+         }
+      }
+      if (!gammasToTag.isEmpty()) {
+         AttributeTaggingOperation op = new AttributeTaggingOperation(gammasToTag);
+         Operations.executeWorkAndCheckStatus(op, new NullProgressMonitor());
       }
    }
 
@@ -130,6 +152,7 @@ public final class StoreSkynetTransactionOperation extends AbstractOperation imp
 
          // Collect stale tx currents for batch update
          fetchTxNotCurrent(connection, branch, transactionData, txNotCurrentData);
+
       }
 
       // Insert into data tables - i.e. attribute, relation and artifact version tables

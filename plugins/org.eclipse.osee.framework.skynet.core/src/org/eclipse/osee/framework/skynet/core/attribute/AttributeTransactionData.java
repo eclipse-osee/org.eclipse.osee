@@ -39,6 +39,10 @@ public class AttributeTransactionData extends BaseTransactionData {
       this.daoToSql = new DAOToSQL();
    }
 
+   public Attribute<?> getAttribute() {
+      return attribute;
+   }
+
    @Override
    public OseeSql getSelectTxNotCurrentSql() {
       return OseeSql.TX_GET_PREVIOUS_TX_NOT_CURRENT_ATTRIBUTES;
