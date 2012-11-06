@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.util.AtsXWidgetsExampleBlamTest;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.ImportActionsViaSpreadsheetTest;
 import org.eclipse.osee.ats.workflow.SMAPromptChangeStatusTest;
+import org.eclipse.osee.ats.world.search.AtsTest_Demo_World_Search_Suite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;
@@ -41,6 +42,7 @@ import org.junit.runners.Suite;
    AtsNavigateItemsToMassEditorTest.class,
    AtsNavigateItemsToTaskEditorTest.class,
    AtsNavigateItemsToWorldViewTest.class,
+   AtsTest_Demo_World_Search_Suite.class,
    AtsBranchConfigurationTest.class,
    AtsTest_Demo_Action_Suite.class,
    AtsTest_Demo_Access_Suite.class,

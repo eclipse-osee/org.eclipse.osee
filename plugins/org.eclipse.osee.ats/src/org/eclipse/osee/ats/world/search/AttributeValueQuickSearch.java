@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2012 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,31 +43,32 @@ public class AttributeValueQuickSearch {
     * Must match full value of given value
     */
    public Collection<Artifact> performSearch(boolean exactMatch) throws OseeCoreException {
-      List<Artifact> result = new ArrayList<Artifact>();
-      for (String pcrId : values) {
-         if (values != null && values.size() > 0) {
-            result =
-               ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtil.getAtsBranch(), pcrId, false,
+      List<Artifact> results = new ArrayList<Artifact>();
+      if (values != null && values.size() > 0) {
+         for (String value : values) {
+            List<Artifact> searchResult =
+               ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtil.getAtsBranch(), value, false,
                   EXCLUDE_DELETED, false, attributeType);
+            // Since quick search is tokenized, re-validate if exactMatch is desired
             if (exactMatch) {
-               List<Artifact> removeArts = new ArrayList<Artifact>();
-               for (Artifact artifact : result) {
+               for (Artifact artifact : searchResult) {
                   boolean found = false;
-                  for (String value : values) {
-                     if (artifact.getAttributesToStringList(attributeType).contains(value)) {
+                  for (String value2 : values) {
+                     if (artifact.getAttributesToStringList(attributeType).contains(value2)) {
                         found = true;
                         break;
                      }
                   }
-                  if (!found) {
-                     removeArts.add(artifact);
+                  if (found) {
+                     results.add(artifact);
                   }
                }
-               result.removeAll(removeArts);
+            } else {
+               results.addAll(searchResult);
             }
          }
       }
-      return result;
+      return results;
    }
 
 }

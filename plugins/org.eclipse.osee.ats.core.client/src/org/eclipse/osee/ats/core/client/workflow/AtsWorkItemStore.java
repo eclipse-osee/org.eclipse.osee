@@ -12,7 +12,11 @@ import org.eclipse.osee.ats.api.workflow.IAtsWorkItemStore;
 import org.eclipse.osee.ats.core.client.util.WorkItemUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 
 public class AtsWorkItemStore implements IAtsWorkItemStore {
 
@@ -28,12 +32,22 @@ public class AtsWorkItemStore implements IAtsWorkItemStore {
 
    @Override
    public Collection<Object> getAttributeValues(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException {
-      return WorkItemUtil.get(workItem).getAttributeValues(attributeType);
+      Artifact artifact = WorkItemUtil.get(workItem);
+      Conditions.checkNotNull(artifact, "workItem", "Can't Find Artifact matching [%s]", workItem.toString());
+
+      IAttributeType attrType = AttributeTypeManager.getType(attributeType);
+      if (attrType == null) {
+         throw new OseeArgumentException(String.format("Can't resolve Attribute Type [%s]", attributeType));
+      }
+
+      return artifact.getAttributeValues(attributeType);
    }
 
    @Override
-   public boolean isOfType(IAtsWorkItem item, IArtifactType matchType) throws OseeCoreException {
-      return WorkItemUtil.get(item).getArtifactType().inheritsFrom(matchType);
+   public boolean isOfType(IAtsWorkItem workItem, IArtifactType matchType) throws OseeCoreException {
+      Artifact artifact = WorkItemUtil.get(workItem);
+      Conditions.checkNotNull(artifact, "workItem", "Can't Find Artifact matching [%s]", workItem.toString());
+      return artifact.isOfType(matchType);
    }
 
 }
