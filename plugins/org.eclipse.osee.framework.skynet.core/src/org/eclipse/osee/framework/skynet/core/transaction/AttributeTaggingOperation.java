@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 
 /**
  * @author Roberto E. Escobar
@@ -50,9 +49,8 @@ public class AttributeTaggingOperation extends AbstractOperation {
       try {
          Map<String, String> parameters = new HashMap<String, String>();
          parameters.put("sessionId", ClientSessionManager.getSessionId());
-         if (DbUtil.isDbInit()) {
-            parameters.put("wait", "true");
-         }
+         parameters.put("wait", "true");
+
          StringBuilder payload = new StringBuilder(XML_START);
          for (int data : gammaIds) {
             payload.append(PREFIX);

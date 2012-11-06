@@ -22,6 +22,8 @@ import org.eclipse.osee.framework.manager.servlet.internal.ApplicationContextFac
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.search.IndexerCollector;
+import org.eclipse.osee.orcs.search.IndexerCollectorAdapter;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 
 /**
@@ -51,8 +53,33 @@ public class SearchEngineTaggerServlet extends SecureOseeHttpServlet {
          boolean waitForTags = Boolean.parseBoolean(request.getParameter("wait"));
          QueryIndexer indexer = getQueryIndexer(request);
          if (waitForTags) {
-            Callable<?> callable = indexer.indexXmlStream(request.getInputStream());
+            IndexerCollector collector = new IndexerCollectorAdapter() {
+
+               int totalToProcess = 0;
+               int currentCount = 0;
+
+               @Override
+               public void onIndexTaskComplete(int indexerId, long waitTime, long processingTime) {
+                  currentCount++;
+                  if (currentCount >= totalToProcess) {
+                     synchronized (this) {
+                        notify();
+                     }
+                  }
+               }
+
+               @Override
+               public void onIndexTaskTotalToProcess(int totalQueries) {
+                  totalToProcess = totalQueries;
+               }
+
+            };
+
+            Callable<?> callable = indexer.indexXmlStream(collector, request.getInputStream());
             callable.call();
+            synchronized (collector) {
+               collector.wait();
+            }
          } else {
             byte[] bytes = Lib.inputStreamToBytes(request.getInputStream());
             indexer.submitXmlStream(new ByteArrayInputStream(bytes));
