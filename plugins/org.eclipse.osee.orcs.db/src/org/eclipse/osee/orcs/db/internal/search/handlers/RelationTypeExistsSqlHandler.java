@@ -45,7 +45,7 @@ public class RelationTypeExistsSqlHandler extends SqlHandler<CriteriaRelationTyp
    }
 
    @Override
-   public void addPredicates(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
       IRelationType type = criteria.getType();
       writer.write(relAlias);
       writer.write(".rel_link_type_id = ?");
@@ -53,7 +53,7 @@ public class RelationTypeExistsSqlHandler extends SqlHandler<CriteriaRelationTyp
 
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       if (!aliases.isEmpty()) {
-         writer.write("\n AND \n");
+         writer.writeAndLn();
          int aSize = aliases.size();
          for (int index = 0; index < aSize; index++) {
             String artAlias = aliases.get(index);
@@ -72,16 +72,17 @@ public class RelationTypeExistsSqlHandler extends SqlHandler<CriteriaRelationTyp
             writer.write(".art_id)");
 
             if (index + 1 < aSize) {
-               writer.write("\n AND \n");
+               writer.writeAndLn();
             }
          }
       }
-      writer.write("\n AND \n");
+      writer.writeAndLn();
       writer.write(relAlias);
       writer.write(".gamma_id = ");
       writer.write(txsAlias);
       writer.write(".gamma_id AND ");
       writer.writeTxBranchFilter(txsAlias);
+      return true;
    }
 
    @Override

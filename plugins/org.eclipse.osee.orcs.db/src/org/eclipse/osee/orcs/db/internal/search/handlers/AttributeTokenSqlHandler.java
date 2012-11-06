@@ -110,7 +110,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
    }
 
    @Override
-   public void addPredicates(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
       if (types.size() > 1) {
          Set<Integer> typeIds = new HashSet<Integer>();
          for (IAttributeType type : types) {
@@ -137,7 +137,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
       writer.addPostProcessor(processor);
 
       if (criteria.getStringOp().isTokenized()) {
-         writer.write("\n AND \n");
+         writer.writeAndLn();
 
          int size = tagAliases.size();
          for (int index = 0; index < size; index++) {
@@ -153,7 +153,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
             }
          }
          if (size > 1) {
-            writer.write("\n AND \n");
+            writer.writeAndLn();
             for (int index = 1; index < size; index++) {
                String tagAlias1 = tagAliases.get(index - 1);
                String tagAlias2 = tagAliases.get(index);
@@ -181,7 +181,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
 
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       if (!aliases.isEmpty()) {
-         writer.write("\n AND \n");
+         writer.writeAndLn();
          int aSize = aliases.size();
          for (int index = 0; index < aSize; index++) {
             String artAlias = aliases.get(index);
@@ -195,7 +195,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
          }
       }
 
-      writer.write("\n AND \n");
+      writer.writeAndLn();
       writer.write(tagAliases.get(0));
       writer.write(".gamma_id = ");
       writer.write(attrAlias);
@@ -207,13 +207,14 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
       writer.writeTxBranchFilter(txsAlias1);
 
       if (txs2Alias2 != null && artAlias2 != null) {
-         writer.write("\n AND \n");
+         writer.writeAndLn();
          writer.write(artAlias2);
          writer.write(".gamma_id = ");
          writer.write(txs2Alias2);
          writer.write(".gamma_id AND ");
          writer.writeTxBranchFilter(txs2Alias2);
       }
+      return true;
    }
 
    @Override

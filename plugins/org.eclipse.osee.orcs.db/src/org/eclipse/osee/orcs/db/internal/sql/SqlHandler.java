@@ -63,7 +63,7 @@ public abstract class SqlHandler<T extends Criteria<?>, O extends Options> imple
 
    public abstract void addTables(AbstractSqlWriter<O> writer) throws OseeCoreException;
 
-   public abstract void addPredicates(AbstractSqlWriter<O> writer) throws OseeCoreException;
+   public abstract boolean addPredicates(AbstractSqlWriter<O> writer) throws OseeCoreException;
 
    @SuppressWarnings("unused")
    public void addSelect(AbstractSqlWriter<O> sqlWriter) throws OseeCoreException {

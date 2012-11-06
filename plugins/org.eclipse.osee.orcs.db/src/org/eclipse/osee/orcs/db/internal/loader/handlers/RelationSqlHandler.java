@@ -78,7 +78,7 @@ public class RelationSqlHandler extends SqlHandler<CriteriaRelation, LoadOptions
    }
 
    @Override
-   public void addPredicates(AbstractSqlWriter<LoadOptions> writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter<LoadOptions> writer) throws OseeCoreException {
       writer.write("(%s.a_art_id = %s.art_id OR %s.b_art_id = %s.art_id)", relationAlias, jArtAlias, relationAlias,
          jArtAlias);
       writer.write(" AND ");
@@ -130,5 +130,6 @@ public class RelationSqlHandler extends SqlHandler<CriteriaRelation, LoadOptions
       writer.write(".gamma_id");
       writer.write("\n AND ");
       writer.writeTxBranchFilter(txsAlias);
+      return true;
    }
 }

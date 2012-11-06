@@ -69,6 +69,14 @@ public class OrcsQueryTest {
    }
 
    @Test
+   public void testAllArtifactsFromBranch() throws OseeCoreException {
+      QueryBuilder builder = factory.fromBranch(CoreBranches.COMMON);
+      Assert.assertEquals(191, builder.getCount());
+
+      Assert.assertEquals(191, builder.getResults().getList().size());
+   }
+
+   @Test
    public void testQueryByIds() throws OseeCoreException {
       QueryBuilder builder = factory.fromBranch(CoreBranches.COMMON).andGuidsOrHrids("AEmLGXnw0WaGLxcK5qwA");
       Assert.assertEquals(1, builder.getCount());

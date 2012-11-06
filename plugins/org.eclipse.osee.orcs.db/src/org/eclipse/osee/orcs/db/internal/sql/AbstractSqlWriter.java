@@ -31,6 +31,8 @@ import org.eclipse.osee.orcs.db.internal.SqlProvider;
  */
 public abstract class AbstractSqlWriter<O extends Options> {
 
+   private static final String AND_WITH_NEWLINES = "\n AND \n";
+
    private final StringBuilder output = new StringBuilder();
    private final List<String> tableEntries = new ArrayList<String>();
    private final SqlAliasManager aliasManager = new SqlAliasManager();
@@ -55,6 +57,7 @@ public abstract class AbstractSqlWriter<O extends Options> {
 
    public void build(List<SqlHandler<?, O>> handlers) throws OseeCoreException {
       Conditions.checkNotNullOrEmpty(handlers, "SqlHandlers");
+      output.delete(0, output.length());
 
       computeTables(handlers);
 
@@ -102,10 +105,23 @@ public abstract class AbstractSqlWriter<O extends Options> {
       int size = handlers.size();
       for (int index = 0; index < size; index++) {
          SqlHandler<?, O> handler = handlers.get(index);
-         handler.addPredicates(this);
-         if (index + 1 < size) {
-            write("\n AND \n");
+         boolean modified = handler.addPredicates(this);
+         if (modified && index + 1 < size) {
+            writeAndLn();
          }
+      }
+      removeDanglingSeparator(AND_WITH_NEWLINES);
+   }
+
+   public void writeAndLn() throws OseeCoreException {
+      write(AND_WITH_NEWLINES);
+   }
+
+   private void removeDanglingSeparator(String token) {
+      int length = output.length();
+      int index = output.lastIndexOf(token);
+      if (index == length - token.length()) {
+         output.delete(index, length);
       }
    }
 

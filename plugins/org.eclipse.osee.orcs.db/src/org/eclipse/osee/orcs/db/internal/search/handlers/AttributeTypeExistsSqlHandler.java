@@ -55,7 +55,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
    }
 
    @Override
-   public void addPredicates(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
       Collection<? extends IAttributeType> types = criteria.getTypes();
       if (types.size() > 1) {
          Set<Integer> typeIds = new HashSet<Integer>();
@@ -82,7 +82,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
 
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       if (!aliases.isEmpty()) {
-         writer.write("\n AND \n");
+         writer.writeAndLn();
          int aSize = aliases.size();
          for (int index = 0; index < aSize; index++) {
             String artAlias = aliases.get(index);
@@ -96,12 +96,13 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
             }
          }
       }
-      writer.write("\n AND \n");
+      writer.writeAndLn();
       writer.write(attrAlias);
       writer.write(".gamma_id = ");
       writer.write(txsAlias);
       writer.write(".gamma_id AND ");
       writer.writeTxBranchFilter(txsAlias);
+      return true;
    }
 
    @Override

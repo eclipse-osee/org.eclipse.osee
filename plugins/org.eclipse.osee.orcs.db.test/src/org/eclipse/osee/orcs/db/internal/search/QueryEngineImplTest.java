@@ -33,6 +33,7 @@ import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.DataPostProcessorFactory;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllArtifacts;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactHrids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
@@ -81,6 +82,7 @@ public class QueryEngineImplTest {
    private static final Criteria<?> RELATED_TO = new CriteriaRelatedTo(CoreRelationTypes.Default_Hierarchical__Child,
       Arrays.asList(45, 61));
 
+   private static final Criteria<?> ALL_ARTIFACTS = new CriteriaAllArtifacts();
    //   private static final Criteria TWO_TYPES = new CriteriaArtifactType(Arrays.asList(CoreArtifactTypes.CodeUnit,
    //      CoreArtifactTypes.Artifact));
 
@@ -677,5 +679,137 @@ public class QueryEngineImplTest {
       Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid().intValue(), parameters.get(6));
       Assert.assertEquals(joins.get(2).getQueryId(), parameters.get(7));
       Assert.assertEquals(EXPECTED_BRANCH_ID, parameters.get(8));
+   }
+
+   @Test
+   public void testCountAllArtifactsFromBranch() throws OseeCoreException {
+      String expected = "SELECT/*+ ordered */ count(art1.art_id)\n" + // 
+      " FROM \n" + //
+      "osee_artifact art1, osee_txs txs1\n" + //
+      " WHERE \n" + //
+      "art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?";
+
+      queryData.addCriteria(ALL_ARTIFACTS);
+
+      QuerySqlContext context = queryEngine.createCount(sessionId, queryData);
+
+      Assert.assertEquals(expected, context.getSql());
+
+      List<Object> parameters = context.getParameters();
+      Assert.assertEquals(1, parameters.size());
+      List<AbstractJoinQuery> joins = context.getJoins();
+      Assert.assertEquals(0, joins.size());
+
+      Iterator<Object> iterator = parameters.iterator();
+      Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
+   }
+
+   @Test
+   public void testCountAllArtifactsFromBranchHistorical() throws OseeCoreException {
+      String expected = "SELECT count(xTable.art_id) FROM (\n" + //
+      " SELECT/*+ ordered */ max(txs1.transaction_id), art1.art_id, txs1.branch_id\n" + //
+      " FROM \n" + //
+      "osee_artifact art1, osee_txs txs1\n" + //
+      " WHERE \n" + //
+      "art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ?\n" + //
+      " AND \n" + // 
+      "txs1.tx_current IN (1, 0) AND txs1.branch_id = ?\n" + //
+      " GROUP BY art1.art_id, txs1.branch_id\n" + //
+      ") xTable";
+
+      queryData.getOptions().setFromTransaction(EXPECTED_TX_ID);
+      queryData.addCriteria(ALL_ARTIFACTS);
+
+      QuerySqlContext context = queryEngine.createCount(sessionId, queryData);
+
+      Assert.assertEquals(expected, context.getSql());
+
+      List<Object> parameters = context.getParameters();
+      Assert.assertEquals(2, parameters.size());
+      List<AbstractJoinQuery> joins = context.getJoins();
+      Assert.assertEquals(0, joins.size());
+
+      Iterator<Object> iterator = parameters.iterator();
+      Assert.assertEquals(EXPECTED_TX_ID, iterator.next());
+      Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
+   }
+
+   @Test
+   public void testQueryAllArtifactsFromBranch() throws OseeCoreException {
+      String expected = "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + // 
+      " FROM \n" + //
+      "osee_artifact art1, osee_txs txs1\n" + //
+      " WHERE \n" + //
+      "art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+      " ORDER BY art1.art_id, txs1.branch_id";
+
+      queryData.addCriteria(ALL_ARTIFACTS);
+
+      QuerySqlContext context = queryEngine.create(sessionId, queryData);
+
+      Assert.assertEquals(expected, context.getSql());
+
+      List<Object> parameters = context.getParameters();
+      Assert.assertEquals(1, parameters.size());
+      List<AbstractJoinQuery> joins = context.getJoins();
+      Assert.assertEquals(0, joins.size());
+
+      Iterator<Object> iterator = parameters.iterator();
+      Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
+   }
+
+   @Test
+   public void testQueryAllArtifactsFromBranchHistorical() throws OseeCoreException {
+      String expected = "SELECT/*+ ordered */ max(txs1.transaction_id), art1.art_id, txs1.branch_id\n" + // 
+      " FROM \n" + //
+      "osee_artifact art1, osee_txs txs1\n" + //
+      " WHERE \n" + //
+      "art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ?\n" + //
+      " AND \n" + // 
+      "txs1.tx_current IN (1, 0) AND txs1.branch_id = ?\n" + //
+      " GROUP BY art1.art_id, txs1.branch_id\n" + //
+      " ORDER BY art1.art_id, txs1.branch_id";
+
+      queryData.getOptions().setFromTransaction(EXPECTED_TX_ID);
+      queryData.addCriteria(ALL_ARTIFACTS);
+
+      QuerySqlContext context = queryEngine.create(sessionId, queryData);
+
+      Assert.assertEquals(expected, context.getSql());
+
+      List<Object> parameters = context.getParameters();
+      Assert.assertEquals(2, parameters.size());
+      List<AbstractJoinQuery> joins = context.getJoins();
+      Assert.assertEquals(0, joins.size());
+
+      Iterator<Object> iterator = parameters.iterator();
+      Assert.assertEquals(EXPECTED_TX_ID, iterator.next());
+      Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
+   }
+
+   @Test
+   public void testAllArtifactWithOtherCriteria() throws OseeCoreException {
+      String expected =
+         "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + // 
+         " FROM \n" + //
+         "osee_join_id jid1, osee_artifact art1, osee_txs txs1\n" + //
+         " WHERE \n" + //
+         "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+         " ORDER BY art1.art_id, txs1.branch_id";
+
+      queryData.addCriteria(ALL_ARTIFACTS, IDS);
+
+      QuerySqlContext context = queryEngine.create(sessionId, queryData);
+      Assert.assertEquals(expected, context.getSql());
+
+      List<Object> parameters = context.getParameters();
+      Assert.assertEquals(2, parameters.size());
+
+      List<AbstractJoinQuery> joins = context.getJoins();
+      Assert.assertEquals(1, joins.size());
+
+      Iterator<Object> iterator = parameters.iterator();
+      Assert.assertEquals(joins.get(0).getQueryId(), iterator.next());
+      Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
    }
 }

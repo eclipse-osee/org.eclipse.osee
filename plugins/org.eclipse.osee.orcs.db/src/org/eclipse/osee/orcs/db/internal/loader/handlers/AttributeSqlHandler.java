@@ -78,7 +78,7 @@ public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute, LoadOptio
    }
 
    @Override
-   public void addPredicates(AbstractSqlWriter<LoadOptions> writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter<LoadOptions> writer) throws OseeCoreException {
       writer.write(attrAlias);
       writer.write(".art_id = ");
       writer.write(jArtAlias);
@@ -131,6 +131,7 @@ public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute, LoadOptio
       writer.write(".gamma_id");
       writer.write("\n AND ");
       writer.writeTxBranchFilter(txsAlias);
+      return true;
    }
 
 }

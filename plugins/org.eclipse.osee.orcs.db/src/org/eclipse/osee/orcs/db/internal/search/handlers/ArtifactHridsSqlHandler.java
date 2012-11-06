@@ -46,7 +46,7 @@ public class ArtifactHridsSqlHandler extends SqlHandler<CriteriaArtifactHrids, Q
    }
 
    @Override
-   public void addPredicates(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
       Collection<String> ids = criteria.getIds();
       if (ids.size() > 1) {
          joinQuery = writer.writeCharJoin(ids);
@@ -68,6 +68,7 @@ public class ArtifactHridsSqlHandler extends SqlHandler<CriteriaArtifactHrids, Q
       writer.write(txsAlias);
       writer.write(".gamma_id AND ");
       writer.writeTxBranchFilter(txsAlias);
+      return true;
    }
 
    @Override

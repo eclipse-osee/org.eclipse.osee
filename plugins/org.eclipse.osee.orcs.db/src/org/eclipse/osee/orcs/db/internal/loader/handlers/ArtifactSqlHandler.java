@@ -50,7 +50,7 @@ public class ArtifactSqlHandler extends SqlHandler<CriteriaArtifact, LoadOptions
    }
 
    @Override
-   public void addPredicates(AbstractSqlWriter<LoadOptions> writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter<LoadOptions> writer) throws OseeCoreException {
       writer.write(artAlias);
       writer.write(".art_id = ");
       writer.write(jArtAlias);
@@ -66,6 +66,7 @@ public class ArtifactSqlHandler extends SqlHandler<CriteriaArtifact, LoadOptions
       writer.write(".gamma_id");
       writer.write("\n AND ");
       writer.writeTxBranchFilter(txsAlias);
+      return true;
    }
 
 }

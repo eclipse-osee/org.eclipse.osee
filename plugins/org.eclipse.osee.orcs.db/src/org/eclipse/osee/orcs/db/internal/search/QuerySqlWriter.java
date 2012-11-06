@@ -98,7 +98,7 @@ public class QuerySqlWriter extends AbstractSqlWriter<QueryOptions> {
          write(".transaction_id <= ?");
          addParameter(getOptions().getFromTransaction());
          if (!getOptions().areDeletedIncluded()) {
-            write("\n AND \n");
+            writeAndLn();
             write(txsAlias);
             write(".tx_current");
             write(" IN (");

@@ -24,6 +24,7 @@ import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.DataPostProcessorFactory;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllArtifacts;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactHrids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
@@ -34,6 +35,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
+import org.eclipse.osee.orcs.db.internal.search.handlers.AllArtifactsSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.ArtifactGuidSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.ArtifactHridsSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.ArtifactIdsSqlHandler;
@@ -135,6 +137,7 @@ public class QueryModuleFactory {
       handleMap.put(CriteriaAttributeTypeExists.class, AttributeTypeExistsSqlHandler.class);
       handleMap.put(CriteriaAttributeOther.class, AttributeOtherSqlHandler.class);
       handleMap.put(CriteriaAttributeKeyword.class, AttributeTokenSqlHandler.class);
+      handleMap.put(CriteriaAllArtifacts.class, AllArtifactsSqlHandler.class);
 
       factoryMap.put(AttributeTokenSqlHandler.class, postProcessorFactory);
 

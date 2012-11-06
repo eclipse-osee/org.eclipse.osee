@@ -71,7 +71,7 @@ public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther,
    }
 
    @Override
-   public void addPredicates(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
       IAttributeType attributeType = criteria.getAttributeType();
       Operator operator = criteria.getOperator();
 
@@ -118,7 +118,7 @@ public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther,
 
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       if (!aliases.isEmpty()) {
-         writer.write("\n AND \n");
+         writer.writeAndLn();
          int aSize = aliases.size();
          for (int index = 0; index < aSize; index++) {
             String artAlias = aliases.get(index);
@@ -139,13 +139,14 @@ public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther,
       writer.writeTxBranchFilter(txsAlias1);
 
       if (txs2Alias2 != null && artAlias2 != null) {
-         writer.write("\n AND \n");
+         writer.writeAndLn();
          writer.write(artAlias2);
          writer.write(".gamma_id = ");
          writer.write(txs2Alias2);
          writer.write(".gamma_id AND ");
          writer.writeTxBranchFilter(txs2Alias2);
       }
+      return true;
    }
 
    @Override

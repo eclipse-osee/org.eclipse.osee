@@ -81,8 +81,11 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType, Que
    }
 
    @Override
-   public void addPredicates(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
+      boolean modified = false;
+
       if (typeIds.size() > 1) {
+         modified = true;
          joinQuery = writer.writeIdJoin(typeIds);
          writer.write(jIdAlias);
          writer.write(".query_id = ?");
@@ -103,6 +106,7 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType, Que
             }
          }
       } else {
+         modified = true;
          int localId = typeIds.iterator().next();
 
          int aSize = artAliases.size();
@@ -124,7 +128,9 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType, Que
          writer.write(txsAlias);
          writer.write(".gamma_id AND ");
          writer.writeTxBranchFilter(txsAlias);
+         modified = true;
       }
+      return modified;
    }
 
    @Override

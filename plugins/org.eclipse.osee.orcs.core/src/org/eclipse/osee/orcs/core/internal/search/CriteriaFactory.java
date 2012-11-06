@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllArtifacts;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactHrids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
@@ -95,6 +96,10 @@ public class CriteriaFactory {
 
    public Criteria<QueryOptions> createRelatedToCriteria(IRelationTypeSide relationType, Collection<Integer> artifactIds) throws OseeCoreException {
       return new CriteriaRelatedTo(relationType, artifactIds);
+   }
+
+   public Criteria<QueryOptions> createAllArtifactsCriteria() {
+      return new CriteriaAllArtifacts();
    }
 
 }

@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.orcs.core.ds.Criteria;
+import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
@@ -181,7 +182,7 @@ public class QueryBuilderImpl implements QueryBuilder {
    @Override
    public QueryBuilder andLocalIds(Collection<Integer> artifactIds) throws OseeCoreException {
       Criteria<QueryOptions> criteria = criteriaFactory.createArtifactIdCriteria(artifactIds);
-      return addAndCheck(criteria);
+      return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
@@ -201,12 +202,12 @@ public class QueryBuilderImpl implements QueryBuilder {
       Conditions.checkExpressionFailOnTrue(!invalids.isEmpty(), "Invalid guids or hrids detected - %s", invalids);
       if (!guids.isEmpty()) {
          Criteria<QueryOptions> guidCriteria = criteriaFactory.createArtifactGuidCriteria(guids);
-         addAndCheck(guidCriteria);
+         addAndCheck(getQueryData(), guidCriteria);
       }
 
       if (!hrids.isEmpty()) {
          Criteria<QueryOptions> hridCriteria = criteriaFactory.createArtifactHridCriteria(hrids);
-         addAndCheck(hridCriteria);
+         addAndCheck(getQueryData(), hridCriteria);
       }
       return this;
    }
@@ -214,13 +215,13 @@ public class QueryBuilderImpl implements QueryBuilder {
    @Override
    public QueryBuilder andIsOfType(IArtifactType... artifactType) throws OseeCoreException {
       Criteria<QueryOptions> criteria = criteriaFactory.createArtifactTypeCriteria(Arrays.asList(artifactType));
-      return addAndCheck(criteria);
+      return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
    public QueryBuilder andIsOfType(Collection<? extends IArtifactType> artifactType) throws OseeCoreException {
       Criteria<QueryOptions> criteria = criteriaFactory.createArtifactTypeCriteria(artifactType);
-      return addAndCheck(criteria);
+      return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
@@ -231,44 +232,44 @@ public class QueryBuilderImpl implements QueryBuilder {
    @Override
    public QueryBuilder andExists(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
       Criteria<QueryOptions> criteria = criteriaFactory.createExistsCriteria(attributeTypes);
-      return addAndCheck(criteria);
+      return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
    public QueryBuilder andExists(IRelationType relationType) throws OseeCoreException {
       Criteria<QueryOptions> criteria = criteriaFactory.createExistsCriteria(relationType);
-      return addAndCheck(criteria);
+      return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
    public QueryBuilder and(IAttributeType attributeType, Operator operator, String value) throws OseeCoreException {
       Criteria<QueryOptions> criteria =
          criteriaFactory.createAttributeCriteria(attributeType, operator, Collections.singleton(value));
-      return addAndCheck(criteria);
+      return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
    public QueryBuilder and(IAttributeType attributeType, Operator operator, Collection<String> values) throws OseeCoreException {
       Criteria<QueryOptions> criteria = criteriaFactory.createAttributeCriteria(attributeType, operator, values);
-      return addAndCheck(criteria);
+      return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
    public QueryBuilder and(IAttributeType attributeType, StringOperator operator, CaseType match, String value) throws OseeCoreException {
       Criteria<QueryOptions> criteria =
          criteriaFactory.createAttributeCriteria(Collections.singleton(attributeType), operator, match, value);
-      return addAndCheck(criteria);
+      return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
    public QueryBuilder and(Collection<? extends IAttributeType> attributeTypes, StringOperator operator, CaseType match, String value) throws OseeCoreException {
       Criteria<QueryOptions> criteria = criteriaFactory.createAttributeCriteria(attributeTypes, operator, match, value);
-      return addAndCheck(criteria);
+      return addAndCheck(getQueryData(), criteria);
    }
 
-   private QueryBuilder addAndCheck(Criteria<QueryOptions> criteria) throws OseeCoreException {
+   private QueryBuilder addAndCheck(QueryData queryData, Criteria<QueryOptions> criteria) throws OseeCoreException {
       criteria.checkValid(getOptions());
-      getQueryData().addCriteria(criteria);
+      queryData.addCriteria(criteria);
       return this;
    }
 
@@ -317,7 +318,7 @@ public class QueryBuilderImpl implements QueryBuilder {
    @Override
    public QueryBuilder andRelatedToLocalIds(IRelationTypeSide relationTypeSide, Collection<Integer> artifactIds) throws OseeCoreException {
       Criteria<QueryOptions> criteria = criteriaFactory.createRelatedToCriteria(relationTypeSide, artifactIds);
-      return addAndCheck(criteria);
+      return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
@@ -354,18 +355,26 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public CancellableCallable<Integer> createCount() {
-      return queryFactory.createCount(sessionContext, getQueryData().clone());
+   public CancellableCallable<Integer> createCount() throws OseeCoreException {
+      return queryFactory.createCount(sessionContext, checkAndCloneQueryData());
    }
 
    @Override
-   public CancellableCallable<ResultSet<ArtifactReadable>> createSearch() {
-      return queryFactory.createSearch(sessionContext, getQueryData().clone());
+   public CancellableCallable<ResultSet<ArtifactReadable>> createSearch() throws OseeCoreException {
+      return queryFactory.createSearch(sessionContext, checkAndCloneQueryData());
    }
 
    @Override
-   public CancellableCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> createSearchWithMatches() {
-      return queryFactory.createSearchWithMatches(sessionContext, getQueryData().clone());
+   public CancellableCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> createSearchWithMatches() throws OseeCoreException {
+      return queryFactory.createSearchWithMatches(sessionContext, checkAndCloneQueryData());
    }
 
+   private QueryData checkAndCloneQueryData() throws OseeCoreException {
+      QueryData queryData = getQueryData().clone();
+      CriteriaSet criteriaSet = queryData.getCriteriaSet();
+      if (criteriaSet.getBranch() != null && criteriaSet.getCriterias().isEmpty()) {
+         addAndCheck(queryData, criteriaFactory.createAllArtifactsCriteria());
+      }
+      return queryData;
+   }
 }
