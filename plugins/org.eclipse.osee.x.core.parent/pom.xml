@@ -7,7 +7,7 @@
 	<artifactId>org.eclipse.osee.x.core.parent</artifactId>
 	<packaging>pom</packaging>
 	<name>OSEE X Core - Parent (Incubation)</name>
-	<version>0.10.4-SNAPSHOT</version>
+	<version>0.11.0-SNAPSHOT</version>
 
 	<modules>
 		<module>../../plugins/com.sun.jersey</module>
