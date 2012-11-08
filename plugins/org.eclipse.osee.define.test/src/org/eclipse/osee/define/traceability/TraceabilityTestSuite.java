@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Boeing.
+ * Copyright (c) 2011 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,13 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.blam.operation;
+package org.eclipse.osee.define.traceability;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({FixAttributeOperationTest.class, TestPlanComplianceReportTest.class})
-public class BlamTestSuite {
-   //
+@Suite.SuiteClasses({TestUnitAnnotationUtilityTest.class})
+/**
+ * @author John R. Misinco
+ */
+public class TraceabilityTestSuite {
+   // Tests added above
 }

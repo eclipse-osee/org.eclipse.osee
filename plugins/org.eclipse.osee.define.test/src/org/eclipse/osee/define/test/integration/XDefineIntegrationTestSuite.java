@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Boeing.
+ * Copyright (c) 2011 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,11 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define;
+package org.eclipse.osee.define.test.integration;
 
-import org.eclipse.osee.define.blam.operation.BlamTestSuite;
-import org.eclipse.osee.define.jobs.JobsTestSuite;
-import org.eclipse.osee.define.traceability.TestUnitAnnotationUtilityTest;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -20,16 +17,22 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({BlamTestSuite.class, JobsTestSuite.class, TestUnitAnnotationUtilityTest.class})
-public final class AllDefineTestSuite {
+@Suite.SuiteClasses({
+   FixAttributeOperationTest.class,
+   ImportTraceUnitsOperationTest.class,
+   TestPlanComplianceReportTest.class})
+/**
+ * @author John R. Misinco
+ */
+public class XDefineIntegrationTestSuite {
    @BeforeClass
    public static void setUp() throws Exception {
       OseeProperties.setIsInTest(true);
-      System.out.println("\n\nBegin " + AllDefineTestSuite.class.getSimpleName());
+      System.out.println("\n\nBegin " + XDefineIntegrationTestSuite.class.getSimpleName());
    }
 
    @AfterClass
    public static void tearDown() throws Exception {
-      System.out.println("End " + AllDefineTestSuite.class.getSimpleName());
+      System.out.println("End " + XDefineIntegrationTestSuite.class.getSimpleName());
    }
 }

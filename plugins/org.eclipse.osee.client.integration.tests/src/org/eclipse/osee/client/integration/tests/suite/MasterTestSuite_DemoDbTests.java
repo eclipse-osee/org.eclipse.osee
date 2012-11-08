@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.AtsTest_Demo_Suite;
 import org.eclipse.osee.ats.Review_Demo_Suite;
 import org.eclipse.osee.ats.config.demo.config.DemoDbUtil;
 import org.eclipse.osee.coverage.Coverage_Db_Suite;
-import org.eclipse.osee.define.AllDefineTestSuite;
+import org.eclipse.osee.define.AllDefineIntegrationTestSuite;
 import org.eclipse.osee.framework.access.test.AllAccessTestSuite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.dsl.ui.integration.test.AllDslUiIntegrationTestSuite;
@@ -46,7 +46,7 @@ import org.junit.runners.Suite;
    FrameworkCore_Demo_Suite.class,
    AllEventResTestSuite.class,
    Review_Demo_Suite.class,
-   AllDefineTestSuite.class,
+   AllDefineIntegrationTestSuite.class,
    Coverage_Db_Suite.class,
    FrameworkUi_Demo_Suite.class,
    // This should always be last test of master suite

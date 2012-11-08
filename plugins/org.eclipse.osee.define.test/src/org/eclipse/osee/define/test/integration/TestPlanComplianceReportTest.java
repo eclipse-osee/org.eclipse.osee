@@ -8,12 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.blam.operation;
+package org.eclipse.osee.define.test.integration;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.define.blam.operation.TestPlanComplianceReport;
+import org.eclipse.osee.define.blam.operation.TestStatusEnum;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
