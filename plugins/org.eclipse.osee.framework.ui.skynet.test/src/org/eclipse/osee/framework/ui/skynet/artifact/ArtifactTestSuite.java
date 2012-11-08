@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Boeing.
+ * Copyright (c) 2012 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,17 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.util;
+package org.eclipse.osee.framework.ui.skynet.artifact;
 
-import org.eclipse.osee.ats.AtsImage;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses({ArtifactPromptChangeTest.class})
 /**
- * @author Donald G. Dunne
+ * @author Roberto E. Escobar
  */
-public class AtsImageTest extends ImageManagerTest {
-
-   public AtsImageTest() {
-      super("AtsImage", AtsImage.values());
-   }
-
+public class ArtifactTestSuite {
+   // Test Suite
 }

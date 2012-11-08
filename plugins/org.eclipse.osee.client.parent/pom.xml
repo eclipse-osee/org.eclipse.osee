@@ -46,7 +46,8 @@
 		<module>../../plugins/org.eclipse.osee.ote.define</module>
 
 		<module>../../plugins/org.eclipse.osee.framework.ui.skynet</module>
-		
+                <module>../../plugins/org.eclipse.osee.framework.ui.skynet.test</module>
+
 		<module>../../plugins/org.eclipse.osee.framework.core.dsl.ui</module>
 		<module>../../plugins/org.eclipse.osee.framework.core.dsl.ui.integration</module>
 		<module>../../plugins/org.eclipse.osee.framework.ui.admin</module>

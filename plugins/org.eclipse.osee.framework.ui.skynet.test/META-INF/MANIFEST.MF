@@ -5,8 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.framework.ui.skynet.test;singleton:=true
 Bundle-Version: 0.11.0.qualifier
 Fragment-Host: org.eclipse.osee.framework.ui.skynet
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: org.eclipse.osee.framework.ui.skynet.test,
- org.eclipse.osee.framework.ui.skynet.test.cases
+Export-Package: org.eclipse.osee.framework.ui.skynet
 Import-Package: com.lowagie.text.pdf;version="2.1.7",
  com.lowagie.text.rtf;version="2.1.7",
  org.eclipse.osee.framework.access,
