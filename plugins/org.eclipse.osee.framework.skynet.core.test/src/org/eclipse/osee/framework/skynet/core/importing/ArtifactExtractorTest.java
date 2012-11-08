@@ -18,8 +18,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
@@ -28,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtract
 import org.eclipse.osee.framework.skynet.core.importing.parsers.NativeDocumentExtractor;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -36,25 +37,17 @@ import org.junit.runners.Parameterized.Parameters;
 /**
  * @author Roberto E. Escobar
  */
+@Ignore
 @RunWith(Parameterized.class)
 public class ArtifactExtractorTest {
-   private static final String TEST_DATA_PATH = "support/ArtifactExtractorTests/";
    private final IArtifactExtractor extractor;
    private final String testDataFileName;
    private final PropertyStore propertyStore;
-   private static String BASE_DATA_PATH;
 
    public ArtifactExtractorTest(IArtifactExtractor extractor, String testDataFileName) {
       this.extractor = extractor;
       this.testDataFileName = testDataFileName;
       this.propertyStore = new PropertyStore();
-
-   }
-
-   @BeforeClass
-   public static void testInitialize() throws Exception {
-      BASE_DATA_PATH = Lib.getBasePath(ArtifactExtractorTest.class) + "../";
-      BASE_DATA_PATH += TEST_DATA_PATH;
    }
 
    @Before
@@ -62,17 +55,10 @@ public class ArtifactExtractorTest {
       Assert.assertTrue(Strings.isValid(testDataFileName));
       InputStream inputStream = null;
       try {
-         URL url = Lib.getUrlFromString(BASE_DATA_PATH + testDataFileName);
-         inputStream = url.openStream();
+         inputStream = getClass().getResourceAsStream(testDataFileName);
          propertyStore.load(inputStream);
       } finally {
-         if (inputStream != null) {
-            try {
-               inputStream.close();
-            } catch (IOException ex) {
-               Assert.assertTrue("Error closing resource: " + testDataFileName, false);
-            }
-         }
+         Lib.close(inputStream);
       }
    }
 
@@ -174,15 +160,15 @@ public class ArtifactExtractorTest {
       RoughArtifactCollector expectedCollector = new RoughArtifactCollector(parent);
       for (ParseTestData testData : getParseTestData()) {
 
-         RoughArtifactUtil.resetCollector(actualCollector);
-         RoughArtifactUtil.resetCollector(expectedCollector);
+         resetCollector(actualCollector);
+         resetCollector(expectedCollector);
 
-         URL url = Lib.getUrlFromString(BASE_DATA_PATH + testData.getSourceData());
+         URL url = getClass().getResource(testData.getSourceData());
          extractor.process(null, url.toURI(), actualCollector);
 
-         URL expectedData = Lib.getUrlFromString(BASE_DATA_PATH + testData.getExpectedData());
-         RoughArtifactUtil.loadDataFrom(expectedData, expectedCollector);
-         RoughArtifactUtil.checkCollectors(expectedCollector, actualCollector);
+         URL expectedData = getClass().getResource(testData.getExpectedData());
+         loadDataFrom(expectedData, expectedCollector);
+         checkCollectors(expectedCollector, actualCollector);
       }
    }
 
@@ -254,5 +240,59 @@ public class ArtifactExtractorTest {
       public String toString() {
          return String.format("msg:[%s] file:[%s] isAccepted:[%s]", getMessage(), getFile(), getExpected());
       }
+   }
+
+   public static void loadDataFrom(URL expecetedData, RoughArtifactCollector collector) {
+      // TODO: convert expected to actual Objects;
+      //      collector.addRoughArtifact();
+      //      collector.addRoughRelation();
+   }
+
+   public static void resetCollector(RoughArtifactCollector collector) {
+      collector.reset();
+      Assert.assertTrue(collector.getRoughArtifacts().isEmpty());
+      Assert.assertTrue(collector.getRoughRelations().isEmpty());
+   }
+
+   public static void checkCollectors(RoughArtifactCollector expected, RoughArtifactCollector actual) {
+      Assert.assertEquals(expected.getParentRoughArtifact(), actual.getParentRoughArtifact());
+
+      List<RoughArtifact> expectedItems = expected.getRoughArtifacts();
+      List<RoughArtifact> actualItems = actual.getRoughArtifacts();
+      Assert.assertEquals(expectedItems.size(), actualItems.size());
+      int size = expectedItems.size();
+      for (int index = 0; index < size; index++) {
+         checkRoughArtifact(expectedItems.get(index), actualItems.get(index));
+      }
+
+      List<RoughRelation> expectedRelItems = expected.getRoughRelations();
+      List<RoughRelation> actualRelItems = actual.getRoughRelations();
+      Assert.assertEquals(expectedRelItems.size(), actualRelItems.size());
+      size = expectedRelItems.size();
+      for (int index = 0; index < size; index++) {
+         checkRoughRelation(expectedRelItems.get(index), actualRelItems.get(index));
+      }
+   }
+
+   public static void checkRoughRelation(RoughRelation expected, RoughRelation actual) {
+      Assert.assertTrue(GUID.isValid(actual.getAartifactGuid()));
+      Assert.assertTrue(GUID.isValid(actual.getBartifactGuid()));
+      Assert.assertEquals(expected.getRelationTypeName(), actual.getRelationTypeName());
+      Assert.assertEquals(expected.getRationale(), actual.getRationale());
+      Assert.assertEquals(expected.getAartifactGuid(), actual.getAartifactGuid());
+      Assert.assertEquals(expected.getBartifactGuid(), actual.getBartifactGuid());
+   }
+
+   public static void checkRoughArtifact(RoughArtifact expected, RoughArtifact actual) {
+      // Randomly generated - just check the format
+      Assert.assertTrue(GUID.isValid(actual.getGuid()));
+      Assert.assertTrue(HumanReadableId.isValid(actual.getHumanReadableId()));
+      Assert.assertEquals(expected.getName(), actual.getName());
+      Assert.assertEquals(expected.getPrimaryArtifactType(), actual.getPrimaryArtifactType());
+      Assert.assertEquals(expected.getRoughArtifactKind(), actual.getRoughArtifactKind());
+      Assert.assertEquals(expected.getRoughParent(), actual.getRoughParent());
+
+      Assert.assertEquals(expected.getAttributes(), actual.getAttributes());
+      Assert.assertEquals(expected.getURIAttributes(), actual.getURIAttributes());
    }
 }

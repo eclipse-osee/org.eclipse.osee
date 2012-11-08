@@ -5,27 +5,12 @@ Bundle-SymbolicName: org.eclipse.osee.framework.skynet.core.test;singleton:=true
 Bundle-Version: 0.11.0.qualifier
 Fragment-Host: org.eclipse.osee.framework.skynet.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.junit
+Require-Bundle: org.junit,
+ org.mockito;bundle-version="1.9.0",
+ org.hamcrest.core
 Export-Package: org.eclipse.osee.framework.skynet.core,
- org.eclipse.osee.framework.skynet.core.artifact,
- org.eclipse.osee.framework.skynet.core.artifact.search,
- org.eclipse.osee.framework.skynet.core.event,
- org.eclipse.osee.framework.skynet.core.event.filter,
- org.eclipse.osee.framework.skynet.core.event.model,
- org.eclipse.osee.framework.skynet.core.importing,
- org.eclipse.osee.framework.skynet.core.importing.parsers,
- org.eclipse.osee.framework.skynet.core.linking,
  org.eclipse.osee.framework.skynet.core.mocks,
- org.eclipse.osee.framework.skynet.core.relation,
- org.eclipse.osee.framework.skynet.core.relation.order,
- org.eclipse.osee.framework.skynet.core.relation.sorters,
- org.eclipse.osee.framework.skynet.core.revision,
- org.eclipse.osee.framework.skynet.core.rule,
- org.eclipse.osee.framework.skynet.core.transaction,
- org.eclipse.osee.framework.skynet.core.util,
- org.eclipse.osee.framework.skynet.core.utility,
- org.eclipse.osee.framework.skynet.core.validation,
- org.eclipse.osee.framework.skynet.core.word
+ org.eclipse.osee.framework.skynet.core.rule
 Import-Package: org.apache.commons.lang;version="2.4.0",
  org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.enums,

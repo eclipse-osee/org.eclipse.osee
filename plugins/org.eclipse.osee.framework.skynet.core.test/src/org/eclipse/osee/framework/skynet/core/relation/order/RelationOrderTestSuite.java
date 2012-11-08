@@ -17,11 +17,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    RelationOrderDataTest.class,
    RelationOrderMergerTest.class,
-   RelationOrderMergeUtilityTest.class,
    RelationOrderParserTest.class,
-   RelationSorterProviderTest.class
-
-})
+   RelationSorterProviderTest.class})
 /**
  * @author Roberto E. Escobar
  */

@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing;
 
+import org.eclipse.osee.framework.skynet.core.importing.parsers.ParsersSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ReqNumberingTest.class, RoughArtifactTest.class})
+@Suite.SuiteClasses({ParsersSuite.class, ArtifactExtractorTest.class, ReqNumberingTest.class})
 /**
  * @author Karol M. Wilk
  */

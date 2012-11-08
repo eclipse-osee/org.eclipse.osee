@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.skynet.core;
 
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryPerformanceTests;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryTestProduction;
+import org.eclipse.osee.framework.skynet.core.test.production.ArtifactQueryPerformanceTests;
+import org.eclipse.osee.framework.skynet.core.test.production.ArtifactQueryTestProduction;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;

@@ -14,11 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-   TxMonitorCacheTest.class,
-   TxMonitorImplTest.class,
-   TransactionManagerTest.class,
-   SkynetTransactionTest.class})
+@Suite.SuiteClasses({TxMonitorCacheTest.class, TxMonitorImplTest.class})
 /**
  * @author Roberto E. Escobar
  */

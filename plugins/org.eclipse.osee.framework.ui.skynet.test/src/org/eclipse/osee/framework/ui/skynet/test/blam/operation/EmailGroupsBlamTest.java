@@ -15,7 +15,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -28,7 +27,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.EmailGroupsBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.EmailGroupsData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -47,8 +45,6 @@ public class EmailGroupsBlamTest extends EmailGroupsBlam {
 
    @BeforeClass
    public static void setUp() throws Exception {
-      cleanup();
-
       newGroup =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.UserGroup, BranchManager.getCommonBranch(),
             EmailGroupsBlamTest.class.getSimpleName());
@@ -58,11 +54,9 @@ public class EmailGroupsBlamTest extends EmailGroupsBlam {
 
    @AfterClass
    public static void tearDown() throws Exception {
-      cleanup();
-   }
-
-   private static void cleanup() throws OseeCoreException, Exception {
-      FrameworkTestUtil.cleanupSimpleTest(BranchManager.getCommonBranch(), EmailGroupsBlamTest.class.getSimpleName());
+      if (newGroup != null) {
+         newGroup.deleteAndPersist();
+      }
    }
 
    @org.junit.Test

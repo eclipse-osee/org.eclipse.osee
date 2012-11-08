@@ -16,15 +16,12 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
-import org.eclipse.osee.framework.skynet.core.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
-import org.junit.After;
 import org.junit.Before;
 
 /**
@@ -36,7 +33,6 @@ public class WordTrackedChangesTest {
    @Before
    public void setUp() throws Exception {
       assertFalse("Not to be run on production datbase.", TestUtil.isProductionDb());
-      FrameworkTestUtil.cleanupSimpleTest(DemoSawBuilds.SAW_Bld_1, WordTrackedChangesTest.class.getSimpleName());
       RenderingUtil.setPopupsAllowed(false);
    }
 
@@ -57,18 +53,19 @@ public class WordTrackedChangesTest {
    public void testWholeWordSaveWithTrackChanges() throws Exception {
       String content = Lib.fileToString(getClass(), TEST_WORD_EDIT_FILE_NAME);
       LinkType linkType = LinkType.OSEE_SERVER_LINK;
-      Artifact newArt =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedureWML, DemoSawBuilds.SAW_Bld_1,
-            getClass().getSimpleName());
-      newArt.persist(getClass().getSimpleName());
-      String unlinkedContent = WordMlLinkHandler.unlink(linkType, newArt, content);
-
-      assertTrue(WordUtil.containsWordAnnotations(unlinkedContent));
+      Artifact newArt = null;
+      try {
+         newArt =
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedureWML, DemoSawBuilds.SAW_Bld_1,
+               getClass().getSimpleName());
+         newArt.persist(getClass().getSimpleName());
+         String unlinkedContent = WordMlLinkHandler.unlink(linkType, newArt, content);
+         assertTrue(WordUtil.containsWordAnnotations(unlinkedContent));
+      } finally {
+         if (newArt != null) {
+            newArt.purgeFromBranch();
+         }
+      }
    }
 
-   @After
-   public void tearDown() throws Exception {
-      FrameworkTestUtil.cleanupSimpleTest(DemoSawBuilds.SAW_Bld_1, WordTrackedChangesTest.class.getSimpleName());
-      FrameworkTestUtil.cleanupSimpleTest(BranchManager.getCommonBranch(), WordTrackedChangesTest.class.getSimpleName());
-   }
 }
