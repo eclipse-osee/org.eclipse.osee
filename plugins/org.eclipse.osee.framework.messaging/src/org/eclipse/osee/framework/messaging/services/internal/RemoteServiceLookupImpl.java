@@ -17,7 +17,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -38,13 +37,13 @@ public class RemoteServiceLookupImpl implements RemoteServiceLookup {
    private final CompositeKeyHashMap<String, String, List<ServiceNotification>> callbacks;
    private final HealthServiceListener healthServiceListener;
 
-   public RemoteServiceLookupImpl(ConnectionNode node, ScheduledExecutorService executor) {
+   public RemoteServiceLookupImpl(ConnectionNode node, ScheduledExecutorService executor, long serviceTimeout, TimeUnit unit) {
       this.connectionNode = node;
       map = new CompositeKeyHashMap<String, String, Map<String, ServiceHealthPlusTimeout>>(25, true);
       callbacks = new CompositeKeyHashMap<String, String, List<ServiceNotification>>(25, true);
       healthServiceListener = new HealthServiceListener(map, callbacks);
       connectionNode.subscribeToReply(BaseMessages.ServiceHealthRequest, healthServiceListener);
-      executor.scheduleAtFixedRate(new MonitorTimedOutServices(map, callbacks), 30, 30, TimeUnit.SECONDS);
+      executor.scheduleAtFixedRate(new MonitorTimedOutServices(map, callbacks), serviceTimeout, serviceTimeout, unit);
    }
 
    public void start() {

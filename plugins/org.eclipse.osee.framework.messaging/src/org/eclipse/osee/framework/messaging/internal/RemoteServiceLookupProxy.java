@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.messaging.internal;
 import java.net.URI;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -30,6 +31,8 @@ import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
  * @author Roberto E. Escobar
  */
 public class RemoteServiceLookupProxy implements RemoteServiceLookup, RemoteServiceRegistrar {
+
+   private static final long SERVICE_LOOKUP_TIMEOUT = 30;
 
    private ClassLoader contextClassLoader;
    private RemoteServiceRegistrarImpl registrar;
@@ -52,7 +55,8 @@ public class RemoteServiceLookupProxy implements RemoteServiceLookup, RemoteServ
       registrar = new RemoteServiceRegistrarImpl(messageService.getDefault(), executor);
       registrar.start();
 
-      lookup = new RemoteServiceLookupImpl(messageService.getDefault(), executor);
+      lookup =
+         new RemoteServiceLookupImpl(messageService.getDefault(), executor, SERVICE_LOOKUP_TIMEOUT, TimeUnit.SECONDS);
       lookup.start();
       OseeLog.log(Activator.class, Level.INFO, "Remote Service Lookup - Started");
    }

@@ -8,10 +8,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.messaging.internal;
+package org.eclipse.osee.framework.messaging.data;
 
 import org.eclipse.osee.framework.messaging.MessageID;
-import org.eclipse.osee.framework.messaging.test.msg.TestMessage;
 
 /**
  * @author Andrew M. Finkbeiner

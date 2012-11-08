@@ -20,7 +20,6 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
-
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
 import javax.jms.ExceptionListener;
@@ -32,7 +31,6 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TemporaryTopic;
 import javax.jms.Topic;
-
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -80,7 +78,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
       regularListeners = new CompositeKeyHashMap<String, MessageConsumer, OseeMessagingListener>(64, true);
       replyListeners = new ConcurrentHashMap<String, OseeMessagingListener>();
    }
-   
+
    @Override
    public synchronized void start() throws OseeCoreException {
       if (started) {
@@ -122,12 +120,13 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
       try {
          if (messageId.isTopic()) {
             try {
-               sendInternal(messageId, message, properties, statusCallback);
+               sendInternal(messageId, message, properties);
+               statusCallback.success();
             } catch (JMSException ex) {
                removeProducerFromCache(messageId);
-               sendInternal(messageId, message, properties, statusCallback);
+               sendInternal(messageId, message, properties);
+               statusCallback.success();
             }
-            statusCallback.success();
          }
       } catch (Exception ex) {
          statusCallback.fail(ex);
@@ -135,28 +134,28 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
       }
    }
 
-   private synchronized void sendInternal(MessageID messageId, Object message, Properties properties, OseeMessagingStatusCallback statusCallback) throws JMSException, OseeCoreException {
+   private synchronized void sendInternal(MessageID messageId, Object message, Properties properties) throws JMSException, OseeCoreException {
       ConsoleDebugSupport support = ServiceUtility.getConsoleDebugSupport();
-	   if(support != null){
-		  if(support.getPrintSends()){
-			  System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++");
-			  System.out.println(messageId.getName() + " ==> " + new Date());
-			  if(properties != null){
-				 System.out.println("PROPERTIES:");
-				 System.out.println(properties.toString());
-			  }
-			  System.out.println("MESSAGE:");
-			  System.out.println(message.toString());
-			  System.out.println("STACK:");
-			  StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-			  for(StackTraceElement el:stack){
-				  System.out.println("   " + el.toString());
-			  }
-			  System.out.println("-----------------------------------------------------------------------------");
-		  }
-    	  support.addSend(messageId);
+      if (support != null) {
+         if (support.getPrintSends()) {
+            System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++");
+            System.out.println(messageId.getName() + " ==> " + new Date());
+            if (properties != null) {
+               System.out.println("PROPERTIES:");
+               System.out.println(properties.toString());
+            }
+            System.out.println("MESSAGE:");
+            System.out.println(message.toString());
+            System.out.println("STACK:");
+            StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+            for (StackTraceElement el : stack) {
+               System.out.println("   " + el.toString());
+            }
+            System.out.println("-----------------------------------------------------------------------------");
+         }
+         support.addSend(messageId);
       }
-	  Topic destination = getOrCreateTopic(messageId);
+      Topic destination = getOrCreateTopic(messageId);
       MessageProducer producer = getOrCreateProducer(destination);
       Message msg = activeMqUtil.createMessage(session, messageId.getSerializationClass(), message);
       if (messageId.isReplyRequired()) {
@@ -193,7 +192,6 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
          }
       }
       producer.send(msg);
-      statusCallback.success();
    }
 
    @Override

@@ -45,7 +45,7 @@ public class MessageServiceProxy implements MessageService {
       messageService = null;
    }
 
-   MessageService getProxiedService() {
+   public MessageService getProxiedService() {
       return messageService;
    }
 

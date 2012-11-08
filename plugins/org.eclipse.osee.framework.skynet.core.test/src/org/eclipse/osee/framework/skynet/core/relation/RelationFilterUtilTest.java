@@ -13,14 +13,14 @@ package org.eclipse.osee.framework.skynet.core.relation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.skynet.core.mocks.DataFactory;
+import org.eclipse.osee.framework.skynet.core.mocks.MockDataFactory;
 import org.eclipse.osee.framework.skynet.core.relation.RelationFilterUtil.RelationMatcher;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;

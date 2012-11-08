@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.messaging.internal;
+package org.eclipse.osee.framework.messaging.integration.experimental;
 
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 
@@ -66,6 +66,7 @@ public class MessageStatusTest implements OseeMessagingStatusCallback {
          try {
             Thread.sleep(200);
          } catch (InterruptedException ex) {
+            //
          }
       }
       if (!isDone) {

@@ -8,40 +8,43 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.messaging.internal;
+package org.eclipse.osee.framework.messaging.integration.experimental;
 
+import static org.eclipse.osee.framework.messaging.integration.experimental.MessageAssert.verifyJMSSendShouldFail;
+import static org.eclipse.osee.framework.messaging.integration.experimental.MessageAssert.verifyJMSSendShouldPass;
+import static org.eclipse.osee.framework.messaging.integration.experimental.MessageAssert.verifyJMSSubscribeShouldFail;
+import static org.eclipse.osee.framework.messaging.integration.experimental.MessageAssert.verifyJMSSubscribeShouldPass;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.framework.messaging.ConnectionListener;
 import org.eclipse.osee.framework.messaging.ConnectionNode;
+import org.junit.Test;
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public class TestBrokerServiceInterruptions extends BaseBrokerTesting {
 
-   //   @Ignore
-   @org.junit.Test
+   @Test
    public void testBrokerComesUpAfterAppsRunning() throws Exception {
-      testJMSSendShouldFail(getMessaging());
-      testJMSSubscribeShouldFail(getMessaging());
+      verifyJMSSendShouldFail(getConnectionNode());
+      verifyJMSSubscribeShouldFail(getConnectionNode());
 
       startBroker();
 
-      testJMSSubscribeShouldPass(getMessaging());
-      testJMSSendShouldPass(getMessaging());
+      verifyJMSSubscribeShouldPass(getConnectionNode());
+      verifyJMSSendShouldPass(getConnectionNode());
 
       stopBroker();
    }
 
-   //	@Ignore
-   @org.junit.Test
+   @Test
    public void testBrokerGoingDownTriggersConnectionEvent() throws Exception {
       startBroker();
 
-      testJMSSendShouldPass(getMessaging());
+      verifyJMSSendShouldPass(getConnectionNode());
 
-      ConnectionNode connectionNode = getMessaging().get(DefaultNodeInfos.OSEE_JMS_DEFAULT);
+      ConnectionNode connectionNode = getConnectionNode();
       TestConnectionListener connectionListener = new TestConnectionListener();
       connectionNode.addConnectionListener(connectionListener);
 
@@ -53,6 +56,28 @@ public class TestBrokerServiceInterruptions extends BaseBrokerTesting {
 
       assertFalse(connectionListener.isConnected());
 
+   }
+
+   @Test
+   public void testBrokerGoingDownSendFails() throws Exception {
+      startBroker();
+
+      verifyJMSSendShouldPass(getConnectionNode());
+
+      stopBroker();
+
+      verifyJMSSendShouldFail(getConnectionNode());
+   }
+
+   @Test
+   public void testBrokerGoingDownSubscribeFails() throws Exception {
+      startBroker();
+
+      verifyJMSSubscribeShouldPass(getConnectionNode());
+
+      stopBroker();
+
+      verifyJMSSubscribeShouldFail(getConnectionNode());
    }
 
    private class TestConnectionListener implements ConnectionListener {
@@ -75,29 +100,4 @@ public class TestBrokerServiceInterruptions extends BaseBrokerTesting {
          isConnected = false;
       }
    }
-
-   //	@Ignore
-   @org.junit.Test
-   public void testBrokerGoingDownSendFails() throws Exception {
-      startBroker();
-
-      testJMSSendShouldPass(getMessaging());
-
-      stopBroker();
-
-      testJMSSendShouldFail(getMessaging());
-   }
-
-   //	@Ignore
-   @org.junit.Test
-   public void testBrokerGoingDownSubscribeFails() throws Exception {
-      startBroker();
-
-      testJMSSubscribeShouldPass(getMessaging());
-
-      stopBroker();
-
-      testJMSSubscribeShouldFail(getMessaging());
-   }
-
 }

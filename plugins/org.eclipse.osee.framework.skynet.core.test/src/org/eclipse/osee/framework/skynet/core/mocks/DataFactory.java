@@ -17,8 +17,9 @@ import java.util.Random;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
+import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -108,7 +109,19 @@ public final class DataFactory {
    }
 
    public static RelationType createRelationType(int id) {
-      ArtifactType dummyArtType = MockDataFactory.createArtifactType(id);
-      return MockDataFactory.createRelationType(id, dummyArtType, dummyArtType);
+      ArtifactType dummyArtType = createArtifactType(id);
+      return createRelationType(id, dummyArtType, dummyArtType);
+   }
+
+   private static ArtifactType createArtifactType(int index) {
+      return new ArtifactType(randomGenerator.nextLong(), "art_" + index, index % 2 == 0);
+   }
+
+   private static RelationType createRelationType(int index, IArtifactType artTypeA, IArtifactType artTypeB) {
+      RelationTypeMultiplicity multiplicity =
+         RelationTypeMultiplicity.values()[Math.abs(index % RelationTypeMultiplicity.values().length)];
+      String order = RelationOrderBaseTypes.values()[index % RelationTypeMultiplicity.values().length].getGuid();
+      return new RelationType(randomGenerator.nextLong(), "relType_" + index, "sideA_" + index, "sideB_" + index,
+         artTypeA, artTypeB, multiplicity, order);
    }
 }

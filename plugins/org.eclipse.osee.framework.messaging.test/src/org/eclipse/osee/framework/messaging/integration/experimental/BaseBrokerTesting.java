@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.messaging.internal;
+package org.eclipse.osee.framework.messaging.integration.experimental;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -18,7 +18,6 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import org.apache.activemq.broker.BrokerService;
@@ -27,10 +26,9 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.messaging.MessageService;
-import org.eclipse.osee.framework.messaging.OseeMessagingListener;
-import org.eclipse.osee.framework.messaging.ReplyConnection;
 import org.eclipse.osee.framework.messaging.SystemTopic;
-import org.eclipse.osee.framework.messaging.test.msg.TestMessage;
+import org.eclipse.osee.framework.messaging.data.DefaultNodeInfos;
+import org.eclipse.osee.framework.messaging.internal.MessageServiceProxy;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -39,7 +37,6 @@ public class BaseBrokerTesting {
 
    private MessageServiceProxy messageServiceProviderImpl = null;
    private ConcurrentHashMap<String, BrokerService> brokers;
-   private Thread[] threads;
 
    @org.junit.Before
    public void beforeTest() {
@@ -78,6 +75,10 @@ public class BaseBrokerTesting {
       } catch (InterruptedException ex) {
          ex.printStackTrace();
       }
+   }
+
+   protected ConnectionNode getConnectionNode() throws OseeCoreException {
+      return getMessaging().get(DefaultNodeInfos.OSEE_JMS_NODE_INFO);
    }
 
    protected void stopEmbeddedBroker(String brokerName, String brokerURI) throws Exception {
@@ -155,7 +156,7 @@ public class BaseBrokerTesting {
 
    protected void stopBroker() {
       try {
-         getMessaging().get(DefaultNodeInfos.OSEE_JMS_DEFAULT).send(SystemTopic.KILL_TEST_JMS_BROKER, "kill",
+         getMessaging().get(DefaultNodeInfos.OSEE_JMS_NODE_INFO).send(SystemTopic.KILL_TEST_JMS_BROKER, "kill",
             new MessageStatusTest(true));
          Thread.sleep(10000);
       } catch (InterruptedException ex) {
@@ -174,51 +175,4 @@ public class BaseBrokerTesting {
       return messaging;
    }
 
-   protected void testJMSSendShouldFail(MessageService messaging) {
-      MessageStatusTest status = new MessageStatusTest(false);
-      try {
-         messaging.get(DefaultNodeInfos.OSEE_JMS_DEFAULT).send(TestMessages.test, "test", status);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(BaseBrokerTesting.class, Level.SEVERE, ex);
-      }
-      status.waitForStatus(5000);
-   }
-
-   protected void testJMSSendShouldPass(MessageService messaging) {
-      MessageStatusTest status = new MessageStatusTest(true);
-      try {
-         messaging.get(DefaultNodeInfos.OSEE_JMS_DEFAULT).send(TestMessages.test, "test", status);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(BaseBrokerTesting.class, Level.SEVERE, ex);
-      }
-      status.waitForStatus(5000);
-   }
-
-   protected void testJMSSubscribeShouldFail(MessageService messaging) throws OseeCoreException {
-      MessageStatusTest status = new MessageStatusTest(false);
-      OseeMessagingListener listener = new OseeMessagingListener(TestMessage.class) {
-         @Override
-         public void process(Object message, Map<String, Object> headers, ReplyConnection replyConnection) {
-            TestMessage msg = (TestMessage) message;
-            System.out.println(msg.getMessage());
-         }
-      };
-
-      messaging.get(DefaultNodeInfos.OSEE_JMS_DEFAULT).subscribe(TestMessages.test2, listener, status);
-      status.waitForStatus(5000);
-      messaging.get(DefaultNodeInfos.OSEE_JMS_DEFAULT).unsubscribe(TestMessages.test2, listener, status);//we have to remove so we don't get a false fail later on
-   }
-
-   protected void testJMSSubscribeShouldPass(MessageService messaging) throws OseeCoreException {
-      MessageStatusTest status = new MessageStatusTest(true);
-      ConnectionNode node = messaging.get(DefaultNodeInfos.OSEE_JMS_DEFAULT);
-      node.subscribe(TestMessages.test2, new OseeMessagingListener(TestMessage.class) {
-         @Override
-         public void process(Object message, Map<String, Object> headers, ReplyConnection replyConnection) {
-            TestMessage msg = (TestMessage) message;
-            System.out.println(msg.getMessage());
-         }
-      }, status);
-      status.waitForStatus(5000);
-   }
 }

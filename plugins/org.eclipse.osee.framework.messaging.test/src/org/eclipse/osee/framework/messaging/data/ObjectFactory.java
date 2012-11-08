@@ -5,7 +5,7 @@
 // Generated on: 2010.01.24 at 05:48:12 PM MST
 //
 
-package org.eclipse.osee.framework.messaging.test.msg;
+package org.eclipse.osee.framework.messaging.data;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;

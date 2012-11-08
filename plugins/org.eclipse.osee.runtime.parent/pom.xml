@@ -30,8 +30,10 @@
 		<module>../../features/org.eclipse.osee.core.plugin.feature.source</module>
 
 		<module>../../plugins/org.eclipse.osee.framework.jini</module>
+
 		<module>../../plugins/org.eclipse.osee.framework.messaging</module>
-		<!-- <module>../../plugins/org.eclipse.osee.framework.messaging.test</module> -->
+		<module>../../plugins/org.eclipse.osee.framework.messaging.test</module>
+
 		<module>../../plugins/org.eclipse.osee.framework.plugin.core</module>
 
 		<module>../../features/org.eclipse.osee.core.ui.feature</module>
