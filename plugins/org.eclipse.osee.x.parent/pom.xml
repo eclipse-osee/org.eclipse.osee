@@ -3,6 +3,13 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
+	<parent>
+		<groupId>org.eclipse.osee</groupId>
+		<artifactId>org.eclipse.osee.parent</artifactId>
+		<version>0.11.0-SNAPSHOT</version>
+		<relativePath>../../plugins/org.eclipse.osee.parent</relativePath>
+	</parent>
+
 	<groupId>org.eclipse.osee</groupId>
 	<artifactId>org.eclipse.osee.x.parent</artifactId>
 	<packaging>pom</packaging>
@@ -14,30 +21,5 @@
 		<module>../../plugins/org.eclipse.osee.orcs.parent</module>
 		<module>../../plugins/org.eclipse.osee.x.server.parent</module>
 	</modules>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jacoco-version>0.5.3.201107060350</jacoco-version>
-	</properties>
-
-	<profiles>
-		<profile>
-			<id>sonar</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-				<sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
-
-				<!-- Sonar Server -->
-				<sonar.jdbc.url>jdbc:postgresql://msa-linux-201.msc.az.boeing.com:5432/sonar</sonar.jdbc.url>
-				<sonar.jdbc.driverClassName>org.postgresql.Driver</sonar.jdbc.driverClassName>
-				<sonar.jdbc.username>sonar</sonar.jdbc.username>
-				<sonar.jdbc.password>sonar</sonar.jdbc.password>
-				<sonar.host.url>http://msa-linux-201.msc.az.boeing.com:9000/sonar</sonar.host.url>
-			</properties>
-		</profile>
-	</profiles>
 	
 </project>
