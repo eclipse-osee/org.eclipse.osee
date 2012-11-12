@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.ui.integration.operations;
+package org.eclipse.osee.framework.core.dsl.ui.integration.test.integration;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -17,7 +17,6 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.dsl.integration.util.ModelUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
-import org.eclipse.osee.framework.core.dsl.ui.integration.mocks.MockDslProvider;
 import org.eclipse.osee.framework.core.dsl.ui.integration.operations.OseeDslRoleContextProvider;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;

@@ -8,10 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.ui.integration.test;
+package org.eclipse.osee.framework.core.dsl.ui.integration;
 
-import org.eclipse.osee.framework.core.dsl.ui.integration.AllDslUiIntegrationJunitTestSuite;
-import org.eclipse.osee.framework.core.dsl.ui.integration.test.integration.OseeDslRoleContextProviderTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -19,7 +17,7 @@ import org.junit.runners.Suite;
  * @author John R. Misinco
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AllDslUiIntegrationJunitTestSuite.class, OseeDslRoleContextProviderTest.class})
-public class AllDslUiIntegrationTestSuite {
+@Suite.SuiteClasses({UiDslIntegrationTest.class})
+public class AllDslUiIntegrationJunitTestSuite {
    // test suite
 }

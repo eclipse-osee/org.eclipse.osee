@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.ui.integration.mocks;
+package org.eclipse.osee.framework.core.dsl.ui.integration.test.integration;
 
 import org.eclipse.osee.framework.core.dsl.integration.OseeDslProvider;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
