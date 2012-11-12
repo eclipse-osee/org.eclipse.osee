@@ -62,21 +62,6 @@
 		<module>../../plugins/org.eclipse.osee.define.test</module>
 
 
-      <module>../../plugins/org.eclipse.osee.ats.mocks</module>
-		<module>../../plugins/org.eclipse.osee.ats.help.ui</module>
-		<module>../../plugins/org.eclipse.osee.ats</module>
-		<module>../../plugins/org.eclipse.osee.ats.core</module>
-		<module>../../plugins/org.eclipse.osee.ats.core.client</module>
-		<module>../../plugins/org.eclipse.osee.ats.dsl</module>
-		<module>../../plugins/org.eclipse.osee.ats.dsl.ui</module>
-		<module>../../plugins/org.eclipse.osee.ats.config.demo</module>
-		<module>../../plugins/org.eclipse.osee.ats.impl</module>
-
-      <module>../../plugins/org.eclipse.osee.ats.reports</module>
-      <module>../../plugins/org.eclipse.osee.ats.reports.burndown</module>
-      <module>../../plugins/org.eclipse.osee.ats.reports.efficiency</module>
-      <module>../../plugins/org.eclipse.osee.ats.reports.split</module>
-
 		<module>../../features/org.eclipse.osee.framework.feature</module>
 		<module>../../features/org.eclipse.osee.framework.feature.source</module>
 
@@ -85,12 +70,6 @@
 
 		<module>../../features/org.eclipse.osee.define.feature</module>
 		<module>../../features/org.eclipse.osee.define.feature.source</module>
-
-		<module>../../features/org.eclipse.osee.ats.feature</module>
-		<module>../../features/org.eclipse.osee.ats.feature.source</module>
-
-		<module>../../features/org.eclipse.osee.demo.feature</module>
-		<module>../../features/org.eclipse.osee.demo.feature.source</module>
 
 		<module>../../plugins/org.eclipse.osee.client.demo</module>
 

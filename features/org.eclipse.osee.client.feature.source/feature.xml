@@ -29,12 +29,4 @@
          id="org.eclipse.osee.define.feature.source"
          version="0.0.0"/>
 
-   <includes
-         id="org.eclipse.osee.client.demo.feature.source"
-         version="0.0.0"/>
-
-   <requires>
-      <import feature="org.eclipse.osee.core.runtime.feature.source"/>
-   </requires>
-
 </feature>

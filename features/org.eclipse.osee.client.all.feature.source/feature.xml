@@ -33,4 +33,12 @@
          id="org.eclipse.osee.coverage.feature.source"
          version="0.0.0"/>
          
+   <includes
+         id="org.eclipse.osee.ats.feature.source"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.osee.ats.client.demo.feature.source"
+         version="0.0.0"/>
+
 </feature>
