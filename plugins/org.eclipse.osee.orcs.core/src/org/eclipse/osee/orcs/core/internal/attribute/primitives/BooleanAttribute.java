@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute.primitives;
 
+import java.util.Arrays;
+import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
 import org.eclipse.osee.orcs.core.internal.attribute.CharacterBackedAttribute;
@@ -19,10 +21,11 @@ import org.eclipse.osee.orcs.core.internal.attribute.CharacterBackedAttribute;
  */
 @OseeAttribute("BooleanAttribute")
 public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
+   private static final List<String> oldChoices = Arrays.asList("yes", "no");
 
    @Override
    public Boolean getValue() throws OseeCoreException {
-      return Boolean.valueOf(getDataProxy().getValueAsString());
+      return convertStringToValue(getDataProxy().getValueAsString());
    }
 
    @Override
@@ -32,6 +35,9 @@ public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
 
    @Override
    protected Boolean convertStringToValue(String value) {
+      if (oldChoices.contains(value)) {
+         return value.equalsIgnoreCase(oldChoices.get(0));
+      }
       return Boolean.valueOf(value);
    }
 }
