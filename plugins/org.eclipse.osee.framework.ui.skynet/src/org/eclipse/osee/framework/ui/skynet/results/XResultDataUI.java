@@ -102,9 +102,25 @@ public class XResultDataUI {
       XResultPage page =
          new XResultPage(title + " - " + DateUtil.getMMDDYYHHMM(),
             (resultData.toString().equals("") ? "Nothing Logged" : resultData.toString()), manipulations);
-      page.setNumErrors(resultData.getNumErrors());
-      page.setNumWarnings(resultData.getNumWarnings());
+      if (isErrorWarningCountFromSearch(manipulations)) {
+         page.setNumErrors(resultData.getNumErrorsViaSearch());
+         page.setNumWarnings(resultData.getNumWarningsViaSearch());
+      } else {
+         page.setNumErrors(resultData.getNumErrors());
+         page.setNumWarnings(resultData.getNumWarnings());
+      }
       return page;
+   }
+
+   private static boolean isErrorWarningCountFromSearch(Manipulations[] manipulations) {
+      if (manipulations != null) {
+         for (Manipulations manip : manipulations) {
+            if (manip == Manipulations.ERROR_WARNING_FROM_SEARCH) {
+               return true;
+            }
+         }
+      }
+      return false;
    }
 
    public static void runExample() {

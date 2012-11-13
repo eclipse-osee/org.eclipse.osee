@@ -158,7 +158,7 @@ public class XResultData {
 
    /**
     * XResultData counts number of errors logged with logError, however users can insert their own "Error: " strings to
-    * produce errors. This counts based on these occurences.
+    * produce errors. This counts based on these occurrences.
     */
    public int getNumErrorsViaSearch() {
       return Lib.getMatcherCount(ErrorPattern, toString());
@@ -166,7 +166,7 @@ public class XResultData {
 
    /**
     * XResultData counts number of warnings logged with logWarning, however users can insert their own "Error: " strings
-    * to produce errors. This counts based on these occurences.
+    * to produce errors. This counts based on these occurrences.
     */
    public int getNumWarningsViaSearch() {
       return Lib.getMatcherCount(WarningPattern, toString());

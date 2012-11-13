@@ -18,7 +18,8 @@ import org.junit.runners.Suite;
    AbstractOperationTest.class,
    AbstractTrackingHandlerTest.class,
    ServiceDependencyTrackerTest.class,
-   ConditionsTest.class})
+   ConditionsTest.class,
+   XResultDataTest.class})
 /**
  * @author Roberto E. Escobar
  */
