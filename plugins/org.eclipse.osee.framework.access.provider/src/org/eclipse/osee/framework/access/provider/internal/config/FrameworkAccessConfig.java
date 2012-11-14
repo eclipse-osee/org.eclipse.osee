@@ -41,7 +41,7 @@ public class FrameworkAccessConfig implements IDbInitializationTask {
 
    private static void importFrameworkAccessModel() throws OseeCoreException {
       Bundle bundle = FrameworkUtil.getBundle(FrameworkAccessConfig.class);
-      URL url = bundle.getEntry("/support/OseeAccess_FrameworkAccess.osee");
+      URL url = bundle.getEntry("support/OseeAccess_FrameworkAccess.osee");
 
       InputStream inputStream = null;
       try {
