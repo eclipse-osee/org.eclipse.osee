@@ -17,6 +17,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -71,10 +72,12 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
          }
          HashCollection<String, String> testNameToResultsMap = null;
          testNameToResultsMap = new HashCollection<String, String>();
+         CountingMap<String> testNameToTimeSpentMap = new CountingMap<String>();
 
          SkynetTransaction transaction =
             TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Fix Working attributes.");
-         ValidateAtsDatabase.testCompletedCancelledStateAttributesSet(artifacts, transaction, testNameToResultsMap);
+         ValidateAtsDatabase.testCompletedCancelledStateAttributesSet(artifacts, transaction, testNameToResultsMap,
+            testNameToTimeSpentMap);
 
          XResultData xResultData = new XResultData();
          ValidateAtsDatabase.addResultsMapToResultData(xResultData, testNameToResultsMap);

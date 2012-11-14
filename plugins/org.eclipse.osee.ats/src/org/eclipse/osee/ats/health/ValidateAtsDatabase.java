@@ -85,6 +85,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.skynet.core.utility.ElapsedTime;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -138,10 +139,13 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       @Override
       protected IStatus run(IProgressMonitor monitor) {
          try {
-
+            ElapsedTime et = new ElapsedTime(getName());
             XResultData rd = new XResultData();
 
             runIt(monitor, rd);
+
+            String elapsedStr = et.end();
+            rd.log("\n\n" + elapsedStr);
             XResultDataUI.report(rd, getName());
             if (Strings.isValid(emailOnComplete)) {
                String html = XResultDataUI.getReport(rd, getName()).getManipulatedHtml();
@@ -195,7 +199,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             //            elapsedTime =
             //               new ElapsedTime(String.format("ValidateAtsDatabase - load Artifact set %d/%d", artSetNum++,
             //                  artIdLists.size()));
+            Date date = new Date();
             Collection<Artifact> allArtifacts = ArtifactQuery.getArtifactListFromIds(artIdList, AtsUtil.getAtsBranch());
+            logTestTimeSpent(date, "ArtifactQuery.getArtifactListFromIds", testNameToTimeSpentMap);
             //            elapsedTime.end();
 
             // NOTE: Use DoesNotWorkItemAts to process list of HRIDs
@@ -255,7 +261,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       try {
          SkynetTransaction transaction =
             TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Validate ATS Database");
-         testCompletedCancelledStateAttributesSet(artifacts, transaction, testNameToResultsMap);
+         testCompletedCancelledStateAttributesSet(artifacts, transaction, testNameToResultsMap, testNameToTimeSpentMap);
          transaction.execute();
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -264,7 +270,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
    }
 
-   public static void testCompletedCancelledStateAttributesSet(Collection<Artifact> artifacts, SkynetTransaction transaction, HashCollection<String, String> testNameToResultsMap) {
+   public static void testCompletedCancelledStateAttributesSet(Collection<Artifact> artifacts, SkynetTransaction transaction, HashCollection<String, String> testNameToResultsMap, CountingMap<String> testNameToTimeSpentMap) {
+      Date date = new Date();
       for (Artifact artifact : artifacts) {
          try {
             if (artifact instanceof AbstractWorkflowArtifact) {
@@ -310,9 +317,10 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             }
          } catch (Exception ex) {
             testNameToResultsMap.put("testCompletedCancelledStateAttributesSet",
-               "Error: " + artifact.getArtifactTypeName() + " exception: " + ex.getLocalizedMessage());
+               "Error: on [" + artifact.toStringWithId() + "] exception: " + ex.getLocalizedMessage());
          }
       }
+      logTestTimeSpent(date, "testCompletedCancelledStateAttributesSet", testNameToTimeSpentMap);
    }
 
    private static void fixCancelledByAttributes(SkynetTransaction transaction, AbstractWorkflowArtifact awa, HashCollection<String, String> testNameToResultsMap) throws OseeCoreException {
