@@ -13,34 +13,38 @@ package org.eclipse.osee.framework.database.init.internal;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
-import org.eclipse.osee.framework.core.translation.IDataTranslationServiceProvider;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
-public class DatabaseInitActivator implements BundleActivator, IDataTranslationServiceProvider {
+public class DatabaseInitActivator implements BundleActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.database.init";
 
    private static DatabaseInitActivator instance;
-   private ServiceTracker serviceTracker;
-   private ServiceTracker serviceTracker2;
-   private ServiceTracker serviceTracker3;
-   private ServiceTracker serviceTracker4;
+
+   private ServiceTracker<IDataTranslationService, IDataTranslationService> serviceTracker;
+   private ServiceTracker<IOseeCachingService, IOseeCachingService> serviceTracker2;
+   private ServiceTracker<IOseeDatabaseService, IOseeDatabaseService> serviceTracker3;
+   private ServiceTracker<IdentityService, IdentityService> serviceTracker4;
 
    @Override
    public void start(BundleContext context) throws Exception {
       DatabaseInitActivator.instance = this;
-      serviceTracker = new ServiceTracker(context, IDataTranslationService.class.getName(), null);
+      serviceTracker =
+         new ServiceTracker<IDataTranslationService, IDataTranslationService>(context, IDataTranslationService.class,
+            null);
       serviceTracker.open(true);
 
-      serviceTracker2 = new ServiceTracker(context, IOseeCachingService.class.getName(), null);
+      serviceTracker2 =
+         new ServiceTracker<IOseeCachingService, IOseeCachingService>(context, IOseeCachingService.class, null);
       serviceTracker2.open(true);
 
-      serviceTracker3 = new ServiceTracker(context, IOseeDatabaseService.class.getName(), null);
+      serviceTracker3 =
+         new ServiceTracker<IOseeDatabaseService, IOseeDatabaseService>(context, IOseeDatabaseService.class, null);
       serviceTracker3.open(true);
 
-      serviceTracker4 = new ServiceTracker(context, IdentityService.class.getName(), null);
+      serviceTracker4 = new ServiceTracker<IdentityService, IdentityService>(context, IdentityService.class, null);
       serviceTracker4.open(true);
    }
 
@@ -65,19 +69,18 @@ public class DatabaseInitActivator implements BundleActivator, IDataTranslationS
    }
 
    public IOseeCachingService getCachingService() {
-      return (IOseeCachingService) serviceTracker2.getService();
+      return serviceTracker2.getService();
    }
 
-   @Override
    public IDataTranslationService getTranslationService() {
-      return (IDataTranslationService) serviceTracker.getService();
+      return serviceTracker.getService();
    }
 
    public IOseeDatabaseService getDatabaseService() {
-      return (IOseeDatabaseService) serviceTracker3.getService();
+      return serviceTracker3.getService();
    }
 
    public IdentityService getIdentityService() {
-      return (IdentityService) serviceTracker4.getService();
+      return serviceTracker4.getService();
    }
 }

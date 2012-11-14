@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.database.init;
+package org.eclipse.osee.framework.database.init.internal;
 
 import java.io.File;
 import java.net.URI;
@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
+import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;

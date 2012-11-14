@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.database.init;
+package org.eclipse.osee.framework.database.init.internal;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +33,8 @@ import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.core.util.HttpMessage;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
+import org.eclipse.osee.framework.database.init.IDatabaseInitConfiguration;
+import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
@@ -42,9 +43,9 @@ import org.osgi.framework.BundleException;
  * @author Andrew M. Finkbeiner
  */
 public class DbBootstrapTask implements IDbInitializationTask {
-   private DbInitConfiguration configuration;
+   private IDatabaseInitConfiguration configuration;
 
-   public void setConfiguration(DbInitConfiguration configuration) {
+   public void setConfiguration(IDatabaseInitConfiguration configuration) {
       this.configuration = configuration;
    }
 

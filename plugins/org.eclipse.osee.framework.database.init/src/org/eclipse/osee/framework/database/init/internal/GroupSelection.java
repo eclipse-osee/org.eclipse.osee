@@ -9,22 +9,25 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.database.init;
+package org.eclipse.osee.framework.database.init.internal;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
+import org.eclipse.osee.framework.database.init.IAddDbInitChoice;
+import org.eclipse.osee.framework.database.init.IDatabaseInitConfiguration;
+import org.eclipse.osee.framework.database.init.IDbInitChoiceEnum;
+import org.eclipse.osee.framework.database.init.IGroupSelector;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 
 /**
  * @author Andrew M. Finkbeiner
  */
-public class GroupSelection {
+public class GroupSelection implements IGroupSelector {
    private static final GroupSelection instance = new GroupSelection();
-   private final Map<String, DbInitConfiguration> initGroups = new HashMap<String, DbInitConfiguration>();
+   private final Map<String, IDatabaseInitConfiguration> initGroups = new HashMap<String, IDatabaseInitConfiguration>();
 
    private boolean wasInitialized;
 
@@ -51,7 +54,8 @@ public class GroupSelection {
       }
    }
 
-   public void addChoice(String listName, DbInitConfiguration configuration) {
+   @Override
+   public void addChoice(String listName, IDatabaseInitConfiguration configuration) {
       initGroups.put(listName, configuration);
    }
 
@@ -61,7 +65,12 @@ public class GroupSelection {
       return choices;
    }
 
-   public DbInitConfiguration getDbInitConfiguration(String choice) {
+   public IDatabaseInitConfiguration getDbInitConfiguration(String choice) {
       return initGroups.get(choice);
+   }
+
+   @Override
+   public void addChoice(IDbInitChoiceEnum choice, IDatabaseInitConfiguration configuration) {
+      addChoice(choice.name(), configuration);
    }
 }

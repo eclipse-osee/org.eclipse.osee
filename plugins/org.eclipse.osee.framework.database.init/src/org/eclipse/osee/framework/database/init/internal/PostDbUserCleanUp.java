@@ -8,13 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.database.init;
+package org.eclipse.osee.framework.database.init.internal;
 
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
+import org.eclipse.osee.framework.database.init.IDbInitializationTask;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -50,8 +52,12 @@ public class PostDbUserCleanUp implements IDbInitializationTask {
          // Release bootstrap session session
          ClientSessionManager.releaseSession();
 
-         // Acquire session
-         User user = UserManager.getUser();
+         User user = null;
+         if (OseeProperties.isInTest()) {
+            user = UserManager.getUser(SystemUser.OseeSystem);
+         } else {
+            user = UserManager.getUser();
+         }
          authorArtId = user.getArtId();
       } else {
          // This is an initialization for base import -- users are not available

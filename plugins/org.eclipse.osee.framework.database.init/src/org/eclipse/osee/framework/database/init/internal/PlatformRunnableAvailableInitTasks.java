@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.database.init;
+package org.eclipse.osee.framework.database.init.internal;
 
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -37,5 +37,6 @@ public class PlatformRunnableAvailableInitTasks implements IApplication {
 
    @Override
    public void stop() {
+      //
    }
 }

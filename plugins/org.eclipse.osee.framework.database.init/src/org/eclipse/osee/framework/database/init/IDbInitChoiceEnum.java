@@ -10,19 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.init;
 
-import org.eclipse.equinox.app.IApplication;
-import org.eclipse.equinox.app.IApplicationContext;
+/**
+ * @author Ryan D. Brooks
+ */
+public interface IDbInitChoiceEnum {
 
-public class ConfigDatabase implements IApplication {
-
-   @Override
-   public Object start(IApplicationContext context) throws Exception {
-      DatabaseInitializationOperation.executeConfigureFromJvmProperties();
-      return EXIT_OK;
-   }
-
-   @Override
-   public void stop() {
-   }
+   String name();
 
 }

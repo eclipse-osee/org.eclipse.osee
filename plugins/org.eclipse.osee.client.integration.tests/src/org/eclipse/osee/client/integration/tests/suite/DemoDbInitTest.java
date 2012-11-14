@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.init.DatabaseInitializationOperation;
+import org.eclipse.osee.framework.database.init.DatabaseInitOpFactory;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -47,10 +47,10 @@ public class DemoDbInitTest {
 
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
       OseeLog.registerLoggerListener(monitorLog);
-      DatabaseInitializationOperation.executeWithoutPrompting("OSEE Demo Database");
+      DatabaseInitOpFactory.executeWithoutPrompting("OSEE Demo Database");
 
       TestUtil.severeLoggingEnd(monitorLog);
-      OseeLog.log(DatabaseInitializationOperation.class, Level.INFO, "Completed database initialization");
+      OseeLog.log(DemoDbInitTest.class, Level.INFO, "Completed database initialization");
       wasDbInitSuccessful = true;
 
       if (wasDbInitSuccessful) {

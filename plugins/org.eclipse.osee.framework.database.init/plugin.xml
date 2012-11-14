@@ -7,7 +7,7 @@
          id="configClient"
          point="org.eclipse.core.runtime.applications">
       <application>
-         <run class="org.eclipse.osee.framework.database.init.ConfigDatabase"/>
+         <run class="org.eclipse.osee.framework.database.init.internal.ConfigDatabaseApplication"/>
       </application>
    </extension>
    <extension
@@ -21,41 +21,41 @@
 			id="PostDatabaseInitialization"
       	point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
    	<DatabaseInitializationTask
-      	   classname="org.eclipse.osee.framework.database.init.PostDatabaseInitialization">
+      	   classname="org.eclipse.osee.framework.database.init.internal.PostDatabaseInitialization">
       </DatabaseInitializationTask>
 	</extension>
 	<extension
 			id="PostDbUserCleanUp"
          point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
    	<DatabaseInitializationTask
-      	   classname="org.eclipse.osee.framework.database.init.PostDbUserCleanUp">
+      	   classname="org.eclipse.osee.framework.database.init.internal.PostDbUserCleanUp">
    	</DatabaseInitializationTask>
 	</extension>
 	<extension
 			id="SimpleTemplateProviderTask"
          point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
    	<DatabaseInitializationTask
-      	   classname="org.eclipse.osee.framework.database.init.SimpleTemplateProviderTask">
+      	   classname="org.eclipse.osee.framework.database.init.internal.SimpleTemplateProviderTask">
    	</DatabaseInitializationTask>
 	</extension>
 	<extension
 			id="SkynetDbBranchDataImport"
          point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
    	<DatabaseInitializationTask
-      	   classname="org.eclipse.osee.framework.database.init.SkynetDbBranchDataImport">
+      	   classname="org.eclipse.osee.framework.database.init.internal.SkynetDbBranchDataImport">
    	</DatabaseInitializationTask>
 	</extension>
 	<extension
 			id="DbBootstrapTask"
          point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
    	<DatabaseInitializationTask
-      	   classname="org.eclipse.osee.framework.database.init.DbBootstrapTask">
+      	   classname="org.eclipse.osee.framework.database.init.internal.DbBootstrapTask">
    	</DatabaseInitializationTask>
 	</extension>
  <extension
        point="org.eclipse.osee.framework.database.init.DatabaseInitializationConfiguration">
     <DatabaseInitializationConfiguration
-          classname="org.eclipse.osee.framework.database.init.AddBaseDbInitChoice">
+          classname="org.eclipse.osee.framework.database.init.internal.AddBaseDbInitChoice">
     </DatabaseInitializationConfiguration>
  </extension>
 </plugin>

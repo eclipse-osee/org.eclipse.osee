@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.database.init;
+package org.eclipse.osee.framework.database.init.internal;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.BaseCredentialProvider;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -27,26 +29,29 @@ import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.Conditions;
-import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
+import org.eclipse.osee.framework.database.init.DefaultDbInitTasks;
+import org.eclipse.osee.framework.database.init.IDatabaseInitConfiguration;
+import org.eclipse.osee.framework.database.init.IDbInitializationRule;
+import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * @author Roberto E. Escobar
  */
-public class DatabaseInitializationOperation {
-
-   private static final String INIT_TASK_EXTENSION_ID =
-      "org.eclipse.osee.framework.database.init.DatabaseInitializationTask";
+public class DatabaseInitializationOperation extends AbstractOperation {
 
    private static BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
 
    private final String preSelectedChoice;
    private final boolean isPromptEnabled;
 
-   private DatabaseInitializationOperation(String preSelectedChoice, boolean isPromptEnabled) {
+   public DatabaseInitializationOperation(String preSelectedChoice, boolean isPromptEnabled) {
+      super("Database Initialization", DatabaseInitActivator.PLUGIN_ID);
       this.preSelectedChoice = preSelectedChoice;
       this.isPromptEnabled = isPromptEnabled;
    }
@@ -59,7 +64,8 @@ public class DatabaseInitializationOperation {
       return preSelectedChoice;
    }
 
-   private void execute() throws OseeCoreException {
+   @Override
+   protected void doWork(IProgressMonitor monitor) throws Exception {
       boolean isConfigured = false;
       checkServerPreconditions();
 
@@ -90,16 +96,17 @@ public class DatabaseInitializationOperation {
       }
       if (line.equalsIgnoreCase("Y")) {
          isConfigured = true;
-         OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Configuring Database...");
-         // long startTime = System.currentTimeMillis();
+         System.out.println("Begin Database Initialization...");
 
          OseeClientProperties.setInDbInit(true);
          try {
             processTasks();
+            System.out.println("Database Initialization Complete");
+         } catch (Exception ex) {
+            OseeLog.log(DatabaseInitializationOperation.class, Level.SEVERE, ex);
+            OseeExceptions.wrapAndThrow(ex);
          } finally {
             OseeClientProperties.setInDbInit(false);
-            // System.out.println(String.format("Database Configuration completed in [%s] ms",
-            //   Lib.getElapseString(startTime)));
          }
       }
 
@@ -111,20 +118,19 @@ public class DatabaseInitializationOperation {
    private void checkValidExtension(IExtension extension, String pointId) throws OseeCoreException {
       Conditions.checkNotNull(extension, "Extension", "Unable to locate extension [%s]", pointId);
       String extensionPointId = extension.getExtensionPointUniqueIdentifier();
-      Conditions.checkExpressionFailOnTrue(!INIT_TASK_EXTENSION_ID.equals(extensionPointId),
+      Conditions.checkExpressionFailOnTrue(!DefaultDbInitTasks.DB_INIT_TASK.getExtensionId().equals(extensionPointId),
          "Unknown extension id [%s] from extension [%s]", extensionPointId, pointId);
    }
 
    private void processTasks() throws OseeCoreException {
-      OseeLog.log(DatabaseInitializationOperation.class, Level.INFO, "Begin Database Initialization...");
-      DbInitConfiguration configuration = getConfiguration();
+      OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Configuring Database...");
+      IDatabaseInitConfiguration configuration = getConfiguration();
+      IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
       for (String pointId : configuration.getTaskExtensionIds()) {
-         System.out.print(".");
-         IExtension extension = Platform.getExtensionRegistry().getExtension(pointId);
+         IExtension extension = extensionRegistry.getExtension(pointId);
          checkValidExtension(extension, pointId);
          runDbInitTasks(configuration, extension);
       }
-      System.out.println(".");
       OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Database Initialization Complete.");
    }
 
@@ -133,7 +139,7 @@ public class DatabaseInitializationOperation {
     * 
     * @return initialization task list
     */
-   private DbInitConfiguration getConfiguration() {
+   private IDatabaseInitConfiguration getConfiguration() {
       String selectedChoice = null;
       GroupSelection selector = GroupSelection.getInstance();
       List<String> choices = selector.getChoices();
@@ -154,7 +160,7 @@ public class DatabaseInitializationOperation {
       return selector.getDbInitConfiguration(selectedChoice);
    }
 
-   private static String getInitChoiceFromUser(String message, List<String> choices) {
+   private String getInitChoiceFromUser(String message, List<String> choices) {
       int selection = -1;
       BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
       while (selection == -1) {
@@ -178,7 +184,7 @@ public class DatabaseInitializationOperation {
       return choices.get(selection);
    }
 
-   private static void runDbInitTasks(DbInitConfiguration configuration, IExtension extension) throws OseeCoreException {
+   private void runDbInitTasks(IDatabaseInitConfiguration configuration, IExtension extension) throws OseeCoreException {
       IConfigurationElement[] elements = extension.getConfigurationElements();
       String classname = null;
       String bundleName = null;
@@ -197,8 +203,8 @@ public class DatabaseInitializationOperation {
             boolean isExecutionAllowed = true;
             if (Strings.isValid(initRuleClassName)) {
                isExecutionAllowed = false;
-               Class<?> taskClass = bundle.loadClass(initRuleClassName);
-               IDbInitializationRule rule = (IDbInitializationRule) taskClass.newInstance();
+
+               IDbInitializationRule rule = createTask(bundle, initRuleClassName);
                isExecutionAllowed = rule.isAllowed();
             }
 
@@ -216,6 +222,28 @@ public class DatabaseInitializationOperation {
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
+   }
+
+   private IDbInitializationRule createTask(Bundle bundle, String initRuleClassName) throws OseeCoreException {
+      IDbInitializationRule rule = null;
+      Class<?> taskClass = null;
+      try {
+         taskClass = bundle.loadClass(initRuleClassName);
+      } catch (Exception ex) {
+         Bundle dbInitBundle = FrameworkUtil.getBundle(DatabaseInitializationOperation.class);
+         try {
+            taskClass = dbInitBundle.loadClass(initRuleClassName);
+         } catch (ClassNotFoundException ex1) {
+            throw new OseeCoreException(ex, "Unable to find rule [%s] in bundle [%s] or in [%s]", initRuleClassName,
+               bundle.getSymbolicName(), dbInitBundle.getSymbolicName());
+         }
+      }
+      try {
+         rule = (IDbInitializationRule) taskClass.newInstance();
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      }
+      return rule;
    }
 
    private String waitForUserResponse() {
@@ -257,21 +285,4 @@ public class DatabaseInitializationOperation {
          "Error connecting to application server [%s].\nPlease ensure server is running and try again.", serverUrl);
    }
 
-   public static void executeWithoutPrompting(String choice) throws OseeCoreException {
-      new DatabaseInitializationOperation(choice, false).execute();
-   }
-
-   public static void executeWithPromptsAndChoice(String choice) throws OseeCoreException {
-      new DatabaseInitializationOperation(choice, false).execute();
-   }
-
-   public static void executeWithPrompts() throws OseeCoreException {
-      new DatabaseInitializationOperation(null, true).execute();
-   }
-
-   public static void executeConfigureFromJvmProperties() throws OseeCoreException {
-      boolean arePromptsAllowed = OseeClientProperties.promptOnDbInit();
-      String predefinedChoice = OseeClientProperties.getChoiceOnDbInit();
-      new DatabaseInitializationOperation(predefinedChoice, arePromptsAllowed).execute();
-   }
 }

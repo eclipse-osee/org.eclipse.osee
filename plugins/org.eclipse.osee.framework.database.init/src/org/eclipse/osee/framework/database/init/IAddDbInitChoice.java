@@ -14,5 +14,7 @@ package org.eclipse.osee.framework.database.init;
  * @author Ryan D. Brooks
  */
 public interface IAddDbInitChoice {
-   public abstract void addDbInitChoice(GroupSelection groupSelection);
+
+   void addDbInitChoice(IGroupSelector groupSelection);
+
 }

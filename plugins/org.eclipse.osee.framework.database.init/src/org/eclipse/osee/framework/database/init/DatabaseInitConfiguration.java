@@ -11,17 +11,19 @@
 package org.eclipse.osee.framework.database.init;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-public class DbInitConfiguration {
-   private final boolean isBareBones;
+/**
+ * @author Roberto E. Escobar
+ */
+public class DatabaseInitConfiguration implements IDatabaseInitConfiguration {
    private final List<String> dbInitTasks;
    private final List<String> oseeTypeIds;
 
-   public DbInitConfiguration(boolean isBareBones) {
-      this.isBareBones = isBareBones;
+   public DatabaseInitConfiguration() {
       this.dbInitTasks = new ArrayList<String>();
       this.oseeTypeIds = new ArrayList<String>();
    }
@@ -34,27 +36,37 @@ public class DbInitConfiguration {
       oseeTypeIds.add(oseeTypesExtensionIds);
    }
 
-   public boolean isBareBones() {
-      return isBareBones;
+   public void addTask(DefaultDbInitTasks task) {
+      addDefaultTask(dbInitTasks, task);
    }
 
+   public void addOseeType(DefaultOseeTypeDefinitions typeDef) {
+      addDefaultType(oseeTypeIds, typeDef);
+   }
+
+   @Override
    public List<String> getTaskExtensionIds() {
       List<String> initTasks = new ArrayList<String>();
-      initTasks.add("org.eclipse.osee.framework.database.init.DbBootstrapTask");
+      addDefaultTask(initTasks, DefaultDbInitTasks.BOOTSTRAP_TASK);
       initTasks.addAll(dbInitTasks);
-      initTasks.add("org.eclipse.osee.framework.database.init.PostDbUserCleanUp");
-      initTasks.add("org.eclipse.osee.framework.database.init.SkynetDbBranchDataImport");
-      initTasks.add("org.eclipse.osee.framework.database.init.PostDatabaseInitialization");
+      addDefaultTask(initTasks, DefaultDbInitTasks.DB_USER_CLEANUP);
+      addDefaultTask(initTasks, DefaultDbInitTasks.BRANCH_DATA_IMPORT);
+      addDefaultTask(initTasks, DefaultDbInitTasks.DB_STATS);
       return initTasks;
    }
 
+   @Override
    public List<String> getOseeTypeExtensionIds() {
       Set<String> oseeTypes = new LinkedHashSet<String>();
-      oseeTypes.add("org.eclipse.osee.framework.skynet.core.OseeTypes_Framework");
-      oseeTypes.add("org.eclipse.osee.ats.OseeTypes_ATS");
-      oseeTypes.add("org.eclipse.osee.coverage.OseeTypes_Coverage");
-      oseeTypes.add("org.eclipse.osee.ote.define.OseeTypesOTE");
       oseeTypes.addAll(oseeTypeIds);
       return new ArrayList<String>(oseeTypes);
+   }
+
+   private void addDefaultTask(Collection<String> initTasks, DefaultDbInitTasks task) {
+      initTasks.add(task.getExtensionId());
+   }
+
+   private void addDefaultType(Collection<String> initTasks, DefaultOseeTypeDefinitions type) {
+      initTasks.add(type.getExtensionId());
    }
 }

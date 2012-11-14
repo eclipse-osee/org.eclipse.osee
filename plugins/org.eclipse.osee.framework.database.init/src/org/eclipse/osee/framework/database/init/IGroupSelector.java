@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2012 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.init;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+/**
+ * @author Roberto E. Escobar
+ */
+public interface IGroupSelector {
 
-public interface IDbInitializationTask {
+   void addChoice(String listName, IDatabaseInitConfiguration configuration);
 
-   void run() throws OseeCoreException;
+   void addChoice(IDbInitChoiceEnum choice, IDatabaseInitConfiguration configuration);
 
 }

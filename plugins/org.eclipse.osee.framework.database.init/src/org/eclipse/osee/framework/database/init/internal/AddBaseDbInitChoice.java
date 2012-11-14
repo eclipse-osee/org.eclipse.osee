@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2009 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.config.demo.config;
+
+package org.eclipse.osee.framework.database.init.internal;
 
 import org.eclipse.osee.framework.database.init.DatabaseInitConfiguration;
 import org.eclipse.osee.framework.database.init.DefaultOseeTypeDefinitions;
@@ -16,27 +17,15 @@ import org.eclipse.osee.framework.database.init.IAddDbInitChoice;
 import org.eclipse.osee.framework.database.init.IGroupSelector;
 
 /**
- * * Add the ability to wipe an OSEE database and configure it for the ATS Demo Configuration which will showcase ATS
- * functionality.
- * 
- * @author Donald G. Dunne
+ * @author Ryan D. Brooks
  */
-public class AddDbInitDemoChoice implements IAddDbInitChoice {
-
+public class AddBaseDbInitChoice implements IAddDbInitChoice {
    @Override
    public void addDbInitChoice(IGroupSelector groupSelection) {
       DatabaseInitConfiguration config = new DatabaseInitConfiguration();
-      config.addTask("org.eclipse.osee.ats.config.demo.AddCommonBranchForAtsDemo");
-      config.addTask("org.eclipse.osee.framework.access.provider.FrameworkAccessConfig");
-      config.addTask("org.eclipse.osee.ats.config.demo.AtsConfigAddDemoUsers");
-      config.addTask("org.eclipse.osee.framework.database.init.SimpleTemplateProviderTask");
-      config.addTask("org.eclipse.osee.ats.AtsDatabaseConfig");
-      config.addTask("org.eclipse.osee.ats.config.demo.DemoDatabaseConfig");
-
       for (DefaultOseeTypeDefinitions types : DefaultOseeTypeDefinitions.values()) {
          config.addOseeType(types);
       }
-      config.addOseeType("org.eclipse.osee.ats.config.demo.OseeTypes_Demo");
-      groupSelection.addChoice("OSEE Demo Database", config);
+      groupSelection.addChoice("Base - for importing branches", config);
    }
 }

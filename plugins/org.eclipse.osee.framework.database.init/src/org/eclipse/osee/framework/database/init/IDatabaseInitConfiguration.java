@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 Boeing.
+ * Copyright (c) 2012 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,16 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-
 package org.eclipse.osee.framework.database.init;
 
+import java.util.List;
+
 /**
- * @author Ryan D. Brooks
+ * @author Roberto E. Escobar
  */
-public class AddBaseDbInitChoice implements IAddDbInitChoice {
-   @Override
-   public void addDbInitChoice(GroupSelection groupSelection) {
-      DbInitConfiguration config = new DbInitConfiguration(true);
-      groupSelection.addChoice("Base - for importing branches", config);
-   }
+public interface IDatabaseInitConfiguration {
+
+   List<String> getTaskExtensionIds();
+
+   List<String> getOseeTypeExtensionIds();
+
 }
