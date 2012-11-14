@@ -1,0 +1,8 @@
+import
+"platform:/plugin/org.eclipse.osee.framework.skynet.core/support/OseeTypes_Framework.osee"
+
+artifactType "Demo Artifact With Selective Partition" extends "Artifact" {
+	guid "AZIueZVQaBXuqGjFMaQA"
+	uuid 0x0000000000000056
+	attribute "Partition" branchGuid "AyH_f2sSKy3l07fIvAAA"
+}
