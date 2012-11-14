@@ -29,4 +29,8 @@
          id="org.eclipse.osee.core.runtime.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.osee.coverage.feature"
+         version="0.0.0"/>
+
 </feature>

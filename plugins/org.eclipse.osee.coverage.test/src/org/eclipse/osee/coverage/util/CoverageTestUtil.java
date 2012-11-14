@@ -22,6 +22,7 @@ import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.dialog.CoveragePackageArtifactListDialog;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -30,13 +31,13 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.support.test.util.DemoSawBuilds;
 
 /**
  * @author Donald G. Dunne
  */
 public class CoverageTestUtil {
    private static String COVERAGE_STATIC_ID = "coverage.artifact";
+   public static final IOseeBranch SAW_Bld_1 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvAAA", "SAW_Bld_1");
 
    public static void cleanupCoverageTests() throws OseeCoreException {
       try {
@@ -124,7 +125,7 @@ public class CoverageTestUtil {
    }
 
    public static IOseeBranch getTestBranch() {
-      return DemoSawBuilds.SAW_Bld_1;
+      return SAW_Bld_1;
    }
 
    public static Artifact getSelectedCoveragePackageFromDialog() throws OseeCoreException {

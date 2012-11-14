@@ -48,8 +48,6 @@
 		<module>../../plugins/org.eclipse.osee.framework.ui.product</module>
 		<module>../../plugins/org.eclipse.osee.ote.ui.define</module>
 
-		<module>../../plugins/org.eclipse.osee.coverage.help.ui</module>
-		<module>../../plugins/org.eclipse.osee.coverage</module>
 		<module>../../plugins/org.eclipse.osee.define</module>
 
       <module>../../plugins/org.eclipse.osee.ats.mocks</module>
