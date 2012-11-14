@@ -22,17 +22,17 @@ public final class H2DbServerUtil {
 
    private final Collection<Server> serverControls = new ArrayList<Server>();
 
-   public H2DbServerUtil(InetAddress host, int port) {
+   public H2DbServerUtil(InetAddress host, int dbPort, int webPort) throws Exception {
+      String[] dbArgs = new String[] {"-tcp", "-tcpAllowOthers", "true", "-tcpPort", String.valueOf(dbPort)};
+      serverControls.add(Server.createTcpServer(dbArgs));
+      OseeLog.logf(H2DbServer.class, Level.INFO, "H2 Database Server created on [%s:%s]", host, dbPort);
+
       try {
-         String[] webArgs = new String[] {"-webAllowOthers", "true", "-webPort", String.valueOf(port - 1)};
+         String[] webArgs = new String[] {"-webAllowOthers", "true", "-webPort", String.valueOf(webPort)};
          serverControls.add(Server.createWebServer(webArgs));
-
-         String[] dbArgs = new String[] {"-tcp", "-tcpAllowOthers", "true", "-tcpPort", String.valueOf(port)};
-         serverControls.add(Server.createTcpServer(dbArgs));
-
-         OseeLog.log(H2DbServer.class, Level.INFO, "H2 Database Server created");
-      } catch (Exception e) {
-         OseeLog.log(H2DbServer.class, Level.SEVERE, "Error Initializing Server Control.", e);
+      } catch (Exception ex) {
+         OseeLog.logf(H2DbServer.class, Level.SEVERE, ex,
+            "Error Initializing Database Web Server Control on port [%s]", webPort);
       }
 
       for (Server server : serverControls) {

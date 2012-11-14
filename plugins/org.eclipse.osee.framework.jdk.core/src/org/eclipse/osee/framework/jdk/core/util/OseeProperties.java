@@ -30,6 +30,7 @@ public class OseeProperties {
    public static final String OSEE_DB_CONNECTION_ID = "osee.db.connection.id";
    private static final String OSEE_CONNECTION_INFO_URI = "osee.connection.info.uri";
    private static final String OSEE_EMBEDDED_DB_SERVER = "osee.db.embedded.server";
+   private static final String OSEE_EMBEDDED_DB_WEB_SERVER_PORT = "osee.db.embedded.web.server.port";
    private static final String OSEE_DEFAULT_BROKER_URI = "osee.default.broker.uri";
    private static final String OSEE_PROXY_BYPASS_ENABLED = "osee.proxy.bypass.enabled";
    private static final String OSEE_DB_CONNECTION_COUNT = "osee.db.connection.count";
@@ -40,6 +41,15 @@ public class OseeProperties {
 
    public static String getOseeDefaultBrokerUri() {
       return System.getProperty(OSEE_DEFAULT_BROKER_URI);
+   }
+
+   public static int getOseeDbEmbeddedWebServerPort() {
+      int port = -1;
+      String portStr = System.getProperty(OSEE_EMBEDDED_DB_WEB_SERVER_PORT, "");
+      if (Strings.isValid(portStr)) {
+         port = Integer.parseInt(portStr);
+      }
+      return port;
    }
 
    public static Pair<String, Integer> getOseeDbEmbeddedServerAddress() {

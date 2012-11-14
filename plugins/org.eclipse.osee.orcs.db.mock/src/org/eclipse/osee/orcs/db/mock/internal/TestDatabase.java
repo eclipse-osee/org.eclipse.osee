@@ -76,7 +76,9 @@ public class TestDatabase {
 
       String dbPath = getDbHomePath(tempFolder, "h2");
 
-      int port = PortUtil.getInstance().getValidPort() + 1;
+      int port = PortUtil.getInstance().getConsecutiveValidPorts(2);
+      int webPort = port + 1;
+
       IDatabaseInfo databaseInfo = new DbInfo(connectionId, port, dbPath);
       TestDbProvider provider = new TestDbProvider(databaseInfo);
 
@@ -87,7 +89,7 @@ public class TestDatabase {
       IOseeDatabaseService dbService = OsgiUtil.getService(IOseeDatabaseService.class);
       Assert.assertNotNull(dbService);
 
-      H2DbServer.startServer("0.0.0.0", port);
+      H2DbServer.startServer("0.0.0.0", port, webPort);
 
       OseeConnection connection = dbService.getConnection();
       try {

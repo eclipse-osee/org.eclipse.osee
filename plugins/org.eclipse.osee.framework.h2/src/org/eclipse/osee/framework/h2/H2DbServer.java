@@ -27,18 +27,19 @@ public class H2DbServer {
       this.nwServer = null;
    }
 
-   public static void startServer(String host, int port) throws Exception {
-      instance.startServerInternal(host, port);
+   public static void startServer(String host, int port, int webPort) throws Exception {
+      instance.startServerInternal(host, port, webPort);
    }
 
    public static void stopServer() {
       instance.shutdown();
    }
 
-   private void startServerInternal(String host, int port) throws Exception {
-      OseeLog.logf(H2DbServer.class, Level.INFO, "Starting H2 Database Server on [%s:%s]....", host, port);
+   private void startServerInternal(String host, int port, int webPort) throws Exception {
+      OseeLog.logf(H2DbServer.class, Level.INFO,
+         "Starting H2 Database Server on [%s:%s] with webserver on [%s,%s]....", host, port, host, webPort);
       try {
-         nwServer = new H2DbServerUtil(InetAddress.getByName(host), port);
+         nwServer = new H2DbServerUtil(InetAddress.getByName(host), port, webPort);
          nwServer.start();
 
          if (isConnectionAvailable()) {

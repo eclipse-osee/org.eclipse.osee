@@ -16,6 +16,7 @@ import java.util.Properties;
 import org.eclipse.osee.framework.database.core.IConnectionFactory;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
 
 /**
  * @author Roberto E. Escobar
@@ -33,7 +34,11 @@ public class H2ClientConnection implements IConnectionFactory {
          firstTime = false;
          Pair<String, Integer> addressAndPort = OseeProperties.getOseeDbEmbeddedServerAddress();
          if (addressAndPort != null) {
-            H2DbServer.startServer(addressAndPort.getFirst(), addressAndPort.getSecond());
+            int webPort = OseeProperties.getOseeDbEmbeddedWebServerPort();
+            if (webPort < 0) {
+               webPort = PortUtil.getInstance().getValidPort();
+            }
+            H2DbServer.startServer(addressAndPort.getFirst(), addressAndPort.getSecond(), webPort);
          }
       }
       Connection connection = DriverManager.getConnection(connectionURL, properties);
