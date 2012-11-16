@@ -26,9 +26,9 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
  */
 public class UpdatePreviousTxCurrent {
    private static final String UPDATE_TXS_NOT_CURRENT =
-      "update osee_txs SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " where branch_id = ? AND gamma_id = ? and tx_current <> ? and transaction_id = ?";
+      "update osee_txs SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " where branch_id = ? AND gamma_id = ? and transaction_id = ?";
    private static final String SELECT_TXS_AND_GAMMAS =
-      "SELECT txs.transaction_id, txs.gamma_id FROM osee_join_id idj, %s item, osee_txs txs WHERE idj.query_id = ? and idj.id = item.%s AND item.gamma_id = txs.gamma_id AND txs.branch_id = ?";
+      "SELECT txs.transaction_id, txs.gamma_id FROM osee_join_id idj, %s item, osee_txs txs WHERE idj.query_id = ? and idj.id = item.%s AND item.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> ?";
 
    private final IOseeDatabaseService dbService;
    private final Branch branch;
@@ -84,13 +84,9 @@ public class UpdatePreviousTxCurrent {
       List<Object[]> updateData = new ArrayList<Object[]>();
       IOseeStatement chStmt = dbService.getStatement(connection);
       try {
-         chStmt.runPreparedQuery(10000, query, queryId, branch.getId());
+         chStmt.runPreparedQuery(10000, query, queryId, branch.getId(), TxChange.NOT_CURRENT.getValue());
          while (chStmt.next()) {
-            updateData.add(new Object[] {
-               branch.getId(),
-               chStmt.getLong("gamma_id"),
-               TxChange.NOT_CURRENT.getValue(),
-               chStmt.getInt("transaction_id")});
+            updateData.add(new Object[] {branch.getId(), chStmt.getLong("gamma_id"), chStmt.getInt("transaction_id")});
          }
       } finally {
          chStmt.close();
