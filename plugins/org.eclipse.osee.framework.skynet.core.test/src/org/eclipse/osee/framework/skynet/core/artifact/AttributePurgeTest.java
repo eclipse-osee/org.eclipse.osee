@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.mocks.DbTestUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -64,7 +65,7 @@ public class AttributePurgeTest extends AbstractPurgeTest {
       for (Artifact softArt : softArts) {
          attributesToPurge.addAll(softArt.getAttributes(CoreAttributeTypes.StaticId));
       }
-      new PurgeAttribute(attributesToPurge).execute();
+      Operations.executeWorkAndCheckStatus(new PurgeAttributes(attributesToPurge));
 
       getPostTableCount();
    }

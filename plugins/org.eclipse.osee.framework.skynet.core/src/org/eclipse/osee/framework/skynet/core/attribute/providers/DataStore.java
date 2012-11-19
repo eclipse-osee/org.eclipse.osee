@@ -85,7 +85,7 @@ public class DataStore {
    }
 
    public void purge() throws OseeCoreException {
-      if (isLocatorValid() != false) {
+      if (isLocatorValid()) {
          resourceProcessor.purge(this);
       }
    }

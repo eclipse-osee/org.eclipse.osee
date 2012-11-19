@@ -282,9 +282,9 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
    }
 
    /**
-    * Purges the attribute from the database.
+    * Purges attribute binary data
     */
-   public void purge() throws OseeCoreException {
+   void purge() throws OseeCoreException {
       getAttributeDataProvider().purge();
    }
 

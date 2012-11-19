@@ -1470,15 +1470,6 @@
      </Operation>
   </extension>
   <extension
-        id="PurgeDeletedAttributes"
-        name="Purge Deleted Attributes"
-        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-     <Operation
-           className="org.eclipse.osee.framework.ui.skynet.blam.operation.PurgeDeletedAttributes">
-     </Operation>
-  </extension>
-
-  <extension
         point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
      <DatabaseHealthOperation
            className="org.eclipse.osee.framework.ui.skynet.dbHealth.CommitTransactions">

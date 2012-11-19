@@ -13,10 +13,11 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
@@ -25,36 +26,46 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
  * @author Jeff C. Phillips
  */
-public class PurgeAttribute extends DbTransaction {
+public class PurgeAttributes extends AbstractDbTxOperation {
+
    private static final String DELETE_TXS =
       "DELETE FROM osee_txs txs1 WHERE EXISTS (select 1 from osee_join_id jt1 WHERE jt1.query_id = ? AND jt1.id = txs1.gamma_id)";
+
    private static final String DELETE_ATTR =
       "DELETE FROM osee_attribute attr1 WHERE EXISTS (select 1 from osee_join_id jt1 WHERE jt1.query_id = ? AND jt1.id = attr1.gamma_id)";
+
    private static final String SELECT_ATTR_GAMMAS =
-      "select gamma_id from osee_attribute t1, osee_join_id t2 where t1.attr_id = t2.id and t2.query_id = ?";
+      "SELECT gamma_id FROM osee_attribute t1, osee_join_id t2 where t1.attr_id = t2.id and t2.query_id = ?";
 
    private final Collection<Attribute<?>> attributesToPurge;
    private boolean success;
 
-   public PurgeAttribute(Collection<Attribute<?>> attributesToPurge) {
+   public PurgeAttributes(Collection<Attribute<?>> attributesToPurge) throws OseeCoreException {
+      super(ServiceUtil.getOseeDatabaseService(), "Purge Attributes", Activator.PLUGIN_ID);
       this.attributesToPurge = attributesToPurge;
    }
 
    @Override
-   protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
+   protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
       IdJoinQuery txsJoin = populateTxsJoinTable();
-
       try {
-         ConnectionHandler.runPreparedUpdate(connection, DELETE_TXS, txsJoin.getQueryId());
-         ConnectionHandler.runPreparedUpdate(connection, DELETE_ATTR, txsJoin.getQueryId());
+         getDatabaseService().runPreparedUpdate(connection, DELETE_TXS, txsJoin.getQueryId());
+         getDatabaseService().runPreparedUpdate(connection, DELETE_ATTR, txsJoin.getQueryId());
+
+         for (Attribute<?> attribute : attributesToPurge) {
+            attribute.purge();
+         }
          success = true;
       } finally {
          txsJoin.delete();
       }
+
    }
 
    private IdJoinQuery populateTxsJoinTable() throws OseeDataStoreException, OseeCoreException {
@@ -85,7 +96,8 @@ public class PurgeAttribute extends DbTransaction {
    }
 
    @Override
-   protected void handleTxFinally() throws OseeCoreException {
+   protected void handleTxFinally(IProgressMonitor monitor) throws OseeCoreException {
+      super.handleTxFinally(monitor);
       if (success) {
          Set<EventBasicGuidArtifact> artifactChanges = new HashSet<EventBasicGuidArtifact>();
          for (Attribute<?> attribute : attributesToPurge) {
@@ -96,7 +108,8 @@ public class PurgeAttribute extends DbTransaction {
          for (EventBasicGuidArtifact guidArt : artifactChanges) {
             artifactEvent.getArtifacts().add(guidArt);
          }
-         OseeEventManager.kickPersistEvent(PurgeAttribute.class, artifactEvent);
+         OseeEventManager.kickPersistEvent(this, artifactEvent);
       }
    }
+
 }

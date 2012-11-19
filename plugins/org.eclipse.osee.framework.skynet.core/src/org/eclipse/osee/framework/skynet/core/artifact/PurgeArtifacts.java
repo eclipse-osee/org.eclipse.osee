@@ -43,10 +43,13 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
 
    private static final String INSERT_SELECT_ITEM =
       "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id, branch_id) SELECT /*+ ordered */ ?, ?, txs.gamma_id, txs.transaction_id, aj.branch_id FROM osee_join_artifact aj, %s item, osee_txs txs WHERE aj.query_id = ? AND %s AND item.gamma_id = txs.gamma_id AND aj.branch_id = txs.branch_id";
+
    private static final String COUNT_ARTIFACT_VIOLATIONS =
       "SELECT art.art_id, txs.branch_id FROM osee_join_artifact aj, osee_artifact art, osee_txs txs WHERE aj.query_id = ? AND aj.art_id = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = aj.branch_id";
+
    private static final String DELETE_FROM_TXS_USING_JOIN_TRANSACTION =
       "DELETE FROM osee_txs txs WHERE EXISTS (select 1 from osee_join_transaction jt WHERE jt.query_id = ? AND jt.branch_id = txs.branch_id AND jt.gamma_id = txs.gamma_id AND jt.transaction_id = txs.transaction_id)";
+
    private static final String DELETE_FROM_TX_DETAILS_USING_JOIN_TRANSACTION =
       "DELETE FROM osee_tx_details txd WHERE EXISTS (select 1 from osee_join_transaction jt WHERE jt.query_id = ? AND jt.branch_id = txd.branch_id AND jt.transaction_id = txd.transaction_id AND not exists (select * from osee_txs txs where jt.branch_id = txs.branch_id and jt.transaction_id = txs.transaction_id))";
 

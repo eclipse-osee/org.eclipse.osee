@@ -18,14 +18,20 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.CompositeOperation;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.PurgeAttribute;
+import org.eclipse.osee.framework.skynet.core.artifact.PurgeAttributes;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -34,17 +40,16 @@ import org.eclipse.swt.program.Program;
 public class PurgeAttributesBlam extends AbstractBlam {
    @Override
    public String getName() {
-      return "Purge Attributes";
+      return "Purge Invalid Attribute Types";
    }
 
    @Override
-   public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
+   public IOperation createOperation(VariableMap variableMap, OperationLogger logger) throws Exception {
       Collection<AttributeType> purgeAttributeTypes =
          variableMap.getCollection(AttributeType.class, "Attribute Type(s) to purge");
 
       List<Artifact> artifacts = variableMap.getArtifacts("artifacts");
 
-      StringBuilder strB = new StringBuilder();
       List<Attribute<?>> attributesToPurge = new ArrayList<Attribute<?>>();
 
       for (Artifact artifact : artifacts) {
@@ -52,25 +57,16 @@ public class PurgeAttributesBlam extends AbstractBlam {
             //if attribute type is invalid purge them
             if (!artifact.isAttributeTypeValid(attributeType)) {
                for (Attribute<?> attribute : artifact.getAllAttributesIncludingHardDeleted(attributeType)) {
-                  strB.append(attribute.getAttributeType());
-                  strB.append(";");
-                  strB.append(artifact.getArtId());
-                  strB.append(";");
-                  strB.append(attribute.getDisplayableString());
-                  strB.append("\n");
-
-                  attribute.purge();
                   attributesToPurge.add(attribute);
                }
             }
          }
-         artifact.persist(getName());
-         new PurgeAttribute(attributesToPurge).execute();
       }
 
-      IFile iFile = OseeData.getIFile("Purge Attributes" + Lib.getDateTimeString() + ".txt");
-      AIFile.writeToFile(iFile, strB.toString());
-      Program.launch(iFile.getLocation().toOSString());
+      List<IOperation> ops = new ArrayList<IOperation>();
+      ops.add(new PurgeAttributes(attributesToPurge));
+      ops.add(new ReportPurgedAttributes(attributesToPurge));
+      return new CompositeOperation(getName(), Activator.PLUGIN_ID, ops);
    }
 
    @Override
@@ -81,11 +77,41 @@ public class PurgeAttributesBlam extends AbstractBlam {
 
    @Override
    public String getDescriptionUsage() {
-      return "Purge specified attribute from selected artifacts.";
+      return "Purge invalid specified attribute types from selected artifacts.";
    }
 
    @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Admin");
+   }
+
+   private class ReportPurgedAttributes extends AbstractOperation {
+      private final List<Attribute<?>> attributesToPurge;
+
+      public ReportPurgedAttributes(List<Attribute<?>> attributesToPurge) {
+         super("Purge Attributes", Activator.PLUGIN_ID);
+         this.attributesToPurge = attributesToPurge;
+      }
+
+      @Override
+      protected void doWork(IProgressMonitor monitor) throws Exception {
+         StringBuilder strB = new StringBuilder();
+         for (Attribute<?> attribute : attributesToPurge) {
+            strB.append(attribute.getAttributeType());
+            strB.append(";");
+            strB.append(attribute.getArtifact().getArtId());
+            strB.append(";");
+            strB.append(attribute.getDisplayableString());
+            strB.append("\n");
+         }
+         final IFile iFile = OseeData.getIFile("Purge Attributes" + Lib.getDateTimeString() + ".txt");
+         AIFile.writeToFile(iFile, strB.toString());
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               Program.launch(iFile.getLocation().toOSString());
+            }
+         });
+      }
    }
 }
