@@ -6,7 +6,5 @@ Bundle-Version: 0.11.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.framework.core.dsl.ui.integration
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package:  org.junit;version="4.8.2",
- org.junit.runner;version="4.8.2",
- org.junit.runners;version="4.8.2"
-Export-Package: org.eclipse.osee.framework.core.dsl.ui.integration.test
+Require-Bundle: org.junit
+Export-Package: org.eclipse.osee.framework.core.dsl.ui.integration

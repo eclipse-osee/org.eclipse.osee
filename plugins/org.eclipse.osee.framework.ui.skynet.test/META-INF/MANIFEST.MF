@@ -10,8 +10,7 @@ Import-Package: com.lowagie.text.pdf;version="2.1.7",
  com.lowagie.text.rtf;version="2.1.7",
  org.eclipse.osee.framework.access,
  org.eclipse.osee.framework.core.enums,
- org.eclipse.osee.framework.jdk.core.util.windows,
- org.eclipse.osee.support.test.util
+ org.eclipse.osee.framework.jdk.core.util.windows
 Require-Bundle: org.junit,
  org.mockito;bundle-version="1.9.0",
  org.hamcrest.core,

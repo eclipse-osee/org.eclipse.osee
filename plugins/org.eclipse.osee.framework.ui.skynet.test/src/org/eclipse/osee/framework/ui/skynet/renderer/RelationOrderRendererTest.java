@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
@@ -34,7 +33,6 @@ import org.eclipse.osee.framework.skynet.core.relation.order.RelationSorterProvi
 import org.eclipse.osee.framework.ui.skynet.render.ArtifactGuidToWordML;
 import org.eclipse.osee.framework.ui.skynet.render.RelationOrderRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
-import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -47,7 +45,6 @@ public class RelationOrderRendererTest {
 
    private static RelationOrderRenderer renderer;
    private static RelationSorterProvider sorterProvider;
-   private static SevereLoggingMonitor severeLoggingMonitor;
 
    @BeforeClass
    public static void prepareTest() throws Exception {
@@ -58,16 +55,12 @@ public class RelationOrderRendererTest {
       addRelationTypeData(typeCache);
       sorterProvider = new RelationSorterProvider();
       renderer = new RelationOrderRenderer(typeCache, resolver, sorterProvider);
-
-      severeLoggingMonitor = TestUtil.severeLoggingStart();
    }
 
    @AfterClass
    public static void cleanupTest() throws Exception {
       sorterProvider = null;
       renderer = null;
-
-      TestUtil.severeLoggingEnd(severeLoggingMonitor);
    }
 
    @Test

@@ -16,16 +16,16 @@ import org.eclipse.osee.ats.AtsTest_Demo_StateItem_Suite;
 import org.eclipse.osee.ats.AtsTest_Demo_Suite;
 import org.eclipse.osee.ats.Review_Demo_Suite;
 import org.eclipse.osee.ats.config.demo.config.DemoDbUtil;
+import org.eclipse.osee.client.integration.tests.integration.define.XDefineIntegrationTestSuite;
+import org.eclipse.osee.client.integration.tests.integration.dsl.ui.integration.OseeDslRoleContextProviderTest;
+import org.eclipse.osee.client.integration.tests.integration.skynet.core.XSkynetCoreIntegrationTestSuite;
+import org.eclipse.osee.client.integration.tests.integration.ui.skynet.XUiSkynetCoreIntegrationTestSuite;
 import org.eclipse.osee.coverage.Coverage_Db_Suite;
-import org.eclipse.osee.define.AllDefineIntegrationTestSuite;
 import org.eclipse.osee.framework.access.test.AllAccessTestSuite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.dsl.ui.integration.test.AllDslUiIntegrationTestSuite;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.messaging.event.res.test.AllEventResTestSuite;
-import org.eclipse.osee.framework.skynet.core.FrameworkCore_Demo_Suite;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.ui.skynet.FrameworkUi_Demo_Suite;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.support.test.util.DemoUsers;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -41,14 +41,14 @@ import org.junit.runners.Suite;
    AtsTest_Demo_StateItem_Suite.class,
    AtsTest_Demo_Config_Suite.class,
    AllAccessTestSuite.class,
-   AllDslUiIntegrationTestSuite.class,
+   OseeDslRoleContextProviderTest.class,
    CoreRuntimeFeatureTestsSuite.class,
-   FrameworkCore_Demo_Suite.class,
+   XSkynetCoreIntegrationTestSuite.class,
    AllEventResTestSuite.class,
    Review_Demo_Suite.class,
-   AllDefineIntegrationTestSuite.class,
+   XDefineIntegrationTestSuite.class,
    Coverage_Db_Suite.class,
-   FrameworkUi_Demo_Suite.class,
+   XUiSkynetCoreIntegrationTestSuite.class,
    // This should always be last test of master suite
    DirtyArtifactCacheTest.class})
 /**
