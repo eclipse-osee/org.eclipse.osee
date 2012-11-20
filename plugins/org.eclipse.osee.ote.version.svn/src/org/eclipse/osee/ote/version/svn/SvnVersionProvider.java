@@ -1,6 +1,8 @@
 package org.eclipse.osee.ote.version.svn;
 
 import java.io.File;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.osee.ote.version.FileVersion;
 import org.eclipse.osee.ote.version.FileVersionInformationProvider;
@@ -24,6 +26,16 @@ public class SvnVersionProvider implements FileVersionInformationProvider {
 	protected boolean isSvn(File file) {
 		File svn = new File(file.getParentFile(), SVNUtility.getSVNFolderName());
 		return svn.exists();
+	}
+
+	@Override
+	public void getFileVersions(List<File> files, Map<File, FileVersion> versions) {
+		for(File file:files){
+			FileVersion version = getFileVersion(file);
+			if(version != null){
+				versions.put(file, version);
+			}
+		}
 	}
 
 }

@@ -21,9 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.ws.AJavaProject;
 import org.eclipse.osee.ote.core.TestScript;
 import org.eclipse.osee.ote.core.environment.config.ScriptVersionConfig;
-import org.eclipse.osee.ote.ui.test.manager.internal.ServiceUtility;
 import org.eclipse.osee.ote.version.FileVersion;
-import org.eclipse.osee.ote.version.FileVersionInformation;
 
 public class ScriptModel extends FileModel {
 
@@ -42,22 +40,17 @@ public class ScriptModel extends FileModel {
       public String projectPath = null;
       public String rawFileName;
 
-      public ScriptVersionConfig getVersionInfo() {
-         ScriptVersionConfig scriptVersion = new ScriptVersionConfig();
-         File javaFile = new File(rawFileName);
-         if (javaFile != null && javaFile.exists() && javaFile.canRead()) {
-        	FileVersionInformation fileVersionInformation= ServiceUtility.getFileVersionInformation();
-        	FileVersion version = fileVersionInformation.getFileVersion(javaFile);
-            if (version != null) {
-               scriptVersion.setRevision(version.getVersion());
-               scriptVersion.setLocation(version.getURL());
-               scriptVersion.setRepositoryType(version.getVersionControlSystem());
-               scriptVersion.setLastAuthor(version.getLastAuthor());
-               scriptVersion.setLastModificationDate(version.getLastModificationDate());
-               scriptVersion.setModifiedFlag(version.getModifiedFlag());
-            }
-         }
-         return scriptVersion;
+      public ScriptVersionConfig getVersionInfo(FileVersion version) {
+    	  ScriptVersionConfig scriptVersion = new ScriptVersionConfig();
+    	  if (version != null) {
+    		  scriptVersion.setRevision(version.getVersion());
+    		  scriptVersion.setLocation(version.getURL());
+    		  scriptVersion.setRepositoryType(version.getVersionControlSystem());
+    		  scriptVersion.setLastAuthor(version.getLastAuthor());
+    		  scriptVersion.setLastModificationDate(version.getLastModificationDate());
+    		  scriptVersion.setModifiedFlag(version.getModifiedFlag());
+    	  }
+    	  return scriptVersion;
       }
    }
 

@@ -19,6 +19,10 @@ public class GitFileVersion implements FileVersion {
 		}
 	}
 	
+	GitFileVersion(RevCommit commit) {
+		this.commit = commit;
+	}
+	
 	@Override
 	public String getVersion() {
 		return commit.getId().getName();
