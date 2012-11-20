@@ -10,10 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.dsl.ui.integration;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.dsl.integration.util.ModelUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
@@ -26,6 +29,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -35,41 +39,11 @@ import org.junit.Test;
  */
 public class OseeDslRoleContextProviderTest {
 
-   private String getTestSheet1(String contextGuid, String role1Guid) {
-      StringBuilder sb = new StringBuilder();
-      sb.append("role \"role1\" {\n");
-      sb.append("   guid \"");
-      sb.append(role1Guid);
-      sb.append("\";\n");
-      sb.append("   accessContext \"role1.context\";\n");
-      sb.append("}\n\n");
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
 
-      sb.append("accessContext \"role1.context\" {\n");
-      sb.append("   guid \"");
-      sb.append(contextGuid);
-      sb.append("\";\n");
-      sb.append("   DENY edit relationType ALL BOTH;\n");
-      sb.append("}\n");
-      return sb.toString();
-   }
-
-   private String getTestSheet2(String context1, String role1Guid, String context2, String role2Guid) {
-      StringBuilder sb = new StringBuilder(getTestSheet1(context1, role1Guid));
-      sb.append("\nrole \"role2\" extends \"role1\" {\n");
-      sb.append("   guid \"");
-      sb.append(role2Guid);
-      sb.append("\";\n");
-      sb.append("   accessContext \"role2.context\";\n");
-      sb.append("}\n\n");
-
-      sb.append("accessContext \"role2.context\" {\n");
-      sb.append("   guid \"");
-      sb.append(context2);
-      sb.append("\";\n");
-      sb.append("   DENY edit relationType ALL BOTH;\n");
-      sb.append("}\n");
-      return sb.toString();
-   }
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
    @Test
    public void testGetContextId() throws OseeCoreException {
@@ -113,5 +87,41 @@ public class OseeDslRoleContextProviderTest {
       Assert.assertTrue(contextList.remove(iterator.next().getGuid()));
 
       role2User.deleteAndPersist();
+   }
+
+   private String getTestSheet1(String contextGuid, String role1Guid) {
+      StringBuilder sb = new StringBuilder();
+      sb.append("role \"role1\" {\n");
+      sb.append("   guid \"");
+      sb.append(role1Guid);
+      sb.append("\";\n");
+      sb.append("   accessContext \"role1.context\";\n");
+      sb.append("}\n\n");
+
+      sb.append("accessContext \"role1.context\" {\n");
+      sb.append("   guid \"");
+      sb.append(contextGuid);
+      sb.append("\";\n");
+      sb.append("   DENY edit relationType ALL BOTH;\n");
+      sb.append("}\n");
+      return sb.toString();
+   }
+
+   private String getTestSheet2(String context1, String role1Guid, String context2, String role2Guid) {
+      StringBuilder sb = new StringBuilder(getTestSheet1(context1, role1Guid));
+      sb.append("\nrole \"role2\" extends \"role1\" {\n");
+      sb.append("   guid \"");
+      sb.append(role2Guid);
+      sb.append("\";\n");
+      sb.append("   accessContext \"role2.context\";\n");
+      sb.append("}\n\n");
+
+      sb.append("accessContext \"role2.context\" {\n");
+      sb.append("   guid \"");
+      sb.append(context2);
+      sb.append("\";\n");
+      sb.append("   DENY edit relationType ALL BOTH;\n");
+      sb.append("}\n");
+      return sb.toString();
    }
 }

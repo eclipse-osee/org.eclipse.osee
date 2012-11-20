@@ -11,103 +11,102 @@
 
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
+import static java.util.Arrays.asList;
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.junit.Assert.assertTrue;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.client.demo.DemoBranches;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.support.test.util.DemoSawBuilds;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * @author Donald G. Dunne
  */
 public class ArtifactSetAttributeValuesTest {
 
-   private static List<String> firstSet = Arrays.asList("First", "Second", "Third");
-   private static List<String> addOneSet = Arrays.asList("First", "Second", "Third", "Fourth");
-   private static List<String> addOneRemoveOneSet = Arrays.asList("Second", "Third", "Fourth", "Fifth");
-   private static List<String> addDuplicates_set = Arrays.asList("Second", "Second", "Third", "Fourth", "Fifth",
-      "Fourth");
-   private static List<String> addDuplicates_result = Arrays.asList("Second", "Third", "Fifth", "Fourth");
-   private static List<String> emptySet = Arrays.asList();
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
 
-   @BeforeClass
-   public static void testCleanupPre() throws Exception {
-      cleanup();
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   @Rule
+   public TestInfo method = new TestInfo();
+
+   private static final List<String> START_VALUE = asList("First", "Second", "Third");
+   private static final List<String> ADD_ONE = asList("First", "Second", "Third", "Fourth");
+   private static final List<String> ADD_ONE_REMOVE_ONE = asList("Second", "Third", "Fourth", "Fifth");
+   private static final List<String> ADD_DUPLICATES = asList("Second", "Second", "Third", "Fourth", "Fifth", "Fourth");
+   private static final List<String> ADD_DUPLICATES_EXPECTED = asList("Second", "Third", "Fifth", "Fourth");
+
+   private Artifact artifact;
+
+   @Before
+   public void setup() throws Exception {
+      artifact =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, DemoBranches.SAW_Bld_1,
+            method.getQualifiedTestName());
+      artifact.setAttributeValues(CoreAttributeTypes.StaticId, START_VALUE);
    }
 
-   @org.junit.Test
+   @After
+   public void tearDown() throws Exception {
+      if (artifact != null) {
+         artifact.purgeFromBranch();
+      }
+   }
+
+   @Test
    public void testSetAttributeValues() throws Exception {
-      Artifact artifact =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, DemoSawBuilds.SAW_Bld_1,
-            getClass().getSimpleName());
-      artifact.setAttributeValues(CoreAttributeTypes.StaticId, firstSet);
-      artifact.persist(getClass().getSimpleName());
+      List<String> actual = artifact.getAttributesToStringList(CoreAttributeTypes.StaticId);
 
-      assertTrue(Collections.isEqual(firstSet, artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)));
+      assertTrue(Collections.isEqual(START_VALUE, actual));
    }
 
-   @org.junit.Test
+   @Test
    public void testSetAttributeValuesAddOne() throws Exception {
-      Artifact artifact = getArtifact();
-      artifact.setAttributeValues(CoreAttributeTypes.StaticId, addOneSet);
-      artifact.persist(getClass().getSimpleName());
+      artifact.setAttributeValues(CoreAttributeTypes.StaticId, ADD_ONE);
 
-      assertTrue(Collections.isEqual(addOneSet, artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)));
+      List<String> actual = artifact.getAttributesToStringList(CoreAttributeTypes.StaticId);
+
+      assertTrue(Collections.isEqual(ADD_ONE, actual));
    }
 
-   @org.junit.Test
+   @Test
    public void testSetAttributeValuesAddOneRemoveOne() throws Exception {
-      Artifact artifact = getArtifact();
-      artifact.setAttributeValues(CoreAttributeTypes.StaticId, addOneRemoveOneSet);
-      artifact.persist(getClass().getSimpleName());
+      artifact.setAttributeValues(CoreAttributeTypes.StaticId, ADD_ONE_REMOVE_ONE);
 
-      assertTrue(Collections.isEqual(addOneRemoveOneSet,
-         artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)));
+      List<String> actual = artifact.getAttributesToStringList(CoreAttributeTypes.StaticId);
+
+      assertTrue(Collections.isEqual(ADD_ONE_REMOVE_ONE, actual));
    }
 
-   @org.junit.Test
+   @Test
    public void testSetAttributeValuesRemoveAll() throws Exception {
-      Artifact artifact = getArtifact();
-      artifact.setAttributeValues(CoreAttributeTypes.StaticId, emptySet);
-      artifact.persist(getClass().getSimpleName());
+      artifact.setAttributeValues(CoreAttributeTypes.StaticId, java.util.Collections.<String> emptyList());
 
-      assertTrue(artifact.getAttributesToStringList(CoreAttributeTypes.StaticId).isEmpty());
+      List<String> actual = artifact.getAttributesToStringList(CoreAttributeTypes.StaticId);
+
+      assertTrue(actual.isEmpty());
    }
 
-   @org.junit.Test
+   @Test
    public void testSetAttributeValuesWithDuplicates() throws Exception {
-      Artifact artifact = getArtifact();
-      artifact.setAttributeValues(CoreAttributeTypes.StaticId, addDuplicates_set);
-      artifact.persist(getClass().getSimpleName());
+      artifact.setAttributeValues(CoreAttributeTypes.StaticId, ADD_DUPLICATES);
 
-      assertTrue(Collections.isEqual(addDuplicates_result,
-         artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)));
+      List<String> actual = artifact.getAttributesToStringList(CoreAttributeTypes.StaticId);
+
+      assertTrue(Collections.isEqual(ADD_DUPLICATES_EXPECTED, actual));
    }
 
-   @AfterClass
-   public static void testCleanupPost() throws Exception {
-      cleanup();
-   }
-
-   private Artifact getArtifact() throws Exception {
-      return ArtifactQuery.getArtifactListFromName(getClass().getSimpleName(), DemoSawBuilds.SAW_Bld_1, EXCLUDE_DELETED).iterator().next();
-   }
-
-   private static void cleanup() throws Exception {
-      Collection<Artifact> arts =
-         ArtifactQuery.getArtifactListFromName(ArtifactSetAttributeValuesTest.class.getSimpleName(),
-            DemoSawBuilds.SAW_Bld_1, EXCLUDE_DELETED);
-      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(arts));
-   }
 }

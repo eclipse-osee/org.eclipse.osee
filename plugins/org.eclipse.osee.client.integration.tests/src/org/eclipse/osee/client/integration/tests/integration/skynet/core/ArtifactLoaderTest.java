@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
-import static org.junit.Assert.assertFalse;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -26,7 +26,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.FrameworkTestUtil;
+import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.TestUtil;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.client.test.framework.TestInfo;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -37,7 +41,6 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
@@ -47,10 +50,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.LoadType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.support.test.util.TestUtil;
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -58,28 +60,25 @@ import org.junit.Test;
  */
 public class ArtifactLoaderTest {
 
-   private static SevereLoggingMonitor monitorLog;
-   private static int NUM_ARTIFACTS = 100;
-   private static String ATTRIBUTE_VALUE = "now is the time";
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
 
-   @BeforeClass
-   public static void testInitialize() throws Exception {
-      assertFalse(TestUtil.isProductionDb());
-      testCleanup();
-      monitorLog = TestUtil.severeLoggingStart();
-   }
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
-   @AfterClass
-   public static void tearDown() throws Exception {
-      TestUtil.severeLoggingEnd(monitorLog);
-      testCleanup();
-   }
+   @Rule
+   public TestInfo testInfo = new TestInfo();
 
-   private static void testCleanup() throws Exception {
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(BranchManager.getCommonBranch(), "ArtifactLoaderTest");
+   private static final int TOTAL_THREADS = 7;
+   private static final int NUM_ARTIFACTS = 100;
+   private static final String ATTRIBUTE_VALUE = "now is the time";
+   private static final IOseeBranch branch = CoreBranches.COMMON;
+
+   @After
+   public void tearDown() throws Exception {
+      SkynetTransaction transaction = TransactionManager.createTransaction(branch, testInfo.getQualifiedTestName());
       List<Artifact> artifacts =
-         ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", BranchManager.getCommonBranch(), EXCLUDE_DELETED);
+         ArtifactQuery.getArtifactListFromName(testInfo.getQualifiedTestName(), branch, EXCLUDE_DELETED);
       ArtifactPersistenceManager.deleteArtifactCollection(transaction, false, artifacts);
       transaction.execute();
    }
@@ -99,8 +98,8 @@ public class ArtifactLoaderTest {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(BranchManager.getCommonBranch(), "ArtifactLoaderTest");
       Collection<Artifact> artifacts =
-         FrameworkTestUtil.createSimpleArtifacts(CoreArtifactTypes.GlobalPreferences, NUM_ARTIFACTS,
-            "ArtifactLoaderTest", BranchManager.getCommonBranch());
+         TestUtil.createSimpleArtifacts(CoreArtifactTypes.GlobalPreferences, NUM_ARTIFACTS, "ArtifactLoaderTest",
+            BranchManager.getCommonBranch());
       for (Artifact artifact : artifacts) {
          artifact.setName("ArtifactLoaderTest");
          artifact.addAttribute(CoreAttributeTypes.DefaultMailServer, ATTRIBUTE_VALUE);
@@ -113,7 +112,6 @@ public class ArtifactLoaderTest {
          ArtifactCache.deCache(artifact);
       }
 
-      final int TOTAL_THREADS = 7;
       Collection<LoadArtifacts> tasks = new ArrayList<LoadArtifacts>();
       for (int x = 1; x <= TOTAL_THREADS; x++) {
          tasks.add(new LoadArtifacts());
@@ -135,7 +133,7 @@ public class ArtifactLoaderTest {
       String message =
          String.format("Hit timeout value before threads were completed - completed[%s] cancelled[%s]", completed,
             cancelled);
-      Assert.assertEquals(message, 7, completed);
+      Assert.assertEquals(message, TOTAL_THREADS, completed);
 
       // Load and check artifacts
       artifacts =
@@ -153,7 +151,7 @@ public class ArtifactLoaderTest {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(BranchManager.getCommonBranch(), "ArtifactLoaderTest");
       Artifact testArt =
-         FrameworkTestUtil.createSimpleArtifact(CoreArtifactTypes.GlobalPreferences, "ArtifactLoaderTest",
+         TestUtil.createSimpleArtifact(CoreArtifactTypes.GlobalPreferences, "ArtifactLoaderTest",
             BranchManager.getCommonBranch());
       testArt.setName("ArtifactLoaderTest");
       testArt.addAttribute(CoreAttributeTypes.DefaultMailServer, ATTRIBUTE_VALUE);

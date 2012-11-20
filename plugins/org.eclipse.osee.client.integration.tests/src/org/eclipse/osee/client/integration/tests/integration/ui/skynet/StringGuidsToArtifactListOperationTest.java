@@ -1,10 +1,14 @@
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import junit.framework.Assert;
+import org.eclipse.osee.client.demo.DemoBranches;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -17,9 +21,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.httpRequests.PurgeBranchHttpRequestOperation;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.StringGuidsToArtifactListOperation;
 import org.eclipse.osee.framework.ui.skynet.widgets.IXWidgetInputAddable;
-import org.eclipse.osee.support.test.util.DemoSawBuilds;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -29,18 +33,25 @@ import org.junit.Test;
  */
 public class StringGuidsToArtifactListOperationTest {
 
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
    private static final String SAMPLE_SEPARATOR = "\r\n";
+   private static final String invalidGuid = String.format("4F@3g@#$G@GZS%s", SAMPLE_SEPARATOR);
    private static final int capacity = 10;
-   private static Branch testBranch;
 
-   private final static Collection<Object> artifacts = new ArrayList<Object>(capacity);
-   private final static String[] guids = new String[capacity];
-   private final String invalidGuid = String.format("4F@3g@#$G@GZS%s", SAMPLE_SEPARATOR);
+   private Branch testBranch;
 
-   @BeforeClass
-   public static void setUpOnce() throws OseeCoreException {
+   private final Collection<Object> artifacts = new ArrayList<Object>(capacity);
+   private final String[] guids = new String[capacity];
+
+   @Before
+   public void setUpOnce() throws OseeCoreException {
       testBranch =
-         BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1,
+         BranchManager.createWorkingBranch(DemoBranches.SAW_Bld_1,
             StringGuidsToArtifactListOperationTest.class.getSimpleName() + " Branch");
 
       for (int i = 0; i < capacity; ++i) {
@@ -51,8 +62,8 @@ public class StringGuidsToArtifactListOperationTest {
       }
    }
 
-   @AfterClass
-   public static void tearDownOnce() throws OseeCoreException {
+   @After
+   public void tearDownOnce() throws OseeCoreException {
       Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(testBranch, true));
    }
 

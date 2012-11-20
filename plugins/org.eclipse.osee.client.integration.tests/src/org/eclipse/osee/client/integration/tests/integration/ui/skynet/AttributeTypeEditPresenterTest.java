@@ -10,26 +10,29 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeEditPresenter;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeEditPresenter.Display.OperationType;
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -38,47 +41,54 @@ import org.junit.Test;
  * @author Roberto E. Escobar
  */
 public class AttributeTypeEditPresenterTest {
+
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
    private static final IAttributeType[] selectableTypes = new IAttributeType[] {
       CoreAttributeTypes.RelationOrder,
       CoreAttributeTypes.Annotation,
       CoreAttributeTypes.StaticId};
 
-   private static AttributeTypeEditPresenter controller;
-   private static MockDisplay display;
-   private static Artifact artifact;
-   private static MockEditor editor;
+   private AttributeTypeEditPresenter controller;
+   private MockDisplay display;
+   private Artifact artifact;
+   private MockEditor editor;
 
-   @BeforeClass
-   public static void setUp() throws OseeCoreException {
+   @Before
+   public void setUp() throws OseeCoreException {
       display = new MockDisplay();
       editor = new MockEditor();
-      Branch branch = BranchManager.getCommonBranch();
-      artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Artifact, branch, "test attribute types");
-      editor.setArtifact(artifact);
       controller = new AttributeTypeEditPresenter(editor, display);
+
+      artifact =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.Artifact, CoreBranches.COMMON, "test attribute types");
+      editor.setArtifact(artifact);
    }
 
-   @AfterClass
-   public static void tearDown() throws OseeCoreException {
-      artifact.purgeFromBranch();
+   @After
+   public void tearDown() throws OseeCoreException {
+      if (artifact != null) {
+         artifact.purgeFromBranch();
+      }
    }
 
    @Test
-   public void testAddItems() throws OseeCoreException {
+   public void testAddRemoveItems() throws OseeCoreException {
       String expectedTitle = "Add Attribute Types";
       String expectedOpMessage = "Select items to add.";
       String expectedNoneMessage = "No attribute types available to add.";
       OperationType expectedType = OperationType.ADD_ITEM;
 
       testOperation(expectedType, expectedTitle, expectedOpMessage, expectedNoneMessage);
-   }
 
-   @Test
-   public void testRemoveItems() throws OseeCoreException {
-      String expectedTitle = "Delete Attribute Types";
-      String expectedOpMessage = "Select items to remove.";
-      String expectedNoneMessage = "No attribute types available to remove.";
-      OperationType expectedType = OperationType.REMOVE_ITEM;
+      expectedTitle = "Delete Attribute Types";
+      expectedOpMessage = "Select items to remove.";
+      expectedNoneMessage = "No attribute types available to remove.";
+      expectedType = OperationType.REMOVE_ITEM;
 
       testOperation(expectedType, expectedTitle, expectedOpMessage, expectedNoneMessage);
    }

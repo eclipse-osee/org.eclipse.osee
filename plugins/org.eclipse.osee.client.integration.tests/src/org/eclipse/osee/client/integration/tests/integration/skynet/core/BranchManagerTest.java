@@ -10,62 +10,70 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
-import static org.junit.Assert.assertFalse;
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.client.test.framework.TestInfo;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.support.test.util.TestUtil;
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * @author Donald G. Dunne
  */
 public class BranchManagerTest {
 
-   public static String branchName = "BranchManagerTest";
-   public static String branchReNamed = "BranchManagerTest-Renamed";
+   @Rule
+   public ExpectedException thrown = ExpectedException.none();
 
-   private static Branch testBranch;
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
 
-   @BeforeClass
-   public static void setUp() throws Exception {
-      // This test should only be run on test db
-      assertFalse(TestUtil.isProductionDb());
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
-      testBranch = BranchManager.createWorkingBranch(BranchManager.getCommonBranch(), branchName);
+   @Rule
+   public TestInfo testInfo = new TestInfo();
+
+   public String branchName;
+   public String branchReNamed;
+
+   private Branch testBranch;
+
+   @Before
+   public void setUp() throws Exception {
+      branchName = testInfo.getQualifiedTestName();
+      branchReNamed = String.format("%s - Renamed", branchName);
+      testBranch = BranchManager.createWorkingBranch(CoreBranches.COMMON, branchName);
+   }
+
+   @After
+   public void tearDown() throws Exception {
+      if (testBranch != null) {
+         BranchManager.purgeBranch(testBranch);
+      }
    }
 
    @Test
-   public void testBranchRetrieval() throws Exception {
-      testBranch.equals(BranchManager.getBranch(branchName));
-   }
-
-   @Test
-   public void testRenameBranch() throws Exception {
-      Assert.assertEquals(branchName, testBranch.getName());
+   public void testBranch() throws Exception {
+      Assert.assertEquals(testBranch, BranchManager.getBranch(branchName));
 
       testBranch.setName(branchReNamed);
       BranchManager.persist(testBranch);
 
       testBranch = BranchManager.getBranch(branchReNamed);
       Assert.assertEquals(branchReNamed, testBranch.getName());
+
+      thrown.expect(BranchDoesNotExist.class);
+      thrown.expectMessage(String.format("No branch exists with the name: [%s]", branchName));
+      BranchManager.getBranch(branchName);
    }
 
-   @Test(expected = BranchDoesNotExist.class)
-   public void testLookForOldBranch() throws OseeCoreException {
-      Assert.assertNull("Old branch is found and should be renamed...", BranchManager.getBranch(branchName));
-   }
-
-   @AfterClass
-   public static void testCleanupPost() throws Exception {
-      cleanup();
-   }
-
-   private static void cleanup() throws Exception {
-      BranchManager.purgeBranch(BranchManager.getBranch(branchReNamed));
-   }
 }

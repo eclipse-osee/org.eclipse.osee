@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -30,9 +33,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -41,16 +45,23 @@ import org.junit.Test;
  */
 public final class UserManagerTest {
 
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
    private static final String[] TEST_DEFAULT_GROUPS = {"Alkali Metals", "Metals"};
    private static final String[] NEW_USER_NAMES = {"Lithium", "Sodium", "Potassium"};
 
-   private User createUser(SkynetTransaction transaction, int index) throws OseeCoreException {
-      IUserToken token =
-         TokenFactory.createUserToken(GUID.create(), NEW_USER_NAMES[index], "this" + index + "@that.com",
-            "9999999" + index, true, index % 2 == 0, true);
-      User user = UserManager.createUser(token, transaction);
-      user.persist(transaction);
-      return user;
+   @Before
+   public void setUpOnce() throws Exception {
+      createSampleDefaultGroups(CoreBranches.COMMON, TEST_DEFAULT_GROUPS);
+   }
+
+   @After
+   public void tearDownOnce() throws Exception {
+      deleteSampleDefaultGroups(CoreBranches.COMMON, TEST_DEFAULT_GROUPS);
    }
 
    @Test
@@ -86,17 +97,16 @@ public final class UserManagerTest {
       Assert.assertTrue("Members not subscribed to right groups.", verifiedNames.size() == TEST_DEFAULT_GROUPS.length);
    }
 
-   @BeforeClass
-   public static void setUpOnce() throws Exception {
-      createSampleDefaultGroups(CoreBranches.COMMON, TEST_DEFAULT_GROUPS);
+   private User createUser(SkynetTransaction transaction, int index) throws OseeCoreException {
+      IUserToken token =
+         TokenFactory.createUserToken(GUID.create(), NEW_USER_NAMES[index], "this" + index + "@that.com",
+            "9999999" + index, true, index % 2 == 0, true);
+      User user = UserManager.createUser(token, transaction);
+      user.persist(transaction);
+      return user;
    }
 
-   @AfterClass
-   public static void tearDownOnce() throws Exception {
-      deleteSampleDefaultGroups(CoreBranches.COMMON, TEST_DEFAULT_GROUPS);
-   }
-
-   private static void createSampleDefaultGroups(IOseeBranch branch, String... names) throws OseeCoreException {
+   private void createSampleDefaultGroups(IOseeBranch branch, String... names) throws OseeCoreException {
       for (String name : names) {
          //Create artifact
          Artifact groupArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.UserGroup, branch, name);
@@ -112,7 +122,7 @@ public final class UserManagerTest {
       }
    }
 
-   private static void deleteSampleDefaultGroups(IOseeBranch branch, String... artifactNames) throws OseeCoreException {
+   private void deleteSampleDefaultGroups(IOseeBranch branch, String... artifactNames) throws OseeCoreException {
       Collection<Artifact> list = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.UserGroup, branch);
       for (Artifact artifact : list) {
          for (String artifactName : artifactNames) {

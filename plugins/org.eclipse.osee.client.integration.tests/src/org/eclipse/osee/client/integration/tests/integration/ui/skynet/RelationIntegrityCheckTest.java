@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.util.LinkedList;
 import java.util.List;
 import junit.framework.Assert;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -33,6 +36,7 @@ import org.eclipse.osee.framework.ui.skynet.dbHealth.LocalRelationLink;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.RelationIntegrityCheck;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -46,10 +50,50 @@ import org.junit.Test;
  * @author Karol M. Wilk
  */
 public class RelationIntegrityCheckTest {
+
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
    private final DoubleKeyHashMap<Integer, Integer, LocalRelationLink> map =
       new DoubleKeyHashMap<Integer, Integer, LocalRelationLink>();
    private Branch parentBranch;
    private Branch workingBranch;
+
+   @Before
+   public void setUp() throws Exception {
+      parentBranch = BranchManager.createTopLevelBranch("1");
+
+      Artifact art_A = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, parentBranch, "A");
+      art_A.persist(getClass().getSimpleName());
+      BranchManager.persist(parentBranch);
+
+      workingBranch = BranchManager.createWorkingBranch(parentBranch, TokenFactory.createBranch(GUID.create(), "2"));
+
+      art_A.deleteAndPersist();
+
+      Artifact art_A_prime = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, "A", workingBranch);
+      //Sample artifact to create a relation to...
+      Artifact child = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, workingBranch, "Child");
+
+      //cause a change on the branch
+      art_A_prime.persist(getClass().getSimpleName());
+
+      //create a new relation on A' to child
+      art_A_prime.addChild(child);
+      art_A_prime.persist(getClass().getSimpleName());
+
+      //commit branch 2 into 1
+      ConflictManagerExternal conflictManager = new ConflictManagerExternal(parentBranch, workingBranch);
+      BranchManager.commitBranch(null, conflictManager, false, true);
+   }
+
+   @After
+   public void tearDown() throws Exception {
+      Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(parentBranch, true));
+   }
 
    @Test
    public void testNewRelationOnDeletedArtifact() throws Exception {
@@ -110,37 +154,4 @@ public class RelationIntegrityCheckTest {
       }
    }
 
-   @Before
-   public void setUp() throws Exception {
-
-      parentBranch = BranchManager.createTopLevelBranch("1");
-
-      Artifact art_A = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, parentBranch, "A");
-      art_A.persist(getClass().getSimpleName());
-      BranchManager.persist(parentBranch);
-
-      workingBranch = BranchManager.createWorkingBranch(parentBranch, TokenFactory.createBranch(GUID.create(), "2"));
-
-      art_A.deleteAndPersist();
-
-      Artifact art_A_prime = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, "A", workingBranch);
-      //Sample artifact to create a relation to...
-      Artifact child = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, workingBranch, "Child");
-
-      //cause a change on the branch
-      art_A_prime.persist(getClass().getSimpleName());
-
-      //create a new relation on A' to child
-      art_A_prime.addChild(child);
-      art_A_prime.persist(getClass().getSimpleName());
-
-      //commit branch 2 into 1
-      ConflictManagerExternal conflictManager = new ConflictManagerExternal(parentBranch, workingBranch);
-      BranchManager.commitBranch(null, conflictManager, false, true);
-   }
-
-   @After
-   public void tearDown() throws Exception {
-      Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(parentBranch, true));
-   }
 }

@@ -10,41 +10,40 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
-import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.FrameworkTestUtil;
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import org.eclipse.osee.client.demo.DemoBranches;
+import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.TestUtil;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
  * @author Ryan Schmitt
  */
 public class CrossBranchRelationLinkTest {
-   Branch branch1;
-   Branch branch2;
-   Artifact left, right;
-   RelationType type;
+
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   private Artifact left, right;
 
    @Before
    public void setUp() throws OseeCoreException {
-      branch1 = BranchManager.getBranch("SAW_Bld_1");
-      branch2 = BranchManager.getBranch("SAW_Bld_2");
-      left = FrameworkTestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Left", branch1);
-      right = FrameworkTestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Right", branch2);
+      left = TestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Left", DemoBranches.SAW_Bld_1);
+      right = TestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Right", DemoBranches.SAW_Bld_2);
       left.persist(getClass().getSimpleName());
       right.persist(getClass().getSimpleName());
-   }
-
-   @Test(expected = OseeArgumentException.class)
-   public void attemptCrossBranchLinkCreationTest() throws OseeCoreException {
-      left.addRelation(CoreRelationTypes.Default_Hierarchical__Child, right);
    }
 
    @After
@@ -52,4 +51,10 @@ public class CrossBranchRelationLinkTest {
       left.purgeFromBranch();
       right.purgeFromBranch();
    }
+
+   @Test(expected = OseeArgumentException.class)
+   public void attemptCrossBranchLinkCreationTest() throws OseeCoreException {
+      left.addRelation(CoreRelationTypes.Default_Hierarchical__Child, right);
+   }
+
 }

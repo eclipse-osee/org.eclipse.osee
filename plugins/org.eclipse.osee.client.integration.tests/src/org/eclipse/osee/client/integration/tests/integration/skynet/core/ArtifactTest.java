@@ -11,17 +11,20 @@
 
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import org.eclipse.osee.client.demo.DemoArtifactTypes;
+import org.eclipse.osee.client.demo.DemoBranches;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.support.test.util.DemoArtifactTypes;
-import org.eclipse.osee.support.test.util.DemoSawBuilds;
-import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -29,16 +32,18 @@ import org.junit.Test;
  */
 public final class ArtifactTest {
 
-   private SevereLoggingMonitor monitorLog;
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
    private Artifact artifactWithSpecialAttr;
 
    @Before
    public void setUp() throws Exception {
-      monitorLog = TestUtil.severeLoggingStart();
-
       artifactWithSpecialAttr =
-         ArtifactTypeManager.addArtifact(DemoArtifactTypes.DemoCodeTeamWorkflow, DemoSawBuilds.SAW_Bld_1);
+         ArtifactTypeManager.addArtifact(DemoArtifactTypes.DemoTestRequirement, DemoBranches.SAW_Bld_1);
    }
 
    @After
@@ -46,7 +51,6 @@ public final class ArtifactTest {
       if (artifactWithSpecialAttr != null) {
          artifactWithSpecialAttr.deleteAndPersist();
       }
-      TestUtil.severeLoggingEnd(monitorLog);
    }
 
    @Test
@@ -54,7 +58,7 @@ public final class ArtifactTest {
       artifactWithSpecialAttr.setSoleAttributeValue(CoreAttributeTypes.Partition, "Navigation");
       artifactWithSpecialAttr.setName("ArtifactTest-artifactWithSpecialAttr");
 
-      Artifact copiedArtifact = artifactWithSpecialAttr.duplicate(DemoSawBuilds.SAW_Bld_2);
+      Artifact copiedArtifact = artifactWithSpecialAttr.duplicate(DemoBranches.SAW_Bld_2);
       try {
          Assert.assertFalse(copiedArtifact.getAttributes(CoreAttributeTypes.Partition).isEmpty());
       } finally {

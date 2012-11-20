@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -18,6 +19,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.osee.client.demo.DemoBranches;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -40,10 +44,10 @@ import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImpor
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationFactory;
 import org.eclipse.osee.framework.ui.skynet.Import.MatchingStrategy;
-import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -57,6 +61,12 @@ import org.junit.runners.Parameterized.Parameters;
  */
 @RunWith(Parameterized.class)
 public final class WordOutlineAndStyleTest {
+
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
    /**
     * <pre>
@@ -109,25 +119,24 @@ public final class WordOutlineAndStyleTest {
 
    @Before
    public void setUp() throws Exception {
-      Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(DemoSawBuilds.SAW_Bld_1);
+      Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(DemoBranches.SAW_Bld_1);
       String name = WordOutlineAndStyleTest.class.getSimpleName() + "_Folder";
       folder =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, DemoSawBuilds.SAW_Bld_1, name, GUID.create(),
-            "12345");
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, DemoBranches.SAW_Bld_1, name, GUID.create(), "12345");
       root.addChild(folder);
       root.persist(name);
-   }
-
-   @Test
-   public void testStyleResolution() throws Exception {
-      buildUpTest(wordMLFileName);
-      Assert.assertEquals(testComment, expected, Artifacts.getNames(folder.getDescendants()));
    }
 
    @After
    public void tearDown() throws Exception {
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(folder.getChildren(), true));
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(Collections.<Artifact> singleton(folder)));
+   }
+
+   @Test
+   public void testStyleResolution() throws Exception {
+      buildUpTest(wordMLFileName);
+      Assert.assertEquals(testComment, expected, Artifacts.getNames(folder.getDescendants()));
    }
 
    @Parameters

@@ -10,24 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
-import org.eclipse.osee.framework.skynet.core.rule.OseeHousekeepingRule;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -39,15 +39,20 @@ import org.junit.rules.MethodRule;
  */
 public class RelationDeletionTest {
 
-   private final List<Artifact> artifacts = new ArrayList<Artifact>();
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
    @Rule
    public MethodRule oseeHousekeepingRule = new OseeHousekeepingRule();
 
+   private List<Artifact> artifacts;
+
    @Before
-   public void setUp() throws Exception {
-      // This test should only be run on test db
-      assertFalse(ClientSessionManager.isProductionDataStore());
+   public void setup() {
+      artifacts = new ArrayList<Artifact>();
    }
 
    @After
@@ -57,9 +62,6 @@ public class RelationDeletionTest {
 
    @Test
    public void testDeleteRelationPersistsBothSides() throws Exception {
-      SevereLoggingMonitor monitor = new SevereLoggingMonitor();
-      OseeLog.registerLoggerListener(monitor);
-
       Branch branch = BranchManager.getCommonBranch();
       Artifact parent = createArtifact(CoreArtifactTypes.Folder, branch);
       Artifact child1 = createArtifact(CoreArtifactTypes.Folder, branch);
@@ -88,8 +90,6 @@ public class RelationDeletionTest {
       assertTrue("The deleted child was not successfully removed.", children.size() == 2);
 
       assertTrue("Child2 is not the first in the list and it should be.", children.get(0) == child2);
-
-      assertTrue(monitor.toString(), monitor.getSevereLogs().isEmpty());
    }
 
    private Artifact createArtifact(IArtifactType artifactType, Branch branch) throws OseeCoreException {

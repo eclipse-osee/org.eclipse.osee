@@ -12,18 +12,15 @@ package org.eclipse.osee.support.test.util;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.junit.Assert;
 
 /**
  * @author Donald G. Dunne
@@ -126,35 +123,6 @@ public class TestUtil {
             throw new OseeStateException("SevereLoggingMonitor found [%d] exceptions - [%s]", numExceptions,
                builder.toString());
          }
-      }
-   }
-
-   public static void checkThatIncreased(Map<String, Integer> prevCount, Map<String, Integer> postCount) {
-      for (String name : prevCount.keySet()) {
-         if (!OseeProperties.isInTest()) {
-            String incStr = postCount.get(name) > prevCount.get(name) ? "Increased" : "ERROR, Not Increased";
-            System.out.println(String.format(incStr + ": [%s] pre[%d] vs post[%d]", name, prevCount.get(name),
-               postCount.get(name)));
-         }
-      }
-      for (String name : prevCount.keySet()) {
-         Assert.assertTrue(String.format("[%s] did not increase as expected: pre[%d] vs post[%d]", name,
-            prevCount.get(name), postCount.get(name)), postCount.get(name) > prevCount.get(name));
-      }
-   }
-
-   public static void checkThatEqual(Map<String, Integer> prevCount, Map<String, Integer> postCount) {
-      for (String tableName : prevCount.keySet()) {
-         if (!OseeProperties.isInTest()) {
-            String equalStr = postCount.get(tableName).equals(prevCount.get(tableName)) ? "Equal" : "ERROR, NotEqual";
-            System.out.println(String.format(equalStr + ": [%s] pre[%d] post[%d]", tableName, prevCount.get(tableName),
-               postCount.get(tableName)));
-         }
-      }
-      for (String tableName : prevCount.keySet()) {
-         Assert.assertTrue(
-            String.format("[%s] count not equal pre[%d] post[%d]", tableName, prevCount.get(tableName),
-               postCount.get(tableName)), postCount.get(tableName).equals(prevCount.get(tableName)));
       }
    }
 

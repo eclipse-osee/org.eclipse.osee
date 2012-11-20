@@ -10,8 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.client.demo.DemoBranches;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -28,9 +32,9 @@ import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListe
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
-import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -39,14 +43,22 @@ import org.junit.Test;
  * @author Shawn F. Cook
  */
 public class FrameworkEventToRemoteEventListenerTest {
-   private static final IOseeBranch branch = DemoSawBuilds.SAW_Bld_1;
+
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   private static final IOseeBranch BRANCH = DemoBranches.SAW_Bld_1;
    private static final String ARTIFACT_NAME_1 =
       FrameworkEventToRemoteEventListenerTest.class.getSimpleName() + ".Edit1";
    private static final int newArtTx = 12345;
-   private static RemoteNetworkSender1 networkSender;
 
-   @BeforeClass
-   public static void setupStatic() {
+   private RemoteNetworkSender1 networkSender;
+
+   @Before
+   public void setup() {
       networkSender = new RemoteNetworkSender1();
       networkSender.setSourceObject(ArtifactEventTest.class.getName());
       networkSender.setSessionId("N23422.32");
@@ -59,14 +71,14 @@ public class FrameworkEventToRemoteEventListenerTest {
 
    /**
     * We want to test FrameworkEventToRemoteEventListener.updateModifiedArtifact(). But it's nested rather deeply in
-    * dependancies on other classes. So we need to fire up several other classes. So we make use of OseeEventManager
+    * dependencies on other classes. So we need to fire up several other classes. So we make use of OseeEventManager
     * which already has a convenience method for passing in a sample RemoteEvent to the
     * FrameworkEventToRemoteEventListener. The test needed here is to verify that the Artifact.transactionId field is
     * updated by the recipient of a remote event.
     */
    @Test
    public void testUpdateModifiedArtifact() throws Exception {
-      Artifact artifact = createArtifact(branch, ARTIFACT_NAME_1);
+      Artifact artifact = createArtifact(BRANCH, ARTIFACT_NAME_1);
       artifact.persist(getClass().getSimpleName());
 
       boolean eventBoolean = OseeEventManager.isDisableEvents();
@@ -91,7 +103,7 @@ public class FrameworkEventToRemoteEventListenerTest {
       }
 
       Assert.assertTrue("Event completion was not received.", listener.wasUpdateReceived());
-      Artifact artifactAfterUpdate = ArtifactQuery.getArtifactFromId(artifact.getGuid(), branch);
+      Artifact artifactAfterUpdate = ArtifactQuery.getArtifactFromId(artifact.getGuid(), BRANCH);
       Assert.assertTrue("", artifactAfterUpdate.getTransactionNumber() == newArtTx);
 
       //Reset artifact tx - just to be clean
@@ -101,10 +113,10 @@ public class FrameworkEventToRemoteEventListenerTest {
    private RemotePersistEvent1 createRemoteEvent(Artifact modifiedArt) {
       RemotePersistEvent1 remoteEvent = new RemotePersistEvent1();
       remoteEvent.setNetworkSender(networkSender);
-      remoteEvent.setBranchGuid(branch.getGuid());
+      remoteEvent.setBranchGuid(BRANCH.getGuid());
       RemoteBasicGuidArtifact1 remGuidArt = new RemoteBasicGuidArtifact1();
       remGuidArt.setModTypeGuid(EventModType.Modified.getGuid());
-      remGuidArt.setBranchGuid(branch.getGuid());
+      remGuidArt.setBranchGuid(BRANCH.getGuid());
       remGuidArt.setArtTypeGuid(modifiedArt.getArtTypeGuid());
       remGuidArt.setArtGuid(modifiedArt.getGuid());
 

@@ -10,24 +10,36 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * @author Ryan D. Brooks
  */
 public class RoughArtifactTest {
 
-   private static RoughArtifact ra;
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
 
-   @org.junit.BeforeClass
-   public static void setUpBeforeClass() {
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   private RoughArtifact ra;
+
+   @Before
+   public void setup() {
       ra = new RoughArtifact(RoughArtifactKind.PRIMARY);
    }
 
-   @org.junit.Test(expected = OseeTypeDoesNotExist.class)
+   @Test(expected = OseeTypeDoesNotExist.class)
    public void testNonExistingEnumeration() throws OseeCoreException {
       ra.addAttribute("Apple", "Orange");
    }

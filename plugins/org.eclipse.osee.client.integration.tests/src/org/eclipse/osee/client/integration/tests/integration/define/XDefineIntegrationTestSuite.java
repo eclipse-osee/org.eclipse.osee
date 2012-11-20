@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.define;
 
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -22,14 +19,5 @@ import org.junit.runners.Suite;
    ImportTraceUnitsOperationTest.class,
    TestPlanComplianceReportTest.class})
 public class XDefineIntegrationTestSuite {
-   @BeforeClass
-   public static void setUp() throws Exception {
-      OseeProperties.setIsInTest(true);
-      System.out.println("\n\nBegin " + XDefineIntegrationTestSuite.class.getSimpleName());
-   }
-
-   @AfterClass
-   public static void tearDown() throws Exception {
-      System.out.println("End " + XDefineIntegrationTestSuite.class.getSimpleName());
-   }
+   // Test Suite
 }

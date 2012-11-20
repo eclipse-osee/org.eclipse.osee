@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -19,6 +20,9 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.client.demo.DemoBranches;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -27,10 +31,9 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.utility.CsvArtifact;
-import org.eclipse.osee.support.test.util.DemoSawBuilds;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 /**
@@ -39,24 +42,30 @@ import org.junit.rules.TemporaryFolder;
 public class NativeArtifactTest {
 
    @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   @Rule
    public final TemporaryFolder folder = new TemporaryFolder();
 
-   private final static String ARTIFACT_NAME = NativeArtifactTest.class.getSimpleName();
-   private final static Set<Artifact> testArtifacts = new HashSet<Artifact>();
+   private static final String ARTIFACT_NAME = NativeArtifactTest.class.getSimpleName();
 
-   @BeforeClass
-   @AfterClass
-   public static void cleanup() throws Exception {
+   private final Set<Artifact> testArtifacts = new HashSet<Artifact>();
+
+   @After
+   public void cleanup() throws Exception {
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(testArtifacts));
    }
 
-   @org.junit.Test
+   @Test
    public void testGetFileExtension() throws Exception {
       Artifact nativeArtifact = getNativeArtifact();
       assertTrue(nativeArtifact.getSoleAttributeValue(CoreAttributeTypes.Extension, "").equals("csv"));
    }
 
-   @org.junit.Test
+   @Test
    public void testNativeArtifact() throws Exception {
       CsvArtifact csvArtifact = getCsvArtifact(true);
       assertNotNull(csvArtifact);
@@ -65,7 +74,7 @@ public class NativeArtifactTest {
       assertTrue(artifact.isAttributeTypeValid(CoreAttributeTypes.Extension));
    }
 
-   @org.junit.Test
+   @Test
    public void testSetAndGetValueAsString() throws Exception {
       Artifact nativeArtifact = getNativeArtifact();
       nativeArtifact.setSoleAttributeFromString(CoreAttributeTypes.NativeContent, "hello world");
@@ -74,7 +83,7 @@ public class NativeArtifactTest {
       assertEquals("hello world", content);
    }
 
-   @org.junit.Test
+   @Test
    public void testSetAndGetNativeContent() throws Exception {
       File file = folder.newFile(GUID.create() + ".txt");
       Lib.writeStringToFile("hello world", file);
@@ -98,7 +107,7 @@ public class NativeArtifactTest {
    }
 
    private CsvArtifact getCsvArtifact(boolean create) throws OseeCoreException {
-      CsvArtifact csvArtifact = CsvArtifact.getCsvArtifact(ARTIFACT_NAME, DemoSawBuilds.SAW_Bld_2, create);
+      CsvArtifact csvArtifact = CsvArtifact.getCsvArtifact(ARTIFACT_NAME, DemoBranches.SAW_Bld_2, create);
       testArtifacts.add(csvArtifact.getArtifact());
       return csvArtifact;
    }

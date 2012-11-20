@@ -10,12 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.define;
 
+import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_1;
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.client.demo.DemoTraceability;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.define.traceability.operations.ImportTraceUnitsOperation;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -26,12 +32,12 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -44,46 +50,36 @@ import org.junit.rules.TemporaryFolder;
  */
 public final class ImportTraceUnitsOperationTest {
 
-   private static final String TEST_ONE_FILE = "ImportTraceUnitsTest1.txt";
-   private static final String TEST_TWO_FILE = "ImportTraceUnitsTest2.txt";
-   private static final IOseeBranch TEST_BRANCH =
-      TokenFactory.createBranch("BIkSWxVrZClFHss6FTAA", "Trace Unit Branch");
-   private static final int RUNS = 3;
-
-   private Branch importToBranch;
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
 
    @Rule
-   public final TemporaryFolder tempFolder = new TemporaryFolder();
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
-   private URI getMockFile(String fileName, String text) throws Exception {
-      File testFile = tempFolder.newFile(fileName);
-      Lib.writeStringToFile(text, testFile);
-      return testFile.toURI();
-   }
+   @Rule
+   public TestInfo testInfo = new TestInfo();
+
+   @Rule
+   public TemporaryFolder tempFolder = new TemporaryFolder();
+
+   private static final String TEST_ONE_FILE = "ImportTraceUnitsTest1.txt";
+   private static final String TEST_TWO_FILE = "ImportTraceUnitsTest2.txt";
+   private static final int RUNS = 3;
+
+   private IOseeBranch branch;
+   private Branch importToBranch;
 
    @Before
-   public void setup() throws OseeCoreException {
-      if (BranchManager.branchExists(TEST_BRANCH)) {
-         BranchManager.purgeBranch(TEST_BRANCH);
-      }
-      importToBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_2, TEST_BRANCH);
+   public void setup() throws Exception {
+      branch = TokenFactory.createBranch(GUID.create(), testInfo.getQualifiedTestName());
+      importToBranch = BranchManager.createWorkingBranch(SAW_Bld_1, branch);
    }
 
    @After
    public void tearDown() throws OseeCoreException {
-      BranchManager.purgeBranch(importToBranch);
-   }
-
-   private void runOperation(URI file) {
-      boolean isRecursive = false;
-      boolean isPersistChanges = true;
-      String[] traceUnitHandlerIds = {"org.eclipse.osee.ats.config.demo.DemoTraceUnitHandler"};
-      boolean fileWithMultiPaths = false;
-
-      IOperation op =
-         new ImportTraceUnitsOperation("Import Trace Units", importToBranch, file, isRecursive, isPersistChanges,
-            fileWithMultiPaths, traceUnitHandlerIds);
-      Operations.executeWork(op);
+      if (importToBranch != null) {
+         BranchManager.purgeBranch(importToBranch);
+      }
    }
 
    @Test
@@ -126,6 +122,22 @@ public final class ImportTraceUnitsOperationTest {
       Assert.assertNotNull(artifact);
       // make sure a new artifact was created
       Assert.assertFalse(gammas.contains(artifact.getGammaId()));
+   }
 
+   private URI getMockFile(String fileName, String text) throws Exception {
+      File testFile = tempFolder.newFile(fileName);
+      Lib.writeStringToFile(text, testFile);
+      return testFile.toURI();
+   }
+
+   private void runOperation(URI file) throws OseeCoreException {
+      boolean isRecursive = false;
+      boolean isPersistChanges = true;
+      boolean fileWithMultiPaths = false;
+
+      IOperation op =
+         new ImportTraceUnitsOperation("Import Trace Units", importToBranch, file, isRecursive, isPersistChanges,
+            fileWithMultiPaths, DemoTraceability.DEMO_TRACE_UNIT_HANDLER_ID);
+      Operations.executeWorkAndCheckStatus(op);
    }
 }

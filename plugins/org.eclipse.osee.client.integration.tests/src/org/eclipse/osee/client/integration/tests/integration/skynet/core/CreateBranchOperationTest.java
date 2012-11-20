@@ -10,10 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.client.demo.DemoBranches;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.client.test.framework.TestInfo;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -24,35 +31,35 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.DeleteBranchOperation;
-import org.eclipse.osee.support.test.util.DemoSawBuilds;
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestName;
 
 /**
- * {@link CreateBranchOperation}
+ * Test Case for {@link CreateBranchOperation}
  */
 public class CreateBranchOperationTest {
 
-   static final String NAME = CreateBranchOperationTest.class.getSimpleName() + " %s";
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
 
    @Rule
-   public TestName testName = new TestName();
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   @Rule
+   public TestInfo method = new TestInfo();
+
+   private static final IOseeBranch BRANCH = DemoBranches.SAW_Bld_1;
 
    @Test
    public void test_checkPreconditions_AllowWorkingBranchCreationIfDeleted() throws OseeCoreException {
       Artifact folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, CoreBranches.COMMON);
       folder.persist("");
 
-      Branch workingBranch =
-         BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, String.format(NAME, testName.getMethodName()),
-            folder);
+      Branch workingBranch = BranchManager.createWorkingBranch(BRANCH, method.getQualifiedTestName(), folder);
       workingBranch.setBranchState(BranchState.DELETED);
       BranchManager.persist(workingBranch);
 
-      Branch workingBranch2 =
-         BranchManager.createWorkingBranch(workingBranch, workingBranch.getName() + " child", folder);
+      Branch workingBranch2 = BranchManager.createWorkingBranch(workingBranch, getName(workingBranch, "child"), folder);
 
       Operations.executeWorkAndCheckStatus(new DeleteBranchOperation(workingBranch));
       Operations.executeWorkAndCheckStatus(new DeleteBranchOperation(workingBranch2));
@@ -65,20 +72,16 @@ public class CreateBranchOperationTest {
       Artifact folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, CoreBranches.COMMON);
       folder.persist("");
 
-      Branch workingBranch =
-         BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, String.format(NAME, testName.getMethodName()),
-            folder);
+      Branch workingBranch = BranchManager.createWorkingBranch(BRANCH, method.getQualifiedTestName(), folder);
       workingBranch.setBranchState(BranchState.REBASELINED);
       BranchManager.persist(workingBranch);
 
-      Branch workingBranch2 =
-         BranchManager.createWorkingBranch(workingBranch, workingBranch.getName() + " child", folder);
+      Branch workingBranch2 = BranchManager.createWorkingBranch(workingBranch, getName(workingBranch, "child"), folder);
 
       Operations.executeWorkAndCheckStatus(new DeleteBranchOperation(workingBranch));
       Operations.executeWorkAndCheckStatus(new DeleteBranchOperation(workingBranch2));
 
       folder.deleteAndPersist();
-
    }
 
    /**
@@ -96,15 +99,12 @@ public class CreateBranchOperationTest {
          Artifact folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, CoreBranches.COMMON);
          folder.persist("");
 
-         Branch workingBranch =
-            BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, String.format(NAME, testName.getMethodName()),
-               folder);
-
+         Branch workingBranch = BranchManager.createWorkingBranch(BRANCH, method.getQualifiedTestName(), folder);
          workingBranch.setBranchState(state);
          BranchManager.persist(workingBranch);
 
          try {
-            BranchManager.createWorkingBranch(workingBranch, workingBranch.getName() + " child", folder);
+            BranchManager.createWorkingBranch(workingBranch, getName(workingBranch, "child"), folder);
          } catch (OseeCoreException ex) {
             exceptionsCaught++;
          }
@@ -114,8 +114,14 @@ public class CreateBranchOperationTest {
          folder.deleteAndPersist();
       }
 
-      Assert.assertEquals(
-         "CreateBranchOperation.checkPreconditions() should throw " + (subset.size() - allowedStates.size()) + " exceptions",
-         exceptionsCaught, subset.size());
+      String errorMessage =
+         String.format("CreateBranchOperation.checkPreconditions() should throw [%s] exceptions",
+            subset.size() - allowedStates.size());
+      assertEquals(errorMessage, exceptionsCaught, subset.size());
    }
+
+   private String getName(IOseeBranch branch, String value) {
+      return String.format("%s_%s", branch.getName(), value);
+   }
+
 }

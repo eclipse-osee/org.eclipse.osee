@@ -10,21 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.TestUtil;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.RelationType;
-import org.eclipse.osee.framework.skynet.core.mocks.DataFactory;
-import org.eclipse.osee.framework.skynet.core.mocks.MockDataFactory;
 import org.eclipse.osee.framework.skynet.core.relation.RelationFilterUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationFilterUtil.RelationMatcher;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -34,24 +37,30 @@ import org.junit.Test;
  */
 public class RelationFilterUtilTest {
 
-   private static Branch branch1;
-   private static RelationType relationType;
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
 
-   @BeforeClass
-   public static void setUp() {
-      branch1 = MockDataFactory.createBranch(100);
-      relationType = DataFactory.createRelationType(5);
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   private Branch branch1;
+   private RelationType relationType;
+
+   @Before
+   public void setUp() {
+      branch1 = TestUtil.createBranch(100);
+      relationType = TestUtil.createRelationType(5);
    }
 
-   @AfterClass
-   public static void tearDown() {
+   @After
+   public void tearDown() {
       branch1 = null;
       relationType = null;
    }
 
    @Test
    public void testFilter() {
-      List<RelationLink> sourceLinks = DataFactory.createLinks(4, branch1);
+      List<RelationLink> sourceLinks = TestUtil.createLinks(4, branch1);
       Assert.assertEquals(4, sourceLinks.size());
 
       List<RelationLink> destination = new ArrayList<RelationLink>();
@@ -64,7 +73,7 @@ public class RelationFilterUtilTest {
 
    @Test
    public void testIncludeExcludeDeletedFilter() {
-      List<RelationLink> sourceLinks = DataFactory.createLinks(10, branch1);
+      List<RelationLink> sourceLinks = TestUtil.createLinks(10, branch1);
       Assert.assertEquals(10, sourceLinks.size());
 
       RelationMatcher excludeDeleteds = RelationFilterUtil.createMatcher(DeletionFlag.EXCLUDE_DELETED);
@@ -76,7 +85,7 @@ public class RelationFilterUtilTest {
       destination.clear();
       Assert.assertEquals(0, destination.size());
 
-      DataFactory.setEveryOtherToDeleted(sourceLinks);
+      TestUtil.setEveryOtherToDeleted(sourceLinks);
       RelationFilterUtil.filter(sourceLinks, destination, excludeDeleteds);
       Assert.assertEquals(5, destination.size());
 
@@ -90,7 +99,7 @@ public class RelationFilterUtilTest {
 
    @Test
    public void testFindFirstRelationLinkIdFilter() {
-      List<RelationLink> sourceLinks = DataFactory.createLinks(4, branch1);
+      List<RelationLink> sourceLinks = TestUtil.createLinks(4, branch1);
       List<RelationLink> destination = new ArrayList<RelationLink>();
 
       int relationLinkToFind = 2;
@@ -105,8 +114,8 @@ public class RelationFilterUtilTest {
 
       // Add two more Relations with RelationId == 2 so we have more than one match 
       // Check we only return the first match
-      sourceLinks.add(DataFactory.createRelationLink(2, 55, 66, branch1, relationType));
-      sourceLinks.add(DataFactory.createRelationLink(2, 77, 88, branch1, relationType));
+      sourceLinks.add(TestUtil.createRelationLink(2, 55, 66, branch1, relationType));
+      sourceLinks.add(TestUtil.createRelationLink(2, 77, 88, branch1, relationType));
       Assert.assertEquals(6, sourceLinks.size());
 
       destination.clear();
@@ -119,8 +128,8 @@ public class RelationFilterUtilTest {
 
    @Test
    public void testFindFirstArtifactIdFilter() {
-      RelationLink link1 = DataFactory.createRelationLink(0, 55, 66, branch1, relationType);
-      RelationLink link2 = DataFactory.createRelationLink(1, 77, 55, branch1, relationType);
+      RelationLink link1 = TestUtil.createRelationLink(0, 55, 66, branch1, relationType);
+      RelationLink link2 = TestUtil.createRelationLink(1, 77, 55, branch1, relationType);
 
       List<RelationLink> sourceLinks = Arrays.asList(link1, link2);
 
@@ -144,11 +153,11 @@ public class RelationFilterUtilTest {
 
    @Test
    public void testCompositeFilter() {
-      RelationLink link1 = DataFactory.createRelationLink(0, 55, 66, branch1, relationType);
-      RelationLink link2 = DataFactory.createRelationLink(1, 77, 55, branch1, relationType);
+      RelationLink link1 = TestUtil.createRelationLink(0, 55, 66, branch1, relationType);
+      RelationLink link2 = TestUtil.createRelationLink(1, 77, 55, branch1, relationType);
       link2.delete(false);
-      RelationLink link3 = DataFactory.createRelationLink(3, 88, 55, branch1, relationType);
-      RelationLink link4 = DataFactory.createRelationLink(4, 99, 55, branch1, relationType);
+      RelationLink link3 = TestUtil.createRelationLink(3, 88, 55, branch1, relationType);
+      RelationLink link4 = TestUtil.createRelationLink(4, 99, 55, branch1, relationType);
 
       List<RelationLink> sourceLinks = Arrays.asList(link1, link2, link3, link4);
 

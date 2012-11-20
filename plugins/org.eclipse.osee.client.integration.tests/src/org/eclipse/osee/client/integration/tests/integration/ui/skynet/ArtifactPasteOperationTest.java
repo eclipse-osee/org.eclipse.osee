@@ -10,10 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -34,9 +37,10 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactNameConflictHandler;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPasteOperation;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactPasteConfiguration;
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -46,16 +50,21 @@ import org.junit.Test;
  */
 public class ArtifactPasteOperationTest {
 
-   private static Artifact parent1;
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
 
-   private static Artifact child1;
-   private static Artifact child2;
-   private static Artifact child3;
-   private static Artifact destination;
-   private static RelationOrderFactory relationOrderFactory;
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
-   @BeforeClass
-   public static void setup() throws OseeCoreException {
+   private Artifact parent1;
+   private Artifact child1;
+   private Artifact child2;
+   private Artifact child3;
+   private Artifact destination;
+   private RelationOrderFactory relationOrderFactory;
+
+   @Before
+   public void setup() throws OseeCoreException {
       List<Artifact> emptyList = Collections.emptyList();
       relationOrderFactory = new RelationOrderFactory();
 
@@ -78,8 +87,8 @@ public class ArtifactPasteOperationTest {
       destination.addChild(parent1);
    }
 
-   @AfterClass
-   public static void cleanup() throws OseeCoreException {
+   @After
+   public void cleanup() throws OseeCoreException {
       delete(child1);
       delete(child2);
       delete(child3);

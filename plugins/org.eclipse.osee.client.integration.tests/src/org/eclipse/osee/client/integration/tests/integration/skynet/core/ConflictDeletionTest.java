@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
-import static org.junit.Assert.assertFalse;
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.Collection;
@@ -18,7 +18,7 @@ import java.util.LinkedList;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.Asserts;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.ConflictTestManager;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -34,8 +34,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperationWithListener;
-import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -44,6 +44,9 @@ import org.junit.Test;
 @Ignore
 // This test does not work
 public class ConflictDeletionTest {
+
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
 
    private static final String CHECK_FOR_ZERO_TX_CURRENT =
       "SELECT txs.tx_current, txs.transaction_id FROM osee_txs txs, osee_artifact art WHERE txs.branch_id = ? AND txs.transaction_id < ? AND txs.tx_current != 0 AND txs.gamma_id = art.gamma_id and art.art_id = ?";
@@ -74,11 +77,6 @@ public class ConflictDeletionTest {
    private static final boolean DEBUG = false;
    private static final boolean DELETE_TRANSACTION_TEST = true;
    private static final boolean INDIVIDUAL_DELETE_TEST = true;
-
-   @Before
-   public void setUp() throws Exception {
-      assertFalse(ClientSessionManager.isProductionDataStore());
-   }
 
    /**
     * Test method for
@@ -174,7 +172,7 @@ public class ConflictDeletionTest {
 
       if (DELETE_TRANSACTION_TEST) {
          IOperation operation = PurgeTransactionOperationWithListener.getPurgeTransactionOperation(deletionTransaction);
-         Asserts.testOperation(operation, IStatus.OK);
+         Asserts.assertOperation(operation, IStatus.OK);
          if (DEBUG) {
             System.err.println("Deleting the Transaction");
          }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +18,8 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -26,6 +29,8 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
+import org.junit.Rule;
+import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
@@ -34,10 +39,16 @@ import org.osgi.framework.FrameworkUtil;
  */
 public class WordMlLinkHandlerTest {
 
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
    /**
     * Data driven test to check document link manager link/unlink methods
     */
-   @org.junit.Test
+   @Test
    public void testLinkUnLink() throws Exception {
       User user = UserManager.getUser(SystemUser.OseeSystem);
       String guid = user.getGuid();

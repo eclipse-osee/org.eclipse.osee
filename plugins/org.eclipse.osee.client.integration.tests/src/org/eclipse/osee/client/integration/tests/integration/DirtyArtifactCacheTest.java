@@ -8,15 +8,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.client.integration.tests.suite;
+package org.eclipse.osee.client.integration.tests.integration;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.util.Collection;
 import java.util.logging.Level;
 import junit.framework.Assert;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * This test should be run as the last test of a suite to make sure that the ArtifactCache has no dirty artifacts.
@@ -25,7 +29,10 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
  */
 public class DirtyArtifactCacheTest {
 
-   @org.junit.Test
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Test
    public void testArtifactCacheNotDirty() {
       final Collection<Artifact> dirtyArtifacts = ArtifactCache.getDirtyArtifacts();
       for (Artifact artifact : dirtyArtifacts) {

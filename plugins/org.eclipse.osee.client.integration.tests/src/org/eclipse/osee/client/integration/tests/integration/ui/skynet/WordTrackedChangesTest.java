@@ -10,8 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import org.eclipse.osee.client.demo.DemoBranches;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -19,44 +23,43 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
-import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
-import org.eclipse.osee.support.test.util.DemoSawBuilds;
-import org.eclipse.osee.support.test.util.TestUtil;
-import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * @author Megumi Telles
  */
 public class WordTrackedChangesTest {
+
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
    private static final String TEST_WORD_EDIT_FILE_NAME = "support/WordTrackedChangesTest.xml";
 
-   @Before
-   public void setUp() throws Exception {
-      assertFalse("Not to be run on production datbase.", TestUtil.isProductionDb());
-      RenderingUtil.setPopupsAllowed(false);
-   }
-
-   @org.junit.Test
+   @Test
    public void testFindTrackChanges() throws Exception {
       String content = Lib.fileToString(getClass(), TEST_WORD_EDIT_FILE_NAME);
       assertTrue(WordUtil.containsWordAnnotations(content));
    }
 
-   @org.junit.Test
+   @Test
    public void testRemoveTrackChanges() throws Exception {
       String content = Lib.fileToString(getClass(), TEST_WORD_EDIT_FILE_NAME);
       content = WordUtil.removeAnnotations(content);
       assertFalse(WordUtil.containsWordAnnotations(content));
    }
 
-   @org.junit.Test
+   @Test
    public void testWholeWordSaveWithTrackChanges() throws Exception {
       String content = Lib.fileToString(getClass(), TEST_WORD_EDIT_FILE_NAME);
       LinkType linkType = LinkType.OSEE_SERVER_LINK;
       Artifact newArt = null;
       try {
          newArt =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedureWML, DemoSawBuilds.SAW_Bld_1,
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedureWML, DemoBranches.SAW_Bld_1,
                getClass().getSimpleName());
          newArt.persist(getClass().getSimpleName());
          String unlinkedContent = WordMlLinkHandler.unlink(linkType, newArt, content);

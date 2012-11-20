@@ -10,22 +10,29 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
-import static org.junit.Assert.*;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import static java.lang.Thread.sleep;
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.junit.Assert.assertTrue;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.client.test.framework.TestInfo;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.update.InterArtifactExplorerDropHandlerOperation;
+import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests cross branch drag and drop.
@@ -33,41 +40,52 @@ import org.junit.Before;
  * @author Jeff C. Phillips
  */
 public class InterArtifactDropTest {
-   private static Artifact sourceArtifact;
-   private Branch sourceBranch;
-   private Branch destinationBranch;
-   private Branch updateTestParentSourceBranch;
-   private Branch updateTestSourceBranch;
+
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   @Rule
+   public TestInfo method = new TestInfo();
+
+   private Artifact sourceArtifact;
+
+   private IOseeBranch sourceBranch;
+   private IOseeBranch destinationBranch;
+   private IOseeBranch updateTestParentSourceBranch;
+   private IOseeBranch updateTestSourceBranch;
 
    @Before
    public void setUp() throws Exception {
-      assertFalse("This test can not be run on Production", ClientSessionManager.isProductionDataStore());
+      sourceBranch = createBranchToken("Source");
+      destinationBranch = createBranchToken("Destination");
+      updateTestParentSourceBranch = createBranchToken("updateTestParentSource");
+      updateTestSourceBranch = createBranchToken("updateTestSource");
 
-      String sourceBranchName = "Source Branch" + GUID.create();
-      String destinationBranchName = "Destination Branch" + GUID.create();
-      String updateSourceBranchName = "updateTestParentSourceBranch" + GUID.create();
-      String updateTestSourceName = "updateTestSourceBranch" + GUID.create();
+      BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, sourceBranch);
+      BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, destinationBranch);
 
-      sourceBranch = BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, sourceBranchName);
-      sleep(5000);
-
+      // Add artifacts to source
       sourceArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, sourceBranch);
-      sourceArtifact.persist(getClass().getSimpleName());
+      sourceArtifact.persist(method.getQualifiedTestName());
 
-      destinationBranch = BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, destinationBranchName);
-
-      updateTestParentSourceBranch = BranchManager.createWorkingBranch(sourceBranch, updateSourceBranchName);
-
-      updateTestSourceBranch = BranchManager.createWorkingBranch(updateTestParentSourceBranch, updateTestSourceName);
-
-      sleep(5000);
+      BranchManager.createWorkingBranch(sourceBranch, updateTestParentSourceBranch);
+      BranchManager.createWorkingBranch(updateTestParentSourceBranch, updateTestSourceBranch);
    }
 
-   @org.junit.Test
-   public void testIntroduceCrossBranch() throws Exception {
-      SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
-      OseeLog.registerLoggerListener(monitorLog);
+   @After
+   public void tearDown() throws OseeCoreException {
+      BranchManager.purgeBranch(destinationBranch);
 
+      BranchManager.purgeBranch(updateTestSourceBranch);
+      BranchManager.purgeBranch(updateTestParentSourceBranch);
+      BranchManager.purgeBranch(sourceBranch);
+   }
+
+   @Test
+   public void testIntroduceCrossBranch() throws Exception {
       InterArtifactExplorerDropHandlerOperation dropHandler =
          new InterArtifactExplorerDropHandlerOperation(
             OseeSystemArtifacts.getDefaultHierarchyRootArtifact(destinationBranch), new Artifact[] {sourceArtifact},
@@ -80,11 +98,8 @@ public class InterArtifactDropTest {
       assertTrue(sourceArtifact.getName().equals(destArtifact.getName()));
    }
 
-   @org.junit.Test
+   @Test
    public void testUpdateBranch() throws Exception {
-      SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
-      OseeLog.registerLoggerListener(monitorLog);
-
       Artifact updateTestArtifact = ArtifactQuery.getArtifactFromId(sourceArtifact.getArtId(), updateTestSourceBranch);
       updateTestArtifact.setName("I am an update branch test");
       Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(updateTestSourceBranch);
@@ -104,8 +119,8 @@ public class InterArtifactDropTest {
       assertTrue(updateTestArtifact.getName().equals(destArtifact.getName()));
    }
 
-   public static void sleep(long milliseconds) throws Exception {
-      Thread.sleep(milliseconds);
+   private IOseeBranch createBranchToken(String name) {
+      String branchName = String.format("%s__%s", method.getQualifiedTestName(), name);
+      return TokenFactory.createBranch(GUID.create(), branchName);
    }
-
 }

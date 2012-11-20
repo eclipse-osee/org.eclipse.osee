@@ -33,4 +33,8 @@
          id="org.eclipse.osee.client.demo.feature.source"
          version="0.0.0"/>
 
+   <requires>
+      <import feature="org.eclipse.osee.core.runtime.feature.source"/>
+   </requires>
+
 </feature>

@@ -10,31 +10,29 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
+import org.eclipse.osee.client.demo.DemoBranches;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.render.WholeWordRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
-import org.eclipse.osee.support.test.util.DemoSawBuilds;
-import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -42,37 +40,20 @@ import org.junit.Test;
  */
 public class PreviewAndMultiPreviewTest {
 
-   private static final IOseeBranch BRANCH = DemoSawBuilds.SAW_Bld_1;
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
 
-   private static SevereLoggingMonitor monitorLog;
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
-   private static List<Artifact> testArtifacts = new ArrayList<Artifact>();
+   private static final IOseeBranch BRANCH = DemoBranches.SAW_Bld_1;
 
-   @BeforeClass
-   public static void setUpOnce() throws OseeCoreException {
-      Assert.assertFalse("Not to be run on production datbase.", TestUtil.isProductionDb());
-      RenderingUtil.setPopupsAllowed(false);
-   }
-
-   @Before
-   public void setUp() throws Exception {
-      monitorLog = TestUtil.severeLoggingStart();
-   }
+   private final List<Artifact> testArtifacts = new ArrayList<Artifact>();
 
    @After
    public void tearDown() throws Exception {
-      Assert.assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).isEmpty());
-      Assert.assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).isEmpty());
-      TestUtil.severeLoggingEnd(monitorLog);
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(testArtifacts));
       testArtifacts.clear();
-   }
-
-   private static Artifact createArtifact(IArtifactType type, IOseeBranch branch, String name) throws OseeCoreException {
-      Artifact artifact = ArtifactTypeManager.addArtifact(type, branch, name);
-      Assert.assertNotNull(artifact);
-      testArtifacts.add(artifact);
-      return artifact;
    }
 
    /*
@@ -205,6 +186,13 @@ public class PreviewAndMultiPreviewTest {
       art.persist(String.format("%s, persist on %s, guid: %s", PreviewAndMultiPreviewTest.class.getSimpleName(),
          BRANCH.getName(), BRANCH.getGuid()));
       RendererManager.openInJob(Arrays.asList(art), PresentationType.PREVIEW);
+   }
+
+   private Artifact createArtifact(IArtifactType type, IOseeBranch branch, String name) throws OseeCoreException {
+      Artifact artifact = ArtifactTypeManager.addArtifact(type, branch, name);
+      Assert.assertNotNull(artifact);
+      testArtifacts.add(artifact);
+      return artifact;
    }
 
    public String addPrefix(String name) {

@@ -10,10 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.USER_DEFINED;
 import java.util.List;
-import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.FrameworkTestUtil;
+import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.TestUtil;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -29,7 +33,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderMergeUtility;
-import org.eclipse.osee.framework.skynet.core.rule.OseeHousekeepingRule;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.After;
@@ -37,7 +40,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.MethodRule;
 
 /**
  * @author Ryan Schmitt
@@ -45,7 +47,13 @@ import org.junit.rules.MethodRule;
 public class RelationOrderMergeUtilityTest {
 
    @Rule
-   public final MethodRule oseeHousekeeping = new OseeHousekeepingRule();
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   @Rule
+   public final OseeHousekeepingRule oseeHousekeeping = new OseeHousekeepingRule();
 
    private final IRelationTypeSide defaultHierarchy = CoreRelationTypes.Default_Hierarchical__Child;
    private final IRelationSorterId ascOrder = RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC;
@@ -72,9 +80,9 @@ public class RelationOrderMergeUtilityTest {
 
    @Test
    public void testTrivialMerge() throws OseeCoreException {
-      Artifact parent = FrameworkTestUtil.createSimpleArtifact(Artifact, "Parent", destBranch);
+      Artifact parent = TestUtil.createSimpleArtifact(Artifact, "Parent", destBranch);
       Artifact[] children =
-         FrameworkTestUtil.createSimpleArtifacts(Artifact, 5, "Relative", destBranch).toArray(new Artifact[5]);
+         TestUtil.createSimpleArtifacts(Artifact, 5, "Relative", destBranch).toArray(new Artifact[5]);
 
       for (int i = 0; i < 5; i++) {
          setAsChild(parent, children[i], ascOrder);
@@ -89,9 +97,9 @@ public class RelationOrderMergeUtilityTest {
 
    @Test
    public void testOrderMerge() throws OseeCoreException {
-      Artifact destParent = FrameworkTestUtil.createSimpleArtifact(Artifact, "Parent", destBranch);
+      Artifact destParent = TestUtil.createSimpleArtifact(Artifact, "Parent", destBranch);
       Artifact[] destChildren =
-         FrameworkTestUtil.createSimpleArtifacts(Artifact, 5, "Relative", destBranch).toArray(new Artifact[5]);
+         TestUtil.createSimpleArtifacts(Artifact, 5, "Relative", destBranch).toArray(new Artifact[5]);
 
       for (int i = 0; i <= 3; i++) {
          setAsChild(destParent, destChildren[i], USER_DEFINED);
@@ -122,12 +130,12 @@ public class RelationOrderMergeUtilityTest {
    @Test
    public void testStrategyMerge() throws OseeCoreException {
 
-      Artifact ascParent = FrameworkTestUtil.createSimpleArtifact(Artifact, "Parent", destBranch);
+      Artifact ascParent = TestUtil.createSimpleArtifact(Artifact, "Parent", destBranch);
       Artifact[] ascRelatives =
-         FrameworkTestUtil.createSimpleArtifacts(Artifact, 5, "Relative", destBranch).toArray(new Artifact[5]);
-      Artifact descParent = FrameworkTestUtil.createSimpleArtifact(Artifact, "Parent", destBranch);
+         TestUtil.createSimpleArtifacts(Artifact, 5, "Relative", destBranch).toArray(new Artifact[5]);
+      Artifact descParent = TestUtil.createSimpleArtifact(Artifact, "Parent", destBranch);
       Artifact[] descRelatives =
-         FrameworkTestUtil.createSimpleArtifacts(Artifact, 5, "Relative", destBranch).toArray(new Artifact[5]);
+         TestUtil.createSimpleArtifacts(Artifact, 5, "Relative", destBranch).toArray(new Artifact[5]);
 
       for (int i = 0; i < 5; i++) {
          setAsChild(ascParent, ascRelatives[i], ascOrder);

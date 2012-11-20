@@ -8,7 +8,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-
 package org.eclipse.osee.client.integration.tests.integration.skynet.core.utils;
 
 import java.util.Collection;
@@ -16,6 +15,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.ConflictDeletionTest;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -42,7 +42,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.support.test.util.DemoSawBuilds;
 
 /**
  * @author Theron Virgin
@@ -160,7 +159,7 @@ public class ConflictTestManager {
    public static void initializeConflictTest() throws Exception {
       cleanUpConflictTest();
       createConflictDefinitions();
-      destBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, DEST_BRANCH);
+      destBranch = BranchManager.createWorkingBranch(DemoBranches.SAW_Bld_1, DEST_BRANCH);
 
       Artifact rootArtifact = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, FOLDER, destBranch);
 

@@ -10,8 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import java.util.List;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -24,12 +28,19 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
  * @author Donald G. Dunne
  */
 public class ArtifactQueryTest {
+
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
    @Test
    public void testGetArtifactFromGUIDDeleted() throws OseeCoreException {
@@ -96,28 +107,32 @@ public class ArtifactQueryTest {
    }
 
    @Test
-   public void testGetOrCreate() throws OseeCoreException {
+   public void testGetOrCreate() throws Exception {
       String guid = GUID.create();
       Branch branch = BranchManager.createTopLevelBranch("test branch");
       Artifact artifact1 = ArtifactQuery.getOrCreate(guid, null, CoreArtifactTypes.GeneralData, branch);
       Assert.assertNotNull(artifact1);
       Artifact artifact2 = ArtifactQuery.getOrCreate(guid, null, CoreArtifactTypes.GeneralData, branch);
       Assert.assertEquals(artifact1, artifact2);
-      BranchManager.deleteBranch(branch);
+      Job job = BranchManager.deleteBranch(branch);
+      job.join();
    }
 
    @Test
-   public void testLargeAttributeIndexing() throws OseeCoreException {
+   public void testLargeAttributeIndexing() throws Exception {
       String guid = GUID.create();
       Branch branch = BranchManager.createTopLevelBranch("testLargeAttributeIndexing branch");
       Artifact artifact1 = ArtifactQuery.getOrCreate(guid, null, CoreArtifactTypes.GeneralData, branch);
       artifact1.setSoleAttributeFromString(CoreAttributeTypes.Name, longStr());
       artifact1.persist("testLargeAttributeIndexing");
+      Thread.sleep(1000);
       List<Artifact> artifacts =
          ArtifactQuery.getArtifactListFromAttributeKeywords(branch, "Wikipedia", false, DeletionFlag.EXCLUDE_DELETED,
             false, CoreAttributeTypes.Name);
-      BranchManager.deleteBranch(branch);
-      Assert.assertTrue(artifacts.size() == 1);
+      Job job = BranchManager.deleteBranch(branch);
+      job.join();
+      Assert.assertEquals(1, artifacts.size());
+      Assert.assertEquals(artifact1, artifacts.iterator().next());
    }
 
    private String longStr() {

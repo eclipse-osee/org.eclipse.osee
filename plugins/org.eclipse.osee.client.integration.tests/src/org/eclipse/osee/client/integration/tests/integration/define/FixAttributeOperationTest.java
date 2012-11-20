@@ -11,6 +11,8 @@
 package org.eclipse.osee.client.integration.tests.integration.define;
 
 import static junit.framework.Assert.assertEquals;
+import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_1;
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
@@ -20,6 +22,8 @@ import static org.mockito.Mockito.when;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.define.blam.operation.FixAttributeOperation;
 import org.eclipse.osee.define.blam.operation.FixAttributeOperation.Display;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -35,9 +39,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.httpRequests.PurgeBranchHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -49,13 +54,17 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-//.mockito.MockitoAnnotations;
-
 /**
  * @author Angel Avila
  */
 
 public class FixAttributeOperationTest {
+
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
    private static final String WORKING_BRANCH_NAME = "BranchWorking";
 
@@ -78,7 +87,7 @@ public class FixAttributeOperationTest {
    public void setUp() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
 
-      branchWorking = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, WORKING_BRANCH_NAME);
+      branchWorking = BranchManager.createWorkingBranch(SAW_Bld_1, WORKING_BRANCH_NAME);
       Branch branch1 = editBranch(branchWorking, "branch1");
       Branch branch2 = editBranch(branchWorking, "branch2");
 
@@ -86,36 +95,15 @@ public class FixAttributeOperationTest {
       commit(branch2, branchWorking);
    }
 
-   private Branch editBranch(Branch parentBranch, String workingBranchName) throws OseeCoreException {
-      String branchName = String.format("%s_%s", FixAttributeOperationTest.class.getSimpleName(), workingBranchName);
-      Branch branch = BranchManager.createWorkingBranch(parentBranch, branchName);
-
-      Artifact robotAPI =
-         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "Robot API", branch);
-      robotAPI.addAttribute(CoreAttributeTypes.Partition, "Navigation");
-
-      itemId = robotAPI.getGuid();
-
-      SkynetTransaction transaction = TransactionManager.createTransaction(branch, "Adding Attribute");
-      transaction.addArtifact(robotAPI);
-      transaction.execute();
-      return branch;
-   }
-
-   private void commit(Branch source, Branch destination) throws OseeCoreException {
-      boolean archiveSourceBranch = false;
-      boolean overwriteUnresolvedConflicts = true;
-      ConflictManagerExternal conflictManager = new ConflictManagerExternal(destination, source);
-      BranchManager.commitBranch(new NullProgressMonitor(), conflictManager, archiveSourceBranch,
-         overwriteUnresolvedConflicts);
-   }
-
    @After
    public void tearDown() throws OseeCoreException {
-      for (Branch child : branchWorking.getChildBranches()) {
-         BranchManager.purgeBranch(child);
+      boolean isPending = OseeEventManager.getPreferences().isPendRunning();
+      try {
+         OseeEventManager.getPreferences().setPendRunning(true);
+         Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(branchWorking, true));
+      } finally {
+         OseeEventManager.getPreferences().setPendRunning(isPending);
       }
-      BranchManager.purgeBranch(branchWorking);
    }
 
    @Test
@@ -206,5 +194,28 @@ public class FixAttributeOperationTest {
       IOperation operation = new FixAttributeOperation(logger, display, branch, commitChangesBool);
       Operations.executeWorkAndCheckStatus(operation);
    }
+   
+   private Branch editBranch(Branch parentBranch, String workingBranchName) throws OseeCoreException {
+      String branchName = String.format("%s_%s", FixAttributeOperationTest.class.getSimpleName(), workingBranchName);
+      Branch branch = BranchManager.createWorkingBranch(parentBranch, branchName);
 
+      Artifact robotAPI =
+         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "Robot API", branch);
+      robotAPI.addAttribute(CoreAttributeTypes.Partition, "Navigation");
+
+      itemId = robotAPI.getGuid();
+
+      SkynetTransaction transaction = TransactionManager.createTransaction(branch, "Adding Attribute");
+      transaction.addArtifact(robotAPI);
+      transaction.execute();
+      return branch;
+   }
+
+   private void commit(Branch source, Branch destination) throws OseeCoreException {
+      boolean archiveSourceBranch = false;
+      boolean overwriteUnresolvedConflicts = true;
+      ConflictManagerExternal conflictManager = new ConflictManagerExternal(destination, source);
+      BranchManager.commitBranch(new NullProgressMonitor(), conflictManager, archiveSourceBranch,
+         overwriteUnresolvedConflicts);
+   }
 }

@@ -10,23 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.dsl.ui.integration;
 
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({OseeDslRoleContextProviderTest.class})
 public class XDslUiIntegrationTestSuite {
-   @BeforeClass
-   public static void setUp() throws Exception {
-      OseeProperties.setIsInTest(true);
-      System.out.println("\n\nBegin " + XDslUiIntegrationTestSuite.class.getSimpleName());
-   }
-
-   @AfterClass
-   public static void tearDown() throws Exception {
-      System.out.println("End " + XDslUiIntegrationTestSuite.class.getSimpleName());
-   }
+   // Test Suite
 }

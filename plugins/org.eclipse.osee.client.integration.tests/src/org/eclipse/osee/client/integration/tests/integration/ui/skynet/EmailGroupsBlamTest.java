@@ -10,11 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.io.ByteArrayOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -22,7 +26,6 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -31,38 +34,48 @@ import org.eclipse.osee.framework.ui.skynet.blam.operation.EmailGroupsBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.EmailGroupsData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
-import org.eclipse.osee.support.test.util.TestUtil;
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * @author Donald G. Dunne
  */
-public class EmailGroupsBlamTest extends EmailGroupsBlam {
+public class EmailGroupsBlamTest {
 
-   private static Artifact newGroup;
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
 
-   @BeforeClass
-   public static void setUp() throws Exception {
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   @Rule
+   public TestInfo method = new TestInfo();
+
+   private Artifact newGroup;
+
+   @Before
+   public void setUp() throws Exception {
       newGroup =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.UserGroup, BranchManager.getCommonBranch(),
-            EmailGroupsBlamTest.class.getSimpleName());
+            method.getQualifiedTestName());
       newGroup.addRelation(CoreRelationTypes.Users_User, UserManager.getUser());
-      newGroup.persist(EmailGroupsBlamTest.class.getSimpleName());
+      newGroup.persist(method.getQualifiedTestName());
    }
 
-   @AfterClass
-   public static void tearDown() throws Exception {
+   @After
+   public void tearDown() throws Exception {
       if (newGroup != null) {
-         newGroup.deleteAndPersist();
+         newGroup.purgeFromBranch();
       }
    }
 
    @org.junit.Test
    public void testXWidgetsResolved() throws Exception {
-      SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      for (XWidgetRendererItem xWidgetLayoutData : getLayoutDatas()) {
+      EmailGroupsBlam blam = new EmailGroupsBlam();
+      for (XWidgetRendererItem xWidgetLayoutData : blam.getLayoutDatas()) {
          XWidget xWidget = xWidgetLayoutData.getXWidget();
          Assert.assertNotNull(xWidget);
          /**
@@ -71,10 +84,9 @@ public class EmailGroupsBlamTest extends EmailGroupsBlam {
           */
          Assert.assertFalse(xWidget.getLabel(), xWidget.getLabel().contains("Unhandled XWidget"));
       }
-      TestUtil.severeLoggingEnd(monitorLog, Arrays.asList(""));
    }
 
-   @org.junit.Test
+   @Test
    public void testEmailGroupsData() throws OseeCoreException {
       Assert.assertNotNull(newGroup);
 
@@ -101,7 +113,7 @@ public class EmailGroupsBlamTest extends EmailGroupsBlam {
       Assert.assertEquals(getHtmlResult(), data.getHtmlResult(UserManager.getUser()));
    }
 
-   @org.junit.Test
+   @Test
    public void testEmailGroupsUnsubscribe() throws OseeCoreException, MalformedURLException {
       Assert.assertEquals("Should be subscribed to the user group", Arrays.asList(UserManager.getUser()),
          newGroup.getRelatedArtifacts(CoreRelationTypes.Users_User));
@@ -147,6 +159,8 @@ public class EmailGroupsBlamTest extends EmailGroupsBlam {
       builder.append(newGroup.getArtId());
       builder.append("/user/");
       builder.append(UserManager.getUser().getArtId());
-      builder.append("\">unsubscribe</a> to stop receiving all emails for the topic \"EmailGroupsBlamTest\"");
+      builder.append("\">unsubscribe</a> to stop receiving all emails for the topic \"");
+      builder.append(method.getQualifiedTestName());
+      builder.append("\"");
    }
 }

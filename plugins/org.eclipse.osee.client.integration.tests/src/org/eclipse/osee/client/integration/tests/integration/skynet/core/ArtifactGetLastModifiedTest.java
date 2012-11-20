@@ -11,82 +11,93 @@
 
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
-import java.util.Collection;
+import static java.lang.Thread.sleep;
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.junit.Assert.assertEquals;
 import java.util.Date;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * @author Donald G. Dunne
  */
 public class ArtifactGetLastModifiedTest {
 
-   @BeforeClass
-   public static void testCleanupPre() throws Exception {
-      cleanup();
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   @Rule
+   public TestInfo method = new TestInfo();
+
+   private String testName;
+   private Artifact artifact;
+
+   @Before
+   public void setup() throws Exception {
+      artifact =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, CoreBranches.COMMON, method.getQualifiedTestName());
    }
 
-   @AfterClass
-   public static void testCleanupPost() throws Exception {
-      cleanup();
+   @After
+   public void tearDown() throws Exception {
+      if (artifact != null) {
+         artifact.purgeFromBranch();
+      }
    }
 
-   @org.junit.Test
+   @Test
    public void testGetLastModified() throws Exception {
-      Artifact artifact =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, BranchManager.getCommonBranch(),
-            getClass().getSimpleName());
-
-      Assert.assertNotNull(artifact.getLastModified());
-      Assert.assertEquals(UserManager.getUser(SystemUser.OseeSystem), artifact.getLastModifiedBy());
       Date previousModifyDate = artifact.getLastModified();
 
-      Thread.sleep(1100); // just enough time to guarantee the date will be at least a second later
-      artifact.persist(getClass().getSimpleName());
+      Assert.assertNotNull(previousModifyDate);
+      Assert.assertEquals(UserManager.getUser(SystemUser.OseeSystem), artifact.getLastModifiedBy());
+
+      sleep(1100); // just enough time to guarantee the date will be at least a second later
+      artifact.persist(testName);
 
       assertBefore(previousModifyDate, artifact);
       Assert.assertEquals(UserManager.getUser(), artifact.getLastModifiedBy());
+
       previousModifyDate = artifact.getLastModified();
 
       // Test post-modified
       artifact.setSingletonAttributeValue(CoreAttributeTypes.StaticId, "this");
-      Thread.sleep(1100); // just enough time to guarantee the date will be at least a second later
-      artifact.persist(getClass().getSimpleName());
+      sleep(1100); // just enough time to guarantee the date will be at least a second later
+      artifact.persist(testName);
 
       assertBefore(previousModifyDate, artifact);
       Assert.assertEquals(UserManager.getUser(), artifact.getLastModifiedBy());
+
       previousModifyDate = artifact.getLastModified();
 
       // Test post deleted
-      Thread.sleep(1100); // just enough time to guarantee the date will be at least a second later
+      sleep(1100); // just enough time to guarantee the date will be at least a second later
       artifact.deleteAndPersist();
 
       assertBefore(previousModifyDate, artifact);
-      Assert.assertEquals(UserManager.getUser(), artifact.getLastModifiedBy());
+      assertEquals(UserManager.getUser(), artifact.getLastModifiedBy());
    }
 
    private void assertBefore(Date previousModifyDate, Artifact artifact) throws OseeCoreException {
-      Assert.assertTrue(String.format("expected %tc to be before %tc", previousModifyDate, artifact.getLastModified()),
-         previousModifyDate.before(artifact.getLastModified()));
+      String message = String.format("expected %tc to be before %tc", previousModifyDate, artifact.getLastModified());
+      Assert.assertTrue(message, previousModifyDate.before(artifact.getLastModified()));
    }
 
-   private static void cleanup() throws Exception {
-      Collection<Artifact> arts =
-         ArtifactQuery.getArtifactListFromName(ArtifactGetLastModifiedTest.class.getSimpleName(),
-            BranchManager.getCommonBranch(), EXCLUDE_DELETED);
-      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(arts));
-   }
 }

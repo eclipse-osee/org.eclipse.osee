@@ -10,11 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
-import static org.junit.Assert.assertTrue;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -38,18 +33,5 @@ import org.junit.runners.Suite;
    WordTemplateProcessorTest.class,
    WordTrackedChangesTest.class})
 public class XUiSkynetCoreIntegrationTestSuite {
-   @BeforeClass
-   public static void setUp() throws Exception {
-      assertTrue("Demo Application Server must be running.",
-         ClientSessionManager.getAuthenticationProtocols().contains("demo"));
-      assertTrue("Client must authenticate using demo protocol",
-         ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
-      OseeProperties.setIsInTest(true);
-      System.out.println("\n\nBegin " + XUiSkynetCoreIntegrationTestSuite.class.getSimpleName());
-   }
-
-   @AfterClass
-   public static void tearDown() throws Exception {
-      System.out.println("End " + XUiSkynetCoreIntegrationTestSuite.class.getSimpleName());
-   }
+   // Test Suite
 }

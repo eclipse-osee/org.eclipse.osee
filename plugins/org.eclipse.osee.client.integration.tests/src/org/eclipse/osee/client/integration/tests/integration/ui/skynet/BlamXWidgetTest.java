@@ -10,14 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
-import java.util.Arrays;
-import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import java.util.Collection;
+import java.util.List;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamContributionManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
-import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Assert;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Will instantiate all Blams and test<br>
@@ -28,21 +32,28 @@ import org.junit.Assert;
  */
 public class BlamXWidgetTest {
 
-   @org.junit.Test
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   @Test
    public void testXWidgetsResolved() throws Exception {
-      SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      for (AbstractBlam blam : BlamContributionManager.getBlamOperations()) {
-         for (XWidgetRendererItem xWidgetLayoutData : blam.getLayoutDatas()) {
+      Collection<AbstractBlam> blams = BlamContributionManager.getBlamOperations();
+      for (AbstractBlam blam : blams) {
+         List<XWidgetRendererItem> datas = blam.getLayoutDatas();
+         for (XWidgetRendererItem xWidgetLayoutData : datas) {
             XWidget xWidget = xWidgetLayoutData.getXWidget();
             Assert.assertNotNull(xWidget);
+
             /**
              * Test that widget gets resolved. If widget is unresolved, the resolver will resolve it as an XLabel with
              * an error string so the widget creation doesn't exception and fail. Check for this condition.
              */
-            Assert.assertFalse(blam.getClass().getSimpleName() + " - " + xWidget.getLabel(),
-               xWidget.getLabel().contains("Unhandled XWidget"));
+            String errorMessage = String.format("%s - %s", blam.getClass().getSimpleName(), xWidget.getLabel());
+            Assert.assertFalse(errorMessage, xWidget.getLabel().contains("Unhandled XWidget"));
          }
       }
-      TestUtil.severeLoggingEnd(monitorLog, Arrays.asList(""));
    }
 }

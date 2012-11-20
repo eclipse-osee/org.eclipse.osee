@@ -10,28 +10,34 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.MockIArtifact;
+import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.MockLinker;
+import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.TestUtil;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitor;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.mocks.DataFactory;
-import org.eclipse.osee.framework.skynet.core.mocks.MockDataFactory;
-import org.eclipse.osee.framework.skynet.core.mocks.MockLinker;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationCache;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
-import org.eclipse.osee.support.test.util.TestUtil;
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -41,52 +47,58 @@ import org.junit.Test;
  */
 public class RelationCacheTest {
 
-   private static Branch branch1;
-   private static Branch branch2;
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
 
-   private static IArtifact artfact1;
-   private static IArtifact artfact2;
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
-   private static List<RelationLink> sourceLinksRelType1;
-   private static List<RelationLink> sourceLinksRelType2;
-   private static List<RelationLink> sourceLinksRelType1AndType2;
+   private Branch branch1;
+   private Branch branch2;
 
-   private static RelationType relType1;
-   private static RelationType relType2;
+   private IArtifact artfact1;
+   private IArtifact artfact2;
 
-   private static SevereLoggingMonitor severeLoggingMonitor;
+   private List<RelationLink> sourceLinksRelType1;
+   private List<RelationLink> sourceLinksRelType2;
+   private List<RelationLink> sourceLinksRelType1AndType2;
 
-   @BeforeClass
-   public static void setup() throws Exception {
-      branch1 = MockDataFactory.createBranch(100);
+   private RelationType relType1;
+   private RelationType relType2;
+
+   @OseeLogMonitor
+   private SevereLoggingMonitor severeLoggingMonitor;
+
+   @Before
+   public void setup() throws Exception {
+      branch1 = TestUtil.createBranch(100);
       branch1.setId(100);
 
-      branch2 = MockDataFactory.createBranch(200);
+      branch2 = TestUtil.createBranch(200);
       branch2.setId(200);
 
       artfact1 = createArtifact(111, branch1);
       artfact2 = createArtifact(222, branch2);
 
-      relType1 = DataFactory.createRelationType(51);
-      relType2 = DataFactory.createRelationType(52);
+      relType1 = TestUtil.createRelationType(51);
+      relType2 = TestUtil.createRelationType(52);
 
-      sourceLinksRelType1 = DataFactory.createLinks(4, branch1, relType1);
-      sourceLinksRelType2 = DataFactory.createLinks(4, branch1, relType2);
+      sourceLinksRelType1 = TestUtil.createLinks(4, branch1, relType1);
+      sourceLinksRelType2 = TestUtil.createLinks(4, branch1, relType2);
 
       sourceLinksRelType1AndType2 = new ArrayList<RelationLink>();
       sourceLinksRelType1AndType2.addAll(sourceLinksRelType1);
       sourceLinksRelType1AndType2.addAll(sourceLinksRelType2);
 
-      DataFactory.setEveryOtherToDeleted(sourceLinksRelType1);
-      DataFactory.setEveryOtherToDeleted(sourceLinksRelType2);
+      TestUtil.setEveryOtherToDeleted(sourceLinksRelType1);
+      TestUtil.setEveryOtherToDeleted(sourceLinksRelType2);
 
-      checkAssumptions();
-
-      severeLoggingMonitor = TestUtil.severeLoggingStart();
+      Assert.assertTrue(!artfact1.equals(artfact2));
+      Assert.assertTrue(!artfact1.getBranch().equals(artfact2.getBranch()));
    }
 
-   @AfterClass
-   public static void tearDown() throws Exception {
+   @After
+   public void tearDown() throws Exception {
       branch1 = null;
       branch2 = null;
 
@@ -99,8 +111,6 @@ public class RelationCacheTest {
 
       relType1 = null;
       relType2 = null;
-
-      TestUtil.severeLoggingEnd(severeLoggingMonitor);
    }
 
    @Test
@@ -211,11 +221,11 @@ public class RelationCacheTest {
    public void testGetRelationByIdOnArtifact() {
       RelationCache relCache = new RelationCache();
 
-      RelationLink link11 = DataFactory.createRelationLink(0, 11, 22, branch1, relType1);
-      RelationLink link12 = DataFactory.createRelationLink(0, 33, 44, branch1, relType1);
+      RelationLink link11 = TestUtil.createRelationLink(0, 11, 22, branch1, relType1);
+      RelationLink link12 = TestUtil.createRelationLink(0, 33, 44, branch1, relType1);
 
-      RelationLink link21 = DataFactory.createRelationLink(1, 55, 66, branch2, relType2);
-      RelationLink link22 = DataFactory.createRelationLink(1, 77, 88, branch2, relType2);
+      RelationLink link21 = TestUtil.createRelationLink(1, 55, 66, branch2, relType2);
+      RelationLink link22 = TestUtil.createRelationLink(1, 77, 88, branch2, relType2);
 
       relCache.cache(artfact1, link11);
       relCache.cache(artfact1, link12);
@@ -269,11 +279,11 @@ public class RelationCacheTest {
       int art1Id = artfact1.getArtId();
       int art2Id = artfact2.getArtId();
 
-      RelationLink link11 = DataFactory.createRelationLink(0, art1Id, 22, branch1, relType1);
-      RelationLink link12 = DataFactory.createRelationLink(0, 33, 44, branch1, relType1);
+      RelationLink link11 = TestUtil.createRelationLink(0, art1Id, 22, branch1, relType1);
+      RelationLink link12 = TestUtil.createRelationLink(0, 33, 44, branch1, relType1);
 
-      RelationLink link21 = DataFactory.createRelationLink(1, 55, 66, branch2, relType2);
-      RelationLink link22 = DataFactory.createRelationLink(1, 77, art2Id, branch2, relType2);
+      RelationLink link21 = TestUtil.createRelationLink(1, 55, 66, branch2, relType2);
+      RelationLink link22 = TestUtil.createRelationLink(1, 77, art2Id, branch2, relType2);
       link22.delete(false);
 
       relCache.cache(artfact1, link11);
@@ -302,13 +312,13 @@ public class RelationCacheTest {
    public void testGetLoadedRelationNoId() {
       RelationCache relCache = new RelationCache();
 
-      RelationLink link11 = DataFactory.createRelationLink(0, 11, 22, branch1, relType1);
-      RelationLink link12 = DataFactory.createRelationLink(1, 11, 22, branch1, relType1);
-      RelationLink link13 = DataFactory.createRelationLink(3, 22, 11, branch1, relType1);
+      RelationLink link11 = TestUtil.createRelationLink(0, 11, 22, branch1, relType1);
+      RelationLink link12 = TestUtil.createRelationLink(1, 11, 22, branch1, relType1);
+      RelationLink link13 = TestUtil.createRelationLink(3, 22, 11, branch1, relType1);
 
-      RelationLink link21 = DataFactory.createRelationLink(4, 551, 661, branch2, relType2);
-      RelationLink link22 = DataFactory.createRelationLink(5, 551, 661, branch2, relType2);
-      RelationLink link23 = DataFactory.createRelationLink(6, 661, 551, branch2, relType2);
+      RelationLink link21 = TestUtil.createRelationLink(4, 551, 661, branch2, relType2);
+      RelationLink link22 = TestUtil.createRelationLink(5, 551, 661, branch2, relType2);
+      RelationLink link23 = TestUtil.createRelationLink(6, 661, 551, branch2, relType2);
 
       relCache.cache(artfact1, link11);
       relCache.cache(artfact1, link12);
@@ -355,7 +365,7 @@ public class RelationCacheTest {
    @Test
    public void testDeCache() throws OseeCoreException {
       RelationCache relCache = new RelationCache();
-      Branch testBranch = MockDataFactory.createBranch(777);
+      Branch testBranch = TestUtil.createBranch(777);
       testBranch.setId(777);
 
       IArtifact artifactA = createArtifact(54, testBranch);
@@ -381,12 +391,7 @@ public class RelationCacheTest {
       Assert.assertEquals(0, artBRels.size());
    }
 
-   private static void checkAssumptions() {
-      Assert.assertTrue(!artfact1.equals(artfact2));
-      Assert.assertTrue(!artfact1.getBranch().equals(artfact2.getBranch()));
-   }
-
-   private static void fillCache(RelationCache relCache) {
+   private void fillCache(RelationCache relCache) {
       for (RelationLink link : sourceLinksRelType1) {
          relCache.cache(artfact1, link);
       }
@@ -400,8 +405,8 @@ public class RelationCacheTest {
       }
    }
 
-   private static IArtifact createArtifact(int id, Branch branch) {
-      return DataFactory.createArtifact(id, "Art-" + id, GUID.create(), branch);
+   private IArtifact createArtifact(int id, Branch branch) throws OseeCoreException {
+      ArtifactType artifactType = ArtifactTypeManager.getType(CoreArtifactTypes.Artifact);
+      return new MockIArtifact(id, "Art-" + id, GUID.create(), branch, artifactType);
    }
-
 }

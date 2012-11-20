@@ -10,21 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.mocks;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Random;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
-import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.core.model.type.RelationType;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
-import org.junit.Assert;
 
 /**
  * @author Roberto E. Escobar
@@ -47,7 +38,7 @@ public final class DataFactory {
       return createArtifact(uniqueId, name, guid, null, fromToken(CoreArtifactTypes.Artifact));
    }
 
-   public static IArtifact createArtifact(int uniqueId, String name, String guid, Branch branch, ArtifactType artifactType) {
+   private static IArtifact createArtifact(int uniqueId, String name, String guid, Branch branch, ArtifactType artifactType) {
       return new MockIArtifact(uniqueId, name, guid, branch, artifactType);
    }
 
@@ -55,73 +46,4 @@ public final class DataFactory {
       return new MockIArtifact(uniqueId, name, guid, branch, fromToken(CoreArtifactTypes.Artifact));
    }
 
-   public static RelationLink createRelationLink(int relationId, int artA, int artB, Branch branch, RelationType relationType) {
-      return new RelationLink(new MockLinker("Linker"), artA, artB, branch, relationType, relationId, 0,
-         "relation: " + relationId, ModificationType.MODIFIED);
-   }
-
-   public static List<RelationLink> createLinks(int total, int artA, int artB, Branch branch) {
-      List<RelationLink> links = new ArrayList<RelationLink>();
-      for (int index = 0; index < total; index++) {
-         RelationType relationType = createRelationType(index);
-         RelationLink link = DataFactory.createRelationLink(index, index + 1, index + 2, branch, relationType);
-         links.add(link);
-      }
-      return links;
-   }
-
-   public static List<RelationLink> createLinks(int total, Branch branch) {
-      List<RelationLink> links = new ArrayList<RelationLink>();
-      for (int index = 0; index < total; index++) {
-         RelationType relationType = createRelationType(index);
-         RelationLink link = DataFactory.createRelationLink(index, index + 1, index + 2, branch, relationType);
-         links.add(link);
-      }
-      return links;
-   }
-
-   public static List<RelationLink> createLinks(int total, Branch branch, RelationType relationType) {
-      List<RelationLink> links = new ArrayList<RelationLink>();
-      for (int index = 0; index < total; index++) {
-         RelationLink link = DataFactory.createRelationLink(index, index + 1, index + 2, branch, relationType);
-         links.add(link);
-      }
-      return links;
-   }
-
-   public static void setEveryOtherToDeleted(Collection<RelationLink> sourceLinks) {
-      int count = 0;
-      for (RelationLink link : sourceLinks) {
-         if (count % 2 == 0) {
-            link.delete(false);
-         }
-         count++;
-      }
-
-      int deletedCounts = 0;
-      for (RelationLink link : sourceLinks) {
-         if (link.isDeleted()) {
-            deletedCounts++;
-         }
-      }
-      int expected = sourceLinks.isEmpty() ? 0 : sourceLinks.size() / 2;
-      Assert.assertEquals("Deleted relation link count did not match", expected, deletedCounts);
-   }
-
-   public static RelationType createRelationType(int id) {
-      ArtifactType dummyArtType = createArtifactType(id);
-      return createRelationType(id, dummyArtType, dummyArtType);
-   }
-
-   private static ArtifactType createArtifactType(int index) {
-      return new ArtifactType(randomGenerator.nextLong(), "art_" + index, index % 2 == 0);
-   }
-
-   private static RelationType createRelationType(int index, IArtifactType artTypeA, IArtifactType artTypeB) {
-      RelationTypeMultiplicity multiplicity =
-         RelationTypeMultiplicity.values()[Math.abs(index % RelationTypeMultiplicity.values().length)];
-      String order = RelationOrderBaseTypes.values()[index % RelationTypeMultiplicity.values().length].getGuid();
-      return new RelationType(randomGenerator.nextLong(), "relType_" + index, "sideA_" + index, "sideB_" + index,
-         artTypeA, artTypeB, multiplicity, order);
-   }
 }

@@ -11,16 +11,25 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * @author Donald G. Dunne
  */
 public class TransactionEventLocalTest extends AbstractTransactionEventTest {
 
-   @BeforeClass
-   public static void setUp() {
+   private boolean remoteEventLoopback;
+
+   @Before
+   public void setUp() {
+      remoteEventLoopback = OseeEventManager.getPreferences().isEnableRemoteEventLoopback();
       OseeEventManager.getPreferences().setEnableRemoteEventLoopback(false);
+   }
+
+   @After
+   public void tearDown() {
+      OseeEventManager.getPreferences().setEnableRemoteEventLoopback(remoteEventLoopback);
    }
 
    @Override

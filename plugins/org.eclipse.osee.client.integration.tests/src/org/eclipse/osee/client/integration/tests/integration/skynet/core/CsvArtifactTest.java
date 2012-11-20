@@ -11,60 +11,65 @@
 
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import java.util.Collection;
-import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.client.demo.DemoBranches;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.skynet.core.utility.CsvArtifact;
-import org.eclipse.osee.support.test.util.DemoSawBuilds;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * @author Donald G. Dunne
  */
 public class CsvArtifactTest {
 
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   @Rule
+   public TestInfo testInfo = new TestInfo();
+
    private static String id = "org.csv.artifact.test";
-   private static String csvData = "Name, Value1, Value2\narf,1,3\nbarn,3,5";
-   private static String appendData = "snarf,6,3";
+   private static final String CSV_DATA = "Name, Value1, Value2\narf,1,3\nbarn,3,5";
+   private static final String APPEND_DATA = "snarf,6,3";
+   private static final String EXPECTED_APPEND_DATA = CSV_DATA + "\n" + APPEND_DATA;
 
-   private static CsvArtifact csv;
+   private CsvArtifact csv;
 
-   @BeforeClass
-   @AfterClass
-   public static void cleanup() throws Exception {
-      if (csv == null) {
-         csv = CsvArtifact.getCsvArtifact(id, DemoSawBuilds.SAW_Bld_2, true);
+   @Before
+   public void setup() throws Exception {
+      csv = CsvArtifact.getCsvArtifact(id, DemoBranches.SAW_Bld_2, true);
+   }
+
+   @After
+   public void tearDown() throws Exception {
+      if (csv != null) {
+         csv.getArtifact().purgeFromBranch();
       }
-      Collection<Artifact> arts = ArtifactQuery.getArtifactListFromName(id, DemoSawBuilds.SAW_Bld_2, EXCLUDE_DELETED);
-      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(arts));
    }
 
-   @org.junit.Test
-   public void testCreateCsvArtifact() throws Exception {
+   @Test
+   public void testCsvArtifact() throws Exception {
       assertEquals(csv.getCsvData(), "");
+
       csv.getArtifact().setName(id);
-      csv.setCsvData(csvData);
-      csv.getArtifact().persist(getClass().getSimpleName());
-   }
+      csv.setCsvData(CSV_DATA);
+      csv.getArtifact().persist(testInfo.getQualifiedTestName());
 
-   @org.junit.Test
-   public void testgetCsvArtifactAndAppendData() throws Exception {
-      assertNotNull(csv);
-      assertEquals(csvData, csv.getCsvData());
-      csv.appendData(appendData);
-      csv.getArtifact().persist(getClass().getSimpleName());
-   }
+      assertEquals(CSV_DATA, csv.getCsvData());
 
-   @org.junit.Test
-   public void testCsvGetData() throws Exception {
-      assertNotNull(csv);
-      assertEquals(csvData + "\n" + appendData, csv.getCsvData());
+      csv.appendData(APPEND_DATA);
+      csv.getArtifact().persist(testInfo.getQualifiedTestName());
+
+      assertEquals(EXPECTED_APPEND_DATA, csv.getCsvData());
    }
 
 }

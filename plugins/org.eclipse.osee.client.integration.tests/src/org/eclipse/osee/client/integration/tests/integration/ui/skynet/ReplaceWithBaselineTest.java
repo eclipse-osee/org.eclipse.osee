@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -18,6 +19,9 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.client.demo.DemoBranches;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
@@ -47,9 +51,9 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.ReplaceArtifactWithBaselineOperation;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.ReplaceAttributeWithBaselineOperation;
 import org.eclipse.osee.framework.ui.skynet.update.InterArtifactExplorerDropHandlerOperation;
-import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -89,22 +93,27 @@ import org.junit.runners.Parameterized.Parameters;
  */
 @RunWith(Parameterized.class)
 public final class ReplaceWithBaselineTest {
-   private final IRelationSorterId ascOrder = RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC;
-   private final IRelationSorterId descOrder = RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
+
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   private static final IRelationSorterId ascOrder = RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC;
+   private static final IRelationSorterId descOrder = RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
 
    /**
     * Refer to table for Case 10*
     */
-   private final static int CASE_10_EXPECTED = 2;
-
-   private final static int CASE_0_EXPECTED = 10;
-
-   static final IArtifactType DOC = CoreArtifactTypes.GeneralDocument;
-   static final IProgressMonitor MONITOR = new NullProgressMonitor();
+   private static final int CASE_10_EXPECTED = 2;
+   private static final int CASE_0_EXPECTED = 10;
+   private static final IArtifactType DOC = CoreArtifactTypes.GeneralDocument;
+   private static final IProgressMonitor MONITOR = new NullProgressMonitor();
 
    //@formatter:off
-   enum Item { ARTIFACT, ATTRBUTE, RELATION, };
-   enum ChangeItem { NEW, DELETED, MODIFIED, MOVED, INTRODUCED, RELATION_ORDER_ATTR };
+   private static enum Item { ARTIFACT, ATTRBUTE, RELATION, };
+   private static enum ChangeItem { NEW, DELETED, MODIFIED, MOVED, INTRODUCED, RELATION_ORDER_ATTR };
    //@formatter:on
 
    private IOseeBranch workingBranch;
@@ -187,8 +196,7 @@ public final class ReplaceWithBaselineTest {
    /**
     * Sets up the test based on <code>ReplaceWithBaselineTest.testItem</code> and performs a revert.
     */
-   void runTest() throws Exception {
-
+   private void runTest() throws Exception {
       setupBackgroundForScenario();
 
       makeChange(testDatas);
@@ -219,7 +227,7 @@ public final class ReplaceWithBaselineTest {
    }
 
    private void setupBackgroundForScenario() throws Exception {
-      baselineBranch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
+      baselineBranch = BranchManager.getBranch(DemoBranches.SAW_Bld_1);
 
       //Setup data before the working branch has been created
       for (TestData testData : this.testDatas) {

@@ -4,15 +4,21 @@
 	<!--
 	${extraVMargs}
 
-	$osee.db.name=psql.osee.eclipse.org \
-   $osee.db.user=osee.eclipse \
-   $osee.db.passwd=osee.eclipse \
-   $osee.db.address=127.0.0.1 \
-   $osee.db.port=1623 \
-   $osee.db.type=H2,PGSQL \
-
-	${osee.app.server.home}	
-	${osee.app.server.port}
+   $xserver-db-home
+	$xserver-db-name=psql.osee.eclipse.org \
+   $xserver-db-username=osee.eclipse \
+   $xserver-db-password=osee.eclipse \
+   $xserver-db-address=127.0.0.1 \
+   $xserver-db-port=1623 \
+   $xserver-db-web-port=1623 \
+   $xserver-db-type=H2,PGSQL \
+   
+   ${xserver-authentication} 
+	${xserver-data}
+	${xserver-home}	
+	${xserver-port}
+	${xserver-telnet-port}
+	${xserver-log-config}
 	-->
 
 	<target name="init">
@@ -27,81 +33,80 @@
 			</sequential>
 		</for>
 
-		<if>
-			<equals arg1="${osee.db.type}" arg2="H2" />
-			<then>
-				<var name="isH2Launch" value="true" />
-			</then>
-			<elseif>
-				<equals arg1="${osee.db.type}" arg2="PGSQL" />
-				<then>
-					<var name="isPostgreSqlLaunch" value="true" />
-				</then>
-			</elseif>
-			<else>
-				<fail message="Osee Db Type Undefined [${osee.db.type}] - [H2,PGSQL] are allowed" />
-			</else>
-		</if>
-
-		<property name="osee.app.server.data" value="${osee.app.server.home}/${eclipse-home}/testWorkspace/serverBinData" />
-		<property name="osee.app.server.connectionFile" value="${osee.app.server.home}/test.osee.client.db.connection.xml" />
+		<property name="osee.app.server.connectionFile" value="${xserver-data}/test.osee.client.db.connection.xml" />
 		<property name="osee.app.server.connectionId" value="test.osee.client.db.connection.id" />
 
-		<echo message="Osee Application Server Home: [${osee.app.server.home}]" />
-		<echo message="Osee Application Server Port: [${osee.app.server.port}]" />
-		<echo message="Osee Application Server Db Type: [${osee.db.type}]" />
+		<echo message="Osee Application Server Home: [${xserver-home}]" />
+		<echo message="Osee Application Server Port: [${xserver-port}]" />
+		<echo message="Osee Application Server Telnet Port: [${xserver-telnet-port}]" />
+		<echo message="Osee Application Server Db Type: [${xserver-db-type}]" />
 	</target>
 
-	<target name="writePosgresqlConnectionFile" depends="init" if="isPostgreSqlLaunch">
-		<writeConnectionFile dbType="postgresql" dbPrefix="jdbc:postgresql" dbDriver="postgresql.db.connection" dbName="${osee.db.name}" dbUser="${osee.db.user}" dbPasswd="${osee.db.passwd}" dbAddress="${osee.db.address}" dbPort="${osee.db.port}" connectionFilePath="${osee.app.server.connectionFile}" connectionid="${osee.app.server.connectionId}" />
-		<property name="additionalJvmArgs" value=" " />
+	<target name="writeH2ConnectionFile" depends="init">
+		<writeConnectionFile dbType="h2" dbHome="${xserver-db-home}" dbPrefix="jdbc:h2" dbDriver="h2.db.connection" dbName="${xserver-db-name}" dbUser="${xserver-db-username}" dbPasswd="${xserver-db-password}" dbAddress="${xserver-db-address}" dbPort="${xserver-db-port}" connectionFilePath="${osee.app.server.connectionFile}" connectionid="${osee.app.server.connectionId}" />
 	</target>
 
-	<target name="writeH2ConnectionFile" depends="init" if="isH2Launch">
-		<writeConnectionFile dbType="h2" dbPrefix="jdbc:h2" dbDriver="h2.db.connection" dbName="${osee.db.name}" dbUser="${osee.db.user}" dbPasswd="${osee.db.passwd}" dbAddress="${osee.db.address}" dbPort="${osee.db.port}" connectionFilePath="${osee.app.server.connectionFile}" connectionid="${osee.app.server.connectionId}" />
-		<property name="additionalJvmArgs" value=" -Dosee.db.embedded.server=${osee.db.address}:${osee.db.port}" />
-	</target>
-
-	<target name="run" depends="init,writeH2ConnectionFile,writePosgresqlConnectionFile,startServer" />
+	<target name="run" depends="init,writeH2ConnectionFile,startServer" />
 
 	<target name="startServer">
 		<pathconvert property="launcherJarPath" setonempty="false">
 			<path>
-				<fileset dir="${osee.app.server.home}/plugins">
+				<fileset dir="${xserver-home}/plugins">
 					<include name="org.eclipse.equinox.launcher_*.jar" />
 				</fileset>
 			</path>
 		</pathconvert>
+
+		<mkdir dir="${xserver-data}" />
+
 		<forget>
 			<echo message="Launching Osee Application Server..." />
 			<!-- Test Should Complete in 30 mins (timeout vale) - currently, they only take ~13 mins -->
-			<java taskname="build" jvm="${JAVA_HOME}/bin/java" failonerror="true" maxmemory="1024m" timeout="1800000" jar="${launcherJarPath}" fork="true">
+			<java taskname="build" failonerror="true" maxmemory="1024m" timeout="1800000" jar="${launcherJarPath}" fork="true">
 				<classpath>
-					<fileset dir="${osee.app.server.home}/plugins" includes="org.eclipse.equinox.launcher_*.jar" />
-					<pathelement location="${osee.app.server.home}/plugins" />
+					<fileset dir="${xserver-home}/plugins" includes="org.eclipse.equinox.launcher_*.jar" />
+					<pathelement location="${xserver-home}/plugins" />
 				</classpath>
-				<jvmarg line=" -Dosgi.noShutdown=true" />
-				<jvmarg line=" -Dorg.osgi.service.http.port=${osee.app.server.port}" />
-				<jvmarg line=" -Dosee.db.connection.id=${osee.app.server.connectionId}" />
-				<jvmarg line=" -Dosee.connection.info.uri=${osee.app.server.connectionFile}" />
-				<jvmarg line=" -Dosee.application.server.data=${osee.app.server.data}" />
+				<sysproperty key="osee.log.default" value="INFO" />
+				<sysproperty key="osee.check.tag.queue.on.startup" value="false" />
+				<sysproperty key="osgi.noShutdown" value="true" />
+				<sysproperty key="org.osgi.service.http.port" value="${xserver-port}" />
+				<sysproperty key="osee.db.connection.id" value="${osee.app.server.connectionId}" />
+				<sysproperty key="osee.connection.info.uri" value="${osee.app.server.connectionFile}" />
+				<sysproperty key="osee.application.server.data" value="${xserver-data}" />
+				<sysproperty key="osee.authentication.protocol" value="${xserver-authentication}" />
+				<sysproperty key="osee.connection.info.uri" value="${osee.app.server.connectionFile}" />
+				<sysproperty key="osee.db.embedded.server" value="${xserver-db-address}:${xserver-db-port}" />
+				<sysproperty key="osee.db.embedded.web.server.port" value="${xserver-db-web-port}" />
+				<sysproperty key="logback.configurationFile" value="${xserver-log-config}" />
+				<sysproperty key="osgi.configuration.area" value="${xserver-data}/configuration" />
+
 				<jvmarg line="${additionalJvmArgs}" />
-				<jvmarg line=" -Dosee.check.tag.queue.on.startup=false" />
-				<arg line=" -console -consoleLog" />
+				<arg line=" -console ${xserver-telnet-port} -consoleLog -configuration &quot;${xserver-home}/configuration&quot;" />
 			</java>
 		</forget>
 
-		<waitfor maxwait="1" maxwaitunit="minute" checkevery="100" checkeveryunit="millisecond">
-			<http url="http://127.0.0.1:${osee.app.server.port}" />
+		<waitfor maxwait="20" maxwaitunit="second" checkevery="100" checkeveryunit="millisecond">
+			<http url="http://127.0.0.1:${xserver-port}/osee/configure/datastore/schema" />
 		</waitfor>
 	</target>
 
-	<target name="stopServer" depends="init">
-		<post to="http://127.0.0.1:${osee.app.server.port}/osee/admin?cmd=osee_shutdown" verbose="true" wantresponse="true" property="shutdownOutput" />
+	<target name="stopServer">
+		<echo message="Osee Application Server Telnet Port: [${xserver-telnet-port}]" />
+		<telnet server="localhost" port="${xserver-telnet-port}" initialCR="yes" timeout="1000">
+			<read>osgi&gt;</read>
+			<write>close</write>
+		</telnet>
+		<sleep milliseconds="500" />
+
+		<!--		<echo message="Osee Application Server Port: [${xserver-port}]" />	
+	<post to="http://127.0.0.1:${xserver-port}/osee/console?cmd=osee&amp;args=server_shutdown" verbose="true" wantresponse="true" property="shutdownOutput" />
 		<echo message="${shutdownOutput}" />
+      -->
 	</target>
 
 	<macrodef name="writeConnectionFile">
+		<attribute name="dbHome" />
 		<attribute name="dbName" />
 		<attribute name="dbUser" />
 		<attribute name="dbPasswd" />
@@ -117,7 +122,7 @@
 			<echo file="@{connectionFilePath}">
 			&lt;DbConnection&gt;
 				&lt;DatabaseInfo id=&quot;db.connection.info&quot;&gt;${line.separator}
-					&lt;DatabaseHome key=&quot;#DBHOME#&quot; /&gt;${line.separator}
+					&lt;DatabaseHome key=&quot;#DBHOME#&quot; value=&quot;@{dbHome}&quot; /&gt;${line.separator}
 					&lt;DatabaseName key=&quot;#DBNAME#&quot; value=&quot;@{dbName}&quot; /&gt;${line.separator}
 					&lt;DatabaseType key=&quot;#TYPE#&quot; value=&quot;@{dbType}&quot; /&gt;${line.separator}
 					&lt;Prefix key=&quot;#PREFIX#&quot; value=&quot;@{dbPrefix}&quot; /&gt;${line.separator}

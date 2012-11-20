@@ -10,15 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.Asserts.assertThatEquals;
 import static org.junit.Assert.assertEquals;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.Asserts;
-import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.FrameworkTestUtil;
+import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.TestUtil;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -29,94 +31,89 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.operation.PurgeUnusedBackingDataAndTransactions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.mocks.DbTestUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperationWithListener;
-import org.eclipse.osee.support.test.util.DemoSawBuilds;
-import org.eclipse.osee.support.test.util.TestUtil;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * @author Ryan Schmitt
  */
 public class PurgeTransactionTest {
-   private IOseeBranch branch;
-   Collection<Artifact> softArts;
-   private SkynetTransaction createTransaction;
-   private SkynetTransaction modifyTransaction;
-   private int createId;
-   private int modifyId;
-   private Map<String, Integer> preCreateCount;
-   private Map<String, Integer> preModifyCount;
-   private Map<String, Integer> postModifyPurgeCount;
-   private Map<String, Integer> postCreatePurgeCount;
-   private static final List<String> tables = Arrays.asList("osee_attribute", "osee_artifact", "osee_relation_link",
-      "osee_tx_details", "osee_txs");
 
-   @BeforeClass
-   public static void setUpOnce() throws Exception {
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   private static final IOseeBranch BRANCH = DemoBranches.SAW_Bld_2;
+
+   private static final String[] TABLES = new String[] {
+      "osee_attribute",
+      "osee_artifact",
+      "osee_relation_link",
+      "osee_tx_details",
+      "osee_txs"};
+
+   private Collection<Artifact> softArts;
+
+   @Before
+   @After
+   public void cleanup() throws OseeCoreException {
       Operations.executeWorkAndCheckStatus(new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
    }
 
-   @org.junit.Test
+   @Test
    public void testPurgeTransaction() throws Exception {
-      init();
+      Map<String, Integer> initialRowCount = TestUtil.getTableRowCounts(TABLES);
+      int createTxId = createArtifacts();
 
-      createArtifacts();
-      int initialTxCurrents = getCurrentRows();
+      Map<String, Integer> preModifyCount = TestUtil.getTableRowCounts(TABLES);
+      int initialTxCurrents = getCurrentRows(createTxId);
 
-      modifyArtifacts();
-      purge(modifyId, postModifyPurgeCount);
-      TestUtil.checkThatEqual(preModifyCount, postModifyPurgeCount);
+      int modifyTxId = modifyArtifacts();
+      purge(modifyTxId);
+      assertThatEquals(preModifyCount, TestUtil.getTableRowCounts(TABLES));
+      assertEquals("Purge Transaction did not correctly update tx_current.", initialTxCurrents,
+         getCurrentRows(createTxId));
 
-      assertEquals("Purge Transaction did not correctly update tx_current.", initialTxCurrents, getCurrentRows());
-
-      purge(createId, postCreatePurgeCount);
-      TestUtil.checkThatEqual(preCreateCount, postCreatePurgeCount);
+      purge(createTxId);
+      assertThatEquals(initialRowCount, TestUtil.getTableRowCounts(TABLES));
    }
 
-   private void init() throws Exception {
-      branch = DemoSawBuilds.SAW_Bld_2;
-      preCreateCount = new HashMap<String, Integer>();
-      preModifyCount = new HashMap<String, Integer>();
-      postModifyPurgeCount = new HashMap<String, Integer>();
-      postCreatePurgeCount = new HashMap<String, Integer>();
-   }
-
-   private void createArtifacts() throws Exception {
-      DbTestUtil.getTableRowCounts(preCreateCount, tables);
-      createTransaction = TransactionManager.createTransaction(branch, "Purge Transaction Test");
+   private int createArtifacts() throws Exception {
+      SkynetTransaction createTransaction = TransactionManager.createTransaction(BRANCH, "Purge Transaction Test");
       softArts =
-         FrameworkTestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10, getClass().getSimpleName(),
-            branch);
+         TestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10, getClass().getSimpleName(), BRANCH);
       for (Artifact softArt : softArts) {
          softArt.persist(createTransaction);
       }
       createTransaction.execute();
-      createId = createTransaction.getTransactionId();
+      return createTransaction.getTransactionId();
    }
 
-   private void modifyArtifacts() throws Exception {
-      DbTestUtil.getTableRowCounts(preModifyCount, tables);
-      modifyTransaction = TransactionManager.createTransaction(branch, "Purge Transaction Test");
+   private int modifyArtifacts() throws Exception {
+      SkynetTransaction modifyTransaction = TransactionManager.createTransaction(BRANCH, "Purge Transaction Test");
       for (Artifact softArt : softArts) {
          softArt.addAttribute(CoreAttributeTypes.StaticId, getClass().getSimpleName());
          softArt.persist(modifyTransaction);
       }
       modifyTransaction.execute();
-      modifyId = modifyTransaction.getTransactionId();
+      return modifyTransaction.getTransactionId();
    }
 
-   private void purge(int transactionId, Map<String, Integer> dbCount) throws Exception {
+   private void purge(int transactionId) throws Exception {
       IOperation operation = PurgeTransactionOperationWithListener.getPurgeTransactionOperation(transactionId);
-      Asserts.testOperation(operation, IStatus.OK);
+      Asserts.assertOperation(operation, IStatus.OK);
       Operations.executeWorkAndCheckStatus(new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
-      DbTestUtil.getTableRowCounts(dbCount, tables);
    }
 
-   private int getCurrentRows() throws OseeCoreException {
+   private int getCurrentRows(int createTxId) throws OseeCoreException {
       final String query = "select count(*) from osee_txs where transaction_id=? and tx_current=1";
-      return ConnectionHandler.runPreparedQueryFetchInt(-1, query, createId);
+      return ConnectionHandler.runPreparedQueryFetchInt(-1, query, createTxId);
    }
 }

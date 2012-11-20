@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
-import java.util.Arrays;
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.util.List;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
@@ -24,108 +26,137 @@ import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.NetworkSender;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
-import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * @author Donald G. Dunne
  */
 public class BranchEventFiltersTest {
 
-   private BranchEvent resultBranchEvent = null;
-   private Sender resultSender = null;
-   public static List<String> ignoreLogging = Arrays.asList("");
-   private List<IEventFilter> eventFilters = null;
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   @Rule
+   public TestInfo method = new TestInfo();
+
+   private IOseeBranch branch;
+   private BranchEventListener listener;
+   private BranchEvent event;
+   private Sender sender;
 
    @Before
    public void setup() {
+      listener = new BranchEventListener();
       OseeEventManager.getPreferences().setPendRunning(true);
+
+      OseeEventManager.removeAllListeners();
+      OseeEventManager.addListener(listener);
+
+      Assert.assertEquals(1, OseeEventManager.getNumberOfListeners());
+
+      branch = TokenFactory.createBranch(GUID.create(), method.getQualifiedTestName());
+
+      event = new BranchEvent(BranchEventType.Renamed, branch.getGuid());
+
+      NetworkSender networkSender =
+         new NetworkSender(this, GUID.create(), "PC", "12345", "123.234.345.456", 34, "1.0.0");
+      sender = Sender.createSender(networkSender);
    }
 
    @After
    public void cleanup() {
+      OseeEventManager.removeAllListeners();
       OseeEventManager.getPreferences().setPendRunning(false);
    }
 
-   @org.junit.Test
-   public void testBranchEventFilters() throws Exception {
-      SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      OseeEventManager.removeAllListeners();
-      OseeEventManager.addListener(branchEventListener);
-      Assert.assertEquals(1, OseeEventManager.getNumberOfListeners());
-
-      // Create dummy branch event
-      String branchGuid = GUID.create();
-      BranchEvent testBranchEvent = new BranchEvent(BranchEventType.Renamed, branchGuid);
-
+   @Test
+   public void testNullBranchEventFilters() throws Exception {
       // Register set filters to null to see if event comes through
-      eventFilters = null;
-      resultBranchEvent = null;
-      resultSender = null;
-
-      // Send dummy event
-      Sender sender =
-         Sender.createSender(new NetworkSender(this, GUID.create(), "PC", "12345", "123.234.345.456", 34, "1.0.0"));
-      processBranchEvent(sender, testBranchEvent);
+      processBranchEvent(sender, event);
 
       // Test that event did come through
-      Assert.assertNotNull(resultBranchEvent);
-      Assert.assertEquals(BranchEventType.Renamed, resultBranchEvent.getEventType());
-      Assert.assertTrue(resultSender.isRemote());
-      Assert.assertEquals(branchGuid, resultBranchEvent.getBranchGuid());
+      BranchEvent actualEvent = listener.getBranchEvent();
+      Sender actualSender = listener.getSender();
 
+      Assert.assertNotNull(actualEvent);
+      Assert.assertEquals(BranchEventType.Renamed, actualEvent.getEventType());
+      Assert.assertEquals(branch.getGuid(), actualEvent.getBranchGuid());
+      Assert.assertEquals(true, actualSender.isRemote());
+   }
+
+   @Test
+   public void testBranchEventFilters() throws Exception {
       // Reset event filters only allow events from this branch
-      IOseeBranch branchToken = TokenFactory.createBranch(resultBranchEvent.getBranchGuid(), "Test Branch");
-      eventFilters = OseeEventManager.getEventFiltersForBranch(branchToken);
-      resultBranchEvent = null;
-      resultSender = null;
+      List<IEventFilter> filters = OseeEventManager.getEventFiltersForBranch(branch);
+      listener.setEventFilters(filters);
 
       // Re-send dummy event
-      processBranchEvent(sender, testBranchEvent);
+      processBranchEvent(sender, event);
 
       // Test that event did come through
-      Assert.assertNotNull(resultBranchEvent);
-      Assert.assertEquals(BranchEventType.Renamed, resultBranchEvent.getEventType());
-      Assert.assertTrue(resultSender.isRemote());
-      Assert.assertEquals(branchGuid, resultBranchEvent.getBranchGuid());
+      BranchEvent actualEvent = listener.getBranchEvent();
+      Sender actualSender = listener.getSender();
 
+      Assert.assertNotNull(actualEvent);
+      Assert.assertEquals(BranchEventType.Renamed, actualEvent.getEventType());
+      Assert.assertEquals(branch.getGuid(), actualEvent.getBranchGuid());
+      Assert.assertEquals(true, actualSender.isRemote());
+   }
+
+   @Test
+   public void testBranchEventFiltersNotMatch() throws Exception {
       // Reset event filters only filter out this branch
       String otherBranchGuid = GUID.create();
       IOseeBranch otherBranchToken = TokenFactory.createBranch(otherBranchGuid, "Other Test Branch");
-      eventFilters = OseeEventManager.getEventFiltersForBranch(otherBranchToken);
-      resultBranchEvent = null;
-      resultSender = null;
+      List<IEventFilter> filters = OseeEventManager.getEventFiltersForBranch(otherBranchToken);
+      listener.setEventFilters(filters);
 
       // Re-send dummy event
-      processBranchEvent(sender, testBranchEvent);
+      processBranchEvent(sender, event);
 
       // Test that event did NOT come through
-      Assert.assertNull(resultBranchEvent);
-
-      TestUtil.severeLoggingEnd(monitorLog);
+      Assert.assertNull(listener.getBranchEvent());
    }
 
    private static void processBranchEvent(Sender sender, BranchEvent branchEvent) throws OseeCoreException {
       OseeEventManager.internalTestProcessBranchEvent(sender, branchEvent);
    }
 
-   private class BranchEventListener implements IBranchEventListener {
+   private static final class BranchEventListener implements IBranchEventListener {
+
+      private BranchEvent branchEvent;
+      private Sender sender;
+      private List<IEventFilter> eventFilters;
 
       @Override
       public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
-         resultBranchEvent = branchEvent;
-         resultSender = sender;
+         this.branchEvent = branchEvent;
+         this.sender = sender;
       }
 
       @Override
       public List<? extends IEventFilter> getEventFilters() {
          return eventFilters;
       }
-   }
 
-   // artifact listener create for use by all tests to just capture result eventArtifacts for query
-   private final BranchEventListener branchEventListener = new BranchEventListener();
+      public BranchEvent getBranchEvent() {
+         return branchEvent;
+      }
+
+      public Sender getSender() {
+         return sender;
+      }
+
+      public void setEventFilters(List<IEventFilter> eventFilters) {
+         this.eventFilters = eventFilters;
+      }
+   }
 
 }

@@ -10,21 +10,27 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.osee.client.demo.DemoBranches;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -37,14 +43,12 @@ import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImpor
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationFactory;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard;
 import org.eclipse.osee.framework.ui.skynet.Import.MatchingStrategy;
-import org.eclipse.osee.support.test.util.DemoSawBuilds;
-import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * @see ArtifactImportWizard
@@ -52,8 +56,64 @@ import org.junit.Test;
  */
 public final class ArtifactImportWizardTest {
 
-   private static SevereLoggingMonitor monitorLog = null;
-   private static Artifact myRootArtifact = null;
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   @Rule
+   public TemporaryFolder resource = new TemporaryFolder();
+
+   private static final IOseeBranch BRANCH = DemoBranches.SAW_Bld_1;
+
+   private Artifact myRootArtifact;
+
+   /**
+    * setup artifact tree of this form:
+    * 
+    * <pre>
+    * myRootArtifact
+    *              |
+    *              `--A
+    *              |   \._ C
+    *              |   |
+    *              |   `._ D
+    *              |
+    *              `--B
+    * </pre>
+    * 
+    * Where myRootArtifact real name is "ArtifactImportWizardTest_Root"
+    */
+   @Before
+   public void setUp() throws Exception {
+      myRootArtifact =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BRANCH, "ArtifactImportWizardTest_Root",
+            "ArtifatImpWizaTestGUID", "12345");
+
+      OseeSystemArtifacts.getDefaultHierarchyRootArtifact(BRANCH).addChild(myRootArtifact);
+
+      Artifact artifactA =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, "A", "AAAAAAAAAAAAAAAAAAAAAA",
+            "A2345");
+      myRootArtifact.addChild(artifactA);
+
+      artifactA.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, "C",
+         "CCCCCCCCCCCCCCCCCCCCCC", "C2345"));
+
+      artifactA.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.Requirement, BRANCH, "D",
+         "DDDDDDDDDDDDDDDDDDDDDD", "D2345"));
+
+      myRootArtifact.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, "B",
+         "BBBBBBBBBBBBBBBBBBBBBB", "B2345"));
+
+      myRootArtifact.persist("ArtifactImportWizardTest");
+   }
+
+   @After
+   public void tearDown() throws Exception {
+      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(Collections.singletonList(myRootArtifact), true));
+   }
 
    @Test
    public void simpleImportNobodyGetsDeleted() throws Exception {
@@ -110,13 +170,22 @@ public final class ArtifactImportWizardTest {
    }
 
    private void buildAndRunCoreTest(String nameOfExcelImportFile) throws Exception {
-      File inputExcelFile = OseeData.getFile("artifact.import.wizard.test." + nameOfExcelImportFile);
       URL url = ArtifactImportWizardTest.class.getResource("support/" + nameOfExcelImportFile);
-      url = FileLocator.resolve(url);
-
       Assert.assertNotNull(url);
 
-      Lib.copyFile(new File(url.toURI()), inputExcelFile);
+      String importFileName = String.format("artifact.import.wizard.test_%s", nameOfExcelImportFile);
+      File inputExcelFile = resource.newFile(importFileName);
+
+      InputStream inputStream = null;
+      OutputStream outputStream = null;
+      try {
+         inputStream = new BufferedInputStream(url.openStream());
+         outputStream = new FileOutputStream(inputExcelFile);
+         Lib.inputStreamToOutputStream(inputStream, outputStream);
+      } finally {
+         Lib.close(inputStream);
+         Lib.close(outputStream);
+      }
 
       Assert.assertTrue(inputExcelFile.exists());
       try {
@@ -137,63 +206,6 @@ public final class ArtifactImportWizardTest {
          inputExcelFile.delete();
       }
    }
-
-   /**
-    * setup artifact tree of this form:
-    * 
-    * <pre>
-    * myRootArtifact
-    *              |
-    *              `--A
-    *              |   \._ C
-    *              |   |
-    *              |   `._ D
-    *              |
-    *              `--B
-    * </pre>
-    * 
-    * Where myRootArtifact real name is "ArtifactImportWizardTest_Root"
-    */
-   @Before
-   public void setUp() throws Exception {
-      myRootArtifact =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, DemoSawBuilds.SAW_Bld_1,
-            "ArtifactImportWizardTest_Root", "ArtifatImpWizaTestGUID", "12345");
-
-      OseeSystemArtifacts.getDefaultHierarchyRootArtifact(DemoSawBuilds.SAW_Bld_1).addChild(myRootArtifact);
-
-      Artifact artifactA =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, DemoSawBuilds.SAW_Bld_1, "A",
-            "AAAAAAAAAAAAAAAAAAAAAA", "A2345");
-      myRootArtifact.addChild(artifactA);
-
-      artifactA.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement,
-         DemoSawBuilds.SAW_Bld_1, "C", "CCCCCCCCCCCCCCCCCCCCCC", "C2345"));
-
-      artifactA.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.Requirement, DemoSawBuilds.SAW_Bld_1, "D",
-         "DDDDDDDDDDDDDDDDDDDDDD", "D2345"));
-
-      myRootArtifact.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement,
-         DemoSawBuilds.SAW_Bld_1, "B", "BBBBBBBBBBBBBBBBBBBBBB", "B2345"));
-
-      myRootArtifact.persist("ArtifactImportWizardTest");
-   }
-
-   @After
-   public void tearDown() throws Exception {
-      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(Collections.singletonList(myRootArtifact), true));
-   }
-
-   @BeforeClass
-   public static void setUpOnce() throws Exception {
-      monitorLog = TestUtil.severeLoggingStart();
-   }
-
-   @AfterClass
-   public static void tearDownOnce() throws Exception {
-      TestUtil.severeLoggingEnd(monitorLog);
-   }
-
    //   private void displayArtifactTree(Artifact artifact) throws OseeCoreException {
    //      displayArtifactTree(artifact, 0);
    //   }

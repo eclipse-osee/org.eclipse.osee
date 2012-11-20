@@ -10,14 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
-import static org.junit.Assert.assertFalse;
-import java.util.Arrays;
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.Asserts.assertThatEquals;
+import static org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.Asserts.assertThatIncreased;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.client.integration.tests.Activator;
-import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.FrameworkTestUtil;
+import org.eclipse.osee.client.demo.DemoBranches;
+import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.TestUtil;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.client.test.framework.TestInfo;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -25,17 +29,17 @@ import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.operation.PurgeUnusedBackingDataAndTransactions;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.httpRequests.PurgeBranchHttpRequestOperation;
-import org.eclipse.osee.framework.skynet.core.mocks.DbTestUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.support.test.util.DemoSawBuilds;
-import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * This test is intended to be run against a demo database. It tests the branch purge logic by counting the rows of the
@@ -46,67 +50,69 @@ import org.junit.Before;
  */
 public class BranchPurgeTest {
 
-   private final Map<String, Integer> preCreateCount = new HashMap<String, Integer>();
-   private final Map<String, Integer> postCreateBranchCount = new HashMap<String, Integer>();
-   private final Map<String, Integer> postPurgeCount = new HashMap<String, Integer>();
-   List<String> tables = Arrays.asList("osee_attribute", "osee_artifact", "osee_relation_link", "osee_tx_details",
-      "osee_txs");
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   @Rule
+   public TestInfo method = new TestInfo();
+
+   private static final String[] TABLES = new String[] {
+      "osee_attribute",
+      "osee_artifact",
+      "osee_relation_link",
+      "osee_tx_details",
+      "osee_txs"};
+
+   private IOseeBranch workingBranch;
 
    @Before
-   public void setUp() throws Exception {
-      // This test should only be run on test db
-      assertFalse(TestUtil.isProductionDb());
-      cleanup();
+   public void setup() {
+      workingBranch = TokenFactory.createBranch(GUID.create(), method.getQualifiedTestName());
    }
 
-   @org.junit.Test
+   @After
+   public void cleanup() throws Exception {
+      if (BranchManager.branchExists(workingBranch)) {
+         BranchManager.purgeBranch(workingBranch);
+      }
+      Operations.executeWorkAndCheckStatus(new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
+   }
+
+   @Test
    public void testPurgeBranch() throws Exception {
       Operations.executeWorkAndCheckStatus(new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
 
-      String name = getClass().getSimpleName();
+      Map<String, Integer> initialRowCount = TestUtil.getTableRowCounts(TABLES);
 
-      // Count rows in tables prior to purge
-      DbTestUtil.getTableRowCounts(preCreateCount, tables);
-
-      // create a new working branch
-      Branch branch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_2, name);
-
-      // create some software artifacts
+      Branch branch = BranchManager.createWorkingBranch(DemoBranches.SAW_Bld_2, workingBranch);
       Collection<Artifact> softArts =
-         FrameworkTestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10, name, branch);
+         TestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10, method.getQualifiedTestName(),
+            branch);
       Artifacts.persistInTransaction("Test purge branch", softArts);
 
-      SkynetTransaction transaction = TransactionManager.createTransaction(branch, name);
+      SkynetTransaction transaction = TransactionManager.createTransaction(branch, method.getQualifiedTestName());
       // make more changes to artifacts
       for (Artifact softArt : softArts) {
-         softArt.addAttribute(CoreAttributeTypes.StaticId, name);
+         softArt.addAttribute(CoreAttributeTypes.StaticId, method.getQualifiedTestName());
          softArt.persist(transaction);
       }
       transaction.execute();
 
       // Count rows and check that increased
-      DbTestUtil.getTableRowCounts(postCreateBranchCount, tables);
-      TestUtil.checkThatIncreased(preCreateCount, postCreateBranchCount);
+      assertThatIncreased(initialRowCount, TestUtil.getTableRowCounts(TABLES));
 
       CompositeOperation operation =
-         new CompositeOperation("PurgeBranchHttpRequest and PurgeUnusedBackingDataAndTransactions Ops",
-            Activator.PLUGIN_ID, new PurgeBranchHttpRequestOperation(branch, false),
-            new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
+         new CompositeOperation(method.getQualifiedTestName(), method.getQualifiedTestName(),
+            new PurgeBranchHttpRequestOperation(branch, false), new PurgeUnusedBackingDataAndTransactions(
+               NullOperationLogger.getSingleton()));
 
       Operations.executeWorkAndCheckStatus(operation);
 
       // Count rows and check that same as when began
-      DbTestUtil.getTableRowCounts(postPurgeCount, tables);
       // TODO looks like artifacts are not being removed when purge a branch
-      TestUtil.checkThatEqual(preCreateCount, postPurgeCount);
-   }
-
-   @After
-   public void testCleanupPost() throws Exception {
-      cleanup();
-   }
-
-   private static void cleanup() throws Exception {
-      FrameworkTestUtil.purgeWorkingBranches(Arrays.asList(BranchPurgeTest.class.getSimpleName()));
+      assertThatEquals(initialRowCount, TestUtil.getTableRowCounts(TABLES));
    }
 }

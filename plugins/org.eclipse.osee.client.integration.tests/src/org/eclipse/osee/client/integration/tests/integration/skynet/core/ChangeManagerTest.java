@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Collection;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -35,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -43,6 +46,10 @@ import org.junit.Test;
  * @author Jeff C. Phillips
  */
 public class ChangeManagerTest {
+
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
    private static Artifact newArtifact;
    private static Artifact modArtifact;
    private Branch branch;

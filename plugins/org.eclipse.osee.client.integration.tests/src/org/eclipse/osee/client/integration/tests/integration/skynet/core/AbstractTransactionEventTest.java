@@ -10,19 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.util.Collection;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.Asserts;
-import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.MockTransactionEventListener;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.listener.ITransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionChange;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
@@ -30,15 +30,21 @@ import org.eclipse.osee.framework.skynet.core.event.model.TransactionEventType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperationWithListener;
-import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 
 /**
  * @author Donald G. Dunne
  */
 public abstract class AbstractTransactionEventTest {
+
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
    protected AbstractTransactionEventTest() {
       // Extra protection
@@ -58,8 +64,6 @@ public abstract class AbstractTransactionEventTest {
 
    @org.junit.Test
    public void testRegistration() throws Exception {
-      SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-
       OseeEventManager.removeAllListeners();
       Assert.assertEquals(0, OseeEventManager.getNumberOfListeners());
 
@@ -70,13 +74,10 @@ public abstract class AbstractTransactionEventTest {
 
       OseeEventManager.removeListener(listener);
       Assert.assertEquals(0, OseeEventManager.getNumberOfListeners());
-
-      TestUtil.severeLoggingEnd(monitorLog);
    }
 
    @org.junit.Test
    public void testPurgeTransaction() throws Exception {
-      SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
       String START_NAME = getClass().getSimpleName();
       String CHANGE_NAME = START_NAME + " - changed";
 
@@ -109,7 +110,7 @@ public abstract class AbstractTransactionEventTest {
 
       // Delete it
       IOperation operation = PurgeTransactionOperationWithListener.getPurgeTransactionOperation(transIdToDelete);
-      Asserts.testOperation(operation, IStatus.OK);
+      Asserts.assertOperation(operation, IStatus.OK);
 
       // Verify that all stuff reverted
       Assert.assertTrue(listener.wasEventReceived());
@@ -123,8 +124,6 @@ public abstract class AbstractTransactionEventTest {
 
       Collection<TransactionChange> transactionChanges = resultTransEvent.getTransactionChanges();
       Assert.assertTrue(transactionChanges.isEmpty());
-
-      TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? Arrays.asList("") : new ArrayList<String>()));
    }
 
    private void assertSender(Sender sender) {
@@ -133,4 +132,46 @@ public abstract class AbstractTransactionEventTest {
       Assert.assertTrue(senderType);
    }
 
+   private static final class MockTransactionEventListener implements ITransactionEventListener {
+      private TransactionEvent resultTransEvent;
+      private Sender resultSender;
+      private int eventCount;
+
+      public MockTransactionEventListener() {
+         clear();
+      }
+
+      @Override
+      public void handleTransactionEvent(Sender sender, TransactionEvent transEvent) {
+         incrementEventCount();
+         resultTransEvent = transEvent;
+         resultSender = sender;
+      }
+
+      public TransactionEvent getResultTransEvent() {
+         return resultTransEvent;
+      }
+
+      public Sender getResultSender() {
+         return resultSender;
+      }
+
+      public int getEventCount() {
+         return eventCount;
+      }
+
+      public boolean wasEventReceived() {
+         return eventCount > 0;
+      }
+
+      private void incrementEventCount() {
+         eventCount++;
+      }
+
+      public void clear() {
+         eventCount = 0;
+         resultSender = null;
+         resultTransEvent = null;
+      }
+   }
 }

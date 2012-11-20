@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-
 import java.util.List;
-
-import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.FrameworkTestUtil;
+import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.TestUtil;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -29,28 +30,37 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
  * @author Ryan Schmitt
  */
+@Ignore
 public class LoadDeletedRelationTest {
-   Branch branch;
-   Artifact left, right;
-   IRelationType type;
+
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   private Branch branch;
+   private Artifact left, right;
+   private IRelationType type;
 
    @Before
    public void setUp() throws OseeCoreException {
       branch = BranchManager.getBranch("SAW_Bld_2");
-      left = FrameworkTestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Left", branch);
-      right = FrameworkTestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Right", branch);
+      left = TestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Left", branch);
+      right = TestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Right", branch);
       left.persist(getClass().getSimpleName());
       right.persist(getClass().getSimpleName());
       type = CoreRelationTypes.Requirement_Trace__Higher_Level;
    }
 
-   @Ignore
    //not implemented  in the code
+   @Ignore
    @Test
    public void loadDeletedRelationTest() throws OseeCoreException {
       RelationManager.addRelation(type, left, right, "");

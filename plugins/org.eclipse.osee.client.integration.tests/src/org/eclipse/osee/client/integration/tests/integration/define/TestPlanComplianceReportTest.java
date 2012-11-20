@@ -10,10 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.define;
 
+import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_1;
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.define.blam.operation.TestPlanComplianceReport;
 import org.eclipse.osee.define.blam.operation.TestStatusEnum;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -21,16 +25,12 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.support.test.util.DemoSawBuilds;
-import org.eclipse.osee.support.test.util.TestUtil;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -38,6 +38,13 @@ import org.junit.Test;
  * @author: Karol M. Wilk
  */
 public final class TestPlanComplianceReportTest {
+
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
    private static final String EXPECTED_NOT_PERFORMED_DATA =
       "    <Cell><Data ss:Type=\"String\">Sample Test Procedure_0</Data></Cell>\n" + //
       "    <Cell><Data ss:Type=\"String\">Not Performed</Data></Cell>\n" + //
@@ -47,7 +54,6 @@ public final class TestPlanComplianceReportTest {
    private static final String EXPECTED_MULTIPLE_RESULTS_IN_1_CELL = //
       "    <Cell><Data ss:Type=\"String\">Sample_Test_Result_0&#10;Sample_Test_Result_1</Data></Cell>";
 
-   private static SevereLoggingMonitor monitorLog;
    private final TestPlanComplianceReport testCompReport = new TestPlanComplianceReport();
    private Collection<Artifact> dummyArtifactList = null;
 
@@ -113,16 +119,6 @@ public final class TestPlanComplianceReportTest {
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(dummyArtifactList));
    }
 
-   @BeforeClass
-   public static void setUp() throws Exception {
-      monitorLog = TestUtil.severeLoggingStart();
-   }
-
-   @AfterClass
-   public static void tearDown() throws Exception {
-      TestUtil.severeLoggingEnd(monitorLog);
-   }
-
    private void buildTest(int amountOfTestProcedures, TestStatusEnum testProcedureStatus, int testResultsAmount) throws Exception {
       resultBuffer = new StringWriter();
       testCompReport.runOperation(loadArtifacts(amountOfTestProcedures, testProcedureStatus, testResultsAmount),
@@ -131,7 +127,7 @@ public final class TestPlanComplianceReportTest {
 
    private VariableMap loadArtifacts(int amountOfTestProcedures, TestStatusEnum testProcedureStatus, int testResultsAmount) throws OseeCoreException {
       Artifact testPlan =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestPlanElement, DemoSawBuilds.SAW_Bld_1, "Sample_Test_Plan");
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestPlanElement, SAW_Bld_1, "Sample_Test_Plan");
       testPlan.persist(getClass().getSimpleName());
 
       dummyArtifactList = new ArrayList<Artifact>();
@@ -139,7 +135,7 @@ public final class TestPlanComplianceReportTest {
 
       for (int i = 0; i < amountOfTestProcedures; i++) {
          Artifact testProcedure =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedure, DemoSawBuilds.SAW_Bld_1,
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedure, SAW_Bld_1,
                "Sample Test Procedure" + "_" + i);
 
          testProcedure.setSoleAttributeValue(CoreAttributeTypes.TestProcedureStatus, testProcedureStatus.testStatus);
@@ -149,8 +145,7 @@ public final class TestPlanComplianceReportTest {
 
          for (int j = 0; j < testResultsAmount; j++) {
             Artifact testResult =
-               ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestResultWML, DemoSawBuilds.SAW_Bld_1,
-                  "Sample_Test_Result_" + j);
+               ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestResultWML, SAW_Bld_1, "Sample_Test_Result_" + j);
             testProcedure.addRelation(CoreRelationTypes.Test_Unit_Result__Test_Result, testResult);
             testProcedure.persist(getClass().getSimpleName());
          }

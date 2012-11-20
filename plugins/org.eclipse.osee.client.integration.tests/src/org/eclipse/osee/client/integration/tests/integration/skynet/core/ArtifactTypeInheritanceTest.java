@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -23,6 +26,8 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.junit.Assert;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * High-level test to ensure demo artifact types correctly inherit from artifact
@@ -30,13 +35,20 @@ import org.junit.Assert;
  * @author Roberto E. Escobar
  */
 public class ArtifactTypeInheritanceTest {
-   @org.junit.Test
+
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   @Test
    public void testIsOfTypeWithNull() throws OseeCoreException {
       ArtifactType baseArtifactType = ArtifactTypeManager.getType(CoreArtifactTypes.Artifact);
       Assert.assertFalse(baseArtifactType.inheritsFrom((ArtifactType) null));
    }
 
-   @org.junit.Test
+   @Test
    public void testAllArtifactTypesInheritFromArtifactWithIsOfType() throws OseeCoreException {
       for (ArtifactType artifactType : ArtifactTypeManager.getAllTypes()) {
          Assert.assertTrue(String.format("[%s] was not of type [%s]", artifactType, CoreArtifactTypes.Artifact),
@@ -44,7 +56,7 @@ public class ArtifactTypeInheritanceTest {
       }
    }
 
-   @org.junit.Test
+   @Test
    public void testAttributeTypesOfDescendants() throws OseeCoreException {
       ArtifactType baseArtifactType = ArtifactTypeManager.getType(CoreArtifactTypes.Artifact);
       Set<ArtifactType> allTypes = new HashSet<ArtifactType>(ArtifactTypeManager.getAllTypes());

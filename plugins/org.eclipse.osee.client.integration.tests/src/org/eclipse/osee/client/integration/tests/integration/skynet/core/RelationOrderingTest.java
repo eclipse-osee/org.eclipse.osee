@@ -10,35 +10,35 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.client.test.framework.TestInfo;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -46,54 +46,55 @@ import org.junit.Test;
  */
 public class RelationOrderingTest {
 
-   private static final String STATIC_ID_TO_DELETE = "testOrderPersist";
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
 
-   private Branch branch;
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   @Rule
+   public TestInfo method = new TestInfo();
+
+   private static final IOseeBranch branch = CoreBranches.COMMON;
+
+   private Set<Artifact> itemsToDelete;
    private Artifact parent;
    private Artifact child1;
    private Artifact child2;
    private Artifact child3;
 
-   @BeforeClass
-   @AfterClass
-   public static void setupTeardown() throws Exception {
-      Set<Artifact> artsToDel = new HashSet<Artifact>();
-      artsToDel.addAll(ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.Folder,
-         CoreAttributeTypes.StaticId, STATIC_ID_TO_DELETE, BranchManager.getCommonBranch()));
-      if (artsToDel.size() > 0) {
-         Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artsToDel));
-         Thread.sleep(5000);
-      }
-   }
-
    @Before
    public void setupArtifacts() throws Exception {
-      branch = BranchManager.getCommonBranch();
+      itemsToDelete = new HashSet<Artifact>();
+
       parent = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "parent");
-      addStaticIdToDelete(parent);
+      addToCleanup(parent);
 
       child1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "a_child");
-      addStaticIdToDelete(child1);
+      addToCleanup(child1);
       child2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "b_child");
-      addStaticIdToDelete(child2);
+      addToCleanup(child2);
       child3 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "c_child");
-      addStaticIdToDelete(child3);
+      addToCleanup(child3);
 
       parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child1);
       parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child2);
       parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child3);
 
+      parent.persist(method.getQualifiedTestName());
    }
 
    @After
    public void cleanupArtifacts() throws Exception {
-      for (Artifact artifact : new Artifact[] {parent, child1, child2, child3}) {
-         ArtifactCache.deCache(artifact);
-         artifact.deleteAndPersist();
+      for (Artifact artifact : itemsToDelete) {
+         if (artifact != null) {
+            ArtifactCache.deCache(artifact);
+            artifact.deleteAndPersist();
+         }
       }
    }
 
-   @org.junit.Test
+   @Test
    public void testSetOrderAndSort() throws Exception {
 
       checkDesc();
@@ -112,21 +113,21 @@ public class RelationOrderingTest {
       /**
        * set userId on Users so doesn't break user management
        */
-      SkynetTransaction transaction = TransactionManager.createTransaction(branch, getClass().getSimpleName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(branch, method.getQualifiedTestName());
       Artifact child4 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, branch, "a_child");
       child4.setSoleAttributeValue(CoreAttributeTypes.UserId, "a_child");
       child4.persist(transaction);
-      addStaticIdToDelete(child4);
+      addToCleanup(child4);
 
       Artifact child5 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, branch, "b_child");
       child5.setSoleAttributeValue(CoreAttributeTypes.UserId, "b_child");
       child5.persist(transaction);
-      addStaticIdToDelete(child5);
+      addToCleanup(child5);
 
       Artifact child6 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, branch, "c_child");
       child6.setSoleAttributeValue(CoreAttributeTypes.UserId, "c_child");
       child6.persist(transaction);
-      addStaticIdToDelete(child6);
+      addToCleanup(child6);
 
       parent.addRelation(CoreRelationTypes.Users_User, child4);
       parent.addRelation(CoreRelationTypes.Users_User, child5);
@@ -178,7 +179,7 @@ public class RelationOrderingTest {
       Assert.assertEquals(children.get(2).getName(), "a_child");
    }
 
-   @org.junit.Test
+   @Test
    public void testUserDefinedOrderUpdatesListWhenRelationDeleted() throws OseeCoreException {
       checkUserDefined();
 
@@ -204,33 +205,29 @@ public class RelationOrderingTest {
    @Test
    public void testOrderPersist() throws OseeCoreException {
       String guid = GUID.create();
-      SkynetTransaction transaction = TransactionManager.createTransaction(BranchManager.getCommonBranch(), "Test");
-      Artifact mainFolder =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BranchManager.getCommonBranch(),
-            "Main Folder - " + guid);
+      SkynetTransaction transaction = TransactionManager.createTransaction(branch, method.getQualifiedTestName());
+      Artifact mainFolder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "Main Folder - " + guid);
       mainFolder.persist(transaction);
-      mainFolder.setSingletonAttributeValue(CoreAttributeTypes.StaticId, STATIC_ID_TO_DELETE);
-      OseeSystemArtifacts.getDefaultHierarchyRootArtifact(BranchManager.getCommonBranch()).addChild(mainFolder);
+
+      mainFolder.setSingletonAttributeValue(CoreAttributeTypes.StaticId, method.getQualifiedTestName());
+      OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch).addChild(mainFolder);
       List<Artifact> children = new ArrayList<Artifact>();
       for (int x = 0; x < 3; x++) {
          Artifact childArt =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BranchManager.getCommonBranch(),
-               "New Child " + x + " - " + guid);
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "New Child " + x + " - " + guid);
          children.add(childArt);
-         addStaticIdToDelete(childArt);
+         addToCleanup(childArt);
          mainFolder.addChild(childArt);
          childArt.persist(transaction);
       }
       mainFolder.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, children);
       transaction.execute();
 
-      Artifact newArtifact =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BranchManager.getCommonBranch(),
-            "New Artifact " + guid);
+      Artifact newArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "New Artifact " + guid);
       mainFolder.addChild(newArtifact);
-      addStaticIdToDelete(newArtifact);
-      newArtifact.setSingletonAttributeValue(CoreAttributeTypes.StaticId, STATIC_ID_TO_DELETE);
-      newArtifact.persist(getClass().getSimpleName());
+      addToCleanup(newArtifact);
+      newArtifact.setSingletonAttributeValue(CoreAttributeTypes.StaticId, method.getQualifiedTestName());
+      newArtifact.persist(method.getQualifiedTestName());
 
       for (Artifact child : children) {
          Assert.assertFalse(child.isDirty());
@@ -240,7 +237,8 @@ public class RelationOrderingTest {
       Assert.assertFalse("Artifact should not be dirty.", mainFolder.isDirty());
    }
 
-   private void addStaticIdToDelete(Artifact artifact) throws OseeCoreException {
-      artifact.setSingletonAttributeValue(CoreAttributeTypes.StaticId, STATIC_ID_TO_DELETE);
+   private void addToCleanup(Artifact artifact) throws OseeCoreException {
+      artifact.setSingletonAttributeValue(CoreAttributeTypes.StaticId, method.getQualifiedTestName());
+      itemsToDelete.add(artifact);
    }
 }

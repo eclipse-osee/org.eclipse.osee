@@ -10,16 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import junit.framework.Assert;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchGuidEventFilter;
@@ -30,14 +32,21 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.NetworkSender;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
-import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 
 /**
  * @author Donald G. Dunne
  */
 public class ArtifactEventFiltersTest {
+
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
    // artifact listener create for use by all tests to just capture result eventArtifacts for query
    private final ArtifactEventListener artifactEventListener = new ArtifactEventListener();
    private ArtifactEvent resultArtifactEvent = null;
@@ -57,15 +66,12 @@ public class ArtifactEventFiltersTest {
 
    @org.junit.Test
    public void testArtifactEventFilters() throws Exception {
-      SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
       OseeEventManager.removeAllListeners();
       OseeEventManager.addListener(artifactEventListener);
 
       testArtifactEventFilters__artifactTypeInheritance();
       testArtifactEventFilters__branchFilter();
       testArtifactEventFilters__branchFilterArtifactType();
-
-      TestUtil.severeLoggingEnd(monitorLog);
    }
 
    private void testArtifactEventFilters__artifactTypeInheritance() throws Exception {

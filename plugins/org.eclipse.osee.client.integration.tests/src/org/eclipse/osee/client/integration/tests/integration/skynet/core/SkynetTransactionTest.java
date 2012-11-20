@@ -10,8 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.client.demo.DemoBranches;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -19,15 +25,11 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.rule.OseeHousekeepingRule;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.support.test.util.DemoSawBuilds;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestName;
 
 /**
  * @author Karol M. Wilk
@@ -35,24 +37,28 @@ import org.junit.rules.TestName;
 public final class SkynetTransactionTest {
 
    @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   @Rule
    public OseeHousekeepingRule rule = new OseeHousekeepingRule();
 
    @Rule
-   public TestName testName = new TestName();
+   public TestInfo method = new TestInfo();
 
-   @After
-   public void tearDown() {
-      System.gc();
-   }
+   private static final IOseeBranch BRANCH = DemoBranches.SAW_Bld_1;
+   private static final IOseeBranch BRANCH_2 = DemoBranches.SAW_Bld_2;
 
    @Test(expected = OseeStateException.class)
    public void test_overalappingTransactions() throws OseeCoreException {
 
-      SkynetTransaction trans1 = TransactionManager.createTransaction(DemoSawBuilds.SAW_Bld_1, createComment(1));
+      SkynetTransaction trans1 = TransactionManager.createTransaction(BRANCH, createComment(1));
 
-      SkynetTransaction trans2 = TransactionManager.createTransaction(DemoSawBuilds.SAW_Bld_1, createComment(2));
+      SkynetTransaction trans2 = TransactionManager.createTransaction(BRANCH, createComment(2));
 
-      Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, DemoSawBuilds.SAW_Bld_1);
+      Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BRANCH);
 
       try {
          trans1.addArtifact(artifact);
@@ -65,11 +71,11 @@ public final class SkynetTransactionTest {
    @Test
    public void test_overalappingTransactionsButWithDifferentArtifacts() throws OseeCoreException {
 
-      SkynetTransaction trans1 = TransactionManager.createTransaction(DemoSawBuilds.SAW_Bld_1, createComment(1));
-      SkynetTransaction trans2 = TransactionManager.createTransaction(DemoSawBuilds.SAW_Bld_1, createComment(2));
+      SkynetTransaction trans1 = TransactionManager.createTransaction(BRANCH, createComment(1));
+      SkynetTransaction trans2 = TransactionManager.createTransaction(BRANCH, createComment(2));
 
-      Artifact artifact1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, DemoSawBuilds.SAW_Bld_1);
-      Artifact artifact2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, DemoSawBuilds.SAW_Bld_1);
+      Artifact artifact1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BRANCH);
+      Artifact artifact2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BRANCH);
 
       boolean wasAdded = false;
       try {
@@ -87,11 +93,11 @@ public final class SkynetTransactionTest {
    public void test_overalappingTransactionsDifferentBranches() throws Exception {
       Object lock = new Object();
 
-      WorkerThread thread1 = new WorkerThread(lock, DemoSawBuilds.SAW_Bld_1, WorkerType.PRIMARY);
-      WorkerThread thread2 = new WorkerThread(lock, DemoSawBuilds.SAW_Bld_2, WorkerType.SECONDARY);
+      WorkerThread thread1 = new WorkerThread(lock, BRANCH, WorkerType.PRIMARY);
+      WorkerThread thread2 = new WorkerThread(lock, BRANCH_2, WorkerType.SECONDARY);
 
-      Artifact artifact1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, DemoSawBuilds.SAW_Bld_1);
-      Artifact artifact2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, DemoSawBuilds.SAW_Bld_2);
+      Artifact artifact1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BRANCH);
+      Artifact artifact2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BRANCH_2);
 
       thread1.addItem(artifact1);
       thread2.addItem(artifact2);
@@ -109,11 +115,11 @@ public final class SkynetTransactionTest {
    public void test_multiThreadedOveralappingTransactions() throws Exception {
       Object lock = new Object();
 
-      WorkerThread thread1 = new WorkerThread(lock, DemoSawBuilds.SAW_Bld_1, WorkerType.PRIMARY);
-      WorkerThread thread2 = new WorkerThread(lock, DemoSawBuilds.SAW_Bld_1, WorkerType.SECONDARY);
+      WorkerThread thread1 = new WorkerThread(lock, BRANCH, WorkerType.PRIMARY);
+      WorkerThread thread2 = new WorkerThread(lock, BRANCH, WorkerType.SECONDARY);
 
-      Artifact artifact1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, DemoSawBuilds.SAW_Bld_1);
-      Artifact artifact2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, DemoSawBuilds.SAW_Bld_1);
+      Artifact artifact1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BRANCH);
+      Artifact artifact2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BRANCH);
 
       thread1.addItem(artifact1);
       thread2.addItem(artifact2);
@@ -131,10 +137,10 @@ public final class SkynetTransactionTest {
    public void test_multiThreadedCoModificationOveralappingTransactions() throws Exception {
       Object lock = new Object();
 
-      WorkerThread thread1 = new WorkerThread(lock, DemoSawBuilds.SAW_Bld_1, WorkerType.PRIMARY);
-      WorkerThread thread2 = new WorkerThread(lock, DemoSawBuilds.SAW_Bld_1, WorkerType.SECONDARY);
+      WorkerThread thread1 = new WorkerThread(lock, BRANCH, WorkerType.PRIMARY);
+      WorkerThread thread2 = new WorkerThread(lock, BRANCH, WorkerType.SECONDARY);
 
-      Artifact artifact1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, DemoSawBuilds.SAW_Bld_1);
+      Artifact artifact1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BRANCH);
 
       thread1.addItem(artifact1);
       thread2.addItem(artifact1);
@@ -174,7 +180,7 @@ public final class SkynetTransactionTest {
    }
 
    private String createComment(int index) {
-      return String.format("%s.%s %d", getClass().getSimpleName(), testName.getMethodName(), index);
+      return String.format("%s_%d", method.getQualifiedTestName(), index);
    }
 
    private static enum WorkerType {

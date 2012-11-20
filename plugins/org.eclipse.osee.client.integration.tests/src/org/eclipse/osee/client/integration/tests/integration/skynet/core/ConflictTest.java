@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -18,6 +19,8 @@ import static org.junit.Assert.fail;
 import java.util.Collection;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.ConflictTestManager;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -35,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.conflict.RelationConflict;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
-import org.eclipse.osee.framework.skynet.core.rule.OseeHousekeepingRule;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -47,6 +49,9 @@ import org.junit.rules.MethodRule;
  * @author Theron Virgin
  */
 public class ConflictTest {
+
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
 
    @Rule
    public MethodRule oseeHousekeepingRule = new OseeHousekeepingRule();

@@ -11,8 +11,8 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * event loopback will test that remote messages get processed and treated like local messages by turning off local and
@@ -22,14 +22,17 @@ import org.junit.BeforeClass;
  */
 public class ArtifactEventLoopbackTest extends ArtifactEventTest {
 
-   @BeforeClass
-   public static void setUp() {
+   private boolean remoteEventLoopback;
+
+   @Before
+   public void setUp() {
+      remoteEventLoopback = OseeEventManager.getPreferences().isEnableRemoteEventLoopback();
       OseeEventManager.getPreferences().setEnableRemoteEventLoopback(true);
    }
 
-   @AfterClass
-   public static void tearDown() {
-      OseeEventManager.getPreferences().setEnableRemoteEventLoopback(false);
+   @After
+   public void tearDown() {
+      OseeEventManager.getPreferences().setEnableRemoteEventLoopback(remoteEventLoopback);
    }
 
    @Override

@@ -10,26 +10,31 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
-import org.eclipse.osee.support.test.util.TestUtil;
-import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * @author Ryan Schmitt
  */
 public class DuplicateHridTest {
-   @Before
-   public void setUp() throws Exception {
-      assertFalse("Not to be run on production datbase.", TestUtil.isProductionDb());
-   }
 
-   @org.junit.Test
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   @Test
    public void testDuplicatePrevention() throws OseeCoreException {
       String known_duplicate = get_used_HRID();
       String random_HRID = generate_random_HRID();
