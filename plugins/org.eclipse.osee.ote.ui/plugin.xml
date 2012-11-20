@@ -35,4 +35,30 @@
             id="org.eclipse.osee.ote.ui.TestPerspective"
             name="OSEE Test"/>
    </extension>
+   <extension point="org.eclipse.ui.popupMenus">
+      <objectContribution objectClass="org.eclipse.jdt.core.ICompilationUnit"
+            nameFilter="*" id="org.eclipse.osee.ote.ui.menucontribution">
+         <menu
+               label="OTE"
+               path="additions"
+               id="org.eclipse.osee.ote.ui">               
+            <separator
+                  name="placeholder">
+            </separator>
+         </menu>
+      </objectContribution>
+      <viewerContribution
+             targetID="#CompilationUnitEditorContext"
+             id="viewConf">
+              <menu
+               label="OTE"
+               path="additions"
+               id="org.eclipse.osee.ote.ui.viewer">
+            <separator
+                  name="placeholder">
+            </separator>
+         </menu>
+       </viewerContribution>
+         
+   </extension>
 </plugin>

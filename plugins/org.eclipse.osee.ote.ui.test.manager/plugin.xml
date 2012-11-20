@@ -37,32 +37,25 @@
             objectClass="org.eclipse.jdt.core.ICompilationUnit"
             nameFilter="*"
             id="org.eclipse.osee.ote.ui.test.manager.contribution1">
-         <menu
-               label="Test Manager"
-               path="additions"
-               id="org.eclipse.osee.ote.ui.test.manager.menu1">
-            <separator
-                  name="markers">
-            </separator>
-         </menu>
          <action
                enablesFor="+"
                label="Add to Test Manager"
                icon="images/tm.gif"
                class="org.eclipse.osee.ote.ui.test.manager.actions.AddToTestManagerPopupAction"
-               menubarPath="org.eclipse.osee.ote.ui.test.manager.menu1/markers"
+               menubarPath="org.eclipse.osee.ote.ui/placeholder"
                id="org.eclipse.osee.ote.ui.test.manager.addtotestmanager">
          </action>
       </objectContribution>
-         <viewerContribution
+      <viewerContribution
              targetID="#CompilationUnitEditorContext"
              id="viewConf">
           <action
                 label="Add To Test Manager"
                 icon="images/tm.gif"
-                menubarPath="org.eclipse.jdt.ui.source.menu"
+                menubarPath="org.eclipse.osee.ote.ui.viewer/placeholder"
                 id="org.eclipse.osee.ote.ui.test.manager.actions.AddToTestManagerEditorAction"
                 class="org.eclipse.osee.ote.ui.test.manager.actions.AddToTestManagerEditorAction"/>
+                
       </viewerContribution>
          
    </extension>
