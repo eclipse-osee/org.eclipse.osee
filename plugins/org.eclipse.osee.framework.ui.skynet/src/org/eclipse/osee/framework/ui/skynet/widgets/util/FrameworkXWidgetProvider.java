@@ -404,7 +404,7 @@ public final class FrameworkXWidgetProvider {
    private static Collection<IXWidgetProvider> getXWidgetProviders() {
       ExtensionDefinedObjects<IXWidgetProvider> contributions =
          new ExtensionDefinedObjects<IXWidgetProvider>(Activator.PLUGIN_ID + ".XWidgetProvider", "XWidgetProvider",
-            "classname");
+            "classname", true);
       return contributions.getObjects();
    }
 }
