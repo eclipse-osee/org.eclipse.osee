@@ -35,12 +35,12 @@ public class BlamContributionManager implements IXNavigateCommonItem {
 
    private static TreeMap<String, AbstractBlam> blams;
 
-   public static Map<String, AbstractBlam> getBlamMap() {
+   public synchronized static Map<String, AbstractBlam> getBlamMap() {
       if (blams == null) {
+         blams = new TreeMap<String, AbstractBlam>();
          ExtensionDefinedObjects<AbstractBlam> definedObjects =
             new ExtensionDefinedObjects<AbstractBlam>("org.eclipse.osee.framework.ui.skynet.BlamOperation",
                "Operation", "className");
-         blams = new TreeMap<String, AbstractBlam>();
          for (AbstractBlam blam : definedObjects.getObjects()) {
             blams.put(blam.getName(), blam);
          }
@@ -85,7 +85,7 @@ public class BlamContributionManager implements IXNavigateCommonItem {
    public void createCommonSection(List<XNavigateItem> items, List<String> excludeSectionIds) {
       Map<String, XNavigateItem> nameToParent = new HashMap<String, XNavigateItem>();
       XNavigateItem blamOperationItems = new XNavigateItem(null, "Blam Operations", FrameworkImage.BLAM);
-      for (AbstractBlam blamOperation : BlamContributionManager.getBlamOperations()) {
+      for (AbstractBlam blamOperation : getBlamOperations()) {
 
          // Create categories first (so can have them up top)
          for (String category : blamOperation.getCategories()) {
