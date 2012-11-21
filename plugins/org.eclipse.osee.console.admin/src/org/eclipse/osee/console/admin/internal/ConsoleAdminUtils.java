@@ -15,8 +15,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -85,6 +87,7 @@ public final class ConsoleAdminUtils {
       String commandName = "";
       StringBuilder rawString = new StringBuilder();
       PropertyStore store = new PropertyStore();
+      Set<String> options = new HashSet<String>();
 
       int count = 0;
       String arg = ci.nextArgument();
@@ -107,6 +110,8 @@ public final class ConsoleAdminUtils {
                         store.put(key, arrayVal);
                      }
                   }
+               } else if (arg.startsWith("-")) {
+                  options.add(arg.substring(1));
                }
             }
          }
@@ -116,7 +121,7 @@ public final class ConsoleAdminUtils {
             rawString.append(" ");
          }
       }
-      return new ConsoleParametersImpl(commandName, rawString.toString(), store);
+      return new ConsoleParametersImpl(commandName, rawString.toString(), store, options);
    }
 
    public static void checkNotNull(Object object, String objectName) throws IllegalArgumentException {

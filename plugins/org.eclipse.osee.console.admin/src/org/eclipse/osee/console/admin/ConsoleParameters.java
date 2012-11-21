@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.console.admin;
 
+import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -38,5 +39,7 @@ public interface ConsoleParameters {
    Date getDate(String key) throws IllegalArgumentException;
 
    boolean exists(String key);
+
+   Collection<String> getOptions();
 
 }

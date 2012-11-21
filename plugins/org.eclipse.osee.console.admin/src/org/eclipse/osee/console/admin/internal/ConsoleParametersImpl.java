@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.console.admin.internal;
 
+import java.util.Collection;
 import java.util.Date;
 import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -23,11 +24,13 @@ public class ConsoleParametersImpl implements ConsoleParameters {
    private final String commandName;
    private final String rawString;
    private final PropertyStore store;
+   private final Collection<String> options;
 
-   public ConsoleParametersImpl(String commandName, String rawString, PropertyStore store) {
+   public ConsoleParametersImpl(String commandName, String rawString, PropertyStore store, Collection<String> options) {
       this.commandName = commandName;
       this.rawString = rawString;
       this.store = store;
+      this.options = options;
    }
 
    @Override
@@ -84,6 +87,11 @@ public class ConsoleParametersImpl implements ConsoleParameters {
    @Override
    public String getCommandName() {
       return commandName;
+   }
+
+   @Override
+   public Collection<String> getOptions() {
+      return options;
    }
 
 }
