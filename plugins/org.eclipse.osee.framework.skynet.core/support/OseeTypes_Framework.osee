@@ -393,7 +393,6 @@ attributeType "Relation Order" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
-	taggerId DefaultAttributeTaggerProvider
 	description "Defines relation ordering information"
 }
 
