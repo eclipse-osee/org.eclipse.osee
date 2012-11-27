@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.core.client.operation.AtsCoreClient_Operation_PT_Sui
 import org.eclipse.osee.ats.core.client.review.AtsCoreClient_Review_PT_Suite;
 import org.eclipse.osee.ats.core.client.task.AtsCoreClient_Task_PT_Suite;
 import org.eclipse.osee.ats.core.client.util.AtsCoreClient_Util_PT_Suite;
+import org.eclipse.osee.ats.core.client.workflow.AtsCoreClient_Workflow_PT_Suite;
 import org.eclipse.osee.ats.core.client.workflow.transition.AtsCoreClient_Transition_PT_Suite;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;
@@ -27,6 +28,7 @@ import org.junit.runners.Suite;
    AtsCoreClient_Transition_PT_Suite.class,
    AtsTestUtilTest.class,
    AtsCoreClient_Util_PT_Suite.class,
+   AtsCoreClient_Workflow_PT_Suite.class,
    AtsCoreClient_Notify_PT_Suite.class,
    AtsCoreClient_Operation_PT_Suite.class,
    AtsCoreClient_Review_PT_Suite.class,

@@ -1,0 +1,144 @@
+/*******************************************************************************
+ * Copyright (c) 2011 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.ats.core.client.workflow;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import junit.framework.Assert;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+/**
+ * Test case for {@link ConvertWorkflowStatesOperation}
+ * 
+ * @author Donald G. Dunne
+ */
+public class ConvertWorkflowStatesOperationTest {
+
+   @BeforeClass
+   @AfterClass
+   public static void cleanup() throws OseeCoreException {
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranchToken(),
+            "ConvertWorkflowStatesOperationTest.cleanup");
+      for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.TeamWorkflow,
+         "ConvertWorkflowStatesOperationTest%", AtsUtilCore.getAtsBranchToken())) {
+         art.deleteAndPersist(transaction);
+      }
+      transaction.execute();
+   }
+
+   @Test
+   public void testDoWork_errorChecking() throws Exception {
+      Map<String, String> fromStateToStateMap = new HashMap<String, String>();
+      List<AbstractWorkflowArtifact> workflows = new ArrayList<AbstractWorkflowArtifact>();
+      boolean persist = false;
+      XResultData rd = new XResultData(false);
+      ConvertWorkflowStatesOperation operation =
+         new ConvertWorkflowStatesOperation(fromStateToStateMap, workflows, persist, rd);
+
+      operation.doWork(null);
+      Assert.assertEquals("Error: Must enter FromToState pairs\n", rd.toString());
+
+      fromStateToStateMap.put("Endor;se", "New\"StateName");
+      rd.clear();
+      operation.doWork(null);
+      Assert.assertEquals("Should be two state name errors\n", 2, rd.getNumErrors());
+
+      fromStateToStateMap.clear();
+      fromStateToStateMap.put("Endorse", "NewStateName");
+
+      rd.clear();
+      operation.doWork(null);
+      Assert.assertEquals("Error: No workflows entered\n", rd.toString());
+   }
+
+   @Test
+   public void testDoWork() throws Exception {
+      Map<String, String> fromStateToStateMap = new HashMap<String, String>();
+      fromStateToStateMap.put("Endorse", "NewEndorse");
+      fromStateToStateMap.put("Analyze", "NewAnalyze");
+
+      List<AbstractWorkflowArtifact> workflows = new ArrayList<AbstractWorkflowArtifact>();
+      Artifact teamWf =
+         ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamWorkflow, AtsUtilCore.getAtsBranchToken(),
+            "ConvertWorkflowStatesOperationTest.testDoWork");
+      teamWf.addAttribute(AtsAttributeTypes.CurrentState, "Endorse;");
+      teamWf.addAttribute(AtsAttributeTypes.State, "Analyze;");
+      teamWf.addAttribute(AtsAttributeTypes.State, "Endorse;");
+      teamWf.addAttribute(AtsAttributeTypes.CompletedFromState, "Analyze");
+      teamWf.addAttribute(AtsAttributeTypes.CancelledFromState, "Endorse");
+      teamWf.addAttribute(AtsAttributeTypes.Log, "log state=\"Endorse\", state=\"Analyze\"");
+      workflows.add((AbstractWorkflowArtifact) teamWf);
+
+      boolean persist = false;
+      XResultData rd = new XResultData(false);
+
+      ConvertWorkflowStatesOperation operation =
+         new ConvertWorkflowStatesOperation(fromStateToStateMap, workflows, persist, rd);
+      operation.doWork(null);
+
+      Assert.assertFalse(rd.isErrors());
+      Assert.assertEquals("NewEndorse;", teamWf.getSoleAttributeValue(AtsAttributeTypes.CurrentState, ""));
+      List<String> stateNames = teamWf.getAttributesToStringList(AtsAttributeTypes.State);
+      Assert.assertEquals(2, stateNames.size());
+      Assert.assertTrue(stateNames.contains("NewAnalyze;"));
+      Assert.assertTrue(stateNames.contains("NewEndorse;"));
+      Assert.assertEquals("NewAnalyze", teamWf.getSoleAttributeValue(AtsAttributeTypes.CompletedFromState, ""));
+      Assert.assertEquals("NewEndorse", teamWf.getSoleAttributeValue(AtsAttributeTypes.CancelledFromState, ""));
+      Assert.assertEquals("log state=\"NewEndorse\", state=\"NewAnalyze\"",
+         teamWf.getSoleAttributeValue(AtsAttributeTypes.Log, ""));
+
+      Assert.assertTrue(teamWf.isDirty());
+      // decache to cleanup test, cause artifact is not persisted
+      ArtifactCache.deCache(teamWf);
+   }
+
+   @Test
+   public void testDoWork_persist() throws Exception {
+      Map<String, String> fromStateToStateMap = new HashMap<String, String>();
+      fromStateToStateMap.put("Endorse", "NewEndorse");
+
+      List<AbstractWorkflowArtifact> workflows = new ArrayList<AbstractWorkflowArtifact>();
+      Artifact teamWf =
+         ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamWorkflow, AtsUtilCore.getAtsBranchToken(),
+            "ConvertWorkflowStatesOperationTest.testDoWork_persist");
+      teamWf.addAttribute(AtsAttributeTypes.CurrentState, "Endorse;");
+      workflows.add((AbstractWorkflowArtifact) teamWf);
+
+      boolean persist = true;
+      XResultData rd = new XResultData(false);
+
+      ConvertWorkflowStatesOperation operation =
+         new ConvertWorkflowStatesOperation(fromStateToStateMap, workflows, persist, rd);
+      operation.doWork(null);
+
+      Assert.assertFalse(rd.isErrors());
+      Assert.assertEquals("NewEndorse;", teamWf.getSoleAttributeValue(AtsAttributeTypes.CurrentState, ""));
+
+      Assert.assertFalse(teamWf.isDirty());
+   }
+
+}
