@@ -17,18 +17,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.logging.Level;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.TextSelection;
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -77,7 +83,7 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
 
    private int lastPageIndex = 0;
 
-   private final TestManagerModel model;
+   private final ITestManagerModel model;
 
    private boolean reloadSourcePage = false;
 
@@ -91,8 +97,6 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
 
    private IFile thisIFile = null;
 
-   private String xmlText;
-
    private final IPropertyStore propertyStore;
 
    private final PageManager pageManager;
@@ -101,12 +105,12 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
    private IServiceConnector connector = null;
    private IHostTestEnvironment connectedHost;
 
-   public TestManagerEditor(final ITestManagerFactory testManagerFactory) {
+   public TestManagerEditor(final ITestManagerFactory testManagerFactory, ITestManagerModel model) {
       super();
 
       this.testManagerFactory = testManagerFactory;
       this.pageManager = new PageManager(testManagerFactory, this);
-      this.model = new TestManagerModel();
+      this.model = model;
       this.propertyStore = new PropertyStore(testManagerFactory.getClass().getSimpleName());
    }
 
@@ -216,7 +220,7 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
    /**
     * @return Returns the model.
     */
-   public TestManagerModel getModel() {
+   public ITestManagerModel getModel() {
       return model;
    }
 
@@ -313,15 +317,14 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
    private void readXmlData() {
       TestManagerPlugin.log(Level.INFO, "readXmlData");
       IEditorInput coreinput = getEditorInput();
+      String xmlText = "";
       if (coreinput instanceof IFileEditorInput) {
          IFileEditorInput input = (IFileEditorInput) getEditorInput();
          thisIFile = input.getFile();
          String name = thisIFile.getName();
          this.setPartName(name);
-         model.setConfiguration(name);
          if (thisIFile != null) {
             IPath containerPath = thisIFile.getRawLocation();
-            model.filename = containerPath.toOSString();
             try {
 
                xmlText = Lib.inputStreamToString(thisIFile.getContents());
@@ -335,9 +338,9 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
          TestManagerInput input = (TestManagerInput) getEditorInput();
          String name = "TestManager";
          this.setPartName(name);
-         model.setConfiguration(name);
          xmlText = input.getDefaultXML();
       }
+      model.setFromXml(xmlText);
    }
 
    /**
@@ -347,25 +350,20 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
    protected void createPages() {
       readXmlData();
 
-      if (model.setFromXml(xmlText)) {
-         pageManager.createPages(getContainer());
-         pageSourceCreate();
+      pageManager.createPages(getContainer());
+      pageSourceCreate();
 
-         fileIsDirty = false;
-         reloadSourcePage = false;
-         pageSourceCheck();
-         restoreSettings();
-      }
+      fileIsDirty = false;
+      reloadSourcePage = false;
+      pageSourceCheck();
+      restoreSettings();
+      
       // If parse errors, send to sourcePage and set error on page
-      else {
+      if (model.hasParseExceptions()) {
          if (sourceEditor == null) {
             pageSourceCreate();
-            setActivePage(sourcePage);
-            return;
          }
-         pageSourceCheck();
-         setPageImage(sourcePage, errorImage);
-         setActivePage(sourcePage);
+         handleSourceEditorError();
       }
       fileIsDirty = false;
       firePropertyChange(PROP_DIRTY);
@@ -400,10 +398,7 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
             if (lastPageIndex == sourcePage) {
                // if parse error, goto source and error
                if (!model.setFromXml(newXml)) {
-                  setActivePage(sourcePage);
-                  setPageError(sourcePage, true);
-                  MessageDialog.openError(getSite().getShell(), "Source Page Error",
-                     "Error parsing Source page\n\n" + model.getParseExceptions());
+                  handleSourceEditorError();
                   return;
                }
                setPageError(sourcePage, false);
@@ -413,6 +408,30 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
       lastPageIndex = newPageIndex;
    }
 
+   private void handleSourceEditorError() {
+      if (model.hasParseExceptions()) {
+         try {
+            setActivePage(sourcePage);
+            pageSourceCheck();
+            MessageDialog.openError(getSite().getShell(), "Source Page Error",
+               "Error parsing Source page\n  "+model.getParseError());
+            Pair<Integer, Integer> parseErrorRange = model.getParseErrorRange();
+            sourceEditor.setHighlightRange(parseErrorRange.getFirst(), parseErrorRange.getSecond(), false);
+            sourceEditor.getSelectionProvider().setSelection(new TextSelection(parseErrorRange.getFirst(), parseErrorRange.getSecond()));
+         } catch (Throwable th) {}
+      }
+   }
+
+   public void updateFromTestManagerModel() {
+      IDocument doc = sourceEditor.getDocumentProvider().getDocument(sourceEditor.getEditorInput());
+      doc.set(model.getRawXml());
+      try {
+         sourceEditor.getDocumentProvider().saveDocument(new NullProgressMonitor(), null, doc, true);
+      } catch (CoreException e) {
+         OseeLog.log(getClass(), Level.SEVERE, e);
+      }
+   }
+   
    void pageSourceCreate() {
       try {
          if (getEditorInput() instanceof IFileEditorInput) {
@@ -436,8 +455,6 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
    }
 
    public void doSave() {
-      readXmlData();
-      model.setFromXml(xmlText);
       pageManager.save();
       OutputStream outputStream = null;
       try {
@@ -455,7 +472,6 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
             }
          }
       }
-      pageManager.refreshPages();
    }
 
    public void restoreSettings() {

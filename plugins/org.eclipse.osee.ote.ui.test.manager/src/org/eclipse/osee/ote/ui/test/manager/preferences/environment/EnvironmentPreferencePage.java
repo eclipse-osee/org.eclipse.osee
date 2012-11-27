@@ -13,6 +13,7 @@ package org.eclipse.osee.ote.ui.test.manager.preferences.environment;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
@@ -139,7 +140,7 @@ public class EnvironmentPreferencePage {
 
          @Override
          public void keyReleased(KeyEvent e) {
-            if (e.character == SWT.DEL) {
+            if (e.character == SWT.DEL && (e.stateMask & SWT.CTRL) == 0) {
                environmentPageEventHandler.handleRemoveSelectedViewEvent();
             }
          }

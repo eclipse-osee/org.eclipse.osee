@@ -47,7 +47,7 @@ public class HostPage extends TestManagerPage {
       hostGroup.setText("Double click a Host to Connect/Disconnect");
 
       getTestManager().createHostWidget(hostGroup);
-      computeScrollSize();
+      setMinSize(0, 0);
    }
 
    @Override

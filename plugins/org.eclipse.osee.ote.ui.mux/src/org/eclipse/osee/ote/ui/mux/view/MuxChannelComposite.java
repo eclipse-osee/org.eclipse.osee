@@ -400,7 +400,7 @@ public class MuxChannelComposite extends Composite {
 										|| e.character >= 0x61
 										&& e.character <= 0x66
 										|| e.character == SWT.BS
-										|| e.character == SWT.DEL
+										|| (e.character == SWT.DEL && (e.stateMask & SWT.CTRL) == 0)
 										|| e.keyCode == SWT.ARROW_LEFT
 										|| e.keyCode == SWT.ARROW_RIGHT) {
 									e.doit = true;

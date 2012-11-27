@@ -12,12 +12,12 @@ package org.eclipse.osee.ote.ui.test.manager.core;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.ui.test.manager.ITestManagerFactory;
 import org.eclipse.osee.ote.ui.test.manager.pages.AdvancedPage;
 import org.eclipse.osee.ote.ui.test.manager.pages.HostPage;
-import org.eclipse.osee.ote.ui.test.manager.pages.OverviewPage;
 import org.eclipse.osee.ote.ui.test.manager.pages.ScriptPage;
 import org.eclipse.osee.ote.ui.test.manager.pages.TestManagerPage;
 import org.eclipse.swt.SWT;
@@ -30,7 +30,6 @@ public class PageManager {
 
    protected AdvancedPage advancedPage;
    protected HostPage hostPage;
-   protected OverviewPage overviewPage;
    protected ScriptPage scriptPage;
    private final List<TestManagerPage> pages;
 
@@ -44,9 +43,6 @@ public class PageManager {
    }
 
    protected void createPages(Composite parent) {
-      overviewPage = new OverviewPage(parent, SWT.NONE, testManager);
-      registerPage(overviewPage);
-
       hostPage = new HostPage(parent, SWT.NONE, testManager);
       registerPage(hostPage);
 
@@ -105,13 +101,6 @@ public class PageManager {
     */
    public HostPage getHostPage() {
       return hostPage;
-   }
-
-   /**
-    * @return the overviewPage
-    */
-   public OverviewPage getOverviewPage() {
-      return overviewPage;
    }
 
    /**
@@ -180,7 +169,4 @@ public class PageManager {
       return problemEncountered;
    }
 
-   public void refreshPages() {
-      overviewPage.refresh();
-   }
 }

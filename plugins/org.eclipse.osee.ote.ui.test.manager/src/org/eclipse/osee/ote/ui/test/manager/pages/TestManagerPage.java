@@ -42,6 +42,10 @@ public abstract class TestManagerPage extends ScrolledComposite {
       this.setContent(mainComposite);
       this.setExpandHorizontal(true);
       this.setExpandVertical(true);
+      getVerticalBar().setIncrement(25);
+      getVerticalBar().setPageIncrement(200);
+      getHorizontalBar().setIncrement(25);
+      getHorizontalBar().setPageIncrement(200);
    }
 
    public void computeScrollSize() {

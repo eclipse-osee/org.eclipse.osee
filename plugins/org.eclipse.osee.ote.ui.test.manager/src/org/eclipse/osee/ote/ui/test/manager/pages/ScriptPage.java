@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -101,8 +102,8 @@ public abstract class ScriptPage extends TestManagerPage {
       createStatusWindow(sashForm);
 
       sashForm.setWeights(new int[] {8, 2});
-      computeScrollSize();
-
+      setMinSize(0, 0);
+      
       // TODO: Change to use OteHelpContext
       HelpUtil.setHelp(this, "test_manager_scripts_page", "org.eclipse.osee.framework.help.ui");
    }

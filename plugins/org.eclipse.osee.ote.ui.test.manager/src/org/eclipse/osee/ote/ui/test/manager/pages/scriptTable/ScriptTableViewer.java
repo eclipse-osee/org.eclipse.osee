@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -481,8 +482,7 @@ public class ScriptTableViewer {
 
          @Override
          public void keyReleased(KeyEvent e) {
-            // If they press enter, do the same as a double click
-            if (e.character == SWT.DEL) {
+            if (e.character == SWT.DEL && (e.stateMask & SWT.CTRL) == 0) {
                removeSelectedTasks();
                refresh();
             }
