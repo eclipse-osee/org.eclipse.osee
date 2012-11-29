@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Demo Plug-in
+Bundle-Name: ATS Client Demo (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ats.client.demo;singleton:=true
 Bundle-Version: 0.11.0.qualifier
 Eclipse-ExtensibleAPI: true

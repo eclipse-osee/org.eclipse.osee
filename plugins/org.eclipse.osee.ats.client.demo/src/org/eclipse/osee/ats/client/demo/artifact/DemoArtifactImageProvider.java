@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.demo.artifact;
 
+import org.eclipse.osee.ats.client.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.client.demo.util.DemoImage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider;
-import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 
 /**
  * @author Donald G. Dunne

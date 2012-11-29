@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.client.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.client.demo.internal.Activator;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
@@ -28,17 +29,14 @@ import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
-import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 
 /**
  * @author Donald G. Dunne
@@ -47,37 +45,6 @@ public class DemoDbUtil {
 
    public static String INTERFACE_INITIALIZATION = "Interface Initialization";
    private static List<TeamWorkFlowArtifact> codeArts;
-
-   public static void checkDbInitSuccess() throws OseeCoreException {
-      if (!isDbInitSuccessful()) {
-         throw new OseeStateException("DbInit must be successful to continue");
-      }
-   }
-
-   public static void checkDbInitAndPopulateSuccess() throws OseeCoreException {
-      if (!isDbInitSuccessful()) {
-         throw new OseeStateException("DbInit must be successful to continue");
-      }
-      if (!isPopulateDbSuccessful()) {
-         throw new OseeStateException("PopulateDb must be successful to continue");
-      }
-   }
-
-   public static boolean isDbInitSuccessful() throws OseeCoreException {
-      return OseeInfo.isBoolean("DbInitSuccess");
-   }
-
-   public static void setDbInitSuccessful(boolean success) throws OseeCoreException {
-      OseeInfo.setBoolean("DbInitSuccess", success);
-   }
-
-   public static boolean isPopulateDbSuccessful() throws OseeCoreException {
-      return OseeInfo.isBoolean("PopulateSuccessful");
-   }
-
-   public static void setPopulateDbSuccessful(boolean success) throws OseeCoreException {
-      OseeInfo.setBoolean("PopulateSuccessful", success);
-   }
 
    public static List<TeamWorkFlowArtifact> getSampleCodeWorkflows() throws OseeCoreException {
       if (codeArts == null) {

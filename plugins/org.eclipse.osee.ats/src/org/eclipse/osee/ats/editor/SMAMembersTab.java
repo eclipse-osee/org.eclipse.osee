@@ -154,15 +154,17 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
             public IStatus runInUIThread(IProgressMonitor monitor) {
                if (firstTime) {
                   try {
-                     updateTitleBar();
-                     setLoading(false);
-                     boolean createdAndLoaded = createMembersBody();
-                     if (!createdAndLoaded) {
-                        smaGoalMembersSection.reload();
+                     if (managedForm != null && Widgets.isAccessible(managedForm.getForm())) {
+                        updateTitleBar();
+                        setLoading(false);
+                        boolean createdAndLoaded = createMembersBody();
+                        if (!createdAndLoaded) {
+                           smaGoalMembersSection.reload();
+                        }
+                        jumptoScrollLocation();
+                        FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
+                        editor.onDirtied();
                      }
-                     jumptoScrollLocation();
-                     FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
-                     editor.onDirtied();
                      firstTime = false;
                   } catch (OseeCoreException ex) {
                      handleException(ex);
@@ -174,8 +176,12 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
                      updateTitleBar();
                   } catch (OseeCoreException ex) {
                      handleException(ex);
+                  } finally {
+                     showBusy(false);
                   }
-                  smaGoalMembersSection.refresh();
+                  if (managedForm != null && Widgets.isAccessible(managedForm.getForm())) {
+                     smaGoalMembersSection.refresh();
+                  }
                }
                return Status.OK_STATUS;
             }

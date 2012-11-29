@@ -66,6 +66,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 public class StateManager implements IAtsNotificationListener, WorkStateProvider, WorkStateFactory {
 
    private final AbstractWorkflowArtifact awa;
+
    private static List<String> allValidStateNames = null;
    private WorkStateProvider stateProvider = null;
    private int loadTransactionNumber;

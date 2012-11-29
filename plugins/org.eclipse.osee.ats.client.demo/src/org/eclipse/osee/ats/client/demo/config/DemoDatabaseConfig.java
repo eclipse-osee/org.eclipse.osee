@@ -11,7 +11,9 @@
 package org.eclipse.osee.ats.client.demo.config;
 
 import org.eclipse.osee.ats.client.demo.DemoCISBuilds;
+import org.eclipse.osee.ats.client.demo.DemoSawBuilds;
 import org.eclipse.osee.ats.client.demo.DemoSubsystems;
+import org.eclipse.osee.ats.client.demo.DemoUsers;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -23,8 +25,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
-import org.eclipse.osee.support.test.util.DemoSawBuilds;
-import org.eclipse.osee.support.test.util.DemoUsers;
 import org.eclipse.osee.support.test.util.TestUtil;
 
 /**

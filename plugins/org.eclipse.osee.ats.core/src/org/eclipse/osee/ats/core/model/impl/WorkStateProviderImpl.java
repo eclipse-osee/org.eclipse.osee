@@ -36,10 +36,11 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class WorkStateProviderImpl implements WorkStateProvider {
 
-   protected IAtsNotificationListener listener;
-   WorkStateFactory factory;
-   List<WorkState> states = new LinkedList<WorkState>();
-   String currentStateName;
+   private final WorkStateFactory factory;
+   private final List<WorkState> states = new LinkedList<WorkState>();
+
+   private IAtsNotificationListener listener;
+   private String currentStateName;
 
    /**
     * Creates a new StateData initialized with currentStateName as current state and sets assignees

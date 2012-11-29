@@ -1,0 +1,63 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.ats.client.integration.tests.ats;
+
+import org.eclipse.osee.ats.client.integration.tests.ats.access.AtsTest_Access_Suite;
+import org.eclipse.osee.ats.client.integration.tests.ats.actions.AtsTest_Action_Suite;
+import org.eclipse.osee.ats.client.integration.tests.ats.artifact.log.AtsTest_Log_Suite;
+import org.eclipse.osee.ats.client.integration.tests.ats.column.AtsTest_Column_Suite;
+import org.eclipse.osee.ats.client.integration.tests.ats.config.AtsTest_Config_Suite;
+import org.eclipse.osee.ats.client.integration.tests.ats.editor.AtsTest_Editor_Suite;
+import org.eclipse.osee.ats.client.integration.tests.ats.health.AtsTest_Health_Suite;
+import org.eclipse.osee.ats.client.integration.tests.ats.navigate.AtsTest_Navigate_Suite;
+import org.eclipse.osee.ats.client.integration.tests.ats.render.AtsTest_Renderer_Suite;
+import org.eclipse.osee.ats.client.integration.tests.ats.review.AtsTest_Review_Suite;
+import org.eclipse.osee.ats.client.integration.tests.ats.util.AtsTest_Util_Suite;
+import org.eclipse.osee.ats.client.integration.tests.ats.workflow.AtsTest_Workflow_Suite;
+import org.eclipse.osee.ats.client.integration.tests.ats.world.search.AtsTest_World_Search_Suite;
+import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+
+/**
+ * @author Donald G. Dunne
+ */
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+   AtsTest_Access_Suite.class,
+   AtsTest_Action_Suite.class,
+   AtsTest_Log_Suite.class,
+   AtsTest_Column_Suite.class,
+   AtsTest_Config_Suite.class,
+   AtsTest_Editor_Suite.class,
+   AtsTest_Health_Suite.class,
+   AtsTest_Navigate_Suite.class,
+   AtsTest_Renderer_Suite.class,
+   AtsTest_Review_Suite.class,
+   AtsTest_Util_Suite.class,
+   AtsTest_Workflow_Suite.class,
+   AtsTest_World_Search_Suite.class})
+public class AtsTest_Ats_Suite {
+   @BeforeClass
+   public static void setUp() throws Exception {
+      OseeProperties.setIsInTest(true);
+      System.out.println("\n\nBegin " + AtsTest_Ats_Suite.class.getSimpleName());
+      DemoTestUtil.setUpTest();
+   }
+
+   @AfterClass
+   public static void tearDown() throws Exception {
+      System.out.println("End " + AtsTest_Ats_Suite.class.getSimpleName());
+   }
+}

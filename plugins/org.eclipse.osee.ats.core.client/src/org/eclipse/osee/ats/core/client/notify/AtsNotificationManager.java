@@ -177,7 +177,7 @@ public class AtsNotificationManager {
       return AtsNotificationManager.inTest;
    }
 
-   protected static void setInTest(boolean inTest) {
+   public static void setInTest(boolean inTest) {
       AtsNotificationManager.inTest = inTest;
    }
 }

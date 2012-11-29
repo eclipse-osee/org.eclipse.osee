@@ -9,7 +9,7 @@
 		<version>0.11.0-SNAPSHOT</version>
 		<relativePath>../../plugins/org.eclipse.osee.ide.parent</relativePath>
 	</parent>
-	
+
 	<groupId>org.eclipse.osee</groupId>
 	<artifactId>org.eclipse.osee.ats.parent</artifactId>
 	<packaging>pom</packaging>
@@ -17,26 +17,34 @@
 	<version>0.11.0-SNAPSHOT</version>
 
 	<modules>
-      <module>../../plugins/org.eclipse.osee.ats.mocks</module>
+	   <module>../../plugins/org.eclipse.osee.support.test.util</module>
+	
+		<module>../../plugins/org.eclipse.osee.ats.mocks</module>
 		<module>../../plugins/org.eclipse.osee.ats.help.ui</module>
 		<module>../../plugins/org.eclipse.osee.ats</module>
 		<module>../../plugins/org.eclipse.osee.ats.core</module>
+		<module>../../plugins/org.eclipse.osee.ats.core.test</module>
 		<module>../../plugins/org.eclipse.osee.ats.core.client</module>
+		<module>../../plugins/org.eclipse.osee.ats.core.client.test</module>
 		<module>../../plugins/org.eclipse.osee.ats.dsl</module>
-		<module>../../plugins/org.eclipse.osee.ats.dsl.ui</module>		
+		<module>../../plugins/org.eclipse.osee.ats.dsl.ui</module>
 		<module>../../plugins/org.eclipse.osee.ats.impl</module>
-		<module>../../plugins/org.eclipse.osee.ats.client.demo</module>
+		<module>../../plugins/org.eclipse.osee.ats.impl.test</module>
 
-      <module>../../plugins/org.eclipse.osee.ats.reports</module>
-      <module>../../plugins/org.eclipse.osee.ats.reports.burndown</module>
-      <module>../../plugins/org.eclipse.osee.ats.reports.efficiency</module>
-      <module>../../plugins/org.eclipse.osee.ats.reports.split</module>
+		<module>../../plugins/org.eclipse.osee.ats.reports</module>
+		<module>../../plugins/org.eclipse.osee.ats.reports.burndown</module>
+		<module>../../plugins/org.eclipse.osee.ats.reports.efficiency</module>
+		<module>../../plugins/org.eclipse.osee.ats.reports.split</module>
+
+		<module>../../plugins/org.eclipse.osee.ats.client.demo</module>
 
 		<module>../../features/org.eclipse.osee.ats.feature</module>
 		<module>../../features/org.eclipse.osee.ats.feature.source</module>
 
 		<module>../../features/org.eclipse.osee.ats.client.demo.feature</module>
 		<module>../../features/org.eclipse.osee.ats.client.demo.feature.source</module>
+
+		<module>../../plugins/org.eclipse.osee.ats.client.integration.tests</module>
 
 		<module>../../plugins/org.eclipse.osee.ats.p2</module>
 	</modules>

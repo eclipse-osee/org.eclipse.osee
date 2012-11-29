@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Disposition;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.InjectionActivity;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;
-import org.eclipse.osee.ats.core.validator.ValidatorTestUtil;
 import org.eclipse.osee.ats.mocks.MockStateDefinition;
 import org.eclipse.osee.ats.mocks.MockWidgetDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

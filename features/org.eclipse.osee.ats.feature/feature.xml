@@ -17,6 +17,10 @@
       %license
    </license>
 
+   <requires>
+      <import feature="org.eclipse.osee.client.feature"/>
+   </requires>
+
    <plugin
          id="org.eclipse.osee.ats"
          download-size="0"

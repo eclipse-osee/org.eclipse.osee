@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.demo.config;
 
+import org.eclipse.osee.ats.client.demo.DemoChoice;
 import org.eclipse.osee.framework.database.init.DatabaseInitConfiguration;
 import org.eclipse.osee.framework.database.init.DefaultOseeTypeDefinitions;
 import org.eclipse.osee.framework.database.init.IAddDbInitChoice;
@@ -33,10 +34,10 @@ public class AddDbInitDemoChoice implements IAddDbInitChoice {
       config.addTask("org.eclipse.osee.ats.AtsDatabaseConfig");
       config.addTask("org.eclipse.osee.ats.client.demo.DemoDatabaseConfig");
 
-      for (DefaultOseeTypeDefinitions types : DefaultOseeTypeDefinitions.values()) {
-         config.addOseeType(types);
-      }
+      config.addOseeType(DefaultOseeTypeDefinitions.OSEE_BASE_TYPES);
+      config.addOseeType(DefaultOseeTypeDefinitions.DEFINE_TYPES);
+      config.addOseeType(DefaultOseeTypeDefinitions.ATS_TYPES);
       config.addOseeType("org.eclipse.osee.ats.client.demo.OseeTypes_Demo");
-      groupSelection.addChoice("OSEE Demo Database", config);
+      groupSelection.addChoice(DemoChoice.ATS_CLIENT_DEMO, config);
    }
 }
