@@ -21,6 +21,7 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITimeout;
  */
 public class CycleCountDown implements ICancelTimer {
    private int cycleCount;
+   private volatile boolean completed; 
    private final ITimeout objToNotify;
    private final IScriptControl scriptLock;
 
@@ -33,32 +34,33 @@ public class CycleCountDown implements ICancelTimer {
       this.scriptLock = scriptLock;
       this.cycleCount = cycleCount;
       this.objToNotify = objToNotify;
+      this.completed = false;
       objToNotify.setTimeout(false);
    }
 
    /**
-    * @return true if the cycleCount == 0, otherwise false
+    * @return true if the countdown is complete/canceled, otherwise false
     */
    public boolean cycleOccurred() {
-      if (cycleCount == -1) {
-         return true;
-      }
-      if (cycleCount == 0) {
+      if (cycleCount == 0 && !completed) {
+         completed = true;
          synchronized (objToNotify) {
             objToNotify.setTimeout(true);
             objToNotify.notifyAll();
          }
-         return true; // so that notify is only called after a countdown becomes zero for the first time
       }
-      cycleCount--;
-      return false;
+      else {
+         cycleCount--;
+      }
+      return completed;
    }
 
    @Override
    public void cancelTimer() {
-      this.cycleCount = -1;
+      this.completed = true;
       if (this.scriptLock != null) {
          this.scriptLock.lock();
       }
    }
+  
 }

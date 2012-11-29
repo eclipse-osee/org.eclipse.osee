@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.environment.EnvironmentTask;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
@@ -78,21 +79,21 @@ public class SimulatedTime extends TimerControl {
 
    @Override
    public ICancelTimer setTimerFor(ITimeout objToNotify, int milliseconds) {
-      try {
-
-         scriptControl.unlock();
-      } catch (IllegalMonitorStateException ex) {
-         if (!Thread.currentThread().getName().contains("(JSK) mux request dispatch") || !Thread.currentThread().getName().contains(
-            "(JSK) Mux request dispatch")) {
-            OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, ex);
-         }
-      }
-      CycleCountDown cycleCountDown =
-         new CycleCountDown(scriptControl, objToNotify,
+      CycleCountDown cycleCountDown = new CycleCountDown(scriptControl, objToNotify,
             (int) Math.rint(milliseconds / (1000.0 / EnvironmentTask.cycleResolution)) - 1);
       synchronized (cycleCounters) {
          cycleCounters.add(cycleCountDown);
       }
+
+      try {
+         scriptControl.unlock();
+      } catch (IllegalMonitorStateException ex) {
+         if (!Thread.currentThread().getName().contains("(JSK) mux request dispatch") || !Thread.currentThread().getName().contains(
+               "(JSK) Mux request dispatch")) {
+            OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, ex);
+         }
+      }
+      
       return cycleCountDown;
    }
 
