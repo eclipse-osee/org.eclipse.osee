@@ -290,11 +290,10 @@ public class XBranchWidget extends GenericXWidget {
 
                @Override
                public void run() {
-
                   if (extraInfoLabel != null && !extraInfoLabel.isDisposed()) {
                      extraInfoLabel.setText("");
                   }
-                  if (branchXViewer != null) {
+                  if (branchXViewer != null && branchXViewer.getTree() != null && !branchXViewer.getTree().isDisposed()) {
                      branchXViewer.setInput(input);
                      getXViewer().setExpandedElements(expandedBranches);
                      if (selectedBranch != null) {

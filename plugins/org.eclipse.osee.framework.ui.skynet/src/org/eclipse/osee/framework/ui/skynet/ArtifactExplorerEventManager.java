@@ -29,6 +29,8 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * Common location for event handling for ArtifactExplorers in order to keep number of registrations and processing to a
@@ -63,6 +65,11 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener {
 
    @Override
    public void handleArtifactEvent(final ArtifactEvent artifactEvent, Sender sender) {
+      IWorkbench workbench = PlatformUI.getWorkbench();
+      if (workbench == null || workbench.isClosing() || workbench.isStarting()) {
+         return;
+      }
+
       for (IArtifactExplorerEventHandler handler : new CopyOnWriteArrayList<IArtifactExplorerEventHandler>(handlers)) {
          if (handler.isDisposed()) {
             handlers.remove(handler);
