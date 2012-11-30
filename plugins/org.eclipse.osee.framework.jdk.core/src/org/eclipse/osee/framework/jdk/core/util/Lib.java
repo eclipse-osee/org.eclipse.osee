@@ -63,6 +63,7 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.util.io.IOInputThread;
 import org.eclipse.osee.framework.jdk.core.util.io.IOOutputThread;
@@ -121,6 +122,11 @@ public final class Lib {
       }
       sb.append(ex.getClass().getName());
       sb.append("\n");
+      if (ex.getMessage() != null && !ex.getMessage().isEmpty()) {
+         sb.append("   \"");
+         sb.append(ex.getMessage());
+         sb.append("\"\n");
+      }
       StackTraceElement st[] = ex.getStackTrace();
       for (int i = 0; i < st.length; i++) {
          StackTraceElement ste = st[i];

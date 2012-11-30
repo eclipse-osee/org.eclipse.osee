@@ -78,7 +78,17 @@ public class TestRunThread extends OseeTestThread {
                      abort = true;
                      this.test.setAborted(true);
                      MethodResultImpl methodresult = new MethodResultImpl(ReturnCode.ABORTED);
-                     methodresult.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, ex));
+                     Throwable clientSideThrowable = ex;
+                     if (!ex.getClass().getName().startsWith("java")) {
+                        String msg = ex.getClass().getName();
+                        if (ex.getMessage() != null && !ex.getMessage().isEmpty()) {
+                           msg += ": "+ex.getMessage();
+                        }
+                        Throwable removeThisOnceWeGetRidOfSerializationOnAssociatedException = new Throwable(msg);
+                        removeThisOnceWeGetRidOfSerializationOnAssociatedException.setStackTrace(ex.getStackTrace());
+                        clientSideThrowable = removeThisOnceWeGetRidOfSerializationOnAssociatedException;
+                     }
+                     methodresult.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, clientSideThrowable));
                      rb.append(methodresult);
                      OseeLog.log(
                         Activator.class,
