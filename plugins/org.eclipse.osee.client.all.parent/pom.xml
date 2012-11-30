@@ -9,7 +9,7 @@
 		<version>0.11.0-SNAPSHOT</version>
 		<relativePath>../../plugins/org.eclipse.osee.ide.parent</relativePath>
 	</parent>
-	
+
 	<groupId>org.eclipse.osee</groupId>
 	<artifactId>org.eclipse.osee.client.all.parent</artifactId>
 	<packaging>pom</packaging>
@@ -21,7 +21,20 @@
 		<module>../../features/org.eclipse.osee.client.all.feature.source</module>
 
 		<module>../../plugins/org.eclipse.osee.client.all.p2</module>
-		<module>../../plugins/org.eclipse.osee.client.all.product</module>
 	</modules>
+
+	<profiles>
+		<profile>
+			<id>build-osee-product</id>
+			<activation>
+				<property>
+					<name>!skip-osee-client-all-product</name>
+				</property>
+			</activation>
+			<modules>
+				<module>../../plugins/org.eclipse.osee.client.all.product</module>
+			</modules>
+		</profile>
+	</profiles>
 
 </project>
