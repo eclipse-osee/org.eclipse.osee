@@ -49,6 +49,7 @@ public class ImportCoverageMethodsBlam extends AbstractBlam {
    private final String TO_PACKAGE_ARTIFACT = "Select the TO Coverage Package";
    private final String CHKBOX_PERSIST_TRANSACTION = "Execute transaction";
    private final String CHKBOX_RETAIN_TASK_TRACKING = "Retain Work Product Task Tracking Information";
+   private final String CHKBOX_FORCE_METHOD_NUMBERS = "Force method number";
    public static String RESULTS_DIR = "Results Directory";
 
    private XBranchSelectWidget fromBranchWidget = null;
@@ -66,6 +67,7 @@ public class ImportCoverageMethodsBlam extends AbstractBlam {
       builder.append("<XWidget xwidgetType=\"XComboViewer\" displayName=\"" + TO_PACKAGE_ARTIFACT + "\" />");
       builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + CHKBOX_PERSIST_TRANSACTION + "\" labelAfter=\"true\" horizontalLabel=\"true\" />");
       builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + CHKBOX_RETAIN_TASK_TRACKING + "\" defaultValue=\"true\" labelAfter=\"true\" horizontalLabel=\"true\" />");
+      builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + CHKBOX_FORCE_METHOD_NUMBERS + "\" labelAfter=\"true\" horizontalLabel=\"true\" />");
       builder.append("<XWidget xwidgetType=\"XDirectorySelectionDialog\" displayName=\"" + RESULTS_DIR + "\" defaultValue=\"C:\\UserData\\CoverageMerge\\\" />");
       builder.append("</xWidgets>");
       return builder.toString();
@@ -93,9 +95,10 @@ public class ImportCoverageMethodsBlam extends AbstractBlam {
       }
       boolean isPersistTransaction = variableMap.getBoolean(CHKBOX_PERSIST_TRANSACTION);
       boolean isRetainTaskTracking = variableMap.getBoolean(CHKBOX_RETAIN_TASK_TRACKING);
+      boolean forMethodNumbers = variableMap.getBoolean(CHKBOX_FORCE_METHOD_NUMBERS);
       ImportCoverageMethodsOperation operation =
          new ImportCoverageMethodsOperation(fromPackageArt, toPackageArt, resultsDir, isPersistTransaction,
-            isRetainTaskTracking);
+            isRetainTaskTracking, forMethodNumbers);
       Operations.executeWork(operation, monitor);
    }
 

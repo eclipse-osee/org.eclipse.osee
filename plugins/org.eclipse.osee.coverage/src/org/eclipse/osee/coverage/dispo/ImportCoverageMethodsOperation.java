@@ -45,14 +45,16 @@ public class ImportCoverageMethodsOperation extends org.eclipse.osee.framework.c
    private final boolean isPersistTransaction;
    private final String resultsDir;
    private final boolean isRetainTaskTracking;
+   private final boolean forceCompareMethodNumbers;
 
-   public ImportCoverageMethodsOperation(Artifact fromPackageArt, Artifact toPackageArt, String resultsDir, boolean isPersistTransaction, boolean isRetainTaskTracking) {
+   public ImportCoverageMethodsOperation(Artifact fromPackageArt, Artifact toPackageArt, String resultsDir, boolean isPersistTransaction, boolean isRetainTaskTracking, boolean forceCompareMethodNumbers) {
       super("Import Coverage Methods for " + fromPackageArt, Activator.PLUGIN_ID);
       this.fromPackageArt = fromPackageArt;
       this.toPackageArt = toPackageArt;
       this.resultsDir = resultsDir;
       this.isPersistTransaction = isPersistTransaction;
       this.isRetainTaskTracking = isRetainTaskTracking;
+      this.forceCompareMethodNumbers = forceCompareMethodNumbers;
    }
 
    @Override
@@ -351,12 +353,23 @@ public class ImportCoverageMethodsOperation extends org.eclipse.osee.framework.c
    }
 
    private CoverageUnit getMethodCoverageUnit(CoverageUnit fromFile, CoverageItem fromItem) {
+      CoverageUnit ret = null;
       for (CoverageUnit unit : fromFile.getCoverageUnits()) {
-         if (unit.getName().equals(fromItem.getParent().getName())) {
-            return unit;
+         if (methodsMatched(unit, fromFile, forceCompareMethodNumbers)) {
+            ret = unit;
+            break;
          }
       }
-      return null;
+      return ret;
+   }
+
+   private boolean methodsMatched(CoverageUnit cvgUnitA, CoverageUnit cvgUnitB, boolean forceCompareMethodNumbers) {
+      ICoverage cvgUnitBParent = cvgUnitB.getParent();
+      boolean result = cvgUnitA.getName().equals(cvgUnitBParent.getName());
+      if (forceCompareMethodNumbers) {
+         result &= cvgUnitA.getOrderNumber().equals(cvgUnitBParent.getOrderNumber());
+      }
+      return result;
    }
 
    private CoverageUnit getFileCoverageUnitFromNameRecurseDown(ICoverage coverage, String name) {
