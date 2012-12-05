@@ -1,0 +1,209 @@
+<project name="Construct Maven build command and run build" default="run">
+
+	<target name="init">
+		<property environment="env" />
+		<property name="tab" value="     " />
+	</target>
+
+	<target name="get-inputs">
+		<echo>--------------------------------------------------------------</echo>
+		<echo>OSEE BUILD - Build Stage</echo>
+		<echo>--------------------------------------------------------------</echo>
+		<property name="input-arguments" value="all,all-ide,server,runtime,ote,osee-client,coverage,ats-client,products" />
+		<input message="${tab}[input] Select build to perform?" validargs="${input-arguments}" defaultvalue="${default-osee-build-stage}" addproperty="input-osee-build-stage">
+			<handler classname="org.apache.tools.ant.input.SecureInputHandler" />
+		</input>
+		<echo message="${tab}${tab}Selected: [${input-osee-build-stage}]" />
+
+		<switch value="${input-osee-build-stage}">
+			<case value="all">
+				<!--<property name="osee-build-stage" value="osee-all" />-->
+				<property name="osee-build-directory" value="org.eclipse.osee.parent" />
+			</case>
+			<case value="all-ide">
+				<property name="osee-build-stage" value="osee-all-ide" />
+				<property name="osee-build-directory" value="org.eclipse.osee.ide.parent" />
+			</case>
+			<case value="server">
+				<property name="osee-build-stage" value="osee-server" />
+				<property name="osee-build-directory" value="org.eclipse.osee.x.parent" />
+			</case>
+			<case value="runtime">
+				<property name="osee-build-stage" value="osee-client-runtime" />
+				<property name="osee-build-directory" value="org.eclipse.osee.runtime.parent" />
+			</case>
+			<case value="ote">
+				<property name="osee-build-stage" value="osee-ote-client" />
+				<property name="osee-build-directory" value="org.eclipse.osee.ote.parent" />
+			</case>
+			<case value="osee-client">
+				<property name="osee-build-stage" value="osee-client" />
+				<property name="osee-build-directory" value="org.eclipse.osee.client.parent" />
+			</case>
+			<case value="coverage">
+				<property name="osee-build-stage" value="osee-coverage-client" />
+				<property name="osee-build-directory" value="org.eclipse.osee.coverage.parent" />
+			</case>
+			<case value="ats-client">
+				<property name="osee-build-stage" value="osee-ats-client" />
+				<property name="osee-build-directory" value="org.eclipse.osee.ats.parent" />
+			</case>
+			<case value="products">
+				<property name="osee-build-stage" value="osee-client-products" />
+				<property name="osee-build-directory" value="org.eclipse.osee.client.all.parent" />
+			</case>
+			<default>
+				<echo message="Build stage[${input-osee-build-stage}] is not recognized." />
+			</default>
+		</switch>
+		<var name="build-options" value=" " />
+		<if>
+			<isset property="osee-build-stage" />
+			<then>
+				<var name="build-options" value="${build-options}-Dosee-build-stage=${osee-build-stage}" />
+			</then>
+		</if>
+
+		<echo>--------------------------------------------------------------</echo>
+		<echo>OSEE BUILD - Build Options</echo>
+		<echo>--------------------------------------------------------------</echo>
+		<!--	SKIP PRODUCT BUILD -->
+		<input message="${tab}[input] Build OSEE RCP Product (slows down build)?" validargs="y,n" defaultvalue="${default-build-rcp-ide-product}" addproperty="input-build-rcp-ide-product">
+			<handler classname="org.apache.tools.ant.input.SecureInputHandler" />
+		</input>
+		<echo message="${tab}${tab}Selected: [${input-build-rcp-ide-product}]" />
+		<if>
+			<equals arg1="${input-build-rcp-ide-product}" arg2="n" />
+			<then>
+				<var name="build-options" value="${build-options} -Dskip-osee-client-all-product" />
+			</then>
+		</if>
+
+		<!--	STATIC ANALYSIS -->
+		<input message="${tab}[input] Perform Static Analysis?" validargs="y,n" defaultvalue="${default-static-analysis}" addproperty="input-static-analysis">
+			<handler classname="org.apache.tools.ant.input.SecureInputHandler" />
+		</input>
+		<echo message="${tab}${tab}Selected: [${input-static-analysis}]" />
+		<if>
+			<equals arg1="${input-static-analysis}" arg2="y" />
+			<then>
+				<var name="build-options" value="${build-options} -Dwith-static-analysis" />
+			</then>
+		</if>
+
+		<!--	COVERAGE -->
+		<input message="${tab}[input] Perform Code Coverage Analysis?" validargs="y,n" defaultvalue="${default-coverage-analysis}" addproperty="input-coverage-analysis">
+			<handler classname="org.apache.tools.ant.input.SecureInputHandler" />
+		</input>
+		<echo message="${tab}${tab}Selected: [${input-coverage-analysis}]" />
+		<if>
+			<equals arg1="${input-coverage-analysis}" arg2="y" />
+			<then>
+				<var name="build-options" value="${build-options} -Dwith-code-coverage" />
+			</then>
+		</if>
+
+		<echo>--------------------------------------------------------------</echo>
+		<echo>OSEE BUILD - Maven Options</echo>
+		<echo>--------------------------------------------------------------</echo>
+		<!--	 LIFECYCLE PHASE -->
+		<input message="${tab}[input] Maven lifecycle phase?" defaultvalue="${default-maven-lifecycle}" addproperty="input-maven-lifecycle">
+			<handler classname="org.apache.tools.ant.input.SecureInputHandler" />
+		</input>
+		<property name="maven-goal" value="${input-maven-lifecycle}" />
+
+		<echo message="${tab}${tab}Selected: [${maven-goal}]" />
+
+		<!--	DEBUG OPTIONS -->
+		<input message="${tab}[input] Maven options (-X -e)?" defaultvalue="${default-maven-options}" addproperty="input-maven-options">
+			<handler classname="org.apache.tools.ant.input.SecureInputHandler" />
+		</input>
+		<echo message="${tab}${tab}Selected: [${input-maven-options}]" />
+		<if>
+			<isset property="input-maven-options" />
+			<then>
+				<var name="build-options" value="${input-maven-options} ${build-options}" />
+			</then>
+		</if>
+
+		<!--	UPDATE CODE QUALITY STATS -->
+		<!--<input message="     [input] Upload code quality data after build [default: n]?" validargs="y,n" addproperty="input-sonar-analysis" />
+				 SONAR:  run-sonar -->
+		<!--	-Dmaven.test.skip=true -->
+		<!-- JAVADOC Generation: allow-javadoc -->
+
+		<property name="maven-options" value="${build-options}" />
+		<property name="pom-directory" value="${repository-base}/plugins/${osee-build-directory}" />
+	</target>
+
+	<target name="load-settings">
+		<property name="custom-settings" value="${store-settings-dir}/custom-settings.properties" />
+		<if>
+			<not>
+				<available file="${custom-settings}" />
+			</not>
+			<then>
+				<mkdir dir="${store-settings-dir}" />
+				<copy file="${default-settings-file}" tofile="${custom-settings}" />
+			</then>
+		</if>
+		<loadproperties taskname="load-settings" srcfile="${custom-settings}" />
+	</target>
+
+	<target name="save-settings">
+		<propertyfile taskname="save-settings" file="${custom-settings}" comment="OSEE Build Last Values Selected">
+			<entry key="default-osee-build-stage" value="${input-osee-build-stage}" />
+			<entry key="default-build-rcp-ide-product" value="${input-build-rcp-ide-product}" />
+			<entry key="default-static-analysis" value="${input-static-analysis}" />
+			<entry key="default-coverage-analysis" value="${input-coverage-analysis}" />
+			<entry key="default-maven-lifecycle" value="${input-maven-lifecycle}" />
+			<entry key="default-maven-options" value="${input-maven-options}" />
+		</propertyfile>
+	</target>
+
+	<target name="execute-build">
+		<echo>--------------------------------------------------------------</echo>
+		<echo>OSEE BUILD - Execute</echo>
+		<echo>--------------------------------------------------------------</echo>
+		<echo>Maven Goal: [${maven-goal}]</echo>
+		<echo>Maven Options: [${maven-options}]</echo>
+		<echo>Maven Parent Directory: [${pom-directory}]</echo>
+		<echo>Maven Command: [mvn ${maven-goal}${maven-options}]</echo>
+		<echo>--------------------------------------------------------------</echo>
+		<echo />
+		<maven basedir="${pom-directory}" options="${maven-options}" goal="${maven-goal}" resultproperty="maven.build.result" />
+	</target>
+
+	<!-- *************************************************************** -->
+	<!--   MAIN                                                          -->
+	<!-- *************************************************************** -->
+	<target name="run" depends="init,load-settings,get-inputs,save-settings,execute-build" />
+
+	<!-- *************************************************************** -->
+	<!--   MAVEN MACRO                                                   -->
+	<!-- *************************************************************** -->
+	<macrodef name="maven">
+		<attribute name="options" default="" />
+		<attribute name="goal" />
+		<attribute name="basedir" />
+		<attribute name="resultproperty" default="maven.result" />
+		<element name="args" implicit="true" optional="true" />
+		<sequential>
+			<java taskname="mvn" classname="org.codehaus.classworlds.Launcher" fork="true" dir="@{basedir}" resultproperty="@{resultproperty}">
+				<jvmarg value="-Xmx512m" />
+				<classpath>
+					<fileset dir="${maven.home}/boot">
+						<include name="*.jar" />
+					</fileset>
+					<fileset dir="${maven.home}/lib">
+						<include name="*.jar" />
+					</fileset>
+				</classpath>
+				<sysproperty key="classworlds.conf" value="${maven.home}/bin/m2.conf" />
+				<sysproperty key="maven.home" value="${maven.home}" />
+				<arg line="--batch-mode @{options} @{goal}" />
+			</java>
+		</sequential>
+	</macrodef>
+
+</project>
