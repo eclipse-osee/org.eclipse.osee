@@ -29,10 +29,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.ChecksumUtil;
@@ -399,11 +397,10 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
          Bundle bundle = iter.next();
 
          try {
-            bundle.getHeaders().get(OTE_ACTIVATION_POLICY);
-            //            if ("early".equalsIgnoreCase(oteActivationPolicy)) {
-            //               bundle.start();
-            //            }
-            bundle.start();
+            String entry = bundle.getHeaders().get("Fragment-Host");
+            if(entry == null){
+              bundle.start();
+            }
 
             // We got here because bundle.start did not exception
             runningBundles.add(bundle);
