@@ -17,12 +17,12 @@ import java.util.Calendar;
 import java.util.Date;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.nebula.widgets.calendarcombo.CalendarCombo;
-import org.eclipse.nebula.widgets.calendarcombo.CalendarListenerAdapter;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.CalendarWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.CalendarWidget.CalendarListener;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
@@ -39,7 +39,7 @@ public class XDate extends XWidget {
    private final ArrayList<ModifyListener> listeners = new ArrayList<ModifyListener>();
    private String defaultFormat = DateUtil.MMDDYYHHMM;
    private boolean requireFutureDate = false;
-   private CalendarCombo dateCombo;
+   private CalendarWidget dateCombo;
    private Composite parent;
    protected Date date;
 
@@ -91,17 +91,16 @@ public class XDate extends XWidget {
       if (!Lib.isWindows()) {
          style |= SWT.FLAT;
       }
-      dateCombo = new CalendarCombo(parent, style);
+      dateCombo = new CalendarWidget(parent, style);
       dateCombo.setEnabled(isEditable());
       GridData gd = new GridData();
       gd.widthHint = 100;
       if (date != null) {
          dateCombo.setDate(date);
       }
-      dateCombo.addCalendarListener(new CalendarListenerAdapter() {
+      dateCombo.addCalendarListener(new CalendarListener() {
          @Override
          public void dateChanged(Calendar newDate) {
-            super.dateChanged(newDate);
             if (newDate == null) {
                date = null;
             } else {

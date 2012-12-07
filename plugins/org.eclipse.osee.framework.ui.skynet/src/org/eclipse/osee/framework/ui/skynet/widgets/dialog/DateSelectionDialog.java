@@ -14,8 +14,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 import java.util.Calendar;
 import java.util.Date;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.nebula.widgets.calendarcombo.CalendarCombo;
-import org.eclipse.nebula.widgets.calendarcombo.CalendarListenerAdapter;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.CalendarWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.CalendarWidget.CalendarListener;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -58,12 +58,12 @@ public class DateSelectionDialog extends MessageDialog {
 
       new Label(filterComp, SWT.None).setText(dialogMessage);
 
-      final CalendarCombo dp = new CalendarCombo(filterComp, SWT.BORDER | SWT.SINGLE | SWT.FLAT);
+      final CalendarWidget dp = new CalendarWidget(filterComp, SWT.BORDER | SWT.SINGLE | SWT.FLAT);
       dp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       if (initialDate != null) {
          dp.setDate(initialDate);
       }
-      dp.addCalendarListener(new CalendarListenerAdapter() {
+      dp.addCalendarListener(new CalendarListener() {
          @Override
          public void dateChanged(Calendar date) {
             if (date == null) {
