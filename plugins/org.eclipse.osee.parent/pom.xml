@@ -42,6 +42,8 @@
 		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
 		<itemis-site>http://download.itemis.com/updates/releases/${xtext-version}</itemis-site>
+		
+		<osee-create-help-docs>true</osee-create-help-docs>
 	</properties>
 
 	<licenses>
@@ -521,16 +523,6 @@
 					</plugin>
 				</plugins>
 			</reporting>
-		</profile>
-
-		<profile>
-			<id>helpGeneration</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<update.osee.doc>true</update.osee.doc>
-			</properties>
 		</profile>
 
 		<profile>

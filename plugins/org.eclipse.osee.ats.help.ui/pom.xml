@@ -47,7 +47,7 @@
 								</taskdef>
 
 								<if>
-									<equals arg1="${update.osee.doc}" arg2="true" />
+									<equals arg1="${osee-create-help-docs}" arg2="true" />
 									<then>
 										<property name="compile_classpath" refid="maven.compile.classpath" />
 										<delete dir="images" />
@@ -75,7 +75,7 @@
 								</taskdef>
 
 								<if>
-									<equals arg1="${update.osee.doc}" arg2="true" />
+									<equals arg1="${osee-create-help-docs}" arg2="true" />
 									<then>
 
 										<if>
