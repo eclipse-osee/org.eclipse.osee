@@ -119,6 +119,7 @@ public class TableDataImpl implements TableData {
             afterRow();
          } catch (Exception ex) {
             handleExceptions(ex);
+            cols.add(ex.toString());
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
          return cols;
@@ -151,7 +152,7 @@ public class TableDataImpl implements TableData {
     * Subclasses should override this method (if needed) an evaluate the row of data for validity. It is the subclass's
     * opportunity to reject rows and remove them from the report. This method is called once for every row after it has
     * been generated in the next() method above.
-    *
+    * 
     * @param rowData - The row of data that was just generated.
     * @return Return TRUE if rowData is valid and should be included in the report. Return FALSE if rowData is invalid
     * (for any reason) and should not be included in the report.
@@ -167,7 +168,7 @@ public class TableDataImpl implements TableData {
     * This is nearly the same as validateRow() method (see above) but it is called after the key columns have been
     * incremented and BEFORE the row's data has been generated. Therefore, the subclass that overrides this should only
     * use the key column objects to determine if this row should be rejected or validated.
-    *
+    * 
     * @return Return symantics is the same as validateRow()
     * @throws OseeCoreException
     */
@@ -192,7 +193,7 @@ public class TableDataImpl implements TableData {
 
    /**
     * Subclasses should override this method if they wish to receive exceptions and error messages.
-    *
+    * 
     * @param ex The exception to handle
     */
    protected void handleExceptions(Exception ex) {
