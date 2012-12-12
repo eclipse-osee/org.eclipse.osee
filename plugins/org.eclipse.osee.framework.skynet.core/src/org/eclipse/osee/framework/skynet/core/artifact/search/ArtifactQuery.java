@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.*;
-import static org.eclipse.osee.framework.core.enums.LoadLevel.*;
-import static org.eclipse.osee.framework.skynet.core.artifact.LoadType.*;
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
+import static org.eclipse.osee.framework.core.enums.LoadLevel.FULL;
+import static org.eclipse.osee.framework.skynet.core.artifact.LoadType.INCLUDE_CACHE;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -176,8 +177,8 @@ public class ArtifactQuery {
     * @throws ArtifactDoesNotExist if no artifacts are found
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
-   public static Artifact getArtifactFromTypeAndName(IArtifactType artifactType, String artifactName, IOseeBranch branch) throws OseeCoreException {
-      return queryFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch).getOrCheckArtifact(
+   public static Artifact getArtifactFromTypeAndName(IArtifactType artifactType, String artifactName, IOseeBranch branch, QueryOption... options) throws OseeCoreException {
+      return queryFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch, options).getOrCheckArtifact(
          QueryType.GET);
    }
 
@@ -441,8 +442,9 @@ public class ArtifactQuery {
          300, null);
    }
 
-   private static ArtifactQueryBuilder queryFromTypeAndAttribute(IArtifactType artifactType, IAttributeType attributeType, String attributeValue, IOseeBranch branch) {
-      return new ArtifactQueryBuilder(artifactType, branch, FULL, new AttributeCriteria(attributeType, attributeValue));
+   private static ArtifactQueryBuilder queryFromTypeAndAttribute(IArtifactType artifactType, IAttributeType attributeType, String attributeValue, IOseeBranch branch, QueryOption... options) {
+      return new ArtifactQueryBuilder(artifactType, branch, FULL, new AttributeCriteria(attributeType, attributeValue,
+         options));
    }
 
    public static List<Artifact> getArtifactListFromTypeAndAttribute(IArtifactType artifactType, IAttributeType attributeType, Collection<String> attributeValues, IOseeBranch branch, int artifactCountEstimate) throws OseeCoreException {
