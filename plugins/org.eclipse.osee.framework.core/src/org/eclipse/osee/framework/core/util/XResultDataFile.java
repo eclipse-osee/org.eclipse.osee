@@ -15,8 +15,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.logging.Level;
+import org.eclipse.osee.framework.core.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * Used to log Info, Warning and Errors to multiple locations (logger, stderr/out and XResultView). Upon completion, a
@@ -30,7 +34,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  */
 public final class XResultDataFile extends XResultData {
 
-   OutputStreamWriter out = null;
+   private OutputStreamWriter out;
    private File file;
 
    public XResultDataFile() {
@@ -46,25 +50,35 @@ public final class XResultDataFile extends XResultData {
       clear();
    }
 
+   private File getDirectory() {
+      File directory = new File(System.getProperty("java.io.tmpdir"));
+      if (!directory.canWrite()) {
+         directory = new File(System.getProperty("user.home"));
+      }
+      return directory;
+
+   }
+
    @Override
    public void clear() {
       super.clear();
-      String filename = System.getProperty("java.io.tmpdir") + GUID.create() + ".txt";
-      file = new File(filename);
+      String filename = String.format("%s.txt", GUID.create());
+      file = new File(getDirectory(), filename);
       try {
          out = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
       } catch (Exception ex) {
-         System.out.println("Execption - " + ex.getLocalizedMessage());
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
    @Override
    public void addRaw(String str) {
-      char[] chars = str.toCharArray();
-      try {
-         out.write(chars, 0, chars.length);
-      } catch (IOException ex) {
-         System.out.println("Execption - " + ex.getLocalizedMessage());
+      if (Strings.isValid(str)) {
+         try {
+            out.write(str);
+         } catch (IOException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
       }
    }
 
@@ -79,12 +93,19 @@ public final class XResultDataFile extends XResultData {
    @Override
    public String toString() {
       Lib.close(out);
+      String toReturn = null;
       try {
-         return Lib.fileToString(file);
+         toReturn = Lib.fileToString(file);
       } catch (IOException ex) {
-         System.out.println("Execption - " + ex.getLocalizedMessage());
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      return null;
+      return toReturn;
+   }
+
+   @Override
+   protected void finalize() throws Throwable {
+      dispose();
+      super.finalize();
    }
 
 }

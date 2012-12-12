@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.core.util.XResultDataFile;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -122,7 +122,7 @@ public class CreateTasksOperationTest {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
             artifactNamePrefix + " - testCreateTasksOperation");
-      XResultDataFile resultData = new XResultDataFile();
+      XResultData resultData = new XResultData();
       resultData.clear();
 
       //Notice that the Actionable Item used is what will determine which TeamWF the CreateTasksOperation will chose
@@ -248,8 +248,11 @@ public class CreateTasksOperationTest {
          IAtsVersion verArt4 = AtsTestUtil.getVerArt4();
          verArt4.setBaselineBranchGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
          verArt4.setAllowCreateBranch(true);
+
          reqTeamWf = AtsTestUtil.getTeamWf4();
          Result result = AtsBranchManagerCore.createWorkingBranch_Validate(reqTeamWf);
+         Assert.assertTrue(result.isTrue());
+
          Job createBranchJob = AtsBranchManagerCore.createWorkingBranch_Create(reqTeamWf);
          createBranchJob.join();
          int count = 0;

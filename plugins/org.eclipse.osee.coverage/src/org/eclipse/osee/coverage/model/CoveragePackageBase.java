@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  */
 public abstract class CoveragePackageBase extends NamedIdentity<String> implements ICoverage, ICoverageUnitProvider {
    protected final List<CoverageUnit> coverageUnits = new CopyOnWriteArrayList<CoverageUnit>();
-   final XResultDataFile logResultData = new XResultDataFile(false);
+   private final XResultDataFile logResultData = new XResultDataFile(false);
    boolean editable = true;
    protected final CoverageOptionManager coverageOptionManager;
    protected ICoverageUnitFileContentsProvider coverageUnitFileContentsProvider;
