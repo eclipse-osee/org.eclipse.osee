@@ -11,7 +11,9 @@
 package org.eclipse.osee.coverage.action;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.coverage.event.CoverageEventManager;
 import org.eclipse.osee.coverage.event.CoverageEventType;
 import org.eclipse.osee.coverage.event.CoveragePackageEvent;
@@ -29,7 +31,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.CheckBoxDialog;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
@@ -59,20 +61,22 @@ public class DeleteCoveragePackageAction extends Action {
          CoveragePackageArtifactListDialog dialog =
             new CoveragePackageArtifactListDialog("Delete Package", "Select Package");
          dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts(branch));
-         if (dialog.open() == 0) {
+         if (dialog.open() == Window.OK) {
             if (dialog.getResult().length == 0) {
                AWorkbench.popup("Must select coverage package.");
                return;
             }
             Artifact coveragePackageArtifact = (Artifact) dialog.getResult()[0];
             CoveragePackage coveragePackage = OseeCoveragePackageStore.get(coveragePackageArtifact);
-            CheckBoxDialog cDialog =
-               new CheckBoxDialog(
+            MessageDialog cDialog =
+               new MessageDialog(
+                  Displays.getActiveShell(),
                   "Delete Package",
+                  null,
                   String.format(
-                     "This will delete Coverage Package and all realted Coverage Units and Test Units.\n\nDelete Package [%s]?",
-                     coveragePackage.getName()), null);
-            if (cDialog.open() == 0) {
+                     "This will delete Coverage Package and all related Coverage Units and Test Units.\n\nDelete Package [%s]?",
+                     coveragePackage.getName()), MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+            if (cDialog.open() == Window.OK) {
                SkynetTransaction transaction =
                   TransactionManager.createTransaction(branch, "Delete Coverage Package - " + coveragePackage.getName());
                CoveragePackageEvent coverageEvent =

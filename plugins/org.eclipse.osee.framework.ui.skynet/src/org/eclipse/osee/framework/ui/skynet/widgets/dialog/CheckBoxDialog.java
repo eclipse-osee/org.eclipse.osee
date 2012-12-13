@@ -53,17 +53,15 @@ public class CheckBoxDialog extends MessageDialog {
       composite.setLayout(new GridLayout(2, false));
       composite.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
 
-      if (Strings.isValid(checkBoxMessage)) {
-         checkButton = new Button(composite, SWT.CHECK);
-         checkButton.setText(checkBoxMessage);
-         checkButton.addSelectionListener(new SelectionAdapter() {
+      checkButton = new Button(composite, SWT.CHECK);
+      checkButton.setText(Strings.isValid(checkBoxMessage) ? checkBoxMessage : "<NONE>");
+      checkButton.addSelectionListener(new SelectionAdapter() {
 
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-               checked = checkButton.getSelection();
-            }
-         });
-      }
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            checked = checkButton.getSelection();
+         }
+      });
 
       return composite;
    }
