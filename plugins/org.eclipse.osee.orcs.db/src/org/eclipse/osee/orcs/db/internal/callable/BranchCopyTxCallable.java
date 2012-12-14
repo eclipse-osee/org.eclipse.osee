@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.CreateBranchData;
+import org.eclipse.osee.orcs.db.internal.accessor.UpdatePreviousTxCurrent;
 import org.eclipse.osee.orcs.db.internal.loader.RelationalConstants;
 
 /**
@@ -122,6 +123,10 @@ public final class BranchCopyTxCallable extends DatabaseTxCallable<Branch> {
          txCache.cache(record);
 
          populateTransaction(0.30, connection, record.getId(), internalBranch, savedTx);
+
+         UpdatePreviousTxCurrent updater =
+            new UpdatePreviousTxCurrent(getDatabaseService(), internalBranch, connection);
+         updater.updateTxNotCurrentsFromTx(record.getId());
 
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
