@@ -494,4 +494,20 @@
             className="org.eclipse.osee.ats.operation.CreateActionFromTaskBlam">
       </Operation>
    </extension>
+   <extension
+         id="PortPairsBlam"
+         name="PortPairsBlam"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.ats.PortPairsBlam">
+      </Operation>
+   </extension>
+   <extension
+         id="CreatePortingWorkflows"
+         name="CratePortingWorkflows"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.ats.WorkflowPortingBlam">
+      </Operation>
+   </extension>
 </plugin>
