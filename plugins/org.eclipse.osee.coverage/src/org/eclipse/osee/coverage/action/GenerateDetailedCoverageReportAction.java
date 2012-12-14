@@ -50,7 +50,7 @@ public class GenerateDetailedCoverageReportAction extends Action {
 
    private final ICoveragePackageHandler coveragePackageHandler;
    private final Collection<XViewerColumn> columns = Arrays.asList(CoverageXViewerFactory.Namespace,
-      CoverageXViewerFactory.Coverage_Method, CoverageXViewerFactory.Guid, CoverageXViewerFactory.Name);
+      CoverageXViewerFactory.Coverage_Method, CoverageXViewerFactory.Name);
 
    public GenerateDetailedCoverageReportAction(ICoveragePackageHandler coveragePackageHandler) {
       super("Generate Detailed Coverage Report");
