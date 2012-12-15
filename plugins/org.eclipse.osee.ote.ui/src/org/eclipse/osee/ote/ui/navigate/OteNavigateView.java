@@ -10,12 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.ui.navigate;
 
+import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IRegistryEventListener;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite;
@@ -65,22 +68,38 @@ public class OteNavigateView extends ViewPart {
       extensionRegistry.addListener(new IRegistryEventListener() {
          @Override
          public void added(IExtension[] extensions) {
-            refresh();
+        	try{
+        		refresh();
+        	} catch (Exception ex){
+        		OseeLog.log(getClass(), Level.SEVERE, ex);
+        	}
          }
 
          @Override
          public void added(IExtensionPoint[] extensionPoints) {
-            refresh();
+        	 try{
+         		refresh();
+         	} catch (Exception ex){
+         		OseeLog.log(getClass(), Level.SEVERE, ex);
+         	}
          }
 
          @Override
          public void removed(IExtension[] extensions) {
-            refresh();
+        	 try{
+         		refresh();
+         	} catch (Exception ex){
+         		OseeLog.log(getClass(), Level.SEVERE, ex);
+         	}
          }
 
          @Override
          public void removed(IExtensionPoint[] extensionPoints) {
-            refresh();
+        	 try{
+         		refresh();
+         	} catch (Exception ex){
+         		OseeLog.log(getClass(), Level.SEVERE, ex);
+         	}
          }
       }, "org.eclipse.osee.framework.ui.plugin.XNavigateItem");
    }

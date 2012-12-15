@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -67,7 +68,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
          IWorkspace workspace = service.getWorkspace();
          workspaceListener = new JarChangeResourceListener<WorkspaceStarterNature>(WorkspaceStarterNature.NATURE_ID, SafeWorkspaceTracker.this);
          try {
-            loadBundles();
+            loadBundles(monitor);
          } catch (CoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
@@ -113,7 +114,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
    }
 
    @Override
-   public void loadBundles() throws CoreException {
+   public void loadBundles(IProgressMonitor monitor) throws CoreException {
       for (WorkspaceStarterNature starterNature : WorkspaceStarterNature.getWorkspaceProjects()) {
          for (URL url : starterNature.getBundles()) {
             try {
@@ -124,8 +125,9 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
             }
          }
       }
-      bundleCoordinator.updateBundles();
-      bundleCoordinator.installLatestBundles();
+      SubMonitor master = SubMonitor.convert(monitor, 100);
+      bundleCoordinator.updateBundles(master.newChild(10));
+      bundleCoordinator.installLatestBundles(master.newChild(90));
    }
 
    @Override

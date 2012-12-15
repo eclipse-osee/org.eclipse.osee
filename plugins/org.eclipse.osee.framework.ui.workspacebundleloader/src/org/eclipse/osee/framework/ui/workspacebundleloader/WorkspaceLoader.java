@@ -11,13 +11,14 @@
 package org.eclipse.osee.framework.ui.workspacebundleloader;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.osgi.framework.BundleException;
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public interface WorkspaceLoader {
-   public void loadBundles() throws CoreException, BundleException;
+   public void loadBundles(IProgressMonitor monitor) throws CoreException, BundleException;
 
    public void unloadBundles();
 }

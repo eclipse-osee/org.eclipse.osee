@@ -2,8 +2,11 @@
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -16,8 +19,28 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.OseeData;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IPerspectiveDescriptor;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.WorkbenchException;
+import org.eclipse.ui.XMLMemento;
+import org.eclipse.ui.views.IViewDescriptor;
+import org.eclipse.ui.views.IViewRegistry;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -28,6 +51,10 @@ import org.osgi.framework.wiring.FrameworkWiring;
 
 public class WorkspaceBundleLoadCoordinator {
 
+	private static final String TAG_VIEW = "view";
+	private static final String TAG_PERSPECTIVE = "perspective";
+	private static final String TAG_OTE_PRECOMPILED = "OTEPrecompiled";
+	private static final String OTE_MEMENTO = "OTEMemento";
 	private File temporaryBundleLocationFolder;
 	private Set<String> bundlesToCheck;
 	private BundleCollection managedArea = new BundleCollection();
@@ -46,7 +73,6 @@ public class WorkspaceBundleLoadCoordinator {
 			cleanOutDirectory();
 		}
 		
-		
 		Bundle bundle = FrameworkUtil.getBundle(getClass());
 		for(Bundle findit:bundle.getBundleContext().getBundles()){
 			wiring = findit.adapt(FrameworkWiring.class);
@@ -54,32 +80,6 @@ public class WorkspaceBundleLoadCoordinator {
 				break;
 			}
 		}
-		
-		Thread th = new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				int lastSize = 0;
-				while(true){
-					try {
-						Thread.sleep(5000);
-					} catch (InterruptedException e) {
-					}
-					if(lastSize == bundlesToCheck.size()){
-						if(lastSize != 0){
-							updateBundles();
-							installLatestBundles();
-						}
-					} else {
-						lastSize = bundlesToCheck.size();
-					}
-					
-				}
-			}
-		});
-		th.setName("OTE BundleLoad Check");
-		th.setDaemon(true);
-		th.start();
 	}
 	
 	/**
@@ -110,17 +110,118 @@ public class WorkspaceBundleLoadCoordinator {
 		return temporaryBundleLocationFolder;
 	}
 	
+	
+	
 	public synchronized void uninstallBundles(){
-		for(BundleInfoLite info:managedArea.getInstalledBundles()){
-			try {
-				info.uninstall();
-			} catch (BundleException e) {
-				OseeLog.log(WorkspaceBundleLoadCoordinator.class, Level.WARNING, e);
+		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable(){
+			@Override
+			public void run() {
+				saveAndCloseManagedViews();
+				for(BundleInfoLite info:managedArea.getInstalledBundles()){
+					try {
+						info.uninstall();
+					} catch (BundleException e) {
+						OseeLog.log(WorkspaceBundleLoadCoordinator.class, Level.WARNING, e);
+					}
+				}
 			}
-		}
+		});
+		
 		if(wiring != null){
 			wiring.refreshBundles(null);
 		}
+	}
+
+	private void saveAndCloseManagedViews() {
+		Set<String> managedViewIds = determineManagedViews();
+		
+		IWorkbench workbench = PlatformUI.getWorkbench();     
+		if (managedArea.getInstalledBundles().size() > 0 && workbench != null && workbench.getActiveWorkbenchWindow() != null){
+			IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+			IPerspectiveDescriptor originalPerspective = page.getPerspective();
+			XMLMemento memento = XMLMemento.createWriteRoot(TAG_OTE_PRECOMPILED);
+			//find the view in other perspectives
+			IPerspectiveDescriptor[] pd = page.getOpenPerspectives();
+			for (int i = 0; i < pd.length; i++) {
+				try {
+					page.setPerspective(pd[i]);
+				} catch (Exception ex) {
+					// Ignore, this can get an NPE in Eclipse, see bug 4454
+				} 
+				IMemento perspectiveMemento = null;
+				try{
+					perspectiveMemento = memento.createChild(TAG_PERSPECTIVE);
+					perspectiveMemento.putString("id", pd[i].getId());
+				} catch (Exception ex){
+					//Ignore, the perspective id is invalid xml
+				}
+				IViewReference[] activeReferences = page.getViewReferences();
+				for (IViewReference viewReference : activeReferences) {
+					if (managedViewIds.contains(viewReference.getId())){
+						if(perspectiveMemento != null){
+							try{
+								IMemento viewMemento = perspectiveMemento.createChild(TAG_VIEW);
+								viewMemento.putString("id", viewReference.getId());
+								String secondaryId = viewReference.getSecondaryId();
+								if(secondaryId != null){
+									viewMemento.putString("secondId", secondaryId);
+								}
+								IWorkbenchPart part = viewReference.getPart(false);
+								if(part instanceof IViewPart){
+									IViewPart viewPart = (IViewPart)part;
+									viewPart.saveState(viewMemento);
+								}
+							} catch (Exception ex){
+								//Ignore, we failed during view save
+							}
+						}
+						page.hideView(viewReference);
+					}
+				}
+			}
+			
+			saveMementoToFile(memento);
+			page.setPerspective(originalPerspective);
+		}
+	}
+
+	private Set<String> determineManagedViews() {
+		Set<String> managedViewIds = new HashSet<String>();
+		IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
+		IExtensionPoint extensionPoint = extensionRegistry.getExtensionPoint("org.eclipse.ui.views");
+		IExtension[] extensions = extensionPoint.getExtensions();
+		for(IExtension ex:extensions){
+			String name = ex.getContributor().getName();
+			if(managedArea.getByBundleName(name) != null){
+				IConfigurationElement[] elements = ex.getConfigurationElements();
+				for(IConfigurationElement el:elements){
+					if(el.getName().equals(TAG_VIEW)){
+						String id = el.getAttribute("id");
+						if(id != null){
+							managedViewIds.add(id);
+						}
+					}
+				}
+			}
+		}
+		return managedViewIds;
+	}
+	
+	private boolean saveMementoToFile(XMLMemento memento) {
+		File stateFile = OseeData.getFile(OTE_MEMENTO);
+		if (stateFile == null) {
+			return false;
+		}
+		try {
+			FileOutputStream stream = new FileOutputStream(stateFile);
+			OutputStreamWriter writer = new OutputStreamWriter(stream, "utf-8"); //$NON-NLS-1$
+			memento.save(writer);
+			writer.close();
+		} catch (IOException e) {
+			stateFile.delete();
+			return false;
+		}
+		return true;
 	}
 	
 	 public static void copyFile(File source, File destination) throws IOException {
@@ -240,19 +341,23 @@ public class WorkspaceBundleLoadCoordinator {
 		this.bundlesToCheck.add(urlString);
 	}
 	
-	public synchronized void updateBundles(){
+	public synchronized void updateBundles(SubMonitor subMonitor){
+		final SubMonitor master = SubMonitor.convert(subMonitor, 100);
 		List<BundleInfoLite> deltas = determineDeltasBetweenBundlesToLoad();
+		master.worked(30);
 		List<BundleInfoLite> lockedFiles = copyDeltasToManagedFolder(deltas);
+		master.worked(65);
 		for(BundleInfoLite info: lockedFiles){
 			addBundleToCheck(info.getSystemLocation().toString());
 			OseeLog.log(WorkspaceBundleLoadCoordinator.class, Level.WARNING, String.format("Unable to copy and load locked file: [%s]", info.getSystemLocation().toString()));
 		}
+		master.worked(5);
 	}
 	
-	public synchronized void installLatestBundles(){
+	public synchronized void installLatestBundles(SubMonitor subMonitor){
+		final SubMonitor master = SubMonitor.convert(subMonitor, 100);
 		final List<BundleInfoLite> bundles = managedArea.getLatestBundles();
 		Collection<Bundle> bundlesToRefresh = new ArrayList<Bundle>();
-		Bundle systemBundle = null;
 		for(BundleInfoLite info:bundles){
 			if(!info.isInstalled()){
 				try {
@@ -271,27 +376,148 @@ public class WorkspaceBundleLoadCoordinator {
 				} 
 			}
 		}
+		
 		if(wiring != null && bundlesToRefresh.size() > 0){
 			wiring.refreshBundles(bundlesToRefresh, new FrameworkListener(){
 				@Override
 				public void frameworkEvent(FrameworkEvent event) {
 					if(FrameworkEvent.PACKAGES_REFRESHED == event.getType()){
-						startBundles(bundles);
+						startBundles(bundles, master.newChild(80));
+						waitForViewsToBeRegistered(master.newChild(15));
+						PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable(){
+							@Override
+							public void run() {
+								restoreStateFromMemento(master.newChild(5));
+							}
+						});
 					}
 				}
 			});
 		} else {
-			startBundles(bundles);
+			startBundles(bundles, master.newChild(80));
+			waitForViewsToBeRegistered(master.newChild(15));
+			final SubMonitor restore = master.newChild(5);
+			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable(){
+				@Override
+				public void run() {
+					restoreStateFromMemento(restore);
+				}
+			});
 		}
-		
 	}
 	
-	private void startBundles(Collection<BundleInfoLite> bundles){
+	private boolean waitForViewsToBeRegistered(SubMonitor subMonitor){
+		SubMonitor monitor = SubMonitor.convert(subMonitor, 10);
+		monitor.setTaskName("Waiting for views to register.");
+		for(int i = 0; i < 10; i++){
+			monitor.worked(1);
+			CheckViewsRegistered check = new CheckViewsRegistered();
+			PlatformUI.getWorkbench().getDisplay().syncExec(check);
+			if(check.isLoaded()){
+				return true;
+			} else {
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return false;
+	}
+
+	private class CheckViewsRegistered implements Runnable {
+
+		private volatile boolean isLoaded = false;
+		
+		@Override
+		public void run() {
+			IWorkbench workbench = PlatformUI.getWorkbench();     
+			if (managedArea.getInstalledBundles().size() > 0 && workbench != null && workbench.getActiveWorkbenchWindow() != null){
+				IViewRegistry registry = workbench.getViewRegistry();
+				Set<String> managedViews = determineManagedViews();
+				for(String viewId:managedViews){
+					try{
+						IViewDescriptor desc = registry.find(viewId);
+						if(desc == null){
+							return;
+						}
+					} catch (Exception ex){
+						return;
+					}
+				}
+				isLoaded = true;
+			}
+			
+		}
+		
+		public boolean isLoaded(){
+			return isLoaded;
+		}
+	}
+
+
+	
+	private void restoreStateFromMemento(SubMonitor restore) {
+		File mementoFile = OseeData.getFile(OTE_MEMENTO);
+		if(mementoFile.exists()){
+			try {
+				IWorkbench workbench = PlatformUI.getWorkbench();     
+				if (managedArea.getInstalledBundles().size() > 0 && workbench != null && workbench.getActiveWorkbenchWindow() != null){
+					IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+					IPerspectiveDescriptor originalPerspective = page.getPerspective();
+					IPerspectiveDescriptor[] pds = page.getOpenPerspectives();
+
+					XMLMemento memento = XMLMemento.createReadRoot(new FileReader(mementoFile));
+					IMemento[] perspectives = memento.getChildren(TAG_PERSPECTIVE);
+					if(perspectives != null){
+						for(IMemento perspective:perspectives){
+							IMemento[] views = perspective.getChildren(TAG_VIEW);
+							if(views != null && views.length > 0){
+								String perspectiveId = perspective.getString("id");
+								for(IPerspectiveDescriptor pd:pds){
+									if(pd.getId().equals(perspectiveId)){
+										page.setPerspective(pd);
+										for(IMemento view:views){
+											String viewId = view.getString("id");
+											String secondId = view.getString("secondId");
+											if(viewId != null){
+												//show view
+												try {
+													page.showView(viewId, secondId, IWorkbenchPage.VIEW_ACTIVATE);
+												} catch (PartInitException ex) {
+													System.err.println("COULD NOT FIND " + viewId + ", with ID # = " + secondId);
+													ex.printStackTrace();
+												}
+											}
+										}
+										break;
+									}
+								}
+							}
+						}
+					}
+
+					page.setPerspective(originalPerspective);
+				}
+
+			} catch (WorkbenchException e) {
+				e.printStackTrace();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void startBundles(Collection<BundleInfoLite> bundles, SubMonitor subMonitor){
+		final SubMonitor master = SubMonitor.convert(subMonitor, bundles.size() * 3);
 		BundleContext context = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
+		master.setTaskName("Installing Bundles");
 		for(BundleInfoLite info:bundles){
 			if(!info.isInstalled()){
 				try {
 					info.install(context);					
+					master.worked(2);
 				} catch (BundleException e) {
 				} catch (IOException e) {
 				} 
@@ -300,7 +526,8 @@ public class WorkspaceBundleLoadCoordinator {
 		for(BundleInfoLite info:bundles){
 			if(!info.isStarted()){
 				try {
-					info.start(context);					
+					info.start(context);
+					master.worked(1);
 				} catch (BundleException e) {
 				} 
 			}
