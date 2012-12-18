@@ -133,6 +133,56 @@ public class WorkStateProviderImplTest {
    }
 
    @Test
+   public void testSetAssignees_nextStateNotification() throws OseeCoreException {
+      // create state with two assignees
+      provider.addState(new WorkStateImpl("endorse"));
+      provider.setCurrentStateName("endorse");
+      List<MockAtsUser> currentAssignees = Arrays.asList(joe, steve);
+      provider.setAssignees(currentAssignees);
+
+      // create next state with no assignees
+      provider.addState(new WorkStateImpl("analyze"));
+
+      final List<IAtsUser> notify = new ArrayList<IAtsUser>();
+      IAtsNotificationListener listener = new IAtsNotificationListener() {
+         @Override
+         public void notifyAssigned(List<IAtsUser> notifyAssignees) {
+            notify.addAll(notifyAssignees);
+         }
+      };
+      provider.setNotificationListener(listener);
+
+      provider.setAssignees("analyze", currentAssignees);
+      Assert.assertTrue(provider.getAssignees().contains(joe));
+      Assert.assertTrue(provider.getAssignees().contains(steve));
+      Assert.assertEquals("shouldn't notify anyone previously assigned", 0, notify.size());
+   }
+
+   @Test
+   public void testSetAssignees_sameStateNotification() throws OseeCoreException {
+      // create state with two assignees
+      provider.addState(new WorkStateImpl("endorse"));
+      provider.setCurrentStateName("endorse");
+      List<MockAtsUser> currentAssignees = Arrays.asList(joe);
+      provider.setAssignees(currentAssignees);
+
+      final List<IAtsUser> notify = new ArrayList<IAtsUser>();
+      IAtsNotificationListener listener = new IAtsNotificationListener() {
+         @Override
+         public void notifyAssigned(List<IAtsUser> notifyAssignees) {
+            notify.addAll(notifyAssignees);
+         }
+      };
+      provider.setNotificationListener(listener);
+
+      List<MockAtsUser> newAssignees = Arrays.asList(joe, steve);
+      provider.setAssignees("endorse", newAssignees);
+      Assert.assertTrue(provider.getAssignees().contains(joe));
+      Assert.assertTrue(provider.getAssignees().contains(steve));
+      Assert.assertEquals("should notify new assignee steve", 1, notify.size());
+   }
+
+   @Test
    public void testAddState_exception() {
       provider.addState(new WorkStateImpl("endorse"));
 

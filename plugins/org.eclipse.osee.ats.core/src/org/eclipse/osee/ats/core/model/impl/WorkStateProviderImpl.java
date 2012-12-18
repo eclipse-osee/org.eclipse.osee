@@ -153,6 +153,9 @@ public class WorkStateProviderImpl implements WorkStateProvider {
       setAssignees(getCurrentStateName(), assignees);
    }
 
+   /**
+    * Set assignees for stateName and notify any newly added assignees
+    */
    @Override
    public void setAssignees(String stateName, List<? extends IAtsUser> assignees) throws OseeCoreException {
       if (assignees == null) {
@@ -163,30 +166,30 @@ public class WorkStateProviderImpl implements WorkStateProvider {
             throw new OseeArgumentException("Can not assign workflow to Guest");
          }
       }
-      WorkState state = getState(stateName);
-      List<IAtsUser> currentAssignees = new LinkedList<IAtsUser>();
-      currentAssignees.addAll(state.getAssignees());
 
-      List<IAtsUser> notifyAssignees = new ArrayList<IAtsUser>();
-      // Add new assignees
-      for (IAtsUser user : assignees) {
-         if (!currentAssignees.contains(user)) {
-            state.addAssignee(user);
-            notifyAssignees.add(user);
-         }
-      }
-      // Delete removed assignees
-      for (IAtsUser user : currentAssignees) {
-         if (!assignees.contains(user)) {
-            state.removeAssignee(user);
-         }
-      }
+      // Note: current and next state could be same
+      WorkState currState = getState(getCurrentStateName());
+      List<IAtsUser> currAssignees = currState.getAssignees();
+
+      WorkState nextState = getState(stateName);
+      List<IAtsUser> nextAssignees = new ArrayList<IAtsUser>(assignees);
+
+      List<IAtsUser> notifyNewAssignees = new ArrayList<IAtsUser>(nextAssignees);
+      notifyNewAssignees.removeAll(currAssignees);
+
+      //Update assignees for state
+      nextState.setAssignees(nextAssignees);
+
+      //Notify users who are being assigned to the state
       if (listener != null) {
-         listener.notifyAssigned(notifyAssignees);
+         listener.notifyAssigned(notifyNewAssignees);
       }
+
+      // Remove UnAssigned if part of assignees
       if (getAssignees().size() > 1 && getAssignees().contains(AtsUsers.getUnAssigned())) {
          removeAssignee(getCurrentStateName(), AtsUsers.getUnAssigned());
       }
+
    }
 
    @Override
