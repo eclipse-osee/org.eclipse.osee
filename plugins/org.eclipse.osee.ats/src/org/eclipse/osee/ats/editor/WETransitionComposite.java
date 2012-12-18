@@ -200,7 +200,7 @@ public class WETransitionComposite extends Composite {
          }
 
          @Override
-         public Collection<? extends IAtsUser> getToAssignees() throws OseeCoreException {
+         public Collection<? extends IAtsUser> getToAssignees(AbstractWorkflowArtifact awa) throws OseeCoreException {
             return awa.getTransitionAssignees();
          }
 

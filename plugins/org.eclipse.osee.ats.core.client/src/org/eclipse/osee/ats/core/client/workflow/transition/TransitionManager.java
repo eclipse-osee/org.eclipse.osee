@@ -3,11 +3,13 @@
  */
 package org.eclipse.osee.ats.core.client.workflow.transition;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -52,6 +54,8 @@ public class TransitionManager {
    private SkynetTransaction transaction;
    private IAtsUser transitionAsUser;
    private Date transitionOnDate;
+   private final Map<AbstractWorkflowArtifact, List<IAtsUser>> awasToAssignees =
+      new HashMap<AbstractWorkflowArtifact, List<IAtsUser>>();
 
    public TransitionManager(ITransitionHelper helper) {
       this(helper, null);
@@ -188,7 +192,7 @@ public class TransitionManager {
       // Check extension points for valid transition
       for (ITransitionListener listener : TransitionListeners.getListeners()) {
          try {
-            listener.transitioning(results, awa, fromStateDef, toStateDef, helper.getToAssignees());
+            listener.transitioning(results, awa, fromStateDef, toStateDef, getToAssignees(awa, toStateDef));
             if (results.isCancelled() || !results.isEmpty()) {
                continue;
             }
@@ -201,11 +205,14 @@ public class TransitionManager {
 
       }
 
+      // clear cache, so can be re-computed if above extension calls changed assignees
+      awasToAssignees.remove(awa);
+
       // Check again in case first check made changes that would now keep transition from happening
       if (results.isEmpty()) {
          for (ITransitionListener listener : TransitionListeners.getListeners()) {
             try {
-               listener.transitioning(results, awa, fromStateDef, toStateDef, helper.getToAssignees());
+               listener.transitioning(results, awa, fromStateDef, toStateDef, getToAssignees(awa, toStateDef));
                if (results.isCancelled() || !results.isEmpty()) {
                   continue;
                }
@@ -279,22 +286,10 @@ public class TransitionManager {
                   }
                   logStateStartedEvent(awa, toState, transitionDate, transitionUser);
 
-                  // Get transition to assignees
-                  List<IAtsUser> toAssignees = new LinkedList<IAtsUser>();
-                  if (!toState.getStateType().isCompletedOrCancelledState()) {
-                     if (helper.getToAssignees() != null) {
-                        toAssignees.addAll(helper.getToAssignees());
-                     }
-                     if (toAssignees.contains(AtsUsers.getUnAssigned())) {
-                        toAssignees.remove(AtsUsers.getUnAssigned());
-                        toAssignees.add(AtsUsersClient.getUser());
-                     }
-                     if (toAssignees.isEmpty()) {
-                        toAssignees.add(AtsUsersClient.getUser());
-                     }
-                  }
+                  // Get transition to assignees, do some checking to ensure someone is assigneed and UnAssigned
+                  List<? extends IAtsUser> updatedAssigees = getToAssignees(awa, toState);
 
-                  awa.getStateMgr().transitionHelper(toAssignees, fromState, toState, completedCancellationReason);
+                  awa.getStateMgr().transitionHelper(updatedAssigees, fromState, toState, completedCancellationReason);
 
                   if (awa.isValidationRequired() && awa.isTeamWorkflow()) {
                      ValidateReviewManager.createValidateReview((TeamWorkFlowArtifact) awa, false, transitionDate,
@@ -304,11 +299,11 @@ public class TransitionManager {
                   // Persist
                   awa.persist(transaction);
 
-                  awa.transitioned(fromState, toState, helper.getToAssignees(), transaction);
+                  awa.transitioned(fromState, toState, updatedAssigees, transaction);
 
                   // Notify extension points of transition
                   for (ITransitionListener listener : TransitionListeners.getListeners()) {
-                     listener.transitioned(awa, fromState, toState, helper.getToAssignees(), transaction);
+                     listener.transitioned(awa, fromState, toState, updatedAssigees, transaction);
                   }
                   if (toState.getStateType().isCompletedOrCancelledState()) {
                      awa.clearImplementersCache();
@@ -509,6 +504,41 @@ public class TransitionManager {
 
    public void setTransitionOnDate(Date transitionOnDate) {
       this.transitionOnDate = transitionOnDate;
+   }
+
+   /**
+    * Get transition to assignees. Verify that UnAssigned is not selected with another assignee. Ensure an assignee is
+    * entered, else use current user or UnAssigneed if current user is SystemUser.
+    */
+   public List<? extends IAtsUser> getToAssignees(AbstractWorkflowArtifact awa, IAtsStateDefinition toState) throws OseeCoreException {
+      List<IAtsUser> assignees = awasToAssignees.get(awa);
+      if (assignees != null && toState.getStateType().isCompletedOrCancelledState()) {
+         assignees.clear();
+      }
+      if (assignees == null) {
+         assignees = new ArrayList<IAtsUser>();
+         awasToAssignees.put(awa, assignees);
+         if (!toState.getStateType().isCompletedOrCancelledState()) {
+            Collection<? extends IAtsUser> requestedAssignees = helper.getToAssignees(awa);
+            if (requestedAssignees != null) {
+               for (IAtsUser user : requestedAssignees) {
+                  assignees.add(user);
+               }
+            }
+            if (assignees.contains(AtsUsers.getUnAssigned())) {
+               assignees.remove(AtsUsers.getUnAssigned());
+               assignees.add(AtsUsersClient.getUser());
+            }
+            if (assignees.isEmpty()) {
+               if (helper.isSystemUser()) {
+                  assignees.add(AtsUsers.getUnAssigned());
+               } else {
+                  assignees.add(AtsUsersClient.getUser());
+               }
+            }
+         }
+      }
+      return assignees;
    }
 
 }

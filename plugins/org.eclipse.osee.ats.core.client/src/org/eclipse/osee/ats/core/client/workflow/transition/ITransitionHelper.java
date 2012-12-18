@@ -44,7 +44,7 @@ public interface ITransitionHelper {
     */
    public Result handleExtraHoursSpent();
 
-   public Collection<? extends IAtsUser> getToAssignees() throws OseeCoreException;
+   public Collection<? extends IAtsUser> getToAssignees(AbstractWorkflowArtifact awa) throws OseeCoreException;
 
    public String getToStateName();
 

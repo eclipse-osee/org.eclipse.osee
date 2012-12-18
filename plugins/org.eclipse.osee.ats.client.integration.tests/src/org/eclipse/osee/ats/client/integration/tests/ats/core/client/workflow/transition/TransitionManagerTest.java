@@ -605,4 +605,48 @@ public class TransitionManagerTest {
       transMgr03.handleTransitionValidation(results03);
       Assert.assertTrue(results03.isEmpty());
    }
+
+   @org.junit.Test
+   public void testHandleTransitionValidation__AssigneesUpdate() throws OseeCoreException {
+      AtsTestUtil.cleanupAndReset("TransitionManagerTest-E");
+      TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
+      List<IAtsUser> assigneesBefore = teamArt.getAssignees();
+      Assert.assertTrue(assigneesBefore.size() > 0);
+      MockTransitionHelper helper =
+         new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+            AtsTestUtil.getImplementStateDef().getName(), teamArt.getAssignees(), null, TransitionOption.None);
+      TransitionManager transMgr = new TransitionManager(helper);
+      TransitionResults results = new TransitionResults();
+      TransitionResults results01 = new TransitionResults();
+      transMgr.handleTransitionValidation(results);
+      Assert.assertTrue(results.isEmpty());
+      results01 = transMgr.handleAll();
+      transMgr.getTransaction().execute();
+      Assert.assertTrue(results01.isEmpty());
+      List<IAtsUser> assigneesAfter = teamArt.getAssignees();
+      Assert.assertTrue(assigneesAfter.containsAll(assigneesBefore));
+      Assert.assertTrue(assigneesBefore.containsAll(assigneesAfter));
+   }
+
+   @org.junit.Test
+   public void testHandleTransitionValidation__AssigneesNull() throws OseeCoreException {
+      AtsTestUtil.cleanupAndReset("TransitionManagerTest-F");
+      TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
+      List<IAtsUser> assigneesBefore = teamArt.getAssignees();
+      Assert.assertTrue(assigneesBefore.size() > 0);
+      MockTransitionHelper helper =
+         new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+            AtsTestUtil.getImplementStateDef().getName(), null, null, TransitionOption.None);
+      TransitionManager transMgr = new TransitionManager(helper);
+      TransitionResults results = new TransitionResults();
+      TransitionResults results01 = new TransitionResults();
+      transMgr.handleTransitionValidation(results);
+      Assert.assertTrue(results.isEmpty());
+      results01 = transMgr.handleAll();
+      transMgr.getTransaction().execute();
+      Assert.assertTrue(results01.isEmpty());
+      List<IAtsUser> assigneesAfter = teamArt.getAssignees();
+      Assert.assertTrue(assigneesAfter.containsAll(assigneesBefore));
+      Assert.assertTrue(assigneesBefore.containsAll(assigneesAfter));
+   }
 }

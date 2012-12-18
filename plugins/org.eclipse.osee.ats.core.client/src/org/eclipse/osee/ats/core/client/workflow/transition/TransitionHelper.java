@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -72,8 +73,9 @@ public class TransitionHelper extends TransitionHelperAdapter {
       return name;
    }
 
+   @SuppressWarnings("unused")
    @Override
-   public Collection<? extends IAtsUser> getToAssignees() {
+   public Collection<? extends IAtsUser> getToAssignees(AbstractWorkflowArtifact awa) throws OseeCoreException {
       return toAssignees;
    }
 

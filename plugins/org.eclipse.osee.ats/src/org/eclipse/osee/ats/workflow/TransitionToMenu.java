@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.workflow;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -177,8 +176,8 @@ public class TransitionToMenu {
          }
 
          @Override
-         public Collection<? extends IAtsUser> getToAssignees() {
-            return Collections.emptyList();
+         public Collection<? extends IAtsUser> getToAssignees(AbstractWorkflowArtifact awa) throws OseeCoreException {
+            return awa.getAssignees();
          }
 
          @Override

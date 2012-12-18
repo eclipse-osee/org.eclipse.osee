@@ -651,6 +651,10 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return stateMgr.getAssignees().contains(AtsUsersClient.getUser());
    }
 
+   /*
+    * getTransitionAssignees() is a method that is ONLY to be used in the WETransitionComposition class. Eventually this
+    * method needs to be incorporated into WETransitionComposition.
+    */
    public Collection<? extends IAtsUser> getTransitionAssignees() throws OseeCoreException {
       if (transitionAssignees != null) {
          if (!transitionAssignees.isEmpty() && transitionAssignees.contains(AtsUsers.getUnAssigned())) {
