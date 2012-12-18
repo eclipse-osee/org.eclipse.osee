@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.CoreException;
@@ -25,12 +26,16 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -62,6 +67,7 @@ public class ChangeArtifactType {
    private final Set<EventBasicGuidArtifact> artifactChanges = new HashSet<EventBasicGuidArtifact>();
    private final List<Artifact> modifiedArtifacts = new ArrayList<Artifact>();
    private static final IStatus promptStatus = new Status(IStatus.WARNING, Activator.PLUGIN_ID, 257, "", null);
+   private final Map<Integer, Integer> gammaToArtId = new HashMap<Integer, Integer>();
 
    public static void changeArtifactType(Collection<? extends Artifact> inputArtifacts, IArtifactType newArtifactTypeToken) throws OseeCoreException {
 
@@ -120,29 +126,36 @@ public class ChangeArtifactType {
    }
 
    private void createAttributeRelationTransactions(Collection<? extends Artifact> inputArtifacts, ArtifactType newArtifactType) throws OseeDataStoreException, OseeCoreException {
-      IdJoinQuery artifactJoin = populateJoinIdTable(inputArtifacts);
+      IdJoinQuery artifactJoin = populateArtIdsInJoinIdTable(inputArtifacts);
+      IdJoinQuery branchJoin = populateBranchIdsJoinIdTable();
+      IdJoinQuery gammaJoin = populateGammaIdsJoinIdTable(artifactJoin);
       IOseeDatabaseService database = ServiceUtil.getOseeDatabaseService();
       IOseeStatement chStmt = database.getStatement();
 
       try {
          chStmt.runPreparedQuery(
-            "select art_id, branch_id from osee_join_id jid, osee_artifact art, osee_txs txs where jid.query_id = ? and jid.id = art.art_id and art.gamma_id = txs.gamma_id and txs.tx_current = ?",
-            artifactJoin.getQueryId(), TxChange.CURRENT.getValue());
+            "select branch_id, gamma_id from osee_join_id jid1, osee_join_id jid2, osee_txs txs where jid1.query_id = ? and jid2.query_id = ? and jid1.id = txs.gamma_id and jid2.id = txs.branch_id and txs.tx_current = ?",
+            gammaJoin.getQueryId(), branchJoin.getQueryId(), TxChange.CURRENT.getValue());
 
          while (chStmt.next()) {
-            int artId = chStmt.getInt("art_id");
+            int gammaId = chStmt.getInt("gamma_id");
             int branchId = chStmt.getInt("branch_id");
             IOseeBranch branch = BranchManager.getBranch(branchId);
-            Artifact artifact = ArtifactQuery.getArtifactFromId(artId, branch);
-            deleteInvalidAttributes(artifact, newArtifactType);
-            deleteInvalidRelations(artifact, newArtifactType);
-            addTransaction(artifact, txMap);
-            artifactChanges.add(new EventChangeTypeBasicGuidArtifact(artifact.getBranch().getGuid(),
-               artifact.getArtTypeGuid(), newArtifactType.getGuid(), artifact.getGuid()));
+            int artId = gammaToArtId.get(gammaId);
+            Artifact artifact = ArtifactQuery.checkArtifactFromId(artId, branch, DeletionFlag.EXCLUDE_DELETED);
+            if (artifact != null) {
+               deleteInvalidAttributes(artifact, newArtifactType);
+               deleteInvalidRelations(artifact, newArtifactType);
+               addTransaction(artifact, txMap);
+               artifactChanges.add(new EventChangeTypeBasicGuidArtifact(artifact.getBranch().getGuid(),
+                  artifact.getArtTypeGuid(), newArtifactType.getGuid(), artifact.getGuid()));
+            }
          }
       } finally {
          chStmt.close();
          artifactJoin.delete();
+         branchJoin.delete();
+         gammaJoin.delete();
       }
    }
 
@@ -248,7 +261,7 @@ public class ChangeArtifactType {
       return new Object[] {art_type_id, art_id};
    }
 
-   private IdJoinQuery populateJoinIdTable(Collection<? extends Artifact> inputArtifacts) throws OseeDataStoreException, OseeCoreException {
+   private IdJoinQuery populateArtIdsInJoinIdTable(Collection<? extends Artifact> inputArtifacts) throws OseeDataStoreException, OseeCoreException {
       IdJoinQuery artifactJoin = JoinUtility.createIdJoinQuery();
 
       for (Artifact artifact : inputArtifacts) {
@@ -259,4 +272,47 @@ public class ChangeArtifactType {
 
       return artifactJoin;
    }
+
+   private IdJoinQuery populateBranchIdsJoinIdTable() throws OseeDataStoreException, OseeCoreException {
+      IdJoinQuery branchJoin = JoinUtility.createIdJoinQuery();
+
+      // loop through all non-archieved non-deleted
+
+      BranchFilter branchFilter = new BranchFilter(BranchArchivedState.UNARCHIVED);
+      branchFilter.setNegatedBranchStates(BranchState.DELETED);
+      for (Branch branch : BranchManager.getBranches(branchFilter)) {
+         branchJoin.add(branch.getId());
+      }
+
+      branchJoin.store();
+
+      return branchJoin;
+   }
+
+   private IdJoinQuery populateGammaIdsJoinIdTable(IdJoinQuery artIds) throws OseeDataStoreException, OseeCoreException {
+      IdJoinQuery gammaJoin = JoinUtility.createIdJoinQuery();
+
+      IOseeDatabaseService database = ServiceUtil.getOseeDatabaseService();
+      IOseeStatement chStmt = database.getStatement();
+
+      try {
+         chStmt.runPreparedQuery(
+            "select art_id, gamma_id from osee_artifact art, osee_join_id jid where jid.query_id = ? and jid.id = art.art_id",
+            artIds.getQueryId());
+
+         while (chStmt.next()) {
+            Integer artId = chStmt.getInt("art_id");
+            Integer gammaId = chStmt.getInt("gamma_id");
+            gammaToArtId.put(gammaId, artId);
+            gammaJoin.add(gammaId);
+         }
+      } finally {
+         chStmt.close();
+      }
+
+      gammaJoin.store();
+
+      return gammaJoin;
+   }
+
 }
