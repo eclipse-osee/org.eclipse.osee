@@ -61,6 +61,8 @@ public interface IOseeStatement extends Closeable {
 
    int getInt(String columnName) throws OseeCoreException;
 
+   boolean getBoolean(String columnName) throws OseeCoreException;
+
    Timestamp getTimestamp(String columnName) throws OseeCoreException;
 
    BigDecimal getBigDecimal(String name) throws OseeCoreException;

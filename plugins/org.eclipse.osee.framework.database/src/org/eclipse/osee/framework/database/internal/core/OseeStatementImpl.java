@@ -231,6 +231,16 @@ public final class OseeStatementImpl implements IOseeStatement {
    }
 
    @Override
+   public boolean getBoolean(String columnName) throws OseeCoreException {
+      try {
+         return rSet.getBoolean(columnName);
+      } catch (SQLException ex) {
+         OseeExceptions.wrapAndThrow(ex);
+         return false; // unreachable since wrapAndThrow() always throws an exception
+      }
+   }
+
+   @Override
    public int getInt(int columnIndex) throws OseeCoreException {
       try {
          return rSet.getInt(columnIndex);
