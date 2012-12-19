@@ -70,7 +70,7 @@ public class WordUtil {
    private static final Matcher binIdMatcher = Pattern.compile("wordml://(.+?)[.]").matcher("");
    private static final Pattern tagKiller = Pattern.compile("<.*?>", Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern paragraphPattern = Pattern.compile("<w:p( .*?)?>");
-   private static final Pattern referencePattern = Pattern.compile("(_Ref[0-9]{9}|Word.Bookmark.End)");
+   private static final Pattern referencePattern = Pattern.compile("(_Ref[0-9]{9}|Word\\.Bookmark\\.End)");
    private static int bookMarkId = 1000;
    private static UpdateBookmarkIds updateBookmarkIds = new UpdateBookmarkIds(bookMarkId);
 
