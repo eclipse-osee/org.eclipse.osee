@@ -568,6 +568,7 @@ public class AtsNavigateItemsToWorldViewTest {
       beforeSize = getXViewer().getCustomizeMgr().getCurrentVisibleTableColumns().size();
       // show all columns
       handleTableCustomization();
+      xv.expandAll(); // necessary for linux cause customization change collapsesAll
       afterSize = getXViewer().getCustomizeMgr().getCurrentVisibleTableColumns().size();
       NavigateTestUtil.testExpectedVersusActual("Column Count - ", true, (afterSize >= beforeSize));
       runGeneralXColTest(itemCount, false, null, testTaskTab);
@@ -591,6 +592,7 @@ public class AtsNavigateItemsToWorldViewTest {
          // open the task in the Task Editor
          TaskEditor.open(new TaskEditorSimpleProvider("ATS Tasks", getXViewer().getSelectedTaskArtifacts()));
          handleTableCustomization();
+         getXViewer().expandAll(); // necessary for linux cause customization change collapsesAll
          columns = getXViewer().getCustomizeMgr().getCurrentTableColumns();
          verifyXColumns(labelProv, arts, columns);
       } else if (isErrorCheck) {
@@ -627,8 +629,8 @@ public class AtsNavigateItemsToWorldViewTest {
 
    private void deleteAttributesForXColErrorTest(Collection<Artifact> arts, IAttributeType attributeTypeToDelete) throws Exception {
       Map<Artifact, Object> attributeValues = new HashMap<Artifact, Object>();
-      getXViewer().expandAll();
       handleTableCustomization();
+      getXViewer().expandAll(); // necessary after table customization for linux cause customization change collapsesAll
       SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Navigate Test");
       // select a workflow artifact; get its attributes; delete an attribute
       for (Artifact art : arts) {
