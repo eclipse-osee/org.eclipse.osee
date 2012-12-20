@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.manager.servlet;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.server.ISessionManager;
@@ -53,28 +54,8 @@ public class SearchEngineTaggerServlet extends SecureOseeHttpServlet {
          boolean waitForTags = Boolean.parseBoolean(request.getParameter("wait"));
          QueryIndexer indexer = getQueryIndexer(request);
          if (waitForTags) {
-            IndexerCollector collector = new IndexerCollectorAdapter() {
 
-               int totalToProcess = 0;
-               int currentCount = 0;
-
-               @Override
-               public void onIndexTaskComplete(int indexerId, long waitTime, long processingTime) {
-                  currentCount++;
-                  if (currentCount >= totalToProcess) {
-                     synchronized (this) {
-                        notify();
-                     }
-                  }
-               }
-
-               @Override
-               public void onIndexTaskTotalToProcess(int totalQueries) {
-                  totalToProcess = totalQueries;
-               }
-
-            };
-
+            IndexerCollector collector = new WaitForIndexerCollector();
             Callable<?> callable = indexer.indexXmlStream(collector, request.getInputStream());
             callable.call();
             synchronized (collector) {
@@ -118,4 +99,26 @@ public class SearchEngineTaggerServlet extends SecureOseeHttpServlet {
          response.getWriter().close();
       }
    }
+
+   private static class WaitForIndexerCollector extends IndexerCollectorAdapter {
+
+      private final AtomicInteger totalToProcess = new AtomicInteger();
+      private final AtomicInteger currentCount = new AtomicInteger();
+
+      @Override
+      public void onIndexTaskComplete(int indexerId, long waitTime, long processingTime) {
+         int count = currentCount.incrementAndGet();
+         if (count >= totalToProcess.get()) {
+            synchronized (this) {
+               notify();
+            }
+         }
+      }
+
+      @Override
+      public void onIndexTaskTotalToProcess(int totalQueries) {
+         totalToProcess.set(totalQueries);
+      }
+
+   };
 }
