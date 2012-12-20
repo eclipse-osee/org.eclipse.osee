@@ -11,10 +11,13 @@
 package org.eclipse.osee.framework.database.internal.core;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -24,12 +27,16 @@ import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 public class OseeConnectionPoolImpl {
+
    private static final int MAX_CONNECTIONS_PER_CLIENT = OseeProperties.getOseeDbConnectionCount();
    private final List<OseeConnectionImpl> connections = new LinkedList<OseeConnectionImpl>();
    private final Semaphore connectionsSemaphore = new Semaphore(MAX_CONNECTIONS_PER_CLIENT, true);
    private final String dbUrl;
    private final Properties properties;
    private final IConnectionFactory connectionFactory;
+
+   private final AtomicBoolean isInitialized = new AtomicBoolean(false);
+   private final AtomicBoolean supportedIsolationLevel = new AtomicBoolean(true);
 
    public OseeConnectionPoolImpl(IConnectionFactory connectionFactory, String dbUrl, Properties properties) {
       this.connectionFactory = connectionFactory;
@@ -75,10 +82,21 @@ public class OseeConnectionPoolImpl {
       return toReturn;
    }
 
+   private boolean isTxReadCommittedIsolationLevelSupported(Connection connection) throws SQLException {
+      if (isInitialized.compareAndSet(false, true)) {
+         DatabaseMetaData metadata = connection.getMetaData();
+         boolean result = metadata.supportsTransactionIsolationLevel(Connection.TRANSACTION_READ_COMMITTED);
+         supportedIsolationLevel.set(result);
+      }
+      return supportedIsolationLevel.get();
+   }
+
    private OseeConnectionImpl getOseeConnection() throws OseeCoreException {
       try {
          Connection connection = connectionFactory.getConnection(properties, dbUrl);
-         connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+         if (isTxReadCommittedIsolationLevelSupported(connection)) {
+            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+         }
          return new OseeConnectionImpl(connection, this);
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
