@@ -53,7 +53,6 @@ Require-Bundle: org.eclipse.osee.framework.jdk.core,
  org.apache.commons.net,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.ote.connection.service,
- org.eclipse.help,
  net.jini;bundle-version="2.1.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
