@@ -196,6 +196,11 @@ public class SecondPassMatcherTest {
       addTest(data, matcher, "Robot API", "Robot", CaseType.MATCH_CASE, TokenDelimiterMatch.ANY,
          TokenOrderType.MATCH_ORDER, MatchTokenCountType.IGNORE_TOKEN_COUNT, true, getLocs(1, 5));
 
+      addTest(data, matcher, "Joe Smith", "joe", CaseType.IGNORE_CASE, TokenDelimiterMatch.ANY,
+         TokenOrderType.ANY_ORDER, MatchTokenCountType.IGNORE_TOKEN_COUNT, true, getLocs(1, 3));
+      addTest(data, matcher, "Joe Smith", "smith", CaseType.IGNORE_CASE, TokenDelimiterMatch.ANY,
+         TokenOrderType.ANY_ORDER, MatchTokenCountType.IGNORE_TOKEN_COUNT, true, getLocs(5, 9));
+
       return data;
    }
 

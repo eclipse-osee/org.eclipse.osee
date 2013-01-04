@@ -47,11 +47,8 @@ public class AnyTokenOrderProcessor implements TokenOrderProcessor {
    public boolean processToken(String token, MatchResult match) {
       if (trackingSet.found(token)) {
          locations.add(createMatchLocation(match.start(), match.end()));
-         if (trackingSet.areAllFound()) {
-            return true;
-         }
       }
-      return false;
+      return trackingSet.areAllFound();
    }
 
    @Override
