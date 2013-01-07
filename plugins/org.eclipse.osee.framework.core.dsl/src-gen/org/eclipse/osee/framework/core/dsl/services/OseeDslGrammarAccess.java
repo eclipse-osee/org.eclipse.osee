@@ -646,19 +646,21 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cIntegerAttributeKeyword_5 = (Keyword)cAlternatives.eContents().get(5);
 		private final Keyword cJavaObjectAttributeKeyword_6 = (Keyword)cAlternatives.eContents().get(6);
 		private final Keyword cStringAttributeKeyword_7 = (Keyword)cAlternatives.eContents().get(7);
-		private final Keyword cWordAttributeKeyword_8 = (Keyword)cAlternatives.eContents().get(8);
-		private final Keyword cOutlineNumberAttributeKeyword_9 = (Keyword)cAlternatives.eContents().get(9);
-		private final RuleCall cQUALIFIED_NAMEParserRuleCall_10 = (RuleCall)cAlternatives.eContents().get(10);
+		private final Keyword cArtifactReferenceAttributeKeyword_8 = (Keyword)cAlternatives.eContents().get(8);
+		private final Keyword cBranchReferenceAttributeKeyword_9 = (Keyword)cAlternatives.eContents().get(9);
+		private final Keyword cWordAttributeKeyword_10 = (Keyword)cAlternatives.eContents().get(10);
+		private final Keyword cOutlineNumberAttributeKeyword_11 = (Keyword)cAlternatives.eContents().get(11);
+		private final RuleCall cQUALIFIED_NAMEParserRuleCall_12 = (RuleCall)cAlternatives.eContents().get(12);
 		
 		//AttributeBaseType:
 		//	"BooleanAttribute" | "CompressedContentAttribute" | "DateAttribute" | "EnumeratedAttribute" | "FloatingPointAttribute"
-		//	| "IntegerAttribute" | "JavaObjectAttribute" | "StringAttribute" | "WordAttribute" | "OutlineNumberAttribute" |
-		//	QUALIFIED_NAME;
+		//	| "IntegerAttribute" | "JavaObjectAttribute" | "StringAttribute" | "ArtifactReferenceAttribute" |
+		//	"BranchReferenceAttribute" | "WordAttribute" | "OutlineNumberAttribute" | QUALIFIED_NAME;
 		public ParserRule getRule() { return rule; }
 
 		//"BooleanAttribute" | "CompressedContentAttribute" | "DateAttribute" | "EnumeratedAttribute" | "FloatingPointAttribute" |
-		//"IntegerAttribute" | "JavaObjectAttribute" | "StringAttribute" | "WordAttribute" | "OutlineNumberAttribute" |
-		//QUALIFIED_NAME
+		//"IntegerAttribute" | "JavaObjectAttribute" | "StringAttribute" | "ArtifactReferenceAttribute" |
+		//"BranchReferenceAttribute" | "WordAttribute" | "OutlineNumberAttribute" | QUALIFIED_NAME
 		public Alternatives getAlternatives() { return cAlternatives; }
 
 		//"BooleanAttribute"
@@ -685,14 +687,20 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		//"StringAttribute"
 		public Keyword getStringAttributeKeyword_7() { return cStringAttributeKeyword_7; }
 
+		//"ArtifactReferenceAttribute"
+		public Keyword getArtifactReferenceAttributeKeyword_8() { return cArtifactReferenceAttributeKeyword_8; }
+
+		//"BranchReferenceAttribute"
+		public Keyword getBranchReferenceAttributeKeyword_9() { return cBranchReferenceAttributeKeyword_9; }
+
 		//"WordAttribute"
-		public Keyword getWordAttributeKeyword_8() { return cWordAttributeKeyword_8; }
+		public Keyword getWordAttributeKeyword_10() { return cWordAttributeKeyword_10; }
 
 		//"OutlineNumberAttribute"
-		public Keyword getOutlineNumberAttributeKeyword_9() { return cOutlineNumberAttributeKeyword_9; }
+		public Keyword getOutlineNumberAttributeKeyword_11() { return cOutlineNumberAttributeKeyword_11; }
 
 		//QUALIFIED_NAME
-		public RuleCall getQUALIFIED_NAMEParserRuleCall_10() { return cQUALIFIED_NAMEParserRuleCall_10; }
+		public RuleCall getQUALIFIED_NAMEParserRuleCall_12() { return cQUALIFIED_NAMEParserRuleCall_12; }
 	}
 
 	public class XOseeEnumTypeElements extends AbstractParserRuleElementFinder {
@@ -775,12 +783,16 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cEntryGuidKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
 		private final Assignment cEntryGuidAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
 		private final RuleCall cEntryGuidSTRINGTerminalRuleCall_3_1_0 = (RuleCall)cEntryGuidAssignment_3_1.eContents().get(0);
+		private final Group cGroup_4 = (Group)cGroup.eContents().get(4);
+		private final Keyword cDescriptionKeyword_4_0 = (Keyword)cGroup_4.eContents().get(0);
+		private final Assignment cDescriptionAssignment_4_1 = (Assignment)cGroup_4.eContents().get(1);
+		private final RuleCall cDescriptionSTRINGTerminalRuleCall_4_1_0 = (RuleCall)cDescriptionAssignment_4_1.eContents().get(0);
 		
 		//XOseeEnumEntry:
-		//	"entry" name=STRING ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?;
+		//	"entry" name=STRING ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)? ("description" description=STRING)?;
 		public ParserRule getRule() { return rule; }
 
-		//"entry" name=STRING ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?
+		//"entry" name=STRING ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)? ("description" description=STRING)?
 		public Group getGroup() { return cGroup; }
 
 		//"entry"
@@ -809,6 +821,18 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 
 		//STRING
 		public RuleCall getEntryGuidSTRINGTerminalRuleCall_3_1_0() { return cEntryGuidSTRINGTerminalRuleCall_3_1_0; }
+
+		//("description" description=STRING)?
+		public Group getGroup_4() { return cGroup_4; }
+
+		//"description"
+		public Keyword getDescriptionKeyword_4_0() { return cDescriptionKeyword_4_0; }
+
+		//description=STRING
+		public Assignment getDescriptionAssignment_4_1() { return cDescriptionAssignment_4_1; }
+
+		//STRING
+		public RuleCall getDescriptionSTRINGTerminalRuleCall_4_1_0() { return cDescriptionSTRINGTerminalRuleCall_4_1_0; }
 	}
 
 	public class XOseeEnumOverrideElements extends AbstractParserRuleElementFinder {
@@ -897,12 +921,16 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cEntryGuidKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
 		private final Assignment cEntryGuidAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
 		private final RuleCall cEntryGuidSTRINGTerminalRuleCall_3_1_0 = (RuleCall)cEntryGuidAssignment_3_1.eContents().get(0);
+		private final Group cGroup_4 = (Group)cGroup.eContents().get(4);
+		private final Keyword cDescriptionKeyword_4_0 = (Keyword)cGroup_4.eContents().get(0);
+		private final Assignment cDescriptionAssignment_4_1 = (Assignment)cGroup_4.eContents().get(1);
+		private final RuleCall cDescriptionSTRINGTerminalRuleCall_4_1_0 = (RuleCall)cDescriptionAssignment_4_1.eContents().get(0);
 		
 		//AddEnum:
-		//	"add" enumEntry=STRING ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?;
+		//	"add" enumEntry=STRING ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)? ("description" description=STRING)?;
 		public ParserRule getRule() { return rule; }
 
-		//"add" enumEntry=STRING ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?
+		//"add" enumEntry=STRING ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)? ("description" description=STRING)?
 		public Group getGroup() { return cGroup; }
 
 		//"add"
@@ -931,6 +959,18 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 
 		//STRING
 		public RuleCall getEntryGuidSTRINGTerminalRuleCall_3_1_0() { return cEntryGuidSTRINGTerminalRuleCall_3_1_0; }
+
+		//("description" description=STRING)?
+		public Group getGroup_4() { return cGroup_4; }
+
+		//"description"
+		public Keyword getDescriptionKeyword_4_0() { return cDescriptionKeyword_4_0; }
+
+		//description=STRING
+		public Assignment getDescriptionAssignment_4_1() { return cDescriptionAssignment_4_1; }
+
+		//STRING
+		public RuleCall getDescriptionSTRINGTerminalRuleCall_4_1_0() { return cDescriptionSTRINGTerminalRuleCall_4_1_0; }
 	}
 
 	public class RemoveEnumElements extends AbstractParserRuleElementFinder {
@@ -2404,8 +2444,8 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 
 	//AttributeBaseType:
 	//	"BooleanAttribute" | "CompressedContentAttribute" | "DateAttribute" | "EnumeratedAttribute" | "FloatingPointAttribute"
-	//	| "IntegerAttribute" | "JavaObjectAttribute" | "StringAttribute" | "WordAttribute" | "OutlineNumberAttribute" |
-	//	QUALIFIED_NAME;
+	//	| "IntegerAttribute" | "JavaObjectAttribute" | "StringAttribute" | "ArtifactReferenceAttribute" |
+	//	"BranchReferenceAttribute" | "WordAttribute" | "OutlineNumberAttribute" | QUALIFIED_NAME;
 	public AttributeBaseTypeElements getAttributeBaseTypeAccess() {
 		return (pAttributeBaseType != null) ? pAttributeBaseType : (pAttributeBaseType = new AttributeBaseTypeElements());
 	}
@@ -2425,7 +2465,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//XOseeEnumEntry:
-	//	"entry" name=STRING ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?;
+	//	"entry" name=STRING ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)? ("description" description=STRING)?;
 	public XOseeEnumEntryElements getXOseeEnumEntryAccess() {
 		return (pXOseeEnumEntry != null) ? pXOseeEnumEntry : (pXOseeEnumEntry = new XOseeEnumEntryElements());
 	}
@@ -2456,7 +2496,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//AddEnum:
-	//	"add" enumEntry=STRING ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?;
+	//	"add" enumEntry=STRING ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)? ("description" description=STRING)?;
 	public AddEnumElements getAddEnumAccess() {
 		return (pAddEnum != null) ? pAddEnum : (pAddEnum = new AddEnumElements());
 	}

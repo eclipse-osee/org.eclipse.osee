@@ -12,7 +12,9 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -20,6 +22,7 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -122,6 +125,14 @@ public class AttributeTypeManager {
 
    public static Set<String> getEnumerationValues(IAttributeType attributeType) throws OseeCoreException {
       return getEnumerationValues(getType(attributeType));
+   }
+
+   public static Map<String, String> getEnumerationValueDescriptions(IAttributeType attributeType) throws OseeCoreException {
+      Map<String, String> values = new HashMap<String, String>();
+      for (OseeEnumEntry entry : AttributeTypeManager.getType(attributeType).getOseeEnumType().values()) {
+         values.put(entry.getName(), entry.getDescription());
+      }
+      return values;
    }
 
    public static int getMinOccurrences(IAttributeType attributeType) throws OseeCoreException {

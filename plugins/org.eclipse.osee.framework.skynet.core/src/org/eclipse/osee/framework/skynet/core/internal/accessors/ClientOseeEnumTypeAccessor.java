@@ -52,7 +52,7 @@ public class ClientOseeEnumTypeAccessor extends AbstractClientDataAccessor<Long,
 
       for (String[] enumEntryRow : response.getEnumEntryRows()) {
          factory.createOrUpdate(cache, Long.valueOf(enumEntryRow[0]), enumEntryRow[1], enumEntryRow[2],
-            Integer.parseInt(enumEntryRow[3]));
+            Integer.parseInt(enumEntryRow[3]), enumEntryRow[4]);
       }
       return enumTypes;
    }

@@ -29,11 +29,11 @@ public class OseeEnumTypeFactory implements IOseeTypeFactory {
       return new OseeEnumType(guid, name);
    }
 
-   public OseeEnumEntry createEnumEntry(String guid, String name, int ordinal) throws OseeCoreException {
+   public OseeEnumEntry createEnumEntry(String guid, String name, int ordinal, String description) throws OseeCoreException {
       Conditions.checkNotNullOrEmpty(name, "osee enum entry name");
       Conditions.checkExpressionFailOnTrue(ordinal < 0, "ordinal must be greater than or equal to zero");
       String checkedGuid = Conditions.checkGuidCreateIfNeeded(guid);
-      return new OseeEnumEntry(checkedGuid, name, ordinal);
+      return new OseeEnumEntry(checkedGuid, name, ordinal, description);
    }
 
    public OseeEnumType createOrUpdate(IOseeCache<Long, OseeEnumType> cache, int enumTypeId, StorageState storageState, Long guid, String enumTypeName) throws OseeCoreException {
@@ -64,16 +64,17 @@ public class OseeEnumTypeFactory implements IOseeTypeFactory {
       return oseeEnumType;
    }
 
-   public OseeEnumEntry createOrUpdate(IOseeCache<Long, OseeEnumType> cache, Long enumTypeGuid, String enumEntryGuid, String enumEntryName, int ordinal) throws OseeCoreException {
+   public OseeEnumEntry createOrUpdate(IOseeCache<Long, OseeEnumType> cache, Long enumTypeGuid, String enumEntryGuid, String enumEntryName, int ordinal, String enumEntryDescription) throws OseeCoreException {
       Conditions.checkNotNull(cache, "OseeEnumTypeCache");
       OseeEnumType oseeEnumType = ((AbstractOseeCache<Long, OseeEnumType>) cache).getByGuid(enumTypeGuid);
       OseeEnumEntry enumEntry = oseeEnumType.getEntryByGuid(enumEntryGuid);
       if (enumEntry == null) {
-         enumEntry = createEnumEntry(enumEntryGuid, enumEntryName, ordinal);
+         enumEntry = createEnumEntry(enumEntryGuid, enumEntryName, ordinal, enumEntryDescription);
          oseeEnumType.addEntry(enumEntry);
       } else {
          enumEntry.setName(enumEntryName);
          enumEntry.setOrdinal(ordinal);
+         enumEntry.setDescription(enumEntryDescription);
       }
       return enumEntry;
    }

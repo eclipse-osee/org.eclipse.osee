@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage;
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AddEnumImpl#getEnumEntry <em>Enum Entry</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AddEnumImpl#getOrdinal <em>Ordinal</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AddEnumImpl#getEntryGuid <em>Entry Guid</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AddEnumImpl#getDescription <em>Description</em>}</li>
  * </ul>
  * </p>
  *
@@ -91,6 +92,26 @@ public class AddEnumImpl extends OverrideOptionImpl implements AddEnum
    * @ordered
    */
   protected String entryGuid = ENTRY_GUID_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getDescription() <em>Description</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDescription()
+   * @generated
+   * @ordered
+   */
+  protected static final String DESCRIPTION_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getDescription() <em>Description</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDescription()
+   * @generated
+   * @ordered
+   */
+  protected String description = DESCRIPTION_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -187,6 +208,29 @@ public class AddEnumImpl extends OverrideOptionImpl implements AddEnum
    * <!-- end-user-doc -->
    * @generated
    */
+  public String getDescription()
+  {
+    return description;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setDescription(String newDescription)
+  {
+    String oldDescription = description;
+    description = newDescription;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.ADD_ENUM__DESCRIPTION, oldDescription, description));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
@@ -198,6 +242,8 @@ public class AddEnumImpl extends OverrideOptionImpl implements AddEnum
         return getOrdinal();
       case OseeDslPackage.ADD_ENUM__ENTRY_GUID:
         return getEntryGuid();
+      case OseeDslPackage.ADD_ENUM__DESCRIPTION:
+        return getDescription();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -220,6 +266,9 @@ public class AddEnumImpl extends OverrideOptionImpl implements AddEnum
         return;
       case OseeDslPackage.ADD_ENUM__ENTRY_GUID:
         setEntryGuid((String)newValue);
+        return;
+      case OseeDslPackage.ADD_ENUM__DESCRIPTION:
+        setDescription((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -244,6 +293,9 @@ public class AddEnumImpl extends OverrideOptionImpl implements AddEnum
       case OseeDslPackage.ADD_ENUM__ENTRY_GUID:
         setEntryGuid(ENTRY_GUID_EDEFAULT);
         return;
+      case OseeDslPackage.ADD_ENUM__DESCRIPTION:
+        setDescription(DESCRIPTION_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -264,6 +316,8 @@ public class AddEnumImpl extends OverrideOptionImpl implements AddEnum
         return ORDINAL_EDEFAULT == null ? ordinal != null : !ORDINAL_EDEFAULT.equals(ordinal);
       case OseeDslPackage.ADD_ENUM__ENTRY_GUID:
         return ENTRY_GUID_EDEFAULT == null ? entryGuid != null : !ENTRY_GUID_EDEFAULT.equals(entryGuid);
+      case OseeDslPackage.ADD_ENUM__DESCRIPTION:
+        return DESCRIPTION_EDEFAULT == null ? description != null : !DESCRIPTION_EDEFAULT.equals(description);
     }
     return super.eIsSet(featureID);
   }
@@ -285,6 +339,8 @@ public class AddEnumImpl extends OverrideOptionImpl implements AddEnum
     result.append(ordinal);
     result.append(", entryGuid: ");
     result.append(entryGuid);
+    result.append(", description: ");
+    result.append(description);
     result.append(')');
     return result.toString();
   }

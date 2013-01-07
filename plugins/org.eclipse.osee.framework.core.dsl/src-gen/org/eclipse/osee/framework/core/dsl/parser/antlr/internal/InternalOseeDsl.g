@@ -1054,25 +1054,39 @@ ruleAttributeBaseType returns [AntlrDatatypeRuleToken current=new AntlrDatatypeR
     }
 
     |
+	kw='ArtifactReferenceAttribute' 
+    {
+        $current.merge(kw);
+        newLeafNode(kw, grammarAccess.getAttributeBaseTypeAccess().getArtifactReferenceAttributeKeyword_8()); 
+    }
+
+    |
+	kw='BranchReferenceAttribute' 
+    {
+        $current.merge(kw);
+        newLeafNode(kw, grammarAccess.getAttributeBaseTypeAccess().getBranchReferenceAttributeKeyword_9()); 
+    }
+
+    |
 	kw='WordAttribute' 
     {
         $current.merge(kw);
-        newLeafNode(kw, grammarAccess.getAttributeBaseTypeAccess().getWordAttributeKeyword_8()); 
+        newLeafNode(kw, grammarAccess.getAttributeBaseTypeAccess().getWordAttributeKeyword_10()); 
     }
 
     |
 	kw='OutlineNumberAttribute' 
     {
         $current.merge(kw);
-        newLeafNode(kw, grammarAccess.getAttributeBaseTypeAccess().getOutlineNumberAttributeKeyword_9()); 
+        newLeafNode(kw, grammarAccess.getAttributeBaseTypeAccess().getOutlineNumberAttributeKeyword_11()); 
     }
 
     |
     { 
-        newCompositeNode(grammarAccess.getAttributeBaseTypeAccess().getQUALIFIED_NAMEParserRuleCall_10()); 
+        newCompositeNode(grammarAccess.getAttributeBaseTypeAccess().getQUALIFIED_NAMEParserRuleCall_12()); 
     }
-    this_QUALIFIED_NAME_10=ruleQUALIFIED_NAME    {
-		$current.merge(this_QUALIFIED_NAME_10);
+    this_QUALIFIED_NAME_12=ruleQUALIFIED_NAME    {
+		$current.merge(this_QUALIFIED_NAME_12);
     }
 
     { 
@@ -1270,6 +1284,28 @@ ruleXOseeEnumEntry returns [EObject current=null]
        			$current, 
        			"entryGuid",
         		lv_entryGuid_4_0, 
+        		"STRING");
+	    }
+
+)
+))?(	otherlv_5='description' 
+    {
+    	newLeafNode(otherlv_5, grammarAccess.getXOseeEnumEntryAccess().getDescriptionKeyword_4_0());
+    }
+(
+(
+		lv_description_6_0=RULE_STRING
+		{
+			newLeafNode(lv_description_6_0, grammarAccess.getXOseeEnumEntryAccess().getDescriptionSTRINGTerminalRuleCall_4_1_0()); 
+		}
+		{
+	        if ($current==null) {
+	            $current = createModelElement(grammarAccess.getXOseeEnumEntryRule());
+	        }
+       		setWithLastConsumed(
+       			$current, 
+       			"description",
+        		lv_description_6_0, 
         		"STRING");
 	    }
 
@@ -1472,6 +1508,28 @@ ruleAddEnum returns [EObject current=null]
        			$current, 
        			"entryGuid",
         		lv_entryGuid_4_0, 
+        		"STRING");
+	    }
+
+)
+))?(	otherlv_5='description' 
+    {
+    	newLeafNode(otherlv_5, grammarAccess.getAddEnumAccess().getDescriptionKeyword_4_0());
+    }
+(
+(
+		lv_description_6_0=RULE_STRING
+		{
+			newLeafNode(lv_description_6_0, grammarAccess.getAddEnumAccess().getDescriptionSTRINGTerminalRuleCall_4_1_0()); 
+		}
+		{
+	        if ($current==null) {
+	            $current = createModelElement(grammarAccess.getAddEnumRule());
+	        }
+       		setWithLastConsumed(
+       			$current, 
+       			"description",
+        		lv_description_6_0, 
         		"STRING");
 	    }
 

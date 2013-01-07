@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.model.cache.IOseeTypeFactory;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
@@ -172,20 +171,6 @@ public class ModelAsserts {
          Assert.assertEquals(itemName, actual[index2].getName());
          Assert.assertEquals((int) ordinal, actual[index2].ordinal());
       }
-   }
-
-   public static OseeEnumType createEnumType(IOseeTypeFactory factory, Long guid, String name, Object... entries) throws OseeCoreException {
-      OseeEnumType type = new OseeEnumType(guid, name);
-      if (entries != null && entries.length > 0) {
-         List<OseeEnumEntry> items = new ArrayList<OseeEnumEntry>();
-         for (int index = 0; index < entries.length; index++) {
-            String itemName = (String) entries[index];
-            Integer ordinal = (Integer) entries[++index];
-            items.add(new OseeEnumEntry(null, itemName, ordinal));
-         }
-         type.setEntries(items);
-      }
-      return type;
    }
 
    public static void checkEnumType(String expectedName, String[] expectedEntries, Integer[] expectedOrdinals, OseeEnumType actualEnumType) throws OseeCoreException {

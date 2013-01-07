@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry;
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XOseeEnumEntryImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XOseeEnumEntryImpl#getOrdinal <em>Ordinal</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XOseeEnumEntryImpl#getEntryGuid <em>Entry Guid</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XOseeEnumEntryImpl#getDescription <em>Description</em>}</li>
  * </ul>
  * </p>
  *
@@ -92,6 +93,26 @@ public class XOseeEnumEntryImpl extends MinimalEObjectImpl.Container implements 
    * @ordered
    */
   protected String entryGuid = ENTRY_GUID_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getDescription() <em>Description</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDescription()
+   * @generated
+   * @ordered
+   */
+  protected static final String DESCRIPTION_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getDescription() <em>Description</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDescription()
+   * @generated
+   * @ordered
+   */
+  protected String description = DESCRIPTION_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -188,6 +209,29 @@ public class XOseeEnumEntryImpl extends MinimalEObjectImpl.Container implements 
    * <!-- end-user-doc -->
    * @generated
    */
+  public String getDescription()
+  {
+    return description;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setDescription(String newDescription)
+  {
+    String oldDescription = description;
+    description = newDescription;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XOSEE_ENUM_ENTRY__DESCRIPTION, oldDescription, description));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
@@ -199,6 +243,8 @@ public class XOseeEnumEntryImpl extends MinimalEObjectImpl.Container implements 
         return getOrdinal();
       case OseeDslPackage.XOSEE_ENUM_ENTRY__ENTRY_GUID:
         return getEntryGuid();
+      case OseeDslPackage.XOSEE_ENUM_ENTRY__DESCRIPTION:
+        return getDescription();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -221,6 +267,9 @@ public class XOseeEnumEntryImpl extends MinimalEObjectImpl.Container implements 
         return;
       case OseeDslPackage.XOSEE_ENUM_ENTRY__ENTRY_GUID:
         setEntryGuid((String)newValue);
+        return;
+      case OseeDslPackage.XOSEE_ENUM_ENTRY__DESCRIPTION:
+        setDescription((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -245,6 +294,9 @@ public class XOseeEnumEntryImpl extends MinimalEObjectImpl.Container implements 
       case OseeDslPackage.XOSEE_ENUM_ENTRY__ENTRY_GUID:
         setEntryGuid(ENTRY_GUID_EDEFAULT);
         return;
+      case OseeDslPackage.XOSEE_ENUM_ENTRY__DESCRIPTION:
+        setDescription(DESCRIPTION_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -265,6 +317,8 @@ public class XOseeEnumEntryImpl extends MinimalEObjectImpl.Container implements 
         return ORDINAL_EDEFAULT == null ? ordinal != null : !ORDINAL_EDEFAULT.equals(ordinal);
       case OseeDslPackage.XOSEE_ENUM_ENTRY__ENTRY_GUID:
         return ENTRY_GUID_EDEFAULT == null ? entryGuid != null : !ENTRY_GUID_EDEFAULT.equals(entryGuid);
+      case OseeDslPackage.XOSEE_ENUM_ENTRY__DESCRIPTION:
+        return DESCRIPTION_EDEFAULT == null ? description != null : !DESCRIPTION_EDEFAULT.equals(description);
     }
     return super.eIsSet(featureID);
   }
@@ -286,6 +340,8 @@ public class XOseeEnumEntryImpl extends MinimalEObjectImpl.Container implements 
     result.append(ordinal);
     result.append(", entryGuid: ");
     result.append(entryGuid);
+    result.append(", description: ");
+    result.append(description);
     result.append(')');
     return result.toString();
   }

@@ -52,7 +52,8 @@ public class OseeEnumTypeCacheUpdateResponse {
                String.valueOf(type.getGuid()),
                entry.getGuid(),
                entry.getName(),
-               String.valueOf(entry.ordinal())});
+               String.valueOf(entry.ordinal()),
+               entry.getDescription()});
          }
       }
       return new OseeEnumTypeCacheUpdateResponse(enumTypeRows, enumEntryRows);

@@ -3083,11 +3083,11 @@ protected class XOseeEnumType_RightCurlyBracketKeyword_7 extends KeywordToken  {
 /************ begin Rule XOseeEnumEntry ****************
  *
  * XOseeEnumEntry:
- * 	"entry" name=STRING ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?;
+ * 	"entry" name=STRING ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)? ("description" description=STRING)?;
  *
  **/
 
-// "entry" name=STRING ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?
+// "entry" name=STRING ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)? ("description" description=STRING)?
 protected class XOseeEnumEntry_Group extends GroupToken {
 	
 	public XOseeEnumEntry_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -3102,9 +3102,10 @@ protected class XOseeEnumEntry_Group extends GroupToken {
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new XOseeEnumEntry_Group_3(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new XOseeEnumEntry_OrdinalAssignment_2(lastRuleCallOrigin, this, 1, inst);
-			case 2: return new XOseeEnumEntry_NameAssignment_1(lastRuleCallOrigin, this, 2, inst);
+			case 0: return new XOseeEnumEntry_Group_4(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new XOseeEnumEntry_Group_3(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new XOseeEnumEntry_OrdinalAssignment_2(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new XOseeEnumEntry_NameAssignment_1(lastRuleCallOrigin, this, 3, inst);
 			default: return null;
 		}	
 	}
@@ -3279,6 +3280,87 @@ protected class XOseeEnumEntry_EntryGuidAssignment_3_1 extends AssignmentToken  
 		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getXOseeEnumEntryAccess().getEntryGuidSTRINGTerminalRuleCall_3_1_0(), value, null)) {
 			type = AssignmentType.TERMINAL_RULE_CALL;
 			element = grammarAccess.getXOseeEnumEntryAccess().getEntryGuidSTRINGTerminalRuleCall_3_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("description" description=STRING)?
+protected class XOseeEnumEntry_Group_4 extends GroupToken {
+	
+	public XOseeEnumEntry_Group_4(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getXOseeEnumEntryAccess().getGroup_4();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new XOseeEnumEntry_DescriptionAssignment_4_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "description"
+protected class XOseeEnumEntry_DescriptionKeyword_4_0 extends KeywordToken  {
+	
+	public XOseeEnumEntry_DescriptionKeyword_4_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getXOseeEnumEntryAccess().getDescriptionKeyword_4_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new XOseeEnumEntry_Group_3(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new XOseeEnumEntry_OrdinalAssignment_2(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new XOseeEnumEntry_NameAssignment_1(lastRuleCallOrigin, this, 2, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// description=STRING
+protected class XOseeEnumEntry_DescriptionAssignment_4_1 extends AssignmentToken  {
+	
+	public XOseeEnumEntry_DescriptionAssignment_4_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getXOseeEnumEntryAccess().getDescriptionAssignment_4_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new XOseeEnumEntry_DescriptionKeyword_4_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("description",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("description");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getXOseeEnumEntryAccess().getDescriptionSTRINGTerminalRuleCall_4_1_0(), value, null)) {
+			type = AssignmentType.TERMINAL_RULE_CALL;
+			element = grammarAccess.getXOseeEnumEntryAccess().getDescriptionSTRINGTerminalRuleCall_4_1_0();
 			return obj;
 		}
 		return null;
@@ -3636,11 +3718,11 @@ protected class OverrideOption_RemoveEnumParserRuleCall_1 extends RuleCallToken 
 /************ begin Rule AddEnum ****************
  *
  * AddEnum:
- * 	"add" enumEntry=STRING ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?;
+ * 	"add" enumEntry=STRING ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)? ("description" description=STRING)?;
  *
  **/
 
-// "add" enumEntry=STRING ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?
+// "add" enumEntry=STRING ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)? ("description" description=STRING)?
 protected class AddEnum_Group extends GroupToken {
 	
 	public AddEnum_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -3655,9 +3737,10 @@ protected class AddEnum_Group extends GroupToken {
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new AddEnum_Group_3(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new AddEnum_OrdinalAssignment_2(lastRuleCallOrigin, this, 1, inst);
-			case 2: return new AddEnum_EnumEntryAssignment_1(lastRuleCallOrigin, this, 2, inst);
+			case 0: return new AddEnum_Group_4(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new AddEnum_Group_3(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new AddEnum_OrdinalAssignment_2(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new AddEnum_EnumEntryAssignment_1(lastRuleCallOrigin, this, 3, inst);
 			default: return null;
 		}	
 	}
@@ -3832,6 +3915,87 @@ protected class AddEnum_EntryGuidAssignment_3_1 extends AssignmentToken  {
 		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getAddEnumAccess().getEntryGuidSTRINGTerminalRuleCall_3_1_0(), value, null)) {
 			type = AssignmentType.TERMINAL_RULE_CALL;
 			element = grammarAccess.getAddEnumAccess().getEntryGuidSTRINGTerminalRuleCall_3_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("description" description=STRING)?
+protected class AddEnum_Group_4 extends GroupToken {
+	
+	public AddEnum_Group_4(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getAddEnumAccess().getGroup_4();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new AddEnum_DescriptionAssignment_4_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "description"
+protected class AddEnum_DescriptionKeyword_4_0 extends KeywordToken  {
+	
+	public AddEnum_DescriptionKeyword_4_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getAddEnumAccess().getDescriptionKeyword_4_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new AddEnum_Group_3(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new AddEnum_OrdinalAssignment_2(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new AddEnum_EnumEntryAssignment_1(lastRuleCallOrigin, this, 2, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// description=STRING
+protected class AddEnum_DescriptionAssignment_4_1 extends AssignmentToken  {
+	
+	public AddEnum_DescriptionAssignment_4_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getAddEnumAccess().getDescriptionAssignment_4_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new AddEnum_DescriptionKeyword_4_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("description",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("description");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getAddEnumAccess().getDescriptionSTRINGTerminalRuleCall_4_1_0(), value, null)) {
+			type = AssignmentType.TERMINAL_RULE_CALL;
+			element = grammarAccess.getAddEnumAccess().getDescriptionSTRINGTerminalRuleCall_4_1_0();
 			return obj;
 		}
 		return null;

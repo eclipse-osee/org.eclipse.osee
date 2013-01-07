@@ -61,7 +61,7 @@ XOseeEnumType:
 	'oseeEnumType' name=STRING '{' ('guid' typeGuid=STRING)? 'uuid' uuid=HEX_INT (enumEntries+=XOseeEnumEntry)* '}';
 
 XOseeEnumEntry:
-	'entry' name=STRING (ordinal=WHOLE_NUM_STR)? ('entryGuid' entryGuid=STRING)?;
+	'entry' name=STRING (ordinal=WHOLE_NUM_STR)? ('entryGuid' entryGuid=STRING)? ('description' description=STRING)? ;
 
 XOseeEnumOverride:
 	'overrides enum' overridenEnumType=[XOseeEnumType|STRING] '{' (inheritAll?='inheritAll')?
@@ -71,7 +71,7 @@ OverrideOption:
 	AddEnum | RemoveEnum;
 
 AddEnum:
-	'add' enumEntry=STRING (ordinal=WHOLE_NUM_STR)? ('entryGuid' entryGuid=STRING)?;
+	'add' enumEntry=STRING (ordinal=WHOLE_NUM_STR)? ('entryGuid' entryGuid=STRING)? ('description' description=STRING)? ;
 
 RemoveEnum:
 	'remove' enumEntry=[XOseeEnumEntry|STRING];

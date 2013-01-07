@@ -11,17 +11,21 @@
 package org.eclipse.osee.framework.core.model;
 
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
  */
 public class OseeEnumEntry extends AbstractOseeType<String> {
    private final static String ENUM_ENTRY_ORDINAL_FIELD = "osee.enum.entry.ordinal.field";
+   private final static String ENUM_ENTRY_DESCRIPTION_FIELD = "osee.enum.entry.description.field";
 
-   public OseeEnumEntry(String guid, String name, int ordinal) {
+   public OseeEnumEntry(String guid, String name, int ordinal, String description) {
       super(guid, name);
       addField(ENUM_ENTRY_ORDINAL_FIELD, new OseeField<Integer>());
       setOrdinal(ordinal);
+      addField(ENUM_ENTRY_DESCRIPTION_FIELD, new OseeField<String>());
+      setDescription(description);
    }
 
    public int ordinal() {
@@ -30,6 +34,15 @@ public class OseeEnumEntry extends AbstractOseeType<String> {
 
    public void setOrdinal(int ordinal) {
       setFieldLogException(ENUM_ENTRY_ORDINAL_FIELD, ordinal);
+   }
+
+   public void setDescription(String description) {
+      setFieldLogException(ENUM_ENTRY_DESCRIPTION_FIELD, Strings.isValid(description) ? description : "");
+   }
+
+   @Override
+   public String getDescription() {
+      return getFieldValueLogException("", ENUM_ENTRY_DESCRIPTION_FIELD);
    }
 
    public Pair<String, Integer> asPair() {
@@ -55,6 +68,14 @@ public class OseeEnumEntry extends AbstractOseeType<String> {
 
    @Override
    public String toString() {
-      return String.format("%s:%s", getName(), ordinal());
+      return String.format("%s:%s%s", getName(), ordinal(), toStringDescription());
+   }
+
+   private String toStringDescription() {
+      String description = "";
+      if (Strings.isValid(getDescription())) {
+         description = " - " + getDescription();
+      }
+      return description;
    }
 }

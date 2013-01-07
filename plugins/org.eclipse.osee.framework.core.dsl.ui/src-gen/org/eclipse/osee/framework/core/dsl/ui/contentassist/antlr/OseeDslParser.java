@@ -83,9 +83,11 @@ public class OseeDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getXOseeEnumTypeAccess().getGroup_3(), "rule__XOseeEnumType__Group_3__0");
 					put(grammarAccess.getXOseeEnumEntryAccess().getGroup(), "rule__XOseeEnumEntry__Group__0");
 					put(grammarAccess.getXOseeEnumEntryAccess().getGroup_3(), "rule__XOseeEnumEntry__Group_3__0");
+					put(grammarAccess.getXOseeEnumEntryAccess().getGroup_4(), "rule__XOseeEnumEntry__Group_4__0");
 					put(grammarAccess.getXOseeEnumOverrideAccess().getGroup(), "rule__XOseeEnumOverride__Group__0");
 					put(grammarAccess.getAddEnumAccess().getGroup(), "rule__AddEnum__Group__0");
 					put(grammarAccess.getAddEnumAccess().getGroup_3(), "rule__AddEnum__Group_3__0");
+					put(grammarAccess.getAddEnumAccess().getGroup_4(), "rule__AddEnum__Group_4__0");
 					put(grammarAccess.getRemoveEnumAccess().getGroup(), "rule__RemoveEnum__Group__0");
 					put(grammarAccess.getXRelationTypeAccess().getGroup(), "rule__XRelationType__Group__0");
 					put(grammarAccess.getXRelationTypeAccess().getGroup_3(), "rule__XRelationType__Group_3__0");
@@ -149,12 +151,14 @@ public class OseeDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getXOseeEnumEntryAccess().getNameAssignment_1(), "rule__XOseeEnumEntry__NameAssignment_1");
 					put(grammarAccess.getXOseeEnumEntryAccess().getOrdinalAssignment_2(), "rule__XOseeEnumEntry__OrdinalAssignment_2");
 					put(grammarAccess.getXOseeEnumEntryAccess().getEntryGuidAssignment_3_1(), "rule__XOseeEnumEntry__EntryGuidAssignment_3_1");
+					put(grammarAccess.getXOseeEnumEntryAccess().getDescriptionAssignment_4_1(), "rule__XOseeEnumEntry__DescriptionAssignment_4_1");
 					put(grammarAccess.getXOseeEnumOverrideAccess().getOverridenEnumTypeAssignment_1(), "rule__XOseeEnumOverride__OverridenEnumTypeAssignment_1");
 					put(grammarAccess.getXOseeEnumOverrideAccess().getInheritAllAssignment_3(), "rule__XOseeEnumOverride__InheritAllAssignment_3");
 					put(grammarAccess.getXOseeEnumOverrideAccess().getOverrideOptionsAssignment_4(), "rule__XOseeEnumOverride__OverrideOptionsAssignment_4");
 					put(grammarAccess.getAddEnumAccess().getEnumEntryAssignment_1(), "rule__AddEnum__EnumEntryAssignment_1");
 					put(grammarAccess.getAddEnumAccess().getOrdinalAssignment_2(), "rule__AddEnum__OrdinalAssignment_2");
 					put(grammarAccess.getAddEnumAccess().getEntryGuidAssignment_3_1(), "rule__AddEnum__EntryGuidAssignment_3_1");
+					put(grammarAccess.getAddEnumAccess().getDescriptionAssignment_4_1(), "rule__AddEnum__DescriptionAssignment_4_1");
 					put(grammarAccess.getRemoveEnumAccess().getEnumEntryAssignment_1(), "rule__RemoveEnum__EnumEntryAssignment_1");
 					put(grammarAccess.getXRelationTypeAccess().getNameAssignment_1(), "rule__XRelationType__NameAssignment_1");
 					put(grammarAccess.getXRelationTypeAccess().getTypeGuidAssignment_3_1(), "rule__XRelationType__TypeGuidAssignment_3_1");

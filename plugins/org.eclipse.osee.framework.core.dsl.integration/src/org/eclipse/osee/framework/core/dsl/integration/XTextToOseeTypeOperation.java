@@ -192,7 +192,8 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
          }
 
          String entryGuid = xEnumEntry.getEntryGuid();
-         oseeEnumEntries.add(provider.getOseeEnumTypeFactory().createEnumEntry(entryGuid, entryName, lastOrdinal));
+         oseeEnumEntries.add(provider.getOseeEnumTypeFactory().createEnumEntry(entryGuid, entryName, lastOrdinal,
+            xEnumEntry.getDescription()));
          lastOrdinal++;
       }
       oseeEnumType.setEntries(oseeEnumEntries);
@@ -208,9 +209,11 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
          if (xOverrideOption instanceof AddEnum) {
             String entryName = ((AddEnum) xOverrideOption).getEnumEntry();
             String entryGuid = ((AddEnum) xOverrideOption).getEntryGuid();
+            String description = ((AddEnum) xOverrideOption).getDescription();
             XOseeEnumEntry xEnumEntry = factory.createXOseeEnumEntry();
             xEnumEntry.setName(entryName);
             xEnumEntry.setEntryGuid(entryGuid);
+            xEnumEntry.setDescription(description);
             xEnumType.getEnumEntries().add(xEnumEntry);
          } else if (xOverrideOption instanceof RemoveEnum) {
             XOseeEnumEntry enumEntry = ((RemoveEnum) xOverrideOption).getEnumEntry();
