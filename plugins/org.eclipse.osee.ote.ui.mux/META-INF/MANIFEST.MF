@@ -13,8 +13,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.ote.core,
  org.eclipse.osee.ote.client,
  org.eclipse.osee.ote.ui,
- org.eclipse.osee.ote.connection.service,
- org.eclipse.help
+ org.eclipse.osee.ote.connection.service
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

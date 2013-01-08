@@ -19,7 +19,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.ote.client,
  org.eclipse.osee.framework.logging,
  org.eclipse.nebula.widgets.xviewer,
- org.eclipse.help,
  org.eclipse.osee.ote.client.msg;visibility:=reexport,
  org.eclipse.osee.ote.ui.message.util
 Bundle-ActivationPolicy: lazy
