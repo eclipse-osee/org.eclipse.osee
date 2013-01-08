@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.rest.internal.mappers.OseeCoreExceptionMapper;
 
 /**
  * Get application.wadl at this context to get rest documentation
@@ -34,7 +35,10 @@ public class OrcsApplication extends Application {
 
    @Override
    public Set<Class<?>> getClasses() {
-      return Collections.<Class<?>> singleton(BranchesResource.class);
+      Set<Class<?>> classes = new HashSet<Class<?>>();
+      classes.add(BranchesResource.class);
+      classes.add(OseeCoreExceptionMapper.class);
+      return classes;
    }
 
 }

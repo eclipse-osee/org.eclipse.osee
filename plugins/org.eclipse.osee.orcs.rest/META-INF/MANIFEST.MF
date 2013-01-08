@@ -8,6 +8,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/*.xml
 Import-Package: javax.ws.rs,
  javax.ws.rs.core,
+ javax.ws.rs.ext,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,

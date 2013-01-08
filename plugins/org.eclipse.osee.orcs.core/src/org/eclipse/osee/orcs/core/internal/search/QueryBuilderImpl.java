@@ -192,10 +192,13 @@ public class QueryBuilderImpl implements QueryBuilder {
       for (String id : ids) {
          if (GUID.isValid(id)) {
             guids.add(id);
-         } else if (HumanReadableId.isValid(id)) {
-            hrids.add(id);
          } else {
-            invalids.add(id);
+            String hrid = id.toUpperCase();
+            if (HumanReadableId.isValid(hrid)) {
+               hrids.add(hrid);
+            } else {
+               invalids.add(id);
+            }
          }
       }
       Conditions.checkExpressionFailOnTrue(!invalids.isEmpty(), "Invalid guids or hrids detected - %s", invalids);

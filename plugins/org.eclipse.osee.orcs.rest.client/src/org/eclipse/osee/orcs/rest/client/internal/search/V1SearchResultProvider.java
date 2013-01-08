@@ -15,14 +15,15 @@ import java.util.List;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.services.URIProvider;
 import org.eclipse.osee.orcs.rest.client.internal.WebClientProvider;
+import org.eclipse.osee.orcs.rest.model.ExceptionEntity;
 import org.eclipse.osee.orcs.rest.model.search.OutputFormat;
 import org.eclipse.osee.orcs.rest.model.search.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.SearchParameters;
 import org.eclipse.osee.orcs.rest.model.search.SearchResult;
+import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 
 /**
@@ -84,8 +85,9 @@ public class V1SearchResultProvider implements SearchResultProvider {
          searchResult =
             resource.accept(MediaType.APPLICATION_JSON_TYPE).type(MediaType.APPLICATION_JSON_TYPE).post(
                SearchResult.class, params);
-      } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+      } catch (UniformInterfaceException ex) {
+         ExceptionEntity entity = ex.getResponse().getEntity(ExceptionEntity.class);
+         throw new OseeCoreException(entity.getExceptionString());
       }
       return searchResult;
    }
