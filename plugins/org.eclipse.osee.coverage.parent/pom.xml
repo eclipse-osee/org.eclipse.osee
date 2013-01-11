@@ -18,10 +18,19 @@
 
 	<modules>
 		<module>../../plugins/org.eclipse.osee.coverage</module>
+		<module>../../plugins/org.eclipse.osee.coverage.test</module>
+
 		<module>../../plugins/org.eclipse.osee.coverage.help.ui</module>
 
 		<module>../../features/org.eclipse.osee.coverage.feature</module>
 		<module>../../features/org.eclipse.osee.coverage.feature.source</module>
+
+		<module>../../plugins/org.eclipse.osee.coverage.demo</module>
+
+		<module>../../features/org.eclipse.osee.coverage.demo.feature</module>
+		<module>../../features/org.eclipse.osee.coverage.demo.feature.source</module>
+
+		<module>../../plugins/org.eclipse.osee.coverage.integration.tests</module>
 
 		<module>../../plugins/org.eclipse.osee.coverage.p2</module>
 	</modules>

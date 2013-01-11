@@ -1,27 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Test
+Bundle-Name: Coverage Test (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.coverage.test;singleton:=true
 Bundle-Version: 0.11.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.coverage
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit
-Import-Package: org.eclipse.osee.framework.database.init,
- org.eclipse.osee.support.test.util
-Export-Package: org.eclipse.osee.coverage,
- org.eclipse.osee.coverage.import01,
- org.eclipse.osee.coverage.import02,
- org.eclipse.osee.coverage.import03,
- org.eclipse.osee.coverage.import04,
- org.eclipse.osee.coverage.import05,
- org.eclipse.osee.coverage.import06,
- org.eclipse.osee.coverage.import07,
- org.eclipse.osee.coverage.import08,
- org.eclipse.osee.coverage.import09,
- org.eclipse.osee.coverage.import10,
- org.eclipse.osee.coverage.import11,
- org.eclipse.osee.coverage.import12,
- org.eclipse.osee.coverage.import13,
- org.eclipse.osee.coverage.model,
- org.eclipse.osee.coverage.navigate
+Import-Package: org.eclipse.osee.framework.database.init

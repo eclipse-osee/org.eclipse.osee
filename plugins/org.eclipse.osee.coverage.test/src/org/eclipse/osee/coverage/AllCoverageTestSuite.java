@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage;
 
+import org.eclipse.osee.coverage.merge.MatchTypeTest;
 import org.eclipse.osee.coverage.model.CoverageItemTest;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerTest;
 import org.eclipse.osee.coverage.model.CoverageUnitTest;
 import org.eclipse.osee.coverage.model.SimpleTestUnitProviderTest;
+import org.eclipse.osee.coverage.store.TestUnitCacheTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -22,13 +24,12 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   SimpleTestUnitProviderTest.class,
-   CoverageItemTest.class,
-   CoverageUnitTest.class,
    MatchTypeTest.class,
+   CoverageItemTest.class,
    CoverageOptionManagerTest.class,
-   DbInitTest.class,
-   Coverage_Db_Suite.class})
+   CoverageUnitTest.class,
+   SimpleTestUnitProviderTest.class,
+   TestUnitCacheTest.class})
 public class AllCoverageTestSuite {
    // do nothing
 }

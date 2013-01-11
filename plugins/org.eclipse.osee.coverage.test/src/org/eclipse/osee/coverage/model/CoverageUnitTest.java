@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.model;
 
-import org.eclipse.osee.coverage.util.CoverageTestUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
@@ -216,9 +215,9 @@ public class CoverageUnitTest {
    @Test
    public void testIsCovered() {
       Assert.assertFalse(cu.isCovered());
-      CoverageTestUtil.setAllCoverageMethod(cu, CoverageOptionManager.Test_Unit, true);
+      setAllCoverageMethod(cu, CoverageOptionManager.Test_Unit, true);
       Assert.assertTrue(cu.isCovered());
-      CoverageTestUtil.setAllCoverageMethod(cu, CoverageOptionManager.Not_Covered, true);
+      setAllCoverageMethod(cu, CoverageOptionManager.Not_Covered, true);
    }
 
    /**
@@ -294,9 +293,9 @@ public class CoverageUnitTest {
    @Test
    public void testGetCoverageItemsCoveredBoolean() {
       Assert.assertFalse(cu.isCovered());
-      CoverageTestUtil.setAllCoverageMethod(cu, CoverageOptionManager.Test_Unit, true);
+      setAllCoverageMethod(cu, CoverageOptionManager.Test_Unit, true);
       Assert.assertTrue(cu.isCovered());
-      CoverageTestUtil.setAllCoverageMethod(cu, CoverageOptionManager.Not_Covered, true);
+      setAllCoverageMethod(cu, CoverageOptionManager.Not_Covered, true);
    }
 
    /**
@@ -366,11 +365,11 @@ public class CoverageUnitTest {
     */
    @Test
    public void testGetCoveragePercentAndStr() {
-      CoverageTestUtil.setAllCoverageMethod(cu, CoverageOptionManager.Not_Covered, true);
+      setAllCoverageMethod(cu, CoverageOptionManager.Not_Covered, true);
       Assert.assertFalse(cu.isCovered());
       Assert.assertEquals(Double.valueOf(0.0), cu.getCoveragePercent());
       Assert.assertEquals("0% - 0 / 4", cu.getCoveragePercentStr());
-      CoverageTestUtil.setAllCoverageMethod(cu, CoverageOptionManager.Test_Unit, true);
+      setAllCoverageMethod(cu, CoverageOptionManager.Test_Unit, true);
       Assert.assertEquals(Double.valueOf(100.0), cu.getCoveragePercent());
       Assert.assertEquals("100% - 4 / 4", cu.getCoveragePercentStr());
    }
@@ -409,6 +408,12 @@ public class CoverageUnitTest {
       Assert.assertEquals(1, cu.getCoverageUnits().size());
       cu.removeCoverageUnit(childCu);
       Assert.assertEquals(0, cu.getCoverageUnits().size());
+   }
+
+   private static void setAllCoverageMethod(CoverageUnit coverageUnit, CoverageOption CoverageOption, boolean recurse) {
+      for (CoverageItem item : coverageUnit.getCoverageItems(recurse)) {
+         item.setCoverageMethod(CoverageOption);
+      }
    }
 
 }

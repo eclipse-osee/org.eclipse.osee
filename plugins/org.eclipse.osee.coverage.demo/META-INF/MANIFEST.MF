@@ -34,7 +34,8 @@ Import-Package: org.eclipse.osee.ats.core.client.util,
  org.eclipse.osee.framework.ui.skynet.blam,
  org.eclipse.osee.framework.ui.skynet.cm,
  org.eclipse.osee.framework.ui.skynet.widgets,
- org.eclipse.osee.framework.ui.skynet.widgets.util
+ org.eclipse.osee.framework.ui.skynet.widgets.util,
+ org.eclipse.osee.framework.ui.swt
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.forms,
  org.eclipse.ui

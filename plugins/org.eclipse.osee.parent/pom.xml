@@ -737,6 +737,7 @@
 				<osee-xserver-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.x.server.p2/target/repository</osee-xserver-site>
 				<osee-runtime-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.runtime.p2/target/repository</osee-runtime-site>
 				<osee-client-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.client.p2/target/repository</osee-client-site>
+				<osee-ats-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.ats.p2/target/repository</osee-ats-site>
 			</properties>
 			<repositories>
 				<repository>
@@ -758,6 +759,11 @@
 					<id>osee-client</id>
 					<layout>p2</layout>
 					<url>${osee-client-site}</url>
+				</repository>
+				<repository>
+					<id>osee-ats</id>
+					<layout>p2</layout>
+					<url>${osee-ats-site}</url>
 				</repository>
 			</repositories>
 		</profile>
@@ -845,14 +851,14 @@
 					<url>${osee-client-site}</url>
 				</repository>
 				<repository>
-					<id>osee-coverage</id>
-					<layout>p2</layout>
-					<url>${osee-coverage-site}</url>
-				</repository>
-				<repository>
 					<id>osee-ats</id>
 					<layout>p2</layout>
 					<url>${osee-ats-site}</url>
+				</repository>
+				<repository>
+					<id>osee-coverage</id>
+					<layout>p2</layout>
+					<url>${osee-coverage-site}</url>
 				</repository>
 			</repositories>
 		</profile>

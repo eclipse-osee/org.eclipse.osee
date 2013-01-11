@@ -6,6 +6,12 @@
    <feature url="features/org.eclipse.osee.coverage.feature.source_0.11.0.qualifier.jar" id="org.eclipse.osee.coverage.feature.source" version="0.11.0.qualifier">
       <category name="org.eclipse.osee.coverage"/>
    </feature>
+   <feature url="features/org.eclipse.osee.coverage.demo.feature_0.11.0.qualifier.jar" id="org.eclipse.osee.coverage.demo.feature" version="0.11.0.qualifier">
+      <category name="org.eclipse.osee.coverage"/>
+   </feature>
+   <feature url="features/org.eclipse.osee.coverage.demo.feature.source_0.11.0.qualifier.jar" id="org.eclipse.osee.coverage.demo.feature.source" version="0.11.0.qualifier">
+      <category name="org.eclipse.osee.coverage"/>
+   </feature>
    <category-def name="org.eclipse.osee.coverage" label="Eclipse OSEE Coverage - (Incubation)">
       <description>
          Eclipse OSEE Coverage - (Incubation)
