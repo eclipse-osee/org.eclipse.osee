@@ -68,6 +68,7 @@ public abstract class OseeCoverageStore extends CoverageStore {
          SkynetTransaction transaction = TransactionManager.createTransaction(branch, "Coverage Save - " + saveName);
          CoveragePackageEvent coverageEvent = getBaseCoveragePackageEvent(CoverageEventType.Modified);
          save(transaction, coverageEvent, coverageOptionManager);
+         saveTestUnitNames(transaction);
          transaction.execute();
          CoverageEventManager.instance.sendRemoteEvent(coverageEvent);
       } catch (OseeCoreException ex) {
@@ -89,6 +90,8 @@ public abstract class OseeCoverageStore extends CoverageStore {
    public abstract CoveragePackageEvent getBaseCoveragePackageEvent(CoverageEventType coverageEventType);
 
    public abstract Result save(SkynetTransaction transaction, CoveragePackageEvent coverageEvent, CoverageOptionManager coverageOptionManager) throws OseeCoreException;
+
+   public abstract void saveTestUnitNames(SkynetTransaction transaction) throws OseeCoreException;
 
    public IOseeBranch getBranch() {
       return branch;

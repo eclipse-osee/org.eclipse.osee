@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.store;
 
+import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,29 +24,44 @@ import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.CoverageUnitFactory;
-import org.eclipse.osee.coverage.store.ITestUnitStore;
-import org.eclipse.osee.coverage.store.TestUnitCache;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 /**
  * @author John R. Misinco
  */
 public class TestUnitCacheTest {
 
-   private CoverageItem createCoverageItem(TestUnitCache tc) throws OseeCoreException {
-      CoverageUnit parent = CoverageUnitFactory.createCoverageUnit(null, "Top", "C:/UserData/", null);
-      CoverageItem ci1 = new CoverageItem(parent, CoverageOptionManager.Deactivated_Code, "1");
-      ci1.setName("this is text");
-      return CoverageItem.createCoverageItem(parent, ci1.toXml(), CoverageOptionManagerDefault.instance(), tc);
+   @Mock
+   private ITestUnitStore testUnitStore;
+
+   private TestUnitCache tc;
+
+   @Before
+   public void setUp() throws OseeCoreException {
+      MockitoAnnotations.initMocks(this);
+
+      when(testUnitStore.getNextTestUnitId()).thenAnswer(new Answer<Integer>() {
+         private int id;
+
+         @Override
+         public Integer answer(InvocationOnMock invocation) throws Throwable {
+            return id++;
+         }
+      });
+
+      tc = new TestUnitCache(testUnitStore);
    }
 
    @Test
    public void testPut() throws OseeCoreException {
-      ITestUnitStore testUnitStore = new MockTestUnitStore();
-      TestUnitCache tc = new TestUnitCache(testUnitStore);
       tc.put("test1");
       tc.put("test2");
       Assert.assertEquals(2, tc.getAllCachedTestUnitNames().size());
@@ -68,8 +84,6 @@ public class TestUnitCacheTest {
 
    @Test
    public void testGetAllCachedTestUnitEntries() throws OseeCoreException {
-      ITestUnitStore testUnitStore = new MockTestUnitStore();
-      TestUnitCache tc = new TestUnitCache(testUnitStore);
       HashMap<Integer, String> entries = new HashMap<Integer, String>();
       for (int i = 0; i < 10; i++) {
          entries.put(i, "test" + Integer.toString(i));
@@ -89,8 +103,6 @@ public class TestUnitCacheTest {
 
    @Test
    public void testGetAllCachedTestUnitNames() throws OseeCoreException {
-      ITestUnitStore testUnitStore = new MockTestUnitStore();
-      TestUnitCache tc = new TestUnitCache(testUnitStore);
       String[] entries = {"test1", "test2", "test3", "test4"};
       for (String entry : entries) {
          tc.put(entry);
@@ -108,8 +120,6 @@ public class TestUnitCacheTest {
 
    @Test
    public void testAddAndGetTestUnits() throws OseeCoreException {
-      ITestUnitStore testUnitStore = new MockTestUnitStore();
-      TestUnitCache tc = new TestUnitCache(testUnitStore);
       Collection<String> expected = new ArrayList<String>();
       CoverageItem ci = createCoverageItem(tc);
       for (int i = 0; i < 10; i++) {
@@ -126,8 +136,6 @@ public class TestUnitCacheTest {
 
    @Test
    public void testRemoveTestUnit() throws OseeCoreException {
-      ITestUnitStore testUnitStore = new MockTestUnitStore();
-      TestUnitCache tc = new TestUnitCache(testUnitStore);
       Collection<String> expected = new ArrayList<String>();
       CoverageItem ci = createCoverageItem(tc);
       for (int i = 0; i < 10; i++) {
@@ -153,14 +161,12 @@ public class TestUnitCacheTest {
 
    @Test
    public void testSetTestUnits() throws OseeCoreException {
-      ITestUnitStore testUnitStore = new MockTestUnitStore();
-      TestUnitCache tc = new TestUnitCache(testUnitStore);
       Collection<String> expected = new ArrayList<String>();
       CoverageItem ci = createCoverageItem(tc);
       for (int i = 0; i < 10; i++) {
          String testUnitName = "test" + Integer.toString(i);
          expected.add(testUnitName);
-         tc.put(i, testUnitName);
+         tc.put(testUnitStore.getNextTestUnitId(), testUnitName);
       }
 
       tc.setTestUnits(ci, expected);
@@ -176,12 +182,10 @@ public class TestUnitCacheTest {
 
    @Test
    public void testToXml() throws OseeCoreException {
-      ITestUnitStore testUnitStore = new MockTestUnitStore();
-      TestUnitCache tc = new TestUnitCache(testUnitStore);
       HashMap<Integer, String> entries = new HashMap<Integer, String>();
       for (int i = 0; i < 10; i++) {
          entries.put(i, "test" + Integer.toString(i));
-         tc.put(i, "test" + Integer.toString(i));
+         tc.put(testUnitStore.getNextTestUnitId(), "test" + Integer.toString(i));
       }
 
       CoverageItem ci = createCoverageItem(tc);
@@ -190,13 +194,12 @@ public class TestUnitCacheTest {
       tc.addTestUnit(ci, "test10");
 
       String expected = "1;2;10";
-      Assert.assertTrue(expected.equals(tc.toXml(ci)));
+      String actual = tc.toXml(ci);
+      Assert.assertEquals(expected, actual);
    }
 
    @Test
    public void testFromXml() throws OseeCoreException {
-      ITestUnitStore testUnitStore = new MockTestUnitStore();
-      TestUnitCache tc = new TestUnitCache(testUnitStore);
       for (int i = 0; i < 10; i++) {
          tc.put(i, "test" + Integer.toString(i));
       }
@@ -213,4 +216,29 @@ public class TestUnitCacheTest {
       Assert.assertTrue(Collections.setComplement(expected, units).isEmpty());
    }
 
+   @Test
+   public void testReset() throws OseeCoreException {
+      CoverageItem ci = createCoverageItem(tc);
+      Collection<String> expected = new ArrayList<String>();
+
+      for (int i = 0; i < 10; i++) {
+         tc.put(i, "test" + Integer.toString(i));
+      }
+
+      tc.setTestUnits(ci, expected);
+      Collection<String> actual = tc.getTestUnits(ci);
+      Assert.assertTrue(Collections.setComplement(expected, actual).isEmpty());
+
+      tc.reset();
+
+      actual = tc.getTestUnits(ci);
+      Assert.assertTrue(actual.isEmpty());
+   }
+
+   private CoverageItem createCoverageItem(TestUnitCache tc) throws OseeCoreException {
+      CoverageUnit parent = CoverageUnitFactory.createCoverageUnit(null, "Top", "C:/UserData/", null);
+      CoverageItem ci1 = new CoverageItem(parent, CoverageOptionManager.Deactivated_Code, "1");
+      ci1.setName("this is text");
+      return CoverageItem.createCoverageItem(parent, ci1.toXml(), CoverageOptionManagerDefault.instance(), tc);
+   }
 }

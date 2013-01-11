@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
@@ -38,6 +39,9 @@ public class CoverageTestUtil {
 
    public static void cleanupCoverageTests() throws OseeCoreException {
       try {
+         for (Artifact art : ArtifactCache.getDirtyArtifacts()) {
+            ArtifactCache.deCache(art);
+         }
          Collection<? extends Artifact> allCoverageArtifacts = getAllCoverageArtifacts();
          IOperation op = new PurgeArtifacts(allCoverageArtifacts);
          Operations.executeWorkAndCheckStatus(op);
@@ -118,7 +122,7 @@ public class CoverageTestUtil {
    }
 
    public static IOseeBranch getTestBranch() {
-      return CoverageBranches.SAW_Bld_1;
+      return CoverageBranches.COVERAGE_TEST_BRANCH;
    }
 
 }

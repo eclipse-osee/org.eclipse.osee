@@ -14,6 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * Simple provider that optimizes how test units are stored by sharing test unit names.
@@ -71,8 +72,13 @@ public class SimpleTestUnitProvider implements ITestUnitProvider {
    }
 
    @Override
-   public void save() {
+   public void save(SkynetTransaction transaction) {
       // do nothing cause storeage is in memory only
+   }
+
+   @Override
+   public void reset() {
+      // do nothing
    }
 
 }

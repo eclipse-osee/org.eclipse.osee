@@ -102,8 +102,9 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
          coveragePackage.setEditable(editable, editableReason);
          for (Artifact childArt : artifact.getChildren()) {
             if (childArt.isOfType(CoverageArtifactTypes.CoverageUnit, CoverageArtifactTypes.CoverageFolder)) {
-               coveragePackage.addCoverageUnit(OseeCoverageUnitStore.get(coveragePackage, childArt,
-                  coverageOptionManager));
+               CoverageUnit coverageUnit =
+                  OseeCoverageUnitStore.get(coveragePackage, childArt, coverageOptionManager, artifact);
+               coveragePackage.addCoverageUnit(coverageUnit);
             }
          }
       }
@@ -274,5 +275,10 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
    @Override
    public CoveragePackageEvent getBaseCoveragePackageEvent(CoverageEventType coverageEventType) {
       return new CoveragePackageEvent(coveragePackage, coverageEventType);
+   }
+
+   @Override
+   public void saveTestUnitNames(SkynetTransaction transaction) {
+      //do nothing
    }
 }

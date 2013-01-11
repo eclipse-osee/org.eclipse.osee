@@ -10,8 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.integration.tests.integration;
 
-import static org.eclipse.osee.coverage.demo.CoverageChoice.*;
-import static org.mockito.Mockito.*;
+import static org.eclipse.osee.coverage.demo.CoverageChoice.OSEE_COVERAGE_DEMO;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.coverage.event.CoverageEventType;
@@ -22,10 +21,12 @@ import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.CoverageUnitFactory;
-import org.eclipse.osee.coverage.store.ITestUnitStore;
+import org.eclipse.osee.coverage.store.ArtifactTestUnitStore;
 import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
 import org.eclipse.osee.coverage.store.TestUnitCache;
 import org.eclipse.osee.coverage.util.CoverageUtil;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -44,18 +45,18 @@ import org.junit.Test;
  */
 public class CoverageItemPersistTest {
 
-   @Rule
-   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_COVERAGE_DEMO);
-
-   @Rule
-   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
-
    public static CoverageUnit parentCu = null;
+   public static Artifact readOnlyTestUnitNames = null;
    public static CoverageItem ci = null;
    public static String parentGuid = null;
    public static String guid = null;
    public static TestUnitCache testUnitCache;
    public static boolean initOnce = false;
+
+   @Rule
+   public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_COVERAGE_DEMO);
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
    @AfterClass
    public static void testCleanup() throws OseeCoreException {
@@ -71,9 +72,14 @@ public class CoverageItemPersistTest {
          // If this fails, cleanup didn't happen.  Must DbInit
          Assert.assertEquals(0, CoverageTestUtil.getAllCoverageArtifacts().size());
 
+         readOnlyTestUnitNames =
+            ArtifactQuery.getOrCreate(ArtifactTestUnitStore.READ_ONLY_GUID, null, CoreArtifactTypes.GeneralData,
+               CoverageTestUtil.getTestBranch());
+         readOnlyTestUnitNames.setSoleAttributeFromString(CoreAttributeTypes.GeneralStringData, "");
          parentCu = CoverageUnitFactory.createCoverageUnit(null, "Top", "C:/UserData/", null);
          parentGuid = parentCu.getGuid();
-         ITestUnitStore testUnitStore = mock(ITestUnitStore.class);
+         ArtifactTestUnitStore testUnitStore = new ArtifactTestUnitStore(null, readOnlyTestUnitNames);
+
          testUnitCache = new TestUnitCache(testUnitStore);
          ci = new CoverageItem(parentCu, CoverageOptionManager.Deactivated_Code, "1");
          ci.setTestUnitProvider(testUnitCache);
@@ -98,9 +104,11 @@ public class CoverageItemPersistTest {
          // do nothing
       }
 
-      Artifact artifact = new OseeCoverageUnitStore(parentCu, CoverageTestUtil.getTestBranch()).getArtifact(false);
+      Artifact artifact =
+         new OseeCoverageUnitStore(parentCu, CoverageTestUtil.getTestBranch(), readOnlyTestUnitNames).getArtifact(false);
       Assert.assertNull("Artifact should not have been created", artifact);
-      artifact = new OseeCoverageUnitStore(parentCu, CoverageTestUtil.getTestBranch()).getArtifact(true);
+      artifact =
+         new OseeCoverageUnitStore(parentCu, CoverageTestUtil.getTestBranch(), readOnlyTestUnitNames).getArtifact(true);
       CoverageTestUtil.registerAsTestArtifact(artifact);
       artifact.persist(getClass().getSimpleName());
       Assert.assertNotNull("Artifact should have been created", artifact);
@@ -115,7 +123,8 @@ public class CoverageItemPersistTest {
       // Since test units are stored through provider, ensure they are same before and after save
       Assert.assertEquals(10, ci.getTestUnits().size());
 
-      Artifact artifact = new OseeCoverageUnitStore(parentCu, CoverageTestUtil.getTestBranch()).getArtifact(true);
+      Artifact artifact =
+         new OseeCoverageUnitStore(parentCu, CoverageTestUtil.getTestBranch(), readOnlyTestUnitNames).getArtifact(true);
       Assert.assertNotNull(artifact);
       SkynetTransaction transaction =
          TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), "Save CoverageItem");
@@ -123,8 +132,8 @@ public class CoverageItemPersistTest {
       String coverageName = "Test CP";
       CoveragePackageEvent coverageEvent =
          new CoveragePackageEvent(coverageName, coverageGuid, CoverageEventType.Modified, GUID.create());
-      new OseeCoverageUnitStore(parentCu, CoverageTestUtil.getTestBranch()).save(transaction, coverageEvent,
-         CoverageOptionManagerDefault.instance());
+      new OseeCoverageUnitStore(parentCu, CoverageTestUtil.getTestBranch(), readOnlyTestUnitNames).save(transaction,
+         coverageEvent, CoverageOptionManagerDefault.instance());
       artifact.persist(transaction);
 
       transaction.execute();
@@ -165,15 +174,18 @@ public class CoverageItemPersistTest {
     */
    @Test
    public void testDelete() throws OseeCoreException {
-      Artifact artifact = new OseeCoverageUnitStore(parentCu, CoverageTestUtil.getTestBranch()).getArtifact(false);
+      Artifact artifact =
+         new OseeCoverageUnitStore(parentCu, CoverageTestUtil.getTestBranch(), readOnlyTestUnitNames).getArtifact(false);
       Assert.assertNotNull(artifact);
       SkynetTransaction transaction =
          TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), "Save CoverageItem");
       CoveragePackageEvent coverageEvent =
          new CoveragePackageEvent("Test CP", GUID.create(), CoverageEventType.Deleted, GUID.create());
-      new OseeCoverageUnitStore(parentCu, CoverageTestUtil.getTestBranch()).delete(transaction, coverageEvent, false);
+      new OseeCoverageUnitStore(parentCu, CoverageTestUtil.getTestBranch(), readOnlyTestUnitNames).delete(transaction,
+         coverageEvent, false);
       transaction.execute();
-      artifact = new OseeCoverageUnitStore(parentCu, CoverageTestUtil.getTestBranch()).getArtifact(false);
+      artifact =
+         new OseeCoverageUnitStore(parentCu, CoverageTestUtil.getTestBranch(), readOnlyTestUnitNames).getArtifact(false);
       Assert.assertNull(artifact);
       Assert.assertEquals(0, CoverageTestUtil.getAllCoverageArtifacts().size());
       Assert.assertEquals(1, coverageEvent.getCoverages().size());

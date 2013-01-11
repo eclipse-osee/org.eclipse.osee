@@ -24,6 +24,7 @@ artifactType "Coverage Package" extends "General Data" {
    uuid 0x000000000000004B
    attribute "Active"
    attribute "coverage.Coverage Options"
+   attribute "coverage.UnitTestTable"
    attribute "coverage.WorkProductPcrGuid"
 }
 
@@ -120,4 +121,13 @@ artifactType "Coverage Unit" extends "Abstract Coverage Unit" {
    guid "ALZS3MQdCCIUvEYlZeAA"
    uuid 0x000000000000004E
    attribute "coverage.WorkProductTaskGuid"
+}
+
+attributeType "coverage.UnitTestTable" extends StringAttribute {
+   guid "AZAQd2A09VdGcvXOdCAA"
+   uuid 0x100000000000037B
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   fileExtension "txt"
 }

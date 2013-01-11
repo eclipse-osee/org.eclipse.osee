@@ -99,7 +99,7 @@ public class CoveragePackageTestUtil {
 
       if (testWithDb) {
          OseeCoveragePackageStore packageStore =
-            new OseeCoveragePackageStore(coveragePackage, CoverageBranches.SAW_Bld_1);
+            new OseeCoveragePackageStore(coveragePackage, CoverageBranches.COVERAGE_TEST_BRANCH);
          packageStore.save(coveragePackage.getName(), coveragePackage.getCoverageOptionManager());
       }
 

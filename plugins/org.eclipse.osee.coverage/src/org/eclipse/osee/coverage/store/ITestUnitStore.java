@@ -11,6 +11,7 @@
 package org.eclipse.osee.coverage.store;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author John R. Misinco
@@ -19,6 +20,8 @@ public interface ITestUnitStore {
 
    public void load(TestUnitCache cache) throws OseeCoreException;
 
-   public void store(TestUnitCache cache) throws OseeCoreException;
+   public void store(TestUnitCache cache, SkynetTransaction transaction) throws OseeCoreException;
+
+   public int getNextTestUnitId() throws OseeCoreException;
 
 }

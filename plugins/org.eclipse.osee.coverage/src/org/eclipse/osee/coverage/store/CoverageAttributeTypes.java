@@ -29,6 +29,7 @@ public final class CoverageAttributeTypes {
    public static final IAttributeType WorkProductPcrGuid = TokenFactory.createAttributeType(0x1000000000000100L, "coverage.WorkProductPcrGuid");
    public static final IAttributeType Notes = TokenFactory.createAttributeType(0x10000000000000FCL, "coverage.Notes");
    public static final IAttributeType Order = TokenFactory.createAttributeType(0x1000000000000102L, "coverage.Order");
+   public static final IAttributeType UnitTestTable = TokenFactory.createAttributeType(0x100000000000037BL, "coverage.UnitTestTable");
    // @formatter:on
 
    private CoverageAttributeTypes() {

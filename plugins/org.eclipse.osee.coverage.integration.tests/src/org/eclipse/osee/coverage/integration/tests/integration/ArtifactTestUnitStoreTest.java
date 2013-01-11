@@ -11,9 +11,13 @@
 package org.eclipse.osee.coverage.integration.tests.integration;
 
 import static org.eclipse.osee.coverage.demo.CoverageChoice.OSEE_COVERAGE_DEMO;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.coverage.integration.tests.integration.util.CoverageTestUtil;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
@@ -21,6 +25,8 @@ import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.CoverageUnitFactory;
 import org.eclipse.osee.coverage.model.ITestUnitProvider;
 import org.eclipse.osee.coverage.store.ArtifactTestUnitStore;
+import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
+import org.eclipse.osee.coverage.store.CoverageAttributeTypes;
 import org.eclipse.osee.coverage.store.TestUnitCache;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -42,14 +48,17 @@ import org.junit.Test;
  */
 public class ArtifactTestUnitStoreTest {
 
+   private static final String testInputDataReadOnlyList = "1|test1\n2|test2\n3|test3";
+   private static final String testInputDataCoverageArtifact = "4|test4\n5|test5\n6|test6";
+   private static final String coverageTestGuid = "Bs+PvSVQf4Z4EHSTcyQB";
+   private static Artifact readOnlyTestUnitNames;
+   private Branch testTopBranch;
+   private Branch testWorkingBranch;
+
    @Rule
    public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_COVERAGE_DEMO);
-
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
-
-   private static final String testInputData = "1|test1\n2|test2\n3|test3";
-   private Branch testBranch;
 
    private CoverageItem createCoverageItem(ITestUnitProvider tc) throws OseeCoreException {
       CoverageUnit parent = CoverageUnitFactory.createCoverageUnit(null, "Top", "C:/UserData/", null);
@@ -60,20 +69,23 @@ public class ArtifactTestUnitStoreTest {
 
    @Before
    public void createTestArtifact() throws OseeCoreException {
-      testBranch = BranchManager.createTopLevelBranch("TestBranch");
-      Artifact testArtifact =
-         ArtifactQuery.getOrCreate(ArtifactTestUnitStore.COVERAGE_GUID, null, CoreArtifactTypes.GeneralData, testBranch);
-      testArtifact.setSoleAttributeFromString(CoreAttributeTypes.GeneralStringData, testInputData);
+      testTopBranch = BranchManager.createTopLevelBranch("Test Top Level Branch");
+      testWorkingBranch = BranchManager.createWorkingBranch(CoverageTestUtil.getTestBranch(), "Test Working Branch");
+      readOnlyTestUnitNames =
+         ArtifactQuery.getOrCreate(ArtifactTestUnitStore.READ_ONLY_GUID, null, CoreArtifactTypes.GeneralData,
+            testTopBranch);
+      readOnlyTestUnitNames.setSoleAttributeFromString(CoreAttributeTypes.GeneralStringData, testInputDataReadOnlyList);
    }
 
    @After
    public void cleanUpTestArtifact() {
-      BranchManager.deleteBranch(testBranch);
+      BranchManager.deleteBranch(testTopBranch);
+      BranchManager.deleteBranch(testWorkingBranch);
    }
 
    @Test
    public void testLoad() throws OseeCoreException {
-      ArtifactTestUnitStore store = new ArtifactTestUnitStore(testBranch);
+      ArtifactTestUnitStore store = new ArtifactTestUnitStore(null, readOnlyTestUnitNames);
       TestUnitCache tc = new TestUnitCache(store);
       store.load(tc);
       StringBuilder actual = new StringBuilder();
@@ -87,27 +99,90 @@ public class ArtifactTestUnitStoreTest {
          actual.append(entry.getValue());
          firstTime = false;
       }
-      Assert.assertEquals(testInputData, actual.toString());
+      Assert.assertEquals(testInputDataReadOnlyList, actual.toString());
    }
 
    @Test
    public void testStore() throws OseeCoreException {
 
-      ArtifactTestUnitStore store = new ArtifactTestUnitStore(testBranch);
+      Artifact testArtifact =
+         ArtifactQuery.getOrCreate(coverageTestGuid, null, CoverageArtifactTypes.CoveragePackage, testWorkingBranch);
+      testArtifact.setSoleAttributeFromString(CoverageAttributeTypes.UnitTestTable, testInputDataCoverageArtifact);
+
+      ArtifactTestUnitStore store = new ArtifactTestUnitStore(testArtifact, readOnlyTestUnitNames);
       TestUnitCache tc = new TestUnitCache(store);
       CoverageItem ci = createCoverageItem(tc);
       ci.addTestUnitName("test1");
-      ci.addTestUnitName("test10");
 
-      store.store(tc);
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(testWorkingBranch, getClass().getSimpleName());
+      store.store(tc, transaction);
 
-      SkynetTransaction transaction = TransactionManager.createTransaction(testBranch, getClass().getSimpleName());
-      Artifact testArtifact =
-         ArtifactQuery.getOrCreate(ArtifactTestUnitStore.COVERAGE_GUID, null, CoreArtifactTypes.GeneralData, testBranch);
-      String actual = testArtifact.getSoleAttributeValueAsString(CoreAttributeTypes.GeneralStringData, "");
-      String expected = testInputData + "\n4|test10";
+      String actual = testArtifact.getSoleAttributeValueAsString(CoverageAttributeTypes.UnitTestTable, "");
+      String expected = "1|test1\n" + testInputDataCoverageArtifact;
       Assert.assertEquals(expected, actual);
       testArtifact.persist(transaction);
       transaction.execute();
+   }
+
+   @Test
+   public void testCoveragePackageEmptyTestUnitTableAttr() throws OseeCoreException {
+      // Test when CoveragePackageArtifact has an empty UnitTestTable the ArtifactStore gets testUnits from the readOnly Artifact
+      Artifact testCoverageArtifact =
+         ArtifactQuery.getOrCreate(coverageTestGuid, null, CoverageArtifactTypes.CoveragePackage, testWorkingBranch);
+      testCoverageArtifact.setSoleAttributeFromString(CoverageAttributeTypes.UnitTestTable, "");
+
+      ArtifactTestUnitStore store = new ArtifactTestUnitStore(testCoverageArtifact, readOnlyTestUnitNames);
+      TestUnitCache tc = new TestUnitCache(store);
+
+      Collection<Entry<Integer, String>> allCachedTestUnitNames = tc.getAllCachedTestUnitEntries();
+      Map<Integer, String> testUnitNamesList = new HashMap<Integer, String>();
+      for (Entry<Integer, String> entry : allCachedTestUnitNames) {
+         testUnitNamesList.put(entry.getKey(), entry.getValue());
+      }
+
+      String actual = testUnitNamesList.get(1);
+      String expected = "test1";
+      Assert.assertEquals(expected, actual);
+
+      actual = testUnitNamesList.get(2);
+      expected = "test2";
+      Assert.assertEquals(expected, actual);
+
+      actual = testUnitNamesList.get(3);
+      expected = "test3";
+      Assert.assertEquals(expected, actual);
+
+   }
+
+   @Test
+   public void testCoveragePackageTestUnitTableAttr() throws OseeCoreException {
+
+      Artifact testCoverageArtifact =
+         ArtifactQuery.getOrCreate(coverageTestGuid, null, CoverageArtifactTypes.CoveragePackage, testWorkingBranch);
+      testCoverageArtifact.setSoleAttributeFromString(CoverageAttributeTypes.UnitTestTable,
+         testInputDataCoverageArtifact);
+
+      ArtifactTestUnitStore store = new ArtifactTestUnitStore(testCoverageArtifact, readOnlyTestUnitNames);
+      TestUnitCache tc = new TestUnitCache(store);
+
+      Collection<Entry<Integer, String>> allCachedTestUnitNames = tc.getAllCachedTestUnitEntries();
+      Map<Integer, String> testUnitNamesList = new HashMap<Integer, String>();
+      for (Entry<Integer, String> entry : allCachedTestUnitNames) {
+         testUnitNamesList.put(entry.getKey(), entry.getValue());
+      }
+
+      String actual = testUnitNamesList.get(4);
+      String expected = "test4";
+      Assert.assertEquals(expected, actual);
+
+      actual = testUnitNamesList.get(5);
+      expected = "test5";
+      Assert.assertEquals(expected, actual);
+
+      actual = testUnitNamesList.get(6);
+      expected = "test6";
+      Assert.assertEquals(expected, actual);
+
    }
 }

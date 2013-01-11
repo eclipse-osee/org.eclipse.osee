@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.integration.tests.integration;
 
-import static org.eclipse.osee.coverage.demo.CoverageChoice.*;
+import static org.eclipse.osee.coverage.demo.CoverageChoice.OSEE_COVERAGE_DEMO;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;

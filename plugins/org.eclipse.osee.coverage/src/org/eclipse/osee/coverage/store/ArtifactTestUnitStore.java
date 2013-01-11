@@ -11,57 +11,100 @@
 package org.eclipse.osee.coverage.store;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringTokenizer;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import java.util.concurrent.atomic.AtomicBoolean;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author John R. Misinco
  */
 public class ArtifactTestUnitStore implements ITestUnitStore {
 
-   public static final String COVERAGE_GUID = "AhQuIIQa0Vkw4mswxhwA";
+   private static final String COVERAGE_TEST_UNIT_NAME_SEQ = "COVERAGE_TEST_UNIT_NAME_SEQ";
 
-   private final IOseeBranch branch;
+   private final Artifact coveragePackage;
+   private Artifact readOnlyTestUnitNames;
 
-   public ArtifactTestUnitStore(IOseeBranch branch) {
-      this.branch = branch;
-   }
+   private static final IArtifactToken READ_ONLY_TEST_UNIT_NAMES = TokenFactory.createArtifactToken(
+      "Bs+PvSVQf3R5EHSTcyQA", "ReadOnlyTestUnitNames", CoreArtifactTypes.GeneralData);
+   public static final String READ_ONLY_GUID = READ_ONLY_TEST_UNIT_NAMES.getGuid();
+   private final AtomicBoolean isRegisteredForEvents = new AtomicBoolean(false);
 
-   public ArtifactTestUnitStore() {
-      this(CoreBranches.COMMON);
+   public ArtifactTestUnitStore(Artifact coveragePackage, Artifact readOnlyTestUnitNames) {
+      this.coveragePackage = coveragePackage;
+      this.readOnlyTestUnitNames = readOnlyTestUnitNames;
    }
 
    @Override
    public void load(TestUnitCache cache) throws OseeCoreException {
+      if (!isRegisteredForEvents.get() && coveragePackage != null) {
+         IEventListener eventListener = createEventListener(coveragePackage, cache);
+         OseeEventManager.addListener(eventListener);
+
+         isRegisteredForEvents.compareAndSet(false, true);
+      }
       String data = getAttributeData();
       parse(data, cache);
    }
 
+   private IEventListener createEventListener(final Artifact artifact, final TestUnitCache cache) {
+      IArtifactEventListener eventListener = new IArtifactEventListener() {
+
+         @Override
+         public List<? extends IEventFilter> getEventFilters() {
+            return Arrays.asList(new ArtifactEventFilter(artifact));
+         }
+
+         @Override
+         public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+            cache.reset();
+         }
+
+      };
+
+      return eventListener;
+   }
+
    private String getAttributeData() throws OseeCoreException {
-      Artifact artifact = getCoverageTestUnitArtifact();
-      return artifact.getSoleAttributeValueAsString(CoreAttributeTypes.GeneralStringData, "");
+      String data = Strings.EMPTY_STRING;
+      if (coveragePackage != null) {
+         data = coveragePackage.getSoleAttributeValueAsString(CoverageAttributeTypes.UnitTestTable, "");
+      }
+      if (!Strings.isValid(data)) {
+         if (readOnlyTestUnitNames == null) {
+            readOnlyTestUnitNames = ArtifactQuery.getArtifactFromToken(READ_ONLY_TEST_UNIT_NAMES, CoreBranches.COMMON);
+         }
+         data = readOnlyTestUnitNames.getSoleAttributeValueAsString(CoreAttributeTypes.GeneralStringData, "");
+      }
+      return data;
    }
 
    @Override
-   public void store(TestUnitCache cache) throws OseeCoreException {
-      Artifact artifact = getCoverageTestUnitArtifact();
-
-      SkynetTransaction transaction = TransactionManager.createTransaction(branch, "Store CoverageTestUnitArtifact");
+   public void store(TestUnitCache cache, SkynetTransaction transaction) throws OseeCoreException {
 
       Set<Entry<Integer, String>> entries = cache.getAllCachedTestUnitEntries();
       List<Entry<Integer, String>> entriesList = new ArrayList<Entry<Integer, String>>(entries);
@@ -74,9 +117,14 @@ public class ArtifactTestUnitStore implements ITestUnitStore {
       });
 
       String storage = asStorage(entriesList);
-      artifact.setSoleAttributeFromString(CoreAttributeTypes.GeneralStringData, storage);
-      artifact.persist(transaction);
-      transaction.execute();
+
+      if (coveragePackage != null) {
+         coveragePackage.setSoleAttributeFromString(CoverageAttributeTypes.UnitTestTable, storage);
+         coveragePackage.persist(transaction);
+      } else if (readOnlyTestUnitNames != null) {
+         readOnlyTestUnitNames.setSoleAttributeFromString(CoreAttributeTypes.GeneralStringData, storage);
+         readOnlyTestUnitNames.persist(transaction);
+      }
    }
 
    protected String asStorage(List<Entry<Integer, String>> entries) {
@@ -113,7 +161,8 @@ public class ArtifactTestUnitStore implements ITestUnitStore {
       }
    }
 
-   private Artifact getCoverageTestUnitArtifact() throws OseeCoreException {
-      return ArtifactQuery.getOrCreate(COVERAGE_GUID, null, CoreArtifactTypes.GeneralData, branch);
+   @Override
+   public int getNextTestUnitId() throws OseeCoreException {
+      return (int) ConnectionHandler.getSequence().getNextSequence(COVERAGE_TEST_UNIT_NAME_SEQ);
    }
 }

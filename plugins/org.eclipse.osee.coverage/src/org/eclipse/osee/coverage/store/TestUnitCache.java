@@ -10,14 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.store;
 
+import java.rmi.activation.Activator;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
-import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.ITestUnitProvider;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -26,7 +28,7 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import com.google.common.collect.HashBiMap;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author John R. Misinco
@@ -36,15 +38,14 @@ public class TestUnitCache implements ITestUnitProvider {
    private final static int HASHMAP_SIZE = 3000;
    private final HashCollection<CoverageItem, Integer> itemsToTestUnit = new HashCollection<CoverageItem, Integer>(
       HASHMAP_SIZE);
-   private int lastId;
-   private final HashBiMap<Integer, String> idToNameCache = HashBiMap.create(HASHMAP_SIZE);
+   private final Map<Integer, String> idToNameCache = new HashMap<Integer, String>(HASHMAP_SIZE);
+   private final Map<String, Integer> nameToIdCache = new HashMap<String, Integer>(HASHMAP_SIZE);
    private final ITestUnitStore testUnitStore;
    private volatile boolean ensurePopulatedRanOnce;
    private volatile boolean cacheIsDirty;
 
    public TestUnitCache(ITestUnitStore testUnitStore) {
       super();
-      this.lastId = 0;
       this.ensurePopulatedRanOnce = false;
       this.cacheIsDirty = false;
       this.testUnitStore = testUnitStore;
@@ -52,12 +53,11 @@ public class TestUnitCache implements ITestUnitProvider {
 
    private Integer getKey(String testUnitName) throws OseeCoreException {
       ensurePopulated();
-      Integer key = idToNameCache.inverse().get(testUnitName);
+      Integer key = nameToIdCache.get(testUnitName);
       if (key == null) {
-         return ++lastId;
-      } else {
-         return key;
+         key = testUnitStore.getNextTestUnitId();
       }
+      return key;
    }
 
    public void put(String testUnitName) throws OseeCoreException {
@@ -72,8 +72,8 @@ public class TestUnitCache implements ITestUnitProvider {
          throw new OseeArgumentException("TestUnit key: [%s] has already been used", key);
       } else {
          idToNameCache.put(key, testUnitName);
+         nameToIdCache.put(testUnitName, key);
          cacheIsDirty = true;
-         lastId = Math.max(lastId, key);
       }
    }
 
@@ -119,10 +119,10 @@ public class TestUnitCache implements ITestUnitProvider {
       ensurePopulated();
       Collection<String> testUnitNames = getTestUnitsHelper(coverageItem, testUnitName);
       if (!testUnitNames.contains(testUnitName)) {
-         if (idToNameCache.inverse().get(testUnitName) == null) {
+         if (nameToIdCache.get(testUnitName) == null) {
             put(testUnitName);
          }
-         int key = idToNameCache.inverse().get(testUnitName);
+         int key = nameToIdCache.get(testUnitName);
          itemsToTestUnit.put(coverageItem, key);
       }
    }
@@ -130,7 +130,7 @@ public class TestUnitCache implements ITestUnitProvider {
    @Override
    public void removeTestUnit(CoverageItem coverageItem, String testUnitName) throws OseeCoreException {
       ensurePopulated();
-      Integer value = idToNameCache.inverse().get(testUnitName);
+      Integer value = nameToIdCache.get(testUnitName);
       if (value != null) {
          itemsToTestUnit.removeValue(coverageItem, value);
       } else {
@@ -183,6 +183,7 @@ public class TestUnitCache implements ITestUnitProvider {
          ensurePopulatedRanOnce = true;
          try {
             testUnitStore.load(this);
+            cacheIsDirty = false;
          } catch (OseeCoreException ex) {
             throw ex;
          }
@@ -190,11 +191,20 @@ public class TestUnitCache implements ITestUnitProvider {
    }
 
    @Override
-   public synchronized void save() throws OseeCoreException {
+   public synchronized void save(SkynetTransaction transaction) throws OseeCoreException {
       ensurePopulated();
       if (cacheIsDirty) {
-         testUnitStore.store(this);
+         testUnitStore.store(this, transaction);
          cacheIsDirty = false;
+      }
+   }
+
+   @Override
+   public void reset() {
+      if (!cacheIsDirty) {
+         nameToIdCache.clear();
+         idToNameCache.clear();
+         ensurePopulatedRanOnce = false;
       }
    }
 

@@ -42,7 +42,7 @@ public class CpCreateAndImportItem extends XNavigateItemAction {
       coveragePackage =
          new CoveragePackage(coveragePkgName, CoverageOptionManagerDefault.instance(),
             new SimpleWorkProductTaskProvider());
-      OseeCoveragePackageStore store = new OseeCoveragePackageStore(coveragePackage, CoverageBranches.SAW_Bld_1);
+      OseeCoveragePackageStore store = new OseeCoveragePackageStore(coveragePackage, CoverageBranches.COVERAGE_TEST_BRANCH);
       store.save(coveragePackage.getName(), coveragePackage.getCoverageOptionManager());
       CoverageEditor.open(new CoverageEditorInput(coveragePackage.getName(), store.getArtifact(false), coveragePackage,
          true));

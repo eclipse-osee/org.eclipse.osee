@@ -24,7 +24,7 @@ public class AddCoverageBranch implements IDbInitializationTask {
 
    @Override
    public void run() throws OseeCoreException {
-      Branch coverageBranch = BranchManager.createTopLevelBranch(CoverageBranches.SAW_Bld_1);
+      Branch coverageBranch = BranchManager.createTopLevelBranch(CoverageBranches.COVERAGE_TEST_BRANCH);
       OseeSystemArtifacts.getDefaultHierarchyRootArtifact(coverageBranch);
    }
 

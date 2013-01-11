@@ -35,7 +35,7 @@ public class CoveragePackage1Import10a extends XNavigateItem {
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       super.run(tableLoadOptions);
 
-      CoverageUtil.setNavigatorSelectedBranch(CoverageBranches.SAW_Bld_1);
+      CoverageUtil.setNavigatorSelectedBranch(CoverageBranches.COVERAGE_TEST_BRANCH);
       Artifact coveragePackageArtifact = CoveragePackageTestUtil.getSelectedCoveragePackageFromDialog();
       if (coveragePackageArtifact == null) {
          return;
