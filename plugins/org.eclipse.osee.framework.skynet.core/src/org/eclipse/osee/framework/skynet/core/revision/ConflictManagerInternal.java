@@ -176,8 +176,11 @@ public class ConflictManagerInternal {
 
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
+         int commonTransactionNumber = transactionId != null ? transactionId.getId() : 0;
+         int commonBranchId = transactionId != null ? transactionId.getBranchId() : 0;
+
          chStmt.runPreparedQuery(sql, sourceBranch.getId(), sourceBranch.getBaseTransaction().getId(),
-            destinationBranch.getId(), transactionId != null ? transactionId.getId() : 0);
+            destinationBranch.getId(), commonBranchId, commonTransactionNumber);
 
          ArtifactConflictBuilder artifactConflictBuilder;
          int artId = 0;
@@ -225,9 +228,12 @@ public class ConflictManagerInternal {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       AttributeConflictBuilder attributeConflictBuilder;
       try {
+         int commonTransactionNumber = transactionId != null ? transactionId.getId() : 0;
+         int commonBranchId = transactionId != null ? transactionId.getBranchId() : 0;
+
          chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_ATTRIBUTES), sourceBranch.getId(),
-            sourceBranch.getBaseTransaction().getId(), destinationBranch.getId(),
-            transactionId != null ? transactionId.getId() : 0);
+            sourceBranch.getBaseTransaction().getId(), destinationBranch.getId(), commonBranchId,
+            commonTransactionNumber);
 
          int attrId = 0;
 
