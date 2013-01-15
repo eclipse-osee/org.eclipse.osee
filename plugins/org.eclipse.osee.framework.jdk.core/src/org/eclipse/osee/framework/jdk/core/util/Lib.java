@@ -757,13 +757,12 @@ public final class Lib {
          in = new BufferedReader(new FileReader(file));
 
          String line = null;
-         if (keepExtension) {
-            while ((line = in.readLine()) != null) {
-               list.add(line);
+         while ((line = in.readLine()) != null) {
+            if (!keepExtension) {
+               line = Lib.removeExtension(line);
             }
-         } else {
-            while ((line = in.readLine()) != null) {
-               list.add(Lib.removeExtension(line));
+            if (Strings.isValid(line)) {
+               list.add(line);
             }
          }
       } finally {

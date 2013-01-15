@@ -11,10 +11,18 @@
 package org.eclipse.osee.define.traceability;
 
 import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectComposite;
 import org.eclipse.swt.SWT;
@@ -80,6 +88,11 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
       setPageComplete(determinePageCompletion());
    }
 
+   @Override
+   protected boolean determinePageCompletion() {
+      return super.determinePageCompletion() && preprocessInput(getImportFile());
+   }
+
    protected void createSourceGroup(Composite parent) {
       directoryFileSelector = new DirectoryOrFileSelector(parent, SWT.NONE, "Import Source", this);
 
@@ -130,5 +143,52 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
    @Override
    protected boolean allowNewContainerName() {
       return false;
+   }
+
+   private boolean preprocessInput(final File file) {
+      final StringBuilder errorMessage = new StringBuilder();
+      try {
+         getContainer().run(true, true, new IRunnableWithProgress() {
+
+            @Override
+            public void run(IProgressMonitor monitor) {
+               if (file != null) {
+                  try {
+                     int count = 0;
+                     for (String path : Lib.readListFromFile(file, true)) {
+                        File toCheck = new File(path);
+                        if (!toCheck.exists()) {
+                           count++;
+                           errorMessage.append(String.format("\nPath does not exist: [%s]", path));
+                        } else if (!toCheck.isDirectory()) {
+                           count++;
+                           errorMessage.append(String.format("\nNot a directory: [%s]", path));
+                        }
+                     }
+                     if (count > 0) {
+                        errorMessage.insert(0, String.format("%d paths have errors:", count));
+                     }
+                  } catch (IOException ex) {
+                     OseeLog.log(Activator.class, Level.SEVERE, Lib.exceptionToString(ex));
+                  }
+
+               }
+            }
+         });
+      } catch (InvocationTargetException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, Lib.exceptionToString(ex));
+      } catch (InterruptedException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, Lib.exceptionToString(ex));
+      }
+
+      if (errorMessage.length() != 0) {
+         setErrorMessage(errorMessage.toString());
+         return false;
+      } else {
+         setErrorMessage(null);
+         setMessage(null);
+         return true;
+      }
+
    }
 }
