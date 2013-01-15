@@ -6,9 +6,20 @@
    <feature url="features/org.eclipse.osee.client.feature.source_0.11.0.qualifier.jar" id="org.eclipse.osee.client.feature.source" version="0.11.0.qualifier">
       <category name="org.eclipse.osee.client"/>
    </feature>
+   <feature url="features/org.eclipse.osee.client.test.framework.feature_0.11.0.qualifier.jar" id="org.eclipse.osee.client.test.framework.feature" version="0.11.0.qualifier">
+      <category name="org.eclipse.osee.client.test"/>
+   </feature>
+   <feature url="features/org.eclipse.osee.client.test.framework.feature.source_0.11.0.qualifier.jar" id="org.eclipse.osee.client.test.framework.feature.source" version="0.11.0.qualifier">
+      <category name="org.eclipse.osee.client.test"/>
+   </feature>
    <category-def name="org.eclipse.osee.client" label="Eclipse OSEE Client - (Incubation)">
       <description>
          Eclipse OSEE Client - (Incubation)
+      </description>
+   </category-def>
+   <category-def name="org.eclipse.osee.client.test" label="Eclipse OSEE Client Test Framework - (Incubation)">
+      <description>
+         Eclipse OSEE Client Test Framework - (Incubation)
       </description>
    </category-def>
 </site>
