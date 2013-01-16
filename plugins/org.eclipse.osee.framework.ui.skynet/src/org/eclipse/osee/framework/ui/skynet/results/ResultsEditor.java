@@ -55,7 +55,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 public class ResultsEditor extends AbstractArtifactEditor {
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.results.ResultsEditor";
    private Integer startPage = null;
-   private List<IResultsEditorTab> pages;
+   private List<IResultsEditorTab> tabs;
    private int lastPageSelected = -1;
    private ISelectionChangedListener selectionListener;
 
@@ -75,6 +75,19 @@ public class ResultsEditor extends AbstractArtifactEditor {
 
          }
       };
+   }
+
+   List<IResultsEditorTab> getTabs() throws OseeCoreException {
+      if (tabs == null) {
+         tabs = getResultsEditorProvider().getResultsEditorTabs();
+         if (tabs == null || tabs.isEmpty()) {
+            tabs.add(new ResultsEditorHtmlTab(
+               "Error",
+               "Error",
+               AHTML.simplePage("Error: No tabs were defined for \"" + getResultsEditorProvider().getEditorName() + "\"")));
+         }
+      }
+      return tabs;
    }
 
    private List<Object> rowsToData(ISelection selection) {
@@ -117,10 +130,8 @@ public class ResultsEditor extends AbstractArtifactEditor {
 
    private ResultsXViewer getViewerForPage(int index) {
       ResultsXViewer viewer = null;
-      IResultsEditorProvider provider = getResultsEditorProvider();
       try {
-         List<IResultsEditorTab> tabs = provider.getResultsEditorTabs();
-         IResultsEditorTab iResultsEditorTab = tabs.get(index);
+         IResultsEditorTab iResultsEditorTab = getTabs().get(index);
          if (iResultsEditorTab instanceof ResultsEditorTableTab) {
             ResultsEditorTableTab tableTab = (ResultsEditorTableTab) iResultsEditorTab;
             viewer = tableTab.getResultsXViewer();
@@ -135,23 +146,15 @@ public class ResultsEditor extends AbstractArtifactEditor {
    protected void addPages() {
       try {
          OseeStatusContributionItemFactory.addTo(this, true);
-
-         IResultsEditorProvider provider = getResultsEditorProvider();
-         pages = provider.getResultsEditorTabs();
-         if (pages.isEmpty()) {
-            pages.add(new ResultsEditorHtmlTab("Error", "Error",
-               AHTML.simplePage("Error: No tabs were defined for \"" + provider.getEditorName() + "\"")));
-         }
-         for (IResultsEditorTab tab : provider.getResultsEditorTabs()) {
+         String editorName = getResultsEditorProvider().getEditorName();
+         for (IResultsEditorTab tab : getTabs()) {
             addResultsTab(tab);
          }
          if (startPage == null) {
-            addResultsTab(new ResultsEditorHtmlTab(
-               "Error",
-               "Error",
-               AHTML.simplePage("Error: Pages creation error for \"" + provider.getEditorName() + "\"; StartPage == null")));
+            addResultsTab(new ResultsEditorHtmlTab("Error", "Error",
+               AHTML.simplePage("Error: Pages creation error for \"" + editorName + "\"; StartPage == null")));
          }
-         setPartName(provider.getEditorName());
+         setPartName(editorName);
          setActivePage(startPage);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
