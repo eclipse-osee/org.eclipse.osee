@@ -60,13 +60,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.ote.ui.mux.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.osee.ote.client.source"
          download-size="0"
          install-size="0"
@@ -110,20 +103,6 @@
 
    <plugin
          id="org.eclipse.osee.ote.server.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.ote.ui.message.util.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.ote.ui.message.source"
          download-size="0"
          install-size="0"
          version="0.0.0"

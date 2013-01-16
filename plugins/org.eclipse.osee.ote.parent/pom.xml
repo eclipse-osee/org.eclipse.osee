@@ -38,9 +38,6 @@
 		<module>../../plugins/org.eclipse.osee.ote.ui</module>
 		<!-- <module>../../plugins/org.eclipse.osee.ote.ui.host.cmd</module> -->
 		<module>../../plugins/org.eclipse.osee.ote.ui.markers</module>
-		<module>../../plugins/org.eclipse.osee.ote.ui.message</module>
-		<module>../../plugins/org.eclipse.osee.ote.ui.message.util</module>
-		<module>../../plugins/org.eclipse.osee.ote.ui.mux</module>
 
 		<module>../../plugins/org.eclipse.osee.ote.version</module>
 		<module>../../plugins/org.eclipse.osee.ote.version.git</module>
