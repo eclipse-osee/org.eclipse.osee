@@ -108,7 +108,9 @@ public class VCastAdaCoverage_V6_0_ImportOperation extends AbstractOperation {
             coverageImport.getLog().logError(
                "Error: instrumented_file has invalid LIS_file value.  ID:(" + instrumentedFile.getId() + ")");
          }
-         File f = new File(lisFileName_badPath);
+
+         String normalizedPath = lisFileName_badPath.replaceAll("\\\\", "/");
+         File f = new File(normalizedPath);
          String lisFileName = f.getName();
 
          VCastLisFileParser lisFileParser = new VCastLisFileParser(lisFileName, input.getVCastDirectory());
