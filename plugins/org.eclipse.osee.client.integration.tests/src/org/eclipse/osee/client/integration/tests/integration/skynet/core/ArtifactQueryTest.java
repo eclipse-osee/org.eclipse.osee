@@ -10,23 +10,27 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
-import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
+import static org.eclipse.osee.client.demo.DemoChoice.*;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -55,7 +59,8 @@ public class ArtifactQueryTest {
 
       // Should exist with allowDeleted
       searchedArtifact =
-         ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), BranchManager.getCommonBranch(), INCLUDE_DELETED);
+         ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), BranchManager.getCommonBranch(),
+            DeletionFlag.INCLUDE_DELETED);
       Assert.assertNotNull(searchedArtifact);
 
       newArtifact.deleteAndPersist();
@@ -77,7 +82,8 @@ public class ArtifactQueryTest {
 
       // Should still exist with allowDeleted
       searchedArtifact =
-         ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), BranchManager.getCommonBranch(), INCLUDE_DELETED);
+         ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), BranchManager.getCommonBranch(),
+            DeletionFlag.INCLUDE_DELETED);
       Assert.assertNotNull(searchedArtifact);
 
    }
@@ -85,8 +91,11 @@ public class ArtifactQueryTest {
    @Test
    public void testGetArtifactListFromType() throws OseeCoreException {
       // Should exist
-      List<Artifact> searchedArtifacts =
-         ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirement, DeletionFlag.INCLUDE_DELETED);
+      Set<Artifact> searchedArtifacts = new LinkedHashSet<Artifact>();
+      for (IOseeBranch branch : BranchManager.getBranches(new BranchFilter())) {
+         searchedArtifacts.addAll(ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirement, branch,
+            DeletionFlag.INCLUDE_DELETED));
+      }
       // make sure at least one artifact exists
       Assert.assertTrue("No artifacts found", searchedArtifacts.size() > 0);
 
@@ -127,8 +136,8 @@ public class ArtifactQueryTest {
       artifact1.persist("testLargeAttributeIndexing");
       Thread.sleep(1000);
       List<Artifact> artifacts =
-         ArtifactQuery.getArtifactListFromAttributeKeywords(branch, "Wikipedia", false, DeletionFlag.EXCLUDE_DELETED,
-            false, CoreAttributeTypes.Name);
+         ArtifactQuery.getArtifactListFromName("Wikipedia", branch, DeletionFlag.EXCLUDE_DELETED,
+            QueryOptions.CONTAINS_MATCH_OPTIONS);
       Job job = BranchManager.deleteBranch(branch);
       job.join();
       Assert.assertEquals(1, artifacts.size());

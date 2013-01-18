@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.util.widgets.dialog.ActionActionableItemListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
 
@@ -128,7 +128,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
       for (IAtsActionableItem ai : items) {
          actionItemGuids.add(ai.getGuid());
       }
-      List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>();
+      List<ArtifactSearchCriteria> criteria = new ArrayList<ArtifactSearchCriteria>();
 
       criteria.add(new AttributeCriteria(AtsAttributeTypes.ActionableItem, actionItemGuids));
       // exclude completed or canceled

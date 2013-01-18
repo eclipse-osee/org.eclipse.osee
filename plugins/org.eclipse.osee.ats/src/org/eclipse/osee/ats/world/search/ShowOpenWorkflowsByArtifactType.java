@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
@@ -51,7 +51,7 @@ public class ShowOpenWorkflowsByArtifactType extends WorldUISearchItem {
 
       List<Artifact> artifacts = null;
       if (!showFinished) {
-         List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>();
+         List<ArtifactSearchCriteria> criteria = new ArrayList<ArtifactSearchCriteria>();
          TeamWorldSearchItem.addIncludeCompletedCancelledCriteria(criteria, showFinished, showFinished);
          artifacts = ArtifactQuery.getArtifactListFromTypeAnd(artifactType, AtsUtil.getAtsBranch(), 500, criteria);
       } else {

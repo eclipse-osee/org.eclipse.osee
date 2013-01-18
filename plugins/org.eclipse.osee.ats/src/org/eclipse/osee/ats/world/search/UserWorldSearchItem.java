@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 
 /**
  * @author Donald G. Dunne
@@ -77,7 +78,8 @@ public class UserWorldSearchItem {
          // Note: Don't need to do this for Originator, Subscribed or Favorites, cause it does completed canceled in it's own searches
          if (options.contains(UserSearchOption.IncludeCancelled) || options.contains(UserSearchOption.IncludeCompleted)) {
             searchArts.addAll(WorkflowManager.getAwas(ArtifactQuery.getArtifactListFromAttribute(
-               AtsAttributeTypes.State, "%<" + user.getUserId() + ">%", AtsUtil.getAtsBranch())));
+               AtsAttributeTypes.State, "<" + user.getUserId() + ">", AtsUtil.getAtsBranch(),
+               QueryOptions.CONTAINS_MATCH_OPTIONS)));
          }
       }
 

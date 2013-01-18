@@ -12,6 +12,7 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.core.services,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.jdk.core.util,
@@ -23,4 +24,4 @@ Import-Package: org.eclipse.core.runtime,
 Export-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.client.server,
  org.eclipse.osee.framework.core.client.task
-Service-Component: OSGI-INF/client.database.provider.xml
+Service-Component: OSGI-INF/*.xml

@@ -41,7 +41,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -147,7 +147,7 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
             actionableItemGuids.add(aia.getGuid());
          }
       }
-      List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>();
+      List<ArtifactSearchCriteria> criteria = new ArrayList<ArtifactSearchCriteria>();
       if (actionableItemGuids.isEmpty()) {
          criteria.add(new AttributeCriteria(AtsAttributeTypes.ActionableItem));
       } else {
@@ -219,7 +219,7 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
 
    }
 
-   public static void addIncludeCompletedCancelledCriteria(List<AbstractArtifactSearchCriteria> criteria, boolean includeCompleted, boolean includeCancelled) throws OseeCoreException {
+   public static void addIncludeCompletedCancelledCriteria(List<ArtifactSearchCriteria> criteria, boolean includeCompleted, boolean includeCancelled) throws OseeCoreException {
       try {
          if (AttributeTypeManager.getType(AtsAttributeTypes.CurrentStateType) != null) {
             if (!includeCancelled && !includeCompleted) {

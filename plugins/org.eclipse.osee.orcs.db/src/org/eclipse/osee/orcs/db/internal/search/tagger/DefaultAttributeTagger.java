@@ -13,20 +13,19 @@ package org.eclipse.osee.orcs.db.internal.search.tagger;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.AttributeReadable;
-import org.eclipse.osee.orcs.db.internal.search.util.WordOrderMatcher;
-import org.eclipse.osee.orcs.search.CaseType;
 
 /**
  * @author Roberto E. Escobar
  */
 public class DefaultAttributeTagger extends BaseAttributeTagger {
 
-   public DefaultAttributeTagger(TagProcessor tagProcessor, WordOrderMatcher matcher) {
+   public DefaultAttributeTagger(TagProcessor tagProcessor, StreamMatcher matcher) {
       super(tagProcessor, matcher);
    }
 
@@ -42,13 +41,13 @@ public class DefaultAttributeTagger extends BaseAttributeTagger {
    }
 
    @Override
-   public List<MatchLocation> find(AttributeReadable<?> attribute, String toSearch, CaseType caseType, boolean matchAllLocations) throws OseeCoreException {
+   public List<MatchLocation> find(AttributeReadable<?> attribute, String toSearch, boolean matchAllLocations, QueryOption... options) throws OseeCoreException {
       List<MatchLocation> toReturn;
       if (Strings.isValid(toSearch)) {
          InputStream inputStream = null;
          try {
             inputStream = getValueAsStream(attribute);
-            toReturn = getMatcher().findInStream(inputStream, toSearch, caseType, matchAllLocations);
+            toReturn = getMatcher().findInStream(inputStream, toSearch, matchAllLocations, options);
          } finally {
             Lib.close(inputStream);
          }

@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
 
@@ -108,7 +108,7 @@ public class GoalSearchItem extends WorldUISearchItem {
             teamDefinitionGuids.add(teamDef.getGuid());
          }
       }
-      List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>();
+      List<ArtifactSearchCriteria> criteria = new ArrayList<ArtifactSearchCriteria>();
       if (!teamDefinitionGuids.isEmpty()) {
          criteria.add(new AttributeCriteria(AtsAttributeTypes.TeamDefinition, teamDefinitionGuids));
       }

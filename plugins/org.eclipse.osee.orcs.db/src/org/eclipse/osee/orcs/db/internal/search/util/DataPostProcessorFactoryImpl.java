@@ -37,11 +37,11 @@ public class DataPostProcessorFactoryImpl implements DataPostProcessorFactory<Cr
    @Override
    public DataPostProcessor<?> createPostProcessor(CriteriaAttributeKeyword criteria, QueryOptions options) {
       DataPostProcessor<?> processor;
-      if (criteria.getStringOp().isTokenized()) {
-         processor = new TokenQueryPostProcessor(logger, executorAdmin, taggingEngine, criteria, options);
-      } else {
-         processor = new AttributeQueryPostProcessor(logger, executorAdmin, taggingEngine, criteria, options);
-      }
+      //      if (criteria.getStringOp().isTokenized()) {
+      processor = new TokenQueryPostProcessor(logger, executorAdmin, taggingEngine, criteria, options);
+      //      } else {
+      //         processor = new AttributeQueryPostProcessor(logger, executorAdmin, taggingEngine, criteria, options);
+      //      }
       return processor;
    }
 }

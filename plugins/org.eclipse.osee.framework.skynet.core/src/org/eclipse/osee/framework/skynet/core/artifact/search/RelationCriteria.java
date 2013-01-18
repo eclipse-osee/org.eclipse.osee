@@ -12,19 +12,18 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.services.IdentityService;
-import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.orcs.rest.client.QueryBuilder;
 
 /**
  * @author Ryan D. Brooks
  */
-public class RelationCriteria extends AbstractArtifactSearchCriteria {
+public class RelationCriteria implements ArtifactSearchCriteria {
    private final IRelationType relationType;
    private final RelationSide relationSide;
-   private String txsAlias;
-   private String relAlias;
    private final int artifactId;
 
    /**
@@ -47,38 +46,14 @@ public class RelationCriteria extends AbstractArtifactSearchCriteria {
    }
 
    @Override
-   public void addToTableSql(ArtifactQueryBuilder builder) {
-      relAlias = builder.appendAliasedTable("osee_relation_link");
-      txsAlias = builder.appendAliasedTable("osee_txs");
-   }
-
-   @Override
-   public void addToWhereSql(ArtifactQueryBuilder builder) throws OseeCoreException {
+   public void addToQueryBuilder(QueryBuilder builder) throws OseeCoreException {
       if (artifactId > 0) {
-         builder.append(relAlias);
-         builder.append(relationSide.isSideA() ? ".b_art_id" : ".a_art_id");
-         builder.append("=? AND ");
-         builder.addParameter(artifactId);
+         IRelationTypeSide rts =
+            TokenFactory.createRelationTypeSide(relationSide, relationType.getGuid(), Strings.EMPTY_STRING);
+         builder.andRelatedToLocalIds(rts, artifactId);
+      } else {
+         builder.andExists(relationType);
       }
-      if (relationType != null) {
-         IdentityService identityService = ServiceUtil.getIdentityService();
-         builder.append(relAlias);
-         builder.append(".rel_link_type_id=? AND ");
-         builder.addParameter(identityService.getLocalId(relationType));
-      }
-
-      builder.append(relAlias);
-      builder.append(".gamma_id=");
-      builder.append(txsAlias);
-      builder.append(".gamma_id AND ");
-
-      builder.addTxSql(txsAlias, false);
    }
 
-   @Override
-   public void addJoinArtId(ArtifactQueryBuilder builder, boolean left) {
-      boolean useArtA = relationSide == RelationSide.SIDE_A ^ left;
-      builder.append(relAlias);
-      builder.append(useArtA ? ".a_art_id" : ".b_art_id");
-   }
 }

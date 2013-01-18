@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.*;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -93,7 +94,8 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
 
       private void getMatrixItems() throws OseeCoreException {
          final Collection<Artifact> srchArts =
-            ArtifactQuery.getArtifactListFromName("%" + artifactName + "%", branch, INCLUDE_DELETED);
+            ArtifactQuery.getArtifactListFromName(artifactName, branch, INCLUDE_DELETED,
+               QueryOptions.CONTAINS_MATCH_OPTIONS);
          final Set<Artifact> processArts = new HashSet<Artifact>();
          if (srchArts.isEmpty()) {
             return;

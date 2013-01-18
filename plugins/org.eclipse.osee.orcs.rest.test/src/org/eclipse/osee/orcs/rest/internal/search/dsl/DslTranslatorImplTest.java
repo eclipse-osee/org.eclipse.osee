@@ -15,7 +15,10 @@ import java.util.Random;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.rest.internal.search.Predicate;
+import org.eclipse.osee.orcs.rest.model.search.Predicate;
+import org.eclipse.osee.orcs.rest.model.search.SearchFlag;
+import org.eclipse.osee.orcs.rest.model.search.SearchMethod;
+import org.eclipse.osee.orcs.rest.model.search.SearchOp;
 import org.junit.Test;
 
 /**
@@ -25,7 +28,7 @@ public class DslTranslatorImplTest {
 
    @Test(expected = OseeArgumentException.class)
    public void testBadSearchType() throws OseeCoreException {
-      DslTranslatorImpl translator = new DslTranslatorImpl();
+      DslTranslatorImpl_V1 translator = new DslTranslatorImpl_V1();
 
       //test bad search type
       String test = "[t:attrTypes&tp:1000000000000070&op:==&v:AtsAdmin]";
@@ -34,7 +37,7 @@ public class DslTranslatorImplTest {
 
    @Test(expected = OseeArgumentException.class)
    public void testBadOp() throws OseeCoreException {
-      DslTranslatorImpl translator = new DslTranslatorImpl();
+      DslTranslatorImpl_V1 translator = new DslTranslatorImpl_V1();
 
       //test bad op
       String test = "[t:attrType&tp:1000000000000070&op:<>&v:AtsAdmin]";
@@ -43,7 +46,7 @@ public class DslTranslatorImplTest {
 
    @Test(expected = OseeArgumentException.class)
    public void testBadFlag() throws OseeCoreException {
-      DslTranslatorImpl translator = new DslTranslatorImpl();
+      DslTranslatorImpl_V1 translator = new DslTranslatorImpl_V1();
 
       //test bad flags
       String test = "[t:attrType&tp:1000000000000070&op:==&f:ti&v:AtsAdmin]";
@@ -123,7 +126,7 @@ public class DslTranslatorImplTest {
 
    @Test
    public void testMultiplePredicates() throws OseeCoreException {
-      DslTranslatorImpl translator = new DslTranslatorImpl();
+      DslTranslatorImpl_V1 translator = new DslTranslatorImpl_V1();
       int size = 5;
 
       String test = getTestQuery(size);
@@ -138,15 +141,38 @@ public class DslTranslatorImplTest {
 
    @Test
    public void testAttrTypeSearches() throws OseeCoreException {
-      DslTranslatorImpl translator = new DslTranslatorImpl();
+      DslTranslatorImpl_V1 translator = new DslTranslatorImpl_V1();
+      List<Predicate> predicates;
 
-      String test = "[t:attrType&tp:0x1000000000000070&op:==&f:t,i&v:AtsAdmin]";
-      translator.translate(test);
+      String test = "[t:attrType&tp:0x1000000000000070&op:==&v:AtsAdmin]";
+      predicates = translator.translate(test);
+      Assert.assertEquals(1, predicates.size());
+      Predicate predicate = predicates.iterator().next();
+      Assert.assertEquals(SearchMethod.ATTRIBUTE_TYPE, predicate.getType());
+      Assert.assertEquals(SearchOp.EQUALS, predicate.getOp());
+      Assert.assertTrue(predicate.getValues().contains("AtsAdmin"));
 
-      test = "[t:attrType&tp:1000000000000070&op:!=&f:t,i&v:AtsAdmin]";
-      translator.translate(test);
+      test = "[t:isOfType&tp:1000000000000070&op:>&v:AtsAdmin]";
+      predicates = translator.translate(test);
+      Assert.assertEquals(1, predicates.size());
+      predicate = predicates.iterator().next();
+      Assert.assertEquals(SearchMethod.IS_OF_TYPE, predicate.getType());
+      Assert.assertEquals(SearchOp.GREATER_THAN, predicate.getOp());
+      Assert.assertTrue(predicate.getValues().contains("AtsAdmin"));
 
-      test = "[t:attrType&tp:1000000000000070&op:<&f:t,i&v:AtsAdmin]";
-      translator.translate(test);
+      test = "[t:ids&tp:1000000000000070&op:<&v:AtsAdmin&d:'bo'b]''']";
+      test += "&[t:attrType&tp:1000000000000070&op:==&v:TestAdmin&d:'bo'b]'[]&]'']";
+      predicates = translator.translate(test);
+      Assert.assertEquals(2, predicates.size());
+      predicate = predicates.get(0);
+      Assert.assertEquals(SearchMethod.IDS, predicate.getType());
+      Assert.assertEquals(SearchOp.LESS_THAN, predicate.getOp());
+      Assert.assertTrue(predicate.getValues().contains("AtsAdmin"));
+      Assert.assertEquals("bo'b]''", predicate.getDelimiter());
+      predicate = predicates.get(1);
+      Assert.assertEquals(SearchMethod.ATTRIBUTE_TYPE, predicate.getType());
+      Assert.assertEquals(SearchOp.EQUALS, predicate.getOp());
+      Assert.assertTrue(predicate.getValues().contains("TestAdmin"));
+      Assert.assertEquals("bo'b]'[]&]'", predicate.getDelimiter());
    }
 }

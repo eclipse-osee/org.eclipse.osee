@@ -18,7 +18,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.ResultSet;
+import org.eclipse.osee.framework.core.enums.CaseType;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
+import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
+import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.core.message.SearchOptions;
 import org.eclipse.osee.framework.core.message.SearchRequest;
 import org.eclipse.osee.framework.core.message.SearchResponse;
@@ -33,11 +36,9 @@ import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
-import org.eclipse.osee.orcs.search.CaseType;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
-import org.eclipse.osee.orcs.search.StringOperator;
 
 /**
  * @author Roberto E. Escobar
@@ -66,8 +67,7 @@ public class SearchEngineServlet extends SecureOseeHttpServlet {
             translationService.convert(request.getInputStream(), CoreTranslatorId.SEARCH_REQUEST);
          SearchOptions options = searchRequest.getOptions();
 
-         StringOperator operator =
-            options.isMatchWordOrder() ? StringOperator.TOKENIZED_MATCH_ORDER : StringOperator.TOKENIZED_ANY_ORDER;
+         TokenOrderType operator = options.isMatchWordOrder() ? TokenOrderType.MATCH_ORDER : TokenOrderType.ANY_ORDER;
          CaseType caseType = options.isCaseSensitive() ? CaseType.MATCH_CASE : CaseType.IGNORE_CASE;
 
          QueryFactory factory = orcsApi.getQueryFactory(getContext(request));
@@ -78,7 +78,7 @@ public class SearchEngineServlet extends SecureOseeHttpServlet {
          if (attributeTypes.isEmpty()) {
             attributeTypes = Collections.singleton(QueryBuilder.ANY_ATTRIBUTE_TYPE);
          }
-         builder.and(attributeTypes, operator, caseType, searchRequest.getRawSearch());
+         builder.and(attributeTypes, searchRequest.getRawSearch(), TokenDelimiterMatch.ANY, operator, caseType);
 
          BranchCache branchCache = orcsApi.getBranchCache();
 

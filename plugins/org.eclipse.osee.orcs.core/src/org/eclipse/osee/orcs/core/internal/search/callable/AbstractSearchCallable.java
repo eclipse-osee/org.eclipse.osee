@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
-import org.eclipse.osee.orcs.core.internal.ArtifactLoaderFactory;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.search.QueryCollector;
 
@@ -27,19 +26,16 @@ public abstract class AbstractSearchCallable<T> extends CancellableCallable<T> {
 
    protected final Log logger;
    protected final QueryEngine queryEngine;
-   protected final ArtifactLoaderFactory objectLoader;
-
    protected final SessionContext sessionContext;
    protected final LoadLevel loadLevel;
    protected final QueryData queryData;
    private final QueryCollector collector;
 
-   public AbstractSearchCallable(Log logger, QueryEngine queryEngine, QueryCollector collector, ArtifactLoaderFactory objectLoader, SessionContext sessionContext, LoadLevel loadLevel, QueryData queryData) {
+   public AbstractSearchCallable(Log logger, QueryEngine queryEngine, QueryCollector collector, SessionContext sessionContext, LoadLevel loadLevel, QueryData queryData) {
       super();
       this.logger = logger;
       this.queryEngine = queryEngine;
       this.collector = collector;
-      this.objectLoader = objectLoader;
       this.sessionContext = sessionContext;
       this.loadLevel = loadLevel;
       this.queryData = queryData;
@@ -85,4 +81,5 @@ public abstract class AbstractSearchCallable<T> extends CancellableCallable<T> {
    protected abstract int getCount(T results) throws Exception;
 
    protected abstract T innerCall() throws Exception;
+
 }

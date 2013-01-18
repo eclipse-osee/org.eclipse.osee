@@ -62,7 +62,7 @@
 		<forget>
 			<echo message="Launching Osee Application Server..." />
 			<!-- Test Should Complete in 30 mins (timeout vale) - currently, they only take ~13 mins -->
-			<java taskname="build" failonerror="true" maxmemory="1024m" timeout="1800000" jar="${launcherJarPath}" fork="true">
+			<java taskname="int-test-server" failonerror="true" maxmemory="1024m" timeout="1800000" jar="${launcherJarPath}" fork="true">
 				<classpath>
 					<fileset dir="${xserver-home}/plugins" includes="org.eclipse.equinox.launcher_*.jar" />
 					<pathelement location="${xserver-home}/plugins" />

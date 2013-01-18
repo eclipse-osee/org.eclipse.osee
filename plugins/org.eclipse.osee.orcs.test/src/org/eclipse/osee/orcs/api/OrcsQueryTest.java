@@ -18,10 +18,13 @@ import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.enums.CaseType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.Operator;
+import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.orcs.ApplicationContext;
@@ -31,12 +34,9 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
-import org.eclipse.osee.orcs.search.CaseType;
 import org.eclipse.osee.orcs.search.Match;
-import org.eclipse.osee.orcs.search.Operator;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
-import org.eclipse.osee.orcs.search.StringOperator;
 import org.eclipse.osee.orcs.utility.MatchComparator;
 import org.eclipse.osee.orcs.utility.NameComparator;
 import org.eclipse.osee.orcs.utility.SortOrder;
@@ -249,7 +249,7 @@ public class OrcsQueryTest {
    @Test
    public void testQueryAttributeKeyword() throws OseeCoreException {
       QueryBuilder builder = factory.fromBranch(TestBranches.SAW_Bld_1);
-      builder.and(CoreAttributeTypes.Name, StringOperator.TOKENIZED_ANY_ORDER, CaseType.IGNORE_CASE, "REQUIREMENTS");
+      builder.and(CoreAttributeTypes.Name, "REQUIREMENTS", TokenDelimiterMatch.ANY);
 
       Assert.assertEquals(7, builder.getCount());
       List<ArtifactReadable> requirements = builder.getResults().getList();
@@ -284,7 +284,7 @@ public class OrcsQueryTest {
       // @formatter:on
 
       QueryBuilder builder1 = factory.fromBranch(TestBranches.SAW_Bld_1);
-      builder1.and(CoreAttributeTypes.Name, StringOperator.TOKENIZED_ANY_ORDER, CaseType.MATCH_CASE, "REQUIREMENTS");
+      builder1.and(CoreAttributeTypes.Name, "REQUIREMENTS", TokenDelimiterMatch.ANY, CaseType.MATCH_CASE);
       Assert.assertEquals(0, builder1.getCount());
    }
 

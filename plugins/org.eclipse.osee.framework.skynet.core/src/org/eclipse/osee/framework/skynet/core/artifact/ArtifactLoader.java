@@ -71,14 +71,18 @@ public final class ArtifactLoader {
       return new LinkedList<Artifact>(artifacts);
    }
 
-   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, IOseeBranch branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted) throws OseeCoreException {
+   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, IOseeBranch branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionRecord transactionId) throws OseeCoreException {
       List<Pair<Integer, Integer>> toLoad = new LinkedList<Pair<Integer, Integer>>();
       Integer branchId = BranchManager.getBranchId(branch);
       for (Integer artId : new HashSet<Integer>(artIds)) {
          toLoad.add(new Pair<Integer, Integer>(artId, branchId));
       }
-      List<Artifact> artifacts = loadSelectedArtifacts(toLoad, loadLevel, reload, allowDeleted, null);
+      List<Artifact> artifacts = loadSelectedArtifacts(toLoad, loadLevel, reload, allowDeleted, transactionId);
       return artifacts;
+   }
+
+   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, IOseeBranch branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted) throws OseeCoreException {
+      return loadArtifacts(artIds, branch, loadLevel, reload, allowDeleted, null);
    }
 
    private static List<Artifact> loadSelectedArtifacts(List<Pair<Integer, Integer>> toLoad, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionRecord transactionId) throws OseeCoreException {

@@ -84,17 +84,15 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
    public void addTables(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
       types = criteria.getTypes();
 
-      if (criteria.getStringOp().isTokenized()) {
-         codedTags = new ArrayList<Long>();
-         tokenize(criteria.getValue(), codedTags);
+      codedTags = new ArrayList<Long>();
+      tokenize(criteria.getValue(), codedTags);
 
       Conditions.checkExpressionFailOnTrue(codedTags.size() > MAX_TOKEN_SIZE,
          "Parsed tokens for [%s] is greater than [%d]", criteria.getValue(), MAX_TOKEN_SIZE);
 
-         tagAliases = new ArrayList<String>();
-         for (int index = 0; index < codedTags.size(); index++) {
-            tagAliases.add(writer.addTable(TableEnum.SEARCH_TAGS_TABLE));
-         }
+      tagAliases = new ArrayList<String>();
+      for (int index = 0; index < codedTags.size(); index++) {
+         tagAliases.add(writer.addTable(TableEnum.SEARCH_TAGS_TABLE));
       }
       attrAlias = writer.addTable(TableEnum.ATTRIBUTE_TABLE);
       if (types.size() > 1) {
@@ -141,47 +139,35 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
       DataPostProcessor<?> processor = getDataPostProcessorFactory().createPostProcessor(criteria, writer.getOptions());
       writer.addPostProcessor(processor);
 
-      if (criteria.getStringOp().isTokenized()) {
          writer.writeAndLn();
 
-         int size = tagAliases.size();
-         for (int index = 0; index < size; index++) {
-            String tagAlias = tagAliases.get(index);
-            Long tag = codedTags.get(index);
+      int size = tagAliases.size();
+      for (int index = 0; index < size; index++) {
+         String tagAlias = tagAliases.get(index);
+         Long tag = codedTags.get(index);
 
-            writer.write(tagAlias);
-            writer.write(".coded_tag_id = ?");
-            writer.addParameter(tag);
+         writer.write(tagAlias);
+         writer.write(".coded_tag_id = ?");
+         writer.addParameter(tag);
 
+         if (index + 1 < size) {
+            writer.write(" AND ");
+         }
+      }
+      if (size > 1) {
+            writer.writeAndLn();
+         for (int index = 1; index < size; index++) {
+            String tagAlias1 = tagAliases.get(index - 1);
+            String tagAlias2 = tagAliases.get(index);
+
+            writer.write(tagAlias1);
+            writer.write(".gamma_id = ");
+            writer.write(tagAlias2);
+            writer.write(".gamma_id");
             if (index + 1 < size) {
                writer.write(" AND ");
             }
          }
-         if (size > 1) {
-            writer.writeAndLn();
-            for (int index = 1; index < size; index++) {
-               String tagAlias1 = tagAliases.get(index - 1);
-               String tagAlias2 = tagAliases.get(index);
-
-               writer.write(tagAlias1);
-               writer.write(".gamma_id = ");
-               writer.write(tagAlias2);
-               writer.write(".gamma_id");
-               if (index + 1 < size) {
-                  writer.write(" AND ");
-               }
-            }
-         }
-      } else {
-         // case CONTAINS:
-         // case NOT_EQUALS:
-         // case EQUALS:
-         //
-         //
-         //
-         //         CaseType caseType = criteria.getMatch();
-         //         caseType.isCaseSensitive();
-         throw new UnsupportedOperationException();
       }
 
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);

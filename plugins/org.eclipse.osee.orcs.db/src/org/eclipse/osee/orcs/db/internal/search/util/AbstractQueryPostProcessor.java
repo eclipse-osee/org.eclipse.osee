@@ -33,7 +33,6 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeyword;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger;
-import org.eclipse.osee.orcs.search.CaseType;
 import org.eclipse.osee.orcs.search.Match;
 
 /**
@@ -51,10 +50,6 @@ public abstract class AbstractQueryPostProcessor extends QueryPostProcessor impl
       this.executorAdmin = executorAdmin;
       this.criteria = criteria;
       this.options = options;
-   }
-
-   protected CaseType getCaseType() {
-      return criteria.getMatch();
    }
 
    protected Collection<? extends IAttributeType> getTypes() {
@@ -128,7 +123,7 @@ public abstract class AbstractQueryPostProcessor extends QueryPostProcessor impl
                      Tagger tagger = getTagger(attribute);
                      if (tagger != null) {
                         checkForCancelled();
-                        List<MatchLocation> locations = tagger.find(attribute, getQuery(), getCaseType(), true);
+                        List<MatchLocation> locations = tagger.find(attribute, getQuery(), true, criteria.getOptions());
                         if (!locations.isEmpty()) {
                            if (matchedAttributes == null) {
                               matchedAttributes = new HashMap<AttributeReadable<?>, List<MatchLocation>>();

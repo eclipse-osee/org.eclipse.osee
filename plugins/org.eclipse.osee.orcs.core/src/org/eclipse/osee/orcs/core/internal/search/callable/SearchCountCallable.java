@@ -30,7 +30,7 @@ import org.eclipse.osee.orcs.search.Match;
 /**
  * @author Roberto E. Escobar
  */
-public class SearchCountCallable extends AbstractSearchCallable<Integer> {
+public class SearchCountCallable extends AbstractArtifactSearchCallable<Integer> {
 
    private QueryContext queryContext;
 

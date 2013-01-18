@@ -12,9 +12,9 @@ package org.eclipse.osee.orcs.rest.internal.search.predicate;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.core.util.HexUtil;
  */
 public class PredicateHandlerUtil {
 
-   public static Collection<IAttributeType> getIAttributeTypes(List<String> types) throws OseeCoreException {
+   public static Collection<IAttributeType> getIAttributeTypes(Collection<String> types) throws OseeCoreException {
       Collection<IAttributeType> attrTypes = new HashSet<IAttributeType>();
       for (String value : types) {
          long uuid = parseUuid(value);
@@ -38,7 +38,7 @@ public class PredicateHandlerUtil {
       return attrTypes;
    }
 
-   public static Collection<IArtifactType> getIArtifactTypes(List<String> types) throws OseeCoreException {
+   public static Collection<IArtifactType> getIArtifactTypes(Collection<String> types) throws OseeCoreException {
       Collection<IArtifactType> artTypes = new HashSet<IArtifactType>();
       for (String value : types) {
          long uuid = parseUuid(value);
@@ -49,7 +49,18 @@ public class PredicateHandlerUtil {
       return artTypes;
    }
 
-   public static Collection<IRelationTypeSide> getIRelationTypeSides(List<String> rels) throws OseeCoreException {
+   public static Collection<IRelationType> getIRelationTypes(Collection<String> rels) throws OseeCoreException {
+      Collection<IRelationType> types = new HashSet<IRelationType>();
+      for (String value : rels) {
+         long longUuid = parseUuid(value);
+         if (longUuid != -1L) {
+            types.add(TokenFactory.createRelationType(longUuid, "SearchRelationType"));
+         }
+      }
+      return types;
+   }
+
+   public static Collection<IRelationTypeSide> getIRelationTypeSides(Collection<String> rels) throws OseeCoreException {
       Collection<IRelationTypeSide> relSides = new HashSet<IRelationTypeSide>();
       for (String value : rels) {
          char sideChar = value.charAt(0);

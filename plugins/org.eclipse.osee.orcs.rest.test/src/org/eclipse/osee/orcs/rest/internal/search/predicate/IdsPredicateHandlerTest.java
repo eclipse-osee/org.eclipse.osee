@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal.search.predicate;
 
+import static org.mockito.Mockito.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,11 +18,13 @@ import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.rest.internal.search.Predicate;
-import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchMethod;
+import org.eclipse.osee.orcs.rest.model.search.Predicate;
+import org.eclipse.osee.orcs.rest.model.search.SearchMethod;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -30,86 +33,77 @@ import org.mockito.MockitoAnnotations;
  */
 public class IdsPredicateHandlerTest {
 
-   private class TestIdsPredicateHandler extends IdsPredicateHandler {
+   @Mock
+   private QueryBuilder builder;
 
-      Collection<String> guids;
-      Collection<Integer> rawIds;
-
-      @Override
-      protected QueryBuilder addGuids(QueryBuilder builder, Collection<String> guids) {
-         this.guids = guids;
-         return builder;
-      }
-
-      @Override
-      protected QueryBuilder addIds(QueryBuilder builder, Collection<Integer> rawIds) {
-         this.rawIds = rawIds;
-         return builder;
-      }
-
-   }
-
-   // @formatter:off
-   @Mock private QueryBuilder builder;
-   // @formatter:on
+   @Captor
+   private ArgumentCaptor<Collection<String>> guidsCaptor;
+   @Captor
+   private ArgumentCaptor<Collection<Integer>> localIdsCaptor;
 
    @Before
-   public void setup() {
+   public void initialize() {
       MockitoAnnotations.initMocks(this);
    }
 
    @Test
-   public void testHandle() throws OseeCoreException {
-      TestIdsPredicateHandler handler = new TestIdsPredicateHandler();
+   public void testHandleLocalId() throws OseeCoreException {
+      IdsPredicateHandler handler = new IdsPredicateHandler();
       //no type params, op, or flags for ids - any passed are ignored
 
       //all digits get treated as artId
       String id1 = "12345";
       List<String> values = Collections.singletonList(id1);
-      Predicate testPredicate = new Predicate(SearchMethod.IDS, null, null, null, values);
+      Predicate testPredicate = new Predicate(SearchMethod.IDS, null, null, null, null, values);
       handler.handle(builder, testPredicate);
+      verify(builder).andLocalIds(localIdsCaptor.capture());
+      Assert.assertEquals(1, localIdsCaptor.getValue().size());
+      Assert.assertTrue(localIdsCaptor.getValue().contains(12345));
+   }
 
-      Assert.assertEquals(1, handler.rawIds.size());
-      Assert.assertNull(handler.guids);
-      Assert.assertEquals(id1, handler.rawIds.iterator().next().toString());
-
-      //if not all digits, treated as guid
-      handler = new TestIdsPredicateHandler();
+   @Test
+   public void testHandleGuids() throws OseeCoreException {
+      IdsPredicateHandler handler = new IdsPredicateHandler();
+      // no type params, op, or flags for ids - any passed are ignored
+      // if not all digits, treated as guid
       String id2 = "AGUID234";
-      values = Collections.singletonList(id2);
-      testPredicate = new Predicate(SearchMethod.IDS, null, null, null, values);
+      List<String> values = Collections.singletonList(id2);
+      Predicate testPredicate = new Predicate(SearchMethod.IDS, null, null, null, null, values);
       handler.handle(builder, testPredicate);
+      verify(builder).andGuidsOrHrids(guidsCaptor.capture());
+      Assert.assertEquals(1, guidsCaptor.getValue().size());
+      Assert.assertTrue(guidsCaptor.getValue().contains(id2));
+   }
 
-      Assert.assertNull(handler.rawIds);
-      Assert.assertEquals(1, handler.guids.size());
-      Assert.assertEquals(id2, handler.guids.iterator().next());
-
+   @Test
+   public void testHandleIdsAndGuids() throws OseeCoreException {
       //test a rawId and guid
-      handler = new TestIdsPredicateHandler();
-      values = Arrays.asList(id1, id2);
-      testPredicate = new Predicate(SearchMethod.IDS, null, null, null, values);
+      IdsPredicateHandler handler = new IdsPredicateHandler();
+      List<String> values = Arrays.asList("AGUID234", "12345");
+      Predicate testPredicate = new Predicate(SearchMethod.IDS, null, null, null, null, values);
       handler.handle(builder, testPredicate);
+      verify(builder).andGuidsOrHrids(guidsCaptor.capture());
+      Assert.assertTrue(guidsCaptor.getValue().contains("AGUID234"));
+      Assert.assertEquals(1, guidsCaptor.getValue().size());
 
-      Assert.assertEquals(1, handler.rawIds.size());
-      Assert.assertEquals(1, handler.guids.size());
-      Assert.assertEquals(id1, handler.rawIds.iterator().next().toString());
-      Assert.assertEquals(id2, handler.guids.iterator().next());
-
+      verify(builder).andLocalIds(localIdsCaptor.capture());
+      Assert.assertEquals(1, localIdsCaptor.getValue().size());
+      Assert.assertTrue(localIdsCaptor.getValue().contains(12345));
    }
 
    @Test(expected = OseeArgumentException.class)
    public void testHandleBadValues() throws OseeCoreException {
-      TestIdsPredicateHandler handler = new TestIdsPredicateHandler();
-      Predicate testPredicate = new Predicate(SearchMethod.IDS, null, null, null, null);
+      IdsPredicateHandler handler = new IdsPredicateHandler();
+      Predicate testPredicate = new Predicate(SearchMethod.IDS, null, null, null, null, null);
       handler.handle(builder, testPredicate);
    }
 
    @Test(expected = OseeArgumentException.class)
    public void testBadSearchMethod() throws OseeCoreException {
-      TestIdsPredicateHandler handler = new TestIdsPredicateHandler();
+      IdsPredicateHandler handler = new IdsPredicateHandler();
       String id1 = "12345";
       List<String> values = Collections.singletonList(id1);
-      Predicate testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, null, null, null, values);
+      Predicate testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, null, null, null, null, values);
       handler.handle(builder, testPredicate);
    }
 }

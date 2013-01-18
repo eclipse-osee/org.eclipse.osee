@@ -10,8 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.client.test.framework;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import org.eclipse.osee.client.test.framework.internal.AbstractTestRule;
 import org.eclipse.osee.client.test.framework.internal.DatabaseInitializer;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -47,7 +46,7 @@ public final class OseeClientIntegrationRule extends AbstractTestRule {
 
    private static boolean onFirstSuccess = false;
 
-   private boolean originalIsInTest;
+   //   private boolean originalIsInTest;
    //   private boolean popUps;
 
    private final IDbInitChoiceEnum choice;
@@ -79,7 +78,7 @@ public final class OseeClientIntegrationRule extends AbstractTestRule {
       if (onFirstSuccess) {
          checkNotProductionDataStore();
 
-         originalIsInTest = OseeProperties.isInTest();
+         //         originalIsInTest = OseeProperties.isInTest();
          OseeProperties.setIsInTest(true);
          //         popUps = RenderingUtil.arePopupsAllowed();
          RenderingUtil.setPopupsAllowed(false);
@@ -97,7 +96,7 @@ public final class OseeClientIntegrationRule extends AbstractTestRule {
     */
    @Override
    public void onTestFinished(FrameworkMethod method) {
-      OseeProperties.setIsInTest(originalIsInTest);
+      //      OseeProperties.setIsInTest(originalIsInTest);
       //      RenderingUtil.setPopupsAllowed(popUps);
    }
 

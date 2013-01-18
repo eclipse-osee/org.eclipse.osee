@@ -110,7 +110,8 @@ public class OrcsApiImpl implements OrcsApi {
       loaderFactory = new ArtifactLoaderFactoryImpl(dataStore.getDataLoaderFactory(), builderFactory);
 
       queryModule =
-         new QueryModule(logger, dataStore.getQueryEngine(), loaderFactory, cacheService.getAttributeTypeCache());
+         new QueryModule(logger, dataStore.getQueryEngine(), loaderFactory, cacheService.getAttributeTypeCache(),
+            dataStore.getDataLoaderFactory());
 
       indexerModule = new IndexerModule(logger, preferences, executorAdmin, dataStore.getQueryEngineIndexer());
       indexerModule.start();

@@ -10,14 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds.criteria;
 
+import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
-import org.eclipse.osee.orcs.search.CaseType;
-import org.eclipse.osee.orcs.search.StringOperator;
 
 /**
  * @author Roberto E. Escobar
@@ -26,15 +27,13 @@ public class CriteriaAttributeKeyword extends Criteria<QueryOptions> {
 
    private final Collection<? extends IAttributeType> attributeType;
    private final String value;
-   private final StringOperator stringOp;
-   private final CaseType match;
+   private final QueryOption[] options;
 
-   public CriteriaAttributeKeyword(Collection<? extends IAttributeType> attributeType, String value, StringOperator stringOp, CaseType match) {
+   public CriteriaAttributeKeyword(Collection<? extends IAttributeType> attributeType, String value, QueryOption... options) {
       super();
       this.attributeType = attributeType;
       this.value = value;
-      this.stringOp = stringOp;
-      this.match = match;
+      this.options = options;
    }
 
    public Collection<? extends IAttributeType> getTypes() {
@@ -45,12 +44,8 @@ public class CriteriaAttributeKeyword extends Criteria<QueryOptions> {
       return value;
    }
 
-   public StringOperator getStringOp() {
-      return stringOp;
-   }
-
-   public CaseType getMatch() {
-      return match;
+   public QueryOption[] getOptions() {
+      return options;
    }
 
    @Override
@@ -62,7 +57,8 @@ public class CriteriaAttributeKeyword extends Criteria<QueryOptions> {
 
    @Override
    public String toString() {
-      return "CriteriaAttributeKeyword [attributeType=" + attributeType + ", value=" + value + ", stringOp=" + stringOp + ", match=" + match + "]";
+      return String.format("CriteriaAttributeKeyword [attributeType=%s, value=%s, options=%s]", attributeType, value,
+         Collections.toString(",", Arrays.asList(options)));
    }
 
 }

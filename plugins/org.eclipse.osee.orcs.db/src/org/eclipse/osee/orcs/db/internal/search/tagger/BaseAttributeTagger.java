@@ -16,17 +16,16 @@ import java.io.UnsupportedEncodingException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.orcs.data.AttributeReadable;
-import org.eclipse.osee.orcs.db.internal.search.util.WordOrderMatcher;
 
 /**
  * @author Roberto E. Escobar
  */
 public abstract class BaseAttributeTagger implements Tagger {
 
-   private final WordOrderMatcher matcher;
+   private final StreamMatcher matcher;
    private final TagProcessor tagProcessor;
 
-   protected BaseAttributeTagger(TagProcessor tagProcessor, WordOrderMatcher matcher) {
+   protected BaseAttributeTagger(TagProcessor tagProcessor, StreamMatcher matcher) {
       super();
       this.tagProcessor = tagProcessor;
       this.matcher = matcher;
@@ -36,7 +35,7 @@ public abstract class BaseAttributeTagger implements Tagger {
       return tagProcessor;
    }
 
-   protected WordOrderMatcher getMatcher() {
+   protected StreamMatcher getMatcher() {
       return matcher;
    }
 

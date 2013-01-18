@@ -1,0 +1,284 @@
+/*******************************************************************************
+ * Copyright (c) 2012 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.orcs.rest.client.internal.search;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.ResultSet;
+import org.eclipse.osee.framework.core.data.ResultSetList;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.Operator;
+import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.rest.client.QueryBuilder;
+import org.eclipse.osee.orcs.rest.model.search.Predicate;
+import org.eclipse.osee.orcs.rest.model.search.SearchResult;
+
+/**
+ * @author John Misinco
+ */
+public class QueryBuilderImpl implements QueryBuilder {
+
+   private final PredicateFactory predicateFactory;
+   private final SearchResultProvider searchResultProvider;
+   private final IOseeBranch branch;
+   private final QueryOptions options;
+   private final List<Predicate> predicates;
+
+   public QueryBuilderImpl(IOseeBranch branch, List<Predicate> predicates, QueryOptions options, PredicateFactory predicateFactory, SearchResultProvider searchResultProvider) {
+      this.branch = branch;
+      this.predicates = predicates;
+      this.options = options;
+      this.predicateFactory = predicateFactory;
+      this.searchResultProvider = searchResultProvider;
+      reset();
+   }
+
+   private void reset() {
+      options.reset();
+      predicates.clear();
+   }
+
+   @Override
+   public QueryBuilder includeCache() {
+      return includeCache(true);
+   }
+
+   @Override
+   public QueryBuilder includeCache(boolean enabled) {
+      options.setIncludeDeleted(enabled);
+      return this;
+   }
+
+   @Override
+   public boolean isCacheIncluded() {
+      return options.isCacheIncluded();
+   }
+
+   @Override
+   public QueryBuilder includeDeleted() {
+      return includeDeleted(true);
+   }
+
+   @Override
+   public QueryBuilder includeDeleted(boolean enabled) {
+      options.setIncludeDeleted(enabled);
+      return this;
+   }
+
+   @Override
+   public boolean areDeletedIncluded() {
+      return options.areDeletedIncluded();
+   }
+
+   @Override
+   public QueryBuilder includeTypeInheritance() {
+      includeTypeInheritance(true);
+      return this;
+   }
+
+   @Override
+   public QueryBuilder includeTypeInheritance(boolean enabled) {
+      options.setIncludeTypeInheritance(enabled);
+      return this;
+   }
+
+   @Override
+   public boolean isTypeInheritanceIncluded() {
+      return options.isTypeInheritanceIncluded();
+   }
+
+   @Override
+   public QueryBuilder fromTransaction(int transactionId) {
+      options.setFromTransaction(transactionId);
+      return this;
+   }
+
+   @Override
+   public int getFromTransaction() {
+      return options.getFromTransaction();
+   }
+
+   @Override
+   public QueryBuilder headTransaction() {
+      options.setHeadTransaction();
+      return this;
+   }
+
+   @Override
+   public boolean isHeadTransaction() {
+      return options.isHeadTransaction();
+   }
+
+   @Override
+   public QueryBuilder excludeCache() {
+      options.setIncludeCache(false);
+      return this;
+   }
+
+   @Override
+   public QueryBuilder excludeDeleted() {
+      return includeDeleted(false);
+   }
+
+   @Override
+   public QueryBuilder excludeTypeInheritance() {
+      includeTypeInheritance(false);
+      return this;
+   }
+
+   @Override
+   public QueryBuilder resetToDefaults() {
+      reset();
+      return this;
+   }
+
+   @Override
+   public QueryBuilder andLocalId(int... artifactId) {
+      Collection<Integer> ids = new LinkedList<Integer>();
+      for (int id : artifactId) {
+         ids.add(id);
+      }
+      return andLocalIds(ids);
+   }
+
+   @Override
+   public QueryBuilder andLocalIds(Collection<Integer> artifactIds) {
+      predicates.add(predicateFactory.createLocalIdsSearch(artifactIds));
+      return this;
+   }
+
+   @Override
+   public QueryBuilder andGuidsOrHrids(String... ids) {
+      return andGuidsOrHrids(Arrays.asList(ids));
+   }
+
+   @Override
+   public QueryBuilder andGuidsOrHrids(Collection<String> ids) {
+      predicates.add(predicateFactory.createUuidSearch(ids));
+      return this;
+   }
+
+   @Override
+   public QueryBuilder andIds(IArtifactToken... artifactToken) {
+      return andIds(Arrays.asList(artifactToken));
+   }
+
+   @Override
+   public QueryBuilder andIds(Collection<? extends IArtifactToken> artifactTokens) {
+      predicates.add(predicateFactory.createIdSearch(artifactTokens));
+      return this;
+   }
+
+   @Override
+   public QueryBuilder andIsOfType(IArtifactType... artifactType) {
+      return andIsOfType(Arrays.asList(artifactType));
+   }
+
+   @Override
+   public QueryBuilder andIsOfType(Collection<? extends IArtifactType> artifactTypes) {
+      predicates.add(predicateFactory.createTypeSearch(artifactTypes));
+      return this;
+   }
+
+   @Override
+   public QueryBuilder andExists(IAttributeType... attributeType) {
+      return andExists(Arrays.asList(attributeType));
+   }
+
+   @Override
+   public QueryBuilder andExists(Collection<? extends IAttributeType> attributeTypes) {
+      predicates.add(predicateFactory.createAttributeExistsSearch(attributeTypes));
+      return this;
+   }
+
+   @Override
+   public QueryBuilder andExists(IRelationType relationType) {
+      predicates.add(predicateFactory.createRelationExistsSearch(Collections.singleton(relationType)));
+      return this;
+   }
+
+   @Override
+   public QueryBuilder andNameEquals(String artifactName) {
+      return and(CoreAttributeTypes.Name, Operator.EQUAL, artifactName);
+   }
+
+   @Override
+   public QueryBuilder and(IAttributeType attributeType, Operator operator, String value) {
+      return and(attributeType, operator, Collections.singleton(value));
+   }
+
+   @Override
+   public QueryBuilder and(IAttributeType attributeType, Operator operator, Collection<String> values) {
+      predicates.add(predicateFactory.createAttributeTypeSearch(Collections.singleton(attributeType), operator, values));
+      return this;
+   }
+
+   @Override
+   public QueryBuilder and(IAttributeType attributeType, String value, QueryOption... options) {
+      return and(Collections.singleton(attributeType), value, options);
+   }
+
+   @Override
+   public QueryBuilder and(Collection<? extends IAttributeType> attributeTypes, String value, QueryOption... options) {
+      predicates.add(predicateFactory.createAttributeTypeSearch(attributeTypes, value, options));
+      return this;
+   }
+
+   @Override
+   public QueryBuilder andRelatedTo(IRelationTypeSide relationTypeSide, IArtifactToken... artifacts) {
+      return andRelatedTo(relationTypeSide, Arrays.asList(artifacts));
+   }
+
+   @Override
+   public QueryBuilder andRelatedTo(IRelationTypeSide relationTypeSide, Collection<? extends IArtifactToken> artifacts) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public QueryBuilder andRelatedToLocalIds(IRelationTypeSide relationTypeSide, int... artifactIds) {
+      Collection<Integer> ids = new LinkedList<Integer>();
+      for (int id : artifactIds) {
+         ids.add(id);
+      }
+      return andRelatedToLocalIds(relationTypeSide, ids);
+   }
+
+   @Override
+   public QueryBuilder andRelatedToLocalIds(IRelationTypeSide relationTypeSide, Collection<Integer> artifactIds) {
+      predicates.add(predicateFactory.createRelatedToSearch(relationTypeSide, artifactIds));
+      return this;
+   }
+
+   @Override
+   public ResultSet<Integer> getResults() throws OseeCoreException {
+      QueryOptions qOptions = options.clone();
+      SearchResult result = searchResultProvider.getSearchResults(branch, predicates, qOptions);
+      List<Integer> ids = result.getIds();
+      return new ResultSetList<Integer>(ids);
+   }
+
+   @Override
+   public int getCount() throws OseeCoreException {
+      QueryOptions qOptions = options.clone();
+      return searchResultProvider.getSearchCount(branch, predicates, qOptions);
+   }
+
+}

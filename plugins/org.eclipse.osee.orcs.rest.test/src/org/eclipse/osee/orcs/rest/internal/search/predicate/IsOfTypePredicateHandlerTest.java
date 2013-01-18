@@ -10,19 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal.search.predicate;
 
+import static org.mockito.Mockito.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.rest.internal.search.Predicate;
-import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchMethod;
+import org.eclipse.osee.orcs.rest.model.search.Predicate;
+import org.eclipse.osee.orcs.rest.model.search.SearchMethod;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -31,62 +35,61 @@ import org.mockito.MockitoAnnotations;
  */
 public class IsOfTypePredicateHandlerTest {
 
-   private class TestIsOfTypePredicateHandler extends IsOfTypePredicateHandler {
+   @Mock
+   private QueryBuilder builder;
 
-      Collection<IArtifactType> artTypes;
-
-      @Override
-      protected QueryBuilder andIsOfType(QueryBuilder builder, Collection<IArtifactType> artTypes) {
-         this.artTypes = artTypes;
-         return builder;
-      }
-
-   }
-
-   // @formatter:off
-   @Mock private QueryBuilder builder;
-   // @formatter:on
+   @Captor
+   private ArgumentCaptor<Collection<IArtifactType>> artifactTypesCaptor;
 
    @Before
-   public void setup() {
+   public void initialize() {
       MockitoAnnotations.initMocks(this);
    }
 
    @Test
-   public void testHandle() throws OseeCoreException {
-      TestIsOfTypePredicateHandler handler = new TestIsOfTypePredicateHandler();
+   public void testHandleSingle() throws OseeCoreException {
+      IsOfTypePredicateHandler handler = new IsOfTypePredicateHandler();
       //no type params, op, or flags for ids - any passed are ignored
 
       String id1 = "12345";
       List<String> values = Collections.singletonList(id1);
-      Predicate testPredicate = new Predicate(SearchMethod.IS_OF_TYPE, null, null, null, values);
+      Predicate testPredicate = new Predicate(SearchMethod.IS_OF_TYPE, null, null, null, null, values);
       handler.handle(builder, testPredicate);
+      verify(builder).andIsOfType(artifactTypesCaptor.capture());
+      Assert.assertEquals(1, artifactTypesCaptor.getValue().size());
+      // :-)
+      Assert.assertTrue(artifactTypesCaptor.getValue().iterator().next().getGuid().toString().equals(id1));
+   }
 
-      Assert.assertEquals(1, handler.artTypes.size());
-      Assert.assertEquals(id1, handler.artTypes.iterator().next().getGuid().toString());
-
+   @Test
+   public void testHandleMultiple() throws OseeCoreException {
+      IsOfTypePredicateHandler handler = new IsOfTypePredicateHandler();
+      String id1 = "12345";
       String id2 = "45678";
-      values = Arrays.asList(id1, id2);
+      List<String> values = Arrays.asList(id1, id2);
 
-      testPredicate = new Predicate(SearchMethod.IS_OF_TYPE, null, null, null, values);
+      Predicate testPredicate = new Predicate(SearchMethod.IS_OF_TYPE, null, null, null, null, values);
       handler.handle(builder, testPredicate);
-
-      Assert.assertEquals(2, handler.artTypes.size());
+      verify(builder).andIsOfType(artifactTypesCaptor.capture());
+      Assert.assertEquals(2, artifactTypesCaptor.getValue().size());
+      List<IArtifactType> types = new LinkedList<IArtifactType>(artifactTypesCaptor.getValue());
+      Assert.assertEquals(id2, types.get(0).getGuid().toString());
+      Assert.assertEquals(id1, types.get(1).getGuid().toString());
    }
 
    @Test(expected = OseeArgumentException.class)
    public void testHandleBadValues() throws OseeCoreException {
-      TestIsOfTypePredicateHandler handler = new TestIsOfTypePredicateHandler();
-      Predicate testPredicate = new Predicate(SearchMethod.IS_OF_TYPE, null, null, null, null);
+      IsOfTypePredicateHandler handler = new IsOfTypePredicateHandler();
+      Predicate testPredicate = new Predicate(SearchMethod.IS_OF_TYPE, null, null, null, null, null);
       handler.handle(builder, testPredicate);
    }
 
    @Test(expected = OseeArgumentException.class)
    public void testBadSearchMethod() throws OseeCoreException {
-      TestIsOfTypePredicateHandler handler = new TestIsOfTypePredicateHandler();
+      IsOfTypePredicateHandler handler = new IsOfTypePredicateHandler();
       String id1 = "12345";
       List<String> values = Collections.singletonList(id1);
-      Predicate testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, null, null, null, values);
+      Predicate testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, null, null, null, null, values);
       handler.handle(builder, testPredicate);
    }
 }

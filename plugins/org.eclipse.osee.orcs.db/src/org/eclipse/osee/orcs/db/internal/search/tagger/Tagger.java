@@ -11,10 +11,10 @@
 package org.eclipse.osee.orcs.db.internal.search.tagger;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.orcs.data.AttributeReadable;
-import org.eclipse.osee.orcs.search.CaseType;
 
 /**
  * @author Roberto E. Escobar
@@ -23,6 +23,6 @@ public interface Tagger {
 
    void tagIt(AttributeReadable<?> attribute, TagCollector collector) throws OseeCoreException;
 
-   List<MatchLocation> find(AttributeReadable<?> attribute, String toSearch, CaseType caseType, boolean matchAllLocations) throws OseeCoreException;
+   List<MatchLocation> find(AttributeReadable<?> attribute, String toSearch, boolean matchAllLocations, QueryOption... options) throws OseeCoreException;
 
 }

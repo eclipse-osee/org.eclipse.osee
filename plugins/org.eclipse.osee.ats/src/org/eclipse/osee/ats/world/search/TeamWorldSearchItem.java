@@ -35,14 +35,14 @@ import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 
@@ -157,7 +157,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
             teamDefinitionGuids.add(teamDef.getGuid());
          }
       }
-      List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>();
+      List<ArtifactSearchCriteria> criteria = new ArrayList<ArtifactSearchCriteria>();
 
       if (teamDefinitionGuids.isEmpty()) {
          criteria.add(new AttributeCriteria(AtsAttributeTypes.TeamDefinition));
@@ -226,7 +226,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
 
    }
 
-   public static void addIncludeCompletedCancelledCriteria(List<AbstractArtifactSearchCriteria> criteria, boolean includeCompleted, boolean includeCancelled) throws OseeCoreException {
+   public static void addIncludeCompletedCancelledCriteria(List<ArtifactSearchCriteria> criteria, boolean includeCompleted, boolean includeCancelled) throws OseeCoreException {
       try {
          if (AttributeTypeManager.getType(AtsAttributeTypes.CurrentStateType) != null) {
             if (!includeCancelled && !includeCompleted) {

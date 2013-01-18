@@ -13,13 +13,13 @@ package org.eclipse.osee.orcs.rest.internal.search.predicate;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
-import org.eclipse.osee.orcs.rest.internal.search.Predicate;
 import org.eclipse.osee.orcs.rest.internal.search.PredicateHandler;
-import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchMethod;
+import org.eclipse.osee.orcs.rest.model.search.Predicate;
+import org.eclipse.osee.orcs.rest.model.search.SearchMethod;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
@@ -34,7 +34,7 @@ public class ExistsTypePredicateHandler implements PredicateHandler {
          throw new OseeArgumentException("This predicate handler only supports [%s]", SearchMethod.EXISTS_TYPE);
       }
       List<String> typeParameters = predicate.getTypeParameters();
-      List<String> values = predicate.getValues();
+      Collection<String> values = predicate.getValues();
 
       Conditions.checkNotNull(typeParameters, "typeParameters");
       Conditions.checkNotNull(values, "values");
@@ -43,24 +43,17 @@ public class ExistsTypePredicateHandler implements PredicateHandler {
          String existsType = typeParameters.get(0);
          if ("attrType".equals(existsType)) {
             Collection<IAttributeType> attributeTypes = PredicateHandlerUtil.getIAttributeTypes(values);
-            builder = andAttrTypesExists(builder, attributeTypes);
+            if (!attributeTypes.isEmpty()) {
+               builder.andExists(attributeTypes);
+            }
          } else if ("relType".equals(existsType)) {
-            Collection<IRelationTypeSide> relations = PredicateHandlerUtil.getIRelationTypeSides(values);
-            builder = andRelTypeSideExists(builder, relations);
+            for (IRelationType rt : PredicateHandlerUtil.getIRelationTypes(values)) {
+               builder.andExists(rt);
+            }
          }
       }
 
       return builder;
    }
 
-   protected QueryBuilder andRelTypeSideExists(QueryBuilder builder, Collection<IRelationTypeSide> relations) throws OseeCoreException {
-      for (IRelationTypeSide rts : relations) {
-         builder = builder.andExists(rts);
-      }
-      return builder;
-   }
-
-   protected QueryBuilder andAttrTypesExists(QueryBuilder builder, Collection<IAttributeType> attributeTypes) throws OseeCoreException {
-      return builder.andExists(attributeTypes);
-   }
 }

@@ -40,7 +40,7 @@ public class QuerySqlWriter extends AbstractSqlWriter<QueryOptions> {
 
       write("SELECT%s ", getSqlHint());
       if (getOptions().isHistorical()) {
-         write("max(%s.transaction_id), %s.art_id, %s.branch_id", txAlias, artAlias, txAlias);
+         write("max(%s.transaction_id) as transaction_id, %s.art_id, %s.branch_id", txAlias, artAlias, txAlias);
       } else {
          write("%s.art_id, %s.branch_id", artAlias, txAlias);
       }

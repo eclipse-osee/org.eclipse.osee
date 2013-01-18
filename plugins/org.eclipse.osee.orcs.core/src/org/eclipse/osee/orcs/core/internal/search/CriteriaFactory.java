@@ -17,6 +17,8 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.enums.Operator;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -32,10 +34,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
-import org.eclipse.osee.orcs.search.CaseType;
-import org.eclipse.osee.orcs.search.Operator;
 import org.eclipse.osee.orcs.search.QueryBuilder;
-import org.eclipse.osee.orcs.search.StringOperator;
 
 /**
  * @author Roberto E. Escobar
@@ -73,9 +72,9 @@ public class CriteriaFactory {
       return new CriteriaAttributeOther(attributeType, values, operator);
    }
 
-   public Criteria<QueryOptions> createAttributeCriteria(Collection<? extends IAttributeType> attributeTypes, StringOperator operator, CaseType match, String value) throws OseeCoreException {
+   public Criteria<QueryOptions> createAttributeCriteria(Collection<? extends IAttributeType> attributeTypes, String value, QueryOption... options) throws OseeCoreException {
       Collection<? extends IAttributeType> toReturn = checkForAnyType(attributeTypes);
-      return new CriteriaAttributeKeyword(toReturn, value, operator, match);
+      return new CriteriaAttributeKeyword(toReturn, value, options);
    }
 
    public Criteria<QueryOptions> createArtifactTypeCriteria(Collection<? extends IArtifactType> artifactTypes) throws OseeCoreException {

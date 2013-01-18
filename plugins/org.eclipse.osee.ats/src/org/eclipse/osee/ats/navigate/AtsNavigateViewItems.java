@@ -46,7 +46,6 @@ import org.eclipse.osee.ats.util.AtsEditor;
 import org.eclipse.osee.ats.util.ConvertAIsAndTeamDefinitions;
 import org.eclipse.osee.ats.util.CreateActionUsingAllActionableItems;
 import org.eclipse.osee.ats.util.DoesNotWorkItemAts;
-import org.eclipse.osee.ats.util.OpenByIdSearchPerformance;
 import org.eclipse.osee.ats.util.Import.ImportActionsViaSpreadsheetBlam;
 import org.eclipse.osee.ats.version.CreateNewVersionItem;
 import org.eclipse.osee.ats.version.GenerateFullVersionReportItem;
@@ -171,7 +170,6 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
             new MultipleHridSearchOperationFactory("Search by ID(s) - Open Workflow Editor", AtsEditor.WorkflowEditor)));
          items.add(new XNavigateItemOperation(item, AtsImage.GLOBE, "Quick Search",
             new AtsQuickSearchOperationFactory()));
-         items.add(new OpenByIdSearchPerformance(item));
 
          items.add(new ArtifactImpactToActionSearchItem(null));
 

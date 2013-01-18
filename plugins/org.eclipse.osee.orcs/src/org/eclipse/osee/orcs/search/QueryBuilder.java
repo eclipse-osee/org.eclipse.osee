@@ -19,9 +19,12 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.enums.Operator;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
+import org.eclipse.osee.orcs.data.HasLocalId;
 
 /**
  * @author Ryan D. Brooks
@@ -148,14 +151,14 @@ public interface QueryBuilder {
     * Search criteria that finds an attribute of the given type with its current value relative to the given value based
     * on the operator provided.
     */
-   QueryBuilder and(IAttributeType attributeType, StringOperator operator, CaseType match, String value) throws OseeCoreException;
+   QueryBuilder and(IAttributeType attributeType, String value, QueryOption... options) throws OseeCoreException;
 
    /**
     * Search criteria that finds an attribute of the given type with its current value exactly equal (or not equal) to
     * any one of the given literal values. If the list only contains one value, then the search is conducted exactly as
     * if the single value constructor was called. This search does not support the (* wildcard) for multiple values.
     */
-   QueryBuilder and(Collection<? extends IAttributeType> attributeTypes, StringOperator operator, CaseType match, String value) throws OseeCoreException;
+   QueryBuilder and(Collection<? extends IAttributeType> attributeTypes, String value, QueryOption... options) throws OseeCoreException;
 
    /**
     * Search for related artifacts
@@ -200,6 +203,13 @@ public interface QueryBuilder {
    ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> getMatches() throws OseeCoreException;
 
    /**
+    * Executes query
+    * 
+    * @return localIds search results
+    */
+   ResultSet<HasLocalId> getResultsAsLocalIds() throws OseeCoreException;
+
+   /**
     * Count search results
     */
    int getCount() throws OseeCoreException;
@@ -222,5 +232,12 @@ public interface QueryBuilder {
     * @return artifact search results with match locations
     */
    CancellableCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> createSearchWithMatches() throws OseeCoreException;
+
+   /**
+    * Schedule query and find matching locations
+    * 
+    * @return localIds search results
+    */
+   CancellableCallable<ResultSet<HasLocalId>> createSearchResultsAsLocalIds() throws OseeCoreException;
 
 }

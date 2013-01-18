@@ -33,7 +33,7 @@ import org.eclipse.osee.orcs.search.Match;
 /**
  * @author Roberto E. Escobar
  */
-public class SearchMatchesCallable extends AbstractSearchCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> {
+public class SearchMatchesCallable extends AbstractArtifactSearchCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> {
 
    private Collection<QueryPostProcessor> processors;
 

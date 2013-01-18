@@ -10,110 +10,71 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal.search.dsl;
 
-import java.util.Collection;
-import java.util.Collections;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.rest.internal.search.Predicate;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.rest.internal.search.PredicateHandler;
-import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchDsl.DslTranslator;
+import org.eclipse.osee.orcs.rest.model.search.Predicate;
+import org.eclipse.osee.orcs.rest.model.search.SearchMethod;
+import org.eclipse.osee.orcs.rest.model.search.SearchOp;
+import org.eclipse.osee.orcs.rest.model.search.SearchParameters;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
-import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 /**
  * @author John R. Misinco
  */
 public class SearchDslTest {
 
-   private class MockTranslator implements DslTranslator {
-      public String rawString;
-      private final SearchMethod method;
+   // @formatter:off
+   @Mock private PredicateHandler handler;
+   @Mock private QueryFactory queryFactory;
+   @Mock private QueryBuilder builder;
+   @Captor private ArgumentCaptor<IOseeBranch> fromBranch;
+   // @formatter:on
 
-      public MockTranslator(SearchMethod method) {
-         this.method = method;
-      }
+   private static final IOseeBranch BRANCH = CoreBranches.COMMON;
+   private SearchQueryBuilder dsl;
 
-      @Override
-      public List<Predicate> translate(String rawString) {
-         this.rawString = rawString;
-         Predicate toReturn = new Predicate(method, null, null, null, null);
-         return Collections.singletonList(toReturn);
-      }
+   @Before
+   public void setup() {
+      MockitoAnnotations.initMocks(this);
+
+      Map<SearchMethod, PredicateHandler> handlers = new HashMap<SearchMethod, PredicateHandler>();
+      handlers.put(SearchMethod.ATTRIBUTE_TYPE, handler);
+
+      dsl = new SearchQueryBuilder(handlers);
    }
-
-   private class MockPredicateHandler implements PredicateHandler {
-      public boolean handleCalled = false;
-
-      @Override
-      public QueryBuilder handle(QueryBuilder builder, Predicate predicate) {
-         handleCalled = true;
-         return builder;
-      }
-   }
-
-   private class MockQueryFactory implements QueryFactory {
-      public IOseeBranch branch;
-
-      @Override
-      public QueryBuilder fromBranch(IOseeBranch branch) {
-         this.branch = branch;
-         return null;
-      }
-
-      @Override
-      public QueryBuilder fromArtifactTypeAllBranches(IArtifactType artifactType) {
-         return null;
-      }
-
-      @Override
-      public QueryBuilder fromArtifacts(Collection<? extends ArtifactReadable> artifacts) {
-         return null;
-      }
-   };
 
    @Test
    public void testBuildValidSearchType() throws OseeCoreException {
-      Map<SearchMethod, PredicateHandler> handlers = new HashMap<SearchMethod, PredicateHandler>();
-      MockPredicateHandler handler = new MockPredicateHandler();
-      handlers.put(SearchMethod.ATTRIBUTE_TYPE, handler);
+      when(queryFactory.fromBranch(any(IOseeBranch.class))).thenReturn(builder);
 
-      MockTranslator translator = new MockTranslator(SearchMethod.ATTRIBUTE_TYPE);
-      SearchDsl dsl = new SearchDsl(handlers, translator);
-      MockQueryFactory queryFactory = new MockQueryFactory();
+      Predicate predicate =
+         new Predicate(SearchMethod.ATTRIBUTE_TYPE, Arrays.asList("1000000000000070"), SearchOp.EQUALS, null,
+            Strings.EMPTY_STRING, Arrays.asList("AtsAdmin"));
+      SearchParameters params =
+         new SearchParameters(BRANCH.getGuid(), Arrays.asList(predicate), Strings.EMPTY_STRING, Strings.EMPTY_STRING,
+            0, false, false, false);
 
-      IOseeBranch branch = CoreBranches.COMMON;
-      String rawQuery = "[t:attrType&tp:1000000000000070&op:==&v:AtsAdmin]";
-      dsl.build(queryFactory, branch, rawQuery);
+      dsl.build(queryFactory, params);
 
-      Assert.assertEquals(rawQuery, translator.rawString);
-      Assert.assertEquals(branch, queryFactory.branch);
-      Assert.assertTrue(handler.handleCalled);
-   }
-
-   @Test
-   public void testBuildInvalidSearchType() throws OseeCoreException {
-      Map<SearchMethod, PredicateHandler> handlers = new HashMap<SearchMethod, PredicateHandler>();
-      MockPredicateHandler handler = new MockPredicateHandler();
-      handlers.put(SearchMethod.ATTRIBUTE_TYPE, handler);
-
-      MockTranslator translator = new MockTranslator(SearchMethod.EXISTS_TYPE);
-      SearchDsl dsl = new SearchDsl(handlers, translator);
-      MockQueryFactory queryFactory = new MockQueryFactory();
-
-      IOseeBranch branch = CoreBranches.COMMON;
-      String rawQuery = "[t:attrType&tp:1000000000000070&op:==&v:AtsAdmin]";
-      dsl.build(queryFactory, branch, rawQuery);
-
-      Assert.assertEquals(rawQuery, translator.rawString);
-      Assert.assertEquals(branch, queryFactory.branch);
-      Assert.assertFalse(handler.handleCalled);
+      verify(queryFactory).fromBranch(fromBranch.capture());
+      Assert.assertEquals(BRANCH.getGuid(), fromBranch.getValue().getGuid());
+      verify(handler).handle(builder, predicate);
    }
 }

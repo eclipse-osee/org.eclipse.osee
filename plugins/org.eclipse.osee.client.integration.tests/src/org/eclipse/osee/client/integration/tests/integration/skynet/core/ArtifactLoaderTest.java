@@ -10,8 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
-import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
+import static org.eclipse.osee.client.demo.DemoChoice.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -78,7 +77,7 @@ public class ArtifactLoaderTest {
    public void tearDown() throws Exception {
       SkynetTransaction transaction = TransactionManager.createTransaction(branch, testInfo.getQualifiedTestName());
       List<Artifact> artifacts =
-         ArtifactQuery.getArtifactListFromName(testInfo.getQualifiedTestName(), branch, EXCLUDE_DELETED);
+         ArtifactQuery.getArtifactListFromName(testInfo.getQualifiedTestName(), branch, DeletionFlag.EXCLUDE_DELETED);
       ArtifactPersistenceManager.deleteArtifactCollection(transaction, false, artifacts);
       transaction.execute();
    }
@@ -92,7 +91,7 @@ public class ArtifactLoaderTest {
     * Another interesting side-effect, is this test also gives a repeatable case for duplicate relation loading. These
     * are caught by the SevereLoggingMonitor.
     */
-   @Test(timeout = 5000)
+   @Test(timeout = 10000)
    public void testThreadSafeLoading() throws Exception {
       // Create some software artifacts
       SkynetTransaction transaction =
@@ -117,7 +116,7 @@ public class ArtifactLoaderTest {
          tasks.add(new LoadArtifacts());
       }
 
-      ExecutorService executor = Executors.newFixedThreadPool(7, new LoadThreadFactory());
+      ExecutorService executor = Executors.newFixedThreadPool(TOTAL_THREADS, new LoadThreadFactory());
       List<Future<List<Artifact>>> futures = executor.invokeAll(tasks, 81, TimeUnit.SECONDS);
       int completed = 0;
       int cancelled = 0;
@@ -137,7 +136,8 @@ public class ArtifactLoaderTest {
 
       // Load and check artifacts
       artifacts =
-         ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", BranchManager.getCommonBranch(), EXCLUDE_DELETED);
+         ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", BranchManager.getCommonBranch(),
+            DeletionFlag.EXCLUDE_DELETED);
       Assert.assertEquals(NUM_ARTIFACTS, artifacts.size());
       for (Artifact artifact : artifacts) {
          Assert.assertEquals(ATTRIBUTE_VALUE, artifact.getSoleAttributeValue(CoreAttributeTypes.DefaultMailServer));
@@ -273,7 +273,7 @@ public class ArtifactLoaderTest {
       public List<Artifact> call() throws Exception {
          List<Artifact> artifacts =
             ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", BranchManager.getCommonBranch(),
-               EXCLUDE_DELETED);
+               DeletionFlag.EXCLUDE_DELETED);
          if (artifacts.size() != NUM_ARTIFACTS) {
             throw new OseeStateException("Should have loaded %d not %d", NUM_ARTIFACTS, artifacts.size());
          }

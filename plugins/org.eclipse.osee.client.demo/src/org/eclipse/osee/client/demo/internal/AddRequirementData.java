@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.client.demo.internal;
 
-import static java.lang.Thread.sleep;
+import static java.lang.Thread.*;
 import java.io.File;
 import java.net.URL;
 import java.util.Collection;
@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineExtractorDelegate;
@@ -253,7 +254,8 @@ public class AddRequirementData implements IDbInitializationTask {
             artifactNameStr, branch.getName());
       }
       Collection<Artifact> arts =
-         ArtifactQuery.getArtifactListFromTypeAndName(artifactType, "%" + artifactNameStr + "%", branch);
+         ArtifactQuery.getArtifactListFromTypeAndName(artifactType, artifactNameStr, branch,
+            QueryOptions.CONTAINS_MATCH_OPTIONS);
       if (DEBUG) {
          OseeLog.logf(AddRequirementData.class, Level.INFO, "Found [%s] Artifacts", arts.size());
       }

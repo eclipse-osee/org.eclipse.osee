@@ -31,8 +31,12 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.ResultSet;
+import org.eclipse.osee.framework.core.enums.CaseType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
+import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
+import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -40,11 +44,9 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.GraphReadable;
-import org.eclipse.osee.orcs.search.CaseType;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
-import org.eclipse.osee.orcs.search.StringOperator;
 import com.google.common.collect.Lists;
 
 /**
@@ -118,7 +120,8 @@ public class ArtifactProviderImpl implements ArtifactProvider {
       } else {
          IAttributeType type = params.isNameOnly() ? CoreAttributeTypes.Name : QueryBuilder.ANY_ATTRIBUTE_TYPE;
          QueryBuilder builder = getFactory().fromBranch(params.getBranch());
-         builder.and(type, StringOperator.TOKENIZED_ANY_ORDER, CaseType.IGNORE_CASE, params.getSearchPhrase());
+         builder.and(type, params.getSearchPhrase(), TokenDelimiterMatch.ANY, CaseType.IGNORE_CASE,
+            TokenOrderType.ANY_ORDER, MatchTokenCountType.IGNORE_TOKEN_COUNT);
          callable = new FilteredResultSetCallable(executorAdmin, filter, builder.createSearchWithMatches());
       }
       return callable;

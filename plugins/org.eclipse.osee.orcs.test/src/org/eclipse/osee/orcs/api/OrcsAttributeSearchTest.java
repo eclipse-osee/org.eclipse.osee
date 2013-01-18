@@ -15,8 +15,13 @@ import java.util.List;
 import java.util.Map;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.ResultSet;
+import org.eclipse.osee.framework.core.enums.CaseType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
+import org.eclipse.osee.framework.core.enums.Operator;
+import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
+import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
@@ -26,11 +31,8 @@ import org.eclipse.osee.orcs.OrcsIntegrationRule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
-import org.eclipse.osee.orcs.search.CaseType;
-import org.eclipse.osee.orcs.search.Operator;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
-import org.eclipse.osee.orcs.search.StringOperator;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -93,8 +95,8 @@ public class OrcsAttributeSearchTest {
       BranchCache branchCache = orcsApi.getBranchCache();
       Branch branch = branchCache.getBySoleName("SAW_Bld_1");
       QueryBuilder builder =
-         queryFactory.fromBranch(branch).and(CoreAttributeTypes.WordTemplateContent,
-            StringOperator.TOKENIZED_ANY_ORDER, CaseType.IGNORE_CASE, "commands");
+         queryFactory.fromBranch(branch).and(CoreAttributeTypes.WordTemplateContent, "commands",
+            TokenDelimiterMatch.ANY, TokenOrderType.MATCH_ORDER, CaseType.IGNORE_CASE, MatchTokenCountType.IGNORE_TOKEN_COUNT);
 
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
       List<ArtifactReadable> moreArts = resultSet.getList();

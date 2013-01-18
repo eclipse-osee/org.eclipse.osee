@@ -12,13 +12,12 @@ package org.eclipse.osee.orcs.rest.internal.search.predicate;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
-import org.eclipse.osee.orcs.rest.internal.search.Predicate;
 import org.eclipse.osee.orcs.rest.internal.search.PredicateHandler;
-import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchMethod;
+import org.eclipse.osee.orcs.rest.model.search.Predicate;
+import org.eclipse.osee.orcs.rest.model.search.SearchMethod;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
@@ -32,8 +31,7 @@ public class IdsPredicateHandler implements PredicateHandler {
       if (predicate.getType() != SearchMethod.IDS) {
          throw new OseeArgumentException("This predicate handler only supports [%s]", SearchMethod.IDS);
       }
-      QueryBuilder theBuilder = builder;
-      List<String> values = predicate.getValues();
+      Collection<String> values = predicate.getValues();
 
       Conditions.checkNotNull(values, "values");
 
@@ -48,20 +46,13 @@ public class IdsPredicateHandler implements PredicateHandler {
       }
 
       if (!guids.isEmpty()) {
-         theBuilder = addGuids(builder, guids);
+         builder.andGuidsOrHrids(guids);
       }
 
       if (!rawIds.isEmpty()) {
-         theBuilder = addIds(builder, rawIds);
+         builder.andLocalIds(rawIds);
       }
-      return theBuilder;
+      return builder;
    }
 
-   protected QueryBuilder addGuids(QueryBuilder builder, Collection<String> guids) throws OseeCoreException {
-      return builder.andGuidsOrHrids(guids);
-   }
-
-   protected QueryBuilder addIds(QueryBuilder builder, Collection<Integer> rawIds) throws OseeCoreException {
-      return builder.andLocalIds(rawIds);
-   }
 }

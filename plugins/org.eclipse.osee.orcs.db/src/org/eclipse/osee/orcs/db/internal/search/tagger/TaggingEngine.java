@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.tagger;
 
-import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -19,22 +18,20 @@ import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.db.internal.search.util.WordOrderMatcher;
 
 /**
  * @author Roberto E. Escobar
  */
 public class TaggingEngine {
 
-   private final Map<String, Tagger> taggers = new HashMap<String, Tagger>();
+   private final Map<String, Tagger> taggers;
    private final AttributeTypeCache attributeTypeCache;
    private final TagProcessor tagProcessor;
 
-   public TaggingEngine(TagProcessor tagProcessor, AttributeTypeCache attributeTypeCache) {
+   public TaggingEngine(Map<String, Tagger> taggers, TagProcessor tagProcessor, AttributeTypeCache attributeTypeCache) {
+      this.taggers = taggers;
       this.tagProcessor = tagProcessor;
       this.attributeTypeCache = attributeTypeCache;
-      taggers.put("DefaultAttributeTaggerProvider", new DefaultAttributeTagger(tagProcessor, new WordOrderMatcher()));
-      taggers.put("XmlAttributeTaggerProvider", new XmlAttributeTagger(tagProcessor, new WordOrderMatcher()));
    }
 
    public TagProcessor getTagProcessor() {
@@ -78,13 +75,4 @@ public class TaggingEngine {
       return tagger;
    }
 
-   //   public void tagIt(ReadableAttribute<?> attribute, TagCollector collector) throws OseeCoreException {
-   //      Tagger tagger = getTagger(attribute.getAttributeType());
-   //      tagger.tagIt(attribute, collector);
-   //   }
-   //
-   //   public List<MatchLocation> find(ReadableAttribute<?> attribute, String toSearch, CaseType caseType, boolean matchAllLocations) throws OseeCoreException {
-   //      Tagger tagger = getTagger(attribute.getAttributeType());
-   //      return tagger.find(attribute, toSearch, caseType, matchAllLocations);
-   //   }
 }

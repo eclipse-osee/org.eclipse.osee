@@ -16,12 +16,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -29,6 +32,7 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
+import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
@@ -199,8 +203,11 @@ public class ArtifactTypeManager {
    public static void purgeArtifactTypesWithCheck(Collection<? extends IArtifactType> purgeArtifactTypes, IArtifactType newArtifactType) throws CoreException {
       for (IArtifactType purgeArtifactType : purgeArtifactTypes) {
          // find all artifact of this type on all branches and make a unique list for type change (since it is not by branch)
-         List<Artifact> artifacts =
-            ArtifactQuery.getArtifactListFromType(purgeArtifactType, DeletionFlag.INCLUDE_DELETED);
+         Set<Artifact> artifacts = new LinkedHashSet<Artifact>();
+         for (IOseeBranch branch : BranchManager.getBranches(new BranchFilter())) {
+            artifacts.addAll(ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirement, branch,
+               DeletionFlag.INCLUDE_DELETED));
+         }
          if (artifacts.size() > 0) {
             HashMap<Integer, Artifact> artifactMap = new HashMap<Integer, Artifact>();
             for (Artifact artifact : artifacts) {

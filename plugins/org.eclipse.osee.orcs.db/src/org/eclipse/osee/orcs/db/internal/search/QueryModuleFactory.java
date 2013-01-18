@@ -53,10 +53,15 @@ import org.eclipse.osee.orcs.db.internal.search.indexer.QueryEngineIndexerImpl;
 import org.eclipse.osee.orcs.db.internal.search.indexer.QueueToAttributeLoader;
 import org.eclipse.osee.orcs.db.internal.search.indexer.data.QueueToAttributeLoaderImpl;
 import org.eclipse.osee.orcs.db.internal.search.language.EnglishLanguage;
+import org.eclipse.osee.orcs.db.internal.search.tagger.DefaultAttributeTagger;
+import org.eclipse.osee.orcs.db.internal.search.tagger.StreamMatcher;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagEncoder;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
+import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
+import org.eclipse.osee.orcs.db.internal.search.tagger.XmlAttributeTagger;
 import org.eclipse.osee.orcs.db.internal.search.util.DataPostProcessorFactoryImpl;
+import org.eclipse.osee.orcs.db.internal.search.util.MatcherFactory;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactoryImpl;
@@ -104,7 +109,13 @@ public class QueryModuleFactory {
 
    protected TaggingEngine createTaggingEngine(AttributeTypeCache attributeTypeCache) {
       TagProcessor tagProcessor = new TagProcessor(new EnglishLanguage(logger), new TagEncoder());
-      return new TaggingEngine(tagProcessor, attributeTypeCache);
+      Map<String, Tagger> taggers = new HashMap<String, Tagger>();
+
+      StreamMatcher matcher = MatcherFactory.createMatcher();
+      taggers.put("DefaultAttributeTaggerProvider", new DefaultAttributeTagger(tagProcessor, matcher));
+      taggers.put("XmlAttributeTaggerProvider", new XmlAttributeTagger(tagProcessor, matcher));
+
+      return new TaggingEngine(taggers, tagProcessor, attributeTypeCache);
    }
 
    protected QueryEngineImpl createQueryEngine(IOseeDatabaseService dbService, SqlHandlerFactory handlerFactory, SqlProvider sqlProvider, BranchCache branchCache) {

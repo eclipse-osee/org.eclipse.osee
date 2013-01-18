@@ -10,23 +10,29 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal.search.predicate;
 
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.enums.CaseType;
+import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
+import org.eclipse.osee.framework.core.enums.Operator;
+import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
+import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.rest.internal.search.Predicate;
-import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchFlag;
-import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchMethod;
-import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchOp;
-import org.eclipse.osee.orcs.search.CaseType;
-import org.eclipse.osee.orcs.search.Operator;
+import org.eclipse.osee.orcs.rest.model.search.Predicate;
+import org.eclipse.osee.orcs.rest.model.search.SearchFlag;
+import org.eclipse.osee.orcs.rest.model.search.SearchMethod;
+import org.eclipse.osee.orcs.rest.model.search.SearchOp;
 import org.eclipse.osee.orcs.search.QueryBuilder;
-import org.eclipse.osee.orcs.search.StringOperator;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -35,109 +41,57 @@ import org.mockito.MockitoAnnotations;
  */
 public class AttributeTypePredicateHandlerTest {
 
-   private class TestAttributeTypePredicateHandler extends AttributeTypePredicateHandler {
-
-      StringOperator stringOperator;
-      Operator operator;
-      CaseType ct;
-
-      @Override
-      protected QueryBuilder and(QueryBuilder builder, Collection<IAttributeType> attributeTypes, StringOperator operator, CaseType ct, String value) {
-         this.stringOperator = operator;
-         this.ct = ct;
-         return builder;
-      }
-
-      @Override
-      protected QueryBuilder and(QueryBuilder builder, IAttributeType type, Operator operator, List<String> values) {
-         this.operator = operator;
-         return builder;
-      }
-
-   }
-
-   // @formatter:off
-   @Mock private QueryBuilder builder;
-   // @formatter:on
+   @Mock
+   private QueryBuilder builder;
+   @Captor
+   private ArgumentCaptor<TokenDelimiterMatch> pattern;
+   @Captor
+   private ArgumentCaptor<Collection<String>> valueCaptor;
 
    @Before
-   public void setup() {
+   public void initialize() {
       MockitoAnnotations.initMocks(this);
    }
 
    @Test
-   public void testStringOperatorSelection() throws OseeCoreException {
-      TestAttributeTypePredicateHandler handler = new TestAttributeTypePredicateHandler();
+   public void testStringSearchOptions() throws OseeCoreException {
+      AttributeTypePredicateHandler handler = new AttributeTypePredicateHandler();
       List<String> typeParameters = Collections.singletonList("0x0123");
-      List<SearchFlag> flags = Arrays.asList(SearchFlag.TOKENIZED_ANY);
+      List<SearchFlag> flags = Collections.emptyList();
       List<String> values = Collections.singletonList("value");
+      String delimiter = "delim";
       Predicate testPredicate =
-         new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.EQUALS, flags, values);
+         new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.EQUALS, flags, delimiter, values);
       handler.handle(builder, testPredicate);
-      Assert.assertEquals(StringOperator.TOKENIZED_ANY_ORDER, handler.stringOperator);
+      verify(builder).and(anyCollectionOf(IAttributeType.class), eq("value"), pattern.capture(),
+         eq(CaseType.IGNORE_CASE), eq(TokenOrderType.ANY_ORDER), eq(MatchTokenCountType.IGNORE_TOKEN_COUNT));
+      Assert.assertTrue(delimiter.equals(pattern.getValue().getPattern().pattern()));
 
-      flags = Arrays.asList(SearchFlag.TOKENIZED_ORDERED);
-      testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.EQUALS, flags, values);
+      reset(builder);
+      flags = Arrays.asList(SearchFlag.values());
+      testPredicate =
+         new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.EQUALS, flags, "delim", values);
       handler.handle(builder, testPredicate);
-      Assert.assertEquals(StringOperator.TOKENIZED_MATCH_ORDER, handler.stringOperator);
-
-      flags = Arrays.asList(SearchFlag.IGNORE_CASE);
-      testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.EQUALS, flags, values);
-      handler.handle(builder, testPredicate);
-      Assert.assertEquals(StringOperator.EQUALS, handler.stringOperator);
-
-      testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.NOT_EQUALS, flags, values);
-      handler.handle(builder, testPredicate);
-      Assert.assertEquals(StringOperator.NOT_EQUALS, handler.stringOperator);
-
-      testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.IN, flags, values);
-      handler.handle(builder, testPredicate);
-      Assert.assertEquals(StringOperator.CONTAINS, handler.stringOperator);
-   }
-
-   @Test
-   public void testCaseTypeSelection() throws OseeCoreException {
-      TestAttributeTypePredicateHandler handler = new TestAttributeTypePredicateHandler();
-      List<String> typeParameters = Collections.singletonList("0x0123");
-      List<SearchFlag> flags = Arrays.asList(SearchFlag.IGNORE_CASE);
-      List<String> values = Collections.singletonList("value");
-      Predicate testPredicate =
-         new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.EQUALS, flags, values);
-      handler.handle(builder, testPredicate);
-      Assert.assertEquals(CaseType.IGNORE_CASE, handler.ct);
-
-      flags = Arrays.asList(SearchFlag.TOKENIZED, SearchFlag.IGNORE_CASE);
-      testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.EQUALS, flags, values);
-      handler.handle(builder, testPredicate);
-      Assert.assertEquals(CaseType.IGNORE_CASE, handler.ct);
-
-      flags = Arrays.asList(SearchFlag.TOKENIZED, SearchFlag.MATCH_CASE);
-      testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.EQUALS, flags, values);
-      handler.handle(builder, testPredicate);
-      Assert.assertEquals(CaseType.MATCH_CASE, handler.ct);
+      verify(builder).and(anyCollectionOf(IAttributeType.class), eq("value"), pattern.capture(),
+         eq(CaseType.MATCH_CASE), eq(TokenOrderType.MATCH_ORDER), eq(MatchTokenCountType.MATCH_TOKEN_COUNT));
    }
 
    @Test
    public void testOperatorSelection() throws OseeCoreException {
-      TestAttributeTypePredicateHandler handler = new TestAttributeTypePredicateHandler();
+      AttributeTypePredicateHandler handler = new AttributeTypePredicateHandler();
       List<String> typeParameters = Collections.singletonList("0x0123");
       List<SearchFlag> flags = Arrays.asList(SearchFlag.MATCH_CASE);
       List<String> values = Collections.singletonList("value");
       Predicate testPredicate =
-         new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.EQUALS, flags, values);
+         new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.GREATER_THAN, flags, "", values);
       handler.handle(builder, testPredicate);
-      Assert.assertEquals(Operator.EQUAL, handler.operator);
+      verify(builder).and(any(IAttributeType.class), eq(Operator.GREATER_THAN), valueCaptor.capture());
+      Assert.assertEquals(values, valueCaptor.getValue());
 
-      testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.GREATER_THAN, flags, values);
+      reset(builder);
+      testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.LESS_THAN, flags, "", values);
       handler.handle(builder, testPredicate);
-      Assert.assertEquals(Operator.GREATER_THAN, handler.operator);
-
-      testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.LESS_THAN, flags, values);
-      handler.handle(builder, testPredicate);
-      Assert.assertEquals(Operator.LESS_THAN, handler.operator);
-
-      testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, SearchOp.NOT_EQUALS, flags, values);
-      handler.handle(builder, testPredicate);
-      Assert.assertEquals(Operator.NOT_EQUAL, handler.operator);
+      verify(builder).and(any(IAttributeType.class), eq(Operator.LESS_THAN), valueCaptor.capture());
+      Assert.assertEquals(values, valueCaptor.getValue());
    }
 }

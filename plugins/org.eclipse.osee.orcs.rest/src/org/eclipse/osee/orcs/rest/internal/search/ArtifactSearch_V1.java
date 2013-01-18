@@ -10,22 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal.search;
 
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.data.HasLocalId;
 import org.eclipse.osee.orcs.rest.internal.OrcsApplication;
-import org.eclipse.osee.orcs.rest.internal.search.dsl.DslTranslatorImpl;
-import org.eclipse.osee.orcs.rest.internal.search.dsl.PredicateHandlerFactory;
-import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchDsl;
-import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchDsl.DslTranslator;
-import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchMethod;
+import org.eclipse.osee.orcs.rest.internal.search.dsl.DslFactory;
+import org.eclipse.osee.orcs.rest.internal.search.dsl.DslTranslator;
+import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchQueryBuilder;
+import org.eclipse.osee.orcs.rest.model.search.SearchParameters;
+import org.eclipse.osee.orcs.rest.model.search.SearchResult;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
@@ -35,15 +37,11 @@ import org.eclipse.osee.orcs.search.QueryFactory;
  */
 public class ArtifactSearch_V1 extends ArtifactSearch {
 
-   private final SearchDsl dsl;
+   private final SearchQueryBuilder searchQueryBuilder;
 
    public ArtifactSearch_V1(UriInfo uriInfo, Request request, String branchUuid) {
       super(uriInfo, request, branchUuid);
-
-      Map<SearchMethod, PredicateHandler> handlers = PredicateHandlerFactory.getHandlers();
-      DslTranslator translator = new DslTranslatorImpl();
-      // Can have a single instance of this
-      dsl = new SearchDsl(handlers, translator);
+      searchQueryBuilder = DslFactory.createQueryBuilder();
    }
 
    /**
@@ -102,45 +100,53 @@ public class ArtifactSearch_V1 extends ArtifactSearch {
    @GET
    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
    public SearchResult getSearchWithQueryParams(@QueryParam("alt") String alt, @QueryParam("fields") String fields, @QueryParam("q") String rawQuery, @QueryParam("fromTx") int fromTransaction, @QueryParam("inherits") boolean includeTypeInheritance, @QueryParam("cached") boolean includeCache, @QueryParam("includeDeleted") boolean includeDeleted) throws OseeCoreException {
-      return search(alt, fields, rawQuery, fromTransaction, includeTypeInheritance, includeCache, includeDeleted);
+      DslTranslator translator = DslFactory.createTranslator();
+      SearchParameters params =
+         new SearchParameters(getBranchUuid(), translator.translate(rawQuery), alt, fields, fromTransaction,
+            includeTypeInheritance, includeCache, includeDeleted);
+      return search(params);
    }
 
-   //   @GET
-   //   @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-   //   public SearchResult getSearchWithMatrixParams(@MatrixParam("alt") String alt, @MatrixParam("fields") String fields, @MatrixParam("q") String rawQuery, @MatrixParam("fromTx") int fromTransaction, @MatrixParam("inherits") boolean includeTypeInheritance, @MatrixParam("cached") boolean includeCache, @MatrixParam("includeDeleted") boolean includeDeleted) throws OseeCoreException {
-   //      return search(alt, fields, rawQuery, fromTransaction, includeTypeInheritance, includeCache, includeDeleted);
-   //   }
+   @POST
+   @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+   @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+   public SearchResult getSearchWithMatrixParams(SearchParameters parameters) throws OseeCoreException {
+      return search(parameters);
+   }
 
-   private SearchResult search(String alt, String fields, String rawQuery, int fromTransaction, boolean includeTypeInheritance, boolean includeCache, boolean includeDeleted) throws OseeCoreException {
+   private SearchResult search(SearchParameters params) throws OseeCoreException {
       long startTime = System.currentTimeMillis();
-
-      IOseeBranch branch = TokenFactory.createBranch(getBranchUuid(), "searchBranch");
 
       QueryFactory qFactory = OrcsApplication.getOrcsApi().getQueryFactory(null); // Fix this
 
-      QueryBuilder builder = dsl.build(qFactory, branch, rawQuery);
+      QueryBuilder builder = searchQueryBuilder.build(qFactory, params);
 
-      builder.includeCache(includeCache);
-      builder.includeTypeInheritance(includeTypeInheritance);
-      builder.includeDeleted(includeDeleted);
+      builder.includeCache(params.isIncludeCache());
+      builder.includeTypeInheritance(params.isIncludeTypeInheritance());
+      builder.includeDeleted(params.isIncludeDeleted());
 
-      if (fromTransaction > 0) {
-         builder.fromTransaction(fromTransaction);
+      if (params.getFromTx() > 0) {
+         builder.fromTransaction(params.getFromTx());
       }
 
-      SearchResult result = new SearchResult();
-      SearchParameters params = new SearchParameters(getBranchUuid(), rawQuery, alt, fields);
-      result.setPredicates(dsl.getPredicates());
-      result.setSearchParams(params);
-      if (fields.equals("count")) {
+      SearchResult result;
+      if (params.getFields().equals("count")) {
+         result = new SearchResult();
          int total = builder.getCount();
          result.setTotal(total);
 
+      } else if (params.getFields().equals("ids")) {
+         List<Integer> localIds = new LinkedList<Integer>();
+         for (HasLocalId art : builder.getResultsAsLocalIds()) {
+            localIds.add(art.getLocalId());
+         }
+         result = new SearchResult();
+         result.setIds(localIds);
+         result.setTotal(localIds.size());
       } else {
-         //         builder.createSearch();
-         //         builder.createSearchWithMatches();
          throw new UnsupportedOperationException();
       }
+      result.setSearchParams(params);
       result.setSearchTime(System.currentTimeMillis() - startTime);
       return result;
    }

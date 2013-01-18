@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({WordOrderMatcherTest.class, WordsUtilTest.class})
+@Suite.SuiteClasses({SecondPassMatcherTest.class, WordsUtilTest.class})
 public class UtilityTestSuite {
    // Test Suite
 }

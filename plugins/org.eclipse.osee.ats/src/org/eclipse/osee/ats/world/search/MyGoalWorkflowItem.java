@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 
 /**
@@ -62,7 +63,7 @@ public class MyGoalWorkflowItem extends UserSearchItem {
          artifacts.addAll(RelationManager.getRelatedArtifacts(assigned, 1, AtsRelationTypes.SmaToTask_Sma));
       } else {
          artifacts.addAll(ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.State,
-            "%<" + user.getUserId() + ">%", AtsUtil.getAtsBranch()));
+            "<" + user.getUserId() + ">", AtsUtil.getAtsBranch(), QueryOptions.CONTAINS_MATCH_OPTIONS));
       }
 
       List<Artifact> artifactsToReturn = new ArrayList<Artifact>(artifacts.size());

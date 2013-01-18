@@ -10,15 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
+import org.eclipse.osee.framework.core.enums.CaseType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
+import org.eclipse.osee.framework.core.enums.Operator;
+import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
+import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
@@ -47,9 +52,6 @@ import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
 import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
-import org.eclipse.osee.orcs.search.CaseType;
-import org.eclipse.osee.orcs.search.Operator;
-import org.eclipse.osee.orcs.search.StringOperator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -76,8 +78,8 @@ public class QueryEngineImplTest {
       CoreRelationTypes.Default_Hierarchical__Child);
 
    private static final Criteria<?> ATTRIBUTE_KEYWORD = new CriteriaAttributeKeyword(Arrays.asList(
-      CoreAttributeTypes.Name, CoreAttributeTypes.WordTemplateContent), "hello1_two_three",
-      StringOperator.TOKENIZED_MATCH_ORDER, CaseType.IGNORE_CASE);
+      CoreAttributeTypes.Name, CoreAttributeTypes.WordTemplateContent), "hello1_two_three", TokenDelimiterMatch.ANY,
+      TokenOrderType.MATCH_ORDER, MatchTokenCountType.IGNORE_TOKEN_COUNT, CaseType.MATCH_CASE);
 
    private static final Criteria<?> RELATED_TO = new CriteriaRelatedTo(CoreRelationTypes.Default_Hierarchical__Child,
       Arrays.asList(45, 61));
@@ -176,7 +178,7 @@ public class QueryEngineImplTest {
    @Test
    public void testCountHistorical() throws Exception {
       String expected = "SELECT count(xTable.art_id) FROM (\n" + //
-      " SELECT/*+ ordered */ max(txs1.transaction_id), art1.art_id, txs1.branch_id\n" + //
+      " SELECT/*+ ordered */ max(txs1.transaction_id) as transaction_id, art1.art_id, txs1.branch_id\n" + //
       " FROM \n" + //
       "osee_artifact art1, osee_txs txs1\n" + //
       " WHERE \n" + //
@@ -286,7 +288,7 @@ public class QueryEngineImplTest {
    @Test
    public void testQueryHistorical() throws OseeCoreException {
       String expected =
-         "SELECT/*+ ordered */ max(txs1.transaction_id), art1.art_id, txs1.branch_id\n" + // 
+         "SELECT/*+ ordered */ max(txs1.transaction_id) as transaction_id, art1.art_id, txs1.branch_id\n" + // 
          " FROM \n" + //
          "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, osee_join_char_id jch2, osee_artifact art3, osee_txs txs3\n" + //
          " WHERE \n" + //
@@ -707,7 +709,7 @@ public class QueryEngineImplTest {
    @Test
    public void testCountAllArtifactsFromBranchHistorical() throws OseeCoreException {
       String expected = "SELECT count(xTable.art_id) FROM (\n" + //
-      " SELECT/*+ ordered */ max(txs1.transaction_id), art1.art_id, txs1.branch_id\n" + //
+      " SELECT/*+ ordered */ max(txs1.transaction_id) as transaction_id, art1.art_id, txs1.branch_id\n" + //
       " FROM \n" + //
       "osee_artifact art1, osee_txs txs1\n" + //
       " WHERE \n" + //
@@ -760,15 +762,16 @@ public class QueryEngineImplTest {
 
    @Test
    public void testQueryAllArtifactsFromBranchHistorical() throws OseeCoreException {
-      String expected = "SELECT/*+ ordered */ max(txs1.transaction_id), art1.art_id, txs1.branch_id\n" + // 
-      " FROM \n" + //
-      "osee_artifact art1, osee_txs txs1\n" + //
-      " WHERE \n" + //
-      "art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ?\n" + //
-      " AND \n" + // 
-      "txs1.tx_current IN (1, 0) AND txs1.branch_id = ?\n" + //
-      " GROUP BY art1.art_id, txs1.branch_id\n" + //
-      " ORDER BY art1.art_id, txs1.branch_id";
+      String expected =
+         "SELECT/*+ ordered */ max(txs1.transaction_id) as transaction_id, art1.art_id, txs1.branch_id\n" + // 
+         " FROM \n" + //
+         "osee_artifact art1, osee_txs txs1\n" + //
+         " WHERE \n" + //
+         "art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ?\n" + //
+         " AND \n" + // 
+         "txs1.tx_current IN (1, 0) AND txs1.branch_id = ?\n" + //
+         " GROUP BY art1.art_id, txs1.branch_id\n" + //
+         " ORDER BY art1.art_id, txs1.branch_id";
 
       queryData.getOptions().setFromTransaction(EXPECTED_TX_ID);
       queryData.addCriteria(ALL_ARTIFACTS);

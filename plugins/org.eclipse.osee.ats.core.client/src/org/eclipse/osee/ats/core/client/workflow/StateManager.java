@@ -58,6 +58,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 
 /**
  * @author Donald G. Dunne
@@ -315,7 +316,7 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
    public static Set<Artifact> getAssigned(String userId, Class<?> clazz) throws OseeCoreException {
       Set<Artifact> assigned = new HashSet<Artifact>();
       for (Artifact artifact : ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.CurrentState,
-         "%<" + userId + ">%", AtsUtilCore.getAtsBranch())) {
+         "<" + userId + ">", AtsUtilCore.getAtsBranch(), QueryOptions.CONTAINS_MATCH_OPTIONS)) {
          if (clazz == null || clazz.isInstance(artifact)) {
             assigned.add(artifact);
          }

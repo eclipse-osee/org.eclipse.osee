@@ -31,7 +31,7 @@ import org.eclipse.osee.orcs.search.Match;
 /**
  * @author Roberto E. Escobar
  */
-public class SearchCallable extends AbstractSearchCallable<ResultSet<ArtifactReadable>> {
+public class SearchCallable extends AbstractArtifactSearchCallable<ResultSet<ArtifactReadable>> {
 
    private QueryContext queryContext;
 

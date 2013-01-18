@@ -1,0 +1,103 @@
+/*******************************************************************************
+ * Copyright (c) 2012 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.orcs.db.internal.search.util;
+
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.MatchResult;
+import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
+import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
+
+/**
+ * @author John Misinco
+ */
+public class AnyTokenOrderProcessor implements TokenOrderProcessor {
+
+   private final TrackingMap trackingSet;
+   private final List<MatchLocation> locations;
+   private int numTokensToMatch = 0;
+
+   public AnyTokenOrderProcessor() {
+      locations = new LinkedList<MatchLocation>();
+      trackingSet = new TrackingMap();
+   }
+
+   @Override
+   public int getTotalTokensToMatch() {
+      return numTokensToMatch;
+   }
+
+   @Override
+   public void acceptTokenToMatch(String token) {
+      trackingSet.add(token);
+      numTokensToMatch++;
+   }
+
+   @Override
+   public boolean processToken(String token, MatchResult match) {
+      if (trackingSet.found(token)) {
+         locations.add(createMatchLocation(match.start(), match.end()));
+         if (trackingSet.areAllFound()) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   @Override
+   public List<MatchLocation> getLocations() {
+      return locations;
+   }
+
+   @Override
+   public void clearAllLocations() {
+      locations.clear();
+   }
+
+   private MatchLocation createMatchLocation(int start, int end) {
+      return new MatchLocation(start + 1, end);
+   }
+
+   private static final class TrackingMap {
+
+      private final Map<String, MutableInteger> map = new LinkedHashMap<String, MutableInteger>();
+      private int total = 0;
+
+      public void add(String value) {
+         MutableInteger stored = map.get(value);
+         if (stored == null) {
+            map.put(value, new MutableInteger(1));
+         } else {
+            stored.getValueAndInc();
+         }
+         total++;
+      }
+
+      public boolean found(String value) {
+         MutableInteger stored = map.get(value);
+         if (stored != null) {
+            stored.getValueAndInc(-1);
+            if (stored.getValue() > -1) {
+               total--;
+            }
+            return true;
+         }
+         return false;
+      }
+
+      public boolean areAllFound() {
+         return total == 0;
+      }
+   }
+
+}
