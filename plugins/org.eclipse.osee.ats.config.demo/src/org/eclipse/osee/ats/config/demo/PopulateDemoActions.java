@@ -70,6 +70,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineExtractorDelegate;
@@ -184,7 +185,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
             OseeLog.log(Activator.class, Level.INFO, "Add Favorites");
          }
          for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(DemoArtifactTypes.DemoCodeTeamWorkflow,
-            "%Diagram View%", AtsUtil.getAtsBranch())) {
+            "Diagram View", AtsUtil.getAtsBranch(), QueryOptions.CONTAINS_MATCH_OPTIONS)) {
             new FavoritesManager((AbstractWorkflowArtifact) art).toggleFavorite(false);
          }
 
@@ -193,7 +194,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
             OseeLog.log(Activator.class, Level.INFO, "Add Subscribed");
          }
          for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(DemoArtifactTypes.DemoCodeTeamWorkflow,
-            "%Even%", AtsUtil.getAtsBranch())) {
+            "Even", AtsUtil.getAtsBranch(), QueryOptions.CONTAINS_MATCH_OPTIONS)) {
             new SubscribeManagerUI((AbstractWorkflowArtifact) art).toggleSubscribe(false);
          }
 

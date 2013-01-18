@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 
 /**
@@ -121,7 +122,8 @@ public class DemoDbUtil {
             "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + branch.getName());
       }
       Collection<Artifact> arts =
-         ArtifactQuery.getArtifactListFromTypeAndName(artifactType, "%" + artifactNameStr + "%", branch);
+         ArtifactQuery.getArtifactListFromTypeAndName(artifactType, artifactNameStr, branch,
+            QueryOptions.CONTAINS_MATCH_OPTIONS);
 
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "Found " + arts.size() + " Artifacts");

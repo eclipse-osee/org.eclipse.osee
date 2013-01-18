@@ -69,6 +69,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -523,8 +524,8 @@ public class AtsTestUtil {
    public static void cleanupSimpleTest(Collection<String> titles) throws Exception {
       List<Artifact> artifacts = new ArrayList<Artifact>();
       for (String title : titles) {
-         artifacts.addAll(ArtifactQuery.getArtifactListFromName(title + "%", AtsUtilCore.getAtsBranch(),
-            EXCLUDE_DELETED));
+         artifacts.addAll(ArtifactQuery.getArtifactListFromName(title, AtsUtilCore.getAtsBranch(), EXCLUDE_DELETED,
+            QueryOptions.CONTAINS_MATCH_OPTIONS));
       }
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artifacts));
       TestUtil.sleep(4000);

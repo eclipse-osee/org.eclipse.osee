@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.support.test.util.DemoActionableItems;
 import org.eclipse.osee.support.test.util.DemoArtifactTypes;
@@ -61,8 +62,8 @@ public class DemoTestUtil {
 
    public static Result isDbPopulatedWithDemoData() throws Exception {
       Collection<Artifact> robotArtifacts =
-         ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "%Robot%",
-            DemoSawBuilds.SAW_Bld_1);
+         ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "Robot",
+            DemoSawBuilds.SAW_Bld_1, QueryOptions.CONTAINS_MATCH_OPTIONS);
       if (robotArtifacts.size() < 6) {
          return new Result(
             String.format(

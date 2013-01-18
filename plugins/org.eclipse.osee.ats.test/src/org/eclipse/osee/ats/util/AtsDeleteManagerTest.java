@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.DemoActionableItems;
@@ -178,7 +179,8 @@ public class AtsDeleteManagerTest {
 
    private void verifyExists(TestNames testName, int expectedNumActions, int expectedNumCodeWorkflows, int expectedNumReqWorkflows, int expectedNumTasks, int expectedNumReviews) throws OseeCoreException {
       List<Artifact> artifacts =
-         ArtifactQuery.getArtifactListFromName(testName + "%", AtsUtil.getAtsBranch(), EXCLUDE_DELETED);
+         ArtifactQuery.getArtifactListFromName(testName.toString(), AtsUtil.getAtsBranch(), EXCLUDE_DELETED,
+            QueryOptions.CONTAINS_MATCH_OPTIONS);
       CountingMap<IArtifactType> countMap = new CountingMap<IArtifactType>();
       for (Artifact artifact : artifacts) {
          countMap.put(artifact.getArtifactType());
@@ -210,7 +212,7 @@ public class AtsDeleteManagerTest {
          }
       }
 
-      teamArt.createTasks(Arrays.asList(testName.name() + "Task 1", testName.name() + "Task 2"), null, createdDate,
+      teamArt.createTasks(Arrays.asList(testName.name() + " Task 1", testName.name() + " Task 2"), null, createdDate,
          createdBy, transaction);
 
       DecisionReviewArtifact decRev =

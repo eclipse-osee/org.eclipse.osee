@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.DemoArtifactTypes;
@@ -100,9 +101,9 @@ public class DemoDbReviews {
    private static List<TeamWorkFlowArtifact> getSampleReviewTestWorkflows() throws Exception {
       if (reviewTestArts == null) {
          reviewTestArts = new ArrayList<TeamWorkFlowArtifact>();
-         for (String actionName : new String[] {"Button W doesn't work on%", "%Diagram Tree"}) {
+         for (String actionName : new String[] {"Button W doesn't work on", "Diagram Tree"}) {
             for (Artifact art : ArtifactQuery.getArtifactListFromName(actionName, AtsUtil.getAtsBranch(),
-               EXCLUDE_DELETED)) {
+               EXCLUDE_DELETED, QueryOptions.CONTAINS_MATCH_OPTIONS)) {
                if (art.isOfType(DemoArtifactTypes.DemoTestTeamWorkflow)) {
                   reviewTestArts.add((TeamWorkFlowArtifact) art);
                }
@@ -142,8 +143,8 @@ public class DemoDbReviews {
       roles.add(new UserRole(Role.Reviewer, AtsUsersClient.getUserFromToken(DemoUsers.Kay_Jones)));
       roles.add(new UserRole(Role.Reviewer, AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay), 2.0, true));
       Result result =
-         PeerToPeerReviewManager.transitionTo(reviewArt, PeerToPeerReviewState.Review, roles, null, AtsUsersClient.getUser(),
-            false, transaction);
+         PeerToPeerReviewManager.transitionTo(reviewArt, PeerToPeerReviewState.Review, roles, null,
+            AtsUsersClient.getUser(), false, transaction);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Review: " + result.getText());
       }
@@ -160,16 +161,18 @@ public class DemoDbReviews {
       roles.add(new UserRole(Role.Reviewer, AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay), 2.0, true));
 
       List<ReviewDefectItem> defects = new ArrayList<ReviewDefectItem>();
-      defects.add(new ReviewDefectItem(AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay), Severity.Issue, Disposition.Accept,
-         InjectionActivity.Code, "Problem with logic", "Fixed", "Line 234", new Date()));
-      defects.add(new ReviewDefectItem(AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay), Severity.Issue, Disposition.Accept,
-         InjectionActivity.Code, "Using getInteger instead", "Fixed", "MyWorld.java:Line 33", new Date()));
-      defects.add(new ReviewDefectItem(AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay), Severity.Major, Disposition.Reject,
-         InjectionActivity.Code, "Spelling incorrect", "Is correct", "MyWorld.java:Line 234", new Date()));
-      defects.add(new ReviewDefectItem(AtsUsersClient.getUserFromToken(DemoUsers.Joe_Smith), Severity.Minor, Disposition.Reject,
-         InjectionActivity.Code, "Remove unused code", "", "Here.java:Line 234", new Date()));
-      defects.add(new ReviewDefectItem(AtsUsersClient.getUserFromToken(DemoUsers.Joe_Smith), Severity.Major, Disposition.Accept,
-         InjectionActivity.Code, "Negate logic", "Fixed", "There.java:Line 234", new Date()));
+      defects.add(new ReviewDefectItem(AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay), Severity.Issue,
+         Disposition.Accept, InjectionActivity.Code, "Problem with logic", "Fixed", "Line 234", new Date()));
+      defects.add(new ReviewDefectItem(AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay), Severity.Issue,
+         Disposition.Accept, InjectionActivity.Code, "Using getInteger instead", "Fixed", "MyWorld.java:Line 33",
+         new Date()));
+      defects.add(new ReviewDefectItem(AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay), Severity.Major,
+         Disposition.Reject, InjectionActivity.Code, "Spelling incorrect", "Is correct", "MyWorld.java:Line 234",
+         new Date()));
+      defects.add(new ReviewDefectItem(AtsUsersClient.getUserFromToken(DemoUsers.Joe_Smith), Severity.Minor,
+         Disposition.Reject, InjectionActivity.Code, "Remove unused code", "", "Here.java:Line 234", new Date()));
+      defects.add(new ReviewDefectItem(AtsUsersClient.getUserFromToken(DemoUsers.Joe_Smith), Severity.Major,
+         Disposition.Accept, InjectionActivity.Code, "Negate logic", "Fixed", "There.java:Line 234", new Date()));
       for (ReviewDefectItem defect : defects) {
          defect.setClosed(true);
       }

@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.INotificationManager;
@@ -73,7 +74,7 @@ public class AtsNotifyUsersTest {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsNotifyUsersTest.class.getSimpleName());
       for (Artifact art : ArtifactQuery.getArtifactListFromAttribute(CoreAttributeTypes.Name,
-         AtsNotifyUsersTest.class.getSimpleName() + "%", AtsUtilCore.getAtsBranch())) {
+         AtsNotifyUsersTest.class.getSimpleName(), AtsUtilCore.getAtsBranch(), QueryOptions.CONTAINS_MATCH_OPTIONS)) {
          art.deleteAndPersist(transaction);
       }
       transaction.execute();
@@ -198,8 +199,8 @@ public class AtsNotifyUsersTest {
       notifyManager.clear();
       teamArt.getStateMgr().initializeStateMachine(TeamState.Analyze, null, AtsUsersClient.getUser());
       TransitionHelper helper =
-         new TransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), TeamState.Cancelled.getName(),
-            null, "this is the reason", TransitionOption.OverrideTransitionValidityCheck);
+         new TransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), TeamState.Cancelled.getName(), null,
+            "this is the reason", TransitionOption.OverrideTransitionValidityCheck);
       transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       TransitionManager transitionMgr = new TransitionManager(helper, transaction);
       TransitionResults results = transitionMgr.handleAll();
