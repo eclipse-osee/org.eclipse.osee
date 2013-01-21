@@ -13,8 +13,6 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.impl.internal.AtsWorkDefinitionServiceImpl;
-import org.eclipse.osee.ats.impl.internal.model.StateDefinition;
-import org.eclipse.osee.ats.impl.internal.model.WorkDefinition;
 import org.junit.Test;
 
 /**
@@ -180,7 +178,6 @@ public class WorkDefinitionTest {
    @Test
    public void testGetIds() {
       WorkDefinition def = new WorkDefinition("this");
-      Assert.assertEquals("", def.getId());
       Assert.assertEquals("this", def.getId());
       def.setId("3.4");
       Assert.assertEquals("3.4", def.getId());
@@ -213,7 +210,7 @@ public class WorkDefinitionTest {
       Assert.assertFalse(obj.equals("str"));
 
       WorkDefinition obj3 = new WorkDefinition("hello");
-      obj3.setName(null);
+      obj3.setId(null);
       Assert.assertFalse(obj.equals(obj3));
       Assert.assertFalse(obj3.equals(obj));
 
@@ -228,7 +225,7 @@ public class WorkDefinitionTest {
       Assert.assertEquals(99162353, obj.hashCode());
 
       obj = new WorkDefinition("hello");
-      obj.setName(null);
+      obj.setId(null);
       Assert.assertEquals(31, obj.hashCode());
    }
 
