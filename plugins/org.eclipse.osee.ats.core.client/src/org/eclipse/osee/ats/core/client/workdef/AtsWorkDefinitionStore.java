@@ -84,6 +84,7 @@ public class AtsWorkDefinitionStore implements IAtsWorkDefinitionStore {
          return artifact;
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
+         ex.printStackTrace();
       }
       return null;
    }
