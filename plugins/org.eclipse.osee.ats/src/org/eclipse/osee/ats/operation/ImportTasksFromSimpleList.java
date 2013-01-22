@@ -25,9 +25,9 @@ import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -63,7 +63,13 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
          public void run() {
             try {
                List<Artifact> artifacts = variableMap.getArtifacts(TEAM_WORKFLOW);
-               final List<IAtsUser> assignees = Collections.castAll(variableMap.getArtifacts(ASSIGNEES));
+               final List<IAtsUser> assignees = new ArrayList<IAtsUser>();
+               for (Artifact art : variableMap.getArtifacts(ASSIGNEES)) {
+                  if (art instanceof User) {
+                     IAtsUser atsUser = AtsUsersClient.getUserFromOseeUser((User) art);
+                     assignees.add(atsUser);
+                  }
+               }
                final List<String> titles = new ArrayList<String>();
                for (String title : variableMap.getString(TASK_IMPORT_TITLES).split("\n")) {
                   title = title.replaceAll("\r", "");
