@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -435,6 +436,7 @@ public class WorkspaceBundleLoadCoordinator {
 			IWorkbench workbench = PlatformUI.getWorkbench();     
 			if (managedArea.getInstalledBundles().size() > 0 && workbench != null && workbench.getActiveWorkbenchWindow() != null){
 				IViewRegistry registry = workbench.getViewRegistry();
+				forceViewRegistryReload(workbench, registry);
 				Set<String> managedViews = determineManagedViews();
 				for(String viewId:managedViews){
 					try{
@@ -447,15 +449,44 @@ public class WorkspaceBundleLoadCoordinator {
 					}
 				}
 				isLoaded = true;
+			} else { //no workspace bundles to load, so don't wait
+				isLoaded = true;
 			}
-			
+
+		}
+		
+		private void forceViewRegistryReload(IWorkbench workbench, IViewRegistry registry){
+			try{
+				Method[] methods = registry.getClass().getDeclaredMethods();
+				Method method = null;
+				for(Method m:methods){
+					if(m.getName().equals("postConstruct")){
+						method = m;
+						break;
+					}
+				}
+				if(method != null){
+					boolean access = method.isAccessible();
+					method.setAccessible(true);
+					try{
+						method.invoke(registry);
+					} finally {
+						method.setAccessible(access);
+					}
+				}
+			} catch (Throwable th){
+				OseeLog.log(this.getClass(), Level.SEVERE, th);
+			}
 		}
 		
 		public boolean isLoaded(){
 			return isLoaded;
 		}
+		
+		
 	}
 
+	
 
 	
 	private void restoreStateFromMemento(SubMonitor restore) {
