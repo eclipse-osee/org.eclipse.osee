@@ -13,7 +13,9 @@ package org.eclipse.osee.framework.core.server.internal.session;
 import java.util.Date;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.core.CharJoinQuery;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.database.core.JoinUtility;
 
 /**
  * @author Roberto E. Escobar
@@ -21,6 +23,9 @@ import org.eclipse.osee.framework.database.core.IOseeStatement;
 public final class DatabaseSessionQuery implements ISessionQuery {
    private static final String SELECT_SESSIONS_BY_SERVER_ID =
       "select * from osee_session WHERE managed_by_server_id = ?";
+
+   private static final String SELECT_SESSIONS_BY_SESSION_ID =
+      "select * from osee_session, osee_join_char_id jid WHERE session_id = jid.id and jid.query_id = ?";
 
    private static final String SELECT_SESSIONS_BY_NOT_SERVER_ID =
       "select * from osee_session WHERE NOT managed_by_server_id = ?";
@@ -43,7 +48,7 @@ public final class DatabaseSessionQuery implements ISessionQuery {
    }
 
    @Override
-   public void selectServerManagedSessions(ISessionCollector collector) throws OseeCoreException {
+   public void selectAllServerManagedSessions(ISessionCollector collector) throws OseeCoreException {
       querySessions(collector, SELECT_SESSIONS_BY_SERVER_ID, getServerId());
    }
 
@@ -52,10 +57,24 @@ public final class DatabaseSessionQuery implements ISessionQuery {
       querySessions(collector, SELECT_SESSIONS_BY_NOT_SERVER_ID, getServerId());
    }
 
+   @Override
+   public void selectSessionsById(ISessionCollector collector, Iterable<? extends String> ids) throws OseeCoreException {
+      CharJoinQuery joinQuery = JoinUtility.createCharJoinQuery(getDatabaseService());
+      try {
+         for (String id : ids) {
+            joinQuery.add(id);
+         }
+         joinQuery.store();
+         querySessions(collector, SELECT_SESSIONS_BY_SESSION_ID, joinQuery.getQueryId());
+      } finally {
+         joinQuery.delete();
+      }
+   }
+
    private void querySessions(ISessionCollector collector, String sql, Object... params) throws OseeCoreException {
       IOseeStatement chStmt = getDatabaseService().getStatement();
       try {
-         chStmt.runPreparedQuery(sql, serverId);
+         chStmt.runPreparedQuery(sql, params);
          while (chStmt.next()) {
             String sessionGuid = chStmt.getString("session_id");
             String userId = chStmt.getString("user_id");
@@ -66,12 +85,12 @@ public final class DatabaseSessionQuery implements ISessionQuery {
             int clientPort = chStmt.getInt("client_port");
             Date lastInteractionDate = chStmt.getTimestamp("last_interaction_date");
             String lastInteractionDetails = chStmt.getString("last_interaction");
-            int sessionId = Session.guidAsInteger(sessionGuid);
-            collector.collect(sessionId, sessionGuid, userId, creationDate, serverId, clientVersion, clientMachineName,
+            collector.collect(sessionGuid, userId, creationDate, serverId, clientVersion, clientMachineName,
                clientAddress, clientPort, lastInteractionDate, lastInteractionDetails);
          }
       } finally {
          chStmt.close();
       }
    }
+
 }

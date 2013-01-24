@@ -13,9 +13,6 @@ package org.eclipse.osee.framework.core.server.test.internal.session;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import org.eclipse.osee.framework.core.enums.StorageState;
-import org.eclipse.osee.framework.core.model.mocks.ModelAsserts;
-import org.eclipse.osee.framework.core.model.type.AbstractOseeTypeTest;
 import org.eclipse.osee.framework.core.server.internal.session.Session;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
@@ -30,9 +27,10 @@ import org.junit.runners.Parameterized.Parameters;
  * @author Roberto E. Escobar
  */
 @RunWith(Parameterized.class)
-public class SessionTest extends AbstractOseeTypeTest<String, Session> {
+public class SessionTest {
 
-   private final int expectedId;
+   private final Session session;
+   private final String expectedGuid;
    private final String expectedClientAddress;
    private final String expectedClientMachine;
    private final String expectedClientVersion;
@@ -41,11 +39,11 @@ public class SessionTest extends AbstractOseeTypeTest<String, Session> {
    private final String expectedUserId;
    private final Date expectedLastInteractionDate;
    private final String expectedLastInteraction;
-   private final String exepectedManagedByServerId;
+   private final String expectedManagedByServerId;
 
-   public SessionTest(Session type, String guid, String name, int expectedId, String expectedClientAddress, String expectedClientMachine, String expectedClientVersion, int expectedClientPort, Date expectedCreationDate, String expectedUserId, Date expectedLastInteractionDate, String expectedLastInteraction, String exepectedManagedByServerId) {
-      super(type, guid, name);
-      this.expectedId = expectedId;
+   public SessionTest(Session session, String guid, String expectedClientAddress, String expectedClientMachine, String expectedClientVersion, int expectedClientPort, Date expectedCreationDate, String expectedUserId, Date expectedLastInteractionDate, String expectedLastInteraction, String exepectedManagedByServerId) {
+      this.session = session;
+      this.expectedGuid = guid;
       this.expectedClientAddress = expectedClientAddress;
       this.expectedClientMachine = expectedClientMachine;
       this.expectedClientVersion = expectedClientVersion;
@@ -54,70 +52,87 @@ public class SessionTest extends AbstractOseeTypeTest<String, Session> {
       this.expectedUserId = expectedUserId;
       this.expectedLastInteractionDate = expectedLastInteractionDate;
       this.expectedLastInteraction = expectedLastInteraction;
-      this.exepectedManagedByServerId = exepectedManagedByServerId;
+      this.expectedManagedByServerId = exepectedManagedByServerId;
    }
 
    @Test
-   public void testGuidAsInteger() {
-      int actualId = Session.guidAsInteger(getType().getGuid());
-      Assert.assertEquals(expectedId, actualId);
+   public void testGetGuid() {
+      Assert.assertEquals(expectedGuid, session.getGuid());
    }
 
    @Test
    public void testGetClientVersion() {
-      Assert.assertEquals(expectedClientVersion, getType().getClientVersion());
+      Assert.assertEquals(expectedClientVersion, session.getClientVersion());
    }
 
    @Test
    public void testGetCreationDate() {
-      Assert.assertEquals(expectedCreationDate, getType().getCreationDate());
+      Assert.assertEquals(expectedCreationDate, session.getCreationDate());
    }
 
    @Test
    public void testGetUserId() {
-      Assert.assertEquals(expectedUserId, getType().getUserId());
+      Assert.assertEquals(expectedUserId, session.getUserId());
    }
 
    @Test
    public void testSetGetClientAddress() throws Exception {
       String newValue = GUID.create();
-      ModelAsserts.assertTypeSetGet(getType(), Session.SESSION_CLIENT_ADDRESS, "getClientAddress", "setClientAddress",
-         expectedClientAddress, newValue);
+
+      Assert.assertEquals(expectedClientAddress, session.getClientAddress());
+
+      session.setClientAddress(newValue);
+      Assert.assertEquals(newValue, session.getClientAddress());
    }
 
    @Test
    public void testSetGetClientMachineName() throws Exception {
       String newValue = GUID.create();
-      ModelAsserts.assertTypeSetGet(getType(), Session.SESSION_CLIENT_MACHINE_NAME, "getClientMachineName",
-         "setClientMachineName", expectedClientMachine, newValue);
+
+      Assert.assertEquals(expectedClientMachine, session.getClientMachineName());
+
+      session.setClientMachineName(newValue);
+      Assert.assertEquals(newValue, session.getClientMachineName());
    }
 
    @Test
    public void testSetGetClientPort() throws Exception {
       int newValue = Integer.MAX_VALUE;
-      ModelAsserts.assertTypeSetGet(getType(), Session.SESSION_CLIENT_PORT, "getClientPort", "setClientPort",
-         expectedClientPort, newValue);
+
+      Assert.assertEquals(expectedClientPort, session.getClientPort());
+
+      session.setClientPort(newValue);
+      Assert.assertEquals(newValue, session.getClientPort());
    }
 
    @Test
    public void testSetGetLastInteractionDate() throws Exception {
       Date newValue = new Date();
-      ModelAsserts.assertTypeSetGet(getType(), Session.SESSION_LAST_INTERACTION_DATE, "getLastInteractionDate",
-         "setLastInteractionDate", expectedLastInteractionDate, newValue);
+
+      Assert.assertEquals(expectedLastInteractionDate, session.getLastInteractionDate());
+
+      session.setLastInteractionDate(newValue);
+      Assert.assertEquals(newValue, session.getLastInteractionDate());
    }
 
    @Test
    public void testSetGetLastInteractionDetails() throws Exception {
       String newValue = GUID.create();
-      ModelAsserts.assertTypeSetGet(getType(), Session.SESSION_LAST_INTERACTION_DETAILS, "getLastInteractionDetails",
-         "setLastInteractionDetails", expectedLastInteraction, newValue);
+
+      Assert.assertEquals(expectedLastInteraction, session.getLastInteractionDetails());
+
+      session.setLastInteractionDetails(newValue);
+      Assert.assertEquals(newValue, session.getLastInteractionDetails());
    }
 
    @Test
    public void testSetManagedByServerId() throws Exception {
       String newValue = GUID.create();
-      ModelAsserts.assertTypeSetGet(getType(), Session.SESSION_MANAGED_BY_SERVER_ID, "getManagedByServerId",
-         "setManagedByServerId", exepectedManagedByServerId, newValue);
+
+      Assert.assertEquals(expectedManagedByServerId, session.getManagedByServerId());
+
+      session.setManagedByServerId(newValue);
+      Assert.assertEquals(newValue, session.getManagedByServerId());
    }
 
    @Parameters
@@ -125,11 +140,6 @@ public class SessionTest extends AbstractOseeTypeTest<String, Session> {
       Collection<Object[]> data = new ArrayList<Object[]>();
       for (int index = 1; index <= 3; index++) {
          String guid = "ABCD" + String.valueOf(index);
-         int actualIndex = index - 1;
-         int expectedId = 1946 + actualIndex * 20 + 4 * actualIndex;
-
-         String name = "index-" + index;
-
          String clientAddress = "addresss-" + index;
          String clientMachine = "machine-" + index;
          String clientVersion = "version-" + index;
@@ -141,16 +151,12 @@ public class SessionTest extends AbstractOseeTypeTest<String, Session> {
          String managedByServerId = "serverId-" + index;
 
          Session session =
-            new Session(guid, name, userId, creationDate, managedByServerId, clientVersion, clientMachine,
-               clientAddress, clientPort, lastInteractionDate, lastInteraction);
-         session.setStorageState(StorageState.LOADED);
-         session.clearDirty();
+            new Session(guid, userId, creationDate, managedByServerId, clientVersion, clientMachine, clientAddress,
+               clientPort, lastInteractionDate, lastInteraction);
 
          data.add(new Object[] {
             session,
             guid,
-            name,
-            expectedId,
             clientAddress,
             clientMachine,
             clientVersion,

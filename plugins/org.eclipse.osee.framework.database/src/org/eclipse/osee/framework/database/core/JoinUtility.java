@@ -66,6 +66,10 @@ public class JoinUtility {
       return new CharJoinQuery(createAccessor(service, sessionId), getNewQueryId());
    }
 
+   public static CharJoinQuery createCharJoinQuery(IOseeDatabaseService service) {
+      return new CharJoinQuery(createAccessor(service), getNewQueryId());
+   }
+
    ////////////////// Static Legacy Calls /////////////////////////
    private static IOseeDatabaseService getDatabase() throws OseeDataStoreException {
       return ServiceUtil.getDatabaseService();
@@ -95,7 +99,4 @@ public class JoinUtility {
       return new ExportImportJoinQuery(createAccessor(getDatabase()), getNewQueryId());
    }
 
-   public static CharJoinQuery createCharJoinQuery(String sessionId) throws OseeDataStoreException {
-      return new CharJoinQuery(createAccessor(getDatabase(), sessionId), getNewQueryId());
-   }
 }

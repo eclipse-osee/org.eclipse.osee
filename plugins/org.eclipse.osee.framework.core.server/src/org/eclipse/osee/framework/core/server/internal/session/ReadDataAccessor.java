@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2013 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,17 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.internal.session;
 
+import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
+ * @author John Misinco
  * @author Roberto E. Escobar
  */
-public interface ISessionQuery {
+public interface ReadDataAccessor<K, V> {
 
-   void selectAllServerManagedSessions(ISessionCollector collector) throws OseeCoreException;
+   Map<K, V> load(Iterable<? extends K> keys) throws OseeCoreException;
 
-   void selectSessionsById(ISessionCollector collector, Iterable<? extends String> ids) throws OseeCoreException;
+   V load(K key) throws OseeCoreException;
 
-   void selectNonServerManagedSessions(ISessionCollector collector) throws OseeCoreException;
+   Iterable<? extends K> getAllKeys() throws OseeCoreException;
 
 }

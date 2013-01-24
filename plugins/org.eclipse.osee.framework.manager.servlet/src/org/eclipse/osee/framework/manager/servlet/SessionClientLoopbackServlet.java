@@ -23,7 +23,6 @@ import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
-import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.server.ISession;
 import org.eclipse.osee.framework.core.server.ISessionManager;
@@ -142,14 +141,11 @@ public class SessionClientLoopbackServlet extends UnsecuredOseeHttpServlet {
 
    private boolean isSessionValid(ISession session) {
       boolean result = false;
-      StorageState storageState = session.getStorageState();
-      if (storageState != StorageState.DELETED && storageState != StorageState.PURGED) {
-         try {
-            String urlString = getRemoteHostUrl(session);
-            result = canConnect(urlString);
-         } catch (Exception ex) {
-            // Do nothing
-         }
+      try {
+         String urlString = getRemoteHostUrl(session);
+         result = canConnect(urlString);
+      } catch (Exception ex) {
+         // Do nothing
       }
       return result;
    }

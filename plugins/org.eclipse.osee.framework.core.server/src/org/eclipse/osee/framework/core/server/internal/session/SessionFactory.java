@@ -15,9 +15,7 @@ import java.util.Date;
 import java.util.Properties;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
-import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeTypeFactory;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.core.server.internal.BuildTypeIdentifier;
@@ -46,30 +44,18 @@ public final class SessionFactory implements IOseeTypeFactory {
       this.dbService = dbService;
    }
 
-   public Session createOrUpdate(IOseeCache<String, Session> cache, int uniqueId, StorageState storageState, String guid, String userId, Date creationDate, String managedByServerId, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) throws OseeCoreException {
-      Conditions.checkNotNull(cache, "SessionCache");
-      Session session = cache.getById(uniqueId);
-      if (session == null) {
-         session =
-            create(guid, userId, creationDate, managedByServerId, clientVersion, clientMachineName, clientAddress,
-               clientPort, lastInteractionDate, lastInteractionDetails);
-         session.setId(uniqueId);
-         session.setStorageState(storageState);
-      } else {
-         cache.decache(session);
-         session.setClientMachineName(clientMachineName);
-         session.setClientAddress(clientAddress);
-         session.setClientPort(clientPort);
-         session.setLastInteractionDate(lastInteractionDate);
-         session.setLastInteractionDetails(lastInteractionDetails);
-      }
-      cache.cache(session);
-      return session;
+   public Session createLoadedSession(String guid, String userId, Date creationDate, String managedByServerId, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) {
+      Session toReturn =
+         createNewSession(guid, userId, creationDate, managedByServerId, clientVersion, clientMachineName,
+            clientAddress, clientPort, lastInteractionDate, lastInteractionDetails);
+      return toReturn;
    }
 
-   public Session create(String guid, String userId, Date creationDate, String managedByServerId, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) {
-      return new Session(guid, userId, userId, creationDate, managedByServerId, clientVersion, clientMachineName,
-         clientAddress, clientPort, lastInteractionDate, lastInteractionDetails);
+   public Session createNewSession(String guid, String userId, Date creationDate, String managedByServerId, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) {
+      Session toReturn =
+         new Session(guid, userId, creationDate, managedByServerId, clientVersion, clientMachineName, clientAddress,
+            clientPort, lastInteractionDate, lastInteractionDetails);
+      return toReturn;
    }
 
    public OseeSessionGrant createSessionGrant(Session session, IUserToken userToken, String authenticationType) throws OseeCoreException {

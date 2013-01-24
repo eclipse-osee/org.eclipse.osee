@@ -14,7 +14,6 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.IOseeDataAccessor;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISession;
@@ -36,7 +35,6 @@ public final class SessionManagerService implements ISessionManager {
    private IApplicationServerManager serverManager;
    private IAuthenticationManager authenticationManager;
 
-   private ISessionDataStoreSync dataStoreSync;
    private ISessionManager proxiedSessionManager;
 
    public void setLogger(Log logger) {
@@ -78,24 +76,21 @@ public final class SessionManagerService implements ISessionManager {
       SessionFactory sessionFactory = new SessionFactory(logger, registry, dbService, identifier);
 
       ISessionQuery sessionQuery = new DatabaseSessionQuery(serverId, getDbService());
-      IOseeDataAccessor<String, Session> accessor =
-         new DatabaseSessionAccessor(serverId, sessionFactory, sessionQuery, getDbService());
-      SessionCache sessionCache = new SessionCache(accessor);
 
-      sessionCache.setIgnoreEnsurePopulateException(true);
+      DatabaseSessionAccessor accessor =
+         new DatabaseSessionAccessor(serverId, sessionFactory, sessionQuery, getDbService());
+
+      CacheFactory cacheFactory = new CacheFactory();
+      Cache<String, Session> sessionCache = cacheFactory.create(accessor);
 
       proxiedSessionManager =
-         new SessionManagerImpl(serverId, sessionFactory, sessionQuery, sessionCache, getAuthenticationManager());
+         new SessionManagerImpl(serverId, sessionFactory, sessionQuery, sessionCache, getAuthenticationManager(),
+            accessor);
 
-      dataStoreSync = new SessionDataStoreSync(sessionCache);
-      dataStoreSync.start();
    }
 
    public void stop() {
-      if (dataStoreSync != null) {
-         dataStoreSync.stop();
-         dataStoreSync = null;
-      }
+      // do nothing
    }
 
    @Override

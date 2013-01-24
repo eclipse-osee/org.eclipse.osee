@@ -11,19 +11,23 @@
 package org.eclipse.osee.framework.core.server.internal.session;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
-import org.eclipse.osee.framework.core.enums.StorageState;
+import java.util.Map;
+import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.IOseeCache;
-import org.eclipse.osee.framework.core.model.cache.IOseeDataAccessor;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.core.DatabaseTransactions;
+import org.eclipse.osee.framework.database.core.IDbTransactionWork;
+import org.eclipse.osee.framework.database.core.OseeConnection;
 
 /**
  * @author Roberto E. Escobar
  */
-public final class DatabaseSessionAccessor implements IOseeDataAccessor<String, Session> {
+public final class DatabaseSessionAccessor implements ReadDataAccessor<String, Session>, WriteDataAccessor<Session> {
 
    private static final String INSERT_SESSION =
       "INSERT INTO osee_session (managed_by_server_id, session_id, user_id, client_machine_name, client_address, client_port, client_version, created_on, last_interaction_date, last_interaction) VALUES (?,?,?,?,?,?,?,?,?,?)";
@@ -62,83 +66,172 @@ public final class DatabaseSessionAccessor implements IOseeDataAccessor<String, 
       return sessionQuery;
    }
 
-   private Object[] toInsert(Session session) {
-      return new Object[] {
-         session.getManagedByServerId(),
-         session.getGuid(),
-         session.getUserId(),
-         session.getClientMachineName(),
-         session.getClientAddress(),
-         session.getClientPort(),
-         session.getClientVersion(),
-         session.getCreationDate(),
-         session.getLastInteractionDate(),
-         session.getLastInteractionDetails()};
-   }
-
-   private Object[] toUpdate(Session session) {
-      return new Object[] {
-         session.getManagedByServerId(),
-         session.getLastInteractionDate(),
-         session.getLastInteractionDetails(),
-         session.getGuid()};
-   }
-
-   private Object[] toDelete(Session session) {
-      return new Object[] {session.getGuid()};
+   private void executeTx(SessionTxType op, Iterable<Session> sessions) throws OseeCoreException {
+      IDbTransactionWork tx = new SessionTx(getDatabaseService(), op, sessions);
+      DatabaseTransactions.execute(getDatabaseService(), getDatabaseService().getConnection(), tx);
    }
 
    @Override
-   public void load(IOseeCache<String, Session> cache) throws OseeCoreException {
-      CacheSessionCollector collector = new CacheSessionCollector(cache);
-      getSessionQuery().selectServerManagedSessions(collector);
+   public void create(Iterable<Session> sessions) throws OseeCoreException {
+      executeTx(SessionTxType.CREATE, sessions);
    }
 
    @Override
-   public void store(Collection<Session> sessions) throws OseeCoreException {
-      List<Object[]> insertData = new ArrayList<Object[]>();
-      List<Object[]> updateData = new ArrayList<Object[]>();
-      List<Object[]> deleteData = new ArrayList<Object[]>();
+   public void update(Iterable<Session> sessions) throws OseeCoreException {
+      executeTx(SessionTxType.UPDATE, sessions);
+   }
 
-      for (Session session : sessions) {
-         switch (session.getStorageState()) {
-            case CREATED:
-               session.setId(Session.guidAsInteger(session.getGuid()));
-               insertData.add(toInsert(session));
+   @Override
+   public void delete(Iterable<Session> sessions) throws OseeCoreException {
+      executeTx(SessionTxType.DELETE, sessions);
+   }
+
+   @Override
+   public Map<String, Session> load(Iterable<? extends String> sessionIds) throws OseeCoreException {
+      final Map<String, Session> sessions = new LinkedHashMap<String, Session>();
+      ISessionCollector collector = new ISessionCollector() {
+
+         @Override
+         public void collect(String guid, String userId, Date creationDate, String managedByServerId, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) {
+            Session session =
+               getFactory().createLoadedSession(guid, userId, creationDate, getServerId(), clientVersion,
+                  clientMachineName, clientAddress, clientPort, lastInteractionDate, lastInteractionDetails);
+            sessions.put(guid, session);
+         }
+      };
+
+      getSessionQuery().selectSessionsById(collector, sessionIds);
+      return sessions;
+   }
+
+   @Override
+   public Session load(String sessionId) throws OseeCoreException {
+      Map<String, Session> loaded = load(Collections.singleton(sessionId));
+      Session toReturn = null;
+      if (!loaded.values().isEmpty()) {
+         toReturn = loaded.values().iterator().next();
+      }
+      return toReturn;
+   }
+
+   @Override
+   public Iterable<? extends String> getAllKeys() throws OseeCoreException {
+      final Set<String> ids = new LinkedHashSet<String>();
+      ISessionCollector idCollector = new ISessionCollector() {
+
+         @Override
+         public void collect(String guid, String userId, Date creationDate, String managedByServerId, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) {
+            ids.add(guid);
+         }
+      };
+      getSessionQuery().selectAllServerManagedSessions(idCollector);
+      return ids;
+   }
+
+   private static enum SessionTxType {
+      CREATE,
+      UPDATE,
+      DELETE;
+   }
+
+   private static final class SessionTx implements IDbTransactionWork {
+
+      private final IOseeDatabaseService dbService;
+      private final SessionTxType txType;
+      private final Iterable<Session> sessions;
+
+      public SessionTx(IOseeDatabaseService dbService, SessionTxType txType, Iterable<Session> sessions) {
+         this.dbService = dbService;
+         this.txType = txType;
+         this.sessions = sessions;
+      }
+
+      @Override
+      public String getName() {
+         return String.format("[%s] Session", txType);
+      }
+
+      @Override
+      public void handleTxWork(OseeConnection connection) throws OseeCoreException {
+         switch (txType) {
+            case CREATE:
+               create(connection);
                break;
-            case MODIFIED:
-               updateData.add(toUpdate(session));
+            case UPDATE:
+               update(connection);
                break;
-            case PURGED:
-               deleteData.add(toDelete(session));
+            case DELETE:
+               delete(connection);
                break;
             default:
                break;
          }
       }
-      getDatabaseService().runBatchUpdate(INSERT_SESSION, insertData);
-      getDatabaseService().runBatchUpdate(UPDATE_SESSION, updateData);
-      getDatabaseService().runBatchUpdate(DELETE_SESSION, deleteData);
 
-      for (Session session : sessions) {
-         session.clearDirty();
+      private void create(OseeConnection connection) throws OseeCoreException {
+         List<Object[]> insertData = new ArrayList<Object[]>();
+         for (Session session : sessions) {
+            insertData.add(toInsert(session));
+         }
+         if (!insertData.isEmpty()) {
+            dbService.runBatchUpdate(connection, INSERT_SESSION, insertData);
+         }
       }
-   }
 
-   private final class CacheSessionCollector implements ISessionCollector {
-      private final IOseeCache<String, Session> cache;
+      private void update(OseeConnection connection) throws OseeCoreException {
+         List<Object[]> updateData = new ArrayList<Object[]>();
+         for (Session session : sessions) {
+            updateData.add(toUpdate(session));
+         }
+         if (!updateData.isEmpty()) {
+            dbService.runBatchUpdate(connection, UPDATE_SESSION, updateData);
+         }
+      }
 
-      public CacheSessionCollector(IOseeCache<String, Session> cache) {
-         this.cache = cache;
+      private void delete(OseeConnection connection) throws OseeCoreException {
+         List<Object[]> deleteData = new ArrayList<Object[]>();
+         for (Session session : sessions) {
+            deleteData.add(toDelete(session));
+         }
+         if (!deleteData.isEmpty()) {
+            dbService.runBatchUpdate(connection, DELETE_SESSION, deleteData);
+         }
+      }
+
+      private Object[] toInsert(Session session) {
+         return new Object[] {
+            session.getManagedByServerId(),
+            session.getGuid(),
+            session.getUserId(),
+            session.getClientMachineName(),
+            session.getClientAddress(),
+            session.getClientPort(),
+            session.getClientVersion(),
+            session.getCreationDate(),
+            session.getLastInteractionDate(),
+            session.getLastInteractionDetails()};
+      }
+
+      private Object[] toUpdate(Session session) {
+         return new Object[] {
+            session.getManagedByServerId(),
+            session.getLastInteractionDate(),
+            session.getLastInteractionDetails(),
+            session.getGuid()};
+      }
+
+      private Object[] toDelete(Session session) {
+         return new Object[] {session.getGuid()};
       }
 
       @Override
-      public void collect(int sessionId, String guid, String userId, Date creationDate, String managedByServerId, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) throws OseeCoreException {
-         Session cachedSession =
-            getFactory().createOrUpdate(cache, sessionId, StorageState.LOADED, guid, userId, creationDate,
-               getServerId(), clientVersion, clientMachineName, clientAddress, clientPort, lastInteractionDate,
-               lastInteractionDetails);
-         cachedSession.clearDirty();
+      public void handleTxException(Exception ex) {
+         //
       }
-   }
+
+      @Override
+      public void handleTxFinally() {
+         //
+      }
+   };
 }

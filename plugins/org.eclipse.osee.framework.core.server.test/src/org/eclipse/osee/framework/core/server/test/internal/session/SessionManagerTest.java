@@ -10,11 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.test.internal.session;
 
-import org.eclipse.osee.framework.core.model.mocks.MockOseeDataAccessor;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.internal.session.ISessionQuery;
-import org.eclipse.osee.framework.core.server.internal.session.Session;
-import org.eclipse.osee.framework.core.server.internal.session.SessionCache;
 import org.eclipse.osee.framework.core.server.internal.session.SessionFactory;
 import org.eclipse.osee.framework.core.server.internal.session.SessionManagerImpl;
 import org.junit.Ignore;
@@ -27,15 +24,17 @@ import org.junit.Test;
  */
 public class SessionManagerTest {
 
+   @SuppressWarnings({"rawtypes", "unchecked"})
    @Ignore
    @Test
    public void test() {
       SessionFactory factory = null;
       ISessionQuery query = null;
       IAuthenticationManager authenticator = null;
-      MockOseeDataAccessor<String, Session> accessor = new MockOseeDataAccessor<String, Session>();
-      SessionCache sessionCache = new SessionCache(accessor);
-      new SessionManagerImpl("ABCD", factory, query, sessionCache, authenticator);
+      //      LoadDataAccessor lda = mock(LoadDataAccessor.class);
+      //      StoreDataAccessor sda = mock(StoreDataAccessor.class);
+      //      SessionCache sessionCache = new SessionCache(lda);
+      //      new SessionManagerImpl("ABCD", factory, query, sessionCache, authenticator, sda);
 
       //		OseeSessionGrant grant = sessionManager.createSession(OseeCredential credential); throws OseeCoreException;
 

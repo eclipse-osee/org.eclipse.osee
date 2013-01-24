@@ -12,8 +12,6 @@ package org.eclipse.osee.framework.core.server.internal.session;
 
 import java.util.Collection;
 import java.util.Date;
-import org.eclipse.osee.framework.core.enums.StorageState;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.server.ISession;
 
 /**
@@ -31,13 +29,10 @@ public final class DefaultSessionCollector implements ISessionCollector {
    }
 
    @Override
-   public void collect(int sessionId, String guid, String userId, Date creationDate, String managedByServerId, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) throws OseeCoreException {
+   public void collect(String guid, String userId, Date creationDate, String managedByServerId, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) {
       Session session =
-         factory.create(guid, userId, creationDate, serverId, clientVersion, clientMachineName, clientAddress,
-            clientPort, lastInteractionDate, lastInteractionDetails);
-      session.setId(sessionId);
-      session.setStorageState(StorageState.LOADED);
-      session.clearDirty();
+         factory.createLoadedSession(guid, userId, creationDate, serverId, clientVersion, clientMachineName,
+            clientAddress, clientPort, lastInteractionDate, lastInteractionDetails);
       sessions.add(session);
    }
 }

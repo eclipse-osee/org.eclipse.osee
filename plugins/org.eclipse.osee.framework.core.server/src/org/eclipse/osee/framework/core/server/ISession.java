@@ -11,12 +11,12 @@
 package org.eclipse.osee.framework.core.server;
 
 import java.util.Date;
-import org.eclipse.osee.framework.core.enums.StorageState;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface ISession {
+
    String getUserId();
 
    Date getLastInteractionDate();
@@ -41,5 +41,4 @@ public interface ISession {
 
    String getGuid();
 
-   StorageState getStorageState();
 }

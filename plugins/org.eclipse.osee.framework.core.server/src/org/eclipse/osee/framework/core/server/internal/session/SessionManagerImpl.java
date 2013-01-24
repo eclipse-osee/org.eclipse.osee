@@ -12,9 +12,11 @@ package org.eclipse.osee.framework.core.server.internal.session;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
@@ -37,51 +39,60 @@ public final class SessionManagerImpl implements ISessionManager {
    private final String serverId;
    private final SessionFactory sessionFactory;
    private final ISessionQuery sessionQuery;
-   private final SessionCache sessionCache;
+   private final Cache<String, Session> sessionCache;
    private final IAuthenticationManager authenticationManager;
+   private final WriteDataAccessor<Session> storeDataAccessor;
 
-   public SessionManagerImpl(String serverId, SessionFactory sessionFactory, ISessionQuery sessionQuery, SessionCache sessionCache, IAuthenticationManager authenticationManager) {
+   public SessionManagerImpl(String serverId, SessionFactory sessionFactory, ISessionQuery sessionQuery, Cache<String, Session> sessionCache, IAuthenticationManager authenticationManager, WriteDataAccessor<Session> storeDataAccessor) {
       this.serverId = serverId;
       this.sessionFactory = sessionFactory;
       this.sessionQuery = sessionQuery;
       this.sessionCache = sessionCache;
       this.authenticationManager = authenticationManager;
+      this.storeDataAccessor = storeDataAccessor;
    }
 
    @Override
-   public OseeSessionGrant createSession(OseeCredential credential) throws OseeCoreException {
+   public OseeSessionGrant createSession(final OseeCredential credential) throws OseeCoreException {
       Conditions.checkNotNull(credential, "credential");
       OseeSessionGrant sessionGrant = null;
-
+      final String newSessionId = GUID.create();
       boolean isAuthenticated = authenticationManager.authenticate(credential);
       if (isAuthenticated) {
-         IUserToken userToken = authenticationManager.asUserToken(credential);
+         final IUserToken userToken = authenticationManager.asUserToken(credential);
 
-         String managedByServerId = serverId;
-         Date creationDate = GlobalTime.GreenwichMeanTimestamp();
-         Session session =
-            sessionFactory.create(GUID.create(), userToken.getUserId(), creationDate, managedByServerId,
-               credential.getVersion(), credential.getClientMachineName(), credential.getClientAddress(),
-               credential.getPort(), creationDate, StorageState.CREATED.name().toLowerCase());
+         Callable<Session> callable = new Callable<Session>() {
 
-         if (credential.getUserName().equals(SystemUser.BootStrap.getName())) {
-            sessionCache.setIgnoreEnsurePopulateException(true);
-         } else {
-            sessionCache.setIgnoreEnsurePopulateException(false);
-         }
-         sessionCache.cache(session);
+            @Override
+            public Session call() throws Exception {
+
+               String managedByServerId = serverId;
+               Date creationDate = GlobalTime.GreenwichMeanTimestamp();
+               Session session =
+                  sessionFactory.createNewSession(newSessionId, userToken.getUserId(), creationDate, managedByServerId,
+                     credential.getVersion(), credential.getClientMachineName(), credential.getClientAddress(),
+                     credential.getPort(), creationDate, StorageState.CREATED.name().toLowerCase());
+
+               // if the user is BootStrap we do not want to insert into database since tables may not exist
+               if (!SystemUser.BootStrap.equals(userToken)) {
+                  storeDataAccessor.create(Collections.singleton(session));
+               }
+
+               return session;
+            }
+         };
+
+         Session session = sessionCache.get(newSessionId, callable);
+
          sessionGrant = sessionFactory.createSessionGrant(session, userToken, authenticationManager.getProtocol());
+
       }
       return sessionGrant;
    }
 
    @Override
    public void releaseSession(String sessionId) throws OseeCoreException {
-      Conditions.checkNotNull(sessionId, "sessionId");
-      Session session = getSessionById(sessionId);
-      if (session != null) {
-         session.setStorageState(StorageState.PURGED);
-      }
+      releaseSessionImmediate(sessionId);
    }
 
    @Override
@@ -91,19 +102,20 @@ public final class SessionManagerImpl implements ISessionManager {
       Conditions.checkNotNull(session, "Session", "for id [%s]", sessionId);
       session.setLastInteractionDetails(Strings.isValid(interactionName) ? interactionName : "unknown");
       session.setLastInteractionDate(GlobalTime.GreenwichMeanTimestamp());
+      storeDataAccessor.update(Collections.singleton(session));
    }
 
    @Override
    public Session getSessionById(String sessionId) throws OseeCoreException {
       Conditions.checkNotNull(sessionId, "sessionId");
-      return sessionCache.getByGuid(sessionId);
+      return sessionCache.get(sessionId);
    }
 
    @Override
    public Collection<ISession> getSessionByClientAddress(String clientAddress) throws OseeCoreException {
       Conditions.checkNotNull(clientAddress, "clientAddress");
       Set<ISession> sessions = new HashSet<ISession>();
-      for (Session session : sessionCache.getRawValues()) {
+      for (Session session : sessionCache.getAll()) {
          if (session.getClientAddress().equals(clientAddress)) {
             sessions.add(session);
          }
@@ -126,7 +138,9 @@ public final class SessionManagerImpl implements ISessionManager {
    @Override
    public Collection<ISession> getAllSessions(boolean includeNonServerManagedSessions) throws OseeCoreException {
       Collection<ISession> toReturn = new HashSet<ISession>();
-      toReturn.addAll(sessionCache.getRawValues());
+      for (Session session : sessionCache.getAll()) {
+         toReturn.add(session);
+      }
       if (includeNonServerManagedSessions) {
          ISessionCollector collector = new DefaultSessionCollector(serverId, sessionFactory, toReturn);
          sessionQuery.selectNonServerManagedSessions(collector);
@@ -138,10 +152,18 @@ public final class SessionManagerImpl implements ISessionManager {
    public void releaseSessionImmediate(String... sessionIds) throws OseeCoreException {
       Conditions.checkNotNull(sessionIds, "sessionIds");
 
+      Set<Session> sessions = new HashSet<Session>();
       for (String sessionId : sessionIds) {
-         releaseSession(sessionId);
+         Session session = getSessionById(sessionId);
+         if (session != null) {
+            sessions.add(session);
+         }
       }
-      sessionCache.storeByGuid(Arrays.asList(sessionIds));
+
+      if (!sessions.isEmpty()) {
+         storeDataAccessor.delete(sessions);
+      }
+      sessionCache.invalidateAll(Arrays.asList(sessionIds));
    }
 
 }

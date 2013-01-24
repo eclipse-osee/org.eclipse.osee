@@ -13,13 +13,7 @@ package org.eclipse.osee.framework.core.server.test.internal.session;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import org.eclipse.osee.framework.core.enums.StorageState;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IOseeStorable;
-import org.eclipse.osee.framework.core.model.cache.IOseeCache;
-import org.eclipse.osee.framework.core.model.cache.IOseeDataAccessor;
 import org.eclipse.osee.framework.core.server.internal.session.Session;
-import org.eclipse.osee.framework.core.server.internal.session.SessionCache;
 import org.eclipse.osee.framework.core.server.internal.session.SessionFactory;
 import org.eclipse.osee.framework.core.server.test.mocks.MockBuildTypeIdentifier;
 import org.eclipse.osee.framework.core.server.test.mocks.MockLog;
@@ -67,8 +61,8 @@ public class SessionFactoryTest {
    @Test
    public void testCreate() {
       Session session =
-         factory.create(guid, userId, creationDate, managedByServerId, clientVersion, clientMachineName, clientAddress,
-            clientPort, lastInteractionDate, lastInteractionDetails);
+         factory.createNewSession(guid, userId, creationDate, managedByServerId, clientVersion, clientMachineName,
+            clientAddress, clientPort, lastInteractionDate, lastInteractionDetails);
 
       Assert.assertEquals(guid, session.getGuid());
       Assert.assertEquals(userId, session.getUserId());
@@ -80,51 +74,6 @@ public class SessionFactoryTest {
       Assert.assertEquals(clientPort, session.getClientPort());
       Assert.assertEquals(lastInteractionDate, session.getLastInteractionDate());
       Assert.assertEquals(lastInteractionDetails, session.getLastInteractionDetails());
-
-      Assert.assertEquals("", session.getDescription());
-      Assert.assertEquals(IOseeStorable.UNPERSISTED_VALUE.intValue(), session.getId());
-      Assert.assertEquals(userId, session.getName());
-      Assert.assertEquals(StorageState.CREATED, session.getStorageState());
-
-      String unqual = userId.replaceAll("hello.", "");
-      Assert.assertEquals(unqual, session.getUnqualifiedName());
-
-   }
-
-   @Test
-   public void testCreateOrUpdate() throws OseeCoreException {
-      SessionCache cache = new SessionCache(new MockSessionAccessor());
-
-      Session session =
-         factory.create(guid, userId, creationDate, managedByServerId, clientVersion, clientMachineName, clientAddress,
-            clientPort, lastInteractionDate, lastInteractionDetails);
-      session.setId(200);
-      session.setStorageState(StorageState.LOADED);
-
-      cache.cache(session);
-
-      Session session2 =
-         factory.createOrUpdate(cache, 200, StorageState.LOADED, guid, userId, creationDate, managedByServerId,
-            clientVersion, clientMachineName, clientAddress, clientPort, lastInteractionDate, lastInteractionDetails);
-      Assert.assertEquals(session, session2);
-
-      session2 =
-         factory.createOrUpdate(cache, 200, StorageState.MODIFIED, guid, userId, creationDate, managedByServerId,
-            clientVersion, clientMachineName, clientAddress, clientPort, lastInteractionDate, lastInteractionDetails);
-      Assert.assertEquals(session, session2);
-      Assert.assertEquals(StorageState.MODIFIED, session2.getStorageState());
-
-      Assert.assertEquals(guid, session.getGuid());
-      Assert.assertEquals(userId, session.getUserId());
-      Assert.assertEquals(creationDate, session.getCreationDate());
-      Assert.assertEquals(managedByServerId, session.getManagedByServerId());
-      Assert.assertEquals(clientVersion, session.getClientVersion());
-      Assert.assertEquals(clientMachineName, session.getClientMachineName());
-      Assert.assertEquals(clientAddress, session.getClientAddress());
-      Assert.assertEquals(clientPort, session.getClientPort());
-      Assert.assertEquals(lastInteractionDate, session.getLastInteractionDate());
-      Assert.assertEquals(lastInteractionDetails, session.getLastInteractionDetails());
-
    }
 
    @Parameters
@@ -158,17 +107,4 @@ public class SessionFactoryTest {
       return data;
    }
 
-   private static final class MockSessionAccessor implements IOseeDataAccessor<String, Session> {
-
-      @Override
-      public void load(IOseeCache<String, Session> cache) {
-         // Do Nothing
-      }
-
-      @Override
-      public void store(Collection<Session> types) {
-         // Do Nothing
-      }
-
-   }
 }
