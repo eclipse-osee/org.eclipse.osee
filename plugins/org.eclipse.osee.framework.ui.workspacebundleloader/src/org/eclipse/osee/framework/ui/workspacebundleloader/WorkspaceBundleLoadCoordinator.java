@@ -36,6 +36,7 @@ import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
@@ -112,22 +113,24 @@ public class WorkspaceBundleLoadCoordinator {
 	}
 	
 	
-	
-	public synchronized void uninstallBundles(){
+	private void saveAndCloseViews(){
 		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable(){
 			@Override
 			public void run() {
 				saveAndCloseManagedViews();
-				for(BundleInfoLite info:managedArea.getInstalledBundles()){
-					try {
-						info.uninstall();
-					} catch (BundleException e) {
-						OseeLog.log(WorkspaceBundleLoadCoordinator.class, Level.WARNING, e);
-					}
-				}
 			}
 		});
-		
+	}
+	
+	public synchronized void uninstallBundles(){
+		saveAndCloseViews();
+		for(BundleInfoLite info:managedArea.getInstalledBundles()){
+			try {
+				info.uninstall();
+			} catch (BundleException e) {
+				OseeLog.log(WorkspaceBundleLoadCoordinator.class, Level.WARNING, e);
+			}
+		}
 		if(wiring != null){
 			wiring.refreshBundles(null);
 		}
@@ -137,8 +140,22 @@ public class WorkspaceBundleLoadCoordinator {
 		Set<String> managedViewIds = determineManagedViews();
 		
 		IWorkbench workbench = PlatformUI.getWorkbench();     
-		if (managedArea.getInstalledBundles().size() > 0 && workbench != null && workbench.getActiveWorkbenchWindow() != null){
-			IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		if (managedArea.getInstalledBundles().size() > 0 && workbench != null){
+			IWorkbenchPage page = null;
+			if(PlatformUI.getWorkbench().getActiveWorkbenchWindow() == null){
+				IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
+				for(IWorkbenchWindow win :windows){
+					page = win.getActivePage();
+					if(page != null){
+						break;
+					} 
+				}
+			} else {
+				page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+			}
+			if(page == null){
+				return;
+			}
 			IPerspectiveDescriptor originalPerspective = page.getPerspective();
 			XMLMemento memento = XMLMemento.createWriteRoot(TAG_OTE_PRECOMPILED);
 			//find the view in other perspectives
@@ -564,4 +581,5 @@ public class WorkspaceBundleLoadCoordinator {
 			}
 		}
 	}
+
 }
