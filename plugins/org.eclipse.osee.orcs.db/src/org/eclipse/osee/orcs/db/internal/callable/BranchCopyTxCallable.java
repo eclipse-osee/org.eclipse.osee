@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Callable;
+
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -83,7 +84,6 @@ public final class BranchCopyTxCallable extends AbstractDatastoreTxCallable<Bran
    @Override
    public Branch handleTxWork(OseeConnection connection) throws OseeCoreException {
       // get the previous transaction, if there is one
-      // TODO figure out what happens when there isn't one
       int sourceTx = IdUtil.getSourceTxId(branchData, txCache);
       TransactionRecord savedTx = txCache.getOrLoad(sourceTx);
 

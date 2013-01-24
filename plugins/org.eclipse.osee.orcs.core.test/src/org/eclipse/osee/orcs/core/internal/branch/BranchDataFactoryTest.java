@@ -143,6 +143,30 @@ public class BranchDataFactoryTest {
       assertData(result, branchName, guid, BranchType.WORKING, comment, txRecord, author, null, true);
    }
 
+   @Test
+   public void testDataForPortBranch() throws OseeCoreException {
+      String branchName = "testDataForPortBranch";
+      String parentName = "testParentBranchName";
+      String guid = GUID.create();
+      when(branch.getName()).thenReturn(branchName);
+      when(branch.getGuid()).thenReturn(guid);
+
+      when(parent.getName()).thenReturn(parentName);
+
+      when(txCache.getOrLoad(99)).thenReturn(txRecord);
+      when(txRecord.getBranch()).thenReturn(parent);
+
+      ITransaction tx = TokenFactory.createTransaction(99);
+
+      CreateBranchData result = factory.createPortBranchData(branch, author, tx, null);
+
+      verify(txCache).getOrLoad(99);
+      verify(txRecord).getBranch();
+
+      String comment = String.format("Transaction %d ported from %s to create Branch %s", 99, parentName, branchName);
+      assertData(result, branchName, guid, BranchType.PORT, comment, txRecord, author, null, true);
+   }
+
    private static void assertData(CreateBranchData actual, String branchName, String branchGuid, BranchType type, String comment, TransactionRecord fromTx, ArtifactReadable author, ArtifactReadable associatedArtifact, boolean isCopyFromTx) {
       assertEquals(branchName, actual.getName());
       assertEquals(branchGuid, actual.getGuid());

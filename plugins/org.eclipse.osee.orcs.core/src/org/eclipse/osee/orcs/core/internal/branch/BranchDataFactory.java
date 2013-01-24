@@ -70,6 +70,17 @@ public class BranchDataFactory {
       return createBranchData(branch, BranchType.WORKING, creationComment, fromTx, author, associatedArtifact, true);
    }
 
+   public CreateBranchData createPortBranchData(IOseeBranch branch, ArtifactReadable author, ITransaction fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
+      int value = fromTransaction.getGuid();
+      TransactionRecord fromTx = txCache.getOrLoad(value);
+      IOseeBranch parent = fromTx.getBranch();
+
+      String creationComment =
+         String.format("Transaction %d ported from %s to create Branch %s", value, parent.getName(),
+            branch.getName());
+      return createBranchData(branch, BranchType.PORT, creationComment, fromTx, author, associatedArtifact, true);
+   }
+
    private CreateBranchData createBranchData(IOseeBranch branch, BranchType branchType, String creationComment, ITransaction fromTx, ArtifactReadable author, ArtifactReadable associatedArtifact, boolean bCopyTx) {
       CreateBranchData createData = new CreateBranchData();
       createData.setGuid(branch.getGuid());

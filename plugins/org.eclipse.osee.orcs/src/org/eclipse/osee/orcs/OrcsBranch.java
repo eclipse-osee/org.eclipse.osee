@@ -54,6 +54,8 @@ public interface OrcsBranch {
 
    Callable<ReadableBranch> createCopyTxBranch(IOseeBranch branch, ArtifactReadable author, ITransaction fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException;
 
+   Callable<ReadableBranch> createPortBranch(IOseeBranch branch, ArtifactReadable author, ITransaction fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException;
+
    /////////////////////////////////////////////////////////////////////////
 
    Callable<ReadableBranch> changeBranchState(IOseeBranch branch, BranchState newState);

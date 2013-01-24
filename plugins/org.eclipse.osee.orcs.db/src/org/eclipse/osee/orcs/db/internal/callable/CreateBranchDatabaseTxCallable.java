@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -125,6 +126,8 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       } else if (!newBranchData.getBranchType().isSystemRootBranch()) {
          int associatedArtifactId = newBranchData.getAssociatedArtifactId();
          int systemUserId = getSystemUserId();
+
+         // this checks to see if there are any branches that aren't either DELETED or REBASELINED with the same artifact ID
          if (associatedArtifactId > -1 && associatedArtifactId != systemUserId) {
             int count =
                getDatabaseService().runPreparedQueryFetchObject(0,
@@ -132,7 +135,24 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
                   newBranchData.getAssociatedArtifactId(), BranchState.DELETED.getValue(),
                   BranchState.REBASELINED.getValue());
             if (count > 0) {
-               throw new OseeStateException("Existing branch creation detected for [%s]", newBranchData.getName());
+               // the PORT branch type is a special case, a PORT branch can have the same associated artifact
+               // as its related RPCR branch. We need to check to see if there is already a 
+               // port branch with the same artifact ID - if the type is port type, then we need an additional check
+               if (newBranchData.getBranchType().equals(BranchType.PORT)) {
+
+                  int portcount =
+                     getDatabaseService().runPreparedQueryFetchObject(
+                        0,
+                        "SELECT (1) FROM osee_branch WHERE associated_art_id = ? AND branch_state NOT IN (?, ?) AND branch_type = ?",
+                        newBranchData.getAssociatedArtifactId(), BranchState.DELETED.getValue(),
+                        BranchState.REBASELINED.getValue(), BranchType.PORT.getValue());
+                  if (portcount > 0) {
+                     throw new OseeStateException("Existing port branch creation detected for [%s]",
+                        newBranchData.getName());
+                  }
+               } else {
+                  throw new OseeStateException("Existing branch creation detected for [%s]", newBranchData.getName());
+               }
             }
          }
       }

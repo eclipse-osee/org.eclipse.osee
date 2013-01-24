@@ -19,7 +19,9 @@ public enum BranchType {
    WORKING(0),
    BASELINE(2),
    MERGE(3),
-   SYSTEM_ROOT(4);
+   SYSTEM_ROOT(4),
+   PORT(5);
+
    private final int value;
 
    BranchType(int value) {
@@ -44,6 +46,10 @@ public enum BranchType {
 
    public boolean isWorkingBranch() {
       return this == BranchType.WORKING;
+   }
+
+   public boolean isPortBranch() {
+      return this == BranchType.PORT;
    }
 
    public boolean isOfType(BranchType... branchTypes) {
