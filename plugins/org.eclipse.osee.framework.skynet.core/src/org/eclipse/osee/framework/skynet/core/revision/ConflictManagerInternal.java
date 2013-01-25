@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeSql;
-import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
@@ -50,7 +49,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  */
 public class ConflictManagerInternal {
    private static final String CONFLICT_CLEANUP =
-      "DELETE FROM osee_conflict t1 WHERE merge_branch_id = ? and NOT EXISTS (SELECT 'X' FROM osee_join_artifact WHERE query_id = ? and t1.conflict_id = art_id)";
+      "DELETE FROM osee_conflict t1 WHERE merge_branch_id = ? and NOT EXISTS (SELECT 'X' FROM osee_join_artifact WHERE query_id = ? and t1.conflict_id = art_id and (t1.conflict_type = transaction_id or transaction_id is NULL))";
 
    private static final String GET_DESTINATION_BRANCHES =
       "SELECT dest_branch_id FROM osee_merge WHERE source_branch_id = ?";
@@ -317,7 +316,7 @@ public class ConflictManagerInternal {
                   insertTime,
                   conflict.getObjectId(),
                   branchId,
-                  SQL3DataType.INTEGER});
+                  conflict.getConflictType().getValue()});
             }
             ArtifactLoader.insertIntoArtifactJoin(insertParameters);
             ConnectionHandler.runPreparedUpdate(CONFLICT_CLEANUP, branchId, queryId);
