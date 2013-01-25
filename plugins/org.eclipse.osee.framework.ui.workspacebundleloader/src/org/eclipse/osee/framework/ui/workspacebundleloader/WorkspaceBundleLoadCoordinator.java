@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -17,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -24,11 +26,15 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
+import org.eclipse.osee.framework.ui.workspacebundleloader.internal.Activator;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IViewPart;
@@ -82,6 +88,52 @@ public class WorkspaceBundleLoadCoordinator {
 				break;
 			}
 		}
+		
+		Thread th = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				int lastSize = 0;
+				while(true){
+					try {
+						Thread.sleep(5000);
+					} catch (InterruptedException e) {
+					}
+					if(lastSize == bundlesToCheck.size()){
+						if(lastSize != 0){
+							if(bundlesToCheck.size() > 0){
+								lastSize = 0;
+								Jobs.runInJob(new RefreshWorkspaceBundles(), false);
+								try {
+									Thread.sleep(1000*30); //give time to load so we don't get called twice
+								} catch (InterruptedException e) {
+								}
+							}
+						}
+					} else {
+						lastSize = bundlesToCheck.size();
+					}
+
+				}
+			}
+		});
+		th.setName("OTE BundleLoad Check");
+		th.setDaemon(true);
+		th.start();
+	}
+	
+	private class RefreshWorkspaceBundles  extends AbstractOperation  {
+
+		public RefreshWorkspaceBundles() {
+			super("Update Precompiled", Activator.BUNDLE_ID);
+		}
+
+		@Override
+		protected void doWork(IProgressMonitor monitor) throws Exception {
+			SubMonitor master = SubMonitor.convert(monitor, 100);
+			updateBundles(master.newChild(50));
+			installLatestBundles(master.newChild(50));
+		}
+		
 	}
 	
 	/**
@@ -117,7 +169,16 @@ public class WorkspaceBundleLoadCoordinator {
 		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable(){
 			@Override
 			public void run() {
-				saveAndCloseManagedViews();
+				saveAndCloseManagedViews(determineManagedViews(), true);
+			}
+		});
+	}
+	
+	private void closeUpdatedViews(final List<BundleInfoLite> uninstallList){
+		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable(){
+			@Override
+			public void run() {
+				saveAndCloseManagedViews(determineManagedViews(uninstallList), true);
 			}
 		});
 	}
@@ -136,8 +197,8 @@ public class WorkspaceBundleLoadCoordinator {
 		}
 	}
 
-	private void saveAndCloseManagedViews() {
-		Set<String> managedViewIds = determineManagedViews();
+	
+	private void saveAndCloseManagedViews(Set<String> managedViewIds, boolean save) {
 		
 		IWorkbench workbench = PlatformUI.getWorkbench();     
 		if (managedArea.getInstalledBundles().size() > 0 && workbench != null){
@@ -197,13 +258,18 @@ public class WorkspaceBundleLoadCoordinator {
 					}
 				}
 			}
-			
-			saveMementoToFile(memento);
+			if(save){
+				saveMementoToFile(memento);
+			}
 			page.setPerspective(originalPerspective);
 		}
 	}
 
 	private Set<String> determineManagedViews() {
+		return determineManagedViews(null);
+	}
+	
+	private Set<String> determineManagedViews(List<BundleInfoLite> uninstallList){
 		Set<String> managedViewIds = new HashSet<String>();
 		IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
 		IExtensionPoint extensionPoint = extensionRegistry.getExtensionPoint("org.eclipse.ui.views");
@@ -216,7 +282,16 @@ public class WorkspaceBundleLoadCoordinator {
 					if(el.getName().equals(TAG_VIEW)){
 						String id = el.getAttribute("id");
 						if(id != null){
-							managedViewIds.add(id);
+							if(uninstallList != null){
+								for(BundleInfoLite infoLite:uninstallList){
+									if(name.equals(infoLite.getSymbolicName())){
+										managedViewIds.add(id);
+										break;
+									}
+								}
+							} else  {
+								managedViewIds.add(id);
+							}
 						}
 					}
 				}
@@ -383,6 +458,7 @@ public class WorkspaceBundleLoadCoordinator {
 					if(uninstallList.size() > 1){
 						for(BundleInfoLite toUninstall:uninstallList){
 							if(toUninstall.isInstalled()){
+								closeUpdatedViews(uninstallList);
 								Bundle bundle = toUninstall.uninstall();
 								bundlesToRefresh.add(bundle);
 							}
@@ -396,6 +472,7 @@ public class WorkspaceBundleLoadCoordinator {
 		}
 		
 		if(wiring != null && bundlesToRefresh.size() > 0){
+			final Object waitForLoad = new Object();
 			wiring.refreshBundles(bundlesToRefresh, new FrameworkListener(){
 				@Override
 				public void frameworkEvent(FrameworkEvent event) {
@@ -408,9 +485,18 @@ public class WorkspaceBundleLoadCoordinator {
 								restoreStateFromMemento(master.newChild(5));
 							}
 						});
+						synchronized (waitForLoad) {
+							waitForLoad.notifyAll();
+						}
 					}
 				}
 			});
+			synchronized (waitForLoad) {
+				try {
+					waitForLoad.wait(20000);
+				} catch (InterruptedException e) {
+				}
+			}
 		} else {
 			startBundles(bundles, master.newChild(80));
 			waitForViewsToBeRegistered(master.newChild(15));
@@ -472,8 +558,29 @@ public class WorkspaceBundleLoadCoordinator {
 
 		}
 		
+		@SuppressWarnings({ "rawtypes" })
 		private void forceViewRegistryReload(IWorkbench workbench, IViewRegistry registry){
 			try{
+//				private Map<String, IViewDescriptor> descriptors = new HashMap<String, IViewDescriptor>();
+//				private List<IStickyViewDescriptor> stickyDescriptors = new ArrayList<IStickyViewDescriptor>();
+//				private HashMap<String, ViewCategory> categories = new HashMap<String, ViewCategory>();
+				
+				Field field1 = registry.getClass().getDeclaredField("descriptors");
+				Field field2 = registry.getClass().getDeclaredField("stickyDescriptors");
+				Field field3 = registry.getClass().getDeclaredField("categories");
+				
+				field1.setAccessible(true);
+				field2.setAccessible(true);
+				field3.setAccessible(true);
+				
+				((Map)field1.get(registry)).clear();
+				((List)field2.get(registry)).clear();
+				((Map)field3.get(registry)).clear();
+				
+				field1.setAccessible(false);
+				field2.setAccessible(false);
+				field3.setAccessible(false);
+				
 				Method[] methods = registry.getClass().getDeclaredMethods();
 				Method method = null;
 				for(Method m:methods){
@@ -499,13 +606,8 @@ public class WorkspaceBundleLoadCoordinator {
 		public boolean isLoaded(){
 			return isLoaded;
 		}
-		
-		
 	}
 
-	
-
-	
 	private void restoreStateFromMemento(SubMonitor restore) {
 		File mementoFile = OseeData.getFile(OTE_MEMENTO);
 		if(mementoFile.exists()){
