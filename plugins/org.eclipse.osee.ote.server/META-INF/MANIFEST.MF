@@ -120,3 +120,4 @@ Import-Package: net.jini.core.lookup,
 Bundle-Activator: org.eclipse.osee.ote.server.internal.Activator
 Export-Package: org.eclipse.osee.ote.server
 Bundle-Vendor: Eclipse Open System Engineering Environment
+Service-Component: OSGI-INF/*.xml
