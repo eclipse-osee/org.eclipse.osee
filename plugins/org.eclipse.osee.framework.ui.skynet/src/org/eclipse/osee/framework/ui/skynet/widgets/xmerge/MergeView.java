@@ -300,6 +300,14 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
       return Conditions.anyNull(mergeXWidget.getXViewer(), mergeXWidget.getXViewer().getTree()) || mergeXWidget.getXViewer().getTree().isDisposed();
    }
 
+   private boolean conflictInvovlesArtifact(Artifact artifact, Conflict conflict) {
+      if (artifact.getArtId() == conflict.getArtId()) {
+         IOseeBranch branch = artifact.getBranch();
+         return branch.equals(conflict.getSourceBranch()) || branch.equals(conflict.getDestBranch());
+      }
+      return false;
+   }
+
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, final Sender sender) {
       if (isDisposed()) {
@@ -337,7 +345,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                   if (showConflicts) {
                      Conflict[] conflicts = getConflicts();
                      for (Conflict conflict : conflicts) {
-                        if (artifact.equals(conflict.getSourceArtifact()) && branch.equals(conflict.getSourceBranch()) || artifact.equals(conflict.getDestArtifact()) && branch.equals(conflict.getDestBranch())) {
+                        if (conflictInvovlesArtifact(artifact, conflict)) {
                            mergeXWidget.setInputData(sourceBranch, destBranch, transactionId, mergeView, commitTrans,
                               "Source Artifact Changed", showConflicts);
                            if (artifact.equals(conflict.getSourceArtifact()) && sender.isLocal()) {
