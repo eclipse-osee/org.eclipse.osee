@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2012 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.ats.core.config.internal;
 
 import java.util.ArrayList;
@@ -29,7 +39,6 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
    private boolean actionable = false;
    private boolean allowCreateBranch = false;
    private boolean allowCommitBranch = false;
-   private boolean teamUsesVersions = false;
 
    private String baselineBranchGuid = null;
    private String description = null;
@@ -91,9 +100,6 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
       leads.addAll(leads);
       members.addAll(members);
 
-      if (teamDefOptions.contains(TeamDefinitionOptions.TeamUsesVersions)) {
-         setTeamUsesVersions(true);
-      }
       if (teamDefOptions.contains(TeamDefinitionOptions.RequireTargetedVersion)) {
          addRule(RuleDefinitionOption.RequireTargetedVersion.name());
       }
@@ -111,9 +117,6 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
 
    @Override
    public IAtsTeamDefinition getTeamDefinitionHoldingVersions() throws OseeCoreException {
-      if (!isTeamUsesVersions()) {
-         return null;
-      }
       if (getVersions().size() > 0) {
          return this;
       }
@@ -248,8 +251,8 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
    }
 
    @Override
-   public boolean isTeamUsesVersions() {
-      return teamUsesVersions;
+   public boolean isTeamUsesVersions() throws OseeCoreException {
+      return getTeamDefinitionHoldingVersions() != null;
    }
 
    @Override
@@ -331,11 +334,6 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
    @Override
    public void setFullName(String fullName) {
       this.fullName = fullName;
-   }
-
-   @Override
-   public void setTeamUsesVersions(boolean teamUsesVersions) {
-      this.teamUsesVersions = teamUsesVersions;
    }
 
    @Override

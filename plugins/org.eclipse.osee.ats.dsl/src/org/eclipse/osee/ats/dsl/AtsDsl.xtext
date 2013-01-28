@@ -27,7 +27,6 @@ TeamDef:
 	name=TEAM_DEF_REFERENCE (teamDefOption+=TeamDefOption)*
 	'{'
 		('active' active=BooleanDef)?
-		('usesVersions' usesVersions=BooleanDef)?
 		('staticId' staticId+=STRING)*
 		('lead' lead+=UserRef)*
 		('member' member+=UserRef)*

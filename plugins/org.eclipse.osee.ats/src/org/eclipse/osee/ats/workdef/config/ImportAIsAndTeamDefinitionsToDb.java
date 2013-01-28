@@ -112,9 +112,6 @@ public class ImportAIsAndTeamDefinitionsToDb {
          newTeam.getAttributes(AtsAttributeTypes.Active).iterator().next().setValue(
             BooleanDefUtil.get(dslTeamDef.getActive(), true));
          //         newTeam.setSoleAttributeValue(CoreAttributeTypes.Active, BooleanDefUtil.get(dslTeamDef.getActive(), true));
-         boolean configuredForTeamUsesVersions = BooleanDefUtil.get(dslTeamDef.getUsesVersions(), false);
-         boolean hasVersions = dslTeamDef.getVersion().size() > 0;
-         newTeam.setSoleAttributeValue(AtsAttributeTypes.TeamUsesVersions, configuredForTeamUsesVersions | hasVersions);
          for (String staticId : dslTeamDef.getStaticId()) {
             newTeam.setSingletonAttributeValue(CoreAttributeTypes.StaticId, staticId);
          }

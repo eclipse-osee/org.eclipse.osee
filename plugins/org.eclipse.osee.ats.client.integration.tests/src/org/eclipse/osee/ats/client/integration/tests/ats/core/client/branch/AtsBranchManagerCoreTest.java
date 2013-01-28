@@ -47,7 +47,6 @@ public class AtsBranchManagerCoreTest {
    public static void setUp() throws Exception {
       OseeProperties.setIsInTest(true);
       TestUtil.setIsInTest(true);
-      AtsTestUtil.cleanupAndReset("AtsBranchManagerCoreTest");
    }
 
    @AfterClass
@@ -58,9 +57,24 @@ public class AtsBranchManagerCoreTest {
    }
 
    @Test
-   public void testGetCommitTransactionsAndConfigItemsForTeamWf() throws OseeCoreException {
+   public void testGetCommitTransactionsAndConfigItemsForTeamWf_teamDef() throws OseeCoreException {
+      AtsTestUtil.cleanupAndReset(AtsBranchManagerCoreTest.class.getSimpleName() + ".testGetCommitTransactionsAndConfigItemsForTeamWf_teamDef");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
 
+      //Test Team Def-base Team Arts
+      IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
+      // clear versions to config item is from teamDef
+      teamDef.getVersions().clear();
+      teamDef.setBaselineBranchGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
+      Collection<Object> commitObjs = AtsBranchManagerCore.getCommitTransactionsAndConfigItemsForTeamWf(teamArt);
+      assertTrue("commitObjs has wrong size", commitObjs.size() == 1);
+      assertTrue("commitObjs is missing teamDef", commitObjs.contains(teamDef));
+   }
+
+   @Test
+   public void testGetCommitTransactionsAndConfigItemsForTeamWf_versions() throws OseeCoreException {
+      AtsTestUtil.cleanupAndReset(AtsBranchManagerCoreTest.class.getSimpleName() + ".testGetCommitTransactionsAndConfigItemsForTeamWf_versions");
+      TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       //Test Version-based Team Arts
       IAtsVersion verArt1 = AtsTestUtil.getVerArt1();
       IAtsVersion verArt2 = AtsTestUtil.getVerArt2();
@@ -70,15 +84,16 @@ public class AtsBranchManagerCoreTest {
       assertTrue("commitObjs has wrong size", commitObjs.size() == 2);
       assertTrue("commitObjs is missing verArt1", commitObjs.contains(verArt1));
       assertTrue("commitObjs is missing verArt2", commitObjs.contains(verArt2));
+   }
 
-      //Test Team Def-base Team Arts
+   @Test
+   public void testGetCommitTransactionsAndConfigItemsForTeam_txRecords() throws OseeCoreException {
+      AtsTestUtil.cleanupAndReset(AtsBranchManagerCoreTest.class.getSimpleName() + ".testGetCommitTransactionsAndConfigItemsForTeam_txRecords");
+      TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
-      teamDef.setTeamUsesVersions(false);
       teamDef.setBaselineBranchGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
-      commitObjs = AtsBranchManagerCore.getCommitTransactionsAndConfigItemsForTeamWf(teamArt);
-      assertTrue("commitObjs has wrong size", commitObjs.size() == 1);
-      assertTrue("commitObjs is missing teamDef", commitObjs.contains(teamDef));
-
+      // clear versions to config item is from teamDef
+      teamDef.getVersions().clear();
       //Test TxRecords
       Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
       BranchCache branchCache = BranchManager.getCache();
@@ -88,7 +103,8 @@ public class AtsBranchManagerCoreTest {
       Collection<TransactionRecord> commitTxs = new ArrayList<TransactionRecord>();
       Collection<ICommitConfigArtifact> configArtSet = new HashSet<ICommitConfigArtifact>();
       commitTxs.add(txRecord);
-      commitObjs = AtsBranchManagerCore.combineCommitTransactionsAndConfigItems(configArtSet, commitTxs);
+      Collection<Object> commitObjs =
+         AtsBranchManagerCore.combineCommitTransactionsAndConfigItems(configArtSet, commitTxs);
       assertTrue("commitObjs has wrong size", commitObjs.size() == 1);
 
       Collection<ICommitConfigArtifact> configArtifactsConfiguredToCommitTo =

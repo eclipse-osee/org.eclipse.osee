@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.core.client;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.*;
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -335,7 +335,6 @@ public class AtsTestUtil {
             getTitle("Team Def", postFixName));
       teamDef.setWorkflowDefinition(WORK_DEF_NAME);
       teamDef.setActive(true);
-      teamDef.setTeamUsesVersions(true);
       teamDef.getLeads().add(AtsUsersClient.getUser());
       AtsConfigCache.instance.cache(teamDef);
 
@@ -428,8 +427,6 @@ public class AtsTestUtil {
    /**
     * All team defs, AIs, action and workflows will be deleted and new ones created with "name" as part of object
     * names/titles. In addition, ArtifactCache will validate that it is not dirty or display errors if it is.
-    * 
-    * @throws OseeCoreException
     */
    public static void cleanupAndReset(String name) throws OseeCoreException {
       cleanup();

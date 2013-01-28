@@ -39,7 +39,6 @@ import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getTeamDefOption <em>Team Def Option</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getActive <em>Active</em>}</li>
- *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getUsesVersions <em>Uses Versions</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getStaticId <em>Static Id</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getLead <em>Lead</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getMember <em>Member</em>}</li>
@@ -105,26 +104,6 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
    * @ordered
    */
   protected BooleanDef active = ACTIVE_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getUsesVersions() <em>Uses Versions</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getUsesVersions()
-   * @generated
-   * @ordered
-   */
-  protected static final BooleanDef USES_VERSIONS_EDEFAULT = BooleanDef.NONE;
-
-  /**
-   * The cached value of the '{@link #getUsesVersions() <em>Uses Versions</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getUsesVersions()
-   * @generated
-   * @ordered
-   */
-  protected BooleanDef usesVersions = USES_VERSIONS_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getStaticId() <em>Static Id</em>}' attribute list.
@@ -322,29 +301,6 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
    * <!-- end-user-doc -->
    * @generated
    */
-  public BooleanDef getUsesVersions()
-  {
-    return usesVersions;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setUsesVersions(BooleanDef newUsesVersions)
-  {
-    BooleanDef oldUsesVersions = usesVersions;
-    usesVersions = newUsesVersions == null ? USES_VERSIONS_EDEFAULT : newUsesVersions;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, AtsDslPackage.TEAM_DEF__USES_VERSIONS, oldUsesVersions, usesVersions));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EList<String> getStaticId()
   {
     if (staticId == null)
@@ -524,8 +480,6 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
         return getTeamDefOption();
       case AtsDslPackage.TEAM_DEF__ACTIVE:
         return getActive();
-      case AtsDslPackage.TEAM_DEF__USES_VERSIONS:
-        return getUsesVersions();
       case AtsDslPackage.TEAM_DEF__STATIC_ID:
         return getStaticId();
       case AtsDslPackage.TEAM_DEF__LEAD:
@@ -568,9 +522,6 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
         return;
       case AtsDslPackage.TEAM_DEF__ACTIVE:
         setActive((BooleanDef)newValue);
-        return;
-      case AtsDslPackage.TEAM_DEF__USES_VERSIONS:
-        setUsesVersions((BooleanDef)newValue);
         return;
       case AtsDslPackage.TEAM_DEF__STATIC_ID:
         getStaticId().clear();
@@ -629,9 +580,6 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
       case AtsDslPackage.TEAM_DEF__ACTIVE:
         setActive(ACTIVE_EDEFAULT);
         return;
-      case AtsDslPackage.TEAM_DEF__USES_VERSIONS:
-        setUsesVersions(USES_VERSIONS_EDEFAULT);
-        return;
       case AtsDslPackage.TEAM_DEF__STATIC_ID:
         getStaticId().clear();
         return;
@@ -679,8 +627,6 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
         return teamDefOption != null && !teamDefOption.isEmpty();
       case AtsDslPackage.TEAM_DEF__ACTIVE:
         return active != ACTIVE_EDEFAULT;
-      case AtsDslPackage.TEAM_DEF__USES_VERSIONS:
-        return usesVersions != USES_VERSIONS_EDEFAULT;
       case AtsDslPackage.TEAM_DEF__STATIC_ID:
         return staticId != null && !staticId.isEmpty();
       case AtsDslPackage.TEAM_DEF__LEAD:
@@ -720,8 +666,6 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
     result.append(teamDefOption);
     result.append(", active: ");
     result.append(active);
-    result.append(", usesVersions: ");
-    result.append(usesVersions);
     result.append(", staticId: ");
     result.append(staticId);
     result.append(", workDefinition: ");

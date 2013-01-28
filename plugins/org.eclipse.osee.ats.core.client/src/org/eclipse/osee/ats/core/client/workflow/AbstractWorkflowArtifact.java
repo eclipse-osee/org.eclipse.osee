@@ -116,7 +116,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       if (!isTeamWorkflow()) {
          return false;
       }
-      return ((TeamWorkFlowArtifact) this).getTeamDefinition().getTeamDefinitionHoldingVersions() != null && ((TeamWorkFlowArtifact) this).getTeamDefinition().getTeamDefinitionHoldingVersions().isTeamUsesVersions();
+      return ((TeamWorkFlowArtifact) this).getTeamDefinition().isTeamUsesVersions();
    }
 
    public String getArtifactSuperTypeName() {
@@ -462,21 +462,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public boolean isAccessControlWrite() throws OseeCoreException {
       return AccessControlManager.hasPermission(this, PermissionEnum.WRITE);
-   }
-
-   /**
-    * @return true if this is a TeamWorkflow and it uses versions
-    */
-   public boolean isTeamUsesVersions() {
-      if (isDeleted() || !isTeamWorkflow()) {
-         return false;
-      }
-      try {
-         return ((TeamWorkFlowArtifact) this).getTeamDefinition().isTeamUsesVersions();
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-         return false;
-      }
    }
 
    /**

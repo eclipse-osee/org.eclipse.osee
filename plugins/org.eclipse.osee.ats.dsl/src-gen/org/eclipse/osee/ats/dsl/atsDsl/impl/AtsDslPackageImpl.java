@@ -477,7 +477,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getTeamDef_UsesVersions()
+  public EAttribute getTeamDef_StaticId()
   {
     return (EAttribute)teamDefEClass.getEStructuralFeatures().get(3);
   }
@@ -487,19 +487,9 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getTeamDef_StaticId()
-  {
-    return (EAttribute)teamDefEClass.getEStructuralFeatures().get(4);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EReference getTeamDef_Lead()
   {
-    return (EReference)teamDefEClass.getEStructuralFeatures().get(5);
+    return (EReference)teamDefEClass.getEStructuralFeatures().get(4);
   }
 
   /**
@@ -509,7 +499,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    */
   public EReference getTeamDef_Member()
   {
-    return (EReference)teamDefEClass.getEStructuralFeatures().get(6);
+    return (EReference)teamDefEClass.getEStructuralFeatures().get(5);
   }
 
   /**
@@ -519,7 +509,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    */
   public EReference getTeamDef_Privileged()
   {
-    return (EReference)teamDefEClass.getEStructuralFeatures().get(7);
+    return (EReference)teamDefEClass.getEStructuralFeatures().get(6);
   }
 
   /**
@@ -529,7 +519,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    */
   public EAttribute getTeamDef_WorkDefinition()
   {
-    return (EAttribute)teamDefEClass.getEStructuralFeatures().get(8);
+    return (EAttribute)teamDefEClass.getEStructuralFeatures().get(7);
   }
 
   /**
@@ -539,7 +529,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    */
   public EAttribute getTeamDef_RelatedTaskWorkDefinition()
   {
-    return (EAttribute)teamDefEClass.getEStructuralFeatures().get(9);
+    return (EAttribute)teamDefEClass.getEStructuralFeatures().get(8);
   }
 
   /**
@@ -549,7 +539,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    */
   public EAttribute getTeamDef_AccessContextId()
   {
-    return (EAttribute)teamDefEClass.getEStructuralFeatures().get(10);
+    return (EAttribute)teamDefEClass.getEStructuralFeatures().get(9);
   }
 
   /**
@@ -559,7 +549,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    */
   public EReference getTeamDef_Version()
   {
-    return (EReference)teamDefEClass.getEStructuralFeatures().get(11);
+    return (EReference)teamDefEClass.getEStructuralFeatures().get(10);
   }
 
   /**
@@ -569,7 +559,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    */
   public EReference getTeamDef_Children()
   {
-    return (EReference)teamDefEClass.getEStructuralFeatures().get(12);
+    return (EReference)teamDefEClass.getEStructuralFeatures().get(11);
   }
 
   /**
@@ -1670,7 +1660,6 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     createEAttribute(teamDefEClass, TEAM_DEF__NAME);
     createEAttribute(teamDefEClass, TEAM_DEF__TEAM_DEF_OPTION);
     createEAttribute(teamDefEClass, TEAM_DEF__ACTIVE);
-    createEAttribute(teamDefEClass, TEAM_DEF__USES_VERSIONS);
     createEAttribute(teamDefEClass, TEAM_DEF__STATIC_ID);
     createEReference(teamDefEClass, TEAM_DEF__LEAD);
     createEReference(teamDefEClass, TEAM_DEF__MEMBER);
@@ -1867,7 +1856,6 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     initEAttribute(getTeamDef_Name(), ecorePackage.getEString(), "name", null, 0, 1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTeamDef_TeamDefOption(), ecorePackage.getEString(), "teamDefOption", null, 0, -1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTeamDef_Active(), this.getBooleanDef(), "active", null, 0, 1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getTeamDef_UsesVersions(), this.getBooleanDef(), "usesVersions", null, 0, 1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTeamDef_StaticId(), ecorePackage.getEString(), "staticId", null, 0, -1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getTeamDef_Lead(), this.getUserRef(), null, "lead", null, 0, -1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getTeamDef_Member(), this.getUserRef(), null, "member", null, 0, -1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

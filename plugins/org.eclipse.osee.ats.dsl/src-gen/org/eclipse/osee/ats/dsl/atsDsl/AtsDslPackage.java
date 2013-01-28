@@ -227,22 +227,13 @@ public interface AtsDslPackage extends EPackage
   int TEAM_DEF__ACTIVE = 2;
 
   /**
-   * The feature id for the '<em><b>Uses Versions</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int TEAM_DEF__USES_VERSIONS = 3;
-
-  /**
    * The feature id for the '<em><b>Static Id</b></em>' attribute list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TEAM_DEF__STATIC_ID = 4;
+  int TEAM_DEF__STATIC_ID = 3;
 
   /**
    * The feature id for the '<em><b>Lead</b></em>' containment reference list.
@@ -251,7 +242,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TEAM_DEF__LEAD = 5;
+  int TEAM_DEF__LEAD = 4;
 
   /**
    * The feature id for the '<em><b>Member</b></em>' containment reference list.
@@ -260,7 +251,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TEAM_DEF__MEMBER = 6;
+  int TEAM_DEF__MEMBER = 5;
 
   /**
    * The feature id for the '<em><b>Privileged</b></em>' containment reference list.
@@ -269,7 +260,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TEAM_DEF__PRIVILEGED = 7;
+  int TEAM_DEF__PRIVILEGED = 6;
 
   /**
    * The feature id for the '<em><b>Work Definition</b></em>' attribute.
@@ -278,7 +269,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TEAM_DEF__WORK_DEFINITION = 8;
+  int TEAM_DEF__WORK_DEFINITION = 7;
 
   /**
    * The feature id for the '<em><b>Related Task Work Definition</b></em>' attribute.
@@ -287,7 +278,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TEAM_DEF__RELATED_TASK_WORK_DEFINITION = 9;
+  int TEAM_DEF__RELATED_TASK_WORK_DEFINITION = 8;
 
   /**
    * The feature id for the '<em><b>Access Context Id</b></em>' attribute list.
@@ -296,7 +287,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TEAM_DEF__ACCESS_CONTEXT_ID = 10;
+  int TEAM_DEF__ACCESS_CONTEXT_ID = 9;
 
   /**
    * The feature id for the '<em><b>Version</b></em>' containment reference list.
@@ -305,7 +296,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TEAM_DEF__VERSION = 11;
+  int TEAM_DEF__VERSION = 10;
 
   /**
    * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -314,7 +305,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TEAM_DEF__CHILDREN = 12;
+  int TEAM_DEF__CHILDREN = 11;
 
   /**
    * The number of structural features of the '<em>Team Def</em>' class.
@@ -323,7 +314,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TEAM_DEF_FEATURE_COUNT = 13;
+  int TEAM_DEF_FEATURE_COUNT = 12;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl <em>Actionable Item Def</em>}' class.
@@ -1666,17 +1657,6 @@ public interface AtsDslPackage extends EPackage
    * @generated
    */
   EAttribute getTeamDef_Active();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getUsesVersions <em>Uses Versions</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Uses Versions</em>'.
-   * @see org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getUsesVersions()
-   * @see #getTeamDef()
-   * @generated
-   */
-  EAttribute getTeamDef_UsesVersions();
 
   /**
    * Returns the meta object for the attribute list '{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getStaticId <em>Static Id</em>}'.
@@ -3063,14 +3043,6 @@ public interface AtsDslPackage extends EPackage
      * @generated
      */
     EAttribute TEAM_DEF__ACTIVE = eINSTANCE.getTeamDef_Active();
-
-    /**
-     * The meta object literal for the '<em><b>Uses Versions</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute TEAM_DEF__USES_VERSIONS = eINSTANCE.getTeamDef_UsesVersions();
 
     /**
      * The meta object literal for the '<em><b>Static Id</b></em>' attribute list feature.

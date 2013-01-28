@@ -108,7 +108,6 @@ public final class AtsAttributeTypes {
    public static final IAttributeType EndDate = createType(0x1000000000000197L, "End Date");
    public static final IAttributeType SwEnhancement = createType(0x10000000000000FBL, "SW Enhancement");
    public static final IAttributeType TeamDefinition = createType(0x10000000000000E1L, "Team Definition");
-   public static final IAttributeType TeamUsesVersions = createType(0x10000000000000B6L, "Team Uses Versions", "True if Team Workflow uses versioning/releasing option.");
    public static final IAttributeType Title = createType(CoreAttributeTypes.Name.getGuid(), CoreAttributeTypes.Name.getName(), "Enter clear and consise title that can be generally understood.");
    public static final IAttributeType UserCommunity = createType(0x10000000000000CDL, "User Community", "If working in one of these communities resulted in the creation of this Action, please select.  Otherwise, select Other.");
    public static final IAttributeType ValidationRequired = createType(0x10000000000000AAL, "Validation Required", "If selected, originator will be asked to validate the implementation.");

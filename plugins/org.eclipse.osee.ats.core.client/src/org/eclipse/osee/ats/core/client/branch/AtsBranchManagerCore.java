@@ -326,7 +326,7 @@ public class AtsBranchManagerCore {
 
    public static Collection<ICommitConfigArtifact> getConfigArtifactsConfiguredToCommitTo(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       Set<ICommitConfigArtifact> configObjects = new HashSet<ICommitConfigArtifact>();
-      if (teamArt.isTeamUsesVersions()) {
+      if (teamArt.getTeamDefinition().isTeamUsesVersions()) {
          if (AtsVersionService.get().hasTargetedVersion(teamArt)) {
             AtsVersionService.get().getTargetedVersion(teamArt).getParallelVersions(configObjects);
          }
@@ -339,7 +339,7 @@ public class AtsBranchManagerCore {
    }
 
    public static ICommitConfigArtifact getParentBranchConfigArtifactConfiguredToCommitTo(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      if (teamArt.isTeamUsesVersions()) {
+      if (teamArt.getTeamDefinition().isTeamUsesVersions()) {
          if (AtsVersionService.get().hasTargetedVersion(teamArt)) {
             return AtsVersionService.get().getTargetedVersion(teamArt);
          }
@@ -440,7 +440,7 @@ public class AtsBranchManagerCore {
       Branch parentBranch = null;
 
       // Check for parent branch id in Version artifact
-      if (teamArt.isTeamUsesVersions()) {
+      if (teamArt.getTeamDefinition().isTeamUsesVersions()) {
          IAtsVersion verArt = AtsVersionService.get().getTargetedVersion(teamArt);
          if (verArt != null && Strings.isValid(verArt.getBaslineBranchGuid())) {
             parentBranch = BranchManager.getBranchByGuid(verArt.getBaslineBranchGuid());
@@ -487,11 +487,6 @@ public class AtsBranchManagerCore {
 
    /**
     * This method was refactored from above so it could be tested independently
-    * 
-    * @param configArtSet
-    * @param commitTxs
-    * @return
-    * @throws OseeCoreException
     */
    public static Collection<Object> combineCommitTransactionsAndConfigItems(Collection<ICommitConfigArtifact> configArtSet, Collection<TransactionRecord> commitTxs) throws OseeCoreException {
       // commitMgrInputObjs will hold a union of all commits from configArtSet and commitTxs.

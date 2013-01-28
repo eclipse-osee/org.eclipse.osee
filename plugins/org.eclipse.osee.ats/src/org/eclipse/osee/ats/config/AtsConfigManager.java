@@ -129,9 +129,6 @@ public class AtsConfigManager extends AbstractOperation {
    private IAtsTeamDefinition createTeamDefinition(SkynetTransaction transaction) throws OseeCoreException {
       IAtsTeamDefinition teamDef =
          AtsConfigCache.instance.getTeamDefinitionFactory().createTeamDefinition(GUID.create(), teamDefName);
-      if (versionNames == null || versionNames.size() > 0) {
-         teamDef.setTeamUsesVersions(true);
-      }
       teamDef.getLeads().add(AtsUsersClient.getUser());
       teamDef.getMembers().add(AtsUsersClient.getUser());
       TeamDefinitions.getTopTeamDefinition().getChildrenTeamDefinitions().add(teamDef);

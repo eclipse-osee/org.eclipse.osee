@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.team;
 
+/**
+ * @author Donald G. Dunne
+ */
 public enum TeamDefinitionOptions {
-   TeamUsesVersions,
    RequireTargetedVersion
 };

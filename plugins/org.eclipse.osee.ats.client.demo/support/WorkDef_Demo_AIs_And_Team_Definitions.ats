@@ -48,7 +48,6 @@ teamDefinition "Teams" GetOrCreate {
 			children {
 
 				teamDefinition "CIS Code" {
-					usesVersions True
 					staticId "cis.code"
 					lead named "Jason Michael"
 					member named "Jason Michael"
@@ -56,7 +55,6 @@ teamDefinition "Teams" GetOrCreate {
 				}
 
 				teamDefinition "CIS Requirements" {
-					usesVersions True
 					staticId "cis.requirements"
 					lead named "Joe Smith"
 					member named "Joe Smith"
@@ -64,7 +62,6 @@ teamDefinition "Teams" GetOrCreate {
 				}
 
 				teamDefinition "CIS SW Design" {
-					usesVersions True
 					staticId "cis.sw_design"
 					lead named "Kay Jones"
 					member named "Kay Jones"
@@ -72,7 +69,6 @@ teamDefinition "Teams" GetOrCreate {
 				}
 
 				teamDefinition "CIS Test" {
-					usesVersions True
 					staticId "cis.test"
 					lead named "Kay Jones"
 					member named "Kay Jones"
@@ -133,7 +129,6 @@ teamDefinition "Teams" GetOrCreate {
 			children {
 
 				teamDefinition "SAW Code" {
-					usesVersions True
 					staticId "saw.code"
 					lead named "Joe Smith"
 					member named "Joe Smith"
@@ -141,14 +136,12 @@ teamDefinition "Teams" GetOrCreate {
 				}
 
 				teamDefinition "SAW HW" {
-					usesVersions True
 					lead named "Jason Michael"
 					member named "Jason Michael"
 					workDefinition "WorkDef_Team_Default"
 				}
 
 				teamDefinition "SAW Requirements" {
-					usesVersions True
 					staticId "saw.requirements"
 					lead named "Joe Smith"
 					member named "Joe Smith"
@@ -156,7 +149,6 @@ teamDefinition "Teams" GetOrCreate {
 				}
 
 				teamDefinition "SAW SW Design" {
-					usesVersions True
 					staticId "saw.sw_design"
 					lead named "Kay Jones"
 					member named "Kay Jones"
@@ -164,7 +156,6 @@ teamDefinition "Teams" GetOrCreate {
 				}
 
 				teamDefinition "SAW Test" {
-					usesVersions True
 					staticId "saw.test"
 					lead named "Kay Jones"
 					member named "Kay Jones" privileged named "Joe Smith"

@@ -33,6 +33,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * Take existing AIs, TeamDefs and Versions and create AtsDsl
+ * 
+ * @author Donald G. Dunne
  */
 public class ConvertAIsAndTeamsToAtsDsl {
 
@@ -105,9 +107,6 @@ public class ConvertAIsAndTeamsToAtsDsl {
       dslTeamDefs.put(teamDef.getName(), dslTeamDef);
       if (teamDef.isActive()) {
          dslTeamDef.setActive(BooleanDef.TRUE);
-      }
-      if (teamDef.isTeamUsesVersions()) {
-         dslTeamDef.setUsesVersions(BooleanDef.TRUE);
       }
       for (String staticId : teamDef.getStaticIds()) {
          dslTeamDef.getStaticId().add(staticId);

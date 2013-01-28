@@ -269,7 +269,6 @@ public class AtsBranchConfigurationTest {
       // setup team def to allow create/commit of branch
       teamDef.setAllowCommitBranch(true);
       teamDef.setAllowCreateBranch(true);
-      teamDef.setTeamUsesVersions(false);
       new TeamDefinitionArtifactStore(teamDef).save(getClass().getSimpleName());
 
       TestUtil.sleep(2000);
