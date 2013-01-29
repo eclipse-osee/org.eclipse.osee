@@ -75,7 +75,9 @@ public class BranchExchangeCheckCommand implements ConsoleCommand {
          for (String fileToImport : importFiles) {
             console.writeln("Checking branch exchange [%]", fileToImport);
             URI uriToCheck = new URI("exchange://" + fileToImport);
-            orcsBranch.checkBranchExchangeIntegrity(uriToCheck);
+            Callable<URI> callable = orcsBranch.checkBranchExchangeIntegrity(uriToCheck);
+            callable.call();
+            checkForCancelled();
          }
          return Boolean.TRUE;
       }

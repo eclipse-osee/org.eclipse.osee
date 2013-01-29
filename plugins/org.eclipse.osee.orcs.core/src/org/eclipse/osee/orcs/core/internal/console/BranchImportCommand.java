@@ -123,7 +123,9 @@ public final class BranchImportCommand implements ConsoleCommand {
          for (String fileToImport : importFiles) {
             URI uri = new URI("exchange://" + fileToImport);
             console.writeln("Importing from [%s]", uri);
-            orcsBranch.importBranch(uri, branches, options);
+            Callable<URI> callable = orcsBranch.importBranch(uri, branches, options);
+            callable.call();
+            checkForCancelled();
          }
          return Boolean.TRUE;
       }
