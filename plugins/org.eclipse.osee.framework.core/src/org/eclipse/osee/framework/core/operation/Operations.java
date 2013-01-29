@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.internal.Activator;
+import org.eclipse.osee.framework.core.internal.OperationBuilderImpl;
 
 /**
  * @author Roberto E. Escobar
@@ -137,6 +138,10 @@ public final class Operations {
          }
       }
       return status;
+   }
+
+   public static OperationBuilder createBuilder(String operationName) {
+      return new OperationBuilderImpl(operationName, Activator.PLUGIN_ID);
    }
 
    private static final class OperationJob extends Job {

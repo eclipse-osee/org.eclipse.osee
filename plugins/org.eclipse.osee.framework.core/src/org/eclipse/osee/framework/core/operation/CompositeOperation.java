@@ -22,7 +22,9 @@ import org.eclipse.osee.framework.core.util.Conditions;
 
 /**
  * @author Roberto E. Escobar
+ * @deprecated Use {@link Operations#createBuilder(String) Operations.createBuilder(String name)} instead
  */
+@Deprecated
 public class CompositeOperation extends AbstractOperation {
    private final List<IStatus> statuses = new ArrayList<IStatus>();
    private final List<? extends IOperation> operations;
