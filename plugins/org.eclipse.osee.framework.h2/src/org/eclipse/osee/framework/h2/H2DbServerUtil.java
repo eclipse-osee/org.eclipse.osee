@@ -23,12 +23,12 @@ public final class H2DbServerUtil {
    private final Collection<Server> serverControls = new ArrayList<Server>();
 
    public H2DbServerUtil(InetAddress host, int dbPort, int webPort) throws Exception {
-      String[] dbArgs = new String[] {"-tcp", "-tcpAllowOthers", "true", "-tcpPort", String.valueOf(dbPort)};
+      String[] dbArgs = new String[] {"-tcp", "-tcpAllowOthers", "-tcpPort", String.valueOf(dbPort)};
       serverControls.add(Server.createTcpServer(dbArgs));
       OseeLog.logf(H2DbServer.class, Level.INFO, "H2 Database Server created on [%s:%s]", host, dbPort);
 
       try {
-         String[] webArgs = new String[] {"-webAllowOthers", "true", "-webPort", String.valueOf(webPort)};
+         String[] webArgs = new String[] {"-webAllowOthers", "-webPort", String.valueOf(webPort)};
          serverControls.add(Server.createWebServer(webArgs));
       } catch (Exception ex) {
          OseeLog.logf(H2DbServer.class, Level.SEVERE, ex,
