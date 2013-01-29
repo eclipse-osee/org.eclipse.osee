@@ -23,9 +23,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadFactory;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.operation.OperationJob;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
@@ -165,7 +164,7 @@ public class ApplicationServerManager implements IApplicationServerManager {
     */
    @Override
    public boolean isSystemIdle() {
-      return Job.getJobManager().find(OperationJob.class).length <= 1;
+      return !Operations.areOperationsScheduled();
    }
 
    private void updateServletRequestsAllowed(final boolean value) {

@@ -21,13 +21,18 @@ import org.eclipse.osee.framework.database.operation.InvalidTxCurrentsAndModType
 /**
  * @author Ryan D. Brooks
  */
-public class TxCurrentsAndModTypesCommand extends CompositeOperation {
+public class TxCurrentsOpFactory {
 
-   public TxCurrentsAndModTypesCommand(IOseeDatabaseService db, OperationLogger logger, boolean archived) {
-      super("TxCurrents And Mod Types", "Plugin Id", logger, buildSubOperations(db, logger, archived));
+   private TxCurrentsOpFactory() {
+      //Static utility
    }
 
-   private static List<IOperation> buildSubOperations(IOseeDatabaseService db, OperationLogger logger, boolean archived) {
+   public static IOperation createTxCurrentsAndModTypesOp(IOseeDatabaseService db, OperationLogger logger, boolean archived) {
+      List<IOperation> ops = createSubOperations(db, logger, archived);
+      return new CompositeOperation("TxCurrents And Mod Types", "Plugin Id", logger, ops);
+   }
+
+   private static List<IOperation> createSubOperations(IOseeDatabaseService db, OperationLogger logger, boolean archived) {
       List<IOperation> operations = new ArrayList<IOperation>(3);
       operations.add(buildFixOperation(db, logger, archived, "1/3 ", "osee_artifact", "art_id"));
       operations.add(buildFixOperation(db, logger, archived, "2/3 ", "osee_attribute", "attr_id"));

@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.workspacebundleloader;
 import java.io.File;
 import java.net.URL;
 import java.util.logging.Level;
-
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -22,7 +21,8 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.core.operation.OperationJob;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
@@ -44,7 +44,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
    private JarChangeResourceListener<WorkspaceStarterNature> workspaceListener;
    private SafeWorkspaceAccess service;
    private final WorkspaceBundleLoadCoordinator bundleCoordinator;
-   
+
    public SafeWorkspaceTracker(BundleContext context) {
       super(context, SafeWorkspaceAccess.class.getName(), null);
       bundleCoordinator = new WorkspaceBundleLoadCoordinator(new File(OseeData.getPath().toFile(), "loadedbundles"));
@@ -71,14 +71,16 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
          IWorkspace workspace = service.getWorkspace();
-         workspaceListener = new JarChangeResourceListener<WorkspaceStarterNature>(WorkspaceStarterNature.NATURE_ID, SafeWorkspaceTracker.this);
+         workspaceListener =
+            new JarChangeResourceListener<WorkspaceStarterNature>(WorkspaceStarterNature.NATURE_ID,
+               SafeWorkspaceTracker.this);
          try {
             loadBundles(monitor);
          } catch (CoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
          workspace.addResourceChangeListener(workspaceListener);
-         
+
       }
    }
 
@@ -91,20 +93,20 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
 
    @Override
    public void handleBundleAdded(URL url) {
-	   String urlString = url.toString();
-	   bundleCoordinator.addBundleToCheck(urlString);
+      String urlString = url.toString();
+      bundleCoordinator.addBundleToCheck(urlString);
    }
 
    @Override
    public void handleBundleChanged(URL url) {
-	   String urlString = url.toString();
-	   bundleCoordinator.addBundleToCheck(urlString);
+      String urlString = url.toString();
+      bundleCoordinator.addBundleToCheck(urlString);
    }
 
    @Override
    public void handleBundleRemoved(URL url) {
-	   String urlString = url.toString();
-	   bundleCoordinator.addBundleToCheck(urlString);
+      String urlString = url.toString();
+      bundleCoordinator.addBundleToCheck(urlString);
    }
 
    @Override
@@ -114,8 +116,8 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
    @Override
    public void handleNatureClosed(WorkspaceStarterNature nature) {
       for (URL url : nature.getBundles()) {
-          handleBundleRemoved(url);
-       }
+         handleBundleRemoved(url);
+      }
    }
 
    @Override
@@ -137,68 +139,67 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
 
    @Override
    public void unloadBundles() {
-	  bundleCoordinator.uninstallBundles();
+      bundleCoordinator.uninstallBundles();
    }
 
    @Override
    public boolean preShutdown(IWorkbench workbench, boolean forced) {
-	   JobComplete jobComplete = new JobComplete();
-	   Job job = new OperationJob(new PrecompileShutdown("Closing Precompiled Libraries", Activator.BUNDLE_ID));
-	   job.setPriority(Job.INTERACTIVE);
-	   Jobs.startJob(job, false, jobComplete);
-	   for(int i = 0; i < 100 && !jobComplete.isDone(); i++){//wait up to 10 seconds or until job completion
-		   yieldDisplay100ms();
-	   }
-	   return true;
+      JobComplete jobComplete = new JobComplete();
+      IOperation operation = new PrecompileShutdown("Closing Precompiled Libraries", Activator.BUNDLE_ID);
+      Operations.executeAsJob(operation, false, Job.INTERACTIVE, jobComplete);
+      for (int i = 0; i < 100 && !jobComplete.isDone(); i++) {//wait up to 10 seconds or until job completion
+         yieldDisplay100ms();
+      }
+      return true;
    }
 
    private static class JobComplete extends JobChangeAdapter {
-	   private volatile boolean done = false;
-	   
-	   public boolean isDone() {
-		   return done;
-	   }
+      private volatile boolean done = false;
 
-	   @Override
-	   public void done(IJobChangeEvent event) {
-		   done = true;
-	   }
+      public boolean isDone() {
+         return done;
+      }
+
+      @Override
+      public void done(IJobChangeEvent event) {
+         done = true;
+      }
    }
-   
+
    private class PrecompileShutdown extends AbstractOperation {
-	   public PrecompileShutdown(String operationName, String pluginId) {
-		   super(operationName, pluginId);
-	   }
+      public PrecompileShutdown(String operationName, String pluginId) {
+         super(operationName, pluginId);
+      }
 
-	   @Override
-	   protected void doWork(IProgressMonitor monitor) throws Exception {
-		   bundleCoordinator.uninstallBundles();
-	   }
+      @Override
+      protected void doWork(IProgressMonitor monitor) throws Exception {
+         bundleCoordinator.uninstallBundles();
+      }
    }
-   
+
    @Override
    public void postShutdown(IWorkbench workbench) {
    }
-   
-   
+
    /**
-    * This method gives UI updates that happen from bundle unloading to happen before the workbench shuts down, view shutdown 
-    * and extension point registry based UI updates.  If we don't do this we get unexpected errors in logView and other places.
+    * This method gives UI updates that happen from bundle unloading to happen before the workbench shuts down, view
+    * shutdown and extension point registry based UI updates. If we don't do this we get unexpected errors in logView
+    * and other places.
     */
-   private void yieldDisplay100ms(){
-	   while(Display.getCurrent().readAndDispatch()){
-	   }
-	   try {
-		   Thread.sleep(50);
-	   } catch (InterruptedException e) {
-	   }
-	   while(Display.getCurrent().readAndDispatch()){
-	   }
-	   try {
-		   Thread.sleep(50);
-	   } catch (InterruptedException e) {
-	   }
-	   while(Display.getCurrent().readAndDispatch()){
-	   }
+   private void yieldDisplay100ms() {
+      while (Display.getCurrent().readAndDispatch()) {
+      }
+      try {
+         Thread.sleep(50);
+      } catch (InterruptedException e) {
+      }
+      while (Display.getCurrent().readAndDispatch()) {
+      }
+      try {
+         Thread.sleep(50);
+      } catch (InterruptedException e) {
+      }
+      while (Display.getCurrent().readAndDispatch()) {
+      }
    }
 }

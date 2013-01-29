@@ -85,14 +85,6 @@ public final class Operations {
       return status;
    }
 
-   /**
-    * Executes an operation calling the monitor begin and done methods.
-    */
-   public static IStatus executeWork(IOperation operation, IProgressMonitor monitor) {
-      SubMonitor subMonitor = SubMonitor.convert(monitor, operation.getName(), TASK_WORK_RESOLUTION);
-      return operation.run(subMonitor);
-   }
-
    public static Job executeAsJob(IOperation operation, boolean user) {
       return executeAsJob(operation, user, Job.LONG, null, null);
    }
@@ -115,7 +107,7 @@ public final class Operations {
       return scheduleJob(job, user, priority, jobChangeListener, null);
    }
 
-   public static Job scheduleJob(Job job, boolean user, int priority, IJobChangeListener jobChangeListener, ISchedulingRule rule) {
+   private static Job scheduleJob(Job job, boolean user, int priority, IJobChangeListener jobChangeListener, ISchedulingRule rule) {
       job.setUser(user);
       job.setPriority(priority);
       if (jobChangeListener != null) {
@@ -124,5 +116,48 @@ public final class Operations {
       job.setRule(rule);
       job.schedule();
       return job;
+   }
+
+   public static boolean areOperationsScheduled() {
+      Job[] jobs = Job.getJobManager().find(OperationJob.class);
+      return jobs != null && jobs.length > 0;
+   }
+
+   /**
+    * Executes an operation calling the monitor begin and done methods.
+    */
+   public static IStatus executeWork(IOperation operation, IProgressMonitor monitor) {
+      IStatus status = null;
+      try {
+         SubMonitor subMonitor = SubMonitor.convert(monitor, operation.getName(), TASK_WORK_RESOLUTION);
+         status = operation.run(subMonitor);
+      } finally {
+         if (monitor != null) {
+            monitor.done();
+         }
+      }
+      return status;
+   }
+
+   private static final class OperationJob extends Job {
+      private final IOperation operation;
+
+      /**
+       * @param operation the operation that will be executed by this Job's run method
+       */
+      public OperationJob(IOperation operation) {
+         super(operation.getName());
+         this.operation = operation;
+      }
+
+      @Override
+      protected IStatus run(IProgressMonitor monitor) {
+         return executeWork(operation, monitor);
+      }
+
+      @Override
+      public boolean belongsTo(Object family) {
+         return OperationJob.class.equals(family);
+      }
    }
 }

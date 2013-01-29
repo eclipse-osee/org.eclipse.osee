@@ -17,7 +17,7 @@ import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.orcs.db.internal.exchange.TxCurrentsAndModTypesCommand;
+import org.eclipse.osee.orcs.db.internal.exchange.TxCurrentsOpFactory;
 import org.eclipse.osee.orcs.db.internal.util.OperationCallableAdapter;
 import org.eclipse.osee.orcs.db.internal.util.OperationLoggerAdapter;
 
@@ -55,7 +55,8 @@ public class TxCurrentsCommand implements ConsoleCommand {
    public Callable<?> createCallable(Console console, ConsoleParameters params) {
       boolean isArchivedTable = params.getBoolean("onTxsArchived");
       OperationLogger logger = new OperationLoggerAdapter(console);
-      IOperation operation = new TxCurrentsAndModTypesCommand(getDatabaseService(), logger, isArchivedTable);
+      IOperation operation =
+         TxCurrentsOpFactory.createTxCurrentsAndModTypesOp(getDatabaseService(), logger, isArchivedTable);
       return new OperationCallableAdapter(operation);
    }
 }

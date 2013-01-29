@@ -18,13 +18,12 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osee.framework.core.enums.OperationBehavior;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.util.Conditions;
 
 /**
  * @author Roberto E. Escobar
  */
 public class CompositeOperation extends AbstractOperation {
-   private static final int MONITOR_RESOLUTION = 1000;
    private final List<IStatus> statuses = new ArrayList<IStatus>();
    private final List<? extends IOperation> operations;
    private final OperationBehavior behavior;
@@ -65,13 +64,30 @@ public class CompositeOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor parentMonitor) throws Exception {
-      if (operations == null || operations.isEmpty()) {
-         throw new OseeArgumentException("Sub-operations not available.");
+      Conditions.checkNotNullOrEmpty(operations, "sub-operations");
+
+      SubMonitor subMonitor = SubMonitor.convert(parentMonitor, getName(), Operations.TASK_WORK_RESOLUTION);
+      try {
+         processSubWork(subMonitor);
+      } finally {
+         subMonitor.done();
       }
-      SubMonitor subMonitor = SubMonitor.convert(parentMonitor, getName(), MONITOR_RESOLUTION);
-      int subTicks = MONITOR_RESOLUTION / operations.size();
+   }
+
+   private void processSubWork(SubMonitor subMonitor) throws Exception {
+      int subTicks = Operations.TASK_WORK_RESOLUTION / operations.size();
       for (IOperation operation : operations) {
-         IStatus status = operation.run(subMonitor.newChild(subTicks));
+         checkForCancelledStatus(subMonitor);
+
+         SubMonitor childMonitor = subMonitor.newChild(subTicks);
+         childMonitor.subTask(operation.getName());
+
+         IStatus status;
+         try {
+            status = operation.run(childMonitor);
+         } finally {
+            childMonitor.done();
+         }
 
          if (behavior == OperationBehavior.TerminateOnError && status.getSeverity() == IStatus.ERROR) {
             setStatus(status);

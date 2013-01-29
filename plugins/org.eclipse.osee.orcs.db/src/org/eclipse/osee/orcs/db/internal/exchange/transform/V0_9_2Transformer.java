@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.jdk.core.text.rules.ReplaceAll;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.db.internal.exchange.ExchangeUtil;
-import org.eclipse.osee.orcs.db.internal.exchange.TxCurrentsAndModTypesCommand;
+import org.eclipse.osee.orcs.db.internal.exchange.TxCurrentsOpFactory;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
 import org.osgi.framework.Version;
 
@@ -83,8 +83,10 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
 
    @Override
    public void finalizeTransform(IOseeDatabaseService dbService, ExchangeDataProcessor processor, OperationLogger logger) throws OseeCoreException {
-      Operations.executeWorkAndCheckStatus(new TxCurrentsAndModTypesCommand(dbService, logger, false));
-      Operations.executeWorkAndCheckStatus(new TxCurrentsAndModTypesCommand(dbService, logger, true));
+      Operations.executeWorkAndCheckStatus(TxCurrentsOpFactory.createTxCurrentsAndModTypesOp(dbService,
+         logger, false));
+      Operations.executeWorkAndCheckStatus(TxCurrentsOpFactory.createTxCurrentsAndModTypesOp(dbService,
+         logger, true));
    }
 
    private List<Integer> convertBranchTable(ExchangeDataProcessor processor) throws OseeCoreException {
