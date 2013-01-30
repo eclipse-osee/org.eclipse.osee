@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.orcs.data.GraphReadable;
-import org.eclipse.osee.orcs.search.QueryFacade;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
@@ -27,8 +26,6 @@ public interface OrcsApi {
    QueryIndexer getQueryIndexer(ApplicationContext context);
 
    QueryFactory getQueryFactory(ApplicationContext context);
-
-   QueryFacade getQueryFacade(ApplicationContext context);
 
    GraphReadable getGraph(ApplicationContext context);
 

@@ -43,7 +43,6 @@ import org.eclipse.osee.orcs.core.internal.transaction.TransactionFactoryImpl;
 import org.eclipse.osee.orcs.core.internal.transaction.handler.TxDataHandlerFactoryImpl;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.GraphReadable;
-import org.eclipse.osee.orcs.search.QueryFacade;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
@@ -142,11 +141,6 @@ public class OrcsApiImpl implements OrcsApi {
    @Override
    public BranchCache getBranchCache() {
       return cacheService.getBranchCache();
-   }
-
-   @Override
-   public QueryFacade getQueryFacade(ApplicationContext context) {
-      throw new UnsupportedOperationException();
    }
 
    @Override
