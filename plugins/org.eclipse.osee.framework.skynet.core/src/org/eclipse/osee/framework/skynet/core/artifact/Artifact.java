@@ -301,9 +301,19 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
       return null;
    }
 
+   public final List<Integer> getAttributeIds(IAttributeType attributeType) throws OseeCoreException {
+      List<Integer> items = new ArrayList<Integer>();
+      List<Attribute<Object>> data = getAttributes(attributeType);
+      for (Attribute<Object> attribute : data) {
+         Integer value = new Integer(attribute.getId());
+         items.add(value);
+      }
+      return items;
+   }
+
    /**
     * @return whether this artifact has exactly one parent artifact related by a relation of type default hierarchical
-    * @throws MultipleArtifactsExist if this artifact has more than one parent
+    * @throws MultipleArtifactsExist if this artiAact has more than one parent
     */
    public final boolean hasParent() throws OseeCoreException {
       int parentCount = getRelatedArtifactsUnSorted(CoreRelationTypes.Default_Hierarchical__Parent).size();
@@ -886,6 +896,44 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
       }
    }
 
+   public final <T> void setBinaryAttributeFromValues(IAttributeType attributeType, Collection<T> values) throws OseeCoreException {
+      ensureAttributesLoaded();
+
+      Set<T> uniqueItems = Collections.toSet(values);
+
+      List<Attribute<T>> remainingAttributes = getAttributes(attributeType);
+      List<T> remainingNewValues = new ArrayList<T>(uniqueItems.size());
+
+      // all existing attributes matching a new value will be left untouched
+      for (T newValue : uniqueItems) {
+         boolean found = false;
+         for (Attribute<T> attribute : remainingAttributes) {
+            if (newValue.equals(attribute.getValue())) {
+               remainingAttributes.remove(attribute);
+               found = true;
+               break;
+            }
+         }
+         if (!found) {
+            remainingNewValues.add(newValue);
+         }
+      }
+
+      for (T newValue : remainingNewValues) {
+         if (remainingAttributes.isEmpty()) {
+            setOrAddBinaryAttribute(attributeType, newValue);
+         } else {
+            int index = remainingAttributes.size() - 1;
+            remainingAttributes.get(index).setValue(newValue);
+            remainingAttributes.remove(index);
+         }
+      }
+
+      for (Attribute<T> attribute : remainingAttributes) {
+         attribute.delete();
+      }
+   }
+
    /**
     * adds a new attribute of the type named attributeTypeName and assigns it the given value
     */
@@ -927,6 +975,14 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
             return;
          }
       }
+      addAttribute(attributeType, value);
+   }
+
+   private final <T> void setOrAddBinaryAttribute(IAttributeType attributeType, T value) throws OseeCoreException {
+      /*
+       * List<Attribute<String>> attributes = getAttributes(attributeType); for (Attribute<String> canidateAttribute :
+       * attributes) { if (canidateAttribute.getValue().equals(value)) { return; } }
+       */
       addAttribute(attributeType, value);
    }
 

@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -61,7 +60,7 @@ public final class ArtifactImportOperationFactory {
     * </ol>
     * </p>
     * <br/>
-    *
+    * 
     * @param param
     * @return
     * @throws OseeCoreException
@@ -91,7 +90,7 @@ public final class ArtifactImportOperationFactory {
 
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(new SourceToRoughArtifactOperation(logger, extractor, sourceFile, collector));
-      ops.add(new RoughToRealArtifactOperation(transaction, destinationArtifact, collector, resolver, false));
+      ops.add(new RoughToRealArtifactOperation(transaction, destinationArtifact, collector, resolver, false, extractor));
       ops.add(new ArtifactValidationCheckOperation(destinationArtifact.getDescendants(), stopOnError));
       if (executeTransaction) {
          ops.add(new CompleteArtifactImportOperation(transaction, destinationArtifact));
@@ -123,7 +122,7 @@ public final class ArtifactImportOperationFactory {
          destinationArtifact, logger, extractor, collector, selectionArtifactTypes, runFilterByAttributes));
       ops.add(createRoughToRealOperation(
          "Artifact Import - RoughToRealArtifactOperation, ArtifactValidationCheckOperation, CompleteArtifactImportOperation",
-         destinationArtifact, resolver, stopOnError, collector, deleteUnMatched));
+         destinationArtifact, resolver, stopOnError, collector, deleteUnMatched, null));
       return new CompositeOperation("Artifact Import - ArtifactAndRoughToRealOperation, RoughToRealOperation",
          Activator.PLUGIN_ID, ops);
    }
@@ -145,14 +144,14 @@ public final class ArtifactImportOperationFactory {
     * @throws OseeCoreException
     * @see ArtifactImportWizard
     */
-   public static IOperation createRoughToRealOperation(String opName, final Artifact destinationArtifact, IArtifactImportResolver resolver, boolean stopOnError, RoughArtifactCollector collector, boolean deleteUnmatchedArtifacts) throws OseeCoreException {
+   public static IOperation createRoughToRealOperation(String opName, final Artifact destinationArtifact, IArtifactImportResolver resolver, boolean stopOnError, RoughArtifactCollector collector, boolean deleteUnmatchedArtifacts, IArtifactExtractor extractor) throws OseeCoreException {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(destinationArtifact.getBranch(),
             "Artifact Import Wizard transaction " + opName);
 
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(new RoughToRealArtifactOperation(transaction, destinationArtifact, collector, resolver,
-         deleteUnmatchedArtifacts));
+         deleteUnmatchedArtifacts, extractor));
 
       final List<Artifact> children = new ArrayList<Artifact>();
       ops.add(new FetchAndAddDescendantsOperation(children, destinationArtifact));

@@ -213,6 +213,12 @@
                  classname="org.eclipse.osee.framework.skynet.core.importing.parsers.ExcelArtifactExtractor">
            </ArtifactExtractor>
         </extension>
+        <extension
+              point="org.eclipse.osee.framework.skynet.core.ArtifactExtractor">
+           <ArtifactExtractor
+                 classname="org.eclipse.osee.framework.skynet.core.importing.parsers.DoorsArtifactExtractor">
+           </ArtifactExtractor>
+        </extension>        
  <extension
         point="org.eclipse.osee.framework.skynet.core.ArtifactExtractor">
      <ArtifactExtractor

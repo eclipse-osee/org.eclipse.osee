@@ -14,6 +14,7 @@ import java.net.URI;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 
@@ -75,6 +76,15 @@ public abstract class AbstractArtifactExtractor implements IArtifactExtractor {
       } finally {
          delegate.dispose();
       }
+   }
+
+   /**********************************************************
+    * Called after the rough artifact is converted to a real artifact
+    * 
+    * @param theArtifact The artifact that has been created
+    */
+   public void artifactCreated(Artifact theArtifact) {
+      // Allows option post processing if needed.  Default is do nothing
    }
 
    private void connectCollectorParent(RoughArtifactCollector collector) {

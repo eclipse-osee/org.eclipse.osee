@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.importing;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -135,8 +134,8 @@ public class RoughArtifact {
       attributes.add(attrType.getName(), value);
    }
 
-   public Map<String, URI> getURIAttributes() {
-      return getURIAttributes();
+   public Collection<URI> getURIAttributes() {
+      return attributes.getURIAttributes();
    }
 
    public boolean isChild(RoughArtifact otherArtifact) {

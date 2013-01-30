@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.importing.parsers;
 import java.io.FileFilter;
 import java.net.URI;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 
 /**
@@ -37,5 +38,7 @@ public interface IArtifactExtractor {
    public IArtifactExtractorDelegate getDelegate();
 
    public boolean hasDelegate();
+
+   public void artifactCreated(Artifact theArtifact);
 
 }

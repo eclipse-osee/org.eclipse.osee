@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughRelation;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -44,8 +45,9 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
    private final IRelationSorterId importArtifactOrder;
    private final boolean deleteUnmatchedArtifacts;
    private Collection<Artifact> unmatchedArtifacts;
+   private final IArtifactExtractor extractor;
 
-   public RoughToRealArtifactOperation(SkynetTransaction transaction, Artifact destinationArtifact, RoughArtifactCollector rawData, IArtifactImportResolver artifactResolver, boolean deleteUnmatchedArtifacts) {
+   public RoughToRealArtifactOperation(SkynetTransaction transaction, Artifact destinationArtifact, RoughArtifactCollector rawData, IArtifactImportResolver artifactResolver, boolean deleteUnmatchedArtifacts, IArtifactExtractor extractor) {
       super("Materialize Artifacts", Activator.PLUGIN_ID);
       this.rawData = rawData;
       this.transaction = transaction;
@@ -54,6 +56,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
       this.importArtifactOrder = RelationOrderBaseTypes.USER_DEFINED;
       this.roughToRealArtifact = new HashMap<RoughArtifact, Artifact>();
       this.deleteUnmatchedArtifacts = deleteUnmatchedArtifacts;
+      this.extractor = extractor;
       roughToRealArtifact.put(rawData.getParentRoughArtifact(), this.destinationArtifact);
    }
 
@@ -101,6 +104,9 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
             if (!childArtifact.hasParent()) {
                realArtifact.addChild(importArtifactOrder, childArtifact);
             }
+         }
+         if (extractor != null) {
+            extractor.artifactCreated(childArtifact);
          }
       }
 

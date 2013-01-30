@@ -17,6 +17,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    OutlineResolutionAndNumberTest.class,
    RoughArtifactMetaDataTest.class,
+   DoorsArtifactExtractorTest.class,
    WordMLExtractorDelegateTableOfContentsTest.class})
 public class ParsersSuite {
    // do nothing

@@ -14,11 +14,9 @@ import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Vector;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -31,7 +29,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 public final class RoughAttributeSet {
    private final HashCollection<CaseInsensitiveString, String> attributes =
       new HashCollection<CaseInsensitiveString, String>();
-   private final Map<CaseInsensitiveString, URI> uriAttributes = new HashMap<CaseInsensitiveString, URI>(2, 1);
+   private final HashCollection<CaseInsensitiveString, URI> uriAttributes =
+      new HashCollection<CaseInsensitiveString, URI>(2, 1);
 
    public void clear() {
       attributes.clear();
@@ -58,6 +57,11 @@ public final class RoughAttributeSet {
          return null;
       }
       return valueAsCollection.iterator().next();
+   }
+
+   public Collection<URI> getURIAttributes() {
+      Collection<URI> allURI = uriAttributes.getValues();
+      return allURI;
    }
 
    public Collection<String> getAttributeValueList(IAttributeType attributeType) {
@@ -104,16 +108,35 @@ public final class RoughAttributeSet {
    }
 
    private void transferBinaryAttributes(Artifact artifact) throws OseeCoreException {
-      for (Entry<CaseInsensitiveString, URI> entry : uriAttributes.entrySet()) {
-         InputStream inputStream = null;
-         try {
-            inputStream = new BufferedInputStream(entry.getValue().toURL().openStream());
-            IAttributeType attributeType = AttributeTypeManager.getType(entry.getKey().toString());
-            artifact.setSoleAttributeFromStream(attributeType, inputStream);
-         } catch (Exception ex) {
-            OseeExceptions.wrapAndThrow(ex);
-         } finally {
-            Lib.close(inputStream);
+      for (CaseInsensitiveString attrTypeName : uriAttributes.keySet()) {
+         Collection<URI> values = uriAttributes.getValues(attrTypeName);
+         if (values.size() == 1) {
+            InputStream inputStream = null;
+            try {
+               URI[] theURI = (URI[]) values.toArray();
+               inputStream = new BufferedInputStream(theURI[0].toURL().openStream());
+               IAttributeType attributeType = AttributeTypeManager.getType(attrTypeName.toString());
+               artifact.setSoleAttributeFromStream(attributeType, inputStream);
+            } catch (Exception ex) {
+               OseeExceptions.wrapAndThrow(ex);
+            } finally {
+               Lib.close(inputStream);
+            }
+         } else {
+            Collection<InputStream> streamCollection = new Vector<InputStream>();
+            try {
+               for (URI uri : values) {
+                  streamCollection.add(uri.toURL().openStream());
+               }
+               artifact.setBinaryAttributeFromValues(AttributeTypeManager.getType(attrTypeName.toString()),
+                  streamCollection);
+            } catch (Exception ex) {
+               OseeExceptions.wrapAndThrow(ex);
+            } finally {
+               for (InputStream inputStream : streamCollection) {
+                  Lib.close(inputStream);
+               }
+            }
          }
       }
    }
