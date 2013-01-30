@@ -22,7 +22,7 @@
 				<version>${tycho-version}</version>
 				<configuration>
 					<testSuite>org.eclipse.osee.framework.core.test</testSuite>
-					<testClass>org.eclipse.osee.framework.core.test.FrameworkCoreTestSuite</testClass>
+					<testClass>org.eclipse.osee.framework.core.FrameworkCoreTestSuite</testClass>
 				</configuration>
 			</plugin>
 		</plugins>
