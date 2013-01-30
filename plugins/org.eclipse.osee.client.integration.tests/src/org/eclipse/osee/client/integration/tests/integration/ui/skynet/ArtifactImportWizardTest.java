@@ -190,14 +190,14 @@ public final class ArtifactImportWizardTest {
       Assert.assertTrue(inputExcelFile.exists());
       try {
          IArtifactImportResolver resolver =
-            MatchingStrategy.GUID.getResolver(CoreArtifactTypes.SystemRequirement, null, true, true);
+            MatchingStrategy.GUID.getResolver(CoreArtifactTypes.SystemRequirementMSWord, null, true, true);
 
          RoughArtifactCollector collector = new RoughArtifactCollector(new RoughArtifact(RoughArtifactKind.PRIMARY));
          collector.reset();
 
          IOperation operation =
             ArtifactImportOperationFactory.createOperation(inputExcelFile, myRootArtifact, null,
-               new ExcelArtifactExtractor(), resolver, collector, Arrays.asList(CoreArtifactTypes.SystemRequirement),
+               new ExcelArtifactExtractor(), resolver, collector, Arrays.asList(CoreArtifactTypes.SystemRequirementMSWord),
                true, true, false);
          Operations.executeWorkAndCheckStatus(operation);
 

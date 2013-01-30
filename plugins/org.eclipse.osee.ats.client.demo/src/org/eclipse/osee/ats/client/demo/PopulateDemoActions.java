@@ -348,10 +348,10 @@ public class PopulateDemoActions extends XNavigateItemAction {
       try {
          importRequirements(DemoSawBuilds.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirement.getName() + "s",
             CoreArtifactTypes.SoftwareRequirement, "support/SAW-SoftwareRequirements.xml");
-         importRequirements(DemoSawBuilds.SAW_Bld_1, CoreArtifactTypes.SystemRequirement.getName() + "s",
-            CoreArtifactTypes.SystemRequirement, "support/SAW-SystemRequirements.xml");
-         importRequirements(DemoSawBuilds.SAW_Bld_1, CoreArtifactTypes.SubsystemRequirement.getName() + "s",
-            CoreArtifactTypes.SubsystemRequirement, "support/SAW-SubsystemRequirements.xml");
+         importRequirements(DemoSawBuilds.SAW_Bld_1, CoreArtifactTypes.SystemRequirementMSWord.getName() + "s",
+            CoreArtifactTypes.SystemRequirementMSWord, "support/SAW-SystemRequirements.xml");
+         importRequirements(DemoSawBuilds.SAW_Bld_1, CoreArtifactTypes.SubsystemRequirementMSWord.getName() + "s",
+            CoreArtifactTypes.SubsystemRequirementMSWord, "support/SAW-SubsystemRequirements.xml");
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -395,7 +395,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
    private void demoDbTraceabilityTx(SkynetTransaction transaction, IOseeBranch branch) {
       try {
          Collection<Artifact> systemArts =
-            DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SystemRequirement, "Robot", branch);
+            DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SystemRequirementMSWord, "Robot", branch);
 
          Collection<Artifact> component =
             DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.Component, "API", branch);
@@ -403,10 +403,10 @@ public class PopulateDemoActions extends XNavigateItemAction {
          component.addAll(DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.Component, "Sensor", branch));
 
          Collection<Artifact> subSystemArts =
-            DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirement, "Robot", branch);
-         subSystemArts.addAll(DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirement, "Video",
+            DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMSWord, "Robot", branch);
+         subSystemArts.addAll(DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMSWord, "Video",
             branch));
-         subSystemArts.addAll(DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirement,
+         subSystemArts.addAll(DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMSWord,
             "Interface", branch));
 
          Collection<Artifact> softArts =

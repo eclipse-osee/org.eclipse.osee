@@ -122,8 +122,8 @@ public class SubsystemFullTraceReport extends AbstractBlam {
 
    private void writeMainSheet(List<Artifact> artifacts) throws IOException, OseeCoreException {
       writer.startSheet("report", 18);
-      writer.writeRow(CoreArtifactTypes.SystemRequirement.getName(), null, null,
-         CoreArtifactTypes.SubsystemRequirement.getName(), null, null, null, null, null,
+      writer.writeRow(CoreArtifactTypes.SystemRequirementMSWord.getName(), null, null,
+         CoreArtifactTypes.SubsystemRequirementMSWord.getName(), null, null, null, null, null,
          CoreArtifactTypes.SoftwareRequirement.getName());
       writer.writeRow("Paragraph #", "Requirement Name", "Requirement Text", "Paragraph #", "Requirement Name",
          "Requirement Text", "Subsystem", CoreAttributeTypes.QualificationMethod.getName(), "Test Procedure",

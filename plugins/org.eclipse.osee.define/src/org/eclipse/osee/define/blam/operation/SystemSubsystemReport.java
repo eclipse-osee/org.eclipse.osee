@@ -107,10 +107,10 @@ public class SystemSubsystemReport extends AbstractBlam {
       ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.Component, branch);
 
       monitor.subTask("Aquiring System Requirements");
-      ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SystemRequirement, branch);
+      ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SystemRequirementMSWord, branch);
 
       monitor.subTask("Aquiring Subsystem Requirements"); // bulk load for performance reasons
-      ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubsystemRequirement, branch);
+      ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubsystemRequirementMSWord, branch);
 
       Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
       Artifact subsysTopFolder = root.getChild(Requirements.SUBSYSTEM_REQUIREMENTS);
@@ -237,7 +237,7 @@ public class SystemSubsystemReport extends AbstractBlam {
 
          row[SubsystemCompletness.subSys.ordinal()] = artifact.getSoleAttributeValue(CoreAttributeTypes.Subsystem, "");
 
-         if (artifact.isOfType(CoreArtifactTypes.SubsystemRequirement)) {
+         if (artifact.isOfType(CoreArtifactTypes.SubsystemRequirementMSWord)) {
             row[SubsystemCompletness.qualMethod.ordinal()] =
                artifact.getAttributesToStringSorted(CoreAttributeTypes.QualificationMethod);
          } else {
@@ -266,7 +266,7 @@ public class SystemSubsystemReport extends AbstractBlam {
          row[0] = artifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
          row[1] = artifact.getName();
 
-         if (artifact.isOfType(CoreArtifactTypes.SubsystemRequirement)) {
+         if (artifact.isOfType(CoreArtifactTypes.SubsystemRequirementMSWord)) {
             for (Artifact component : artifact.getRelatedArtifacts(CoreRelationTypes.Allocation__Component)) {
                components.add(component);
                row[2] = component.getName();
@@ -328,7 +328,7 @@ public class SystemSubsystemReport extends AbstractBlam {
 
    private void countDescendants(String subSysName, Set<Artifact> subsysReqs, Artifact artifact, Set<String> missingAllocationGuids) throws OseeCoreException {
       for (Artifact child : artifact.getChildren()) {
-         if (child.isOfType(CoreArtifactTypes.SubsystemRequirement)) {
+         if (child.isOfType(CoreArtifactTypes.SubsystemRequirementMSWord)) {
             subsysDescendantCount++;
             String selectedSubSystem = child.getSoleAttributeValue(CoreAttributeTypes.Subsystem, "");
 
@@ -362,7 +362,7 @@ public class SystemSubsystemReport extends AbstractBlam {
       excelWriter.startSheet(getShortSheetName(subSysName, "System Trace"), 4);
 
       excelWriter.writeRow(subSysName, "System To Subsystem Trace");
-      excelWriter.writeRow(CoreArtifactTypes.SystemRequirement.getName(), null, "Traceable Subsystem Requirement", null);
+      excelWriter.writeRow(CoreArtifactTypes.SystemRequirementMSWord.getName(), null, "Traceable Subsystem Requirement", null);
       excelWriter.writeRow("Paragraph #", "Paragraph Title", "Paragraph #", "Paragraph Title");
 
       String[] row = new String[4];
@@ -401,7 +401,7 @@ public class SystemSubsystemReport extends AbstractBlam {
       Set<Artifact> subsysReqs = subsysToSubsysReqsMap.get(subSysName);
 
       excelWriter.writeRow(subSysName, "Subsystem To System Trace");
-      excelWriter.writeRow(CoreArtifactTypes.SubsystemRequirement.getName(), null, null,
+      excelWriter.writeRow(CoreArtifactTypes.SubsystemRequirementMSWord.getName(), null, null,
          "Traceable System Requirement", null);
       excelWriter.writeRow("Paragraph #", "Paragraph Title", CoreAttributeTypes.QualificationMethod.getName(),
          "Paragraph #", "Paragraph Title");
@@ -411,7 +411,7 @@ public class SystemSubsystemReport extends AbstractBlam {
       for (Artifact subsysReq : subsysReqs) {
          row[0] = subsysReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
          row[1] = subsysReq.getName();
-         if (subsysReq.isOfType(CoreArtifactTypes.SubsystemRequirement)) {
+         if (subsysReq.isOfType(CoreArtifactTypes.SubsystemRequirementMSWord)) {
             row[2] = subsysReq.getAttributesToStringSorted(CoreAttributeTypes.QualificationMethod);
          } else {
             row[2] = "N/A: " + subsysReq.getArtifactTypeName();

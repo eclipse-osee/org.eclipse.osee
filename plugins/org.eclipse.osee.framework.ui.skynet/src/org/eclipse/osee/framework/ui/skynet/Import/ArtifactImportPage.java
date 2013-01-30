@@ -309,7 +309,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       return sourceFile;
    }
 
-   private IArtifactExtractor getArtifactParser() {
+   public IArtifactExtractor getArtifactParser() {
       return parserSelectPanel.getArtifactExtractor();
    }
 

@@ -484,6 +484,16 @@ attributeType "Native Content" extends CompressedContentAttribute {
 	fileExtension "bin"
 }
 
+attributeType "Image Content" extends CompressedContentAttribute {
+	guid "AA5h+kkRmm7I4TzZmVwA"
+	uuid 0x100000000000037C
+	dataProvider UriAttributeDataProvider
+	min 0
+	max unlimited
+	description "Binary Image content"
+	fileExtension "bin"
+}
+
 attributeType "Plain Text Content" extends StringAttribute {
 	guid "ALCoFaWDHHVgdAf2vOgA"
 	uuid 0x100000000000037A
@@ -492,6 +502,17 @@ attributeType "Plain Text Content" extends StringAttribute {
 	max 1
 	description "plain text file"
 	fileExtension "txt"
+}
+
+attributeType "HTML Content" extends StringAttribute {
+	guid "AAPGqIWsgnaSPB5p4KAA"
+	uuid 0x000000000000037D
+	dataProvider UriAttributeDataProvider
+	min 0
+	max unlimited
+	taggerId XmlAttributeTaggerProvider
+	description "HTML format text must be a valid xhtml file"
+	fileExtension "html"
 }
 
 attributeType "Word Template Content" extends WordAttribute {
@@ -574,6 +595,22 @@ abstract artifactType "Native Artifact" extends "Artifact" {
 	attribute "Extension"
 	attribute "Description"
 	attribute "Native Content"
+}
+
+artifactType "HTML Artifact" extends "Artifact" {
+	guid "AATyFmmwZzItgwtxImAA"
+	uuid 0x000000000000031E
+	attribute "Paragraph Number"
+	attribute "HTML Content"
+	attribute "Image Content"
+	attribute "PublishInline"
+}
+
+artifactType "Image Artifact" extends "Artifact" {
+	guid "ABpsLRWluR_gZraQj6wA"
+	uuid 0x0000000000000320
+	attribute "Paragraph Number"
+	attribute "Image Content"
 }
 
 attributeType "Content URL" extends StringAttribute {
@@ -698,9 +735,9 @@ artifactType "Software Requirement Data Definition" extends "Indirect Software R
 	uuid 0x0000000000000319
 }
 
-artifactType "System Requirement" extends "Requirement" , "MS Word Template" {
-	guid "AAMFDiSTcDGdUd9+tHAA"
-	uuid 0x000000000000001E
+abstract artifactType "Abstract System Requirement" extends "Requirement" {
+	guid "AAVaC7M+cBb4ksLwy1gA"
+	uuid 0x000000000000031C
 	attribute "Legacy Id"
 	attribute "Verification Level"
 	attribute "Effectivity"
@@ -708,13 +745,33 @@ artifactType "System Requirement" extends "Requirement" , "MS Word Template" {
 	attribute "Verification Event"
 }
 
-artifactType "Subsystem Requirement" extends "Requirement" , "MS Word Template" {
-	guid "AAMFDiN9KiAkhuLqOhQA"
-	uuid 0x000000000000001F
+artifactType "System Requirement - MS Word" extends "Abstract System Requirement" , "MS Word Template" {
+	guid "AAMFDiSTcDGdUd9+tHAA"
+	uuid 0x000000000000001E
+}
+
+artifactType "System Requirement - HTML" extends "Abstract System Requirement" , "HTML Artifact" {
+	guid "AAWAvGX_v3sdjnOGOrAA"
+	uuid 0x000000000000031A
+}
+
+abstract artifactType "Abstract Subsystem Requirement" extends "Requirement" {
+	guid "AARxa7RcITBOilT50gAA"
+	uuid 0x000000000000031D
 	attribute "Legacy Id"
 	attribute "Verification Level"
 	attribute "Verification Event"
 	attribute "Effectivity"
+}
+
+artifactType "Subsystem Requirement - MS Word" extends "Abstract Subsystem Requirement" , "MS Word Template" {
+	guid "AAMFDiN9KiAkhuLqOhQA"
+	uuid 0x000000000000001F
+}
+
+artifactType "Subsystem Requirement - HTML" extends "Abstract Subsystem Requirement" , "HTML Artifact" {
+	guid "AAS+1esqZlCSEheTPOgA"
+	uuid 0x000000000000031B
 }
 
 artifactType "Interface Requirement" extends "Requirement" , "MS Word Template" {

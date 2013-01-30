@@ -63,7 +63,7 @@ public class RelationImporter implements RowProcessor {
       }
       monitor.worked(1);
       Collection<Artifact> artifacts =
-         ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.SubsystemRequirement,
+         ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.SubsystemRequirementMSWord,
             CoreAttributeTypes.ParagraphNumber, row[1], branch);
 
       Artifact rowArtifact = getSoleArtifact(artifacts);

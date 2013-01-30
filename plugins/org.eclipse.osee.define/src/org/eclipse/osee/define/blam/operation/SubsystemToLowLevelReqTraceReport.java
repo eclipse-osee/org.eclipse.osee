@@ -86,7 +86,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
 
       monitor.subTask("Loading Higher Level Requirements"); // bulk load to improve performance
       monitor.worked(1);
-      ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubsystemRequirement, branch);
+      ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubsystemRequirementMSWord, branch);
       monitor.worked(30);
 
       Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
@@ -161,7 +161,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
          excelWriter.writeRow();
          excelWriter.writeRow();
          excelWriter.writeRow("5.2." + count++ + " " + subSysName + " Requirements Allocation Traceability to Lower Level Requirements");
-         excelWriter.writeRow(CoreArtifactTypes.SubsystemRequirement.getName(), null,
+         excelWriter.writeRow(CoreArtifactTypes.SubsystemRequirementMSWord.getName(), null,
             "Traceable Lower Level Requirements", null);
          excelWriter.writeRow("Paragraph #", "Paragraph Title", "Paragraph #", "Paragraph Title");
 

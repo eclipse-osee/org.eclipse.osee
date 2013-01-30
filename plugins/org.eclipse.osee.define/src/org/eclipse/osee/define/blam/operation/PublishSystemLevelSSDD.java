@@ -77,7 +77,7 @@ public class PublishSystemLevelSSDD extends AbstractBlam {
       ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.Component, branch);
 
       monitor.subTask("Aquiring System Requirements");
-      ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SystemRequirement, branch);
+      ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SystemRequirementMSWord, branch);
 
       Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
       sysReqs = root.getChild(Requirements.SYSTEM_REQUIREMENTS).getDescendants();
@@ -128,7 +128,7 @@ public class PublishSystemLevelSSDD extends AbstractBlam {
    private void writeSystemRequirementAllocationBySubsystem(Artifact subsystem) throws IOException, OseeCoreException {
       excelWriter.startSheet(subsystem.getName(), 200);
       excelWriter.writeRow("System Requirements Allocated to the " + subsystem.getName());
-      excelWriter.writeRow(CoreAttributeTypes.ParagraphNumber.getName(), CoreArtifactTypes.SystemRequirement.getName(),
+      excelWriter.writeRow(CoreAttributeTypes.ParagraphNumber.getName(), CoreArtifactTypes.SystemRequirementMSWord.getName(),
          "Notes <rationale>");
 
       for (Artifact systemRequirement : subsystemToRequirements.getValues(subsystem)) {
