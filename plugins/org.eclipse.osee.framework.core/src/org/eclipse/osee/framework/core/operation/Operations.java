@@ -27,15 +27,19 @@ import org.eclipse.osee.framework.core.internal.Activator;
 public final class Operations {
    public static final int TASK_WORK_RESOLUTION = Integer.MAX_VALUE;
 
-   private static final IOperation NOOP_OPERATION = new AbstractOperation("", Activator.PLUGIN_ID) {
-      @Override
-      protected void doWork(IProgressMonitor monitor) throws Exception {
-         // Do Nothing
-      }
-   };
+   private static final IOperation NOOP_OPERATION = createNoOpOperation("");
 
    private Operations() {
       // this private empty constructor exists to prevent the default constructor from allowing public construction
+   }
+
+   public static IOperation createNoOpOperation(String name) {
+      return new AbstractOperation(name, Activator.PLUGIN_ID) {
+         @Override
+         protected void doWork(IProgressMonitor monitor) throws Exception {
+            // Do Nothing
+         }
+      };
    }
 
    public static IOperation getNoOpOperation() {

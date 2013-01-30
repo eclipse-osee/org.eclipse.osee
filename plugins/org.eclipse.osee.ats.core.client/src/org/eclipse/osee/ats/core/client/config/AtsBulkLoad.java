@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
-import org.eclipse.osee.framework.core.operation.EmptyOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -45,7 +44,7 @@ public class AtsBulkLoad {
          ops.add(new AtsLoadWorkDefinitionsOperation());
          ops.add(new AtsLoadDictionaryOperation());
       } else {
-         ops.add(new EmptyOperation("ATS Bulk Loading", Activator.PLUGIN_ID));
+         ops.add(Operations.createNoOpOperation("ATS Bulk Loading"));
       }
       return ops;
    }
