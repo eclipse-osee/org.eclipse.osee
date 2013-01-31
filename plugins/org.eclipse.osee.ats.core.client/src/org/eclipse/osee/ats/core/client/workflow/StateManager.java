@@ -192,13 +192,37 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
       setMetrics(getCurrentState(), hours, percentComplete, logMetrics, user, date);
    }
 
+   /**
+    * @return true if hours difference is > than .01
+    */
+   protected boolean isHoursEqual(double hours1, double hours2) {
+      return Math.abs(hours2 - hours1) < 0.01;
+   }
+
+   /**
+    * Set metrics and log if changed
+    */
    public void setMetrics(IStateToken state, double hours, int percentComplete, boolean logMetrics, IAtsUser user, Date date) throws OseeCoreException {
-      getStateProvider().setHoursSpent(state.getName(), hours);
-      getStateProvider().setPercentComplete(state.getName(), percentComplete);
-      if (logMetrics) {
-         logMetrics(awa.getStateMgr().getCurrentState(), AtsUsersClient.getUser(), new Date());
+      boolean changed = setMetricsIfChanged(state, hours, percentComplete);
+      if (changed) {
+         if (logMetrics) {
+            logMetrics(awa.getStateMgr().getCurrentState(), AtsUsersClient.getUser(), new Date());
+         }
+         writeToArtifact();
       }
-      writeToArtifact();
+   }
+
+   protected boolean setMetricsIfChanged(IStateToken state, double hours, int percentComplete) throws OseeCoreException {
+      boolean changed = false;
+      if (!isHoursEqual(getStateProvider().getHoursSpent(state.getName()), hours)) {
+         getStateProvider().setHoursSpent(state.getName(), hours);
+         changed = true;
+      }
+      if (percentComplete != getStateProvider().getPercentComplete(state.getName())) {
+         getStateProvider().setPercentComplete(state.getName(), percentComplete);
+         changed = true;
+      }
+      return changed;
    }
 
    public StateType getStateType() {
