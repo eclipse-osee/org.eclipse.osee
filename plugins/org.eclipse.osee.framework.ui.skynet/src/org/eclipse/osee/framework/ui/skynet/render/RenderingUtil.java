@@ -136,8 +136,9 @@ public final class RenderingUtil {
             subFolder = pathPrefix.substring(0, index);
          }
          fileNamePrefix = pathPrefix.substring(index + 1);
+         fileNamePrefix = fileNamePrefix.trim();
       }
-
+      subFolder = subFolder.trim();
       String fileName = constructFilename(mainName, fileNamePrefix, extension);
       return getRenderFile(renderer, subFolder, fileName, presentationType);
    }
