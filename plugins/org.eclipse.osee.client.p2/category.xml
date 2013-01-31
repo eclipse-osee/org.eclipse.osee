@@ -12,11 +12,23 @@
    <feature url="features/org.eclipse.osee.client.test.framework.feature.source_0.11.0.qualifier.jar" id="org.eclipse.osee.client.test.framework.feature.source" version="0.11.0.qualifier">
       <category name="org.eclipse.osee.client.test"/>
    </feature>
+   <feature url="features/org.eclipse.osee.client.demo.feature_0.11.0.qualifier.jar" id="org.eclipse.osee.client.demo.feature" version="0.11.0.qualifier">
+      <category name="org.eclipse.osee.client.demo"/>
+   </feature>
+   <feature url="features/org.eclipse.osee.client.demo.feature.source_0.11.0.qualifier.jar" id="org.eclipse.osee.client.demo.feature.source" version="0.11.0.qualifier">
+      <category name="org.eclipse.osee.client.demo"/>
+   </feature>
+   
    <category-def name="org.eclipse.osee.client" label="Eclipse OSEE Client - (Incubation)">
       <description>
          Eclipse OSEE Client - (Incubation)
       </description>
    </category-def>
+   <category-def name="org.eclipse.osee.client.demo" label="Eclipse OSEE Client Demo - (Incubation)">
+      <description>
+         Eclipse OSEE Client Demo - (Incubation)
+      </description>   
+   </category-def>      
    <category-def name="org.eclipse.osee.client.test" label="Eclipse OSEE Client Test Framework - (Incubation)">
       <description>
          Eclipse OSEE Client Test Framework - (Incubation)
