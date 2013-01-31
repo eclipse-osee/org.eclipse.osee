@@ -42,7 +42,7 @@
 		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
 		<itemis-site>http://download.itemis.com/updates/releases/${xtext-version}</itemis-site>
-		
+
 		<osee-create-help-docs>true</osee-create-help-docs>
 	</properties>
 
@@ -136,6 +136,14 @@
 				<artifactId>target-platform-configuration</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
+					<filters>
+						<!-- Work around Equinox bug 348045 -->
+						<filter>
+							<type>p2-installable-unit</type>
+							<id>org.eclipse.equinox.servletbridge.extensionbundle</id>
+							<removeAll />
+						</filter>
+					</filters>
 					<resolver>p2</resolver>
 					<environments>
 						<!-- <environment> <os>macosx</os> <ws>carbon</ws> <arch>x86</arch> 
@@ -199,7 +207,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-resources-plugin</artifactId>
-					<version>2.4.1</version>
+					<version>2.5</version>
 					<configuration>
 						<encoding>ISO-8859-1</encoding>
 					</configuration>
