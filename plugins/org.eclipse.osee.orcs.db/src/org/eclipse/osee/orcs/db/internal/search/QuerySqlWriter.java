@@ -38,7 +38,7 @@ public class QuerySqlWriter extends AbstractSqlWriter<QueryOptions> {
       String txAlias = getAliasManager().getFirstAlias(TableEnum.TXS_TABLE);
       String artAlias = getAliasManager().getFirstAlias(TableEnum.ARTIFACT_TABLE);
 
-      write("SELECT%s ", getSqlHint());
+      write("SELECT ");
       if (getOptions().isHistorical()) {
          write("max(%s.transaction_id) as transaction_id, %s.art_id, %s.branch_id", txAlias, artAlias, txAlias);
       } else {
