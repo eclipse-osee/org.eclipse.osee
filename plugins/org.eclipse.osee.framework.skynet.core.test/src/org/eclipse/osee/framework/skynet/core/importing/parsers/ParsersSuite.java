@@ -15,9 +15,9 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   DoorsArtifactExtractorTest.class,
    OutlineResolutionAndNumberTest.class,
    RoughArtifactMetaDataTest.class,
-   DoorsArtifactExtractorTest.class,
    WordMLExtractorDelegateTableOfContentsTest.class})
 public class ParsersSuite {
    // do nothing
