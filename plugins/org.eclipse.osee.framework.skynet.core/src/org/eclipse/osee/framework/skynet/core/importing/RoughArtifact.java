@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
@@ -82,24 +81,32 @@ public class RoughArtifact {
       return roughParent;
    }
 
-   public void addURIAttribute(String name, URI url) {
-      attributes.addURIAttribute(name, url);
-   }
-
-   public void addURIAttribute(IAttributeType attributeType, URI file) {
-      addURIAttribute(attributeType.getName(), file);
+   public void addAttribute(IAttributeType attrType, String value) throws OseeCoreException {
+      addAttribute(attrType.getName(), value);
    }
 
    public void addAttribute(String typeName, String value) throws OseeCoreException {
       if (isEnumeration(typeName)) {
          if (isMultipleEnum(typeName, value)) {
-            attributes.addMultiple(typeName, getEnumValues(value));
+            attributes.addAttribute(typeName, getEnumValues(value));
          } else {
-            attributes.add(typeName, value.trim());
+            attributes.addAttribute(typeName, value.trim());
          }
       } else {
-         attributes.add(typeName, value);
+         attributes.addAttribute(typeName, value);
       }
+   }
+
+   public void addAttribute(String name, URI uri) {
+      attributes.addAttribute(name, uri);
+   }
+
+   public void addAttribute(IAttributeType attributeType, URI uri) {
+      addAttribute(attributeType.getName(), uri);
+   }
+
+   public Collection<URI> getURIAttributes() {
+      return attributes.getURIAttributes();
    }
 
    private String[] getEnumValues(String value) {
@@ -128,14 +135,6 @@ public class RoughArtifact {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return result;
-   }
-
-   public void addAttribute(IAttributeType attrType, String value) {
-      attributes.add(attrType.getName(), value);
-   }
-
-   public Collection<URI> getURIAttributes() {
-      return attributes.getURIAttributes();
    }
 
    public boolean isChild(RoughArtifact otherArtifact) {
@@ -213,7 +212,4 @@ public class RoughArtifact {
       this.primaryArtifactType = primaryArtifactType;
    }
 
-   public void translateAttributes(Artifact artifact) throws OseeCoreException {
-      attributes.translateAttributes(artifact);
-   }
 }

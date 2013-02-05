@@ -23,10 +23,11 @@ import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
  * @author Ryan Schmitt
  */
 public class GuidBasedArtifactResolver extends NewArtifactImportResolver {
+
    private final boolean createNewIfNotExist;
 
-   public GuidBasedArtifactResolver(IArtifactType primaryArtifactType, IArtifactType secondaryArtifactType, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
-      super(primaryArtifactType, secondaryArtifactType);
+   public GuidBasedArtifactResolver(IRoughArtifactTranslator translator, IArtifactType primaryArtifactType, IArtifactType secondaryArtifactType, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
+      super(translator, primaryArtifactType, secondaryArtifactType);
       this.createNewIfNotExist = createNewIfNotExist;
    }
 
@@ -49,7 +50,7 @@ public class GuidBasedArtifactResolver extends NewArtifactImportResolver {
 
       for (Artifact artifact : descendants) {
          if (guidsMatch(roughArtifact, artifact)) {
-            roughArtifact.translateAttributes(artifact);
+            getTranslator().translate(roughArtifact, artifact);
             return artifact;
          }
       }

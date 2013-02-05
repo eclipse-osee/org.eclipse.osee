@@ -496,7 +496,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
    private final Vector<String> theArtifact = new Vector<String>();
    private String paragraphNumber = "", paragraphName = "";
 
-   public void processRow(String[] row) {
+   public void processRow(String[] row) throws OseeCoreException {
       /***************************************************************
        * First check the document applicability box, if it is empty this is a header row
        */
@@ -589,7 +589,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       inArtifact = true;
    }
 
-   private void processArtifact() {
+   private void processArtifact() throws OseeCoreException {
       RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY);
       roughArtifact.setSectionNumber(paragraphNumber);
       roughArtifact.addAttribute(CoreAttributeTypes.ParagraphNumber, paragraphNumber);
@@ -623,7 +623,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                      }
                      try {
                         URI imageURI = new URI(theImage);
-                        roughArtifact.addURIAttribute("Image Content", imageURI);
+                        roughArtifact.addAttribute("Image Content", imageURI);
                         rowValue = rowValue.replace(theImage, imageBaseName + Integer.toString(imageNumber));
                         imageNumber++;
                      } catch (URISyntaxException e) {
@@ -671,8 +671,9 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
    /**********************************************************************
     * @param column value from the Verification type cell
     * @param roughArtifact the artifact being populated
+    * @throws OseeCoreException
     */
-   public void processVerification(String column, RoughArtifact roughArtifact) {
+   public void processVerification(String column, RoughArtifact roughArtifact) throws OseeCoreException {
       /**************************************************************
        * The followings possibilities exist for this field 1) Field empty 2) Some/all keywords The keywords may not be
        * filled in. In other words a keyword may be followed by a keyword instead of data.
@@ -718,11 +719,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                if (colon == -1) {
                   if (keywords[i].equals("Criteria:")) {
                      // special case Criteria is a string attribute
-                     try {
-                        roughArtifact.addAttribute("Verification Acceptance Criteria", rest);
-                     } catch (OseeCoreException e) {
-                        e.printStackTrace();
-                     }
+                     roughArtifact.addAttribute("Verification Acceptance Criteria", rest);
                   } else {
                      roughArtifact.addAttribute(FieldType[i], rest);
                   }

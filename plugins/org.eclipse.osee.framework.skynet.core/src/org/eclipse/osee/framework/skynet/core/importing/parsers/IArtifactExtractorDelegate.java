@@ -52,6 +52,6 @@ public interface IArtifactExtractorDelegate {
     */
    public void processContent(OperationLogger logger, RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) throws OseeCoreException;
 
-   public void finish();
+   public void finish() throws OseeCoreException;
 
 }

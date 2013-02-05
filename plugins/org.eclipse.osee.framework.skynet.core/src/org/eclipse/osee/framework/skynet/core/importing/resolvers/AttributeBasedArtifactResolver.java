@@ -30,11 +30,12 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  * @author Robert A. Fisher
  */
 public class AttributeBasedArtifactResolver extends NewArtifactImportResolver {
+
    private final Collection<IAttributeType> nonChangingAttributes;
    private final boolean createNewIfNotExist;
 
-   public AttributeBasedArtifactResolver(IArtifactType primaryArtifactType, IArtifactType secondaryArtifactType, Collection<IAttributeType> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
-      super(primaryArtifactType, secondaryArtifactType);
+   public AttributeBasedArtifactResolver(IRoughArtifactTranslator translator, IArtifactType primaryArtifactType, IArtifactType secondaryArtifactType, Collection<IAttributeType> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
+      super(translator, primaryArtifactType, secondaryArtifactType);
       this.nonChangingAttributes = nonChangingAttributes;
       this.createNewIfNotExist = createNewIfNotExist;
    }
@@ -89,7 +90,7 @@ public class AttributeBasedArtifactResolver extends NewArtifactImportResolver {
 
          if (candidates.size() == 1) {
             realArtifact = candidates.iterator().next();
-            roughArtifact.translateAttributes(realArtifact);
+            getTranslator().translate(roughArtifact, realArtifact);
          } else {
             String output =
                String.format("Found %s candidates during reuse import for \"%s\"", candidates.size(),

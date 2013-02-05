@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtract
 import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractorDelegate;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.Import.ArtifactResolverFactory.ArtifactCreationStrategy;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.panels.ArtifactExtractorSelectPanel;
 import org.eclipse.osee.framework.ui.skynet.panels.ArtifactSelectPanel;
@@ -283,13 +284,13 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       return deleteUnmatchedArtifacts.getSelection();
    }
 
-   public MatchingStrategy getMatchingStrategy() {
+   public ArtifactCreationStrategy getArtifactCreationStrategy() {
       if (isUpdateExistingSelected() && isUpdateByGuidSelected()) {
-         return MatchingStrategy.GUID;
+         return ArtifactCreationStrategy.CREATE_ON_NEW_ART_GUID;
       } else if (isUpdateExistingSelected()) {
-         return MatchingStrategy.ATTRIBUTE;
+         return ArtifactCreationStrategy.CREATE_ON_DIFFERENT_ATTRIBUTES;
       } else {
-         return MatchingStrategy.NONE;
+         return ArtifactCreationStrategy.CREATE_NEW_ALWAYS;
       }
    }
 

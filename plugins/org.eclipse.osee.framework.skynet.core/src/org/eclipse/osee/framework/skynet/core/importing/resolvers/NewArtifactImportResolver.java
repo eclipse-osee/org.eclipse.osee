@@ -25,25 +25,32 @@ import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
  * @author Ryan D. Brooks
  */
 public class NewArtifactImportResolver implements IArtifactImportResolver {
+
+   private final IRoughArtifactTranslator translator;
    private final IArtifactType primaryArtifactType;
    private final IArtifactType secondaryArtifactType;
 
-   public NewArtifactImportResolver(IArtifactType primaryArtifactType, IArtifactType secondaryArtifactType) {
+   public NewArtifactImportResolver(IRoughArtifactTranslator translator, IArtifactType primaryArtifactType, IArtifactType secondaryArtifactType) {
+      this.translator = translator;
       this.primaryArtifactType = primaryArtifactType;
       this.secondaryArtifactType = secondaryArtifactType;
+   }
+
+   protected IRoughArtifactTranslator getTranslator() {
+      return translator;
    }
 
    @Override
    public Artifact resolve(final RoughArtifact roughArtifact, final IOseeBranch branch, Artifact realParent, Artifact root) throws OseeCoreException {
       IArtifactType artifactType = getArtifactType(roughArtifact.getRoughArtifactKind());
 
-      OseeLog.logf(NewArtifactImportResolver.class, Level.INFO, "New artifact: [%s]. Attributes: [%s]",
-         roughArtifact, roughArtifact.getAttributes());
+      OseeLog.logf(NewArtifactImportResolver.class, Level.INFO, "New artifact: [%s]. Attributes: [%s]", roughArtifact,
+         roughArtifact.getAttributes());
 
       Artifact realArtifact =
          ArtifactTypeManager.addArtifact(artifactType, branch, roughArtifact.getGuid(),
             roughArtifact.getHumanReadableId());
-      roughArtifact.translateAttributes(realArtifact);
+      translator.translate(roughArtifact, realArtifact);
       return realArtifact;
    }
 

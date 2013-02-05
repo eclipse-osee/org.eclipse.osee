@@ -299,8 +299,10 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
 
    /**
     * Sets up storage (word formatted storage) for new artifact.
+    * 
+    * @throws OseeCoreException
     */
-   private void setContent() {
+   private void setContent() throws OseeCoreException {
       if (roughArtifact != null) {
          roughArtifact.addAttribute(CoreAttributeTypes.WordTemplateContent, wordFormattedContent.toString());
          postProcessContent(wordFormattedContent, roughArtifact);
@@ -309,7 +311,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    }
 
    @Override
-   public void finish() {
+   public void finish() throws OseeCoreException {
       setContent();
    }
 

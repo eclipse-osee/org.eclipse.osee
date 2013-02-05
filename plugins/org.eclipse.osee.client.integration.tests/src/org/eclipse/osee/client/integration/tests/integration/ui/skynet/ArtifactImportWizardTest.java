@@ -42,7 +42,8 @@ import org.eclipse.osee.framework.skynet.core.importing.parsers.ExcelArtifactExt
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationFactory;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard;
-import org.eclipse.osee.framework.ui.skynet.Import.MatchingStrategy;
+import org.eclipse.osee.framework.ui.skynet.Import.ArtifactResolverFactory;
+import org.eclipse.osee.framework.ui.skynet.Import.ArtifactResolverFactory.ArtifactCreationStrategy;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -190,15 +191,16 @@ public final class ArtifactImportWizardTest {
       Assert.assertTrue(inputExcelFile.exists());
       try {
          IArtifactImportResolver resolver =
-            MatchingStrategy.GUID.getResolver(CoreArtifactTypes.SystemRequirementMSWord, null, true, true);
+            ArtifactResolverFactory.createResolver(ArtifactCreationStrategy.CREATE_ON_NEW_ART_GUID,
+               CoreArtifactTypes.SystemRequirementMSWord, null, true, true);
 
          RoughArtifactCollector collector = new RoughArtifactCollector(new RoughArtifact(RoughArtifactKind.PRIMARY));
          collector.reset();
 
          IOperation operation =
             ArtifactImportOperationFactory.createOperation(inputExcelFile, myRootArtifact, null,
-               new ExcelArtifactExtractor(), resolver, collector, Arrays.asList(CoreArtifactTypes.SystemRequirementMSWord),
-               true, true, false);
+               new ExcelArtifactExtractor(), resolver, collector,
+               Arrays.asList(CoreArtifactTypes.SystemRequirementMSWord), true, true, false);
          Operations.executeWorkAndCheckStatus(operation);
 
          Assert.assertFalse(collector.getRoughArtifacts().isEmpty());

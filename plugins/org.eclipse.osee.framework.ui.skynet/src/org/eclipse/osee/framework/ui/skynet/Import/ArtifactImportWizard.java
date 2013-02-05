@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
+import org.eclipse.osee.framework.ui.skynet.Import.ArtifactResolverFactory.ArtifactCreationStrategy;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
@@ -114,7 +115,8 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
    }
 
    private IArtifactImportResolver getResolver() {
-      return mainPage.getMatchingStrategy().getResolver(mainPage.getArtifactType(),
+      ArtifactCreationStrategy strategy = mainPage.getArtifactCreationStrategy();
+      return ArtifactResolverFactory.createResolver(strategy, mainPage.getArtifactType(),
          mainPage.getNonChangingAttributes(), true, mainPage.isDeleteUnmatchedSelected());
    }
 }

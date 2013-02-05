@@ -35,8 +35,8 @@ public class NativeDocumentExtractor extends AbstractArtifactExtractor {
 
       RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY, name);
       collector.addRoughArtifact(roughArtifact);
-      roughArtifact.addAttribute(CoreAttributeTypes.Extension.getName(), extension);
-      roughArtifact.addURIAttribute(CoreAttributeTypes.NativeContent.getName(), source);
+      roughArtifact.addAttribute(CoreAttributeTypes.Extension, extension);
+      roughArtifact.addAttribute(CoreAttributeTypes.NativeContent, source);
    }
 
    @Override
