@@ -346,24 +346,21 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
    private void demoDbImportReqsTx() {
       try {
-         importRequirements(DemoSawBuilds.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirement.getName() + "s",
-            CoreArtifactTypes.SoftwareRequirement, "support/SAW-SoftwareRequirements.xml");
-         importRequirements(DemoSawBuilds.SAW_Bld_1, CoreArtifactTypes.SystemRequirementMSWord.getName() + "s",
-            CoreArtifactTypes.SystemRequirementMSWord, "support/SAW-SystemRequirements.xml");
-         importRequirements(DemoSawBuilds.SAW_Bld_1, CoreArtifactTypes.SubsystemRequirementMSWord.getName() + "s",
-            CoreArtifactTypes.SubsystemRequirementMSWord, "support/SAW-SubsystemRequirements.xml");
+         //@formatter:off
+         importRequirements(DemoSawBuilds.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirement, "Software Requirements", "support/SAW-SoftwareRequirements.xml");
+         importRequirements(DemoSawBuilds.SAW_Bld_1, CoreArtifactTypes.SystemRequirementMSWord, "System Requirements", "support/SAW-SystemRequirements.xml");
+         importRequirements(DemoSawBuilds.SAW_Bld_1, CoreArtifactTypes.SubsystemRequirementMSWord, "Subsystem Requirements", "support/SAW-SubsystemRequirements.xml");
+         //@formatter:on
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
-   private void importRequirements(IOseeBranch branch, String rootArtifactName, IArtifactType requirementType, String filename) throws Exception {
-
+   private void importRequirements(IOseeBranch branch, IArtifactType requirementType, String folderName, String filename) throws Exception {
       if (DEBUG) {
-         OseeLog.logf(Activator.class, Level.INFO, "Importing \"%s\" requirements on branch \"%s\"", rootArtifactName,
-            branch);
+         OseeLog.logf(Activator.class, Level.INFO, "Importing \"%s\" requirements on branch \"%s\"", folderName, branch);
       }
-      Artifact systemReq = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, rootArtifactName, branch);
+      Artifact systemReq = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, folderName, branch);
 
       File file = Activator.getInstance().getPluginFile(filename);
       IArtifactImportResolver artifactResolver =
@@ -404,8 +401,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
          Collection<Artifact> subSystemArts =
             DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMSWord, "Robot", branch);
-         subSystemArts.addAll(DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMSWord, "Video",
-            branch));
+         subSystemArts.addAll(DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMSWord,
+            "Video", branch));
          subSystemArts.addAll(DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMSWord,
             "Interface", branch));
 

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.client.demo.internal;
 
-import static java.lang.Thread.*;
+import static java.lang.Thread.sleep;
 import java.io.File;
 import java.net.URL;
 import java.util.Collection;
@@ -64,9 +64,11 @@ public class AddRequirementData implements IDbInitializationTask {
          // Import all requirements on SAW_Bld_1 Branch
          IOseeBranch branch = DemoBranches.SAW_Bld_1;
 
-         importRequirements(branch, CoreArtifactTypes.SoftwareRequirement, "support/SAW-SoftwareRequirements.xml");
-         importRequirements(branch, CoreArtifactTypes.SystemRequirementMSWord, "support/SAW-SystemRequirements.xml");
-         importRequirements(branch, CoreArtifactTypes.SubsystemRequirementMSWord, "support/SAW-SubsystemRequirements.xml");
+         //@formatter:off
+         importRequirements(branch, CoreArtifactTypes.SoftwareRequirement, "Software Requirements", "support/SAW-SoftwareRequirements.xml");
+         importRequirements(branch, CoreArtifactTypes.SystemRequirementMSWord, "System Requirements", "support/SAW-SystemRequirements.xml");
+         importRequirements(branch, CoreArtifactTypes.SubsystemRequirementMSWord, "Subsystem Requirements", "support/SAW-SubsystemRequirements.xml");
+         //@formatter:on
 
          SkynetTransaction demoDbTraceability =
             TransactionManager.createTransaction(branch, "Populate Demo DB - Create Traceability");
@@ -91,17 +93,12 @@ public class AddRequirementData implements IDbInitializationTask {
       }
    }
 
-   private String toPlural(String value) {
-      return String.format("%ss", value);
-   }
-
-   private void importRequirements(IOseeBranch branch, IArtifactType requirementType, String filename) throws Exception {
-      String rootArtifactName = toPlural(requirementType.getName());
+   private void importRequirements(IOseeBranch branch, IArtifactType requirementType, String folderName, String filename) throws Exception {
       if (DEBUG) {
          OseeLog.logf(AddRequirementData.class, Level.INFO, "Importing \"%s\" requirements on branch \"%s\"",
-            rootArtifactName, branch);
+            folderName, branch);
       }
-      Artifact systemReq = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, rootArtifactName, branch);
+      Artifact systemReq = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, folderName, branch);
 
       IArtifactImportResolver artifactResolver =
          new NewArtifactImportResolver(requirementType, CoreArtifactTypes.Heading);
@@ -148,7 +145,8 @@ public class AddRequirementData implements IDbInitializationTask {
       Collection<Artifact> subSystemArts =
          getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMSWord, "Robot", branch);
       subSystemArts.addAll(getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMSWord, "Video", branch));
-      subSystemArts.addAll(getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMSWord, "Interface", branch));
+      subSystemArts.addAll(getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMSWord, "Interface",
+         branch));
 
       Collection<Artifact> softArts =
          getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirement, "Robot", branch);
