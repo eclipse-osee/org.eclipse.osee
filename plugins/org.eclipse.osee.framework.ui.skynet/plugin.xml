@@ -16,7 +16,6 @@
  <extension-point id="DatabaseHealthOperation" name="DatabaseHealthOperation" schema="schema/DatabaseHealthOperation.exsd"/>
   <extension-point id="ArtifactImageProvider" name="ArtifactImageProvider" schema="schema/ArtifactImageProvider.exsd"/>
   <extension-point id="UserNavigateItem" name="UserNavigateItem" schema="schema/UserNavigateItem.exsd"/>
- 
 
    <extension point="org.eclipse.ui.popupMenus">
       <objectContribution
@@ -1580,7 +1579,6 @@
                  className="org.eclipse.osee.framework.ui.skynet.dbHealth.RepeatEnumerationAttributeValues">
            </DatabaseHealthOperation>
         </extension>
-        
         <extension
               point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
            <Operation
@@ -1755,5 +1753,11 @@
             name="OSEE Context"
             parentId="org.eclipse.ui.contexts.window">
       </context>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.skynet.core.OseeValidator">
+      <OseeValidator
+            classname="org.eclipse.osee.framework.ui.skynet.templates.TemplateArtifactValidator">
+      </OseeValidator>
    </extension>
 </plugin>

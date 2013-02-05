@@ -36,6 +36,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.BinaryBackedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
+import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
+import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -202,8 +204,13 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
       if (status.isOK()) {
          for (XWidget widget : xWidgets.values()) {
             status = widget.isValid();
+            if (status.isOK()) {
+               status =
+                  OseeValidator.getInstance().validate(IOseeValidator.SHORT, getArtifact(), getAttributeType(),
+                     widget.getData());
+            }
             if (!status.isOK()) {
-               return status;
+               break;
             }
          }
       }
@@ -278,6 +285,7 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
       }
       return xWidget;
    }
+
    private final class XTextInternalWidget extends XText {
 
       public XTextInternalWidget(String label) {

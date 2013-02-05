@@ -26,6 +26,7 @@ import org.junit.runners.Suite;
    RelationIntegrityCheckTest.class,
    ReplaceWithBaselineTest.class,
    StringGuidsToArtifactListOperationTest.class,
+   TemplateArtifactValidatorTest.class,
    ViewWordChangeAndDiffTest.class,
    WordArtifactElementExtractorTest.class,
    WordEditTest.class,

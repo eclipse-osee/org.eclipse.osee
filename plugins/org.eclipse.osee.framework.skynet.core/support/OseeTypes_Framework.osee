@@ -328,6 +328,7 @@ attributeType "Template Match Criteria" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
+	taggerId DefaultAttributeTaggerProvider
 	description "Criteria that determines what template is selected ie: \'Render Artifact PresentationType Option\'"
 }
 

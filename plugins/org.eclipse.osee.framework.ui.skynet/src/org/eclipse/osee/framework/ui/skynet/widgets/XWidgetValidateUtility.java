@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 
@@ -24,9 +25,9 @@ public final class XWidgetValidateUtility {
       // Utility class
    }
 
-   public static void validate(int requiredQualityOfService, XWidget xWidget, Artifact artifact, String attributeTypeName, Object proposedValue) {
+   public static void validate(int requiredQualityOfService, XWidget xWidget, Artifact artifact, IAttributeType attributeType, Object proposedValue) {
       IStatus status =
-         OseeValidator.getInstance().validate(requiredQualityOfService, artifact, attributeTypeName, proposedValue);
+         OseeValidator.getInstance().validate(requiredQualityOfService, artifact, attributeType, proposedValue);
       setStatus(status, xWidget);
    }
 
