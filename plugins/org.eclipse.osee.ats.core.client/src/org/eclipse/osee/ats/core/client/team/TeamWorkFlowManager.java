@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.internal.Activator;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ITeamWorkflowProvider;
@@ -37,6 +36,7 @@ import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -65,10 +65,22 @@ public class TeamWorkFlowManager {
     * Quickly transition to a state with minimal metrics and data entered. Should only be used for automated transition
     * for things such as developmental testing and demos.
     * 
-    * @param user User to transition to OR null if should use user of current state
+    * @param user Users to be assigned after transition and that did the current state work
     */
    public Result transitionTo(TeamState toState, IAtsUser user, boolean popup, SkynetTransaction transaction) throws OseeCoreException {
-      Assert.isNotNull(user);
+      return transitionTo(toState, user, Arrays.asList(user), popup, transaction);
+   }
+
+   /**
+    * Quickly transition to a state with minimal metrics and data entered. Should only be used for automated transition
+    * for things such as developmental testing and demos.
+    * 
+    * @param transitionToAssignees Users to be assigned after transition
+    * @param currentStateUser User that did work on current state
+    */
+   public Result transitionTo(TeamState toState, IAtsUser currentStateUser, Collection<IAtsUser> transitionToAssignees, boolean popup, SkynetTransaction transaction) throws OseeCoreException {
+      Assert.isNotNull(currentStateUser);
+      Conditions.checkNotNullOrEmpty(transitionToAssignees, "transitionToAssignees");
       Date date = new Date();
       if (toState == TeamState.Endorse) {
          if (!teamArt.getCurrentStateName().equals(TeamState.Endorse.getName())) {
@@ -77,7 +89,8 @@ public class TeamWorkFlowManager {
          return Result.TrueResult;
       }
       if (teamArt.isInState(TeamState.Endorse)) {
-         Result result = processEndorseState(popup, teamArt, user, date, transaction);
+         Result result =
+            processEndorseState(popup, teamArt, currentStateUser, transitionToAssignees, date, transaction);
          if (result.isFalse()) {
             return result;
          }
@@ -87,7 +100,8 @@ public class TeamWorkFlowManager {
       }
 
       if (teamArt.isInState(TeamState.Analyze)) {
-         Result result = processAnalyzeState(popup, teamArt, user, date, transaction);
+         Result result =
+            processAnalyzeState(popup, teamArt, currentStateUser, transitionToAssignees, date, transaction);
          if (result.isFalse()) {
             return result;
          }
@@ -98,7 +112,8 @@ public class TeamWorkFlowManager {
       }
 
       if (teamArt.isInState(TeamState.Authorize)) {
-         Result result = processAuthorizeState(popup, teamArt, user, date, transaction);
+         Result result =
+            processAuthorizeState(popup, teamArt, currentStateUser, transitionToAssignees, date, transaction);
          if (result.isFalse()) {
             return result;
          }
@@ -109,7 +124,7 @@ public class TeamWorkFlowManager {
       }
 
       if (teamArt.isInState(TeamState.Implement)) {
-         Result result = transitionToState(popup, teamArt, TeamState.Completed, user, transaction);
+         Result result = transitionToState(popup, teamArt, TeamState.Completed, transitionToAssignees, transaction);
          if (result.isFalse()) {
             return result;
          }
@@ -118,53 +133,46 @@ public class TeamWorkFlowManager {
 
    }
 
-   private IAtsUser getUserOrDefault(IAtsUser user) throws OseeCoreException {
-      if (user == null) {
-         return AtsUsersClient.getUser();
-      }
-      return user;
-   }
-
-   private Result processAuthorizeState(boolean popup, TeamWorkFlowArtifact teamArt, IAtsUser user, Date date, SkynetTransaction transaction) throws OseeCoreException {
-      Result result = setAuthorizeData(popup, 100, .2, getUserOrDefault(user), date);
+   private Result processAuthorizeState(boolean popup, TeamWorkFlowArtifact teamArt, IAtsUser currentStateUser, Collection<IAtsUser> transitionToAssignees, Date date, SkynetTransaction transaction) throws OseeCoreException {
+      Result result = setAuthorizeData(popup, 100, .2, currentStateUser, date);
       if (result.isFalse()) {
          return result;
       }
-      result = transitionToState(popup, teamArt, TeamState.Implement, getUserOrDefault(user), transaction);
+      result = transitionToState(popup, teamArt, TeamState.Implement, transitionToAssignees, transaction);
       if (result.isFalse()) {
          return result;
       }
       return Result.TrueResult;
    }
 
-   private Result processAnalyzeState(boolean popup, TeamWorkFlowArtifact teamArt, IAtsUser user, Date date, SkynetTransaction transaction) throws OseeCoreException {
-      Result result = setAnalyzeData(popup, null, null, 1, 100, .2, getUserOrDefault(user), date);
+   private Result processAnalyzeState(boolean popup, TeamWorkFlowArtifact teamArt, IAtsUser currentStateUser, Collection<IAtsUser> transitionToAssignees, Date date, SkynetTransaction transaction) throws OseeCoreException {
+      Result result = setAnalyzeData(popup, null, null, 1, 100, .2, currentStateUser, date);
       if (result.isFalse()) {
          return result;
       }
-      result = transitionToState(popup, teamArt, TeamState.Authorize, getUserOrDefault(user), transaction);
-      if (result.isFalse()) {
-         return result;
-      }
-      return Result.TrueResult;
-   }
-
-   private Result processEndorseState(boolean popup, TeamWorkFlowArtifact teamArt, IAtsUser user, Date date, SkynetTransaction transaction) throws OseeCoreException {
-      Result result = setEndorseData(popup, null, 100, .2, getUserOrDefault(user), date);
-      if (result.isFalse()) {
-         return result;
-      }
-      result = transitionToState(popup, teamArt, TeamState.Analyze, getUserOrDefault(user), transaction);
+      result = transitionToState(popup, teamArt, TeamState.Authorize, transitionToAssignees, transaction);
       if (result.isFalse()) {
          return result;
       }
       return Result.TrueResult;
    }
 
-   private Result transitionToState(boolean popup, TeamWorkFlowArtifact teamArt, IStateToken toState, IAtsUser user, SkynetTransaction transaction) {
+   private Result processEndorseState(boolean popup, TeamWorkFlowArtifact teamArt, IAtsUser currentStateUser, Collection<IAtsUser> transitionToAssignees, Date date, SkynetTransaction transaction) throws OseeCoreException {
+      Result result = setEndorseData(popup, null, 100, .2, currentStateUser, date);
+      if (result.isFalse()) {
+         return result;
+      }
+      result = transitionToState(popup, teamArt, TeamState.Analyze, transitionToAssignees, transaction);
+      if (result.isFalse()) {
+         return result;
+      }
+      return Result.TrueResult;
+   }
+
+   private Result transitionToState(boolean popup, TeamWorkFlowArtifact teamArt, IStateToken toState, Collection<IAtsUser> transitionToAssignees, SkynetTransaction transaction) {
       TransitionHelper helper =
          new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(teamArt), toState.getName(),
-            Arrays.asList(user), null, transitionOptions);
+            transitionToAssignees, null, transitionOptions);
       TransitionManager transitionMgr = new TransitionManager(helper, transaction);
       TransitionResults results = transitionMgr.handleAll();
       if (results.isEmpty()) {
