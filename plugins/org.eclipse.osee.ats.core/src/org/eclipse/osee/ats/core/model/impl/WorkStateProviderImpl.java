@@ -52,7 +52,7 @@ public class WorkStateProviderImpl implements WorkStateProvider {
    public WorkStateProviderImpl(WorkStateFactory factory, WorkState workState) {
       this.factory = factory;
       if (workState != null) {
-         this.currentStateName = workState.getName();
+         currentStateName = workState.getName();
          states.add(workState);
       }
    }
@@ -128,6 +128,9 @@ public class WorkStateProviderImpl implements WorkStateProvider {
       }
       if (getAssignees().size() > 1 && getAssignees().contains(AtsUsers.getUnAssigned())) {
          removeAssignee(getCurrentStateName(), AtsUsers.getUnAssigned());
+      }
+      if (getAssignees().size() > 1 && getAssignees().contains(AtsUsers.getSystemUser())) {
+         removeAssignee(getCurrentStateName(), AtsUsers.getSystemUser());
       }
    }
 
