@@ -40,12 +40,10 @@ public class MessageRecorder {
    private final IMessageEntryFactory factory;
 
    private final ExecutorService taskHandler = Executors.newFixedThreadPool(2);
-   private final TestEnvironmentInterface env;
    private final ArrayBlockingQueue<ByteBuffer> bufferQueue = new ArrayBlockingQueue<ByteBuffer>(NUM_BUFFERS);
 
    public MessageRecorder(IMessageEntryFactory factory) {
       this.factory = factory;
-      this.env = Activator.getTestEnvironment();
       try {
          for (int i = 0; i < NUM_BUFFERS; i++) {
             bufferQueue.put(ByteBuffer.allocateDirect(256000));
@@ -96,10 +94,6 @@ public class MessageRecorder {
 
    public boolean isRecording() {
       return isRecording;
-   }
-
-   public long getTimeStamp() {
-      return env.getEnvTime();
    }
 
    public void stopRecording(boolean closeOutputChannel) throws IOException {
