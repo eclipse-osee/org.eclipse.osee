@@ -13,11 +13,15 @@ package org.eclipse.osee.ats.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsEditor;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchData;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchOperation;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -45,7 +49,11 @@ public class OpenWorldByIdAction extends Action {
       }
       MultipleHridSearchOperation operation = new MultipleHridSearchOperation(data);
       if (pend) {
-         operation.run(null);
+         try {
+            Operations.executeWorkAndCheckStatus(operation);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         }
       } else {
          Operations.executeAsJob(operation, true);
       }

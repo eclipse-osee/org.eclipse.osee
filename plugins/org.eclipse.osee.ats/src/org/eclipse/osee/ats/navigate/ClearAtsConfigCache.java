@@ -13,7 +13,12 @@ package org.eclipse.osee.ats.navigate;
 
 import org.eclipse.osee.ats.core.client.config.AtsLoadConfigArtifactsOperation;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -39,7 +44,11 @@ public class ClearAtsConfigCache extends XNavigateItemAction {
       AtsConfigCache.instance.clearCaches();
 
       AtsLoadConfigArtifactsOperation opt = new AtsLoadConfigArtifactsOperation(true);
-      opt.run(null);
+      try {
+         Operations.executeWorkAndCheckStatus(opt);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
 
       rd.log("\n\nPost-reload");
       AtsConfigCache.instance.getReport(rd);
