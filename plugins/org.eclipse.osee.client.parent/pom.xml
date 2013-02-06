@@ -37,7 +37,10 @@
 		<module>../../plugins/org.eclipse.osee.framework.messaging.event.res.test</module>
 
 		<module>../../plugins/org.eclipse.osee.framework.dev.help.ui</module>
+		<module>../../plugins/org.eclipse.osee.framework.dev.help.ui.test</module>
+				
 		<module>../../plugins/org.eclipse.osee.framework.help.ui</module>
+		<module>../../plugins/org.eclipse.osee.framework.help.ui.test</module>
 
 		<module>../../plugins/org.eclipse.osee.framework.skynet.core</module>
 		<module>../../plugins/org.eclipse.osee.framework.skynet.core.test</module>

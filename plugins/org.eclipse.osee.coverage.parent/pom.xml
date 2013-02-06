@@ -21,6 +21,7 @@
 		<module>../../plugins/org.eclipse.osee.coverage.test</module>
 
 		<module>../../plugins/org.eclipse.osee.coverage.help.ui</module>
+		<module>../../plugins/org.eclipse.osee.coverage.help.ui.test</module>
 
 		<module>../../features/org.eclipse.osee.coverage.feature</module>
 		<module>../../features/org.eclipse.osee.coverage.feature.source</module>

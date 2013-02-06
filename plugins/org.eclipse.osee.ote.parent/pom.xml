@@ -35,6 +35,8 @@
 		<module>../../plugins/org.eclipse.osee.ote.server</module>
 
 		<module>../../plugins/org.eclipse.osee.ote.help.ui</module>
+		<module>../../plugins/org.eclipse.osee.ote.help.ui.test</module>
+		
 		<module>../../plugins/org.eclipse.osee.ote.ui</module>
 		<!-- <module>../../plugins/org.eclipse.osee.ote.ui.host.cmd</module> -->
 		<module>../../plugins/org.eclipse.osee.ote.ui.markers</module>

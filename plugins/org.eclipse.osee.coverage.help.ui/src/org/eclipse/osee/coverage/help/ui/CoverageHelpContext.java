@@ -22,7 +22,7 @@ public class CoverageHelpContext {
       // Private Constructor
    }
 
-   private static final String PLUGIN_ID = "org.eclipse.osee.framework.help.ui";
+   private static final String PLUGIN_ID = "org.eclipse.osee.coverage.help.ui";
 
    public static final HelpContext NAVIGATOR = toContext("coverage_navigator");
 

@@ -16,7 +16,6 @@
 	<context id="atsConfigureWorkflow">
 	   <description>Configure Workflow for use by Team Definition.</description>
 	   <topic href="OSEE/ATS/Users_Guide/Views/ATS-Workflow-Configuration-Editor.html" label="Workflow Configuration Editor"/>
-	   <topic href="OSEE/ATS/Users_Guide/Workflow-Configuration.html" label="Workflow Configuration"/>
 	   <topic href="OSEE/ATS/Users_Guide/Views/Work-Page-Definition-Artifact.html" label="Work Page Definition"/>
 	   <topic href="OSEE/ATS/Users_Guide/Views/Work-Rule-Definition-Artifact.html" label="Work Rule Definition"/>
 	   <topic href="OSEE/ATS/Users_Guide/Views/Work-Rule-Widget-Artifact.html" label="Work Widget Definition"/>
@@ -39,7 +38,6 @@
 		<description>Show loaded Action, Team Workflows, Tasks and Reviews.</description>
 		<topic href="OSEE/ATS/Users_Guide/Views/ATS-World-View.html" label="ATS World View"/>
 		<topic href="OSEE/ATS/Users_Guide/Views/Table-Customization.html" label="Table Customization"/>
-		<topic href="OSEE/ATS/Users_Guide/Views.html" label="ATS Icons"/>
 		<topic href="OSEE/ATS/Users_Guide/Intro/Intro.html" label="ATS Overview"/>
 		<topic href="OSEE/ATS/Users_Guide/Tips/Tips.html" label="ATS Tips"/>		
 	</context>
