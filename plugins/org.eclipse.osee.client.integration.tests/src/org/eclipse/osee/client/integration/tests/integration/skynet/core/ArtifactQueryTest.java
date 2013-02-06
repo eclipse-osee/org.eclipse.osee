@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
-import static org.eclipse.osee.client.demo.DemoChoice.*;
+import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,6 +31,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactSearchCriteria;
+import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -113,6 +116,50 @@ public class ArtifactQueryTest {
          }
       }
       Assert.assertTrue("No artifacts on multiple branches found", pass);
+   }
+
+   @Test
+   public void testNotTaggableGetArtifactListFromAttributeType() {
+      List<ArtifactSearchCriteria> criteria = new ArrayList<ArtifactSearchCriteria>();
+
+      criteria.add(new AttributeCriteria(CoreAttributeTypes.FavoriteBranch, "Common"));
+      // test against a couple of attributes types that are not taggable; expect exception
+      try {
+         List<Artifact> artifacts =
+            ArtifactQuery.getArtifactListFromCriteria(BranchManager.getCommonBranch(), 1000, criteria);
+         Assert.fail("Should have thrown an exception as the attribute type are not taggable");
+      } catch (OseeCoreException e) {
+         Assert.assertTrue(e.getMessage(), Boolean.TRUE);
+      }
+
+      try {
+         List<Artifact> artifacts =
+            ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.Active,
+               "true", BranchManager.getCommonBranch());
+         Assert.fail("Should have thrown an exception as the attribute type are not taggable");
+      } catch (OseeCoreException e) {
+         Assert.assertTrue(e.getMessage(), Boolean.TRUE);
+      }
+      // test against a couple attributes types that are taggable; do not expect exception
+      criteria.clear();
+      criteria.add(new AttributeCriteria(CoreAttributeTypes.Email, "john.doe@somewhere.com"));
+      try {
+         List<Artifact> artifacts =
+            ArtifactQuery.getArtifactListFromCriteria(BranchManager.getCommonBranch(), 1000, criteria);
+         Assert.assertTrue("This attribute type is taggable", Boolean.TRUE);
+      } catch (OseeCoreException e) {
+         Assert.fail(e.getMessage());
+      }
+
+      try {
+         List<Artifact> artifacts =
+            ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.Notes,
+               "My Notes", BranchManager.getCommonBranch());
+         Assert.assertTrue("This attribute type is taggable", Boolean.TRUE);
+      } catch (OseeCoreException e) {
+         Assert.fail(e.getMessage());
+      }
+
    }
 
    @Test

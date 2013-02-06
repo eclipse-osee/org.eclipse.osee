@@ -78,8 +78,8 @@ public class QueryEngineImplTest {
       CoreRelationTypes.Default_Hierarchical__Child);
 
    private static final Criteria<?> ATTRIBUTE_KEYWORD = new CriteriaAttributeKeyword(Arrays.asList(
-      CoreAttributeTypes.Name, CoreAttributeTypes.WordTemplateContent), "hello1_two_three", TokenDelimiterMatch.ANY,
-      TokenOrderType.MATCH_ORDER, MatchTokenCountType.IGNORE_TOKEN_COUNT, CaseType.MATCH_CASE);
+      CoreAttributeTypes.Name, CoreAttributeTypes.WordTemplateContent), null, "hello1_two_three",
+      TokenDelimiterMatch.ANY, TokenOrderType.MATCH_ORDER, MatchTokenCountType.IGNORE_TOKEN_COUNT, CaseType.MATCH_CASE);
 
    private static final Criteria<?> RELATED_TO = new CriteriaRelatedTo(CoreRelationTypes.Default_Hierarchical__Child,
       Arrays.asList(45, 61));

@@ -74,7 +74,7 @@ public class CriteriaFactory {
 
    public Criteria<QueryOptions> createAttributeCriteria(Collection<? extends IAttributeType> attributeTypes, String value, QueryOption... options) throws OseeCoreException {
       Collection<? extends IAttributeType> toReturn = checkForAnyType(attributeTypes);
-      return new CriteriaAttributeKeyword(toReturn, value, options);
+      return new CriteriaAttributeKeyword(toReturn, attributeTypeCache, value, options);
    }
 
    public Criteria<QueryOptions> createArtifactTypeCriteria(Collection<? extends IArtifactType> artifactTypes) throws OseeCoreException {

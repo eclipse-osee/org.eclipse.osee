@@ -10,11 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds.criteria;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.orcs.core.ds.Criteria;
@@ -25,12 +28,14 @@ import org.eclipse.osee.orcs.core.ds.QueryOptions;
  */
 public class CriteriaAttributeKeyword extends Criteria<QueryOptions> {
 
+   private final AttributeTypeCache attributeTypeCache;
    private final Collection<? extends IAttributeType> attributeType;
    private final String value;
    private final QueryOption[] options;
 
-   public CriteriaAttributeKeyword(Collection<? extends IAttributeType> attributeType, String value, QueryOption... options) {
+   public CriteriaAttributeKeyword(Collection<? extends IAttributeType> attributeType, AttributeTypeCache attributeTypeCache, String value, QueryOption... options) {
       super();
+      this.attributeTypeCache = attributeTypeCache;
       this.attributeType = attributeType;
       this.value = value;
       this.options = options;
@@ -53,6 +58,7 @@ public class CriteriaAttributeKeyword extends Criteria<QueryOptions> {
       super.checkValid(options);
       Conditions.checkNotNullOrEmpty(getValue(), "search value");
       Conditions.checkNotNullOrEmpty(getTypes(), "attribute types");
+      checkNotTaggable();
    }
 
    @Override
@@ -61,4 +67,17 @@ public class CriteriaAttributeKeyword extends Criteria<QueryOptions> {
          Collections.toString(",", Arrays.asList(options)));
    }
 
+   public void checkNotTaggable() throws OseeCoreException {
+      ArrayList<String> notTaggable = new ArrayList<String>();
+      if (attributeTypeCache != null) {
+         for (IAttributeType type : attributeType) {
+            if (!(attributeTypeCache.get(type)).isTaggable()) {
+               notTaggable.add((attributeTypeCache.get(type)).getName());
+            }
+         }
+         if (!notTaggable.isEmpty()) {
+            throw new OseeArgumentException("Attribute types [%s] is not taggable", notTaggable.toString());
+         }
+      }
+   }
 }

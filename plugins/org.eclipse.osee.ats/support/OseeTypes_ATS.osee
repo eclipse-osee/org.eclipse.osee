@@ -1,188 +1,187 @@
-import
-"platform:/plugin/org.eclipse.osee.framework.skynet.core/support/OseeTypes_Framework.osee"
+import "platform:/plugin/org.eclipse.osee.framework.skynet.core/support/OseeTypes_Framework.osee"
 abstract artifactType "ats.Release Artifact" extends "Artifact" {
-   guid "ABMZAdJpQi01iAbMBjgA"
-   uuid 0x000000000000003D
-   attribute "ats.Released"
+	guid "ABMZAdJpQi01iAbMBjgA"
+	uuid 0x000000000000003D
+	attribute "ats.Released"
 }
 
 artifactType "Work Definition" extends "Artifact" {
-   guid "AGrU8fWa3AJ6uoWYP7wA"
-   uuid 0x000000000000003E
-   attribute "ats.DSL Sheet"
+	guid "AGrU8fWa3AJ6uoWYP7wA"
+	uuid 0x000000000000003E
+	attribute "ats.DSL Sheet"
 }
 
 abstract artifactType "ats.Ats Artifact" extends "Artifact" {
-   guid "ABMaLS0jvw92SE+4ZJQA"
-   uuid 0x000000000000003F
-   attribute "ats.Description"
-   attribute "ats.Goal Order Vote"
+	guid "ABMaLS0jvw92SE+4ZJQA"
+	uuid 0x000000000000003F
+	attribute "ats.Description"
+	attribute "ats.Goal Order Vote"
 }
 
 artifactType "ats.Review" extends "ats.State Machine" {
-   guid "ABMa6P4TwzXA1b8K3RAA"
-   uuid 0x0000000000000040
-   attribute "ats.Actionable Item"
-   attribute "ats.Related To State"
-   attribute "ats.Review Blocks"
+	guid "ABMa6P4TwzXA1b8K3RAA"
+	uuid 0x0000000000000040
+	attribute "ats.Actionable Item"
+	attribute "ats.Related To State"
+	attribute "ats.Review Blocks"
 }
 
 artifactType "PeerToPeer Review" extends "ats.Review" {
-   guid "AAMFDhh_300dpgmNtRAA"
-   uuid 0x0000000000000041
-   attribute "ats.Location"
-   attribute "ats.Review Defect"
-   attribute "ats.Role"
-   attribute "ats.LOC Changed"
-   attribute "ats.LOC Reviewed"
-   attribute "ats.Pages Changed"
-   attribute "ats.Pages Reviewed"
-   attribute "ats.Review Formal Type"
-   attribute "ats.Meeting Attendee"
-   attribute "ats.Meeting Length"
-   attribute "ats.Meeting Location"
+	guid "AAMFDhh_300dpgmNtRAA"
+	uuid 0x0000000000000041
+	attribute "ats.Location"
+	attribute "ats.Review Defect"
+	attribute "ats.Role"
+	attribute "ats.LOC Changed"
+	attribute "ats.LOC Reviewed"
+	attribute "ats.Pages Changed"
+	attribute "ats.Pages Reviewed"
+	attribute "ats.Review Formal Type"
+	attribute "ats.Meeting Attendee"
+	attribute "ats.Meeting Length"
+	attribute "ats.Meeting Location"
 }
 
 artifactType "Decision Review" extends "ats.Review" {
-   guid "AAMFDhfrdR7BGTL7H_wA"
-   uuid 0x0000000000000042
-   attribute "ats.Decision Review Options"
-   attribute "ats.Decision"
+	guid "AAMFDhfrdR7BGTL7H_wA"
+	uuid 0x0000000000000042
+	attribute "ats.Decision Review Options"
+	attribute "ats.Decision"
 }
 
 artifactType "Action" extends "ats.Ats Artifact" {
-   guid "AAMFDhY_rns71KvX14QA"
-   uuid 0x0000000000000043
-   attribute "ats.User Community"
-   attribute "ats.Actionable Item"
-   attribute "ats.Change Type"
-   attribute "ats.Need By"
-   attribute "ats.Priority"
-   attribute "ats.Validation Required"
+	guid "AAMFDhY_rns71KvX14QA"
+	uuid 0x0000000000000043
+	attribute "ats.User Community"
+	attribute "ats.Actionable Item"
+	attribute "ats.Change Type"
+	attribute "ats.Need By"
+	attribute "ats.Priority"
+	attribute "ats.Validation Required"
 }
 
-artifactType "Team Definition" extends "ats.Ats Artifact", "Abstract Access Controlled" {
-   guid "AAMFDhUrlytusKbaQGAA"
-   uuid 0x0000000000000044
-   attribute "ats.Hours Per Work Day"
-   attribute "ats.Full Name"
-   attribute "ats.Team Uses Versions"
-   attribute "ats.Require Targeted Version"
-   attribute "ats.Baseline Branch Guid"
-   attribute "ats.Action Details Format"
-   attribute "ats.Active"
-   attribute "ats.Actionable"
-   attribute "ats.Allow Create Branch"
-   attribute "ats.Allow Commit Branch"
-   attribute "ats.Related Task Workflow Definition Old"
-   attribute "ats.Related Task Workflow Definition"
-   attribute "ats.Workflow Definition Old"
-   attribute "ats.Workflow Definition"
-   attribute "ats.Rule Definition"
+artifactType "Team Definition" extends "ats.Ats Artifact" , "Abstract Access Controlled" {
+	guid "AAMFDhUrlytusKbaQGAA"
+	uuid 0x0000000000000044
+	attribute "ats.Hours Per Work Day"
+	attribute "ats.Full Name"
+	attribute "ats.Team Uses Versions"
+	attribute "ats.Require Targeted Version"
+	attribute "ats.Baseline Branch Guid"
+	attribute "ats.Action Details Format"
+	attribute "ats.Active"
+	attribute "ats.Actionable"
+	attribute "ats.Allow Create Branch"
+	attribute "ats.Allow Commit Branch"
+	attribute "ats.Related Task Workflow Definition Old"
+	attribute "ats.Related Task Workflow Definition"
+	attribute "ats.Workflow Definition Old"
+	attribute "ats.Workflow Definition"
+	attribute "ats.Rule Definition"
 }
 
-artifactType "Actionable Item" extends "ats.Ats Artifact", "Abstract Access Controlled" {
-   guid "AAMFDhW2LmhtRFsVyzwA"
-   uuid 0x0000000000000045
-   attribute "ats.Active"
-   attribute "ats.Actionable"
+artifactType "Actionable Item" extends "ats.Ats Artifact" , "Abstract Access Controlled" {
+	guid "AAMFDhW2LmhtRFsVyzwA"
+	uuid 0x0000000000000045
+	attribute "ats.Active"
+	attribute "ats.Actionable"
 }
 
 artifactType "Version" extends "ats.Ats Artifact" {
-   guid "AAMFDhder0oETnv14xQA"
-   uuid 0x0000000000000046
-   attribute "ats.Allow Commit Branch"
-   attribute "ats.Allow Create Branch"
-   attribute "ats.Estimated Release Date"
-   attribute "ats.Full Name"
-   attribute "ats.Next Version"
-   attribute "ats.Baseline Branch Guid"
-   attribute "ats.Release Date"
-   attribute "ats.Released"
-   attribute "ats.Version Locked"
+	guid "AAMFDhder0oETnv14xQA"
+	uuid 0x0000000000000046
+	attribute "ats.Allow Commit Branch"
+	attribute "ats.Allow Create Branch"
+	attribute "ats.Estimated Release Date"
+	attribute "ats.Full Name"
+	attribute "ats.Next Version"
+	attribute "ats.Baseline Branch Guid"
+	attribute "ats.Release Date"
+	attribute "ats.Released"
+	attribute "ats.Version Locked"
 }
 
 abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
-   guid "ABMfXC+LFBn31ZZbvjAA"
-   uuid 0x0000000000000047
-   attribute "ats.Work Package"
-   attribute "ats.Category"
-   attribute "ats.Category2"
-   attribute "ats.Category3"
-   attribute "ats.Points"
-   attribute "ats.Numeric1"
-   attribute "ats.Numeric2"
-   attribute "ats.Current State"
-   attribute "ats.Estimated Completion Date"
-   attribute "ats.Estimated Hours"
-   attribute "ats.Estimated Release Date"
-   attribute "ats.Log"
-   attribute "ats.Percent Complete"
-   attribute "ats.Release Date"
-   attribute "ats.Resolution"
-   attribute "ats.SMA Note"
-   attribute "ats.State Notes"
-   attribute "ats.State"
-   attribute "ats.Start Date"
-   attribute "ats.End Date"
-   attribute "ats.Current State Type"
-   attribute "ats.Created By"
-   attribute "ats.Created Date"
-   attribute "ats.Completed By"
-   attribute "ats.Completed Date"
-   attribute "ats.Completed From State"
-   attribute "ats.Cancelled By"
-   attribute "ats.Cancelled Date"
-   attribute "ats.Cancelled From State"
-   attribute "ats.Cancelled Reason"
-   attribute "ats.Workflow Definition Old"
-   attribute "ats.Workflow Definition"
+	guid "ABMfXC+LFBn31ZZbvjAA"
+	uuid 0x0000000000000047
+	attribute "ats.Work Package"
+	attribute "ats.Category"
+	attribute "ats.Category2"
+	attribute "ats.Category3"
+	attribute "ats.Points"
+	attribute "ats.Numeric1"
+	attribute "ats.Numeric2"
+	attribute "ats.Current State"
+	attribute "ats.Estimated Completion Date"
+	attribute "ats.Estimated Hours"
+	attribute "ats.Estimated Release Date"
+	attribute "ats.Log"
+	attribute "ats.Percent Complete"
+	attribute "ats.Release Date"
+	attribute "ats.Resolution"
+	attribute "ats.SMA Note"
+	attribute "ats.State Notes"
+	attribute "ats.State"
+	attribute "ats.Start Date"
+	attribute "ats.End Date"
+	attribute "ats.Current State Type"
+	attribute "ats.Created By"
+	attribute "ats.Created Date"
+	attribute "ats.Completed By"
+	attribute "ats.Completed Date"
+	attribute "ats.Completed From State"
+	attribute "ats.Cancelled By"
+	attribute "ats.Cancelled Date"
+	attribute "ats.Cancelled From State"
+	attribute "ats.Cancelled Reason"
+	attribute "ats.Workflow Definition Old"
+	attribute "ats.Workflow Definition"
 }
 
 artifactType "Goal" extends "ats.State Machine" {
-   guid "ABMgU119UjI_Q23Yu+gA"
-   uuid 0x0000000000000048
-   attribute "ats.Change Type"
-   attribute "ats.Need By"
-   attribute "ats.Priority"
+	guid "ABMgU119UjI_Q23Yu+gA"
+	uuid 0x0000000000000048
+	attribute "ats.Change Type"
+	attribute "ats.Need By"
+	attribute "ats.Priority"
 }
 
-artifactType "Team Workflow" extends "ats.State Machine", "Abstract Access Controlled" {
-   guid "AAMFDhSiF2OD+wiUqugA"
-   uuid 0x0000000000000049
-   attribute "ats.Actionable Item"
-   attribute "ats.Branch Metrics"
-   attribute "ats.Baseline Branch Guid"
-   attribute "ats.Validation Required"
-   attribute "ats.Weekly Benefit"
-   attribute "ats.Change Type"
-   attribute "ats.Legacy PCR Id"
-   attribute "ats.Need By"
-   attribute "ats.Percent Rework"
-   attribute "ats.Priority"
-   attribute "ats.Problem"
-   attribute "ats.Proposed Resolution"
-   attribute "ats.Team Definition"
-   attribute "ats.User Community"
-   attribute "ats.Operational Impact"
-   attribute "ats.Operational Impact Description"
-   attribute "ats.Operational Impact Workaround"
-   attribute "ats.Operational Impact Workaround Description"
-   attribute "ats.Related Task Workflow Definition Old"
-   attribute "ats.Related Task Workflow Definition"
+artifactType "Team Workflow" extends "ats.State Machine" , "Abstract Access Controlled" {
+	guid "AAMFDhSiF2OD+wiUqugA"
+	uuid 0x0000000000000049
+	attribute "ats.Actionable Item"
+	attribute "ats.Branch Metrics"
+	attribute "ats.Baseline Branch Guid"
+	attribute "ats.Validation Required"
+	attribute "ats.Weekly Benefit"
+	attribute "ats.Change Type"
+	attribute "ats.Legacy PCR Id"
+	attribute "ats.Need By"
+	attribute "ats.Percent Rework"
+	attribute "ats.Priority"
+	attribute "ats.Problem"
+	attribute "ats.Proposed Resolution"
+	attribute "ats.Team Definition"
+	attribute "ats.User Community"
+	attribute "ats.Operational Impact"
+	attribute "ats.Operational Impact Description"
+	attribute "ats.Operational Impact Workaround"
+	attribute "ats.Operational Impact Workaround Description"
+	attribute "ats.Related Task Workflow Definition Old"
+	attribute "ats.Related Task Workflow Definition"
 }
 
 artifactType "Task" extends "ats.State Machine" {
-   guid "AAMFDhbTAAB6h+06fuAA"
-   uuid 0x000000000000004A
-   attribute "ats.Related To State"
-   attribute "ats.Uses Resolution Options"
-   attribute "ats.Task To Changed Artifact Reference"
+	guid "AAMFDhbTAAB6h+06fuAA"
+	uuid 0x000000000000004A
+	attribute "ats.Related To State"
+	attribute "ats.Uses Resolution Options"
+	attribute "ats.Task To Changed Artifact Reference"
 }
 
 attributeType "ats.Artifact Reference" extends ArtifactReferenceAttribute {
 	guid "AGLQob1V12UEWGPQ7FAA"
-	uuid  0x1000BA00000000F9
+	uuid 0x1000BA00000000F9
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -192,7 +191,7 @@ attributeType "ats.Artifact Reference" extends ArtifactReferenceAttribute {
 
 attributeType "ats.Task To Changed Artifact Reference" extends ArtifactReferenceAttribute {
 	guid "AGg4eqU6J3h5O9HmdKgA"
-	uuid  0x1000BA00000000FA
+	uuid 0x1000BA00000000FA
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -201,987 +200,1016 @@ attributeType "ats.Task To Changed Artifact Reference" extends ArtifactReference
 }
 
 attributeType "ats.Baseline Branch Guid" extends StringAttribute {
-   guid "AAMFEdIjJ2za2fblEVgA"
-   uuid 0x10000000000000A9
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AAMFEdIjJ2za2fblEVgA"
+	uuid 0x10000000000000A9
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.Validation Required" extends BooleanAttribute {
-   guid "AAMFEcjT0TwkD2R4w1QA"
-   uuid 0x10000000000000AA
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   defaultValue "false"
+	guid "AAMFEcjT0TwkD2R4w1QA"
+	uuid 0x10000000000000AA
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	defaultValue "false"
 }
 
 attributeType "ats.Current State Type" extends StringAttribute {
-   guid "ATOWheEyGUJmPmPuqyAA"
-   uuid 0x10000000000000AB
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "ATOWheEyGUJmPmPuqyAA"
+	uuid 0x10000000000000AB
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Workflow Definition Old" extends StringAttribute {
-   guid "ADG50fkFrQIxmfZgk3gA"
-   uuid 0x10000000000000AC
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "ADG50fkFrQIxmfZgk3gA"
+	uuid 0x10000000000000AC
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.Workflow Definition" extends StringAttribute {
-   guid "AbksV06OrBP_ceKCeSQA"
-   uuid 0x10000000000000AD
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AbksV06OrBP_ceKCeSQA"
+	uuid 0x10000000000000AD
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Rule Definition" extends StringAttribute {
-   guid "AEqAJNnkyW4_d5_WhpgA"
-   uuid 0x10000000000000AE
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max unlimited
+	guid "AEqAJNnkyW4_d5_WhpgA"
+	uuid 0x10000000000000AE
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
 }
 
 attributeType "ats.Related Task Workflow Definition Old" extends StringAttribute {
-   guid "AdR02A0xcUq4arK58BAA"
-   uuid 0x10000000000000AF
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AdR02A0xcUq4arK58BAA"
+	uuid 0x10000000000000AF
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.Related Task Workflow Definition" extends StringAttribute {
-   guid "AblApNMuhjVuyDRq6VgA"
-   uuid 0x10000000000000B0
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AblApNMuhjVuyDRq6VgA"
+	uuid 0x10000000000000B0
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.Active" extends BooleanAttribute {
-   guid "AAMFEclQOVmzkIvzyWwA"
-   uuid 0x10000000000000B1
-   dataProvider DefaultAttributeDataProvider
-   min 1
-   max 1
-   defaultValue "true"
+	guid "AAMFEclQOVmzkIvzyWwA"
+	uuid 0x10000000000000B1
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	defaultValue "true"
 }
 
 attributeType "ats.Uses Resolution Options" extends BooleanAttribute {
-   guid "AAMFEPuOzltN1+Ze1kQA"
-   uuid 0x10000000000000B2
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   defaultValue "false"
+	guid "AAMFEPuOzltN1+Ze1kQA"
+	uuid 0x10000000000000B2
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	defaultValue "false"
 }
 
 attributeType "ats.Released" extends BooleanAttribute {
-   guid "AAMFEcnMoUZMLA2zB1AA"
-   uuid 0x10000000000000B3
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   defaultValue "false"
+	guid "AAMFEcnMoUZMLA2zB1AA"
+	uuid 0x10000000000000B3
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	defaultValue "false"
 }
 
 attributeType "ats.Version Locked" extends BooleanAttribute {
-   guid "AAzRtEJXbjzR5jySOZgA"
-   uuid 0x10000000000000B4
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   defaultValue "false"
+	guid "AAzRtEJXbjzR5jySOZgA"
+	uuid 0x10000000000000B4
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	defaultValue "false"
 }
 
 attributeType "ats.Next Version" extends BooleanAttribute {
-   guid "AAMFEcpH8Xb72hsF5AwA"
-   uuid 0x10000000000000B5
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   defaultValue "false"
+	guid "AAMFEcpH8Xb72hsF5AwA"
+	uuid 0x10000000000000B5
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	defaultValue "false"
 }
 
 attributeType "ats.Team Uses Versions" extends BooleanAttribute {
-   guid "AAMFEcrHnzPxQ7w3ligA"
-   uuid 0x10000000000000B6
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   defaultValue "false"
+	guid "AAMFEcrHnzPxQ7w3ligA"
+	uuid 0x10000000000000B6
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	defaultValue "false"
 }
 
 attributeType "ats.Require Targeted Version" extends BooleanAttribute {
-   guid "AAMFEQUBDxMJ67lodTQA"
-   uuid 0x10000000000000B7
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   defaultValue "false"
+	guid "AAMFEQUBDxMJ67lodTQA"
+	uuid 0x10000000000000B7
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	defaultValue "false"
 }
 
 attributeType "ats.Actionable" extends BooleanAttribute {
-   guid "AAMFEcvDtBiaJ3TMatAA"
-   uuid 0x10000000000000B8
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   defaultValue "true"
+	guid "AAMFEcvDtBiaJ3TMatAA"
+	uuid 0x10000000000000B8
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	defaultValue "true"
 }
 
 attributeType "ats.Allow Create Branch" extends BooleanAttribute {
-   guid "AAMFEbARuQEvi6rtY5gA"
-   uuid 0x10000000000000B9
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   defaultValue "true"
+	guid "AAMFEbARuQEvi6rtY5gA"
+	uuid 0x10000000000000B9
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	defaultValue "true"
 }
 
 attributeType "ats.Allow Commit Branch" extends BooleanAttribute {
-   guid "AAMFEbCZCkwgj73BsQgA"
-   uuid 0x10000000000000BA
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   defaultValue "true"
+	guid "AAMFEbCZCkwgj73BsQgA"
+	uuid 0x10000000000000BA
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	defaultValue "true"
 }
 
 attributeType "ats.Need By" extends DateAttribute {
-   guid "AAMFEcxAGzHAKfDNAIwA"
-   uuid 0x10000000000000BB
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AAMFEcxAGzHAKfDNAIwA"
+	uuid 0x10000000000000BB
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.Estimated Release Date" extends DateAttribute {
-   guid "AAMFEcy6VB7Ble5SP1QA"
-   uuid 0x10000000000000BC
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AAMFEcy6VB7Ble5SP1QA"
+	uuid 0x10000000000000BC
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.Estimated Completion Date" extends DateAttribute {
-   guid "AAMFEc18k3Gh+GP7zqAA"
-   uuid 0x10000000000000BD
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AAMFEc18k3Gh+GP7zqAA"
+	uuid 0x10000000000000BD
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.Completed Date" extends DateAttribute {
-   guid "AXnxSfRg6UhirNzaZnQA"
-   uuid 0x10000000000000BE
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AXnxSfRg6UhirNzaZnQA"
+	uuid 0x10000000000000BE
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.Completed By" extends StringAttribute {
-   guid "AXo6tqxrOStgd9P16XQA"
-   uuid 0x10000000000000BF
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AXo6tqxrOStgd9P16XQA"
+	uuid 0x10000000000000BF
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.Completed From State" extends StringAttribute {
-   guid "AXr9OO909xRiI3MFNOwA"
-   uuid 0x10000000000000C0
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AXr9OO909xRiI3MFNOwA"
+	uuid 0x10000000000000C0
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.Cancelled Date" extends DateAttribute {
-   guid "AXnyKG1waCcPPHHGEFQA"
-   uuid 0x10000000000000C1
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AXnyKG1waCcPPHHGEFQA"
+	uuid 0x10000000000000C1
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.Cancelled By" extends StringAttribute {
-   guid "AXpNsieBHnqaJJfduGgA"
-   uuid 0x10000000000000C2
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AXpNsieBHnqaJJfduGgA"
+	uuid 0x10000000000000C2
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.Cancelled Reason" extends StringAttribute {
-   guid "AXqJE0SmwRQzvzlqC9gA"
-   uuid 0x10000000000000C3
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AXqJE0SmwRQzvzlqC9gA"
+	uuid 0x10000000000000C3
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.Cancelled From State" extends StringAttribute {
-   guid "AXrxlXOwGiAnlaUNX6AA"
-   uuid 0x10000000000000C4
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AXrxlXOwGiAnlaUNX6AA"
+	uuid 0x10000000000000C4
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.Created Date" extends DateAttribute {
-   guid "AXny90bBpmfNkLpNhqwA"
-   uuid 0x10000000000000C5
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AXny90bBpmfNkLpNhqwA"
+	uuid 0x10000000000000C5
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.Created By" extends StringAttribute {
-   guid "AXpTVIExV1p0kp9IKKQA"
-   uuid 0x10000000000000C6
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AXpTVIExV1p0kp9IKKQA"
+	uuid 0x10000000000000C6
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Release Date" extends DateAttribute {
-   guid "AAMFEc3+cGcMDOCdmdAA"
-   uuid 0x10000000000000C7
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AAMFEc3+cGcMDOCdmdAA"
+	uuid 0x10000000000000C7
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.Start Date" extends DateAttribute {
-   guid "AJ_AAAAKiHnsKh2C3jQA"
-   uuid 0x1000000000000196
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AJ_AAAAKiHnsKh2C3jQA"
+	uuid 0x1000000000000196
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.End Date" extends DateAttribute {
-   guid "AJ_AAAnHFFhJhbKqFWgA"
-   uuid 0x1000000000000197
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AJ_AAAnHFFhJhbKqFWgA"
+	uuid 0x1000000000000197
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 oseeEnumType "enum.ats.review.blocks" {
-   guid "ABbjHDeufSNcLOtj78wA"
-   uuid 0x300000000000018A
-   entry "None" entryGuid "CArJmR2JDn5DXT9FGPQA"
-   entry "Transition" entryGuid "CArJmR3xrEmbw7zbyqgA"
-   entry "Commit" entryGuid "CArJmR5WzHmG_n_OKhQA"
+	guid "ABbjHDeufSNcLOtj78wA"
+	uuid 0x300000000000018A
+	entry "None"
+	entryGuid "CArJmR2JDn5DXT9FGPQA"
+	entry "Transition"
+	entryGuid "CArJmR3xrEmbw7zbyqgA"
+	entry "Commit"
+	entryGuid "CArJmR5WzHmG_n_OKhQA"
 }
 
 attributeType "ats.Review Blocks" extends EnumeratedAttribute {
-   guid "AAMFEc6G2A8jmRWJgagA"
-   uuid 0x10000000000000C8
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   enumType "enum.ats.review.blocks"
+	guid "AAMFEc6G2A8jmRWJgagA"
+	uuid 0x10000000000000C8
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	enumType "enum.ats.review.blocks"
 }
 
 attributeType "ats.Review Formal Type" extends EnumeratedAttribute {
-   guid "AOwrClAkonFC_UKqyJAA"
-   uuid 0x10000000000000C9
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   enumType "enum.ats.review.formalType"
+	guid "AOwrClAkonFC_UKqyJAA"
+	uuid 0x10000000000000C9
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	enumType "enum.ats.review.formalType"
 }
 
 oseeEnumType "enum.ats.review.formalType" {
-   guid "AOwcwimB611lejOyNxQA"
-   uuid 0x300000000000018B
-   entry "InFormal" entryGuid "AOwhbvyBMHKCIuhSzwgA"
-   entry "Formal" entryGuid "AOwiPVD_jCOHV4KnAQwA"
+	guid "AOwcwimB611lejOyNxQA"
+	uuid 0x300000000000018B
+	entry "InFormal"
+	entryGuid "AOwhbvyBMHKCIuhSzwgA"
+	entry "Formal"
+	entryGuid "AOwiPVD_jCOHV4KnAQwA"
 }
-
 
 oseeEnumType "enum.ats.point" {
-   guid "AYyqLF5WrgvoWwAJhbAA"
-   uuid 0x300000000000018C
-   entry "1" entryGuid "AYyqLF5WrgvoWwAJhb12"
-   entry "2" entryGuid "AYyqLWfS+S+58gmCmOQA"
-   entry "4" entryGuid "AYyqLY8_ChxManvFc6QA"
-   entry "8" entryGuid "AYyqLbRYXECHjlLzQ+QA"
-   entry "13" entryGuid "AYyqLdkSvmy0XZECrRwA"
-   entry "20" entryGuid "AYyqLfzfO20iUkZSilgA"
-   entry "40" entryGuid "AYyqLiFHxD1XUanPXBwA"
-   entry "80" entryGuid "AYyqLkUSERzIljDD4agA"
-   entry "150" entryGuid "AYyqLmlTUi3u7Eg8CdgA"
-   entry "Epic" entryGuid "AYyqLo2M7zr1nj1mFfQA"
+	guid "AYyqLF5WrgvoWwAJhbAA"
+	uuid 0x300000000000018C
+	entry "1"
+	entryGuid "AYyqLF5WrgvoWwAJhb12"
+	entry "2"
+	entryGuid "AYyqLWfS+S+58gmCmOQA"
+	entry "4"
+	entryGuid "AYyqLY8_ChxManvFc6QA"
+	entry "8"
+	entryGuid "AYyqLbRYXECHjlLzQ+QA"
+	entry "13"
+	entryGuid "AYyqLdkSvmy0XZECrRwA"
+	entry "20"
+	entryGuid "AYyqLfzfO20iUkZSilgA"
+	entry "40"
+	entryGuid "AYyqLiFHxD1XUanPXBwA"
+	entry "80"
+	entryGuid "AYyqLkUSERzIljDD4agA"
+	entry "150"
+	entryGuid "AYyqLmlTUi3u7Eg8CdgA"
+	entry "Epic"
+	entryGuid "AYyqLo2M7zr1nj1mFfQA"
 }
+
 attributeType "ats.Points" extends EnumeratedAttribute {
-   guid "AY2EeqhzcDEGtXtREkAA"
-   uuid 0x10000000000000CA
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   enumType "enum.ats.point"
+	guid "AY2EeqhzcDEGtXtREkAA"
+	uuid 0x10000000000000CA
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	enumType "enum.ats.point"
 }
 
 oseeEnumType "enum.ats.priority" {
-   guid "ABbjHDlSoUHxQqPfkQAA"
-   uuid 0x300000000000018D
-   entry "1" entryGuid "CArJmPvK7mXFU4cMY3gA"
-   entry "2" entryGuid "CArJmR7LQUYx7XRMnwQA"
-   entry "3" entryGuid "CArJmR82AgY40rzzjagA"
-   entry "4" entryGuid "CArJmR+dqR2jW6eRU1AA"
-   entry "5" entryGuid "CArJmSAGIB9IRKqlKuAA"
+	guid "ABbjHDlSoUHxQqPfkQAA"
+	uuid 0x300000000000018D
+	entry "1"
+	entryGuid "CArJmPvK7mXFU4cMY3gA"
+	entry "2"
+	entryGuid "CArJmR7LQUYx7XRMnwQA"
+	entry "3"
+	entryGuid "CArJmR82AgY40rzzjagA"
+	entry "4"
+	entryGuid "CArJmR+dqR2jW6eRU1AA"
+	entry "5"
+	entryGuid "CArJmSAGIB9IRKqlKuAA"
 }
 
 attributeType "ats.Priority" extends EnumeratedAttribute {
-   guid "AAMFEc8JzH1U6XGD59QA"
-   uuid 0x10000000000000CB
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   enumType "enum.ats.priority"
+	guid "AAMFEc8JzH1U6XGD59QA"
+	uuid 0x10000000000000CB
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	enumType "enum.ats.priority"
 }
 
 oseeEnumType "enum.ats.change.type" {
-   guid "ABbjHDsCxWD6TscnY4AA"
-   uuid 0x300000000000018E
-   entry "Improvement" entryGuid "CArJmSBzfx4jvQ5vEtAA"
-   entry "Problem" entryGuid "CArJmPw6F3bP1V5B59gA"
-   entry "Support" entryGuid "CArJmSDgGAG4aKsU+KAA"
-   entry "Refinement" entryGuid "ADTfjCHhk0KoDVpUpagA"
+	guid "ABbjHDsCxWD6TscnY4AA"
+	uuid 0x300000000000018E
+	entry "Improvement"
+	entryGuid "CArJmSBzfx4jvQ5vEtAA"
+	entry "Problem"
+	entryGuid "CArJmPw6F3bP1V5B59gA"
+	entry "Support"
+	entryGuid "CArJmSDgGAG4aKsU+KAA"
+	entry "Refinement"
+	entryGuid "ADTfjCHhk0KoDVpUpagA"
 }
 
 attributeType "ats.Change Type" extends EnumeratedAttribute {
-   guid "AAMFEc+MwGHnPCv7HlgA"
-   uuid 0x10000000000000CC
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   enumType "enum.ats.change.type"
+	guid "AAMFEc+MwGHnPCv7HlgA"
+	uuid 0x10000000000000CC
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	enumType "enum.ats.change.type"
 }
 
 oseeEnumType "enum.ats.user.community" {
-   guid "ABbjHDyl0m_BTHf+IdgA"
-   uuid 0x300000000000018F
-   entry "Program_1" entryGuid "AHcuApVCczNvC7AP52QA"
-   entry "Program_2" entryGuid "AHcuBuS3JDdeZZ1mSxQA"
-   entry "Tools" entryGuid "AHcuBuWaNFeVCgjNfwAA"
-   entry "Processes" entryGuid "AHcuBuaJ0UGsRf0+WqAA"
-   entry "Other" entryGuid "AHcuBud8JBLfUo3PK5AA"
+	guid "ABbjHDyl0m_BTHf+IdgA"
+	uuid 0x300000000000018F
+	entry "Program_1"
+	entryGuid "AHcuApVCczNvC7AP52QA"
+	entry "Program_2"
+	entryGuid "AHcuBuS3JDdeZZ1mSxQA"
+	entry "Tools"
+	entryGuid "AHcuBuWaNFeVCgjNfwAA"
+	entry "Processes"
+	entryGuid "AHcuBuaJ0UGsRf0+WqAA"
+	entry "Other"
+	entryGuid "AHcuBud8JBLfUo3PK5AA"
 }
 
 attributeType "ats.User Community" extends EnumeratedAttribute {
-   guid "AAMFEdAPtAq1IEwiCQAA"
-   uuid 0x10000000000000CD
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max unlimited
-   enumType "enum.ats.user.community"
+	guid "AAMFEdAPtAq1IEwiCQAA"
+	uuid 0x10000000000000CD
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	taggerId DefaultAttributeTaggerProvider
+	enumType "enum.ats.user.community"	
 }
 
 attributeType "ats.Estimated Hours" extends FloatingPointAttribute {
-   guid "AAMFEdCSqBh+cPyadiwA"
-   uuid 0x10000000000000CE
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   defaultValue "0.0"
+	guid "AAMFEdCSqBh+cPyadiwA"
+	uuid 0x10000000000000CE
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	defaultValue "0.0"
 }
 
 attributeType "ats.Percent Complete" extends IntegerAttribute {
-   guid "AALLbOZiBBDN39YsRSAA"
-   uuid 0x10000000000000CF
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   defaultValue "0"
+	guid "AALLbOZiBBDN39YsRSAA"
+	uuid 0x10000000000000CF
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	defaultValue "0"
 }
 
 attributeType "ats.Numeric1" extends FloatingPointAttribute {
-   guid "AABY2xxQsDm811kCViwA"
-   uuid 0x10000000000000D0
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   defaultValue "0.0"
+	guid "AABY2xxQsDm811kCViwA"
+	uuid 0x10000000000000D0
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	defaultValue "0.0"
 }
 
 attributeType "ats.Numeric2" extends FloatingPointAttribute {
-   guid "AABiRtvZsAEkU4BS9qwA"
-   uuid 0x10000000000000D1
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   defaultValue "0.0"
+	guid "AABiRtvZsAEkU4BS9qwA"
+	uuid 0x10000000000000D1
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	defaultValue "0.0"
 }
 
 attributeType "ats.Weekly Benefit" extends FloatingPointAttribute {
-   guid "AAMFEdEnEU9AecOHMOwA"
-   uuid 0x10000000000000D2
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   defaultValue "0"
+	guid "AAMFEdEnEU9AecOHMOwA"
+	uuid 0x10000000000000D2
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	defaultValue "0"
 }
 
 attributeType "ats.Hours Per Work Day" extends FloatingPointAttribute {
-   guid "AAMFEdGlqFsZp22RMdAA"
-   uuid 0x10000000000000D3
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   defaultValue "0.0"
+	guid "AAMFEdGlqFsZp22RMdAA"
+	uuid 0x10000000000000D3
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	defaultValue "0.0"
 }
 
 attributeType "ats.Meeting Length" extends FloatingPointAttribute {
-   guid "APoxOFjXzV49ZmO3CfwA"
-   uuid 0x10000000000000D4
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   defaultValue "0.0"
+	guid "APoxOFjXzV49ZmO3CfwA"
+	uuid 0x10000000000000D4
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	defaultValue "0.0"
 }
 
 attributeType "ats.Percent Rework" extends IntegerAttribute {
-   guid "AAMFEdKfjl2TII9+tuwA"
-   uuid 0x10000000000000D5
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AAMFEdKfjl2TII9+tuwA"
+	uuid 0x10000000000000D5
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.Branch Metrics" extends StringAttribute {
-   guid "AAMFEQc7yxE0jUqVA7wA"
-   uuid 0x10000000000000D6
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AAMFEQc7yxE0jUqVA7wA"
+	uuid 0x10000000000000D6
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.State" extends StringAttribute {
-   guid "AAMFEdMa3wzVvp60xLQA"
-   uuid 0x10000000000000D7
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max unlimited
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEdMa3wzVvp60xLQA"
+	uuid 0x10000000000000D7
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Current State" extends StringAttribute {
-   guid "AAMFEdOWL3u6hmX2VbwA"
-   uuid 0x10000000000000D8
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEdOWL3u6hmX2VbwA"
+	uuid 0x10000000000000D8
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Problem" extends StringAttribute {
-   guid "AAMFEdQUxRyevvTu+bwA"
-   uuid 0x10000000000000D9
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-   fileExtension "txt"
+	guid "AAMFEdQUxRyevvTu+bwA"
+	uuid 0x10000000000000D9
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	fileExtension "txt"
 }
 
 attributeType "ats.Proposed Resolution" extends StringAttribute {
-   guid "AAMFEdSSRDGgBQ5tctAA"
-   uuid 0x10000000000000DA
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEdSSRDGgBQ5tctAA"
+	uuid 0x10000000000000DA
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Resolution" extends StringAttribute {
-   guid "AAMFEdUMfV1KdbQNaKwA"
-   uuid 0x10000000000000DB
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-   fileExtension "txt"
+	guid "AAMFEdUMfV1KdbQNaKwA"
+	uuid 0x10000000000000DB
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	fileExtension "txt"
 }
 
 attributeType "ats.Description" extends StringAttribute {
-   guid "AAMFEdWJ_ChxX6+YKbwA"
-   uuid 0x10000000000000DC
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-   fileExtension "txt"
+	guid "AAMFEdWJ_ChxX6+YKbwA"
+	uuid 0x10000000000000DC
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	fileExtension "txt"
 }
 
 attributeType "ats.DSL Sheet" extends StringAttribute {
-   guid "AGrqojZDowPDaLh4kBAA"
-   uuid 0x10000000000000DD
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   fileExtension "txt"
+	guid "AGrqojZDowPDaLh4kBAA"
+	uuid 0x10000000000000DD
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	fileExtension "txt"
 }
 
 attributeType "ats.Full Name" extends StringAttribute {
-   guid "AAMFEdZI9XLT34cTonAA"
-   uuid 0x10000000000000DE
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEdZI9XLT34cTonAA"
+	uuid 0x10000000000000DE
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Action Details Format" extends StringAttribute {
-   guid "Aij_PfM7wCsEA2Z720wA"
-   uuid 0x10000000000000DF
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "Aij_PfM7wCsEA2Z720wA"
+	uuid 0x10000000000000DF
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.Actionable Item" extends StringAttribute {
-   guid "AAMFEdbcR2zpGzFOLOQA"
-   uuid 0x10000000000000E0
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max unlimited
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEdbcR2zpGzFOLOQA"
+	uuid 0x10000000000000E0
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Team Definition" extends StringAttribute {
-   guid "AAMFEdd5bFEe18bd0lQA"
-   uuid 0x10000000000000E1
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEdd5bFEe18bd0lQA"
+	uuid 0x10000000000000E1
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Log" extends StringAttribute {
-   guid "AAMFEdgB1DX3eJSZb0wA"
-   uuid 0x10000000000000E2
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-   fileExtension "xml"
+	guid "AAMFEdgB1DX3eJSZb0wA"
+	uuid 0x10000000000000E2
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	fileExtension "xml"
 }
 
 attributeType "ats.State Notes" extends StringAttribute {
-   guid "AAMFEdiWPm7M_xV1EswA"
-   uuid 0x10000000000000E3
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   fileExtension "xml"
+	guid "AAMFEdiWPm7M_xV1EswA"
+	uuid 0x10000000000000E3
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	fileExtension "xml"
 }
 
 attributeType "ats.Related To State" extends StringAttribute {
-   guid "AAMFEdkwHULOmHbMbGgA"
-   uuid 0x10000000000000E4
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AAMFEdkwHULOmHbMbGgA"
+	uuid 0x10000000000000E4
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.SMA Note" extends StringAttribute {
-   guid "AAMFEdm7ywte8qayfbAA"
-   uuid 0x10000000000000E5
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEdm7ywte8qayfbAA"
+	uuid 0x10000000000000E5
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Work Package" extends StringAttribute {
-   guid "AAMFEdpJqRp2wvA2qvAA"
-   uuid 0x10000000000000E6
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEdpJqRp2wvA2qvAA"
+	uuid 0x10000000000000E6
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.LOC Changed" extends IntegerAttribute {
-   guid "AQR27biJiQlOKTEKCvwA"
-   uuid 0x10000000000000E7
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AQR27biJiQlOKTEKCvwA"
+	uuid 0x10000000000000E7
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.LOC Reviewed" extends IntegerAttribute {
-   guid "AQR5ckRsrh4PpayYGAgA"
-   uuid 0x10000000000000E8
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AQR5ckRsrh4PpayYGAgA"
+	uuid 0x10000000000000E8
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.Pages Changed" extends IntegerAttribute {
-   guid "AQR8yMuv4W84UwvSJAQA"
-   uuid 0x10000000000000E9
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AQR8yMuv4W84UwvSJAQA"
+	uuid 0x10000000000000E9
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.Pages Reviewed" extends IntegerAttribute {
-   guid "AQR9qM8TTyCMb7sf4cQA"
-   uuid 0x10000000000000EA
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AQR9qM8TTyCMb7sf4cQA"
+	uuid 0x10000000000000EA
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.Goal Order Vote" extends StringAttribute {
-   guid "Aiecsz9pP1CRoQdaYRAA"
-   uuid 0x10000000000000EB
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "Aiecsz9pP1CRoQdaYRAA"
+	uuid 0x10000000000000EB
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Category" extends StringAttribute {
-   guid "AAMFEdrYniOQYrYUKKQA"
-   uuid 0x10000000000000EC
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEdrYniOQYrYUKKQA"
+	uuid 0x10000000000000EC
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Operational Impact" extends StringAttribute {
-   guid "ADTfjCBpFxlyV3o1wLwA"
-   uuid 0x10000000000000ED
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "ADTfjCBpFxlyV3o1wLwA"
+	uuid 0x10000000000000ED
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.Operational Impact Description" extends StringAttribute {
-   guid "ADTfjCDvUF5PtiKdQ3wA"
-   uuid 0x10000000000000EE
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "ADTfjCDvUF5PtiKdQ3wA"
+	uuid 0x10000000000000EE
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Operational Impact Workaround" extends StringAttribute {
-   guid "AbMqFfIwQHRbmzT_VTAA"
-   uuid 0x10000000000000EF
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AbMqFfIwQHRbmzT_VTAA"
+	uuid 0x10000000000000EF
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.Operational Impact Workaround Description" extends StringAttribute {
-   guid "AbMo7PoIukFDhQFJxKwA"
-   uuid 0x10000000000000F0
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AbMo7PoIukFDhQFJxKwA"
+	uuid 0x10000000000000F0
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Category2" extends StringAttribute {
-   guid "AAMFEdthBkolbJKLXuAA"
-   uuid 0x10000000000000F1
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEdthBkolbJKLXuAA"
+	uuid 0x10000000000000F1
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Category3" extends StringAttribute {
-   guid "AAMFEd06oxr8LMzZxdgA"
-   uuid 0x10000000000000F2
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEd06oxr8LMzZxdgA"
+	uuid 0x10000000000000F2
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Legacy PCR Id" extends StringAttribute {
-   guid "AAMFEd3TakphMtQX1zgA"
-   uuid 0x10000000000000F3
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEd3TakphMtQX1zgA"
+	uuid 0x10000000000000F3
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Decision Review Options" extends StringAttribute {
-   guid "AAMFEd5hRy1+SRJRqfwA"
-   uuid 0x10000000000000F4
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
+	guid "AAMFEd5hRy1+SRJRqfwA"
+	uuid 0x10000000000000F4
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.Decision" extends StringAttribute {
-   guid "AAMFEd7uDXcmqq_FrCQA"
-   uuid 0x10000000000000F5
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEd7uDXcmqq_FrCQA"
+	uuid 0x10000000000000F5
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Review Defect" extends StringAttribute {
-   guid "AAMFEd+MSVAb8JQ6f5gA"
-   uuid 0x10000000000000F6
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max unlimited
+	guid "AAMFEd+MSVAb8JQ6f5gA"
+	uuid 0x10000000000000F6
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
 }
 
 attributeType "ats.Location" extends StringAttribute {
-   guid "AAMFEeAW4QBlesdfacwA"
-   uuid 0x10000000000000F7
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-   fileExtension "txt"
+	guid "AAMFEeAW4QBlesdfacwA"
+	uuid 0x10000000000000F7
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	fileExtension "txt"
 }
 
 attributeType "ats.Meeting Location" extends StringAttribute {
-   guid "APom8wytSX0G3mcb3qQA"
-   uuid 0x10000000000000F8
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-   fileExtension "txt"
+	guid "APom8wytSX0G3mcb3qQA"
+	uuid 0x10000000000000F8
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	fileExtension "txt"
 }
 
 attributeType "ats.Meeting Attendee" extends StringAttribute {
-   guid "APrZQQaOlFcX1CxbO6QA"
-   uuid 0x10000000000000F9
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max unlimited
-   fileExtension "txt"
+	guid "APrZQQaOlFcX1CxbO6QA"
+	uuid 0x10000000000000F9
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	fileExtension "txt"
 }
 
 attributeType "ats.Role" extends StringAttribute {
-   guid "AAMFEeCqMz0XCSBJ+IQA"
-   uuid 0x10000000000000FA
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max unlimited
+	guid "AAMFEeCqMz0XCSBJ+IQA"
+	uuid 0x10000000000000FA
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
 }
 
 attributeType "ats.SW Enhancement" extends StringAttribute {
-   guid "AAMFEgVmxCgOdP+DuNwA"
-   uuid 0x10000000000000FB
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max unlimited
-   taggerId DefaultAttributeTaggerProvider
+	guid "AAMFEgVmxCgOdP+DuNwA"
+	uuid 0x10000000000000FB
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	taggerId DefaultAttributeTaggerProvider
 }
 
-
-
 relationType "TeamLead" {
-   guid "AAMFE90HyTZPyHuQWOQA"
-   uuid 0x2000000000000169
-   sideAName "Team Definition"
-   sideAArtifactType "Team Definition"
-   sideBName "User"
-   sideBArtifactType "User"
-   defaultOrderType Unordered
-   multiplicity MANY_TO_MANY
+	guid "AAMFE90HyTZPyHuQWOQA"
+	uuid 0x2000000000000169
+	sideAName "Team Definition"
+	sideAArtifactType "Team Definition"
+	sideBName "User"
+	sideBArtifactType "User"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
 }
 
 relationType "ActionableItemLead" {
-   guid "BHjFmzMBsi6okwNJeVgA"
-   uuid 0x2000000000000179
-   sideAName "Actionable Item"
-   sideAArtifactType "Actionable Item"
-   sideBName "User"
-   sideBArtifactType "User"
-   defaultOrderType Unordered
-   multiplicity MANY_TO_MANY
+	guid "BHjFmzMBsi6okwNJeVgA"
+	uuid 0x2000000000000179
+	sideAName "Actionable Item"
+	sideAArtifactType "Actionable Item"
+	sideBName "User"
+	sideBArtifactType "User"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
 }
 
 relationType "TeamMember" {
-   guid "AAMFE92A6gCO9WJ2ijQA"
-   uuid 0x200000000000016A
-   sideAName "Team Definition"
-   sideAArtifactType "Team Definition"
-   sideBName "User"
-   sideBArtifactType "User"
-   defaultOrderType Unordered
-   multiplicity MANY_TO_MANY
+	guid "AAMFE92A6gCO9WJ2ijQA"
+	uuid 0x200000000000016A
+	sideAName "Team Definition"
+	sideAArtifactType "Team Definition"
+	sideBName "User"
+	sideBArtifactType "User"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
 }
 
 relationType "PrivilegedMember" {
-   guid "AAMFE9XfiibyK1x2FiwA"
-   uuid 0x200000000000016B
-   sideAName "Team Definition"
-   sideAArtifactType "Team Definition"
-   sideBName "User"
-   sideBArtifactType "User"
-   defaultOrderType Unordered
-   multiplicity MANY_TO_MANY
+	guid "AAMFE9XfiibyK1x2FiwA"
+	uuid 0x200000000000016B
+	sideAName "Team Definition"
+	sideAArtifactType "Team Definition"
+	sideBName "User"
+	sideBArtifactType "User"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
 }
 
 relationType "TeamActionableItem" {
-   guid "AAMFE939Ul9Oenq9wWgA"
-   uuid 0x200000000000016C
-   sideAName "Team Definition"
-   sideAArtifactType "Team Definition"
-   sideBName "Actionable Item"
-   sideBArtifactType "Actionable Item"
-   defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+	guid "AAMFE939Ul9Oenq9wWgA"
+	uuid 0x200000000000016C
+	sideAName "Team Definition"
+	sideAArtifactType "Team Definition"
+	sideBName "Actionable Item"
+	sideBArtifactType "Actionable Item"
+	defaultOrderType Unordered
+	multiplicity ONE_TO_MANY
 }
 
 relationType "ActionToWorkflow" {
-   guid "AAMFE953ixQThusHUPwA"
-   uuid 0x200000000000016D
-   sideAName "Action"
-   sideAArtifactType "Action"
-   sideBName "Team Workflow"
-   sideBArtifactType "Team Workflow"
-   defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+	guid "AAMFE953ixQThusHUPwA"
+	uuid 0x200000000000016D
+	sideAName "Action"
+	sideAArtifactType "Action"
+	sideBName "Team Workflow"
+	sideBArtifactType "Team Workflow"
+	defaultOrderType Unordered
+	multiplicity ONE_TO_MANY
 }
 
 relationType "Port" {
-   guid "AF4HCZd7j0hjE2yVsTwA"
-   uuid 0x200000000000017A
-   sideAName "From"
-   sideAArtifactType "Team Workflow"
-   sideBName "To"
-   sideBArtifactType "Team Workflow"
-   defaultOrderType Unordered
-   multiplicity MANY_TO_MANY
+	guid "AF4HCZd7j0hjE2yVsTwA"
+	uuid 0x200000000000017A
+	sideAName "From"
+	sideAArtifactType "Team Workflow"
+	sideBName "To"
+	sideBArtifactType "Team Workflow"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
 }
 
 relationType "Derive" {
-   guid "AF4bxUKu2H7HYNu2zhQA"
-   uuid 0x200000000000017B
-   sideAName "From"
-   sideAArtifactType "Team Workflow"
-   sideBName "To"
-   sideBArtifactType "Team Workflow"
-   defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+	guid "AF4bxUKu2H7HYNu2zhQA"
+	uuid 0x200000000000017B
+	sideAName "From"
+	sideAArtifactType "Team Workflow"
+	sideBName "To"
+	sideBArtifactType "Team Workflow"
+	defaultOrderType Unordered
+	multiplicity ONE_TO_MANY
 }
 
 relationType "SmaToTask" {
-   guid "AAMFE97xw1BM5l+GxKAA"
-   uuid 0x200000000000016E
-   sideAName "State Machine Artifact"
-   sideAArtifactType "ats.Ats Artifact"
-   sideBName "Task"
-   sideBArtifactType "Task"
-   defaultOrderType Lexicographical_Ascending
-   multiplicity ONE_TO_MANY
+	guid "AAMFE97xw1BM5l+GxKAA"
+	uuid 0x200000000000016E
+	sideAName "State Machine Artifact"
+	sideAArtifactType "ats.Ats Artifact"
+	sideBName "Task"
+	sideBArtifactType "Task"
+	defaultOrderType Lexicographical_Ascending
+	multiplicity ONE_TO_MANY
 }
 
 relationType "TeamWorkflowTargetedForVersion" {
-   guid "AAMFE99pzm4zSibDT9gA"
-   uuid 0x200000000000016F
-   sideAName "Team Workflow"
-   sideAArtifactType "Team Workflow"
-   sideBName "Version"
-   sideBArtifactType "Version"
-   defaultOrderType Unordered
-   multiplicity MANY_TO_ONE
+	guid "AAMFE99pzm4zSibDT9gA"
+	uuid 0x200000000000016F
+	sideAName "Team Workflow"
+	sideAArtifactType "Team Workflow"
+	sideBName "Version"
+	sideBArtifactType "Version"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_ONE
 }
 
 relationType "TeamDefinitionToVersion" {
-   guid "AAMFE9_i7zG3lR1kGWQA"
-   uuid 0x2000000000000170
-   sideAName "Team Definition"
-   sideAArtifactType "Team Definition"
-   sideBName "Version"
-   sideBArtifactType "Version"
-   defaultOrderType Lexicographical_Ascending
-   multiplicity ONE_TO_MANY
+	guid "AAMFE9_i7zG3lR1kGWQA"
+	uuid 0x2000000000000170
+	sideAName "Team Definition"
+	sideAArtifactType "Team Definition"
+	sideBName "Version"
+	sideBArtifactType "Version"
+	defaultOrderType Lexicographical_Ascending
+	multiplicity ONE_TO_MANY
 }
 
 relationType "TeamWorkflowToReview" {
-   guid "AAMFE+JqDz+8tuRDdIwA"
-   uuid 0x2000000000000171
-   sideAName "Team Workflow"
-   sideAArtifactType "Team Workflow"
-   sideBName "Review"
-   sideBArtifactType "ats.Review"
-   defaultOrderType Unordered
-   multiplicity MANY_TO_MANY
+	guid "AAMFE+JqDz+8tuRDdIwA"
+	uuid 0x2000000000000171
+	sideAName "Team Workflow"
+	sideAArtifactType "Team Workflow"
+	sideBName "Review"
+	sideBArtifactType "ats.Review"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
 }
 
 relationType "SubscribedUser" {
-   guid "AAMFE+LkSAkfUWoTHdwA"
-   uuid 0x2000000000000172
-   sideAName "Artifact"
-   sideAArtifactType "Artifact"
-   sideBName "User"
-   sideBArtifactType "User"
-   defaultOrderType Unordered
-   multiplicity MANY_TO_MANY
+	guid "AAMFE+LkSAkfUWoTHdwA"
+	uuid 0x2000000000000172
+	sideAName "Artifact"
+	sideAArtifactType "Artifact"
+	sideBName "User"
+	sideBArtifactType "User"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
 }
 
 relationType "FavoriteUser" {
-   guid "AAMFE+NegDLK1g2ph+AA"
-   uuid 0x2000000000000173
-   sideAName "Artifact"
-   sideAArtifactType "Artifact"
-   sideBName "User"
-   sideBArtifactType "User"
-   defaultOrderType Unordered
-   multiplicity MANY_TO_MANY
+	guid "AAMFE+NegDLK1g2ph+AA"
+	uuid 0x2000000000000173
+	sideAName "Artifact"
+	sideAArtifactType "Artifact"
+	sideBName "User"
+	sideBArtifactType "User"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
 }
 
 relationType "ParallelVersion" {
-   guid "AAMFE_EJHSBGb9msPXQA"
-   uuid 0x2000000000000174
-   sideAName "Parent"
-   sideAArtifactType "Version"
-   sideBName "Child"
-   sideBArtifactType "Version"
-   defaultOrderType Lexicographical_Ascending
-   multiplicity MANY_TO_MANY
+	guid "AAMFE_EJHSBGb9msPXQA"
+	uuid 0x2000000000000174
+	sideAName "Parent"
+	sideAArtifactType "Version"
+	sideBName "Child"
+	sideBArtifactType "Version"
+	defaultOrderType Lexicographical_Ascending
+	multiplicity MANY_TO_MANY
 }
 
 relationType "Owner" {
-   guid "AA65ENnCSzX_F5mspbwA"
-   uuid 0x2000000000000178
-   sideAName "Actionable Item"
-   sideAArtifactType "Actionable Item"
-   sideBName "Owner"
-   sideBArtifactType "User"
-   defaultOrderType Lexicographical_Ascending
-   multiplicity MANY_TO_MANY
+	guid "AA65ENnCSzX_F5mspbwA"
+	uuid 0x2000000000000178
+	sideAName "Actionable Item"
+	sideAArtifactType "Actionable Item"
+	sideBName "Owner"
+	sideBArtifactType "User"
+	defaultOrderType Lexicographical_Ascending
+	multiplicity MANY_TO_MANY
 }
 
 relationType "Goal" {
-   guid "ABMn0wPKdyN+Mfo5nwgA"
-   uuid 0x2000000000000175
-   sideAName "Goal"
-   sideAArtifactType "Goal"
-   sideBName "Member"
-   sideBArtifactType "ats.Ats Artifact"
-   defaultOrderType Lexicographical_Ascending
-   multiplicity MANY_TO_MANY
+	guid "ABMn0wPKdyN+Mfo5nwgA"
+	uuid 0x2000000000000175
+	sideAName "Goal"
+	sideAArtifactType "Goal"
+	sideBName "Member"
+	sideBArtifactType "ats.Ats Artifact"
+	defaultOrderType Lexicographical_Ascending
+	multiplicity MANY_TO_MANY
 }

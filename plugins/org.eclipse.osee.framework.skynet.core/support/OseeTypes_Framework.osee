@@ -581,6 +581,7 @@ attributeType "Content URL" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "Paragraph Number" extends OutlineNumberAttribute {
@@ -589,6 +590,7 @@ attributeType "Paragraph Number" extends OutlineNumberAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	taggerId DefaultAttributeTaggerProvider
 	description
 	"This is the corresponding section number from the outline of document from which this artifact was imported"
 }
