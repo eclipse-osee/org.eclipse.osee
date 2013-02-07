@@ -30,6 +30,7 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -241,6 +242,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
 
             case '<':
             case '>':
+               inDoubleQuote = inSingleQuote = false;
             case '=':
             case ' ':
                if ((!inSingleQuote) && (!inDoubleQuote)) {
@@ -278,7 +280,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
     * <th width=50>instead of
     * <th width='50'>)
     */
-   private String standardizeDOORS(String input) throws IllegalArgumentException {
+   private String standardizeDOORS(String input) throws OseeArgumentException {
       StringBuilder rawValue = new StringBuilder(""), returnValue = new StringBuilder("");
       int iLastSlash = input.lastIndexOf('/'), iLastBackslash = input.lastIndexOf('\\');
       int iLast = (iLastBackslash > iLastSlash) ? iLastBackslash : iLastSlash;
@@ -310,12 +312,12 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
             inTag = false; // breakpoint
          } else if (token.equals("<")) {
             if (inTag) {
-               throw (new IllegalArgumentException("< within a tag in HTML"));
+               throw (new OseeArgumentException("< within a tag in HTML"));
             }
             inTag = true;
          } else if (token.equals(">")) {
             if (!inTag) {
-               throw (new IllegalArgumentException("> outside a tag in HTML"));
+               throw (new OseeArgumentException("> outside a tag in HTML"));
             }
             inTag = false;
             if (inMeta) {
@@ -359,6 +361,9 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
             token = "/body";
          } else if (token.equalsIgnoreCase("!--") && inTag) {
             LiteralTag = true;
+         } else if (token.equalsIgnoreCase("&nbsp") && !inTag) {
+            // no closing semicolon
+            token = "&nbsp;";
          } else if (!LiteralTag) {
             if (inTag) {
                /***************************************************
