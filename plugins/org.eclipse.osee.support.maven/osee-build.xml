@@ -11,7 +11,7 @@
 		<echo>--------------------------------------------------------------</echo>
 		<property name="input-arguments" value="all,all-ide,server,runtime,ote,osee-client,coverage,ats-client,products" />
 		<input message="${tab}[input] Select build to perform?" validargs="${input-arguments}" defaultvalue="${default-osee-build-stage}" addproperty="input-osee-build-stage">
-			<handler classname="org.apache.tools.ant.input.SecureInputHandler" />
+			<handler classname="org.apache.tools.ant.input.DefaultInputHandler" />
 		</input>
 		<echo message="${tab}${tab}Selected: [${input-osee-build-stage}]" />
 
@@ -69,7 +69,7 @@
 		<echo>--------------------------------------------------------------</echo>
 		<!--	SKIP PRODUCT BUILD -->
 		<input message="${tab}[input] Build OSEE RCP Product (slows down build)?" validargs="y,n" defaultvalue="${default-build-rcp-ide-product}" addproperty="input-build-rcp-ide-product">
-			<handler classname="org.apache.tools.ant.input.SecureInputHandler" />
+			<handler classname="org.apache.tools.ant.input.DefaultInputHandler" />
 		</input>
 		<echo message="${tab}${tab}Selected: [${input-build-rcp-ide-product}]" />
 		<if>
@@ -81,7 +81,7 @@
 
 		<!--	STATIC ANALYSIS -->
 		<input message="${tab}[input] Perform Static Analysis?" validargs="y,n" defaultvalue="${default-static-analysis}" addproperty="input-static-analysis">
-			<handler classname="org.apache.tools.ant.input.SecureInputHandler" />
+			<handler classname="org.apache.tools.ant.input.DefaultInputHandler" />
 		</input>
 		<echo message="${tab}${tab}Selected: [${input-static-analysis}]" />
 		<if>
@@ -93,7 +93,7 @@
 
 		<!--	COVERAGE -->
 		<input message="${tab}[input] Perform Code Coverage Analysis?" validargs="y,n" defaultvalue="${default-coverage-analysis}" addproperty="input-coverage-analysis">
-			<handler classname="org.apache.tools.ant.input.SecureInputHandler" />
+			<handler classname="org.apache.tools.ant.input.DefaultInputHandler" />
 		</input>
 		<echo message="${tab}${tab}Selected: [${input-coverage-analysis}]" />
 		<if>
@@ -108,7 +108,7 @@
 		<echo>--------------------------------------------------------------</echo>
 		<!--	 LIFECYCLE PHASE -->
 		<input message="${tab}[input] Maven lifecycle phase?" defaultvalue="${default-maven-lifecycle}" addproperty="input-maven-lifecycle">
-			<handler classname="org.apache.tools.ant.input.SecureInputHandler" />
+			<handler classname="org.apache.tools.ant.input.DefaultInputHandler" />
 		</input>
 		<property name="maven-goal" value="${input-maven-lifecycle}" />
 
@@ -116,7 +116,7 @@
 
 		<!--	DEBUG OPTIONS -->
 		<input message="${tab}[input] Maven options (-X -e)?" defaultvalue="${default-maven-options}" addproperty="input-maven-options">
-			<handler classname="org.apache.tools.ant.input.SecureInputHandler" />
+			<handler classname="org.apache.tools.ant.input.DefaultInputHandler" />
 		</input>
 		<echo message="${tab}${tab}Selected: [${input-maven-options}]" />
 		<if>
