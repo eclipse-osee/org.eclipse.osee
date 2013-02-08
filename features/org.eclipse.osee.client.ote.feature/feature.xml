@@ -22,7 +22,6 @@
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.apache.commons.net"/>
       <import plugin="org.eclipse.osee.framework.logging"/>
-      <import plugin="org.eclipse.help"/>
       <import plugin="net.jini" version="2.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.apache.xerces"/>
@@ -46,9 +45,14 @@
       <import plugin="org.eclipse.osee.framework.ui.ws"/>
       <import plugin="org.eclipse.osee.framework.jini"/>
       <import plugin="jms.libraries"/>
-      <import plugin="org.eclipse.team.svn.core"/>
-      <import feature="org.eclipse.osee.core.runtime.feature" version="0.11.0.qualifier" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.help"/>
+      <import feature="org.eclipse.osee.core.runtime.feature"/>
       <import feature="org.eclipse.osee.external.feature"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="org.eclipse.jgit"/>
+      <import plugin="org.eclipse.team.svn.core"/>
    </requires>
 
    <plugin

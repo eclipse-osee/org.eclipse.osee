@@ -12,7 +12,7 @@
 
 	<artifactId>org.eclipse.osee.ote.version.svn</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<name>OTE Ui Test Manager (Incubation)</name>
+	<name>OTE SVN (Incubation)</name>
 
    <build>
      <!-- workaround for https://issues.sonatype.org/browse/TYCHO-168 -->
