@@ -8,13 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.importing.parsers;
+package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.junit.Assert.assertEquals;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -23,17 +28,21 @@ import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.DoorsArtifactExtractor;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * @author Marc A. Potter
  */
 public class DoorsArtifactExtractorTest {
 
-   private static final String SUPPORT_SAMPLE_DOORS_EXPORT_HTM = "support/sample_DOORS_export.htm";
+   private static final String THIS_IS_A_PNG_IMAGE_PNG = "This_is_a_PNG_image.png";
+   private static final String THIS_IS_A_JPEG_IMAGE_JPG = "This_is_a_JPEG_image.jpg";
    private static final String IMAGE_CONTENT = "Image Content";
    private static final String PRIME_ITEM_DIAGRAM = "Prime item diagram.";
    private static final String[] ARTIFACT_NAMES = {
@@ -63,14 +72,10 @@ public class DoorsArtifactExtractorTest {
       extractor = new DoorsArtifactExtractor();
       collector = new RoughArtifactCollector(null);
 
-      InputStream inputStream = null;
-      try {
-         doorHtmlExport = folder.newFile("sample_DOORS_export.htm");
-         inputStream = getClass().getResourceAsStream(SUPPORT_SAMPLE_DOORS_EXPORT_HTM);
-         Lib.inputStreamToFile(inputStream, doorHtmlExport);
-      } finally {
-         Lib.close(inputStream);
-      }
+      doorHtmlExport = folder.newFile("sample_DOORS_export.htm");
+      copyResource("sample_DOORS_export.htm", doorHtmlExport);
+      copyResource(THIS_IS_A_JPEG_IMAGE_JPG, folder.newFile(THIS_IS_A_JPEG_IMAGE_JPG));
+      copyResource(THIS_IS_A_PNG_IMAGE_PNG, folder.newFile(THIS_IS_A_PNG_IMAGE_PNG));
    }
 
    @Test
@@ -117,8 +122,8 @@ public class DoorsArtifactExtractorTest {
             URI uri1 = iter.next();
             URI uri2 = iter.next();
 
-            assertEquals("Wrong image stored in slot 0", "This_is_a_JPEG_image.jpg", getName(uri1));
-            assertEquals("Wrong image stored in slot 1", "This_is_a_PNG_image.png", getName(uri2));
+            assertEquals("Wrong image stored in slot 0", THIS_IS_A_JPEG_IMAGE_JPG, getName(uri1));
+            assertEquals("Wrong image stored in slot 1", THIS_IS_A_PNG_IMAGE_PNG, getName(uri2));
          }
       }
    }
@@ -130,5 +135,22 @@ public class DoorsArtifactExtractorTest {
          value = value.substring(index + 1, value.length());
       }
       return value;
+   }
+
+   private static void copyResource(String resource, File output) throws IOException {
+      Bundle bundle = FrameworkUtil.getBundle(DoorsArtifactExtractorTest.class);
+      String fullPath = String.format("support/doorsArtifactExtractor/%s", resource);
+      URL input = bundle.getResource(fullPath);
+
+      OutputStream outputStream = null;
+      InputStream inputStream = null;
+      try {
+         outputStream = new BufferedOutputStream(new FileOutputStream(output));
+         inputStream = new BufferedInputStream(input.openStream());
+         Lib.inputStreamToOutputStream(inputStream, outputStream);
+      } finally {
+         Lib.close(inputStream);
+         Lib.close(outputStream);
+      }
    }
 }
