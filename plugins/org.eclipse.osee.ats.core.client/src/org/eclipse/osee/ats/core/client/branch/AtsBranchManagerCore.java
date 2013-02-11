@@ -51,6 +51,7 @@ import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -616,13 +617,17 @@ public class AtsBranchManagerCore {
 
    public static Job createWorkingBranch_Create(final TeamWorkFlowArtifact teamArt, final IOseeBranch parentBranch, boolean pend) throws OseeCoreException {
       final String branchName = Strings.truncate(TeamWorkFlowManager.getBranchName(teamArt), 195, true);
+      Conditions.checkNotNull(teamArt, "Parent Team Workflow");
+      Conditions.checkNotNull(parentBranch, "Parent Branch");
 
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
+
          @Override
          public IStatus run(IProgressMonitor monitor) throws OseeCoreException {
             teamArt.setWorkingBranchCreationInProgress(true);
             BranchManager.createWorkingBranch(parentBranch, branchName, teamArt);
             teamArt.setWorkingBranchCreationInProgress(false);
+
             // Create reviews as necessary
             SkynetTransaction transaction =
                TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Create Reviews upon Transition");

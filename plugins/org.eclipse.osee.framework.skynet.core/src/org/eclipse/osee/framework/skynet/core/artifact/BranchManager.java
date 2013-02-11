@@ -390,6 +390,9 @@ public class BranchManager {
    }
 
    public static Branch createWorkingBranch(IOseeBranch parentBranch, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
+      Conditions.checkNotNull(parentBranch, "Parent Branch");
+      Conditions.checkNotNull(childBranchName, "Child Branch Name");
+      Conditions.checkNotNull(associatedArtifact, "Associated Artifact");
       TransactionRecord parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
       return createWorkingBranch(parentTransactionId, childBranchName, null, associatedArtifact);
    }
