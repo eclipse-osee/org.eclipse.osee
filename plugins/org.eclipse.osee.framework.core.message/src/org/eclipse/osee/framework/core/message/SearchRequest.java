@@ -22,10 +22,6 @@ public class SearchRequest implements HasBranch {
    private final String rawSearch;
    private final SearchOptions options;
 
-   public SearchRequest(IOseeBranch branch, String rawSearch) {
-      this(branch, rawSearch, null);
-   }
-
    public SearchRequest(IOseeBranch branch, String rawSearch, SearchOptions options) {
       this.branch = branch;
       this.rawSearch = rawSearch;

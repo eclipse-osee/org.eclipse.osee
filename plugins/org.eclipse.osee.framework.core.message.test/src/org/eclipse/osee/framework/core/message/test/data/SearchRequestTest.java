@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.message.test.data;
 
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.message.SearchOptions;
 import org.eclipse.osee.framework.core.message.SearchRequest;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -26,7 +26,7 @@ public class SearchRequestTest {
 
    @Test
    public void testDataDefaultOptions() {
-      SearchRequest request = new SearchRequest(CoreBranches.COMMON, "Search");
+      SearchRequest request = new SearchRequest(CoreBranches.COMMON, "Search", new SearchOptions());
       Assert.assertEquals(CoreBranches.COMMON, request.getBranch());
       Assert.assertEquals("Search", request.getRawSearch());
       DataAsserts.assertEquals(new SearchOptions(), request.getOptions());
@@ -34,7 +34,7 @@ public class SearchRequestTest {
 
    @Test
    public void testDataNullConstructedOptions() {
-      SearchRequest request = new SearchRequest(CoreBranches.COMMON, "Search", null);
+      SearchRequest request = new SearchRequest(CoreBranches.COMMON, "Search", new SearchOptions());
       Assert.assertEquals(CoreBranches.COMMON, request.getBranch());
       Assert.assertEquals("Search", request.getRawSearch());
       DataAsserts.assertEquals(new SearchOptions(), request.getOptions());

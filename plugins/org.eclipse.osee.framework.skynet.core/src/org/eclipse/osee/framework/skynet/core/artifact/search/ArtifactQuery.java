@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 
@@ -483,13 +484,14 @@ public class ArtifactQuery {
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromAttributeKeywords(IOseeBranch branch, String queryString, boolean isMatchWordOrder, DeletionFlag deletionFlag, boolean isCaseSensitive, IAttributeType... attributeTypes) throws OseeCoreException {
-      SearchRequest searchRequest = new SearchRequest(branch, queryString);
-      SearchOptions options = searchRequest.getOptions();
+      SearchOptions options = new SearchOptions();
       options.setAttributeTypeFilter(attributeTypes);
       options.setCaseSensive(isCaseSensitive);
       options.setDeletedIncluded(deletionFlag);
       options.setMatchWordOrder(isMatchWordOrder);
 
+      SearchRequest searchRequest = new SearchRequest(branch, queryString, options);
+      determineSearchAll(searchRequest);
       return new HttpArtifactQuery(searchRequest).getArtifacts(FULL, INCLUDE_CACHE);
    }
 
@@ -502,7 +504,21 @@ public class ArtifactQuery {
     * first one. When returning all match locations, search performance may be slow.
     */
    public static List<ArtifactMatch> getArtifactMatchesFromAttributeKeywords(SearchRequest searchRequest) throws OseeCoreException {
+      determineSearchAll(searchRequest);
       return new HttpArtifactQuery(searchRequest).getArtifactsWithMatches(FULL, INCLUDE_CACHE);
+   }
+
+   /**
+    * Since the application server can support non taggable attribute types, the artifact query is filtering only
+    * taggable types here.
+    */
+   private static void determineSearchAll(SearchRequest searchRequest) throws OseeCoreException {
+      if (searchRequest.getOptions().getAttributeTypeFilter().isEmpty()) {
+         searchRequest.getOptions().setIsSearchAll(true);
+         for (IAttributeType attrType : AttributeTypeManager.getTaggableTypes()) {
+            searchRequest.getOptions().addAttributeTypeFilter(attrType);
+         }
+      }
    }
 
    public static Artifact reloadArtifactFromId(int artId, IOseeBranch branch) throws OseeCoreException {

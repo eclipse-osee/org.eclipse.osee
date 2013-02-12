@@ -68,8 +68,12 @@ public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
          optionsList.add("Case Sensitive");
       }
 
-      if (options.isAttributeTypeFiltered()) {
-         optionsList.add(String.format("Attribute Type Filter:%s", options.getAttributeTypeFilter()));
+      if (!options.isSearchAll()) {
+         if (options.getAttributeTypeFilter().size() <= 5) {
+            optionsList.add(String.format("Attribute Type Filter:%s", options.getAttributeTypeFilter()));
+         } else {
+            optionsList.add(String.format("Attribute Type Filter: %d types", options.getAttributeTypeFilter().size()));
+         }
       }
 
       String optionsLabel =

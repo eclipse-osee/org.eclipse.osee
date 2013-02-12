@@ -83,19 +83,18 @@ public class SearchRequestTranslator implements ITranslator<SearchRequest> {
          store.put(Entry.OPTION_IS_INCLUDE_DELETED.name(), options.getDeletionFlag().areDeletedAllowed());
          store.put(Entry.OPTION_FIND_ALL_LOCATIONS.name(), options.isFindAllLocationsEnabled());
 
-         if (options.isAttributeTypeFiltered()) {
-            Collection<IAttributeType> types = options.getAttributeTypeFilter();
-            String[] guids = new String[types.size()];
-            String[] names = new String[types.size()];
-            int index = 0;
-            for (IAttributeType type : types) {
-               guids[index] = String.valueOf(type.getGuid());
-               names[index] = type.getName();
-               index++;
-            }
-            store.put(Entry.OPTION_ATTRIBUTE_TYPE_FILTER_GUIDS.name(), guids);
-            store.put(Entry.OPTION_ATTRIBUTE_TYPE_FILTER_NAMES.name(), names);
+         Collection<IAttributeType> types = options.getAttributeTypeFilter();
+         String[] guids = new String[types.size()];
+         String[] names = new String[types.size()];
+         int index = 0;
+         for (IAttributeType type : types) {
+            guids[index] = String.valueOf(type.getGuid());
+            names[index] = type.getName();
+            index++;
          }
+         store.put(Entry.OPTION_ATTRIBUTE_TYPE_FILTER_GUIDS.name(), guids);
+         store.put(Entry.OPTION_ATTRIBUTE_TYPE_FILTER_NAMES.name(), names);
+
       }
       return store;
    }

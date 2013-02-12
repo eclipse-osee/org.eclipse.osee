@@ -184,8 +184,7 @@ public final class DataAsserts {
          Assert.assertEquals(expected.getCreationComment(), actual.getCreationComment());
          Assert.assertEquals(expected.getMergeDestinationBranchId(), actual.getMergeDestinationBranchId());
          Assert.assertEquals(expected.getParentBranchId(), actual.getParentBranchId());
-         Assert.assertEquals(expected.getMergeAddressingQueryId(),
-            actual.getMergeAddressingQueryId());
+         Assert.assertEquals(expected.getMergeAddressingQueryId(), actual.getMergeAddressingQueryId());
          Assert.assertEquals(expected.getSourceTransactionId(), actual.getSourceTransactionId());
          Assert.assertEquals(expected.getBranchType(), actual.getBranchType());
       }
@@ -298,7 +297,7 @@ public final class DataAsserts {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
-         Assert.assertEquals(expected.isAttributeTypeFiltered(), actual.isAttributeTypeFiltered());
+         Assert.assertEquals(expected.isSearchAll(), actual.isSearchAll());
          Assert.assertEquals(expected.isCaseSensitive(), actual.isCaseSensitive());
          Assert.assertEquals(expected.isFindAllLocationsEnabled(), actual.isFindAllLocationsEnabled());
          Assert.assertEquals(expected.getDeletionFlag(), actual.getDeletionFlag());
