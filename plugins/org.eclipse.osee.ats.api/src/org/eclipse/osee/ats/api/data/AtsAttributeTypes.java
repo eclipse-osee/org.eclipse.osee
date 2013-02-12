@@ -116,6 +116,7 @@ public final class AtsAttributeTypes {
    public static final IAttributeType WorkflowDefinition = createType(0x10000000000000ADL, "Workflow Definition", "Specific work flow definition id used by this Workflow artifact");
    public static final IAttributeType RelatedTaskWorkDefinition = createType(0x10000000000000B0L, "Related Task Workflow Definition", "Specific work flow definition id used by Tasks related to this Workflow");
    public static final IAttributeType WorkPackage = createType(0x10000000000000E6L, "Work Package", "Designated accounting work package for completing workflow.");
+   public static final IAttributeType RelatedPeerWorkflowDefinition = createType(0x100000000000037EL, "Related Peer Workflow Definition", "Specific work flow definition id used by Peer To Peer Reviews for this Team");
 
 
    // @formatter:on

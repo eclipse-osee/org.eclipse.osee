@@ -11,8 +11,10 @@
 package org.eclipse.osee.ats.core.client.workflow;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -49,9 +51,9 @@ public interface ITeamWorkflowProvider {
     */
    public void teamWorkflowCreated(TeamWorkFlowArtifact teamArt);
 
-   public String getWorkflowDefinitionId(AbstractWorkflowArtifact artifact) throws OseeCoreException;
+   public String getWorkflowDefinitionId(IAtsWorkItem workItem) throws OseeCoreException;
 
-   public String getRelatedTaskWorkflowDefinitionId(TeamWorkFlowArtifact teamArt) throws OseeCoreException;
+   public String getRelatedTaskWorkflowDefinitionId(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
    /**
     * Assigned or computed Id that will show at the top of the editor

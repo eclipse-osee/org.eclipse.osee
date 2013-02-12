@@ -88,9 +88,6 @@ public class AtsConfigCache {
    }
 
    public final <A extends IAtsConfigObject> A getSoleByGuid(String guid, Class<A> clazz) {
-      if (guid.equals("BKbckZfNIkcx2wIVGkAA")) {
-         System.out.println("where");
-      }
       List<A> list = getByTag(guid, clazz);
       if (list.isEmpty()) {
          return null;

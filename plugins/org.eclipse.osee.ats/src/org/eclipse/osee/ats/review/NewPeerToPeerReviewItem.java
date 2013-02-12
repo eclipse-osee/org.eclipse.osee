@@ -12,6 +12,7 @@
 package org.eclipse.osee.ats.review;
 
 import java.util.Date;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
@@ -25,6 +26,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -46,19 +48,22 @@ public class NewPeerToPeerReviewItem extends XNavigateItemAction {
             Active.Active,
             "Select Actionable Items to Review\n\nNOTE: To create a review against " + "an Action and Team Workflow\nopen the object in ATS and select the " + "review to create from the editor.");
       int result = ld.open();
-      if (result == 0) {
+      if (result == Window.OK) {
          final EntryDialog ed = new EntryDialog("Peer Review Title", "Enter Peer Review Title");
-         if (ed.open() == 0) {
+         if (ed.open() == Window.OK) {
             try {
+               if (ld.getSelected().isEmpty()) {
+                  AWorkbench.popup("Must select at least one Actionable Item");
+                  return;
+               }
                SkynetTransaction transaction =
-                  TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "New Peer To Peer Review");
+                  TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "New Stand-alone Peer To Peer Review");
                PeerToPeerReviewArtifact peerArt =
-                  PeerToPeerReviewManager.createNewPeerToPeerReview(null, ed.getEntry(), null, new Date(),
-                     AtsUsersClient.getUser(), transaction);
-               peerArt.getActionableItemsDam().setActionableItems(ld.getSelected());
+                  PeerToPeerReviewManager.createNewPeerToPeerReview(ld.getSelected().iterator().next(), ed.getEntry(),
+                     null, new Date(), AtsUsersClient.getUser(), transaction);
                peerArt.persist(transaction);
-               AtsUtil.openATSAction(peerArt, AtsOpenOption.OpenAll);
                transaction.execute();
+               AtsUtil.openATSAction(peerArt, AtsOpenOption.OpenAll);
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }

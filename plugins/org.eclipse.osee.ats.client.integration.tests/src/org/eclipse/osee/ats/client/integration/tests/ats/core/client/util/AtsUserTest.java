@@ -18,11 +18,11 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
 import org.eclipse.osee.ats.core.client.util.AtsUser;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
-import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.mockito.Mockito;
 
 /**
  * @author Donald G. Dunne
@@ -56,7 +56,9 @@ public class AtsUserTest {
       AtsUser atsUser = new AtsUser(user);
       Assert.assertEquals(atsUser, user);
 
-      IAtsUser atsUser2 = getAtsUser(user.getName(), user.getUserId());
+      IAtsUser atsUser2 = Mockito.mock(IAtsUser.class);
+      Mockito.when(atsUser2.getName()).thenReturn(user.getName());
+      Mockito.when(atsUser2.getUserId()).thenReturn(user.getUserId());
       Assert.assertEquals(atsUser, atsUser2);
    }
 
@@ -73,56 +75,6 @@ public class AtsUserTest {
       assignees.remove(AtsUsersClient.getUser());
       Assert.assertTrue(Collections.isEqual(assignees,
          Arrays.asList(AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay))));
-   }
-
-   public IAtsUser getAtsUser(final String name, final String userId) {
-      return new IAtsUser() {
-
-         @Override
-         public int compareTo(Object o) {
-            return 0;
-         }
-
-         @Override
-         public String getName() {
-            return name;
-         }
-
-         @Override
-         public String getHumanReadableId() {
-            return null;
-         }
-
-         @Override
-         public String getGuid() {
-            return null;
-         }
-
-         @Override
-         public String getDescription() {
-            return null;
-         }
-
-         @Override
-         public boolean isActive() {
-            return false;
-         }
-
-         @Override
-         public String getUserId() {
-            return userId;
-         }
-
-         @Override
-         public String getEmail() {
-            return null;
-         }
-
-         @Override
-         public boolean matches(Identity<?>... identities) {
-            return false;
-         }
-      };
    }
 
 }

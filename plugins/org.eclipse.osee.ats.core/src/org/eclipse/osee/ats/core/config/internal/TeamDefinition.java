@@ -59,6 +59,7 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
    private final Set<IAtsTeamDefinition> childrenTeamDefinitions = new HashSet<IAtsTeamDefinition>();
    private final Set<IAtsActionableItem> actionableItems = new HashSet<IAtsActionableItem>();
    private final Set<IAtsVersion> versions = new HashSet<IAtsVersion>();
+   private String relatedPeerWorkflowDefinition;
 
    @Override
    public String getRelatedTaskWorkDefinition() {
@@ -363,7 +364,7 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
 
    @Override
    public void setWorkflowDefinition(String workDefinitionName) {
-      this.workflowDefinitionName = workDefinitionName;
+      workflowDefinitionName = workDefinitionName;
    }
 
    @Override
@@ -383,7 +384,7 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
 
    @Override
    public void setRelatedTaskWorkDefinition(String name) {
-      this.relatedTaskWorkDefinition = name;
+      relatedTaskWorkDefinition = name;
    }
 
    @Override
@@ -425,6 +426,16 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
    @Override
    public String getTypeName() {
       return "Team Definition";
+   }
+
+   @Override
+   public String getRelatedPeerWorkDefinition() {
+      return relatedPeerWorkflowDefinition;
+   }
+
+   @Override
+   public void setRelatedPeerWorkDefinition(String relatedPeerWorkflowDefinition) {
+      this.relatedPeerWorkflowDefinition = relatedPeerWorkflowDefinition;
    }
 
 }

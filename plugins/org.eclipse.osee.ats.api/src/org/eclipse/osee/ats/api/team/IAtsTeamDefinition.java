@@ -155,6 +155,10 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
 
    void initialize(String fullname, String description, Collection<IAtsUser> leads, Collection<IAtsUser> members, Collection<IAtsActionableItem> actionableItems, TeamDefinitionOptions... teamDefinitionOptions);
 
+   String getRelatedPeerWorkDefinition();
+
+   void setRelatedPeerWorkDefinition(String relatedPeerWorkDefinition);
+
    /*****************************
     * Rules
     ******************************/

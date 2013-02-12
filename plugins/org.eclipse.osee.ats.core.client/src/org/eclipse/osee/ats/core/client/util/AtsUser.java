@@ -143,4 +143,10 @@ public class AtsUser implements IAtsUser {
       }
       return false;
    }
+
+   @Override
+   public String toStringWithId() {
+      return String.format("[%s][%s]", getName(), getHumanReadableId());
+   }
+
 }

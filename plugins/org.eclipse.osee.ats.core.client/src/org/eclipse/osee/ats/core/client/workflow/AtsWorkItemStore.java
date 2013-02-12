@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.client.workflow;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemStore;
@@ -23,6 +24,9 @@ import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsWorkItemStore implements IAtsWorkItemStore {
 
    @Override
@@ -36,7 +40,7 @@ public class AtsWorkItemStore implements IAtsWorkItemStore {
    }
 
    @Override
-   public Collection<Object> getAttributeValues(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException {
+   public Collection<Object> getAttributeValues(IAtsObject workItem, IAttributeType attributeType) throws OseeCoreException {
       Artifact artifact = WorkItemUtil.get(workItem);
       Conditions.checkNotNull(artifact, "workItem", "Can't Find Artifact matching [%s]", workItem.toString());
 
@@ -53,6 +57,17 @@ public class AtsWorkItemStore implements IAtsWorkItemStore {
       Artifact artifact = WorkItemUtil.get(workItem);
       Conditions.checkNotNull(artifact, "workItem", "Can't Find Artifact matching [%s]", workItem.toString());
       return artifact.isOfType(matchType);
+   }
+
+   @Override
+   public IAtsWorkItem getParentTeamWorkflow(IAtsWorkItem workItem) throws OseeCoreException {
+      Artifact artifact = WorkItemUtil.get(workItem);
+      Conditions.checkNotNull(artifact, "workItem", "Can't Find Artifact matching [%s]", workItem.toString());
+      if (artifact instanceof AbstractWorkflowArtifact) {
+         AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
+         return awa.getParentTeamWorkflow();
+      }
+      return null;
    }
 
 }

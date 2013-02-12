@@ -61,6 +61,9 @@ public class WorkflowManagerCore {
       AtsUtilCore.isAtsAdmin());
    }
 
+   /**
+    * Return parent AWA. Note: Use WorkItemUtil.getParentTeamWorkflow instead.
+    */
    public static AbstractWorkflowArtifact getParentAWA(Artifact artifact) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.Task)) {
          Collection<Artifact> awas = artifact.getRelatedArtifacts(AtsRelationTypes.TeamWfToTask_TeamWf);
@@ -94,6 +97,9 @@ public class WorkflowManagerCore {
       return null;
    }
 
+   /**
+    * Return parent team workflow artifact. Note: Preferred use of WorkItemUtil.getParentTeamWorkflow
+    */
    public static Artifact getParentTeamWorkflow(Artifact artifact) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
          return artifact;

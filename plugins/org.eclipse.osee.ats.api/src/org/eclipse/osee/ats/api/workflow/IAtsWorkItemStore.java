@@ -11,19 +11,25 @@
 package org.eclipse.osee.ats.api.workflow;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IAtsWorkItemStore {
 
-   public abstract IAtsWorkData getWorkData(IAtsWorkItem workItem) throws OseeCoreException;
+   IAtsWorkData getWorkData(IAtsWorkItem workItem) throws OseeCoreException;
 
-   public abstract IArtifactType getArtifactType(IAtsWorkItem workItem) throws OseeCoreException;
+   IArtifactType getArtifactType(IAtsWorkItem workItem) throws OseeCoreException;
 
-   public abstract Collection<Object> getAttributeValues(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException;
+   Collection<Object> getAttributeValues(IAtsObject workItem, IAttributeType attributeType) throws OseeCoreException;
 
-   public abstract boolean isOfType(IAtsWorkItem item, IArtifactType matchType) throws OseeCoreException;
+   boolean isOfType(IAtsWorkItem item, IArtifactType matchType) throws OseeCoreException;
+
+   IAtsWorkItem getParentTeamWorkflow(IAtsWorkItem workItem) throws OseeCoreException;
 
 }

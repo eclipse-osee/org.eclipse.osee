@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2012 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,7 @@ public class MockAtsUser implements IAtsUser {
 
    public MockAtsUser(String name) {
       this.name = name;
-      this.userId = name;
+      userId = name;
    }
 
    @Override
@@ -125,6 +125,11 @@ public class MockAtsUser implements IAtsUser {
          }
       }
       return false;
+   }
+
+   @Override
+   public String toStringWithId() {
+      return toString();
    }
 
 }

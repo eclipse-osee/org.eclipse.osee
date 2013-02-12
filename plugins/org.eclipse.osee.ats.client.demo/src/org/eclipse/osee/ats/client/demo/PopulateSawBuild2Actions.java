@@ -34,7 +34,6 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
-import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -238,8 +237,8 @@ public class PopulateSawBuild2Actions {
             Result result =
                dtwm.transitionTo(TeamState.Analyze, teamWf.getAssignees().iterator().next(), false, transaction);
             if (result.isFalse()) {
-               throw new OseeCoreException("Error transitioning [%s] to Analyze state: [%s]", teamWf.toStringWithId(),
-                  toState.getName(), result.getText());
+               throw new OseeCoreException("Error transitioning [%s] to Analyze state [%s] error [%s]",
+                  teamWf.toStringWithId(), toState.getName(), result.getText());
             }
             if (ReviewManager.getReviews(teamWf).size() != 1) {
                throw new OseeCoreException(

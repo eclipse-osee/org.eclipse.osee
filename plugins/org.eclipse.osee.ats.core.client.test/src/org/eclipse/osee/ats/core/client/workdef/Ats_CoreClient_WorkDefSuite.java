@@ -8,20 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api;
+package org.eclipse.osee.ats.core.client.workdef;
 
-import org.eclipse.osee.framework.core.data.HasDescription;
-import org.eclipse.osee.framework.core.data.Identifiable;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses({WorkDefinitionFactoryTest.class})
 /**
- * Base class to build all ats config and action objects on
- * 
  * @author Donald G. Dunne
  */
-public interface IAtsObject extends Identifiable, HasDescription {
-
-   String getHumanReadableId();
-
-   String toStringWithId();
-
+public class Ats_CoreClient_WorkDefSuite {
+   // TestSuite
 }

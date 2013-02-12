@@ -90,6 +90,10 @@ public class TeamDefinitionArtifactStore extends ArtifactAtsObjectStore {
          teamDefArt.setSoleAttributeValue(AtsAttributeTypes.RelatedTaskWorkDefinition,
             teamDef.getRelatedTaskWorkDefinition());
       }
+      if (Strings.isValid(teamDef.getRelatedPeerWorkDefinition())) {
+         teamDefArt.setSoleAttributeValue(AtsAttributeTypes.RelatedPeerWorkflowDefinition,
+            teamDef.getRelatedPeerWorkDefinition());
+      }
       if (Strings.isValid(teamDef.getDescription())) {
          teamDefArt.setSoleAttributeValue(AtsAttributeTypes.Description, teamDef.getDescription());
       }
@@ -204,6 +208,11 @@ public class TeamDefinitionArtifactStore extends ArtifactAtsObjectStore {
             teamDefArt.getSoleAttributeValue(AtsAttributeTypes.RelatedTaskWorkDefinition, "");
          if (Strings.isValid(relatedTaskWorkDefinition)) {
             teamDef.setRelatedTaskWorkDefinition(relatedTaskWorkDefinition);
+         }
+         String relatedPeerWorkDefinition =
+            teamDefArt.getSoleAttributeValue(AtsAttributeTypes.RelatedPeerWorkflowDefinition, "");
+         if (Strings.isValid(relatedPeerWorkDefinition)) {
+            teamDef.setRelatedPeerWorkDefinition(relatedPeerWorkDefinition);
          }
          teamDef.setDescription(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.Description, ""));
          teamDef.setFullName(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.FullName, ""));

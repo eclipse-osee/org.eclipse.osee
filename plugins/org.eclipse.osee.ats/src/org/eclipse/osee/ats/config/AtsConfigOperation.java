@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.core.client.AtsClient;
 import org.eclipse.osee.ats.core.client.config.AtsArtifactToken;
 import org.eclipse.osee.ats.core.client.config.store.ActionableItemArtifactStore;
 import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
@@ -30,7 +31,6 @@ import org.eclipse.osee.ats.core.client.config.store.VersionArtifactStore;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workdef.AtsWorkDefinitionStore;
-import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
@@ -94,7 +94,7 @@ public class AtsConfigOperation extends AbstractOperation {
    private void checkWorkItemNamespaceUnique() throws OseeCoreException {
       WorkDefinitionMatch match = null;
       try {
-         match = WorkDefinitionFactory.getWorkDefinition(name);
+         match = AtsClient.getWorkDefFactory().getWorkDefinition(name);
       } catch (Exception ex) {
          return;
       }
@@ -188,7 +188,7 @@ public class AtsConfigOperation extends AbstractOperation {
    }
 
    private IAtsWorkDefinition createWorkflow(SkynetTransaction transaction, XResultData resultData, IAtsTeamDefinition teamDef) throws OseeCoreException {
-      WorkDefinitionMatch workDefMatch = WorkDefinitionFactory.getWorkDefinition(name);
+      WorkDefinitionMatch workDefMatch = AtsClient.getWorkDefFactory().getWorkDefinition(name);
       IAtsWorkDefinition workDef = null;
       // If can't be found, create a new one
       if (!workDefMatch.isMatched()) {
@@ -215,7 +215,7 @@ public class AtsConfigOperation extends AbstractOperation {
 
    private IAtsWorkDefinition generateDefaultWorkflow(String name, XResultData resultData, SkynetTransaction transaction, IAtsTeamDefinition teamDef) {
       IAtsWorkDefinition defaultWorkDef =
-         WorkDefinitionFactory.getWorkDefinition(AtsWorkDefinitionSheetProviders.WORK_DEF_TEAM_DEFAULT).getWorkDefinition();
+         AtsClient.getWorkDefFactory().getWorkDefinition(AtsWorkDefinitionSheetProviders.WORK_DEF_TEAM_DEFAULT).getWorkDefinition();
 
       // Duplicate default team workflow definition w/ namespace changes
 

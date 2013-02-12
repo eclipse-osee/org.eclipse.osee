@@ -8,20 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api;
+package org.eclipse.osee.ats.api.workflow;
 
-import org.eclipse.osee.framework.core.data.HasDescription;
-import org.eclipse.osee.framework.core.data.Identifiable;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 
 /**
- * Base class to build all ats config and action objects on
- * 
  * @author Donald G. Dunne
  */
-public interface IAtsObject extends Identifiable, HasDescription {
-
-   String getHumanReadableId();
-
-   String toStringWithId();
-
+public interface IAtsTask extends IAtsWorkItem {
+   // do nothing
 }

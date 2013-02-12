@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2012 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,7 +46,7 @@ public class MockWorkItem implements IAtsWorkItem {
 
    public MockWorkItem(String name, IAtsWorkData atsWorkData, WorkStateProvider workStateProvider) {
       this.name = name;
-      this.id = name;
+      id = name;
       this.atsWorkData = atsWorkData;
       this.workStateProvider = workStateProvider;
    }
@@ -78,7 +78,7 @@ public class MockWorkItem implements IAtsWorkItem {
 
    @Override
    public List<IAtsUser> getImplementers() {
-      return this.implementers.getUsers();
+      return implementers.getUsers();
    }
 
    public void setImplementers(List<? extends IAtsUser> implementers) {
@@ -95,7 +95,7 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    public void setStateData(WorkStateProvider atsStateData) {
-      this.workStateProvider = atsStateData;
+      workStateProvider = atsStateData;
    }
 
    @Override
@@ -120,6 +120,11 @@ public class MockWorkItem implements IAtsWorkItem {
    @Override
    public IAtsTeamWorkflow getParentTeamWorkflow() throws OseeCoreException {
       return null;
+   }
+
+   @Override
+   public String toStringWithId() {
+      return toString();
    }
 
 }

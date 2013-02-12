@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkState;
 import org.eclipse.osee.ats.api.workflow.WorkStateProvider;
+import org.eclipse.osee.ats.core.client.AtsClient;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.client.notify.AtsNotifyType;
@@ -394,7 +395,7 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
                   "ATS Valid State Names: Missing [%s] Artifact; Falling back to loadAddDefinitions",
                   AtsArtifactToken.WorkDef_State_Names.getName());
                try {
-                  for (IAtsWorkDefinition workDef : WorkDefinitionFactory.loadAllDefinitions()) {
+                  for (IAtsWorkDefinition workDef : AtsClient.getWorkDefFactory().loadAllDefinitions()) {
                      for (String stateName : AtsWorkDefinitionService.getService().getStateNames(workDef)) {
                         if (!allValidStateNames.contains(stateName)) {
                            allValidStateNames.add(stateName);

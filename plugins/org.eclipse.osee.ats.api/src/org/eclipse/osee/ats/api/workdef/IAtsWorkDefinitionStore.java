@@ -19,11 +19,13 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
  */
 public interface IAtsWorkDefinitionStore {
 
-   public abstract String loadWorkDefinitionString(String workDefId);
+   boolean isWorkDefinitionExists(String workDefId) throws OseeCoreException;
 
-   public abstract IAttributeResolver getAttributeResolver();
+   String loadWorkDefinitionString(String workDefId) throws OseeCoreException;
 
-   public abstract IUserResolver getUserResolver();
+   IAttributeResolver getAttributeResolver();
 
-   public abstract List<Pair<String, String>> getWorkDefinitionStrings() throws OseeCoreException;
+   IUserResolver getUserResolver();
+
+   List<Pair<String, String>> getWorkDefinitionStrings() throws OseeCoreException;
 }

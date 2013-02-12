@@ -75,6 +75,7 @@ artifactType "Team Definition" extends "ats.Ats Artifact" , "Abstract Access Con
 	attribute "ats.Allow Commit Branch"
 	attribute "ats.Related Task Workflow Definition Old"
 	attribute "ats.Related Task Workflow Definition"
+	attribute "ats.Related Peer Workflow Definition"
 	attribute "ats.Workflow Definition Old"
 	attribute "ats.Workflow Definition"
 	attribute "ats.Rule Definition"
@@ -265,6 +266,15 @@ attributeType "ats.Related Task Workflow Definition" extends StringAttribute {
 	min 0
 	max 1
 }
+
+attributeType "ats.Related Peer Workflow Definition" extends StringAttribute {
+   guid "AOofT00toVUnUEIokZQA"
+   uuid 0x100000000000037B
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
 
 attributeType "ats.Active" extends BooleanAttribute {
 	guid "AAMFEclQOVmzkIvzyWwA"

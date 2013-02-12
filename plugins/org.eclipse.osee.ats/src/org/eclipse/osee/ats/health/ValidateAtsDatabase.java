@@ -39,6 +39,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.core.client.AtsClient;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
@@ -48,7 +49,6 @@ import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.log.AtsLog;
 import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
@@ -520,7 +520,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       for (Artifact artifact : artifacts) {
          try {
             String workDefName = artifact.getSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, "");
-            if (Strings.isValid(workDefName) && WorkDefinitionFactory.getWorkDefinition(workDefName) == null) {
+            if (Strings.isValid(workDefName) && AtsClient.getWorkDefFactory().getWorkDefinition(workDefName) == null) {
                testNameToResultsMap.put(
                   "testAttributeSetWorkDefinitionsExist",
                   String.format(

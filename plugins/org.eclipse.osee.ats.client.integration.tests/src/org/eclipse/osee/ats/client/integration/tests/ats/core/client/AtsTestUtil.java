@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.client.demo.DemoSawBuilds;
+import org.eclipse.osee.ats.core.client.AtsClient;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
@@ -46,7 +47,6 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
@@ -61,6 +61,7 @@ import org.eclipse.osee.ats.mocks.MockWidgetDefinition;
 import org.eclipse.osee.ats.mocks.MockWorkDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -190,7 +191,7 @@ public class AtsTestUtil {
 
    private static void clearCaches() {
       if (workDef != null) {
-         WorkDefinitionFactory.removeWorkDefinition(workDef);
+         AtsClient.getWorkDefFactory().removeWorkDefinition(workDef);
       }
       analyze = null;
       implement = null;
@@ -300,7 +301,7 @@ public class AtsTestUtil {
       workPackageWidgetDef.setAttributeName(AtsAttributeTypes.WorkPackage.getName());
       workPackageWidgetDef.setXWidgetName("XTextDam");
 
-      WorkDefinitionFactory.addWorkDefinition(workDef);
+      AtsClient.getWorkDefFactory().addWorkDefinition(workDef);
 
       testAi =
          AtsConfigCache.instance.getActionableItemFactory().createActionableItem(GUID.create(),
@@ -594,10 +595,16 @@ public class AtsTestUtil {
 
    public static PeerToPeerReviewArtifact getOrCreatePeerReview(ReviewBlockType reviewBlockType, AtsTestUtilState relatedToState, SkynetTransaction transaction) throws OseeCoreException {
       ensureLoaded();
-      if (peerRevArt == null) {
-         peerRevArt =
-            PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt,
-               AtsTestUtil.class.getSimpleName() + " Test Peer Review", relatedToState.getName(), transaction);
+      try {
+         if (peerRevArt == null) {
+            peerRevArt =
+               PeerToPeerReviewManager.createNewPeerToPeerReview(
+                  AtsClient.getWorkDefFactory().getDefaultPeerToPeerWorkflowDefinitionMatch().getWorkDefinition(),
+                  teamArt, AtsTestUtil.class.getSimpleName() + " Test Peer Review", relatedToState.getName(),
+                  transaction);
+         }
+      } catch (OseeCoreException ex) {
+         throw new OseeWrappedException(ex);
       }
       return peerRevArt;
    }

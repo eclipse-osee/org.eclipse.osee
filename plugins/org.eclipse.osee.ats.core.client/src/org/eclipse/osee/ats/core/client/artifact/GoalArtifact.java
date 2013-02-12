@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.client.artifact;
 
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.GoalArtifactMembersCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -23,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Donald G. Dunne
  */
-public class GoalArtifact extends AbstractWorkflowArtifact {
+public class GoalArtifact extends AbstractWorkflowArtifact implements IAtsGoal {
 
    private List<Artifact> members;
    private volatile boolean firstTime = true;

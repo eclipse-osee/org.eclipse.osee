@@ -16,13 +16,13 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
+import org.eclipse.osee.ats.core.client.AtsClient;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskManager;
 import org.eclipse.osee.ats.core.client.task.TaskStates;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.client.workflow.HoursSpentUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
@@ -54,9 +54,10 @@ public class TaskManagerTest extends TaskManager {
       TaskArtifact taskToMove = AtsTestUtil.getOrCreateTaskOffTeamWf1();
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
 
-      IAtsWorkDefinition taskWorkDef = WorkDefinitionFactory.getWorkDefinitionForTask(taskToMove).getWorkDefinition();
+      IAtsWorkDefinition taskWorkDef =
+         AtsClient.getWorkDefFactory().getWorkDefinitionForTask(taskToMove).getWorkDefinition();
       IAtsWorkDefinition newTaskWorkDef =
-         WorkDefinitionFactory.getWorkDefinitionForTaskNotYetCreated(teamWf2).getWorkDefinition();
+         AtsClient.getWorkDefFactory().getWorkDefinitionForTaskNotYetCreated(teamWf2).getWorkDefinition();
       Assert.assertNotNull(taskWorkDef);
 
       Assert.assertEquals(taskWorkDef, newTaskWorkDef);
@@ -73,21 +74,23 @@ public class TaskManagerTest extends TaskManager {
       AtsTestUtil.cleanupAndReset("testMoveTasks - diffWorkDefs");
       TaskArtifact taskToMove = AtsTestUtil.getOrCreateTaskOffTeamWf1();
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
-      IAtsWorkDefinition taskWorkDef = WorkDefinitionFactory.getWorkDefinitionForTask(taskToMove).getWorkDefinition();
+      IAtsWorkDefinition taskWorkDef =
+         AtsClient.getWorkDefFactory().getWorkDefinitionForTask(taskToMove).getWorkDefinition();
 
       // create new task work def
       XResultData resultData = new XResultData();
+      AtsClient.getWorkDefFactory();
       IAtsWorkDefinition differentTaskWorkDef =
-         WorkDefinitionFactory.copyWorkDefinition(taskWorkDef.getName() + "2", taskWorkDef, resultData);
+         AtsClient.getWorkDefFactory().copyWorkDefinition(taskWorkDef.getName() + "2", taskWorkDef, resultData);
       Assert.assertFalse("Should be no errors", resultData.isErrors());
-      WorkDefinitionFactory.addWorkDefinition(differentTaskWorkDef);
+      AtsClient.getWorkDefFactory().addWorkDefinition(differentTaskWorkDef);
 
       // set teamWf2 to use that work def for tasks
       IAtsTeamDefinition teamDef = teamWf2.getTeamDefinition();
       teamDef.setRelatedTaskWorkDefinition(differentTaskWorkDef.getName());
 
       IAtsWorkDefinition newTaskWorkDef =
-         WorkDefinitionFactory.getWorkDefinitionForTaskNotYetCreated(teamWf2).getWorkDefinition();
+         AtsClient.getWorkDefFactory().getWorkDefinitionForTaskNotYetCreated(teamWf2).getWorkDefinition();
       Assert.assertNotNull(taskWorkDef);
       Assert.assertNotSame("Should be different", taskWorkDef, newTaskWorkDef);
       Result result = TaskManager.moveTasks(teamWf2, Arrays.asList(taskToMove));
@@ -104,21 +107,23 @@ public class TaskManagerTest extends TaskManager {
       AtsTestUtil.cleanupAndReset("testMoveTasks - diffWorkDefinitionsButTaskOverride");
       TaskArtifact taskToMove = AtsTestUtil.getOrCreateTaskOffTeamWf1();
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
-      IAtsWorkDefinition taskWorkDef = WorkDefinitionFactory.getWorkDefinitionForTask(taskToMove).getWorkDefinition();
+      IAtsWorkDefinition taskWorkDef =
+         AtsClient.getWorkDefFactory().getWorkDefinitionForTask(taskToMove).getWorkDefinition();
 
       // create new task work def
       XResultData resultData = new XResultData();
+      AtsClient.getWorkDefFactory();
       IAtsWorkDefinition differentTaskWorkDef =
-         WorkDefinitionFactory.copyWorkDefinition(taskWorkDef.getName() + "2", taskWorkDef, resultData);
+         AtsClient.getWorkDefFactory().copyWorkDefinition(taskWorkDef.getName() + "2", taskWorkDef, resultData);
       Assert.assertFalse("Should be no errors", resultData.isErrors());
-      WorkDefinitionFactory.addWorkDefinition(differentTaskWorkDef);
+      AtsClient.getWorkDefFactory().addWorkDefinition(differentTaskWorkDef);
 
       // set work definition override on task; move should go through
       taskToMove.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, differentTaskWorkDef.getName());
       taskToMove.persist("testMoveTasks - set workDef attribute on task");
 
       IAtsWorkDefinition newTaskWorkDef =
-         WorkDefinitionFactory.getWorkDefinitionForTaskNotYetCreated(teamWf2).getWorkDefinition();
+         AtsClient.getWorkDefFactory().getWorkDefinitionForTaskNotYetCreated(teamWf2).getWorkDefinition();
       Assert.assertNotNull(taskWorkDef);
       Assert.assertSame("Should be same", taskWorkDef, newTaskWorkDef);
       Result result = TaskManager.moveTasks(teamWf2, Arrays.asList(taskToMove));

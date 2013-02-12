@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2012 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,12 +54,8 @@ public class AtsWorkDefinitionStore implements IAtsWorkDefinitionStore {
    }
 
    @Override
-   public String loadWorkDefinitionString(String workDefId) {
-      try {
-         return loadWorkDefinitionFromArtifact(workDefId);
-      } catch (Exception ex) {
-         throw new IllegalArgumentException(ex.getLocalizedMessage());
-      }
+   public String loadWorkDefinitionString(String workDefId) throws OseeCoreException {
+      return loadWorkDefinitionFromArtifact(workDefId);
    }
 
    @Override
@@ -76,6 +72,11 @@ public class AtsWorkDefinitionStore implements IAtsWorkDefinitionStore {
          userResolver = new WorkDefUserResolver();
       }
       return userResolver;
+   }
+
+   @Override
+   public boolean isWorkDefinitionExists(String workDefId) throws OseeCoreException {
+      return loadWorkDefinitionString(workDefId) != null;
    }
 
    private String loadWorkDefinitionFromArtifact(String name) throws OseeCoreException {

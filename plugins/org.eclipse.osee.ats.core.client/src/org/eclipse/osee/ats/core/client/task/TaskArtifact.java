@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
@@ -41,7 +42,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 /**
  * @author Donald G. Dunne
  */
-public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateMachineArtifact {
+public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, IATSStateMachineArtifact {
 
    public TaskArtifact(String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(guid, humanReadableId, branch, artifactType);
@@ -64,8 +65,8 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
    public Result parentWorkFlowTransitioned(IAtsStateDefinition fromState, IAtsStateDefinition toState, Collection<? extends IAtsUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
       if (toState.getName().equals(TeamState.Cancelled.getName()) && isInWork()) {
          TransitionHelper helper =
-            new TransitionHelper("Transition to Cancelled", Arrays.asList(this), TaskStates.Cancelled.getName(),
-               null, "Parent Cancelled", TransitionOption.None);
+            new TransitionHelper("Transition to Cancelled", Arrays.asList(this), TaskStates.Cancelled.getName(), null,
+               "Parent Cancelled", TransitionOption.None);
          TransitionManager transitionMgr = new TransitionManager(helper, transaction);
          TransitionResults results = transitionMgr.handleAll();
          if (!results.isEmpty()) {

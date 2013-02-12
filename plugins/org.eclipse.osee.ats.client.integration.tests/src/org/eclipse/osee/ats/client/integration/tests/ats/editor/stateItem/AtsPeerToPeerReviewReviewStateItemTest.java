@@ -15,6 +15,7 @@ import java.util.Arrays;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
+import org.eclipse.osee.ats.core.client.AtsClient;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewState;
@@ -51,7 +52,10 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
          // setup fake review artifact with decision options set
          SkynetTransaction transaction =
             TransactionManager.createTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
-         peerRevArt = PeerToPeerReviewManager.createNewPeerToPeerReview(null, getClass().getName(), "", transaction);
+         peerRevArt =
+            PeerToPeerReviewManager.createNewPeerToPeerReview(
+               AtsClient.getWorkDefFactory().getDefaultPeerToPeerWorkflowDefinitionMatch().getWorkDefinition(), null,
+               getClass().getName(), "", transaction);
          peerRevArt.setName(getClass().getSimpleName());
          peerRevArt.persist(transaction);
          transaction.execute();

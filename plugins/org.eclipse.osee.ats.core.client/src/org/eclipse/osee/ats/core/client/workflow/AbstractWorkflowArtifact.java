@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
 import org.eclipse.osee.ats.api.workflow.WorkStateProvider;
+import org.eclipse.osee.ats.core.client.AtsClient;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.artifact.AbstractAtsArtifact;
 import org.eclipse.osee.ats.core.client.internal.Activator;
@@ -42,7 +43,6 @@ import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.client.workflow.log.ArtifactLog;
 import org.eclipse.osee.ats.core.client.workflow.log.AtsLog;
 import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
@@ -100,7 +100,11 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public void initializeNewStateMachine(List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
-      IAtsStateDefinition startState = getWorkDefinition().getStartState();
+      initializeNewStateMachine(getWorkDefinition(), assignees, createdDate, createdBy);
+   }
+
+   public void initializeNewStateMachine(IAtsWorkDefinition workDefinition, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
+      IAtsStateDefinition startState = workDefinition.getStartState();
       initializeNewStateMachine(startState, assignees, createdDate, createdBy);
    }
 
@@ -433,7 +437,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public WorkDefinitionMatch getWorkDefinitionMatch() {
       try {
-         return WorkDefinitionFactory.getWorkDefinition(this);
+         return AtsClient.getWorkDefFactory().getWorkDefinition(this);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
