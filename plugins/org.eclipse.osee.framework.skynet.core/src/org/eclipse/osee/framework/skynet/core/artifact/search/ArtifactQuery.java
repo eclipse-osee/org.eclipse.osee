@@ -10,10 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
-import static org.eclipse.osee.framework.core.enums.LoadLevel.FULL;
-import static org.eclipse.osee.framework.skynet.core.artifact.LoadType.INCLUDE_CACHE;
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.*;
+import static org.eclipse.osee.framework.core.enums.LoadLevel.*;
+import static org.eclipse.osee.framework.skynet.core.artifact.LoadType.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -189,9 +188,9 @@ public class ArtifactQuery {
     * @return exactly one artifact based on its type and name, otherwise null
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
-   public static Artifact getArtifactFromTypeAndNameNoException(IArtifactType artifactType, String artifactName, IOseeBranch branch) throws OseeCoreException {
+   public static Artifact getArtifactFromTypeAndNameNoException(IArtifactType artifactType, String artifactName, IOseeBranch branch, QueryOption... options) throws OseeCoreException {
       try {
-         return queryFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch).getOrCheckArtifact(
+         return queryFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch, options).getOrCheckArtifact(
             QueryType.GET);
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
@@ -199,12 +198,14 @@ public class ArtifactQuery {
       return null;
    }
 
-   public static List<Integer> selectArtifactIdsFromTypeAndName(IArtifactType artifactType, String artifactName, IOseeBranch branch) throws OseeCoreException {
-      return queryFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch).selectArtifacts(2);
+   public static List<Integer> selectArtifactIdsFromTypeAndName(IArtifactType artifactType, String artifactName, IOseeBranch branch, QueryOption... options) throws OseeCoreException {
+      return queryFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch, options).selectArtifacts(
+         2);
    }
 
-   public static List<Integer> selectArtifactIdsFromTypeAndAttribute(IArtifactType artifactType, IAttributeType attributeType, String attributeValue, IOseeBranch branch) throws OseeCoreException {
-      return queryFromTypeAndAttribute(artifactType, attributeType, attributeValue, branch).selectArtifacts(10000);
+   public static List<Integer> selectArtifactIdsFromTypeAndAttribute(IArtifactType artifactType, IAttributeType attributeType, String attributeValue, IOseeBranch branch, QueryOption... options) throws OseeCoreException {
+      return queryFromTypeAndAttribute(artifactType, attributeType, attributeValue, branch, options).selectArtifacts(
+         10000);
    }
 
    /**
@@ -212,8 +213,8 @@ public class ArtifactQuery {
     * 
     * @return one artifact based on its type and name if it exists, otherwise null
     */
-   public static Artifact checkArtifactFromTypeAndName(IArtifactType artifactTypeToken, String artifactName, IOseeBranch branch) throws OseeCoreException {
-      return queryFromTypeAndAttribute(artifactTypeToken, CoreAttributeTypes.Name, artifactName, branch).getOrCheckArtifact(
+   public static Artifact checkArtifactFromTypeAndName(IArtifactType artifactTypeToken, String artifactName, IOseeBranch branch, QueryOption... options) throws OseeCoreException {
+      return queryFromTypeAndAttribute(artifactTypeToken, CoreAttributeTypes.Name, artifactName, branch, options).getOrCheckArtifact(
          QueryType.CHECK);
    }
 
