@@ -12,7 +12,9 @@
 package org.eclipse.osee.orcs.db.internal.search.indexer.callable.producer;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Future;
 import org.eclipse.osee.database.schema.DatabaseTxCallable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -27,7 +29,7 @@ import org.eclipse.osee.orcs.search.IndexerCollector;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractIndexerTxDatabaseCallable extends DatabaseTxCallable<Long> {
+public abstract class AbstractIndexerTxDatabaseCallable extends DatabaseTxCallable<List<Future<?>>> {
 
    private final IndexerCollector collector;
    private final int cacheLimit;
@@ -37,6 +39,7 @@ public abstract class AbstractIndexerTxDatabaseCallable extends DatabaseTxCallab
    private TagQueueJoinQuery currentJoinQuery;
    private boolean isOkToDispatch;
    private long totalGammas;
+   private List<Future<?>> futures;
 
    protected AbstractIndexerTxDatabaseCallable(Log logger, IOseeDatabaseService dbService, IndexingTaskConsumer consumer, IndexerCollector collector, boolean isCacheAll, int cacheLimit) {
       super(logger, dbService, "Indexing Database Transaction");
@@ -50,7 +53,7 @@ public abstract class AbstractIndexerTxDatabaseCallable extends DatabaseTxCallab
    }
 
    @Override
-   protected Long handleTxWork(OseeConnection connection) throws OseeCoreException {
+   protected List<Future<?>> handleTxWork(OseeConnection connection) throws OseeCoreException {
       totalGammas = 0;
       try {
          convertInput(connection);
@@ -63,7 +66,8 @@ public abstract class AbstractIndexerTxDatabaseCallable extends DatabaseTxCallab
          collector.onIndexTotalTaskItems(totalGammas);
       }
       isOkToDispatch = true;
-      return totalGammas;
+      futures = new LinkedList<Future<?>>();
+      return futures;
    }
 
    @Override
@@ -83,10 +87,11 @@ public abstract class AbstractIndexerTxDatabaseCallable extends DatabaseTxCallab
    @Override
    protected void handleTxFinally() throws OseeCoreException {
       super.handleTxFinally();
-      if (isOkToDispatch) {
+      if (isOkToDispatch && !queryIds.isEmpty()) {
          for (int queryId : queryIds) {
             try {
-               consumer.submitTaskId(collector, queryId);
+               Future<?> future = consumer.submitTaskId(collector, queryId);
+               futures.add(future);
             } catch (Exception ex) {
                OseeExceptions.wrapAndThrow(ex);
             }

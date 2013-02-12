@@ -11,7 +11,9 @@
 package org.eclipse.osee.orcs.db.internal.search.indexer;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.model.ReadableBranch;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
@@ -71,7 +73,7 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
    }
 
    @Override
-   public CancellableCallable<?> indexXmlStream(String sessionId, IndexerCollector collector, InputStream inputStream) {
+   public CancellableCallable<List<Future<?>>> indexXmlStream(String sessionId, IndexerCollector collector, InputStream inputStream) {
       return new XmlStreamIndexerDatabaseCallable(logger, dbService, consumer, collector,
          IndexerConstants.INDEXER_CACHE_ALL_ITEMS, IndexerConstants.INDEXER_CACHE_LIMIT, inputStream);
    }

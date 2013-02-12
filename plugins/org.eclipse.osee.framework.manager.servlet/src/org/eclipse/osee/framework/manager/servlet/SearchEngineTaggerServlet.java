@@ -12,8 +12,10 @@ package org.eclipse.osee.framework.manager.servlet;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.server.ISessionManager;
@@ -23,8 +25,6 @@ import org.eclipse.osee.framework.manager.servlet.internal.ApplicationContextFac
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.search.IndexerCollector;
-import org.eclipse.osee.orcs.search.IndexerCollectorAdapter;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 
 /**
@@ -54,12 +54,10 @@ public class SearchEngineTaggerServlet extends SecureOseeHttpServlet {
          boolean waitForTags = Boolean.parseBoolean(request.getParameter("wait"));
          QueryIndexer indexer = getQueryIndexer(request);
          if (waitForTags) {
-
-            IndexerCollector collector = new WaitForIndexerCollector();
-            Callable<?> callable = indexer.indexXmlStream(collector, request.getInputStream());
-            callable.call();
-            synchronized (collector) {
-               collector.wait();
+            Callable<List<Future<?>>> callable = indexer.indexXmlStream(request.getInputStream());
+            List<Future<?>> futures = callable.call();
+            for (Future<?> future : futures) {
+               future.get(1, TimeUnit.MINUTES);
             }
          } else {
             byte[] bytes = Lib.inputStreamToBytes(request.getInputStream());
@@ -99,26 +97,4 @@ public class SearchEngineTaggerServlet extends SecureOseeHttpServlet {
          response.getWriter().close();
       }
    }
-
-   private static class WaitForIndexerCollector extends IndexerCollectorAdapter {
-
-      private final AtomicInteger totalToProcess = new AtomicInteger();
-      private final AtomicInteger currentCount = new AtomicInteger();
-
-      @Override
-      public void onIndexTaskComplete(int indexerId, long waitTime, long processingTime) {
-         int count = currentCount.incrementAndGet();
-         if (count >= totalToProcess.get()) {
-            synchronized (this) {
-               notify();
-            }
-         }
-      }
-
-      @Override
-      public void onIndexTaskTotalToProcess(int totalQueries) {
-         totalToProcess.set(totalQueries);
-      }
-
-   };
 }

@@ -11,7 +11,9 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.model.ReadableBranch;
 import org.eclipse.osee.orcs.search.IndexerCollector;
@@ -31,6 +33,6 @@ public interface QueryEngineIndexer {
 
    CancellableCallable<IndexerData> getIndexerData(String sessionId);
 
-   CancellableCallable<?> indexXmlStream(String sessionId, IndexerCollector collector, InputStream inputStream);
+   CancellableCallable<List<Future<?>>> indexXmlStream(String sessionId, IndexerCollector collector, InputStream inputStream);
 
 }

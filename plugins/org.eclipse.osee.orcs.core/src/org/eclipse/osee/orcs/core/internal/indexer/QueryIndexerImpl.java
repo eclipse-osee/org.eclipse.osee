@@ -11,8 +11,10 @@
 package org.eclipse.osee.orcs.core.internal.indexer;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.model.ReadableBranch;
@@ -72,12 +74,12 @@ public class QueryIndexerImpl implements QueryIndexer {
    }
 
    @Override
-   public CancellableCallable<?> indexXmlStream(InputStream inputStream) {
+   public CancellableCallable<List<Future<?>>> indexXmlStream(InputStream inputStream) {
       return indexXmlStream(null, inputStream);
    }
 
    @Override
-   public CancellableCallable<?> indexXmlStream(IndexerCollector collector, InputStream inputStream) {
+   public CancellableCallable<List<Future<?>>> indexXmlStream(IndexerCollector collector, InputStream inputStream) {
       return engineIndexer.indexXmlStream(sessionContext.getSessionId(), merge(collector), inputStream);
    }
 

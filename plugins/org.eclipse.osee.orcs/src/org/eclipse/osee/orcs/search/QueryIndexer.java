@@ -11,7 +11,9 @@
 package org.eclipse.osee.orcs.search;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.model.ReadableBranch;
 
@@ -47,7 +49,7 @@ public interface QueryIndexer {
     * @param listener object listening for tag events
     * @param inputStream xml inputStream
     */
-   CancellableCallable<?> indexXmlStream(InputStream inputStream);
+   CancellableCallable<List<Future<?>>> indexXmlStream(InputStream inputStream);
 
    CancellableCallable<?> indexXmlStream(IndexerCollector collector, InputStream inputStream);
 
