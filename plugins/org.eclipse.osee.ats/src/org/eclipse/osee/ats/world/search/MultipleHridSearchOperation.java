@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.world.search;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -213,8 +214,11 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
       }
 
       // This does hrid/guid search
-      for (Artifact art : ArtifactQuery.getArtifactListFromIds(data.getIds(), AtsUtil.getAtsBranch())) {
-         artifacts.add(art);
+      List<String> validGuidsAndHrids = data.getValidGuidsAndHrids();
+      if (!validGuidsAndHrids.isEmpty()) {
+         for (Artifact art : ArtifactQuery.getArtifactListFromIds(validGuidsAndHrids, AtsUtil.getAtsBranch())) {
+            artifacts.add(art);
+         }
       }
 
       for (Artifact art : artifacts) {

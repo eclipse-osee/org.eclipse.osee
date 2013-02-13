@@ -16,6 +16,8 @@ import org.eclipse.osee.ats.util.AtsEditor;
 import org.eclipse.osee.ats.world.IWorldEditorConsumer;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -59,6 +61,16 @@ public class MultipleHridSearchData implements IWorldEditorConsumer {
             ids.add(str.toUpperCase());
          }
       }
+   }
+
+   public List<String> getValidGuidsAndHrids() {
+      List<String> results = new ArrayList<String>();
+      for (String id : getIds()) {
+         if (GUID.isValid(id) || HumanReadableId.isValid(id)) {
+            results.add(id);
+         }
+      }
+      return results;
    }
 
    public List<String> getIds() {
