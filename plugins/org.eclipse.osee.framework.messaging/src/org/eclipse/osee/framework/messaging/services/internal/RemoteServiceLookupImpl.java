@@ -17,6 +17,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -59,15 +60,9 @@ public class RemoteServiceLookupImpl implements RemoteServiceLookup {
 
    @Override
    public void register(String serviceName, String serviceVersion, ServiceNotification notification) {
+
       addListener(serviceName, serviceVersion, notification);
-      Map<String, ServiceHealthPlusTimeout> healthMap = map.get(serviceName, serviceVersion);
-      if (healthMap != null) {
-         for (ServiceHealthPlusTimeout serviceHealth : healthMap.values()) {
-            notification.onServiceUpdate(serviceHealth.getServiceHealth());
-         }
-      } else {
-         sendOutRequest(serviceName, serviceVersion);
-      }
+      sendOutRequest(serviceName, serviceVersion);
    }
 
    @Override
