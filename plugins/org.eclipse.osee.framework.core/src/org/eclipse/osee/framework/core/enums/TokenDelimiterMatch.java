@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 public class TokenDelimiterMatch implements QueryOption {
    public static final TokenDelimiterMatch EXACT = new TokenDelimiterMatch(Pattern.compile(""));
    public static final TokenDelimiterMatch WHITESPACE = new TokenDelimiterMatch(Pattern.compile("\\s+"));
-   public static final TokenDelimiterMatch ANY = new TokenDelimiterMatch(Pattern.compile("(\\W|_)+"));
+   public static final TokenDelimiterMatch ANY = new TokenDelimiterMatch(Pattern.compile("([^a-zA-Z0-9])+"));
 
    private final Pattern pattern;
 
