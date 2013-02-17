@@ -13,10 +13,14 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 
+/**
+ * @author Megumi Telles
+ */
 public enum PresentationType {
    GENERALIZED_EDIT, // open using general editor (i.e. artifact editor)
    SPECIALIZED_EDIT, // open using application specific editor
    DIFF,
+   F5_DIFF,
    PREVIEW, // open read-only using application specific editor
    MERGE,
    DEFAULT_OPEN, // up to the renderer to determine what is used for default

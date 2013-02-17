@@ -75,12 +75,18 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
 import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
+import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.AttributeColumn;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -106,6 +112,32 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    public WorldXViewer(Composite parent, int style, IXViewerFactory xViewerFactory, IDirtiableEditor editor) {
       super(parent, style, xViewerFactory);
       this.editor = editor;
+      getTree().addKeyListener(new KeySelectedListener());
+   }
+
+   private class KeySelectedListener implements KeyListener {
+      @Override
+      public void keyPressed(KeyEvent e) {
+         // do nothing
+      }
+
+      @Override
+      public void keyReleased(KeyEvent e) {
+         if (e.keyCode == SWT.F5) {
+            try {
+               List<Artifact> artifacts = getSelectedArtifacts();
+               for (IRenderer renderer : RendererManager.getCommonRenderers(artifacts, PresentationType.F5_DIFF)) {
+                  for (Artifact art : artifacts) {
+                     if (renderer.getApplicabilityRating(PresentationType.F5_DIFF, art) == IRenderer.SPECIALIZED_KEY_MATCH) {
+                        RendererManager.open(art, PresentationType.F5_DIFF);
+                     }
+                  }
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      }
    }
 
    @Override

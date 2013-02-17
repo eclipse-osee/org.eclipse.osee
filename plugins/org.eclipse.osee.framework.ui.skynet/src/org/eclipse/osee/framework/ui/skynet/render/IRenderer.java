@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
  */
 public interface IRenderer {
 
+   public static final int SPECIALIZED_KEY_MATCH = 70;
    public static final int SPECIALIZED_MATCH = 60;
    public static final int PRESENTATION_SUBTYPE_MATCH = 50;
    public static final int PRESENTATION_TYPE = 40;
