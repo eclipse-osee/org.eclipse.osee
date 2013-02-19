@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -290,11 +291,15 @@ public class BranchManager {
       if (!conflictManager.getDestinationBranch().isEditable()) {
          throw new OseeCoreException("Commit failed - unable to commit into a non-editable branch");
       }
-      runCommitExtPointActions(conflictManager);
+
+      boolean skipCommitChecksAndEvents = OseeClientProperties.isSkipCommitChecksAndEvents();
+      if (!skipCommitChecksAndEvents) {
+         runCommitExtPointActions(conflictManager);
+      }
 
       IOperation operation =
          new CommitBranchHttpRequestOperation(UserManager.getUser(), conflictManager.getSourceBranch(),
-            conflictManager.getDestinationBranch(), archiveSourceBranch);
+            conflictManager.getDestinationBranch(), archiveSourceBranch, skipCommitChecksAndEvents);
       Operations.executeWorkAndCheckStatus(operation, monitor);
    }
 

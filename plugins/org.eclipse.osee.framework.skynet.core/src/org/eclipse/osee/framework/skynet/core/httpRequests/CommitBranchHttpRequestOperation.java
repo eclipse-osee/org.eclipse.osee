@@ -65,13 +65,15 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
    private final Branch sourceBranch;
    private final Branch destinationBranch;
    private final boolean isArchiveAllowed;
+   private final boolean skipChecksAndEvents;
 
-   public CommitBranchHttpRequestOperation(User user, Branch sourceBranch, Branch destinationBranch, boolean isArchiveAllowed) {
+   public CommitBranchHttpRequestOperation(User user, Branch sourceBranch, Branch destinationBranch, boolean isArchiveAllowed, boolean skipChecksAndEvents) {
       super("Commit " + sourceBranch, Activator.PLUGIN_ID);
       this.user = user;
       this.sourceBranch = sourceBranch;
       this.destinationBranch = destinationBranch;
       this.isArchiveAllowed = isArchiveAllowed;
+      this.skipChecksAndEvents = skipChecksAndEvents;
    }
 
    @Override
@@ -118,10 +120,12 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       }
       BranchManager.getCache().reloadCache();
 
-      Collection<Change> changes = new ArrayList<Change>();
-      IOperation operation = ChangeManager.comparedToPreviousTx(newTransaction, changes);
-      doSubWork(operation, monitor, 1.0);
-      handleArtifactEvents(newTransaction, changes);
+      if (!skipChecksAndEvents) {
+         Collection<Change> changes = new ArrayList<Change>();
+         IOperation operation = ChangeManager.comparedToPreviousTx(newTransaction, changes);
+         doSubWork(operation, monitor, 1.0);
+         handleArtifactEvents(newTransaction, changes);
+      }
 
       OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Committed, sourceBranch.getGuid(),
          destinationBranch.getGuid()));

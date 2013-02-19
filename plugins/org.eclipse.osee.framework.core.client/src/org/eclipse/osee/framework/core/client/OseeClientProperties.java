@@ -51,6 +51,8 @@ public class OseeClientProperties extends OseeProperties {
 
    private static final String OSEE_IS_IN_DB_INIT = "osee.is.in.db.init";
 
+   private static final String OSEE_COMMIT_SKIP_CHECKS_AND_EVENTS = "osee.commit.skipChecksAndEvents";
+
    private enum InitializerFlag {
       overwrite_settings,
       client_defaults;
@@ -131,6 +133,10 @@ public class OseeClientProperties extends OseeProperties {
     */
    public static boolean promptOnDbInit() {
       return Boolean.valueOf(getProperty(OSEE_PROMPT_ON_DB_INIT, "true"));
+   }
+
+   public static boolean isSkipCommitChecksAndEvents() {
+      return Boolean.valueOf(getProperty(OSEE_COMMIT_SKIP_CHECKS_AND_EVENTS, "false"));
    }
 
    /**
