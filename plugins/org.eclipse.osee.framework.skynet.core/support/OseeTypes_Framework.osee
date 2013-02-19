@@ -692,6 +692,11 @@ artifactType "Software Requirement Drawing" extends "Indirect Software Requireme
 	uuid 0x000000000000001D
 }
 
+artifactType "Software Requirement Data Definition" extends "Indirect Software Requirement" {
+	guid "ABuaO1r0gHAjipBZ_rwA"
+	uuid 0x0000000000000319
+}
+
 artifactType "System Requirement" extends "Requirement" , "MS Word Template" {
 	guid "AAMFDiSTcDGdUd9+tHAA"
 	uuid 0x000000000000001E

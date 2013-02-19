@@ -42,6 +42,7 @@ public final class CoreArtifactTypes {
    public static final IArtifactType RootArtifact = TokenFactory.createArtifactType(0x000000000000000AL, "Root Artifact");
    public static final IArtifactType SoftwareDesign = TokenFactory.createArtifactType(0x000000000000002DL, "Software Design");
    public static final IArtifactType SoftwareRequirement = TokenFactory.createArtifactType(0x0000000000000018L, "Software Requirement");
+   public static final IArtifactType SoftwareRequirementDataDefinition = TokenFactory.createArtifactType(0x0000000000000319L, "Software Requirement Data Definition");
    public static final IArtifactType SoftwareRequirementDrawing = TokenFactory.createArtifactType(0x000000000000001DL, "Software Requirement Drawing");
    public static final IArtifactType SoftwareRequirementFunction = TokenFactory.createArtifactType(0x000000000000001CL, "Software Requirement Function");
    public static final IArtifactType SoftwareRequirementPlainText = TokenFactory.createArtifactType(0x000000000000318L, "Software Requirement Plain Text");
