@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
  * @author Roberto E. Escobar
  */
 public class PostDbUserCleanUp implements IDbInitializationTask {
-   private static final String UPDATE_BOOTSTRAP_USER_ID = "UPDATE osee_tx_details SET author = ? where author = 0";
+   private static final String UPDATE_BOOTSTRAP_USER_ID = "UPDATE osee_tx_details SET author = ? where author <= 0";
 
    @Override
    public void run() throws OseeCoreException {
