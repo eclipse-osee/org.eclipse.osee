@@ -20,9 +20,7 @@ import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IUserResolver;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -80,35 +78,18 @@ public class AtsWorkDefinitionStore implements IAtsWorkDefinitionStore {
       return userResolver;
    }
 
-   private Artifact getWorkDefinitionArtifact(String name) throws OseeCoreException {
-      Artifact artifact = null;
-      try {
-         artifact =
-            ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, name,
-               BranchManager.getCommonBranch());
-         return artifact;
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
-         ex.printStackTrace();
-      }
-      return null;
-   }
-
    private String loadWorkDefinitionFromArtifact(String name) throws OseeCoreException {
-      Artifact artifact = null;
-      try {
-         artifact = getWorkDefinitionArtifact(name);
-         return loadWorkDefinitionFromArtifact(artifact);
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
-      } catch (Exception ex) {
-         throw new OseeWrappedException(String.format("Error loading AtsDsl [%s] from Artifact", name), ex);
-      }
-      return null;
+      Artifact artifact =
+         ArtifactQuery.getArtifactFromTypeAndNameNoException(AtsArtifactTypes.WorkDefinition, name,
+            BranchManager.getCommonBranch());
+      return loadWorkDefinitionFromArtifact(artifact);
    }
 
    private String loadWorkDefinitionFromArtifact(Artifact artifact) throws OseeCoreException {
-      String modelText = artifact.getAttributesToString(AtsAttributeTypes.DslSheet);
+      String modelText = null;
+      if (artifact != null) {
+         modelText = artifact.getAttributesToString(AtsAttributeTypes.DslSheet);
+      }
       return modelText;
    };
 
