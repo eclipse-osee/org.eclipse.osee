@@ -64,7 +64,13 @@ public final class ImportTraceUnitsOperationTest {
 
    private static final String TEST_ONE_FILE = "ImportTraceUnitsTest1.txt";
    private static final String TEST_TWO_FILE = "ImportTraceUnitsTest2.txt";
+   private static final String TEST_THREE_FILE = "ImportTraceUnitsTest3.txt";
+   private static final String TEST_FOUR_FILE = "ImportTraceUnitsTest4.txt";
+   private static final String TEST_FIVE_FILE = "ImportTraceUnitsTest5.txt";
    private static final int RUNS = 3;
+
+   private static final List<String> expectedReqs = Arrays.asList("Robot Object", "Haptic Constraints",
+      "Robot Interfaces", "Individual robot events", "Collaborative Robot");
 
    private IOseeBranch branch;
    private Branch importToBranch;
@@ -90,7 +96,7 @@ public final class ImportTraceUnitsOperationTest {
       ArrayList<Integer> gammas = new ArrayList<Integer>(RUNS);
 
       for (int i = 0; i < RUNS; i++) {
-         runOperation(mockURI1);
+         runOperation(Arrays.asList(mockURI1));
 
          Artifact artifact =
             ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.CodeUnit, TEST_ONE_FILE, importToBranch);
@@ -107,21 +113,42 @@ public final class ImportTraceUnitsOperationTest {
          Assert.assertEquals(5, reqArtifacts.size());
 
          Collection<String> actual = Artifacts.getNames(reqArtifacts);
-         List<String> expected =
-            Arrays.asList("Robot Object", "Haptic Constraints", "Robot Interfaces", "Individual robot events",
-               "Collaborative Robot");
-         Assert.assertFalse(Compare.isDifferent(expected, actual));
+
+         Assert.assertFalse(Compare.isDifferent(expectedReqs, actual));
       }
       // make sure multiple artifacts were not created
       Assert.assertEquals(1, gammas.size());
 
       // create a 2nd artifact
-      runOperation(mockURI2);
+      runOperation(Arrays.asList(mockURI2));
       Artifact artifact =
          ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.CodeUnit, TEST_TWO_FILE, importToBranch);
       Assert.assertNotNull(artifact);
       // make sure a new artifact was created
       Assert.assertFalse(gammas.contains(artifact.getGammaId()));
+   }
+
+   @Test
+   public void testMultipleUris() throws Exception {
+      URI mockURI3 = getMockFile(TEST_THREE_FILE, "some text");
+      URI mockURI4 = getMockFile(TEST_FOUR_FILE, "some text");
+      URI mockURI5 = getMockFile(TEST_FIVE_FILE, "some text");
+
+      Iterable<URI> uris = Arrays.asList(mockURI3, mockURI4, mockURI5);
+      runOperation(uris);
+
+      for (String fileName : Arrays.asList(TEST_THREE_FILE, TEST_FOUR_FILE, TEST_FIVE_FILE)) {
+         Artifact artifact =
+            ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.CodeUnit, fileName, importToBranch);
+         Assert.assertNotNull(artifact);
+         List<Artifact> reqArtifacts = artifact.getRelatedArtifacts(CoreRelationTypes.CodeRequirement_Requirement);
+         Assert.assertEquals(5, reqArtifacts.size());
+
+         Collection<String> actual = Artifacts.getNames(reqArtifacts);
+
+         Assert.assertFalse(Compare.isDifferent(expectedReqs, actual));
+      }
+
    }
 
    private URI getMockFile(String fileName, String text) throws Exception {
@@ -130,13 +157,13 @@ public final class ImportTraceUnitsOperationTest {
       return testFile.toURI();
    }
 
-   private void runOperation(URI file) throws OseeCoreException {
+   private void runOperation(Iterable<URI> files) throws OseeCoreException {
       boolean isRecursive = false;
       boolean isPersistChanges = true;
       boolean fileWithMultiPaths = false;
 
       IOperation op =
-         new ImportTraceUnitsOperation("Import Trace Units", importToBranch, file, isRecursive, isPersistChanges,
+         new ImportTraceUnitsOperation("Import Trace Units", importToBranch, files, isRecursive, isPersistChanges,
             fileWithMultiPaths, DemoTraceability.DEMO_TRACE_UNIT_HANDLER_ID);
       Operations.executeWorkAndCheckStatus(op);
    }

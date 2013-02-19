@@ -12,11 +12,12 @@ package org.eclipse.osee.define.traceability.importer;
 
 import java.io.File;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -91,7 +92,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
    private BranchSelectComposite branchSelectComposite;
    private final MutableBoolean isFolderRecursionAllowed;
    private final MutableBoolean isArtifactPersistanceAllowed;
-   private IResource currentResourceSelection;
+   private List<IResource> currentResourceSelection;
    private final MutableBoolean isFileContainingMultiplePaths;
    private final Map<Button, Boolean> traceUnitHandlers;
    private final Map<String, Button> optionButtons;
@@ -107,10 +108,17 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
       this.isArtifactPersistanceAllowed = new MutableBoolean(false);
       this.isFileContainingMultiplePaths = new MutableBoolean(false);
 
-      if (selection != null && selection.size() == 1) {
-         Object firstElement = selection.getFirstElement();
-         if (firstElement instanceof IAdaptable) {
-            currentResourceSelection = (IResource) ((IAdaptable) firstElement).getAdapter(IResource.class);
+      if (selection != null && selection.size() >= 1) {
+         currentResourceSelection = new LinkedList<IResource>();
+         Iterator<?> it = selection.iterator();
+         while (it.hasNext()) {
+            Object element = it.next();
+            if (element instanceof IAdaptable) {
+               IResource toAdd = (IResource) ((IAdaptable) element).getAdapter(IResource.class);
+               if (toAdd != null) {
+                  currentResourceSelection.add(toAdd);
+               }
+            }
          }
       }
    }
@@ -166,14 +174,29 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
    }
 
    protected void createTestUnitSourceArea(Composite parent) {
-      directoryFileSelector = new DirectoryOrFileSelector(parent, SWT.NONE, SOURCE_GROUP, this);
+      directoryFileSelector = new DirectoryOrFileSelector(parent, SWT.NONE, SOURCE_GROUP, this, true);
+      updateDirectoryFileSelection();
+   }
 
-      if (currentResourceSelection == null) {
-         // Select directory as the default
-         directoryFileSelector.setDirectorySelected(true);
-      } else {
-         directoryFileSelector.setDirectorySelected(currentResourceSelection.getType() != IResource.FILE);
-         directoryFileSelector.setText(currentResourceSelection.getLocation().toString());
+   private void updateDirectoryFileSelection() {
+      directoryFileSelector.setDirectorySelected(true);
+      if (currentResourceSelection != null) {
+         String text;
+         if (currentResourceSelection.isEmpty()) {
+            IResource selected = currentResourceSelection.iterator().next();
+            directoryFileSelector.setDirectorySelected(selected.getType() != IResource.FILE);
+            text = selected.getLocation().toString();
+         } else {
+            directoryFileSelector.setDirectorySelected(false);
+            StringBuilder sb = new StringBuilder();
+            for (IResource resource : currentResourceSelection) {
+               sb.append(resource.getLocation().toString());
+               sb.append(DirectoryOrFileSelector.FILE_SEPARATOR);
+            }
+            sb.setLength(sb.length() - DirectoryOrFileSelector.FILE_SEPARATOR.length());
+            text = sb.toString();
+         }
+         directoryFileSelector.setText(text);
       }
    }
 
@@ -303,8 +326,15 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
       return result;
    }
 
-   public URI getSourceURI() {
-      return isWidgetAccessible(directoryFileSelector) ? directoryFileSelector.getFile().toURI() : null;
+   public Iterable<URI> getSourceURI() {
+      List<URI> toReturn = null;
+      if (isWidgetAccessible(directoryFileSelector)) {
+         toReturn = new LinkedList<URI>();
+         for (File file : directoryFileSelector.getSelection()) {
+            toReturn.add(file.toURI());
+         }
+      }
+      return toReturn;
    }
 
    public IOseeBranch getSelectedBranch() {
@@ -341,15 +371,9 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
       if (settings != null) {
 
          String source = settings.get(SOURCE_URI_KEY);
-         if (currentResourceSelection == null || !currentResourceSelection.isAccessible()) {
-            if (Strings.isValid(source)) {
-               directoryFileSelector.setDirectorySelected(settings.getBoolean(SOURCE_URI_IS_DIRECTORY_KEY));
-               try {
-                  directoryFileSelector.setText(new File(new URI(source)).getAbsolutePath());
-               } catch (URISyntaxException ex) {
-                  // Do Nothing
-               }
-            }
+         if (Strings.isValid(source)) {
+            directoryFileSelector.setDirectorySelected(settings.getBoolean(SOURCE_URI_IS_DIRECTORY_KEY));
+            directoryFileSelector.setText(source);
          }
 
          for (String id : optionButtons.keySet()) {
@@ -410,8 +434,11 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
             }
          }
 
+         if (isWidgetAccessible(directoryFileSelector)) {
+            settings.put(SOURCE_URI_KEY, directoryFileSelector.getText());
+         }
+
          settings.put(SELECTED_TRACE_HANDLERS_KEY, getTraceUnitHandlerIds());
-         settings.put(SOURCE_URI_KEY, getSourceURI().toASCIIString());
          settings.put(SOURCE_URI_IS_DIRECTORY_KEY, directoryFileSelector.isDirectorySelected());
          settings.put(IS_ART_PERSIST_ALLOWED_KEY, isArtifactPersistanceAllowed());
          settings.put(IS_FOLDER_RECURSION_KEY, isFolderRecursionAllowed());

@@ -133,7 +133,7 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
    }
 
    public File getImportFile() {
-      return directoryFileSelector.getFile();
+      return directoryFileSelector.getSingleSelection();
    }
 
    public IOseeBranch getSelectedBranch() {

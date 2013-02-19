@@ -11,7 +11,11 @@
 package org.eclipse.osee.framework.ui.plugin.util;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -36,11 +40,21 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
    private final Button radDirectory;
    private final Button radSingleFile;
    private final Text txtDirectory;
-   private final Text txtSingleFile;
+   private final Text txtFiles;
    private final Button btnDirectory;
    private final Button btnSingleFile;
+   private final int singleOrMulti;
 
+   public static final String FILE_SEPARATOR = ",";
+
+   /**
+    * Creates a DirectoryOrFileSelector with only single file selection
+    */
    public DirectoryOrFileSelector(Composite parent, int style, String name, Listener listener) {
+      this(parent, style, name, listener, false);
+   }
+
+   public DirectoryOrFileSelector(Composite parent, int style, String name, Listener listener, boolean multiFileSelect) {
       super(parent, style);
       GridLayout gdMain = new GridLayout();
       gdMain.marginHeight = 0;
@@ -54,6 +68,7 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
       gd.numColumns = 3;
       composite.setLayout(gd);
       composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      singleOrMulti = multiFileSelect ? SWT.MULTI : SWT.SINGLE;
 
       radDirectory = new Button(composite, SWT.RADIO);
       radDirectory.setText("Directory:");
@@ -78,26 +93,34 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
       });
 
       radSingleFile = new Button(composite, SWT.RADIO);
-      radSingleFile.setText("File:");
+      radSingleFile.setText("File" + (multiFileSelect ? "(s):" : ":"));
       radSingleFile.addListener(SWT.Selection, this);
       radSingleFile.addListener(SWT.Selection, listener);
-      txtSingleFile = new Text(composite, SWT.SINGLE | SWT.BORDER);
-      txtSingleFile.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      txtSingleFile.addListener(SWT.Modify, this);
-      txtSingleFile.addListener(SWT.Modify, listener);
+
+      txtFiles = new Text(composite, SWT.SINGLE | SWT.BORDER);
+      GridData layoutData = new GridData(GridData.FILL_HORIZONTAL);
+      layoutData.widthHint = 250;
+      txtFiles.setLayoutData(layoutData);
+      txtFiles.addListener(SWT.Modify, this);
+      txtFiles.addListener(SWT.Modify, listener);
       btnSingleFile = new Button(composite, SWT.PUSH);
       btnSingleFile.setText("&Browse...");
       btnSingleFile.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            File file = selectFile();
-            if (file != null && file.isFile()) {
-               txtSingleFile.setText(file.getPath());
+            Iterable<File> files = selectFiles();
+            List<String> paths = new LinkedList<String>();
+            for (File file : files) {
+               if (file != null && file.isFile()) {
+                  paths.add(file.getPath());
+               }
             }
+            setText(Collections.toString(FILE_SEPARATOR, paths));
          }
 
       });
+
    }
 
    private void updateWidgetEnablements() {
@@ -106,20 +129,40 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
       txtDirectory.setEnabled(directorySelected);
       btnDirectory.setEnabled(directorySelected);
 
-      txtSingleFile.setEnabled(!directorySelected);
+      txtFiles.setEnabled(!directorySelected);
       btnSingleFile.setEnabled(!directorySelected);
    }
 
    /**
     * @return new File if path is valid, null otherwise.
     */
-   public File getFile() {
-      String path = isDirectorySelected() ? txtDirectory.getText() : txtSingleFile.getText();
-      return Strings.isValid(path) ? new File(path) : null;
+   public Iterable<File> getSelection() {
+      String path = isDirectorySelected() ? txtDirectory.getText() : txtFiles.getText();
+      return Strings.isValid(path) ? getFiles(path) : null;
+   }
+
+   /**
+    * @return single selection if valid, null otherwise
+    */
+   public File getSingleSelection() {
+      File toReturn = null;
+      Iterable<File> selection = getSelection();
+      if (selection != null) {
+         toReturn = selection.iterator().next();
+      }
+      return toReturn;
+   }
+
+   private Iterable<File> getFiles(String paths) {
+      List<File> toReturn = new LinkedList<File>();
+      for (String path : paths.split(FILE_SEPARATOR)) {
+         toReturn.add(new File(path));
+      }
+      return toReturn;
    }
 
    public String getText() {
-      return (isDirectorySelected() ? txtDirectory : txtSingleFile).getText();
+      return (isDirectorySelected() ? txtDirectory : txtFiles).getText();
    }
 
    public boolean isDirectorySelected() {
@@ -134,30 +177,54 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
    }
 
    public void setText(String text) {
-      (isDirectorySelected() ? txtDirectory : txtSingleFile).setText(text);
+      (isDirectorySelected() ? txtDirectory : txtFiles).setText(text);
    }
 
    public boolean validate(WizardDataTransferPage wizardPage) {
-      if (getFile() != null && (isDirectorySelected() && getFile().isDirectory() || !isDirectorySelected() && getFile().isFile())) {
-         return true;
+      Iterable<File> files = getSelection();
+      boolean toReturn = false;
+      if (files != null) {
+         if (isDirectorySelected()) {
+            toReturn = files.iterator().next().isDirectory();
+         } else {
+            toReturn = true;
+            for (File file : files) {
+               toReturn &= file.isFile();
+            }
+         }
       }
 
-      wizardPage.setErrorMessage(getText() + " is not a " + (isDirectorySelected() ? "directory" : "file"));
-      return false;
+      if (toReturn == false) {
+         wizardPage.setErrorMessage(getText() + " is not a " + (isDirectorySelected() ? "directory" : "file"));
+      }
+      return toReturn;
    }
 
-   private File selectFile() {
-      FileDialog dialog = new FileDialog(getShell(), SWT.OPEN | SWT.SINGLE);
-      File file = getFile();
-      if (file != null && Strings.isValid(file.getAbsolutePath())) {
-         dialog.setFilterPath(file.getAbsolutePath());
-      } else {
-         dialog.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString());
+   private String getFilterPath() {
+      String toReturn = ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
+      Iterable<File> file = getSelection();
+      if (file != null) {
+         File first = file.iterator().next();
+         if (Strings.isValid(first.getAbsolutePath())) {
+            toReturn = first.getAbsolutePath();
+         }
       }
+      return toReturn;
+   }
+
+   private Iterable<File> selectFiles() {
+      FileDialog dialog = new FileDialog(getShell(), SWT.OPEN | singleOrMulti);
+      dialog.setFilterPath(getFilterPath());
+
       String path = dialog.open();
 
       if (path != null) {
-         return new File(path);
+         String selectedPath = dialog.getFilterPath();
+         List<File> files = new LinkedList<File>();
+         for (String filename : dialog.getFileNames()) {
+            files.add(new File(selectedPath + IPath.SEPARATOR + filename));
+         }
+         return files;
       } else {
          return null;
       }
@@ -165,12 +232,8 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
 
    private File selectDirectory() {
       DirectoryDialog dialog = new DirectoryDialog(getShell(), SWT.OPEN);
-      File file = getFile();
-      if (file != null && Strings.isValid(file.getAbsolutePath())) {
-         dialog.setFilterPath(file.getAbsolutePath());
-      } else {
-         dialog.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString());
-      }
+      dialog.setFilterPath(getFilterPath());
+
       String path = dialog.open();
 
       if (path != null) {

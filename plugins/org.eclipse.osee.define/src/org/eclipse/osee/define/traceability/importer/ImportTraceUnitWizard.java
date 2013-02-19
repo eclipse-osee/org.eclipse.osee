@@ -41,12 +41,12 @@ public class ImportTraceUnitWizard extends Wizard implements IImportWizard {
          IOseeBranch importToBranch = page.getSelectedBranch();
          boolean isRecursive = page.isFolderRecursionAllowed();
          boolean isPersistChanges = page.isArtifactPersistanceAllowed();
-         URI source = page.getSourceURI();
+         Iterable<URI> sources = page.getSourceURI();
          String[] traceUnitHandlerIds = page.getTraceUnitHandlerIds();
          boolean fileWithMultiPaths = page.isFileContainingMultiplePaths();
 
          IOperation op =
-            new ImportTraceUnitsOperation("Import Trace Units", importToBranch, source, isRecursive, isPersistChanges,
+            new ImportTraceUnitsOperation("Import Trace Units", importToBranch, sources, isRecursive, isPersistChanges,
                fileWithMultiPaths, traceUnitHandlerIds);
          Operations.executeAsJob(op, true);
          page.saveWidgetValues();

@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -118,8 +117,7 @@ public class PublishStdStpTraceability extends AbstractBlam {
          } else {
             provider = new ScriptTraceabilityOperation(scriptDir, requirementsBranch, false, types, searchInherited);
          }
-         RequirementTraceabilityData traceabilityData =
-            new RequirementTraceabilityData(testProcedureBranch, provider);
+         RequirementTraceabilityData traceabilityData = new RequirementTraceabilityData(testProcedureBranch, provider);
          IStatus status = traceabilityData.initialize(monitor);
          if (status.getSeverity() == IStatus.CANCEL) {
             monitor.setCanceled(true);

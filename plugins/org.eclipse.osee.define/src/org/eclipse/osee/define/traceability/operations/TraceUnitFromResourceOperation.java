@@ -39,11 +39,11 @@ public class TraceUnitFromResourceOperation {
       return TraceUnitExtensionManager.getInstance().getTraceUnitHandlerIds();
    }
 
-   private static ResourceToTraceUnit getResourceToTestUnit(URI source, boolean isRecursive, boolean isFileWithMultiplePaths, String... testUnitTraceIds) throws OseeCoreException {
-      checkSourceArgument(source);
+   private static ResourceToTraceUnit getResourceToTestUnit(Iterable<URI> sources, boolean isRecursive, boolean isFileWithMultiplePaths, String... testUnitTraceIds) throws OseeCoreException {
+      checkSourceArgument(sources);
       checkTraceUnitHandlerIdsArgument(testUnitTraceIds);
 
-      ResourceToTraceUnit operation = new ResourceToTraceUnit(source, isRecursive, isFileWithMultiplePaths);
+      ResourceToTraceUnit operation = new ResourceToTraceUnit(sources, isRecursive, isFileWithMultiplePaths);
       TraceUnitExtensionManager traceManager = TraceUnitExtensionManager.getInstance();
       for (String traceUnitHandlerId : testUnitTraceIds) {
 
@@ -55,9 +55,9 @@ public class TraceUnitFromResourceOperation {
       return operation;
    }
 
-   public static void printTraceFromTestUnits(IProgressMonitor monitor, URI source, boolean isRecursive, boolean isFileWithMultiplePaths, String... traceUnitHandlerIds) throws OseeCoreException {
+   public static void printTraceFromTestUnits(IProgressMonitor monitor, Iterable<URI> sources, boolean isRecursive, boolean isFileWithMultiplePaths, String... traceUnitHandlerIds) throws OseeCoreException {
       ResourceToTraceUnit operation =
-         getResourceToTestUnit(source, isRecursive, isFileWithMultiplePaths, traceUnitHandlerIds);
+         getResourceToTestUnit(sources, isRecursive, isFileWithMultiplePaths, traceUnitHandlerIds);
       if (monitor == null) {
          monitor = new NullProgressMonitor();
       }
@@ -65,11 +65,11 @@ public class TraceUnitFromResourceOperation {
       operation.execute(monitor);
    }
 
-   public static void importTraceFromTestUnits(IProgressMonitor monitor, URI source, boolean isRecursive, boolean isFileWithMultiplePaths, IOseeBranch importToBranch, String... traceUnitHandlerIds) throws OseeCoreException {
+   public static void importTraceFromTestUnits(IProgressMonitor monitor, Iterable<URI> sources, boolean isRecursive, boolean isFileWithMultiplePaths, IOseeBranch importToBranch, String... traceUnitHandlerIds) throws OseeCoreException {
       checkBranchArguments(importToBranch);
 
       ResourceToTraceUnit operation =
-         getResourceToTestUnit(source, isRecursive, isFileWithMultiplePaths, traceUnitHandlerIds);
+         getResourceToTestUnit(sources, isRecursive, isFileWithMultiplePaths, traceUnitHandlerIds);
       if (monitor == null) {
          monitor = new NullProgressMonitor();
       }
@@ -96,18 +96,20 @@ public class TraceUnitFromResourceOperation {
       }
    }
 
-   private static void checkSourceArgument(URI source) throws OseeArgumentException {
-      if (source == null) {
+   private static void checkSourceArgument(Iterable<URI> sources) throws OseeArgumentException {
+      if (sources == null) {
          throw new OseeArgumentException("Source was null");
       }
       try {
-         IFileStore fileStore = EFS.getStore(source);
-         IFileInfo fileInfo = fileStore.fetchInfo();
-         if (!fileInfo.exists()) {
-            throw new OseeArgumentException("Unable to access source: [%s]", source);
+         for (URI source : sources) {
+            IFileStore fileStore = EFS.getStore(source);
+            IFileInfo fileInfo = fileStore.fetchInfo();
+            if (!fileInfo.exists()) {
+               throw new OseeArgumentException("Unable to access source: [%s]", source);
+            }
          }
       } catch (CoreException ex) {
-         throw new OseeArgumentException("Unable to access source: [%s]", source);
+         throw new OseeArgumentException(ex);
       }
    }
 

@@ -305,7 +305,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
    public File getSourceFile() {
       File sourceFile = null;
       if (Widgets.isAccessible(directoryFileSelector)) {
-         sourceFile = directoryFileSelector.getFile();
+         sourceFile = directoryFileSelector.getSingleSelection();
       }
       return sourceFile;
    }

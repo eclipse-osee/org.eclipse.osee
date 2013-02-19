@@ -41,11 +41,11 @@ public class ResourceToTraceUnit {
    private final Set<ITraceUnitProcessor> traceProcessors;
    private final HashCollection<ITraceUnitResourceLocator, ITraceParser> traceUnitHandlers;
 
-   public ResourceToTraceUnit(final URI source, final boolean isRecursionAllowed, final boolean isFileWithMultiplePaths) {
+   public ResourceToTraceUnit(final Iterable<URI> sources, final boolean isRecursionAllowed, final boolean isFileWithMultiplePaths) {
       super();
       this.traceUnitHandlers = new HashCollection<ITraceUnitResourceLocator, ITraceParser>();
       this.traceProcessors = Collections.synchronizedSet(new HashSet<ITraceUnitProcessor>());
-      this.resourceFinder = new UriResourceContentFinder(source, isRecursionAllowed, isFileWithMultiplePaths);
+      this.resourceFinder = new UriResourceContentFinder(sources, isRecursionAllowed, isFileWithMultiplePaths);
    }
 
    public void addTraceProcessor(ITraceUnitProcessor traceProcessor) {

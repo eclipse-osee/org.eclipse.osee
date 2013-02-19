@@ -36,14 +36,14 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class UriResourceContentFinder {
 
-   private final URI source;
+   private final Iterable<URI> sources;
    private final HashCollection<IResourceLocator, IResourceHandler> locatorMap;
    private final boolean isRecursionAllowed;
    private final boolean isFileWithMultiplePaths;
 
-   public UriResourceContentFinder(final URI source, final boolean isRecursionAllowed, final boolean isFileWithMultiplePaths) {
+   public UriResourceContentFinder(final Iterable<URI> sources, final boolean isRecursionAllowed, final boolean isFileWithMultiplePaths) {
       super();
-      this.source = source;
+      this.sources = sources;
       this.isRecursionAllowed = isRecursionAllowed;
       this.isFileWithMultiplePaths = isFileWithMultiplePaths;
       this.locatorMap = new HashCollection<IResourceLocator, IResourceHandler>();
@@ -67,13 +67,15 @@ public class UriResourceContentFinder {
 
    public void execute(IProgressMonitor monitor) throws OseeCoreException {
       try {
-         IFileStore fileStore = EFS.getStore(source);
-         if (isFileWithMultiplePaths) {
-            processFileWithPaths(monitor, fileStore);
-         } else {
-            monitor.beginTask("Scanning files", 1);
-            processFileStore(monitor, fileStore);
-            monitor.worked(1);
+         for (URI source : sources) {
+            IFileStore fileStore = EFS.getStore(source);
+            if (isFileWithMultiplePaths) {
+               processFileWithPaths(monitor, fileStore);
+            } else {
+               monitor.beginTask("Scanning files", 1);
+               processFileStore(monitor, fileStore);
+               monitor.worked(1);
+            }
          }
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
@@ -177,8 +179,8 @@ public class UriResourceContentFinder {
             try {
                inputStream.close();
             } catch (IOException ex) {
-               OseeLog.logf(Activator.class, Level.SEVERE,
-                  ex, "Error closing stream for resource: [%s]", fileStore.getName());
+               OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error closing stream for resource: [%s]",
+                  fileStore.getName());
             }
          }
       }

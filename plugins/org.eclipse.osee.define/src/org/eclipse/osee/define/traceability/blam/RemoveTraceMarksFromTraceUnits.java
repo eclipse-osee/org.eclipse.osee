@@ -166,7 +166,7 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
 
             ReportCreator reportCreator = new ReportCreator(monitor);
             UriResourceContentFinder resourceFinder =
-               new UriResourceContentFinder(source, isRecursionAllowed, isFileWithMultiplePaths);
+               new UriResourceContentFinder(Arrays.asList(source), isRecursionAllowed, isFileWithMultiplePaths);
             resourceFinder.addLocator(locator,
                new TraceRemover(isInPlaceStorageAllowed, locator, parser, reportCreator));
 
