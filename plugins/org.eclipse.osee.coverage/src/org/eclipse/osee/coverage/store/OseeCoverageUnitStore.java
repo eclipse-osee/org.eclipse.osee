@@ -165,7 +165,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
    }
 
    @Override
-   public Result save(SkynetTransaction transaction, CoveragePackageEvent coverageEvent, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
+   public Result save(SkynetTransaction transaction, CoveragePackageEvent coverageEvent, CoverageOptionManager coverageOptionManager, Artifact parentArt) throws OseeCoreException {
       Artifact artifact = getArtifact(true);
       artifact.setName(coverageUnit.getName());
 
@@ -243,15 +243,22 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       } else {
          artifact.deleteAttributes(CoverageAttributeTypes.Location);
       }
+      // For increased performance, parent Coverage unit calls save operation by passing in itself as the parent instead of having to query 
       if (coverageUnit.getParent() != null) {
-         Artifact parentArt = ArtifactQuery.getArtifactFromId(coverageUnit.getParent().getGuid(), branch);
-         if (artifact.getParent() == null && !parentArt.getChildren().contains(artifact)) {
-            parentArt.addChild(artifact);
+         Artifact parentArtifact;
+         if (parentArt == null) {
+            parentArtifact = ArtifactQuery.getArtifactFromId(coverageUnit.getParent().getGuid(), branch);
+         } else {
+            parentArtifact = parentArt;
+         }
+         if (artifact.getParent() == null && !parentArtifact.getChildren().contains(artifact)) {
+            parentArtifact.addChild(artifact);
          }
       }
       // Save current/new coverage items
       for (CoverageUnit childCoverageUnit : coverageUnit.getCoverageUnits()) {
-         new OseeCoverageUnitStore(childCoverageUnit, branch).save(transaction, coverageEvent, coverageOptionManager);
+         new OseeCoverageUnitStore(childCoverageUnit, branch).save(transaction, coverageEvent, coverageOptionManager,
+            artifact);
       }
       // Delete removed coverage units and folders
       for (Artifact childArt : artifact.getChildren()) {
@@ -317,5 +324,11 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
    @Override
    public CoveragePackageEvent getBaseCoveragePackageEvent(CoverageEventType coverageEventType) {
       throw new IllegalArgumentException("Should never be called");
+   }
+
+   @Override
+   public Result save(SkynetTransaction transaction, CoveragePackageEvent coverageEvent, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
+      save(transaction, coverageEvent, coverageOptionManager, null);
+      return null;
    }
 }

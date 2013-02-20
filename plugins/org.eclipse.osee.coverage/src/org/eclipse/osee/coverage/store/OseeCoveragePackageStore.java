@@ -134,7 +134,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
    }
 
    @Override
-   public Result save(SkynetTransaction transaction, CoveragePackageEvent coverageEvent, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
+   public Result save(SkynetTransaction transaction, CoveragePackageEvent coverageEvent, CoverageOptionManager coverageOptionManager, Artifact parentArt) throws OseeCoreException {
       boolean newCoveragePackage = getArtifact(false) == null;
       getArtifact(true);
       //      ElapsedTime elapsedTime = new ElapsedTime(getClass().getSimpleName() + " - save");
@@ -151,7 +151,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
       artifact.setSoleAttributeValue(CoreAttributeTypes.Active, coveragePackage.isEditable().isTrue());
       for (CoverageUnit coverageUnit : coveragePackage.getCoverageUnits()) {
          OseeCoverageUnitStore store = new OseeCoverageUnitStore(coverageUnit, artifact.getBranch());
-         store.save(transaction, coverageEvent, coveragePackage.getCoverageOptionManager());
+         store.save(transaction, coverageEvent, coveragePackage.getCoverageOptionManager(), artifact);
          Artifact childArt = store.getArtifact(false);
          if (childArt.getParent() == null && !artifact.getChildren().contains(childArt)) {
             artifact.addChild(store.getArtifact(false));
@@ -175,7 +175,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
             throw new OseeArgumentException("Unhandled coverage type");
          }
          OseeCoverageUnitStore store = new OseeCoverageUnitStore(coverageUnit, transaction.getBranch());
-         store.save(transaction, coverageEvent, coveragePackage.getCoverageOptionManager());
+         store.save(transaction, coverageEvent, coveragePackage.getCoverageOptionManager(), artifact);
       }
       //      elapsedTime.end();
       return Result.TrueResult;
@@ -280,5 +280,11 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
    @Override
    public void saveTestUnitNames(SkynetTransaction transaction) {
       //do nothing
+   }
+
+   @Override
+   public Result save(SkynetTransaction transaction, CoveragePackageEvent coverageEvent, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
+      save(transaction, coverageEvent, coverageOptionManager, null);
+      return null;
    }
 }
