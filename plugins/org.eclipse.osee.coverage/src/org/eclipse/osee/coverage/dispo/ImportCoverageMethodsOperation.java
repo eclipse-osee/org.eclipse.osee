@@ -365,7 +365,7 @@ public class ImportCoverageMethodsOperation extends org.eclipse.osee.framework.c
    private CoverageUnit getMethodCoverageUnit(CoverageUnit fromFile, CoverageItem fromItem) {
       CoverageUnit ret = null;
       for (CoverageUnit unit : fromFile.getCoverageUnits()) {
-         if (methodsMatched(unit, fromFile, forceCompareMethodNumbers)) {
+         if (methodsMatched(unit, fromItem, forceCompareMethodNumbers)) {
             ret = unit;
             break;
          }
@@ -373,7 +373,7 @@ public class ImportCoverageMethodsOperation extends org.eclipse.osee.framework.c
       return ret;
    }
 
-   private boolean methodsMatched(CoverageUnit cvgUnitA, CoverageUnit cvgUnitB, boolean forceCompareMethodNumbers) {
+   private boolean methodsMatched(CoverageUnit cvgUnitA, CoverageItem cvgUnitB, boolean forceCompareMethodNumbers) {
       ICoverage cvgUnitBParent = cvgUnitB.getParent();
       boolean result = cvgUnitA.getName().equals(cvgUnitBParent.getName());
       if (forceCompareMethodNumbers) {
