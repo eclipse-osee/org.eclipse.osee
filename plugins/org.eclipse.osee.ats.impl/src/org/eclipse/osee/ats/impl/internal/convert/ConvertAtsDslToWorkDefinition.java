@@ -261,7 +261,7 @@ public class ConvertAtsDslToWorkDefinition {
             }
          } else if (layoutItem instanceof AttrWidget) {
             AttrWidget attrWidget = (AttrWidget) layoutItem;
-            String attributeName = attrWidget.getAttributeName();
+            String attributeName = Strings.unquote(attrWidget.getAttributeName());
             try {
                if (!attrResolver.isAttributeNamed(attributeName)) {
                   resultData.logErrorWithFormat("Invalid attribute name [%s] in WorkDefinition [%s] (1)",
@@ -290,10 +290,10 @@ public class ConvertAtsDslToWorkDefinition {
    }
 
    private IAtsPeerReviewDefinition convertDslPeerReview(PeerReviewDef dslRevDef) {
-      PeerReviewDefinition revDef = new PeerReviewDefinition(dslRevDef.getName());
-      revDef.setReviewTitle(dslRevDef.getTitle());
-      revDef.setDescription(dslRevDef.getDescription());
-      revDef.setLocation(dslRevDef.getLocation());
+      PeerReviewDefinition revDef = new PeerReviewDefinition(Strings.unquote(dslRevDef.getName()));
+      revDef.setReviewTitle(Strings.unquote(dslRevDef.getTitle()));
+      revDef.setDescription(Strings.unquote(dslRevDef.getDescription()));
+      revDef.setLocation(Strings.unquote(dslRevDef.getLocation()));
 
       String dslBlockType = dslRevDef.getBlockingType().getName();
       ReviewBlockType blockType = ReviewBlockType.None;
@@ -304,7 +304,7 @@ public class ConvertAtsDslToWorkDefinition {
       }
       revDef.setBlockingType(blockType);
 
-      String dslEventType = dslRevDef.getStateEvent().getName();
+      String dslEventType = Strings.unquote(dslRevDef.getStateEvent().getName());
       StateEventType eventType = StateEventType.None;
       try {
          eventType = StateEventType.valueOf(dslEventType);
@@ -334,7 +334,7 @@ public class ConvertAtsDslToWorkDefinition {
             }
          } else if (UserRef instanceof UserByUserId) {
             UserByUserId byUserId = (UserByUserId) UserRef;
-            String userId = byUserId.getUserId();
+            String userId = Strings.unquote(byUserId.getUserId());
             if (!Strings.isValid(userId)) {
                resultData.logWarningWithFormat("Unhandled UserByUserId id [%s]", userId);
                continue;
@@ -362,24 +362,25 @@ public class ConvertAtsDslToWorkDefinition {
 
    private IAtsWidgetDefinition convertDslWidgetDef(WidgetDef dslWidgetDef, String SHEET_NAME) {
       WidgetDefinition widgetDef = new WidgetDefinition(Strings.unquote(dslWidgetDef.getName()));
-      widgetDef.setAttributeName(dslWidgetDef.getAttributeName());
+      String attributeName = Strings.unquote(dslWidgetDef.getAttributeName());
+      widgetDef.setAttributeName(attributeName);
       try {
          // Set description if model defines it
          if (Strings.isValid(dslWidgetDef.getDescription())) {
             widgetDef.setDescription(dslWidgetDef.getDescription());
          }
          // Else, set if AtsAttributeTypes defines it
-         else if (Strings.isValid(dslWidgetDef.getAttributeName()) && attrResolver.isAttributeNamed(dslWidgetDef.getAttributeName()) && Strings.isValid(attrResolver.getDescription(dslWidgetDef.getAttributeName()))) {
-            widgetDef.setDescription(attrResolver.getDescription(dslWidgetDef.getAttributeName()));
+         else if (Strings.isValid(attributeName) && attrResolver.isAttributeNamed(attributeName) && Strings.isValid(attrResolver.getDescription(attributeName))) {
+            widgetDef.setDescription(attrResolver.getDescription(attributeName));
          }
       } catch (Exception ex) {
          resultData.logErrorWithFormat("Exception [%s] in WorkDefinition [%s]", ex.getLocalizedMessage(), SHEET_NAME);
       }
 
-      if (Strings.isValid(dslWidgetDef.getXWidgetName())) {
-         widgetDef.setXWidgetName(dslWidgetDef.getXWidgetName());
+      String xWidgetName = Strings.unquote(dslWidgetDef.getXWidgetName());
+      if (Strings.isValid(xWidgetName)) {
+         widgetDef.setXWidgetName(xWidgetName);
       } else {
-         String attributeName = dslWidgetDef.getAttributeName();
          if (Strings.isValid(attributeName)) {
             try {
                if (!attrResolver.isAttributeNamed(attributeName)) {
