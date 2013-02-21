@@ -1070,7 +1070,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
       private final HashCollection<Class<? extends Artifact>, MenuItem> menuItemMap;
 
       public NeedArtifactMenuListener() {
-         this.menuItemMap = new HashCollection<Class<? extends Artifact>, MenuItem>();
+         menuItemMap = new HashCollection<Class<? extends Artifact>, MenuItem>();
       }
 
       public void add(MenuItem item) {
@@ -1108,7 +1108,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
       Collection<MenuItem> items;
 
       public NeedProjectMenuListener() {
-         this.items = new LinkedList<MenuItem>();
+         items = new LinkedList<MenuItem>();
       }
 
       public void add(MenuItem item) {
@@ -1312,6 +1312,10 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
 
    @Override
    public Branch getBranch(IProgressMonitor monitor) {
+      return branch;
+   }
+
+   public Branch getBranch() {
       return branch;
    }
 

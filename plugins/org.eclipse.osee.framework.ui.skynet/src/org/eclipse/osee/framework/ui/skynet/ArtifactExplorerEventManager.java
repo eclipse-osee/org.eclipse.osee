@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -63,6 +64,19 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener {
       return null;
    }
 
+   /**
+    * @return true if branch is not null, matches the branch for the event and is not deleted or purged
+    */
+   private boolean isArtifactExplorerValidForEvents(ArtifactExplorer artifactExplorer, String branchGuidFromEvent) {
+      boolean toReturn = false;
+      if (artifactExplorer != null) {
+         Branch branch = artifactExplorer.getBranch();
+         toReturn =
+            branch != null && branch.getGuid().equals(branchGuidFromEvent) && !branch.isDeleted() && !branch.isPurged();
+      }
+      return toReturn;
+   }
+
    @Override
    public void handleArtifactEvent(final ArtifactEvent artifactEvent, Sender sender) {
       IWorkbench workbench = PlatformUI.getWorkbench();
@@ -70,11 +84,16 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener {
          return;
       }
 
+      // Do not process event if branch is null, deleted or purged.  But, don't want to remove as handler cause another branch may be selected
+      final List<IArtifactExplorerEventHandler> handlersToProcess = new ArrayList<IArtifactExplorerEventHandler>();
       for (IArtifactExplorerEventHandler handler : new CopyOnWriteArrayList<IArtifactExplorerEventHandler>(handlers)) {
          if (handler.isDisposed()) {
             handlers.remove(handler);
+         } else if (isArtifactExplorerValidForEvents(handler.getArtifactExplorer(), artifactEvent.getBranchGuid())) {
+            handlersToProcess.add(handler);
          }
       }
+
       EventUtil.eventLog("ArtifacExplorer: handleArtifactEvent called [" + artifactEvent + "] - sender " + sender + "");
       final Collection<Artifact> modifiedArts =
          artifactEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
@@ -87,7 +106,7 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener {
          @Override
          public void run() {
             if (!deletedPurgedArts.isEmpty()) {
-               for (IArtifactExplorerEventHandler handler : handlers) {
+               for (IArtifactExplorerEventHandler handler : handlersToProcess) {
                   try {
                      if (!handler.isDisposed()) {
                         handler.getArtifactExplorer().getTreeViewer().remove(
@@ -99,7 +118,7 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener {
                   }
                }
             }
-            for (IArtifactExplorerEventHandler handler : handlers) {
+            for (IArtifactExplorerEventHandler handler : handlersToProcess) {
                try {
                   if (!handler.isDisposed()) {
                      for (Artifact artifact : modifiedArts) {
