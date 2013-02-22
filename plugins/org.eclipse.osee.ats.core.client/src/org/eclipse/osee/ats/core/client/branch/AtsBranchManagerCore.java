@@ -616,16 +616,23 @@ public class AtsBranchManagerCore {
    }
 
    public static Job createWorkingBranch_Create(final TeamWorkFlowArtifact teamArt, final IOseeBranch parentBranch, boolean pend) throws OseeCoreException {
-      final String branchName = Strings.truncate(TeamWorkFlowManager.getBranchName(teamArt), 195, true);
       Conditions.checkNotNull(teamArt, "Parent Team Workflow");
       Conditions.checkNotNull(parentBranch, "Parent Branch");
+      TransactionRecord parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
+      return createWorkingBranch(teamArt, parentTransactionId, pend);
+   }
+
+   public static Job createWorkingBranch(final TeamWorkFlowArtifact teamArt, final TransactionRecord parentTransactionId, boolean pend) throws OseeCoreException {
+      final String branchName = Strings.truncate(TeamWorkFlowManager.getBranchName(teamArt), 195, true);
+      Conditions.checkNotNull(teamArt, "Parent Team Workflow");
+      Conditions.checkNotNull(parentTransactionId, "Parent Branch");
 
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
 
          @Override
          public IStatus run(IProgressMonitor monitor) throws OseeCoreException {
             teamArt.setWorkingBranchCreationInProgress(true);
-            BranchManager.createWorkingBranch(parentBranch, branchName, teamArt);
+            BranchManager.createWorkingBranch(parentTransactionId, branchName, null, teamArt);
             teamArt.setWorkingBranchCreationInProgress(false);
 
             // Create reviews as necessary

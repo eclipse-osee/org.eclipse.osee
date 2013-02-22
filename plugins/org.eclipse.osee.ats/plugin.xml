@@ -478,4 +478,12 @@
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
       <Operation className="org.eclipse.osee.ats.operation.DetailedTestStatusBlam"/>
    </extension>
+   <extension
+         id="CreateWorkingBranchFromTx"
+         name="CreateWorkingBranchFromTx"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.ats.operation.CreateWorkingBranchFromTxBlam">
+      </Operation>
+   </extension>
 </plugin>
