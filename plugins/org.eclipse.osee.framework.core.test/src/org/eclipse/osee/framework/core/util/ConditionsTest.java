@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.util;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.util.Conditions;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -66,5 +68,16 @@ public class ConditionsTest {
    @Test
    public void testCheckNotNullOrEmptyWithoutException() throws OseeCoreException {
       Conditions.checkNotNullOrEmpty("a", "a string");
+   }
+
+   @Test
+   public void testHasValues() {
+      Assert.assertFalse(Conditions.hasValues((Collection<?>) null));
+      Assert.assertFalse(Conditions.hasValues(Collections.emptyList()));
+      Assert.assertTrue(Conditions.hasValues(Arrays.asList("hello")));
+
+      Assert.assertFalse(Conditions.hasValues((String[]) null));
+      Assert.assertFalse(Conditions.hasValues(new Integer[0]));
+      Assert.assertTrue(Conditions.hasValues(new String[] {"hello"}));
    }
 }

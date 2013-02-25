@@ -25,7 +25,7 @@ public class OseeServerInfo extends BaseExchangeData {
    protected static final String VERSION = "version";
    private static final String DATE_CREATED = "creationDate";
    private static final String SERVER_ID = "serverId";
-   private static final String IS_ACCEPTING_REQUESTS = "isAcceptingRequests";
+   protected static final String IS_ACCEPTING_REQUESTS = "isAcceptingRequests";
 
    private OseeServerInfo() {
       super();
@@ -82,13 +82,6 @@ public class OseeServerInfo extends BaseExchangeData {
     */
    public Timestamp getDateStarted() {
       return new Timestamp(backingData.getLong(DATE_CREATED));
-   }
-
-   /**
-    * @param whether server is accepting requests
-    */
-   public void setAcceptingRequests(boolean value) {
-      backingData.put(IS_ACCEPTING_REQUESTS, value);
    }
 
    /**

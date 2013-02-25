@@ -43,7 +43,8 @@ public class ServerServletRequestsCommand implements ConsoleCommand {
 
    @Override
    public String getUsage() {
-      return "accept=<TRUE|FALSE>";
+      return "[accept=<TRUE|FALSE>] - Accept/Reject servlet requests\n" + //
+      "                      - To display whether server is accepting servlet requests\n";
    }
 
    @Override
@@ -65,8 +66,10 @@ public class ServerServletRequestsCommand implements ConsoleCommand {
 
       @Override
       public Boolean call() throws Exception {
-         boolean value = parameters.getBoolean("accept");
-         appManager.setServletRequestsAllowed(value);
+         if (parameters.exists("accept")) {
+            boolean value = parameters.getBoolean("accept");
+            appManager.setServletRequestsAllowed(value);
+         }
          console.writeln("Osee Application Server: [%s] - servlet requests",
             appManager.isAcceptingRequests() ? "ACCEPTING" : "REJECTING");
          return Boolean.TRUE;

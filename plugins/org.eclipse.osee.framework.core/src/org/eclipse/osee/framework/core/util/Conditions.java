@@ -69,6 +69,13 @@ public final class Conditions {
    }
 
    /**
+    * @return false if the parameter is null or empty, otherwise return true
+    */
+   public static boolean hasValues(Object[] toCheck) {
+      return toCheck != null && toCheck.length > 0;
+   }
+
+   /**
     * @return true if all of the parameters are null, otherwise returns false. Also returns true when objects is an
     * empty array
     */

@@ -12,15 +12,16 @@ package org.eclipse.osee.framework.core.server.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.ThreadFactory;
+import java.util.Set;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.server.IApplicationServerLookup;
-import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -28,12 +29,9 @@ import org.eclipse.osee.logger.Log;
  */
 public class ApplicationServerLookup implements IApplicationServerLookup {
 
-   private static ThreadFactory threadFactory = null;
-
    private Log logger;
    private IOseeDatabaseService dbService;
 
-   private IApplicationServerManager serverManager;
    private ApplicationServerDataStore serverDataStore;
 
    public void setLogger(Log logger) {
@@ -52,10 +50,6 @@ public class ApplicationServerLookup implements IApplicationServerLookup {
       return dbService;
    }
 
-   public void setServerManager(IApplicationServerManager serverManager) {
-      this.serverManager = serverManager;
-   }
-
    public void start() {
       serverDataStore = new ApplicationServerDataStore(getLogger(), getDatabaseService());
    }
@@ -70,53 +64,64 @@ public class ApplicationServerLookup implements IApplicationServerLookup {
 
    @Override
    public Collection<OseeServerInfo> getAvailableServers() throws OseeCoreException {
-      Collection<OseeServerInfo> infos = getDataStore().getAllApplicationServerInfos();
+      Collection<? extends OseeServerInfo> infos = getDataStore().getAll();
       return getHealthyServers(infos);
    }
 
-   private Collection<OseeServerInfo> getHealthyServers(Collection<OseeServerInfo> infos) {
+   private Collection<OseeServerInfo> getHealthyServers(Collection<? extends OseeServerInfo> infos) {
       List<OseeServerInfo> healthyServers = new ArrayList<OseeServerInfo>();
-      List<OseeServerInfo> unHealthyServers = new ArrayList<OseeServerInfo>();
       for (OseeServerInfo info : infos) {
-         if (isServerAlive(info)) {
-            if (info.isAcceptingRequests()) {
+         if (info.isAcceptingRequests()) {
+            if (isServerAlive(info)) {
                healthyServers.add(info);
             }
-         } else {
-            unHealthyServers.add(info);
          }
       }
-      cleanUpServers(unHealthyServers);
       return healthyServers;
    }
 
    @Override
    public OseeServerInfo getServerInfoBy(String version) throws OseeCoreException {
-      Collection<OseeServerInfo> healthyServers = getHealthyServers(serverDataStore.getApplicationServerInfos(version));
+      Collection<? extends OseeServerInfo> infos = getVersionCompatibleServers(version);
+      Collection<OseeServerInfo> healthyServers = getHealthyServers(infos);
       return getBestAvailable(healthyServers);
    }
 
-   private synchronized void cleanUpServers(final Collection<OseeServerInfo> unHealthyServers) {
-      if (!unHealthyServers.isEmpty()) {
-         if (threadFactory == null) {
-            threadFactory = serverManager.createNewThreadFactory("Server Status Thread Factory", Thread.NORM_PRIORITY);
-         }
-
-         Thread thread = threadFactory.newThread(new Runnable() {
-            @Override
-            public void run() {
-               final ApplicationServerDataStore store = serverDataStore;
-               if (store != null) {
-                  try {
-                     store.removeByServerId(unHealthyServers);
-                  } catch (OseeCoreException ex) {
-                     logger.error(ex, "Error removing unhealthy server entries: [%s]", unHealthyServers);
-                  }
-               }
+   public Collection<OseeServerInfo> getVersionCompatibleServers(String clientVersion) throws OseeCoreException {
+      Set<OseeServerInfo> toReturn = new HashSet<OseeServerInfo>();
+      if (Strings.isValid(clientVersion)) {
+         Collection<? extends OseeServerInfo> infos = getDataStore().getAll();
+         for (OseeServerInfo info : infos) {
+            if (isServerCompatible(info, clientVersion)) {
+               toReturn.add(info);
             }
-         });
-         thread.start();
+         }
       }
+      return toReturn;
+   }
+
+   private boolean isCompatibleVersion(String serverVersion, String clientVersion) {
+      boolean result = false;
+      if (serverVersion.equals(clientVersion)) {
+         result = true;
+      } else {
+         result = clientVersion.matches(serverVersion);
+         if (!result) {
+            result = serverVersion.matches(clientVersion);
+         }
+      }
+      return result;
+   }
+
+   private boolean isServerCompatible(OseeServerInfo info, String clientVersion) {
+      boolean result = false;
+      for (String version : info.getVersion()) {
+         result = isCompatibleVersion(version, clientVersion);
+         if (result) {
+            break;
+         }
+      }
+      return result;
    }
 
    private OseeServerInfo getBestAvailable(Collection<OseeServerInfo> infos) throws OseeCoreException {

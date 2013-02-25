@@ -12,18 +12,19 @@ package org.eclipse.osee.framework.core.server.internal;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.core.DatabaseTransactions;
+import org.eclipse.osee.framework.database.core.IDbTransactionWork;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -31,24 +32,14 @@ import org.eclipse.osee.logger.Log;
  */
 public class ApplicationServerDataStore {
 
-   private static final String INSERT_LOOKUP_TABLE =
-      "INSERT INTO osee_server_lookup (server_id, version_id, server_address, port, start_time, accepts_requests) VALUES (?,?,?,?,?,?)";
-
-   private static final String UPDATE_LOOKUP_TABLE =
-      "UPDATE osee_server_lookup SET accepts_requests = ? WHERE server_address = ? AND port = ?";
-
-   private static final String DELETE_FROM_LOOKUP_TABLE =
-      "DELETE FROM osee_server_lookup WHERE server_address = ? AND port = ? AND version_id=?";
-
-   private static final String DELETE_FROM_LOOKUP_TABLE_BY_ID = "DELETE FROM osee_server_lookup WHERE server_id = ?";
-
    private static final String GET_NUMBER_OF_SESSIONS =
       "SELECT count(1) FROM osee_session WHERE managed_by_server_id = ?";
 
-   private static final String SELECT_FROM_LOOKUP_TABLE = "SELECT * FROM osee_server_lookup";
+   private static final String SELECT_FROM_LOOKUP_TABLE =
+      "SELECT * FROM osee_server_lookup ORDER BY server_address desc, port desc, version_id desc";
 
-   private static final String SELECT_SUPPORTED_VERSIONS_FROM_LOOKUP_TABLE_BY_SERVER_ID =
-      "SELECT version_id FROM osee_server_lookup where server_id = ?";
+   private static final String SELECT_FROM_LOOKUP_TABLE_BY_SERVER_ID =
+      "SELECT * FROM osee_server_lookup where server_id = ? ORDER BY version_id desc";
 
    private final Log logger;
    private final IOseeDatabaseService dbService;
@@ -66,154 +57,172 @@ public class ApplicationServerDataStore {
       return dbService;
    }
 
-   public void removeByServerId(Collection<OseeServerInfo> infos) throws OseeCoreException {
-      if (!infos.isEmpty()) {
-         List<Object[]> data = new ArrayList<Object[]>();
-         for (OseeServerInfo info : infos) {
-            data.add(new Object[] {info.getServerId()});
-         }
-         getDbService().runBatchUpdate(DELETE_FROM_LOOKUP_TABLE_BY_ID, data);
-      }
+   public void create(Iterable<? extends OseeServerInfo> infos) throws OseeCoreException {
+      executeTx(TxType.CREATE, infos);
    }
 
-   public boolean deregisterWithDb(OseeServerInfo applicationServerInfo) {
-      boolean status = false;
-      try {
-         String address = applicationServerInfo.getServerAddress();
-         int port = applicationServerInfo.getPort();
-         List<Object[]> data = new ArrayList<Object[]>();
-         for (String version : applicationServerInfo.getVersion()) {
-            data.add(new Object[] {address, port, version});
-         }
-         getDbService().runBatchUpdate(DELETE_FROM_LOOKUP_TABLE, data);
-         status = true;
-      } catch (OseeCoreException ex) {
-         getLogger().info("Server lookup table is not initialized");
-      }
-      return status;
+   public void update(Iterable<? extends OseeServerInfo> infos) throws OseeCoreException {
+      executeTx(TxType.UPDATE, infos);
    }
 
-   public boolean registerWithDb(OseeServerInfo applicationServerInfo) {
-      boolean status = false;
-      try {
-         String serverId = applicationServerInfo.getServerId();
-         String address = applicationServerInfo.getServerAddress();
-         int port = applicationServerInfo.getPort();
-         Timestamp dateStarted = applicationServerInfo.getDateStarted();
-         int acceptingRequests = applicationServerInfo.isAcceptingRequests() ? 1 : 0;
-         List<Object[]> data = new ArrayList<Object[]>();
-         for (String version : applicationServerInfo.getVersion()) {
-            data.add(new Object[] {serverId, version, address, port, dateStarted, acceptingRequests});
-         }
-         getDbService().runBatchUpdate(INSERT_LOOKUP_TABLE, data);
-         status = true;
-      } catch (OseeCoreException ex) {
-         getLogger().info("Server lookup table is not initialized");
-      }
-      return status;
+   public void delete(Iterable<? extends OseeServerInfo> infos) throws OseeCoreException {
+      executeTx(TxType.DELETE, infos);
    }
 
-   @SuppressWarnings("unchecked")
-   public boolean updateServerState(OseeServerInfo applicationServerInfo, boolean state) throws OseeCoreException {
-      getDbService().runPreparedUpdate(UPDATE_LOOKUP_TABLE, state ? 1 : 0, applicationServerInfo.getServerAddress(),
-         applicationServerInfo.getPort());
-      return true;
+   private void executeTx(TxType op, Iterable<? extends OseeServerInfo> infos) throws OseeCoreException {
+      IDbTransactionWork tx = new ServerLookupTx(getDbService(), op, infos);
+      DatabaseTransactions.execute(getDbService(), getDbService().getConnection(), tx);
    }
 
-   public boolean isCompatibleVersion(String serverVersion, String clientVersion) {
-      boolean result = false;
-      if (serverVersion.equals(clientVersion)) {
-         result = true;
-      } else {
-         result = clientVersion.matches(serverVersion);
-         if (!result) {
-            result = serverVersion.matches(clientVersion);
-         }
-      }
-      return result;
-   }
-
-   public Collection<OseeServerInfo> getApplicationServerInfos(String clientVersion) throws OseeCoreException {
-      CompositeKeyHashMap<String, Integer, OseeServerInfo> servers =
-         new CompositeKeyHashMap<String, Integer, OseeServerInfo>();
-      if (Strings.isValid(clientVersion)) {
-         IOseeStatement chStmt = getDbService().getStatement();
-         try {
-            chStmt.runPreparedQuery(SELECT_FROM_LOOKUP_TABLE);
-            while (chStmt.next()) {
-               String serverVersion = chStmt.getString("version_id");
-               if (Strings.isValid(serverVersion)) {
-                  if (isCompatibleVersion(serverVersion, clientVersion)) {
-                     String serverAddress = chStmt.getString("server_address");
-                     int port = chStmt.getInt("port");
-                     OseeServerInfo info = servers.get(serverAddress, port);
-                     if (info == null) {
-                        info =
-                           new OseeServerInfo(chStmt.getString("server_id"), serverAddress, port,
-                              new String[] {serverVersion}, chStmt.getTimestamp("start_time"),
-                              chStmt.getInt("accepts_requests") != 0 ? true : false);
-                        servers.put(serverAddress, port, info);
-                     } else {
-                        Set<String> versions = new HashSet<String>(Arrays.asList(info.getVersion()));
-                        if (!versions.contains(serverVersion)) {
-                           versions.add(serverVersion);
-                           info =
-                              new OseeServerInfo(chStmt.getString("server_id"), serverAddress, port,
-                                 versions.toArray(new String[versions.size()]), chStmt.getTimestamp("start_time"),
-                                 chStmt.getInt("accepts_requests") != 0 ? true : false);
-                           servers.put(serverAddress, port, info);
-                        }
-                     }
-                  }
-               }
-            }
-         } finally {
-            chStmt.close();
-         }
-      }
-      return servers.values();
-   }
-
-   public Collection<OseeServerInfo> getAllApplicationServerInfos() throws OseeCoreException {
-      Collection<OseeServerInfo> infos = new ArrayList<OseeServerInfo>();
+   public Collection<? extends OseeServerInfo> getAll() throws OseeCoreException {
+      Map<String, OseeServerInfoMutable> infos = new HashMap<String, OseeServerInfoMutable>();
       IOseeStatement chStmt = getDbService().getStatement();
       try {
          chStmt.runPreparedQuery(SELECT_FROM_LOOKUP_TABLE);
          while (chStmt.next()) {
+            String serverId = chStmt.getString("server_id");
             String serverVersion = chStmt.getString("version_id");
-            String serverAddress = chStmt.getString("server_address");
-            int port = chStmt.getInt("port");
-            OseeServerInfo info =
-               new OseeServerInfo(chStmt.getString("server_id"), serverAddress, port, new String[] {serverVersion},
-                  chStmt.getTimestamp("start_time"), chStmt.getInt("accepts_requests") != 0 ? true : false);
-            infos.add(info);
+            boolean isAcceptingRequests = chStmt.getInt("accepts_requests") != 0 ? true : false;
+
+            OseeServerInfoMutable info = infos.get(serverId);
+            if (info == null) {
+               String serverAddress = chStmt.getString("server_address");
+               int port = chStmt.getInt("port");
+               Timestamp timestamp = chStmt.getTimestamp("start_time");
+               info =
+                  new OseeServerInfoMutable(serverId, serverAddress, port, new String[] {serverVersion}, timestamp,
+                     isAcceptingRequests);
+               infos.put(serverId, info);
+            } else {
+               boolean acceptingRequests = info.isAcceptingRequests() && isAcceptingRequests;
+               info.addVersion(serverVersion);
+               info.setAcceptingRequests(acceptingRequests);
+            }
          }
       } finally {
          chStmt.close();
       }
-      return infos;
+      return infos.values();
    }
 
-   public Set<String> getOseeVersionsByServerId(String serverId) throws OseeDataStoreException {
-      Set<String> supportedVersions = new HashSet<String>();
-      IOseeStatement chStmt = getDbService().getStatement();
+   public void refresh(OseeServerInfoMutable info) {
+      Set<String> original = info.getVersionSet();
+      boolean origAcceptingRequests = info.isAcceptingRequests();
+      IOseeStatement chStmt = null;
       try {
-         chStmt.runPreparedQuery(SELECT_SUPPORTED_VERSIONS_FROM_LOOKUP_TABLE_BY_SERVER_ID, serverId);
+         chStmt = getDbService().getStatement();
+         chStmt.runPreparedQuery(SELECT_FROM_LOOKUP_TABLE_BY_SERVER_ID, info.getServerId());
+         info.setVersions(Collections.<String> emptySet());
          while (chStmt.next()) {
-            String version = chStmt.getString("version_id");
-            if (Strings.isValid(version)) {
-               supportedVersions.add(version);
-            }
+            String serverVersion = chStmt.getString("version_id");
+            boolean isAcceptingRequests = chStmt.getInt("accepts_requests") != 0 ? true : false;
+
+            boolean acceptingRequests = info.isAcceptingRequests() && isAcceptingRequests;
+            info.addVersion(serverVersion);
+            info.setAcceptingRequests(acceptingRequests);
          }
       } catch (Exception ex) {
          getLogger().info("Server lookup table is not initialized");
+         info.setVersions(original);
+         info.setAcceptingRequests(origAcceptingRequests);
       } finally {
-         chStmt.close();
+         if (chStmt != null) {
+            chStmt.close();
+         }
       }
-      return supportedVersions;
    }
 
    public int getNumberOfSessions(String serverId) throws OseeCoreException {
       return getDbService().runPreparedQueryFetchObject(0, GET_NUMBER_OF_SESSIONS, serverId);
    }
+
+   private static enum TxType {
+      CREATE,
+      UPDATE,
+      DELETE;
+   }
+
+   private static final class ServerLookupTx implements IDbTransactionWork {
+
+      private static final String INSERT_LOOKUP_TABLE =
+         "INSERT INTO osee_server_lookup (server_id, version_id, server_address, port, start_time, accepts_requests) VALUES (?,?,?,?,?,?)";
+
+      private static final String DELETE_FROM_LOOKUP_TABLE_BY_ID = "DELETE FROM osee_server_lookup WHERE server_id = ?";
+
+      private final TxType txType;
+      private final Iterable<? extends OseeServerInfo> datas;
+      private final IOseeDatabaseService dbService;
+
+      public ServerLookupTx(IOseeDatabaseService dbService, TxType txType, Iterable<? extends OseeServerInfo> datas) {
+         this.dbService = dbService;
+         this.txType = txType;
+         this.datas = datas;
+      }
+
+      @Override
+      public String getName() {
+         return String.format("[%s] Application Server Info", txType);
+      }
+
+      @Override
+      public void handleTxWork(OseeConnection connection) throws OseeCoreException {
+         switch (txType) {
+            case CREATE:
+               create(connection);
+               break;
+            case UPDATE:
+               update(connection);
+               break;
+            case DELETE:
+               delete(connection);
+               break;
+            default:
+               break;
+         }
+      }
+
+      private void create(OseeConnection connection) throws OseeCoreException {
+         List<Object[]> insertData = new ArrayList<Object[]>();
+         for (OseeServerInfo data : datas) {
+            String serverId = data.getServerId();
+            String address = data.getServerAddress();
+            int port = data.getPort();
+            Timestamp dateStarted = data.getDateStarted();
+            int acceptingRequests = data.isAcceptingRequests() ? 1 : 0;
+
+            for (String version : data.getVersion()) {
+               insertData.add(new Object[] {serverId, version, address, port, dateStarted, acceptingRequests});
+            }
+         }
+         if (!insertData.isEmpty()) {
+            dbService.runBatchUpdate(connection, INSERT_LOOKUP_TABLE, insertData);
+         }
+      }
+
+      private void update(OseeConnection connection) throws OseeCoreException {
+         delete(connection);
+         create(connection);
+      }
+
+      private void delete(OseeConnection connection) throws OseeCoreException {
+         List<Object[]> deleteData = new ArrayList<Object[]>();
+         for (OseeServerInfo data : datas) {
+            deleteData.add(new Object[] {data.getServerId()});
+         }
+         if (!deleteData.isEmpty()) {
+            dbService.runBatchUpdate(connection, DELETE_FROM_LOOKUP_TABLE_BY_ID, deleteData);
+         }
+      }
+
+      @Override
+      public void handleTxException(Exception ex) {
+         //
+      }
+
+      @Override
+      public void handleTxFinally() {
+         //
+      }
+   };
+
 }
