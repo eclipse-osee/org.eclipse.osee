@@ -20,7 +20,6 @@ import java.util.logging.Level;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
@@ -324,9 +323,7 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
          String name = thisIFile.getName();
          this.setPartName(name);
          if (thisIFile != null) {
-            IPath containerPath = thisIFile.getRawLocation();
             try {
-
                xmlText = Lib.inputStreamToString(thisIFile.getContents());
             } catch (Exception ex) {
                ex.printStackTrace();
@@ -424,11 +421,13 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
 
    public void updateFromTestManagerModel() {
       IDocument doc = sourceEditor.getDocumentProvider().getDocument(sourceEditor.getEditorInput());
-      doc.set(model.getRawXml());
-      try {
-         sourceEditor.getDocumentProvider().saveDocument(new NullProgressMonitor(), null, doc, true);
-      } catch (CoreException e) {
-         OseeLog.log(getClass(), Level.SEVERE, e);
+      if (!doc.get().equals(model.getRawXml())) {
+         doc.set(model.getRawXml());
+         try {
+            sourceEditor.getDocumentProvider().saveDocument(new NullProgressMonitor(), null, doc, true);
+         } catch (CoreException e) {
+            OseeLog.log(getClass(), Level.SEVERE, e);
+         }
       }
    }
    
