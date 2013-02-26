@@ -26,6 +26,8 @@ import org.eclipse.osee.framework.plugin.core.internal.PluginCoreActivator;
 import org.osgi.framework.Bundle;
 
 /**
+ * Use ExtensionDefinedObjects if possible
+ * 
  * @author Ryan D. Brooks
  */
 public class ExtensionPoints {

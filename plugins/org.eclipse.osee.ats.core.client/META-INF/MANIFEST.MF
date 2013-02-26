@@ -95,6 +95,7 @@ Export-Package: org.eclipse.osee.ats.core.client.access,
  org.eclipse.osee.ats.core.client.workflow,
  org.eclipse.osee.ats.core.client.workflow.log,
  org.eclipse.osee.ats.core.client.workflow.note,
+ org.eclipse.osee.ats.core.client.workflow.stateitem,
  org.eclipse.osee.ats.core.client.workflow.transition
 Require-Bundle: org.eclipse.osee.framework.skynet.core
 Bundle-Vendor: Eclipse Open System Engineering Environment

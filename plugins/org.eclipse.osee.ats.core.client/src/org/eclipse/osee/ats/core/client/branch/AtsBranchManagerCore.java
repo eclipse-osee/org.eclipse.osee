@@ -38,6 +38,8 @@ import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.workflow.stateitem.AtsStateItemCoreManager;
+import org.eclipse.osee.ats.core.client.workflow.stateitem.IAtsStateItemCore;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -634,15 +636,10 @@ public class AtsBranchManagerCore {
             teamArt.setWorkingBranchCreationInProgress(true);
             BranchManager.createWorkingBranch(parentTransactionId, branchName, null, teamArt);
             teamArt.setWorkingBranchCreationInProgress(false);
-
-            // Create reviews as necessary
-            SkynetTransaction transaction =
-               TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Create Reviews upon Transition");
-            createNecessaryBranchEventReviews(StateEventType.CreateBranch, teamArt, new Date(),
-               AtsUsers.getSystemUser(), transaction);
-            transaction.execute();
+            performPostBranchCreationTasks(teamArt);
             return Status.OK_STATUS;
          }
+
       };
 
       //            Jobs.runInJob("Create Branch", runnable, Activator.class, Activator.PLUGIN_ID);
@@ -656,6 +653,20 @@ public class AtsBranchManagerCore {
          }
       }
       return job;
+   }
+
+   private static void performPostBranchCreationTasks(final TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+      // Create reviews as necessary
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Create Reviews upon Transition");
+      createNecessaryBranchEventReviews(StateEventType.CreateBranch, teamArt, new Date(), AtsUsers.getSystemUser(),
+         transaction);
+      transaction.execute();
+
+      // Notify extensions of branch creation 
+      for (IAtsStateItemCore item : AtsStateItemCoreManager.getStateItems()) {
+         item.workingBranchCreated(teamArt);
+      }
    }
 
    public static void createNecessaryBranchEventReviews(StateEventType stateEventType, TeamWorkFlowArtifact teamArt, Date createdDate, IAtsUser createdBy, SkynetTransaction transaction) throws OseeCoreException {
