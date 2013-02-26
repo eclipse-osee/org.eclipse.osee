@@ -100,6 +100,26 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
          }
          return "";
       }
+      if (xCol.equals(CoverageXViewerFactory.Unit)) {
+         String unit = "";
+         if (element instanceof CoverageUnit) {
+            unit = coverage.getName();
+         } else {
+            unit = coverage.getParent().getName();
+         }
+
+         return unit;
+      }
+      if (xCol.equals(CoverageXViewerFactory.Lines_Covered)) {
+         if (element instanceof CoverageUnit) {
+            return String.valueOf(((CoverageUnit) coverage).getCoverageItemsCoveredCount(true));
+         }
+      }
+      if (xCol.equals(CoverageXViewerFactory.Total_Lines)) {
+         if (element instanceof CoverageUnit) {
+            return String.valueOf(((CoverageUnit) coverage).getCoverageItems(true).size());
+         }
+      }
 
       if (xCol.equals(CoverageMergeXViewerFactoryImport.Import) && element instanceof IMergeItem) {
          return getMergeItemImportColumnText((IMergeItem) element);

@@ -30,7 +30,7 @@ public abstract class CoverageMergeXViewerFactory extends CoverageXViewerFactory
    public void registerColumns() {
       for (XViewerColumn xCol : Arrays.asList(Name, Method_Number, Execution_Number, Namespace, Coverage_Percent,
          Coverage_Method, Work_Product_Task, Coverage_Rationale, Coverage_Test_Units, Assignees_Col, Notes_Col,
-         Parent_Coverage_Unit, Line_Number, Location, Full_Path, Guid)) {
+         Parent_Coverage_Unit, Line_Number, Location, Full_Path, Guid, Unit, Lines_Covered, Total_Lines)) {
          XViewerColumn newXCol = xCol.copy();
          if (xCol.equals(CoverageXViewerFactory.Coverage_Rationale) ||
          //

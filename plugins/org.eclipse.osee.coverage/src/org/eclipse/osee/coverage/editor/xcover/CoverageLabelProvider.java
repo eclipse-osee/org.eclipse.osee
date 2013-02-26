@@ -115,6 +115,26 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
       if (xCol.equals(CoverageXViewerFactory.Guid)) {
          return coverage.getGuid();
       }
+      if (xCol.equals(CoverageXViewerFactory.Unit)) {
+         String unit = "";
+         if (element instanceof CoverageUnit) {
+            unit = coverage.getName();
+         } else {
+            unit = coverage.getParent().getName();
+         }
+
+         return unit;
+      }
+      if (xCol.equals(CoverageXViewerFactory.Lines_Covered)) {
+         if (element instanceof CoverageUnit) {
+            return String.valueOf(((CoverageUnit) coverage).getCoverageItemsCoveredCount(true));
+         }
+      }
+      if (xCol.equals(CoverageXViewerFactory.Total_Lines)) {
+         if (element instanceof CoverageUnit) {
+            return String.valueOf(((CoverageUnit) coverage).getCoverageItems(true).size());
+         }
+      }
 
       if (coverage instanceof CoverageItem || (coverage instanceof MergeItem && ((MergeItem) coverage).getImportItem() instanceof CoverageItem)) {
          CoverageItem coverageItem = null;

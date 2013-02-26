@@ -57,9 +57,16 @@ public class CoverageXViewerFactory extends SkynetXViewerFactory {
    public static XViewerColumn Guid = new XViewerColumn(NAMESPACE + ".guid", "Guid", 80, SWT.LEFT, true,
       SortDataType.String, false, "");
 
+   public static XViewerColumn Unit = new XViewerColumn(NAMESPACE + ".unit", "Unit", 180, SWT.LEFT, true,
+      SortDataType.String, false, "");
+   public static XViewerColumn Lines_Covered = new XViewerColumn(NAMESPACE + ".linesCovered", "Lines Covered", 80,
+      SWT.LEFT, true, SortDataType.String, false, "");
+   public static XViewerColumn Total_Lines = new XViewerColumn(NAMESPACE + ".totalLines", "Total Lines", 80, SWT.LEFT,
+      true, SortDataType.String, false, "");
+
    public static List<XViewerColumn> columns = Arrays.asList(Name, Method_Number, Execution_Number, Namespace,
       Coverage_Percent, Coverage_Method, Work_Product_Task, Coverage_Rationale, Coverage_Test_Units, Assignees_Col,
-      Notes_Col, Parent_Coverage_Unit, Line_Number, Location, Full_Path, Guid);
+      Notes_Col, Parent_Coverage_Unit, Line_Number, Location, Full_Path, Guid, Unit, Lines_Covered, Total_Lines);
 
    public CoverageXViewerFactory() {
       super(NAMESPACE);
