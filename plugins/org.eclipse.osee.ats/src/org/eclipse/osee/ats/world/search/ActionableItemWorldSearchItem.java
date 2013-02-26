@@ -22,14 +22,13 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
-import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.ActionActionableItemListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
 
 /**
@@ -37,7 +36,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
  */
 public class ActionableItemWorldSearchItem extends WorldUISearchItem {
 
-   private Collection<IAtsActionableItem> actionItems;
+   private final Collection<IAtsActionableItem> actionItems;
    private Set<IAtsActionableItem> selectedActionItems;
    private boolean recurseChildren;
    private boolean selectedRecurseChildren; // Used to not corrupt original values
@@ -45,22 +44,9 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
    private boolean selectedShowFinished; // Used to not corrupt original values
    private boolean showAction;
    private boolean selectedShowAction; // Used to not corrupt original values
-   private final Collection<String> actionItemNames;
-
-   public ActionableItemWorldSearchItem(Collection<String> actionItemNames, String displayName, boolean showFinished, boolean recurseChildren, boolean showAction) {
-      super(displayName, AtsImage.ACTIONABLE_ITEM);
-      this.actionItemNames = actionItemNames;
-      this.showFinished = showFinished;
-      this.selectedShowFinished = showFinished; // Set as default in case UI is not used
-      this.recurseChildren = recurseChildren;
-      this.selectedRecurseChildren = recurseChildren; // Set as default in case UI is not used
-      this.showAction = showAction;
-      this.selectedShowAction = showAction;
-   }
 
    public ActionableItemWorldSearchItem(String displayName, Collection<IAtsActionableItem> actionItems, boolean showFinished, boolean recurseChildren, boolean showAction) {
       super(displayName, AtsImage.ACTIONABLE_ITEM);
-      this.actionItemNames = null;
       this.actionItems = actionItems;
       this.showFinished = showFinished;
       this.recurseChildren = recurseChildren;
@@ -69,7 +55,6 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
 
    public ActionableItemWorldSearchItem(ActionableItemWorldSearchItem item) {
       super(item, AtsImage.ACTIONABLE_ITEM);
-      this.actionItemNames = item.actionItemNames;
       this.actionItems = item.actionItems;
       this.showFinished = item.showFinished;
       this.recurseChildren = item.recurseChildren;
@@ -77,9 +62,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
    }
 
    public Collection<String> getProductSearchName() {
-      if (actionItemNames != null) {
-         return actionItemNames;
-      } else if (actionItems != null) {
+      if (actionItems != null) {
          return ActionableItems.getNames(actionItems);
       } else if (selectedActionItems != null) {
          return ActionableItems.getNames(selectedActionItems);
@@ -92,23 +75,10 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
       return String.format("%s - %s", super.getSelectedName(searchType), getProductSearchName());
    }
 
-   public void getActionableItems() {
-      if (actionItemNames != null && actionItems == null) {
-         actionItems = new HashSet<IAtsActionableItem>();
-         for (String actionItemName : actionItemNames) {
-            IAtsActionableItem aia = AtsConfigCache.instance.getSoleByName(actionItemName, IAtsActionableItem.class);
-            if (aia != null) {
-               actionItems.add(aia);
-            }
-         }
-      }
-   }
-
    /**
     * @return All directly specified teamDefs plus if recurse, will get all children
     */
    private Set<IAtsActionableItem> getSearchActionableItems() throws OseeCoreException {
-      getActionableItems();
       Set<IAtsActionableItem> srchTeamDefs = new HashSet<IAtsActionableItem>();
       for (IAtsActionableItem actionableItem : actionItems != null ? actionItems : selectedActionItems) {
          srchTeamDefs.add(actionableItem);
@@ -159,9 +129,6 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
    @Override
    public void performUI(SearchType searchType) throws OseeCoreException {
       super.performUI(searchType);
-      if (actionItemNames != null) {
-         return;
-      }
       if (actionItems != null) {
          return;
       }

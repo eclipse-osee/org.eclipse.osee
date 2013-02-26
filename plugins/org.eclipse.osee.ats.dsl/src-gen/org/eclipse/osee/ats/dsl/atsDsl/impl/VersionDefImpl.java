@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
-
  */
 package org.eclipse.osee.ats.dsl.atsDsl.impl;
 
@@ -31,6 +27,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl#getGuid <em>Guid</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl#getStaticId <em>Static Id</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl#getNext <em>Next</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl#getReleased <em>Released</em>}</li>
@@ -64,6 +61,26 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
    * @ordered
    */
   protected String name = NAME_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getGuid() <em>Guid</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getGuid()
+   * @generated
+   * @ordered
+   */
+  protected static final String GUID_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getGuid() <em>Guid</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getGuid()
+   * @generated
+   * @ordered
+   */
+  protected String guid = GUID_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getStaticId() <em>Static Id</em>}' attribute list.
@@ -234,6 +251,29 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
    * <!-- end-user-doc -->
    * @generated
    */
+  public String getGuid()
+  {
+    return guid;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setGuid(String newGuid)
+  {
+    String oldGuid = guid;
+    guid = newGuid;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, AtsDslPackage.VERSION_DEF__GUID, oldGuid, guid));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EList<String> getStaticId()
   {
     if (staticId == null)
@@ -384,6 +424,8 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
     {
       case AtsDslPackage.VERSION_DEF__NAME:
         return getName();
+      case AtsDslPackage.VERSION_DEF__GUID:
+        return getGuid();
       case AtsDslPackage.VERSION_DEF__STATIC_ID:
         return getStaticId();
       case AtsDslPackage.VERSION_DEF__NEXT:
@@ -415,6 +457,9 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
     {
       case AtsDslPackage.VERSION_DEF__NAME:
         setName((String)newValue);
+        return;
+      case AtsDslPackage.VERSION_DEF__GUID:
+        setGuid((String)newValue);
         return;
       case AtsDslPackage.VERSION_DEF__STATIC_ID:
         getStaticId().clear();
@@ -456,6 +501,9 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
       case AtsDslPackage.VERSION_DEF__NAME:
         setName(NAME_EDEFAULT);
         return;
+      case AtsDslPackage.VERSION_DEF__GUID:
+        setGuid(GUID_EDEFAULT);
+        return;
       case AtsDslPackage.VERSION_DEF__STATIC_ID:
         getStaticId().clear();
         return;
@@ -493,6 +541,8 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
     {
       case AtsDslPackage.VERSION_DEF__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+      case AtsDslPackage.VERSION_DEF__GUID:
+        return GUID_EDEFAULT == null ? guid != null : !GUID_EDEFAULT.equals(guid);
       case AtsDslPackage.VERSION_DEF__STATIC_ID:
         return staticId != null && !staticId.isEmpty();
       case AtsDslPackage.VERSION_DEF__NEXT:
@@ -524,6 +574,8 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (name: ");
     result.append(name);
+    result.append(", guid: ");
+    result.append(guid);
     result.append(", staticId: ");
     result.append(staticId);
     result.append(", next: ");

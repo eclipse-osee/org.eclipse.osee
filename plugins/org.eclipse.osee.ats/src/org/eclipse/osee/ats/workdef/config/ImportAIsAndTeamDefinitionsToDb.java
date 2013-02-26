@@ -33,9 +33,11 @@ import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -101,8 +103,14 @@ public class ImportAIsAndTeamDefinitionsToDb {
             newTeam = getOrCreate(dslTeamName, true, parentArtifact);
          }
          if (newTeam == null) {
+            String guid = dslTeamDef.getGuid();
+            if (guid != null && !GUID.isValid(guid)) {
+               throw new OseeArgumentException("Invalid guid [%s] specified for DSL Team Definition [%s]", guid,
+                  dslTeamDef);
+            }
             newTeam =
-               ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition, AtsUtil.getAtsBranch(), dslTeamName);
+               ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition, AtsUtil.getAtsBranch(), dslTeamName,
+                  guid, HumanReadableId.generate());
          }
          if (parentArtifact != null && !parentArtifact.equals(newTeam)) {
             parentArtifact.addChild(newTeam);
@@ -151,8 +159,15 @@ public class ImportAIsAndTeamDefinitionsToDb {
       for (VersionDef dslVersionDef : versionDefs) {
          String dslVerName = Strings.unquote(dslVersionDef.getName());
          // System.out.println("   - Importing Version " + dslVerName);
+
+         String guid = dslVersionDef.getGuid();
+         if (guid != null && !GUID.isValid(guid)) {
+            throw new OseeArgumentException("Invalid guid [%s] specified for DSL Version Definition [%s]", guid,
+               dslVersionDef);
+         }
          Artifact newVer =
-            ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), dslVerName);
+            ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), dslVerName, guid,
+               HumanReadableId.generate());
          Artifact teamDefArt = new TeamDefinitionArtifactStore(teamDef, AtsConfigCache.instance).getArtifact();
 
          teamDefArt.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, newVer);
@@ -193,7 +208,14 @@ public class ImportAIsAndTeamDefinitionsToDb {
             newAi = getOrCreate(dslAIName, false, parentArtifact);
          }
          if (newAi == null) {
-            newAi = ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem, AtsUtil.getAtsBranch(), dslAIName);
+            String guid = dslAIDef.getGuid();
+            if (guid != null && !GUID.isValid(guid)) {
+               throw new OseeArgumentException("Invalid guid [%s] specified for DSL Actionable Item Definition [%s]",
+                  guid, dslAIDef);
+            }
+            newAi =
+               ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem, AtsUtil.getAtsBranch(), dslAIName,
+                  guid, HumanReadableId.generate());
          }
          if (parentArtifact != null && !parentArtifact.equals(newAi)) {
             parentArtifact.addChild(newAi);

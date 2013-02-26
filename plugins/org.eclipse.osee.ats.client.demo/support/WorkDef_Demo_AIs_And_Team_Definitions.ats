@@ -27,6 +27,7 @@ teamDefinition "Teams" GetOrCreate {
 	children {
 
 		teamDefinition "CIS SW" {
+			guid "At2WHxF7jmUa8jXR3iwA"
 			staticId "cis.teamDefHoldingVersions"
 			lead named "Kay Jason"
 			member named "Steven Kohn"
@@ -48,6 +49,7 @@ teamDefinition "Teams" GetOrCreate {
 			children {
 
 				teamDefinition "CIS Code" {
+					guid "At2WHxGo4A1nnGWYjgwA"
 					staticId "cis.code"
 					lead named "Jason Michael"
 					member named "Jason Michael"
@@ -69,6 +71,7 @@ teamDefinition "Teams" GetOrCreate {
 				}
 
 				teamDefinition "CIS Test" {
+					guid "At2WHxHZrl0bKPA6uUgA"
 					staticId "cis.test"
 					lead named "Kay Jones"
 					member named "Kay Jones"
@@ -78,6 +81,7 @@ teamDefinition "Teams" GetOrCreate {
 		}
 
 		teamDefinition "Facilities Team" {
+			guid "At2WHxIMOz66yR56eRAA"
 			lead named "John Stevens"
 			member named "John Stevens"
 			member named "Steven Michael"
@@ -98,6 +102,7 @@ teamDefinition "Teams" GetOrCreate {
 		}
 
 		teamDefinition "Process Team" {
+			guid "At2WHxBtYhx4Nxrck6gA"
 			lead named "Alex Kay"
 			member named "Keith Johnson"
 			member named "Michael Alex"
@@ -107,6 +112,7 @@ teamDefinition "Teams" GetOrCreate {
 		}
 
 		teamDefinition "SAW SW" {
+			guid "At2WHxFk5VVE2cafF5AA"
 			staticId "saw.teamDefHoldingVersions"
 			lead named "Kay Jason"
 			member named "Maichael Johnson"
@@ -114,21 +120,25 @@ teamDefinition "Teams" GetOrCreate {
 			member named "Kay Jason"
 			workDefinition "WorkDef_Team_Default"
 			version "SAW_Bld_1" {
+				guid "A8msa8LTDG36oWAnq3QA"
 				staticId "saw.teamDefHoldingVersions"
 				released True
 				baslineBranchGuid "AyH_f2sSKy3l07fIvAAA"
 			}
 			version "SAW_Bld_2" {
+				guid "A8YqcqyKh3HCkcHfEVwA"
 				staticId "saw.teamDefHoldingVersions"
 				next True allowCreateBranch True allowCommitBranch True
 				baslineBranchGuid "AyH_f2sSKy3l07fIvBBB"
 			}
 			version "SAW_Bld_3" {
+				guid "A8msa8LrcxhyrUTsbuwA"
 				staticId "saw.teamDefHoldingVersions"
 			}
 			children {
 
 				teamDefinition "SAW Code" {
+					guid "At2WHxC2lxLOGB0YiuQA"
 					staticId "saw.code"
 					lead named "Joe Smith"
 					member named "Joe Smith"
@@ -136,12 +146,14 @@ teamDefinition "Teams" GetOrCreate {
 				}
 
 				teamDefinition "SAW HW" {
+					guid "At2WHxCeMCHfcr02EkAA"
 					lead named "Jason Michael"
 					member named "Jason Michael"
 					workDefinition "WorkDef_Team_Default"
 				}
 
 				teamDefinition "SAW Requirements" {
+					guid "At2WHxEfLXfCLytmLlAA"
 					staticId "saw.requirements"
 					lead named "Joe Smith"
 					member named "Joe Smith"
@@ -149,6 +161,7 @@ teamDefinition "Teams" GetOrCreate {
 				}
 
 				teamDefinition "SAW SW Design" {
+					guid "At2WHxEGxl7nWuqx7FQA"
 					staticId "saw.sw_design"
 					lead named "Kay Jones"
 					member named "Kay Jones"
@@ -156,6 +169,7 @@ teamDefinition "Teams" GetOrCreate {
 				}
 
 				teamDefinition "SAW Test" {
+					guid "At2WHxDuXkCIJFEtQ0AA"
 					staticId "saw.test"
 					lead named "Kay Jones"
 					member named "Kay Jones" privileged named "Joe Smith"
@@ -165,6 +179,7 @@ teamDefinition "Teams" GetOrCreate {
 		}
 
 		teamDefinition "Tools Team" {
+			guid "At2WHxCFyQPidx78iuAA"
 			lead named "Jeffery Kay"
 			member named "Jeffery Kay"
 			member named "Roland Stevens"

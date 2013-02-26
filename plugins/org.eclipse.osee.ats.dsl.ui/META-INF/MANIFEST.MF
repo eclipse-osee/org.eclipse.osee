@@ -21,5 +21,6 @@ Import-Package: org.apache.log4j,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.skynet.core.attribute
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: org.eclipse.osee.ats.dsl.ui.contentassist.antlr
+Export-Package: org.eclipse.osee.ats.dsl.ui.contentassist.antlr,
+ org.eclipse.osee.ats.dsl.ui.contentassist
 Bundle-Activator: org.eclipse.osee.ats.dsl.ui.internal.AtsDslActivator

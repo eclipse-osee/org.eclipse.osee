@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -55,6 +56,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -95,8 +97,15 @@ public class ExcelAtsActionArtifactExtractor {
          } else {
             for (String actionableItemName : aData.actionableItems) {
                try {
-                  Collection<IAtsActionableItem> aias =
-                     AtsConfigCache.instance.getByName(actionableItemName, IAtsActionableItem.class);
+                  Collection<IAtsActionableItem> aias = new ArrayList<IAtsActionableItem>();
+                  for (Artifact aiaArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.ActionableItem,
+                     actionableItemName, AtsUtilCore.getAtsBranchToken())) {
+                     IAtsActionableItem ai =
+                        AtsConfigCache.instance.getSoleByGuid(aiaArt.getGuid(), IAtsActionableItem.class);
+                     if (ai != null) {
+                        aias.add(ai);
+                     }
+                  }
                   if (aias.isEmpty()) {
                      rd.logError("Row " + rowNum + ": Couldn't find actionable item for \"" + actionableItemName + "\"");
                   } else if (aias.size() > 1) {

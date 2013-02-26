@@ -63,7 +63,7 @@ import org.eclipse.ui.progress.UIJob;
  * 
  * @author Donald G. Dunne
  */
-public class AtsConfigManager extends AbstractOperation {
+public class AtsConfigOperation extends AbstractOperation {
 
    public static interface Display {
       public void openAtsConfigurationEditors(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> aias, IAtsWorkDefinition workDefinition);
@@ -72,20 +72,22 @@ public class AtsConfigManager extends AbstractOperation {
    private final String name;
    private final String teamDefName;
    private final Collection<String> versionNames;
-   private final Collection<String> actionableItems;
+   private final Collection<String> actionableItemsNames;
    private final Display display;
+   private IAtsTeamDefinition teamDefinition;
+   private Collection<IAtsActionableItem> actionableItems;
 
    /**
     * @param teamDefName - name of team definition to use
     * @param versionNames - list of version names (if team is using versions)
     * @param actionableItems - list of actionable items
     */
-   public AtsConfigManager(Display display, String name, String teamDefName, Collection<String> versionNames, Collection<String> actionableItems) {
+   public AtsConfigOperation(Display display, String name, String teamDefName, Collection<String> versionNames, Collection<String> actionableItems) {
       super("Configure Ats", Activator.PLUGIN_ID);
       this.name = name;
       this.teamDefName = teamDefName;
       this.versionNames = versionNames;
-      this.actionableItems = actionableItems;
+      this.actionableItemsNames = actionableItems;
       this.display = display;
    }
 
@@ -110,9 +112,9 @@ public class AtsConfigManager extends AbstractOperation {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Configure ATS for Default Team");
 
-      IAtsTeamDefinition teamDefinition = createTeamDefinition(transaction);
+      teamDefinition = createTeamDefinition(transaction);
 
-      Collection<IAtsActionableItem> actionableItems = createActionableItems(transaction, teamDefinition);
+      actionableItems = createActionableItems(transaction, teamDefinition);
 
       createVersions(transaction, teamDefinition);
 
@@ -157,7 +159,7 @@ public class AtsConfigManager extends AbstractOperation {
       aias.add(topAia);
 
       // Create children actionable item
-      for (String name : actionableItems) {
+      for (String name : actionableItemsNames) {
          IAtsActionableItem childAi =
             AtsConfigCache.instance.getActionableItemFactory().createActionableItem(GUID.create(), name);
          childAi.setActionable(true);
@@ -247,6 +249,10 @@ public class AtsConfigManager extends AbstractOperation {
          };
          Jobs.startJob(job, true);
       }
+   }
+
+   public IAtsTeamDefinition getTeamDefinition() {
+      return teamDefinition;
    }
 
 }

@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
@@ -40,24 +39,15 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
 
    private final IAtsTeamDefinition teamDef;
    private final String publishToFilename;
-   private final String teamDefName;
 
    public PublishFullVersionReportItem(XNavigateItem parent, String name, IAtsTeamDefinition teamDef, String publishToFilename) {
       super(parent, name);
       this.teamDef = teamDef;
-      this.teamDefName = null;
-      this.publishToFilename = publishToFilename;
-   }
-
-   public PublishFullVersionReportItem(XNavigateItem parent, String name, String teamDefName, String publishToFilename) {
-      super(parent, name);
-      this.teamDefName = teamDefName;
-      this.teamDef = null;
       this.publishToFilename = publishToFilename;
    }
 
    public PublishFullVersionReportItem(XNavigateItem parent) {
-      this(parent, "Publish Full Version Report", (String) null, null);
+      this(parent, "Publish Full Version Report", null, null);
    }
 
    @Override
@@ -72,9 +62,6 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
          }
       }
       IAtsTeamDefinition useTeamDef = teamDef;
-      if (useTeamDef == null && teamDefName != null) {
-         useTeamDef = AtsConfigCache.instance.getSoleByName(teamDefName, IAtsTeamDefinition.class);
-      }
       if (useTeamDef == null) {
          TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
          ld.setInput(TeamDefinitions.getTeamDefinitions(Active.Both));

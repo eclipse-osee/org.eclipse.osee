@@ -1,176 +1,177 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<genmodel:GenModel xmi:version="2.0"
-    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
-    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.osee.ats.dsl/src-gen"
-    editDirectory="/org.eclipse.osee.ats.dsl.edit/src" editorDirectory="/org.eclipse.osee.ats.dsl.editor/src"
-    modelPluginID="org.eclipse.osee.ats.dsl" forceOverwrite="true" modelName="AtsDsl"
-    updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.osee.ats.dsl/src-gen" editDirectory="/org.eclipse.osee.ats.dsl.edit/src"
+    editorDirectory="/org.eclipse.osee.ats.dsl.editor/src" modelPluginID="org.eclipse.osee.ats.dsl"
+    forceOverwrite="true" modelName="AtsDsl" updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
     complianceLevel="5.0" copyrightFields="false" editPluginID="org.eclipse.osee.ats.dsl.edit"
-    editorPluginID="org.eclipse.osee.ats.dsl.editor">
+    editorPluginID="org.eclipse.osee.ats.dsl.editor" runtimeVersion="2.8">
   <genPackages prefix="AtsDsl" basePackage="org.eclipse.osee.ats.dsl" disposableProviderFactory="true"
-      ecorePackage="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#/">
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//BooleanDef">
-      <genEnumLiterals ecoreEnumLiteral="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//BooleanDef/None"/>
-      <genEnumLiterals ecoreEnumLiteral="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//BooleanDef/True"/>
-      <genEnumLiterals ecoreEnumLiteral="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//BooleanDef/False"/>
+      ecorePackage="AtsDsl.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="AtsDsl.ecore#//BooleanDef">
+      <genEnumLiterals ecoreEnumLiteral="AtsDsl.ecore#//BooleanDef/None"/>
+      <genEnumLiterals ecoreEnumLiteral="AtsDsl.ecore#//BooleanDef/True"/>
+      <genEnumLiterals ecoreEnumLiteral="AtsDsl.ecore#//BooleanDef/False"/>
     </genEnums>
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//WorkflowEventType">
-      <genEnumLiterals ecoreEnumLiteral="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//WorkflowEventType/TransitionTo"/>
-      <genEnumLiterals ecoreEnumLiteral="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//WorkflowEventType/CreateBranch"/>
-      <genEnumLiterals ecoreEnumLiteral="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//WorkflowEventType/CommitBranch"/>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="AtsDsl.ecore#//WorkflowEventType">
+      <genEnumLiterals ecoreEnumLiteral="AtsDsl.ecore#//WorkflowEventType/TransitionTo"/>
+      <genEnumLiterals ecoreEnumLiteral="AtsDsl.ecore#//WorkflowEventType/CreateBranch"/>
+      <genEnumLiterals ecoreEnumLiteral="AtsDsl.ecore#//WorkflowEventType/CommitBranch"/>
     </genEnums>
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//ReviewBlockingType">
-      <genEnumLiterals ecoreEnumLiteral="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//ReviewBlockingType/Transition"/>
-      <genEnumLiterals ecoreEnumLiteral="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//ReviewBlockingType/Commit"/>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="AtsDsl.ecore#//ReviewBlockingType">
+      <genEnumLiterals ecoreEnumLiteral="AtsDsl.ecore#//ReviewBlockingType/Transition"/>
+      <genEnumLiterals ecoreEnumLiteral="AtsDsl.ecore#//ReviewBlockingType/Commit"/>
     </genEnums>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//AtsDsl">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//AtsDsl/workDef"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//AtsDsl/userDef"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//AtsDsl/teamDef"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//AtsDsl/actionableItemDef"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//AtsDsl">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//AtsDsl/workDef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//AtsDsl/userDef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//AtsDsl/teamDef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//AtsDsl/actionableItemDef"/>
     </genClasses>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//UserDef">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//UserDef/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//UserDef/userDefOption"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//UserDef/active"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//UserDef/userId"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//UserDef/email"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//UserDef/admin"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//UserDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//UserDef/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//UserDef/userDefOption"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//UserDef/active"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//UserDef/userId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//UserDef/email"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//UserDef/admin"/>
     </genClasses>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//TeamDef">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//TeamDef/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//TeamDef/teamDefOption"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//TeamDef/active"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//TeamDef/staticId"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//TeamDef/lead"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//TeamDef/member"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//TeamDef/privileged"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//TeamDef/workDefinition"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//TeamDef/relatedTaskWorkDefinition"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//TeamDef/accessContextId"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//TeamDef/version"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//TeamDef/children"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//TeamDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//TeamDef/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//TeamDef/teamDefOption"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//TeamDef/guid"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//TeamDef/active"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//TeamDef/staticId"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//TeamDef/lead"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//TeamDef/member"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//TeamDef/privileged"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//TeamDef/workDefinition"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//TeamDef/relatedTaskWorkDefinition"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//TeamDef/accessContextId"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//TeamDef/version"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//TeamDef/children"/>
     </genClasses>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//ActionableItemDef">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//ActionableItemDef/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//ActionableItemDef/aiDefOption"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//ActionableItemDef/active"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//ActionableItemDef/actionable"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//ActionableItemDef/lead"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//ActionableItemDef/owner"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//ActionableItemDef/staticId"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//ActionableItemDef/teamDef"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//ActionableItemDef/accessContextId"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//ActionableItemDef/children"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//ActionableItemDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ActionableItemDef/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ActionableItemDef/aiDefOption"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ActionableItemDef/guid"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ActionableItemDef/active"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ActionableItemDef/actionable"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//ActionableItemDef/lead"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//ActionableItemDef/owner"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ActionableItemDef/staticId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ActionableItemDef/teamDef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ActionableItemDef/accessContextId"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//ActionableItemDef/children"/>
     </genClasses>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//VersionDef">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//VersionDef/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//VersionDef/staticId"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//VersionDef/next"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//VersionDef/released"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//VersionDef/allowCreateBranch"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//VersionDef/allowCommitBranch"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//VersionDef/baselineBranchGuid"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//VersionDef/parallelVersion"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//VersionDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//VersionDef/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//VersionDef/guid"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//VersionDef/staticId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//VersionDef/next"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//VersionDef/released"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//VersionDef/allowCreateBranch"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//VersionDef/allowCommitBranch"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//VersionDef/baselineBranchGuid"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//VersionDef/parallelVersion"/>
     </genClasses>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//WorkDef">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//WorkDef/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//WorkDef/id"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//WorkDef/startState"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//WorkDef/widgetDefs"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//WorkDef/decisionReviewDefs"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//WorkDef/peerReviewDefs"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//WorkDef/states"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//WorkDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//WorkDef/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//WorkDef/id"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//WorkDef/startState"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//WorkDef/widgetDefs"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//WorkDef/decisionReviewDefs"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//WorkDef/peerReviewDefs"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//WorkDef/states"/>
     </genClasses>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//WidgetDef">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//WidgetDef/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//WidgetDef/attributeName"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//WidgetDef/description"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//WidgetDef/xWidgetName"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//WidgetDef/defaultValue"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//WidgetDef/height"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//WidgetDef/option"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//WidgetDef/minConstraint"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//WidgetDef/maxConstraint"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//WidgetDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//WidgetDef/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//WidgetDef/attributeName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//WidgetDef/description"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//WidgetDef/xWidgetName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//WidgetDef/defaultValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//WidgetDef/height"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//WidgetDef/option"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//WidgetDef/minConstraint"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//WidgetDef/maxConstraint"/>
     </genClasses>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//WidgetRef">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//WidgetRef/widget"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//WidgetRef">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//WidgetRef/widget"/>
     </genClasses>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//AttrWidget">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//AttrWidget/attributeName"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//AttrWidget/option"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//AttrWidget">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//AttrWidget/attributeName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//AttrWidget/option"/>
     </genClasses>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//StateDef">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//StateDef/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//StateDef/description"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//StateDef/pageType"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//StateDef/ordinal"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//StateDef/transitionStates"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//StateDef/rules"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//StateDef/decisionReviews"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//StateDef/peerReviews"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//StateDef/percentWeight"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//StateDef/recommendedPercentComplete"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//StateDef/color"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//StateDef/layout"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//StateDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//StateDef/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//StateDef/description"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//StateDef/pageType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//StateDef/ordinal"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//StateDef/transitionStates"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//StateDef/rules"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//StateDef/decisionReviews"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//StateDef/peerReviews"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//StateDef/percentWeight"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//StateDef/recommendedPercentComplete"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//StateDef/color"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//StateDef/layout"/>
     </genClasses>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//DecisionReviewRef">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//DecisionReviewRef/decisionReview"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//DecisionReviewRef">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//DecisionReviewRef/decisionReview"/>
     </genClasses>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//DecisionReviewDef">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//DecisionReviewDef/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//DecisionReviewDef/title"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//DecisionReviewDef/description"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//DecisionReviewDef/relatedToState"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//DecisionReviewDef/blockingType"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//DecisionReviewDef/stateEvent"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//DecisionReviewDef/assigneeRefs"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//DecisionReviewDef/autoTransitionToDecision"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//DecisionReviewDef/options"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//DecisionReviewDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//DecisionReviewDef/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//DecisionReviewDef/title"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//DecisionReviewDef/description"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//DecisionReviewDef/relatedToState"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//DecisionReviewDef/blockingType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//DecisionReviewDef/stateEvent"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//DecisionReviewDef/assigneeRefs"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//DecisionReviewDef/autoTransitionToDecision"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//DecisionReviewDef/options"/>
     </genClasses>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//DecisionReviewOpt">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//DecisionReviewOpt/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//DecisionReviewOpt/followup"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//DecisionReviewOpt">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//DecisionReviewOpt/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//DecisionReviewOpt/followup"/>
     </genClasses>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//PeerReviewRef">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//PeerReviewRef/peerReview"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//PeerReviewRef">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//PeerReviewRef/peerReview"/>
     </genClasses>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//PeerReviewDef">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//PeerReviewDef/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//PeerReviewDef/title"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//PeerReviewDef/description"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//PeerReviewDef/location"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//PeerReviewDef/relatedToState"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//PeerReviewDef/blockingType"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//PeerReviewDef/stateEvent"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//PeerReviewDef/assigneeRefs"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//PeerReviewDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//PeerReviewDef/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//PeerReviewDef/title"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//PeerReviewDef/description"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//PeerReviewDef/location"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//PeerReviewDef/relatedToState"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//PeerReviewDef/blockingType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//PeerReviewDef/stateEvent"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//PeerReviewDef/assigneeRefs"/>
     </genClasses>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//FollowupRef">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//FollowupRef/assigneeRefs"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//FollowupRef">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//FollowupRef/assigneeRefs"/>
     </genClasses>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//UserRef"/>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//UserByUserId">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//UserByUserId/userId"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//UserRef"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//UserByUserId">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//UserByUserId/userId"/>
     </genClasses>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//UserByName">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//UserByName/userName"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//UserByName">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//UserByName/userName"/>
     </genClasses>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//ToState">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//ToState/state"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//ToState/options"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//ToState">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//ToState/state"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ToState/options"/>
     </genClasses>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//LayoutType"/>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//LayoutDef">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//LayoutDef/layoutItems"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//LayoutType"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//LayoutDef">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//LayoutDef/layoutItems"/>
     </genClasses>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//LayoutCopy">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//LayoutCopy/state"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//LayoutCopy">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//LayoutCopy/state"/>
     </genClasses>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//LayoutItem"/>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//Composite">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//Composite/numColumns"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//Composite/layoutItems"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//Composite/options"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//LayoutItem"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//Composite">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//Composite/numColumns"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//Composite/layoutItems"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//Composite/options"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

@@ -41,24 +41,14 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
-import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
  */
 public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
 
-   private final IAtsTeamDefinition teamDef;
-   private final String teamDefName;
-
-   public FirstTimeQualityMetricReportItem(XNavigateItem parent, String name, String teamDefName) {
-      super(parent, name, AtsImage.REPORT);
-      this.teamDefName = teamDefName;
-      this.teamDef = null;
-   }
-
    public FirstTimeQualityMetricReportItem(XNavigateItem parent) {
-      this(parent, "First Time Quality Metric Report", null);
+      super(parent, "First Time Quality Metric Report", AtsImage.REPORT);
    }
 
    @Override
@@ -67,26 +57,19 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      IAtsTeamDefinition useTeamDef = teamDef;
-      if (useTeamDef == null && teamDefName != null) {
-         useTeamDef = AtsConfigCache.instance.getSoleByName(teamDefName, IAtsTeamDefinition.class);
-      }
-      if (useTeamDef == null) {
-         TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
-         ld.setTitle(getName());
-         ld.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Both));
-         int result = ld.open();
-         if (result == 0) {
-            if (ld.getResult().length == 0) {
-               AWorkbench.popup("ERROR", "You must select a team to operate against.");
-               return;
-            }
-            useTeamDef = (IAtsTeamDefinition) ld.getResult()[0];
-         } else {
+   public void run(TableLoadOption... tableLoadOptions) {
+      IAtsTeamDefinition useTeamDef = null;
+      TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
+      ld.setTitle(getName());
+      ld.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Both));
+      int result = ld.open();
+      if (result == 0) {
+         if (ld.getResult().length == 0) {
+            AWorkbench.popup("ERROR", "You must select a team to operate against.");
             return;
          }
-      } else if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName())) {
+         useTeamDef = (IAtsTeamDefinition) ld.getResult()[0];
+      } else {
          return;
       }
 

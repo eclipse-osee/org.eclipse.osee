@@ -56,17 +56,16 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
    }
 
    private static IAtsTeamDefinition getTeamDef(DemoTeam team) throws OseeCoreException {
+      IAtsTeamDefinition results = null;
       // Add check to keep exception from occurring for OSEE developers running against production
-      if (ClientSessionManager.isProductionDataStore()) {
-         return null;
+      if (!ClientSessionManager.isProductionDataStore()) {
+         try {
+            results = AtsConfigCache.instance.getSoleByGuid(team.getTeamDefToken().getGuid(), IAtsTeamDefinition.class);
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
       }
-      try {
-         String name = team.name().replaceAll("_", " ");
-         return AtsConfigCache.instance.getSoleByName(name, IAtsTeamDefinition.class);
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      return null;
+      return results;
    }
 
    @Override

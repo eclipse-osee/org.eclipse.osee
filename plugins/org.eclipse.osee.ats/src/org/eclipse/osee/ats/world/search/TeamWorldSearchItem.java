@@ -40,8 +40,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -51,16 +51,15 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
  */
 public class TeamWorldSearchItem extends WorldUISearchItem {
 
-   public enum ReleasedOption {
+   public static enum ReleasedOption {
       Released,
       UnReleased,
       Both
    };
-   private Collection<IAtsTeamDefinition> teamDefs;
+   private final Collection<IAtsTeamDefinition> teamDefs;
    private final boolean recurseChildren;
    private boolean includeCompleted;
    private boolean showAction;
-   private final Collection<String> teamDefNames;
    private final ChangeType changeType;
    private final IAtsVersion versionArt;
    private final IAtsUser userArt;
@@ -71,20 +70,6 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
    private IAttributeType attrValueSearchType;
    private final List<String> attrValueSearchOrValues = new ArrayList<String>();
 
-   public TeamWorldSearchItem(String displayName, List<String> teamDefNames, boolean includeCompleted, boolean includeCancelled, boolean showAction, boolean recurseChildren, ChangeType changeType, IAtsVersion versionArt, IAtsUser userArt, ReleasedOption releasedOption, String stateName) {
-      super(displayName, AtsImage.TEAM_WORKFLOW);
-      this.includeCancelled = includeCancelled;
-      this.versionArt = versionArt;
-      this.userArt = userArt;
-      this.teamDefNames = teamDefNames;
-      this.includeCompleted = includeCompleted;
-      this.releasedOption = releasedOption;
-      this.showAction = showAction;
-      this.recurseChildren = recurseChildren;
-      this.changeType = changeType;
-      this.stateName = stateName;
-   }
-
    public TeamWorldSearchItem(String displayName, Collection<IAtsTeamDefinition> teamDefs, boolean includeCompleted, boolean includeCancelled, boolean showAction, boolean recurseChildren, IAtsVersion versionArt, IAtsUser userArt, ReleasedOption releasedOption, String stateName) {
       super(displayName, AtsImage.TEAM_WORKFLOW);
       this.includeCancelled = includeCancelled;
@@ -93,7 +78,6 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
       this.recurseChildren = recurseChildren;
       this.releasedOption = releasedOption;
       this.stateName = stateName;
-      this.teamDefNames = null;
       this.teamDefs = teamDefs;
       this.includeCompleted = includeCompleted;
       this.showAction = showAction;
@@ -106,7 +90,6 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
       this.userArt = null;
       this.releasedOption = null;
       this.recurseChildren = teamWorldUISearchItem.recurseChildren;
-      this.teamDefNames = teamWorldUISearchItem.teamDefNames;
       this.teamDefs = teamWorldUISearchItem.teamDefs;
       this.includeCompleted = teamWorldUISearchItem.includeCompleted;
       this.includeCancelled = teamWorldUISearchItem.includeCancelled;
@@ -116,9 +99,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
    }
 
    public Collection<String> getProductSearchName() {
-      if (teamDefNames != null) {
-         return teamDefNames;
-      } else if (teamDefs != null) {
+      if (teamDefs != null) {
          return TeamDefinitions.getNames(teamDefs);
       }
       return new ArrayList<String>();
@@ -129,24 +110,8 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
       return String.format("%s - %s", super.getSelectedName(searchType), getProductSearchName());
    }
 
-   /**
-    * Loads all team definitions if specified by name versus by team definition class
-    */
-   public void getTeamDefs() {
-      if (teamDefNames != null && teamDefs == null) {
-         teamDefs = new HashSet<IAtsTeamDefinition>();
-         for (String teamDefName : teamDefNames) {
-            IAtsTeamDefinition aia = AtsConfigCache.instance.getSoleByName(teamDefName, IAtsTeamDefinition.class);
-            if (aia != null) {
-               teamDefs.add(aia);
-            }
-         }
-      }
-   }
-
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
-      getTeamDefs();
       Set<String> teamDefinitionGuids = new HashSet<String>(teamDefs.size());
       for (IAtsTeamDefinition teamDef : teamDefs) {
          if (recurseChildren) {

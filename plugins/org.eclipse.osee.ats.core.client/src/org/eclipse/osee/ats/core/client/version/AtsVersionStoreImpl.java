@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2012 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,15 +25,21 @@ import org.eclipse.osee.ats.core.client.config.store.VersionArtifactStore;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
+import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
+import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsVersionStoreImpl implements IAtsVersionStore {
 
    public AtsVersionStoreImpl() {
@@ -140,6 +146,17 @@ public class AtsVersionStoreImpl implements IAtsVersionStore {
          if (teamDefArt != null) {
             result = AtsConfigCache.instance.getSoleByGuid(teamDefArt.getGuid(), IAtsTeamDefinition.class);
          }
+      }
+      return result;
+   }
+
+   @Override
+   public IAtsVersion getById(Identity<String> id) throws OseeCoreException {
+      IAtsVersion result = null;
+      Artifact verArt = ArtifactQuery.getArtifactFromId(id.getGuid(), AtsUtilCore.getAtsBranchToken());
+      if (verArt != null) {
+         VersionArtifactStore store = new VersionArtifactStore(verArt, AtsConfigCache.instance);
+         result = store.getVersion();
       }
       return result;
    }

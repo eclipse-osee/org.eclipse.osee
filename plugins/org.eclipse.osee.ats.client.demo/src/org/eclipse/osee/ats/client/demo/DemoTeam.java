@@ -10,22 +10,34 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.demo;
 
+import org.eclipse.osee.framework.core.data.IArtifactToken;
+
 /**
  * Convenience method for demo plugin to retrieve configured teams for use mostly in DemoNavigateViewItem.
  * 
  * @author Donald G. Dunne
  */
 public enum DemoTeam {
-   Process_Team,
-   Tools_Team,
-   SAW_HW,
-   SAW_Code,
-   SAW_Test,
-   SAW_SW_Design,
-   SAW_Requirements,
-   SAW_SW,
-   CIS_SW,
-   CIS_Code,
-   CIS_Test,
-   Facilities_Team
+   Process_Team(DemoArtifactToken.Process_Team),
+   Tools_Team(DemoArtifactToken.Tools_Team),
+   SAW_HW(DemoArtifactToken.SAW_HW),
+   SAW_Code(DemoArtifactToken.SAW_Code),
+   SAW_Test(DemoArtifactToken.SAW_Test),
+   SAW_SW_Design(DemoArtifactToken.SAW_SW_Design),
+   SAW_Requirements(DemoArtifactToken.SAW_Requirements),
+   SAW_SW(DemoArtifactToken.SAW_SW),
+   CIS_SW(DemoArtifactToken.CIS_SW),
+   CIS_Code(DemoArtifactToken.CIS_Code),
+   CIS_Test(DemoArtifactToken.CIS_Test),
+   Facilities_Team(DemoArtifactToken.Facilities_Team);
+
+   private final IArtifactToken teamDefToken;
+
+   private DemoTeam(IArtifactToken teamDefToken) {
+      this.teamDefToken = teamDefToken;
+   }
+
+   public IArtifactToken getTeamDefToken() {
+      return teamDefToken;
+   }
 }

@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
-
  */
 package org.eclipse.osee.ats.dsl.atsDsl.impl;
 
@@ -37,6 +33,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.UserRef;
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getAiDefOption <em>Ai Def Option</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getGuid <em>Guid</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getActive <em>Active</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getActionable <em>Actionable</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getLead <em>Lead</em>}</li>
@@ -81,6 +78,26 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
    * @ordered
    */
   protected EList<String> aiDefOption;
+
+  /**
+   * The default value of the '{@link #getGuid() <em>Guid</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getGuid()
+   * @generated
+   * @ordered
+   */
+  protected static final String GUID_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getGuid() <em>Guid</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getGuid()
+   * @generated
+   * @ordered
+   */
+  protected String guid = GUID_EDEFAULT;
 
   /**
    * The default value of the '{@link #getActive() <em>Active</em>}' attribute.
@@ -248,6 +265,29 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
       aiDefOption = new EDataTypeEList<String>(String.class, this, AtsDslPackage.ACTIONABLE_ITEM_DEF__AI_DEF_OPTION);
     }
     return aiDefOption;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getGuid()
+  {
+    return guid;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setGuid(String newGuid)
+  {
+    String oldGuid = guid;
+    guid = newGuid;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, AtsDslPackage.ACTIONABLE_ITEM_DEF__GUID, oldGuid, guid));
   }
 
   /**
@@ -423,6 +463,8 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
         return getName();
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__AI_DEF_OPTION:
         return getAiDefOption();
+      case AtsDslPackage.ACTIONABLE_ITEM_DEF__GUID:
+        return getGuid();
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__ACTIVE:
         return getActive();
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__ACTIONABLE:
@@ -460,6 +502,9 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__AI_DEF_OPTION:
         getAiDefOption().clear();
         getAiDefOption().addAll((Collection<? extends String>)newValue);
+        return;
+      case AtsDslPackage.ACTIONABLE_ITEM_DEF__GUID:
+        setGuid((String)newValue);
         return;
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__ACTIVE:
         setActive((BooleanDef)newValue);
@@ -510,6 +555,9 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__AI_DEF_OPTION:
         getAiDefOption().clear();
         return;
+      case AtsDslPackage.ACTIONABLE_ITEM_DEF__GUID:
+        setGuid(GUID_EDEFAULT);
+        return;
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__ACTIVE:
         setActive(ACTIVE_EDEFAULT);
         return;
@@ -552,6 +600,8 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__AI_DEF_OPTION:
         return aiDefOption != null && !aiDefOption.isEmpty();
+      case AtsDslPackage.ACTIONABLE_ITEM_DEF__GUID:
+        return GUID_EDEFAULT == null ? guid != null : !GUID_EDEFAULT.equals(guid);
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__ACTIVE:
         return active != ACTIVE_EDEFAULT;
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__ACTIONABLE:
@@ -587,6 +637,8 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
     result.append(name);
     result.append(", aiDefOption: ");
     result.append(aiDefOption);
+    result.append(", guid: ");
+    result.append(guid);
     result.append(", active: ");
     result.append(active);
     result.append(", actionable: ");

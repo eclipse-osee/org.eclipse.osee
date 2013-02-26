@@ -43,11 +43,11 @@ import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
-import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.ats.util.SubscribeManagerUI;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -61,8 +61,6 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -236,17 +234,15 @@ public class PopulateDemoActions extends XNavigateItemAction {
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "createNonReqChangeDemoActions - SAW_Bld_3");
       }
-      List<ActionArtifact> actions =
-         Collections.castAll(createActions(DemoDbActionData.getNonReqSawActionData(),
-            DemoSawBuilds.SAW_Bld_3.toString(), null, transaction));
+      Set<ActionArtifact> actions =
+         createActions(DemoDbActionData.getNonReqSawActionData(), DemoArtifactToken.SAW_Bld_3, null, transaction);
       appendBuildNameToTitles(actions, DemoSawBuilds.SAW_Bld_3.getName(), transaction);
 
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "createNonReqChangeDemoActions - SAW_Bld_2");
       }
       actions =
-         Collections.castAll(createActions(DemoDbActionData.getNonReqSawActionData(),
-            DemoSawBuilds.SAW_Bld_2.toString(), null, transaction));
+         createActions(DemoDbActionData.getNonReqSawActionData(), DemoArtifactToken.SAW_Bld_2, null, transaction);
       appendBuildNameToTitles(actions, DemoSawBuilds.SAW_Bld_2.getName(), transaction);
 
       if (DEBUG) {
@@ -254,9 +250,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
 
       actions =
-         Collections.castAll(createActions(DemoDbActionData.getNonReqSawActionData(),
-            DemoSawBuilds.SAW_Bld_1.toString(), TeamState.Completed, transaction));
-      appendBuildNameToTitles(actions, DemoSawBuilds.SAW_Bld_1.getName(), transaction);
+         createActions(DemoDbActionData.getNonReqSawActionData(), DemoArtifactToken.SAW_Bld_1, TeamState.Completed,
+            transaction);
+      appendBuildNameToTitles(actions, DemoSawBuilds.SAW_Bld_1.toString(), transaction);
 
       transaction.execute();
    }
@@ -271,7 +267,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       transaction.execute();
    }
 
-   private void appendBuildNameToTitles(List<ActionArtifact> actions, String buildName, SkynetTransaction transaction) throws OseeCoreException {
+   private void appendBuildNameToTitles(Set<ActionArtifact> actions, String buildName, SkynetTransaction transaction) throws OseeCoreException {
       for (ActionArtifact action : actions) {
          for (TeamWorkFlowArtifact team : action.getTeams()) {
             team.setName(team.getName() + " for " + buildName);
@@ -282,8 +278,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
    }
 
-   private Set<Artifact> createActions(List<DemoDbActionData> actionDatas, String versionStr, TeamState toStateOverride, SkynetTransaction transaction) throws Exception {
-      Set<Artifact> actionArts = new HashSet<Artifact>();
+   private Set<ActionArtifact> createActions(List<DemoDbActionData> actionDatas, IArtifactToken versionToken, TeamState toStateOverride, SkynetTransaction transaction) throws Exception {
+      Set<ActionArtifact> actionArts = new HashSet<ActionArtifact>();
       int currNum = 1;
       for (DemoDbActionData aData : actionDatas) {
          if (DEBUG) {
@@ -294,7 +290,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          IAtsUser createdBy = AtsUsersClient.getUser();
 
          for (String prefixTitle : aData.prefixTitles) {
-            Artifact actionArt =
+            ActionArtifact actionArt =
                ActionManager.createAction(null, prefixTitle + " " + aData.postFixTitle,
                   TITLE_PREFIX[x] + " " + aData.postFixTitle, CHANGE_TYPE[x], aData.priority, false, null,
                   aData.getActionableItems(), createdDate, createdBy, null, transaction);
@@ -333,8 +329,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
                }
 
                teamWf.persist(transaction);
-               if (Strings.isValid(versionStr)) {
-                  IAtsVersion version = AtsConfigCache.instance.getSoleByName(versionStr, IAtsVersion.class);
+               if (versionToken != null) {
+                  IAtsVersion version = AtsVersionService.get().getById(versionToken);
                   AtsVersionService.get().setTargetedVersionAndStore(teamWf, version);
                   teamWf.persist(transaction);
                }

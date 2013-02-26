@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2012 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,8 +16,12 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.impl.internal.AtsVersionStore;
+import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
+/**
+ * @author Donald G Dunne
+ */
 public class AtsVersionServiceImpl implements IAtsVersionService {
 
    public IAtsVersion getTargetedVersionByTeamWf(IAtsTeamWorkflow teamWf) throws OseeCoreException {
@@ -87,7 +91,6 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
 
    /**
     * @return true if this is a TeamWorkflow and the version it's been targeted for has been released
-    * @throws OseeCoreException
     */
    @Override
    public boolean isReleased(IAtsTeamWorkflow teamWf) throws OseeCoreException {
@@ -115,6 +118,11 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    @Override
    public IAtsTeamDefinition getTeamDefinition(IAtsVersion version) throws OseeCoreException {
       return AtsVersionStore.getService().getTeamDefinition(version);
+   }
+
+   @Override
+   public IAtsVersion getById(Identity<String> id) throws OseeCoreException {
+      return AtsVersionStore.getService().getById(id);
    }
 
 }

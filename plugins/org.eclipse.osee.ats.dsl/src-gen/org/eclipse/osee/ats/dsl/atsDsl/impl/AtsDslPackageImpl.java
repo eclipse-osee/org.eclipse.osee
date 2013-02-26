@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
-
  */
 package org.eclipse.osee.ats.dsl.atsDsl.impl;
 
@@ -467,7 +463,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getTeamDef_Active()
+  public EAttribute getTeamDef_Guid()
   {
     return (EAttribute)teamDefEClass.getEStructuralFeatures().get(2);
   }
@@ -477,7 +473,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getTeamDef_StaticId()
+  public EAttribute getTeamDef_Active()
   {
     return (EAttribute)teamDefEClass.getEStructuralFeatures().get(3);
   }
@@ -487,9 +483,9 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getTeamDef_Lead()
+  public EAttribute getTeamDef_StaticId()
   {
-    return (EReference)teamDefEClass.getEStructuralFeatures().get(4);
+    return (EAttribute)teamDefEClass.getEStructuralFeatures().get(4);
   }
 
   /**
@@ -497,7 +493,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getTeamDef_Member()
+  public EReference getTeamDef_Lead()
   {
     return (EReference)teamDefEClass.getEStructuralFeatures().get(5);
   }
@@ -507,7 +503,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getTeamDef_Privileged()
+  public EReference getTeamDef_Member()
   {
     return (EReference)teamDefEClass.getEStructuralFeatures().get(6);
   }
@@ -517,9 +513,9 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getTeamDef_WorkDefinition()
+  public EReference getTeamDef_Privileged()
   {
-    return (EAttribute)teamDefEClass.getEStructuralFeatures().get(7);
+    return (EReference)teamDefEClass.getEStructuralFeatures().get(7);
   }
 
   /**
@@ -527,7 +523,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getTeamDef_RelatedTaskWorkDefinition()
+  public EAttribute getTeamDef_WorkDefinition()
   {
     return (EAttribute)teamDefEClass.getEStructuralFeatures().get(8);
   }
@@ -537,7 +533,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getTeamDef_AccessContextId()
+  public EAttribute getTeamDef_RelatedTaskWorkDefinition()
   {
     return (EAttribute)teamDefEClass.getEStructuralFeatures().get(9);
   }
@@ -547,9 +543,19 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getTeamDef_AccessContextId()
+  {
+    return (EAttribute)teamDefEClass.getEStructuralFeatures().get(10);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EReference getTeamDef_Version()
   {
-    return (EReference)teamDefEClass.getEStructuralFeatures().get(10);
+    return (EReference)teamDefEClass.getEStructuralFeatures().get(11);
   }
 
   /**
@@ -559,7 +565,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    */
   public EReference getTeamDef_Children()
   {
-    return (EReference)teamDefEClass.getEStructuralFeatures().get(11);
+    return (EReference)teamDefEClass.getEStructuralFeatures().get(12);
   }
 
   /**
@@ -597,7 +603,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getActionableItemDef_Active()
+  public EAttribute getActionableItemDef_Guid()
   {
     return (EAttribute)actionableItemDefEClass.getEStructuralFeatures().get(2);
   }
@@ -607,7 +613,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getActionableItemDef_Actionable()
+  public EAttribute getActionableItemDef_Active()
   {
     return (EAttribute)actionableItemDefEClass.getEStructuralFeatures().get(3);
   }
@@ -617,9 +623,9 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getActionableItemDef_Lead()
+  public EAttribute getActionableItemDef_Actionable()
   {
-    return (EReference)actionableItemDefEClass.getEStructuralFeatures().get(4);
+    return (EAttribute)actionableItemDefEClass.getEStructuralFeatures().get(4);
   }
 
   /**
@@ -627,7 +633,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getActionableItemDef_Owner()
+  public EReference getActionableItemDef_Lead()
   {
     return (EReference)actionableItemDefEClass.getEStructuralFeatures().get(5);
   }
@@ -637,9 +643,9 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getActionableItemDef_StaticId()
+  public EReference getActionableItemDef_Owner()
   {
-    return (EAttribute)actionableItemDefEClass.getEStructuralFeatures().get(6);
+    return (EReference)actionableItemDefEClass.getEStructuralFeatures().get(6);
   }
 
   /**
@@ -647,7 +653,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getActionableItemDef_TeamDef()
+  public EAttribute getActionableItemDef_StaticId()
   {
     return (EAttribute)actionableItemDefEClass.getEStructuralFeatures().get(7);
   }
@@ -657,7 +663,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getActionableItemDef_AccessContextId()
+  public EAttribute getActionableItemDef_TeamDef()
   {
     return (EAttribute)actionableItemDefEClass.getEStructuralFeatures().get(8);
   }
@@ -667,9 +673,19 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getActionableItemDef_AccessContextId()
+  {
+    return (EAttribute)actionableItemDefEClass.getEStructuralFeatures().get(9);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EReference getActionableItemDef_Children()
   {
-    return (EReference)actionableItemDefEClass.getEStructuralFeatures().get(9);
+    return (EReference)actionableItemDefEClass.getEStructuralFeatures().get(10);
   }
 
   /**
@@ -697,7 +713,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getVersionDef_StaticId()
+  public EAttribute getVersionDef_Guid()
   {
     return (EAttribute)versionDefEClass.getEStructuralFeatures().get(1);
   }
@@ -707,7 +723,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getVersionDef_Next()
+  public EAttribute getVersionDef_StaticId()
   {
     return (EAttribute)versionDefEClass.getEStructuralFeatures().get(2);
   }
@@ -717,7 +733,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getVersionDef_Released()
+  public EAttribute getVersionDef_Next()
   {
     return (EAttribute)versionDefEClass.getEStructuralFeatures().get(3);
   }
@@ -727,7 +743,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getVersionDef_AllowCreateBranch()
+  public EAttribute getVersionDef_Released()
   {
     return (EAttribute)versionDefEClass.getEStructuralFeatures().get(4);
   }
@@ -737,7 +753,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getVersionDef_AllowCommitBranch()
+  public EAttribute getVersionDef_AllowCreateBranch()
   {
     return (EAttribute)versionDefEClass.getEStructuralFeatures().get(5);
   }
@@ -747,7 +763,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getVersionDef_BaselineBranchGuid()
+  public EAttribute getVersionDef_AllowCommitBranch()
   {
     return (EAttribute)versionDefEClass.getEStructuralFeatures().get(6);
   }
@@ -757,9 +773,19 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getVersionDef_ParallelVersion()
+  public EAttribute getVersionDef_BaselineBranchGuid()
   {
     return (EAttribute)versionDefEClass.getEStructuralFeatures().get(7);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getVersionDef_ParallelVersion()
+  {
+    return (EAttribute)versionDefEClass.getEStructuralFeatures().get(8);
   }
 
   /**
@@ -1659,6 +1685,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     teamDefEClass = createEClass(TEAM_DEF);
     createEAttribute(teamDefEClass, TEAM_DEF__NAME);
     createEAttribute(teamDefEClass, TEAM_DEF__TEAM_DEF_OPTION);
+    createEAttribute(teamDefEClass, TEAM_DEF__GUID);
     createEAttribute(teamDefEClass, TEAM_DEF__ACTIVE);
     createEAttribute(teamDefEClass, TEAM_DEF__STATIC_ID);
     createEReference(teamDefEClass, TEAM_DEF__LEAD);
@@ -1673,6 +1700,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     actionableItemDefEClass = createEClass(ACTIONABLE_ITEM_DEF);
     createEAttribute(actionableItemDefEClass, ACTIONABLE_ITEM_DEF__NAME);
     createEAttribute(actionableItemDefEClass, ACTIONABLE_ITEM_DEF__AI_DEF_OPTION);
+    createEAttribute(actionableItemDefEClass, ACTIONABLE_ITEM_DEF__GUID);
     createEAttribute(actionableItemDefEClass, ACTIONABLE_ITEM_DEF__ACTIVE);
     createEAttribute(actionableItemDefEClass, ACTIONABLE_ITEM_DEF__ACTIONABLE);
     createEReference(actionableItemDefEClass, ACTIONABLE_ITEM_DEF__LEAD);
@@ -1684,6 +1712,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
 
     versionDefEClass = createEClass(VERSION_DEF);
     createEAttribute(versionDefEClass, VERSION_DEF__NAME);
+    createEAttribute(versionDefEClass, VERSION_DEF__GUID);
     createEAttribute(versionDefEClass, VERSION_DEF__STATIC_ID);
     createEAttribute(versionDefEClass, VERSION_DEF__NEXT);
     createEAttribute(versionDefEClass, VERSION_DEF__RELEASED);
@@ -1855,6 +1884,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     initEClass(teamDefEClass, TeamDef.class, "TeamDef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTeamDef_Name(), ecorePackage.getEString(), "name", null, 0, 1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTeamDef_TeamDefOption(), ecorePackage.getEString(), "teamDefOption", null, 0, -1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTeamDef_Guid(), ecorePackage.getEString(), "guid", null, 0, 1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTeamDef_Active(), this.getBooleanDef(), "active", null, 0, 1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTeamDef_StaticId(), ecorePackage.getEString(), "staticId", null, 0, -1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getTeamDef_Lead(), this.getUserRef(), null, "lead", null, 0, -1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1869,6 +1899,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     initEClass(actionableItemDefEClass, ActionableItemDef.class, "ActionableItemDef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getActionableItemDef_Name(), ecorePackage.getEString(), "name", null, 0, 1, ActionableItemDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getActionableItemDef_AiDefOption(), ecorePackage.getEString(), "aiDefOption", null, 0, -1, ActionableItemDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getActionableItemDef_Guid(), ecorePackage.getEString(), "guid", null, 0, 1, ActionableItemDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getActionableItemDef_Active(), this.getBooleanDef(), "active", null, 0, 1, ActionableItemDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getActionableItemDef_Actionable(), this.getBooleanDef(), "actionable", null, 0, 1, ActionableItemDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getActionableItemDef_Lead(), this.getUserRef(), null, "lead", null, 0, -1, ActionableItemDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1880,6 +1911,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
 
     initEClass(versionDefEClass, VersionDef.class, "VersionDef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getVersionDef_Name(), ecorePackage.getEString(), "name", null, 0, 1, VersionDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getVersionDef_Guid(), ecorePackage.getEString(), "guid", null, 0, 1, VersionDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getVersionDef_StaticId(), ecorePackage.getEString(), "staticId", null, 0, -1, VersionDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getVersionDef_Next(), this.getBooleanDef(), "next", null, 0, 1, VersionDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getVersionDef_Released(), this.getBooleanDef(), "released", null, 0, 1, VersionDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

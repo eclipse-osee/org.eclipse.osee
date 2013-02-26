@@ -22,8 +22,8 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.ats.config.AtsConfigManager;
-import org.eclipse.osee.ats.config.AtsConfigManager.Display;
+import org.eclipse.osee.ats.config.AtsConfigOperation;
+import org.eclipse.osee.ats.config.AtsConfigOperation.Display;
 import org.eclipse.osee.ats.core.client.config.AtsObjectsClient;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -65,8 +65,8 @@ public class AtsConfigWizard extends Wizard implements INewWizard {
          Collection<String> versionNames = page1.getVersions();
          String workDefName = page1.getWorkDefinitionName();
 
-         AtsConfigManager.Display display = new OpenAtsConfigEditors();
-         IOperation operation = new AtsConfigManager(display, workDefName, teamDefName, versionNames, aias);
+         AtsConfigOperation.Display display = new OpenAtsConfigEditors();
+         IOperation operation = new AtsConfigOperation(display, workDefName, teamDefName, versionNames, aias);
          Operations.executeAsJob(operation, true);
 
       } catch (OseeCoreException ex) {

@@ -27,24 +27,24 @@ public class ActionableItemFactory implements IActionableItemFactory {
    }
 
    @Override
-   public IAtsActionableItem createActionableItem(String guid, String title) {
-      return createActionableItem(title, guid, HumanReadableId.generate());
+   public IAtsActionableItem createActionableItem(String guid, String aiName) {
+      return createActionableItem(aiName, guid, HumanReadableId.generate());
    }
 
-   public IAtsActionableItem createActionableItem(String title, String guid, String humanReadableId) {
+   public IAtsActionableItem createActionableItem(String aiName, String guid, String humanReadableId) {
       if (guid == null) {
          throw new IllegalArgumentException("guid can not be null");
       }
-      IAtsActionableItem ai = new ActionableItem(title, guid, humanReadableId);
+      IAtsActionableItem ai = new ActionableItem(aiName, guid, humanReadableId);
       cache.cache(ai);
       return ai;
    }
 
    @Override
-   public IAtsActionableItem getOrCreate(String guid, String name) {
+   public IAtsActionableItem getOrCreate(String guid, String aiName) {
       IAtsActionableItem ai = cache.getSoleByGuid(guid, IAtsActionableItem.class);
       if (ai == null) {
-         ai = createActionableItem(guid, name);
+         ai = createActionableItem(guid, aiName);
       }
       return ai;
    }

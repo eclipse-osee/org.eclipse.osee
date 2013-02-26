@@ -17,13 +17,17 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.config.store.ActionableItemArtifactStore;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Donald G. Dunne
@@ -90,6 +94,18 @@ public class ActionableItemManager {
       }
 
       return Result.TrueResult;
+   }
+
+   public static Set<IAtsActionableItem> getActionableItemsByToken(Collection<IArtifactToken> aiArtifactTokens) throws OseeCoreException {
+      Set<IAtsActionableItem> aias = new HashSet<IAtsActionableItem>();
+      for (IArtifactToken token : aiArtifactTokens) {
+         Artifact aiArt = ArtifactQuery.getArtifactFromId(token.getGuid(), AtsUtilCore.getAtsBranchToken());
+         if (aiArt != null) {
+            ActionableItemArtifactStore store = new ActionableItemArtifactStore(aiArt, AtsConfigCache.instance);
+            aias.add(store.getActionableItem());
+         }
+      }
+      return aias;
    }
 
 }

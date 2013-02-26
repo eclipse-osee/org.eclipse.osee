@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.config;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,11 +24,10 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.ats.config.AtsConfigManager;
+import org.eclipse.osee.ats.config.AtsConfigOperation;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
-import org.eclipse.osee.ats.core.client.config.store.ActionableItemArtifactStore;
 import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
 import org.eclipse.osee.ats.core.client.config.store.VersionArtifactStore;
 import org.eclipse.osee.ats.core.client.team.TeamState;
@@ -48,7 +49,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -65,7 +65,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 
 /**
@@ -122,7 +121,7 @@ public class AtsBranchConfigurationTest {
       String namespace = asNamespace(BRANCH_VIA_VERSIONS);
       Collection<String> versions = appendToName(BRANCH_VIA_VERSIONS, "Ver1", "Ver2");
       Collection<String> actionableItems = appendToName(BRANCH_VIA_VERSIONS, "A1", "A2");
-      configureAts(namespace, name, versions, actionableItems);
+      AtsConfigOperation operation = configureAts(namespace, name, versions, actionableItems);
 
       // create main branch
       if (DEBUG) {
@@ -138,8 +137,7 @@ public class AtsBranchConfigurationTest {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO,
             "Configuring version to use branch and allow create/commit");
       }
-      IAtsTeamDefinition teamDef =
-         AtsConfigCache.instance.getSoleByName(BRANCH_VIA_VERSIONS.getName(), IAtsTeamDefinition.class);
+      IAtsTeamDefinition teamDef = operation.getTeamDefinition();
       IAtsVersion versionToTarget = null;
       String version1Hrid = "", version2Hrid = "";
       for (IAtsVersion vArt : teamDef.getVersions()) {
@@ -167,7 +165,7 @@ public class AtsBranchConfigurationTest {
 
       Collection<IAtsActionableItem> selectedActionableItems =
          ActionableItems.getActionableItems(appendToName(BRANCH_VIA_VERSIONS, "A1"));
-      Assert.assertFalse(selectedActionableItems.isEmpty());
+      assertFalse(selectedActionableItems.isEmpty());
 
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
@@ -216,10 +214,10 @@ public class AtsBranchConfigurationTest {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Test change report results");
       }
       ChangeData changeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(teamWf);
-      Assert.assertFalse("No changes detected", changeData.isEmpty());
+      assertFalse("No changes detected", changeData.isEmpty());
 
       Collection<Artifact> newArts = changeData.getArtifacts(KindType.Artifact, ModificationType.NEW);
-      Assert.assertTrue("Should be 1 new artifact in change report, found " + newArts.size(), newArts.size() == 1);
+      assertTrue("Should be 1 new artifact in change report, found " + newArts.size(), newArts.size() == 1);
 
       TestUtil.severeLoggingEnd(monitor, Arrays.asList(
          "Version [[" + version1Hrid + "][BranchViaVersions - Ver1]] has no related team defininition",
@@ -247,7 +245,7 @@ public class AtsBranchConfigurationTest {
       String namespace = asNamespace(BRANCH_VIA_TEAM_DEFINITION);
       Collection<String> versions = null;
       Collection<String> actionableItems = appendToName(BRANCH_VIA_TEAM_DEFINITION, "A1", "A2");
-      configureAts(namespace, name, versions, actionableItems);
+      AtsConfigOperation operation = configureAts(namespace, name, versions, actionableItems);
 
       // create main branch
       if (DEBUG) {
@@ -263,8 +261,7 @@ public class AtsBranchConfigurationTest {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO,
             "Configuring team def to use branch and allow create/commit");
       }
-      IAtsTeamDefinition teamDef =
-         AtsConfigCache.instance.getSoleByName(BRANCH_VIA_TEAM_DEFINITION.getName(), IAtsTeamDefinition.class);
+      IAtsTeamDefinition teamDef = operation.getTeamDefinition();
       teamDef.setBaselineBranchGuid(viaTeamDefBranch.getGuid());
       // setup team def to allow create/commit of branch
       teamDef.setAllowCommitBranch(true);
@@ -279,7 +276,7 @@ public class AtsBranchConfigurationTest {
       }
       Collection<IAtsActionableItem> selectedActionableItems =
          ActionableItems.getActionableItems(appendToName(BRANCH_VIA_TEAM_DEFINITION, "A1"));
-      Assert.assertFalse(selectedActionableItems.isEmpty());
+      assertFalse(selectedActionableItems.isEmpty());
 
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Test branch via team definition: create action");
@@ -321,10 +318,10 @@ public class AtsBranchConfigurationTest {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Test change report results");
       }
       ChangeData changeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(teamWf);
-      Assert.assertTrue("No changes detected", !changeData.isEmpty());
+      assertTrue("No changes detected", !changeData.isEmpty());
 
       Collection<Artifact> newArts = changeData.getArtifacts(KindType.Artifact, ModificationType.NEW);
-      Assert.assertTrue("Should be 1 new artifact in change report, found " + newArts.size(), newArts.size() == 1);
+      assertTrue("Should be 1 new artifact in change report, found " + newArts.size(), newArts.size() == 1);
 
       TestUtil.severeLoggingEnd(monitor);
    }
@@ -360,27 +357,26 @@ public class AtsBranchConfigurationTest {
       transaction.execute();
 
       // Delete Team Definitions
-      IAtsTeamDefinition teamDef = AtsConfigCache.instance.getSoleByName(branch.getName(), IAtsTeamDefinition.class);
-      if (teamDef != null) {
-         TeamDefinitionArtifactStore teamDefStore = new TeamDefinitionArtifactStore(teamDef);
-         if (teamDefStore.getArtifact() != null && teamDefStore.getArtifact().isInDb()) {
-            transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
-            teamDefStore.getArtifact().deleteAndPersist(transaction, false);
-            transaction.execute();
-         }
-         AtsConfigCache.instance.decache(teamDef);
+      transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
+      for (Artifact teamDefArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.TeamDefinition,
+         branch.getName(), AtsUtil.getAtsBranchToken())) {
+         teamDefArt.deleteAndPersist(transaction, false);
+         AtsConfigCache.instance.decache(AtsConfigCache.instance.getSoleByGuid(teamDefArt.getGuid(),
+            IAtsTeamDefinition.class));
       }
+      transaction.execute();
 
       // Delete AIs
-      IAtsActionableItem aia = AtsConfigCache.instance.getSoleByName(branch.getName(), IAtsActionableItem.class);
-      if (aia != null) {
-         transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
-         for (IAtsActionableItem childAi : aia.getChildrenActionableItems()) {
-            new ActionableItemArtifactStore(childAi).getArtifact().deleteAndPersist(transaction, false);
-            AtsConfigCache.instance.decache(childAi);
+      transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
+      for (Artifact aiaArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.ActionableItem,
+         branch.getName(), AtsUtil.getAtsBranchToken())) {
+         for (Artifact childArt : aiaArt.getChildren()) {
+            childArt.deleteAndPersist(transaction, false);
+            AtsConfigCache.instance.decache(AtsConfigCache.instance.getSoleByGuid(childArt.getGuid(),
+               IAtsActionableItem.class));
          }
-         new ActionableItemArtifactStore(aia).getArtifact().deleteAndPersist(transaction, false);
-         AtsConfigCache.instance.decache(aia);
+         AtsConfigCache.instance.decache(AtsConfigCache.instance.getSoleByGuid(aiaArt.getGuid(),
+            IAtsActionableItem.class));
          transaction.execute();
       }
 
@@ -443,15 +439,16 @@ public class AtsBranchConfigurationTest {
       cleanupBranchTest(BRANCH_VIA_TEAM_DEFINITION);
    }
 
-   public static void configureAts(String workDefinitionName, String teamDefName, Collection<String> versionNames, Collection<String> actionableItems) throws Exception {
-      AtsConfigManager.Display noDisplay = new MockAtsConfigDisplay();
-      IOperation operation =
-         new AtsConfigManager(noDisplay, workDefinitionName, teamDefName, versionNames, actionableItems);
-      Operations.executeWorkAndCheckStatus(operation);
+   public static AtsConfigOperation configureAts(String workDefinitionName, String teamDefName, Collection<String> versionNames, Collection<String> actionableItems) throws Exception {
+      AtsConfigOperation.Display noDisplay = new MockAtsConfigDisplay();
+      AtsConfigOperation atsConfigManagerOperation =
+         new AtsConfigOperation(noDisplay, workDefinitionName, teamDefName, versionNames, actionableItems);
+      Operations.executeWorkAndCheckStatus(atsConfigManagerOperation);
       TestUtil.sleep(2000);
+      return atsConfigManagerOperation;
    }
 
-   private static final class MockAtsConfigDisplay implements AtsConfigManager.Display {
+   private static final class MockAtsConfigDisplay implements AtsConfigOperation.Display {
       @Override
       public void openAtsConfigurationEditors(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> aias, IAtsWorkDefinition workDefinition) {
          // Nothing to do - we have no display during testing

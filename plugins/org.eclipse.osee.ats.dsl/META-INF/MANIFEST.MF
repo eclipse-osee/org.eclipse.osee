@@ -14,7 +14,9 @@ Export-Package: org.eclipse.osee.ats.dsl,
  org.eclipse.osee.ats.dsl.validation,
  org.eclipse.osee.ats.dsl.atsDsl,
  org.eclipse.osee.ats.dsl.atsDsl.impl,
- org.eclipse.osee.ats.dsl.atsDsl.util
+ org.eclipse.osee.ats.dsl.atsDsl.util,
+ org.eclipse.osee.ats.dsl.scoping,
+ org.eclipse.osee.ats.dsl.formatting
 Require-Bundle: org.eclipse.xtext;bundle-version="2.0.0";visibility:=reexport,
  org.apache.log4j;bundle-version="1.2.15";visibility:=reexport,
  org.apache.commons.logging;resolution:=optional;visibility:=reexport,

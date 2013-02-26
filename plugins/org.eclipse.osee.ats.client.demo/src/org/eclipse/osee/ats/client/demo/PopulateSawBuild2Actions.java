@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -57,11 +58,15 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  */
 public class PopulateSawBuild2Actions {
 
-   private static String versionStr = DemoSawBuilds.SAW_Bld_2.toString();
+   private static IAtsVersion version = null;
    private static TeamState toState = TeamState.Implement;
    private static boolean DEBUG = false;
 
    public static void run() throws OseeCoreException {
+
+      version = AtsVersionService.get().getById(DemoArtifactToken.SAW_Bld_2);
+      Conditions.checkNotNull(version, "SAW_Bld_2");
+
       // Create SAW_Bld_2 Actions
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - PopulateSawBuild2Actions");
@@ -125,7 +130,6 @@ public class PopulateSawBuild2Actions {
 
          teamWf.persist(transaction);
 
-         IAtsVersion version = AtsConfigCache.instance.getSoleByName(versionStr, IAtsVersion.class);
          AtsVersionService.get().setTargetedVersionAndStore(teamWf, version);
          teamWf.persist(transaction);
       }
@@ -201,7 +205,6 @@ public class PopulateSawBuild2Actions {
 
          teamWf.persist(transaction);
 
-         IAtsVersion version = AtsConfigCache.instance.getSoleByName(versionStr, IAtsVersion.class);
          AtsVersionService.get().setTargetedVersionAndStore(teamWf, version);
          teamWf.persist(transaction);
       }
@@ -279,7 +282,6 @@ public class PopulateSawBuild2Actions {
 
          teamWf.persist(transaction);
 
-         IAtsVersion version = AtsConfigCache.instance.getSoleByName(versionStr, IAtsVersion.class);
          AtsVersionService.get().setTargetedVersionAndStore(teamWf, version);
          teamWf.persist(transaction);
       }
@@ -337,7 +339,6 @@ public class PopulateSawBuild2Actions {
          }
 
          teamWf.persist(transaction);
-         IAtsVersion version = AtsConfigCache.instance.getSoleByName(versionStr, IAtsVersion.class);
          AtsVersionService.get().setTargetedVersionAndStore(teamWf, version);
          teamWf.persist(transaction);
       }

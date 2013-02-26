@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
-
  */
 package org.eclipse.osee.ats.dsl.atsDsl;
 
@@ -20,6 +16,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getTeamDefOption <em>Team Def Option</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getGuid <em>Guid</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getActive <em>Active</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getStaticId <em>Static Id</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getLead <em>Lead</em>}</li>
@@ -80,6 +77,32 @@ public interface TeamDef extends EObject
    * @generated
    */
   EList<String> getTeamDefOption();
+
+  /**
+   * Returns the value of the '<em><b>Guid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Guid</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Guid</em>' attribute.
+   * @see #setGuid(String)
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getTeamDef_Guid()
+   * @model
+   * @generated
+   */
+  String getGuid();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getGuid <em>Guid</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Guid</em>' attribute.
+   * @see #getGuid()
+   * @generated
+   */
+  void setGuid(String value);
 
   /**
    * Returns the value of the '<em><b>Active</b></em>' attribute.

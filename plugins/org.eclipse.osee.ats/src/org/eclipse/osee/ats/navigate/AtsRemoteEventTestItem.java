@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
+import org.eclipse.osee.ats.core.client.config.ActionableItemManager;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
@@ -30,12 +31,12 @@ import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.config.ActionableItems;
-import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -58,6 +59,14 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
    XResultData resultData;
+   IArtifactToken Version_2_5_6 = TokenFactory.createArtifactToken("A8Yqcqy9Ewu1LTNllrAA", "2.5.6",
+      AtsArtifactTypes.Version);
+   IArtifactToken Version_2_5_7 = TokenFactory.createArtifactToken("A8YqcqzY91Im4M9XsKQA", "2.5.7",
+      AtsArtifactTypes.Version);
+   IArtifactToken Version_2_5_8 = TokenFactory.createArtifactToken("A8YqcqzzHG5BUQ4PJqwA", "2.5.8",
+      AtsArtifactTypes.Version);
+   IArtifactToken atsActionableItem = TokenFactory.createArtifactToken("AAABER+4zV8A8O7WAtxxaA",
+      "Action Tracking System", AtsArtifactTypes.ActionableItem);
 
    public AtsRemoteEventTestItem(XNavigateItem parent) {
       super(parent, "ATS Remote Event Test");
@@ -99,7 +108,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       NewActionJob job = null;
       job =
          new NewActionJob("tt", "description", ChangeType.Improvement, "1", null, false,
-            ActionableItems.getActionableItems(Arrays.asList("ATS")), null, null);
+            ActionableItemManager.getActionableItemsByToken(Arrays.asList(atsActionableItem)), null, null);
       job.setUser(true);
       job.setPriority(Job.LONG);
       job.schedule();
@@ -227,16 +236,16 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       teamArt.persist("Remote Event Test");
    }
 
-   private IAtsVersion getVersion256() {
-      return AtsConfigCache.instance.getSoleByName("2.5.6", IAtsVersion.class);
+   private IAtsVersion getVersion256() throws OseeCoreException {
+      return AtsVersionService.get().getById(Version_2_5_6);
    }
 
-   private IAtsVersion getVersion257() {
-      return AtsConfigCache.instance.getSoleByName("2.5.7", IAtsVersion.class);
+   private IAtsVersion getVersion257() throws OseeCoreException {
+      return AtsVersionService.get().getById(Version_2_5_7);
    }
 
-   private IAtsVersion getVersion258() {
-      return AtsConfigCache.instance.getSoleByName("2.5.8", IAtsVersion.class);
+   private IAtsVersion getVersion258() throws OseeCoreException {
+      return AtsVersionService.get().getById(Version_2_5_8);
    }
 
    private void validateActionAtStart(Artifact actionArt) throws OseeCoreException {

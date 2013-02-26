@@ -8,6 +8,8 @@ import org.osgi.framework.Bundle;
 
 import com.google.inject.Injector;
 
+import org.eclipse.osee.ats.dsl.ui.internal.AtsDslActivator;
+
 /**
  * This class was generated. Customizations should only happen in a newly
  * introduced subclass. 
@@ -16,12 +18,12 @@ public class AtsDslExecutableExtensionFactory extends AbstractGuiceAwareExecutab
 
 	@Override
 	protected Bundle getBundle() {
-		return org.eclipse.osee.ats.dsl.ui.internal.AtsDslActivator.getInstance().getBundle();
+		return AtsDslActivator.getInstance().getBundle();
 	}
 	
 	@Override
 	protected Injector getInjector() {
-		return org.eclipse.osee.ats.dsl.ui.internal.AtsDslActivator.getInstance().getInjector("org.eclipse.osee.ats.dsl.AtsDsl");
+		return AtsDslActivator.getInstance().getInjector(AtsDslActivator.ORG_ECLIPSE_OSEE_ATS_DSL_ATSDSL);
 	}
 	
 }

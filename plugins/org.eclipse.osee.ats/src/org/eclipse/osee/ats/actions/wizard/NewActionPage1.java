@@ -67,6 +67,7 @@ public class NewActionPage1 extends WizardPage {
    private Text descriptionLabel;
    private boolean debugPopulated = false;
    private static IAtsActionableItem atsAi;
+   private static final String ATS_Actionable_Item_Guid_For_Training_And_Demos = "AAABER+4zV8A8O7WAtxxaA";
 
    protected NewActionPage1(NewActionWizard actionWizard) {
       super("Create new ATS Action", "Create ATS Action", null);
@@ -165,6 +166,10 @@ public class NewActionPage1 extends WizardPage {
       }
    }
 
+   /**
+    * Method is used to quickly create a unique action against the ATS actionable item. This is used for developmental
+    * and training purposes which is why it's in production code.
+    */
    private void handlePopulateWithDebugInfo() {
       if (debugPopulated) {
          return;
@@ -172,10 +177,14 @@ public class NewActionPage1 extends WizardPage {
       try {
          ((XText) getXWidget("Title")).set("tt");
          if (atsAi == null) {
-            atsAi = AtsConfigCache.instance.getSoleByName("ATS", IAtsActionableItem.class);
+            atsAi =
+               AtsConfigCache.instance.getSoleByGuid(ATS_Actionable_Item_Guid_For_Training_And_Demos,
+                  IAtsActionableItem.class);
+            if (atsAi != null) {
+               treeViewer.getViewer().setSelection(new StructuredSelection(Arrays.asList(atsAi)));
+               treeViewer.setInitalChecked(Arrays.asList(atsAi));
+            }
          }
-         treeViewer.getViewer().setSelection(new StructuredSelection(Arrays.asList(atsAi)));
-         treeViewer.setInitalChecked(Arrays.asList(atsAi));
          getContainer().updateButtons();
          debugPopulated = true;
       } catch (OseeCoreException ex) {

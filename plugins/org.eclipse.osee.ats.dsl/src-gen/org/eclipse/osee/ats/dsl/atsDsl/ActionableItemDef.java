@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
-
  */
 package org.eclipse.osee.ats.dsl.atsDsl;
 
@@ -20,6 +16,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getAiDefOption <em>Ai Def Option</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getGuid <em>Guid</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getActive <em>Active</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getActionable <em>Actionable</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getLead <em>Lead</em>}</li>
@@ -78,6 +75,32 @@ public interface ActionableItemDef extends EObject
    * @generated
    */
   EList<String> getAiDefOption();
+
+  /**
+   * Returns the value of the '<em><b>Guid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Guid</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Guid</em>' attribute.
+   * @see #setGuid(String)
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getActionableItemDef_Guid()
+   * @model
+   * @generated
+   */
+  String getGuid();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getGuid <em>Guid</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Guid</em>' attribute.
+   * @see #getGuid()
+   * @generated
+   */
+  void setGuid(String value);
 
   /**
    * Returns the value of the '<em><b>Active</b></em>' attribute.

@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.util;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.*;
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -50,7 +53,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.junit.Assert;
 
 /**
  * @author Donald G. Dunne
@@ -200,36 +202,35 @@ public class DemoTestUtil {
    public static void setUpTest() throws Exception {
       try {
          // This test should only be run on test db
-         Assert.assertFalse(AtsUtil.isProductionDb());
+         assertFalse(AtsUtil.isProductionDb());
          // Confirm test setup with demo data
          Result result = isDbPopulatedWithDemoData();
-         Assert.assertTrue(result.getText(), result.isTrue());
+         assertTrue(result.getText(), result.isTrue());
          // Confirm user is Joe Smith
-         Assert.assertTrue("User \"Joe Smith\" does not exist in DB.  Run Demo DBInit prior to this test.",
+         assertTrue("User \"Joe Smith\" does not exist in DB.  Run Demo DBInit prior to this test.",
             UserManager.getUserByUserId("Joe Smith") != null);
          // Confirm user is Joe Smith
-         Assert.assertTrue(
+         assertTrue(
             "Authenticated user should be \"Joe Smith\" and is not.  Check that Demo Application Server is being run.",
             AtsUsersClient.getUser().getUserId().equals("Joe Smith"));
       } catch (OseeAuthenticationException ex) {
          OseeLog.log(DemoTestUtil.class, Level.SEVERE, ex);
-         Assert.fail("Can't authenticate, either Demo Application Server is not running or Demo DbInit has not been performed");
+         fail("Can't authenticate, either Demo Application Server is not running or Demo DbInit has not been performed");
       }
 
    }
 
    public static IAtsTeamDefinition getTeamDef(DemoTeam team) throws OseeCoreException {
+      IAtsTeamDefinition results = null;
       // Add check to keep exception from occurring for OSEE developers running against production
-      if (ClientSessionManager.isProductionDataStore()) {
-         return null;
+      if (!ClientSessionManager.isProductionDataStore()) {
+         try {
+            results = AtsConfigCache.instance.getSoleByGuid(team.getTeamDefToken().getGuid(), IAtsTeamDefinition.class);
+         } catch (Exception ex) {
+            OseeLog.log(DemoTestUtil.class, Level.SEVERE, ex);
+         }
       }
-      try {
-         String name = team.name().replaceAll("_", " ");
-         return AtsConfigCache.instance.getSoleByName(name, IAtsTeamDefinition.class);
-      } catch (Exception ex) {
-         OseeLog.log(DemoTestUtil.class, Level.SEVERE, ex);
-      }
-      return null;
+      return results;
    }
 
 }

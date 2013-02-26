@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2012 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.config.internal.ActionableItemFactory;
 import org.eclipse.osee.ats.core.config.internal.TeamDefinitionFactory;
 import org.eclipse.osee.ats.core.config.internal.VersionFactory;
@@ -36,7 +35,6 @@ public class AtsConfigCache {
    public static synchronized void setCurrent(AtsConfigCache newInstance) {
       instance = newInstance;
    }
-
    // cache by guid and any other cachgeByTag item (like static id)
    private final List<IAtsConfigObject> configObjects = new CopyOnWriteArrayList<IAtsConfigObject>();
    private final HashCollection<String, IAtsConfigObject> tagToConfigObject =
@@ -79,16 +77,6 @@ public class AtsConfigCache {
    }
 
    @SuppressWarnings("unchecked")
-   public final <A extends IAtsConfigObject> A getSoleByName(String name, Class<A> clazz) {
-      for (IAtsConfigObject obj : get(clazz)) {
-         if (obj.getName().equals(name)) {
-            return (A) obj;
-         }
-      }
-      return null;
-   }
-
-   @SuppressWarnings("unchecked")
    public final <A extends IAtsConfigObject> List<A> get(Class<A> clazz) {
       List<A> objs = new ArrayList<A>();
       for (IAtsConfigObject obj : configObjects) {
@@ -112,21 +100,6 @@ public class AtsConfigCache {
 
    public final IAtsConfigObject getSoleByGuid(String guid) {
       return getSoleByGuid(guid, IAtsConfigObject.class);
-   }
-
-   public IAtsTeamDefinition getSoleByName(String teamDefName) {
-      return null;
-   }
-
-   @SuppressWarnings("unchecked")
-   public final <A extends IAtsConfigObject> List<A> getByName(String name, Class<A> clazz) {
-      List<A> objs = new ArrayList<A>();
-      for (IAtsConfigObject obj : configObjects) {
-         if (clazz.isInstance(obj) && obj.getName().equals(name)) {
-            objs.add((A) obj);
-         }
-      }
-      return objs;
    }
 
    public void decache(IAtsConfigObject atsObject) {
@@ -160,7 +133,6 @@ public class AtsConfigCache {
    }
 
    public void getReport(XResultData rd) {
-      rd.logWithFormat("AtsConfigCache id %s\n", AtsConfigCache.instance);
       rd.logWithFormat("TagToConfigObject size %d\n", tagToConfigObject.keySet().size());
       rd.logWithFormat("ConfigObjects size %d\n", configObjects.size());
    }
@@ -169,4 +141,5 @@ public class AtsConfigCache {
    public String toString() {
       return configObjects.toString();
    }
+
 }

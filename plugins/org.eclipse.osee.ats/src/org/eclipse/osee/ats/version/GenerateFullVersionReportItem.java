@@ -17,15 +17,12 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -40,28 +37,19 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class GenerateFullVersionReportItem extends XNavigateItemAction {
 
    private final IAtsTeamDefinition teamDef;
-   private final String teamDefName;
 
    public GenerateFullVersionReportItem(XNavigateItem parent) {
       super(parent, "Generate Full Version Report", FrameworkImage.VERSION);
-      this.teamDefName = null;
       this.teamDef = null;
    }
 
    public GenerateFullVersionReportItem(XNavigateItem parent, IAtsTeamDefinition teamDef) {
       super(parent, "Generate Full Version Report", FrameworkImage.VERSION);
-      this.teamDefName = null;
       this.teamDef = teamDef;
    }
 
-   public GenerateFullVersionReportItem(XNavigateItem parent, String teamDefName) {
-      super(parent, "Generate Full Version Report", FrameworkImage.VERSION);
-      this.teamDefName = teamDefName;
-      this.teamDef = null;
-   }
-
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
+   public void run(TableLoadOption... tableLoadOptions) {
       IAtsTeamDefinition teamDef = getTeamDefinition();
       if (teamDef == null) {
          return;
@@ -75,23 +63,18 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
       job.schedule();
    }
 
-   public IAtsTeamDefinition getTeamDefinition() throws OseeCoreException {
-      if (teamDef != null) {
+   private IAtsTeamDefinition getTeamDefinition() {
+      if (teamDef == null) {
+         TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
+         ld.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Active));
+         int result = ld.open();
+         if (result == 0) {
+            return (IAtsTeamDefinition) ld.getResult()[0];
+         }
+         return null;
+      } else {
          return teamDef;
       }
-      if (Strings.isValid(teamDefName)) {
-         IAtsTeamDefinition teamDef = AtsConfigCache.instance.getSoleByName(teamDefName, IAtsTeamDefinition.class);
-         if (teamDef != null) {
-            return teamDef;
-         }
-      }
-      TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
-      ld.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Active));
-      int result = ld.open();
-      if (result == 0) {
-         return (IAtsTeamDefinition) ld.getResult()[0];
-      }
-      return null;
    }
 
    private static class PublishReportJob extends Job {

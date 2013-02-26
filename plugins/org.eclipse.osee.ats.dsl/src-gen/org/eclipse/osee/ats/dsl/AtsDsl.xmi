@@ -101,6 +101,12 @@
         </elements>
         <elements xsi:type="xtext:Keyword" value="{"/>
         <elements xsi:type="xtext:Group" cardinality="?">
+          <elements xsi:type="xtext:Keyword" value="guid"/>
+          <elements xsi:type="xtext:Assignment" feature="guid" operator="=">
+            <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
+          </elements>
+        </elements>
+        <elements xsi:type="xtext:Group" cardinality="?">
           <elements xsi:type="xtext:Keyword" value="active"/>
           <elements xsi:type="xtext:Assignment" feature="active" operator="=">
             <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.24"/>
@@ -188,6 +194,12 @@
         <elements xsi:type="xtext:Group" cardinality="?">
           <elements xsi:type="xtext:Keyword" value="{"/>
           <elements xsi:type="xtext:Group" cardinality="?">
+            <elements xsi:type="xtext:Keyword" value="guid"/>
+            <elements xsi:type="xtext:Assignment" feature="guid" operator="=">
+              <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
+            </elements>
+          </elements>
+          <elements xsi:type="xtext:Group" cardinality="?">
             <elements xsi:type="xtext:Keyword" value="active"/>
             <elements xsi:type="xtext:Assignment" feature="active" operator="=">
               <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.24"/>
@@ -259,6 +271,12 @@
           <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.7"/>
         </elements>
         <elements xsi:type="xtext:Keyword" value="{"/>
+        <elements xsi:type="xtext:Group" cardinality="?">
+          <elements xsi:type="xtext:Keyword" value="guid"/>
+          <elements xsi:type="xtext:Assignment" feature="guid" operator="=">
+            <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
+          </elements>
+        </elements>
         <elements xsi:type="xtext:Group" cardinality="*">
           <elements xsi:type="xtext:Keyword" value="staticId"/>
           <elements xsi:type="xtext:Assignment" feature="staticId" operator="+=">

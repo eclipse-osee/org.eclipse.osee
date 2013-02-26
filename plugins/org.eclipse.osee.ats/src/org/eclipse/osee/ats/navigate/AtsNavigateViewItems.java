@@ -155,7 +155,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          items.add(new SearchNavigateItem(item, new GroupWorldSearchItem((Branch) null)));
          items.add(new SearchNavigateItem(item, new TeamWorkflowSearchWorkflowSearchItem()));
          items.add(new SearchNavigateItem(item, new UserCommunitySearchItem()));
-         items.add(new SearchNavigateItem(item, new ActionableItemWorldSearchItem(null, "Actionable Item Search",
+         items.add(new SearchNavigateItem(item, new ActionableItemWorldSearchItem("Actionable Item Search", null,
             false, false, false)));
 
          createGoalsSection(item, items);

@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.client.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.client.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.client.demo.DemoSawBuilds;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
@@ -37,7 +38,7 @@ import org.eclipse.osee.ats.client.integration.tests.util.WorldEditorUtil;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.config.ActionableItems;
-import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
@@ -513,7 +514,7 @@ public class AtsNavigateItemsToWorldViewTest {
       // First one is the global one
       XNavigateItem item = items.iterator().next();
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof VersionTargetedForTeamSearchItem);
-      IAtsVersion version = AtsConfigCache.instance.getSoleByName(DemoSawBuilds.SAW_Bld_2.getName(), IAtsVersion.class);
+      IAtsVersion version = AtsVersionService.get().getById(DemoArtifactToken.SAW_Bld_2);
       ((VersionTargetedForTeamSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedVersionArt(version);
       runGeneralLoadingTest(item, AtsArtifactTypes.TeamWorkflow, 14, null, TableLoadOption.DontCopySearchItem);
       TestUtil.severeLoggingEnd(monitor);

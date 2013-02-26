@@ -32,17 +32,17 @@ import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
-import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.WorldUISearchItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 
@@ -51,10 +51,9 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
  */
 public class ReviewWorldSearchItem extends WorldUISearchItem {
 
-   private Collection<IAtsActionableItem> aias;
+   private final Collection<IAtsActionableItem> aias;
    private final boolean recurseChildren;
    private boolean includeCompleted;
-   private final Collection<String> aiNames;
    private final IAtsVersion versionArt;
    private final IAtsUser userArt;
    private final boolean includeCancelled;
@@ -62,40 +61,27 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
    private final ReviewFormalType reviewFormalType;
    private final ReviewType reviewType;
 
-   public ReviewWorldSearchItem(String displayName, List<String> aiNames, boolean includeCompleted, boolean includeCancelled, boolean recurseChildren, IAtsVersion versionArt, IAtsUser userArt, ReviewFormalType reviewFormalType, ReviewType reviewType, String stateName) {
-      super(displayName, AtsImage.REVIEW);
-      this.includeCancelled = includeCancelled;
-      this.versionArt = versionArt;
-      this.userArt = userArt;
-      this.aiNames = aiNames;
-      this.includeCompleted = includeCompleted;
-      this.recurseChildren = recurseChildren;
-      this.reviewFormalType = reviewFormalType;
-      this.reviewType = reviewType;
-      this.stateName = stateName;
-   }
-
-   public ReviewWorldSearchItem(String displayName, Collection<IAtsActionableItem> aias, boolean includeCompleted, boolean includeCancelled, boolean recurseChildren, IAtsVersion versionArt, IAtsUser userArt, ReviewFormalType reviewFormalType, ReviewType reviewType, String stateName) {
+   public ReviewWorldSearchItem(String displayName, Collection<IAtsActionableItem> aias, boolean includeCompleted, boolean includeCancelled, boolean recurseChildren, IAtsVersion versionArt, IAtsUser userArt, ReviewFormalType reviewFormalType, ReviewType reviewType, String stateName) throws OseeCoreException {
       super(displayName, AtsImage.REVIEW);
       this.includeCancelled = includeCancelled;
       this.versionArt = versionArt;
       this.userArt = userArt;
       this.recurseChildren = recurseChildren;
       this.stateName = stateName;
-      this.aiNames = null;
       this.aias = aias;
+      Conditions.checkNotNull(aias, "Actionable Items");
       this.includeCompleted = includeCompleted;
       this.reviewFormalType = reviewFormalType;
       this.reviewType = reviewType;
    }
 
-   public ReviewWorldSearchItem(ReviewWorldSearchItem reviewWorldUISearchItem) {
+   public ReviewWorldSearchItem(ReviewWorldSearchItem reviewWorldUISearchItem) throws OseeCoreException {
       super(reviewWorldUISearchItem, AtsImage.REVIEW);
       this.versionArt = null;
       this.userArt = null;
       this.recurseChildren = reviewWorldUISearchItem.recurseChildren;
-      this.aiNames = reviewWorldUISearchItem.aiNames;
       this.aias = reviewWorldUISearchItem.aias;
+      Conditions.checkNotNull(aias, "Actionable Items");
       this.includeCompleted = reviewWorldUISearchItem.includeCompleted;
       this.includeCancelled = reviewWorldUISearchItem.includeCancelled;
       this.stateName = reviewWorldUISearchItem.stateName;
@@ -104,12 +90,7 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
    }
 
    public Collection<String> getProductSearchName() {
-      if (aiNames != null) {
-         return aiNames;
-      } else if (aias != null) {
-         return ActionableItems.getNames(aias);
-      }
-      return new ArrayList<String>();
+      return ActionableItems.getNames(aias);
    }
 
    @Override
@@ -117,26 +98,8 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
       return String.format("%s - %s", super.getSelectedName(searchType), getProductSearchName());
    }
 
-   /**
-    * Loads all actionable items if specified by name versus by AI class
-    */
-   public void getAIs() {
-      if (aiNames != null && aias == null) {
-         aias = new HashSet<IAtsActionableItem>();
-         for (String teamDefName : aiNames) {
-            IAtsActionableItem aia = AtsConfigCache.instance.getSoleByName(teamDefName, IAtsActionableItem.class);
-            if (aia != null) {
-               aias.add(aia);
-            }
-         }
-      } else if (aiNames == null && aias == null) {
-         aias = new HashSet<IAtsActionableItem>();
-      }
-   }
-
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
-      getAIs();
       Set<String> actionableItemGuids = new HashSet<String>(aias.size());
       for (IAtsActionableItem aia : aias) {
          if (recurseChildren) {
@@ -257,7 +220,7 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
    }
 
    @Override
-   public WorldUISearchItem copy() {
+   public WorldUISearchItem copy() throws OseeCoreException {
       return new ReviewWorldSearchItem(this);
    }
 

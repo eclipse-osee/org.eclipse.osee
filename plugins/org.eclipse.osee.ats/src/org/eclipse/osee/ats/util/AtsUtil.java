@@ -21,8 +21,6 @@ import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.AtsOpenOption;
-import org.eclipse.osee.ats.actions.NewAction;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.artifact.EditActionableItems;
@@ -33,7 +31,6 @@ import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.StateManager;
-import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.task.TaskEditor;
@@ -227,26 +224,6 @@ public final class AtsUtil {
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
-   }
-
-   public static void createATSAction(String initialDescription, String actionableItemName) {
-      // Ensure actionable item is configured for ATS before continuing
-      try {
-         IAtsActionableItem aia = AtsConfigCache.instance.getSoleByName(actionableItemName, IAtsActionableItem.class);
-         if (aia == null) {
-            AWorkbench.popup(
-               "Configuration Error",
-               "Actionable Item \"" + actionableItemName + "\" is not configured for ATS tracking.\n\nAction can not be created.");
-            return;
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         return;
-      }
-
-      NewAction newAction = new NewAction(actionableItemName);
-      newAction.setInitialDescription(initialDescription);
-      newAction.run();
    }
 
    public static void openATSArtifact(Artifact art) {

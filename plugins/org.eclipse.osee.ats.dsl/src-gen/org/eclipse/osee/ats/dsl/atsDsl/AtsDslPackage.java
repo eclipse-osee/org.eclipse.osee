@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
-
  */
 package org.eclipse.osee.ats.dsl.atsDsl;
 
@@ -218,13 +214,22 @@ public interface AtsDslPackage extends EPackage
   int TEAM_DEF__TEAM_DEF_OPTION = 1;
 
   /**
+   * The feature id for the '<em><b>Guid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TEAM_DEF__GUID = 2;
+
+  /**
    * The feature id for the '<em><b>Active</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TEAM_DEF__ACTIVE = 2;
+  int TEAM_DEF__ACTIVE = 3;
 
   /**
    * The feature id for the '<em><b>Static Id</b></em>' attribute list.
@@ -233,7 +238,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TEAM_DEF__STATIC_ID = 3;
+  int TEAM_DEF__STATIC_ID = 4;
 
   /**
    * The feature id for the '<em><b>Lead</b></em>' containment reference list.
@@ -242,7 +247,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TEAM_DEF__LEAD = 4;
+  int TEAM_DEF__LEAD = 5;
 
   /**
    * The feature id for the '<em><b>Member</b></em>' containment reference list.
@@ -251,7 +256,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TEAM_DEF__MEMBER = 5;
+  int TEAM_DEF__MEMBER = 6;
 
   /**
    * The feature id for the '<em><b>Privileged</b></em>' containment reference list.
@@ -260,7 +265,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TEAM_DEF__PRIVILEGED = 6;
+  int TEAM_DEF__PRIVILEGED = 7;
 
   /**
    * The feature id for the '<em><b>Work Definition</b></em>' attribute.
@@ -269,7 +274,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TEAM_DEF__WORK_DEFINITION = 7;
+  int TEAM_DEF__WORK_DEFINITION = 8;
 
   /**
    * The feature id for the '<em><b>Related Task Work Definition</b></em>' attribute.
@@ -278,7 +283,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TEAM_DEF__RELATED_TASK_WORK_DEFINITION = 8;
+  int TEAM_DEF__RELATED_TASK_WORK_DEFINITION = 9;
 
   /**
    * The feature id for the '<em><b>Access Context Id</b></em>' attribute list.
@@ -287,7 +292,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TEAM_DEF__ACCESS_CONTEXT_ID = 9;
+  int TEAM_DEF__ACCESS_CONTEXT_ID = 10;
 
   /**
    * The feature id for the '<em><b>Version</b></em>' containment reference list.
@@ -296,7 +301,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TEAM_DEF__VERSION = 10;
+  int TEAM_DEF__VERSION = 11;
 
   /**
    * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -305,7 +310,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TEAM_DEF__CHILDREN = 11;
+  int TEAM_DEF__CHILDREN = 12;
 
   /**
    * The number of structural features of the '<em>Team Def</em>' class.
@@ -314,7 +319,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TEAM_DEF_FEATURE_COUNT = 12;
+  int TEAM_DEF_FEATURE_COUNT = 13;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl <em>Actionable Item Def</em>}' class.
@@ -345,13 +350,22 @@ public interface AtsDslPackage extends EPackage
   int ACTIONABLE_ITEM_DEF__AI_DEF_OPTION = 1;
 
   /**
+   * The feature id for the '<em><b>Guid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACTIONABLE_ITEM_DEF__GUID = 2;
+
+  /**
    * The feature id for the '<em><b>Active</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ACTIONABLE_ITEM_DEF__ACTIVE = 2;
+  int ACTIONABLE_ITEM_DEF__ACTIVE = 3;
 
   /**
    * The feature id for the '<em><b>Actionable</b></em>' attribute.
@@ -360,7 +374,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ACTIONABLE_ITEM_DEF__ACTIONABLE = 3;
+  int ACTIONABLE_ITEM_DEF__ACTIONABLE = 4;
 
   /**
    * The feature id for the '<em><b>Lead</b></em>' containment reference list.
@@ -369,7 +383,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ACTIONABLE_ITEM_DEF__LEAD = 4;
+  int ACTIONABLE_ITEM_DEF__LEAD = 5;
 
   /**
    * The feature id for the '<em><b>Owner</b></em>' containment reference list.
@@ -378,7 +392,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ACTIONABLE_ITEM_DEF__OWNER = 5;
+  int ACTIONABLE_ITEM_DEF__OWNER = 6;
 
   /**
    * The feature id for the '<em><b>Static Id</b></em>' attribute list.
@@ -387,7 +401,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ACTIONABLE_ITEM_DEF__STATIC_ID = 6;
+  int ACTIONABLE_ITEM_DEF__STATIC_ID = 7;
 
   /**
    * The feature id for the '<em><b>Team Def</b></em>' attribute.
@@ -396,7 +410,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ACTIONABLE_ITEM_DEF__TEAM_DEF = 7;
+  int ACTIONABLE_ITEM_DEF__TEAM_DEF = 8;
 
   /**
    * The feature id for the '<em><b>Access Context Id</b></em>' attribute list.
@@ -405,7 +419,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ACTIONABLE_ITEM_DEF__ACCESS_CONTEXT_ID = 8;
+  int ACTIONABLE_ITEM_DEF__ACCESS_CONTEXT_ID = 9;
 
   /**
    * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -414,7 +428,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ACTIONABLE_ITEM_DEF__CHILDREN = 9;
+  int ACTIONABLE_ITEM_DEF__CHILDREN = 10;
 
   /**
    * The number of structural features of the '<em>Actionable Item Def</em>' class.
@@ -423,7 +437,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ACTIONABLE_ITEM_DEF_FEATURE_COUNT = 10;
+  int ACTIONABLE_ITEM_DEF_FEATURE_COUNT = 11;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl <em>Version Def</em>}' class.
@@ -445,13 +459,22 @@ public interface AtsDslPackage extends EPackage
   int VERSION_DEF__NAME = 0;
 
   /**
+   * The feature id for the '<em><b>Guid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VERSION_DEF__GUID = 1;
+
+  /**
    * The feature id for the '<em><b>Static Id</b></em>' attribute list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int VERSION_DEF__STATIC_ID = 1;
+  int VERSION_DEF__STATIC_ID = 2;
 
   /**
    * The feature id for the '<em><b>Next</b></em>' attribute.
@@ -460,7 +483,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int VERSION_DEF__NEXT = 2;
+  int VERSION_DEF__NEXT = 3;
 
   /**
    * The feature id for the '<em><b>Released</b></em>' attribute.
@@ -469,7 +492,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int VERSION_DEF__RELEASED = 3;
+  int VERSION_DEF__RELEASED = 4;
 
   /**
    * The feature id for the '<em><b>Allow Create Branch</b></em>' attribute.
@@ -478,7 +501,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int VERSION_DEF__ALLOW_CREATE_BRANCH = 4;
+  int VERSION_DEF__ALLOW_CREATE_BRANCH = 5;
 
   /**
    * The feature id for the '<em><b>Allow Commit Branch</b></em>' attribute.
@@ -487,7 +510,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int VERSION_DEF__ALLOW_COMMIT_BRANCH = 5;
+  int VERSION_DEF__ALLOW_COMMIT_BRANCH = 6;
 
   /**
    * The feature id for the '<em><b>Baseline Branch Guid</b></em>' attribute.
@@ -496,7 +519,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int VERSION_DEF__BASELINE_BRANCH_GUID = 6;
+  int VERSION_DEF__BASELINE_BRANCH_GUID = 7;
 
   /**
    * The feature id for the '<em><b>Parallel Version</b></em>' attribute list.
@@ -505,7 +528,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int VERSION_DEF__PARALLEL_VERSION = 7;
+  int VERSION_DEF__PARALLEL_VERSION = 8;
 
   /**
    * The number of structural features of the '<em>Version Def</em>' class.
@@ -514,7 +537,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int VERSION_DEF_FEATURE_COUNT = 8;
+  int VERSION_DEF_FEATURE_COUNT = 9;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.WorkDefImpl <em>Work Def</em>}' class.
@@ -1648,6 +1671,17 @@ public interface AtsDslPackage extends EPackage
   EAttribute getTeamDef_TeamDefOption();
 
   /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getGuid <em>Guid</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Guid</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getGuid()
+   * @see #getTeamDef()
+   * @generated
+   */
+  EAttribute getTeamDef_Guid();
+
+  /**
    * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getActive <em>Active</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1790,6 +1824,17 @@ public interface AtsDslPackage extends EPackage
   EAttribute getActionableItemDef_AiDefOption();
 
   /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getGuid <em>Guid</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Guid</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getGuid()
+   * @see #getActionableItemDef()
+   * @generated
+   */
+  EAttribute getActionableItemDef_Guid();
+
+  /**
    * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getActive <em>Active</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1897,6 +1942,17 @@ public interface AtsDslPackage extends EPackage
    * @generated
    */
   EAttribute getVersionDef_Name();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getGuid <em>Guid</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Guid</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getGuid()
+   * @see #getVersionDef()
+   * @generated
+   */
+  EAttribute getVersionDef_Guid();
 
   /**
    * Returns the meta object for the attribute list '{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getStaticId <em>Static Id</em>}'.
@@ -3037,6 +3093,14 @@ public interface AtsDslPackage extends EPackage
     EAttribute TEAM_DEF__TEAM_DEF_OPTION = eINSTANCE.getTeamDef_TeamDefOption();
 
     /**
+     * The meta object literal for the '<em><b>Guid</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute TEAM_DEF__GUID = eINSTANCE.getTeamDef_Guid();
+
+    /**
      * The meta object literal for the '<em><b>Active</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -3143,6 +3207,14 @@ public interface AtsDslPackage extends EPackage
     EAttribute ACTIONABLE_ITEM_DEF__AI_DEF_OPTION = eINSTANCE.getActionableItemDef_AiDefOption();
 
     /**
+     * The meta object literal for the '<em><b>Guid</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute ACTIONABLE_ITEM_DEF__GUID = eINSTANCE.getActionableItemDef_Guid();
+
+    /**
      * The meta object literal for the '<em><b>Active</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -3223,6 +3295,14 @@ public interface AtsDslPackage extends EPackage
      * @generated
      */
     EAttribute VERSION_DEF__NAME = eINSTANCE.getVersionDef_Name();
+
+    /**
+     * The meta object literal for the '<em><b>Guid</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute VERSION_DEF__GUID = eINSTANCE.getVersionDef_Guid();
 
     /**
      * The meta object literal for the '<em><b>Static Id</b></em>' attribute list feature.

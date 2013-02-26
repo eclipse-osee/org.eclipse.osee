@@ -30,7 +30,7 @@ public interface IWorldEditorProvider {
 
    public IAtsVersion getTargetedVersionArtifact() throws OseeCoreException;
 
-   public IWorldEditorProvider copyProvider() throws OseeArgumentException;
+   public IWorldEditorProvider copyProvider() throws OseeArgumentException, OseeCoreException;
 
    public void setCustomizeData(CustomizeData customizeData);
 

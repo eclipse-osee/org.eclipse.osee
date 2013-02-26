@@ -70,7 +70,7 @@ public abstract class WorldSearchItem {
       this(worldSearchItem.name, worldSearchItem.loadView, worldSearchItem.cancelled, oseeImage);
    }
 
-   public abstract WorldSearchItem copy() throws OseeArgumentException;
+   public abstract WorldSearchItem copy() throws OseeArgumentException, OseeCoreException;
 
    @SuppressWarnings("unused")
    public String getName() throws OseeCoreException {

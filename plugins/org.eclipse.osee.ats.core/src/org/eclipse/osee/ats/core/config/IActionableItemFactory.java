@@ -14,7 +14,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 
 public interface IActionableItemFactory {
 
-   IAtsActionableItem createActionableItem(String create, String teamDefName);
+   IAtsActionableItem createActionableItem(String create, String aiName);
 
    IAtsActionableItem getOrCreate(String guid, String name);
 

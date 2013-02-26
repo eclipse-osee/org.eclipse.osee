@@ -11,9 +11,9 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.review;
 
 import static org.junit.Assert.assertTrue;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -88,7 +88,8 @@ public class ReviewWorldSearchItemDemoTest {
    public void testAssignee_Joe() throws Exception {
       IAtsUser Joe_Smith = AtsUsersClient.getUserFromToken(DemoUsers.Joe_Smith);
       ReviewWorldSearchItem search =
-         new ReviewWorldSearchItem("", (List<String>) null, false, false, false, null, Joe_Smith, null, null, null);
+         new ReviewWorldSearchItem("", new ArrayList<IAtsActionableItem>(), false, false, false, null, Joe_Smith, null,
+            null, null);
       Collection<Artifact> arts = search.performSearchGetResults();
       NavigateTestUtil.testExpectedVersusActual("AI Search", arts, AtsArtifactTypes.PeerToPeerReview, 2);
       NavigateTestUtil.testExpectedVersusActual("AI Search", arts, AtsArtifactTypes.DecisionReview, 1);
