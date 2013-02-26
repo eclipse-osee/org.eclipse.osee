@@ -8,16 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.workflow;
+package org.eclipse.osee.ats.api.ai;
 
-import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItemProvider;
+import java.util.Set;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsTeamWorkflow extends IAtsWorkItem, IAtsActionableItemProvider {
+public interface IAtsActionableItemProvider {
 
-   String toStringWithId();
+   public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException;
 
 }

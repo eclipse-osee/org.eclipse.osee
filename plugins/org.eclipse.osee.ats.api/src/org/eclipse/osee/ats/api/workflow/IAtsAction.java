@@ -10,14 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workflow;
 
-import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItemProvider;
+import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.team.IAtsTeamWorkflowProvider;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsTeamWorkflow extends IAtsWorkItem, IAtsActionableItemProvider {
-
-   String toStringWithId();
-
+public interface IAtsAction extends IAtsObject, IAtsTeamWorkflowProvider {
+   // do nothing
 }

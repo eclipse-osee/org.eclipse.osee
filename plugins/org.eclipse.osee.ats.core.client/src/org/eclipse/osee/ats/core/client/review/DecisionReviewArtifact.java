@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.review;
 
+import org.eclipse.osee.ats.api.reveiw.IAtsDecisionReview;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -19,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 /**
  * @author Donald G. Dunne
  */
-public class DecisionReviewArtifact extends AbstractReviewArtifact implements IATSStateMachineArtifact {
+public class DecisionReviewArtifact extends AbstractReviewArtifact implements IATSStateMachineArtifact, IAtsDecisionReview {
 
    public XDecisionOptions decisionOptions;
 

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.review;
 
+import org.eclipse.osee.ats.api.reveiw.IAtsPeerToPeerReview;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -19,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 /**
  * @author Donald G. Dunne
  */
-public class PeerToPeerReviewArtifact extends AbstractReviewArtifact implements IATSStateMachineArtifact {
+public class PeerToPeerReviewArtifact extends AbstractReviewArtifact implements IATSStateMachineArtifact, IAtsPeerToPeerReview {
 
    public PeerToPeerReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);

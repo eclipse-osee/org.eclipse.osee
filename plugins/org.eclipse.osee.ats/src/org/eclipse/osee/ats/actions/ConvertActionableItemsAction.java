@@ -20,7 +20,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.column.ActionableItemsColumn;
+import org.eclipse.osee.ats.column.ActionableItemsColumnUI;
 import org.eclipse.osee.ats.core.client.action.ActionArtifactRollup;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -100,7 +100,7 @@ public class ConvertActionableItemsAction extends Action {
             //
             "does not need to do anything, this dialog will purge the\n" + "team from the DB as if it was " +
             //
-            "never chosen.\n\n" + "Current Actionable Item(s): " + ActionableItemsColumn.getActionableItemsStr(teamArt) + "\n" +
+            "never chosen.\n\n" + "Current Actionable Item(s): " + ActionableItemsColumnUI.getActionableItemsStr(teamArt) + "\n" +
             //
             "Current Team: " + teamArt.getTeamDefinition().getName() + "\n" +
             //
@@ -144,7 +144,7 @@ public class ConvertActionableItemsAction extends Action {
             return result;
          }
          StringBuffer sb = new StringBuffer("Converting...\nActionable Item(s): ");
-         sb.append(ActionableItemsColumn.getActionableItemsStr(teamArt));
+         sb.append(ActionableItemsColumnUI.getActionableItemsStr(teamArt));
          sb.append("\nTeam: ");
          sb.append(teamArt.getTeamDefinition().getName());
          sb.append("\nto\nActionable Item(s): ");

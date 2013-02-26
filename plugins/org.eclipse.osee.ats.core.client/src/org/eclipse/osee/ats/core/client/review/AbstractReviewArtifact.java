@@ -14,6 +14,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItemProvider;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -39,7 +41,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 /**
  * @author Donald G. Dunne
  */
-public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
+public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact implements IAtsActionableItemProvider {
 
    private ActionableItemManager actionableItemsDam;
    private Boolean standAlone = null;
@@ -177,6 +179,11 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
          return (AbstractReviewArtifact) artifact;
       }
       return null;
+   }
+
+   @Override
+   public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException {
+      return getActionableItemsDam().getActionableItems();
    }
 
 }

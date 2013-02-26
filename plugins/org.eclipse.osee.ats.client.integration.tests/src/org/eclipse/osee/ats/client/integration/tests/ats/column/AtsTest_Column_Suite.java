@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.column;
 
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
+import org.eclipse.osee.ats.core.column.ActionableItemsColumnTest;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;

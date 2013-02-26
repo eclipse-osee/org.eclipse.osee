@@ -202,6 +202,19 @@ public class Collections {
       return objs;
    }
 
+   /**
+    * Convert objects to HashSet
+    */
+   public static <T> Set<T> asHashSet(T... objects) {
+      Set<T> objs = new HashSet<T>();
+      if (objects != null) {
+         for (T obj : objects) {
+            objs.add(obj);
+         }
+      }
+      return objs;
+   }
+
    public static List<Object> getAggregateTree(List<Object> items, int maxPerList) {
       if (items == null) {
          throw new IllegalArgumentException("items can not be null");
@@ -326,7 +339,7 @@ public class Collections {
     * Collection<String> input = [[A], B, C, [D , E, [F]]]; <br/>
     * List<String> output = [A, B, C, D, E, F];
     * </p>
-    *
+    * 
     * @param collectionInput
     * @param modList
     */

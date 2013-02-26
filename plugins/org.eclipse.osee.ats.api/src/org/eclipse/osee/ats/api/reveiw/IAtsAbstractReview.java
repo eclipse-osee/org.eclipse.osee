@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.workflow;
+package org.eclipse.osee.ats.api.reveiw;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemProvider;
@@ -16,8 +16,6 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItemProvider;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsTeamWorkflow extends IAtsWorkItem, IAtsActionableItemProvider {
-
-   String toStringWithId();
-
+public interface IAtsAbstractReview extends IAtsWorkItem, IAtsActionableItemProvider {
+   // do nothing
 }

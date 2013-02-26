@@ -16,6 +16,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItemProvider;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -52,7 +54,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 /**
  * @author Donald G. Dunne
  */
-public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IAtsTeamWorkflow, IATSStateMachineArtifact {
+public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IAtsTeamWorkflow, IAtsActionableItemProvider, IATSStateMachineArtifact {
 
    private static final Set<Integer> teamArtsWithNoAction = new HashSet<Integer>();
    private final ActionableItemManager actionableItemsDam;
@@ -277,6 +279,11 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
 
    public void setWorkingBranchCommitInProgress(boolean inProgress) {
       this.committingWorkingBranch = inProgress;
+   }
+
+   @Override
+   public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException {
+      return getActionableItemsDam().getActionableItems();
    }
 
 }

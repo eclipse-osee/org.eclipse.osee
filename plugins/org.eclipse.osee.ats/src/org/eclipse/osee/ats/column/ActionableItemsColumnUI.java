@@ -11,37 +11,28 @@
 package org.eclipse.osee.ats.column;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.logging.Level;
+import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.core.column.ActionableItemsColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
  */
-public class ActionableItemsColumn extends XViewerAtsAttributeValueColumn {
+public class ActionableItemsColumnUI extends XViewerAtsAttributeValueColumn {
 
-   public static ActionableItemsColumn instance = new ActionableItemsColumn();
+   public static ActionableItemsColumnUI instance = new ActionableItemsColumnUI();
 
-   public static ActionableItemsColumn getInstance() {
+   public static ActionableItemsColumnUI getInstance() {
       return instance;
    }
 
-   private ActionableItemsColumn() {
+   private ActionableItemsColumnUI() {
       super(AtsAttributeTypes.ActionableItem, WorldXViewerFactory.COLUMN_NAMESPACE + ".actionableItems",
          AtsAttributeTypes.ActionableItem.getUnqualifiedName(), 80, SWT.LEFT, true, SortDataType.String, false, "");
    }
@@ -51,8 +42,8 @@ public class ActionableItemsColumn extends XViewerAtsAttributeValueColumn {
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public ActionableItemsColumn copy() {
-      ActionableItemsColumn newXCol = new ActionableItemsColumn();
+   public ActionableItemsColumnUI copy() {
+      ActionableItemsColumnUI newXCol = new ActionableItemsColumnUI();
       super.copy(this, newXCol);
       return newXCol;
    }
@@ -60,31 +51,17 @@ public class ActionableItemsColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         return getActionableItemsStr(element);
+         return ActionableItemsColumn.getColumnText(element);
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
-      return "";
    }
 
    public static String getActionableItemsStr(Object element) throws OseeCoreException {
-      return Artifacts.commaArts(getActionableItems(element));
+      return ActionableItemsColumn.getActionableItemsStr(element);
    }
 
    public static Collection<IAtsActionableItem> getActionableItems(Object element) throws OseeCoreException {
-      if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-         Set<IAtsActionableItem> aias = new HashSet<IAtsActionableItem>();
-         // Roll up if same for all children
-         for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
-            aias.addAll(team.getActionableItemsDam().getActionableItems());
-         }
-         return aias;
-      } else if (Artifacts.isOfType(element, AtsArtifactTypes.TeamWorkflow)) {
-         return ((TeamWorkFlowArtifact) element).getActionableItemsDam().getActionableItems();
-      } else if (element instanceof AbstractWorkflowArtifact) {
-         TeamWorkFlowArtifact teamArt = ((AbstractWorkflowArtifact) element).getParentTeamWorkflow();
-         return getActionableItems(teamArt);
-      }
-      return Collections.emptyList();
+      return ActionableItemsColumn.getActionableItems(element);
    }
 }
