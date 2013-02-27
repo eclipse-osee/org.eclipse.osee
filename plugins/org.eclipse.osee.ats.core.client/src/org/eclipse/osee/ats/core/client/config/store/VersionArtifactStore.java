@@ -102,6 +102,7 @@ public class VersionArtifactStore extends ArtifactAtsObjectStore {
          }
       }
       verArt.persist(transaction);
+      cache.cache(version);
       return Result.TrueResult;
    }
 

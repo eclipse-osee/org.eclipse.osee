@@ -169,6 +169,7 @@ public class TeamDefinitionArtifactStore extends ArtifactAtsObjectStore {
          }
       }
       teamDefArt.persist(transaction);
+      cache.cache(teamDef);
       return Result.TrueResult;
    }
 

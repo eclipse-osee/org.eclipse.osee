@@ -141,6 +141,7 @@ public class ActionableItemArtifactStore extends ArtifactAtsObjectStore {
          }
       }
       aiArt.persist(transaction);
+      cache.cache(aia);
       return Result.TrueResult;
    }
 
