@@ -34,6 +34,7 @@
       <import plugin="com.jcraft.jsch" version="0.1.44" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.logging" version="1.1.1" match="equivalent"/>
       <import plugin="org.eclipse.jgit"/>
+      <import plugin="com.sun.jersey" version="1.8.0" match="equivalent"/>
    </requires>
 
    <plugin
