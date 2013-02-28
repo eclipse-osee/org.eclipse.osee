@@ -13,39 +13,54 @@ package org.eclipse.osee.ote.version.svn;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
-
+import java.util.logging.Level;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.version.FileVersion;
 import org.eclipse.osee.ote.version.FileVersionInformationProvider;
+import org.eclipse.team.svn.core.connector.ISVNConnector;
+import org.eclipse.team.svn.core.connector.ISVNConnector.Depth;
 import org.eclipse.team.svn.core.connector.SVNEntryInfo;
+import org.eclipse.team.svn.core.connector.SVNEntryRevisionReference;
+import org.eclipse.team.svn.core.extension.CoreExtensionsManager;
+import org.eclipse.team.svn.core.operation.SVNNullProgressMonitor;
 import org.eclipse.team.svn.core.utility.SVNUtility;
 
 public class SvnVersionProvider implements FileVersionInformationProvider {
 
 
-	@Override
-	public FileVersion getFileVersion(File file) {
-		if (isSvn(file)) {
-			SVNEntryInfo entry = SVNUtility.getSVNInfo(file);
-			if(entry != null){
-				return new SvnFileVersion(entry);
-			}
-		}
-		return null;
-	}
+   protected boolean isSvn(File file) {
+      File svn = new File(file, SVNUtility.getSVNFolderName());
+      return svn.exists();
+   }
+   
+   @Override
+   public void getFileVersions(List<File> scriptFiles, Map<File, FileVersion> versions) {
 
-	protected boolean isSvn(File file) {
-		File svn = new File(file.getParentFile(), SVNUtility.getSVNFolderName());
-		return svn.exists();
-	}
+      IProject[] workspaceProjects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+      ScriptToProject collection = new ScriptToProject(workspaceProjects);
+      
+      for(File scriptFile:scriptFiles){
+         collection.add(scriptFile);
+      }
 
-	@Override
-	public void getFileVersions(List<File> files, Map<File, FileVersion> versions) {
-		for(File file:files){
-			FileVersion version = getFileVersion(file);
-			if(version != null){
-				versions.put(file, version);
-			}
-		}
-	}
-
+      ISVNConnector proxy = CoreExtensionsManager.instance().getSVNConnectorFactory().newInstance();
+      for (String projectName :  collection.getProjectsSet()) {
+         try {
+            SVNEntryInfo []st = SVNUtility.info(proxy, new SVNEntryRevisionReference(projectName), Depth.INFINITY, new SVNNullProgressMonitor());
+            for (SVNEntryInfo entry : st) {
+               String svnEntryPath = entry.path;
+               String itemToMatch = svnEntryPath.substring(svnEntryPath.lastIndexOf("/") + 1);
+               File scriptFile = collection.getScriptFileMatch(projectName, itemToMatch);
+               if(scriptFile != null){
+                  versions.put(scriptFile, new SvnFileVersion(entry));
+               }
+            }
+         }
+         catch (Exception ex) {
+            OseeLog.logf(getClass(), Level.SEVERE, "SVNConnectorException while retrieving script SVN info ", ex);
+         }
+      }
+   }
 }

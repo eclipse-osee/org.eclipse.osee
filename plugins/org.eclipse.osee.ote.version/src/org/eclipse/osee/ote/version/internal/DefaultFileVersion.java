@@ -35,7 +35,7 @@ public class DefaultFileVersion implements FileVersion {
 	}
 	
 	@Override
-	public String getVersion() {
+	public String getLastChangedRevision() {
 		return "N/A";
 	}
 

@@ -16,8 +16,6 @@ import java.util.Map;
 
 public interface FileVersionInformation {
 	
-	FileVersion getFileVersion(File file);
-	
 	Map<File, FileVersion> getFileVersions(List<File> files);
 	
 }

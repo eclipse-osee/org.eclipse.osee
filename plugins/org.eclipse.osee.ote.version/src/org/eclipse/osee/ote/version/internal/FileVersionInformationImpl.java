@@ -38,18 +38,6 @@ public class FileVersionInformationImpl implements FileVersionInformation {
 	}
 
 	@Override
-	public FileVersion getFileVersion(File file) {
-		FileVersion version = null;
-		for(FileVersionInformationProvider provider:providers){
-			version = provider.getFileVersion(file);
-			if(version != null){
-				return version;
-			}
-		}
-		return new DefaultFileVersion(file);
-	}
-
-	@Override
 	public Map<File, FileVersion> getFileVersions(List<File> files) {
 		Map<File, FileVersion> versions = new HashMap<File, FileVersion>(files.size());
 		for(File file:files){

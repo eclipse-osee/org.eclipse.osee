@@ -24,7 +24,7 @@ public class ScriptVersionConfig implements Xmlizable, XmlizableStream, Serializ
    private static final long serialVersionUID = -4021198751318075600L;
    private String repositoryType;
    private String location;
-   private String revision;
+   private String lastChangedRevision;
    private String lastAuthor;
    private String lastModificationDate;
    private String modifiedFlag;
@@ -32,16 +32,16 @@ public class ScriptVersionConfig implements Xmlizable, XmlizableStream, Serializ
    public ScriptVersionConfig() {
       repositoryType = "UNKNOWN";
       location = "-";
-      revision = "-";
+      lastChangedRevision = "-";
       lastAuthor = "-";
       lastModificationDate = "-";
       modifiedFlag = "-";
    }
 
-   public ScriptVersionConfig(String repositoryType, String location, String revision, String lastAuthor, String lastModificationDate, String modifiedFlag) {
+   public ScriptVersionConfig(String repositoryType, String location, String lastChangedRevision, String lastAuthor, String lastModificationDate, String modifiedFlag) {
       this.repositoryType = repositoryType;
       this.location = location;
-      this.revision = revision;
+      this.lastChangedRevision = lastChangedRevision;
       this.lastAuthor = lastAuthor;
       this.lastModificationDate = lastModificationDate;
       this.modifiedFlag = modifiedFlag;
@@ -78,15 +78,15 @@ public class ScriptVersionConfig implements Xmlizable, XmlizableStream, Serializ
    /**
     * @return the revision
     */
-   public String getRevision() {
-      return revision;
+   public String getLastChangedRevision() {
+      return lastChangedRevision;
    }
 
    /**
-    * @param revision the revision to set
+    * @param lastChangedRevision the revision to set
     */
-   public void setRevision(String revision) {
-      this.revision = revision;
+   public void setLastChangedRevision(String lastChangedRevision) {
+      this.lastChangedRevision = lastChangedRevision;
    }
 
    /**
@@ -134,7 +134,7 @@ public class ScriptVersionConfig implements Xmlizable, XmlizableStream, Serializ
    @Override
    public Element toXml(Document doc) {
       Element scriptVersion = doc.createElement(BaseTestTags.SCRIPT_VERSION);
-      scriptVersion.setAttribute(BaseTestTags.REVISION_FIELD, getRevision());
+      scriptVersion.setAttribute(BaseTestTags.REVISION_FIELD, getLastChangedRevision());
       scriptVersion.setAttribute(BaseTestTags.REPOSITORY_TYPE, getRepositoryType());
       scriptVersion.setAttribute(BaseTestTags.LAST_AUTHOR_FIELD, getLastAuthor());
       scriptVersion.setAttribute(BaseTestTags.LAST_MODIFIED, getLastModificationDate());
@@ -146,7 +146,7 @@ public class ScriptVersionConfig implements Xmlizable, XmlizableStream, Serializ
    @Override
    public void toXml(XMLStreamWriter writer) throws XMLStreamException {
       writer.writeStartElement(BaseTestTags.SCRIPT_VERSION);
-      writer.writeAttribute(BaseTestTags.REVISION_FIELD, getRevision());
+      writer.writeAttribute(BaseTestTags.REVISION_FIELD, getLastChangedRevision());
       writer.writeAttribute(BaseTestTags.REPOSITORY_TYPE, getRepositoryType());
       writer.writeAttribute(BaseTestTags.LAST_AUTHOR_FIELD, getLastAuthor());
       writer.writeAttribute(BaseTestTags.LAST_MODIFIED, getLastModificationDate());

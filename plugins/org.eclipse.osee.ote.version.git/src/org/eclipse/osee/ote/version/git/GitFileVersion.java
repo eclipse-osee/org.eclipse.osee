@@ -34,7 +34,7 @@ public class GitFileVersion implements FileVersion {
 	}
 	
 	@Override
-	public String getVersion() {
+	public String getLastChangedRevision() {
 		return commit.getId().getName();
 	}
 

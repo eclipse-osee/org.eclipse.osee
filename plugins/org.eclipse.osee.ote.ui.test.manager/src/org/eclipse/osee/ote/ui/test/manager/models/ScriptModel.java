@@ -43,7 +43,7 @@ public class ScriptModel extends FileModel {
       public ScriptVersionConfig getVersionInfo(FileVersion version) {
     	  ScriptVersionConfig scriptVersion = new ScriptVersionConfig();
     	  if (version != null) {
-    		  scriptVersion.setRevision(version.getVersion());
+    		  scriptVersion.setLastChangedRevision(version.getLastChangedRevision());
     		  scriptVersion.setLocation(version.getURL());
     		  scriptVersion.setRepositoryType(version.getVersionControlSystem());
     		  scriptVersion.setLastAuthor(version.getLastAuthor());

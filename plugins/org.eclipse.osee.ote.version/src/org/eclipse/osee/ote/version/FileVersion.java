@@ -11,7 +11,7 @@
 package org.eclipse.osee.ote.version;
 
 public interface FileVersion {
-	String getVersion();
+	String getLastChangedRevision();
 	String getURL();
 	String getVersionControlSystem();
 	String getModifiedFlag();

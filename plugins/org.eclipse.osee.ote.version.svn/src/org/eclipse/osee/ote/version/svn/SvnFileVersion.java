@@ -13,7 +13,6 @@ package org.eclipse.osee.ote.version.svn;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
-
 import org.eclipse.osee.ote.version.FileVersion;
 import org.eclipse.team.svn.core.connector.SVNEntryInfo;
 
@@ -29,8 +28,8 @@ public class SvnFileVersion implements FileVersion {
 	}
 	  
 	@Override
-	public String getVersion() {
-		return Long.toString(entry.revision);
+	public String getLastChangedRevision() {
+		return Long.toString(entry.lastChangedRevision);
 	}
 
 	@Override
