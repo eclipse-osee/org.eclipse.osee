@@ -18,6 +18,7 @@ artifactType "Global Preferences" extends "Artifact" {
 	attribute "Dictionary"
 	attribute "osee.config.Default Mail Server"
 }
+
 attributeType "Artifact Reference" extends ArtifactReferenceAttribute {
 	guid "AQazLX91tV9GYF06fPQA"
 	uuid 0x1000BA00000000F8
@@ -662,7 +663,7 @@ artifactType "Plain Text" extends "Artifact" {
 	attribute "Plain Text Content"
 }
 
-artifactType "Software Requirement Plain Text" extends "Plain Text", "Direct Software Requirement" {
+artifactType "Software Requirement Plain Text" extends "Plain Text" , "Direct Software Requirement" {
 	guid "ALWS_Of11CxazjE71pgA"
 	uuid 0x000000000000318
 }
