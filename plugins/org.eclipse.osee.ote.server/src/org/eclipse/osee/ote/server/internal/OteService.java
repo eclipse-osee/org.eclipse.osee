@@ -24,6 +24,7 @@ import net.jini.id.UuidFactory;
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 import org.eclipse.osee.framework.jini.service.interfaces.IService;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.messaging.NodeInfo;
 import org.eclipse.osee.framework.messaging.services.RegisteredServiceReference;
 import org.eclipse.osee.ote.core.ConnectionRequestResult;
 import org.eclipse.osee.ote.core.IRemoteUserSession;
@@ -52,6 +53,7 @@ public class OteService implements IHostTestEnvironment, IService {
    public OteService(IRuntimeLibraryManager runtimeLibraryManager, EnvironmentCreationParameter environmentCreation, PropertyParamter parameterObject, EnhancedProperties properties) {
       this.runtimeLibraryManager = runtimeLibraryManager;
       this.environmentCreation = environmentCreation;
+      
       Uuid uuid = UuidFactory.generate();
       Long lsb = Long.valueOf(uuid.getLeastSignificantBits());
       Long msb = Long.valueOf(uuid.getMostSignificantBits());
@@ -68,6 +70,11 @@ public class OteService implements IHostTestEnvironment, IService {
       enhancedProperties.setProperty("group", "OSEE Test Environment");
       enhancedProperties.setProperty("owner", System.getProperty("user.name"));
       enhancedProperties.setProperty("id", serviceID.toString());
+   }
+   
+   @Override
+   public NodeInfo getBroker(){
+      return environmentCreation.getBroker();
    }
 
    @Override

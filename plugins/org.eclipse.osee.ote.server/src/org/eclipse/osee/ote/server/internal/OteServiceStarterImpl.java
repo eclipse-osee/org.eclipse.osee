@@ -117,7 +117,6 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 		brokerService.start();
 		URI uri = new URI(strUri);
 
-		OseeLog.log(Activator.class, Level.INFO, "NODE URI IS " + uri.toASCIIString());
 		NodeInfo nodeInfo = new NodeInfo("OTEEmbeddedBroker", uri);
 
 		EnvironmentCreationParameter environmentCreationParameter =
@@ -140,6 +139,9 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 		} else {
 			serviceSideConnector.setProperty("OTEEmbeddedBroker", nodeInfo);
 		}
+		
+		Activator.getDefault().getContext().registerService(IHostTestEnvironment.class, service, null);
+		
 		return service;
 	}
 

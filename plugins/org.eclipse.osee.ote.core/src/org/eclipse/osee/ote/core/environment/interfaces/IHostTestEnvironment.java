@@ -15,6 +15,7 @@ import java.rmi.RemoteException;
 import java.util.Collection;
 
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
+import org.eclipse.osee.framework.messaging.NodeInfo;
 import org.eclipse.osee.ote.core.ConnectionRequestResult;
 import org.eclipse.osee.ote.core.IRemoteUserSession;
 import org.eclipse.osee.ote.core.environment.BundleConfigurationReport;
@@ -36,4 +37,5 @@ public interface IHostTestEnvironment extends Remote {
    void sendRuntimeBundle(Collection<BundleDescription> bundles) throws RemoteException;
    void updateRuntimeBundle(Collection<BundleDescription> bundles) throws RemoteException;
    void cleanupRuntimeBundles() throws RemoteException;
+   public NodeInfo getBroker() throws RemoteException;
 }
