@@ -54,5 +54,7 @@ public interface SystemPreferences {
     */
    public boolean isBoolean(String key) throws OseeCoreException;
 
+   public boolean isBooleanUsingCache(String key) throws OseeCoreException;
+
    public void putValue(String key, String value) throws OseeCoreException;
 }

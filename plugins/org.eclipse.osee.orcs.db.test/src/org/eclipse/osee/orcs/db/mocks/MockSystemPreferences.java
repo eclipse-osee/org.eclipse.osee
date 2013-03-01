@@ -70,4 +70,9 @@ public class MockSystemPreferences implements SystemPreferences {
       return null;
    }
 
+   @Override
+   public boolean isBooleanUsingCache(String key) throws OseeCoreException {
+      return false;
+   }
+
 }

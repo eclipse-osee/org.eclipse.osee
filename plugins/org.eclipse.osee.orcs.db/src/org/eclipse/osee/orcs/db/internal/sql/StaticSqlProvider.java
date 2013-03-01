@@ -95,7 +95,7 @@ public class StaticSqlProvider implements SqlProvider {
       String toReturn = "/*+ ordered */";
       try {
          // necessary performance when using gamma_id indexes
-         if (preferences.isBoolean("useOrderedFirstRows")) {
+         if (preferences.isBooleanUsingCache("useOrderedFirstRows")) {
             toReturn = "/*+ ordered FIRST_ROWS */";
          }
       } catch (OseeCoreException ex) {

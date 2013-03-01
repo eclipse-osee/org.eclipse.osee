@@ -85,7 +85,7 @@ public class OseeInfo {
     * table OR value != "true".<br>
     * <br>
     * Note: This call will hit the database every time, so shouldn't be used for often repeated calls. use
-    * isCacheEnabled that will cache the value
+    * isBooleanUsingCache that will cache the value
     */
    public static boolean isBoolean(String key) throws OseeCoreException {
       String dbProperty = OseeInfo.getValue(key);
@@ -93,6 +93,10 @@ public class OseeInfo {
          return dbProperty.equals("true");
       }
       return false;
+   }
+
+   public static boolean isBooleanUsingCache(String key) throws OseeCoreException {
+      return isCacheEnabled(key);
    }
 
    public static void putValue(String key, String value) throws OseeCoreException {

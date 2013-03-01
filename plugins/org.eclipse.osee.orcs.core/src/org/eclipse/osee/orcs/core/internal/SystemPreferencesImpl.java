@@ -96,6 +96,11 @@ public class SystemPreferencesImpl implements SystemPreferences {
    }
 
    @Override
+   public boolean isBooleanUsingCache(String key) throws OseeCoreException {
+      return isCacheEnabled(key);
+   }
+
+   @Override
    public void putValue(String key, String value) throws OseeCoreException {
       accessor.putValue(key, value);
       cache.put(key, value);

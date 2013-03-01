@@ -102,7 +102,7 @@ public enum OseeSql {
    private static String getHintsOrderedFirstRows() {
       try {
          // necessary performance when using gamma_id indexes
-         if (OseeInfo.isBoolean("useOrderedFirstRows")) {
+         if (OseeInfo.isBooleanUsingCache("useOrderedFirstRows")) {
             return "/*+ ordered FIRST_ROWS */";
          }
       } catch (OseeCoreException ex) {

@@ -25,7 +25,7 @@ public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
 
    @Override
    public Boolean getValue() throws OseeCoreException {
-      if (OseeInfo.isEnabled(YES_NO_KEY)) {
+      if (OseeInfo.isCacheEnabled(YES_NO_KEY)) {
          return getAttributeDataProvider().getValueAsString().equals(oldChoices[0]);
       } else {
          return Boolean.valueOf(getAttributeDataProvider().getValueAsString());
@@ -34,7 +34,7 @@ public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
 
    @Override
    public boolean subClassSetValue(Boolean value) throws OseeCoreException {
-      if (OseeInfo.isEnabled(YES_NO_KEY)) {
+      if (OseeInfo.isCacheEnabled(YES_NO_KEY)) {
          return getAttributeDataProvider().setValue(value ? oldChoices[0] : oldChoices[1]);
       } else {
          return getAttributeDataProvider().setValue(String.valueOf(value));
@@ -43,7 +43,7 @@ public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
 
    @Override
    protected Boolean convertStringToValue(String value) throws OseeCoreException {
-      if (OseeInfo.isEnabled(YES_NO_KEY)) {
+      if (OseeInfo.isCacheEnabled(YES_NO_KEY)) {
          return value != null && value.equalsIgnoreCase(oldChoices[0]);
       } else {
          return Boolean.parseBoolean(value);
