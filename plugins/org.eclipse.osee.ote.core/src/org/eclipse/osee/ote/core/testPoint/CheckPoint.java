@@ -12,8 +12,10 @@ package org.eclipse.osee.ote.core.testPoint;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.jdk.core.util.xml.XMLStreamWriterUtil;
+import org.eclipse.osee.ote.core.XmlSupport;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestPoint;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -46,8 +48,8 @@ public class CheckPoint implements ITestPoint {
 
    public CheckPoint(String testPointName, String expected, String actual, boolean pass, int numTransmissions, long elapsedTime) {
       this.testPointName = testPointName;
-      this.expected = expected.equals("") ? " " : this.convertNonPrintableCharacers(expected);
-      this.actual = actual.equals("") ? " " : this.convertNonPrintableCharacers(actual);
+      this.expected = expected.equals("") ? " " : XmlSupport.convertNonPrintableCharacers(expected);
+      this.actual = actual.equals("") ? " " : XmlSupport.convertNonPrintableCharacers(actual);
       this.pass = pass;
       this.elpasedTime = elapsedTime;
       this.numTransmissions = numTransmissions;
@@ -140,24 +142,4 @@ public class CheckPoint implements ITestPoint {
       return numTransmissions;
    }
 
-   private String convertNonPrintableCharacers(String message) {
-      StringBuffer buff = new StringBuffer();
-      char currentChar;
-      for (int i = 0; i < message.length(); i++) {
-         currentChar = message.charAt(i);
-         if (currentChar < 32 || currentChar > 126) {
-            buff.append(" ASCII=" + (int) currentChar + " ");
-         } else if (currentChar == '<') {
-            buff.append(" less-than ");
-         } else if (currentChar == '>') {
-            buff.append(" greater-than ");
-         } else if (currentChar == '&') {
-            buff.append(" ampersand ");
-         } else {
-            buff.append(currentChar);
-         }
-      }
-
-      return buff.toString();
-   }
 }
