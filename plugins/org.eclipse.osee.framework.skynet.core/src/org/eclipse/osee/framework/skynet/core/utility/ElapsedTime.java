@@ -29,11 +29,11 @@ public class ElapsedTime {
    public void start(String name) {
       this.name = name;
       startDate = new Date();
-      System.out.println("\n" + name + " - start " + DateUtil.getTimeStamp());
+      System.err.println("\n" + name + " - start " + DateUtil.getTimeStamp());
    }
 
    public void logPoint(String pointName) {
-      System.out.println("\n" + name + " - [" + pointName + "] " + DateUtil.getTimeStamp());
+      System.err.println("\n" + name + " - [" + pointName + "] " + DateUtil.getTimeStamp());
    }
 
    public static enum Units {
@@ -52,7 +52,7 @@ public class ElapsedTime {
          String.format("%s - elapsed %d %s - start %s - end %s", name, (units == Units.SEC ? (diff / 1000) : diff),
             units.name(), DateUtil.getDateStr(startDate, DateUtil.HHMMSSSS),
             DateUtil.getDateStr(endDate, DateUtil.HHMMSSSS));
-      System.out.println(str);
+      System.err.println(str);
       return str;
    }
 }
