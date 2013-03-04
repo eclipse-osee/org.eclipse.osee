@@ -36,7 +36,6 @@ public class ExecutorAdminImpl implements ExecutorAdmin {
    private Log logger;
    private EventService eventService;
    private Timer timer;
-   private boolean wasInitialized;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -62,11 +61,9 @@ public class ExecutorAdminImpl implements ExecutorAdmin {
       timer.scheduleAtFixedRate(task, 0, THREAD_CHECK_TIME);
 
       getEventService().postEvent(ExecutorConstants.EXECUTOR_ADMIN_REGISTRATION_EVENT, props);
-      wasInitialized = true;
    }
 
    public void stop(Map<String, ?> props) {
-      wasInitialized = false;
       timer.cancel();
       timer = null;
       for (Entry<String, ExecutorService> entry : cache.getExecutors().entrySet()) {
@@ -76,23 +73,21 @@ public class ExecutorAdminImpl implements ExecutorAdmin {
       getEventService().postEvent(ExecutorConstants.EXECUTOR_ADMIN_DEREGISTRATION_EVENT, props);
    }
 
-   private synchronized void ensureInitialized() throws Exception {
-      if (!wasInitialized) {
-         throw new IllegalStateException("Executor service was not properly initialized. Ensure start() is called.");
-      }
-   }
-
    public ExecutorService getDefaultExecutor() throws Exception {
-      ensureInitialized();
       return getExecutor(DEFAULT_EXECUTOR);
    }
 
    public ExecutorService getExecutor(String id) throws Exception {
-      ensureInitialized();
-      ExecutorService service = cache.getById(id);
+      ExecutorService service = null;
+      synchronized (cache) {
+         service = cache.getById(id);
+         if (service == null) {
+            service = createExecutor(id);
+            cache.put(id, service);
+         }
+      }
       if (service == null) {
-         service = createExecutor(id);
-         cache.put(id, service);
+         throw new IllegalStateException(String.format("Error creating executor [%s].", id));
       }
       if (service.isShutdown() || service.isTerminated()) {
          throw new IllegalStateException(String.format("Error executor [%s] was previously shutdown.", id));
@@ -142,7 +137,7 @@ public class ExecutorAdminImpl implements ExecutorAdmin {
          executor.shutdown();
          boolean completed = false;
          try {
-            completed = executor.awaitTermination(10000, TimeUnit.SECONDS);
+            completed = executor.awaitTermination(5, TimeUnit.SECONDS);
          } catch (Exception ex) {
             // Do nothing;
          }
@@ -161,7 +156,6 @@ public class ExecutorAdminImpl implements ExecutorAdmin {
 
    @Override
    public int cancelTasks(String id) throws Exception {
-      ensureInitialized();
       int itemsCancelled = 0;
       ExecutorWorkCache workCache = cache.getWorkerCache(id);
       if (workCache != null) {
