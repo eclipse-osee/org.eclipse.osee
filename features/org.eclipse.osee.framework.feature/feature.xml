@@ -38,6 +38,8 @@
       <import feature="org.eclipse.osee.core.runtime.feature" version="0.9.5" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.dbcp" version="1.4.0" match="compatible"/>
       <import plugin="org.apache.commons.pool" version="1.6.0" match="compatible"/>
+      <import plugin="com.google.guava" version="10.0.1.v201203051515" match="perfect"/>
+      <import plugin="com.google.guava" version="12.0.0" match="greaterOrEqual"/>        
    </requires>
 
    <plugin

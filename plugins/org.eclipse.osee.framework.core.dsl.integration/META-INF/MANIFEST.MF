@@ -1,16 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Osee DSL Integration
-Bundle-SymbolicName: org.eclipse.osee.framework.core.dsl.integration; singleton:=true
+Bundle-SymbolicName: org.eclipse.osee.framework.core.dsl.integration;singleton:=true
 Bundle-Version: 0.11.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.emf.compare.diff.metamodel,
- org.eclipse.emf.compare.diff.service,
- org.eclipse.emf.compare.match.metamodel,
- org.eclipse.emf.compare.match.service,
- org.eclipse.osee.framework.core.data,
+Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.dsl,
  org.eclipse.osee.framework.core.dsl.oseeDsl,
  org.eclipse.osee.framework.core.enums,
@@ -25,7 +21,11 @@ Import-Package: org.eclipse.emf.compare.diff.metamodel,
  org.eclipse.osee.framework.jdk.core.util,
  org.osgi.framework
 Require-Bundle: org.eclipse.xtext,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ com.google.guava;bundle-version="10.0.1",
+ org.eclipse.emf.compare;bundle-version="1.3.2",
+ org.eclipse.emf.compare.diff;bundle-version="1.3.2",
+ org.eclipse.emf.compare.match;bundle-version="1.3.2"
 Export-Package: org.eclipse.osee.framework.core.dsl.integration,
  org.eclipse.osee.framework.core.dsl.integration.util
 Service-Component: OSGI-INF/*.xml

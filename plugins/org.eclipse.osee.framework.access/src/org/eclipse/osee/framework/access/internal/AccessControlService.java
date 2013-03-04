@@ -18,8 +18,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
@@ -35,6 +36,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessData;
@@ -79,7 +81,8 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
-import com.google.common.collect.MapMaker;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
 /**
  * @author Jeff C. Phillips
@@ -121,8 +124,9 @@ public class AccessControlService implements IAccessControlService {
 
    private final HashCollection<Integer, PermissionEnum> subjectToPermissionCache =
       new HashCollection<Integer, PermissionEnum>(true);
-   private final Map<Collection<String>, AccessData> accessDataCache =
-      new MapMaker().expiration(1, TimeUnit.HOURS).makeMap();
+
+   private final Cache<Collection<String>, AccessData> accessDataCache = CacheBuilder.newBuilder().expireAfterAccess(1,
+      TimeUnit.HOURS).build();
 
    private final IOseeCachingService cachingService;
    private final IOseeDatabaseService databaseService;
@@ -186,7 +190,7 @@ public class AccessControlService implements IAccessControlService {
    }
 
    private void initializeCaches() {
-      accessDataCache.clear();
+      accessDataCache.invalidateAll();
       accessControlListCache.clear();
       objectToSubjectCache.clear();
       subjectToGroupCache.clear();
@@ -330,7 +334,7 @@ public class AccessControlService implements IAccessControlService {
    }
 
    @Override
-   public AccessDataQuery getAccessData(IBasicArtifact<?> userArtifact, Collection<?> objectsToCheck) throws OseeCoreException {
+   public AccessDataQuery getAccessData(final IBasicArtifact<?> userArtifact, final Collection<?> objectsToCheck) throws OseeCoreException {
       List<String> key = new LinkedList<String>();
       for (Object o : objectsToCheck) {
          if (o instanceof Branch) {
@@ -347,20 +351,26 @@ public class AccessControlService implements IAccessControlService {
          eventService.addListener(EventQosType.NORMAL, listener2);
       }
 
-      synchronized (accessDataCache) {
-         if (!accessDataCache.containsKey(key)) {
-            ILifecycleService service = getLifecycleService();
-            AccessData accessData = new AccessData();
-            if (!DbUtil.isDbInit()) {
-               AbstractLifecycleVisitor<?> visitor =
-                  new AccessProviderVisitor(userArtifact, objectsToCheck, accessData);
-               IStatus status = service.dispatch(new NullProgressMonitor(), visitor, ACCESS_POINT_ID);
-               Operations.checkForErrorStatus(status);
+      AccessData accessData = null;
+      try {
+         accessData = accessDataCache.get(key, new Callable<AccessData>() {
+
+            @Override
+            public AccessData call() throws Exception {
+               ILifecycleService service = getLifecycleService();
+               AccessData accessData = new AccessData();
+               if (!DbUtil.isDbInit()) {
+                  AbstractLifecycleVisitor<?> visitor =
+                     new AccessProviderVisitor(userArtifact, objectsToCheck, accessData);
+                  IStatus status = service.dispatch(new NullProgressMonitor(), visitor, ACCESS_POINT_ID);
+                  Operations.checkForErrorStatus(status);
+               }
+               return accessData;
             }
-            accessDataCache.put(key, accessData);
-         }
+         });
+      } catch (ExecutionException ex) {
+         OseeExceptions.wrapAndThrow(ex);
       }
-      AccessData accessData = accessDataCache.get(key);
       addLockAccessControl(userArtifact, objectsToCheck, accessData);
       return new AccessDataQuery(accessData);
    }

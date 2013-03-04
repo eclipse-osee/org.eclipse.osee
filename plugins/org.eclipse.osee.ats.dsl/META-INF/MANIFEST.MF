@@ -3,18 +3,18 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Ats Dsl Ui (Incubation)
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-Version: 0.11.0.qualifier
-Bundle-SymbolicName: org.eclipse.osee.ats.dsl; singleton:=true
+Bundle-SymbolicName: org.eclipse.osee.ats.dsl;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.osee.ats.dsl,
+ org.eclipse.osee.ats.dsl.atsDsl,
+ org.eclipse.osee.ats.dsl.atsDsl.impl,
+ org.eclipse.osee.ats.dsl.atsDsl.util,
  org.eclipse.osee.ats.dsl.parseTreeConstruction,
  org.eclipse.osee.ats.dsl.parser.antlr,
  org.eclipse.osee.ats.dsl.parser.antlr.internal,
  org.eclipse.osee.ats.dsl.services,
  org.eclipse.osee.ats.dsl.validation,
- org.eclipse.osee.ats.dsl.atsDsl,
- org.eclipse.osee.ats.dsl.atsDsl.impl,
- org.eclipse.osee.ats.dsl.atsDsl.util,
  org.eclipse.osee.ats.dsl.scoping,
  org.eclipse.osee.ats.dsl.formatting
 Require-Bundle: org.eclipse.xtext;bundle-version="2.0.0";visibility:=reexport,
@@ -27,7 +27,8 @@ Require-Bundle: org.eclipse.xtext;bundle-version="2.0.0";visibility:=reexport,
  org.eclipse.xtext.util,
  org.eclipse.emf.ecore,
  org.eclipse.emf.common,
- org.antlr.runtime
+ org.antlr.runtime,
+ com.google.guava;bundle-version="10.0.1"
 Import-Package: org.apache.commons.logging,
  org.apache.log4j,
  org.eclipse.core.runtime,
