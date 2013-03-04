@@ -25,7 +25,7 @@ import org.eclipse.osee.orcs.rest.internal.search.PredicateHandler;
 import org.eclipse.osee.orcs.rest.model.search.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.SearchMethod;
 import org.eclipse.osee.orcs.rest.model.search.SearchOp;
-import org.eclipse.osee.orcs.rest.model.search.SearchParameters;
+import org.eclipse.osee.orcs.rest.model.search.SearchRequest;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.junit.Before;
@@ -67,8 +67,8 @@ public class SearchDslTest {
       Predicate predicate =
          new Predicate(SearchMethod.ATTRIBUTE_TYPE, Arrays.asList("1000000000000070"), SearchOp.EQUALS, null,
             Strings.EMPTY_STRING, Arrays.asList("AtsAdmin"));
-      SearchParameters params =
-         new SearchParameters(BRANCH.getGuid(), Arrays.asList(predicate), Strings.EMPTY_STRING, Strings.EMPTY_STRING,
+      SearchRequest params =
+         new SearchRequest(BRANCH.getGuid(), Arrays.asList(predicate), Strings.EMPTY_STRING, Strings.EMPTY_STRING,
             0, false, false, false);
 
       dsl.build(queryFactory, params);

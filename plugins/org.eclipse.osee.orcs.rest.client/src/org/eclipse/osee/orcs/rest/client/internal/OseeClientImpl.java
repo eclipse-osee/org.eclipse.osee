@@ -19,9 +19,8 @@ import org.eclipse.osee.orcs.rest.client.QueryBuilder;
 import org.eclipse.osee.orcs.rest.client.internal.search.PredicateFactory;
 import org.eclipse.osee.orcs.rest.client.internal.search.PredicateFactoryImpl;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryBuilderImpl;
+import org.eclipse.osee.orcs.rest.client.internal.search.QueryExecutorV1;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryOptions;
-import org.eclipse.osee.orcs.rest.client.internal.search.SearchResultProvider;
-import org.eclipse.osee.orcs.rest.client.internal.search.V1SearchResultProvider;
 import org.eclipse.osee.orcs.rest.model.search.Predicate;
 
 /**
@@ -31,7 +30,7 @@ import org.eclipse.osee.orcs.rest.model.search.Predicate;
 public class OseeClientImpl implements OseeClient {
 
    private PredicateFactory predicateFactory;
-   private SearchResultProvider searchResultProvider;
+   private QueryExecutorV1 executor;
 
    private URIProvider uriProvider;
    private WebClientProvider clientProvider;
@@ -46,19 +45,19 @@ public class OseeClientImpl implements OseeClient {
 
    public void start() {
       predicateFactory = new PredicateFactoryImpl();
-      searchResultProvider = new V1SearchResultProvider(uriProvider, clientProvider);
+      executor = new QueryExecutorV1(uriProvider, clientProvider);
    }
 
    public void stop() {
       predicateFactory = null;
-      searchResultProvider = null;
+      executor = null;
    }
 
    @Override
    public QueryBuilder createQueryBuilder(IOseeBranch branch) {
       QueryOptions options = new QueryOptions();
       List<Predicate> predicates = new ArrayList<Predicate>();
-      return new QueryBuilderImpl(branch, predicates, options, predicateFactory, searchResultProvider);
+      return new QueryBuilderImpl(branch, predicates, options, predicateFactory, executor);
    }
 
 }

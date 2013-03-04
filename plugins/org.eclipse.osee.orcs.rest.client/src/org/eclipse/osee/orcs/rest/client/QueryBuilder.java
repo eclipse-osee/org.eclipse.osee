@@ -16,11 +16,11 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
-import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.rest.model.search.SearchResult;
 
 /**
  * @author Ryan D. Brooks
@@ -189,18 +189,10 @@ public interface QueryBuilder {
     * 
     * @return artifact search results
     */
-   public ResultSet<Integer> getResults() throws OseeCoreException;
-
-   /**
-    * Executes query
-    * 
-    * @return artifact search results with match locations
-    */
-   //   public ResultSet<Match<Artifact, Attribute<?>>> getMatches() throws OseeCoreException;
+   SearchResult getSearchResult() throws OseeCoreException;
 
    /**
     * Count search results
     */
-   public int getCount() throws OseeCoreException;
-
+   int getCount() throws OseeCoreException;
 }

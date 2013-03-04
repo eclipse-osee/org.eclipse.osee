@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
-import static org.eclipse.osee.framework.skynet.core.artifact.LoadType.INCLUDE_CACHE;
-import static org.eclipse.osee.framework.skynet.core.artifact.LoadType.RELOAD_CACHE;
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.*;
+import static org.eclipse.osee.framework.skynet.core.artifact.LoadType.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -254,7 +252,7 @@ public class ArtifactQueryBuilder {
    }
 
    private List<Artifact> loadArtifactsFromServerIds(LoadType reload) throws OseeCoreException {
-      List<Integer> ids = createOrcsQuery().getResults().getList();
+      List<Integer> ids = createOrcsQuery().getSearchResult().getIds();
       List<Artifact> artifacts =
          ArtifactLoader.loadArtifacts(ids, branch, loadLevel, reload, allowDeleted, transactionId);
       return artifacts;
@@ -270,7 +268,7 @@ public class ArtifactQueryBuilder {
    }
 
    public List<Integer> selectArtifacts(int artifactCountEstimate) throws OseeCoreException {
-      return createOrcsQuery().getResults().getList();
+      return createOrcsQuery().getSearchResult().getIds();
    }
 
    public int countArtifacts() throws OseeCoreException {

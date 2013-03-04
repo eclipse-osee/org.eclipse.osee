@@ -26,8 +26,8 @@ import org.eclipse.osee.orcs.rest.internal.OrcsApplication;
 import org.eclipse.osee.orcs.rest.internal.search.dsl.DslFactory;
 import org.eclipse.osee.orcs.rest.internal.search.dsl.DslTranslator;
 import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchQueryBuilder;
-import org.eclipse.osee.orcs.rest.model.search.SearchParameters;
-import org.eclipse.osee.orcs.rest.model.search.SearchResult;
+import org.eclipse.osee.orcs.rest.model.search.SearchRequest;
+import org.eclipse.osee.orcs.rest.model.search.SearchResponse;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
@@ -69,7 +69,7 @@ public class ArtifactSearch_V1 extends ArtifactSearch {
     * @param includeCache (Optional) Boolean parameter that configures the search to ???
     * @param includeDeleted (Optional) Boolean parameter that configures the search to include deleted artifacts in its
     * result set and analysis.
-    * @return A {@link SearchResult} object containing the results of the search, configuration and analysis
+    * @return A {@link SearchResponse} object containing the results of the search, configuration and analysis
     * information.
     * @throws OseeCoreException<br>
     * <br>
@@ -99,10 +99,10 @@ public class ArtifactSearch_V1 extends ArtifactSearch {
     */
    @GET
    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-   public SearchResult getSearchWithQueryParams(@QueryParam("alt") String alt, @QueryParam("fields") String fields, @QueryParam("q") String rawQuery, @QueryParam("fromTx") int fromTransaction, @QueryParam("inherits") boolean includeTypeInheritance, @QueryParam("cached") boolean includeCache, @QueryParam("includeDeleted") boolean includeDeleted) throws OseeCoreException {
+   public SearchResponse getSearchWithQueryParams(@QueryParam("alt") String alt, @QueryParam("fields") String fields, @QueryParam("q") String rawQuery, @QueryParam("fromTx") int fromTransaction, @QueryParam("inherits") boolean includeTypeInheritance, @QueryParam("cached") boolean includeCache, @QueryParam("includeDeleted") boolean includeDeleted) throws OseeCoreException {
       DslTranslator translator = DslFactory.createTranslator();
-      SearchParameters params =
-         new SearchParameters(getBranchUuid(), translator.translate(rawQuery), alt, fields, fromTransaction,
+      SearchRequest params =
+         new SearchRequest(getBranchUuid(), translator.translate(rawQuery), alt, fields, fromTransaction,
             includeTypeInheritance, includeCache, includeDeleted);
       return search(params);
    }
@@ -110,11 +110,11 @@ public class ArtifactSearch_V1 extends ArtifactSearch {
    @POST
    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-   public SearchResult getSearchWithMatrixParams(SearchParameters parameters) throws OseeCoreException {
+   public SearchResponse getSearchWithMatrixParams(SearchRequest parameters) throws OseeCoreException {
       return search(parameters);
    }
 
-   private SearchResult search(SearchParameters params) throws OseeCoreException {
+   private SearchResponse search(SearchRequest params) throws OseeCoreException {
       long startTime = System.currentTimeMillis();
 
       QueryFactory qFactory = OrcsApplication.getOrcsApi().getQueryFactory(null); // Fix this
@@ -129,9 +129,9 @@ public class ArtifactSearch_V1 extends ArtifactSearch {
          builder.fromTransaction(params.getFromTx());
       }
 
-      SearchResult result;
+      SearchResponse result;
       if (params.getFields().equals("count")) {
-         result = new SearchResult();
+         result = new SearchResponse();
          int total = builder.getCount();
          result.setTotal(total);
 
@@ -140,13 +140,13 @@ public class ArtifactSearch_V1 extends ArtifactSearch {
          for (HasLocalId art : builder.getResultsAsLocalIds()) {
             localIds.add(art.getLocalId());
          }
-         result = new SearchResult();
+         result = new SearchResponse();
          result.setIds(localIds);
          result.setTotal(localIds.size());
       } else {
          throw new UnsupportedOperationException();
       }
-      result.setSearchParams(params);
+      result.setSearchRequest(params);
       result.setSearchTime(System.currentTimeMillis() - startTime);
       return result;
    }

@@ -13,6 +13,9 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.*;
 import static org.eclipse.osee.framework.core.enums.LoadLevel.*;
 import static org.eclipse.osee.framework.skynet.core.artifact.LoadType.*;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,6 +29,9 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.ResultSet;
+import org.eclipse.osee.framework.core.data.ResultSetList;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -49,6 +55,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
+import org.eclipse.osee.orcs.rest.client.QueryBuilder;
+import org.eclipse.osee.orcs.rest.model.search.SearchParameters;
+import org.eclipse.osee.orcs.rest.model.search.SearchResult;
 
 /**
  * @author Ryan D. Brooks
@@ -570,5 +582,74 @@ public class ArtifactQuery {
          throw new ArtifactDoesNotExist("Artifact of type [%s] does not exist on branch [%s]", type, branch);
       }
       return artifact;
+   }
+
+   public static QueryBuilderArtifact createQueryBuilder(IOseeBranch branch) throws OseeCoreException {
+      OseeClient client = ServiceUtil.getOseeClient();
+      QueryBuilder builder = client.createQueryBuilder(branch);
+
+      QueryBuilderProxy handler = new QueryBuilderProxy(builder);
+
+      Class<?>[] types = new Class<?>[] {QueryBuilderArtifact.class};
+      QueryBuilderArtifact query =
+         (QueryBuilderArtifact) Proxy.newProxyInstance(QueryBuilderArtifact.class.getClassLoader(), types, handler);
+
+      return query;
+   }
+
+   private static final class QueryBuilderProxy implements InvocationHandler {
+
+      private final QueryBuilder proxied;
+
+      public QueryBuilderProxy(QueryBuilder proxied) {
+         super();
+         this.proxied = proxied;
+      }
+
+      @Override
+      public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+         Object toReturn = null;
+         Method localMethod = getMethodFor(this.getClass(), method);
+         if (localMethod != null) {
+            toReturn = localMethod.invoke(this, args);
+         } else {
+            toReturn = invokeOnDelegate(proxied, method, args);
+         }
+         return toReturn;
+      }
+
+      protected Object invokeOnDelegate(Object target, Method method, Object[] args) throws Throwable {
+         return method.invoke(target, args);
+      }
+
+      private Method getMethodFor(Class<?> clazz, Method method) {
+         Method toReturn = null;
+         try {
+            toReturn = clazz.getMethod(method.getName(), method.getParameterTypes());
+         } catch (Exception ex) {
+            // Do Nothing;
+         }
+         return toReturn;
+      }
+
+      // this method is called from invoke in the localMethod case
+      @SuppressWarnings("unused")
+      public ResultSet<Artifact> getResults() throws OseeCoreException {
+         SearchResult result = proxied.getSearchResult();
+         SearchParameters searchParameters = result.getSearchParameters();
+
+         IOseeBranch branch = TokenFactory.createBranch(searchParameters.getBranchUuid(), "N/A");
+
+         TransactionRecord tx = null;
+         if (searchParameters.getFromTx() > 0) {
+            tx = TransactionManager.getTransactionId(searchParameters.getFromTx());
+         }
+         DeletionFlag deletionFlag =
+            searchParameters.isIncludeDeleted() ? DeletionFlag.INCLUDE_DELETED : DeletionFlag.EXCLUDE_DELETED;
+
+         List<Artifact> loadedArtifacts =
+            ArtifactLoader.loadArtifacts(result.getIds(), branch, LoadLevel.FULL, INCLUDE_CACHE, deletionFlag, tx);
+         return new ResultSetList<Artifact>(loadedArtifacts);
+      }
    }
 }

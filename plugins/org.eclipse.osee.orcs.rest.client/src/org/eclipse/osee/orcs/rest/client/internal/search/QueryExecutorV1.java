@@ -21,38 +21,39 @@ import org.eclipse.osee.orcs.rest.model.ExceptionEntity;
 import org.eclipse.osee.orcs.rest.model.search.OutputFormat;
 import org.eclipse.osee.orcs.rest.model.search.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.RequestType;
-import org.eclipse.osee.orcs.rest.model.search.SearchParameters;
 import org.eclipse.osee.orcs.rest.model.search.SearchResult;
+import org.eclipse.osee.orcs.rest.model.search.SearchRequest;
+import org.eclipse.osee.orcs.rest.model.search.SearchResponse;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 
 /**
  * @author John Misinco
  */
-public class V1SearchResultProvider implements SearchResultProvider {
+public class QueryExecutorV1 implements QueryExecutor {
 
    private final WebClientProvider clientProvider;
    private final URIProvider uriProvider;
 
-   public V1SearchResultProvider(URIProvider uriProvider, WebClientProvider clientProvider) {
+   public QueryExecutorV1(URIProvider uriProvider, WebClientProvider clientProvider) {
       super();
       this.uriProvider = uriProvider;
       this.clientProvider = clientProvider;
    }
 
    @Override
-   public int getSearchCount(IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
-      SearchResult result = performSearch(RequestType.COUNT, OutputFormat.XML, branch, predicates, options);
+   public int getCount(IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
+      SearchResponse result = performSearch(RequestType.COUNT, OutputFormat.XML, branch, predicates, options);
       return result.getTotal();
    }
 
    @Override
-   public SearchResult getSearchResults(IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
-      SearchResult result = performSearch(RequestType.IDS, OutputFormat.XML, branch, predicates, options);
+   public SearchResult getResults(IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
+      SearchResponse result = performSearch(RequestType.IDS, OutputFormat.XML, branch, predicates, options);
       return result;
    }
 
-   private SearchResult performSearch(RequestType requestType, OutputFormat outputFormat, IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
+   private SearchResponse performSearch(RequestType requestType, OutputFormat outputFormat, IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
       int fromTx = 0;
       if (options.isHistorical()) {
          fromTx = options.getFromTransaction();
@@ -73,18 +74,18 @@ public class V1SearchResultProvider implements SearchResultProvider {
          includeDeleted = true;
       }
 
-      SearchParameters params =
-         new SearchParameters(branch.getGuid(), predicates, outputFormat.name().toLowerCase(),
+      SearchRequest params =
+         new SearchRequest(branch.getGuid(), predicates, outputFormat.name().toLowerCase(),
             requestType.name().toLowerCase(), fromTx, includeTypeInh, includeCache, includeDeleted);
 
       URI uri = uriProvider.getEncodedURI(String.format("oseex/branch/%s/artifact/search/v1", branch.getGuid()), null);
 
       WebResource resource = clientProvider.createResource(uri);
-      SearchResult searchResult = null;
+      SearchResponse searchResult = null;
       try {
          searchResult =
             resource.accept(MediaType.APPLICATION_JSON_TYPE).type(MediaType.APPLICATION_JSON_TYPE).post(
-               SearchResult.class, params);
+               SearchResponse.class, params);
       } catch (UniformInterfaceException ex) {
          ExceptionEntity entity = ex.getResponse().getEntity(ExceptionEntity.class);
          throw new OseeCoreException(entity.getExceptionString());

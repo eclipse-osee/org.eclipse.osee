@@ -21,8 +21,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
-import org.eclipse.osee.framework.core.data.ResultSet;
-import org.eclipse.osee.framework.core.data.ResultSetList;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -37,17 +35,17 @@ import org.eclipse.osee.orcs.rest.model.search.SearchResult;
 public class QueryBuilderImpl implements QueryBuilder {
 
    private final PredicateFactory predicateFactory;
-   private final SearchResultProvider searchResultProvider;
    private final IOseeBranch branch;
    private final QueryOptions options;
    private final List<Predicate> predicates;
+   private final QueryExecutor executor;
 
-   public QueryBuilderImpl(IOseeBranch branch, List<Predicate> predicates, QueryOptions options, PredicateFactory predicateFactory, SearchResultProvider searchResultProvider) {
+   public QueryBuilderImpl(IOseeBranch branch, List<Predicate> predicates, QueryOptions options, PredicateFactory predicateFactory, QueryExecutor executor) {
       this.branch = branch;
       this.predicates = predicates;
       this.options = options;
       this.predicateFactory = predicateFactory;
-      this.searchResultProvider = searchResultProvider;
+      this.executor = executor;
       reset();
    }
 
@@ -268,17 +266,15 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public ResultSet<Integer> getResults() throws OseeCoreException {
+   public SearchResult getSearchResult() throws OseeCoreException {
       QueryOptions qOptions = options.clone();
-      SearchResult result = searchResultProvider.getSearchResults(branch, predicates, qOptions);
-      List<Integer> ids = result.getIds();
-      return new ResultSetList<Integer>(ids);
+      return executor.getResults(branch, predicates, qOptions);
    }
 
    @Override
    public int getCount() throws OseeCoreException {
       QueryOptions qOptions = options.clone();
-      return searchResultProvider.getSearchCount(branch, predicates, qOptions);
+      return executor.getCount(branch, predicates, qOptions);
    }
 
 }

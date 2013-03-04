@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.rest.internal.search.PredicateHandler;
 import org.eclipse.osee.orcs.rest.model.search.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.SearchMethod;
-import org.eclipse.osee.orcs.rest.model.search.SearchParameters;
+import org.eclipse.osee.orcs.rest.model.search.SearchRequest;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
@@ -35,7 +35,7 @@ public class SearchQueryBuilder {
       this.handlers = handlers;
    }
 
-   public QueryBuilder build(QueryFactory queryFactory, SearchParameters params) throws OseeCoreException {
+   public QueryBuilder build(QueryFactory queryFactory, SearchRequest params) throws OseeCoreException {
       Conditions.checkNotNull(queryFactory, "queryFactory");
       Conditions.checkNotNull(params, "params");
       IOseeBranch searchBranch = TokenFactory.createBranch(params.getBranchUuid(), "searchBranch");

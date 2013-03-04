@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Boeing.
+ * Copyright (c) 2013 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,12 +18,10 @@ import org.eclipse.osee.orcs.rest.model.search.SearchResult;
 
 /**
  * @author John Misinco
- * @author Roberto E. Escobar
  */
-public interface SearchResultProvider {
+public interface QueryExecutor {
 
-   int getSearchCount(IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException;
+   int getCount(IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException;
 
-   SearchResult getSearchResults(IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException;
-
+   SearchResult getResults(IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException;
 }
