@@ -46,6 +46,7 @@ public class DoorsArtifactExtractorTest {
    private static final String IMAGE_CONTENT = "Image Content";
    private static final String PRIME_ITEM_DIAGRAM = "Prime item diagram.";
    private static final String[] ARTIFACT_NAMES = {
+      "Door_Requirements",
       "SCOPE",
       "APPLICABLE DOCUMENTS",
       "Non-Government documents.",

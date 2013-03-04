@@ -13,8 +13,10 @@ package org.eclipse.osee.framework.skynet.core.importing.parsers;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -89,7 +91,6 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
          fileName = "";
       }
       fileName += source.getPath();
-
       String standardHTML = standardizeDOORS(fileName);
 
       XMLInputFactory factory = XMLInputFactory.newInstance();
@@ -100,14 +101,22 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       boolean tableFound = false, inHeaderCell = false;
       int embededTableCount = 0;
       String cell = "";
+      String title = fileName;
+      title = title.replaceAll("\\\\", "_");
+      title = title.replaceAll("/", "_");
+      title = title.replaceAll(" ", "_");
+      Boolean isTitle = false;
       Vector<String> currentRow = new Vector<String>();
+
       while (reader.hasNext()) {
          event = reader.nextEvent();
          if (event.isStartElement()) {
+            isTitle = false;
             StartElement startElement = (StartElement) event;
             String qName = startElement.getName().toString().trim();
             if (qName.equalsIgnoreCase("title")) {
                cell = "";
+               isTitle = true;
             } else if (qName.equalsIgnoreCase("table")) {
                if (tableFound) {
                   // table within the table
@@ -137,6 +146,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                cell += event.toString();
             }
          } else if (event.isEndElement()) {
+            isTitle = false;
             EndElement endElement = (EndElement) event;
             String qName = endElement.getName().toString().trim();
             if (qName.equalsIgnoreCase("title")) {
@@ -202,6 +212,20 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
          } else if (event.isCharacters()) {
             Characters characters = (Characters) event;
             cell += characters.toString();
+            if (isTitle) {
+               title = cell;
+               title = title.replaceAll("/", "_");
+               title = title.replaceAll(" ", "_");
+               if (title.equals("")) {
+                  title = "empty_title";
+               }
+               RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.CONTAINER);
+               roughArtifact.addAttribute(CoreAttributeTypes.Name, title.trim());
+               roughArtifact.setGuid(GUID.create());
+               roughArtifact.setSectionNumber("0");
+               collector.addRoughArtifact(roughArtifact);
+               isTitle = false;
+            }
          }
       }
       myStringReader.close();
@@ -210,18 +234,18 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
 
    }
 
-   private String getToken(String input, int startChar) {
-      String returnValue = input.substring(startChar);
+   private String getToken(byte[] input, int startChar) {
+      String returnValue = "";
       int iPos = 0;
       boolean inSingleQuote = false, inDoubleQuote = false;
-      while (iPos < returnValue.length()) {
-         char theChar = returnValue.charAt(iPos);
+      while (returnValue.equals("") && iPos < input.length - startChar) {
+         char theChar = (char) input[iPos + startChar];
          switch (theChar) {
 
             case '\'':
                if (inSingleQuote) {
                   // have to include closing ' (iPos + 1);
-                  returnValue = returnValue.substring(0, iPos + 1);
+                  returnValue = new String(input, startChar, iPos + 1);
                   iPos++;
                   inSingleQuote = false;
                } else {
@@ -232,7 +256,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
             case '\"':
                if (inDoubleQuote) {
                   // have to include closing " (iPos + 1);
-                  returnValue = returnValue.substring(0, iPos + 1);
+                  returnValue = new String(input, startChar, iPos + 1);
                   iPos++;
                   inDoubleQuote = false;
                } else {
@@ -251,7 +275,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                      // starts with a terminator, token is 1 char
                      returnValue = String.valueOf(theChar);
                   } else {
-                     returnValue = returnValue.substring(0, iPos);
+                     returnValue = new String(input, startChar, iPos);
                      iPos++;
                   }
                }
@@ -285,8 +309,9 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       int iLastSlash = input.lastIndexOf('/'), iLastBackslash = input.lastIndexOf('\\');
       int iLast = (iLastBackslash > iLastSlash) ? iLastBackslash : iLastSlash;
       String filePath = input.substring(0, iLast + 1);
+      FileInputStream readStream = null;
       try {
-         FileInputStream readStream = new FileInputStream(input);
+         readStream = new FileInputStream(input);
          int iRead = 0;
          byte[] readBytes = new byte[READ_BUFFER_LEN];
          iRead = READ_BUFFER_LEN;
@@ -295,17 +320,29 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
             String readString = new String(readBytes, 0, iRead);
             rawValue.append(readString);
          }
-         readStream.close();
       } catch (Exception e) {
          e.printStackTrace();
+      } finally {
+         try {
+            readStream.close();
+         } catch (IOException e) {
+
+         }
       }
       // We now have the whole file as a string --
       // walk through it one token at a time
       int iStart = 0;
       boolean inTag = false, inMeta = false, inBr = false, inImg = false, inP = false, tagName = false, equalFound =
-         false, attributeFound = false, LiteralTag = false, isSrcTag = false;
+               false, attributeFound = false, LiteralTag = false, isSrcTag = false;
+      byte[] rawBytes = null;
+      try {
+         rawBytes = rawValue.toString().getBytes("UTF-8");
+      } catch (UnsupportedEncodingException e) {
+         // use default encoding
+         rawBytes = rawValue.toString().getBytes();
+      }
       while (iStart < rawValue.length()) {
-         String token = getToken(rawValue.toString(), iStart);
+         String token = getToken(rawBytes, iStart);
          iStart += token.length();
          if (token.length() == 0) {
             // do nothing, we are done
@@ -418,7 +455,6 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       if (postProcessGuids.contains(artifactGuid)) {
          // need to modify the HTML so the image references the data stored in the
          // artifact.
-         System.out.println(theArtifact.getGuid());
          try {
             List<Integer> Ids = theArtifact.getAttributeIds(CoreAttributeTypes.ImageContent);
             List<String> HTML = theArtifact.getAttributeValues(CoreAttributeTypes.HTMLContent);
@@ -684,16 +720,11 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
        * filled in. In other words a keyword may be followed by a keyword instead of data.
        */
       String[] keywords =
-         {"Effectivity:", "Verf Method:", "Verf Level:", "Verf Location:", "Verf Type:", "Verified By:", "Criteria:"};
+               {"Effectivity:", "Verf Method:", "Verf Level:", "Verf Location:", "Verf Type:", "Verified By:",
+                        "Criteria:"};
       IAttributeType[] FieldType =
-         {
-            null,
-            CoreAttributeTypes.QualificationMethod,
-            CoreAttributeTypes.VerificationLevel,
-            CoreAttributeTypes.VerificationEvent,
-            null,
-            null,
-            null}; // Last one is actually a string
+               {null, CoreAttributeTypes.QualificationMethod, CoreAttributeTypes.VerificationLevel,
+                        CoreAttributeTypes.VerificationEvent, null, null, null}; // Last one is actually a string
       String trimmed = clearHTML(column);
       if (trimmed.trim().isEmpty()) {
          // empty
@@ -790,8 +821,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
             if (boldEnd > div) {
                int divEND = Lower.indexOf(">", div), divClose = Lower.indexOf("</div>", div);
                Lower =
-                  outputHTML.substring(0, div - 1) + "</strong>" + outputHTML.substring(div - 1, divEND + 1) + "<strong>" + outputHTML.substring(
-                     divEND + 1, divClose) + "</strong>" + outputHTML.substring(divClose, boldEnd) + outputHTML.substring(boldEnd + "</strong>".length());
+                        outputHTML.substring(0, div - 1) + "</strong>" + outputHTML.substring(div - 1, divEND + 1) + "<strong>" + outputHTML.substring(
+                                 divEND + 1, divClose) + "</strong>" + outputHTML.substring(divClose, boldEnd) + outputHTML.substring(boldEnd + "</strong>".length());
                outputHTML = Lower;
                // Set up in case there is also an <em>
                Lower = outputHTML.toLowerCase();
@@ -805,8 +836,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
             if (italicEnd > div) {
                int divEND = Lower.indexOf(">", div), divClose = Lower.indexOf("</div>", div);
                Lower =
-                  outputHTML.substring(0, div - 1) + "</em>" + outputHTML.substring(div - 1, divEND + 1) + "<em>" + outputHTML.substring(
-                     divEND + 1, divClose) + "</em>" + outputHTML.substring(divClose, italicEnd) + outputHTML.substring(italicEnd + "</em>".length());
+                        outputHTML.substring(0, div - 1) + "</em>" + outputHTML.substring(div - 1, divEND + 1) + "<em>" + outputHTML.substring(
+                                 divEND + 1, divClose) + "</em>" + outputHTML.substring(divClose, italicEnd) + outputHTML.substring(italicEnd + "</em>".length());
                outputHTML = Lower;
             }
          }
