@@ -67,6 +67,7 @@ import org.eclipse.osee.ats.column.PagesReviewedColumn;
 import org.eclipse.osee.ats.column.ParentHridColumn;
 import org.eclipse.osee.ats.column.ParentIdColumn;
 import org.eclipse.osee.ats.column.ParentStateColumn;
+import org.eclipse.osee.ats.column.ParentTopTeamColumnUI;
 import org.eclipse.osee.ats.column.ParentWorkDefColumn;
 import org.eclipse.osee.ats.column.PercentCompleteSMAStateColumn;
 import org.eclipse.osee.ats.column.PercentCompleteStateReviewColumn;
@@ -214,6 +215,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       PagesChangedColumn.getInstance(),
       PagesReviewedColumn.getInstance(),
       new GuidColumn(false),
+      ParentTopTeamColumnUI.getInstance(),
       ActionableItemOwner.getInstance()};
    private final static String NAMESPACE = "org.eclipse.osee.ats.WorldXViewer";
 

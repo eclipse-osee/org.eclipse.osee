@@ -12,6 +12,8 @@ package org.eclipse.osee.ats.api.workflow;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemProvider;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
@@ -19,5 +21,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItemProvider;
 public interface IAtsTeamWorkflow extends IAtsWorkItem, IAtsActionableItemProvider {
 
    String toStringWithId();
+
+   IAtsTeamDefinition getTeamDefinition() throws OseeCoreException;
 
 }

@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItemProvider;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -54,7 +53,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 /**
  * @author Donald G. Dunne
  */
-public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IAtsTeamWorkflow, IAtsActionableItemProvider, IATSStateMachineArtifact {
+public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IAtsTeamWorkflow, IATSStateMachineArtifact {
 
    private static final Set<Integer> teamArtsWithNoAction = new HashSet<Integer>();
    private final ActionableItemManager actionableItemsDam;
@@ -130,7 +129,8 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
       this.setSoleAttributeValue(AtsAttributeTypes.TeamDefinition, tda.getGuid());
    }
 
-   public IAtsTeamDefinition getTeamDefinition() throws OseeCoreException, OseeCoreException {
+   @Override
+   public IAtsTeamDefinition getTeamDefinition() throws OseeCoreException {
       AtsBulkLoad.loadConfig(true);
       String guid = this.getSoleAttributeValue(AtsAttributeTypes.TeamDefinition, "");
       if (!Strings.isValid(guid)) {
