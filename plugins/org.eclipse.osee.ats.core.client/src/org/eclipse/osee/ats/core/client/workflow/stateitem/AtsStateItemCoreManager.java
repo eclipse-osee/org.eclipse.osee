@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.workflow.stateitem;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 
@@ -19,25 +18,12 @@ import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
  */
 public class AtsStateItemCoreManager {
 
-   private static List<IAtsStateItemCore> stateItems = new ArrayList<IAtsStateItemCore>();
+   private static final ExtensionDefinedObjects<IAtsStateItemCore> extensionDefinedObjects =
+      new ExtensionDefinedObjects<IAtsStateItemCore>("org.eclipse.osee.ats.core.client.AtsStateItemCore",
+         "AtsStateItemCore", "classname", true);
 
    public static List<IAtsStateItemCore> getStateItems() {
-      loadAllStateItems();
-      return stateItems;
+      return extensionDefinedObjects.getObjects();
    }
 
-   private static void loadAllStateItems() {
-      if (stateItems.size() > 0) {
-         return;
-      }
-
-      stateItems =
-         new ExtensionDefinedObjects<IAtsStateItemCore>("org.eclipse.osee.ats.core.client.AtsStateItemCore",
-            "AtsStateItemCore", "classname").getObjects();
-
-   }
-
-   public static List<IAtsStateItemCore> getAllStateItems() {
-      return stateItems;
-   }
 }
