@@ -236,7 +236,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             testStateMachineAssignees(artifacts);
             testAtsLogs(artifacts);
             testActionableItemToTeamDefinition(artifacts, testNameToResultsMap, testNameToTimeSpentMap);
-
+            
             for (IAtsHealthCheck atsHealthCheck : AtsHealthCheck.getAtsHealthCheckItems()) {
                atsHealthCheck.validateAtsDatabase(artifacts, testNameToResultsMap, testNameToTimeSpentMap);
             }
@@ -678,6 +678,12 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   testNameToResultsMap.put("testTeamWorkflows",
                      "Error: TeamWorkflow " + XResultDataUI.getHyperlink(teamArt) + " has no TeamDefinition");
                }
+               List<String> badGuids = getInvalidGuids(teamArt.getActionableItemsDam().getActionableItemGuids());
+               if (!badGuids.isEmpty()) {
+                  testNameToResultsMap.put(
+                     "testTeamWorkflows",
+                     "Error: TeamWorkflow " + XResultDataUI.getHyperlink(teamArt) + " has AI guids that don't exisit " + badGuids);
+               }
             } catch (Exception ex) {
                testNameToResultsMap.put("testTeamWorkflows",
                   teamArt.getArtifactTypeName() + " exception: " + ex.getLocalizedMessage());
@@ -685,6 +691,16 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
       }
       logTestTimeSpent(date, "testTeamWorkflows", testNameToTimeSpentMap);
+   }
+
+   private List<String> getInvalidGuids(List<String> guids) {
+      List<String> badGuids = new ArrayList<String>();
+      for (String guid : guids) {
+         if (AtsConfigCache.instance.getSoleByGuid(guid) == null) {
+            badGuids.add(guid);
+         }
+      }
+      return badGuids;
    }
 
    private void testAtsBranchManager(Collection<Artifact> artifacts) {
