@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.reveiw;
+package org.eclipse.osee.ats.api.review;
 
 /**
  * @author Donald G. Dunne
