@@ -12,12 +12,10 @@ package org.eclipse.osee.framework.database.core;
 
 import java.sql.DatabaseMetaData;
 import java.util.Properties;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Ryan D. Brooks
@@ -100,15 +98,6 @@ public enum OseeSql {
    }
 
    private static String getHintsOrderedFirstRows() {
-      try {
-         // necessary performance when using gamma_id indexes
-         if (OseeInfo.isBooleanUsingCache("useOrderedFirstRows")) {
-            return "/*+ ordered FIRST_ROWS */";
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(OseeSql.class, Level.SEVERE, ex);
-      }
-      // better for performance when using branch_id indexes
       return "/*+ ordered */";
 
    }

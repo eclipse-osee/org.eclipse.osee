@@ -75,7 +75,7 @@ public class StaticSqlProvider implements SqlProvider {
                String hints = oseeSql.getHints();
                if (areHintsSupported) {
                   if (oseeSql.getIsDynamicHint()) {
-                     hints = getHintsOrderedFirstRows();
+                     hints = "/*+ ordered */";
                   }
                }
                if (hints == null) {
@@ -90,17 +90,4 @@ public class StaticSqlProvider implements SqlProvider {
       }
    }
 
-   private String getHintsOrderedFirstRows() {
-      // better for performance when using branch_id indexes
-      String toReturn = "/*+ ordered */";
-      try {
-         // necessary performance when using gamma_id indexes
-         if (preferences.isBooleanUsingCache("useOrderedFirstRows")) {
-            toReturn = "/*+ ordered FIRST_ROWS */";
-         }
-      } catch (OseeCoreException ex) {
-         logger.error(ex, "Error getHintEnabled setting");
-      }
-      return toReturn;
-   }
 }
