@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.operation;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -23,8 +22,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
@@ -43,6 +40,7 @@ import org.eclipse.osee.ats.core.client.config.VersionsClient;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
@@ -89,18 +87,16 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    private final Matcher taskNameMatcher = taskNamePattern.matcher("");
    private CharBackedInputStream charBak;
    private ISheetWriter excelWriter;
-   //                            reqName  legacyId
-   private final CompositeKeyHashMap<String, String, RequirementStatus> reqTaskMap =
-      new CompositeKeyHashMap<String, String, RequirementStatus>();
-   private final StringBuilder sumFormula = new StringBuilder(500);
-   private final HashMap<String, String> testProcedureInfo = new HashMap<String, String>();
-   private final HashCollection<String, IAtsUser> legacyIdToImplementers = new HashCollection<String, IAtsUser>();
-   private final HashMap<String, Artifact> testRunArtifacts = new HashMap<String, Artifact>();
-   private final HashMap<String, String> scriptCategories = new HashMap<String, String>();
-   private final HashSet<IAtsUser> testPocs = new HashSet<IAtsUser>();
-   private final HashSet<String> requirementPocs = new HashSet<String>();
-   private final ArrayList<String[]> statusLines = new ArrayList<String[]>();
-   private final ArrayList<RequirementStatus> statuses = new ArrayList<RequirementStatus>(100);
+
+   private CompositeKeyHashMap<String, String, RequirementStatus> reqTaskMap;
+   private StringBuilder sumFormula;
+   private HashCollection<String, IAtsUser> legacyIdToImplementers;
+   private HashMap<String, Artifact> testRunArtifacts;
+   private HashMap<String, String> scriptCategories;
+   private HashSet<IAtsUser> testPocs;
+   private HashSet<String> requirementPocs;
+   private ArrayList<String[]> statusLines;
+   private ArrayList<RequirementStatus> statuses;
    private Collection<IAtsVersion> versions;
    private HashCollection<String, Artifact> requirementNameToTestProcedures;
 
@@ -172,15 +168,6 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       }
    }
 
-   private void init() throws IOException {
-      charBak = new CharBackedInputStream();
-      excelWriter = new ExcelXmlWriter(charBak.getWriter());
-      reqTaskMap.clear();
-      testRunArtifacts.clear();
-      testProcedureInfo.clear();
-      legacyIdToImplementers.clear();
-   }
-
    private String getScriptName(String scriptPath) {
       String scriptName = scriptPath;
       int endOfPackageName = scriptName.lastIndexOf(".");
@@ -229,7 +216,18 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       IOseeBranch reportBranch = variableMap.getBranch("Requirements Branch");
       IOseeBranch resultsBranch = variableMap.getBranch("Test Results Branch");
       versions = variableMap.getCollection(IAtsVersion.class, "Versions");
-      init();
+
+      reqTaskMap = new CompositeKeyHashMap<String, String, RequirementStatus>();
+      legacyIdToImplementers = new HashCollection<String, IAtsUser>();
+      testRunArtifacts = new HashMap<String, Artifact>();
+      scriptCategories = new HashMap<String, String>();
+      testPocs = new HashSet<IAtsUser>();
+      requirementPocs = new HashSet<String>();
+      statusLines = new ArrayList<String[]>();
+      statuses = new ArrayList<RequirementStatus>(100);
+      charBak = new CharBackedInputStream();
+      excelWriter = new ExcelXmlWriter(charBak.getWriter());
+      sumFormula = new StringBuilder();
 
       //100
       monitor.beginTask("Detailed Test Status", 500);
@@ -243,15 +241,28 @@ public class DetailedTestStatusBlam extends AbstractBlam {
 
       List<Artifact> allSwReqs =
          ArtifactQuery.getArtifactListFromTypeWithInheritence(CoreArtifactTypes.AbstractSoftwareRequirement,
-            reportBranch, EXCLUDE_DELETED);
+            reportBranch, DeletionFlag.EXCLUDE_DELETED);
 
       //100
       writeStatusSheet(allSwReqs, monitor);
+
+      reqTaskMap = null;
+      legacyIdToImplementers = null;
+      versions = null;
+      requirementNameToTestProcedures = null;
+      testPocs = null;
+      requirementPocs = null;
+      statusLines = null;
+      statuses = null;
+      versions = null;
 
       List<Artifact> testCases = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.TestCase, reportBranch);
 
       //100
       writeTestScriptSheet(testCases, monitor);
+
+      testRunArtifacts = null;
+      scriptCategories = null;
 
       excelWriter.endWorkbook();
       IFile iFile = OseeData.getIFile("Detailed_Test_Status_" + Lib.getDateTimeString() + ".xml");
@@ -505,37 +516,24 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       monitor.subTask("Gathering test procedures");
       HashCollection<String, Artifact> requirementNameToTestProcedures = new HashCollection<String, Artifact>();
       // Map Software Requirements from TestProcedure IOseeBranch to Requirements IOseeBranch
-      Map<String, Artifact> testProcedureBranchReqsToReqsBranchMap = new HashMap<String, Artifact>();
-      for (Artifact tpRequirement : ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirement,
-         testProcedureBranch)) {
-         testProcedureBranchReqsToReqsBranchMap.put(tpRequirement.getName(), tpRequirement);
-      }
-
-      double increment = 100.0 / testProcedureBranchReqsToReqsBranchMap.entrySet().size();
+      List<Artifact> tpReqs =
+         ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirement, testProcedureBranch);
+      double increment = 100.0 / tpReqs.size();
       double progress = 0;
 
-      //      Set<String> testProceduresFilter = getAllowedTestProcedures();
-      for (Entry<String, Artifact> entry : testProcedureBranchReqsToReqsBranchMap.entrySet()) {
+      for (Artifact tpRequirement : tpReqs) {
          progress += increment;
          monitor.worked((int) Math.min(1.0, progress));
          if (progress > 1.0) {
             progress = 0;
          }
-         Artifact requirement = entry.getValue();
          Set<Artifact> foundProcedures =
-            new HashSet<Artifact>(requirement.getRelatedArtifacts(CoreRelationTypes.Validation__Validator));
+            new HashSet<Artifact>(tpRequirement.getRelatedArtifacts(CoreRelationTypes.Validation__Validator));
          Set<Artifact> toAdd = new HashSet<Artifact>();
-         //         if (testProceduresFilter.isEmpty() != true) {
-         //            for (Artifact artifact : foundProcedures) {
-         //               if (testProceduresFilter.contains(artifact.getName())) {
-         //                  toAdd.add(artifact);
-         //               }
-         //            }
-         //         } else {
          toAdd = foundProcedures;
-         //         }
-         requirementNameToTestProcedures.put(entry.getKey(), toAdd);
+         requirementNameToTestProcedures.put(tpRequirement.getName(), toAdd);
       }
+
       return requirementNameToTestProcedures;
    }
 
@@ -607,13 +605,14 @@ public class DetailedTestStatusBlam extends AbstractBlam {
 
    private void loadTasksFromWorkflow(TeamWorkFlowArtifact workflow) throws OseeCoreException {
       Collection<TaskArtifact> tasks = workflow.getTaskArtifacts(TeamState.Implement);
+      AtsTaskCache.decache(workflow);
+
       String legacyId = workflow.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
 
       List<IAtsUser> implementers = workflow.getImplementers();
       legacyIdToImplementers.put(legacyId, implementers);
 
       for (TaskArtifact task : tasks) {
-
          taskNameMatcher.reset(task.getName());
          if (taskNameMatcher.find()) {
             String requirementName = taskNameMatcher.group(2);
