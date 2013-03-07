@@ -12,12 +12,16 @@ package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -25,15 +29,18 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -48,6 +55,9 @@ public class ArtifactQueryTest {
 
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   @Rule
+   public TestInfo testInfo = new TestInfo();
 
    @Test
    public void testGetArtifactFromGUIDDeleted() throws OseeCoreException {
@@ -165,7 +175,7 @@ public class ArtifactQueryTest {
    @Test
    public void testGetOrCreate() throws Exception {
       String guid = GUID.create();
-      Branch branch = BranchManager.createTopLevelBranch("test branch");
+      Branch branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
       Artifact artifact1 = ArtifactQuery.getOrCreate(guid, null, CoreArtifactTypes.GeneralData, branch);
       Assert.assertNotNull(artifact1);
       Artifact artifact2 = ArtifactQuery.getOrCreate(guid, null, CoreArtifactTypes.GeneralData, branch);
@@ -177,10 +187,10 @@ public class ArtifactQueryTest {
    @Test
    public void testLargeAttributeIndexing() throws Exception {
       String guid = GUID.create();
-      Branch branch = BranchManager.createTopLevelBranch("testLargeAttributeIndexing branch");
+      Branch branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
       Artifact artifact1 = ArtifactQuery.getOrCreate(guid, null, CoreArtifactTypes.GeneralData, branch);
       artifact1.setSoleAttributeFromString(CoreAttributeTypes.Name, longStr());
-      artifact1.persist("testLargeAttributeIndexing");
+      artifact1.persist(testInfo.getTestName());
       Thread.sleep(1000);
       List<Artifact> artifacts =
          ArtifactQuery.getArtifactListFromName("Wikipedia", branch, DeletionFlag.EXCLUDE_DELETED,
@@ -189,6 +199,40 @@ public class ArtifactQueryTest {
       job.join();
       Assert.assertEquals(1, artifacts.size());
       Assert.assertEquals(artifact1, artifacts.iterator().next());
+   }
+
+   @Test
+   public void testQueryById() throws OseeCoreException {
+      Branch branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
+
+      List<Integer> newIdsInOrder = new LinkedList<Integer>();
+      Map<Integer, TransactionRecord> idToTxId = new HashMap<Integer, TransactionRecord>();
+      //create 3 artifacts, decache them
+      for (int i = 0; i < 2; i++) {
+         Artifact created = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch);
+         created.persist(testInfo.getTestName());
+         ArtifactCache.deCache(created);
+         newIdsInOrder.add(created.getArtId());
+         TransactionRecord tx = TransactionManager.getHeadTransaction(branch);
+         idToTxId.put(created.getArtId(), tx);
+      }
+
+      Assert.assertEquals(2, newIdsInOrder.size());
+
+      //create a new tx deleting the first created
+      Artifact firstCreated = ArtifactQuery.getArtifactFromId(newIdsInOrder.get(0), branch);
+      firstCreated.deleteAndPersist();
+      ArtifactCache.deCache(firstCreated);
+
+      Artifact toCheck = ArtifactQuery.checkArtifactFromId(newIdsInOrder.get(0), branch, DeletionFlag.EXCLUDE_DELETED);
+      Assert.assertNull(toCheck);
+      toCheck = ArtifactQuery.checkArtifactFromId(newIdsInOrder.get(0), branch, DeletionFlag.INCLUDE_DELETED);
+      Assert.assertNotNull(toCheck);
+      ArtifactCache.deCache(toCheck);
+
+      TransactionRecord beforeDelete = idToTxId.get(newIdsInOrder.get(1));
+      Assert.assertNotNull(ArtifactQuery.checkHistoricalArtifactFromId(firstCreated.getArtId(), beforeDelete,
+         DeletionFlag.EXCLUDE_DELETED));
    }
 
    private String longStr() {

@@ -10,12 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.*;
-import static org.eclipse.osee.framework.skynet.core.artifact.LoadType.*;
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
+import static org.eclipse.osee.framework.skynet.core.artifact.LoadType.INCLUDE_CACHE;
+import static org.eclipse.osee.framework.skynet.core.artifact.LoadType.RELOAD_CACHE;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -33,8 +41,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ISearchConfirmer;
 import org.eclipse.osee.framework.skynet.core.artifact.LoadType;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.client.QueryBuilder;
+import org.eclipse.osee.orcs.rest.model.search.SearchResponse;
+import org.eclipse.osee.orcs.rest.model.search.SearchResult;
 
 /**
  * @author Ryan D. Brooks
@@ -181,11 +192,27 @@ public class ArtifactQueryBuilder {
       return id;
    }
 
-   private QueryBuilder createOrcsQuery() throws OseeCoreException {
-      boolean isHistorical = transactionId != null;
+   private boolean useServerSearch() {
+      return (Conditions.hasValues(artifactTypes) || guidOrHrid != null || Conditions.hasValues(guids) || Conditions.hasValues(hrids) || criteria.length > 0 || (artifactId == 0 && !Conditions.hasValues(artifactIds)));
+   }
 
-      OseeClient client = ServiceUtil.getOseeClient();
-      QueryBuilder builder = client.createQueryBuilder(branch);
+   private QueryBuilder getQueryBuilder() throws OseeCoreException {
+      QueryBuilder toReturn;
+      if (useServerSearch()) {
+         OseeClient client = ServiceUtil.getOseeClient();
+         toReturn = client.createQueryBuilder(branch);
+      } else {
+         LocalIdQueryBuilder builder = new LocalIdQueryBuilder(branch);
+
+         Class<?>[] types = new Class<?>[] {QueryBuilder.class};
+         toReturn = (QueryBuilder) Proxy.newProxyInstance(QueryBuilder.class.getClassLoader(), types, builder);
+      }
+      return toReturn;
+   }
+
+   private QueryBuilder createOrcsQuery() throws OseeCoreException {
+
+      QueryBuilder builder = getQueryBuilder();
 
       if (allowDeleted == INCLUDE_DELETED) {
          builder.includeDeleted();
@@ -221,6 +248,7 @@ public class ArtifactQueryBuilder {
          }
       }
 
+      boolean isHistorical = transactionId != null;
       if (isHistorical) {
          builder.fromTransaction(transactionId.getId());
       }
@@ -329,4 +357,91 @@ public class ArtifactQueryBuilder {
       message.append("\"");
       return message.toString();
    }
+
+   private static final class LocalIdQueryBuilder implements InvocationHandler {
+
+      private final Set<Integer> localIds = new LinkedHashSet<Integer>();
+      private DeletionFlag allowDeleted = EXCLUDE_DELETED;
+      private int txId = -1;
+      private final IOseeBranch branch;
+
+      public LocalIdQueryBuilder(IOseeBranch branch) {
+         super();
+         this.branch = branch;
+      }
+
+      @Override
+      public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+         Object toReturn = null;
+
+         Method localMethod = getMethodFor(getClass(), method);
+         if (localMethod != null) {
+            toReturn = localMethod.invoke(this, args);
+            if (toReturn == null) {
+               toReturn = proxy;
+            }
+         } else {
+            throw new UnsupportedOperationException();
+         }
+         return toReturn;
+      }
+
+      private Method getMethodFor(Class<?> clazz, Method method) {
+         Method toReturn = null;
+         try {
+            toReturn = clazz.getMethod(method.getName(), method.getParameterTypes());
+         } catch (Exception ex) {
+            // Do Nothing;
+         }
+         return toReturn;
+      }
+
+      @SuppressWarnings("unused")
+      public void fromTransaction(int transactionId) {
+         txId = transactionId;
+      }
+
+      @SuppressWarnings("unused")
+      public void includeDeleted() {
+         includeDeleted(true);
+      }
+
+      public void includeDeleted(boolean enabled) {
+         allowDeleted = enabled ? INCLUDE_DELETED : EXCLUDE_DELETED;
+      }
+
+      @SuppressWarnings("unused")
+      public SearchResult getSearchResult() throws OseeCoreException {
+         SearchResponse response = new SearchResponse();
+         List<Integer> ids = new LinkedList<Integer>(localIds);
+         response.setIds(ids);
+         return response;
+      }
+
+      @SuppressWarnings("unused")
+      public int getCount() throws OseeCoreException {
+         TransactionRecord tx;
+         if (txId == -1) {
+            tx = TransactionManager.getHeadTransaction(branch);
+         } else {
+            tx = TransactionManager.getTransactionId(txId);
+         }
+         List<Artifact> results =
+            ArtifactLoader.loadArtifacts(localIds, branch, LoadLevel.SHALLOW, LoadType.INCLUDE_CACHE, allowDeleted, tx);
+         return results.size();
+      }
+
+      @SuppressWarnings("unused")
+      public void andLocalId(int... artifactId) {
+         for (int id : artifactId) {
+            localIds.add(id);
+         }
+      }
+
+      @SuppressWarnings("unused")
+      public void andLocalIds(Collection<Integer> artifactIds) {
+         localIds.addAll(artifactIds);
+      }
+   }
+
 }
