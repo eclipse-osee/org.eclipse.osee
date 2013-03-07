@@ -25,6 +25,8 @@
       <import plugin="org.eclipse.osee.framework.skynet.core"/>
       <import plugin="org.eclipse.osee.framework.core.client"/>
       <import plugin="org.eclipse.osee.framework.core"/>
+      <import plugin="org.apache.commons.dbcp" version="1.4.0" match="compatible"/>
+      <import plugin="org.apache.commons.pool" version="1.6.0" match="compatible"/>
       <import plugin="org.eclipse.osee.framework.database"/>
       <import plugin="org.eclipse.osee.framework.jdk.core"/>
       <import plugin="org.eclipse.osee.framework.logging"/>
