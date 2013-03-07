@@ -275,7 +275,7 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
 
    private Artifact getArtifact(int artId, IOseeBranch branch) throws OseeCoreException {
       try {
-         return ArtifactQuery.getArtifactFromId(artId, branch);
+         return ArtifactQuery.getArtifactFromId(artId, branch, DeletionFlag.INCLUDE_DELETED);
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
       }

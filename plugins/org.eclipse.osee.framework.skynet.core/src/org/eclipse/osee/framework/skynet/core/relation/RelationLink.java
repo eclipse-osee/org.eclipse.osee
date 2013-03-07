@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -140,7 +141,7 @@ public class RelationLink {
 
    private void deleteEmptyRelationOrder(SkynetTransaction transaction) {
       try {
-         Artifact aArtifact = ArtifactQuery.getArtifactFromId(aArtifactId, branch);
+         Artifact aArtifact = ArtifactQuery.getArtifactFromId(aArtifactId, branch, DeletionFlag.INCLUDE_DELETED);
 
          if (aArtifact.getAttributeCount(CoreAttributeTypes.RelationOrder) == 1) {
             RelationOrderData relationOrderData = new RelationOrderFactory().createRelationOrderData(aArtifact);

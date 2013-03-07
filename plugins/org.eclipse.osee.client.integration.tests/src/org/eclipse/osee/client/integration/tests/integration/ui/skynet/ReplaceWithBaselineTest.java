@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -206,7 +207,8 @@ public final class ReplaceWithBaselineTest {
       List<Artifact> artifactsToRevert = new ArrayList<Artifact>();
       Artifact artifactToRevert;
       for (TestData testData : testDatas) {
-         artifactToRevert = ArtifactQuery.getArtifactFromId(testData.getArtifactId(), workingBranch);
+         artifactToRevert =
+            ArtifactQuery.getArtifactFromId(testData.getArtifactId(), workingBranch, DeletionFlag.INCLUDE_DELETED);
 
          switch (testData.item) {
             case ARTIFACT:

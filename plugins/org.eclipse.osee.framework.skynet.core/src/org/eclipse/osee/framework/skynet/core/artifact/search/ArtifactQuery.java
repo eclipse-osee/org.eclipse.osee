@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.*;
-import static org.eclipse.osee.framework.core.enums.LoadLevel.*;
-import static org.eclipse.osee.framework.skynet.core.artifact.LoadType.*;
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
+import static org.eclipse.osee.framework.core.enums.LoadLevel.FULL;
+import static org.eclipse.osee.framework.skynet.core.artifact.LoadType.INCLUDE_CACHE;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -105,9 +106,17 @@ public class ArtifactQuery {
    private static Artifact getOrCheckArtifactFromId(int artId, IOseeBranch branch, DeletionFlag allowDeleted, QueryType queryType) throws OseeCoreException {
       Artifact artifact = ArtifactCache.getActive(artId, branch);
       if (artifact != null) {
-         return artifact;
+         if (artifact.isDeleted() && allowDeleted == EXCLUDE_DELETED) {
+            if (queryType == QueryType.CHECK) {
+               artifact = null;
+            } else {
+               throw new ArtifactDoesNotExist("Deleted artifact unexpectedly returned");
+            }
+         }
+      } else {
+         artifact = new ArtifactQueryBuilder(artId, branch, allowDeleted, FULL).getOrCheckArtifact(queryType);
       }
-      return new ArtifactQueryBuilder(artId, branch, allowDeleted, FULL).getOrCheckArtifact(queryType);
+      return artifact;
    }
 
    /**

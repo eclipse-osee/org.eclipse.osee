@@ -597,7 +597,7 @@ public class RelationManager {
 
       @Override
       public Artifact getArtifact(int artifactId, IOseeBranch branch) throws OseeCoreException {
-         return ArtifactQuery.getArtifactFromId(artifactId, branch);
+         return ArtifactQuery.getArtifactFromId(artifactId, branch, DeletionFlag.INCLUDE_DELETED);
       }
 
       @Override
