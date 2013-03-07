@@ -216,8 +216,8 @@ public class CommitBranchDatabaseTxCallable extends DatabaseTxCallable<Transacti
       if (success) {
          // update conflict status, if necessary
          if (mergeBranch != null) {
-            getDatabaseService().runPreparedUpdate(connection, UPDATE_CONFLICT_STATUS,
-               ConflictStatus.COMMITTED.getValue(), ConflictStatus.RESOLVED.getValue(), mergeBranch.getId());
+            getDatabaseService().runPreparedUpdate(UPDATE_CONFLICT_STATUS, ConflictStatus.COMMITTED.getValue(),
+               ConflictStatus.RESOLVED.getValue(), mergeBranch.getId());
          }
       }
    }

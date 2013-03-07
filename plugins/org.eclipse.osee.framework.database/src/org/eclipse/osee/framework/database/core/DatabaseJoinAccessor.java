@@ -126,7 +126,7 @@ public class DatabaseJoinAccessor implements IJoinAccessor {
    @Override
    public Collection<Integer> getAllQueryIds(OseeConnection connection, JoinItem joinItem) throws OseeCoreException {
       Collection<Integer> queryIds = new ArrayList<Integer>();
-      IOseeStatement chStmt = databaseService.getStatement();
+      IOseeStatement chStmt = databaseService.getStatement(connection);
       try {
          String query = String.format(SELECT_QUERY_IDS, joinItem.getJoinTableName());
          chStmt.runPreparedQuery(query);

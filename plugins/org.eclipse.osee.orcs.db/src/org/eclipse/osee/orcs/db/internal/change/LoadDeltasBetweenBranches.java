@@ -119,25 +119,26 @@ public class LoadDeltasBetweenBranches extends DatabaseCallable<List<ChangeItem>
       HashMap<Integer, ChangeItem> changesByItemId = new HashMap<Integer, ChangeItem>();
 
       IdJoinQuery idJoin = JoinUtility.createIdJoinQuery();
+      try {
+         changeItemLoader.loadItemIdsBasedOnGammas(factory, txJoinId, changesByItemId, idJoin);
 
-      changeItemLoader.loadItemIdsBasedOnGammas(factory, txJoinId, changesByItemId, idJoin);
+         idJoin.store();
 
-      idJoin.store();
+         if (hasMergeBranch()) {
+            loadCurrentData(factory.getItemTableName(), factory.getItemIdColumnName(), idJoin, changesByItemId,
+               mergeTransaction);
+         }
 
-      if (hasMergeBranch()) {
          loadCurrentData(factory.getItemTableName(), factory.getItemIdColumnName(), idJoin, changesByItemId,
-            mergeTransaction);
+            getCompareBranchHeadTx());
+
+         loadNonCurrentSourceData(factory.getItemTableName(), factory.getItemIdColumnName(), idJoin, changesByItemId,
+            factory.getItemValueColumnName());
+         changeData.addAll(changesByItemId.values());
+
+      } finally {
+         idJoin.delete();
       }
-
-      loadCurrentData(factory.getItemTableName(), factory.getItemIdColumnName(), idJoin, changesByItemId,
-         getCompareBranchHeadTx());
-
-      loadNonCurrentSourceData(factory.getItemTableName(), factory.getItemIdColumnName(), idJoin, changesByItemId,
-         factory.getItemValueColumnName());
-
-      idJoin.delete();
-
-      changeData.addAll(changesByItemId.values());
    }
 
    private void loadCurrentData(String tableName, String columnName, IdJoinQuery idJoin, HashMap<Integer, ChangeItem> changesByItemId, TransactionRecord transactionLimit) throws OseeCoreException {
