@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.DatabaseService;
@@ -28,13 +27,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Roberto E. Escobar
  */
 public class OseeDatabaseServiceImpl implements DatabaseService {
-
-   public static interface ConnectionPoolProvider {
-
-      void dispose();
-
-      OseeConnectionPoolImpl getConnectionPool(IDatabaseInfo databaseInfo) throws OseeDataStoreException;
-   }
 
    private final ConnectionProvider connectionProvider;
 
@@ -54,22 +46,22 @@ public class OseeDatabaseServiceImpl implements DatabaseService {
    }
 
    @Override
-   public IOseeStatement getStatement() throws OseeDataStoreException {
+   public IOseeStatement getStatement() {
       return new OseeStatementImpl(connectionProvider);
    }
 
    @Override
-   public IOseeStatement getStatement(OseeConnection connection) throws OseeDataStoreException {
+   public IOseeStatement getStatement(OseeConnection connection) {
       return new OseeStatementImpl(connectionProvider, (BaseOseeConnection) connection);
    }
 
    @Override
-   public IOseeStatement getStatement(OseeConnection connection, boolean autoClose) throws OseeDataStoreException {
+   public IOseeStatement getStatement(OseeConnection connection, boolean autoClose) {
       return new OseeStatementImpl(connectionProvider, (BaseOseeConnection) connection, autoClose);
    }
 
    @Override
-   public IOseeStatement getStatement(int resultSetType, int resultSetConcurrency) throws OseeDataStoreException {
+   public IOseeStatement getStatement(int resultSetType, int resultSetConcurrency) {
       return new OseeStatementImpl(connectionProvider, resultSetType, resultSetConcurrency);
    }
 
