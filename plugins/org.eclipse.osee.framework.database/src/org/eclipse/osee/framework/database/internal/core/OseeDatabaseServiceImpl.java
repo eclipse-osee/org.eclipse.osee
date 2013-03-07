@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.DatabaseService;
-import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -37,56 +36,41 @@ public class OseeDatabaseServiceImpl implements DatabaseService {
       OseeConnectionPoolImpl getConnectionPool(IDatabaseInfo databaseInfo) throws OseeDataStoreException;
    }
 
-   private final ConnectionPoolProvider poolProvider;
-   private final IDatabaseInfoProvider dbInfoProvider;
+   private final ConnectionProvider connectionProvider;
 
-   public OseeDatabaseServiceImpl(ConnectionPoolProvider poolProvider, IDatabaseInfoProvider dbInfoProvider) {
+   public OseeDatabaseServiceImpl(ConnectionProvider connectionProvider) {
       super();
-      this.poolProvider = poolProvider;
-      this.dbInfoProvider = dbInfoProvider;
-   }
-
-   private IDatabaseInfo getDatabaseInfoProvider() throws OseeDataStoreException {
-      return dbInfoProvider.getDatabaseInfo();
-   }
-
-   private OseeConnectionPoolImpl getConnectionPool(IDatabaseInfo databaseInfo) throws OseeDataStoreException {
-      return poolProvider.getConnectionPool(databaseInfo);
-   }
-
-   private OseeConnectionPoolImpl getDefaultConnectionPool() throws OseeDataStoreException {
-      return getConnectionPool(getDatabaseInfoProvider());
+      this.connectionProvider = connectionProvider;
    }
 
    @Override
    public OseeConnection getConnection() throws OseeCoreException {
-      return getConnection(getDatabaseInfoProvider());
+      return connectionProvider.getConnection();
    }
 
    @Override
    public OseeConnection getConnection(IDatabaseInfo databaseInfo) throws OseeCoreException {
-      OseeConnectionPoolImpl pool = getConnectionPool(databaseInfo);
-      return pool.getConnection();
+      return connectionProvider.getConnection(databaseInfo);
    }
 
    @Override
    public IOseeStatement getStatement() throws OseeDataStoreException {
-      return new OseeStatementImpl(getDefaultConnectionPool());
+      return new OseeStatementImpl(connectionProvider);
    }
 
    @Override
    public IOseeStatement getStatement(OseeConnection connection) throws OseeDataStoreException {
-      return new OseeStatementImpl(getDefaultConnectionPool(), (OseeConnectionImpl) connection);
+      return new OseeStatementImpl(connectionProvider, (BaseOseeConnection) connection);
    }
 
    @Override
    public IOseeStatement getStatement(OseeConnection connection, boolean autoClose) throws OseeDataStoreException {
-      return new OseeStatementImpl(getDefaultConnectionPool(), (OseeConnectionImpl) connection, autoClose);
+      return new OseeStatementImpl(connectionProvider, (BaseOseeConnection) connection, autoClose);
    }
 
    @Override
    public IOseeStatement getStatement(int resultSetType, int resultSetConcurrency) throws OseeDataStoreException {
-      return new OseeStatementImpl(getDefaultConnectionPool(), resultSetType, resultSetConcurrency);
+      return new OseeStatementImpl(connectionProvider, resultSetType, resultSetConcurrency);
    }
 
    @Override
@@ -97,7 +81,7 @@ public class OseeDatabaseServiceImpl implements DatabaseService {
       PreparedStatement preparedStatement = null;
       int updateCount = 0;
       try {
-         preparedStatement = ((OseeConnectionImpl) connection).prepareStatement(query);
+         preparedStatement = ((BaseOseeConnection) connection).prepareStatement(query);
          StatementUtil.populateValuesForPreparedStatement(preparedStatement, data);
          updateCount = preparedStatement.executeUpdate();
       } catch (SQLException ex) {
@@ -116,7 +100,7 @@ public class OseeDatabaseServiceImpl implements DatabaseService {
       int returnCount = 0;
       PreparedStatement preparedStatement = null;
       try {
-         preparedStatement = ((OseeConnectionImpl) connection).prepareStatement(query);
+         preparedStatement = ((BaseOseeConnection) connection).prepareStatement(query);
          boolean needExecute = false;
          int count = 0;
          for (Object[] data : dataList) {
@@ -207,7 +191,7 @@ public class OseeDatabaseServiceImpl implements DatabaseService {
 
    @Override
    public boolean isProduction() throws OseeCoreException {
-      return getDatabaseInfoProvider().isProduction();
+      return connectionProvider.getDefaultDatabaseInfo().isProduction();
    }
 
 }

@@ -36,29 +36,29 @@ public final class OseeStatementImpl implements IOseeStatement {
    private ResultSet rSet;
    private PreparedStatement preparedStatement;
    private CallableStatement callableStatement;
-   private OseeConnectionImpl connection;
+   private BaseOseeConnection connection;
    private final boolean autoClose;
-   private final OseeConnectionPoolImpl connectionPool;
+   private final ConnectionProvider connectionPool;
    private final int resultSetType;
    private final int resultSetConcurrency;
 
-   public OseeStatementImpl(OseeConnectionPoolImpl connectionPool, OseeConnectionImpl connection) {
+   public OseeStatementImpl(ConnectionProvider connectionPool, BaseOseeConnection connection) {
       this(connectionPool, connection, connection == null);
    }
 
-   public OseeStatementImpl(OseeConnectionPoolImpl connectionPool, OseeConnectionImpl connection, boolean autoClose) {
+   public OseeStatementImpl(ConnectionProvider connectionPool, BaseOseeConnection connection, boolean autoClose) {
       this(connectionPool, connection, autoClose, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
    }
 
-   public OseeStatementImpl(OseeConnectionPoolImpl connectionPool) {
+   public OseeStatementImpl(ConnectionProvider connectionPool) {
       this(connectionPool, null);
    }
 
-   public OseeStatementImpl(OseeConnectionPoolImpl connectionPool, int resultSetType, int resultSetConcurrency) {
+   public OseeStatementImpl(ConnectionProvider connectionPool, int resultSetType, int resultSetConcurrency) {
       this(connectionPool, null, true, resultSetType, resultSetConcurrency);
    }
 
-   public OseeStatementImpl(OseeConnectionPoolImpl connectionPool, OseeConnectionImpl connection, boolean autoClose, int resultSetType, int resultSetConcurrency) {
+   public OseeStatementImpl(ConnectionProvider connectionPool, BaseOseeConnection connection, boolean autoClose, int resultSetType, int resultSetConcurrency) {
       this.autoClose = autoClose;
       this.connection = connection;
       this.connectionPool = connectionPool;
@@ -96,7 +96,6 @@ public final class OseeStatementImpl implements IOseeStatement {
     */
    @Override
    public void runCallableStatement(String query, Object... data) throws OseeCoreException {
-
       try {
          allowReuse();
          callableStatement = connection.prepareCall(query, resultSetType, resultSetConcurrency);

@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.internal.core.OseeDatabaseServiceImpl.ConnectionPoolProvider;
 
 /**
  * @author Roberto E. Escobar
@@ -32,7 +31,7 @@ public class OseeDatabaseServiceProxy implements IOseeDatabaseService {
 
    private final Map<String, IConnectionFactory> factories = new ConcurrentHashMap<String, IConnectionFactory>();
 
-   private ConnectionPoolProvider poolProvider;
+   private ConnectionProvider connectionProvider;
    private DatabaseService databaseService;
    private IOseeSequence oseeSequence;
 
@@ -50,16 +49,20 @@ public class OseeDatabaseServiceProxy implements IOseeDatabaseService {
       databaseInfoProvider = provider;
    }
 
+   private ConnectionProvider createConnectionProvider() {
+      return new LegacyOseeConnectionProvider(new ConnectionPoolProviderImpl(factories), databaseInfoProvider);
+   }
+
    public void start() {
-      poolProvider = new ConnectionPoolProviderImpl(factories);
-      databaseService = new OseeDatabaseServiceImpl(poolProvider, databaseInfoProvider);
+      connectionProvider = createConnectionProvider();
+      databaseService = new OseeDatabaseServiceImpl(connectionProvider);
       oseeSequence = new OseeSequenceImpl(databaseService);
    }
 
    public void stop() {
-      if (poolProvider != null) {
-         poolProvider.dispose();
-         poolProvider = null;
+      if (connectionProvider != null) {
+         connectionProvider.dispose();
+         connectionProvider = null;
       }
       oseeSequence = null;
       databaseService = null;
