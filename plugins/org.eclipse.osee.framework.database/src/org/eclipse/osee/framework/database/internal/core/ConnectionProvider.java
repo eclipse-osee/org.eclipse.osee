@@ -25,6 +25,6 @@ public interface ConnectionProvider {
 
    BaseOseeConnection getConnection(IDatabaseInfo databaseInfo) throws OseeCoreException;
 
-   void dispose();
+   void dispose() throws OseeCoreException;
 
 }

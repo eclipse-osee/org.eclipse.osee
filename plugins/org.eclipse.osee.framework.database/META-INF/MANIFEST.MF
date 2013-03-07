@@ -9,7 +9,10 @@ Export-Package: org.eclipse.osee.framework.database,
 Bundle-ActivationPolicy: lazy
 DynamicImport-Package: *
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Import-Package: org.eclipse.osee.framework.core.data,
+Import-Package: org.apache.commons.dbcp,
+ org.apache.commons.pool,
+ org.apache.commons.pool.impl,
+ org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.model,

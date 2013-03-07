@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.database.internal.core;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -23,6 +24,7 @@ import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
@@ -50,7 +52,7 @@ public class OseeDatabaseServiceProxy implements IOseeDatabaseService {
    }
 
    private ConnectionProvider createConnectionProvider() {
-      return new LegacyOseeConnectionProvider(new ConnectionPoolProviderImpl(factories), databaseInfoProvider);
+      return new PooledConnectionProvider(databaseInfoProvider, factories);
    }
 
    public void start() {
@@ -61,7 +63,11 @@ public class OseeDatabaseServiceProxy implements IOseeDatabaseService {
 
    public void stop() {
       if (connectionProvider != null) {
-         connectionProvider.dispose();
+         try {
+            connectionProvider.dispose();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(OseeDatabaseServiceProxy.class, Level.WARNING, ex);
+         }
          connectionProvider = null;
       }
       oseeSequence = null;
