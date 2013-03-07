@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.core.client.config.sto
 import java.util.Arrays;
 import java.util.Date;
 import junit.framework.Assert;
+import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -38,11 +39,16 @@ public class VersionArtifactStoreTest {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranchToken(),
             VersionArtifactStoreTest.class.getSimpleName() + " - cleanup");
+
+      AtsConfigCache instance = AtsConfigCache.instance;
       for (String name : Arrays.asList("VersionArtifactStoreTest - version 1", "VersionArtifactStoreTest - version 2",
          "VersionArtifactStoreTest - version 3")) {
          for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.Version, name,
             AtsUtilCore.getAtsBranchToken())) {
             art.deleteAndPersist(transaction);
+
+            IAtsConfigObject soleByGuid = instance.getSoleByGuid(art.getGuid());
+            instance.decache(soleByGuid);
          }
       }
       transaction.execute();
