@@ -14,6 +14,7 @@ import org.eclipse.osee.orcs.rest.internal.search.dsl.DslTranslatorImplTest;
 import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchDslTest;
 import org.eclipse.osee.orcs.rest.internal.search.predicate.AttributeTypePredicateHandlerTest;
 import org.eclipse.osee.orcs.rest.internal.search.predicate.ExistsTypePredicateHandlerTest;
+import org.eclipse.osee.orcs.rest.internal.search.predicate.GuidOrHridsPredicateHandlerTest;
 import org.eclipse.osee.orcs.rest.internal.search.predicate.IdsPredicateHandlerTest;
 import org.eclipse.osee.orcs.rest.internal.search.predicate.IsOfTypePredicateHandlerTest;
 import org.junit.runner.RunWith;
@@ -29,6 +30,7 @@ import org.junit.runners.Suite;
    AttributeTypePredicateHandlerTest.class,
    ExistsTypePredicateHandlerTest.class,
    IdsPredicateHandlerTest.class,
+   GuidOrHridsPredicateHandlerTest.class,
    IsOfTypePredicateHandlerTest.class,})
 public class InternalTestSuite {
    // Test Suite

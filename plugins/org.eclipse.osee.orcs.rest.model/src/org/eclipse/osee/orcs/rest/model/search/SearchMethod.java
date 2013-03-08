@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.util.Conditions;
  */
 public enum SearchMethod {
    IDS("ids"),
+   GUID_OR_HRIDS("guids"),
    IS_OF_TYPE("isOfType"),
    EXISTS_TYPE("exists"),
    ATTRIBUTE_TYPE("attrType"),

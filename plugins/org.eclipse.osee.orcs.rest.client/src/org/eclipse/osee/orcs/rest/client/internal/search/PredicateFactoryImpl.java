@@ -47,7 +47,7 @@ public class PredicateFactoryImpl implements PredicateFactory {
    @Override
    public Predicate createUuidSearch(Collection<String> ids) {
       List<String> strIds = new LinkedList<String>(ids);
-      return createIdsSearch(strIds);
+      return createIdsSearch(SearchMethod.GUID_OR_HRIDS, strIds);
    }
 
    @Override
@@ -56,7 +56,7 @@ public class PredicateFactoryImpl implements PredicateFactory {
       for (Integer value : ids) {
          strIds.add(String.valueOf(value));
       }
-      return createIdsSearch(strIds);
+      return createIdsSearch(SearchMethod.IDS, strIds);
    }
 
    @Override
@@ -65,12 +65,11 @@ public class PredicateFactoryImpl implements PredicateFactory {
       for (Identity<String> token : ids) {
          values.add(token.getGuid());
       }
-      return createIdsSearch(values);
+      return createIdsSearch(SearchMethod.GUID_OR_HRIDS, values);
    }
 
-   private Predicate createIdsSearch(List<String> ids) {
-      return new Predicate(SearchMethod.IDS, emptyStringList, SearchOp.EQUALS, emptySearchFlagList,
-         Strings.EMPTY_STRING, ids);
+   private Predicate createIdsSearch(SearchMethod method, List<String> ids) {
+      return new Predicate(method, emptyStringList, SearchOp.EQUALS, emptySearchFlagList, Strings.EMPTY_STRING, ids);
    }
 
    @Override

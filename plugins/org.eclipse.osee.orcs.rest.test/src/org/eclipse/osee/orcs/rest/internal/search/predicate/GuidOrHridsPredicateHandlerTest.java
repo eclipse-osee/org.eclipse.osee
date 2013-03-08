@@ -17,7 +17,6 @@ import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.rest.model.search.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.SearchMethod;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -31,15 +30,13 @@ import org.mockito.MockitoAnnotations;
 /**
  * @author John R. Misinco
  */
-public class IdsPredicateHandlerTest {
+public class GuidOrHridsPredicateHandlerTest {
 
    @Mock
    private QueryBuilder builder;
 
    @Captor
    private ArgumentCaptor<Collection<String>> guidsCaptor;
-   @Captor
-   private ArgumentCaptor<Collection<Integer>> localIdsCaptor;
 
    @Before
    public void initialize() {
@@ -47,42 +44,44 @@ public class IdsPredicateHandlerTest {
    }
 
    @Test
-   public void testHandleLocalId() throws OseeCoreException {
-      IdsPredicateHandler handler = new IdsPredicateHandler();
+   public void testHandleHrid() throws OseeCoreException {
+      GuidOrHridsPredicateHandler handler = new GuidOrHridsPredicateHandler();
       //no type params, op, or flags for ids - any passed are ignored
 
       //all digits get treated as artId
       String id1 = "12345";
       List<String> values = Collections.singletonList(id1);
-      Predicate testPredicate = new Predicate(SearchMethod.IDS, null, null, null, null, values);
+      Predicate testPredicate = new Predicate(SearchMethod.GUID_OR_HRIDS, null, null, null, null, values);
       handler.handle(builder, testPredicate);
-      verify(builder).andLocalIds(localIdsCaptor.capture());
-      Assert.assertEquals(1, localIdsCaptor.getValue().size());
-      Assert.assertTrue(localIdsCaptor.getValue().contains(12345));
+      verify(builder).andGuidsOrHrids(guidsCaptor.capture());
+      Assert.assertEquals(1, guidsCaptor.getValue().size());
+      Assert.assertTrue(guidsCaptor.getValue().contains(id1));
    }
 
-   @Test(expected = OseeArgumentException.class)
-   public void testHandleNonId() throws OseeCoreException {
-      IdsPredicateHandler handler = new IdsPredicateHandler();
-      //no type params, op, or flags for ids - any passed are ignored
-
-      //all digits get treated as artId
-      String id1 = GUID.create();
-      List<String> values = Collections.singletonList(id1);
-      Predicate testPredicate = new Predicate(SearchMethod.IDS, null, null, null, null, values);
+   @Test
+   public void testHandleGuids() throws OseeCoreException {
+      GuidOrHridsPredicateHandler handler = new GuidOrHridsPredicateHandler();
+      // no type params, op, or flags for ids - any passed are ignored
+      // if not all digits, treated as guid
+      String id2 = "AGUID234";
+      List<String> values = Collections.singletonList(id2);
+      Predicate testPredicate = new Predicate(SearchMethod.GUID_OR_HRIDS, null, null, null, null, values);
       handler.handle(builder, testPredicate);
+      verify(builder).andGuidsOrHrids(guidsCaptor.capture());
+      Assert.assertEquals(1, guidsCaptor.getValue().size());
+      Assert.assertTrue(guidsCaptor.getValue().contains(id2));
    }
 
    @Test(expected = OseeArgumentException.class)
    public void testHandleBadValues() throws OseeCoreException {
-      IdsPredicateHandler handler = new IdsPredicateHandler();
-      Predicate testPredicate = new Predicate(SearchMethod.IDS, null, null, null, null, null);
+      GuidOrHridsPredicateHandler handler = new GuidOrHridsPredicateHandler();
+      Predicate testPredicate = new Predicate(SearchMethod.GUID_OR_HRIDS, null, null, null, null, null);
       handler.handle(builder, testPredicate);
    }
 
    @Test(expected = OseeArgumentException.class)
    public void testBadSearchMethod() throws OseeCoreException {
-      IdsPredicateHandler handler = new IdsPredicateHandler();
+      GuidOrHridsPredicateHandler handler = new GuidOrHridsPredicateHandler();
       String id1 = "12345";
       List<String> values = Collections.singletonList(id1);
       Predicate testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, null, null, null, null, values);
