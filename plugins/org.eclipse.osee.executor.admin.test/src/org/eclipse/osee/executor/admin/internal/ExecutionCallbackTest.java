@@ -10,120 +10,110 @@
  *******************************************************************************/
 package org.eclipse.osee.executor.admin.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.executor.admin.mock.MockEventService;
-import org.eclipse.osee.executor.admin.mock.MockExecutionCallback;
-import org.eclipse.osee.executor.admin.mock.MockLog;
-import org.junit.Assert;
+import org.eclipse.osee.executor.admin.ExecutionCallback;
+import org.eclipse.osee.logger.Log;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.mockito.Matchers;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ExecutionCallbackTest {
 
+   @Rule
+   public ExpectedException thrown = ExpectedException.none();
+
+   //@formatter:off
+   @Mock private Log logger;
+   @Mock private EventService eventService;
+   @Mock private Callable<String> callable;
+   @Mock private ExecutionCallback<String> callback;
+   //@formatter:on
+
+   private ExecutorAdminImpl admin;
+
+   @Before
+   public void setUp() {
+      MockitoAnnotations.initMocks(this);
+
+      admin = new ExecutorAdminImpl();
+      admin.setLogger(logger);
+      admin.setEventService(eventService);
+
+      admin.start(new HashMap<String, Object>());
+   }
+
+   @After
+   public void tearDown() {
+      if (admin != null) {
+         admin.stop(new HashMap<String, Object>());
+      }
+   }
+
    @Test
    public void testCallbackOnSuccess() throws Exception {
-      ExecutorAdminImpl admin = new ExecutorAdminImpl();
-      admin.setLogger(new MockLog());
-      admin.setEventService(new MockEventService());
-      admin.start(new HashMap<String, Object>());
+      String expected = "Was Called";
 
-      final String expected = "Was Called";
+      when(callable.call()).thenReturn(expected);
 
-      MockExecutionCallback<String> callback = new MockExecutionCallback<String>(500);
-      Callable<String> callable = new Callable<String>() {
-
-         @Override
-         public String call() throws Exception {
-            return expected;
-         }
-
-      };
       Future<String> future = admin.schedule(callable, callback);
       String actual = future.get();
 
-      Assert.assertEquals(expected, actual);
+      assertEquals(expected, actual);
 
-      Assert.assertTrue(callback.wasOnSuccess());
-      Assert.assertFalse(callback.wasOnCancelled());
-      Assert.assertFalse(callback.wasOnFailure());
-
-      Assert.assertEquals(expected, callback.getResult());
-      Assert.assertNull(callback.getThrowable());
+      verify(callback).onSuccess(expected);
+      verify(callback, times(0)).onCancelled();
+      verify(callback, times(0)).onFailure(Matchers.<Throwable> any());
    }
 
    @Test
    public void testCallbackOnFailure() throws Exception {
-      ExecutorAdminImpl admin = new ExecutorAdminImpl();
-      admin.setLogger(new MockLog());
-      admin.setEventService(new MockEventService());
-      admin.start(new HashMap<String, Object>());
+      Exception expectedException = new IllegalStateException();
 
-      final Exception expectedException = new IllegalStateException();
-      MockExecutionCallback<String> callback = new MockExecutionCallback<String>(500);
-      Callable<String> callable = new Callable<String>() {
+      when(callable.call()).thenThrow(expectedException);
 
-         @Override
-         public String call() throws Exception {
-            throw expectedException;
-         }
-
-      };
       Future<String> future = admin.schedule(callable, callback);
 
-      try {
-         future.get();
-         Assert.assertTrue("An exception should have been thrown", false);
-      } catch (Exception ex) {
-         Assert.assertEquals(ExecutionException.class, ex.getClass());
-         Assert.assertEquals(expectedException, ex.getCause());
-      }
+      thrown.expect(ExecutionException.class);
+      future.get();
 
-      Assert.assertFalse(callback.wasOnSuccess());
-      Assert.assertFalse(callback.wasOnCancelled());
-      Assert.assertTrue(callback.wasOnFailure());
-
-      Assert.assertNull(callback.getResult());
-      Assert.assertEquals(IllegalStateException.class, callback.getThrowable().getClass());
+      verify(callback, times(0)).onSuccess(Matchers.anyString());
+      verify(callback, times(0)).onCancelled();
+      verify(callback).onFailure(expectedException);
    }
 
    @Test
    public void testCallbackOnCancel() throws Exception {
-      ExecutorAdminImpl admin = new ExecutorAdminImpl();
-      admin.setLogger(new MockLog());
-      admin.setEventService(new MockEventService());
-      admin.start(new HashMap<String, Object>());
-
-      final String results = "results";
-
-      MockExecutionCallback<String> callback = new MockExecutionCallback<String>(500);
-
-      TestCancellableCallable callable = new TestCancellableCallable(results);
+      TestCancellableCallable callable = new TestCancellableCallable("results");
       Future<String> future = admin.schedule(callable, callback);
       future.cancel(true);
 
-      Assert.assertFalse(callback.wasOnSuccess());
-      Assert.assertTrue(callback.wasOnCancelled());
-      Assert.assertFalse(callback.wasOnFailure());
+      verify(callback, times(0)).onSuccess(Matchers.anyString());
+      verify(callback).onCancelled();
+      verify(callback, times(0)).onFailure(Matchers.<Throwable> any());
 
-      Assert.assertNull(callback.getResult());
-      Assert.assertNull(callback.getThrowable());
+      assertEquals(true, callable.isCancelled());
+      assertEquals(true, future.isCancelled());
 
-      Assert.assertEquals(true, callable.isCancelled());
-      Assert.assertEquals(true, future.isCancelled());
-
-      try {
-         future.get();
-         Assert.assertTrue("An exception should have been thrown", false);
-      } catch (Exception ex) {
-         Assert.assertEquals(CancellationException.class, ex.getClass());
-      }
+      thrown.expect(CancellationException.class);
+      future.get();
    }
 
    private class TestCancellableCallable extends CancellableCallable<String> {
@@ -138,7 +128,6 @@ public class ExecutionCallbackTest {
       public String call() throws Exception {
          while (!isCancelled()) {
             checkForCancelled();
-            // System.out.println("working...");
          }
          return results;
       }

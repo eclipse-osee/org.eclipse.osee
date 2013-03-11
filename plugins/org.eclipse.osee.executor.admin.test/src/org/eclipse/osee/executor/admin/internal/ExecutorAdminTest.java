@@ -12,29 +12,47 @@ package org.eclipse.osee.executor.admin.internal;
 
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
-import org.eclipse.osee.executor.admin.mock.MockEventService;
-import org.eclipse.osee.executor.admin.mock.MockLog;
+import org.eclipse.osee.event.EventService;
+import org.eclipse.osee.logger.Log;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ExecutorAdminTest {
 
-   @Test(expected = IllegalStateException.class)
-   public void testInitializationGuard() throws Exception {
-      ExecutorAdminImpl admin = new ExecutorAdminImpl();
-      admin.getDefaultExecutor();
+   //@formatter:off
+   @Mock private Log logger;
+   @Mock private EventService eventService;
+   //@formatter:on
+
+   private ExecutorAdminImpl admin;
+
+   @Before
+   public void setUp() {
+      MockitoAnnotations.initMocks(this);
+
+      admin = new ExecutorAdminImpl();
+      admin.setLogger(logger);
+      admin.setEventService(eventService);
+
+      admin.start(new HashMap<String, Object>());
+   }
+
+   @After
+   public void tearDown() {
+      if (admin != null) {
+         admin.stop(new HashMap<String, Object>());
+      }
    }
 
    @Test
    public void testGetService() throws Exception {
-      ExecutorAdminImpl admin = new ExecutorAdminImpl();
-      admin.setLogger(new MockLog());
-      admin.setEventService(new MockEventService());
-      admin.start(new HashMap<String, Object>());
-
       ExecutorService defaultService = admin.getDefaultExecutor();
       Assert.assertNotNull(defaultService);
 
@@ -49,11 +67,6 @@ public class ExecutorAdminTest {
 
    @Test
    public void testTerminateExecutorService() throws Exception {
-      ExecutorAdminImpl admin = new ExecutorAdminImpl();
-      admin.setLogger(new MockLog());
-      admin.setEventService(new MockEventService());
-      admin.start(new HashMap<String, Object>());
-
       ExecutorService anotherExecutor = admin.getExecutor("hello");
       Assert.assertNotNull(anotherExecutor);
 
