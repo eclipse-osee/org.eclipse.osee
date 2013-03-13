@@ -8,7 +8,7 @@
 		interface="org.eclipse.osee.framework.core.server.IServerTask"
 		bind="addServerTask"
 		unbind="removeServerTask"
-		cardinality="0..n"
+		cardinality="1..n"
 		policy="dynamic"/>
  <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
  <reference bind="setServerManager" cardinality="1..1" interface="org.eclipse.osee.framework.core.server.IApplicationServerManager" name="IApplicationServerManager" policy="static"/>

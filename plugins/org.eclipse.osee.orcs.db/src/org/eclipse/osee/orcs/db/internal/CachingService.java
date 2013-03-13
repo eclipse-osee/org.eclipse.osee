@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.core.services.IOseeCachingServiceFactory;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
-import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
@@ -40,10 +39,6 @@ import org.eclipse.osee.orcs.db.internal.accessor.ArtifactTypeDataAccessor;
 import org.eclipse.osee.orcs.db.internal.accessor.DatabaseBranchAccessor;
 import org.eclipse.osee.orcs.db.internal.accessor.DatabaseTransactionRecordAccessor;
 import org.eclipse.osee.orcs.db.internal.accessor.TypeLoaderImpl;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 
 /**
  * @author Roberto E. Escobar
@@ -55,7 +50,7 @@ public class CachingService implements IOseeCachingService, IOseeCachingServiceF
    private IOseeDatabaseService dbService;
    private IResourceManager resourceManager;
    private IOseeModelFactoryService factoryService;
-   //   private IOseeModelingService modelingService;
+   private IOseeModelingService modelingService;
    private IdentityService identityService;
    private Log logger;
    private EventService eventService;
@@ -85,6 +80,10 @@ public class CachingService implements IOseeCachingService, IOseeCachingServiceF
       this.executorAdmin = executorAdmin;
    }
 
+   public void setModelService(IOseeModelingService modelingService) {
+      this.modelingService = modelingService;
+   }
+
    public void setLogger(Log logger) {
       this.logger = logger;
    }
@@ -93,8 +92,9 @@ public class CachingService implements IOseeCachingService, IOseeCachingServiceF
       return logger;
    }
 
-   public void start() throws OseeCoreException {
+   public void start() {
       proxied = createCachingService(true);
+
       getLogger().info("ORCS Cache - Created");
    }
 
@@ -103,79 +103,67 @@ public class CachingService implements IOseeCachingService, IOseeCachingServiceF
       getLogger().info("ORCS Cache - Destroyed");
    }
 
+   private IOseeCachingService getProxied() {
+      return proxied;
+   }
+
    @Override
    public BranchCache getBranchCache() {
-      return proxied.getBranchCache();
+      return getProxied().getBranchCache();
    }
 
    @Override
    public TransactionCache getTransactionCache() {
-      return proxied.getTransactionCache();
+      return getProxied().getTransactionCache();
    }
 
    @Override
    public ArtifactTypeCache getArtifactTypeCache() {
-      return proxied.getArtifactTypeCache();
+      return getProxied().getArtifactTypeCache();
    }
 
    @Override
    public AttributeTypeCache getAttributeTypeCache() {
-      return proxied.getAttributeTypeCache();
+      return getProxied().getAttributeTypeCache();
    }
 
    @Override
    public RelationTypeCache getRelationTypeCache() {
-      return proxied.getRelationTypeCache();
+      return getProxied().getRelationTypeCache();
    }
 
    @Override
    public OseeEnumTypeCache getEnumTypeCache() {
-      return proxied.getEnumTypeCache();
+      return getProxied().getEnumTypeCache();
    }
 
    @Override
    public IdentityService getIdentityService() {
-      return proxied.getIdentityService();
+      return getProxied().getIdentityService();
    }
 
    @Override
    public Collection<?> getCaches() {
-      return proxied.getCaches();
+      return getProxied().getCaches();
    }
 
    @Override
    public IOseeCache<?, ?> getCache(OseeCacheEnum cacheId) throws OseeCoreException {
-      return proxied.getCache(cacheId);
+      return getProxied().getCache(cacheId);
    }
 
    @Override
    public void reloadAll() throws OseeCoreException {
-      proxied.reloadAll();
+      getProxied().reloadAll();
    }
 
    @Override
    public void clearAll() {
-      proxied.clearAll();
-   }
-
-   private BundleContext getBundleContext() throws OseeCoreException {
-      Bundle bundle = FrameworkUtil.getBundle(this.getClass());
-      Conditions.checkNotNull(bundle, "bundle");
-      return bundle.getBundleContext();
-   }
-
-   private <T> T getService(Class<T> clazz) throws OseeCoreException {
-      BundleContext context = getBundleContext();
-      Conditions.checkNotNull(context, "bundleContext");
-      ServiceReference<T> reference = context.getServiceReference(clazz);
-      Conditions.checkNotNull(reference, "serviceReference");
-      T service = context.getService(reference);
-      Conditions.checkNotNull(service, "service");
-      return service;
+      getProxied().clearAll();
    }
 
    @Override
-   public IOseeCachingService createCachingService(boolean needsPriming) throws OseeCoreException {
+   public IOseeCachingService createCachingService(boolean needsPriming) {
       TransactionCache txCache = new TransactionCache();
       BranchCache branchCache =
          new BranchCache(new DatabaseBranchAccessor(logger, executorAdmin, eventService, dbService, txCache,
@@ -183,9 +171,8 @@ public class CachingService implements IOseeCachingService, IOseeCachingServiceF
       txCache.setAccessor(new DatabaseTransactionRecordAccessor(dbService, branchCache,
          factoryService.getTransactionFactory()));
 
-      IOseeModelingService model = getService(IOseeModelingService.class);
       TypeLoaderImpl loader =
-         new TypeLoaderImpl(model, identityService, dbService, resourceManager, branchCache, needsPriming);
+         new TypeLoaderImpl(modelingService, identityService, dbService, resourceManager, branchCache, needsPriming);
 
       OseeEnumTypeCache oseeEnumTypeCache =
          new OseeEnumTypeCache(new ArtifactTypeDataAccessor<OseeEnumType>(identityService, loader));

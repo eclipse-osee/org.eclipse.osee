@@ -4,10 +4,10 @@
 	<service>
 		<provide interface="org.eclipse.osee.framework.core.server.IAuthenticationManager"/>
 	</service>
-	<reference name="resource.provider"
+	<reference name="IAuthenticationProvider"
 		interface="org.eclipse.osee.framework.core.server.IAuthenticationProvider"
 		bind="addAuthenticationProvider"
 		unbind="removeAuthenticationProvider"
-		cardinality="0..n"
+		cardinality="1..n"
 		policy="dynamic"/>
 </scr:component>
