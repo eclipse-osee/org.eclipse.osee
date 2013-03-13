@@ -506,7 +506,7 @@ attributeType "Plain Text Content" extends StringAttribute {
 
 attributeType "HTML Content" extends StringAttribute {
 	guid "AAPGqIWsgnaSPB5p4KAA"
-	uuid 0x000000000000037D
+	uuid 0x100000000000037D
 	dataProvider UriAttributeDataProvider
 	min 0
 	max unlimited
