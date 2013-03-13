@@ -190,7 +190,7 @@
 		<element name="args" implicit="true" optional="true" />
 		<sequential>
 			<java taskname="mvn" classname="org.codehaus.classworlds.Launcher" fork="true" dir="@{basedir}" resultproperty="@{resultproperty}">
-				<jvmarg value="-Xmx512m" />
+				<jvmarg value="-Xmx1G" />
 				<classpath>
 					<fileset dir="${maven.home}/boot">
 						<include name="*.jar" />
