@@ -34,6 +34,7 @@ public class OseeProperties {
    private static final String OSEE_DEFAULT_BROKER_URI = "osee.default.broker.uri";
    private static final String OSEE_PROXY_BYPASS_ENABLED = "osee.proxy.bypass.enabled";
    private static final String OSEE_DB_CONNECTION_COUNT = "osee.db.connection.count";
+   private static final String OSEE_DB_CONNECTION_POOL_CONFIG_URI = "osee.db.connection.pool.config.uri";
 
    protected OseeProperties() {
       // Utility Class
@@ -105,6 +106,31 @@ public class OseeProperties {
     */
    public static String getOseeConnectionInfoUri() {
       return System.getProperty(OSEE_CONNECTION_INFO_URI, "");
+   }
+
+   /**
+    * Retrieve the number of max active connections
+    * 
+    * @return number of max active connections
+    */
+   public static int getOseeDbConnectionCount() {
+      int toReturn = 6;
+      String connections = System.getProperty(OSEE_DB_CONNECTION_COUNT, "6");
+      try {
+         toReturn = Integer.parseInt(connections);
+      } catch (Exception ex) {
+         toReturn = 6;
+      }
+      return toReturn;
+   }
+
+   /**
+    * Retrieve the connection pool configuration file location
+    * 
+    * @return connection pool configuration file URI
+    */
+   public static String getOseeDbConnectionPoolConfigUri() {
+      return System.getProperty(OSEE_DB_CONNECTION_POOL_CONFIG_URI, "");
    }
 
    /**
@@ -182,17 +208,6 @@ public class OseeProperties {
     */
    public static boolean getOseeProxyBypassEnabled() {
       return Boolean.valueOf(System.getProperty(OSEE_PROXY_BYPASS_ENABLED, "false"));
-   }
-
-   public static int getOseeDbConnectionCount() {
-      int toReturn = 6;
-      String connections = System.getProperty(OSEE_DB_CONNECTION_COUNT, "6");
-      try {
-         toReturn = Integer.parseInt(connections);
-      } catch (Exception ex) {
-         toReturn = 6;
-      }
-      return toReturn;
    }
 
    @Override

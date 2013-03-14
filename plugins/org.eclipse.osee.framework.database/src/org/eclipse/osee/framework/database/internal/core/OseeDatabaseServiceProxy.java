@@ -52,7 +52,8 @@ public class OseeDatabaseServiceProxy implements IOseeDatabaseService {
    }
 
    private ConnectionProvider createConnectionProvider() {
-      return new PooledConnectionProvider(databaseInfoProvider, factories);
+      PoolFactory poolFactory = new PoolFactory(factories);
+      return new PooledConnectionProvider(databaseInfoProvider, poolFactory);
    }
 
    public void start() {
