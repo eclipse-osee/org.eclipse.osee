@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.artifact.GoalManager;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
-import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskManager;
@@ -104,13 +103,6 @@ public class WorldContentProvider implements ITreeContentProvider {
                relatedArts.addAll(arts);
                return arts.toArray();
             }
-            if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-               AbstractReviewArtifact reviewArt = AbstractReviewArtifact.cast(artifact);
-               List<Artifact> arts = new ArrayList<Artifact>();
-               arts.addAll(reviewArt.getTaskArtifactsSorted());
-               relatedArts.addAll(arts);
-               return arts.toArray();
-            }
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
@@ -169,7 +161,7 @@ public class WorldContentProvider implements ITreeContentProvider {
       if (workflow.isOfType(AtsArtifactTypes.Task)) {
          return false;
       }
-      if (workflow instanceof AbstractTaskableArtifact && workflow.getRelatedArtifactsCount(AtsRelationTypes.SmaToTask_Task) > 0) {
+      if (workflow instanceof AbstractTaskableArtifact && workflow.getRelatedArtifactsCount(AtsRelationTypes.TeamWfToTask_Task) > 0) {
          return true;
       }
       if (workflow instanceof TeamWorkFlowArtifact && workflow.getRelatedArtifactsCount(AtsRelationTypes.TeamWorkflowToReview_Review) > 0) {

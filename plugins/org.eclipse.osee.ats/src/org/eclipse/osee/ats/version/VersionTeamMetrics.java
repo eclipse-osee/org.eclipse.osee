@@ -54,7 +54,7 @@ public class VersionTeamMetrics {
       RelationManager.getRelatedArtifacts(
          Arrays.asList(new TeamDefinitionArtifactStore(this.verTeamDef).getArtifact()), 6,
          CoreRelationTypes.Default_Hierarchical__Child, AtsRelationTypes.TeamDefinitionToVersion_Version,
-         AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, AtsRelationTypes.SmaToTask_Task,
+         AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, AtsRelationTypes.TeamWfToTask_Task,
          AtsRelationTypes.ActionToWorkflow_Action);
    }
 

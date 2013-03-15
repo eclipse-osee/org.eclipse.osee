@@ -43,7 +43,7 @@ public class RelatedToStateColumnTest {
          RelatedToStateColumn.getInstance().getColumnText(peerArt, RelatedToStateColumn.getInstance(), 0));
 
       TaskArtifact taskArt =
-         (TaskArtifact) codeArt.getRelatedArtifacts(AtsRelationTypes.SmaToTask_Task).iterator().next();
+         (TaskArtifact) codeArt.getRelatedArtifacts(AtsRelationTypes.TeamWfToTask_Task).iterator().next();
       Assert.assertEquals("Implement",
          RelatedToStateColumn.getInstance().getColumnText(taskArt, RelatedToStateColumn.getInstance(), 0));
 

@@ -95,7 +95,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
    }
 
    public boolean hasTaskArtifacts() {
-      return getRelatedArtifactsCount(AtsRelationTypes.SmaToTask_Task) > 0;
+      return getRelatedArtifactsCount(AtsRelationTypes.TeamWfToTask_Task) > 0;
    }
 
    public TaskArtifact createNewTask(String title, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
@@ -107,7 +107,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
       taskArt =
          (TaskArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Task, AtsUtilCore.getAtsBranch(), title);
 
-      addRelation(AtsRelationTypes.SmaToTask_Task, taskArt);
+      addRelation(AtsRelationTypes.TeamWfToTask_Task, taskArt);
       taskArt.initializeNewStateMachine(assignees, new Date(),
          (createdBy == null ? AtsUsersClient.getUser() : createdBy));
 

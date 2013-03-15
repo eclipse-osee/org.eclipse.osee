@@ -964,11 +964,11 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          try {
             if (artifact.isOfType(AtsArtifactTypes.Task)) {
                TaskArtifact taskArtifact = (TaskArtifact) artifact;
-               if (taskArtifact.getRelatedArtifactsCount(AtsRelationTypes.SmaToTask_Sma) != 1) {
+               if (taskArtifact.getRelatedArtifactsCount(AtsRelationTypes.TeamWfToTask_TeamWf) != 1) {
                   testNameToResultsMap.put(
                      "testTasksHaveParentWorkflow",
                      "Error: Task " + XResultDataUI.getHyperlink(taskArtifact) + " has " + taskArtifact.getRelatedArtifacts(
-                        AtsRelationTypes.SmaToTask_Sma).size() + " parents.");
+                        AtsRelationTypes.TeamWfToTask_TeamWf).size() + " parents.");
                }
             }
          } catch (OseeCoreException ex) {

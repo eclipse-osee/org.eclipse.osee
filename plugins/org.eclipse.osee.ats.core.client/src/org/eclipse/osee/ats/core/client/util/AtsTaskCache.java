@@ -50,7 +50,7 @@ public class AtsTaskCache {
       if (tasks == null || containsDeleted(tasks)) {
          //         System.out.println("caching tasks for " + sma.toStringWithId());
          // Get and cache tasks
-         tasks = sma.getRelatedArtifacts(AtsRelationTypes.SmaToTask_Task, TaskArtifact.class);
+         tasks = sma.getRelatedArtifacts(AtsRelationTypes.TeamWfToTask_Task, TaskArtifact.class);
          teamTasksCache.put(sma, tasks);
       }
       return tasks;

@@ -103,7 +103,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
                   }
                }
             }
-            if (guidRel.is(AtsRelationTypes.SmaToTask_Task)) {
+            if (guidRel.is(AtsRelationTypes.TeamWfToTask_Task)) {
                for (TaskArtifact taskArt : ArtifactCache.getActive(guidRel, TaskArtifact.class)) {
                   if (!taskArt.isDeleted()) {
                      AtsTaskCache.decache(taskArt.getParentAWA());

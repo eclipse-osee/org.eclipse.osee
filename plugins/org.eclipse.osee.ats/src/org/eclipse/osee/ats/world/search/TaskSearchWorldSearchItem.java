@@ -172,7 +172,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       //      ElapsedTime time = new ElapsedTime("Task Search - Bulk Load related tasks");
       // Bulk load tasks related to workflows
       Collection<Artifact> artifacts =
-         RelationManager.getRelatedArtifacts(workflows, 1, AtsRelationTypes.SmaToTask_Task);
+         RelationManager.getRelatedArtifacts(workflows, 1, AtsRelationTypes.TeamWfToTask_Task);
       //      time.end();
 
       // Apply the remaining criteria

@@ -90,7 +90,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
          return parentAwa;
       }
       Collection<AbstractWorkflowArtifact> awas =
-         getRelatedArtifacts(AtsRelationTypes.SmaToTask_Sma, AbstractWorkflowArtifact.class);
+         getRelatedArtifacts(AtsRelationTypes.TeamWfToTask_TeamWf, AbstractWorkflowArtifact.class);
       if (awas.isEmpty()) {
          throw new OseeStateException("Task has no parent [%s]", getHumanReadableId());
       }

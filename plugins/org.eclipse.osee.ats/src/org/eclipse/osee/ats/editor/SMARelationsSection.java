@@ -71,7 +71,7 @@ public class SMARelationsSection extends RelationsFormSection {
    };
 
    private static List<String> filteredRelationTypeNames = Arrays.asList(
-      AtsRelationTypes.ActionToWorkflow_Action.getName(), AtsRelationTypes.SmaToTask_Sma.getName(),
+      AtsRelationTypes.ActionToWorkflow_Action.getName(), AtsRelationTypes.TeamWfToTask_TeamWf.getName(),
       AtsRelationTypes.TeamActionableItem_ActionableItem.getName(),
       AtsRelationTypes.TeamWorkflowTargetedForVersion_Version.getName(), AtsRelationTypes.TeamLead_Lead.getName(),
       AtsRelationTypes.TeamMember_Member.getName(), AtsRelationTypes.TeamWorkflowToReview_Review.getName(),

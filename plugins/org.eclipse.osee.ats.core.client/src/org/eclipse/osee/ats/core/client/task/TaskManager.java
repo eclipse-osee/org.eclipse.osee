@@ -121,9 +121,9 @@ public class TaskManager {
             TaskArtifact taskArt = (TaskArtifact) art;
             taskArt.clearCaches();
             if (taskArt.getParentAWA() != null) {
-               taskArt.deleteRelation(AtsRelationTypes.SmaToTask_Sma, taskArt.getParentAWA());
+               taskArt.deleteRelation(AtsRelationTypes.TeamWfToTask_TeamWf, taskArt.getParentAWA());
             }
-            taskArt.addRelation(AtsRelationTypes.SmaToTask_Sma, newParent);
+            taskArt.addRelation(AtsRelationTypes.TeamWfToTask_TeamWf, newParent);
             taskArt.persist(transaction);
             taskArt.clearCaches();
          }

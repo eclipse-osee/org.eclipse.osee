@@ -63,7 +63,7 @@ public class WorkflowManagerCore {
 
    public static AbstractWorkflowArtifact getParentAWA(Artifact artifact) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.Task)) {
-         Collection<Artifact> awas = artifact.getRelatedArtifacts(AtsRelationTypes.SmaToTask_Sma);
+         Collection<Artifact> awas = artifact.getRelatedArtifacts(AtsRelationTypes.TeamWfToTask_TeamWf);
          if (awas.isEmpty()) {
             throw new OseeStateException("Task has no parent [%s]", artifact.getHumanReadableId());
          }

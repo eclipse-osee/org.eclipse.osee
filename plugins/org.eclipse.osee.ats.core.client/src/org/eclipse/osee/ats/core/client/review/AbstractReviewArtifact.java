@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.core.client.config.ActionableItemManager;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.review.role.UserRole;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.StateManager;
@@ -41,7 +40,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 /**
  * @author Donald G. Dunne
  */
-public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact implements IAtsActionableItemProvider {
+public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact implements IAtsActionableItemProvider {
 
    private ActionableItemManager actionableItemsDam;
    private Boolean standAlone = null;

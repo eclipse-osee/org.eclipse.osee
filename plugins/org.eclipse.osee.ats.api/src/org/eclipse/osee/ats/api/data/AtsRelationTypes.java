@@ -41,8 +41,8 @@ public final class AtsRelationTypes {
    public static final IRelationTypeSide PrivilegedMember_Team = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x200000000000016BL, "PrivilegedMember");
    public static final IRelationTypeSide PrivilegedMember_Member = PrivilegedMember_Team.getOpposite();
    
-   public static final IRelationTypeSide SmaToTask_Sma = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x200000000000016EL, "SmaToTask");
-   public static final IRelationTypeSide SmaToTask_Task = SmaToTask_Sma.getOpposite();
+   public static final IRelationTypeSide TeamWfToTask_TeamWf = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x200000000000016EL, "TeamWfToTask");
+   public static final IRelationTypeSide TeamWfToTask_Task = TeamWfToTask_TeamWf.getOpposite();
    
    public static final IRelationTypeSide SubscribedUser_Artifact = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x2000000000000172L, "SubscribedUser");
    public static final IRelationTypeSide SubscribedUser_User = SubscribedUser_Artifact.getOpposite();

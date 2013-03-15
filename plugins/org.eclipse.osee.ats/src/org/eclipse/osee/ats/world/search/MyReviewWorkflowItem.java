@@ -60,7 +60,7 @@ public class MyReviewWorkflowItem extends UserSearchItem {
       artifacts.addAll(assigned);
 
       if (reviewState == ReviewState.InWork) {
-         artifacts.addAll(RelationManager.getRelatedArtifacts(assigned, 1, AtsRelationTypes.SmaToTask_Sma));
+         artifacts.addAll(RelationManager.getRelatedArtifacts(assigned, 1, AtsRelationTypes.TeamWfToTask_TeamWf));
       } else {
          artifacts.addAll(ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.State,
             "<" + user.getUserId() + ">", AtsUtil.getAtsBranch(), QueryOptions.CONTAINS_MATCH_OPTIONS));
