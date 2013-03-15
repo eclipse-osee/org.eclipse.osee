@@ -77,6 +77,7 @@ public final class OseeData {
    }
 
    public static File getFile(String filename) {
+      ensureProjectReady();
       return new File(getPath().toFile(), filename);
    }
 
