@@ -1634,13 +1634,11 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
       return null;
    }
 
-   @Override
-   public final int hashCode() {
-      // Don't use branch so we are consistent with equals method
-      return super.hashCode();
-   }
-
    /**
+    * Note: Artifact class does not implement the hashCode, but instead uses the one implemented by Identity. It can not
+    * use the branch guid due to the need for IArtifactTokens to match Artifact instances. In addition, the event system
+    * requires that the DefaultBasicGuidArtifact and Artifact hashcode matches.
+    * 
     * @param obj the reference object with which to compare.
     * @return <code>true</code> if this artifact has the same GUID and branch <code>false</code> otherwise.
     */

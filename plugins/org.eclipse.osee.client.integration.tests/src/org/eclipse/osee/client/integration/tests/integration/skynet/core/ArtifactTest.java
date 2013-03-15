@@ -16,11 +16,16 @@ import org.eclipse.osee.client.demo.DemoArtifactTypes;
 import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -50,6 +55,10 @@ public final class ArtifactTest {
    public void tearDown() throws Exception {
       if (artifactWithSpecialAttr != null) {
          artifactWithSpecialAttr.deleteAndPersist();
+      }
+      for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.GeneralData,
+         ArtifactTest.class.getSimpleName(), BranchManager.getCommonBranch())) {
+         art.deleteAndPersist();
       }
    }
 
@@ -87,6 +96,58 @@ public final class ArtifactTest {
    public void setSoleAttributeValueTest() throws Exception {
       artifactWithSpecialAttr.setName("ArtifactTest-artifactWithSpecialAttr");
       artifactWithSpecialAttr.setSoleAttributeValue(CoreAttributeTypes.Partition, "Navigation");
+   }
+
+   @Test
+   public void testHashCode() throws OseeCoreException {
+      Artifact art =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch(),
+            ArtifactTest.class.getSimpleName());
+      art.persist("test");
+
+      DefaultBasicGuidArtifact equalGuid =
+         new DefaultBasicGuidArtifact(GUID.create(), CoreArtifactTypes.SoftwareDesign.getGuid(), art.getGuid());
+      Assert.assertEquals(art.hashCode(), equalGuid.hashCode());
+
+      DefaultBasicGuidArtifact equalGuidArtType =
+         new DefaultBasicGuidArtifact(GUID.create(), CoreArtifactTypes.GeneralData.getGuid(), art.getGuid());
+      Assert.assertEquals(art.hashCode(), equalGuidArtType.hashCode());
+
+      DefaultBasicGuidArtifact equalGuidArtTypeBranchGuid =
+         new DefaultBasicGuidArtifact(BranchManager.getCommonBranch().getGuid(),
+            CoreArtifactTypes.GeneralData.getGuid(), art.getGuid());
+      Assert.assertEquals(art.hashCode(), equalGuidArtTypeBranchGuid.hashCode());
+
+      DefaultBasicGuidArtifact equalArtTypeBranchGuidNotGuid =
+         new DefaultBasicGuidArtifact(BranchManager.getCommonBranch().getGuid(),
+            CoreArtifactTypes.GeneralData.getGuid(), GUID.create());
+      Assert.assertNotSame(art.hashCode(), equalArtTypeBranchGuidNotGuid.hashCode());
+   }
+
+   @Test
+   public void testEquals() throws OseeCoreException {
+      Artifact art =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch(),
+            ArtifactTest.class.getSimpleName());
+      art.persist("test");
+
+      DefaultBasicGuidArtifact equalGuid =
+         new DefaultBasicGuidArtifact(GUID.create(), CoreArtifactTypes.SoftwareDesign.getGuid(), art.getGuid());
+      Assert.assertNotSame(art, equalGuid);
+
+      DefaultBasicGuidArtifact equalGuidArtType =
+         new DefaultBasicGuidArtifact(GUID.create(), CoreArtifactTypes.GeneralData.getGuid(), art.getGuid());
+      Assert.assertNotSame(art, equalGuidArtType);
+
+      DefaultBasicGuidArtifact equalGuidArtTypeBranchGuid =
+         new DefaultBasicGuidArtifact(BranchManager.getCommonBranch().getGuid(),
+            CoreArtifactTypes.GeneralData.getGuid(), art.getGuid());
+      Assert.assertEquals(art, equalGuidArtTypeBranchGuid);
+
+      DefaultBasicGuidArtifact equalArtTypeBranchGuidNotGuid =
+         new DefaultBasicGuidArtifact(BranchManager.getCommonBranch().getGuid(),
+            CoreArtifactTypes.GeneralData.getGuid(), GUID.create());
+      Assert.assertNotSame(art, equalArtTypeBranchGuidNotGuid);
    }
 
 }

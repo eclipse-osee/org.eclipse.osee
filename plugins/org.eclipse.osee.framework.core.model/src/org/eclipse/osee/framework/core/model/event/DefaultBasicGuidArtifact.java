@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.event;
 
+import org.eclipse.osee.framework.core.data.AbstractIdentity;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 
 /**
  * @author Donald G. Dunne
  */
-public class DefaultBasicGuidArtifact implements IBasicGuidArtifact {
+public class DefaultBasicGuidArtifact extends AbstractIdentity<String> implements IBasicGuidArtifact {
    private static final long serialVersionUID = -4997763989583925345L;
    private final String branchGuid;
    private Long artTypeGuid;
@@ -45,12 +46,14 @@ public class DefaultBasicGuidArtifact implements IBasicGuidArtifact {
    @Override
    public int hashCode() {
       // NOTE This hashcode MUST match that of Artifact class
-      int hashCode = 11;
-      hashCode = hashCode * 37 + getGuid().hashCode();
-      hashCode = hashCode * 37 + getBranchGuid().hashCode();
-      return hashCode;
+      return super.hashCode();
    }
 
+   /**
+    * Note: DefaultBasicGuidArtifact class does not implement the hashCode, but instead uses the one implemented by
+    * Identity. It can not use the branch guid due to the need for IArtifactTokens to match Artifact instances. In
+    * addition, the event system requires that the DefaultBasicGuidArtifact and Artifact hashcode matches.
+    */
    @Override
    public boolean equals(Object obj) {
       boolean equals = super.equals(obj);
