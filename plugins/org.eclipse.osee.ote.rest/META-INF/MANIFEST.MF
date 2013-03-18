@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Osee OTE Rest
+Bundle-SymbolicName: org.eclipse.osee.ote.rest
+Bundle-Version: 0.11.0.qualifier
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Service-Component: OSGI-INF/*.xml
+Import-Package: javax.ws.rs,
+ javax.ws.rs.core,
+ javax.ws.rs.ext,
+ org.eclipse.core.resources,
+ org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.core.model,
+ org.eclipse.osee.framework.core.model.cache,
+ org.eclipse.osee.framework.core.util,
+ org.eclipse.osee.ote,
+ org.eclipse.osee.ote.rest.model
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.osee.framework.jdk.core;bundle-version="0.11.0"
