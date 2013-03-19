@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.server.internal;
 
 import java.io.Serializable;
+import java.net.InetAddress;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Date;
@@ -70,6 +71,11 @@ public class OteService implements IHostTestEnvironment, IService {
       enhancedProperties.setProperty("group", "OSEE Test Environment");
       enhancedProperties.setProperty("owner", System.getProperty("user.name"));
       enhancedProperties.setProperty("id", serviceID.toString());
+      try {
+         enhancedProperties.setProperty("appServerURI", String.format("http://%s:%s", InetAddress.getLocalHost().getHostAddress(), Integer.parseInt(System.getProperty("org.osgi.service.http.port"))));
+      } catch (Exception e) {
+         OseeLog.log(OteService.class, Level.SEVERE, "Failed to set the appServerURI", e);
+      }
    }
    
    @Override
