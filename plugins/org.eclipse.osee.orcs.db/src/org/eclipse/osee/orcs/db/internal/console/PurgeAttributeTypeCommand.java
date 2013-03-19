@@ -74,7 +74,7 @@ public class PurgeAttributeTypeCommand implements ConsoleCommand {
 
    @Override
    public String getUsage() {
-      return "[force=<TRUE|FALSE>] attrTypes=<ATTRIBUTE_TYPE_NAMES,...>";
+      return "[force=<TRUE|FALSE>] attrTypes=<ATTRIBUTE_TYPE_UUID,...>";
    }
 
    @Override

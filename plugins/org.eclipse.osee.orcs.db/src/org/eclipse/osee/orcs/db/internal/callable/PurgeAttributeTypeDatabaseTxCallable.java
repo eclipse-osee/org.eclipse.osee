@@ -11,7 +11,9 @@
 package org.eclipse.osee.orcs.db.internal.callable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.database.schema.DatabaseTxCallable;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -19,6 +21,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.services.IdentityService;
+import org.eclipse.osee.framework.core.util.HexUtil;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -43,7 +46,7 @@ public final class PurgeAttributeTypeDatabaseTxCallable extends DatabaseTxCallab
    private final IdentityService identityService;
    private final Console console;
 
-   public PurgeAttributeTypeDatabaseTxCallable(Log logger, IOseeDatabaseService databaseService, IdentityService identityService, AttributeTypeCache attributeCache, Console console, boolean force, String... typesToPurge) {
+   public PurgeAttributeTypeDatabaseTxCallable(Log logger, IOseeDatabaseService databaseService, IdentityService identityService, AttributeTypeCache attributeCache, Console console, boolean force, String[] typesToPurge) {
       super(logger, databaseService, "Purge Attribute Type");
       this.identityService = identityService;
       this.attributeCache = attributeCache;
@@ -57,35 +60,36 @@ public final class PurgeAttributeTypeDatabaseTxCallable extends DatabaseTxCallab
       console.writeln();
       console.writeln(!forcePurge ? "Attribute Types:" : "Purging attribute types:");
 
-      List<Long> types = convertTypeNamesToUuids();
+      Set<Long> types = convertTypeNamesToUuids();
       boolean found = !types.isEmpty();
       if (forcePurge && found) {
          console.writeln("Removing from osee_* tables...");
-         processDeletes(connection, retrieveGammaIds(types));
+         processDeletes(connection, retrieveGammaIds(connection, types));
       }
 
       console.writeln((found && !forcePurge) ? "To >DELETE Attribute DATA!< add --force to confirm." : "Operation finished.");
       return null;
    }
 
-   private List<Long> convertTypeNamesToUuids() throws OseeCoreException {
-      List<Long> guids = new ArrayList<Long>();
-      for (String typeName : typesToPurge) {
+   private Set<Long> convertTypeNamesToUuids() throws OseeCoreException {
+      Set<Long> uuids = new HashSet<Long>();
+      for (String uuid : typesToPurge) {
          try {
-            AttributeType type = attributeCache.getBySoleName(typeName);
-            console.writeln("Type [%s] found. Guid: [%s]", typeName, type.getGuid());
-            guids.add(type.getGuid());
+            Long converted = HexUtil.toLong(uuid);
+            AttributeType type = attributeCache.getByGuid(converted);
+            console.writeln("Type [%s] found. Guid: [0x%X]", type.getName(), type.getGuid());
+            uuids.add(type.getGuid());
          } catch (OseeArgumentException ex) {
-            console.writeln("Type [%s] NOT found.", typeName);
+            console.writeln("Type [0x%X] NOT found.", uuid);
             console.writeln(ex);
          }
       }
-      return guids;
+      return uuids;
    }
 
-   private List<Integer[]> retrieveGammaIds(List<Long> types) throws OseeCoreException {
+   private List<Integer[]> retrieveGammaIds(OseeConnection connection, Set<Long> types) throws OseeCoreException {
       List<Integer[]> gammas = new ArrayList<Integer[]>(50000);
-      IOseeStatement chStmt = getDatabaseService().getStatement();
+      IOseeStatement chStmt = getDatabaseService().getStatement(connection);
       try {
          for (Long attributeTypeId : types) {
             chStmt.runPreparedQuery(RETRIEVE_GAMMAS_OF_ATTR_TYPE_TXS, identityService.getLocalId(attributeTypeId));
