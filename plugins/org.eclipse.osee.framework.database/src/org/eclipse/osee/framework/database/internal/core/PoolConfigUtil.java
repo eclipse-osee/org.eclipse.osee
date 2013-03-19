@@ -39,8 +39,8 @@ public final class PoolConfigUtil {
    // The default number of objects to examine per run in the idle object evictor.
    public static final int DEFAULT_NUM_TESTS_PER_EVICTION_RUN = DEFAULT_MAX_ACTIVE;
 
-   public static final long DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS = 1000L; // (1 secs) - default -1L (infinite)
-   public static final long DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS = 500L; // (.5 secs) - default - 1000L * 60L * 30L - 30 mins;
+   public static final long DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS = 900000L; // (15 mins) - default -1L (infinite)
+   public static final long DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS = 60000L; // (60 secs) - default - 1000L * 60L * 30L - 30 mins;
    public static final long DEFAULT_SOFT_MIN_EVICTABLE_IDLE_TIME_MILLIS = -1;
 
    public static final boolean DEFAULT_LIFO = true;
@@ -48,7 +48,7 @@ public final class PoolConfigUtil {
    public static final String DEFAULT_VALIDATION_QUERY = "SELECT 1 FROM DUAL";
    public static final int DEFAULT_VALIDATION_QUERY_TIMEOUT_SECS = 3; // 3 secs 
 
-   public static final boolean DEFAULT_POOL_PREPARED_STATEMENTS = true; // default was false
+   public static final boolean DEFAULT_POOL_PREPARED_STATEMENTS = false; // default was false
 
    public static final int DEFAULT_MAX_TOTAL_STATEMENTS = 20; // default was 8
    public static final int DEFAULT_MAX_ACTIVE_STATEMENTS = DEFAULT_MAX_TOTAL_STATEMENTS; // default was 8

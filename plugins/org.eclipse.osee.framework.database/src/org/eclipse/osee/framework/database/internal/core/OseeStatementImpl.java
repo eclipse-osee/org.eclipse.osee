@@ -132,14 +132,17 @@ public final class OseeStatementImpl implements IOseeStatement {
     */
    @Override
    public void close() {
-      try {
-         closePreviousResources();
-         if (autoClose && connection != null) {
-            connection.close();
+      closePreviousResources();
+      if (autoClose && connection != null) {
+         try {
+            if (!connection.isClosed()) {
+               connection.close();
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(OseeStatementImpl.class, Level.SEVERE, ex);
+         } finally {
             connection = null;// this allows for multiple calls to runPreparedQuery to have an open connection
          }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(OseeStatementImpl.class, Level.SEVERE, ex);
       }
    }
 
@@ -147,25 +150,41 @@ public final class OseeStatementImpl implements IOseeStatement {
     * allows for multiple uses of this object to have an open connection
     */
    private void allowReuse() throws OseeCoreException {
+      closePreviousResources();
       if (connection == null) {
          connection = connectionPool.getConnection();
       }
-      closePreviousResources();
    }
 
-   private void closePreviousResources() throws OseeCoreException {
+   private void closePreviousResources() {
       try {
+         // rSet.isClosed is not supported by some JDBC drivers so don't check it
          if (rSet != null) {
             rSet.close();
          }
-         if (preparedStatement != null) {
+      } catch (SQLException ex) {
+         OseeLog.log(OseeStatementImpl.class, Level.SEVERE, ex);
+      } finally {
+         rSet = null;
+      }
+      try {
+         if (preparedStatement != null && !preparedStatement.isClosed()) {
             preparedStatement.close();
          }
-         if (callableStatement != null) {
+      } catch (SQLException ex) {
+         OseeLog.log(OseeStatementImpl.class, Level.SEVERE, ex);
+      } finally {
+         preparedStatement = null;
+      }
+
+      try {
+         if (callableStatement != null && !callableStatement.isClosed()) {
             callableStatement.close();
          }
       } catch (SQLException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeLog.log(OseeStatementImpl.class, Level.SEVERE, ex);
+      } finally {
+         callableStatement = null;
       }
    }
 
@@ -440,6 +459,7 @@ public final class OseeStatementImpl implements IOseeStatement {
 
    @Override
    public boolean isDatabaseType(SupportedDatabase type) throws OseeCoreException {
+      allowReuse();
       return SupportedDatabase.isDatabaseType(connection.getMetaData(), type);
    }
 
@@ -464,10 +484,14 @@ public final class OseeStatementImpl implements IOseeStatement {
    @Override
    public void cancel() throws OseeCoreException {
       try {
-         if (preparedStatement != null) {
+         if (preparedStatement != null && !preparedStatement.isClosed()) {
             preparedStatement.cancel();
          }
-         if (callableStatement != null) {
+      } catch (SQLException ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      }
+      try {
+         if (callableStatement != null && !callableStatement.isClosed()) {
             callableStatement.cancel();
          }
       } catch (SQLException ex) {

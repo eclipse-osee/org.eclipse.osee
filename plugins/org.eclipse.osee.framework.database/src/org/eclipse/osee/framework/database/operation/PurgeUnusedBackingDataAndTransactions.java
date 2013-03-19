@@ -15,11 +15,11 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.internal.ServiceUtil;
 
 /**
@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.database.internal.ServiceUtil;
  * 
  * @author Ryan D. Brooks
  */
-public class PurgeUnusedBackingDataAndTransactions extends AbstractOperation {
+public class PurgeUnusedBackingDataAndTransactions extends AbstractDbTxOperation {
 
    private static final String NOT_ADDRESSESED_GAMMAS =
       "select gamma_id from %s t1 where not exists (select 1 from osee_txs txs1 where t1.gamma_id = txs1.gamma_id) and not exists (select 1 from osee_txs_archived txs3 where t1.gamma_id = txs3.gamma_id)";
@@ -44,28 +44,20 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractOperation {
    private static final String DELETE_EMPTY_TRANSACTIONS =
       "DELETE FROM osee_tx_details WHERE branch_id = ? and transaction_id = ?";
 
-   private final IOseeDatabaseService dbService;
-
    public PurgeUnusedBackingDataAndTransactions(OperationLogger logger) throws OseeDataStoreException {
       this(ServiceUtil.getDatabaseService(), logger);
    }
 
    public PurgeUnusedBackingDataAndTransactions(IOseeDatabaseService dbService, OperationLogger logger) {
-      super("Data with no TXS Addressing and empty transactions", ServiceUtil.PLUGIN_ID, logger);
-      this.dbService = dbService;
+      super(dbService, "Data with no TXS Addressing and empty transactions", ServiceUtil.PLUGIN_ID, logger);
    }
 
-   private IOseeDatabaseService getDatabaseService() {
-      return dbService;
-   }
-
-   private void processNotAddressedGammas(String tableName) throws OseeCoreException {
+   private void processNotAddressedGammas(OseeConnection connection, String tableName) throws OseeCoreException {
       List<Object[]> notAddressedGammas = new LinkedList<Object[]>();
 
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
-      String sql = String.format(NOT_ADDRESSESED_GAMMAS, tableName);
-
+      IOseeStatement chStmt = getDatabaseService().getStatement(connection);
       try {
+         String sql = String.format(NOT_ADDRESSESED_GAMMAS, tableName);
          chStmt.runPreparedQuery(sql);
          while (chStmt.next()) {
             notAddressedGammas.add(new Object[] {chStmt.getLong("gamma_id")});
@@ -75,14 +67,15 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractOperation {
          chStmt.close();
       }
 
-      sql = String.format(DELETE_GAMMAS, tableName);
-      getDatabaseService().runBatchUpdate(sql, notAddressedGammas);
+      if (!notAddressedGammas.isEmpty()) {
+         getDatabaseService().runBatchUpdate(connection, String.format(DELETE_GAMMAS, tableName), notAddressedGammas);
+      }
    }
 
-   private void processAddressedButNonexistentGammas(String tableName) throws OseeCoreException {
+   private void processAddressedButNonexistentGammas(OseeConnection connection, String tableName) throws OseeCoreException {
       List<Object[]> nonexistentGammas = new LinkedList<Object[]>();
-      IOseeStatement chStmt = getDatabaseService().getStatement();
 
+      IOseeStatement chStmt = getDatabaseService().getStatement(connection);
       try {
          String sql = String.format(NONEXISTENT_GAMMAS, tableName);
 
@@ -95,16 +88,17 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractOperation {
          chStmt.close();
       }
 
-      getDatabaseService().runBatchUpdate(String.format(DELETE_GAMMAS, tableName), nonexistentGammas);
+      if (!nonexistentGammas.isEmpty()) {
+         getDatabaseService().runBatchUpdate(connection, String.format(DELETE_GAMMAS, tableName), nonexistentGammas);
+      }
    }
 
-   private void processEmptyTransactions() throws OseeCoreException {
+   private void processEmptyTransactions(OseeConnection connection) throws OseeCoreException {
       List<Object[]> emptyTransactions = new LinkedList<Object[]>();
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
 
-      String sql = EMPTY_TRANSACTIONS;
+      IOseeStatement chStmt = getDatabaseService().getStatement(connection);
       try {
-         chStmt.runPreparedQuery(sql);
+         chStmt.runPreparedQuery(EMPTY_TRANSACTIONS);
          while (chStmt.next()) {
             emptyTransactions.add(new Object[] {chStmt.getInt("branch_id"), chStmt.getInt("transaction_id")});
             log(String.valueOf(chStmt.getInt("transaction_id")));
@@ -113,16 +107,18 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractOperation {
          chStmt.close();
       }
 
-      ConnectionHandler.runBatchUpdate(DELETE_EMPTY_TRANSACTIONS, emptyTransactions);
+      if (!emptyTransactions.isEmpty()) {
+         getDatabaseService().runBatchUpdate(connection, DELETE_EMPTY_TRANSACTIONS, emptyTransactions);
+      }
    }
 
    @Override
-   protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
-      processNotAddressedGammas("osee_attribute");
-      processNotAddressedGammas("osee_artifact");
-      processNotAddressedGammas("osee_relation_link");
-      processAddressedButNonexistentGammas("osee_txs");
-      processAddressedButNonexistentGammas("osee_txs_archived");
-      processEmptyTransactions();
+   protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
+      processNotAddressedGammas(connection, "osee_attribute");
+      processNotAddressedGammas(connection, "osee_artifact");
+      processNotAddressedGammas(connection, "osee_relation_link");
+      processAddressedButNonexistentGammas(connection, "osee_txs");
+      processAddressedButNonexistentGammas(connection, "osee_txs_archived");
+      processEmptyTransactions(connection);
    }
 }
