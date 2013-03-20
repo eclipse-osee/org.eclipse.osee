@@ -137,14 +137,18 @@ public abstract class XWidget {
    public void removeControlCausedMessageByObject() {
       IMessageManager messageManager = getMessageManager();
       if (messageManager != null && isFormReady()) {
-         messageManager.removeMessage(this, getErrorMessageControl());
+         if (Widgets.isAccessible(getErrorMessageControl())) {
+            messageManager.removeMessage(this, getErrorMessageControl());
+         }
       }
    }
 
    public void removeControlCausedMessage(String messageId) {
       IMessageManager messageManager = getMessageManager();
       if (messageManager != null && isFormReady()) {
-         messageManager.removeMessage(messageId, getErrorMessageControl());
+         if (Widgets.isAccessible(getErrorMessageControl())) {
+            messageManager.removeMessage(messageId, getErrorMessageControl());
+         }
       }
    }
 
@@ -194,7 +198,7 @@ public abstract class XWidget {
       try {
          if (toolTip != null && label != null) {
             MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-               label + " Tool Tip", toolTip);
+                     label + " Tool Tip", toolTip);
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
