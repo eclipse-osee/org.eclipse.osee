@@ -32,6 +32,8 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Roberto E. Escobar
@@ -69,6 +71,10 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
 
    @Override
    public StyledString getStyledText(Object element) {
+      if (element instanceof FakeArtifactParent) {
+         return new StyledString(((FakeArtifactParent) element).getName());
+      }
+
       if (element instanceof AttributeLineElement) {
          return getLineElementLabel((AttributeLineElement) element);
       }
@@ -242,7 +248,9 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
    @Override
    public Image getImage(Object element) {
       Image toReturn = null;
-      if (element instanceof AttributeLineElement) {
+      if (element instanceof FakeArtifactParent) {
+         toReturn = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
+      } else if (element instanceof AttributeLineElement) {
          toReturn = ImageManager.getImage(FrameworkImage.LINE_MATCH);
       } else if (element instanceof Artifact) {
          Image artImage = ArtifactImageManager.getImage((Artifact) element);
@@ -260,22 +268,4 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
       }
       return toReturn;
    }
-
-   private static StyledString decorateColoredString(StyledString string, String decorated, Styler color) {
-      String label = string.getString();
-      int originalStart = decorated.indexOf(label);
-      if (originalStart == -1) {
-         return new StyledString(decorated); // the decorator did something wild
-      }
-      if (originalStart > 0) {
-         StyledString newString = new StyledString(decorated.substring(0, originalStart), color);
-         newString.append(string);
-         string = newString;
-      }
-      if (decorated.length() > originalStart + label.length()) { // decorator appended something
-         return string.append(decorated.substring(originalStart + label.length()), color);
-      }
-      return string; // no change
-   }
-
 }

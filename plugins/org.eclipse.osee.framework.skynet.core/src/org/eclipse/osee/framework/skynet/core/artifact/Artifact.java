@@ -321,10 +321,9 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
       return parentCount == 1;
    }
 
-   public final boolean isOrphan() throws OseeCoreException {
+   public final boolean isNotRootedInDefaultRoot() throws OseeCoreException {
       Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(getBranch());
-
-      if (root.equals(getArtifactRoot())) {
+      if (root.equals(getTopContainer())) {
          return false;
       } else {
          return true;
@@ -334,14 +333,26 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    /**
     * @return the highest level parent of this artifact which will equal to
     * OseeSystemArtifacts.getDefaultHierarchyRootArtifact(artifact.getBranch()) except when this artifact is an orphan
+    * or has a cyclic reference. The getDefaultHierarchyRootArtifact Artifact will return itself from this method.
     */
-   public final Artifact getArtifactRoot() throws OseeCoreException {
-      Artifact artifactRoot = null;
-
-      for (Artifact parent = getParent(); parent != null; parent = parent.getParent()) {
-         artifactRoot = parent;
+   private Artifact getTopContainer() throws OseeCoreException {
+      Artifact root = null;
+      if (this.equals(OseeSystemArtifacts.getDefaultHierarchyRootArtifact(getBranch()))) {
+         root = this;
+      } else {
+         Set<Artifact> set = new HashSet<Artifact>();
+         set.add(this);
+         for (Artifact parent = getParent(); parent != null; parent = parent.getParent()) {
+            if (set.add(parent)) {
+               root = parent;
+            } else {
+               OseeLog.log(Activator.class, Level.SEVERE, String.format("Cycle detected with artifact: %s", parent));
+               root = null;
+               break;
+            }
+         }
       }
-      return artifactRoot;
+      return root;
    }
 
    public final Artifact getChild(String descriptiveName) throws OseeCoreException {

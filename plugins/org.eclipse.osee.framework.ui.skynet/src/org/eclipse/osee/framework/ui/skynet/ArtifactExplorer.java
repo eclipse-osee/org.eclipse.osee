@@ -1378,7 +1378,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
          Conditions.checkNotNull(artifactData, "artifact data");
 
          Artifact artifact = artifactData.getArtifact();
-         Conditions.checkNotNull(artifactData, "artifact");
+         Conditions.checkNotNull(artifact, "artifact");
          if (artifact.isDeleted()) {
             throw new OseeStateException("The artifact [%s] has been deleted.", artifact.getName());
          } else {
@@ -1387,13 +1387,9 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
                   DeletionFlag.EXCLUDE_DELETED));
             }
 
-            Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(artifact.getBranch());
-            Artifact artifactRoot = artifact.getArtifactRoot();
-
-            if (!root.equals(artifactRoot)) {
-               String artifactRootName = artifactRoot != null ? artifactRoot.getName() : artifact.getName();
-               throw new OseeStateException("The artifact [%s] is rooted on an orphan tree at [%s]",
-                  artifact.getName(), artifactRootName);
+            if (artifact.isNotRootedInDefaultRoot()) {
+               throw new OseeStateException("Artifact [%s] is not rooted in the default hierarchical root",
+                  artifact.getName());
             }
          }
       }

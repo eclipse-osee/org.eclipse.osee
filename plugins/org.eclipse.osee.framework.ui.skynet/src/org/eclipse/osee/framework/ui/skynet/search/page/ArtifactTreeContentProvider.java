@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -32,15 +33,18 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
 
    private final Object[] EMPTY_ARR = new Object[0];
 
-   private AbstractArtifactSearchResult fResult;
-   private final ArtifactSearchPage fPage;
-   private final AbstractTreeViewer fTreeViewer;
+   private AbstractArtifactSearchResult searchResult;
+   private final ArtifactSearchPage searchPage;
+   private final AbstractTreeViewer treeViewer;
    @SuppressWarnings("rawtypes")
-   private Map<Object, Set> fChildrenMap;
+   private Map<Object, Set> childrenMap;
+
+   private final FakeArtifactParent orphanParent = new FakeArtifactParent("Artifacts with no parent");
+   private final FakeArtifactParent multiParent = new FakeArtifactParent("Artifacts with multiple parents");
 
    ArtifactTreeContentProvider(ArtifactSearchPage page, AbstractTreeViewer viewer) {
-      fPage = page;
-      fTreeViewer = viewer;
+      searchPage = page;
+      treeViewer = viewer;
    }
 
    @Override
@@ -56,7 +60,7 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
    }
 
    private int getElementLimit() {
-      return fPage.getElementLimit().intValue();
+      return searchPage.getElementLimit().intValue();
    }
 
    @Override
@@ -73,9 +77,9 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
 
    @SuppressWarnings("rawtypes")
    private synchronized void initialize(AbstractArtifactSearchResult result) {
-      fResult = result;
-      fChildrenMap = new HashMap<Object, Set>();
-      boolean showLineMatches = fResult.hasAttributeMatches();
+      searchResult = result;
+      childrenMap = new HashMap<Object, Set>();
+      boolean showLineMatches = searchResult.hasAttributeMatches();
 
       if (result != null) {
          Object[] elements = result.getElements();
@@ -102,20 +106,20 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
       while (parent != null) {
          if (insertChild(parent, child)) {
             if (refreshViewer) {
-               fTreeViewer.add(parent, child);
+               treeViewer.add(parent, child);
             }
          } else {
             if (refreshViewer) {
-               fTreeViewer.refresh(parent);
+               treeViewer.refresh(parent);
             }
             return;
          }
          child = parent;
          parent = getParent(child);
       }
-      if (insertChild(fResult, child)) {
+      if (insertChild(searchResult, child)) {
          if (refreshViewer) {
-            fTreeViewer.add(fResult, child);
+            treeViewer.add(searchResult, child);
          }
       }
    }
@@ -127,40 +131,40 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
     */
    @SuppressWarnings("unchecked")
    private boolean insertChild(Object parent, Object child) {
-      Set<Object> children = fChildrenMap.get(parent);
+      Set<Object> children = childrenMap.get(parent);
       if (children == null) {
          children = new HashSet<Object>();
-         fChildrenMap.put(parent, children);
+         childrenMap.put(parent, children);
       }
       return children.add(child);
    }
 
    private boolean hasChild(Object parent, Object child) {
-      Set<?> children = fChildrenMap.get(parent);
+      Set<?> children = childrenMap.get(parent);
       return children != null && children.contains(child);
    }
 
    private void remove(Object element, boolean refreshViewer) {
       if (hasChildren(element)) {
          if (refreshViewer) {
-            fTreeViewer.refresh(element);
+            treeViewer.refresh(element);
          }
       } else {
          if (!hasMatches(element)) {
-            fChildrenMap.remove(element);
+            childrenMap.remove(element);
             Object parent = getParent(element);
             if (parent != null) {
                removeFromSiblings(element, parent);
                remove(parent, refreshViewer);
             } else {
-               removeFromSiblings(element, fResult);
+               removeFromSiblings(element, searchResult);
                if (refreshViewer) {
-                  fTreeViewer.refresh();
+                  treeViewer.refresh();
                }
             }
          } else {
             if (refreshViewer) {
-               fTreeViewer.refresh(element);
+               treeViewer.refresh(element);
             }
          }
       }
@@ -169,13 +173,13 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
    private boolean hasMatches(Object element) {
       if (element instanceof AttributeLineElement) {
          AttributeLineElement lineElement = (AttributeLineElement) element;
-         return lineElement.getNumberOfMatches(fResult) > 0;
+         return lineElement.getNumberOfMatches(searchResult) > 0;
       }
-      return fResult.getMatchCount(element) > 0;
+      return searchResult.getMatchCount(element) > 0;
    }
 
    private void removeFromSiblings(Object element, Object parent) {
-      Set<?> siblings = fChildrenMap.get(parent);
+      Set<?> siblings = childrenMap.get(parent);
       if (siblings != null) {
          siblings.remove(element);
       }
@@ -183,7 +187,7 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
 
    @Override
    public Object[] getChildren(Object parentElement) {
-      Set<?> children = fChildrenMap.get(parentElement);
+      Set<?> children = childrenMap.get(parentElement);
       if (children == null) {
          return EMPTY_ARR;
       }
@@ -199,17 +203,17 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
    public synchronized void elementsChanged(Object[] updatedElements) {
       for (int i = 0; i < updatedElements.length; i++) {
          if (!(updatedElements[i] instanceof AttributeLineElement)) {
-            if (fResult.getMatchCount(updatedElements[i]) > 0) {
+            if (searchResult.getMatchCount(updatedElements[i]) > 0) {
                insert(updatedElements[i], true);
             } else {
                remove(updatedElements[i], true);
             }
          } else {
             AttributeLineElement lineElement = (AttributeLineElement) updatedElements[i];
-            int nMatches = lineElement.getNumberOfMatches(fResult);
+            int nMatches = lineElement.getNumberOfMatches(searchResult);
             if (nMatches > 0) {
                if (hasChild(lineElement.getParent(), lineElement)) {
-                  fTreeViewer.update(new Object[] {lineElement, lineElement.getParent()}, null);
+                  treeViewer.update(new Object[] {lineElement, lineElement.getParent()}, null);
                } else {
                   insert(lineElement, true);
                }
@@ -222,27 +226,31 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
 
    @Override
    public void clear() {
-      initialize(fResult);
-      fTreeViewer.refresh();
+      initialize(searchResult);
+      treeViewer.refresh();
    }
 
    @Override
    public Object getParent(Object element) {
+      Object toReturn = null;
       if (element instanceof AttributeLineElement) {
-         return ((AttributeLineElement) element).getParent();
-      }
-      if (element instanceof AttributeMatch) {
+         toReturn = ((AttributeLineElement) element).getParent();
+      } else if (element instanceof AttributeMatch) {
          AttributeMatch match = (AttributeMatch) element;
-         return match.getArtifact();
-      }
-      if (element instanceof Artifact) {
+         toReturn = match.getArtifact();
+      } else if (element instanceof Artifact) {
          Artifact resource = (Artifact) element;
          try {
-            return resource.getParent();
+            toReturn = resource.getParent();
+            if (toReturn == null && resource.isNotRootedInDefaultRoot()) {
+               toReturn = orphanParent;
+            }
+         } catch (MultipleArtifactsExist ex) {
+            toReturn = multiParent;
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
-      return null;
+      return toReturn;
    }
 }
