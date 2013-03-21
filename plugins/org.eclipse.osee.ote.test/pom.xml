@@ -10,9 +10,8 @@
 		<relativePath>../../plugins/org.eclipse.osee.ote.parent</relativePath>
 	</parent>
 
-	<artifactId>org.eclipse.osee.ote.rest.model</artifactId>
-	<packaging>eclipse-plugin</packaging>
-	<name>OTE RESTModel(Incubation)</name>
+	<artifactId>org.eclipse.osee.ote.test</artifactId>
+	<name>OTE API Test (Incubation)</name>
 
    <build>
      <!-- workaround for https://issues.sonatype.org/browse/TYCHO-168 -->
@@ -32,4 +31,5 @@
     </plugins>
   </build>
   
+   <packaging>eclipse-test-plugin</packaging>
 </project>

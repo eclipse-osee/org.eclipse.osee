@@ -5,31 +5,31 @@
 
 	<parent>
 		<groupId>org.eclipse.osee</groupId>
-		<artifactId>org.eclipse.osee.client.parent</artifactId>
+		<artifactId>org.eclipse.osee.ote.parent</artifactId>
 		<version>0.11.0-SNAPSHOT</version>
-		<relativePath>../../plugins/org.eclipse.osee.client.parent</relativePath>
+		<relativePath>../../plugins/org.eclipse.osee.ote.parent</relativePath>
 	</parent>
 
 	<artifactId>org.eclipse.osee.ote.rest.client</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<name>OSEE OTE REST Client (Incubation)</name>
+	<name>OTE REST Client(Incubation)</name>
 
-	<build>
-		<!-- workaround for https://issues.sonatype.org/browse/TYCHO-168 -->
-		<resources>
-			<resource>
-				<directory>src</directory>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-		</resources>
-		<plugins>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-source-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-
+   <build>
+     <!-- workaround for https://issues.sonatype.org/browse/TYCHO-168 -->
+     <resources>
+      <resource>
+        <directory>src</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-source-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+  
 </project>

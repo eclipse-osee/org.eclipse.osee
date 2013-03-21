@@ -18,6 +18,12 @@
 
 	<modules>
 		<module>../../plugins/org.eclipse.osee.framework.ui.workspacebundleloader</module>
+		<module>../../plugins/org.eclipse.osee.ote</module>
+		<module>../../plugins/org.eclipse.osee.ote.test</module>
+		<module>../../plugins/org.eclipse.osee.ote.rest</module>
+		<module>../../plugins/org.eclipse.osee.ote.rest.client</module>
+		<module>../../plugins/org.eclipse.osee.ote.rest.model</module>
+		<module>../../plugins/org.eclipse.osee.ote.discovery</module>
 		<module>../../plugins/org.eclipse.osee.ote.client</module>
 		<module>../../plugins/org.eclipse.osee.ote.client.msg</module>
 		<module>../../plugins/org.eclipse.osee.ote.connection.jini</module>
@@ -47,6 +53,8 @@
 
 		<module>../../plugins/org.eclipse.osee.ote.ui.test.manager</module>
 
+		<module>../../features/org.eclipse.osee.ote.feature</module>
+		<module>../../features/org.eclipse.osee.ote.feature.source</module>
 		<module>../../features/org.eclipse.osee.client.ote.feature</module>
 		<module>../../features/org.eclipse.osee.client.ote.feature.source</module>
 

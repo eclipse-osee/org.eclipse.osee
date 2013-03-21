@@ -10,9 +10,9 @@
 		<relativePath>../../plugins/org.eclipse.osee.ote.parent</relativePath>
 	</parent>
 
-	<artifactId>org.eclipse.osee.ote.rest.model</artifactId>
+	<artifactId>org.eclipse.osee.ote.discovery</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<name>OTE RESTModel(Incubation)</name>
+	<name>OTE Discovery(Incubation)</name>
 
    <build>
      <!-- workaround for https://issues.sonatype.org/browse/TYCHO-168 -->
