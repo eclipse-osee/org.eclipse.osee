@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.transaction;
 
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -18,11 +19,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -264,7 +263,7 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
    }
 
    private void addRelations(Artifact artifact) throws OseeCoreException {
-      List<RelationLink> links = artifact.getRelationsAll(DeletionFlag.INCLUDE_DELETED);
+      List<RelationLink> links = artifact.getRelationsAll(INCLUDE_DELETED);
 
       for (RelationLink relation : links) {
          if (relation.isDirty()) {
@@ -273,16 +272,7 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
       }
    }
 
-   private Artifact getArtifact(int artId, IOseeBranch branch) throws OseeCoreException {
-      try {
-         return ArtifactQuery.getArtifactFromId(artId, branch, DeletionFlag.INCLUDE_DELETED);
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
-      }
-      return null;
-   }
-
-   public void addRelation(Artifact artifact, RelationLink link) throws OseeCoreException {
+   private void addRelation(Artifact artifact, RelationLink link) throws OseeCoreException {
       synchronized (getTxMonitor()) {
          checkAccess(artifact, link);
          setTxState(TxState.MODIFIED);
@@ -292,8 +282,8 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
          RelationEventType relationEventType; // needed until persist undeleted modtypes and modified == rational only change
 
          IOseeBranch branch = link.getBranch();
-         Artifact aArtifact = getArtifact(link.getAArtifactId(), branch);
-         Artifact bArtifact = getArtifact(link.getBArtifactId(), branch);
+         Artifact aArtifact = ArtifactQuery.checkArtifactFromId(link.getAArtifactId(), branch, INCLUDE_DELETED);
+         Artifact bArtifact = ArtifactQuery.checkArtifactFromId(link.getBArtifactId(), branch, INCLUDE_DELETED);
 
          if (link.isInDb()) {
             if (link.isUnDeleted()) {
@@ -336,8 +326,12 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
             txItem = new RelationTransactionData(link, modificationType, relationEventType);
             transactionDataItems.put(RelationTransactionData.class, link.getId(), txItem);
 
-            modifiedArtifacts.add(aArtifact);
-            modifiedArtifacts.add(bArtifact);
+            if (aArtifact != null) {
+               modifiedArtifacts.add(aArtifact);
+            }
+            if (bArtifact != null) {
+               modifiedArtifacts.add(bArtifact);
+            }
 
          } else {
             updateTxItem(txItem, modificationType);
