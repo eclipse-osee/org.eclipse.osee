@@ -11,6 +11,12 @@
 package org.eclipse.osee.framework.skynet.core.transaction;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.ARTIFACT_DELETED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.INTRODUCED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.MODIFIED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
+import static org.eclipse.osee.framework.core.enums.ModificationType.REPLACED_WITH_VERSION;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -213,7 +219,7 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
    }
 
    private void addArtifactAndAttributes(Artifact artifact) throws OseeCoreException {
-      if (artifact.hasDirtyAttributes() || artifact.hasDirtyArtifactType() || artifact.getModType() == ModificationType.REPLACED_WITH_VERSION) {
+      if (artifact.hasDirtyAttributes() || artifact.hasDirtyArtifactType() || artifact.getModType() == REPLACED_WITH_VERSION) {
          if (artifact.isDeleted() && !artifact.isInDb()) {
             for (Attribute<?> attribute : artifact.internalGetAttributes()) {
                if (attribute.isDirty()) {
@@ -225,7 +231,7 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
          checkAccess(artifact);
          setTxState(TxState.MODIFIED);
 
-         if (!artifact.isInDb() || artifact.hasDirtyArtifactType() || artifact.getModType().isDeleted() || artifact.getModType() == ModificationType.REPLACED_WITH_VERSION) {
+         if (!artifact.isInDb() || artifact.hasDirtyArtifactType() || artifact.getModType().isDeleted() || artifact.getModType() == REPLACED_WITH_VERSION) {
             BaseTransactionData txItem = transactionDataItems.get(ArtifactTransactionData.class, artifact.getArtId());
             if (txItem == null) {
                modifiedArtifacts.add(artifact);
@@ -287,21 +293,21 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
 
          if (link.isInDb()) {
             if (link.isUnDeleted()) {
-               modificationType = ModificationType.MODIFIED; // Temporary until UNDELETED persisted to DB
+               modificationType = MODIFIED; // Temporary until UNDELETED persisted to DB
                relationEventType = RelationEventType.Undeleted;
             } else if (link.isDeleted()) {
                if (aArtifact != null && aArtifact.isDeleted() || bArtifact != null && bArtifact.isDeleted()) {
-                  modificationType = ModificationType.ARTIFACT_DELETED;
+                  modificationType = ARTIFACT_DELETED;
                   relationEventType = RelationEventType.Deleted;
                } else {
-                  modificationType = ModificationType.DELETED;
+                  modificationType = DELETED;
                   relationEventType = RelationEventType.Deleted;
                }
             } else {
-               if (link.getModificationType() == ModificationType.REPLACED_WITH_VERSION) {
+               if (link.getModificationType().matches(REPLACED_WITH_VERSION, INTRODUCED)) {
                   modificationType = link.getModificationType();
                } else {
-                  modificationType = ModificationType.MODIFIED;
+                  modificationType = MODIFIED;
                }
                relationEventType = RelationEventType.ModifiedRationale;
             }
@@ -310,7 +316,7 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
                return;
             }
             link.internalSetRelationId(getNewRelationId());
-            modificationType = ModificationType.NEW;
+            modificationType = NEW;
             relationEventType = RelationEventType.Added;
          }
 
@@ -340,7 +346,7 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
    }
 
    private void updateTxItem(BaseTransactionData itemToCheck, ModificationType currentModType) {
-      if (itemToCheck.getModificationType() == ModificationType.NEW && currentModType.isDeleted()) {
+      if (itemToCheck.getModificationType() == NEW && currentModType.isDeleted()) {
          transactionDataItems.remove(itemToCheck.getClass(), itemToCheck.getItemId());
       } else {
          itemToCheck.setModificationType(currentModType);
