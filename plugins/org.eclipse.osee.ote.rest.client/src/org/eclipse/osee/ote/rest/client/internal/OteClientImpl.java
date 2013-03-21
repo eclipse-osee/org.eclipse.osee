@@ -13,6 +13,10 @@ package org.eclipse.osee.ote.rest.client.internal;
 import java.io.File;
 import java.net.URI;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -20,7 +24,9 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.ote.rest.client.ConfigurationProgress;
 import org.eclipse.osee.ote.rest.client.ConfigurationStatusCallback;
+import org.eclipse.osee.ote.rest.client.GetFileProgress;
 import org.eclipse.osee.ote.rest.client.OteClient;
 
 import com.sun.jersey.api.client.Client;
@@ -43,6 +49,20 @@ public class OteClientImpl implements OteClient, WebResourceFactory {
 //   public void setUriProvider(URIProvider uriProvider) {
 //      this.uriProvider = uriProvider;
 //   }
+   
+   private ExecutorService executor;
+   
+   public OteClientImpl(){
+      executor = Executors.newCachedThreadPool(new ThreadFactory(){
+         @Override
+         public Thread newThread(Runnable arg0) {
+            Thread th = new Thread(arg0);
+            th.setName("OTE Client " + th.getId());
+            th.setDaemon(true);
+            return th;
+         }
+      });
+   }
 
    public void start() {
 
@@ -167,6 +187,16 @@ public class OteClientImpl implements OteClient, WebResourceFactory {
       Client client = Client.create(config);
       WebResource service = client.resource(uri);
       return service;
+   }
+
+   @Override
+   public Future<GetFileProgress> getFile(URI uri, File destination, String filePath, final GetFileProgress progress){
+      return executor.submit(new GetOteServerFile(uri, destination, filePath, progress, this));
+   }
+   
+   @Override
+   public Future<ConfigurationProgress> configureServerEnvironment(URI uri, List<File> jars, final ConfigurationProgress progress){
+      return executor.submit(new ConfigureOteServerFile(uri, jars, progress, this));
    }
 
 //   @Override

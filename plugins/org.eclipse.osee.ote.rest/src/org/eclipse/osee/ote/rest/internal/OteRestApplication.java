@@ -40,6 +40,7 @@ public class OteRestApplication extends Application {
       classes.add(OseeCoreExceptionMapper.class);
       classes.add(OteConfigurationResource.class);
       classes.add(OteJobsResource.class);
+      classes.add(OteFilesResource.class);
       return classes;
    }
 

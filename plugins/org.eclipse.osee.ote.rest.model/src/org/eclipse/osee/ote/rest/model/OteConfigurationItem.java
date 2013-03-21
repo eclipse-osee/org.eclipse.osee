@@ -2,8 +2,6 @@ package org.eclipse.osee.ote.rest.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.eclipse.osee.ote.OTEConfigurationItem;
-
 @XmlRootElement
 public class OteConfigurationItem {
 
@@ -85,8 +83,5 @@ public class OteConfigurationItem {
 	public String getVersion() {
 		return bundleVersion;
 	}
-   public OTEConfigurationItem translateToOtherConfig() {
-      return new OTEConfigurationItem(locationUrl, bundleVersion, bundleName, md5Digest);
-   }
 
 }

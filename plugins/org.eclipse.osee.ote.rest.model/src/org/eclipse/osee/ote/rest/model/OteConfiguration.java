@@ -17,9 +17,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.eclipse.osee.ote.OTEConfiguration;
-import org.eclipse.osee.ote.OTEConfigurationItem;
-
 /**
  * @author Andrew M. Finkbeiner
  */
@@ -32,18 +29,6 @@ public class OteConfiguration {
  
    public OteConfiguration(){
 	   items = new ArrayList<OteConfigurationItem>();
-   }
-   
-   public OteConfiguration(OTEConfiguration config){
-      this();
-      for(OTEConfigurationItem item:config.getItems()){
-         OteConfigurationItem newitem = new OteConfigurationItem();
-         newitem.setBundleName(item.getSymbolicName());
-         newitem.setBundleVersion(item.getVersion());
-         newitem.setLocationUrl(item.getLocationUrl());
-         newitem.setMd5Digest(item.getMd5Digest());
-         items.add(newitem);
-      }
    }
    
    public OteConfigurationIdentity getIdentity(){
@@ -95,12 +80,4 @@ public class OteConfiguration {
 	   items.add(item);
    }
 
-   public OTEConfiguration translateToOtherConfig() {
-      OTEConfiguration config = new OTEConfiguration();
-      for(OteConfigurationItem item:items){
-         config.addItem(item.translateToOtherConfig());
-      }
-      return config;
-   }
-   
 }

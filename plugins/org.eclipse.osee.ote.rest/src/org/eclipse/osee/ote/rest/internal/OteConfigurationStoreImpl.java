@@ -42,7 +42,7 @@ public class OteConfigurationStoreImpl implements OteConfigurationStore {
 
    @Override
    public OteJobStatus setup(OteConfiguration config, UriInfo uriInfo) throws InterruptedException, ExecutionException, MalformedURLException, IllegalArgumentException, UriBuilderException {
-      OTEConfiguration realConfig = config.translateToOtherConfig();
+      OTEConfiguration realConfig = TranslateUtil.translateToOtherConfig(config);
       ConfigurationJobStatus status = createConfigurationJobStatus(config, uriInfo);
       OTEFuture<OTEConfigurationStatus> future = ote.loadConfiguration(realConfig, status);
       status.setFuture(future);
@@ -75,7 +75,7 @@ public class OteConfigurationStoreImpl implements OteConfigurationStore {
       OTEFuture<OTEConfigurationStatus> future = ote.getConfiguration();
       status.setFuture(future);
       if(future.isDone()){
-         return new OteConfiguration(future.get().getConfiguration());
+         return TranslateUtil.translateConfig(future.get().getConfiguration());
       } else {
          return new OteConfiguration();
       }

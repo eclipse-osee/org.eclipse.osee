@@ -16,10 +16,11 @@ public class OTEServerLocationServiceHealth implements OTEServerLocation {
    
    public OTEServerLocationServiceHealth(ServiceHealth health) throws URISyntaxException{
       this.brokerURI = new URI(health.getBrokerURI());
-      this.title = health.getServiceName();
       for(ServiceDescriptionPair pair:health.getServiceDescription()){
          if("station".equals(pair.getName())){
             machineName = pair.getValue();
+         } else if("name".equals(pair.getName())){
+            title = pair.getValue();
          } else if ("appServerURI".equals(pair.getName())){
             appServerURI = new URI(pair.getValue());
          } 

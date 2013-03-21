@@ -7,10 +7,9 @@ import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
+import org.eclipse.osee.ote.rest.client.ConfigurationProgress;
 import org.eclipse.osee.ote.rest.client.internal.jarserver.BundleInfo;
 import org.eclipse.osee.ote.rest.client.internal.jarserver.HeadlessClassServer;
 import org.eclipse.osee.ote.rest.model.OteConfiguration;
@@ -20,36 +19,32 @@ import org.eclipse.osee.ote.rest.model.OteJobStatus;
 
 import com.sun.jersey.api.client.WebResource;
 
-public class ConfigureOperation extends AbstractOperation {
+public class ConfigureOteServerFile extends BaseClientCallable<ConfigurationProgress> {
 
-   private static final String PLUGIN_ID = "org.eclipse.osee.ote.rest.client";
-   
    private static final long POLLING_RATE = 1000;
-
-   private final WebResourceFactory factory;
-   private final URI uri;
-   private final List<File> jars;
-
-   // Temps
+   private URI uri;
+   private List<File> jars;
+   private ConfigurationProgress progress;
+   private WebResourceFactory factory;
    private OteJobStatus status;
-//   private final Object lock = new Object();
 
-   public ConfigureOperation(WebResourceFactory factory, URI uri, List<File> jars) {
-      super("Configure Server", PLUGIN_ID);
-      this.factory = factory;
+   public ConfigureOteServerFile(URI uri, List<File> jars, ConfigurationProgress progress, WebResourceFactory factory) {
+      super(progress);
       this.uri = uri;
       this.jars = jars;
+      this.progress = progress;
+      this.factory = factory;
    }
 
    @Override
-   protected void doWork(IProgressMonitor monitor) throws Exception {
+   public void doWork() throws Exception {
       Conditions.checkNotNull(uri, "uri");
       Conditions.checkNotNull(factory, "factory");
       Conditions.checkNotNullOrEmpty(jars, "jars");
 
-      status = sendBundleConfiguration(monitor, 0.20);
+      status = sendBundleConfiguration();
       if(!status.isJobComplete()){
-         waitForJobComplete(monitor, 0.80);
+         waitForJobComplete();
       } 
       
       if(!status.isSuccess()){
@@ -57,74 +52,27 @@ public class ConfigureOperation extends AbstractOperation {
       }
    }
 
-   // Put on JobStatus
-   private long getEstimatedTotalTime(OteJobStatus jobStatus) {
-      return 1000 * 60;
-   }
-
-   private long calculateConfigurationTicks(OteJobStatus jobStatus) {
-      return getEstimatedTotalTime(jobStatus) / (long) POLLING_RATE;
-   }
-
-   private void waitForJobComplete(final IProgressMonitor monitor, double percent) throws Exception {
+   private void waitForJobComplete() throws Exception {
       URI jobUri = status.getUpdatedJobStatus().toURI();
-
       final WebResource service = factory.createResource(jobUri);
 
-      double stepAmount = percent / (double) calculateConfigurationTicks(status);
-      final int amount = calculateWork(stepAmount);
-
-//      Timer timer = new Timer();
-//      timer.schedule(new TimerTask() {
-//         @Override
-//         public void run() {
-            boolean shouldCancel = false;
-            while(!shouldCancel){
-               Thread.sleep(POLLING_RATE);
-            try {
-               checkForCancelledStatus(monitor);
-
-               status = service.accept(MediaType.APPLICATION_XML).get(OteJobStatus.class);
-               if (status.isJobComplete()) {
-                  shouldCancel = true;
-               }
-            } catch (Exception ex) {
-               ex.printStackTrace();
-               shouldCancel = true;
-            } finally {
-               monitor.worked(amount);
-            }
-//            if (shouldCancel) {
-//               cancel();
-//               synchronized (lock) {
-//                  lock.notify();
-//               }
-//            }
-         }
-//      }, POLLING_RATE);
-
-//      if(!status.isJobComplete()){
-//         synchronized (lock) {
-//            lock.wait();
-//         }
-//      }
-//      if(!status.isSuccess()){
-//         throw new Exception(status.getErrorLog());
-//      }
+      while(!status.isJobComplete()){
+         Thread.sleep(POLLING_RATE);
+         status = service.accept(MediaType.APPLICATION_XML).get(OteJobStatus.class);
+      }
    }
-
-   private OteJobStatus sendBundleConfiguration(IProgressMonitor monitor, double percent) throws Exception {
+   
+   private OteJobStatus sendBundleConfiguration() throws Exception {
       OteConfiguration configuration = new OteConfiguration();
       OteConfigurationIdentity identity = new OteConfigurationIdentity();
       identity.setName("test");
       configuration.setIdentity(identity);
       HeadlessClassServer classServer = new HeadlessClassServer(PortUtil.getInstance().getValidPort(), InetAddress.getLocalHost(), jars);
       for (BundleInfo bundleInfo : classServer.getBundles()) {
-         checkForCancelledStatus(monitor);
          OteConfigurationItem item = new OteConfigurationItem();
          item.setBundleName(bundleInfo.getSymbolicName());
          item.setBundleVersion(bundleInfo.getVersion());
-         item.setLocationUrl(bundleInfo.getServerBundleLocation().toString());
+         item.setLocationUrl(bundleInfo.getSystemLocation().toString());
          item.setMd5Digest(bundleInfo.getMd5Digest());
          configuration.addItem(item);
       }
@@ -140,4 +88,5 @@ public class ConfigureOperation extends AbstractOperation {
          return baseService.path("ote").path("config").accept(MediaType.APPLICATION_XML).post(OteJobStatus.class, configuration);
       }
    }
+
 }

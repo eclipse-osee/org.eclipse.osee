@@ -115,7 +115,6 @@ Import-Package: net.jini.core.lookup,
  org.eclipse.osee.ote.message,
  org.eclipse.osee.ote.message.instrumentation,
  org.eclipse.osee.ote.message.interfaces,
- org.eclipse.osee.ote.rest.model,
  org.osgi.framework,
  org.osgi.service.packageadmin,
  org.osgi.util.tracker
