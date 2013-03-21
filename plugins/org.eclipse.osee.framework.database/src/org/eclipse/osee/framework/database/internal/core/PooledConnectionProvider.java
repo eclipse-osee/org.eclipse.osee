@@ -14,13 +14,13 @@ package org.eclipse.osee.framework.database.internal.core;
  * @author Roberto E. Escobar
  */
 import java.sql.Connection;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.FutureTask;
 import javax.sql.DataSource;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
 
@@ -38,7 +38,7 @@ public class PooledConnectionProvider implements ConnectionProvider {
    }
 
    @Override
-   public IDatabaseInfo getDefaultDatabaseInfo() throws OseeDataStoreException {
+   public IDatabaseInfo getDefaultDatabaseInfo() throws OseeCoreException {
       return dbInfoProvider.getDatabaseInfo();
    }
 
@@ -90,6 +90,13 @@ public class PooledConnectionProvider implements ConnectionProvider {
       synchronized (poolFactory) {
          poolFactory.disposePools(dataSourceCache.keySet());
          dataSourceCache.clear();
+      }
+   }
+
+   @Override
+   public Map<String, String> getStatistics() throws OseeCoreException {
+      synchronized (poolFactory) {
+         return poolFactory.getPoolStats();
       }
    }
 

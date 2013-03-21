@@ -23,32 +23,57 @@ public enum SupportedDatabase {
    mysql,
    postgresql;
 
-   public static SupportedDatabase getDatabaseType(DatabaseMetaData metaData) throws OseeCoreException {
-      SupportedDatabase toReturn = null;
+   public static String getDatabaseName(DatabaseMetaData metaData) throws OseeCoreException {
+      String name = "";
       try {
-         String dbName = metaData.getDatabaseProductName();
-         String lowerCaseName = dbName.toLowerCase();
-         if (lowerCaseName.contains(SupportedDatabase.h2.toString())) {
-            toReturn = SupportedDatabase.h2;
-         } else if (lowerCaseName.contains(SupportedDatabase.oracle.toString())) {
-            toReturn = SupportedDatabase.oracle;
-         } else if (lowerCaseName.contains(SupportedDatabase.foxpro.toString())) {
-            toReturn = SupportedDatabase.foxpro;
-         } else if (lowerCaseName.contains(SupportedDatabase.mysql.toString())) {
-            toReturn = SupportedDatabase.mysql;
-         } else if (lowerCaseName.contains(SupportedDatabase.postgresql.toString())) {
-            toReturn = SupportedDatabase.postgresql;
-         } else {
-            throw new OseeDataStoreException("Unsupported database type [%s] ", dbName);
-         }
+         name = metaData.getDatabaseProductName();
       } catch (SQLException ex) {
          OseeExceptions.wrapAndThrow(ex);
+      }
+      return name;
+   }
+
+   public static SupportedDatabase getDatabaseTypeAllowNull(DatabaseMetaData metaData) throws OseeCoreException {
+      String dbName = getDatabaseName(metaData);
+      return getDatabaseTypeAllowNull(dbName);
+   }
+
+   private static SupportedDatabase getDatabaseTypeAllowNull(String dbName) {
+      SupportedDatabase toReturn = null;
+      String lowerCaseName = dbName.toLowerCase();
+      if (lowerCaseName.contains(h2.toString())) {
+         toReturn = h2;
+      } else if (lowerCaseName.contains(oracle.toString())) {
+         toReturn = oracle;
+      } else if (lowerCaseName.contains(foxpro.toString())) {
+         toReturn = foxpro;
+      } else if (lowerCaseName.contains(mysql.toString())) {
+         toReturn = mysql;
+      } else if (lowerCaseName.contains(postgresql.toString())) {
+         toReturn = postgresql;
       }
       return toReturn;
    }
 
-   public static boolean isDatabaseType(DatabaseMetaData metaData, SupportedDatabase dbType) throws OseeCoreException {
-      return getDatabaseType(metaData) == dbType;
+   public static SupportedDatabase getDatabaseType(DatabaseMetaData metaData) throws OseeCoreException {
+      String dbName = getDatabaseName(metaData);
+      SupportedDatabase toReturn = getDatabaseTypeAllowNull(dbName);
+      if (toReturn == null) {
+         throw new OseeDataStoreException("Unsupported database type [%s] ", dbName);
+      }
+      return toReturn;
+   }
+
+   public static boolean isDatabaseType(DatabaseMetaData metaData, SupportedDatabase... dbTypes) throws OseeCoreException {
+      boolean result = false;
+      SupportedDatabase supportedType = getDatabaseTypeAllowNull(metaData);
+      for (SupportedDatabase dbType : dbTypes) {
+         if (dbType == supportedType) {
+            result = true;
+            break;
+         }
+      }
+      return result;
    }
 
    public static boolean areHintsSupported(DatabaseMetaData metaData) throws OseeCoreException {
@@ -64,5 +89,16 @@ public enum SupportedDatabase {
 
    public static String getComplementSql(DatabaseMetaData metaData) throws OseeCoreException {
       return isDatabaseType(metaData, oracle) ? "MINUS" : "EXCEPT";
+   }
+
+   public static String getValidationSql(DatabaseMetaData metaData) throws OseeCoreException {
+      String validation;
+      if (isDatabaseType(metaData, oracle, h2)) {
+         validation = "select 1 from dual";
+      } else {
+         validation = "select 1";
+      }
+      return validation;
+
    }
 }

@@ -170,4 +170,10 @@ public class OseeDatabaseServiceProxy implements IOseeDatabaseService {
       checkInitialized();
       return getDatabaseService().isProduction();
    }
+
+   @Override
+   public Map<String, String> getStatistics() throws OseeCoreException {
+      checkInitialized();
+      return getDatabaseService().getStatistics();
+   }
 }

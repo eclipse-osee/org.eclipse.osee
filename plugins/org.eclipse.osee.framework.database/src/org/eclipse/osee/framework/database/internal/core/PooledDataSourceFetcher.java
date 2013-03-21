@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.internal.core;
 
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -18,18 +19,20 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 import javax.sql.DataSource;
+import org.apache.commons.dbcp.AbandonedConfig;
+import org.apache.commons.dbcp.AbandonedObjectPool;
 import org.apache.commons.dbcp.ConnectionFactory;
 import org.apache.commons.dbcp.PoolableConnectionFactory;
 import org.apache.commons.dbcp.PoolingDataSource;
 import org.apache.commons.dbcp.PoolingDriver;
 import org.apache.commons.pool.ObjectPool;
 import org.apache.commons.pool.impl.GenericKeyedObjectPoolFactory;
-import org.apache.commons.pool.impl.GenericObjectPool;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.data.LazyObject;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.database.core.IConnectionFactory;
+import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.database.internal.core.PoolFactory.PoolConfiguration;
 
 /**
@@ -73,32 +76,34 @@ public class PooledDataSourceFetcher implements Callable<DataSource> {
       PoolConfiguration configuration = poolConfig.get();
       Properties configProps = configuration.getProperties();
 
-      ConnectionFactory connectionFactory = createConnectionFactory(dbInfo);
+      IConnectionFactory proxiedFactory = getFactory(dbInfo.getDriver());
+      String connectionURL = dbInfo.getConnectionUrl();
+      Properties properties = dbInfo.getConnectionProperties();
 
-      GenericObjectPool<Connection> connectionPool = new GenericObjectPool<Connection>();
+      MetaData metadata = getMetaData(proxiedFactory, connectionURL, properties);
+
+      ConnectionFactory connectionFactory =
+         new ConnectionFactoryProxy(proxiedFactory, connectionURL, properties, metadata.isTxIsolationLevelSupported());
+
+      AbandonedObjectPool connectionPool =
+         new AbandonedObjectPool(null, PoolConfigUtil.getAbandonedConnectionConfig(configProps));
       connectionPool.setConfig(PoolConfigUtil.getPoolConfig(configProps));
 
       GenericKeyedObjectPoolFactory statementPool = null;
       if (PoolConfigUtil.isPoolingPreparedStatementsAllowed(configProps)) {
          statementPool = new GenericKeyedObjectPoolFactory(null, PoolConfigUtil.getStatementPoolConfig(configProps));
       }
+      AbandonedConfig abandoned = new AbandonedConfig();
+      abandoned.setLogAbandoned(true);
+      abandoned.setLogWriter(new PrintWriter(System.out));
 
-      String validationQuery = PoolConfigUtil.getValidationQuery(configProps);
+      String validationQuery = metadata.getValidationQuery();
       int validationQueryTimeoutSecs = PoolConfigUtil.getValidationQueryTimeoutSecs(configProps);
       boolean defaultReadOnly = false;
       boolean defaultAutoCommit = true;
       new PoolableConnectionFactory(connectionFactory, connectionPool, statementPool, validationQuery,
          validationQueryTimeoutSecs, defaultReadOnly, defaultAutoCommit);
       return connectionPool;
-   }
-
-   private ConnectionFactory createConnectionFactory(IDatabaseInfo dbInfo) throws Exception {
-      IConnectionFactory proxiedFactory = getFactory(dbInfo.getDriver());
-      String connectionURL = dbInfo.getConnectionUrl();
-      Properties properties = dbInfo.getConnectionProperties();
-      boolean isTxIsolationLevelSupported =
-         isTxReadCommittedIsolationLevelSupported(proxiedFactory, connectionURL, properties);
-      return new ConnectionFactoryProxy(proxiedFactory, connectionURL, properties, isTxIsolationLevelSupported);
    }
 
    private IConnectionFactory getFactory(String driver) {
@@ -110,20 +115,42 @@ public class PooledDataSourceFetcher implements Callable<DataSource> {
       return factory;
    }
 
-   private boolean isTxReadCommittedIsolationLevelSupported(IConnectionFactory proxiedFactory, String connectionURL, Properties properties) throws Exception {
-      boolean isTxIsolationLevelSupported = false;
+   private MetaData getMetaData(IConnectionFactory proxiedFactory, String connectionURL, Properties properties) throws Exception {
+      MetaData metaData = new MetaData();
       Connection connection = null;
       try {
          connection = proxiedFactory.getConnection(properties, connectionURL);
          DatabaseMetaData metadata = connection.getMetaData();
-         isTxIsolationLevelSupported =
-            metadata.supportsTransactionIsolationLevel(Connection.TRANSACTION_READ_COMMITTED);
+         metaData.setTxIsolationLevelSupported(metadata.supportsTransactionIsolationLevel(Connection.TRANSACTION_READ_COMMITTED));
+         metaData.setValidationQuery(SupportedDatabase.getValidationSql(metadata));
       } finally {
          if (connection != null) {
             connection.close();
          }
       }
-      return isTxIsolationLevelSupported;
+      return metaData;
+   }
+
+   private final class MetaData {
+      private boolean isTxIsolationLevelSupported;
+      private String validationQuery;
+
+      public boolean isTxIsolationLevelSupported() {
+         return isTxIsolationLevelSupported;
+      }
+
+      public void setTxIsolationLevelSupported(boolean isTxIsolationLevelSupported) {
+         this.isTxIsolationLevelSupported = isTxIsolationLevelSupported;
+      }
+
+      public String getValidationQuery() {
+         return validationQuery;
+      }
+
+      public void setValidationQuery(String validationQuery) {
+         this.validationQuery = validationQuery;
+      }
+
    }
 
    private static final class DefaultConnectionFactory implements IConnectionFactory {

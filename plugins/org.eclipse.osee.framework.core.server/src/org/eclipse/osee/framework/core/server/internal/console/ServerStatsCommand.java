@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
@@ -26,6 +27,7 @@ import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.database.DatabaseInfoRegistry;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
@@ -37,6 +39,7 @@ public class ServerStatsCommand implements ConsoleCommand {
    private ISessionManager sessionManager;
    private DatabaseInfoRegistry registry;
    private IAuthenticationManager authenticationManager;
+   private IOseeDatabaseService dbService;
 
    public void setDbInfoRegistry(DatabaseInfoRegistry registry) {
       this.registry = registry;
@@ -54,6 +57,10 @@ public class ServerStatsCommand implements ConsoleCommand {
       this.sessionManager = sessionManager;
    }
 
+   public void setDatabaseService(IOseeDatabaseService dbService) {
+      this.dbService = dbService;
+   }
+
    private DatabaseInfoRegistry getDbInfoRegistry() {
       return registry;
    }
@@ -68,6 +75,10 @@ public class ServerStatsCommand implements ConsoleCommand {
 
    private ISessionManager getSessionManager() {
       return sessionManager;
+   }
+
+   private IOseeDatabaseService getDbService() {
+      return dbService;
    }
 
    @Override
@@ -88,7 +99,7 @@ public class ServerStatsCommand implements ConsoleCommand {
    @Override
    public Callable<?> createCallable(Console console, ConsoleParameters params) {
       return new ServerStatsCallable(getDbInfoRegistry(), getApplicationServerManager(), getAuthenticationManager(),
-         getSessionManager(), console);
+         getSessionManager(), getDbService(), console);
    }
 
    private static final class ServerStatsCallable implements Callable<Boolean> {
@@ -96,14 +107,16 @@ public class ServerStatsCommand implements ConsoleCommand {
       private final IApplicationServerManager manager;
       private final IAuthenticationManager authManager;
       private final ISessionManager sessionManager;
+      private final IOseeDatabaseService dbService;
       private final Console console;
 
-      public ServerStatsCallable(DatabaseInfoRegistry registry, IApplicationServerManager manager, IAuthenticationManager authenticationManager, ISessionManager sessionManager, Console console) {
+      public ServerStatsCallable(DatabaseInfoRegistry registry, IApplicationServerManager manager, IAuthenticationManager authenticationManager, ISessionManager sessionManager, IOseeDatabaseService dbService, Console console) {
          super();
          this.registry = registry;
          this.manager = manager;
          this.authManager = authenticationManager;
          this.sessionManager = sessionManager;
+         this.dbService = dbService;
          this.console = console;
       }
 
@@ -155,6 +168,10 @@ public class ServerStatsCommand implements ConsoleCommand {
                console.writeln("\t[%s] - %s", index, entries.get(index));
             }
          }
+         console.writeln();
+         logDatabaseStats(dbService);
+         console.writeln();
+
          return Boolean.TRUE;
       }
 
@@ -168,6 +185,21 @@ public class ServerStatsCommand implements ConsoleCommand {
          int midPoint = contexts.size() / 2;
          for (int i = 0; i < midPoint; i++) {
             console.writeln("%-40.40s%s", contexts.get(i), contexts.get(i + midPoint));
+         }
+      }
+
+      private void logDatabaseStats(IOseeDatabaseService dbService) {
+         console.writeln("Database Stats:");
+         try {
+            Map<String, String> store = dbService.getStatistics();
+            for (String key : store.keySet()) {
+               String value = store.get(key);
+
+               console.writeln("\t%s = %s", key, value);
+            }
+
+         } catch (Exception ex) {
+            console.write(ex);
          }
       }
 

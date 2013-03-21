@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.database.internal.core;
 
 import java.util.Properties;
+import org.apache.commons.dbcp.AbandonedConfig;
 import org.apache.commons.pool.impl.GenericKeyedObjectPool;
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -25,7 +26,7 @@ public final class PoolConfigUtil {
    public static final byte WHEN_EXHAUSTED_BLOCK = 1;
    public static final byte WHEN_EXHAUSTED_GROW = 2;
 
-   public static final byte DEFAULT_WHEN_EXHAUSTED_ACTION = WHEN_EXHAUSTED_BLOCK;
+   public static final byte DEFAULT_WHEN_EXHAUSTED_ACTION = WHEN_EXHAUSTED_FAIL; //WHEN_EXHAUSTED_BLOCK;
 
    public static final int DEFAULT_MAX_ACTIVE = OseeProperties.getOseeDbConnectionCount(); // default was 8
    public static final int DEFAULT_MAX_IDLE = DEFAULT_MAX_ACTIVE; // default was 8
@@ -39,13 +40,12 @@ public final class PoolConfigUtil {
    // The default number of objects to examine per run in the idle object evictor.
    public static final int DEFAULT_NUM_TESTS_PER_EVICTION_RUN = DEFAULT_MAX_ACTIVE;
 
-   public static final long DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS = 900000L; // (15 mins) - default -1L (infinite)
-   public static final long DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS = 60000L; // (60 secs) - default - 1000L * 60L * 30L - 30 mins;
+   public static final long DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS = -1L; //1000L; // (1 sec) - default -1L (infinite)
+   public static final long DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS = 60000L; // (30 secs) - default - 1000L * 60L * 30L - 30 mins;
    public static final long DEFAULT_SOFT_MIN_EVICTABLE_IDLE_TIME_MILLIS = -1;
 
    public static final boolean DEFAULT_LIFO = true;
 
-   public static final String DEFAULT_VALIDATION_QUERY = "SELECT 1 FROM DUAL";
    public static final int DEFAULT_VALIDATION_QUERY_TIMEOUT_SECS = 3; // 3 secs 
 
    public static final boolean DEFAULT_POOL_PREPARED_STATEMENTS = false; // default was false
@@ -56,16 +56,16 @@ public final class PoolConfigUtil {
    public static final int DEFAULT_MIN_IDLE_STATEMENTS = 0;
    public static final long DEFAULT_MAX_WAIT_STATEMENTS = -1L;
 
+   public static final boolean DEFAULT_LOG_ABANDONED = false; // default was false
+   public static final boolean DEFAULT_REMOVE_ABANDONED = false; // Flag whether to use abandoned timeout.
+   public static final int DEFAULT_REMOVE_ABANDONED_TIMEOUT = 300; // Timeout in seconds before an abandoned connection can be removed.
+
    private PoolConfigUtil() {
       // Utility class
    }
 
    public static boolean isPoolingPreparedStatementsAllowed(Properties props) {
       return getBoolean(props, "poolPreparedStatements", DEFAULT_POOL_PREPARED_STATEMENTS);
-   }
-
-   public static String getValidationQuery(Properties props) {
-      return get(props, "validationQuery", DEFAULT_VALIDATION_QUERY);
    }
 
    public static int getValidationQueryTimeoutSecs(Properties props) {
@@ -119,8 +119,18 @@ public final class PoolConfigUtil {
       return config;
    }
 
+   public static AbandonedConfig getAbandonedConnectionConfig(Properties props) {
+      AbandonedConfig abandoned = new AbandonedConfig();
+      abandoned.setLogAbandoned(getBoolean(props, "logAbandoned", DEFAULT_LOG_ABANDONED));
+      abandoned.setRemoveAbandoned(getBoolean(props, "removeAbandoned", DEFAULT_REMOVE_ABANDONED));
+      abandoned.setRemoveAbandonedTimeout(getInt(props, "removeAbandonedTimeout", DEFAULT_REMOVE_ABANDONED_TIMEOUT));
+      return abandoned;
+   }
+
    private static String get(Properties props, String key, String defaultValue) {
-      return props.getProperty(key, defaultValue);
+      String value = props.getProperty(key, defaultValue);
+      props.setProperty(key, value);
+      return value;
    }
 
    private static int getInt(Properties props, String key, int defaultValue) {

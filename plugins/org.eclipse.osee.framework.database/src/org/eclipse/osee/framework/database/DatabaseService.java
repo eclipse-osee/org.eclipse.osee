@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.database;
 
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -47,4 +48,6 @@ public interface DatabaseService {
    <T, O extends Object> T runPreparedQueryFetchObject(OseeConnection connection, T defaultValue, String query, O... data) throws OseeCoreException;
 
    boolean isProduction() throws OseeCoreException;
+
+   Map<String, String> getStatistics() throws OseeCoreException;
 }

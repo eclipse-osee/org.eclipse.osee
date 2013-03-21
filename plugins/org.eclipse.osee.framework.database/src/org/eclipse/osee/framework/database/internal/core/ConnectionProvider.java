@@ -10,16 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.internal.core;
 
+import java.util.Map;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface ConnectionProvider {
 
-   IDatabaseInfo getDefaultDatabaseInfo() throws OseeDataStoreException;
+   Map<String, String> getStatistics() throws OseeCoreException;
+
+   IDatabaseInfo getDefaultDatabaseInfo() throws OseeCoreException;
 
    BaseOseeConnection getConnection() throws OseeCoreException;
 

@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.database.internal.core;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -184,6 +185,11 @@ public class OseeDatabaseServiceImpl implements DatabaseService {
    @Override
    public boolean isProduction() throws OseeCoreException {
       return connectionProvider.getDefaultDatabaseInfo().isProduction();
+   }
+
+   @Override
+   public Map<String, String> getStatistics() throws OseeCoreException {
+      return connectionProvider.getStatistics();
    }
 
 }

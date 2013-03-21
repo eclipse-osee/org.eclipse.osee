@@ -12,11 +12,13 @@ package org.eclipse.osee.framework.database.internal.core;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 import javax.sql.DataSource;
 import org.apache.commons.dbcp.PoolingDriver;
+import org.apache.commons.pool.ObjectPool;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.data.LazyObject;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -47,6 +49,30 @@ public class PoolFactory {
          }
       }
       poolingDriver.set(null);
+   }
+
+   public Map<String, String> getPoolStats() throws OseeCoreException {
+      Map<String, String> stats = new LinkedHashMap<String, String>();
+
+      PoolConfiguration config = poolConfig.get();
+      PoolingDriver driver = poolingDriver.get();
+
+      stats.put("db.pool.driver", config.getConnectionPoolDriver());
+
+      String poolVersion = String.format("%s.%s", driver.getMajorVersion(), driver.getMinorVersion());
+      stats.put("db.pool.version", poolVersion);
+
+      String[] names = driver.getPoolNames();
+      for (String name : names) {
+         try {
+            ObjectPool<?> pool = driver.getConnectionPool(name);
+            stats.put(String.format("db.pool.%s.active", name), String.valueOf(pool.getNumActive()));
+            stats.put(String.format("db.pool.%s.idle", name), String.valueOf(pool.getNumIdle()));
+         } catch (SQLException ex) {
+            // Do Nothing
+         }
+      }
+      return stats;
    }
 
    public Callable<DataSource> createDataSourceFetcher(IDatabaseInfo dbInfo) {
