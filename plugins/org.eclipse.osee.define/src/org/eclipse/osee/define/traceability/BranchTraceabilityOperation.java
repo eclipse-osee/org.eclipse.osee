@@ -89,6 +89,12 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
       requirementData.initialize(monitor);
       requirementToTestUnitsMap = new HashCollection<Artifact, String>();
 
+      List<Artifact> unitsOnBranch = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.TestCase, branch);
+      testUnits = new HashMap<String, Artifact>();
+      for (Artifact unit : unitsOnBranch) {
+         testUnits.put(convertToJavaFileName(unit.getName()), unit);
+      }
+
       List<Artifact> reqs = new ArrayList<Artifact>();
       for (IArtifactType type : types) {
          if (withInheritance) {
@@ -97,6 +103,7 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
             reqs.addAll(ArtifactQuery.getArtifactListFromType(type, branch));
          }
       }
+
       for (Artifact req : reqs) {
          List<Artifact> verifiers = req.getRelatedArtifacts(CoreRelationTypes.Verification__Verifier);
          Collection<String> verifierNames = new HashSet<String>();
@@ -106,11 +113,6 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
          requirementToTestUnitsMap.put(req, verifierNames);
       }
 
-      testUnits = new HashMap<String, Artifact>();
-      List<Artifact> unitsOnBranch = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.TestCase, branch);
-      for (Artifact unit : unitsOnBranch) {
-         testUnits.put(convertToJavaFileName(unit.getName()), unit);
-      }
    }
 
    @Override
