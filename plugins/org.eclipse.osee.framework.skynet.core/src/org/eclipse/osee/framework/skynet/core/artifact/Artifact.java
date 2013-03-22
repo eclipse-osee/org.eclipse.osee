@@ -387,30 +387,36 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
       return getRelatedArtifacts(Default_Hierarchical__Child, deletionFlag);
    }
 
+   public final List<Artifact> getDescendants(DeletionFlag includeDeleted) throws OseeCoreException {
+      List<Artifact> descendants = new LinkedList<Artifact>();
+      getDescendants(descendants, includeDeleted);
+      return descendants;
+   }
+
    /**
     * @return a list of artifacts ordered by a depth first traversal of this artifact's descendants
     */
    public final List<Artifact> getDescendants() throws OseeCoreException {
       List<Artifact> descendants = new LinkedList<Artifact>();
-      getDescendants(descendants);
+      getDescendants(descendants, DeletionFlag.EXCLUDE_DELETED);
       return descendants;
    }
 
-   private void getDescendants(Collection<Artifact> descendants) throws OseeCoreException {
-      for (Artifact child : getChildren()) {
+   private void getDescendants(Collection<Artifact> descendants, DeletionFlag includeDeleted) throws OseeCoreException {
+      for (Artifact child : getChildren(includeDeleted)) {
          descendants.add(child);
-         child.getDescendants(descendants);
+         child.getDescendants(descendants, includeDeleted);
       }
    }
 
-   public final List<Artifact> getDescendantsWithArtTypes(Collection<ArtifactType> descendantTypes) throws OseeCoreException {
+   public List<Artifact> getDescendantsWithArtTypes(Collection<ArtifactType> descendantTypes) throws OseeCoreException {
       List<Artifact> descendants = new LinkedList<Artifact>();
       for (Artifact child : getChildren()) {
          ArtifactType childArtType = child.getArtifactType();
          if (descendantTypes.contains(childArtType)) {
             descendants.add(child);
          }
-         child.getDescendants(descendants);
+         child.getDescendants(descendants, DeletionFlag.EXCLUDE_DELETED);
       }
       return descendants;
    }
@@ -1018,16 +1024,20 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
     * data in memory
     */
    public void replaceWithVersion(int gammaId) {
-      lastValidModType = this.modType;
-      this.modType = ModificationType.REPLACED_WITH_VERSION;
       this.gammaId = gammaId;
+      internalSetModType(ModificationType.REPLACED_WITH_VERSION);
+   }
+
+   private final void internalSetModType(ModificationType modType) {
+      lastValidModType = this.modType;
+      this.modType = modType;
    }
 
    /**
     * This is used to mark that the artifact deleted.
     */
    public final void internalSetDeleted() throws OseeCoreException {
-      this.modType = ModificationType.DELETED;
+      internalSetModType(ModificationType.DELETED);
 
       for (Attribute<?> attribute : getAttributes()) {
          attribute.setArtifactDeleted();
@@ -1472,66 +1482,20 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
     * @return the newly created artifact or this artifact if the destinationBranch is this artifact's branch
     */
    public final Artifact reflect(IOseeBranch destinationBranch) throws OseeCoreException {
-      if (branch.equals(destinationBranch)) {
-         return this;
-      }
-      return reflectHelper(destinationBranch);
+      return new IntroduceArtifactOperation(destinationBranch).introduce(this);
    }
 
-   private Artifact reflectHelper(IOseeBranch branch) throws OseeCoreException {
-      Artifact reflectedArtifact =
-         ArtifactTypeManager.getFactory(artifactType).reflectExisitingArtifact(artId, getGuid(), humanReadableId,
-            artifactType, gammaId, branch, ModificationType.INTRODUCED);
-
-      for (Attribute<?> sourceAttribute : attributes.getValues()) {
-         // In order to reflect attributes they must exist in the data store
-         // and be valid for the destination branch as well
-         if (sourceAttribute.isInDb() && reflectedArtifact.isAttributeTypeValid(sourceAttribute.getAttributeType())) {
-            reflectedArtifact.internalInitializeAttribute(sourceAttribute.getAttributeType(), sourceAttribute.getId(),
-               sourceAttribute.getGammaId(), ModificationType.INTRODUCED, true,
-               sourceAttribute.getAttributeDataProvider().getData());
-         }
-      }
-      return reflectedArtifact;
+   Artifact introduceShallowArtifact(IOseeBranch destinationBranch) throws OseeCoreException {
+      return ArtifactTypeManager.getFactory(artifactType).reflectExisitingArtifact(artId, getGuid(), humanReadableId,
+         artifactType, gammaId, destinationBranch, ModificationType.INTRODUCED);
    }
 
-   public final void updateArtifactFromBranch(IOseeBranch updateSourceBranch) throws OseeCoreException {
-      // Do not update the artifact with itself.
-      if (branch.equals(updateSourceBranch)) {
-         return;
-      }
-      updateRelationsFromBranch(updateSourceBranch);
-      updateAttributesFromBranch(updateSourceBranch);
-   }
-
-   @SuppressWarnings({"unchecked", "rawtypes"})
-   private void updateAttributesFromBranch(IOseeBranch updateSourceBranch) throws OseeCoreException {
-      Artifact updateSourceArtifact = ArtifactQuery.getArtifactFromId(this.getArtId(), updateSourceBranch);
-      for (Attribute<?> updateSourceAttr : updateSourceArtifact.getAttributes()) {
-         Attribute thisAttr = getAttributeById(updateSourceAttr.getId(), true);
-         if (thisAttr != null && (thisAttr.getGammaId() != updateSourceAttr.getGammaId() || thisAttr.isDirty())) {
-            thisAttr.setValue(updateSourceAttr.getValue());
-         }
-      }
-   }
-
-   private void updateRelationsFromBranch(IOseeBranch updateSourceBranch) throws OseeCoreException {
-      Artifact updateSourceArtifact = ArtifactQuery.getArtifactFromId(this.getArtId(), updateSourceBranch);
-      for (RelationLink updateSourceRel : updateSourceArtifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
-         Artifact artifactOnSourceOtherSide = updateSourceRel.getArtifactOnOtherSide(updateSourceArtifact);
-         Artifact artifactToBeRelated =
-            ArtifactQuery.checkArtifactFromId(artifactOnSourceOtherSide.getArtId(), this.branch,
-               DeletionFlag.EXCLUDE_DELETED);
-         if (artifactToBeRelated == null) {
-            continue;
-         }
-         RelationTypeSide relTypeSide =
-            new RelationTypeSide(updateSourceRel.getRelationType(), updateSourceRel.getSide(artifactOnSourceOtherSide));
-         try {
-            addRelation(RelationOrderBaseTypes.PREEXISTING, relTypeSide, artifactToBeRelated);
-         } catch (OseeCoreException ex) {
-            // do nothing
-         }
+   void introduce(Artifact sourceArtifact) {
+      int sourceGamma = sourceArtifact.getGammaId();
+      if (gammaId != sourceGamma) {
+         replaceWithVersion(sourceGamma);
+      } else if (!sourceArtifact.getModType().equals(modType)) {
+         internalSetModType(sourceArtifact.getModType());
       }
    }
 

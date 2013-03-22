@@ -191,9 +191,7 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
 
       for (TransferObject sourceArtifact : convertedArtifacts) {
          if (sourceArtifact.getStatus() == TransferStatus.UPDATE) {
-            Artifact toUpdate =
-               ArtifactQuery.getArtifactFromId(sourceArtifact.getArtifact().getArtId(), destinationBranch);
-            handleUpdateCase(sourceArtifact.getArtifact(), toUpdate, updated, transaction);
+            handleUpdateCase(sourceArtifact.getArtifact(), destinationBranch, updated, transaction);
             monitor.worked(1);
          }
       }
@@ -260,8 +258,8 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
       reloadArtifacts.add(updatedArtifact);
    }
 
-   private void handleUpdateCase(Artifact sourceArtifact, Artifact destinationArtifact, Set<Artifact> updated, SkynetTransaction transaction) throws OseeCoreException {
-      destinationArtifact.updateArtifactFromBranch(sourceArtifact.getBranch());
+   private void handleUpdateCase(Artifact sourceArtifact, IOseeBranch destinationBranch, Set<Artifact> updated, SkynetTransaction transaction) throws OseeCoreException {
+      Artifact destinationArtifact = sourceArtifact.reflect(destinationBranch);
       updated.add(destinationArtifact);
       destinationArtifact.persist(transaction);
    }

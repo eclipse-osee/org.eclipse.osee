@@ -398,4 +398,13 @@ public class RelationLink {
 
       return (rightSorter.equals(USER_DEFINED) && leftSorter.equals(USER_DEFINED));
    }
+
+   public void introduce(int sourceGamma, ModificationType sourceModificationType) {
+      if (gammaId != sourceGamma) {
+         replaceWithVersion(sourceGamma);
+      } else if (!sourceModificationType.equals(modificationType)) {
+         internalSetModificationType(sourceModificationType);
+         setDirty();
+      }
+   }
 }

@@ -343,6 +343,15 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
       setDirtyFlag(true);
    }
 
+   public void introduce(Attribute<?> sourceAttr) {
+      int sourceGamma = sourceAttr.getGammaId();
+      if (gammaId != sourceGamma) {
+         replaceWithVersion(sourceGamma);
+      } else if (!sourceAttr.getModificationType().equals(modificationType)) {
+         markAsChanged(sourceAttr.getModificationType());
+      }
+   }
+
    /**
     * @param modificationType the modificationType to set
     */
