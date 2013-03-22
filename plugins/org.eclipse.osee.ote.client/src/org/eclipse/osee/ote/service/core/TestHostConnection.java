@@ -11,9 +11,9 @@
 package org.eclipse.osee.ote.service.core;
 
 import java.rmi.RemoteException;
+import java.util.UUID;
 
 import org.eclipse.osee.connection.service.IServiceConnector;
-import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
 
@@ -27,11 +27,11 @@ class TestHostConnection {
 
    private final IServiceConnector serviceConnector;
    private final ITestEnvironment connectEnvironment;
-   private final UserTestSessionKey sessionKey;
+   private final UUID sessionKey;
    private final IHostTestEnvironment host;
    private String serverId;
 
-   TestHostConnection(IServiceConnector connector, IHostTestEnvironment host, ITestEnvironment connectEnvironment, UserTestSessionKey sessionKey) {
+   TestHostConnection(IServiceConnector connector, IHostTestEnvironment host, ITestEnvironment connectEnvironment, UUID uuid) {
       // intentionally package-private
       if (connector == null) {
          throw new NullPointerException("service connector cannot be null");
@@ -39,13 +39,13 @@ class TestHostConnection {
       if (connectEnvironment == null) {
          throw new NullPointerException("test environment cannot be null");
       }
-      if (sessionKey == null) {
+      if (uuid == null) {
          throw new NullPointerException("session key cannot be null");
       }
       this.serviceConnector = connector;
       this.host = host;
       this.connectEnvironment = connectEnvironment;
-      this.sessionKey = sessionKey;
+      this.sessionKey = uuid;
       try {
 		this.serverId = (String) host.getProperties().getProperty("id");
       } catch (RemoteException e) {
@@ -70,7 +70,7 @@ class TestHostConnection {
    /**
     * @return the sessionKey
     */
-   public UserTestSessionKey getSessionKey() {
+   public UUID getSessionKey() {
       return sessionKey;
    }
 

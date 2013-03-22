@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.jdk.core.reportdata.ReportData;
 import org.eclipse.osee.framework.jdk.core.reportdata.ReportDataListener;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -70,7 +71,7 @@ public class ReportDataControl implements IReportData {
       for (int i = 0; i < cmds.size(); i++) {
          TestEnvironmentCommand cmd = cmds.get(i);
          values = new ArrayList<String>();
-         values.add(cmd.getUser() == null ? "unknown" : cmd.getUser().getName());
+//         values.add(cmd.getUser() == null ? "unknown" : cmd.getUser().getName());
          values.add(cmd.getDescription().getDescription());
          queueData.addItem(cmd.getDescription().getGuid(), values);
       }

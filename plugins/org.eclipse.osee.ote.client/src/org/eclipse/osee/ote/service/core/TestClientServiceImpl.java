@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.eclipse.osee.connection.service.IConnectionService;
@@ -28,7 +29,6 @@ import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 import org.eclipse.osee.ote.core.OSEEPerson1_4;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentConfig;
-import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
 import org.eclipse.osee.ote.service.Activator;
@@ -268,7 +268,7 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 	}
 
 	@Override
-	public synchronized UserTestSessionKey getSessionKey() {
+	public synchronized UUID getSessionKey() {
 		return testConnection != null ? testConnection.getSessionKey() : null;
 
 	}

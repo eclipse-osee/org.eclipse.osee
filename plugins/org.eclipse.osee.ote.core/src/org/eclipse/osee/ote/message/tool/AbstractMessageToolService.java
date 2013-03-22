@@ -30,12 +30,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
+import org.eclipse.osee.ote.core.IUserSession;
+import org.eclipse.osee.ote.core.OTESessionManager;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.internal.Activator;
 import org.eclipse.osee.ote.message.Message;
@@ -86,6 +88,8 @@ public class AbstractMessageToolService implements IRemoteMessageService {
    private final AtomicInteger idCounter = new AtomicInteger(0x0DEF0000);
 
    private InetSocketAddress xmitAddress;
+
+   private OTESessionManager sessionManager;
    private static final class ClientInfo {
       private final IMsgToolServiceClient remoteReference;
 
@@ -368,6 +372,13 @@ public class AbstractMessageToolService implements IRemoteMessageService {
 		this.messageManager = null;
 	}
    
+	public void bindOTESessionManager(OTESessionManager sessionManager){
+	   this.sessionManager = sessionManager;
+	}
+	
+	public void unbindOTESessionManager(OTESessionManager sessionManager){
+      this.sessionManager = null;
+   }
    
    private void openXmitChannel() throws IOException {
       channel = DatagramChannel.open();
@@ -499,8 +510,9 @@ public class AbstractMessageToolService implements IRemoteMessageService {
       if (terminated) {
          throw new IllegalStateException("tool service has been terminated");
       }
+      String userName = "N/A";
       final String name = cmd.getMessage();
-      UserTestSessionKey key = null;
+      UUID key = null;
       Class<?> msgClass;
       try {
 
@@ -527,12 +539,16 @@ public class AbstractMessageToolService implements IRemoteMessageService {
 
          key = reference.getTestSessionKey();
          final InetSocketAddress address = reference.getAddressByType(msgInstance.getMessageName(), type);
+         IUserSession user = sessionManager.get(key);
+         if(user != null){
+            userName = user.getUser().getName();
+         }
          if (address == null) {
             throw new Exception(
-               "client callback for user " + key.getUser().getName() + " returned a null address when subscribing to " + name);
+               "client callback for user " + userName + " returned a null address when subscribing to " + name);
          }
          OseeLog.logf(MessageSystemTestEnvironment.class, Level.INFO,
-            "Client %s at %s is subscribing to message %s: current mem=%s", key.getUser().getName(),
+            "Client %s at %s is subscribing to message %s: current mem=%s",userName,
             address.toString(), name, type);
 
          Map<DataType, EnumMap<MessageMode, SubscriptionRecord>> memToModeMap = messageMap.get(name);
@@ -577,7 +593,7 @@ public class AbstractMessageToolService implements IRemoteMessageService {
          OseeLog.log(MessageSystemTestEnvironment.class, Level.WARNING,
             "Exception occurred when subscribing to " + name, ex);
          if (key != null) {
-            throw new RemoteException("User " + key.getUser().getName() + "Could not subscribe to message " + name, ex);
+            throw new RemoteException("User " + userName + "Could not subscribe to message " + name, ex);
          } else {
             throw new RemoteException("Could not subscribe to message " + name, ex);
          }
@@ -708,7 +724,9 @@ public class AbstractMessageToolService implements IRemoteMessageService {
       }
       String user;
       try {
-         user = cmd.getClient().getTestSessionKey().getUser().getName();
+         UUID key = cmd.getClient().getTestSessionKey();
+         IUserSession userSession = sessionManager.get(key);
+         user = userSession.getUser().getName();
       } catch (Exception ex) {
          OseeLog.log(MessageSystemTestEnvironment.class, Level.WARNING, "Problems retrieving the active user", ex);
          user = "N.A.";

@@ -11,14 +11,15 @@
 package org.eclipse.osee.ote.core.framework.command;
 
 import java.rmi.server.ExportException;
+import java.util.UUID;
 import java.util.concurrent.Future;
+
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
-import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
 import org.eclipse.osee.ote.core.environment.status.OTEStatusBoard;
 
 public interface ITestServerCommand {
 
-   UserTestSessionKey getUserSessionKey();
+   UUID getUserSessionKey();
 
    ICommandHandle createCommandHandle(Future<ITestCommandResult> result, ITestContext context) throws ExportException;
 

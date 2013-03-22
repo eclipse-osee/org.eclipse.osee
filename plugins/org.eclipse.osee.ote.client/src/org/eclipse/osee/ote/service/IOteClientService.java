@@ -12,11 +12,11 @@ package org.eclipse.osee.ote.service;
 
 import java.net.InetAddress;
 import java.util.List;
+import java.util.UUID;
 
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.ote.core.OSEEPerson1_4;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentConfig;
-import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
 
@@ -104,5 +104,5 @@ public interface IOteClientService {
 
    IServiceConnector getConnector(IHostTestEnvironment host);
 
-   UserTestSessionKey getSessionKey();
+   UUID getSessionKey();
 }

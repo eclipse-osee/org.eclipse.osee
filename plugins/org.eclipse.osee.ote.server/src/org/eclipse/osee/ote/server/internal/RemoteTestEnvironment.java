@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.server.internal;
 
-import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.HashMap;
@@ -22,11 +21,8 @@ import java.util.logging.Level;
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.Message;
-import org.eclipse.osee.ote.core.IUserSession;
-import org.eclipse.osee.ote.core.OSEEPerson1_4;
 import org.eclipse.osee.ote.core.ReturnStatus;
 import org.eclipse.osee.ote.core.cmd.Command;
-import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
 import org.eclipse.osee.ote.core.environment.interfaces.IRemoteCommandConsole;
 import org.eclipse.osee.ote.core.framework.command.ICommandHandle;
 import org.eclipse.osee.ote.core.framework.command.ITestServerCommand;
@@ -96,10 +92,6 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       } catch (InterruptedException e) {
          throw new RemoteException("", e);
       }
-   }
-
-   public void removeUser(OSEEPerson1_4 user) {
-      env.removeUser(user);
    }
 
    public ReturnStatus isRunningJarVersions(String[] jarVersions) {
@@ -188,9 +180,9 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       return env.getUniqueId();
    }
 
-   public IUserSession getUserSession(UserTestSessionKey key) {
-      return env.getUserSession(key);
-   }
+//   public IUserSession getUserSession(UserTestSessionKey key) {
+//      return env.getUserSession(key);
+//   }
 
    private class RemoteModelManager implements IModelManagerRemote {
 
@@ -283,15 +275,15 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       env.sendMessageToServer(message);
    }
 
-   @Override
-   public void disconnectAll() throws RemoteException {
-      for (Serializable session : env.getSessionKeys()) {
-         env.disconnect((UserTestSessionKey) session);
-      }
-      if (!keepEnvAliveWithNoUsers) {
-         messageToolServiceTracker.close();
-         closeAllConsoles();
-         env.shutdown();
-      }
-   }
+//   @Override
+//   public void disconnectAll() throws RemoteException {
+//      for (Serializable session : env.getSessionKeys()) {
+//         env.disconnect((UserTestSessionKey) session);
+//      }
+//      if (!keepEnvAliveWithNoUsers) {
+//         messageToolServiceTracker.close();
+//         closeAllConsoles();
+//         env.shutdown();
+//      }
+//   }
 }

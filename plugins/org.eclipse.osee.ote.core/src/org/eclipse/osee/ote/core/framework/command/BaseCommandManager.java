@@ -17,23 +17,19 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.eclipse.osee.ote.core.OTESessionManager;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.environment.status.OTEStatusBoard;
 import org.eclipse.osee.ote.core.framework.thread.OteThreadManager;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.util.tracker.ServiceTracker;
+import org.eclipse.osee.ote.core.internal.ServiceUtility;
 
 public class BaseCommandManager implements ICommandManager {
 
    private final ExecutorService commands;
    private final ExecutorService commandResponse;
    private final Map<ITestServerCommand, Future<ITestCommandResult>> cmdMap;
-   private OTEStatusBoard oteStatusBoard;
 
    public BaseCommandManager() {
-      ServiceTracker<OTEStatusBoard, OTEStatusBoard> tracker = new ServiceTracker<OTEStatusBoard, OTEStatusBoard>(FrameworkUtil.getBundle(getClass()).getBundleContext(), OTEStatusBoard.class, null);
-	  tracker.open(true);
-	  oteStatusBoard = tracker.getService();
       OteThreadManager threadManager = OteThreadManager.getInstance();
       commands = Executors.newSingleThreadExecutor(threadManager.createNewFactory("ote.command"));
       commandResponse = Executors.newSingleThreadExecutor(threadManager.createNewFactory("ote.command.response"));
@@ -42,8 +38,11 @@ public class BaseCommandManager implements ICommandManager {
 
    @Override
    public ICommandHandle addCommand(ITestServerCommand cmd, TestEnvironment context) throws ExportException {
+      OTEStatusBoard statusBoard = ServiceUtility.getService(OTEStatusBoard.class);
+      OTESessionManager sessionManager = ServiceUtility.getService(OTESessionManager.class);
+      
       Future<ITestCommandResult> result =
-         commands.submit(new TestCallableWrapper(this, cmd, context,oteStatusBoard));
+         commands.submit(new TestCallableWrapper(this, cmd, context,statusBoard, sessionManager));
       cmdMap.put(cmd, result);
       return cmd.createCommandHandle(result, context);
    }

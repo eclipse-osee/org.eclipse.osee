@@ -13,7 +13,8 @@ package org.eclipse.osee.ote.message.interfaces;
 import java.net.InetSocketAddress;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
+import java.util.UUID;
+
 import org.eclipse.osee.ote.message.enums.DataType;
 
 public interface IMsgToolServiceClient extends Remote {
@@ -23,5 +24,5 @@ public interface IMsgToolServiceClient extends Remote {
 
    void changeIsScheduled(String msgName, boolean isScheduled) throws RemoteException;
 
-   UserTestSessionKey getTestSessionKey() throws RemoteException;
+   UUID getTestSessionKey() throws RemoteException;
 }

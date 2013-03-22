@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -49,8 +48,6 @@ import org.eclipse.osee.framework.messaging.Message;
 import org.eclipse.osee.framework.messaging.MessagingGateway;
 import org.eclipse.osee.framework.messaging.NodeInfo;
 import org.eclipse.osee.ote.core.GCHelper;
-import org.eclipse.osee.ote.core.IUserSession;
-import org.eclipse.osee.ote.core.OSEEPerson1_4;
 import org.eclipse.osee.ote.core.OseeTestThread;
 import org.eclipse.osee.ote.core.OteProperties;
 import org.eclipse.osee.ote.core.TestScript;
@@ -87,8 +84,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
 
    private File outDir = null;
    private final ITestStation testStation;
-   private final HashMap<Serializable, Object> users;
-   private volatile IUserSession activeUser = null;
    private boolean batchMode = false;
    private final HashMap<String, Remote> controlInterfaces = new HashMap<String, Remote>();
    private final IEnvironmentFactory factory;
@@ -130,10 +125,8 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       this.associatedObjectListeners = new HashMap<Class<?>, ArrayList<IAssociatedObjectListener>>();
       this.associatedObjects = new HashMap<Class<?>, Object>(100);
       this.batchMode = OteProperties.isOseeOteInBatchModeEnabled();
-      this.users = new HashMap<Serializable, Object>(32);
 
       messagingServiceTracker = setupOteMessagingSenderAndReceiver();
-
    }
 
    public void init(IServiceConnector connector) {
@@ -248,13 +241,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       return true;
    }
 
-   @Override
-   public UserTestSessionKey addUser(IUserSession user) throws Exception {
-      UserTestSessionKey key = new UserTestSessionKey(user.getUser());
-      users.put(key, user);
-      return key;
-   }
-
    public boolean equals(ITestEnvironment testEnvironment) throws RemoteException {
       if (testEnvironment.getUniqueId() == getUniqueId()) {
          return true;
@@ -287,11 +273,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
 
    @Override
    public abstract Object getModel(String modelClassName);
-
-   /*
-    * public Remote getRemoteModel(String modelClassName) throws RemoteException { return getRemoteModel(modelClassName,
-    * new Class[] {}, new Object[] {}); }
-    */
 
    @Override
    public IScriptControl getScriptCtrl() {
@@ -334,43 +315,8 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       return this.hashCode();
    }
 
-   @Override
-   public ArrayList<Serializable> getUserList() {
-      return new ArrayList<Serializable>(getSessionKeys());
-   }
-
-   @Override
-   public void disconnect(final UserTestSessionKey key) throws RemoteException {
-      try {
-         OseeLog.log(TestEnvironment.class, Level.INFO, "Disconnecting user " + getUserSession(key).getUser().getName());
-      } catch (Exception ex) {
-         OseeLog.log(TestEnvironment.class, Level.INFO, "problem with accessing user name from the useer session");
-      }
-      users.remove(key);
-   }
-
-   @Override
-   public Set<Serializable> getSessionKeys() {
-      return users.keySet();
-   }
-
-   @Override
-   public IUserSession getUserSession(final UserTestSessionKey key) {
-      return (IUserSession) users.get(key);
-   }
-
    private final void removeAllTasks() {
       factory.getTimerControl().cancelAllTasks();
-   }
-
-   @Override
-   public void removeUser(OSEEPerson1_4 user) {
-      if (users.containsKey(user)) {
-         users.put(user, Integer.valueOf(((Integer) users.get(user)).intValue() - 1));
-         if (((Integer) users.get(user)).intValue() == 0) {
-            users.remove(user);
-         }
-      }
    }
 
    @Override
@@ -441,8 +387,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       if (getRunManager() != null) {
          getRunManager().clearAllListeners();
       }
-      users.clear();
-
    }
 
    protected abstract void loadExternalDrivers();
@@ -457,16 +401,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
 
    protected void stop() {
 
-   }
-
-   @Override
-   public IUserSession getActiveUser() {
-      return activeUser;
-   }
-
-   @Override
-   public void setActiveUser(UserTestSessionKey key) {
-      activeUser = (IUserSession) users.get(key);
    }
 
    protected void cleanupClassReferences() {
@@ -494,17 +428,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    @Override
    public File getOutDir() {
       return outDir;
-   }
-
-   @Override
-   public List<IUserSession> getUserSessions() {
-      List<IUserSession> people = new ArrayList<IUserSession>();
-      for (Object user : users.values()) {
-         if (user instanceof IUserSession) {
-            people.add((IUserSession) user);
-         }
-      }
-      return people;
    }
 
    @Override

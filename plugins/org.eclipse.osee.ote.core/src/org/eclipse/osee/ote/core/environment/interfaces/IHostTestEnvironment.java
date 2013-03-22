@@ -13,6 +13,7 @@ package org.eclipse.osee.ote.core.environment.interfaces;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.UUID;
 
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 import org.eclipse.osee.framework.messaging.NodeInfo;
@@ -21,7 +22,6 @@ import org.eclipse.osee.ote.core.IRemoteUserSession;
 import org.eclipse.osee.ote.core.environment.BundleConfigurationReport;
 import org.eclipse.osee.ote.core.environment.BundleDescription;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentConfig;
-import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -29,9 +29,8 @@ import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
 public interface IHostTestEnvironment extends Remote {
    EnhancedProperties getProperties() throws RemoteException;
    
-   ConnectionRequestResult requestEnvironment(IRemoteUserSession session, TestEnvironmentConfig config) throws RemoteException;
-   void disconnect(UserTestSessionKey key) throws RemoteException;
-   void disconnectAll() throws RemoteException;
+   ConnectionRequestResult requestEnvironment(IRemoteUserSession session, UUID id, TestEnvironmentConfig config) throws RemoteException;
+   void disconnect(UUID sessionId) throws RemoteException;
    
    BundleConfigurationReport checkBundleConfiguration(Collection<BundleDescription> bundles) throws RemoteException;
    void sendRuntimeBundle(Collection<BundleDescription> bundles) throws RemoteException;

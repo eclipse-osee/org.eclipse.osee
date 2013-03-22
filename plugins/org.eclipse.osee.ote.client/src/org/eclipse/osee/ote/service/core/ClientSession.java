@@ -12,9 +12,11 @@ package org.eclipse.osee.ote.service.core;
 
 import java.net.InetAddress;
 import java.rmi.RemoteException;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -167,8 +169,9 @@ public class ClientSession extends AbstractRemoteSession {
       if (lock.tryLock(TIMEOUT, TimeUnit.MINUTES)) {
          try {
             IRemoteUserSession exportedSession = (IRemoteUserSession) connector.export(this);
+            UUID id = UUID.randomUUID();
             Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
-            ConnectionRequestResult result = testHost.requestEnvironment(exportedSession, config);
+            ConnectionRequestResult result = testHost.requestEnvironment(exportedSession, id, config);
             if (result.getStatus().getStatus()) {
                return new TestHostConnection(connector, testHost, result.getEnvironment(), result.getSessionKey());
             } else {

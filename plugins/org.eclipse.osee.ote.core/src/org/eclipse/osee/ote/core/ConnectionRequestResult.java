@@ -11,7 +11,8 @@
 package org.eclipse.osee.ote.core;
 
 import java.io.Serializable;
-import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
+import java.util.UUID;
+
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
 
 /**
@@ -20,12 +21,12 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
 public class ConnectionRequestResult implements Serializable {
    private static final long serialVersionUID = -2269465634573908989L;
    private final ITestEnvironment environment;
-   private final UserTestSessionKey sessionKey;
+   private final UUID sessionKey;
    private final ReturnStatus status;
 
-   public ConnectionRequestResult(ITestEnvironment environment, UserTestSessionKey sessionKey, ReturnStatus status) {
+   public ConnectionRequestResult(ITestEnvironment environment, UUID sessionId, ReturnStatus status) {
       this.environment = environment;
-      this.sessionKey = sessionKey;
+      this.sessionKey = sessionId;
       this.status = status;
    }
 
@@ -39,7 +40,7 @@ public class ConnectionRequestResult implements Serializable {
    /**
     * @return the sessionKey
     */
-   public UserTestSessionKey getSessionKey() {
+   public UUID getSessionKey() {
       return sessionKey;
    }
 

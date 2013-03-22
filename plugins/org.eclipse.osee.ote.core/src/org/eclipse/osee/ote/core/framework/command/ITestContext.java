@@ -11,14 +11,12 @@
 package org.eclipse.osee.ote.core.framework.command;
 
 import java.io.File;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
-import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
 import org.eclipse.osee.ote.core.framework.IRunManager;
 
 public interface ITestContext {
    IRunManager getRunManager();
-
-   void setActiveUser(UserTestSessionKey key);
 
    File getOutDir();
 

@@ -11,6 +11,8 @@
 package org.eclipse.osee.ote.core.environment;
 
 import java.util.Properties;
+import java.util.UUID;
+
 import org.eclipse.osee.framework.messaging.EndpointSend;
 import org.eclipse.osee.framework.messaging.ExceptionHandler;
 import org.eclipse.osee.framework.messaging.Message;
@@ -18,7 +20,8 @@ import org.eclipse.osee.framework.messaging.id.ProtocolId;
 import org.eclipse.osee.framework.messaging.id.StringName;
 import org.eclipse.osee.framework.messaging.id.StringNamespace;
 import org.eclipse.osee.framework.messaging.id.StringProtocolId;
-import org.eclipse.osee.ote.core.IUserSession;
+import org.eclipse.osee.ote.core.OTESessionManager;
+import org.eclipse.osee.ote.core.internal.ServiceUtility;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -37,8 +40,9 @@ public class OteServerSideEndpointSender implements EndpointSend {
    @Override
    public void send(Message message, ExceptionHandler exceptionHandler) {
       try {
-         for (IUserSession session : testEnvironment.getUserSessions()) {
-            session.sendMessageToClient(message);
+         OTESessionManager sessionManager = ServiceUtility.getService(OTESessionManager.class);
+         for(UUID id:sessionManager.get()){
+            sessionManager.get(id).sendMessageToClient(message);
          }
       } catch (Throwable th) {
          exceptionHandler.handleException(th);

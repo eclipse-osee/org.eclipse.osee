@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.server.internal;
 
-import java.io.Serializable;
 import java.net.InetAddress;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import net.jini.core.lookup.ServiceID;
@@ -29,12 +29,13 @@ import org.eclipse.osee.framework.messaging.NodeInfo;
 import org.eclipse.osee.framework.messaging.services.RegisteredServiceReference;
 import org.eclipse.osee.ote.core.ConnectionRequestResult;
 import org.eclipse.osee.ote.core.IRemoteUserSession;
+import org.eclipse.osee.ote.core.IUserSession;
 import org.eclipse.osee.ote.core.OSEEPerson1_4;
+import org.eclipse.osee.ote.core.OTESessionManager;
 import org.eclipse.osee.ote.core.ReturnStatus;
 import org.eclipse.osee.ote.core.environment.BundleConfigurationReport;
 import org.eclipse.osee.ote.core.environment.BundleDescription;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentConfig;
-import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.IRuntimeLibraryManager;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
@@ -50,10 +51,13 @@ public class OteService implements IHostTestEnvironment, IService {
    private final EnvironmentCreationParameter environmentCreation;
    private final IRuntimeLibraryManager runtimeLibraryManager;
    private RegisteredServiceReference registeredServiceReference;
-
-   public OteService(IRuntimeLibraryManager runtimeLibraryManager, EnvironmentCreationParameter environmentCreation, PropertyParamter parameterObject, EnhancedProperties properties) {
+   private OTESessionManager oteSessions;
+   
+   
+   public OteService(IRuntimeLibraryManager runtimeLibraryManager, EnvironmentCreationParameter environmentCreation, OTESessionManager oteSessions, PropertyParamter parameterObject, EnhancedProperties properties) {
       this.runtimeLibraryManager = runtimeLibraryManager;
       this.environmentCreation = environmentCreation;
+      this.oteSessions = oteSessions;
       
       Uuid uuid = UuidFactory.generate();
       Long lsb = Long.valueOf(uuid.getLeastSignificantBits());
@@ -89,7 +93,7 @@ public class OteService implements IHostTestEnvironment, IService {
    }
 
    @Override
-   public ConnectionRequestResult requestEnvironment(IRemoteUserSession session, TestEnvironmentConfig config) throws RemoteException {
+   public ConnectionRequestResult requestEnvironment(IRemoteUserSession session, UUID sessionId, TestEnvironmentConfig config) throws RemoteException {
       try {
          OseeLog.log(OteService.class, Level.INFO,
             "received request for test environment from user " + session.getUser().getName());
@@ -97,9 +101,10 @@ public class OteService implements IHostTestEnvironment, IService {
             createEnvironment();
 
          }
-         UserTestSessionKey key = currentEnvironment.addUser(session);
+         
+         oteSessions.add(sessionId, session);
          updateDynamicInfo();
-         return new ConnectionRequestResult(remoteEnvironment, key, new ReturnStatus("Success", true));
+         return new ConnectionRequestResult(remoteEnvironment, sessionId, new ReturnStatus("Success", true));
       } catch (Throwable ex) {
          OseeLog.log(OteService.class, Level.SEVERE,
             "Exception while requesting environment for user " + session.getUser().getName(), ex);
@@ -121,15 +126,14 @@ public class OteService implements IHostTestEnvironment, IService {
       Collection<OSEEPerson1_4> userList = new LinkedList<OSEEPerson1_4>();
       StringBuilder sb = new StringBuilder();
       if (isEnvironmentAvailable()) {
-    	  for (Serializable serializable : currentEnvironment.getUserList()) {
-              if (serializable instanceof UserTestSessionKey) {
-                 try {
-                	 userList.add(((UserTestSessionKey) serializable).getUser());
-                 } catch (Exception ex) {
-                    OseeLog.log(RemoteTestEnvironment.class, Level.SEVERE, "exception while getting user list", ex);
-                 }
-              }
-           }
+         for(UUID sessionId:oteSessions.get()){
+            IUserSession session = oteSessions.get(sessionId);
+            try {
+               userList.add(session.getUser());
+            } catch (Exception e) {
+               OseeLog.log(OteService.class, Level.SEVERE, e);
+            }
+         }
       }
       for (OSEEPerson1_4 person : userList) {
          sb.append(person.getName());
@@ -185,27 +189,27 @@ public class OteService implements IHostTestEnvironment, IService {
    }
 
    @Override
-   public void disconnect(UserTestSessionKey key) throws RemoteException {
+   public void disconnect(UUID sessionId) throws RemoteException {
       if (currentEnvironment != null) {
-    	  currentEnvironment.disconnect(key);
+         oteSessions.remove(sessionId);
          updateDynamicInfo();
-         if (currentEnvironment.getUserList().isEmpty() && !environmentCreation.isKeepAliveWithNoUsers()) {
-        	remoteEnvironment.disconnectAll();
-            remoteEnvironment = null;
-         }
+//         if (oteSessions.get().isEmpty() && !environmentCreation.isKeepAliveWithNoUsers()) {
+//        	remoteEnvironment.disconnectAll();
+//            remoteEnvironment = null;
+//         }
       }
    }
    
-   @Override
-   public void disconnectAll() throws RemoteException {
-      if (remoteEnvironment != null) {
-         remoteEnvironment.disconnectAll();
-         updateDynamicInfo();
-         if (!environmentCreation.isKeepAliveWithNoUsers()) {
-            remoteEnvironment = null;
-         }
-      }
-   }
+//   @Override
+//   public void disconnectAll() throws RemoteException {
+//      if (remoteEnvironment != null) {
+//         oteSessions.removeAll();
+//         updateDynamicInfo();
+////         if (!environmentCreation.isKeepAliveWithNoUsers()) {
+////            remoteEnvironment = null;
+////         }
+//      }
+//   }
 
    @Override
    public BundleConfigurationReport checkBundleConfiguration(Collection<BundleDescription> bundles) throws RemoteException {

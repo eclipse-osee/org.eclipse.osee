@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.service;
 
+import java.util.UUID;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
-import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
 
@@ -24,11 +25,11 @@ public final class ConnectionEvent {
 
    private final ITestEnvironment environment;
    private final IServiceConnector connector;
-   private final UserTestSessionKey sessionKey;
+   private final UUID sessionKey;
    private final OteServiceProperties props;
    private final IHostTestEnvironment hostTestEnvironment;
 
-   public ConnectionEvent(IHostTestEnvironment hostTestEnvironment, IServiceConnector connector, ITestEnvironment environment, UserTestSessionKey sessionKey) {
+   public ConnectionEvent(IHostTestEnvironment hostTestEnvironment, IServiceConnector connector, ITestEnvironment environment, UUID sessionKey) {
       if (connector == null) {
          throw new NullPointerException("connector cannot be null");
       }
@@ -62,7 +63,7 @@ public final class ConnectionEvent {
     * 
     * @return the sessionKey
     */
-   public UserTestSessionKey getSessionKey() {
+   public UUID getSessionKey() {
       return sessionKey;
    }
 

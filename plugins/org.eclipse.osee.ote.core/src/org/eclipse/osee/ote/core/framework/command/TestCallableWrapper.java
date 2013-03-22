@@ -12,7 +12,9 @@ package org.eclipse.osee.ote.core.framework.command;
 
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.ote.core.OTESessionManager;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.environment.status.OTEStatusBoard;
 
@@ -22,19 +24,21 @@ public class TestCallableWrapper implements Callable<ITestCommandResult> {
    private final TestEnvironment context;
    private final BaseCommandManager cmdManager;
    private final OTEStatusBoard statusBoard;
+   private final OTESessionManager sessionManager;
 
-   public TestCallableWrapper(BaseCommandManager cmdManager, ITestServerCommand cmd, TestEnvironment context, OTEStatusBoard statusBoard) {
+   public TestCallableWrapper(BaseCommandManager cmdManager, ITestServerCommand cmd, TestEnvironment context, OTEStatusBoard statusBoard, OTESessionManager sessionManager) {
       this.cmd = cmd;
       this.context = context;
       this.cmdManager = cmdManager;
       this.statusBoard = statusBoard;
+      this.sessionManager = sessionManager;
    }
 
    @Override
    public ITestCommandResult call() throws Exception {
       ITestCommandResult result;
       try {
-         context.setActiveUser(cmd.getUserSessionKey());
+         sessionManager.setActiveUser(cmd.getUserSessionKey());
          result = cmd.execute(context, statusBoard);
          if (result.getThrowable() != null) {
             OseeLog.log(TestCallableWrapper.class, Level.SEVERE, result.getThrowable());

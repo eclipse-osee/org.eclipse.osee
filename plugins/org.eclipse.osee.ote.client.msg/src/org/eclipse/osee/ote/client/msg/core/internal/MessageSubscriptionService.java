@@ -18,6 +18,7 @@ import java.nio.channels.DatagramChannel;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,7 +33,6 @@ import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.eclipse.osee.ote.client.msg.IOteMessageService;
 import org.eclipse.osee.ote.client.msg.core.IMessageSubscription;
 import org.eclipse.osee.ote.client.msg.core.db.AbstractMessageDataBase;
-import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.MessageDefinitionProvider;
 import org.eclipse.osee.ote.message.commands.RecordCommand;
@@ -261,7 +261,7 @@ public class MessageSubscriptionService implements IOteMessageService, ITestConn
    }
 
    @Override
-   public UserTestSessionKey getTestSessionKey() throws RemoteException {
+   public UUID getTestSessionKey() throws RemoteException {
       return clientService.getSessionKey();
    }
 

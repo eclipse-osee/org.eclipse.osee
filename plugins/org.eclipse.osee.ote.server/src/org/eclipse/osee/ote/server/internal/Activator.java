@@ -13,6 +13,7 @@ package org.eclipse.osee.ote.server.internal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -48,9 +49,6 @@ public class Activator implements BundleActivator {
 
       runtimeManagerHandler = new ServiceDependencyTracker(context, new RuntimeManagerHandler());
       runtimeManagerHandler.open();
-
-      oteServiceStarterHandler = new ServiceDependencyTracker(context, new OteServiceStarterCreationHandler());
-      oteServiceStarterHandler.open();
 
       startServer();
    }

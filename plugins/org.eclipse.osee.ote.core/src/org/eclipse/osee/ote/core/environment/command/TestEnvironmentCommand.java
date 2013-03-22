@@ -11,10 +11,10 @@
 package org.eclipse.osee.ote.core.environment.command;
 
 import java.io.Serializable;
-import org.eclipse.osee.ote.core.OSEEPerson1_4;
+import java.util.UUID;
+
 import org.eclipse.osee.ote.core.TestException;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
-import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
 import org.eclipse.osee.ote.core.environment.interfaces.IServiceCommand;
 
 /**
@@ -23,15 +23,15 @@ import org.eclipse.osee.ote.core.environment.interfaces.IServiceCommand;
  */
 public abstract class TestEnvironmentCommand implements Serializable, IServiceCommand {
    private static final long serialVersionUID = -921447917279635626L;
-   private final UserTestSessionKey key;
+   private final UUID key;
    private final CommandDescription commandDescription;
 
-   public TestEnvironmentCommand(UserTestSessionKey key, CommandDescription commandDescription) {
+   public TestEnvironmentCommand(UUID key, CommandDescription commandDescription) {
       this.key = key;
       this.commandDescription = commandDescription;
    }
 
-   public UserTestSessionKey getUserKey() {
+   public UUID getUserKey() {
       return key;
    }
 
@@ -44,10 +44,6 @@ public abstract class TestEnvironmentCommand implements Serializable, IServiceCo
 
    public CommandDescription getDescription() {
       return commandDescription;
-   }
-
-   public OSEEPerson1_4 getUser() {
-      return key.getUser();
    }
 
 }

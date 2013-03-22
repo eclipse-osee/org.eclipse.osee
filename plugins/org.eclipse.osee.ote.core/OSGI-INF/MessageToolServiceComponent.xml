@@ -5,4 +5,5 @@
       <provide interface="org.eclipse.osee.ote.message.interfaces.IRemoteMessageService"/>
    </service>
    <reference bind="bindMessageManager" cardinality="1..1" interface="org.eclipse.osee.ote.message.interfaces.IMessageManager" name="IMessageManager" policy="static" unbind="unbindMessageManager"/>
+   <reference bind="bindOTESessionManager" cardinality="1..1" interface="org.eclipse.osee.ote.core.OTESessionManager" name="OTESessionManager" policy="static" unbind="unbindOTESessionManager"/>
 </scr:component>

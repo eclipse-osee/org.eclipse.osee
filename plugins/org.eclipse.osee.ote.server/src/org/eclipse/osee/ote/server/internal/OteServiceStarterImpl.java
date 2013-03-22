@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.messaging.services.RegisteredServiceReference;
 import org.eclipse.osee.framework.messaging.services.RemoteServiceRegistrar;
 import org.eclipse.osee.framework.messaging.services.ServiceInfoPopulator;
 import org.eclipse.osee.framework.messaging.services.messages.ServiceDescriptionPair;
+import org.eclipse.osee.ote.core.OTESessionManager;
 import org.eclipse.osee.ote.core.OteBaseMessages;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.IRuntimeLibraryManager;
@@ -54,24 +55,69 @@ import org.osgi.service.packageadmin.PackageAdmin;
  */
 public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopulator, OseeMessagingStatusCallback {
 
-	private final PackageAdmin packageAdmin;
-	private final IRuntimeLibraryManager runtimeLibraryManager;
-	private final IConnectionService connectionService;
-	private final RemoteServiceRegistrar remoteServiceRegistrar;
-	private final MessageService messageService;
+	private PackageAdmin packageAdmin;
+	private IRuntimeLibraryManager runtimeLibraryManager;
+	private IConnectionService connectionService;
+	private RemoteServiceRegistrar remoteServiceRegistrar;
+	private MessageService messageService;
 
 	private BrokerService brokerService;
 	private OteService service;
 	private final ListenForHostRequest listenForHostRequest;
 
 	private IServiceConnector serviceSideConnector;
+   private OTESessionManager oteSessions;
 
-	OteServiceStarterImpl(PackageAdmin packageAdmin, IRuntimeLibraryManager runtimeLibraryManager, IConnectionService connectionService, RemoteServiceRegistrar remoteServiceRegistrar, MessageService messageService) {
-		this.packageAdmin = packageAdmin;
-		this.runtimeLibraryManager = runtimeLibraryManager;
-		this.connectionService = connectionService;
-		this.remoteServiceRegistrar = remoteServiceRegistrar;
-		this.messageService = messageService;
+	
+   public void bindOTESessionManager(OTESessionManager oteSessions){
+      this.oteSessions = oteSessions;
+   }
+   
+   public void unbindOTESessionManager(OTESessionManager oteSessions){
+      this.oteSessions = null;
+   } 
+   
+	public void bindIRuntimeLibraryManager(IRuntimeLibraryManager runtimeLibraryManager){
+	   this.runtimeLibraryManager = runtimeLibraryManager;
+	}
+	
+	public void unbindIRuntimeLibraryManager(IRuntimeLibraryManager runtimeLibraryManager){
+      this.runtimeLibraryManager = null;
+   } 
+	
+	public void bindRemoteServiceRegistrar(RemoteServiceRegistrar remoteServiceRegistrar){
+	   this.remoteServiceRegistrar = remoteServiceRegistrar;
+	}
+	
+	public void unbindRemoteServiceRegistrar(RemoteServiceRegistrar remoteServiceRegistrar){
+      this.remoteServiceRegistrar = null;
+   }
+	
+	public void bindMessageService(MessageService messageService){
+	   this.messageService = messageService;
+	}
+
+	public void unbindMessageService(MessageService messageService){
+	   this.messageService = null;
+	}
+	
+	public void bindIConnectionService(IConnectionService connectionService){
+	   this.connectionService = connectionService;
+	}
+	
+	public void unbindIConnectionService(IConnectionService connectionService){
+	   this.connectionService = null;
+	}
+	   
+	public void bindPackageAdmin(PackageAdmin packageAdmin){
+	   this.packageAdmin = packageAdmin;
+	}
+	
+	public void unbindPackageAdmin(PackageAdmin packageAdmin){
+      this.packageAdmin = null;
+   }
+	
+	OteServiceStarterImpl() {
 		listenForHostRequest = new ListenForHostRequest();
 	}
 
@@ -124,7 +170,7 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 						environmentFactoryClass, packageAdmin);
 
 		service =
-				new OteService(runtimeLibraryManager, environmentCreationParameter, propertyParameter,
+				new OteService(runtimeLibraryManager, environmentCreationParameter, oteSessions, propertyParameter,
 						serviceSideConnector.getProperties());
 
 		serviceSideConnector.init(service);

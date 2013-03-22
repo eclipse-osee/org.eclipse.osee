@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -26,7 +27,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
 import org.eclipse.osee.ote.core.environment.status.TestComplete;
 import org.eclipse.osee.ote.service.ConnectionEvent;
@@ -50,7 +50,7 @@ public abstract class ScriptManager implements Runnable {
    private ScheduledExecutorService updater;
    private Set<ScriptTask> tasksToUpdate;
    private ITestEnvironment connectedEnv;
-   private UserTestSessionKey sessionKey;
+   private UUID sessionKey;
 
    public ScriptManager(TestManagerEditor testManager, StructuredViewer stv) {
       this.testManager = testManager;
@@ -203,7 +203,7 @@ public abstract class ScriptManager implements Runnable {
       }
    }
 
-   protected UserTestSessionKey getSessionKey() {
+   protected UUID getSessionKey() {
       return sessionKey;
    }
 }
