@@ -103,7 +103,7 @@ public class AttributeConflict extends Conflict {
       }
       Collection<Attribute<?>> localAttributes;
       if (allowDeleted) {
-         localAttributes = getSourceArtifact().getAllAttributesIncludingHardDeleted();
+         localAttributes = getSourceArtifact().getAttributes(true);
       } else {
          localAttributes = getSourceArtifact().getAttributes();
       }

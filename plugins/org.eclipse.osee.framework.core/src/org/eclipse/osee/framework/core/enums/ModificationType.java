@@ -52,9 +52,8 @@ public enum ModificationType {
    //Attribute: Valid and can be used to replace the current version of an attribute with another historical version
    REPLACED_WITH_VERSION("Replace_with_version", 8);
 
-   private final static Set<ModificationType> ALL_NONE_HARD_DELETED = new HashSet<ModificationType>();
+   private final static Set<ModificationType> ALL_NOT_HARD_DELETED = new HashSet<ModificationType>();
    private final static Set<ModificationType> ALL_MOD_TYPES = new HashSet<ModificationType>();
-   private final static Set<ModificationType> ALL_STATES = new HashSet<ModificationType>();
    private int value;
    private String displayName;
 
@@ -108,32 +107,23 @@ public enum ModificationType {
       return this == UNDELETED;
    }
 
-   public static Set<ModificationType> getCurrentModTypes() {
-      if (ALL_NONE_HARD_DELETED.isEmpty()) {
-         synchronized (ALL_NONE_HARD_DELETED) {
-            ALL_NONE_HARD_DELETED.addAll(Arrays.asList(ModificationType.values()));
-            ALL_NONE_HARD_DELETED.remove(ModificationType.DELETED);
+   public static Set<ModificationType> getAllNotHardDeletedTypes() {
+      if (ALL_NOT_HARD_DELETED.isEmpty()) {
+         synchronized (ALL_NOT_HARD_DELETED) {
+            ALL_NOT_HARD_DELETED.addAll(getAllModTypes());
+            ALL_NOT_HARD_DELETED.remove(ModificationType.DELETED);
          }
       }
-      return ALL_NONE_HARD_DELETED;
+      return ALL_NOT_HARD_DELETED;
    }
 
-   public static Set<ModificationType> getAllCurrentModTypes() {
+   public static Set<ModificationType> getAllModTypes() {
       if (ALL_MOD_TYPES.isEmpty()) {
          synchronized (ALL_MOD_TYPES) {
             ALL_MOD_TYPES.addAll(Arrays.asList(ModificationType.values()));
          }
       }
       return ALL_MOD_TYPES;
-   }
-
-   public static Set<ModificationType> getAllStates() {
-      if (ALL_STATES.isEmpty()) {
-         synchronized (ALL_STATES) {
-            ALL_STATES.addAll(Arrays.asList(ModificationType.values()));
-         }
-      }
-      return ALL_STATES;
    }
 
    public boolean isExistingVersionUsed() {

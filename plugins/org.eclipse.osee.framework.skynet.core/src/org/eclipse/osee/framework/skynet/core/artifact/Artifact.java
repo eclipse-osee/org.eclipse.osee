@@ -491,19 +491,10 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    /**
     * The use of this method is discouraged since it directly returns Attributes.
     * 
-    * @return attributes All attributes including deleted and artifact deleted
-    */
-   public final List<Attribute<?>> getAllAttributesIncludingHardDeleted() throws OseeCoreException {
-      return getAttributesByModificationType(ModificationType.getAllStates());
-   }
-
-   /**
-    * The use of this method is discouraged since it directly returns Attributes.
-    * 
     * @return attributes All attributes of the specified type name including deleted and artifact deleted
     */
    public final List<Attribute<?>> getAllAttributesIncludingHardDeleted(IAttributeType attributeType) throws OseeCoreException {
-      return getAttributesByModificationType(attributeType, ModificationType.getAllStates());
+      return getAttributesByModificationType(attributeType, ModificationType.getAllModTypes());
    }
 
    /**
@@ -516,9 +507,9 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    public final List<Attribute<?>> getAttributes(boolean includeDeleted) throws OseeCoreException {
       List<Attribute<?>> attributes;
       if (includeDeleted) {
-         attributes = getAttributesByModificationType(ModificationType.getAllCurrentModTypes());
+         attributes = getAttributesByModificationType(ModificationType.getAllModTypes());
       } else {
-         attributes = getAttributesByModificationType(ModificationType.getCurrentModTypes());
+         attributes = getAttributesByModificationType(ModificationType.getAllNotHardDeletedTypes());
       }
       return attributes;
    }
@@ -528,7 +519,8 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
     */
    @Deprecated
    public final <T> List<Attribute<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException {
-      return Collections.castAll(getAttributesByModificationType(attributeType, ModificationType.getCurrentModTypes()));
+      return Collections.castAll(getAttributesByModificationType(attributeType,
+         ModificationType.getAllNotHardDeletedTypes()));
    }
 
    private List<Attribute<?>> getAttributesByModificationType(Set<ModificationType> allowedModTypes) throws OseeCoreException {

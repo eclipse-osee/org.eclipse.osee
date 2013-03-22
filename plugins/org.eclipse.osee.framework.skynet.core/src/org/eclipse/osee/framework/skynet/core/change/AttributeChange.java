@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.change;
 
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
@@ -103,7 +102,7 @@ public final class AttributeChange extends Change {
    }
 
    public Attribute<?> getAttribute() throws OseeCoreException {
-      List<Attribute<?>> attributes = getChangeArtifact().getAllAttributesIncludingHardDeleted();
+      List<Attribute<?>> attributes = getChangeArtifact().getAttributes(true);
       for (Attribute<?> attribute : attributes) {
          if (attribute.getId() == attrId) {
             return attribute;
@@ -151,6 +150,6 @@ public final class AttributeChange extends Change {
 
    @Override
    public Class<? extends IChangeWorker> getWorker() {
-	   return worker;
+      return worker;
    }
 }

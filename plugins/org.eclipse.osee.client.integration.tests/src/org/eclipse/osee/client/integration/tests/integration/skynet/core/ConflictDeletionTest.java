@@ -151,7 +151,7 @@ public class ConflictDeletionTest {
          }
 
          //Check that attributes are Artifact Deleted
-         for (Attribute<?> attribute : artifact.getAllAttributesIncludingHardDeleted()) {
+         for (Attribute<?> attribute : artifact.getAttributes(true)) {
             if (DEBUG) {
                dumpAttribute(attribute);
             } else {
@@ -200,7 +200,7 @@ public class ConflictDeletionTest {
             }
 
             //Check that attributes are Artifact Deleted
-            for (Attribute<?> attribute : artifact.getAllAttributesIncludingHardDeleted()) {
+            for (Attribute<?> attribute : artifact.getAttributes(true)) {
                if (DEBUG) {
                   dumpAttribute(attribute);
                } else {
