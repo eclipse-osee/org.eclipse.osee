@@ -116,7 +116,9 @@ public class XDate extends XWidget {
 
    @Override
    public void dispose() {
-      labelWidget.dispose();
+      if (Widgets.isAccessible(labelWidget)) {
+         labelWidget.dispose();
+      }
       if (Widgets.isAccessible(parent)) {
          parent.layout();
       }
