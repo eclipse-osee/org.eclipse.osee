@@ -56,6 +56,7 @@ public final class CoreArtifactTypes {
    public static final IArtifactType SubsystemRequirementMSWord = TokenFactory.createArtifactType(0x000000000000001FL, "Subsystem Requirement - MS Word");
    public static final IArtifactType SubsystemRequirementHTML = TokenFactory.createArtifactType(0x000000000000031BL, "Subsystem Requirement - HTML");
    public static final IArtifactType SupportingContent = TokenFactory.createArtifactType(0x0000000000000031L, "Supporting Content");
+   public static final IArtifactType SupportDocument = TokenFactory.createArtifactType(0x000000000000000DL, "Support Document");;
    public static final IArtifactType SystemDesign = TokenFactory.createArtifactType(0x000000000000002CL, "System Design");
    public static final IArtifactType SystemFunction = TokenFactory.createArtifactType(0x0000000000000023L, "System Function");
    public static final IArtifactType SystemRequirementMSWord = TokenFactory.createArtifactType(0x000000000000001EL, "System Requirement - MS Word");
@@ -66,7 +67,7 @@ public final class CoreArtifactTypes {
    public static final IArtifactType TestProcedure = TokenFactory.createArtifactType(0x000000000000002EL, "Test Procedure");
    public static final IArtifactType TestProcedureNative = TokenFactory.createArtifactType(0x0000000000000030L, "Test Procedure Native");
    public static final IArtifactType TestProcedureWML = TokenFactory.createArtifactType(0x000000000000002FL, "Test Procedure WML");
-   public static final IArtifactType TestResultNative = TokenFactory.createArtifactType(0x0000000000000026L, "Test Result Native");
+   public static final IArtifactType TestResultNative = TokenFactory.createArtifactType(0x0000000000000027L, "Test Result Native");
    public static final IArtifactType TestResultWML = TokenFactory.createArtifactType(0x0000000000000028L, "Test Result WML");
    public static final IArtifactType TestRun = TokenFactory.createArtifactType(0x0000000000000055L, "Test Run");
    public static final IArtifactType TestRunDisposition = TokenFactory.createArtifactType(0x0000000000000054L, "Test Run Disposition");
