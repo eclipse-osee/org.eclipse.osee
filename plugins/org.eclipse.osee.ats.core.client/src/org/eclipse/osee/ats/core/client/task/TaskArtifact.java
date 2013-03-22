@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
@@ -44,8 +43,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateMachineArtifact {
 
-   public TaskArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
-      super(parentFactory, guid, humanReadableId, branch, artifactType);
+   public TaskArtifact(String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
+      super(guid, humanReadableId, branch, artifactType);
    }
 
    public boolean isRelatedToParentWorkflowCurrentState() throws OseeCoreException {

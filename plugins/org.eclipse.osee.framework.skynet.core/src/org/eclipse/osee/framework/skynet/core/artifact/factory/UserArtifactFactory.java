@@ -32,7 +32,7 @@ public class UserArtifactFactory extends ArtifactFactory {
 
    @Override
    public Artifact getArtifactInstance(String guid, String humandReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
-      return new User(this, guid, humandReadableId, branch, artifactType);
+      return new User(guid, humandReadableId, branch, artifactType);
    }
 
    @Override

@@ -33,7 +33,7 @@ public class DefaultArtifactFactory extends ArtifactFactory {
 
    @Override
    public Artifact getArtifactInstance(String guid, String humandReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
-      return new Artifact(this, guid, humandReadableId, branch, artifactType);
+      return new Artifact(guid, humandReadableId, branch, artifactType);
    }
 
    @Override

@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 
 /**
  * @author Donald G. Dunne
@@ -29,8 +28,8 @@ public class GoalArtifact extends AbstractWorkflowArtifact {
    private List<Artifact> members;
    private volatile boolean firstTime = true;
 
-   public GoalArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
-      super(parentFactory, guid, humanReadableId, branch, artifactType);
+   public GoalArtifact(String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
+      super(guid, humanReadableId, branch, artifactType);
    }
 
    @Override

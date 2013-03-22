@@ -51,17 +51,17 @@ public class AtsArtifactFactory extends ArtifactFactory {
    @Override
    public Artifact getArtifactInstance(String guid, String humandReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       if (artifactType.equals(AtsArtifactTypes.Task)) {
-         return new TaskArtifact(this, guid, humandReadableId, branch, artifactType);
+         return new TaskArtifact(guid, humandReadableId, branch, artifactType);
       } else if (ArtifactTypeManager.inheritsFrom(artifactType, AtsArtifactTypes.TeamWorkflow)) {
-         return new TeamWorkFlowArtifact(this, guid, humandReadableId, branch, artifactType);
+         return new TeamWorkFlowArtifact(guid, humandReadableId, branch, artifactType);
       } else if (artifactType.equals(AtsArtifactTypes.DecisionReview)) {
-         return new DecisionReviewArtifact(this, guid, humandReadableId, branch, artifactType);
+         return new DecisionReviewArtifact(guid, humandReadableId, branch, artifactType);
       } else if (artifactType.equals(AtsArtifactTypes.PeerToPeerReview)) {
-         return new PeerToPeerReviewArtifact(this, guid, humandReadableId, branch, artifactType);
+         return new PeerToPeerReviewArtifact(guid, humandReadableId, branch, artifactType);
       } else if (artifactType.equals(AtsArtifactTypes.Goal)) {
-         return new GoalArtifact(this, guid, humandReadableId, branch, artifactType);
+         return new GoalArtifact(guid, humandReadableId, branch, artifactType);
       } else if (artifactType.equals(AtsArtifactTypes.Action)) {
-         return new ActionArtifact(this, guid, humandReadableId, branch, artifactType);
+         return new ActionArtifact(guid, humandReadableId, branch, artifactType);
       } else {
          throw new OseeArgumentException("AtsArtifactFactory did not recognize the artifact type [%s]", artifactType);
       }

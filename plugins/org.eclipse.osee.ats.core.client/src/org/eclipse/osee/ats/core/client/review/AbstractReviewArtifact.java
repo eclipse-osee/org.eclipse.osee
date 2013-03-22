@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 
 /**
  * @author Donald G. Dunne
@@ -45,8 +44,8 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
    private ActionableItemManager actionableItemsDam;
    private Boolean standAlone = null;
 
-   public AbstractReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
-      super(parentFactory, guid, humanReadableId, branch, artifactType);
+   public AbstractReviewArtifact(String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
+      super(guid, humanReadableId, branch, artifactType);
       actionableItemsDam = new ActionableItemManager(this);
    }
 

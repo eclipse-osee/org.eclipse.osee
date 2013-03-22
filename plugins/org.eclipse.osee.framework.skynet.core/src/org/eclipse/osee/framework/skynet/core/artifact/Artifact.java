@@ -102,7 +102,6 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    private final IOseeBranch branch;
    private final String humanReadableId;
    private ArtifactType artifactType;
-   private final ArtifactFactory parentFactory;
    private int transactionId = TRANSACTION_SENTINEL;
    private int artId;
    private int gammaId;
@@ -112,13 +111,12 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    private ModificationType lastValidModType;
    private EditState objectEditState;
 
-   public Artifact(ArtifactFactory parentFactory, String guid, String humanReadableId, IOseeBranch branch, IArtifactType artifactType) throws OseeCoreException {
+   public Artifact(String guid, String humanReadableId, IOseeBranch branch, IArtifactType artifactType) throws OseeCoreException {
       super(GUID.checkOrCreate(guid), "");
       objectEditState = EditState.NO_CHANGE;
       modType = ModificationType.NEW;
 
       this.humanReadableId = humanReadableId;
-      this.parentFactory = parentFactory;
       this.branch = branch;
       this.artifactType = ArtifactTypeManager.getType(artifactType);
    }
@@ -1010,10 +1008,6 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    @Override
    public final void setName(String name) throws OseeCoreException {
       setSoleAttributeValue(CoreAttributeTypes.Name, name);
-   }
-
-   public final ArtifactFactory getFactory() {
-      return parentFactory;
    }
 
    /**

@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -36,8 +35,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 public class User extends Artifact {
    private PropertyStore userSettings;
 
-   public User(ArtifactFactory parentFactory, String guid, String humanReadableId, IOseeBranch branch, IArtifactType artifactType) throws OseeCoreException {
-      super(parentFactory, guid, humanReadableId, branch, artifactType);
+   public User(String guid, String humanReadableId, IOseeBranch branch, IArtifactType artifactType) throws OseeCoreException {
+      super(guid, humanReadableId, branch, artifactType);
    }
 
    public void setFieldsBasedon(User u) throws Exception {

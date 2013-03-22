@@ -25,7 +25,7 @@ public class BootStrapUser extends User {
    public static BootStrapUser instance;
 
    private BootStrapUser() throws OseeCoreException {
-      super(null, GUID.create(), null, CoreBranches.COMMON, CoreArtifactTypes.User);
+      super(GUID.create(), null, CoreBranches.COMMON, CoreArtifactTypes.User);
    }
 
    public static BootStrapUser getInstance() throws OseeCoreException {
