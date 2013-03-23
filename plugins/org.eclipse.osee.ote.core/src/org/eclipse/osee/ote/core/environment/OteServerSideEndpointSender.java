@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.messaging.id.StringName;
 import org.eclipse.osee.framework.messaging.id.StringNamespace;
 import org.eclipse.osee.framework.messaging.id.StringProtocolId;
 import org.eclipse.osee.ote.core.OTESessionManager;
-import org.eclipse.osee.ote.core.internal.ServiceUtility;
+import org.eclipse.osee.ote.core.ServiceUtility;
 
 /**
  * @author Andrew M. Finkbeiner

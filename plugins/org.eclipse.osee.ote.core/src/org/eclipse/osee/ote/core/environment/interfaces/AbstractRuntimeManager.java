@@ -29,8 +29,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.ChecksumUtil;
@@ -49,6 +51,7 @@ import org.eclipse.osee.ote.core.environment.BundleResolveException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.Version;
 import org.osgi.service.packageadmin.ExportedPackage;
 import org.osgi.service.packageadmin.PackageAdmin;
@@ -68,11 +71,11 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
    private volatile boolean cleanUpNeeded = true;
 
    private final BundleContext context;
-   private final PackageAdmin packageAdmin;
-
-   public AbstractRuntimeManager(PackageAdmin packageAdmin, BundleContext context) {
-      this.context = context;
-      this.packageAdmin = packageAdmin;
+   
+   private PackageAdmin packageAdmin;
+   
+   public AbstractRuntimeManager() {
+      this.context = FrameworkUtil.getBundle(AbstractRuntimeManager.class).getBundleContext();
       this.installedBundles = new LinkedList<Bundle>();
       this.runningBundles = new LinkedList<Bundle>();
       this.availableJars = new HashMap<String, File>(32);
@@ -81,6 +84,14 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
       this.scriptClassLoader = null;
    }
 
+   public void bindPackageAdmin(PackageAdmin admin){
+      this.packageAdmin = admin;
+   }
+   
+   public void unbindPackageAdmin(PackageAdmin admin){
+      this.packageAdmin = null;
+   }
+   
    private final List<RuntimeLibraryListener> listeners = new ArrayList<RuntimeLibraryListener>();
 
    private String[] currentJarVersions = null;

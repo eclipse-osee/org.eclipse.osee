@@ -11,17 +11,18 @@
 package org.eclipse.osee.ote.server.internal;
 
 import org.eclipse.osee.ote.message.interfaces.IRemoteMessageService;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 public class MessageToolServiceTracker extends ServiceTracker {
 
    public MessageToolServiceTracker() {
-      super(Activator.getDefault().getContext(), IRemoteMessageService.class.getName(), null);
+      super(FrameworkUtil.getBundle(MessageToolServiceTracker.class).getBundleContext(), IRemoteMessageService.class.getName(), null);
    }
 
    public MessageToolServiceTracker(ServiceTrackerCustomizer customizer) {
-      super(Activator.getDefault().getContext(), IRemoteMessageService.class.getName(), customizer);
+      super(FrameworkUtil.getBundle(MessageToolServiceTracker.class).getBundleContext(), IRemoteMessageService.class.getName(), customizer);
    }
 
    @Override

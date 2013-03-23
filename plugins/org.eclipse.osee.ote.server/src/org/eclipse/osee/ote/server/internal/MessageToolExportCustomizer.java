@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.message.interfaces.IRemoteMessageService;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
@@ -30,14 +31,14 @@ public class MessageToolExportCustomizer implements ServiceTrackerCustomizer {
 
    @Override
    public Object addingService(ServiceReference reference) {
-      messageToolServiceInstance = (IRemoteMessageService) Activator.getDefault().getContext().getService(reference);
+      messageToolServiceInstance = (IRemoteMessageService) FrameworkUtil.getBundle(getClass()).getBundleContext().getService(reference);
       try {
          return connector.export(messageToolServiceInstance);
       } catch (ExportException e) {
          OseeLog.log(MessageToolExportCustomizer.class, Level.SEVERE, "failed to export message tool service", e);
          return null;
       } finally {
-    	  OseeLog.log(Activator.class, Level.INFO, "!!!message tool service exported");
+    	  OseeLog.log(getClass(), Level.INFO, "!!!message tool service exported");
       }
 
    }

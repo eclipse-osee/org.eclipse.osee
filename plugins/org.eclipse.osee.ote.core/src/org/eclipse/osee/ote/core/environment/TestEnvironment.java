@@ -71,6 +71,8 @@ import org.eclipse.osee.ote.core.framework.command.ITestContext;
 import org.eclipse.osee.ote.core.framework.command.ITestServerCommand;
 import org.eclipse.osee.ote.core.internal.Activator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
@@ -109,6 +111,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
 
    private volatile boolean isShutdown = false;
    private NodeInfo oteEmbeddedBroker;
+   private ServiceRegistration<TestEnvironmentInterface> myRegistration;
 
    protected TestEnvironment(IEnvironmentFactory factory) {
       GCHelper.getGCHelper().addRefWatch(this);
@@ -131,14 +134,14 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
 
    public void init(IServiceConnector connector) {
       this.connector = connector;
-      initializationThreadAdd(new Callable() {
-         @Override
-         public Object call() throws Exception {
-            Activator.getInstance().registerTestEnvironment(TestEnvironment.this);
-            return null;
-         }
-      });
-      waitForWorkerThreadsToComplete();
+//      initializationThreadAdd(new Callable() {
+//         @Override
+//         public Object call() throws Exception {
+//            Activator.getInstance().registerTestEnvironment(TestEnvironment.this);
+//            return null;
+//         }
+//      });
+//      waitForWorkerThreadsToComplete();
    }
 
    public void waitForWorkerThreadsToComplete() {
@@ -397,10 +400,11 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       } catch (IOException ex) {
          throw new Exception("Error in directory setup. " + outfileDir, ex);
       }
+      myRegistration = FrameworkUtil.getBundle(getClass()).getBundleContext().registerService(TestEnvironmentInterface.class, this, null);
    }
 
    protected void stop() {
-
+      myRegistration.unregister();
    }
 
    protected void cleanupClassReferences() {

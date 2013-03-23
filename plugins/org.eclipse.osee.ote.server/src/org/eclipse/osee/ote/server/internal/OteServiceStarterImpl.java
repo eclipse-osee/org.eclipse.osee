@@ -48,6 +48,7 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentServiceC
 import org.eclipse.osee.ote.server.OteServiceStarter;
 import org.eclipse.osee.ote.server.PropertyParamter;
 import org.eclipse.osee.ote.server.TestEnvironmentFactory;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.packageadmin.PackageAdmin;
 
 /**
@@ -117,7 +118,7 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
       this.packageAdmin = null;
    }
 	
-	OteServiceStarterImpl() {
+	public OteServiceStarterImpl() {
 		listenForHostRequest = new ListenForHostRequest();
 	}
 
@@ -146,13 +147,13 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 			strUri = String.format("tcp://%s:%d", addressAsString, port);
 			try {
 				brokerService.addConnector(strUri);
-				OseeLog.log(Activator.class, Level.INFO, "Added TCP connector: " + strUri);			
+				OseeLog.log(getClass(), Level.INFO, "Added TCP connector: " + strUri);			
 			} catch (Exception e) {
-				OseeLog.log(Activator.class, Level.SEVERE, "could not add connector for " + strUri, e);
+				OseeLog.log(getClass(), Level.SEVERE, "could not add connector for " + strUri, e);
 				strUri = "vm://localhost?broker.persistent=false";
 			}
 		} catch (Exception e) {
-			OseeLog.log(Activator.class, Level.SEVERE, "could acquire a TCP address", e);
+			OseeLog.log(getClass(), Level.SEVERE, "could acquire a TCP address", e);
 			strUri = "vm://localhost?broker.persistent=false";
 		}
 		
@@ -186,7 +187,7 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 			serviceSideConnector.setProperty("OTEEmbeddedBroker", nodeInfo);
 		}
 		
-		Activator.getDefault().getContext().registerService(IHostTestEnvironment.class, service, null);
+		FrameworkUtil.getBundle(getClass()).getBundleContext().registerService(IHostTestEnvironment.class, service, null);
 		
 		return service;
 	}
@@ -213,21 +214,21 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 				service.updateDynamicInfo();
 				remoteServiceRegistrar.unregisterService("osee.ote.server", "1.0", service.getServiceID().toString());
 			} catch (RemoteException ex) {
-				OseeLog.log(Activator.class, Level.SEVERE, ex);
+				OseeLog.log(getClass(), Level.SEVERE, ex);
 			}
 		}
 		if (brokerService != null) {
 			try {
 				brokerService.stop();
 			} catch (Exception ex) {
-				OseeLog.log(Activator.class, Level.SEVERE, ex);
+				OseeLog.log(getClass(), Level.SEVERE, ex);
 			}
 		}
 		if (serviceSideConnector != null) {
 			try {
 				connectionService.removeConnector(serviceSideConnector);
 			} catch (Exception ex) {
-				OseeLog.log(Activator.class, Level.SEVERE, ex);
+				OseeLog.log(getClass(), Level.SEVERE, ex);
 			}
 		}
 		service = null;
@@ -262,9 +263,9 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 					oos.writeObject(serviceSideConnector.getService());
 					replyConnection.send(baos.toByteArray(), null, OteServiceStarterImpl.this);
 				} catch (OseeCoreException ex) {
-					OseeLog.log(Activator.class, Level.SEVERE, ex);
+					OseeLog.log(getClass(), Level.SEVERE, ex);
 				} catch (IOException ex) {
-					OseeLog.log(Activator.class, Level.SEVERE, ex);
+					OseeLog.log(getClass(), Level.SEVERE, ex);
 				}
 			}
 		}
@@ -284,7 +285,7 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 
 	@Override
 	public void fail(Throwable th) {
-		OseeLog.log(Activator.class, Level.SEVERE, th);
+		OseeLog.log(getClass(), Level.SEVERE, th);
 	}
 
 	@Override

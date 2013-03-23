@@ -11,6 +11,7 @@ import org.eclipse.osee.ote.core.OTESessionManager;
 public class OTESessionManagerImpl implements OTESessionManager {
 
    private Map<UUID, IUserSession> userMap;
+   private UUID activeUserId;
    
    public OTESessionManagerImpl(){
       userMap = new ConcurrentHashMap<UUID, IUserSession>();
@@ -28,6 +29,9 @@ public class OTESessionManagerImpl implements OTESessionManager {
 
    @Override
    public IUserSession get(UUID sessionId) {
+      if(sessionId == null){
+         return null;
+      }
       return userMap.get(sessionId);
    }
 
@@ -38,14 +42,19 @@ public class OTESessionManagerImpl implements OTESessionManager {
 
    @Override
    public IUserSession getActiveUser() {
-      // TODO Auto-generated method stub
-      return null;
+      IUserSession session = get(activeUserId);
+      if(session == null){
+         if(userMap.size() > 0){
+            UUID id = userMap.keySet().iterator().next();
+            session = get(id);
+         }
+      }
+      return session;
    }
 
    @Override
    public void setActiveUser(UUID sessionId) {
-      // TODO Auto-generated method stub
-
+      this.activeUserId = sessionId;
    }
 
 }

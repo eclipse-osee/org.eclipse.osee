@@ -48,7 +48,6 @@ import org.eclipse.osee.ote.core.framework.prompt.YesNoPromptImpl;
 import org.eclipse.osee.ote.core.framework.prompt.YesNoPromptResult;
 import org.eclipse.osee.ote.core.framework.testrun.ITestRunListener;
 import org.eclipse.osee.ote.core.framework.testrun.ITestRunListenerProvider;
-import org.eclipse.osee.ote.core.internal.ServiceUtility;
 import org.eclipse.osee.ote.core.log.ITestPointTally;
 import org.eclipse.osee.ote.core.log.record.AttentionRecord;
 import org.eclipse.osee.ote.core.log.record.ScriptResultRecord;

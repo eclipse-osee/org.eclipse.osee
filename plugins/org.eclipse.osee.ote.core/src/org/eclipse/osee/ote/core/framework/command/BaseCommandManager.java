@@ -18,10 +18,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.eclipse.osee.ote.core.OTESessionManager;
+import org.eclipse.osee.ote.core.ServiceUtility;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.environment.status.OTEStatusBoard;
 import org.eclipse.osee.ote.core.framework.thread.OteThreadManager;
-import org.eclipse.osee.ote.core.internal.ServiceUtility;
 
 public class BaseCommandManager implements ICommandManager {
 

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ote.core.internal;
+package org.eclipse.osee.ote.core;
 
 import java.util.logging.Level;
 

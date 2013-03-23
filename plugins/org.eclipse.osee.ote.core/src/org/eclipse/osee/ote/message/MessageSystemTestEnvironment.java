@@ -17,7 +17,9 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import org.eclipse.osee.ote.core.IUserSession;
+import org.eclipse.osee.ote.core.ServiceUtility;
 import org.eclipse.osee.ote.core.TestScript;
 import org.eclipse.osee.ote.core.environment.BundleDescription;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
@@ -28,7 +30,6 @@ import org.eclipse.osee.ote.core.model.IModelManager;
 import org.eclipse.osee.ote.message.instrumentation.IOInstrumentation;
 import org.eclipse.osee.ote.message.interfaces.IMessageManager;
 import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystemAccessor;
-import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * @author Ryan D. Brooks
@@ -65,17 +66,19 @@ public abstract class MessageSystemTestEnvironment extends TestEnvironment imple
 
    @Override
    public IMessageManager getMsgManager() {
-      ServiceTracker tracker = getServiceTracker(IMessageManager.class.getName());
-      return (IMessageManager) tracker.getService();
+      return ServiceUtility.getService(IMessageManager.class);
+//      ServiceTracker tracker = getServiceTracker(IMessageManager.class.getName());
+//      return (IMessageManager) tracker.getService();
    }
 
    public IModelManager getModelManager() {
-      ServiceTracker tracker = getServiceTracker(IModelManager.class.getName());
-      try {
-         return (IModelManager) tracker.waitForService(5000);
-      } catch (InterruptedException ex) {
-         throw new IllegalStateException("interrupted while trying to acquire model manager service", ex);
-      }
+      return ServiceUtility.getService(IModelManager.class, 5000);
+//      ServiceTracker tracker = getServiceTracker(IModelManager.class.getName());
+//      try {
+//         return (IModelManager) tracker.waitForService(5000);
+//      } catch (InterruptedException ex) {
+//         throw new IllegalStateException("interrupted while trying to acquire model manager service", ex);
+//      }
    }
 
    @Deprecated

@@ -22,7 +22,9 @@ import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.Message;
 import org.eclipse.osee.ote.core.ReturnStatus;
+import org.eclipse.osee.ote.core.ServiceUtility;
 import org.eclipse.osee.ote.core.cmd.Command;
+import org.eclipse.osee.ote.core.environment.console.ICommandManager;
 import org.eclipse.osee.ote.core.environment.interfaces.IRemoteCommandConsole;
 import org.eclipse.osee.ote.core.framework.command.ICommandHandle;
 import org.eclipse.osee.ote.core.framework.command.ITestServerCommand;
@@ -42,22 +44,23 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
    private final MessageSystemTestEnvironment env;
    private final IServiceConnector serviceConnector;
    private RemoteModelManager modelManager;
-   private final MessageToolServiceTracker messageToolServiceTracker;
+//   private final MessageToolServiceTracker messageToolServiceTracker;
    private final HashMap<IRemoteCommandConsole, RemoteShell> exportedConsoles =
       new HashMap<IRemoteCommandConsole, RemoteShell>(32);
    private final boolean keepEnvAliveWithNoUsers;
 
    private final ReentrantLock lock = new ReentrantLock();
+   private IRemoteMessageService exportedRemoteMessageService;
 
    public RemoteTestEnvironment(MessageSystemTestEnvironment currentEnvironment, IServiceConnector serviceConnector, boolean keepEnvAliveWithNoUsers) {
-	  if (serviceConnector == null) {
-		  throw new NullPointerException("Servce connector cannot be null");
-	  }
+      if (serviceConnector == null) {
+         throw new NullPointerException("Servce connector cannot be null");
+      }
       this.env = currentEnvironment;
       this.serviceConnector = serviceConnector;
       this.keepEnvAliveWithNoUsers = keepEnvAliveWithNoUsers;
-      messageToolServiceTracker = new MessageToolServiceTracker(new MessageToolExportCustomizer(serviceConnector));
-      messageToolServiceTracker.open(true);
+//      messageToolServiceTracker = new MessageToolServiceTracker(new MessageToolExportCustomizer(serviceConnector));
+//      messageToolServiceTracker.open(true);
    }
 
    @Override
@@ -87,11 +90,16 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
 
    @Override
    public IRemoteMessageService getMessageToolServiceProxy() throws RemoteException {
-      try {
-         return messageToolServiceTracker.waitForService(30000);
-      } catch (InterruptedException e) {
-         throw new RemoteException("", e);
+//      try {
+      if(exportedRemoteMessageService == null){
+         IRemoteMessageService service = ServiceUtility.getService(IRemoteMessageService.class, 30000);
+         exportedRemoteMessageService = (IRemoteMessageService)this.serviceConnector.export(service);
       }
+      return exportedRemoteMessageService;
+//         return messageToolServiceTracker.waitForService(30000);
+//      } catch (InterruptedException e) {
+//         throw new RemoteException("", e);
+//      }
    }
 
    public ReturnStatus isRunningJarVersions(String[] jarVersions) {
@@ -106,7 +114,8 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
    @Override
    public IRemoteCommandConsole getCommandConsole() throws RemoteException {
       OseeLog.log(RemoteTestEnvironment.class, Level.FINE, "Remote command onsole requested");
-      RemoteShell shell = new RemoteShell(Activator.getDefault().getCommandManager());
+      ICommandManager commandManager = ServiceUtility.getService(ICommandManager.class);
+      RemoteShell shell = new RemoteShell(commandManager);
 
       IRemoteCommandConsole exportedConsole;
       try {
@@ -179,10 +188,6 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
    public int getUniqueId() throws RemoteException {
       return env.getUniqueId();
    }
-
-//   public IUserSession getUserSession(UserTestSessionKey key) {
-//      return env.getUserSession(key);
-//   }
 
    private class RemoteModelManager implements IModelManagerRemote {
 
@@ -275,15 +280,4 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       env.sendMessageToServer(message);
    }
 
-//   @Override
-//   public void disconnectAll() throws RemoteException {
-//      for (Serializable session : env.getSessionKeys()) {
-//         env.disconnect((UserTestSessionKey) session);
-//      }
-//      if (!keepEnvAliveWithNoUsers) {
-//         messageToolServiceTracker.close();
-//         closeAllConsoles();
-//         env.shutdown();
-//      }
-//   }
 }
