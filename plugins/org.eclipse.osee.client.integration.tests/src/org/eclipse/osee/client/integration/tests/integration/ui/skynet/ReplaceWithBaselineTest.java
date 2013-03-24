@@ -329,7 +329,7 @@ public final class ReplaceWithBaselineTest {
                      InterArtifactExplorerDropHandlerOperation dropHandler =
                         new InterArtifactExplorerDropHandlerOperation(
                            OseeSystemArtifacts.getDefaultHierarchyRootArtifact(workingBranch),
-                           new Artifact[] {artifactToIntroduce}, false, false, false);
+                           new Artifact[] {artifactToIntroduce}, false);
                      Operations.executeWork(dropHandler);
 
                      testData.setArtifactId(artifactToIntroduce.getArtId());
