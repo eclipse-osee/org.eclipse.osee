@@ -68,7 +68,7 @@ public class ServiceUtility {
    }
 
    @SuppressWarnings({ "rawtypes", "unchecked" })
-   private static <T> T getService(Class<T> clazz, boolean logit) {
+   public static <T> T getService(Class<T> clazz, boolean logit) {
       BundleContext context = getContext();
       if(context == null){
          if(logit){
