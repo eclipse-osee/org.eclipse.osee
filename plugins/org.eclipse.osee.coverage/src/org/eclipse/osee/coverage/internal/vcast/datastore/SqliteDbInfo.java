@@ -37,7 +37,7 @@ public class SqliteDbInfo implements IDatabaseInfo {
 
    @Override
    public String getDatabaseName() {
-      return "sqlite.db";
+      return "cover.db";
    }
 
    @Override

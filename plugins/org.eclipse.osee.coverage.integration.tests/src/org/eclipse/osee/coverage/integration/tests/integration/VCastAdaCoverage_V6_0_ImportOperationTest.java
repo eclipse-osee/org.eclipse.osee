@@ -142,7 +142,7 @@ public class VCastAdaCoverage_V6_0_ImportOperationTest {
       copyResource(getURL(bundle, "vcast/results/test_unit_3.dat"), new File(resultsFolder, "test_unit_3.dat"));
 
       VCast60Params params =
-         new VCast60Params(tempFolder.getRoot().getAbsolutePath(), "test", false, dbFile.getAbsolutePath());
+         new VCast60Params(tempFolder.getRoot().getAbsolutePath() + "/", "test", false, dbFile.getName());
       coverageImport = new CoverageImport("VectorCast Import");
       IOperation operation = CoverageImportFactory.createAdaVCast60ImportOp(params, coverageImport);
       Operations.executeWorkAndCheckStatus(operation);

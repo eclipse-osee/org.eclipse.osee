@@ -69,23 +69,29 @@ public class VCastAdaCoverage_V6_0_ImportOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      VCastDataStore dataStore = VCastDataStoreFactory.createDataStore(input.getVCastDbPath());
+      File file = new File(input.getVCastDirectory() + input.getVCastDbPath());
 
-      Map<String, CoverageUnit> fileNumToCoverageUnit = new HashMap<String, CoverageUnit>();
-      coverageImport.setCoverageUnitFileContentsProvider(new SimpleCoverageUnitFileContentsProvider());
+      if (file.exists() && file.canRead()) {
+         VCastDataStore dataStore = VCastDataStoreFactory.createDataStore(file.getAbsolutePath());
 
-      Collection<VCastInstrumentedFile> instrumentedFiles = getInstrumentedFiles(dataStore);
-      for (VCastInstrumentedFile instrumentedFile : instrumentedFiles) {
-         checkForCancelledStatus(monitor);
-         processInstrumented(monitor, dataStore, fileNumToCoverageUnit, instrumentedFile);
+         Map<String, CoverageUnit> fileNumToCoverageUnit = new HashMap<String, CoverageUnit>();
+         coverageImport.setCoverageUnitFileContentsProvider(new SimpleCoverageUnitFileContentsProvider());
+
+         Collection<VCastInstrumentedFile> instrumentedFiles = getInstrumentedFiles(dataStore);
+         for (VCastInstrumentedFile instrumentedFile : instrumentedFiles) {
+            checkForCancelledStatus(monitor);
+            processInstrumented(monitor, dataStore, fileNumToCoverageUnit, instrumentedFile);
+         }
+
+         Collection<VCastResult> results = getResultFiles(dataStore);
+         for (VCastResult result : results) {
+            checkForCancelledStatus(monitor);
+            processResult(monitor, fileNumToCoverageUnit, result);
+         }
+         monitor.worked(1);
+      } else {
+         throw new OseeCoreException("The db file [%s] does not exist or is not readable", file.getAbsolutePath());
       }
-
-      Collection<VCastResult> results = getResultFiles(dataStore);
-      for (VCastResult result : results) {
-         checkForCancelledStatus(monitor);
-         processResult(monitor, fileNumToCoverageUnit, result);
-      }
-      monitor.worked(1);
    }
 
    private void processInstrumented(IProgressMonitor monitor, VCastDataStore dataStore, Map<String, CoverageUnit> fileNumToCoverageUnit, VCastInstrumentedFile instrumentedFile) throws Exception {
