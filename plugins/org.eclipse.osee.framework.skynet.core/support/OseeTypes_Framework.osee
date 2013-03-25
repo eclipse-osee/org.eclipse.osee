@@ -646,7 +646,6 @@ artifactType "Requirement" extends "Artifact" {
 	uuid 0x0000000000000015
 	attribute "Development Assurance Level"
 	attribute "Qualification Method"
-	attribute "Test Frequency"
 	attribute "Subsystem"
 	attribute "Technical Performance Parameter"
 	attribute "PublishInline"
@@ -681,11 +680,8 @@ abstract artifactType "Abstract Software Requirement" extends "Requirement" {
 	uuid 0x0000000000000017
 	attribute "CSCI"
 	attribute "Partition"
-	attribute "Crew Interface Requirement"
 	attribute "Category"
-	attribute "Common NAL Requirement"
 	attribute "System Security Requirement"
-	attribute "Training Effectivity"
 }
 
 artifactType "Software Requirement" extends "MS Word Template" , "Direct Software Requirement" {
@@ -1557,6 +1553,17 @@ relationType "Supporting Info" {
 	sideBArtifactType "Artifact"
 	defaultOrderType Unordered
 	multiplicity MANY_TO_MANY
+}
+
+relationType "Supporting Requirement" {
+    guid "AAN_OjEwzF2w5j4Zr3gA"
+    uuid 0x200000000000017C
+    sideAName "supports requirement"
+    sideAArtifactType "Requirement"
+    sideBName "is supported by"
+    sideBArtifactType "Requirement"
+    defaultOrderType Unordered
+    multiplicity MANY_TO_MANY
 }
 
 artifactType "Heading" extends "MS Word Template" {
