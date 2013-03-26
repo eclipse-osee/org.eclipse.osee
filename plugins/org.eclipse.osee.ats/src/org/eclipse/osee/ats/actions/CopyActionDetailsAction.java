@@ -26,7 +26,6 @@ import org.eclipse.swt.dnd.Transfer;
  */
 public class CopyActionDetailsAction extends Action {
 
-   private Clipboard clipboard;
    private final AbstractWorkflowArtifact awa;
 
    public CopyActionDetailsAction(AbstractWorkflowArtifact awa) {
@@ -39,11 +38,13 @@ public class CopyActionDetailsAction extends Action {
    }
 
    private void performCopy() {
-      if (clipboard == null) {
-         this.clipboard = new Clipboard(null);
+      Clipboard clipboard = new Clipboard(null);
+      try {
+         String detailsStr = new CopyActionDetails(awa).getDetailsString();
+         clipboard.setContents(new Object[] {detailsStr}, new Transfer[] {TextTransfer.getInstance()});
+      } finally {
+         clipboard.dispose();
       }
-      String detailsStr = new CopyActionDetails(awa).getDetailsString();
-      clipboard.setContents(new Object[] {detailsStr}, new Transfer[] {TextTransfer.getInstance()});
    }
 
    @Override

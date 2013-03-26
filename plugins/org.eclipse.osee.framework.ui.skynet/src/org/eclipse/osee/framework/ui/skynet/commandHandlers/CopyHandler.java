@@ -49,37 +49,41 @@ public class CopyHandler extends AbstractHandler {
             ArtifactClipboard clipboard = new ArtifactClipboard(view.getSite().getId());
             Iterator<?> iterator = selection.iterator();
             Object selectionObject = null;
+            try {
+               while (iterator.hasNext()) {
+                  Object object = iterator.next();
 
-            while (iterator.hasNext()) {
-               Object object = iterator.next();
+                  if (object instanceof IAdaptable) {
+                     selectionObject = ((IAdaptable) object).getAdapter(Branch.class);
 
-               if (object instanceof IAdaptable) {
-                  selectionObject = ((IAdaptable) object).getAdapter(Branch.class);
-
-                  if (selectionObject == null) {
-                     selectionObject = ((IAdaptable) object).getAdapter(Artifact.class);
+                     if (selectionObject == null) {
+                        selectionObject = ((IAdaptable) object).getAdapter(Artifact.class);
+                     }
+                  } else if (object instanceof Match) {
+                     selectionObject = ((Match) object).getElement();
                   }
-               } else if (object instanceof Match) {
-                  selectionObject = ((Match) object).getElement();
+
+                  if (selectionObject instanceof IOseeBranch) {
+                     names.add(((IOseeBranch) selectionObject).getName());
+                  } else if (selectionObject instanceof Artifact) {
+                     Artifact artifact = (Artifact) selectionObject;
+                     names.add(artifact.getName());
+                     artifacts.add(artifact);
+                  }
                }
 
-               if (selectionObject instanceof IOseeBranch) {
-                  names.add(((IOseeBranch) selectionObject).getName());
-               } else if (selectionObject instanceof Artifact) {
-                  Artifact artifact = (Artifact) selectionObject;
-                  names.add(artifact.getName());
-                  artifacts.add(artifact);
+               if (!names.isEmpty() && artifacts.isEmpty()) {
+                  clipboard.setTextToClipboard(names);
+               } else if (!names.isEmpty() && !artifacts.isEmpty()) {
+                  try {
+                     clipboard.setArtifactsToClipboard(ServiceUtil.getAccessPolicy(), artifacts);
+                  } catch (OseeCoreException ex) {
+                     clipboard.dispose();
+                     throw new ExecutionException(ex.getLocalizedMessage());
+                  }
                }
-            }
-
-            if (!names.isEmpty() && artifacts.isEmpty()) {
-               clipboard.setTextToClipboard(names);
-            } else if (!names.isEmpty() && !artifacts.isEmpty()) {
-               try {
-                  clipboard.setArtifactsToClipboard(ServiceUtil.getAccessPolicy(), artifacts);
-               } catch (OseeCoreException ex) {
-                  throw new ExecutionException(ex.getLocalizedMessage());
-               }
+            } finally {
+               clipboard.dispose();
             }
          }
       }

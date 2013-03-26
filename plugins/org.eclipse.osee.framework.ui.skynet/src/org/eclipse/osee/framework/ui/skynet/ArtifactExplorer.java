@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -1245,6 +1246,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    public void dispose() {
       OseeEventManager.removeListener(this);
       ArtifactExplorerEventManager.remove(this);
+      artifactClipboard.dispose();
       super.dispose();
    }
 
