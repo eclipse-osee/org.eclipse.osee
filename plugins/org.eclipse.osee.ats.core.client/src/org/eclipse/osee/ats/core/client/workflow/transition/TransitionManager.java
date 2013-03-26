@@ -1,6 +1,13 @@
-/**
- * @author Donald G. Dunne
- */
+/*******************************************************************************
+ * Copyright (c) 2013 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.ats.core.client.workflow.transition;
 
 import java.util.ArrayList;
@@ -270,16 +277,16 @@ public class TransitionManager {
                   IAtsUser transitionUser = getTransitionAsUser();
                   // Log transition
                   if (fromState.getStateType().isCancelledState()) {
-                     logWorkflowUnCancelledEvent(awa);
+                     logWorkflowUnCancelledEvent(awa, toState);
                   } else if (fromState.getStateType().isCompletedState()) {
-                     logWorkflowUnCompletedEvent(awa);
+                     logWorkflowUnCompletedEvent(awa, toState);
                   }
                   if (toState.getStateType().isCancelledState()) {
-                     logWorkflowCancelledEvent(awa, awa.getStateMgr().getCurrentStateName(),
-                        completedCancellationReason, transitionDate, transitionUser);
+                     logWorkflowCancelledEvent(awa, fromState, toState, completedCancellationReason, transitionDate,
+                        transitionUser);
                   } else if (toState.getStateType().isCompletedState()) {
-                     logWorkflowCompletedEvent(awa, awa.getStateMgr().getCurrentStateName(),
-                        completedCancellationReason, transitionDate, transitionUser);
+                     logWorkflowCompletedEvent(awa, fromState, toState, completedCancellationReason, transitionDate,
+                        transitionUser);
                   } else {
                      logStateCompletedEvent(awa, awa.getStateMgr().getCurrentStateName(), completedCancellationReason,
                         transitionDate, transitionUser);
@@ -415,40 +422,53 @@ public class TransitionManager {
       }
    }
 
-   public static void logWorkflowCancelledEvent(AbstractWorkflowArtifact awa, String fromStateName, String reason, Date cancelDate, IAtsUser cancelBy) throws OseeCoreException {
-      awa.getLog().addLog(LogType.StateCancelled, fromStateName, reason, cancelDate, cancelBy);
+   public static void logWorkflowCancelledEvent(AbstractWorkflowArtifact awa, IAtsStateDefinition fromState, IAtsStateDefinition toState, String reason, Date cancelDate, IAtsUser cancelBy) throws OseeCoreException {
+      awa.getLog().addLog(LogType.StateCancelled, fromState.getName(), reason, cancelDate, cancelBy);
       if (awa.isAttributeTypeValid(AtsAttributeTypes.CreatedBy)) {
          awa.setSoleAttributeValue(AtsAttributeTypes.CancelledBy, cancelBy.getUserId());
          awa.setSoleAttributeValue(AtsAttributeTypes.CancelledDate, cancelDate);
          awa.setSoleAttributeValue(AtsAttributeTypes.CancelledReason, reason);
-         awa.setSoleAttributeValue(AtsAttributeTypes.CancelledFromState, fromStateName);
+         awa.setSoleAttributeValue(AtsAttributeTypes.CancelledFromState, fromState.getName());
       }
+      validateUpdatePercentCompleteAttribute(awa, toState);
    }
 
-   public static void logWorkflowUnCancelledEvent(AbstractWorkflowArtifact awa) throws OseeCoreException {
+   public static void logWorkflowUnCancelledEvent(AbstractWorkflowArtifact awa, IAtsStateDefinition toState) throws OseeCoreException {
       if (awa.isAttributeTypeValid(AtsAttributeTypes.CreatedBy)) {
          awa.deleteSoleAttribute(AtsAttributeTypes.CancelledBy);
          awa.deleteSoleAttribute(AtsAttributeTypes.CancelledDate);
          awa.deleteSoleAttribute(AtsAttributeTypes.CancelledReason);
          awa.deleteSoleAttribute(AtsAttributeTypes.CancelledFromState);
       }
+      validateUpdatePercentCompleteAttribute(awa, toState);
    }
 
-   private void logWorkflowCompletedEvent(AbstractWorkflowArtifact awa, String fromStateName, String reason, Date cancelDate, IAtsUser cancelBy) throws OseeCoreException {
-      awa.getLog().addLog(LogType.StateComplete, fromStateName, Strings.isValid(reason) ? reason : "", cancelDate,
-         cancelBy);
+   private void logWorkflowCompletedEvent(AbstractWorkflowArtifact awa, IAtsStateDefinition fromState, IAtsStateDefinition toState, String reason, Date cancelDate, IAtsUser cancelBy) throws OseeCoreException {
+      awa.getLog().addLog(LogType.StateComplete, fromState.getName(), Strings.isValid(reason) ? reason : "",
+         cancelDate, cancelBy);
       if (awa.isAttributeTypeValid(AtsAttributeTypes.CreatedBy)) {
          awa.setSoleAttributeValue(AtsAttributeTypes.CompletedBy, cancelBy.getUserId());
          awa.setSoleAttributeValue(AtsAttributeTypes.CompletedDate, cancelDate);
-         awa.setSoleAttributeValue(AtsAttributeTypes.CompletedFromState, fromStateName);
+         awa.setSoleAttributeValue(AtsAttributeTypes.CompletedFromState, fromState.getName());
       }
+      validateUpdatePercentCompleteAttribute(awa, toState);
    }
 
-   public static void logWorkflowUnCompletedEvent(AbstractWorkflowArtifact awa) throws OseeCoreException {
+   public static void logWorkflowUnCompletedEvent(AbstractWorkflowArtifact awa, IAtsStateDefinition toState) throws OseeCoreException {
       if (awa.isAttributeTypeValid(AtsAttributeTypes.CreatedBy)) {
          awa.deleteSoleAttribute(AtsAttributeTypes.CompletedBy);
          awa.deleteSoleAttribute(AtsAttributeTypes.CompletedDate);
          awa.deleteSoleAttribute(AtsAttributeTypes.CompletedFromState);
+      }
+      validateUpdatePercentCompleteAttribute(awa, toState);
+   }
+
+   private static void validateUpdatePercentCompleteAttribute(AbstractWorkflowArtifact awa, IAtsStateDefinition toState) throws OseeCoreException {
+      Integer percent = awa.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0);
+      if (toState.getStateType().isCompletedOrCancelledState() && percent != 100) {
+         awa.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, 100);
+      } else if (toState.getStateType().isWorkingState() && percent == 100) {
+         awa.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0);
       }
    }
 

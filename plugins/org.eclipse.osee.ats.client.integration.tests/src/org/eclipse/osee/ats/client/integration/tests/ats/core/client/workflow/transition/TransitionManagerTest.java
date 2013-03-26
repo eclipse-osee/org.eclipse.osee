@@ -50,6 +50,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.mocks.MockStateDefinition;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.AfterClass;
@@ -649,4 +650,63 @@ public class TransitionManagerTest {
       Assert.assertTrue(assigneesAfter.containsAll(assigneesBefore));
       Assert.assertTrue(assigneesBefore.containsAll(assigneesAfter));
    }
+
+   @org.junit.Test
+   public void testHandleTransition__PercentComplete() throws OseeCoreException {
+      AtsTestUtil.cleanupAndReset("TransitionManagerTest-G");
+      TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
+
+      // Setup - Transition to Implement
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranchToken(), "create");
+      Result result =
+         AtsTestUtil.transitionTo(AtsTestUtilState.Implement, AtsUsersClient.getUser(), transaction,
+            TransitionOption.OverrideAssigneeCheck);
+      transaction.execute();
+      Assert.assertTrue("Transition Error: " + result.getText(), result.isTrue());
+      Assert.assertEquals("Implement", teamArt.getCurrentStateName());
+      Assert.assertEquals(0, teamArt.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0).intValue());
+
+      // Transition to completed should set percent to 100
+      MockTransitionHelper helper =
+         new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+            AtsTestUtil.getCompletedStateDef().getName(), Arrays.asList(AtsUsersClient.getUser()), null,
+            TransitionOption.None);
+      TransitionManager transMgr = new TransitionManager(helper);
+      TransitionResults results = new TransitionResults();
+      transMgr.handleTransition(results);
+      transMgr.getTransaction().execute();
+      Assert.assertTrue("Transition Error: " + results.toString(), results.isEmpty());
+      Assert.assertEquals("Completed", teamArt.getCurrentStateName());
+      Assert.assertEquals(100, teamArt.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 100).intValue());
+
+      // Transition to Implement should set percent to 0
+      helper =
+         new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsUsersClient.getUser()), null,
+            TransitionOption.None);
+      transMgr = new TransitionManager(helper);
+      results = new TransitionResults();
+      transMgr.handleTransition(results);
+      transMgr.getTransaction().execute();
+
+      Assert.assertTrue("Transition Error: " + results.toString(), results.isEmpty());
+      Assert.assertEquals("Implement", teamArt.getCurrentStateName());
+      Assert.assertEquals(0, teamArt.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0).intValue());
+
+      // Transition to Cancelled should set percent to 0
+      helper =
+         new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+            AtsTestUtil.getCancelledStateDef().getName(), Arrays.asList(AtsUsersClient.getUser()), null,
+            TransitionOption.None);
+      transMgr = new TransitionManager(helper);
+      results = new TransitionResults();
+      transMgr.handleTransition(results);
+      transMgr.getTransaction().execute();
+
+      Assert.assertTrue("Transition Error: " + results.toString(), results.isEmpty());
+      Assert.assertEquals("Cancelled", teamArt.getCurrentStateName());
+      Assert.assertEquals(100, teamArt.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 100).intValue());
+
+   }
+
 }
