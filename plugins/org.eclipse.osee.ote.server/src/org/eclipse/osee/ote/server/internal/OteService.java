@@ -116,7 +116,6 @@ public class OteService implements IHostTestEnvironment, IService {
       currentEnvironment = environmentCreation.createEnvironment();
       remoteEnvironment = environmentCreation.createRemoteTestEnvironment(currentEnvironment);
       currentEnvironment.startup(environmentCreation.getOutfileLocation());
-      currentEnvironment.waitForWorkerThreadsToComplete();
    }
 
    private boolean isEnvironmentAvailable() {

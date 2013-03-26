@@ -27,6 +27,7 @@ public class ConfigureOteServerFile extends BaseClientCallable<ConfigurationProg
    private ConfigurationProgress progress;
    private WebResourceFactory factory;
    private OteJobStatus status;
+   private HeadlessClassServer classServer;
 
    public ConfigureOteServerFile(URI uri, List<File> jars, ConfigurationProgress progress, WebResourceFactory factory) {
       super(progress);
@@ -38,27 +39,36 @@ public class ConfigureOteServerFile extends BaseClientCallable<ConfigurationProg
 
    @Override
    public void doWork() throws Exception {
-      Conditions.checkNotNull(uri, "uri");
-      Conditions.checkNotNull(factory, "factory");
-      Conditions.checkNotNullOrEmpty(jars, "jars");
+      try{
+         Conditions.checkNotNull(uri, "uri");
+         Conditions.checkNotNull(factory, "factory");
+         Conditions.checkNotNullOrEmpty(jars, "jars");
 
-      status = sendBundleConfiguration();
-      if(!status.isJobComplete()){
-         waitForJobComplete();
-      } 
-      
-      if(!status.isSuccess()){
-         throw new Exception("Failed to configure the environment: " + status.getErrorLog());
+         status = sendBundleConfiguration();
+         if(!status.isJobComplete()){
+            waitForJobComplete();
+         } 
+
+         if(!status.isSuccess()){
+            throw new Exception("Failed to configure the environment: " + status.getErrorLog());
+         }
+      } finally {
+         if(classServer != null){
+            classServer.stop();
+         }
       }
    }
 
    private void waitForJobComplete() throws Exception {
+      
       URI jobUri = status.getUpdatedJobStatus().toURI();
       final WebResource service = factory.createResource(jobUri);
 
       while(!status.isJobComplete()){
          Thread.sleep(POLLING_RATE);
          status = service.accept(MediaType.APPLICATION_XML).get(OteJobStatus.class);
+         progress.setUnitsOfWork(status.getTotalUnitsOfWork());
+         progress.setUnitsWorked(status.getUnitsWorked());
       }
    }
    
@@ -67,12 +77,12 @@ public class ConfigureOteServerFile extends BaseClientCallable<ConfigurationProg
       OteConfigurationIdentity identity = new OteConfigurationIdentity();
       identity.setName("test");
       configuration.setIdentity(identity);
-      HeadlessClassServer classServer = new HeadlessClassServer(PortUtil.getInstance().getValidPort(), InetAddress.getLocalHost(), jars);
+      classServer = new HeadlessClassServer(PortUtil.getInstance().getValidPort(), InetAddress.getLocalHost(), jars);
       for (BundleInfo bundleInfo : classServer.getBundles()) {
          OteConfigurationItem item = new OteConfigurationItem();
          item.setBundleName(bundleInfo.getSymbolicName());
          item.setBundleVersion(bundleInfo.getVersion());
-         item.setLocationUrl(bundleInfo.getSystemLocation().toString());
+         item.setLocationUrl(bundleInfo.getServerBundleLocation().toString());
          item.setMd5Digest(bundleInfo.getMd5Digest());
          configuration.addItem(item);
       }

@@ -28,12 +28,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 
 import org.eclipse.core.runtime.Platform;
@@ -106,8 +100,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    private OteServerSideEndprointRecieve oteServerSideEndpointRecieve;
    private OteServerSideEndpointSender oteServerSideEndpointSender;
    private final ServiceTracker messagingServiceTracker;
-   private final ExecutorService execInitializationTasks;
-   private final LinkedBlockingQueue<Future> listOfThreadsToWaitOnInInit = new LinkedBlockingQueue<Future>();
 
    private volatile boolean isShutdown = false;
    private NodeInfo oteEmbeddedBroker;
@@ -120,7 +112,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       } catch (URISyntaxException ex) {
          OseeLog.log(TestEnvironment.class, Level.SEVERE, ex);
       }
-      execInitializationTasks = Executors.newCachedThreadPool();
       this.factory = factory;
       this.testStation = factory.getTestStation();
       this.runtimeManager = factory.getRuntimeManager();
@@ -134,32 +125,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
 
    public void init(IServiceConnector connector) {
       this.connector = connector;
-//      initializationThreadAdd(new Callable() {
-//         @Override
-//         public Object call() throws Exception {
-//            Activator.getInstance().registerTestEnvironment(TestEnvironment.this);
-//            return null;
-//         }
-//      });
-//      waitForWorkerThreadsToComplete();
-   }
-
-   public void waitForWorkerThreadsToComplete() {
-      while (!listOfThreadsToWaitOnInInit.isEmpty()) {
-         Future future = listOfThreadsToWaitOnInInit.poll();
-         try {
-            future.get();
-         } catch (InterruptedException ex) {
-            OseeLog.log(TestEnvironment.class, Level.SEVERE, ex);
-         } catch (ExecutionException ex) {
-            OseeLog.log(TestEnvironment.class, Level.SEVERE, ex);
-         }
-      }
-   }
-
-   @Override
-   public void initializationThreadAdd(Callable callable) {
-      listOfThreadsToWaitOnInInit.add(execInitializationTasks.submit(callable));
    }
 
    private void setupDefaultConnector() {

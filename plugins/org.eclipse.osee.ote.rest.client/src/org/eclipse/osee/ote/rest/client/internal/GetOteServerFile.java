@@ -16,6 +16,7 @@ public class GetOteServerFile extends BaseClientCallable<GetFileProgress> {
 
    private URI uri;
    private String filePath;
+   @SuppressWarnings("unused")
    private GetFileProgress progress;
    private WebResourceFactory factory;
    private File destination;

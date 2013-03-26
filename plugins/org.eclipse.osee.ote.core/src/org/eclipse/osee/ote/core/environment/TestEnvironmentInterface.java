@@ -17,7 +17,6 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.ote.core.environment.interfaces.ICancelTimer;
@@ -91,5 +90,4 @@ public interface TestEnvironmentInterface {
 
    public IEnvironmentFactory getEnvironmentFactory();
 
-   public void initializationThreadAdd(Callable callable);
 }

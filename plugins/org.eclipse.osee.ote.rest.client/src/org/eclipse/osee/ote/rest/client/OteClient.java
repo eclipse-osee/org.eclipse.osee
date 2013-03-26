@@ -15,16 +15,11 @@ import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Future;
 
-import org.eclipse.core.runtime.jobs.Job;
-
 
 /**
  * @author Andrew Finkbeiner
  */
 public interface OteClient {
-   
-   Job configureServerEnvironment(URI uri, List<File> jars, final ConfigurationStatusCallback callback) ;
-
    Future<GetFileProgress> getFile(URI uri, File destination, String filePath, final GetFileProgress progress);
    Future<ConfigurationProgress> configureServerEnvironment(URI uri, List<File> jars, final ConfigurationProgress progress);
 }
