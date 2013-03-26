@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
@@ -95,7 +96,6 @@ public abstract class CoveragePackageBase extends NamedIdentity<String> implemen
          if (coverageItem.getCoverageMethod() == null) {
             OseeLog.log(Activator.class, Level.SEVERE,
                String.format("Coverage Item with null Coverage Method; Item [%s]", coverageItem.toString()));
-            System.out.println("here");
          } else if (!coverageItem.getCoverageMethod().getName().equals(CoverageOptionManager.Not_Covered.name)) {
             items.add(coverageItem);
          }

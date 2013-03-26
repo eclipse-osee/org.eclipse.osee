@@ -21,6 +21,7 @@ import org.eclipse.osee.coverage.action.ConfigureCoverageMethodsAction;
 import org.eclipse.osee.coverage.action.ShowMergeReportAction;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
+import org.eclipse.osee.coverage.model.CoverageOption;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePackage;
@@ -211,6 +212,16 @@ public class ImportCoverageMethodsOperation extends org.eclipse.osee.framework.c
          } else {
             counter.numImported++;
             data.log(" - IMPORTED");
+
+            CoverageOptionManager coverageOptionManager = toPackage.getCoverageOptionManager();
+            CoverageOption coverageOption = fromItem.getCoverageMethod();
+
+            if (!checkOptionIsInPackage(coverageOptionManager, coverageOption)) {
+               throw new OseeCoreException(String.format(
+                  "The Coverage Method [%s] does not exist in the Coverage Package [%s]", coverageOption.getName(),
+                  toPackage.getName()));
+            }
+
             toItem.setCoverageMethod(fromItem.getCoverageMethod());
             if (!toItem.getRationale().equals(fromItem.getRationale())) {
                data.logWithFormat("   --> Updated notes from [%s] to [%s]\n", toItem.getRationale(),
@@ -247,6 +258,17 @@ public class ImportCoverageMethodsOperation extends org.eclipse.osee.framework.c
          data.logWithFormat("   --> Task [%s][%s]\n", getNonNullValue(fromItem.getWorkProductTaskGuid()),
             getNonNullValue(fromItem.getWorkProductTaskStr()));
       }
+   }
+
+   private boolean checkOptionIsInPackage(CoverageOptionManager coverageOptionManager, CoverageOption coverageMethod) {
+      boolean answer;
+      CoverageOption coverageOption = coverageOptionManager.get(coverageMethod.getName());
+      if (coverageOption == null) {
+         answer = false;
+      } else {
+         answer = true;
+      }
+      return answer;
    }
 
    private String getPkgDir(String baseDir, String dirName) {
@@ -286,7 +308,7 @@ public class ImportCoverageMethodsOperation extends org.eclipse.osee.framework.c
             fromMethod.getName());
       }
 
-      CoverageUnit toMethod = null;
+      CoverageUnit bestFitToMethod = null;
       String description = "";
       List<CoverageUnit> strongUnits = new ArrayList<CoverageUnit>();
       List<CoverageUnit> medUnits = new ArrayList<CoverageUnit>();
@@ -308,25 +330,26 @@ public class ImportCoverageMethodsOperation extends org.eclipse.osee.framework.c
             weakUnits.add(possibleToMethod);
          }
       }
-      description += " STRONG=" + strongUnits.size() + " MEDIUM=" + medUnits.size() + " WEAK=" + weakUnits + "; ";
+      description +=
+         " STRONG=" + strongUnits.size() + " MEDIUM=" + medUnits.size() + " WEAK=" + weakUnits.size() + "; ";
       if (strongUnits.size() == 1) {
-         toMethod = strongUnits.iterator().next();
+         bestFitToMethod = strongUnits.iterator().next();
          description += "picked STRONG; ";
       } else if (medUnits.size() == 1) {
-         toMethod = medUnits.iterator().next();
+         bestFitToMethod = medUnits.iterator().next();
          description += "picked MED; ";
       } else if (weakUnits.size() == 1) {
-         toMethod = weakUnits.iterator().next();
-         description += "picked MED; ";
+         bestFitToMethod = weakUnits.iterator().next();
+         description += "picked WEAK; ";
       }
       // TODO may want to handle case where 2 strong or med; see if item name / order match
 
-      if (toMethod == null) {
+      if (bestFitToMethod == null) {
          return new ImportMatch(ImportMatchType.NoMatch, fromFile, null, "No TO method MATCH [%s] - [%s]",
             fromMethod.getName(), description);
       }
 
-      List<CoverageItem> toCoverageItems = toMethod.getCoverageItems();
+      List<CoverageItem> toCoverageItems = bestFitToMethod.getCoverageItems();
       CoverageItem toItem = null;
       for (CoverageItem toCoverageItem : toCoverageItems) {
          boolean orderMatch = toCoverageItem.getOrderNumber().equals(fromItem.getOrderNumber());

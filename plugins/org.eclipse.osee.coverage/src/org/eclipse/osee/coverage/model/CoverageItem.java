@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -263,7 +264,11 @@ public class CoverageItem extends NamedIdentity<String> implements ICoverage, IW
    }
 
    private void setFromPropertyStore(PropertyStore store, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
-      setCoverageMethod(coverageOptionManager.get(store.get("methodType")));
+      String methodTypeString = store.get("methodType");
+      CoverageOption coverageMethod = coverageOptionManager.get(methodTypeString);
+      Conditions.checkNotNull(coverageMethod,
+         String.format("Coverage Method Type [%s] not Configured in this Coverage Package", methodTypeString));
+      setCoverageMethod(coverageMethod);
       if (Strings.isValid(store.get("order"))) {
          setOrderNumber(store.get("order"));
       }
