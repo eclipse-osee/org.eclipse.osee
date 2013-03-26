@@ -217,6 +217,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
             testAtsAttributevaluesWithPersist(artifacts);
             testCompletedCancelledStateAttributesSetWithPersist(artifacts);
+            testCompletedCancelledPercentComplete(artifacts);
             testStateAttributeDuplications(artifacts);
             testArtifactIds(artifacts);
             testStateInWorkDefinition(artifacts);
@@ -236,7 +237,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             testStateMachineAssignees(artifacts);
             testAtsLogs(artifacts);
             testActionableItemToTeamDefinition(artifacts, testNameToResultsMap, testNameToTimeSpentMap);
-            
+
             for (IAtsHealthCheck atsHealthCheck : AtsHealthCheck.getAtsHealthCheckItems()) {
                atsHealthCheck.validateAtsDatabase(artifacts, testNameToResultsMap, testNameToTimeSpentMap);
             }
@@ -320,6 +321,40 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                "Error: on [" + artifact.toStringWithId() + "] exception: " + ex.getLocalizedMessage());
          }
       }
+      logTestTimeSpent(date, "testCompletedCancelledStateAttributesSet", testNameToTimeSpentMap);
+   }
+
+   private void testCompletedCancelledPercentComplete(Collection<Artifact> artifacts) {
+      Date date = new Date();
+      try {
+         SkynetTransaction transaction =
+            TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Validate ATS Database");
+         for (Artifact artifact : artifacts) {
+            try {
+               if (artifact instanceof AbstractWorkflowArtifact) {
+                  AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
+                  Integer percentComplete = awa.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0);
+                  if (awa.isCompletedOrCancelled() && percentComplete != 100) {
+                     testNameToResultsMap.put("testCompletedCancelledPercentComplete", String.format(
+                        "Error: Completed/Cancelled Percent Complete != 100; is [%d] for [%s]", percentComplete,
+                        XResultDataUI.getHyperlink(artifact)));
+                     awa.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, 100);
+                     awa.persist(transaction);
+                     testNameToResultsMap.put("testCompletedCancelledPercentComplete", "FIXED");
+                  }
+               }
+            } catch (Exception ex) {
+               testNameToResultsMap.put("testCompletedCancelledPercentComplete",
+                  "Error: on [" + artifact.toStringWithId() + "] exception: " + ex.getLocalizedMessage());
+            }
+         }
+         transaction.execute();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         testNameToResultsMap.put("testCompletedCancelledPercentComplete",
+            "Error: Exception: " + ex.getLocalizedMessage());
+      }
+
       logTestTimeSpent(date, "testCompletedCancelledStateAttributesSet", testNameToTimeSpentMap);
    }
 
