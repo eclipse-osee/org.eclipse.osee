@@ -2,6 +2,6 @@
 <xWidgets>
 	<XWidget xwidgetType="XHyperlabelTeamDefinitionSelection"
 		displayName="Team Definition(s)" horizontalLabel="true" />
-	<XWidget xwidgetType="XArtifactMultiChoiceSelect"
+	<XWidget xwidgetType="AtsObjectMultiChoiceSelect"
 		horizontalLabel="true" displayName="Version(s)" />
 </xWidgets>

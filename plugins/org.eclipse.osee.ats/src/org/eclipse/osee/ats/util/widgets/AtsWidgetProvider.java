@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.XVersionList;
 import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.ats.util.widgets.defect.XDefectViewer;
+import org.eclipse.osee.ats.util.widgets.dialog.AtsObjectMultiChoiceSelect;
 import org.eclipse.osee.ats.util.widgets.role.XUserRoleViewer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -50,6 +51,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          XHyperlabelGroupSelection widget = new XHyperlabelGroupSelection(name);
          widget.setToolTip(widgetLayoutData.getToolTip());
          toReturn = widget;
+      } else if (widgetName.equals(AtsObjectMultiChoiceSelect.WIDGET_ID)) {
+         toReturn = new AtsObjectMultiChoiceSelect();
       } else if (widgetName.equals(XReviewStateSearchCombo.WIDGET_ID)) {
          toReturn = new XReviewStateSearchCombo();
       } else if (widgetName.equals(XStateCombo.WIDGET_ID)) {

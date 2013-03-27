@@ -28,6 +28,8 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.config.VersionsClient;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
+import org.eclipse.osee.ats.core.column.ImplementersColumn;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.util.widgets.dialog.AtsObjectMultiChoiceSelect;
@@ -54,6 +56,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Ryan D. Brooks
  */
 public class TaskMetrics extends AbstractBlam {
+   private static final int IN_WORK_PERCENT = 5;
+   private static final int COMPLETED_CANCELLED_PERCENT = 100;
    private final CountingMap<IAtsUser> metrics;
    private CharBackedInputStream charBak;
    private ISheetWriter excelWriter;
@@ -82,8 +86,6 @@ public class TaskMetrics extends AbstractBlam {
          metrics.clear();
          charBak = new CharBackedInputStream();
          excelWriter = new ExcelXmlWriter(charBak.getWriter());
-
-         //IArtifactType artifctType = variableMap.getArtifactType("Artifact Type");
 
          List<IAtsObject> versionArtifacts = versionsWidget.getSelected();
 
@@ -124,17 +126,17 @@ public class TaskMetrics extends AbstractBlam {
 
    private void tallyState(TaskArtifact task) throws OseeCoreException {
 
-      for (IAtsUser user : task.getStateMgr().getAssignees()) {
-         int percentComplete = task.getStateMgr().getPercentComplete(task.getCurrentStateName());
-
-         if (percentComplete == 100) {
-            task.getCompletedDate();
-            String stateName = task.getCurrentStateName();
-
-            if (stateName.equals("Complete")) {
-               metrics.put(user, 100);
+      List<IAtsUser> assignees = task.getStateMgr().getAssignees();
+      if (assignees.isEmpty()) {
+         assignees = ImplementersColumn.instance.getImplementers(task);
+      }
+      for (IAtsUser user : assignees) {
+         int percentComplete = PercentCompleteTotalUtil.getPercentCompleteTotal(task);
+         if (percentComplete == COMPLETED_CANCELLED_PERCENT) {
+            if (task.getStateMgr().getStateType().isCompletedOrCancelledState()) {
+               metrics.put(user, COMPLETED_CANCELLED_PERCENT);
             } else {
-               metrics.put(user, 5);
+               metrics.put(user, IN_WORK_PERCENT);
             }
          } else {
             metrics.put(user, percentComplete);
