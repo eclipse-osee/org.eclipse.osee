@@ -24,8 +24,6 @@ public class TestPointTally implements ITestPointTally {
 
    public TestPointTally(String testName) {
       this.testName = testName;
-//      ServiceTracker<OTEStatusBoard, OTEStatusBoard> tracker = new ServiceTracker<OTEStatusBoard, OTEStatusBoard>(FrameworkUtil.getBundle(getClass()).getBundleContext(), OTEStatusBoard.class, null);
-//      tracker.open(true);
       statusBoard = ServiceUtility.getService(OTEStatusBoard.class);//tracker.getService();
    }
 

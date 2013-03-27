@@ -67,18 +67,10 @@ public abstract class MessageSystemTestEnvironment extends TestEnvironment imple
    @Override
    public IMessageManager getMsgManager() {
       return ServiceUtility.getService(IMessageManager.class, false);
-//      ServiceTracker tracker = getServiceTracker(IMessageManager.class.getName());
-//      return (IMessageManager) tracker.getService();
    }
 
    public IModelManager getModelManager() {
       return ServiceUtility.getService(IModelManager.class, 5000);
-//      ServiceTracker tracker = getServiceTracker(IModelManager.class.getName());
-//      try {
-//         return (IModelManager) tracker.waitForService(5000);
-//      } catch (InterruptedException ex) {
-//         throw new IllegalStateException("interrupted while trying to acquire model manager service", ex);
-//      }
    }
 
    @Deprecated
@@ -155,7 +147,7 @@ public abstract class MessageSystemTestEnvironment extends TestEnvironment imple
    }
 
    @Deprecated
-   public IOInstrumentation getIOInstrumentation(String name) {//, IOInstrumentation io){
+   public IOInstrumentation getIOInstrumentation(String name) {
       setupIOInstrumentation();
       return ioInstrumentation.getIOInstrumentation(name);
    }

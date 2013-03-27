@@ -44,7 +44,6 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
    private final MessageSystemTestEnvironment env;
    private final IServiceConnector serviceConnector;
    private RemoteModelManager modelManager;
-//   private final MessageToolServiceTracker messageToolServiceTracker;
    private final HashMap<IRemoteCommandConsole, RemoteShell> exportedConsoles =
       new HashMap<IRemoteCommandConsole, RemoteShell>(32);
    private final boolean keepEnvAliveWithNoUsers;
@@ -59,8 +58,6 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       this.env = currentEnvironment;
       this.serviceConnector = serviceConnector;
       this.keepEnvAliveWithNoUsers = keepEnvAliveWithNoUsers;
-//      messageToolServiceTracker = new MessageToolServiceTracker(new MessageToolExportCustomizer(serviceConnector));
-//      messageToolServiceTracker.open(true);
    }
 
    @Override
@@ -90,16 +87,11 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
 
    @Override
    public IRemoteMessageService getMessageToolServiceProxy() throws RemoteException {
-//      try {
       if(exportedRemoteMessageService == null){
          IRemoteMessageService service = ServiceUtility.getService(IRemoteMessageService.class, 30000);
          exportedRemoteMessageService = (IRemoteMessageService)this.serviceConnector.export(service);
       }
       return exportedRemoteMessageService;
-//         return messageToolServiceTracker.waitForService(30000);
-//      } catch (InterruptedException e) {
-//         throw new RemoteException("", e);
-//      }
    }
 
    public ReturnStatus isRunningJarVersions(String[] jarVersions) {

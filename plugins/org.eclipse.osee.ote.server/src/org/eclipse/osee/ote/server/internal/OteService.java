@@ -193,24 +193,9 @@ public class OteService implements IHostTestEnvironment, IService {
       if (currentEnvironment != null) {
          oteSessions.remove(sessionId);
          updateDynamicInfo();
-//         if (oteSessions.get().isEmpty() && !environmentCreation.isKeepAliveWithNoUsers()) {
-//        	remoteEnvironment.disconnectAll();
-//            remoteEnvironment = null;
-//         }
       }
    }
    
-//   @Override
-//   public void disconnectAll() throws RemoteException {
-//      if (remoteEnvironment != null) {
-//         oteSessions.removeAll();
-//         updateDynamicInfo();
-////         if (!environmentCreation.isKeepAliveWithNoUsers()) {
-////            remoteEnvironment = null;
-////         }
-//      }
-//   }
-
    @Override
    public BundleConfigurationReport checkBundleConfiguration(Collection<BundleDescription> bundles) throws RemoteException {
       try {

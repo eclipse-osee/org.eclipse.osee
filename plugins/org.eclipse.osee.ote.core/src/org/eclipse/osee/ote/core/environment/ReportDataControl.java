@@ -28,7 +28,6 @@ public class ReportDataControl implements IReportData {
 
    public ReportDataControl() {
       this.queueListeners = new ArrayList<ReportDataListener>();
-      // ArrayList<String> queueHeaders = new ArrayList<String>();
       ArrayList<String> queueHeaders = new ArrayList<String>();
       queueHeaders.add("User");
       queueHeaders.add("Script");
@@ -71,7 +70,6 @@ public class ReportDataControl implements IReportData {
       for (int i = 0; i < cmds.size(); i++) {
          TestEnvironmentCommand cmd = cmds.get(i);
          values = new ArrayList<String>();
-//         values.add(cmd.getUser() == null ? "unknown" : cmd.getUser().getName());
          values.add(cmd.getDescription().getDescription());
          queueData.addItem(cmd.getDescription().getGuid(), values);
       }

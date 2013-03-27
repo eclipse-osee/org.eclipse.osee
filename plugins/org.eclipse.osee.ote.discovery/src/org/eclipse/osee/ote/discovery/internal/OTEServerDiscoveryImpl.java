@@ -16,7 +16,6 @@ import org.eclipse.osee.ote.discovery.OTEServerLocation;
 public class OTEServerDiscoveryImpl implements OTEServerDiscovery {
 
    private RemoteServiceLookup remoteMessageServiceLookup;
-//   private MessageService messageService;
    private OTEServerStore store;
    private OteServerNotification notification;
    private ReentrantLock lock;
@@ -55,14 +54,6 @@ public class OTEServerDiscoveryImpl implements OTEServerDiscovery {
    public void unbindRemoteServiceLookup(RemoteServiceLookup remoteMessageServiceLookup){
       this.remoteMessageServiceLookup = null;
    }
-   
-//   public void bindMessageService(MessageService messageService){
-//      this.messageService = messageService;
-//   }
-//   
-//   public void unbindMessageService(MessageService messageService){
-//      this.messageService = null;
-//   }
    
    @Override
    public List<OTEServerLocation> findServerByTitle(String regex, long timeoutMs) throws URISyntaxException {
