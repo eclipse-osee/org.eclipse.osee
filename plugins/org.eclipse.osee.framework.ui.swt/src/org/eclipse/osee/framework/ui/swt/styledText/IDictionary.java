@@ -15,6 +15,8 @@ package org.eclipse.osee.framework.ui.swt.styledText;
  */
 public interface IDictionary {
 
-   public abstract boolean isWord(String w);
+   boolean isWord(String w);
+
+   String getCleanWord(String word);
 
 }

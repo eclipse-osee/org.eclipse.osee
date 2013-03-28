@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.artifact.EditActionableItems;
 import org.eclipse.osee.ats.artifact.TeamWorkflowLabelProvider;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.StateManager;
@@ -200,7 +199,6 @@ public final class AtsUtil {
     * Only to be used by browser. Use open (artifact) instead.
     */
    public static void openArtifact(String guid, OseeCmEditor editor) {
-      AtsBulkLoad.loadConfig(false);
       Artifact artifact = null;
       try {
          artifact = ArtifactQuery.getArtifactFromId(guid, getAtsBranch());

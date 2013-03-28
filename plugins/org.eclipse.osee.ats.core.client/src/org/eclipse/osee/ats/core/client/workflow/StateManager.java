@@ -30,15 +30,14 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkState;
 import org.eclipse.osee.ats.api.workflow.WorkStateProvider;
-import org.eclipse.osee.ats.core.client.AtsClient;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.client.notify.AtsNotifyType;
 import org.eclipse.osee.ats.core.client.team.SimpleTeamState;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
 import org.eclipse.osee.ats.core.client.workflow.log.LogType;
 import org.eclipse.osee.ats.core.model.WorkStateFactory;
@@ -46,7 +45,6 @@ import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.ats.core.model.impl.WorkStateProviderImpl;
 import org.eclipse.osee.ats.core.notify.IAtsNotificationListener;
 import org.eclipse.osee.ats.core.users.AtsUsers;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -166,7 +164,7 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
          provider.setHoursSpent(state.getName(), remaining);
       }
 
-      if (AtsWorkDefinitionService.getService().isStateWeightingEnabled(awa.getWorkDefinition())) {
+      if (AtsClientService.get().getWorkDefinitionAdmin().isStateWeightingEnabled(awa.getWorkDefinition())) {
          provider.setPercentComplete(state.getName(), percentComplete);
       } else {
          awa.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, percentComplete);
@@ -399,8 +397,8 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
                   "ATS Valid State Names: Missing [%s] Artifact; Falling back to loadAddDefinitions",
                   AtsArtifactToken.WorkDef_State_Names.getName());
                try {
-                  for (IAtsWorkDefinition workDef : AtsClient.getWorkDefFactory().loadAllDefinitions()) {
-                     for (String stateName : AtsWorkDefinitionService.getService().getStateNames(workDef)) {
+                  for (IAtsWorkDefinition workDef : AtsClientService.get().getWorkDefinitionAdmin().loadAllDefinitions()) {
+                     for (String stateName : AtsClientService.get().getWorkDefinitionAdmin().getStateNames(workDef)) {
                         if (!allValidStateNames.contains(stateName)) {
                            allValidStateNames.add(stateName);
                         }

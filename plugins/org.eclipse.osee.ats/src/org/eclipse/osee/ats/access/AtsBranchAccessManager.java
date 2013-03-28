@@ -23,10 +23,9 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.access.AtsBranchAccessContextId;
-import org.eclipse.osee.ats.core.client.config.store.ActionableItemArtifactStore;
-import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -158,10 +157,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
    }
 
    /**
-    * Provided for testing purposes only.<br>
-    * <br>
-    * TODO Convert to protected once .test package is removed from ats.test bundle and tests have visibility of this
-    * method without making public.
+    * Provided for testing purposes only.
     */
    public static Collection<IAccessContextId> internalGetFromWorkflow(TeamWorkFlowArtifact teamArt) {
       Set<IAccessContextId> contextIds = new HashSet<IAccessContextId>();
@@ -169,7 +165,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
          contextIds.addAll(getFromArtifact(teamArt));
          if (contextIds.isEmpty()) {
             for (IAtsActionableItem aia : teamArt.getActionableItemsDam().getActionableItems()) {
-               Artifact artifact = new ActionableItemArtifactStore(aia).getArtifact();
+               Artifact artifact = AtsClientService.get().getConfigArtifact(aia);
                if (artifact != null) {
                   contextIds.addAll(getFromArtifact(artifact));
                }
@@ -178,7 +174,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
                }
             }
             if (contextIds.isEmpty()) {
-               Artifact artifact = new TeamDefinitionArtifactStore(teamArt.getTeamDefinition()).getArtifact();
+               Artifact artifact = AtsClientService.get().getConfigArtifact(teamArt.getTeamDefinition());
                if (artifact != null) {
                   contextIds.addAll(getFromArtifact(artifact));
                }

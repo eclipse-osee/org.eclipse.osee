@@ -17,7 +17,11 @@ import java.util.List;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.config.TeamDefinitionSorter;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -40,7 +44,13 @@ public class XTeamDefinitionCombo extends XComboViewer {
    protected void createControls(Composite parent, int horizontalSpan) {
       super.createControls(parent, horizontalSpan);
 
-      Collection<IAtsTeamDefinition> teamDefs = TeamDefinitions.getTeamDefinitions(Active.Active);
+      Collection<IAtsTeamDefinition> teamDefs = null;
+      try {
+         teamDefs = TeamDefinitions.getTeamDefinitions(Active.Active);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading team definitions", ex);
+      }
+
       List<IAtsTeamDefinition> sortedTeamDefs = new ArrayList<IAtsTeamDefinition>();
       sortedTeamDefs.addAll(teamDefs);
       Collections.sort(sortedTeamDefs, new TeamDefinitionSorter());

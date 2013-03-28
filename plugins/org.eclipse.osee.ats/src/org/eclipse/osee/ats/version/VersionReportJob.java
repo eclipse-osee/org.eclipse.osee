@@ -23,12 +23,12 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.core.client.config.VersionsClient;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.client.workflow.PriorityUtil;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -70,7 +70,8 @@ public class VersionReportJob extends Job {
       }
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.heading(3, title + getReleasedString(verArt), verArt.getName()));
-      sb.append(getTeamWorkflowReport(VersionsClient.getTargetedForTeamWorkflows(verArt), null, monitor));
+      sb.append(getTeamWorkflowReport(
+         AtsClientService.get().getAtsVersionService().getTargetedForTeamWorkflowArtifacts(verArt), null, monitor));
       return sb.toString();
    }
 

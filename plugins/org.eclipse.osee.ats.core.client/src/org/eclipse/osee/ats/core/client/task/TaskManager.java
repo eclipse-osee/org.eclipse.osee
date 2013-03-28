@@ -17,13 +17,12 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.client.AtsClient;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
@@ -106,8 +105,10 @@ public class TaskManager {
          }
 
          // Validate able to move tasks; WorkDefinitions must match
-         boolean taskOverridesItsWorkDefinition = AtsClient.getWorkDefFactory().isTaskOverridingItsWorkDefinition(taskArt);
-         WorkDefinitionMatch match = AtsClient.getWorkDefFactory().getWorkDefinitionForTaskNotYetCreated(newParent);
+         boolean taskOverridesItsWorkDefinition =
+            AtsClientService.get().getWorkDefinitionAdmin().isTaskOverridingItsWorkDefinition(taskArt);
+         WorkDefinitionMatch match =
+            AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinitionForTaskNotYetCreated(newParent);
          if (!taskOverridesItsWorkDefinition && !taskArt.getWorkDefinition().equals(match.getWorkDefinition())) {
             return new Result(
                "Desitination Task WorkDefinition does not match current Task WorkDefintion; Move Aborted");

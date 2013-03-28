@@ -37,13 +37,13 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.config.IAtsProgram;
-import org.eclipse.osee.ats.core.client.config.VersionsClient;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.XVersionList;
 import org.eclipse.osee.ats.util.widgets.XAtsProgramComboWidget;
 import org.eclipse.osee.define.traceability.BranchTraceabilityOperation;
@@ -521,7 +521,8 @@ public class DetailedTestStatusOld extends AbstractBlam {
 
    private void loadReqTaskMap() throws Exception {
       for (IAtsVersion version : versions) {
-         for (TeamWorkFlowArtifact workflow : VersionsClient.getTargetedForTeamWorkflows(version)) {
+         for (TeamWorkFlowArtifact workflow : AtsClientService.get().getAtsVersionService().getTargetedForTeamWorkflowArtifacts(
+            version)) {
             loadTasksFromWorkflow(workflow);
          }
       }

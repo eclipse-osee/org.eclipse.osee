@@ -22,8 +22,8 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.UserRelatedToAtsObjectSearch;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
@@ -72,7 +72,8 @@ public class AtsArtifactChecks extends ArtifactCheck {
       Set<IAtsActionableItem> aias = new HashSet<IAtsActionableItem>();
       for (Artifact art : artifacts) {
          if (art.isOfType(AtsArtifactTypes.ActionableItem)) {
-            IAtsActionableItem aia = AtsConfigCache.instance.getSoleByGuid(art.getGuid(), IAtsActionableItem.class);
+            IAtsActionableItem aia =
+               AtsClientService.get().getAtsConfig().getSoleByGuid(art.getGuid(), IAtsActionableItem.class);
             if (aia != null) {
                aias.add(aia);
             }

@@ -23,9 +23,5 @@ public interface IAtsWorkDefinitionStore {
 
    String loadWorkDefinitionString(String workDefId) throws OseeCoreException;
 
-   IAttributeResolver getAttributeResolver();
-
-   IUserResolver getUserResolver();
-
    List<Pair<String, String>> getWorkDefinitionStrings() throws OseeCoreException;
 }

@@ -41,10 +41,10 @@ import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.config.ActionableItems;
-import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -101,7 +101,8 @@ public class ExcelAtsActionArtifactExtractor {
                   for (Artifact aiaArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.ActionableItem,
                      actionableItemName, AtsUtilCore.getAtsBranchToken())) {
                      IAtsActionableItem ai =
-                        AtsConfigCache.instance.getSoleByGuid(aiaArt.getGuid(), IAtsActionableItem.class);
+                        AtsClientService.get().getAtsConfig().getSoleByGuid(aiaArt.getGuid(),
+                           IAtsActionableItem.class);
                      if (ai != null) {
                         aias.add(ai);
                      }

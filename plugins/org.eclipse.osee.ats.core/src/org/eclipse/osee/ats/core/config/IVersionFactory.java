@@ -11,13 +11,15 @@
 package org.eclipse.osee.ats.core.config;
 
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IVersionFactory {
 
-   IAtsVersion createVersion(String title, String create, String generate);
+   IAtsVersion createVersion(String title, String create, String generate) throws OseeCoreException;
 
-   IAtsVersion getOrCreate(String guid, String name);
-
-   IAtsVersion createVersion(String name);
+   IAtsVersion createVersion(String name) throws OseeCoreException;
 
 }

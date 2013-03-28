@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
-import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -65,7 +64,6 @@ public class ImportActionsViaSpreadsheetTest {
 
    @org.junit.Test
    public void testImport() throws Exception {
-      AtsBulkLoad.loadConfig(true);
       ImportActionsViaSpreadsheetBlam blam = new ImportActionsViaSpreadsheetBlam();
 
       File file = blam.getSampleSpreadsheetFile();

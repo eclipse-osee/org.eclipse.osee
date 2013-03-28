@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
+import org.eclipse.osee.ats.api.workflow.IAtsWorkItemStore;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -24,42 +25,43 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
-   private static AtsWorkItemServiceImpl instance;
+   private IAtsWorkItemStore atsWorkItemStore;
 
-   public AtsWorkItemServiceImpl() {
-      AtsWorkItemServiceImpl.instance = this;
+   public void setAtsWorkItemStore(IAtsWorkItemStore atsWorkItemStore) {
+      this.atsWorkItemStore = atsWorkItemStore;
    }
 
-   public static AtsWorkItemServiceImpl instance() {
-      if (instance == null) {
-         instance = new AtsWorkItemServiceImpl();
-      }
-      return instance;
+   public void start() {
+      // do nothing
+   }
+
+   public void stop() {
+      // do nothing
    }
 
    @Override
    public IAtsWorkData getWorkData(IAtsWorkItem workItem) throws OseeCoreException {
-      return AtsWorkItemServiceStore.getService().getWorkData(workItem);
+      return atsWorkItemStore.getWorkData(workItem);
    }
 
    @Override
    public IArtifactType getArtifactType(IAtsWorkItem workItem) throws OseeCoreException {
-      return AtsWorkItemServiceStore.getService().getArtifactType(workItem);
+      return atsWorkItemStore.getArtifactType(workItem);
    }
 
    @Override
    public Collection<Object> getAttributeValues(IAtsObject workItem, IAttributeType attributeType) throws OseeCoreException {
-      return AtsWorkItemServiceStore.getService().getAttributeValues(workItem, attributeType);
+      return atsWorkItemStore.getAttributeValues(workItem, attributeType);
    }
 
    @Override
    public boolean isOfType(IAtsWorkItem item, IArtifactType matchType) throws OseeCoreException {
-      return AtsWorkItemServiceStore.getService().isOfType(item, matchType);
+      return atsWorkItemStore.isOfType(item, matchType);
    }
 
    @Override
    public IAtsWorkItem getParentTeamWorkflow(IAtsWorkItem workItem) throws OseeCoreException {
-      return AtsWorkItemServiceStore.getService().getParentTeamWorkflow(workItem);
+      return atsWorkItemStore.getParentTeamWorkflow(workItem);
    }
 
 }

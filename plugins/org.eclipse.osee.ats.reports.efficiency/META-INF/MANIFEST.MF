@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: OSEE ATS Efficiency Reports (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ats.reports.efficiency;singleton:=true
 Bundle-Version: 0.11.0.qualifier
-Bundle-Activator: org.eclipse.osee.ats.reports.efficiency.Activator
+Bundle-Activator: org.eclipse.osee.ats.reports.efficiency.internal.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.forms
@@ -13,6 +13,7 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.ats,
  org.eclipse.osee.ats.api.team,
  org.eclipse.osee.ats.api.version,
+ org.eclipse.osee.ats.core.client,
  org.eclipse.osee.ats.core.client.config,
  org.eclipse.osee.ats.core.client.team,
  org.eclipse.osee.ats.core.client.workflow,
@@ -29,3 +30,4 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.ui.skynet.results,
  org.eclipse.osee.framework.ui.swt,
  org.osgi.framework
+Service-Component: OSGI-INF/*.xml

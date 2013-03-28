@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.core;
 
 import org.eclipse.osee.ats.core.column.AtsCore_Column_JT_Suite;
-import org.eclipse.osee.ats.core.config.internal.AtsCore_ConfigInternal_JT_Suite;
 import org.eclipse.osee.ats.core.model.impl.AtsCore_ModelImpl_JT_Suite;
 import org.eclipse.osee.ats.core.transition.AtsCore_Transition_JT_Suite;
 import org.eclipse.osee.ats.core.users.AtsCore_Users_JT_Suite;
@@ -25,7 +24,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    AtsCore_Column_JT_Suite.class,
-   AtsCore_ConfigInternal_JT_Suite.class,
    AtsCore_ModelImpl_JT_Suite.class,
    AtsCore_Transition_JT_Suite.class,
    AtsCore_Util_JT_Suite.class,

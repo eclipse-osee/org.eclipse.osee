@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.core.client.util;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -88,7 +88,7 @@ public class CopyActionDetails {
 
    private String getFormatStr(IAtsTeamDefinition teamDef) throws OseeCoreException {
       if (teamDef != null) {
-         Artifact artifact = new TeamDefinitionArtifactStore(teamDef).getArtifact();
+         Artifact artifact = AtsClientService.get().getConfigArtifact(teamDef);
          if (artifact != null) {
             String formatStr = artifact.getSoleAttributeValue(AtsAttributeTypes.ActionDetailsFormat, "");
             if (Strings.isValid(formatStr)) {

@@ -39,11 +39,11 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.users.AtsUsers;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -271,7 +271,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          } else if (element instanceof WrappedTransitions) {
             return true;
          } else if (element instanceof WrappedPercentWeight) {
-            return AtsWorkDefinitionService.getService().isStateWeightingEnabled(
+            return AtsClientService.get().getWorkDefinitionAdmin().isStateWeightingEnabled(
                ((WrappedPercentWeight) element).getWorkDef());
          } else if (element instanceof WrappedLayout) {
             return !((WrappedLayout) element).stateItems.isEmpty();
@@ -294,7 +294,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       }
 
       private void getChildrenFromWrappedPercentDefinition(WrappedPercentWeight weightDef, List<Object> items) {
-         for (IAtsStateDefinition stateDef : AtsWorkDefinitionService.getService().getStatesOrderedByDefaultToState(
+         for (IAtsStateDefinition stateDef : AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByDefaultToState(
             weightDef.getWorkDef())) {
             items.add(String.format("State [%s]: %d", stateDef.getName(), stateDef.getStateWeight()));
          }
@@ -384,7 +384,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       }
 
       private void getChildrenFromWorkDefinitionMatch(Object element, List<Object> items) {
-         items.addAll(AtsWorkDefinitionService.getService().getStatesOrderedByOrdinal(
+         items.addAll(AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByOrdinal(
             ((WorkDefinitionMatch) element).getWorkDefinition()));
          items.add(new WrappedPercentWeight(((WorkDefinitionMatch) element).getWorkDefinition()));
          items.add(new WrappedTrace(((WorkDefinitionMatch) element).getTrace()));
@@ -497,7 +497,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
 
       @Override
       public String toString() {
-         if (AtsWorkDefinitionService.getService().isStateWeightingEnabled(workDef)) {
+         if (AtsClientService.get().getWorkDefinitionAdmin().isStateWeightingEnabled(workDef)) {
             return "Total Percent Weighting";
          } else {
             return "Total Percent Weighting: Single Percent";

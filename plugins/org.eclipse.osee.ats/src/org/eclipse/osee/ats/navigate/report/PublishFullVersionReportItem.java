@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.navigate.report;
 
 import java.io.File;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -22,7 +23,10 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.version.VersionReportJob;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -63,8 +67,15 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
       }
       IAtsTeamDefinition useTeamDef = teamDef;
       if (useTeamDef == null) {
+         List<IAtsTeamDefinition> teamDefinitions = null;
+         try {
+            teamDefinitions = TeamDefinitions.getTeamDefinitions(Active.Both);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading team definitions", ex);
+         }
+
          TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
-         ld.setInput(TeamDefinitions.getTeamDefinitions(Active.Both));
+         ld.setInput(teamDefinitions);
          int result = ld.open();
          if (result == 0) {
             useTeamDef = (IAtsTeamDefinition) ld.getResult()[0];

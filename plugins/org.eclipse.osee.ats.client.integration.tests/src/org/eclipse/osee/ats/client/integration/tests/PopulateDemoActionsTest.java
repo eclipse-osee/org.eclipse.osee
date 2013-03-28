@@ -57,7 +57,7 @@ public class PopulateDemoActionsTest {
    }
 
    @Before
-   public void setup() {
+   public void setup() throws OseeCoreException {
       AtsBulkLoad.reloadConfig(true);
    }
 

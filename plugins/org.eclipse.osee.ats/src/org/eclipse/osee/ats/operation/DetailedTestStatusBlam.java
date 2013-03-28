@@ -36,7 +36,6 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.config.IAtsProgram;
-import org.eclipse.osee.ats.core.client.config.VersionsClient;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -44,6 +43,7 @@ import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.XVersionList;
 import org.eclipse.osee.ats.util.widgets.XAtsProgramComboWidget;
 import org.eclipse.osee.define.traceability.report.RequirementStatus;
@@ -569,7 +569,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
 
       for (IAtsVersion version : versions) {
          Collection<TeamWorkFlowArtifact> targetedForTeamArtifacts =
-            VersionsClient.getTargetedForTeamWorkflows(version);
+            AtsClientService.get().getAtsVersionService().getTargetedForTeamWorkflowArtifacts(version);
          double increment = 100.0 / targetedForTeamArtifacts.size();
          double progress = 0;
          for (TeamWorkFlowArtifact workflow : targetedForTeamArtifacts) {

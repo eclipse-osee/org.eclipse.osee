@@ -16,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 import javax.sql.DataSource;
 import org.apache.commons.dbcp.PoolingDriver;
 import org.apache.commons.pool.ObjectPool;
@@ -48,7 +49,7 @@ public class PoolFactory {
             // Do Nothing
          }
       }
-      poolingDriver.set(null);
+      poolingDriver.invalidate();
    }
 
    public Map<String, String> getPoolStats() throws OseeCoreException {
@@ -82,23 +83,28 @@ public class PoolFactory {
    private static final class PoolingDriverRef extends LazyObject<PoolingDriver> {
 
       @Override
-      protected PoolingDriver instance() throws OseeCoreException {
-         try {
-            Class.forName(PoolConfiguration.CONNECTION_POOL_DRIVER);
-         } catch (Exception ex) {
-            throw new OseeDataStoreException(ex, "Error loading connection pool driver [%s]",
-               PoolConfiguration.CONNECTION_POOL_DRIVER);
-         }
-         PoolingDriver driver;
-         try {
-            driver = (PoolingDriver) DriverManager.getDriver(PoolConfiguration.CONNECTION_POOL_ID);
-         } catch (SQLException ex) {
-            throw new OseeDataStoreException(ex, "Error finding connection pool driver with id [%s]",
-               PoolConfiguration.CONNECTION_POOL_ID);
-         }
-         return driver;
+      protected final FutureTask<PoolingDriver> createLoaderTask() {
+         Callable<PoolingDriver> callable = new Callable<PoolingDriver>() {
+            @Override
+            public PoolingDriver call() throws Exception {
+               try {
+                  Class.forName(PoolConfiguration.CONNECTION_POOL_DRIVER);
+               } catch (Exception ex) {
+                  throw new OseeDataStoreException(ex, "Error loading connection pool driver [%s]",
+                     PoolConfiguration.CONNECTION_POOL_DRIVER);
+               }
+               PoolingDriver driver;
+               try {
+                  driver = (PoolingDriver) DriverManager.getDriver(PoolConfiguration.CONNECTION_POOL_ID);
+               } catch (SQLException ex) {
+                  throw new OseeDataStoreException(ex, "Error finding connection pool driver with id [%s]",
+                     PoolConfiguration.CONNECTION_POOL_ID);
+               }
+               return driver;
+            }
+         };
+         return new FutureTask<PoolingDriver>(callable);
       }
-
    }
 
    public static class PoolConfiguration {

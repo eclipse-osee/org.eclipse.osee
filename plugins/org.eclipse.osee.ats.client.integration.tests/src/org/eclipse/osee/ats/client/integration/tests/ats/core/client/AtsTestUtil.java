@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.client.demo.DemoSawBuilds;
-import org.eclipse.osee.ats.core.client.AtsClient;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
@@ -52,13 +52,14 @@ import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.workdef.SimpleDecisionReviewOption;
 import org.eclipse.osee.ats.core.workflow.StateTypeAdapter;
+import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.mocks.MockStateDefinition;
 import org.eclipse.osee.ats.mocks.MockWidgetDefinition;
 import org.eclipse.osee.ats.mocks.MockWorkDefinition;
+import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -189,9 +190,9 @@ public class AtsTestUtil {
       }
    }
 
-   private static void clearCaches() {
+   private static void clearCaches() throws OseeCoreException {
       if (workDef != null) {
-         AtsClient.getWorkDefFactory().removeWorkDefinition(workDef);
+         AtsClientService.get().getWorkDefinitionAdmin().removeWorkDefinition(workDef);
       }
       analyze = null;
       implement = null;
@@ -221,19 +222,19 @@ public class AtsTestUtil {
       verArt4 = null;
       decRevArt = null;
       peerRevArt = null;
-      for (IAtsActionableItem aia : AtsConfigCache.instance.get(IAtsActionableItem.class)) {
+      for (IAtsActionableItem aia : AtsClientService.get().getAtsConfig().get(IAtsActionableItem.class)) {
          if (aia.getName().contains("AtsTestUtil")) {
-            AtsConfigCache.instance.decache(aia);
+            AtsClientService.get().getAtsConfig().invalidate(aia);
          }
       }
-      for (IAtsTeamDefinition aia : AtsConfigCache.instance.get(IAtsTeamDefinition.class)) {
+      for (IAtsTeamDefinition aia : AtsClientService.get().getAtsConfig().get(IAtsTeamDefinition.class)) {
          if (aia.getName().contains("AtsTestUtil")) {
-            AtsConfigCache.instance.decache(aia);
+            AtsClientService.get().getAtsConfig().invalidate(aia);
          }
       }
-      for (IAtsVersion ver : AtsConfigCache.instance.get(IAtsVersion.class)) {
+      for (IAtsVersion ver : AtsClientService.get().getAtsConfig().get(IAtsVersion.class)) {
          if (ver.getName().contains("AtsTestUtil")) {
-            AtsConfigCache.instance.decache(ver);
+            AtsClientService.get().getAtsConfig().invalidate(ver);
          }
       }
    }
@@ -301,43 +302,28 @@ public class AtsTestUtil {
       workPackageWidgetDef.setAttributeName(AtsAttributeTypes.WorkPackage.getName());
       workPackageWidgetDef.setXWidgetName("XTextDam");
 
-      AtsClient.getWorkDefFactory().addWorkDefinition(workDef);
+      AtsClientService.get().getWorkDefinitionAdmin().addWorkDefinition(workDef);
 
-      testAi =
-         AtsConfigCache.instance.getActionableItemFactory().createActionableItem(GUID.create(),
-            getTitle("AI", postFixName));
+      testAi = AtsClientService.get().createActionableItem(GUID.create(), getTitle("AI", postFixName));
       testAi.setActive(true);
       testAi.setActionable(true);
-      AtsConfigCache.instance.cache(testAi);
 
-      testAi2 =
-         AtsConfigCache.instance.getActionableItemFactory().createActionableItem(GUID.create(),
-            getTitle("AI2", postFixName));
+      testAi2 = AtsClientService.get().createActionableItem(GUID.create(), getTitle("AI2", postFixName));
       testAi2.setActive(true);
       testAi2.setActionable(true);
-      AtsConfigCache.instance.cache(testAi2);
 
-      testAi3 =
-         AtsConfigCache.instance.getActionableItemFactory().createActionableItem(GUID.create(),
-            getTitle("AI3", postFixName));
+      testAi3 = AtsClientService.get().createActionableItem(GUID.create(), getTitle("AI3", postFixName));
       testAi3.setActive(true);
       testAi3.setActionable(true);
-      AtsConfigCache.instance.cache(testAi3);
 
-      testAi4 =
-         AtsConfigCache.instance.getActionableItemFactory().createActionableItem(GUID.create(),
-            getTitle("AI4", postFixName));
+      testAi4 = AtsClientService.get().createActionableItem(GUID.create(), getTitle("AI4", postFixName));
       testAi4.setActive(true);
       testAi4.setActionable(true);
-      AtsConfigCache.instance.cache(testAi4);
 
-      teamDef =
-         AtsConfigCache.instance.getTeamDefinitionFactory().createTeamDefinition(GUID.create(),
-            getTitle("Team Def", postFixName));
+      teamDef = AtsClientService.get().createTeamDefinition(GUID.create(), getTitle("Team Def", postFixName));
       teamDef.setWorkflowDefinition(WORK_DEF_NAME);
       teamDef.setActive(true);
       teamDef.getLeads().add(AtsUsersClient.getUser());
-      AtsConfigCache.instance.cache(teamDef);
 
       testAi.setTeamDefinition(teamDef);
       testAi2.setTeamDefinition(teamDef);
@@ -345,22 +331,18 @@ public class AtsTestUtil {
       testAi4.setTeamDefinition(teamDef);
 
       verArt1 =
-         AtsConfigCache.instance.getVersionFactory().createVersion(getTitle("ver 1.0", postFixName), GUID.create(),
+         AtsClientService.get().createVersion(getTitle("ver 1.0", postFixName), GUID.create(),
             HumanReadableId.generate());
       teamDef.getVersions().add(verArt1);
-      AtsConfigCache.instance.cache(verArt1);
 
-      verArt2 = AtsConfigCache.instance.getVersionFactory().createVersion(getTitle("ver 2.0", postFixName));
+      verArt2 = AtsClientService.get().createVersion(getTitle("ver 2.0", postFixName));
       teamDef.getVersions().add(verArt2);
-      AtsConfigCache.instance.cache(verArt2);
 
-      verArt3 = AtsConfigCache.instance.getVersionFactory().createVersion(getTitle("ver 3.0", postFixName));
+      verArt3 = AtsClientService.get().createVersion(getTitle("ver 3.0", postFixName));
       teamDef.getVersions().add(verArt3);
-      AtsConfigCache.instance.cache(verArt3);
 
-      verArt4 = AtsConfigCache.instance.getVersionFactory().createVersion(getTitle("ver 4.0", postFixName));
+      verArt4 = AtsClientService.get().createVersion(getTitle("ver 4.0", postFixName));
       teamDef.getVersions().add(verArt4);
-      AtsConfigCache.instance.cache(verArt4);
 
       actionArt =
          ActionManager.createAction(null, getTitle("Team WF", postFixName), "description", ChangeType.Improvement, "1",
@@ -469,6 +451,9 @@ public class AtsTestUtil {
     * of each test.
     */
    public static void cleanup() throws OseeCoreException {
+      WorldEditor.closeAll();
+      SMAEditor.closeAll();
+
       SkynetTransaction transaction1 =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
             AtsTestUtil.class.getSimpleName() + " - cleanup 1");
@@ -599,7 +584,7 @@ public class AtsTestUtil {
          if (peerRevArt == null) {
             peerRevArt =
                PeerToPeerReviewManager.createNewPeerToPeerReview(
-                  AtsClient.getWorkDefFactory().getDefaultPeerToPeerWorkflowDefinitionMatch().getWorkDefinition(),
+                  AtsClientService.get().getWorkDefinitionAdmin().getDefaultPeerToPeerWorkflowDefinitionMatch().getWorkDefinition(),
                   teamArt, AtsTestUtil.class.getSimpleName() + " Test Peer Review", relatedToState.getName(),
                   transaction);
          }

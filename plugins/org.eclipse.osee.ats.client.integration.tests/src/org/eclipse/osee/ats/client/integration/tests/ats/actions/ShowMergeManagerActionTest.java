@@ -14,9 +14,12 @@ import junit.framework.Assert;
 import org.eclipse.osee.ats.actions.ShowMergeManagerAction;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.After;
 import org.junit.Test;
 
 /**
@@ -24,10 +27,20 @@ import org.junit.Test;
  */
 public class ShowMergeManagerActionTest extends AbstractAtsActionRunTest {
 
+   private static Branch createdBranch = null;
+
+   @After
+   public void cleanup_closeMergeView() {
+      if (createdBranch != null) {
+         BranchManager.deleteBranchAndPend(createdBranch);
+      }
+   }
+
    @Override
    public ShowMergeManagerAction createAction() throws OseeCoreException {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
       Result result = AtsTestUtil.createWorkingBranchFromTeamWf();
+      createdBranch = AtsTestUtil.getTeamWf().getWorkingBranch();
       Assert.assertTrue(result.getText(), result.isTrue());
 
       ShowMergeManagerAction action = new ShowMergeManagerAction(AtsTestUtil.getTeamWf());

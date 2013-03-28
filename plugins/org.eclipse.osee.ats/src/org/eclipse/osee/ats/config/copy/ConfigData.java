@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -88,7 +89,7 @@ public class ConfigData {
       this.persistChanges = persistChanges;
    }
 
-   public IAtsTeamDefinition getParentTeamDef() {
+   public IAtsTeamDefinition getParentTeamDef() throws OseeCoreException {
       IAtsTeamDefinition parentTeamDef = null;
       if (teamDef.getParentTeamDef() != null) {
          parentTeamDef = teamDef.getParentTeamDef();
@@ -98,7 +99,7 @@ public class ConfigData {
       return parentTeamDef;
    }
 
-   public IAtsActionableItem getParentActionableItem() {
+   public IAtsActionableItem getParentActionableItem() throws OseeCoreException {
       IAtsActionableItem parentActionableItem = null;
       // Determine parent actionable item if possible, otherwise use top actionable item
       Collection<IAtsActionableItem> fromAias = teamDef.getActionableItems();

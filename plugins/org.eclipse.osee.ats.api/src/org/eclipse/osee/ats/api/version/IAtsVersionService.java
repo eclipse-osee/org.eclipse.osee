@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.version;
 
+import java.util.Collection;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.Identity;
@@ -24,6 +25,8 @@ public interface IAtsVersionService {
 
    IAtsVersion getTargetedVersion(Object object) throws OseeCoreException;
 
+   Collection<IAtsTeamWorkflow> getTargetedForTeamWorkflows(IAtsVersion verArt) throws OseeCoreException;
+
    IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, IAtsVersion version) throws OseeCoreException;
 
    IAtsVersion setTargetedVersionAndStore(IAtsTeamWorkflow teamWf, IAtsVersion build) throws OseeCoreException;
@@ -37,8 +40,6 @@ public interface IAtsVersionService {
    boolean isVersionLocked(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
    void removeTargetedVersion(IAtsTeamWorkflow teamWf) throws OseeCoreException;
-
-   void removeTargetedVersionAndStore(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
    IAtsVersion getById(Identity<String> id) throws OseeCoreException;
 

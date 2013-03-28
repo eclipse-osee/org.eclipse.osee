@@ -12,11 +12,11 @@ package org.eclipse.osee.ats.navigate;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.client.workflow.PriorityUtil;
-import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
@@ -35,6 +34,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -61,7 +62,15 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
       IAtsTeamDefinition useTeamDef = null;
       TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
       ld.setTitle(getName());
-      ld.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Both));
+
+      Set<IAtsTeamDefinition> teamReleaseableDefinitions = null;
+      try {
+         teamReleaseableDefinitions = TeamDefinitions.getTeamReleaseableDefinitions(Active.Both);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading team definitions", ex);
+      }
+
+      ld.setInput(teamReleaseableDefinitions);
       int result = ld.open();
       if (result == 0) {
          if (ld.getResult().length == 0) {

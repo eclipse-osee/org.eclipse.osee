@@ -10,7 +10,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.reports.efficiency.Activator;
+import org.eclipse.osee.ats.reports.efficiency.internal.Activator;
 import org.eclipse.osee.ats.reports.efficiency.team.TeamEfficiencyModel;
 import org.eclipse.osee.ats.reports.efficiency.team.VersionEfficiency;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;

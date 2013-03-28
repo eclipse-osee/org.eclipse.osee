@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.LazyObject;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
@@ -161,8 +162,15 @@ public class OrcsApiImpl implements OrcsApi {
       LazyObject<ArtifactReadable> systemUser = new LazyObject<ArtifactReadable>() {
 
          @Override
-         protected ArtifactReadable instance() throws OseeCoreException {
-            return getQueryFactory(context).fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+         protected final FutureTask<ArtifactReadable> createLoaderTask() {
+            Callable<ArtifactReadable> callable = new Callable<ArtifactReadable>() {
+               @Override
+               public ArtifactReadable call() throws Exception {
+                  return getQueryFactory(context).fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+
+               }
+            };
+            return new FutureTask<ArtifactReadable>(callable);
          }
       };
       return new OrcsBranchImpl(logger, sessionContext, dataStore.getBranchDataStore(), cacheService.getBranchCache(),

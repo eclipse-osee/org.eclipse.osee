@@ -18,6 +18,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -88,10 +89,10 @@ public class ActionableItems {
       }
    }
 
-   public static Set<IAtsActionableItem> getActionableItems(Collection<String> actionableItemNames) {
+   public static Set<IAtsActionableItem> getActionableItems(Collection<String> actionableItemNames) throws OseeCoreException {
       Set<IAtsActionableItem> aias = new HashSet<IAtsActionableItem>();
       for (String actionableItemName : actionableItemNames) {
-         for (IAtsActionableItem aia : AtsConfigCache.instance.get(IAtsActionableItem.class)) {
+         for (IAtsActionableItem aia : AtsCore.getAtsConfig().get(IAtsActionableItem.class)) {
             if (aia.getName().equals(actionableItemName)) {
                aias.add(aia);
             }
@@ -104,19 +105,19 @@ public class ActionableItems {
       return TeamDefinitions.getImpactedTeamDefs(aias);
    }
 
-   public static List<IAtsActionableItem> getActionableItems(Active active) {
-      return Collections.castAll(getActive(AtsConfigCache.instance.get(IAtsActionableItem.class), active));
+   public static List<IAtsActionableItem> getActionableItems(Active active) throws OseeCoreException {
+      return Collections.castAll(getActive(AtsCore.getAtsConfig().get(IAtsActionableItem.class), active));
    }
 
    public static String getNotActionableItemError(IAtsConfigObject configObject) {
       return "Action can not be written against " + configObject.getName() + " \"" + configObject + "\" (" + configObject.getHumanReadableId() + ").\n\nChoose another item.";
    }
 
-   public static IAtsActionableItem getTopActionableItem() {
-      return AtsConfigCache.instance.getSoleByGuid(TopActionableItemGuid, IAtsActionableItem.class);
+   public static IAtsActionableItem getTopActionableItem() throws OseeCoreException {
+      return AtsCore.getAtsConfig().getSoleByGuid(TopActionableItemGuid, IAtsActionableItem.class);
    }
 
-   public static List<IAtsActionableItem> getActionableItemsAll() {
+   public static List<IAtsActionableItem> getActionableItemsAll() throws OseeCoreException {
       return getActionableItems(Active.Both);
    }
 

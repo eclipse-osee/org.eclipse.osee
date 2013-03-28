@@ -21,7 +21,7 @@ public interface IAtsWorkDefinitionService {
 
    IAtsWorkDefinition getWorkDef(String id, XResultData resultData) throws Exception;
 
-   IAtsWorkDefinition copyWorkDefinition(String newName, IAtsWorkDefinition workDef, XResultData resultData, IAttributeResolver resolver, IUserResolver iUserResolver);
+   IAtsWorkDefinition copyWorkDefinition(String newName, IAtsWorkDefinition workDef, XResultData resultData);
 
    boolean isStateWeightingEnabled(IAtsWorkDefinition workDef);
 

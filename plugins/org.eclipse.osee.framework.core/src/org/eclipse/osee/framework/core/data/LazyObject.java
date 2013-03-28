@@ -10,34 +10,41 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public abstract class LazyObject<T> {
-   private volatile T val;
+   private final AtomicReference<FutureTask<T>> loaderReference = new AtomicReference<FutureTask<T>>();
+   private final AtomicReference<T> instanceReference = new AtomicReference<T>();
 
-   T result = val;
-
-   public T get() throws OseeCoreException {
-      if (result == null) {
-         synchronized (this) {
-            result = val;
-            if (result == null) {
-               val = result = instance();
-            }
+   public final T get() throws OseeCoreException {
+      T cache = instanceReference.get();
+      if (cache == null) {
+         FutureTask<T> newTask = createLoaderTask();
+         if (loaderReference.compareAndSet(null, newTask)) {
+            newTask.run();
+         }
+         FutureTask<T> task = loaderReference.get();
+         try {
+            cache = task.get();
+            instanceReference.set(cache);
+         } catch (Exception ex) {
+            OseeExceptions.wrapAndThrow(ex);
          }
       }
-      return result;
+      return cache;
    }
 
-   public void set(T t) {
-      val = t;
+   public final void invalidate() {
+      loaderReference.set(null);
+      instanceReference.set(null);
    }
 
-   protected void invalidate() {
-      synchronized (this) {
-         val = result = null;
-      }
-   }
+   protected abstract FutureTask<T> createLoaderTask();
 
-   protected abstract T instance() throws OseeCoreException;
 }

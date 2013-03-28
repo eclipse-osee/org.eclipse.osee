@@ -24,11 +24,8 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
-import org.eclipse.osee.ats.core.client.config.AtsLoadConfigArtifactsOperation;
-import org.eclipse.osee.ats.core.client.config.store.ActionableItemArtifactStore;
-import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
-import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -116,7 +113,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
     * @param transaction
     */
    protected IAtsActionableItem createActionableItems(SkynetTransaction transaction, IAtsActionableItem fromAi, IAtsActionableItem parentAi) throws OseeCoreException {
-      Artifact fromAiArt = new ActionableItemArtifactStore(fromAi).getArtifact();
+      Artifact fromAiArt = AtsClientService.get().getConfigArtifact(fromAi);
 
       if (processedFromAis.contains(fromAiArt)) {
          resultData.log(String.format("Skipping already processed fromAi [%s]", fromAiArt));
@@ -124,12 +121,11 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       } else {
          processedFromAis.add(fromAiArt);
       }
-      ActionableItemArtifactStore parentAiStore = new ActionableItemArtifactStore(parentAi);
-      Artifact parentAiArt = parentAiStore.getArtifactOrCreate(transaction);
+      Artifact parentAiArt = AtsClientService.get().storeConfigObject(parentAi, transaction);
 
       // Get or create new team definition
       Artifact newAiArt = duplicateTeamDefinitionOrActionableItem(fromAiArt);
-      IAtsActionableItem newAi = new ActionableItemArtifactStore(newAiArt, AtsConfigCache.instance).getActionableItem();
+      IAtsActionableItem newAi = AtsClientService.get().getConfigObject(newAiArt);
       newAi.setParentActionableItem(parentAi);
       parentAi.getChildrenActionableItems().add(newAi);
 
@@ -140,9 +136,10 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       for (Artifact fromTeamDefArt : fromAiArt.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_Team,
          Artifact.class)) {
          IAtsConfigObject fromTeamDef =
-            AtsConfigCache.instance.getSoleByGuid(fromTeamDefArt.getGuid(), IAtsTeamDefinition.class);
+            AtsClientService.get().getAtsConfig().getSoleByGuid(fromTeamDefArt.getGuid(),
+               IAtsTeamDefinition.class);
          IAtsTeamDefinition newTeamDef = fromTeamDefToNewTeamDefMap.get(fromTeamDef);
-         Artifact newTeamDefArt = new TeamDefinitionArtifactStore(newTeamDef).getArtifact();
+         Artifact newTeamDefArt = AtsClientService.get().getConfigArtifact(newTeamDef);
 
          if (newTeamDef == null) {
             resultData.logWarningWithFormat(
@@ -154,26 +151,25 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
             newTeamDefArt.persist(transaction);
          }
       }
+
       // Handle all children
-      ActionableItemArtifactStore newAiArtStore = new ActionableItemArtifactStore(newAiArt, AtsConfigCache.instance);
       for (Artifact childFromAiArt : fromAiArt.getChildren()) {
          if (childFromAiArt.isOfType(AtsArtifactTypes.ActionableItem)) {
-            ActionableItemArtifactStore childFromAiArtStore = new ActionableItemArtifactStore(childFromAiArt, AtsConfigCache.instance);
-            createActionableItems(transaction, childFromAiArtStore.getActionableItem(),
-               newAiArtStore.getActionableItem());
+            IAtsActionableItem childAi = AtsClientService.get().getConfigObject(childFromAiArt);
+            IAtsActionableItem newChildAi = AtsClientService.get().getConfigObject(newAiArt);
+            createActionableItems(transaction, childAi, newChildAi);
          }
       }
-      return newAiArtStore.getActionableItem();
+      return newAi;
    }
 
    protected IAtsTeamDefinition createTeamDefinitions(SkynetTransaction transaction, IAtsTeamDefinition fromTeamDef, IAtsTeamDefinition parentTeamDef) throws OseeCoreException {
       // Get or create new team definition
-      Artifact parentTeamDefArt = new TeamDefinitionArtifactStore(parentTeamDef).getArtifact();
-      Artifact fromTeamDefArt = new TeamDefinitionArtifactStore(fromTeamDef).getArtifact();
+      Artifact parentTeamDefArt = AtsClientService.get().getConfigArtifact(parentTeamDef);
+      Artifact fromTeamDefArt = AtsClientService.get().getConfigArtifact(fromTeamDef);
 
       Artifact newTeamDefArt = duplicateTeamDefinitionOrActionableItem(fromTeamDefArt);
-      TeamDefinitionArtifactStore newTeamDefStore = new TeamDefinitionArtifactStore(newTeamDefArt, AtsConfigCache.instance);
-      IAtsTeamDefinition newTeamDef = newTeamDefStore.getTeamDefinition();
+      IAtsTeamDefinition newTeamDef = AtsClientService.get().getConfigObject(newTeamDefArt);
 
       parentTeamDefArt.addChild(newTeamDefArt);
       existingArtifacts.add(parentTeamDefArt);
@@ -185,9 +181,9 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       // handle all children
       for (Artifact childFromTeamDefArt : fromTeamDefArt.getChildren()) {
          if (childFromTeamDefArt.isOfType(AtsArtifactTypes.TeamDefinition)) {
-            IAtsTeamDefinition childFromTeamDef =
-               new TeamDefinitionArtifactStore(childFromTeamDefArt, AtsConfigCache.instance).getTeamDefinition();
-            AtsConfigCache.instance.getSoleByGuid(childFromTeamDefArt.getGuid(), IAtsTeamDefinition.class);
+            IAtsTeamDefinition childFromTeamDef = AtsClientService.get().getConfigObject(childFromTeamDefArt);
+            AtsClientService.get().getAtsConfig().getSoleByGuid(childFromTeamDefArt.getGuid(),
+               IAtsTeamDefinition.class);
             createTeamDefinitions(transaction, childFromTeamDef, newTeamDef);
          }
       }
@@ -195,8 +191,8 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
    }
 
    private void duplicateTeamLeadsAndMembers(IAtsTeamDefinition fromTeamDef, IAtsTeamDefinition newTeamDef) throws OseeCoreException {
-      Artifact fromTeamDefArt = new TeamDefinitionArtifactStore(fromTeamDef).getArtifact();
-      Artifact newTeamDefArt = new TeamDefinitionArtifactStore(newTeamDef).getArtifact();
+      Artifact fromTeamDefArt = AtsClientService.get().getConfigArtifact(fromTeamDef);
+      Artifact newTeamDefArt = AtsClientService.get().getConfigArtifact(newTeamDef);
 
       Collection<Artifact> leads = newTeamDefArt.getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead);
       for (Artifact user : fromTeamDefArt.getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead)) {
@@ -229,8 +225,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
             art.persist(transaction);
          }
          transaction.execute();
-         AtsLoadConfigArtifactsOperation operation = new AtsLoadConfigArtifactsOperation();
-         operation.forceReload();
+         AtsClientService.get().invalidateConfigCache();
       } else {
          resultData.log("\n\nCleanup of created / modified artifacts\n\n");
          for (Artifact artifact : newArtifacts) {

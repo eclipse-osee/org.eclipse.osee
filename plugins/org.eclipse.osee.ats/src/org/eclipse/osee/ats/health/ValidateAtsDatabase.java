@@ -39,10 +39,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.core.client.AtsClient;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
-import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
-import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.AtsReviewCache;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
@@ -51,18 +48,17 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
-import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.log.AtsLog;
 import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
 import org.eclipse.osee.ats.core.client.workflow.log.LogType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
-import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -168,7 +164,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    public void runIt(IProgressMonitor monitor, XResultData xResultData) throws OseeCoreException {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
-      AtsBulkLoad.loadConfig(true);
 
       int count = 0;
       // Break artifacts into blocks so don't run out of memory
@@ -534,7 +529,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       for (Artifact artifact : artifacts) {
          try {
             String workDefName = artifact.getSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, "");
-            if (Strings.isValid(workDefName) && AtsClient.getWorkDefFactory().getWorkDefinition(workDefName) == null) {
+            if (Strings.isValid(workDefName) && AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinition(
+               workDefName) == null) {
                testNameToResultsMap.put(
                   "testAttributeSetWorkDefinitionsExist",
                   String.format(
@@ -628,14 +624,15 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       testNameToTimeSpentMap.put(testName, spent);
    }
 
-   public static void testVersionArtifacts(Collection<Artifact> artifacts, HashCollection<String, String> testNameToResultsMap, CountingMap<String> testNameToTimeSpentMap) {
+   public static void testVersionArtifacts(Collection<Artifact> artifacts, HashCollection<String, String> testNameToResultsMap, CountingMap<String> testNameToTimeSpentMap) throws OseeCoreException {
       Date date = new Date();
       for (Artifact artifact : artifacts) {
          if (artifact.isDeleted()) {
             continue;
          }
          if (artifact.isOfType(AtsArtifactTypes.Version)) {
-            IAtsVersion version = AtsConfigCache.instance.getSoleByGuid(artifact.getGuid(), IAtsVersion.class);
+            IAtsVersion version =
+               AtsClientService.get().getAtsConfig().getSoleByGuid(artifact.getGuid(), IAtsVersion.class);
             if (version != null) {
                try {
                   String parentBranchGuid = version.getBaslineBranchGuid();
@@ -659,14 +656,15 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       logTestTimeSpent(date, "testVersionArtifacts", testNameToTimeSpentMap);
    }
 
-   public static void testParallelConfig(List<Artifact> artifacts, HashCollection<String, String> testNameToResultsMap, CountingMap<String> testNameToTimeSpentMap) {
+   public static void testParallelConfig(List<Artifact> artifacts, HashCollection<String, String> testNameToResultsMap, CountingMap<String> testNameToTimeSpentMap) throws OseeCoreException {
       Date date = new Date();
       for (Artifact artifact : artifacts) {
          if (artifact.isDeleted()) {
             continue;
          }
          if (artifact.isOfType(AtsArtifactTypes.Version)) {
-            IAtsVersion version = AtsConfigCache.instance.getSoleByGuid(artifact.getGuid(), IAtsVersion.class);
+            IAtsVersion version =
+               AtsClientService.get().getAtsConfig().getSoleByGuid(artifact.getGuid(), IAtsVersion.class);
             for (IAtsVersion parallelVersion : version.getParallelVersions()) {
                if (parallelVersion != null) {
                   try {
@@ -688,14 +686,15 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       logTestTimeSpent(date, "testParallelConfig", testNameToTimeSpentMap);
    }
 
-   public static void testTeamDefinitions(Collection<Artifact> artifacts, HashCollection<String, String> testNameToResultsMap, CountingMap<String> testNameToTimeSpentMap) {
+   public static void testTeamDefinitions(Collection<Artifact> artifacts, HashCollection<String, String> testNameToResultsMap, CountingMap<String> testNameToTimeSpentMap) throws OseeCoreException {
       Date date = new Date();
       for (Artifact art : artifacts) {
          if (art.isDeleted()) {
             continue;
          }
          if (art.isOfType(AtsArtifactTypes.TeamDefinition)) {
-            IAtsTeamDefinition teamDef = AtsConfigCache.instance.getSoleByGuid(art.getGuid(), IAtsTeamDefinition.class);
+            IAtsTeamDefinition teamDef =
+               AtsClientService.get().getAtsConfig().getSoleByGuid(art.getGuid(), IAtsTeamDefinition.class);
             try {
                String parentBranchGuid = teamDef.getBaslineBranchGuid();
                if (Strings.isValid(parentBranchGuid)) {
@@ -742,10 +741,10 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       logTestTimeSpent(date, "testTeamWorkflows", testNameToTimeSpentMap);
    }
 
-   private List<String> getInvalidGuids(List<String> guids) {
+   private List<String> getInvalidGuids(List<String> guids) throws OseeCoreException {
       List<String> badGuids = new ArrayList<String>();
       for (String guid : guids) {
-         if (AtsConfigCache.instance.getSoleByGuid(guid) == null) {
+         if (AtsClientService.get().getAtsConfig().getSoleByGuid(guid) == null) {
             badGuids.add(guid);
          }
       }
@@ -962,8 +961,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      if (!teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions().getVersions().contains(verArt)) {
                         testNameToResultsMap.put(
                            "testAtsWorkflowsHaveZeroOrOneVersion",
-                           "Error: Team workflow " + XResultDataUI.getHyperlink(teamArt) + " has version" + XResultDataUI.getHyperlink(teamArt) + " that does not belong to teamDefHoldingVersions" + XResultDataUI.getHyperlink(new TeamDefinitionArtifactStore(
-                              teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions()).getArtifact()));
+                           "Error: Team workflow " + XResultDataUI.getHyperlink(teamArt) + " has version" + XResultDataUI.getHyperlink(teamArt) + " that does not belong to teamDefHoldingVersions" + XResultDataUI.getHyperlink(AtsClientService.get().getConfigArtifact(
+                              teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions())));
                      }
                   }
                }
@@ -991,8 +990,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   if (!teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions().getVersions().contains(verArt)) {
                      testNameToResultsMap.put(
                         "testAtsWorkflowsValidVersion",
-                        "Error: Team workflow " + XResultDataUI.getHyperlink(teamArt) + " has version" + XResultDataUI.getHyperlink(artifact) + " that does not belong to teamDefHoldingVersions" + XResultDataUI.getHyperlink(new TeamDefinitionArtifactStore(
-                           teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions()).getArtifact()));
+                        "Error: Team workflow " + XResultDataUI.getHyperlink(teamArt) + " has version" + XResultDataUI.getHyperlink(artifact) + " that does not belong to teamDefHoldingVersions" + XResultDataUI.getHyperlink(AtsClientService.get().getConfigArtifact(
+                           teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions())));
                   }
                }
             }
@@ -1037,7 +1036,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          try {
             if (artifact.isOfType(AtsArtifactTypes.ActionableItem)) {
                IAtsActionableItem aia =
-                  AtsConfigCache.instance.getSoleByGuid(artifact.getGuid(), IAtsActionableItem.class);
+                  AtsClientService.get().getAtsConfig().getSoleByGuid(artifact.getGuid(), IAtsActionableItem.class);
                if (aia.isActionable() && TeamDefinitions.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {
                   testNameToResultsMap.put(
                      "testActionableItemToTeamDefinition",

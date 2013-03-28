@@ -25,12 +25,12 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.core.client.config.VersionsClient;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.column.ImplementersColumn;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.util.widgets.dialog.AtsObjectMultiChoiceSelect;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -92,7 +92,8 @@ public class TaskMetrics extends AbstractBlam {
          if (!versionArtifacts.isEmpty()) {
             Set<Artifact> teamWorkflows = new HashSet<Artifact>();
             for (IAtsObject version : versionArtifacts) {
-               teamWorkflows.addAll(VersionsClient.getTargetedForTeamWorkflows((IAtsVersion) version));
+               teamWorkflows.addAll(AtsClientService.get().getAtsVersionService().getTargetedForTeamWorkflowArtifacts(
+                  (IAtsVersion) version));
             }
 
             for (Artifact art : teamWorkflows) {

@@ -24,19 +24,16 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.config.AtsConfigOperation;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
-import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
-import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
-import org.eclipse.osee.ats.core.client.config.store.VersionArtifactStore;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.config.ActionableItems;
-import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.util.AtsBranchManager;
@@ -97,8 +94,6 @@ public class AtsBranchConfigurationTest {
       if (AtsUtil.isProductionDb()) {
          throw new IllegalStateException("BranchConfigThroughTeamDefTest should not be run on production DB");
       }
-      AtsBulkLoad.loadConfig(true);
-
    }
 
    @org.junit.Test
@@ -152,8 +147,10 @@ public class AtsBranchConfigurationTest {
       versionToTarget.setAllowCommitBranch(true);
       versionToTarget.setAllowCreateBranch(true);
 
-      VersionArtifactStore verStore = new VersionArtifactStore(versionToTarget);
-      verStore.save(getClass().getSimpleName());
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtil.getAtsBranchToken(), getClass().getSimpleName());
+      AtsClientService.get().storeConfigObject(versionToTarget, transaction);
+      transaction.execute();
 
       TestUtil.sleep(2000);
 
@@ -167,8 +164,7 @@ public class AtsBranchConfigurationTest {
          ActionableItems.getActionableItems(appendToName(BRANCH_VIA_VERSIONS, "A1"));
       assertFalse(selectedActionableItems.isEmpty());
 
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
+      transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
       Artifact actionArt =
          ActionManager.createAction(null, BRANCH_VIA_VERSIONS.getName() + " Req Changes", "description",
             ChangeType.Problem, "1", false, null, selectedActionableItems, new Date(), AtsUsersClient.getUser(), null,
@@ -266,7 +262,10 @@ public class AtsBranchConfigurationTest {
       // setup team def to allow create/commit of branch
       teamDef.setAllowCommitBranch(true);
       teamDef.setAllowCreateBranch(true);
-      new TeamDefinitionArtifactStore(teamDef).save(getClass().getSimpleName());
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtil.getAtsBranchToken(), getClass().getSimpleName());
+      AtsClientService.get().storeConfigObject(teamDef, transaction);
+      transaction.execute();
 
       TestUtil.sleep(2000);
 
@@ -278,7 +277,7 @@ public class AtsBranchConfigurationTest {
          ActionableItems.getActionableItems(appendToName(BRANCH_VIA_TEAM_DEFINITION, "A1"));
       assertFalse(selectedActionableItems.isEmpty());
 
-      SkynetTransaction transaction =
+      transaction =
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Test branch via team definition: create action");
       String actionTitle = BRANCH_VIA_TEAM_DEFINITION.getName() + " Req Changes";
       Artifact actionArt =
@@ -345,14 +344,14 @@ public class AtsBranchConfigurationTest {
       // Delete VersionArtifacts
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
-      for (IAtsVersion version : AtsConfigCache.instance.get(IAtsVersion.class)) {
+      for (IAtsVersion version : AtsClientService.get().getAtsConfig().get(IAtsVersion.class)) {
          if (version.getName().contains(branch.getName())) {
-            Artifact artifact = new VersionArtifactStore(version).getArtifact();
+            Artifact artifact = AtsClientService.get().getConfigArtifact(version);
             if (artifact != null) {
                artifact.deleteAndPersist(transaction);
             }
          }
-         AtsConfigCache.instance.decache(version);
+         AtsClientService.get().getAtsConfig().invalidate(version);
       }
       transaction.execute();
 
@@ -361,8 +360,8 @@ public class AtsBranchConfigurationTest {
       for (Artifact teamDefArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.TeamDefinition,
          branch.getName(), AtsUtil.getAtsBranchToken())) {
          teamDefArt.deleteAndPersist(transaction, false);
-         AtsConfigCache.instance.decache(AtsConfigCache.instance.getSoleByGuid(teamDefArt.getGuid(),
-            IAtsTeamDefinition.class));
+         AtsClientService.get().getAtsConfig().invalidate(
+            AtsClientService.get().getAtsConfig().getSoleByGuid(teamDefArt.getGuid(), IAtsTeamDefinition.class));
       }
       transaction.execute();
 
@@ -372,11 +371,11 @@ public class AtsBranchConfigurationTest {
          branch.getName(), AtsUtil.getAtsBranchToken())) {
          for (Artifact childArt : aiaArt.getChildren()) {
             childArt.deleteAndPersist(transaction, false);
-            AtsConfigCache.instance.decache(AtsConfigCache.instance.getSoleByGuid(childArt.getGuid(),
-               IAtsActionableItem.class));
+            AtsClientService.get().getAtsConfig().invalidate(
+               AtsClientService.get().getAtsConfig().getSoleByGuid(childArt.getGuid(), IAtsActionableItem.class));
          }
-         AtsConfigCache.instance.decache(AtsConfigCache.instance.getSoleByGuid(aiaArt.getGuid(),
-            IAtsActionableItem.class));
+         AtsClientService.get().getAtsConfig().invalidate(
+            AtsClientService.get().getAtsConfig().getSoleByGuid(aiaArt.getGuid(), IAtsActionableItem.class));
          transaction.execute();
       }
 

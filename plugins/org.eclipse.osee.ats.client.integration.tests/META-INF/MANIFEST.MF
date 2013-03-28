@@ -44,3 +44,6 @@ Import-Package: org.eclipse.nebula.widgets.xviewer,
  org.eclipse.osee.framework.ui.plugin.xnavigate,
  org.eclipse.osee.framework.ui.swt,
  org.osgi.framework
+Service-Component: OSGI-INF/*.xml
+Bundle-ActivationPolicy: lazy
+

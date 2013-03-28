@@ -27,9 +27,9 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.AtsClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -188,7 +188,7 @@ public final class AtsWorkDefinitionDslRenderer extends FileSystemRenderer {
             String dslStr = Lib.fileToString(file);
             saveArt.setSoleAttributeValue(AtsAttributeTypes.DslSheet, dslStr);
             saveArt.persist(getName());
-            AtsClient.getWorkDefFactory().clearCaches();
+            AtsClientService.get().getWorkDefinitionAdmin().clearCaches();
          }
 
       }

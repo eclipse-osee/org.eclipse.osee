@@ -16,6 +16,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.Properties;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.LazyObject;
 import org.eclipse.osee.framework.database.internal.core.PoolFactory.PoolConfiguration;
@@ -47,13 +49,6 @@ public final class PoolConfigurationProvider extends LazyObject<PoolConfiguratio
       return configUri;
    }
 
-   @Override
-   protected PoolConfiguration instance() {
-      URL userURL = getUserSpecifiedConfigURL();
-      Properties props = readConfig(userURL);
-      return new PoolConfiguration(props);
-   }
-
    private Properties readConfig(URL url) {
       Properties props = new Properties();
 
@@ -70,6 +65,19 @@ public final class PoolConfigurationProvider extends LazyObject<PoolConfiguratio
          }
       }
       return props;
+   }
+
+   @Override
+   protected FutureTask<PoolConfiguration> createLoaderTask() {
+      Callable<PoolConfiguration> callable = new Callable<PoolConfiguration>() {
+         @Override
+         public PoolConfiguration call() throws Exception {
+            URL userURL = getUserSpecifiedConfigURL();
+            Properties props = readConfig(userURL);
+            return new PoolConfiguration(props);
+         }
+      };
+      return new FutureTask<PoolConfiguration>(callable);
    }
 
 }

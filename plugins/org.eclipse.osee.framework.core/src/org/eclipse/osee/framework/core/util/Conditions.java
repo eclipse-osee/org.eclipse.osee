@@ -162,4 +162,11 @@ public final class Conditions {
          throw new OseeArgumentException("object is not an array or a collection");
       }
    }
+
+   public static void checkNotNullOrEmptyOrContainNull(Collection<? extends Object> collection, String objectName) throws OseeCoreException {
+      checkNotNullOrEmpty(collection, objectName);
+      for (Object object : collection) {
+         checkNotNull(object, objectName);
+      }
+   }
 }

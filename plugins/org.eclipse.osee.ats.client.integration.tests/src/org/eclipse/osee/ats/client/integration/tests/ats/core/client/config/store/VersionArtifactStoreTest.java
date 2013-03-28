@@ -18,9 +18,10 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.core.client.config.store.VersionArtifactStore;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
+import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -40,15 +41,15 @@ public class VersionArtifactStoreTest {
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranchToken(),
             VersionArtifactStoreTest.class.getSimpleName() + " - cleanup");
 
-      AtsConfigCache instance = AtsConfigCache.instance;
+      IAtsConfig config = AtsClientService.get().getAtsConfig();
       for (String name : Arrays.asList("VersionArtifactStoreTest - version 1", "VersionArtifactStoreTest - version 2",
          "VersionArtifactStoreTest - version 3")) {
          for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.Version, name,
             AtsUtilCore.getAtsBranchToken())) {
             art.deleteAndPersist(transaction);
 
-            IAtsConfigObject soleByGuid = instance.getSoleByGuid(art.getGuid());
-            instance.decache(soleByGuid);
+            IAtsConfigObject soleByGuid = config.getSoleByGuid(art.getGuid());
+            config.invalidate(soleByGuid);
          }
       }
       transaction.execute();
@@ -56,14 +57,13 @@ public class VersionArtifactStoreTest {
 
    @Test
    public void testLoadFromArtifact() throws OseeCoreException {
-      AtsConfigCache cache = new AtsConfigCache();
+      IAtsConfig cache = new AtsConfigCache();
 
       Artifact verArt = ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtilCore.getAtsBranchToken());
       verArt.setName("VersionArtifactStoreTest - version 1");
       verArt.persist(getClass().getSimpleName());
 
-      VersionArtifactStore store = new VersionArtifactStore(verArt, cache);
-      IAtsVersion version = store.getVersion();
+      IAtsVersion version = AtsClientService.get().getConfigObject(verArt);
       Assert.assertEquals("VersionArtifactStoreTest - version 1", version.getName());
       Assert.assertFalse(version.isAllowCommitBranch());
       Assert.assertFalse(version.isAllowCreateBranch());
@@ -87,8 +87,7 @@ public class VersionArtifactStoreTest {
       verArt.setSoleAttributeValue(AtsAttributeTypes.ReleaseDate, releaseDate);
       verArt.persist(getClass().getSimpleName());
 
-      store = new VersionArtifactStore(verArt, cache);
-      version = store.getVersion();
+      version = AtsClientService.get().getConfigObject(verArt);
       Assert.assertEquals("VersionArtifactStoreTest - version 1", version.getName());
       Assert.assertTrue(version.isAllowCommitBranch());
       Assert.assertTrue(version.isAllowCreateBranch());
@@ -103,7 +102,7 @@ public class VersionArtifactStoreTest {
 
    @Test
    public void testSaveToArtifact() throws OseeCoreException {
-      AtsConfigCache cache = new AtsConfigCache();
+      IAtsConfig cache = new AtsConfigCache();
 
       Artifact verArt = ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtilCore.getAtsBranchToken());
       verArt.setName("VersionArtifactStoreTest - version 2");
@@ -114,8 +113,7 @@ public class VersionArtifactStoreTest {
       verArt.addRelation(AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition, teamDef);
       verArt.persist(getClass().getSimpleName());
 
-      VersionArtifactStore store = new VersionArtifactStore(verArt, cache);
-      IAtsVersion version = store.getVersion();
+      IAtsVersion version = AtsClientService.get().getConfigObject(verArt);
 
       version.setAllowCommitBranch(true);
       version.setAllowCreateBranch(true);
@@ -132,11 +130,10 @@ public class VersionArtifactStoreTest {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranchToken(),
             VersionArtifactStoreTest.class.getSimpleName() + " - testSaveToArtifact");
-      store.saveToArtifact(transaction);
+      AtsClientService.get().storeConfigObject(version, transaction);
       transaction.execute();
 
-      store = new VersionArtifactStore(version);
-      Artifact saveArt = store.getArtifact();
+      Artifact saveArt = AtsClientService.get().getConfigArtifact(version);
       Assert.assertEquals("VersionArtifactStoreTest - version 3", version.getName());
       Assert.assertTrue(saveArt.getSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, true));
       Assert.assertTrue(saveArt.getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, true));

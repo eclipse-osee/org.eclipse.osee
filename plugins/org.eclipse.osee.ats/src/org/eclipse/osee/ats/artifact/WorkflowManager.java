@@ -34,8 +34,8 @@ import org.eclipse.osee.ats.core.client.workflow.PriorityUtil;
 import org.eclipse.osee.ats.core.client.workflow.StateManager;
 import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
@@ -317,7 +317,7 @@ public class WorkflowManager {
 
    public static List<StateXWidgetPage> getStatePagesOrderedByOrdinal(AbstractWorkflowArtifact awa) {
       List<StateXWidgetPage> statePages = new ArrayList<StateXWidgetPage>();
-      for (IAtsStateDefinition stateDefinition : AtsWorkDefinitionService.getService().getStatesOrderedByOrdinal(
+      for (IAtsStateDefinition stateDefinition : AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByOrdinal(
          awa.getWorkDefinition())) {
          try {
             StateXWidgetPage statePage =
@@ -334,7 +334,7 @@ public class WorkflowManager {
 
    public static List<StateXWidgetPage> getStatePagesOrderedByDefaultToState(AbstractWorkflowArtifact awa) {
       List<StateXWidgetPage> statePages = new ArrayList<StateXWidgetPage>();
-      for (IAtsStateDefinition stateDefinition : AtsWorkDefinitionService.getService().getStatesOrderedByDefaultToState(
+      for (IAtsStateDefinition stateDefinition : AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByDefaultToState(
          awa.getWorkDefinition())) {
          try {
             StateXWidgetPage statePage =
@@ -347,5 +347,4 @@ public class WorkflowManager {
       }
       return statePages;
    }
-
 }

@@ -17,9 +17,9 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
-import org.eclipse.osee.ats.core.client.config.store.ActionableItemArtifactStore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -77,7 +77,7 @@ public class ActionableItemOwner extends XViewerAtsColumn implements IXViewerVal
          TeamWorkFlowArtifact teamArt = ((AbstractWorkflowArtifact) element).getParentTeamWorkflow();
          if (teamArt != null) {
             for (IAtsActionableItem aia : teamArt.getActionableItemsDam().getActionableItems()) {
-               users.addAll(new ActionableItemArtifactStore(aia).getArtifact().getRelatedArtifacts(
+               users.addAll(AtsClientService.get().getConfigArtifact(aia).getRelatedArtifacts(
                   AtsRelationTypes.ActionableItem_User, User.class));
             }
          }

@@ -25,10 +25,10 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.config.ActionableItems;
-import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsObjectLabelProvider;
 import org.eclipse.osee.ats.util.widgets.dialog.AITreeContentProvider;
 import org.eclipse.osee.ats.util.widgets.dialog.AtsObjectNameSorter;
@@ -178,8 +178,8 @@ public class NewActionPage1 extends WizardPage {
          ((XText) getXWidget("Title")).set("tt");
          if (atsAi == null) {
             atsAi =
-               AtsConfigCache.instance.getSoleByGuid(ATS_Actionable_Item_Guid_For_Training_And_Demos,
-                  IAtsActionableItem.class);
+               AtsClientService.get().getAtsConfig().getSoleByGuid(
+                  ATS_Actionable_Item_Guid_For_Training_And_Demos, IAtsActionableItem.class);
             if (atsAi != null) {
                treeViewer.getViewer().setSelection(new StructuredSelection(Arrays.asList(atsAi)));
                treeViewer.setInitalChecked(Arrays.asList(atsAi));

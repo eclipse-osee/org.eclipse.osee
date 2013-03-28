@@ -10,16 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client;
 
+import org.eclipse.osee.ats.core.client.internal.config.InternalConfigTestSuite;
+import org.eclipse.osee.ats.core.client.internal.workdef.WorkDefTestSuite;
 import org.eclipse.osee.ats.core.client.review.ReviewTestSuite;
 import org.eclipse.osee.ats.core.client.workflow.WorkflowSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ReviewTestSuite.class, WorkflowSuite.class})
 /**
  * @author Donald G. Dunne
  */
+@RunWith(Suite.class)
+@Suite.SuiteClasses({InternalConfigTestSuite.class, ReviewTestSuite.class, WorkDefTestSuite.class, WorkflowSuite.class})
 public class AllAtsCoreClientTestSuite {
    // Test Suite
 }

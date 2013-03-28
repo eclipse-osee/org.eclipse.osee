@@ -24,8 +24,8 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.config.AtsConfigOperation;
 import org.eclipse.osee.ats.config.AtsConfigOperation.Display;
-import org.eclipse.osee.ats.core.client.config.AtsObjectsClient;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -84,9 +84,11 @@ public class AtsConfigWizard extends Wizard implements INewWizard {
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
                try {
-                  AtsUtil.openATSAction(AtsObjectsClient.getSoleArtifact(teamDef), AtsOpenOption.OpenAll);
+                  AtsUtil.openATSAction(AtsClientService.get().getConfigArtifact(teamDef),
+                     AtsOpenOption.OpenAll);
                   for (IAtsActionableItem aia : aias) {
-                     AtsUtil.openATSAction(AtsObjectsClient.getSoleArtifact(aia), AtsOpenOption.OpenAll);
+                     AtsUtil.openATSAction(AtsClientService.get().getConfigArtifact(aia),
+                        AtsOpenOption.OpenAll);
                   }
                   RendererManager.open(ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition,
                      workDefinition.getName(), AtsUtil.getAtsBranch()), PresentationType.SPECIALIZED_EDIT, monitor);

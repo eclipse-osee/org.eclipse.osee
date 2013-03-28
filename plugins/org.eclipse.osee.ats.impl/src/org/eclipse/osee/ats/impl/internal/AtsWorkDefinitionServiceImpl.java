@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionStore;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IUserResolver;
 import org.eclipse.osee.ats.dsl.ModelUtil;
@@ -40,10 +41,34 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
-   Map<String, IAtsWorkDefinition> workDefIdToWorkDef;
+   private Map<String, IAtsWorkDefinition> workDefIdToWorkDef;
+
+   private IAtsWorkDefinitionStore store;
+   private IAttributeResolver attrResolver;
+   private IUserResolver userResolver;
+
+   public void setAtsWorkDefinitionStore(IAtsWorkDefinitionStore store) {
+      this.store = store;
+   }
+
+   public void setAttributeResolver(IAttributeResolver attrResolver) {
+      this.attrResolver = attrResolver;
+   }
+
+   public void setUserResolver(IUserResolver userResolver) {
+      this.userResolver = userResolver;
+   }
+
+   public void start() {
+      // Do nothing
+   }
+
+   public void stop() {
+      workDefIdToWorkDef = null;
+   }
 
    @Override
-   public IAtsWorkDefinition copyWorkDefinition(String newName, IAtsWorkDefinition workDef, XResultData resultData, IAttributeResolver attrResolver, IUserResolver userResolver) {
+   public IAtsWorkDefinition copyWorkDefinition(String newName, IAtsWorkDefinition workDef, XResultData resultData) {
       ConvertWorkDefinitionToAtsDsl converter = new ConvertWorkDefinitionToAtsDsl(resultData);
       AtsDsl atsDsl = converter.convert(newName, workDef);
 
@@ -80,14 +105,12 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    private void ensureLoaded(XResultData resultData) throws Exception {
       if (workDefIdToWorkDef == null) {
          workDefIdToWorkDef = new HashMap<String, IAtsWorkDefinition>(15);
-         for (Pair<String, String> entry : AtsWorkDefinitionStore.getService().getWorkDefinitionStrings()) {
+         for (Pair<String, String> entry : store.getWorkDefinitionStrings()) {
             String name = entry.getFirst();
             String workDefStr = entry.getSecond();
             AtsDsl atsDsl = ModelUtil.loadModel(name + ".ats", workDefStr);
             ConvertAtsDslToWorkDefinition convert =
-               new ConvertAtsDslToWorkDefinition(name, atsDsl, resultData,
-                  AtsWorkDefinitionStore.getService().getAttributeResolver(),
-                  AtsWorkDefinitionStore.getService().getUserResolver());
+               new ConvertAtsDslToWorkDefinition(name, atsDsl, resultData, attrResolver, userResolver);
             IAtsWorkDefinition workDef = convert.convert();
             if (workDefIdToWorkDef != null) {
                workDefIdToWorkDef.put(name, workDef);
@@ -99,12 +122,10 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    @Override
    public IAtsWorkDefinition getWorkDef(String workDefId, XResultData resultData) throws Exception {
       ensureLoaded(resultData);
-      String workDefStr = AtsWorkDefinitionStore.getService().loadWorkDefinitionString(workDefId);
+      String workDefStr = store.loadWorkDefinitionString(workDefId);
       AtsDsl atsDsl = ModelUtil.loadModel(workDefId + ".ats", workDefStr);
       ConvertAtsDslToWorkDefinition convert =
-         new ConvertAtsDslToWorkDefinition(workDefId, atsDsl, resultData,
-            AtsWorkDefinitionStore.getService().getAttributeResolver(),
-            AtsWorkDefinitionStore.getService().getUserResolver());
+         new ConvertAtsDslToWorkDefinition(workDefId, atsDsl, resultData, attrResolver, userResolver);
       return convert.convert();
    }
 
@@ -226,8 +247,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       XResultData result = new XResultData(false);
       ConvertAtsDslToWorkDefinition convert =
          new ConvertAtsDslToWorkDefinition(Strings.unquote(atsDsl.getWorkDef().getName()), atsDsl, result,
-            AtsWorkDefinitionStore.getService().getAttributeResolver(),
-            AtsWorkDefinitionStore.getService().getUserResolver());
+            attrResolver, userResolver);
       if (!result.isEmpty()) {
          throw new IllegalStateException(result.toString());
       }

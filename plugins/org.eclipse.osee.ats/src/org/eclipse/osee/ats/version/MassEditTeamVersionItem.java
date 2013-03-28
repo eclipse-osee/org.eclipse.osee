@@ -12,11 +12,12 @@
 package org.eclipse.osee.ats.version;
 
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.client.config.AtsObjectsClient;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -48,7 +49,7 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
       this.teamDef = teamDef;
    }
 
-   private IAtsTeamDefinition getTeamDefinition() {
+   private IAtsTeamDefinition getTeamDefinition() throws OseeCoreException {
       if (selectedTeamDef != null) {
          return selectedTeamDef;
       }
@@ -76,7 +77,7 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
             return;
          }
          MassArtifactEditor.editArtifacts(getName(),
-            AtsObjectsClient.getArtifacts(teamDef.getTeamDefinitionHoldingVersions().getVersions()));
+            AtsClientService.get().getConfigArtifacts(teamDef.getTeamDefinitionHoldingVersions().getVersions()));
          selectedTeamDef = null;
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

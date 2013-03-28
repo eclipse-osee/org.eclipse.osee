@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
-import org.eclipse.osee.ats.core.client.config.VersionsClient;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -32,6 +31,7 @@ import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.Versions;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.task.ITaskEditorProvider;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorParameterSearchItem;
@@ -138,7 +138,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
 
       } // If version specified, get workflows from targeted relation
       if (verArt != null) {
-         for (Artifact art : VersionsClient.getTargetedForTeamWorkflows(verArt)) {
+         for (Artifact art : AtsClientService.get().getAtsVersionService().getTargetedForTeamWorkflowArtifacts(verArt)) {
             if (teamDefs.isEmpty()) {
                workflows.add(art);
             }

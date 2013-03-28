@@ -16,9 +16,9 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.client.config.AtsObjectsClient;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionCheckTreeDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -46,14 +46,15 @@ public class SubscribeByTeamDefinition extends XNavigateItemAction {
             "Select Team Definition\n\nEmail will be sent for every Action created against these Teams.", Active.Active);
       try {
          List<IAtsTeamDefinition> objs = new ArrayList<IAtsTeamDefinition>();
-         objs.addAll(AtsObjectsClient.getConfigObjects(
+         objs.addAll(AtsClientService.get().getConfigObjects(
             AtsUsersClient.getOseeUser().getRelatedArtifacts(AtsRelationTypes.SubscribedUser_Artifact),
             IAtsTeamDefinition.class));
          diag.setInitialTeamDefs(objs);
          if (diag.open() != 0) {
             return;
          }
-         Collection<Artifact> arts = AtsObjectsClient.getArtifacts(diag.getChecked());
+         Collection<IAtsTeamDefinition> selected = diag.getChecked();
+         Collection<Artifact> arts = AtsClientService.get().getConfigArtifacts(selected);
 
          AtsUsersClient.getOseeUser().setRelationsOfTypeUseCurrentOrder(AtsRelationTypes.SubscribedUser_Artifact, arts,
             IAtsTeamDefinition.class);

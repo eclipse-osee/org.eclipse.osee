@@ -9,13 +9,11 @@ import java.util.Collection;
 import java.util.Date;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.core.client.config.VersionsClient;
-import org.eclipse.osee.ats.core.client.config.store.VersionArtifactStore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.config.AtsConfigCache;
-import org.eclipse.osee.ats.reports.burndown.Activator;
 import org.eclipse.osee.ats.reports.burndown.hours.HourBurndownLog;
 import org.eclipse.osee.ats.reports.burndown.hours.HourBurndownModel;
+import org.eclipse.osee.ats.reports.burndown.internal.Activator;
+import org.eclipse.osee.ats.reports.burndown.internal.AtsClientService;
 import org.eclipse.osee.ats.reports.burndown.issues.IssueBurndownLog;
 import org.eclipse.osee.ats.reports.burndown.issues.IssueBurndownModel;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -29,26 +27,24 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class LoadBurndownDataOperation extends AbstractOperation {
 
-   private final Artifact version;
+   private final Artifact versionArt;
    private final Date startDate;
    private final Date endDate;
 
-   public LoadBurndownDataOperation(Artifact version, Date startDate, Date endDate) {
+   public LoadBurndownDataOperation(Artifact versionArt, Date startDate, Date endDate) {
       super("Load Burndown Data", Activator.PLUGIN_ID);
-      this.version = version;
+      this.versionArt = versionArt;
       this.startDate = startDate;
       this.endDate = endDate;
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      Conditions.checkNotNull(version, "version");
+      Conditions.checkNotNull(versionArt, "version");
+      IAtsVersion version = AtsClientService.get().getConfigObject(versionArt);
 
-      AtsConfigCache atsConfigCache = new AtsConfigCache();
-      VersionArtifactStore artifactStore = new VersionArtifactStore(version, atsConfigCache);
-      IAtsVersion version = artifactStore.getVersion();
-
-      Collection<TeamWorkFlowArtifact> workflows = VersionsClient.getTargetedForTeamWorkflows(version);
+      Collection<TeamWorkFlowArtifact> workflows =
+         AtsClientService.get().getAtsVersionService().getTargetedForTeamWorkflowArtifacts(version);
 
       // HourBurndown
       HourBurndownLog log = new HourBurndownLog();

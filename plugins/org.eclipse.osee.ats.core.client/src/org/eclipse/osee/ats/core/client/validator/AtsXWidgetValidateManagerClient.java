@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.review.defect.AtsXDefectValidator;
 import org.eclipse.osee.ats.core.client.review.role.AtsXUserRoleValidator;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -24,7 +25,6 @@ import org.eclipse.osee.ats.core.validator.AtsCoreXWidgetValidatorProvider;
 import org.eclipse.osee.ats.core.validator.AtsXWidgetValidateManager;
 import org.eclipse.osee.ats.core.validator.AtsXWidgetValidatorProvider;
 import org.eclipse.osee.ats.core.validator.IAtsXWidgetValidator;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 
 /**
@@ -70,7 +70,7 @@ public class AtsXWidgetValidateManagerClient implements AtsXWidgetValidatorProvi
    public Collection<WidgetResult> validateTransition(AbstractWorkflowArtifact awa, IAtsStateDefinition toStateDef) {
       ensureLoaded();
       List<WidgetResult> results = new ArrayList<WidgetResult>();
-      for (IAtsWidgetDefinition widgetDef : AtsWorkDefinitionService.getService().getWidgetsFromLayoutItems(
+      for (IAtsWidgetDefinition widgetDef : AtsClientService.get().getWorkDefinitionAdmin().getWidgetsFromLayoutItems(
          awa.getStateDefinition())) {
          ArtifactValueProvider provider = new ArtifactValueProvider(awa, widgetDef);
          AtsXWidgetValidateManager.instance.validateTransition(results, provider, widgetDef, awa.getStateDefinition(),

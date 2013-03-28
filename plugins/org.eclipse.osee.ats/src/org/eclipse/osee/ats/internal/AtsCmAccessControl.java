@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.internal;
 import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.ats.access.AtsBranchAccessManager;
-import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -37,7 +36,6 @@ public class AtsCmAccessControl implements CmAccessControl {
 
    @Override
    public boolean isApplicable(IBasicArtifact<?> user, Object object) {
-      AtsBulkLoad.loadConfig(true);
       boolean result = false;
       if (object != null) {
          if (object instanceof Artifact && !((Artifact) object).getBranch().equals(AtsUtil.getAtsBranchToken())) {
@@ -52,7 +50,6 @@ public class AtsCmAccessControl implements CmAccessControl {
 
    @Override
    public Collection<? extends IAccessContextId> getContextId(IBasicArtifact<?> user, Object object) {
-      AtsBulkLoad.loadConfig(true);
       if (object != null) {
          if (object instanceof Artifact && !((Artifact) object).getBranch().equals(AtsUtil.getAtsBranchToken())) {
             return atsBranchAccessManager.getContextId(((Artifact) object).getBranch());

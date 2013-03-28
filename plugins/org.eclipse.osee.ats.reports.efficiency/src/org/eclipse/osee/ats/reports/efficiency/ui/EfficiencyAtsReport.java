@@ -12,9 +12,10 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.reports.AtsReport;
 import org.eclipse.osee.ats.reports.ReportTabFactory;
-import org.eclipse.osee.ats.reports.efficiency.Activator;
+import org.eclipse.osee.ats.reports.efficiency.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
@@ -38,7 +39,7 @@ public class EfficiencyAtsReport implements AtsReport<IAtsTeamDefinition, Object
    }
 
    @Override
-   public IAtsTeamDefinition getInputParameters() {
+   public IAtsTeamDefinition getInputParameters() throws OseeCoreException {
       IAtsTeamDefinition atsTeamDefinition = null;
       TeamDefinitionDialog dlg =
          new TeamDefinitionDialog("Team Efficiency Report", "Please Select the Team Definition");

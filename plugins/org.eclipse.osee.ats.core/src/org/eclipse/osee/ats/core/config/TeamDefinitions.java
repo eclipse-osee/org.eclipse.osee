@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.core.internal.AtsConfigUtility;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -80,8 +81,12 @@ public class TeamDefinitions {
       return children;
    }
 
-   public static List<IAtsTeamDefinition> getTeamDefinitions(Active active) {
-      return Collections.castAll(getActive(AtsConfigCache.instance.get(IAtsTeamDefinition.class), active));
+   private static IAtsConfig getAtsConfig() {
+      return AtsConfigUtility.getAtsConfigProvider().getAtsConfig();
+   }
+
+   public static List<IAtsTeamDefinition> getTeamDefinitions(Active active) throws OseeCoreException {
+      return Collections.castAll(getActive(getAtsConfig().get(IAtsTeamDefinition.class), active));
    }
 
    public static List<IAtsTeamDefinition> getTeamTopLevelDefinitions(Active active) throws OseeCoreException {
@@ -92,11 +97,11 @@ public class TeamDefinitions {
       return Collections.castAll(getActive(getChildren(topTeamDef, false), active));
    }
 
-   public static IAtsTeamDefinition getTopTeamDefinition() {
-      return AtsConfigCache.instance.getSoleByGuid(TopTeamDefinitionGuid, IAtsTeamDefinition.class);
+   public static IAtsTeamDefinition getTopTeamDefinition() throws OseeCoreException {
+      return getAtsConfig().getSoleByGuid(TopTeamDefinitionGuid, IAtsTeamDefinition.class);
    }
 
-   public static Set<IAtsTeamDefinition> getTeamReleaseableDefinitions(Active active) {
+   public static Set<IAtsTeamDefinition> getTeamReleaseableDefinitions(Active active) throws OseeCoreException {
       Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>();
       for (IAtsTeamDefinition teamDef : getTeamDefinitions(active)) {
          if (teamDef.getVersions().size() > 0) {
@@ -129,9 +134,9 @@ public class TeamDefinitions {
       }
    }
 
-   public static Set<IAtsTeamDefinition> getTeamDefinitions(Collection<String> teamDefNames) {
+   public static Set<IAtsTeamDefinition> getTeamDefinitions(Collection<String> teamDefNames) throws OseeCoreException {
       Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>();
-      for (IAtsTeamDefinition teamDef : AtsConfigCache.instance.get(IAtsTeamDefinition.class)) {
+      for (IAtsTeamDefinition teamDef : getAtsConfig().get(IAtsTeamDefinition.class)) {
          if (teamDefNames.contains(teamDef.getName())) {
             teamDefs.add(teamDef);
          }
@@ -139,9 +144,9 @@ public class TeamDefinitions {
       return teamDefs;
    }
 
-   public static Set<IAtsTeamDefinition> getTeamDefinitionsNameStartsWith(String prefix) {
+   public static Set<IAtsTeamDefinition> getTeamDefinitionsNameStartsWith(String prefix) throws OseeCoreException {
       Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>();
-      for (IAtsTeamDefinition teamDef : AtsConfigCache.instance.get(IAtsTeamDefinition.class)) {
+      for (IAtsTeamDefinition teamDef : getAtsConfig().get(IAtsTeamDefinition.class)) {
          if (teamDef.getName().startsWith(prefix)) {
             teamDefs.add(teamDef);
          }

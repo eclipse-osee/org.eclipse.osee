@@ -13,14 +13,12 @@ package org.eclipse.osee.ats.workdef.config;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.config.store.ActionableItemArtifactStore;
-import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
 import org.eclipse.osee.ats.core.client.workdef.UserRefUtilClient;
 import org.eclipse.osee.ats.core.config.ActionableItems;
-import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.dsl.BooleanDefUtil;
 import org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef;
@@ -28,6 +26,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.dsl.atsDsl.TeamDef;
 import org.eclipse.osee.ats.dsl.atsDsl.UserDef;
 import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -65,12 +64,12 @@ public class ImportAIsAndTeamDefinitionsToDb {
    public void execute() throws OseeCoreException {
       importUserDefinitions(atsDsl.getUserDef());
       importTeamDefinitions(atsDsl.getTeamDef(),
-         new TeamDefinitionArtifactStore(TeamDefinitions.getTopTeamDefinition()).getArtifact());
+         AtsClientService.get().getConfigArtifact(TeamDefinitions.getTopTeamDefinition()));
       importActionableItems(atsDsl.getActionableItemDef(),
-         new ActionableItemArtifactStore(ActionableItems.getTopActionableItem()).getArtifact());
+         AtsClientService.get().getConfigArtifact(ActionableItems.getTopActionableItem()));
    }
 
-   public void importUserDefinitions(EList<UserDef> userDefs) throws OseeCoreException {
+   private void importUserDefinitions(EList<UserDef> userDefs) throws OseeCoreException {
       for (UserDef dslUserDef : userDefs) {
          String dslUserName = Strings.unquote(dslUserDef.getName());
          Artifact userArt = null;
@@ -94,7 +93,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
          BooleanDefUtil.get(dslUserDef.getActive(), true), false, true);
    }
 
-   public void importTeamDefinitions(EList<TeamDef> teamDefs, Artifact parentArtifact) throws OseeCoreException {
+   private void importTeamDefinitions(EList<TeamDef> teamDefs, Artifact parentArtifact) throws OseeCoreException {
       for (TeamDef dslTeamDef : teamDefs) {
          String dslTeamName = Strings.unquote(dslTeamDef.getName());
          //         System.out.println("   - Importing Team " + dslTeamName);
@@ -154,7 +153,10 @@ public class ImportAIsAndTeamDefinitionsToDb {
       }
    }
 
-   public void importVersionDefinitions(EList<VersionDef> versionDefs, Artifact teamDef) throws OseeCoreException {
+   private void importVersionDefinitions(EList<VersionDef> versionDefs, Artifact teamDef) throws OseeCoreException {
+
+      IAtsConfigObject configObject = AtsClientService.get().getConfigObject(teamDef);
+
       Map<String, Artifact> nameToVerArt = new HashMap<String, Artifact>();
       for (VersionDef dslVersionDef : versionDefs) {
          String dslVerName = Strings.unquote(dslVersionDef.getName());
@@ -168,7 +170,8 @@ public class ImportAIsAndTeamDefinitionsToDb {
          Artifact newVer =
             ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), dslVerName, guid,
                HumanReadableId.generate());
-         Artifact teamDefArt = new TeamDefinitionArtifactStore(teamDef, AtsConfigCache.instance).getArtifact();
+
+         Artifact teamDefArt = AtsClientService.get().getConfigArtifact(configObject);
 
          teamDefArt.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, newVer);
          nameToVerArt.put(newVer.getName(), newVer);
@@ -199,7 +202,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
       }
    }
 
-   public void importActionableItems(EList<ActionableItemDef> aiDefs, Artifact parentArtifact) throws OseeCoreException {
+   private void importActionableItems(EList<ActionableItemDef> aiDefs, Artifact parentArtifact) throws OseeCoreException {
       for (ActionableItemDef dslAIDef : aiDefs) {
          String dslAIName = Strings.unquote(dslAIDef.getName());
          // System.out.println("   - Importing Actionable Item " + dslAIName);
@@ -251,11 +254,9 @@ public class ImportAIsAndTeamDefinitionsToDb {
       Artifact parent = parentArtifact;
       if (parent == null) {
          if (isTeamDef) {
-            parent =
-               new TeamDefinitionArtifactStore(TeamDefinitions.getTopTeamDefinition()).getArtifactOrCreate(transaction);
+            parent = AtsClientService.get().storeConfigObject(TeamDefinitions.getTopTeamDefinition(), transaction);
          } else {
-            parent =
-               new ActionableItemArtifactStore(ActionableItems.getTopActionableItem()).getArtifactOrCreate(transaction);
+            parent = AtsClientService.get().storeConfigObject(ActionableItems.getTopActionableItem(), transaction);
          }
       }
       if (parent.getName().equals(artifactName)) {

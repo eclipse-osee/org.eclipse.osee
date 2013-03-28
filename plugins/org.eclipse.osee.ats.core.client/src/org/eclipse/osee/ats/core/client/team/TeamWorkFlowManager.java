@@ -15,6 +15,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Assert;
@@ -40,6 +42,7 @@ import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -226,13 +229,33 @@ public class TeamWorkFlowManager {
       return Result.TrueResult;
    }
 
+   private static final ITeamWorkflowProviders teamWorkflowProviders = new ITeamWorkflowProviders() {
+      private final ExtensionDefinedObjects<ITeamWorkflowProvider> extensionDefinedObjects =
+         new ExtensionDefinedObjects<ITeamWorkflowProvider>("org.eclipse.osee.ats.core.client.AtsTeamWorkflowProvider",
+            "AtsTeamWorkflowProvider", "classname");
+
+      @Override
+      public List<ITeamWorkflowProvider> getTeamWorkflowProviders() {
+         return extensionDefinedObjects.getObjects();
+      }
+
+      @Override
+      public Iterator<ITeamWorkflowProvider> iterator() {
+         return getTeamWorkflowProviders().iterator();
+      }
+   };
+
+   public static ITeamWorkflowProviders getTeamWorkflowProviders() {
+      return teamWorkflowProviders;
+   }
+
    /**
     * Assigned or computed Id that will show at the top of the editor
     */
    public static String getPcrId(AbstractWorkflowArtifact awa) throws OseeCoreException {
       TeamWorkFlowArtifact teamArt = awa.getParentTeamWorkflow();
       if (teamArt != null) {
-         for (ITeamWorkflowProvider atsTeamWorkflow : TeamWorkflowProviders.getAtsTeamWorkflowProviders()) {
+         for (ITeamWorkflowProvider atsTeamWorkflow : getTeamWorkflowProviders()) {
             if (atsTeamWorkflow.isResponsibleFor(awa)) {
                String pcrId = atsTeamWorkflow.getPcrId(teamArt);
                if (Strings.isValid(pcrId)) {
@@ -246,7 +269,7 @@ public class TeamWorkFlowManager {
    }
 
    public static String getArtifactTypeShortName(TeamWorkFlowArtifact teamArt) {
-      for (ITeamWorkflowProvider atsTeamWorkflow : TeamWorkflowProviders.getAtsTeamWorkflowProviders()) {
+      for (ITeamWorkflowProvider atsTeamWorkflow : getTeamWorkflowProviders()) {
          String typeName = atsTeamWorkflow.getArtifactTypeShortName(teamArt);
          if (Strings.isValid(typeName)) {
             return typeName;
@@ -263,7 +286,7 @@ public class TeamWorkFlowManager {
    }
 
    public static String getBranchName(TeamWorkFlowArtifact teamArt) {
-      for (ITeamWorkflowProvider teamExtension : TeamWorkflowProviders.getAtsTeamWorkflowProviders()) {
+      for (ITeamWorkflowProvider teamExtension : getTeamWorkflowProviders()) {
          String name = teamExtension.getBranchName(teamArt);
          if (Strings.isValid(name)) {
             return name;
@@ -273,7 +296,7 @@ public class TeamWorkFlowManager {
    }
 
    public static ITeamWorkflowProvider getTeamWorkflowProvider(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems) {
-      for (ITeamWorkflowProvider teamExtension : TeamWorkflowProviders.getAtsTeamWorkflowProviders()) {
+      for (ITeamWorkflowProvider teamExtension : getTeamWorkflowProviders()) {
          boolean isResponsible = false;
          try {
             isResponsible = teamExtension.isResponsibleForTeamWorkflowCreation(teamDef, actionableItems);

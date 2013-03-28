@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" name="org.eclipse.osee.ats.core.client.query.AtsQueryService">
-   <implementation class="org.eclipse.osee.ats.core.client.query.AtsQueryService"/>
-   <reference bind="setQueryService" cardinality="1..1" interface="org.eclipse.osee.ats.api.query.IAtsQueryService" name="IAtsQueryService" policy="static"/>
-</scr:component>

@@ -16,25 +16,14 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
-import org.eclipse.osee.ats.core.config.internal.ActionableItemFactory;
-import org.eclipse.osee.ats.core.config.internal.TeamDefinitionFactory;
-import org.eclipse.osee.ats.core.config.internal.VersionFactory;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsConfigCache {
+public class AtsConfigCache implements IAtsConfig {
 
-   public static AtsConfigCache instance = new AtsConfigCache();
-
-   /***
-    * Allows cache to be loaded and quick swapped
-    */
-   public static synchronized void setCurrent(AtsConfigCache newInstance) {
-      instance = newInstance;
-   }
    // cache by guid and any other cachgeByTag item (like static id)
    private final List<IAtsConfigObject> configObjects = new CopyOnWriteArrayList<IAtsConfigObject>();
    private final HashCollection<String, IAtsConfigObject> tagToConfigObject =
@@ -49,6 +38,7 @@ public class AtsConfigCache {
       tagToConfigObject.put(tag, configObject);
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public final <A extends IAtsConfigObject> List<A> getByTag(String tag, Class<A> clazz) {
       List<A> objs = new ArrayList<A>();
@@ -63,6 +53,7 @@ public class AtsConfigCache {
       return objs;
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public final <A extends IAtsConfigObject> A getSoleByTag(String tag, Class<A> clazz) {
       Collection<IAtsConfigObject> values = tagToConfigObject.getValues(tag);
@@ -76,6 +67,7 @@ public class AtsConfigCache {
       return null;
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public final <A extends IAtsConfigObject> List<A> get(Class<A> clazz) {
       List<A> objs = new ArrayList<A>();
@@ -87,6 +79,7 @@ public class AtsConfigCache {
       return objs;
    }
 
+   @Override
    public final <A extends IAtsConfigObject> A getSoleByGuid(String guid, Class<A> clazz) {
       List<A> list = getByTag(guid, clazz);
       if (list.isEmpty()) {
@@ -95,11 +88,24 @@ public class AtsConfigCache {
       return list.iterator().next();
    }
 
+   @Override
    public final IAtsConfigObject getSoleByGuid(String guid) {
       return getSoleByGuid(guid, IAtsConfigObject.class);
    }
 
-   public void decache(IAtsConfigObject atsObject) {
+   @Override
+   public void getReport(XResultData rd) {
+      rd.logWithFormat("TagToConfigObject size %d\n", tagToConfigObject.keySet().size());
+      rd.logWithFormat("ConfigObjects size %d\n", configObjects.size());
+   }
+
+   @Override
+   public String toString() {
+      return configObjects.toString();
+   }
+
+   @Override
+   public void invalidate(IAtsConfigObject atsObject) {
       configObjects.remove(atsObject);
       List<String> keysToRemove = new ArrayList<String>();
       for (Entry<String, Collection<IAtsConfigObject>> entry : tagToConfigObject.entrySet()) {
@@ -110,33 +116,6 @@ public class AtsConfigCache {
       for (String key : keysToRemove) {
          tagToConfigObject.removeValue(key, atsObject);
       }
-   }
-
-   public void clearCaches() {
-      tagToConfigObject.clear();
-      configObjects.clear();
-   }
-
-   public IActionableItemFactory getActionableItemFactory() {
-      return new ActionableItemFactory(this);
-   }
-
-   public ITeamDefinitionFactory getTeamDefinitionFactory() {
-      return new TeamDefinitionFactory(this);
-   }
-
-   public IVersionFactory getVersionFactory() {
-      return new VersionFactory(this);
-   }
-
-   public void getReport(XResultData rd) {
-      rd.logWithFormat("TagToConfigObject size %d\n", tagToConfigObject.keySet().size());
-      rd.logWithFormat("ConfigObjects size %d\n", configObjects.size());
-   }
-
-   @Override
-   public String toString() {
-      return configObjects.toString();
    }
 
 }

@@ -7,8 +7,8 @@ package org.eclipse.osee.ats.reports.split.ui;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.core.client.config.store.VersionArtifactStore;
 import org.eclipse.osee.ats.reports.split.Activator;
+import org.eclipse.osee.ats.reports.split.internal.AtsClientService;
 import org.eclipse.osee.ats.reports.split.model.AIDistributionEntry;
 import org.eclipse.osee.ats.reports.split.model.DistributionModel;
 import org.eclipse.osee.ats.reports.split.model.StateDistributionEntry;
@@ -34,8 +34,7 @@ public class LoadDistributionDataOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       Conditions.checkNotNull(version, "teamDefinition");
-      VersionArtifactStore artifactStore = new VersionArtifactStore(version);
-      Artifact artifact = artifactStore.getArtifact();
+      Artifact artifact = AtsClientService.get().getConfigArtifact(version);
 
       AIDistributionEntry aiSplitEntry = new AIDistributionEntry(artifact);
       aiSplitEntry.computeAISplit();

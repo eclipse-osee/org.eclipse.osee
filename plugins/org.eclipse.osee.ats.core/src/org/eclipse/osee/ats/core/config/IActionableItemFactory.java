@@ -11,11 +11,13 @@
 package org.eclipse.osee.ats.core.config;
 
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IActionableItemFactory {
 
-   IAtsActionableItem createActionableItem(String create, String aiName);
-
-   IAtsActionableItem getOrCreate(String guid, String name);
+   IAtsActionableItem createActionableItem(String guid, String name) throws OseeCoreException;
 
 }

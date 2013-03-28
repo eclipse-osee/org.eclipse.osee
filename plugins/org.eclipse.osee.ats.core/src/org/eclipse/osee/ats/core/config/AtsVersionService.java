@@ -11,25 +11,24 @@
 package org.eclipse.osee.ats.core.config;
 
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
+import org.eclipse.osee.ats.api.version.IAtsVersionServiceProvider;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsVersionService {
 
-   private static AtsVersionService instance;
-   private IAtsVersionService service;
+   private static IAtsVersionServiceProvider service;
 
    public static IAtsVersionService get() {
-      if (instance == null) {
+      if (AtsVersionService.service == null) {
          throw new IllegalStateException("ATS Version Service has not been activated");
       }
-      return instance.service;
+      return AtsVersionService.service.getAtsVersionService();
    }
 
-   public void setVersionService(IAtsVersionService service) {
-      this.service = service;
-   }
-
-   public void start() {
-      instance = this;
+   public void setAtsVersionServiceProvider(IAtsVersionServiceProvider service) {
+      AtsVersionService.service = service;
    }
 
 }

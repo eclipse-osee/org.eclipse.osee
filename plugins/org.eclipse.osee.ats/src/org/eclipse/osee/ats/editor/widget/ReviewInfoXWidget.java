@@ -32,10 +32,10 @@ import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.review.NewDecisionReviewJob;
 import org.eclipse.osee.ats.review.NewPeerToPeerReviewJob;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -132,7 +132,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                   StateListAndTitleDialog dialog =
                      new StateListAndTitleDialog("Create Decision Review",
                         "Select state to that review will be associated with.",
-                        AtsWorkDefinitionService.getService().getStateNames(teamArt.getWorkDefinition()));
+                        AtsClientService.get().getWorkDefinitionAdmin().getStateNames(teamArt.getWorkDefinition()));
                   dialog.setInitialSelections(new Object[] {forState.getName()});
                   if (dialog.open() == 0) {
                      if (!Strings.isValid(dialog.getReviewTitle())) {
@@ -175,7 +175,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                   StateListAndTitleDialog dialog =
                      new StateListAndTitleDialog("Add Peer to Peer Review",
                         "Select state to that review will be associated with.",
-                        AtsWorkDefinitionService.getService().getStateNames(teamArt.getWorkDefinition()));
+                        AtsClientService.get().getWorkDefinitionAdmin().getStateNames(teamArt.getWorkDefinition()));
                   dialog.setInitialSelections(new Object[] {forState.getName()});
                   dialog.setReviewTitle(PeerToPeerReviewManager.getDefaultReviewTitle(teamArt));
                   if (dialog.open() == 0) {

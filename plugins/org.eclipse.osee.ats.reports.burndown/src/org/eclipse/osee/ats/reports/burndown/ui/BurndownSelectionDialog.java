@@ -9,15 +9,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
-import org.eclipse.osee.ats.core.client.config.store.VersionArtifactStore;
-import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
-import org.eclipse.osee.ats.reports.burndown.Activator;
+import org.eclipse.osee.ats.reports.burndown.internal.Activator;
+import org.eclipse.osee.ats.reports.burndown.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -82,9 +81,8 @@ public class BurndownSelectionDialog extends SelectionDialog {
       try {
          Set<IAtsTeamDefinition> teamReleaseableDefinitions =
             TeamDefinitions.getTeamReleaseableDefinitions(this.active);
-         for (IAtsTeamDefinition art : teamReleaseableDefinitions) {
-            TeamDefinitionArtifactStore artifactStore = new TeamDefinitionArtifactStore(art);
-            Artifact artifact = artifactStore.getArtifact();
+         for (IAtsTeamDefinition teamDef : teamReleaseableDefinitions) {
+            Artifact artifact = AtsClientService.get().getConfigArtifact(teamDef);
             objs.add(artifact);
          }
       } catch (Exception ex) {
@@ -128,12 +126,11 @@ public class BurndownSelectionDialog extends SelectionDialog {
             }
          });
       } else {
-         TeamDefinitionArtifactStore store = new TeamDefinitionArtifactStore(teamDef);
          Artifact teamArt = null;
          try {
-            teamArt = store.getArtifact();
+            teamArt = AtsClientService.get().getConfigArtifact(teamDef);
          } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
          selectedTeamDef = teamArt;
       }
@@ -162,9 +159,8 @@ public class BurndownSelectionDialog extends SelectionDialog {
          try {
             for (Artifact versionArtifact : selectedTeamDef.getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version)) {
                IAtsVersion version =
-                  AtsConfigCache.instance.getSoleByGuid(versionArtifact.getGuid(), IAtsVersion.class);
-               VersionArtifactStore store = new VersionArtifactStore(version);
-               Artifact verArt = store.getArtifact();
+                  AtsClientService.get().getAtsConfig().getSoleByGuid(versionArtifact.getGuid(), IAtsVersion.class);
+               Artifact verArt = AtsClientService.get().getConfigArtifact(version);
                objs.add(verArt);
             }
             versionCombo.setInput(objs);

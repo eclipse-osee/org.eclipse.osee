@@ -119,7 +119,7 @@ public class DemoDbUtil {
       return UserManager.getUserByName(demoUser.getName());
    }
 
-   public static Collection<IAtsActionableItem> getActionableItems(String[] aiasNames) {
+   public static Collection<IAtsActionableItem> getActionableItems(String[] aiasNames) throws OseeCoreException {
       Set<IAtsActionableItem> aias = new HashSet<IAtsActionableItem>();
       for (String str : aiasNames) {
          for (IAtsActionableItem aia : ActionableItems.getActionableItemsAll()) {

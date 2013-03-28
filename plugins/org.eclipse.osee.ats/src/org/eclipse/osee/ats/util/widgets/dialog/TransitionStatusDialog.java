@@ -16,8 +16,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionStatusData;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -90,7 +90,7 @@ public class TransitionStatusDialog extends MessageDialog {
             } else if (data.getAwas().size() == 1) {
                int currentPercent = 0;
                AbstractWorkflowArtifact awa = data.getAwas().iterator().next();
-               if (!AtsWorkDefinitionService.getService().isStateWeightingEnabled(awa.getWorkDefinition())) {
+               if (!AtsClientService.get().getWorkDefinitionAdmin().isStateWeightingEnabled(awa.getWorkDefinition())) {
                   currentPercent = awa.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0);
                } else {
                   currentPercent = awa.getStateMgr().getPercentComplete(awa.getCurrentStateName());

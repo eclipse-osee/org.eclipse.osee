@@ -31,13 +31,13 @@ import org.eclipse.osee.ats.client.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.client.demo.DemoSawBuilds;
 import org.eclipse.osee.ats.client.demo.DemoTeam;
 import org.eclipse.osee.ats.client.demo.DemoWorkType;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.config.ActionableItems;
-import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -113,11 +113,11 @@ public class DemoTestUtil {
       return teamArt;
    }
 
-   public static Set<IAtsActionableItem> getActionableItems(DemoActionableItems demoActionableItems) {
+   public static Set<IAtsActionableItem> getActionableItems(DemoActionableItems demoActionableItems) throws OseeCoreException {
       return ActionableItems.getActionableItems(Arrays.asList(demoActionableItems.getName()));
    }
 
-   public static IAtsActionableItem getActionableItem(DemoActionableItems demoActionableItems) {
+   public static IAtsActionableItem getActionableItem(DemoActionableItems demoActionableItems) throws OseeCoreException {
       return getActionableItems(demoActionableItems).iterator().next();
    }
 
@@ -225,7 +225,9 @@ public class DemoTestUtil {
       // Add check to keep exception from occurring for OSEE developers running against production
       if (!ClientSessionManager.isProductionDataStore()) {
          try {
-            results = AtsConfigCache.instance.getSoleByGuid(team.getTeamDefToken().getGuid(), IAtsTeamDefinition.class);
+            results =
+               AtsClientService.get().getAtsConfig().getSoleByGuid(team.getTeamDefToken().getGuid(),
+                  IAtsTeamDefinition.class);
          } catch (Exception ex) {
             OseeLog.log(DemoTestUtil.class, Level.SEVERE, ex);
          }

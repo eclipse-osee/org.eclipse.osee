@@ -11,11 +11,13 @@
 package org.eclipse.osee.ats.core.config;
 
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface ITeamDefinitionFactory {
 
-   IAtsTeamDefinition createTeamDefinition(String guid, String title);
-
-   IAtsTeamDefinition getOrCreate(String guid, String name);
+   IAtsTeamDefinition createTeamDefinition(String guid, String title) throws OseeCoreException;
 
 }

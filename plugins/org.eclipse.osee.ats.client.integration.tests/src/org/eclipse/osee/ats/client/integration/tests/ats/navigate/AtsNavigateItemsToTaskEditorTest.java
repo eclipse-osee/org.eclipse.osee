@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.client.demo.DemoSawBuilds;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.NavigateTestUtil;
+import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.task.TaskEditor;
@@ -51,15 +52,13 @@ public class AtsNavigateItemsToTaskEditorTest {
    @org.junit.Test
    public void testMyTasksEditor() throws Exception {
       TaskEditor.closeAll();
-      // Place holder for future navigate items opening TaskEditor
-      //      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("My Tasks (Editor)");
-      //      handleGeneralDoubleClickAndTestResults(item, TaskArtifact.class, DemoDbTasks.getNumTasks());
    }
 
    @org.junit.Test
    public void testTaskSearch() throws Exception {
       SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
 
+      AtsBulkLoad.reloadConfig(true);
       Collection<IAtsTeamDefinition> selectedUsers = TeamDefinitions.getTeamTopLevelDefinitions(Active.Active);
       TaskEditor.closeAll();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Task Search");

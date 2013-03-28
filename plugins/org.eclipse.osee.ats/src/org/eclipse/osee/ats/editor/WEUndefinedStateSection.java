@@ -17,8 +17,8 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.core.client.team.SimpleTeamState;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -85,7 +85,7 @@ public class WEUndefinedStateSection extends SectionPart {
    public static List<String> getUndefinedStateNames(AbstractWorkflowArtifact awa) throws OseeCoreException {
       // Display pages that are in data store, but not in Work Definition
       Collection<String> stateNamesDefined =
-         AtsWorkDefinitionService.getService().getStateNames(awa.getWorkDefinition());
+         AtsClientService.get().getWorkDefinitionAdmin().getStateNames(awa.getWorkDefinition());
       List<String> stateNamesUndefined = new ArrayList<String>();
       for (String pageName : awa.getAttributesToStringList(AtsAttributeTypes.State)) {
          String justPage = pageName.replaceFirst(";.*$", "");

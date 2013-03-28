@@ -18,10 +18,9 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.client.query.AtsQueryService;
-import org.eclipse.osee.ats.core.client.util.WorkItemUtil;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -88,12 +87,12 @@ public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
       }
 
       IAtsQuery query =
-         AtsQueryService.getService().createQuery(WorkItemUtil.getWorkItems(arts)).withOrValue(
+         AtsClientService.get().createQuery(AtsClientService.get().getWorkDefinitionAdmin().getWorkItems(arts)).withOrValue(
             AtsAttributeTypes.LegacyPcrId, pcrIds).withOrValue(AtsAttributeTypes.TeamDefinition, teamDefGuids).isOfType(
             AtsArtifactTypes.TeamWorkflow);
 
       Collection<? extends IAtsWorkItem> workItems = query.getItems();
-      List<Artifact> artifacts = WorkItemUtil.get(workItems, Artifact.class);
+      List<Artifact> artifacts = AtsClientService.get().getWorkDefinitionAdmin().get(workItems, Artifact.class);
       if (returnActions) {
          List<Artifact> actions = new ArrayList<Artifact>();
          for (Artifact artifact : artifacts) {

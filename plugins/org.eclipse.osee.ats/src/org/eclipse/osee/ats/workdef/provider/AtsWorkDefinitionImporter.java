@@ -20,12 +20,12 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.dsl.ModelUtil;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.dsl.atsDsl.StateDef;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workdef.AtsDslUtil;
 import org.eclipse.osee.ats.workdef.config.ImportAIsAndTeamDefinitionsToDb;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -143,7 +143,7 @@ public class AtsWorkDefinitionImporter {
 
    public void convertAndOpenAtsDsl(IAtsWorkDefinition workDef, XResultData resultData, String filename) throws OseeCoreException {
       try {
-         String storageStr = AtsWorkDefinitionService.getService().getStorageString(workDef, resultData);
+         String storageStr = AtsClientService.get().getWorkDefinitionAdmin().getStorageString(workDef, resultData);
          IFile iFile = OseeData.getIFile(filename);
          Lib.writeStringToFile(storageStr, AWorkspace.iFileToFile(iFile));
          AWorkspace.openEditor(iFile);

@@ -23,9 +23,8 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.core.client.config.VersionsClient;
-import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -51,8 +50,7 @@ public class VersionTeamMetrics {
    }
 
    private void bulkLoadArtifacts() throws OseeCoreException {
-      RelationManager.getRelatedArtifacts(
-         Arrays.asList(new TeamDefinitionArtifactStore(this.verTeamDef).getArtifact()), 6,
+      RelationManager.getRelatedArtifacts(Arrays.asList(AtsClientService.get().getConfigArtifact(this.verTeamDef)), 6,
          CoreRelationTypes.Default_Hierarchical__Child, AtsRelationTypes.TeamDefinitionToVersion_Version,
          AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, AtsRelationTypes.TeamWfToTask_Task,
          AtsRelationTypes.ActionToWorkflow_Action);
@@ -64,7 +62,8 @@ public class VersionTeamMetrics {
       if (teamWorkflowToOrigDate == null) {
          teamWorkflowToOrigDate = new HashMap<TeamWorkFlowArtifact, Date>();
          for (IAtsVersion verArt : verTeamDef.getVersions()) {
-            for (TeamWorkFlowArtifact team : VersionsClient.getTargetedForTeamWorkflows(verArt)) {
+            for (TeamWorkFlowArtifact team : AtsClientService.get().getAtsVersionService().getTargetedForTeamWorkflowArtifacts(
+               verArt)) {
                Date origDate = team.getCreatedDate();
                teamWorkflowToOrigDate.put(team, origDate);
             }

@@ -16,11 +16,10 @@ import java.util.Set;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.config.copy.ConfigData;
 import org.eclipse.osee.ats.config.copy.CopyAtsConfigurationOperation;
-import org.eclipse.osee.ats.core.client.config.AtsObjectsClient;
-import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -61,14 +60,14 @@ public class CopyAtsConfigurationOperationTest {
 
       HashCollection<String, String> testNameToResultsMap = new HashCollection<String, String>();
       CountingMap<String> testNameToTimeSpentMap = new CountingMap<String>();
-      Collection<Artifact> aiaArts = AtsObjectsClient.getArtifacts(ais);
+      Collection<Artifact> aiaArts = AtsClientService.get().getConfigArtifacts(ais);
       ValidateAtsDatabase.testActionableItemToTeamDefinition(aiaArts, testNameToResultsMap, testNameToTimeSpentMap);
       Assert.assertEquals(0, testNameToResultsMap.size());
    }
 
-   public static Set<IAtsActionableItem> getActionableItemsNameStartsWith(String prefix) {
+   public static Set<IAtsActionableItem> getActionableItemsNameStartsWith(String prefix) throws OseeCoreException {
       Set<IAtsActionableItem> artifacts = new HashSet<IAtsActionableItem>();
-      for (IAtsActionableItem aia : AtsConfigCache.instance.get(IAtsActionableItem.class)) {
+      for (IAtsActionableItem aia : AtsClientService.get().getAtsConfig().get(IAtsActionableItem.class)) {
          if (aia.getName().startsWith(prefix)) {
             artifacts.add(aia);
          }

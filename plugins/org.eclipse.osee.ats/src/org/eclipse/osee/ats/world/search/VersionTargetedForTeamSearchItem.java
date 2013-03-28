@@ -18,10 +18,10 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
-import org.eclipse.osee.ats.core.client.config.VersionsClient;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -83,7 +83,8 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
       }
 
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
-      for (Artifact art : VersionsClient.getTargetedForTeamWorkflows(getSearchVersionArtifact())) {
+      for (Artifact art : AtsClientService.get().getAtsVersionService().getTargetedForTeamWorkflowArtifacts(
+         getSearchVersionArtifact())) {
          if (returnAction) {
             ActionArtifact parentAction = ((TeamWorkFlowArtifact) art).getParentActionArtifact();
             if (parentAction != null) {

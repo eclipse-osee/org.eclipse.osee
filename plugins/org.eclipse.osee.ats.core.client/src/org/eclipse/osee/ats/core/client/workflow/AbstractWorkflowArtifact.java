@@ -31,10 +31,10 @@ import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
 import org.eclipse.osee.ats.api.workflow.WorkStateProvider;
-import org.eclipse.osee.ats.core.client.AtsClient;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.artifact.AbstractAtsArtifact;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.client.notify.AtsNotifyType;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
@@ -437,7 +437,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public WorkDefinitionMatch getWorkDefinitionMatch() {
       try {
-         return AtsClient.getWorkDefFactory().getWorkDefinition(this);
+         return AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinition(this);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

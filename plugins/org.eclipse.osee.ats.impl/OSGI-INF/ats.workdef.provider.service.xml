@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.eclipse.osee.ats.impl.internal.AtsWorkDefinitionServiceImpl">
-   <implementation class="org.eclipse.osee.ats.impl.internal.AtsWorkDefinitionServiceImpl"/>
-   <service>
-      <provide interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService"/>
-   </service>
-</scr:component>

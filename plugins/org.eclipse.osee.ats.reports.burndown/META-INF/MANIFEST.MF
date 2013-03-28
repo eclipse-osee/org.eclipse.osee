@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: OSEE ATS Burndown Reports (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ats.reports.burndown;singleton:=true
 Bundle-Version: 0.11.0.qualifier
-Bundle-Activator: org.eclipse.osee.ats.reports.burndown.Activator
+Bundle-Activator: org.eclipse.osee.ats.reports.burndown.internal.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.forms
@@ -15,8 +15,8 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.ats.api.data,
  org.eclipse.osee.ats.api.team,
  org.eclipse.osee.ats.api.version,
+ org.eclipse.osee.ats.core.client,
  org.eclipse.osee.ats.core.client.config,
- org.eclipse.osee.ats.core.client.config.store,
  org.eclipse.osee.ats.core.client.team,
  org.eclipse.osee.ats.core.client.workflow,
  org.eclipse.osee.ats.core.client.workflow.log,
@@ -37,3 +37,4 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.ui.skynet.widgets,
  org.eclipse.osee.framework.ui.swt,
  org.osgi.framework
+Service-Component: OSGI-INF/*.xml

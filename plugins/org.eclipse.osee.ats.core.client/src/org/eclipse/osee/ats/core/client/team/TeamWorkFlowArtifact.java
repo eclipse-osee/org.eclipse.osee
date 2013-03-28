@@ -26,15 +26,13 @@ import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionArtifactRollup;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.config.ActionableItemManager;
-import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
-import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.util.AtsUtilCoreCore;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -42,6 +40,7 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -130,13 +129,13 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
 
    @Override
    public IAtsTeamDefinition getTeamDefinition() throws OseeCoreException {
-      AtsBulkLoad.loadConfig(true);
       String guid = this.getSoleAttributeValue(AtsAttributeTypes.TeamDefinition, "");
       if (!Strings.isValid(guid)) {
-         throw new OseeArgumentException("TeamWorkflow [%s] has no IAtsTeamDefinition associated.",
-            getHumanReadableId());
+         throw new OseeArgumentException("TeamWorkflow [%s] has no Team Definition associated.", getHumanReadableId());
       }
-      return AtsConfigCache.instance.getSoleByGuid(guid, IAtsTeamDefinition.class);
+      IAtsTeamDefinition teamDef = AtsClientService.get().getAtsConfig().getSoleByGuid(guid, IAtsTeamDefinition.class);
+      Conditions.checkNotNull(teamDef, String.format("TeamDef null for Team WF %s", toStringWithId()));
+      return teamDef;
    }
 
    public String getTeamName() {
@@ -217,7 +216,7 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
    private double getHoursPerWorkDayFromItemAndChildren(IAtsTeamDefinition teamDef) {
       try {
          double manDayHours = 0;
-         Artifact artifact = new TeamDefinitionArtifactStore(getTeamDefinition()).getArtifact();
+         Artifact artifact = AtsClientService.get().getConfigArtifact(getTeamDefinition());
          if (artifact != null) {
             manDayHours = artifact.getSoleAttributeValue(AtsAttributeTypes.HoursPerWorkDay, 0.0);
          }

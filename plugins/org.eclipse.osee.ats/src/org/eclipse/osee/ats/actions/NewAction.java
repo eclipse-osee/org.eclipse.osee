@@ -14,8 +14,8 @@ import java.util.Arrays;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.wizard.NewActionWizard;
-import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ui.PlatformUI;
 
@@ -39,8 +39,7 @@ public class NewAction extends AbstractAtsAction {
    }
 
    @Override
-   public void runWithException() {
-      AtsBulkLoad.loadConfig(true);
+   public void runWithException() throws OseeCoreException {
       NewActionWizard wizard = new NewActionWizard();
       if (actionableItem != null) {
          wizard.setInitialAias(ActionableItems.getActionableItems(Arrays.asList(actionableItem)));

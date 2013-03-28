@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.artifact;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 import org.eclipse.osee.framework.core.data.LazyObject;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.HasOrcsData;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 
@@ -36,5 +39,18 @@ public abstract class OrcsLazyObject<T, D extends OrcsData> extends LazyObject<T
       invalidate();
       this.data = data;
    }
+
+   @Override
+   protected final FutureTask<T> createLoaderTask() {
+      Callable<T> callable = new Callable<T>() {
+         @Override
+         public T call() throws Exception {
+            return instance();
+         }
+      };
+      return new FutureTask<T>(callable);
+   }
+
+   protected abstract T instance() throws OseeCoreException;
 
 }

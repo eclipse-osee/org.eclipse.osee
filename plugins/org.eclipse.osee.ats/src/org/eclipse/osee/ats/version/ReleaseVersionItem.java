@@ -17,20 +17,22 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
-import org.eclipse.osee.ats.core.client.config.VersionsClient;
-import org.eclipse.osee.ats.core.client.config.store.VersionArtifactStore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -77,7 +79,8 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             }
             // Validate that all Team Workflows are Completed or Cancelled
             String errorStr = null;
-            for (TeamWorkFlowArtifact team : VersionsClient.getTargetedForTeamWorkflows(verArt)) {
+            for (TeamWorkFlowArtifact team : AtsClientService.get().getAtsVersionService().getTargetedForTeamWorkflowArtifacts(
+               verArt)) {
                if (!team.isCancelled() && !team.isCompleted()) {
                   errorStr =
                      "All Team Workflows must be either Completed or " + "Cancelled before releasing a version.\n\n" + team.getHumanReadableId() + " - is in the\"" + team.getStateMgr().getCurrentStateName() + "\" state.";
@@ -96,8 +99,10 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             verArt.setReleased(true);
             verArt.setReleaseDate(new Date());
             verArt.setNextVersion(false);
-            VersionArtifactStore store = new VersionArtifactStore(verArt);
-            store.save(getClass().getSimpleName());
+            SkynetTransaction transaction =
+               TransactionManager.createTransaction(AtsUtil.getAtsBranchToken(), getClass().getSimpleName());
+            AtsClientService.get().storeConfigObject(verArt, transaction);
+            transaction.execute();
 
             if (MessageDialog.openQuestion(Displays.getActiveShell(), "Select NEW Next Release Version",
                "Release Complete.\n\nSelect NEW Next Release Version?")) {
@@ -108,8 +113,10 @@ public class ReleaseVersionItem extends XNavigateItemAction {
                if (result == 0) {
                   verArt = (IAtsVersion) ld.getResult()[0];
                   verArt.setNextVersion(true);
-                  store = new VersionArtifactStore(verArt);
-                  store.save(getClass().getSimpleName());
+                  transaction =
+                     TransactionManager.createTransaction(AtsUtil.getAtsBranchToken(), getClass().getSimpleName());
+                  AtsClientService.get().storeConfigObject(verArt, transaction);
+                  transaction.execute();
                }
             }
          }

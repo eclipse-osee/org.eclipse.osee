@@ -37,8 +37,8 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workdef.viewer.model.DefaultTransitionConnection;
 import org.eclipse.osee.ats.workdef.viewer.model.ReturnTransitionConnection;
 import org.eclipse.osee.ats.workdef.viewer.model.StateDefShape;
@@ -224,7 +224,7 @@ public class AtsWorkDefConfigEditor extends GraphicalEditorWithFlyoutPalette {
             }
             // Create states
             List<IAtsStateDefinition> stateDefs =
-               AtsWorkDefinitionService.getService().getStatesOrderedByDefaultToState(workflowDef);
+               AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByDefaultToState(workflowDef);
             for (IAtsStateDefinition stateDef : workflowDef.getStates()) {
                if (!stateDefs.contains(stateDef)) {
                   stateDefs.add(stateDef);
@@ -243,7 +243,7 @@ public class AtsWorkDefConfigEditor extends GraphicalEditorWithFlyoutPalette {
             }
 
             // Create transitions
-            for (IAtsStateDefinition stateDef : AtsWorkDefinitionService.getService().getStatesOrderedByDefaultToState(
+            for (IAtsStateDefinition stateDef : AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByDefaultToState(
                workflowDef)) {
                StateDefShape pageShape = getStateDefShape(stateDef);
                // Handle to pages

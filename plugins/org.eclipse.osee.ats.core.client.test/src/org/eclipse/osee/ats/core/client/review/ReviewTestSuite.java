@@ -24,7 +24,6 @@ import org.junit.runners.Suite;
    AtsXUserRoleValidatorTest.class,
    UserRoleTest.class})
 /**
- * This test suite contains tests that must be run against demo database as Plugin JUnit (PT)
  *
  * @author Donald G. Dunne
  */

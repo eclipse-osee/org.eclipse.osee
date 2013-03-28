@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.CreateTeamOption;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.team.TeamWorkflowProviders;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.ITeamWorkflowProvider;
@@ -174,7 +174,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
          dupArt.persist(transaction);
          // Notify all extension points that workflow is being duplicated in case they need to add, remove
          // attributes or relations
-         for (ITeamWorkflowProvider teamExtension : TeamWorkflowProviders.getAtsTeamWorkflowProviders()) {
+         for (ITeamWorkflowProvider teamExtension : TeamWorkFlowManager.getTeamWorkflowProviders()) {
             teamExtension.teamWorkflowDuplicating(teamArt, dupArt);
          }
       }

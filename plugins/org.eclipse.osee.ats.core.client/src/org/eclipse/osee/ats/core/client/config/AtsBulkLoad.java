@@ -14,16 +14,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.core.runtime.jobs.Job;
+import java.util.concurrent.atomic.AtomicBoolean;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.review.AtsReviewCache;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.operation.CompositeOperation;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -34,42 +36,33 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
  */
 public class AtsBulkLoad {
 
-   private static boolean atsTypeDataLoadedStarted = false;
+   private static AtomicBoolean atsTypeDataLoadedStarted = new AtomicBoolean(false);
 
-   public synchronized static List<IOperation> getConfigLoadingOperations() {
+   public static List<IOperation> getConfigLoadingOperations() {
       List<IOperation> ops = new ArrayList<IOperation>();
-      if (atsTypeDataLoadedStarted == false) {
-         atsTypeDataLoadedStarted = true;
-         ops.add(new AtsLoadConfigArtifactsOperation());
-         ops.add(new AtsLoadWorkDefinitionsOperation());
-         ops.add(new AtsLoadDictionaryOperation());
+      if (atsTypeDataLoadedStarted.compareAndSet(false, true)) {
+         IOperation op = new AbstractOperation("Re-load ATS Config", Activator.PLUGIN_ID) {
+            @Override
+            protected void doWork(IProgressMonitor monitor) throws Exception {
+               AtsClientService.get().reloadAllCaches();
+            }
+         };
+         ops.add(op);
       } else {
          ops.add(Operations.createNoOpOperation("ATS Bulk Loading"));
       }
       return ops;
    }
 
-   public static void reloadConfig(boolean pend) {
-      List<IOperation> ops = new ArrayList<IOperation>();
-      ops.add(new AtsLoadConfigArtifactsOperation(true));
-      ops.add(new AtsLoadWorkDefinitionsOperation(true));
-      IOperation operation = new CompositeOperation("Re-load ATS Config", Activator.PLUGIN_ID, ops);
+   public static void reloadConfig(boolean pend) throws OseeCoreException {
       if (pend) {
-         Operations.executeWork(operation);
+         AtsClientService.get().reloadAllCaches();
       } else {
-         Operations.executeAsJob(operation, false, Job.LONG, null);
+         AtsClientService.get().invalidateAllCaches();
       }
-   }
-
-   public static void loadConfig(boolean pend) {
-      if (AtsLoadConfigArtifactsOperation.isLoaded()) {
-         return;
-      }
-      reloadConfig(pend);
    }
 
    public static Set<Artifact> bulkLoadArtifacts(Collection<? extends Artifact> artifacts) throws OseeCoreException {
-      //      System.out.println("Bulk loading artifact - START");
       List<Artifact> actions = new ArrayList<Artifact>();
       List<Artifact> teams = new ArrayList<Artifact>();
       for (Artifact art : artifacts) {
@@ -93,7 +86,6 @@ public class AtsBulkLoad {
             AtsReviewCache.getReviewArtifacts((TeamWorkFlowArtifact) art);
          }
       }
-      //      System.out.println("Bulk loading artifact - END");
       return arts;
    }
 }

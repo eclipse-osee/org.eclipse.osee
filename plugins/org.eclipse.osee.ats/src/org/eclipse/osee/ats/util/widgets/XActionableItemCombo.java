@@ -17,7 +17,11 @@ import java.util.List;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.core.config.ActionableItemSorter;
 import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -39,7 +43,13 @@ public class XActionableItemCombo extends XComboViewer {
    protected void createControls(Composite parent, int horizontalSpan) {
       super.createControls(parent, horizontalSpan);
 
-      Collection<IAtsActionableItem> teamDefs = ActionableItems.getActionableItems(Active.Active);
+      Collection<IAtsActionableItem> teamDefs = null;
+      try {
+         teamDefs = ActionableItems.getActionableItems(Active.Active);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading actionable items", ex);
+      }
+
       List<IAtsActionableItem> sortedAiArts = new ArrayList<IAtsActionableItem>();
       sortedAiArts.addAll(teamDefs);
       Collections.sort(sortedAiArts, new ActionableItemSorter());

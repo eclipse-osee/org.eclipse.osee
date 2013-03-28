@@ -13,10 +13,10 @@ import java.util.Map;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.core.client.config.VersionsClient;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.HoursSpentUtil;
-import org.eclipse.osee.ats.reports.efficiency.Activator;
+import org.eclipse.osee.ats.reports.efficiency.internal.Activator;
+import org.eclipse.osee.ats.reports.efficiency.internal.AtsClientService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -48,7 +48,8 @@ public class VersionEfficiency {
       final Map<String, List<TeamWorkFlowArtifact>> teams = new HashMap<String, List<TeamWorkFlowArtifact>>();
 
       // 1. For each team, collect the list of artifacts.
-      for (TeamWorkFlowArtifact teamWorkflow : VersionsClient.getTargetedForTeamWorkflows(this.version)) {
+      for (TeamWorkFlowArtifact teamWorkflow : AtsClientService.get().getAtsVersionService().getTargetedForTeamWorkflowArtifacts(
+         this.version)) {
          if (teams.containsKey(teamWorkflow.getTeamName())) {
             teams.get(teamWorkflow.getTeamName()).add(teamWorkflow);
          } else {

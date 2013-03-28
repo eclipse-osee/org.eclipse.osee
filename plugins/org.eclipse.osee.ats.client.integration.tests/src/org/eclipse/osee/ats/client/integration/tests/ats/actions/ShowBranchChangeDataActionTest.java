@@ -28,7 +28,7 @@ public class ShowBranchChangeDataActionTest extends AbstractAtsActionRunTest {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
       Result result = AtsTestUtil.createWorkingBranchFromTeamWf();
       Assert.assertTrue(result.getText(), result.isTrue());
-      TestUtil.sleep(2000);
+      TestUtil.sleep(4000);
       Assert.assertNotNull(AtsTestUtil.getTeamWf().getWorkingBranch());
 
       return new ShowBranchChangeDataAction(AtsTestUtil.getTeamWf());

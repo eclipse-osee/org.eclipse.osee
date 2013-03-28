@@ -19,8 +19,8 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.client.demo.DemoTeam;
 import org.eclipse.osee.ats.client.demo.PopulateDemoActions;
 import org.eclipse.osee.ats.client.demo.internal.Activator;
+import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.config.ValidateAtsConfiguration;
-import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.navigate.IAtsNavigateItem;
@@ -60,7 +60,9 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       // Add check to keep exception from occurring for OSEE developers running against production
       if (!ClientSessionManager.isProductionDataStore()) {
          try {
-            results = AtsConfigCache.instance.getSoleByGuid(team.getTeamDefToken().getGuid(), IAtsTeamDefinition.class);
+            results =
+               AtsClientService.get().getAtsConfig().getSoleByGuid(team.getTeamDefToken().getGuid(),
+                  IAtsTeamDefinition.class);
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }

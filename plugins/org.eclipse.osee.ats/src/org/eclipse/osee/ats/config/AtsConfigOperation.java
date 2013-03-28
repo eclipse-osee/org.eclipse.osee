@@ -23,20 +23,14 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.ats.core.client.AtsClient;
 import org.eclipse.osee.ats.core.client.config.AtsArtifactToken;
-import org.eclipse.osee.ats.core.client.config.store.ActionableItemArtifactStore;
-import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
-import org.eclipse.osee.ats.core.client.config.store.VersionArtifactStore;
 import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.client.workdef.AtsWorkDefinitionStore;
-import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionService;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionImporter;
@@ -94,7 +88,7 @@ public class AtsConfigOperation extends AbstractOperation {
    private void checkWorkItemNamespaceUnique() throws OseeCoreException {
       WorkDefinitionMatch match = null;
       try {
-         match = AtsClient.getWorkDefFactory().getWorkDefinition(name);
+         match = AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinition(name);
       } catch (Exception ex) {
          return;
       }
@@ -129,15 +123,11 @@ public class AtsConfigOperation extends AbstractOperation {
    }
 
    private IAtsTeamDefinition createTeamDefinition(SkynetTransaction transaction) throws OseeCoreException {
-      IAtsTeamDefinition teamDef =
-         AtsConfigCache.instance.getTeamDefinitionFactory().createTeamDefinition(GUID.create(), teamDefName);
+      IAtsTeamDefinition teamDef = AtsClientService.get().createTeamDefinition(GUID.create(), teamDefName);
       teamDef.getLeads().add(AtsUsersClient.getUser());
       teamDef.getMembers().add(AtsUsersClient.getUser());
       TeamDefinitions.getTopTeamDefinition().getChildrenTeamDefinitions().add(teamDef);
-      TeamDefinitionArtifactStore teamDefStore = new TeamDefinitionArtifactStore(teamDef);
-      teamDefStore.getArtifactOrCreate(transaction);
-      teamDefStore.saveToArtifact(transaction);
-      AtsConfigCache.instance.cache(teamDef);
+      AtsClientService.get().storeConfigObject(teamDef, transaction);
       return teamDef;
    }
 
@@ -145,56 +135,47 @@ public class AtsConfigOperation extends AbstractOperation {
       Collection<IAtsActionableItem> aias = new ArrayList<IAtsActionableItem>();
 
       // Create top actionable item
-      IAtsActionableItem topAia =
-         AtsConfigCache.instance.getActionableItemFactory().createActionableItem(GUID.create(), teamDefName);
+      IAtsActionableItem topAia = AtsClientService.get().createActionableItem(GUID.create(), teamDefName);
       topAia.setActionable(false);
       topAia.setTeamDefinition(teamDef);
-      ActionableItemArtifactStore topAiaStore = new ActionableItemArtifactStore(topAia);
-      topAiaStore.getArtifactOrCreate(transaction);
-      topAiaStore.saveToArtifact(transaction);
-
+      AtsClientService.get().storeConfigObject(topAia, transaction);
       teamDef.getActionableItems().add(topAia);
-      new TeamDefinitionArtifactStore(teamDef).saveToArtifact(transaction);
+      AtsClientService.get().storeConfigObject(teamDef, transaction);
 
       aias.add(topAia);
 
       // Create children actionable item
       for (String name : actionableItemsNames) {
-         IAtsActionableItem childAi =
-            AtsConfigCache.instance.getActionableItemFactory().createActionableItem(GUID.create(), name);
+         IAtsActionableItem childAi = AtsClientService.get().createActionableItem(GUID.create(), name);
          childAi.setActionable(true);
          topAia.getChildrenActionableItems().add(childAi);
          childAi.setParentActionableItem(topAia);
-         ActionableItemArtifactStore childAiStore = new ActionableItemArtifactStore(childAi);
-         childAiStore.getArtifactOrCreate(transaction);
-         childAiStore.saveToArtifact(transaction);
+         AtsClientService.get().storeConfigObject(childAi, transaction);
          aias.add(childAi);
       }
-      topAiaStore.saveToArtifact(transaction);
+      AtsClientService.get().storeConfigObject(topAia, transaction);
       return aias;
    }
 
    private void createVersions(SkynetTransaction transaction, IAtsTeamDefinition teamDef) throws OseeCoreException {
       if (versionNames != null) {
          for (String name : versionNames) {
-            IAtsVersion version = AtsConfigCache.instance.getVersionFactory().createVersion(name);
+            IAtsVersion version = AtsClientService.get().createVersion(name);
             teamDef.getVersions().add(version);
-            VersionArtifactStore verStore = new VersionArtifactStore(version);
-            verStore.getArtifactOrCreate(transaction);
-            verStore.saveToArtifact(transaction);
+            AtsClientService.get().storeConfigObject(version, transaction);
             AtsVersionService.get().setTeamDefinition(version, teamDef);
          }
       }
    }
 
    private IAtsWorkDefinition createWorkflow(SkynetTransaction transaction, XResultData resultData, IAtsTeamDefinition teamDef) throws OseeCoreException {
-      WorkDefinitionMatch workDefMatch = AtsClient.getWorkDefFactory().getWorkDefinition(name);
+      WorkDefinitionMatch workDefMatch = AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinition(name);
       IAtsWorkDefinition workDef = null;
       // If can't be found, create a new one
       if (!workDefMatch.isMatched()) {
          workDef = generateDefaultWorkflow(name, resultData, transaction, teamDef);
          try {
-            String workDefXml = AtsWorkDefinitionService.getService().getStorageString(workDef, resultData);
+            String workDefXml = AtsClientService.get().getWorkDefinitionAdmin().getStorageString(workDef, resultData);
             Artifact workDefArt =
                AtsWorkDefinitionImporter.get().importWorkDefinitionToDb(workDefXml, workDef.getName(), name,
                   resultData, transaction);
@@ -209,20 +190,19 @@ public class AtsConfigOperation extends AbstractOperation {
       }
       // Relate new team def to workflow artifact
       teamDef.setWorkflowDefinition(workDef.getId());
-      new TeamDefinitionArtifactStore(teamDef).saveToArtifact(transaction);
+      AtsClientService.get().storeConfigObject(teamDef, transaction);
       return workDef;
    }
 
-   private IAtsWorkDefinition generateDefaultWorkflow(String name, XResultData resultData, SkynetTransaction transaction, IAtsTeamDefinition teamDef) {
+   private IAtsWorkDefinition generateDefaultWorkflow(String name, XResultData resultData, SkynetTransaction transaction, IAtsTeamDefinition teamDef) throws OseeCoreException {
       IAtsWorkDefinition defaultWorkDef =
-         AtsClient.getWorkDefFactory().getWorkDefinition(AtsWorkDefinitionSheetProviders.WORK_DEF_TEAM_DEFAULT).getWorkDefinition();
+         AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinition(
+            AtsWorkDefinitionSheetProviders.WORK_DEF_TEAM_DEFAULT).getWorkDefinition();
 
       // Duplicate default team workflow definition w/ namespace changes
 
       IAtsWorkDefinition newWorkDef =
-         AtsWorkDefinitionService.getService().copyWorkDefinition(name, defaultWorkDef, resultData,
-            AtsWorkDefinitionStore.getInstance().getAttributeResolver(),
-            AtsWorkDefinitionStore.getInstance().getUserResolver());
+         AtsClientService.get().getWorkDefinitionAdmin().copyWorkDefinition(name, defaultWorkDef, resultData);
       return newWorkDef;
    }
 
@@ -234,10 +214,10 @@ public class AtsConfigOperation extends AbstractOperation {
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
                try {
-                  Artifact teamDefArt = new TeamDefinitionArtifactStore(teamDef).getArtifact();
+                  Artifact teamDefArt = AtsClientService.get().getConfigArtifact(teamDef);
                   AtsUtil.openATSAction(teamDefArt, AtsOpenOption.OpenAll);
                   for (IAtsActionableItem aia : aias) {
-                     AtsUtil.openATSAction(new ActionableItemArtifactStore(aia).getArtifact(), AtsOpenOption.OpenAll);
+                     AtsUtil.openATSAction(AtsClientService.get().getConfigArtifact(aia), AtsOpenOption.OpenAll);
                   }
                   RendererManager.open(ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition,
                      workDefinition.getName(), AtsUtil.getAtsBranch()), PresentationType.SPECIALIZED_EDIT, monitor);

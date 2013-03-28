@@ -11,7 +11,7 @@ import java.util.List;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.reports.AtsReport;
 import org.eclipse.osee.ats.reports.ReportTabFactory;
-import org.eclipse.osee.ats.reports.burndown.Activator;
+import org.eclipse.osee.ats.reports.burndown.internal.Activator;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
