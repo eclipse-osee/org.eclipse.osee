@@ -113,7 +113,13 @@ public class ArtifactClipboard {
    }
 
    public boolean isEmpty() {
-      return clipboard.getContents(ArtifactTransfer.getInstance()) == null;
+      boolean theReturn = true;
+      if (clipboard.isDisposed()) {
+         theReturn = true;
+      } else {
+         theReturn = clipboard.getContents(ArtifactTransfer.getInstance()) == null;
+      }
+      return theReturn;
    }
 
    public List<Artifact> getCopiedContents() {
