@@ -75,8 +75,6 @@ public class OpenContributionItem extends ContributionItem {
    private final Collection<IContributionItem> openWithItems = new ArrayList<IContributionItem>();
    private IContributionItem defaultOpenItem;
 
-   private boolean dirty = true;
-
    public OpenContributionItem() {
       this(null);
    }
@@ -88,11 +86,6 @@ public class OpenContributionItem extends ContributionItem {
    @Override
    public boolean isDynamic() {
       return true;
-   }
-
-   @Override
-   public boolean isDirty() {
-      return dirty;
    }
 
    @Override
@@ -124,8 +117,6 @@ public class OpenContributionItem extends ContributionItem {
 
       final OpenWithToolItemListener listener = new OpenWithToolItemListener(parent);
       toolItem.addListener(SWT.Selection, listener);
-
-      dirty = false;
    }
 
    @Override
@@ -152,10 +143,8 @@ public class OpenContributionItem extends ContributionItem {
          @Override
          public void widgetDisposed(DisposeEvent e) {
             parent.removeMenuListener(listener);
-            dirty = true;
          }
       });
-      dirty = false;
    }
 
    @Override
@@ -175,13 +164,12 @@ public class OpenContributionItem extends ContributionItem {
       @Override
       public void menuAboutToShow(IMenuManager manager) {
          manager.markDirty();
-         dirty = true;
       }
    };
 
    private static boolean isMenuEnabled(Menu menu) {
-      for (MenuItem menuItems : menu.getItems()) {
-         if (menuItems.isEnabled()) {
+      for (MenuItem item : menu.getItems()) {
+         if (item.isEnabled()) {
             return true;
          }
       }
@@ -237,10 +225,11 @@ public class OpenContributionItem extends ContributionItem {
    }
 
    private IContributionItem createContributionItem(String commandId, ImageDescriptor imageDescriptor) {
-      IContributionItem contributionItem =
-         new CommandContributionItem(new CommandContributionItemParameter(
-            PlatformUI.getWorkbench().getActiveWorkbenchWindow(), commandId, commandId, Collections.emptyMap(),
-            imageDescriptor, null, null, null, null, null, SWT.NONE, null, false));
+      CommandContributionItemParameter param =
+         new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(), commandId,
+            commandId, Collections.emptyMap(), imageDescriptor, null, null, null, null, null, SWT.NONE, null, false);
+
+      CommandContributionItem contributionItem = new CommandContributionItem(param);
       return contributionItem;
    }
 

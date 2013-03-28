@@ -13,6 +13,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xHistory;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -67,6 +68,7 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuAdapter;
 import org.eclipse.swt.events.MenuEvent;
+import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -160,9 +162,12 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
 
    private void setupMenus() {
       Menu popupMenu = new Menu(xHistoryWidget.getXViewer().getTree().getParent());
+      OpenOnShowListener openListener = new OpenOnShowListener();
+      popupMenu.addMenuListener(openListener);
 
       OpenContributionItem contributionItem = new OpenContributionItem(getClass().getSimpleName() + ".open");
       contributionItem.fill(popupMenu, -1);
+      openListener.add(popupMenu.getItem(0));
       new MenuItem(popupMenu, SWT.SEPARATOR);
 
       createChangeReportMenuItem(popupMenu);
@@ -186,6 +191,26 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
       xMenu.addFilterMenuBlock(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
       xHistoryWidget.getXViewer().getTree().setMenu(popupMenu);
+   }
+
+   private class OpenOnShowListener implements MenuListener {
+      private final List<MenuItem> items = new LinkedList<MenuItem>();
+
+      public void add(MenuItem item) {
+         items.add(item);
+      }
+
+      @Override
+      public void menuShown(MenuEvent e) {
+         for (MenuItem item : items) {
+            item.setEnabled(!xHistoryWidget.getXViewer().getSelection().isEmpty());
+         }
+      }
+
+      @Override
+      public void menuHidden(MenuEvent e) {
+         // nothing
+      }
    }
 
    private void createReplaceAttributeWithVersionMenuItem(Menu popupMenu) {

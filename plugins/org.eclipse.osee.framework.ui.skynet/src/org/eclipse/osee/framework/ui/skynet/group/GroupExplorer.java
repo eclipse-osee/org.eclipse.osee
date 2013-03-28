@@ -154,9 +154,12 @@ public class GroupExplorer extends GenericViewPart implements IArtifactEventList
       Menu popupMenu = new Menu(treeViewer.getTree().getParent());
       needProjectListener = new NeedProjectMenuListener();
       popupMenu.addMenuListener(needProjectListener);
+      OpenOnShowListener openListener = new OpenOnShowListener();
+      popupMenu.addMenuListener(openListener);
 
       OpenContributionItem contrib = new OpenContributionItem(getClass().getSimpleName() + ".open");
       contrib.fill(popupMenu, -1);
+      openListener.add(popupMenu.getItem(0));
 
       new MenuItem(popupMenu, SWT.SEPARATOR);
 
@@ -216,6 +219,26 @@ public class GroupExplorer extends GenericViewPart implements IArtifactEventList
       });
 
       treeViewer.getTree().setMenu(popupMenu);
+   }
+
+   private class OpenOnShowListener implements MenuListener {
+      private final List<MenuItem> items = new LinkedList<MenuItem>();
+
+      public void add(MenuItem item) {
+         items.add(item);
+      }
+
+      @Override
+      public void menuShown(MenuEvent e) {
+         for (MenuItem item : items) {
+            item.setEnabled(!treeViewer.getSelection().isEmpty());
+         }
+      }
+
+      @Override
+      public void menuHidden(MenuEvent e) {
+         // nothing
+      }
    }
 
    protected void createActions() {

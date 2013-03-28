@@ -453,31 +453,40 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
       popupMenu.addMenuListener(needArtifactListener);
       popupMenu.addMenuListener(needProjectListener);
 
-      OpenContributionItem contrib = new OpenContributionItem(getClass().getSimpleName() + ".open");
-      contrib.fill(popupMenu, -1);
+      OpenContributionItem openWithMenu = new OpenContributionItem(getClass().getSimpleName() + ".open");
+      openWithMenu.fill(popupMenu, -1);
+      needArtifactListener.add(popupMenu.getItem(0));
       new MenuItem(popupMenu, SWT.SEPARATOR);
 
       createFindOnDifferentBranchItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
+
       createNewChildMenuItem(popupMenu);
       createGoIntoMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
+
       new GlobalMenu(popupMenu, globalMenuHelper);
       new MenuItem(popupMenu, SWT.SEPARATOR);
+
       createRenameArtifactMenuItem(popupMenu);
       createRefreshMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
+
       createImportExportMenuItems(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
+
       createLockMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
+
       createCopyMenuItem(popupMenu);
       createPasteMenuItem(popupMenu);
       createPasteSpecialMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
+
       createExpandAllMenuItem(popupMenu);
       createSelectAllMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
+
       createAccessControlMenuItem(popupMenu);
       treeViewer.getTree().setMenu(popupMenu);
    }
