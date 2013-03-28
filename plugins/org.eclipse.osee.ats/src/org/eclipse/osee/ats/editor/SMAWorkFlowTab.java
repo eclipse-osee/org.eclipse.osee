@@ -57,7 +57,6 @@ import org.eclipse.osee.ats.world.IWorldViewerEventHandler;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.WorldXViewerEventManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
@@ -120,7 +119,6 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    private SMAWorkflowMetricsHeader workflowMetricsHeader;
    private SMADetailsSection smaDetailsSection;
    private SMARelationsSection smaRelationsSection;
-   private SMAGoalMembersSection smaGoalMembersSection;
    private SMAHistorySection smaHistorySection;
    private LoadingComposite loadingComposite;
    public final static String ID = "ats.workflow.tab";
@@ -195,7 +193,7 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    public void refreshData() {
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.addAll(AtsBulkLoad.getConfigLoadingOperations());
-      IOperation operation = new CompositeOperation("Load Workflow Tab", Activator.PLUGIN_ID, ops);
+      IOperation operation = Operations.createBuilder("Load Workflow Tab").addAll(ops).build();
       Operations.executeAsJob(operation, false, Job.LONG, new ReloadJobChangeAdapter(editor));
    }
    private final class ReloadJobChangeAdapter extends JobChangeAdapter {
@@ -375,7 +373,6 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       gd.widthHint = 100;
       headerComp.setLayoutData(gd);
       headerComp.setLayout(ALayout.getZeroMarginLayout(1, false));
-      // mainComp.setBackground(Displays.getSystemColor(SWT.COLOR_RED));
 
       // Display relations
       try {
@@ -545,9 +542,6 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       if (smaRelationsSection != null) {
          smaRelationsSection.dispose();
       }
-      if (smaGoalMembersSection != null) {
-         smaGoalMembersSection.dispose();
-      }
       for (SMAWorkFlowSection section : sections) {
          section.dispose();
       }
@@ -577,7 +571,6 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
             @Override
             public void run() {
                Integer selection = guidToScrollLocation.get(awa.getGuid());
-               // System.out.println("Restoring selection => " + selection);
 
                // Find the ScrolledComposite operating on the control.
                ScrolledComposite sComp = null;
@@ -727,9 +720,7 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
 
    @Override
    public WorldXViewer getWorldXViewer() {
-      if (smaGoalMembersSection != null && Widgets.isAccessible(smaGoalMembersSection.getWorldComposite())) {
-         return smaGoalMembersSection.getWorldComposite().getWorldXViewer();
-      }
+      // do nothing
       return null;
    }
 

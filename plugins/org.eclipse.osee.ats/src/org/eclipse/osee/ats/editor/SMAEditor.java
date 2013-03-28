@@ -42,6 +42,8 @@ import org.eclipse.osee.ats.task.TaskTabXWidgetActionPage;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
+import org.eclipse.osee.ats.world.IWorldEditor;
+import org.eclipse.osee.ats.world.IWorldEditorProvider;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -74,6 +76,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
@@ -89,7 +92,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 /**
  * @author Donald G. Dunne
  */
-public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportable, ISMAEditorEventHandler, ISelectedAtsArtifacts, IAtsMetricsProvider, IXTaskViewer {
+public class SMAEditor extends AbstractArtifactEditor implements IWorldEditor, IDirtyReportable, ISMAEditorEventHandler, ISelectedAtsArtifacts, IAtsMetricsProvider, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.SMAEditor";
    private AbstractWorkflowArtifact awa;
    private SMAWorkFlowTab workFlowTab;
@@ -678,8 +681,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
             if (page.equals(workFlowTab)) {
                provider = getDefaultSelectionProvider();
             } else if (page.equals(membersTab)) {
-               if (membersTab != null && membersTab.getSmaGoalMembersSection() != null) {
-                  provider = membersTab.getSmaGoalMembersSection().getWorldComposite().getWorldXViewer();
+               if (membersTab != null && membersTab.getGoalMembersSection() != null) {
+                  provider = membersTab.getWorldXViewer();
                }
             } else if (page.equals(taskTabXWidgetActionPage)) {
                provider = taskTabXWidgetActionPage.getTaskComposite().getTaskXViewer();
@@ -702,6 +705,36 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
          return Arrays.asList((TaskArtifact) awa);
       }
       return java.util.Collections.emptyList();
+   }
+
+   @Override
+   public void reflow() {
+      // do nothing
+   }
+
+   @Override
+   public void setTableTitle(String title, boolean warning) {
+      // do nothing
+   }
+
+   @Override
+   public void reSearch() {
+      // do nothing
+   }
+
+   @Override
+   public IWorldEditorProvider getWorldEditorProvider() {
+      return null;
+   }
+
+   @Override
+   public void createToolBarPulldown(Menu menu) {
+      // do nothing
+   }
+
+   @Override
+   public String getCurrentTitleLabel() {
+      return null;
    }
 
 }

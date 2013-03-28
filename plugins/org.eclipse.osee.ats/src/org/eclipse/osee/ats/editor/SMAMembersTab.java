@@ -11,8 +11,11 @@
 
 package org.eclipse.osee.ats.editor;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -22,22 +25,34 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
+import org.eclipse.osee.ats.goal.GoalXViewerFactory;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.IWorldViewerEventHandler;
+import org.eclipse.osee.ats.world.WorldComposite;
+import org.eclipse.osee.ats.world.WorldLabelProvider;
+import org.eclipse.osee.ats.world.WorldViewDragAndDrop;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.WorldXViewerEventManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
+import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
+import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -45,17 +60,17 @@ import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.progress.UIJob;
 
 /**
@@ -65,7 +80,8 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
    private final GoalArtifact goalArtifact;
    private IManagedForm managedForm;
    private Composite bodyComp;
-   private SMAGoalMembersSection smaGoalMembersSection;
+   private ScrolledForm scrolledForm;
+   private WorldComposite worldComposite;
    private LoadingComposite loadingComposite;
    public final static String ID = "ats.members.tab";
    private final SMAEditor editor;
@@ -84,8 +100,9 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
       super.createFormContent(managedForm);
 
       this.managedForm = managedForm;
+      scrolledForm = managedForm.getForm();
       try {
-         managedForm.getForm().addDisposeListener(new DisposeListener() {
+         scrolledForm.addDisposeListener(new DisposeListener() {
             @Override
             public void widgetDisposed(DisposeEvent e) {
                storeScrollLocation();
@@ -93,10 +110,10 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
          });
          updateTitleBar();
 
-         bodyComp = managedForm.getForm().getBody();
-         GridLayout gridLayout = new GridLayout(1, false);
+         bodyComp = scrolledForm.getBody();
+         GridLayout gridLayout = new GridLayout(1, true);
          bodyComp.setLayout(gridLayout);
-         GridData gd = new GridData(SWT.LEFT, SWT.LEFT, true, true);
+         GridData gd = new GridData(SWT.LEFT, SWT.LEFT, false, false);
          bodyComp.setLayoutData(gd);
 
          setLoading(true);
@@ -108,14 +125,14 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
    }
 
    private void updateTitleBar() throws OseeCoreException {
-      if (managedForm != null && Widgets.isAccessible(managedForm.getForm())) {
+      if (Widgets.isAccessible(scrolledForm)) {
          String titleString = editor.getTitleStr();
          String displayableTitle = Strings.escapeAmpersands(titleString);
-         if (!managedForm.getForm().getText().equals(displayableTitle)) {
-            managedForm.getForm().getForm().setText(displayableTitle);
+         if (!scrolledForm.getText().equals(displayableTitle)) {
+            scrolledForm.setText(displayableTitle);
          }
-         if (!ArtifactImageManager.getImage(goalArtifact).equals(managedForm.getForm().getImage())) {
-            managedForm.getForm().setImage(ArtifactImageManager.getImage(goalArtifact));
+         if (!ArtifactImageManager.getImage(goalArtifact).equals(scrolledForm.getImage())) {
+            scrolledForm.setImage(ArtifactImageManager.getImage(goalArtifact));
          }
       }
    }
@@ -131,10 +148,11 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
    public void refreshData() {
       if (Widgets.isAccessible(bodyComp)) {
          List<IOperation> ops = AtsBulkLoad.getConfigLoadingOperations();
-         IOperation operation = new CompositeOperation("Load Members Tab", Activator.PLUGIN_ID, ops);
+         IOperation operation = Operations.createBuilder("Load Members Tab").addAll(ops).build();
          Operations.executeAsJob(operation, false, Job.LONG, reloadAdapter);
       }
    }
+
    private final class ReloadJobChangeAdapter extends JobChangeAdapter {
 
       private final SMAEditor editor;
@@ -154,15 +172,16 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
             public IStatus runInUIThread(IProgressMonitor monitor) {
                if (firstTime) {
                   try {
-                     if (managedForm != null && Widgets.isAccessible(managedForm.getForm())) {
+                     if (Widgets.isAccessible(scrolledForm)) {
                         updateTitleBar();
                         setLoading(false);
                         boolean createdAndLoaded = createMembersBody();
                         if (!createdAndLoaded) {
-                           smaGoalMembersSection.reload();
+                           reload();
                         }
                         jumptoScrollLocation();
-                        FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
+                        FormsUtil.addHeadingGradient(editor.getToolkit(), scrolledForm, true);
+                        refreshToolbar();
                         editor.onDirtied();
                      }
                      firstTime = false;
@@ -180,7 +199,7 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
                      showBusy(false);
                   }
                   if (managedForm != null && Widgets.isAccessible(managedForm.getForm())) {
-                     smaGoalMembersSection.refresh();
+                     refresh();
                   }
                }
                return Status.OK_STATUS;
@@ -192,8 +211,8 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
 
    private void handleException(Exception ex) {
       setLoading(false);
-      if (Widgets.isAccessible(smaGoalMembersSection)) {
-         smaGoalMembersSection.dispose();
+      if (Widgets.isAccessible(worldComposite)) {
+         worldComposite.dispose();
       }
       OseeLog.log(Activator.class, Level.SEVERE, ex);
       new ExceptionComposite(bodyComp, ex);
@@ -216,28 +235,62 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
     * @return true if created; false if skipped
     */
    private boolean createMembersBody() {
-      if (!Widgets.isAccessible(smaGoalMembersSection)) {
+      if (!Widgets.isAccessible(worldComposite)) {
+         worldComposite =
+            new WorldComposite("workflow.edtor.members.tab", editor, new GoalXViewerFactory(
+               (GoalArtifact) editor.getAwa()), bodyComp, SWT.BORDER, false);
 
-         smaGoalMembersSection =
-            new SMAGoalMembersSection("workflow.edtor.members.tab", editor, bodyComp, SWT.NONE, null, goalArtifact);
-         smaGoalMembersSection.layout();
-         smaGoalMembersSection.setFocus();
+         new GoalDragAndDrop(worldComposite, SMAEditor.EDITOR_ID);
 
-         smaGoalMembersSection.getWorldComposite().getWorldXViewer().getTree().addListener(SWT.MouseWheel,
-            new Listener() {
+         WorldLabelProvider labelProvider = (WorldLabelProvider) worldComposite.getXViewer().getLabelProvider();
+         labelProvider.setParentGoal((GoalArtifact) editor.getAwa());
 
-               @Override
-               public void handleEvent(Event event) {
-                  ScrolledComposite sc = managedForm.getForm();
-                  Point origin = sc.getOrigin();
-                  origin.y -= event.count * 16;
-                  sc.setOrigin(origin);
-               }
-            });
-         getSite().setSelectionProvider(smaGoalMembersSection.getWorldComposite().getWorldXViewer());
+         GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+         gd.widthHint = 100;
+         gd.heightHint = 100;
+         worldComposite.setLayoutData(gd);
+
+         reload();
          return true;
       }
       return false;
+   }
+
+   public void reload() {
+      if (isTableDisposed()) {
+         return;
+      }
+      Job job = new Job("Load Goal Members") {
+
+         @Override
+         protected IStatus run(IProgressMonitor monitor) {
+            if (isTableDisposed()) {
+               return Status.OK_STATUS;
+            }
+            try {
+               final List<Artifact> artifacts = goalArtifact.getMembers();
+               Displays.ensureInDisplayThread(new Runnable() {
+                  @Override
+                  public void run() {
+                     if (isTableDisposed()) {
+                        return;
+                     }
+                     worldComposite.load("Members", artifacts, (CustomizeData) null, TableLoadOption.None);
+                  }
+
+               });
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+               return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Exception loading Goal Members", ex);
+            }
+            return Status.OK_STATUS;
+         }
+      };
+      Jobs.startJob(job, false);
+   }
+
+   private boolean isTableDisposed() {
+      return worldComposite == null || worldComposite.getXViewer() == null || worldComposite.getXViewer().getTree() == null || worldComposite.getXViewer().getTree().isDisposed();
    }
 
    private void jumptoScrollLocation() {
@@ -251,8 +304,8 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
 
    @Override
    public void dispose() {
-      if (smaGoalMembersSection != null) {
-         smaGoalMembersSection.dispose();
+      if (worldComposite != null) {
+         worldComposite.dispose();
       }
       if (editor.getToolkit() != null) {
          editor.getToolkit().dispose();
@@ -264,7 +317,6 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
    private void storeScrollLocation() {
       if (managedForm != null && managedForm.getForm() != null) {
          Integer selection = managedForm.getForm().getVerticalBar().getSelection();
-         // System.out.println("Storing selection => " + selection);
          guidToScrollLocation.put(goalArtifact.getGuid(), selection);
       }
    }
@@ -280,7 +332,6 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
             @Override
             public void run() {
                Integer selection = guidToScrollLocation.get(goalArtifact.getGuid());
-               // System.out.println("Restoring selection => " + selection);
 
                // Find the ScrolledComposite operating on the control.
                ScrolledComposite sComp = null;
@@ -307,19 +358,52 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
    }
 
    public void refresh() {
-      if (editor != null && !goalArtifact.isInTransition()) {
-         // add pages back
-         refreshData();
-      }
+      Displays.ensureInDisplayThread(new Runnable() {
+
+         @Override
+         public void run() {
+            if (Widgets.isAccessible(worldComposite)) {
+               updateShown();
+               worldComposite.update();
+               worldComposite.getXViewer().refresh();
+            }
+         }
+      });
    }
 
-   public SMAGoalMembersSection getSmaGoalMembersSection() {
-      return smaGoalMembersSection;
+   private void updateShown() {
+      List<Artifact> members;
+      try {
+         members = goalArtifact.getMembers();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         return;
+      }
+      List<Artifact> loadedArtifacts = worldComposite.getLoadedArtifacts();
+      List<Artifact> toRemoveFromLoaded = new LinkedList<Artifact>(members);
+      members.removeAll(loadedArtifacts);
+      for (Artifact art : members) {
+         worldComposite.insert(art, -1);
+      }
+      loadedArtifacts.removeAll(toRemoveFromLoaded);
+      worldComposite.getXViewer().remove(loadedArtifacts);
+   }
+
+   private void refreshToolbar() {
+      IToolBarManager toolBarMgr = scrolledForm.getToolBarManager();
+      toolBarMgr.removeAll();
+      toolBarMgr.add(getWorldXViewer().getCustomizeAction());
+      toolBarMgr.add(new RefreshAction(worldComposite));
+      scrolledForm.updateToolBar();
+   }
+
+   public WorldComposite getGoalMembersSection() {
+      return worldComposite;
    }
 
    @Override
    public WorldXViewer getWorldXViewer() {
-      return smaGoalMembersSection.getWorldComposite().getWorldXViewer();
+      return worldComposite.getWorldXViewer();
    }
 
    @Override
@@ -345,6 +429,76 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
    @Override
    public boolean isDisposed() {
       return editor.isDisposed();
+   }
+
+   private class GoalDragAndDrop extends WorldViewDragAndDrop {
+
+      private boolean isFeedbackAfter = false;
+
+      public GoalDragAndDrop(WorldComposite worldComposite, String viewId) {
+         super(worldComposite, viewId);
+      }
+
+      private Artifact getSelectedArtifact(DropTargetEvent event) {
+         if (event.item != null && event.item.getData() instanceof Artifact) {
+            return (Artifact) event.item.getData();
+         }
+         return null;
+      }
+
+      @Override
+      public void operationChanged(DropTargetEvent event) {
+         if (!(event.detail == 1)) {
+            isFeedbackAfter = false;
+         } else {
+            isFeedbackAfter = true;
+         }
+      }
+
+      @Override
+      public void performDragOver(DropTargetEvent event) {
+         if (isValidForArtifactDrop(event)) {
+            event.detail = DND.DROP_MOVE;
+            Artifact selectedArtifact = getSelectedArtifact(event);
+            if (selectedArtifact != null) {
+               if (isFeedbackAfter) {
+                  event.feedback = DND.FEEDBACK_INSERT_AFTER | DND.FEEDBACK_SCROLL;
+               } else {
+                  event.feedback = DND.FEEDBACK_INSERT_BEFORE | DND.FEEDBACK_SCROLL;
+               }
+            }
+         }
+      }
+
+      @Override
+      public void performDrop(final DropTargetEvent event) {
+         final ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
+         final List<Artifact> droppedArtifacts = Arrays.asList(artData.getArtifacts());
+         final Artifact dropTarget = getSelectedArtifact(event);
+         if (ArtifactTransfer.getInstance().isSupportedType(event.currentDataType)) {
+            try {
+               Collections.reverse(droppedArtifacts);
+               List<Artifact> members = goalArtifact.getMembers();
+               for (Artifact dropped : droppedArtifacts) {
+                  if (!members.contains(dropped)) {
+                     goalArtifact.addMember(dropped);
+                     int index = isFeedbackAfter ? members.indexOf(dropTarget) + 1 : members.indexOf(dropTarget);
+                     worldComposite.insert(dropped, index);
+                     worldComposite.update();
+                  }
+                  if (dropTarget != null) {
+                     goalArtifact.setRelationOrder(AtsRelationTypes.Goal_Member, dropTarget, isFeedbackAfter, dropped);
+                  }
+               }
+               goalArtifact.persist(SMAMembersTab.class.getSimpleName());
+               worldComposite.getXViewer().refresh(goalArtifact);
+               worldComposite.getXViewer().update(dropTarget, null);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.WARNING, Lib.exceptionToString(ex));
+            }
+         }
+      }
+
    }
 
 }
