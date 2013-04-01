@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xWidgets>
+   <XWidget displayName="Attribute Type"
+      xwidgetType="XAttributeTypeMultiChoiceSelect" />
+    <XWidget displayName="Branch"
+      xwidgetType="XBranchSelectWidget" />
+   <XWidget displayName="List of Artifact HRIDS (comma separated)"
+      xwidgetType="XTextDam" fill="Vertically" />
+</xWidgets>

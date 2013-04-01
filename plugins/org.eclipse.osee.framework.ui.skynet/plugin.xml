@@ -1760,4 +1760,12 @@
             classname="org.eclipse.osee.framework.ui.skynet.templates.TemplateArtifactValidator">
       </OseeValidator>
    </extension>
+   <extension
+         id="DeleteInvalidAttributeTypes"
+         name="DeleteInvalidAttributeTypes"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.framework.ui.skynet.blam.operation.DeleteInvalidAttributeTypesFromBranch">
+      </Operation>
+   </extension>
 </plugin>
