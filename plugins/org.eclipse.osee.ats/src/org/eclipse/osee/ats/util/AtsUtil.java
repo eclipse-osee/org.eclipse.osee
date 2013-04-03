@@ -295,7 +295,7 @@ public final class AtsUtil {
       return null;
    }
 
-   public static void openInAtsWorldEditor(String name, Collection<Artifact> artifacts) {
+   public static void openInAtsWorldEditor(String name, Collection<? extends Artifact> artifacts) {
       Set<Artifact> otherArts = new HashSet<Artifact>();
       for (Artifact art : artifacts) {
          if (art.isOfType(CoreArtifactTypes.UniversalGroup)) {

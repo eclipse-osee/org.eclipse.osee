@@ -486,4 +486,12 @@
             className="org.eclipse.osee.ats.operation.CreateWorkingBranchFromTxBlam">
       </Operation>
    </extension>
+   <extension
+         id="CreateActionFromTaskBlam"
+         name="CreateActionFromTaskBlam"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.ats.operation.CreateActionFromTaskBlam">
+      </Operation>
+   </extension>
 </plugin>

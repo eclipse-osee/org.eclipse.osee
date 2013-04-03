@@ -76,7 +76,8 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
             try {
                List<Artifact> artifacts = variableMap.getArtifacts(TASKS);
                String title = variableMap.getString(TITLE);
-               List<Artifact> aiasArts = variableMap.getArtifacts(ACTIONABLE_ITEMS);
+               Collection<IAtsActionableItem> aiasArts =
+                  variableMap.getCollection(IAtsActionableItem.class, ACTIONABLE_ITEMS);
                String changeTypeStr = variableMap.getString(CHANGE_TYPE);
                if (changeTypeStr == null || changeTypeStr.equals("--select--")) {
                   AWorkbench.popup("ERROR", "Must select a Change Type");
@@ -125,9 +126,13 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Create Actions from Tasks");
       for (TaskArtifact task : tasks) {
+         String useTitle = title;
+         if (!Strings.isValid(useTitle)) {
+            useTitle = task.getName();
+         }
          ActionArtifact action =
-            ActionManager.createAction(monitor, title, getDescription(task), changeType, priority, false, null, aias,
-               new Date(), AtsUsersClient.getUser(), null, transaction);
+            ActionManager.createAction(monitor, useTitle, getDescription(task), changeType, priority, false, null,
+               aias, new Date(), AtsUsersClient.getUser(), null, transaction);
 
          for (TeamWorkFlowArtifact teamArt : action.getTeams()) {
             newTeamArts.add(teamArt);
@@ -136,9 +141,12 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
          }
       }
       transaction.execute();
-      for (TeamWorkFlowArtifact newTeamArt : newTeamArts) {
-         SMAEditor.editArtifact(newTeamArt);
+      if (newTeamArts.size() == 1) {
+         SMAEditor.editArtifact(newTeamArts.iterator().next());
+      } else {
+         AtsUtil.openInAtsWorldEditor("Created Tasks from Actions", newTeamArts);
       }
+
    }
 
    private String getDescription(TaskArtifact taskArt) {
@@ -213,7 +221,7 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
 
    @Override
    public String getName() {
-      return "Duplicate Workflow";
+      return "Create Actions from Tasks";
    }
 
    @Override
