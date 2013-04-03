@@ -20,7 +20,6 @@ import java.io.OutputStreamWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
@@ -38,13 +37,13 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.workspacebundleloader.internal.Activator;
+import org.eclipse.osee.framework.ui.workspacebundleloader.internal.ManagedFolderArea;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IViewPart;
@@ -73,56 +72,50 @@ public class WorkspaceBundleLoadCoordinator {
 	private static final String TAG_PERSPECTIVE = "perspective";
 	private static final String TAG_OTE_PRECOMPILED = "OTEPrecompiled";
 	private static final String OTE_MEMENTO = "OTEMemento";
-	private File temporaryBundleLocationFolder;
+	
+	private ManagedFolderArea managedFolderArea;
 	private Set<String> bundlesToCheck;
 	private BundleCollection managedArea = new BundleCollection();
 	private FrameworkWiring wiring;
 	
 	public WorkspaceBundleLoadCoordinator(File temporaryBundleLocationFolder) {
 		bundlesToCheck = new HashSet<String>();
-		this.temporaryBundleLocationFolder = temporaryBundleLocationFolder;
-		if(!temporaryBundleLocationFolder.exists()){
-			if(!temporaryBundleLocationFolder.mkdirs()){
-				this.temporaryBundleLocationFolder = makeTempFolder();
-			}
-		} else if(temporaryBundleLocationFolder.exists() && !temporaryBundleLocationFolder.isDirectory()){
-			this.temporaryBundleLocationFolder = makeTempFolder();
-		} else if(temporaryBundleLocationFolder.exists()){
-			cleanOutDirectory();
-		}
-		
-		Bundle bundle = FrameworkUtil.getBundle(getClass());
-		for(Bundle findit:bundle.getBundleContext().getBundles()){
-			wiring = findit.adapt(FrameworkWiring.class);
-			if(wiring != null){
-				break;
-			}
-		}
+		this.managedFolderArea = new ManagedFolderArea(temporaryBundleLocationFolder);
+		managedFolderArea.initialize();
+		this.wiring = getFrameworkWiring();
 		
 		Thread th = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				int lastSize = 0;
+				boolean extraWait = false;
 				while(true){
 					try {
-						Thread.sleep(5000);
+					   if(extraWait){
+					      Thread.sleep(15000);
+					      extraWait = false;
+					   } else {
+					      Thread.sleep(5000);
+					   }
 					} catch (InterruptedException e) {
 					}
 					if(lastSize == bundlesToCheck.size()){
 						if(lastSize != 0){
 							if(bundlesToCheck.size() > 0){
 								lastSize = 0;
-								Jobs.runInJob(new RefreshWorkspaceBundles(), false);
+								Operations.executeAsJob(new RefreshWorkspaceBundles(), false);
 								try {
-									Thread.sleep(1000*30); //give time to load so we don't get called twice
+									Thread.sleep(1000*60); //give time to load so we don't get called twice
 								} catch (InterruptedException e) {
 								}
 							}
 						}
 					} else {
+					   if(bundlesToCheck.size() - lastSize > 5){
+					      extraWait = true;//big import allow for extra time for file imports
+					   }
 						lastSize = bundlesToCheck.size();
 					}
-
 				}
 			}
 		});
@@ -130,6 +123,20 @@ public class WorkspaceBundleLoadCoordinator {
 		th.setDaemon(true);
 		th.start();
 	}
+	
+	private FrameworkWiring getFrameworkWiring() {
+	   FrameworkWiring frameworkWiring = null;
+	   Bundle bundle = FrameworkUtil.getBundle(getClass());
+      for(Bundle findit:bundle.getBundleContext().getBundles()){
+         frameworkWiring = findit.adapt(FrameworkWiring.class);
+         if(frameworkWiring != null){
+            break;
+         }
+      }
+      return frameworkWiring;
+   }
+
+
 	
 	private class RefreshWorkspaceBundles  extends AbstractOperation  {
 
@@ -139,43 +146,13 @@ public class WorkspaceBundleLoadCoordinator {
 
 		@Override
 		protected void doWork(IProgressMonitor monitor) throws Exception {
-			SubMonitor master = SubMonitor.convert(monitor, 100);
-			updateBundles(master.newChild(50));
-			installLatestBundles(master.newChild(50));
+			updateBundles(monitor);
+			installLatestBundles(monitor);
 		}
 		
 	}
-	
-	/**
-	 * should be a flat list of folders with the symbolic name of the bundle and then a version for each jar underneath each folder.
-	 */
-	private void cleanOutDirectory() {
-		File[] symbolicNameFolders = this.temporaryBundleLocationFolder.listFiles();
-		for(File folder:symbolicNameFolders){
-			if(folder.isDirectory()){
-				for(File file :folder.listFiles()){
-					file.delete();
-				}
-				folder.delete();
-			}
-		}
-	}
 
-	private File makeTempFolder(){
-		File folder = new File(System.getProperty("java.io.tmpdir"));
-		File oteFolder = new File(folder, "otebundleload");
-		if(!oteFolder.exists()){
-			oteFolder.mkdirs();
-		}
-		return oteFolder;
-	}
-	
-	File getFolder(){
-		return temporaryBundleLocationFolder;
-	}
-	
-	
-	private void saveAndCloseViews(){
+	public void saveAndCloseViews(){
 		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable(){
 			@Override
 			public void run() {
@@ -193,6 +170,8 @@ public class WorkspaceBundleLoadCoordinator {
 		});
 	}
 	
+	
+	
 	public synchronized void uninstallBundles(){
 		saveAndCloseViews();
 		for(BundleInfoLite info:managedArea.getInstalledBundles()){
@@ -203,8 +182,14 @@ public class WorkspaceBundleLoadCoordinator {
 			}
 		}
 		if(wiring != null){
-			wiring.refreshBundles(null);
+		   wiring.refreshBundles(null);
 		}
+		IWorkbench workbench = PlatformUI.getWorkbench();     
+      if (workbench != null && workbench.getActiveWorkbenchWindow() != null){
+         IViewRegistry registry = workbench.getViewRegistry();
+         forceViewRegistryReload(workbench, registry);
+      }
+		waitForViewsToBeRegistered(null);
 	}
 
 	
@@ -264,7 +249,10 @@ public class WorkspaceBundleLoadCoordinator {
 								//Ignore, we failed during view save
 							}
 						}
-						page.hideView(viewReference);
+						try{
+						   page.hideView(viewReference);
+						} catch (Throwable th){
+						}
 					}
 				}
 			}
@@ -335,9 +323,8 @@ public class WorkspaceBundleLoadCoordinator {
 	            out = new FileOutputStream(new File(destination, source.getName())).getChannel();
 	         } else {
 	            if (destination.exists()) {
-	               destination.delete(); // to work around some file permission
+	               destination.delete(); // to work around some file permission problems
 	            }
-	            // problems
 	            out = new FileOutputStream(destination).getChannel();
 	         }
 	         try {
@@ -354,50 +341,7 @@ public class WorkspaceBundleLoadCoordinator {
 	      }
 	   }
 	
-	private List<BundleInfoLite> copyDeltasToManagedFolder(List<BundleInfoLite> copies) {
-		List<BundleInfoLite> lockedFiles = new ArrayList<BundleInfoLite>();
-		for(BundleInfoLite info: copies){
-			File folder = new File(temporaryBundleLocationFolder, info.getSymbolicName());
-			folder.mkdirs();
-			File newFile = new File(folder, info.getVersion() + ".jar");
-			if(newFile.exists()){
-				newFile.delete();
-			}
-			FileChannel out = null;
-			FileChannel in = null;
-			try {
-				out = new FileOutputStream(newFile).getChannel();
-				String path = info.getSystemLocation().toURI().getPath();
-				in = new FileInputStream(new File(path)).getChannel();
-
-				long position = 0;
-				long size = in.size();
-				while (position < size) {
-					position += in.transferTo(position, size, out);
-				}
-				BundleInfoLite newBundle = new BundleInfoLite(newFile.toURI().toURL());
-				managedArea.add(newBundle);
-			} catch (IOException e) {
-				OseeLog.log(WorkspaceBundleLoadCoordinator.class, Level.WARNING, e);
-			} catch (URISyntaxException e) {
-				OseeLog.log(WorkspaceBundleLoadCoordinator.class, Level.WARNING, e);
-			} finally {
-				try {
-					if(in != null){
-						in.close();
-					}
-				} catch (IOException e) {
-				}
-				try {
-					if(out != null){
-						out.close();
-					}
-				} catch (IOException e) {
-				}
-			}
-		}
-		return lockedFiles;
-	}
+	
 	
 	private List<BundleInfoLite> determineDeltasBetweenBundlesToLoad() {
 		List<BundleInfoLite> bundlesToOperateOn = new ArrayList<BundleInfoLite>();
@@ -444,42 +388,43 @@ public class WorkspaceBundleLoadCoordinator {
 		this.bundlesToCheck.add(urlString);
 	}
 	
-	public synchronized void updateBundles(SubMonitor subMonitor){
-		final SubMonitor master = SubMonitor.convert(subMonitor, 100);
+	public synchronized void updateBundles(IProgressMonitor monitor){
 		List<BundleInfoLite> deltas = determineDeltasBetweenBundlesToLoad();
-		master.worked(30);
-		List<BundleInfoLite> lockedFiles = copyDeltasToManagedFolder(deltas);
-		master.worked(65);
-		for(BundleInfoLite info: lockedFiles){
-			addBundleToCheck(info.getSystemLocation().toString());
-			OseeLog.log(WorkspaceBundleLoadCoordinator.class, Level.WARNING, String.format("Unable to copy and load locked file: [%s]", info.getSystemLocation().toString()));
+		monitor.worked(Operations.calculateWork(Operations.TASK_WORK_RESOLUTION, 0.15));
+		List<BundleInfoLite> bundlesToAdd = managedFolderArea.copyDeltasToManagedFolder(deltas);
+		monitor.worked(Operations.calculateWork(Operations.TASK_WORK_RESOLUTION, 0.30));
+		for(BundleInfoLite bundle:bundlesToAdd){
+		   managedArea.add(bundle);
 		}
-		master.worked(5);
+	    monitor.worked(Operations.calculateWork(Operations.TASK_WORK_RESOLUTION, 0.05));
 	}
 	
-	public synchronized void installLatestBundles(SubMonitor subMonitor){
-		final SubMonitor master = SubMonitor.convert(subMonitor, 100);
+	public synchronized void installLatestBundles(final IProgressMonitor subMonitor){
 		final List<BundleInfoLite> bundles = managedArea.getLatestBundles();
 		Collection<Bundle> bundlesToRefresh = new ArrayList<Bundle>();
+		List<BundleInfoLite> uninstallListAll = new ArrayList<BundleInfoLite>();
 		for(BundleInfoLite info:bundles){
 			if(!info.isInstalled()){
-				try {
-					List<BundleInfoLite> uninstallList = managedArea.getByBundleName(info.getSymbolicName());
-					if(uninstallList.size() > 1){
-						for(BundleInfoLite toUninstall:uninstallList){
-							if(toUninstall.isInstalled()){
-								closeUpdatedViews(uninstallList);
-								Bundle bundle = toUninstall.uninstall();
-								bundlesToRefresh.add(bundle);
-							}
-						}
-					}
-
-				} catch (BundleException e) {
-					OseeLog.log(WorkspaceBundleLoadCoordinator.class, Level.WARNING, e);
-				} 
+			   List<BundleInfoLite> uninstallList = managedArea.getByBundleName(info.getSymbolicName());
+			   if(uninstallList.size() > 1){
+			      for(BundleInfoLite toUninstall:uninstallList){
+			         if(toUninstall.isInstalled()){
+			            uninstallListAll.add(toUninstall);
+			         }
+			      }
+			   }
 			}
 		}
+		
+		closeUpdatedViews(uninstallListAll);
+		for(BundleInfoLite toUninstall:uninstallListAll){
+         try {
+            Bundle bundle = toUninstall.uninstall();
+            bundlesToRefresh.add(bundle);
+         } catch (BundleException e) {
+            OseeLog.log(WorkspaceBundleLoadCoordinator.class, Level.WARNING, e);
+         }
+      }
 		
 		if(wiring != null && bundlesToRefresh.size() > 0){
 			final Object waitForLoad = new Object();
@@ -487,12 +432,12 @@ public class WorkspaceBundleLoadCoordinator {
 				@Override
 				public void frameworkEvent(FrameworkEvent event) {
 					if(FrameworkEvent.PACKAGES_REFRESHED == event.getType()){
-						startBundles(bundles, master.newChild(80));
-						waitForViewsToBeRegistered(master.newChild(15));
+						startBundles(bundles, subMonitor);
+						waitForViewsToBeRegistered(subMonitor);
 						PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable(){
 							@Override
 							public void run() {
-								restoreStateFromMemento(master.newChild(5));
+								restoreStateFromMemento(subMonitor);
 							}
 						});
 						synchronized (waitForLoad) {
@@ -508,23 +453,23 @@ public class WorkspaceBundleLoadCoordinator {
 				}
 			}
 		} else {
-			startBundles(bundles, master.newChild(80));
-			waitForViewsToBeRegistered(master.newChild(15));
-			final SubMonitor restore = master.newChild(5);
+			startBundles(bundles, subMonitor);
+			waitForViewsToBeRegistered(subMonitor);
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable(){
 				@Override
 				public void run() {
-					restoreStateFromMemento(restore);
+					restoreStateFromMemento(subMonitor);
 				}
 			});
 		}
 	}
 	
-	private boolean waitForViewsToBeRegistered(SubMonitor subMonitor){
-		SubMonitor monitor = SubMonitor.convert(subMonitor, 10);
-		monitor.setTaskName("Waiting for views to register.");
+	private boolean waitForViewsToBeRegistered(IProgressMonitor monitor){
+	   if(monitor != null)
+	      monitor.setTaskName("Waiting for views to register.");
 		for(int i = 0; i < 10; i++){
-			monitor.worked(1);
+		   if(monitor != null)
+		      monitor.worked(1);
 			CheckViewsRegistered check = new CheckViewsRegistered();
 			PlatformUI.getWorkbench().getDisplay().syncExec(check);
 			if(check.isLoaded()){
@@ -568,57 +513,54 @@ public class WorkspaceBundleLoadCoordinator {
 
 		}
 		
-		@SuppressWarnings({ "rawtypes" })
-		private void forceViewRegistryReload(IWorkbench workbench, IViewRegistry registry){
-			try{
-//				private Map<String, IViewDescriptor> descriptors = new HashMap<String, IViewDescriptor>();
-//				private List<IStickyViewDescriptor> stickyDescriptors = new ArrayList<IStickyViewDescriptor>();
-//				private HashMap<String, ViewCategory> categories = new HashMap<String, ViewCategory>();
-				
-				Field field1 = registry.getClass().getDeclaredField("descriptors");
-				Field field2 = registry.getClass().getDeclaredField("stickyDescriptors");
-				Field field3 = registry.getClass().getDeclaredField("categories");
-				
-				field1.setAccessible(true);
-				field2.setAccessible(true);
-				field3.setAccessible(true);
-				
-				((Map)field1.get(registry)).clear();
-				((List)field2.get(registry)).clear();
-				((Map)field3.get(registry)).clear();
-				
-				field1.setAccessible(false);
-				field2.setAccessible(false);
-				field3.setAccessible(false);
-				
-				Method[] methods = registry.getClass().getDeclaredMethods();
-				Method method = null;
-				for(Method m:methods){
-					if(m.getName().equals("postConstruct")){
-						method = m;
-						break;
-					}
-				}
-				if(method != null){
-					boolean access = method.isAccessible();
-					method.setAccessible(true);
-					try{
-						method.invoke(registry);
-					} finally {
-						method.setAccessible(access);
-					}
-				}
-			} catch (Throwable th){
-				OseeLog.log(this.getClass(), Level.SEVERE, th);
-			}
-		}
-		
 		public boolean isLoaded(){
 			return isLoaded;
 		}
 	}
+	
+	@SuppressWarnings({ "rawtypes" })
+   private void forceViewRegistryReload(IWorkbench workbench, IViewRegistry registry){
+      try{
+         Field field1 = registry.getClass().getDeclaredField("descriptors");
+         Field field2 = registry.getClass().getDeclaredField("stickyDescriptors");
+         Field field3 = registry.getClass().getDeclaredField("categories");
+         
+         field1.setAccessible(true);
+         field2.setAccessible(true);
+         field3.setAccessible(true);
+         
+         ((Map)field1.get(registry)).clear();
+         ((List)field2.get(registry)).clear();
+         ((Map)field3.get(registry)).clear();
+         
+         field1.setAccessible(false);
+         field2.setAccessible(false);
+         field3.setAccessible(false);
+         
+         Method[] methods = registry.getClass().getDeclaredMethods();
+         Method method = null;
+         for(Method m:methods){
+            if(m.getName().equals("postConstruct")){
+               method = m;
+               break;
+            }
+         }
+         if(method != null){
+            boolean access = method.isAccessible();
+            method.setAccessible(true);
+            try{
+               method.invoke(registry);
+            } finally {
+               method.setAccessible(access);
+            }
+         }
+      } catch (Throwable th){
+         OseeLog.log(this.getClass(), Level.SEVERE, th);
+      }
+   }
+	
 
-	private void restoreStateFromMemento(SubMonitor restore) {
+	private void restoreStateFromMemento(IProgressMonitor restore) {
 		File mementoFile = OseeData.getFile(OTE_MEMENTO);
 		if(mementoFile.exists()){
 			try {
@@ -669,28 +611,29 @@ public class WorkspaceBundleLoadCoordinator {
 		}
 	}
 
-	private void startBundles(Collection<BundleInfoLite> bundles, SubMonitor subMonitor){
-		final SubMonitor master = SubMonitor.convert(subMonitor, bundles.size() * 3);
+	private void startBundles(Collection<BundleInfoLite> bundles, IProgressMonitor subMonitor){
 		BundleContext context = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
-		master.setTaskName("Installing Bundles");
+		subMonitor.setTaskName("Installing Bundles");
+		double workPercentage = 0.50 / (bundles.size()*2);
+		int workAmount = Operations.calculateWork(Operations.TASK_WORK_RESOLUTION, workPercentage);
 		for(BundleInfoLite info:bundles){
 			if(!info.isInstalled()){
 				try {
 					info.install(context);					
-					master.worked(2);
 				} catch (BundleException e) {
 				} catch (IOException e) {
 				} 
 			}
+			subMonitor.worked(workAmount*2);
 		}
 		for(BundleInfoLite info:bundles){
 			if(!info.isStarted()){
 				try {
 					info.start(context);
-					master.worked(1);
 				} catch (BundleException e) {
 				} 
 			}
+			subMonitor.worked(workAmount);
 		}
 	}
 
