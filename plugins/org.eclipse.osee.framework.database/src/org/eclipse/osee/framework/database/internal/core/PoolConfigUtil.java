@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.database.internal.core;
 
 import java.util.Properties;
+
 import org.apache.commons.dbcp.AbandonedConfig;
 import org.apache.commons.pool.impl.GenericKeyedObjectPool;
 import org.apache.commons.pool.impl.GenericObjectPool;
@@ -35,18 +36,18 @@ public final class PoolConfigUtil {
 
    public static final boolean DEFAULT_TEST_ON_BORROW = false;
    public static final boolean DEFAULT_TEST_ON_RETURN = false;
-   public static final boolean DEFAULT_TEST_WHILE_IDLE = true;
+   public static final boolean DEFAULT_TEST_WHILE_IDLE = true; 
 
    // The default number of objects to examine per run in the idle object evictor.
-   public static final int DEFAULT_NUM_TESTS_PER_EVICTION_RUN = DEFAULT_MAX_ACTIVE;
+   public static final int DEFAULT_NUM_TESTS_PER_EVICTION_RUN = 1; // dafault was DEFAULT_MAX_ACTIVE
 
-   public static final long DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS = -1L; //1000L; // (1 sec) - default -1L (infinite)
-   public static final long DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS = 60000L; // (30 secs) - default - 1000L * 60L * 30L - 30 mins;
+   public static final long DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS = 5000L; // (5 sec) - default -1L (infinite) 
+   public static final long DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS = 60000L; // (60 secs) - default - 1000L * 60L * 30L - 30 mins;
    public static final long DEFAULT_SOFT_MIN_EVICTABLE_IDLE_TIME_MILLIS = -1;
 
    public static final boolean DEFAULT_LIFO = true;
 
-   public static final int DEFAULT_VALIDATION_QUERY_TIMEOUT_SECS = 3; // 3 secs 
+   public static final int DEFAULT_VALIDATION_QUERY_TIMEOUT_SECS = 10; // 3 secs 
 
    public static final boolean DEFAULT_POOL_PREPARED_STATEMENTS = false; // default was false
 
