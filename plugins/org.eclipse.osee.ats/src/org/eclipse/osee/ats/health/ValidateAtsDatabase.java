@@ -44,11 +44,14 @@ import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.config.store.TeamDefinitionArtifactStore;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
+import org.eclipse.osee.ats.core.client.review.AtsReviewCache;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
+import org.eclipse.osee.ats.core.client.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.log.AtsLog;
 import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
@@ -79,6 +82,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -242,6 +246,15 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                atsHealthCheck.validateAtsDatabase(artifacts, testNameToResultsMap, testNameToTimeSpentMap);
             }
 
+            // Clear ATS caches
+            for (Artifact artifact : artifacts) {
+               if (artifact instanceof TeamWorkFlowArtifact) {
+                  AtsTaskCache.decache((TeamWorkFlowArtifact) artifact);
+                  AtsReviewCache.decache((TeamWorkFlowArtifact) artifact);
+               }
+               ArtifactCache.deCache(artifact);
+            }
+
             if (monitor != null) {
                monitor.worked(1);
             }
@@ -249,6 +262,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          // Log resultMap data into xResultData
          addResultsMapToResultData(xResultData, testNameToResultsMap);
          addTestTimeMapToResultData(xResultData, testNameToTimeSpentMap);
+
       } finally {
          OseeEventManager.setDisableEvents(false);
       }
@@ -803,7 +817,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          xResultData.logError("Error: Artifact load returned 0 artifacts to check");
       }
       xResultData.log(monitor, "testLoadAllCommonArtifactIds - Completed " + DateUtil.getMMDDYYHHMM());
-      return Collections.subDivide(artIds, 5000);
+      return Collections.subDivide(artIds, 4000);
    }
 
    public static void testAtsAttributeValues(SkynetTransaction transaction, CountingMap<String> testNameToTimeSpentMap, HashCollection<String, String> testNameToResultsMap, boolean fixAttributeValues, Collection<Artifact> artifacts) {
