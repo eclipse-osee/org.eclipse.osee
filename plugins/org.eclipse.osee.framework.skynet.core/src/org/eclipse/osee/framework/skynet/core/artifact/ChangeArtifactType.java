@@ -69,7 +69,7 @@ public class ChangeArtifactType {
    private static final IStatus promptStatus = new Status(IStatus.WARNING, Activator.PLUGIN_ID, 257, "", null);
    private final Map<Integer, Integer> gammaToArtId = new HashMap<Integer, Integer>();
 
-   public static void changeArtifactType(Collection<? extends Artifact> inputArtifacts, IArtifactType newArtifactTypeToken) throws OseeCoreException {
+   public static void changeArtifactType(Collection<? extends Artifact> inputArtifacts, IArtifactType newArtifactTypeToken, boolean prompt) throws OseeCoreException {
 
       ChangeArtifactType app = new ChangeArtifactType();
       if (inputArtifacts.isEmpty()) {
@@ -83,7 +83,7 @@ public class ChangeArtifactType {
       ArtifactType newArtifactType = ArtifactTypeManager.getType(newArtifactTypeToken);
 
       try {
-         app.internalChangeArtifactType(inputArtifacts, newArtifactType);
+         app.internalChangeArtifactType(inputArtifacts, newArtifactType, prompt);
       } catch (Exception ex) {
          ArtifactQuery.reloadArtifacts(app.modifiedArtifacts);
          OseeExceptions.wrapAndThrow(ex);
@@ -97,10 +97,13 @@ public class ChangeArtifactType {
     * memory/database changes in such a manner that they stay in sync therefore, if any part of this blam fails, then
     * the type should not be changed
     */
-   private void internalChangeArtifactType(Collection<? extends Artifact> inputArtifacts, ArtifactType newArtifactType) throws OseeDataStoreException, OseeCoreException {
+   private void internalChangeArtifactType(Collection<? extends Artifact> inputArtifacts, ArtifactType newArtifactType, boolean prompt) throws OseeDataStoreException, OseeCoreException {
 
       createAttributeRelationTransactions(inputArtifacts, newArtifactType);
-      boolean changeOk = doesUserAcceptArtifactChange(newArtifactType);
+      boolean changeOk = !prompt;
+      if (prompt) {
+         changeOk = doesUserAcceptArtifactChange(newArtifactType);
+      }
 
       if (!changeOk) {
          ArtifactQuery.reloadArtifacts(modifiedArtifacts);

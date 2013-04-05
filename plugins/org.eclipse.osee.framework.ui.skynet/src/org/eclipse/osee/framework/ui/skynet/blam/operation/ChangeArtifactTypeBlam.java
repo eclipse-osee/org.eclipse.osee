@@ -35,7 +35,7 @@ public class ChangeArtifactTypeBlam extends AbstractBlam {
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       ChangeArtifactType.changeArtifactType(variableMap.getArtifacts("artifacts"),
-         variableMap.getArtifactType("New Artifact Type"));
+         variableMap.getArtifactType("New Artifact Type"), true);
    }
 
    @Override

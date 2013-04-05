@@ -221,7 +221,7 @@ public class ArtifactTypeManager {
                throw new OseeStateException("Found %d artifact references of type [%s] on branches [%s]",
                   artifacts.size(), purgeArtifactType, branches);
             } else {
-               ChangeArtifactType.changeArtifactType(artifactMap.values(), newArtifactType);
+               ChangeArtifactType.changeArtifactType(artifactMap.values(), newArtifactType, true);
             }
          }
          purgeArtifactType(purgeArtifactType);

@@ -39,7 +39,7 @@ public class ArtifactType extends AbstractOseeType<Long> implements IArtifactTyp
    private final Set<ArtifactType> superTypes = new HashSet<ArtifactType>();
    private final Set<ArtifactType> childTypes = new HashSet<ArtifactType>();
    private final Map<IOseeBranch, Collection<AttributeType>> attributes =
-      new HashMap<IOseeBranch, Collection<AttributeType>>();
+            new HashMap<IOseeBranch, Collection<AttributeType>>();
 
    public ArtifactType(Long guid, String name, boolean isAbstract) {
       super(guid, name);
@@ -110,7 +110,8 @@ public class ArtifactType extends AbstractOseeType<Long> implements IArtifactTyp
    }
 
    public boolean isValidAttributeType(IAttributeType attributeType, Branch branch) throws OseeCoreException {
-      return getAttributeTypes(branch).contains(attributeType);
+      Collection<IAttributeType> attributes = getAttributeTypes(branch);
+      return attributes.contains(attributeType);
    }
 
    public Map<IOseeBranch, Collection<AttributeType>> getLocalAttributeTypes() throws OseeCoreException {

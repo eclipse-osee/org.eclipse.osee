@@ -312,7 +312,7 @@ public class ArtifactEventTest {
 
       // reload Artifact
       Assert.assertTrue(newArt.isOfType(CoreArtifactTypes.GeneralData));
-      ChangeArtifactType.changeArtifactType(Arrays.asList(newArt), CoreArtifactTypes.Heading);
+      ChangeArtifactType.changeArtifactType(Arrays.asList(newArt), CoreArtifactTypes.Heading, true);
 
       Assert.assertEquals(1, listener.getArtifacts().size());
       EventChangeTypeBasicGuidArtifact guidArt =
