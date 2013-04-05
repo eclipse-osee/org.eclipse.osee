@@ -59,11 +59,7 @@ public class IntroduceArtifactOperation {
       destinationArtifacts = new ArrayList<Artifact>(sourceArtifacts.size());
 
       for (Artifact sourceArtifact : sourceArtifacts) {
-         if (sourceArtifact.getBranch().equals(destinationBranch)) {
-            destinationArtifacts.add(sourceArtifact);
-         } else {
-            introduceArtifact(sourceArtifact);
-         }
+         introduceArtifact(sourceArtifact);
       }
       return destinationArtifacts;
    }

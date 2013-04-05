@@ -178,34 +178,6 @@ public class ChangeItemUtilTest {
    }
 
    @Test
-   public void testNewOrIntroducedOnSource() {
-      ChangeVersion introduced = ChangeTestUtility.createChange(2222L, ModificationType.INTRODUCED);
-      ChangeVersion modified = ChangeTestUtility.createChange(1234L, ModificationType.MODIFIED);
-      ChangeItem item;
-
-      item = ChangeTestUtility.createItem(200, null, introduced, modified, null, null);
-      assertTrue(ChangeItemUtil.wasNewOrIntroducedOnSource(item));
-
-      item = ChangeTestUtility.createItem(200, null, null, introduced, null, null);
-      assertTrue(ChangeItemUtil.wasNewOrIntroducedOnSource(item));
-
-      item = ChangeTestUtility.createItem(200, null, null, modified, null, null);
-      assertFalse(ChangeItemUtil.wasNewOrIntroducedOnSource(item));
-
-      ChangeVersion newType = ChangeTestUtility.createChange(2222L, ModificationType.NEW);
-      modified = ChangeTestUtility.createChange(2223L, ModificationType.MODIFIED);
-
-      item = ChangeTestUtility.createItem(200, null, newType, modified, null, null);
-      assertTrue(ChangeItemUtil.wasNewOrIntroducedOnSource(item));
-
-      item = ChangeTestUtility.createItem(200, null, null, newType, null, null);
-      assertTrue(ChangeItemUtil.wasNewOrIntroducedOnSource(item));
-
-      item = ChangeTestUtility.createItem(200, null, modified, modified, null, null);
-      assertFalse(ChangeItemUtil.wasNewOrIntroducedOnSource(item));
-   }
-
-   @Test
    public void testIntroducedOnSource() {
       ChangeVersion introduced = ChangeTestUtility.createChange(2222L, ModificationType.INTRODUCED);
       ChangeVersion modified = ChangeTestUtility.createChange(1234L, ModificationType.MODIFIED);

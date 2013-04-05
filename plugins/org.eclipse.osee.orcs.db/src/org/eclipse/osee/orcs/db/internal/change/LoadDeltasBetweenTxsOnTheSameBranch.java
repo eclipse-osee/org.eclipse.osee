@@ -109,10 +109,10 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends DatabaseCallable<List<C
    }
 
    private void loadByItemId(Collection<ChangeItem> changeData, int txJoinId, ChangeItemFactory factory) throws OseeCoreException {
-      HashMap<Integer, ChangeItem> changesByItemId = new HashMap<Integer, ChangeItem>();
 
       IdJoinQuery idJoin = JoinUtility.createIdJoinQuery();
 
+      HashMap<Integer, ChangeItem> changesByItemId = new HashMap<Integer, ChangeItem>();
       changeItemLoader.loadItemIdsBasedOnGammas(factory, txJoinId, changesByItemId, idJoin);
 
       idJoin.store();
@@ -144,6 +144,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends DatabaseCallable<List<C
             ChangeItem change = changesByItemId.get(itemId);
             change.getDestinationVersion().setModType(modType);
             change.getDestinationVersion().setGammaId(gammaId);
+            change.getBaselineVersion().copy(change.getDestinationVersion());
          }
       } finally {
          chStmt.close();

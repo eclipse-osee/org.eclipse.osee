@@ -10,20 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.IntroduceArtifactOperation;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.change.IChangeWorker;
-import org.eclipse.osee.framework.skynet.core.change.RelationChange;
-import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -49,53 +47,31 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
          monitor.beginTask("Reverting artifact(s)", artifacts.size());
          if (!artifacts.isEmpty()) {
             Artifact firstArtifact = artifacts.iterator().next();
+            IOseeBranch branch = firstArtifact.getBranch();
             SkynetTransaction transaction =
-               TransactionManager.createTransaction(firstArtifact.getBranch(),
-                  ReplaceArtifactWithBaselineOperation.class.getSimpleName());
+               TransactionManager.createTransaction(branch, ReplaceArtifactWithBaselineOperation.class.getSimpleName());
 
+            TransactionRecord txRecord = firstArtifact.getFullBranch().getBaseTransaction();
             for (Artifact artifact : artifacts) {
                monitor.subTask("Reverting: " + artifact.getName());
                monitor.worked(1);
-               Collection<Change> changes = getArtifactSpecificChanges(artifact.getArtId(), changeReportChanges);
-               revertArtifact(artifact, changes);
-               artifact.persist(transaction);
+               Artifact sourceArtifact =
+                  ArtifactQuery.checkHistoricalArtifactFromId(artifact.getArtId(), txRecord,
+                     DeletionFlag.INCLUDE_DELETED);
+               if (sourceArtifact != null) {
+                  transaction.addArtifact(new IntroduceArtifactOperation(branch).introduce(sourceArtifact));
+               } else {
+                  artifact.delete();
+                  transaction.addArtifact(artifact);
+               }
                monitor.done();
             }
-
             monitor.subTask(String.format("Persisting %s artifact(s)", artifacts.size()));
             transaction.execute();
             persistAndReloadArtifacts();
-
          }
          monitor.done();
       }
-   }
-
-   /**
-    * Conditions of filter:
-    * <ul>
-    * <li>!ChangeItem.isSynthetic()</li>
-    * <li>change is for the specific artifact</li>
-    * <li>if change is of type Relation and is NOT on the A side but on B side of that relation</li>
-    * </ul>
-    * 
-    * @return filtered changes based on the above conditions
-    */
-   private Collection<Change> getArtifactSpecificChanges(int artId, Collection<Change> changeReport) {
-      Collection<Change> artifactChanges = new ArrayList<Change>(changeReport.size());
-      for (Change change : changeReport) {
-         if (!change.getChangeItem().isSynthetic()) {
-            if (change.getArtId() == artId) {
-               artifactChanges.add(change);
-            } else if (change.getChangeType() == LoadChangeType.relation) {
-               RelationChange relationChange = (RelationChange) change;
-               if (relationChange.getBArtId() == artId) {
-                  artifactChanges.add(relationChange);
-               }
-            }
-         }
-      }
-      return artifactChanges;
    }
 
    private void persistAndReloadArtifacts() throws OseeCoreException {
@@ -104,12 +80,4 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
       }
    }
 
-   private void revertArtifact(Artifact artifact, Collection<Change> changes) throws OseeStateException, OseeCoreException, SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
-	   for (Change change : changes) {
-		   Class<? extends IChangeWorker> workerClass = change.getWorker();
-		   Constructor<?> ctor = workerClass.getConstructor(Change.class, Artifact.class);
-		   IChangeWorker worker = (IChangeWorker) ctor.newInstance(change, artifact);
-		   worker.revert();
-      }
-   }
 }

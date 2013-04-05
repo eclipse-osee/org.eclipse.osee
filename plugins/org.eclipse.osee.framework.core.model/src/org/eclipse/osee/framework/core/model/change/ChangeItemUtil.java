@@ -75,10 +75,6 @@ public final class ChangeItemUtil {
       return isIntroduced(changeItem.getFirstNonCurrentChange()) || isIntroduced(changeItem.getCurrentVersion());
    }
 
-   public static boolean wasNewOrIntroducedOnSource(ChangeItem changeItem) {
-      return wasNewOnSource(changeItem) || wasIntroducedOnSource(changeItem);
-   }
-
    public static boolean hasBeenReplacedWithVersion(ChangeItem changeItem) {
       boolean results = areGammasEqual(changeItem.getCurrentVersion(), changeItem.getBaselineVersion()) && //
       isModType(changeItem.getCurrentVersion(), ModificationType.MODIFIED);
@@ -128,7 +124,7 @@ public final class ChangeItemUtil {
    }
 
    public static boolean wasCreatedAndDeleted(ChangeItem changeItem) {
-      return wasNewOrIntroducedOnSource(changeItem) && isDeleted(changeItem.getCurrentVersion());
+      return !changeItem.getBaselineVersion().isValid() && isDeleted(changeItem.getCurrentVersion());
    }
 
    public static boolean isDeletedAndDoesNotExistInDestination(ChangeItem changeItem) {
