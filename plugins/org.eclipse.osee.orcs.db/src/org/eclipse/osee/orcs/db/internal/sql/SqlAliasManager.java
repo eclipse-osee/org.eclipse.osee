@@ -45,6 +45,11 @@ public class SqlAliasManager {
       return values != null ? values : Collections.<String> emptyList();
    }
 
+   public int getCount(TableEnum table) {
+      List<String> list = usedAliases.get(table);
+      return list == null ? 0 : list.size();
+   }
+
    public String getNextAlias(TableEnum table) throws OseeCoreException {
       Alias alias = aliases.get(table);
       Conditions.checkNotNull(alias, "alias", "Unable to find alias for [%s]", table);

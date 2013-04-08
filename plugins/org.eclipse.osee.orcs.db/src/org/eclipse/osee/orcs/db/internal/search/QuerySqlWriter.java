@@ -14,11 +14,13 @@ import java.util.List;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataPostProcessor;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
+import org.eclipse.osee.orcs.db.internal.sql.SqlAliasManager;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
@@ -38,7 +40,7 @@ public class QuerySqlWriter extends AbstractSqlWriter<QueryOptions> {
       String txAlias = getAliasManager().getFirstAlias(TableEnum.TXS_TABLE);
       String artAlias = getAliasManager().getFirstAlias(TableEnum.ARTIFACT_TABLE);
 
-      write("SELECT ");
+      write("SELECT%s ", getSqlHint());
       if (getOptions().isHistorical()) {
          write("max(%s.transaction_id) as transaction_id, %s.art_id, %s.branch_id", txAlias, artAlias, txAlias);
       } else {
@@ -124,4 +126,18 @@ public class QuerySqlWriter extends AbstractSqlWriter<QueryOptions> {
          }
       }
    }
+
+   @Override
+   protected String getSqlHint() throws OseeCoreException {
+      String hint = Strings.EMPTY_STRING;
+      SqlAliasManager aliasManager = getAliasManager();
+
+      boolean hintAllowed = aliasManager.getCount(TableEnum.SEARCH_TAGS_TABLE) <= 2;
+
+      if (hintAllowed) {
+         hint = super.getSqlHint();
+      }
+      return hint;
+   }
+
 }

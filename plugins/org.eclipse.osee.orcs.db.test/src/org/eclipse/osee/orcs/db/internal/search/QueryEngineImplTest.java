@@ -178,7 +178,7 @@ public class QueryEngineImplTest {
    @Test
    public void testCountHistorical() throws Exception {
       String expected = "SELECT count(xTable.art_id) FROM (\n" + //
-      " SELECT max(txs1.transaction_id) as transaction_id, art1.art_id, txs1.branch_id\n" + //
+      " SELECT/*+ ordered */ max(txs1.transaction_id) as transaction_id, art1.art_id, txs1.branch_id\n" + //
       " FROM \n" + //
       "osee_artifact art1, osee_txs txs1\n" + //
       " WHERE \n" + //
@@ -210,7 +210,7 @@ public class QueryEngineImplTest {
    @Test
    public void testQuery() throws Exception {
       String expected =
-         "SELECT art1.art_id, txs1.branch_id\n" + // 
+         "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + // 
          " FROM \n" + //
          "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, osee_join_char_id jch2, osee_artifact art3, osee_txs txs3\n" + //
          " WHERE \n" + //
@@ -249,7 +249,7 @@ public class QueryEngineImplTest {
    @Test
    public void testQuerySqlIncludeDeleted() throws OseeCoreException {
       String expected =
-         "SELECT art1.art_id, txs1.branch_id\n" + // 
+         "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + // 
          " FROM \n" + //
          "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, osee_join_char_id jch2, osee_artifact art3, osee_txs txs3\n" + //
          " WHERE \n" + //
@@ -288,7 +288,7 @@ public class QueryEngineImplTest {
    @Test
    public void testQueryHistorical() throws OseeCoreException {
       String expected =
-         "SELECT max(txs1.transaction_id) as transaction_id, art1.art_id, txs1.branch_id\n" + // 
+         "SELECT/*+ ordered */ max(txs1.transaction_id) as transaction_id, art1.art_id, txs1.branch_id\n" + // 
          " FROM \n" + //
          "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, osee_join_char_id jch2, osee_artifact art3, osee_txs txs3\n" + //
          " WHERE \n" + //
@@ -340,7 +340,7 @@ public class QueryEngineImplTest {
    @Test
    public void testQueryGuids() throws OseeCoreException {
       String expected =
-         "SELECT art1.art_id, txs1.branch_id\n" + // 
+         "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + // 
          " FROM \n" + //
          "osee_join_id jid1, osee_artifact art1, osee_txs txs1\n" + //
          " WHERE \n" + //
@@ -365,7 +365,7 @@ public class QueryEngineImplTest {
 
    @Test
    public void testQueryArtifactTypes() throws OseeCoreException {
-      String expected = "SELECT art1.art_id, txs1.branch_id\n" + // 
+      String expected = "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + // 
       " FROM \n" + //
       "osee_artifact art1, osee_txs txs1\n" + //
       " WHERE \n" + //
@@ -390,7 +390,7 @@ public class QueryEngineImplTest {
 
    @Test
    public void testQueryAttribute() throws OseeCoreException {
-      String expected = "SELECT art1.art_id, txs1.branch_id\n" + // 
+      String expected = "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + // 
       " FROM \n" + //
       "osee_attribute att1, osee_txs txs1, osee_artifact art1, osee_txs txs2\n" + //
       " WHERE \n" + //
@@ -513,7 +513,7 @@ public class QueryEngineImplTest {
    @Test
    public void testQueryExistsNoBranch() throws OseeCoreException {
       String expected =
-         "SELECT art1.art_id, txs1.branch_id\n" + // 
+         "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + // 
          " FROM \n" + //
          "osee_join_id jid1, osee_artifact art1, osee_txs txs1, " + //
          "osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, " + //
@@ -572,7 +572,7 @@ public class QueryEngineImplTest {
    @Test
    public void testQueryExistsWithBranch() throws OseeCoreException {
       String expected =
-         "SELECT art1.art_id, txs1.branch_id\n" + // 
+         "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + // 
          " FROM \n" + //
          "osee_join_id jid1, osee_artifact art1, osee_txs txs1, " + //
          "osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, " + //
@@ -638,7 +638,7 @@ public class QueryEngineImplTest {
    @Test
    public void testRelatedTo() throws OseeCoreException {
       String expected =
-         "SELECT art1.art_id, txs1.branch_id\n" + // 
+         "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + // 
          " FROM \n" + //
          "osee_join_id jid1, osee_artifact art1, osee_txs txs1, " + //
          "osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, " + //
@@ -709,7 +709,7 @@ public class QueryEngineImplTest {
    @Test
    public void testCountAllArtifactsFromBranchHistorical() throws OseeCoreException {
       String expected = "SELECT count(xTable.art_id) FROM (\n" + //
-      " SELECT max(txs1.transaction_id) as transaction_id, art1.art_id, txs1.branch_id\n" + //
+      " SELECT/*+ ordered */ max(txs1.transaction_id) as transaction_id, art1.art_id, txs1.branch_id\n" + //
       " FROM \n" + //
       "osee_artifact art1, osee_txs txs1\n" + //
       " WHERE \n" + //
@@ -738,7 +738,7 @@ public class QueryEngineImplTest {
 
    @Test
    public void testQueryAllArtifactsFromBranch() throws OseeCoreException {
-      String expected = "SELECT art1.art_id, txs1.branch_id\n" + // 
+      String expected = "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + // 
       " FROM \n" + //
       "osee_artifact art1, osee_txs txs1\n" + //
       " WHERE \n" + //
@@ -762,15 +762,16 @@ public class QueryEngineImplTest {
 
    @Test
    public void testQueryAllArtifactsFromBranchHistorical() throws OseeCoreException {
-      String expected = "SELECT max(txs1.transaction_id) as transaction_id, art1.art_id, txs1.branch_id\n" + // 
-      " FROM \n" + //
-      "osee_artifact art1, osee_txs txs1\n" + //
-      " WHERE \n" + //
-      "art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ?\n" + //
-      " AND \n" + // 
-      "txs1.tx_current IN (1, 0) AND txs1.branch_id = ?\n" + //
-      " GROUP BY art1.art_id, txs1.branch_id\n" + //
-      " ORDER BY art1.art_id, txs1.branch_id";
+      String expected =
+         "SELECT/*+ ordered */ max(txs1.transaction_id) as transaction_id, art1.art_id, txs1.branch_id\n" + // 
+         " FROM \n" + //
+         "osee_artifact art1, osee_txs txs1\n" + //
+         " WHERE \n" + //
+         "art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ?\n" + //
+         " AND \n" + // 
+         "txs1.tx_current IN (1, 0) AND txs1.branch_id = ?\n" + //
+         " GROUP BY art1.art_id, txs1.branch_id\n" + //
+         " ORDER BY art1.art_id, txs1.branch_id";
 
       queryData.getOptions().setFromTransaction(EXPECTED_TX_ID);
       queryData.addCriteria(ALL_ARTIFACTS);
@@ -792,7 +793,7 @@ public class QueryEngineImplTest {
    @Test
    public void testAllArtifactWithOtherCriteria() throws OseeCoreException {
       String expected =
-         "SELECT art1.art_id, txs1.branch_id\n" + // 
+         "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + // 
          " FROM \n" + //
          "osee_join_id jid1, osee_artifact art1, osee_txs txs1\n" + //
          " WHERE \n" + //
