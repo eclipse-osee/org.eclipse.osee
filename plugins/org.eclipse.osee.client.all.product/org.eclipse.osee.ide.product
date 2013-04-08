@@ -7,9 +7,7 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>--launcher.XXMaxPermSize
-256m</programArgs>
-      <vmArgs>-Xmx700m -Dosee.default.broker.uri=BROKER_ID -Dosee.application.server=http://localhost:8089</vmArgs>
+      <vmArgs>-Xmx1G -XX:MaxPermSize=512m -Dosee.default.broker.uri=BROKER_ID -Dosee.application.server=http://localhost:8089</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
