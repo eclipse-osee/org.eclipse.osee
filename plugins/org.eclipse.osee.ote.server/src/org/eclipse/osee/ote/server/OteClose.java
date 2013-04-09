@@ -13,6 +13,8 @@ package org.eclipse.osee.ote.server;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+import org.apache.felix.service.command.CommandProcessor;
+import org.apache.felix.service.command.Descriptor;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -22,12 +24,13 @@ public class OteClose {
 	public void start(){
 		BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
 		Dictionary<String, Object> dict = new Hashtable<String, Object>();
-		dict.put("osgi.command.scope", "ote");
-		dict.put("osgi.command.function", new String[]{"x"});
+		dict.put(CommandProcessor.COMMAND_SCOPE, "ote");
+		dict.put(CommandProcessor.COMMAND_FUNCTION, new String[]{"x"});
 		context.registerService(OteClose.class, this, dict);
 	}
 	
 	
+	@Descriptor ("Shutdown the OTE Server")
 	public void x() throws Exception {
 		BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
 		Bundle systemBundle = context.getBundle(0);
