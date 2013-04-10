@@ -20,6 +20,8 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.XmlTextInputStream;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -50,7 +52,11 @@ public class WordAttribute extends StringAttribute {
             String message =
                "This document contains track changes and cannot be saved with them. Do you want OSEE to remove them?" + "\n\nNote:You will need to reopen this artifact in OSEE to see the final result.";
             IStatusHandler handler = DebugPlugin.getDefault().getStatusHandler(promptStatus);
-            boolean isOkToRemove = (Boolean) handler.handleStatus(promptStatus, message);
+            @SuppressWarnings("unchecked")
+            Pair<MutableBoolean, Integer> answer =
+               (Pair<MutableBoolean, Integer>) handler.handleStatus(promptStatus, message);
+            MutableBoolean first = answer.getFirst();
+            boolean isOkToRemove = first.getValue();
             if (isOkToRemove) {
                returnValue = WordUtil.removeAnnotations(value);
             } else {
@@ -59,6 +65,8 @@ public class WordAttribute extends StringAttribute {
                   art.getName(), art.getArtId(), fullBranch.getName(), fullBranch.getGuid()));
             }
          } catch (CoreException ex) {
+            OseeExceptions.wrapAndThrow(ex);
+         } catch (ClassCastException ex) {
             OseeExceptions.wrapAndThrow(ex);
          }
       }

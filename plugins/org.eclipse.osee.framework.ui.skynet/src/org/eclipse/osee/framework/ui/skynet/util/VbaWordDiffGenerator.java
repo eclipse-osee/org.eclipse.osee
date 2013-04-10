@@ -133,6 +133,15 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
 
          appendable.append("\"\n\n    set baseDoc = oWord.Documents.Open (ver1)\n");
 
+         appendable.append("    baseDoc.TrackRevisions = false\n");
+         appendable.append("    baseDoc.AcceptAllRevisions\n");
+
+         appendable.append("\n\n    set compareDoc = oWord.Documents.Open (ver2)\n");
+         appendable.append("    compareDoc.AcceptAllRevisions\n");
+         appendable.append("    compareDoc.TrackRevisions = false\n");
+         appendable.append("    compareDoc.Save\n");
+         appendable.append("    compareDoc.Close\n\n\n");
+
          if (merge) {
             appendable.append(String.format(mergeCommand, "\"" + compareData.getOutputPath() + "\""));
          } else {
