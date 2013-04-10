@@ -11,13 +11,16 @@
 
 package org.eclipse.osee.ats.editor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -25,13 +28,24 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
+import org.eclipse.osee.ats.core.client.task.TaskArtifact;
+import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.goal.GoalXViewerFactory;
+import org.eclipse.osee.ats.goal.RemoveFromGoalAction;
+import org.eclipse.osee.ats.goal.RemoveFromGoalAction.RemovedFromGoalHandler;
+import org.eclipse.osee.ats.goal.SetGoalOrderAction;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.world.IMenuActionProvider;
 import org.eclipse.osee.ats.world.IWorldViewerEventHandler;
 import org.eclipse.osee.ats.world.WorldComposite;
 import org.eclipse.osee.ats.world.WorldLabelProvider;
@@ -76,7 +90,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Donald G. Dunne
  */
-public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler {
+public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IWorldViewerEventHandler, IMenuActionProvider {
    private final GoalArtifact goalArtifact;
    private IManagedForm managedForm;
    private Composite bodyComp;
@@ -245,12 +259,15 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
          WorldLabelProvider labelProvider = (WorldLabelProvider) worldComposite.getXViewer().getLabelProvider();
          labelProvider.setParentGoal((GoalArtifact) editor.getAwa());
 
+         worldComposite.getWorldXViewer().addMenuActionProvider(this);
+         getSite().setSelectionProvider(worldComposite.getWorldXViewer());
          GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
          gd.widthHint = 100;
          gd.heightHint = 100;
          worldComposite.setLayoutData(gd);
 
          reload();
+         createActions();
          return true;
       }
       return false;
@@ -499,6 +516,64 @@ public class SMAMembersTab extends FormPage implements IWorldViewerEventHandler 
          }
       }
 
+   }
+
+   Action setGoalOrderAction, removeFromGoalAction;
+
+   private void createActions() {
+      setGoalOrderAction = new SetGoalOrderAction((GoalArtifact) editor.getAwa(), this);
+      RemovedFromGoalHandler handler = new RemovedFromGoalHandler() {
+
+         @Override
+         public void removedFromGoal(Collection<? extends Artifact> removed) {
+            worldComposite.removeItems(removed);
+            worldComposite.getXViewer().remove(removed);
+            worldComposite.getXViewer().refresh(goalArtifact);
+         }
+
+      };
+      removeFromGoalAction = new RemoveFromGoalAction((GoalArtifact) editor.getAwa(), this, handler);
+   }
+
+   @Override
+   public void updateMenuActionsForTable() {
+      MenuManager mm = worldComposite.getXViewer().getMenuManager();
+      mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, setGoalOrderAction);
+      mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, removeFromGoalAction);
+      mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, new Separator());
+   }
+
+   @Override
+   public Set<? extends Artifact> getSelectedSMAArtifacts() {
+      Set<Artifact> artifacts = new HashSet<Artifact>();
+      for (Artifact art : worldComposite.getSelectedArtifacts()) {
+         if (art instanceof AbstractWorkflowArtifact) {
+            artifacts.add(art);
+         }
+      }
+      return artifacts;
+   }
+
+   @Override
+   public List<Artifact> getSelectedAtsArtifacts() {
+      List<Artifact> artifacts = new ArrayList<Artifact>();
+      for (Artifact art : worldComposite.getSelectedArtifacts()) {
+         if (art.isOfType(AtsArtifactTypes.AtsArtifact)) {
+            artifacts.add(art);
+         }
+      }
+      return artifacts;
+   }
+
+   @Override
+   public List<TaskArtifact> getSelectedTaskArtifacts() {
+      List<TaskArtifact> tasks = new ArrayList<TaskArtifact>();
+      for (Artifact art : worldComposite.getSelectedArtifacts()) {
+         if (art instanceof TaskArtifact) {
+            tasks.add((TaskArtifact) art);
+         }
+      }
+      return tasks;
    }
 
 }
